@@ -9,7 +9,6 @@ import game.gameobject.menu.MyMenu;
 import game.gameobject.MyPlace;
 import game.gameobject.Player;
 import game.place.Place;
-import org.lwjgl.opengl.Display;
 
 /**
  *
