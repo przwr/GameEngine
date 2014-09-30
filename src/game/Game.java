@@ -36,7 +36,6 @@ public class Game {
         menu.addPlayer(menuPl);
         menuPl.addCamera(menu.cam1);
         menuPl.addMenu((MyMenu) menu);
-
     }
 
     public void getInput() {

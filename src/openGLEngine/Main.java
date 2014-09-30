@@ -67,7 +67,7 @@ public class Main {
     }
 
     private static void update() {
-        game.update();
+        game.update();   
     }
 
     private static void render() {
@@ -118,7 +118,7 @@ public class Main {
 
     private static void initDisplay() {
         try {
-            setDisplayMode(display.getWidth(), display.getHeight(), false);
+            setDisplayMode(display.getWidth(), display.getHeight(), true);
             //Display.setDisplayMode(new DisplayMode(display.getWidth(), display.getHeight()));
             Display.create(new PixelFormat(0, 16, 1));
             Display.setResizable(false);
