@@ -24,7 +24,6 @@ public class Player extends Entity {
 
     protected final Place place;
     public MyMenu menu;
-    protected boolean pressed_Light;
     protected final Animation anim;
     private boolean animate;
     private Controler ctrl;

@@ -41,20 +41,24 @@ public class MyPad extends Controler {
                 inControl.canMove(0, yPad);
             }
         }
-        if (Controllers.getController(2 * padNr + 1).isButtonPressed(1)) {
+        if (Controllers.getController(2 * padNr + 1).isButtonPressed(7)) {
             inControl.speed = 16;
         } else {
             inControl.speed = 8;
         }
-        if (Controllers.getController(2 * padNr + 1).isButtonPressed(8)) {
-            if (!((Player) inControl).pressed_Light) {
-                ((Player) inControl).emits = !((Player) inControl).emits;
-                ((Player) inControl).pressed_Light = true;
+
+        {
+            int key = 3;
+            if (Controllers.getController(2 * padNr + 1).isButtonPressed(key)) {
+                if (!isPressed[key]) {
+                    ((Player) inControl).emits = !((Player) inControl).emits;
+                    isPressed[key] = true;
+                }
+            } else {
+                isPressed[key] = false;
             }
-        } else {
-            ((Player) inControl).pressed_Light = false;
         }
-        if (Controllers.getController(2 * padNr + 1).isButtonPressed(5)) {
+        if (Controllers.getController(2 * padNr + 1).isButtonPressed(6)) {
             ((Player) inControl).place.shakeCam(((Player) inControl).getCam());
         }
     }

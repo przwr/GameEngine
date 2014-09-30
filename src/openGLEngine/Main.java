@@ -64,6 +64,11 @@ public class Main {
             setDisplayMode(display.getWidth(), display.getHeight(), true);
             game.fullScreen = false;
         }
+        try {
+            Display.setDisplayConfiguration(2f, 0f, 1.0f);
+        } catch (LWJGLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private static void update() {
@@ -133,7 +138,6 @@ public class Main {
         }
         try {
             Display.setDisplayConfiguration(2f, 0f, 1.0f);
-
         } catch (LWJGLException ex) {
             Logger.getLogger(Main.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -164,7 +168,6 @@ public class Main {
                                 freq = targetDisplayMode.getFrequency();
                             }
                         }
-
                         // if we've found a match for bpp and frequence against the 
                         // original display mode then it's probably best to go for this one
                         // since it's most likely compatible with the monitor

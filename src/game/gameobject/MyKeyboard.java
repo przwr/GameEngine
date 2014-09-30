@@ -39,22 +39,23 @@ public class MyKeyboard extends Controler {
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             ((Player) inControl).place.shakeCam(((Player) inControl).getCam());
         }
-
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             inControl.speed = 16;
         } else {
             inControl.speed = 8;
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
-            if (!((Player) inControl).pressed_Light) {
-                ((Player) inControl).emits = !((Player) inControl).emits;
-                ((Player) inControl).pressed_Light = true;
+        {
+            int key = (int) Keyboard.KEY_F;
+            if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
+                if (!isPressed[key]) {
+                    ((Player) inControl).emits = !((Player) inControl).emits;
+                    isPressed[key] = true;
+                }
+            } else {
+                isPressed[key] = false;
             }
-        } else {
-            ((Player) inControl).pressed_Light = false;
         }
-
         if (Mouse.isButtonDown(0)) {
             ((Player) inControl).place.shakeCam(((Player) inControl).getCam());
         }
