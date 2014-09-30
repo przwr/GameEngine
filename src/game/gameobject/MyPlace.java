@@ -40,9 +40,9 @@ public class MyPlace extends Place {
         }
         addObj(new Mob(512, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
         addObj(new Mob(512, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
-        this.r = 0.08f;
-        this.g = 0.08f;
-        this.b = 0.08f;
+        this.r = 1f;
+        this.g = 1f;
+        this.b = 1f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, 24);
     }
