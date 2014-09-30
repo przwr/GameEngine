@@ -122,4 +122,10 @@ public abstract class GameObject {
     public int getSY() {
         return sY;
     }
+
+    public void renderLight(Place place, int x, int y) {
+        if (light != null) {
+            light.render(this, x, y);
+        }
+    }
 }

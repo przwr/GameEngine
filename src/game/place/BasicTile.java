@@ -5,8 +5,6 @@
  */
 package game.place;
 
-import openGLEngine.sprites.SpriteSheet;
-
 /**
  *
  * @author przemek

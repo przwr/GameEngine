@@ -58,4 +58,14 @@ public class Light {
     public void setStrength(int strenght) {
         this.strength = strenght;
     }
+
+    public void render(GameObject emitter, int x, int y) {
+        glColor3f(r, g, b);
+        glPushMatrix();
+        glTranslatef(emitter.getMidX() - light.getSx() / 2 + x, emitter.getMidY() - light.getSy() / 2 + y, 0);
+        for (int i = 0; i < strength; i++) {
+            light.render();
+        }
+        glPopMatrix();
+    }
 }

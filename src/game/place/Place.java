@@ -131,7 +131,7 @@ public abstract class Place {
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (GameObject emitter : emitters) {
             if (emitter.isEmits()) {
-                emitter.renderLight(this, cam);
+                emitter.renderLight(this, cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
         for (GameObject player : players) {
