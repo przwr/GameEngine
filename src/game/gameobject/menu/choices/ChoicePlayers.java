@@ -12,15 +12,24 @@ import game.gameobject.menu.MyMenu;
  *
  * @author przemek
  */
-public class ChoiceStart extends MenuChoice {
+public class ChoicePlayers extends MenuChoice {
 
-    public ChoiceStart(String label, MyMenu menu) {
+
+
+    public ChoicePlayers(String label, MyMenu menu) {
         super(label, menu);
-    }    
-    
+    }
+
     @Override
     public void action() {
-        menu.game.startGame(menu.nrPlayers);
+       menu.addPlayer();
+        if (menu.nrPlayers > 4) {
+            menu.setToOnePlayer();
+        }
     }
-    
+
+    @Override
+    public String getLabel() {
+        return label + menu.nrPlayers;
+    }
 }

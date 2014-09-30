@@ -12,15 +12,15 @@ import game.gameobject.menu.MyMenu;
  *
  * @author przemek
  */
-public class ChoiceStart extends MenuChoice {
+public class ChoiceDesktopFullScreen extends MenuChoice {
 
-    public ChoiceStart(String label, MyMenu menu) {
+    public ChoiceDesktopFullScreen(String label, MyMenu menu) {
         super(label, menu);
     }    
     
     @Override
     public void action() {
-        menu.game.startGame(menu.nrPlayers);
+        menu.game.setDesktopFullScreen();
     }
     
 }

@@ -23,7 +23,7 @@ import org.newdawn.slick.Color;
 public class Player extends Entity {
 
     protected final Place place;
-    protected MyMenu menu;
+    public MyMenu menu;
     protected boolean pressed_Light;
     protected final Animation anim;
     private boolean animate;

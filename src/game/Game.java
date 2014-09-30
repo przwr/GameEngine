@@ -26,6 +26,7 @@ public class Game {
     private final String title;
     private boolean runFlag;
     public boolean exitFlag;
+    public boolean fullScreen;
 
     public Game(String title) {
         this.title = title;
@@ -35,12 +36,12 @@ public class Game {
         menu.addPlayer(menuPl);
         menuPl.addCamera(menu.cam1);
         menuPl.addMenu((MyMenu) menu);
+
     }
 
     public void getInput() {
         if (runFlag) {
             if (player1.isMenuOn()) {
-
                 runFlag = false;
             }
             player1.getInput();
@@ -49,7 +50,6 @@ public class Game {
                     runFlag = false;
                 }
                 player2.getInput();
-
             }
             if (player3 != null && runFlag == true) {
                 if (player3.isMenuOn()) {
@@ -68,45 +68,52 @@ public class Game {
                 menuPl.getMenuInput();
             } else {
                 if (player1.isMenuOn()) {
-                    runFlag = true;
+                    ((MyMenu) menu).back();
                 }
                 player1.getMenuInput();
                 if (player2 != null) {
                     if (player2.isMenuOn()) {
-                        runFlag = true;
+                        ((MyMenu) menu).back();
                     }
                     player2.getMenuInput();
 
                 }
                 if (player3 != null) {
                     if (player3.isMenuOn()) {
-                        runFlag = true;
+                        ((MyMenu) menu).back();
                     }
                     player3.getMenuInput();
                 }
                 if (player4 != null) {
                     if (player4.isMenuOn()) {
-                        runFlag = true;
+                        ((MyMenu) menu).back();
                     }
                     player4.getMenuInput();
                 }
             }
         }
-
     }
 
-    public void startGame() {
+    public void startGame(int nrPl) {
         place = new MyPlace(2048, 2048, 64);
-        player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", place, 0);
-        place.addCamera1(player1, 256, 256);
-        place.addPlayer(player1);
-        player1.addCamera(place.cam1);
-        player1.addMenu((MyMenu) menu);
-        player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", place, 1);
-        place.addCamera2(player2, 256, 512);
-        place.addPlayer(player2);
-        player2.addCamera(place.cam2);
-        player2.addMenu((MyMenu) menu);
+        if (nrPl == 1) {
+            player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", place, 0);
+            place.addCamera1For1(player1, 256, 256);
+            place.addPlayer(player1);
+            player1.addCamera(place.cam1);
+            player1.addMenu((MyMenu) menu);
+        } else {
+            player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", place, 0);
+            place.addCamera1(player1, 256, 256);
+            place.addPlayer(player1);
+            player1.addCamera(place.cam1);
+            player1.addMenu((MyMenu) menu);
+            player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", place, 1);
+            place.addCamera2(player2, 256, 512);
+            place.addPlayer(player2);
+            player2.addCamera(place.cam2);
+            player2.addMenu((MyMenu) menu);
+        }
         runFlag = true;
     }
 
@@ -115,8 +122,8 @@ public class Game {
             runFlag = true;
         }
     }
-    
-    public void exit(){
+
+    public void exit() {
         exitFlag = true;
     }
 
@@ -138,5 +145,9 @@ public class Game {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setDesktopFullScreen() {
+        fullScreen = true;
     }
 }

@@ -25,12 +25,12 @@ public class Main {
 
     private static Game game;
     private static DisplayDevice display;
-    public static int fragmentShader;
-    public static int shaderProgram;
+//    public static int fragmentShader;
+//    public static int shaderProgram;
 
     public static void main(String[] args) {
         display = new DisplayDevice();
-        
+
         initDisplay();
         initGL();
         initGame();
@@ -47,16 +47,22 @@ public class Main {
 
     private static void getInput() {
         game.getInput();
-        if (Keyboard.isKeyDown(Keyboard.KEY_LMENU) && Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-            if (Display.isFullscreen()) {
-                try {
-                    Display.setFullscreen(false);
-                } catch (LWJGLException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                setDisplayMode(display.getWidth(), display.getHeight(), true);
+        if(game.fullScreen){
+            desktopFullScreen();
+        }
+    }
+
+    private static void desktopFullScreen() {
+        if (Display.isFullscreen()) {
+            try {
+                Display.setFullscreen(false);
+            } catch (LWJGLException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
+            game.fullScreen = false;
+        } else {
+            setDisplayMode(display.getWidth(), display.getHeight(), true);
+            game.fullScreen = false;
         }
     }
 
@@ -99,8 +105,10 @@ public class Main {
     private static void cleanUp() {
         try {
             Display.setDisplayConfiguration(1f, 0f, 1.0f);
+
         } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         Display.destroy();
         Keyboard.destroy();
@@ -118,13 +126,17 @@ public class Main {
             Mouse.create();
             Controllers.create();
             Display.setVSyncEnabled(true);
+
         } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         try {
             Display.setDisplayConfiguration(2f, 0f, 1.0f);
+
         } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 

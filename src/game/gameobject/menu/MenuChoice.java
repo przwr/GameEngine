@@ -13,7 +13,7 @@ import game.gameobject.menu.MyMenu;
  */
 public abstract class MenuChoice {
 
-    private String label;
+    protected String label;
     protected MyMenu menu;
 
     public MenuChoice(String label, MyMenu menu) {

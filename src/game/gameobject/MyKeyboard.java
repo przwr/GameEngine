@@ -111,5 +111,16 @@ public class MyKeyboard extends Controler {
                 isPressed[key] = false;
             }
         }
+        {
+            int key = (int) Keyboard.KEY_ESCAPE;
+            if (Keyboard.isKeyDown(key)) {
+                if (!isPressed[key]) {
+                    ((Player) inControl).menu.back();
+                    isPressed[key] = true;
+                }
+            } else {
+                isPressed[key] = false;
+            }
+        }
     }
 }
