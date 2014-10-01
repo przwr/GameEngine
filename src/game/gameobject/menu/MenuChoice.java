@@ -5,8 +5,6 @@
  */
 package game.gameobject.menu;
 
-import game.gameobject.menu.MyMenu;
-
 /**
  *
  * @author przemek

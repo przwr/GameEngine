@@ -21,7 +21,7 @@ import openGLEngine.SoundBase;
  */
 public class MyPlace extends Place {
 
-    private SoundBase sounds = new SoundBase();
+    private final SoundBase sounds = new SoundBase();
     final Tile GRASS = new BasicTile("grass", "Grass", sTile);
     final Tile ROCK = new SolidTile("rock", "Rock", sTile);
 
@@ -32,7 +32,7 @@ public class MyPlace extends Place {
 
     @Override
     public final void generate() {
-        sounds.init("src/res");
+        sounds.init("res");
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 200) {

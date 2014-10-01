@@ -5,7 +5,6 @@
  */
 package game;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -50,7 +49,7 @@ public class Analizer {
     public static void Save(Settings settings) {
         FileWriter fw = null;
         try {
-            fw = new FileWriter("settings.ini");
+            fw = new FileWriter("res/settings.ini");
 
             if (settings.fullscreen) {
                 fw.write("FullScreen: On");

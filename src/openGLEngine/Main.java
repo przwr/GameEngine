@@ -10,9 +10,6 @@ import game.Game;
 import game.IO;
 import game.Settings;
 import java.io.File;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -39,7 +36,7 @@ public class Main {
     public static void main(String[] args) {
         display = new DisplayDevice();
         settings = new Settings();
-        IO.ReadFile(new File("settings.ini"), settings);
+        IO.ReadFile(new File("res/settings.ini"), settings);
 
         initDisplay();
         initGL();

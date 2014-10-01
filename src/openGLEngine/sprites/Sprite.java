@@ -6,7 +6,6 @@
 package openGLEngine.sprites;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +13,7 @@ import javax.imageio.ImageIO;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
 
 /**
  *
@@ -45,7 +45,7 @@ public class Sprite {
 
     public static Texture loadTexture(String key) {
         try {
-            return TextureLoader.getTexture("png", Sprite.class.getResourceAsStream("/res/" + key + ".png"));
+            return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/" + key + ".png"));
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
         }
