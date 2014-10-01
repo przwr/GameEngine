@@ -41,7 +41,7 @@ public class Player extends Entity {
         this.emitter = true;
         init("apple", name, Display.getWidth() / ssModeX - width / 2 - sX, Display.getHeight() / ssModeY - width / 2 - sY, sx, sy);
         this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024);
-        this.anim = new Animation(2, spr, sx, sy, 500);
+        this.anim = new Animation(2, spr, 500);
         animate = true;
         initControler(playerNr);
     }

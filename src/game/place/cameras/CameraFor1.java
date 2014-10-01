@@ -16,7 +16,6 @@ import org.lwjgl.opengl.Display;
  */
 public class CameraFor1 extends Camera {
 
-
     public CameraFor1(Place place, GameObject go, int xStart, int yStart) {
         this.place = place;
         this.go = go;

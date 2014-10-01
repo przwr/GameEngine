@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  *
@@ -16,13 +17,14 @@ import java.io.IOException;
  */
 public class IO {
 
-    public static void ReadFile(File f) {
+    public static void ReadFile(File f, Settings settings) {
         try {
-            BufferedReader r = new BufferedReader(new FileReader(f));
-            String s = null;            
+            FileReader fr = new FileReader(f);
+            BufferedReader r = new BufferedReader(fr);
+            String s = null;
             while ((s = r.readLine()) != null) {
-                Analizer.AnalizeSetting(s);
                 System.out.println("Przeczytano: " + s);
+                Analizer.AnalizeSetting(s, settings);
             }
         } catch (IOException e) {
             System.out.println(e);
