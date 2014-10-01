@@ -13,6 +13,7 @@ import game.place.cameras.Camera;
 import game.place.Place;
 import java.awt.Font;
 import openGLEngine.FontsHandler;
+import openGLEngine.SoundBase;
 
 /**
  *
@@ -20,6 +21,7 @@ import openGLEngine.FontsHandler;
  */
 public class MyPlace extends Place {
 
+    private SoundBase sounds = new SoundBase();
     final Tile GRASS = new BasicTile("grass", "Grass", sTile);
     final Tile ROCK = new SolidTile("rock", "Rock", sTile);
 
@@ -30,6 +32,7 @@ public class MyPlace extends Place {
 
     @Override
     public final void generate() {
+        sounds.init("src/res");
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 200) {
@@ -46,6 +49,7 @@ public class MyPlace extends Place {
         this.b = 0.5f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, 24);
+        sounds.getSound("MumboMountain").playAsMusic(1.0f , 1.0f, true);
     }
 
     @Override
