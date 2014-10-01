@@ -7,13 +7,15 @@ package game.gameobject.menu;
 
 import game.Game;
 import game.gameobject.Player;
+import game.gameobject.menu.choices.ChoiceBrightness;
 import game.gameobject.menu.choices.ChoiceDesktopFullScreen;
 import game.gameobject.menu.choices.ChoiceExit;
 import game.gameobject.menu.choices.ChoicePlayers;
-import game.gameobject.menu.choices.ChoiceResume;
 import game.gameobject.menu.choices.ChoiceSettings;
+import game.gameobject.menu.choices.ChoiceSplitScreen;
 import game.gameobject.menu.choices.ChoiceStart;
-import game.place.Camera;
+import game.gameobject.menu.choices.ChoiceStop;
+import game.place.cameras.Camera;
 import game.place.Place;
 import java.awt.Font;
 import openGLEngine.FontsHandler;
@@ -28,28 +30,28 @@ import org.newdawn.slick.Color;
  */
 public class MyMenu extends Place {
 
-    public Game game;
     private int cur;
     public int nrPlayers = 1;
 
     private MenuOpt[] menus;
 
-    public MyMenu(int width, int height, int tileSize, Game game) {
-        super(width, height, tileSize);
-        this.game = game;
+    public MyMenu(Game game, int width, int height, int tileSize) {
+        super(game, width, height, tileSize);
         generate();
     }
 
     @Override
     public void generate() {
         menus = new MenuOpt[5];
-        menus[0] = new MenuOpt(4, "Menu");
+        menus[0] = new MenuOpt(10, "Menu");
         menus[0].addChoice(new ChoiceStart("Start", this));
-        menus[0].addChoice(new ChoiceResume("Wznów", this));
         menus[0].addChoice(new ChoiceSettings("Opcje", this));
+        menus[0].addChoice(new ChoiceStop("Zakończ", this));
         menus[0].addChoice(new ChoiceExit("Wyjdź", this));
-        menus[1] = new MenuOpt(4, "Opcje");
+        menus[1] = new MenuOpt(10, "Opcje");
         menus[1].addChoice(new ChoicePlayers("Liczba graczy: ", this));
+        menus[1].addChoice(new ChoiceSplitScreen("Dzielenie Ekranu: ", this));
+        menus[1].addChoice(new ChoiceBrightness("Jasność: ", this));
         menus[1].addChoice(new ChoiceDesktopFullScreen("Pełny Ekran", this));
         this.r = 1f;
         this.g = 1f;

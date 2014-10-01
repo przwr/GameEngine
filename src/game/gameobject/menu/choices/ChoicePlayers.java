@@ -15,7 +15,6 @@ import game.gameobject.menu.MyMenu;
 public class ChoicePlayers extends MenuChoice {
 
 
-
     public ChoicePlayers(String label, MyMenu menu) {
         super(label, menu);
     }

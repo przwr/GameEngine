@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place;
+package game.place.cameras;
 
 import game.gameobject.GameObject;
+import game.place.Place;
 import openGLEngine.Delay;
 
 /**

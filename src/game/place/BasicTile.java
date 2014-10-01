@@ -11,9 +11,9 @@ package game.place;
  */
 public class BasicTile extends Tile {
 
-    public BasicTile(String tex, int size) {
+    public BasicTile(String tex, String name, int size) {
         super(tex, size, false, false);
-        init(tex, 1, 1, SIZE, SIZE);
+        init(tex, name, 1, 1, SIZE, SIZE);
     }
 
     @Override

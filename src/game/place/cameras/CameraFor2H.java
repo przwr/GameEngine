@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place;
+package game.place.cameras;
 
 import openGLEngine.Delay;
 import game.gameobject.GameObject;
+import game.place.Place;
 import org.lwjgl.opengl.Display;
 
 /**
  *
  * @author przemek
  */
-public class CameraFor1 extends Camera {
+public class CameraFor2H extends Camera {
 
-
-    CameraFor1(Place place, GameObject go, int xStart, int yStart) {
+    public CameraFor2H(Place place, GameObject go, int xStart, int yStart) {
         this.place = place;
         this.go = go;
         if (go.getX() - xStart > 0) {
@@ -43,10 +43,10 @@ public class CameraFor1 extends Camera {
             } else {
                 go.setY(yStart);
             }
-        } else if (go.getY() - yStart < -(place.getHeight() - Display.getHeight())) {
-            yOffset = -(place.getHeight() - Display.getHeight());
-            if (yStart + go.getSY() + go.getHeight() > Display.getHeight()) {
-                go.setY(Display.getHeight() - (go.getSY() + go.getHeight()));
+        } else if (go.getY() - yStart < -(place.getHeight() - (Display.getHeight() / 2))) {
+            yOffset = -(place.getHeight() - (Display.getHeight() / 2));
+            if (yStart + go.getSY() + go.getHeight() > (Display.getHeight() / 2)) {
+                go.setY((Display.getHeight() / 2) - (go.getSY() + go.getHeight()));
             } else {
                 go.setY(yStart);
             }
@@ -61,7 +61,7 @@ public class CameraFor1 extends Camera {
     @Override
     public synchronized void move(int xPos, int yPos) {
         int Dwidth = Display.getWidth() / 2;
-        int Dheight = Display.getHeight() / 2;
+        int Dheight = (Display.getHeight() / 2) / 2;
         if (xOffset - xPos > 0 || xOffset - xPos < -(place.getWidth() - Display.getWidth())) {
             if (!((go.getBegOfX() + xPos < 0) || go.getEndOfX() + xPos > Display.getWidth())) {
                 go.addX(xPos);
@@ -72,8 +72,8 @@ public class CameraFor1 extends Camera {
             setXOff(xOffset - xPos);
         }
 
-        if (yOffset - yPos > 0 || yOffset - yPos < -(place.getHeight() - Display.getHeight())) {
-            if (!(go.getBegOfY() + yPos < 0 || go.getEndOfY() + yPos > Display.getHeight())) {
+        if (yOffset - yPos > 0 || yOffset - yPos < -(place.getHeight() - (Display.getHeight() / 2))) {
+            if (!(go.getBegOfY() + yPos < 0 || go.getEndOfY() + yPos > (Display.getHeight() / 2))) {
                 go.addY(yPos);
             }
         } else if (go.getMidY() != Dheight) {

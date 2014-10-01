@@ -5,7 +5,7 @@
  */
 package game.gameobject;
 
-import game.place.Camera;
+import game.place.cameras.Camera;
 import game.place.Light;
 import game.place.Place;
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ public class Mob extends Entity {
     protected GameObject prey;
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid) {
-        this.name = name;
         this.width = width;
         this.height = height;
         this.solid = solid;
@@ -36,7 +35,7 @@ public class Mob extends Entity {
         this.top = true;
         this.speed = speed;
         this.range = range;
-        init("rabbit", x, y, sx, sy);
+        init("rabbit", name, x, y, sx, sy);
     }
 
     @Override

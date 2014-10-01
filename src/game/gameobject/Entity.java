@@ -5,7 +5,7 @@
  */
 package game.gameobject;
 
-import game.place.Camera;
+import game.place.cameras.Camera;
 import game.place.Place;
 import openGLEngine.Time;
 
@@ -16,7 +16,6 @@ import openGLEngine.Time;
 public abstract class Entity extends GameObject {
 
     protected int speed;
-    protected String name;
 
     public void canMove(int magX, int magY) {
         if (magX != 0 && magY != 0) {

@@ -6,7 +6,7 @@
 package game.gameobject;
 
 import game.gameobject.menu.MyMenu;
-import game.place.Camera;
+import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
 import openGLEngine.Animation;
@@ -29,7 +29,7 @@ public class Player extends Entity {
     private Controler ctrl;
     private Camera cam;
 
-    public Player(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int playerNr) {
+    public Player(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int ssModeX, int ssModeY, int playerNr) {
         this.name = name;
         this.width = width;
         this.height = height;
@@ -39,8 +39,8 @@ public class Player extends Entity {
         this.top = false;
         this.speed = 8;
         this.emitter = true;
-        init("apple", Display.getWidth() / 2 - width / 2 - sX, Display.getHeight() / 2 - width / 2 - sY, sx, sy);
-        this.light = new Light("light", 1f, 1f, 1f, 3, 1024, 1024);
+        init("apple", name, Display.getWidth() / ssModeX - width / 2 - sX, Display.getHeight() / ssModeY - width / 2 - sY, sx, sy);
+        this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024);
         this.anim = new Animation(2, spr, sx, sy, 500);
         animate = true;
         initControler(playerNr);
@@ -116,6 +116,6 @@ public class Player extends Entity {
     }
 
     public void addMenu(MyMenu menu) {
-       this.menu = menu;
+        this.menu = menu;
     }
 }

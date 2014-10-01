@@ -27,11 +27,12 @@ public class Game {
     private boolean runFlag;
     public boolean exitFlag;
     public boolean fullScreen;
+    public boolean splitMode;
 
     public Game(String title) {
         this.title = title;
-        menu = new MyMenu(2048, 2048, 64, this);
-        menuPl = new Player(0, 0, 0, 0, 0, 0, "", menu, 0);
+        menu = new MyMenu(this, 2048, 2048, 64);
+        menuPl = new Player(0, 0, 0, 0, 0, 0, "", menu, 2, 2, 0);
         menu.addCamera1For1(menuPl, 128, 128);
         menu.addPlayer(menuPl);
         menuPl.addCamera(menu.cam1);
@@ -94,26 +95,100 @@ public class Game {
     }
 
     public void startGame(int nrPl) {
-        place = new MyPlace(2048, 2048, 64);
+        place = new MyPlace(this, 2048, 2048, 64);
         if (nrPl == 1) {
-            player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", place, 0);
-            place.addCamera1For1(player1, 256, 256);
-            place.addPlayer(player1);
-            player1.addCamera(place.cam1);
+            player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 2, 2, 0); // 2 i 2 to tryb SS - nie zmieniać tego!
+            getPlace().addCamera1For1(player1, 256, 256);
+            getPlace().addPlayer(player1);
+            player1.addCamera(getPlace().cam1);
             player1.addMenu((MyMenu) menu);
-        } else {
-            player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", place, 0);
-            place.addCamera1(player1, 256, 256);
-            place.addPlayer(player1);
-            player1.addCamera(place.cam1);
+        } else if (nrPl == 2) {
+            if (splitMode) {
+                player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 2, 4, 0);
+                getPlace().addCamera1For2H(player1, 256, 256);
+                getPlace().addPlayer(player1);
+                player1.addCamera(getPlace().cam1);
+                player1.addMenu((MyMenu) menu);
+                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 2, 4, 1);
+                getPlace().addCamera2For2H(player2, 1024, 512);
+                getPlace().addPlayer(player2);
+                player2.addCamera(getPlace().cam2);
+                player2.addMenu((MyMenu) menu);
+            } else {
+                player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 4, 2, 0);
+                getPlace().addCamera1For2V(player1, 256, 256);
+                getPlace().addPlayer(player1);
+                player1.addCamera(getPlace().cam1);
+                player1.addMenu((MyMenu) menu);
+                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 4, 2, 1);
+                getPlace().addCamera2For2V(player2, 1024, 512);
+                getPlace().addPlayer(player2);
+                player2.addCamera(getPlace().cam2);
+                player2.addMenu((MyMenu) menu);
+            }
+        } else if (nrPl == 3) {
+            if (splitMode) {
+                player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 2, 4, 0);
+                getPlace().addCamera1For2H(player1, 256, 256);
+                getPlace().addPlayer(player1);
+                player1.addCamera(getPlace().cam1);
+                player1.addMenu((MyMenu) menu);
+                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 4, 4, 1);
+                getPlace().addCamera2For4(player2, 1024, 512);
+                getPlace().addPlayer(player2);
+                player2.addCamera(getPlace().cam2);
+                player2.addMenu((MyMenu) menu);
+                player3 = new Player(4, 4, 56, 56, 64, 64, "Player 3", getPlace(), 4, 4, 1);
+                getPlace().addCamera3For4(player3, 512, 1024);
+                getPlace().addPlayer(player3);
+                player3.addCamera(getPlace().cam3);
+                player3.addMenu((MyMenu) menu);
+            } else {
+                player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 4, 2, 0);
+                getPlace().addCamera1For2V(player1, 256, 256);
+                getPlace().addPlayer(player1);
+                player1.addCamera(getPlace().cam1);
+                player1.addMenu((MyMenu) menu);
+                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 4, 4, 1);
+                getPlace().addCamera2For4(player2, 1024, 512);
+                getPlace().addPlayer(player2);
+                player2.addCamera(getPlace().cam2);
+                player2.addMenu((MyMenu) menu);
+                player3 = new Player(4, 4, 56, 56, 64, 64, "Player 3", getPlace(), 4, 4, 1);
+                getPlace().addCamera3For4(player3, 512, 1024);
+                getPlace().addPlayer(player3);
+                player3.addCamera(getPlace().cam3);
+                player3.addMenu((MyMenu) menu);
+            }
+        } else if (nrPl == 4) {
+            player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 4, 4, 0);
+            getPlace().addCamera1For4(player1, 256, 256);
+            getPlace().addPlayer(player1);
+            player1.addCamera(getPlace().cam1);
             player1.addMenu((MyMenu) menu);
-            player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", place, 1);
-            place.addCamera2(player2, 256, 512);
-            place.addPlayer(player2);
-            player2.addCamera(place.cam2);
+            player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 4, 4, 1);
+            getPlace().addCamera2For4(player2, 256, 512);
+            getPlace().addPlayer(player2);
+            player2.addCamera(getPlace().cam2);
             player2.addMenu((MyMenu) menu);
+            player3 = new Player(4, 4, 56, 56, 64, 64, "Player 3", getPlace(), 4, 4, 1);
+            getPlace().addCamera3For4(player3, 512, 1024);
+            getPlace().addPlayer(player3);
+            player3.addCamera(getPlace().cam3);
+            player3.addMenu((MyMenu) menu);
+            player4 = new Player(4, 4, 56, 56, 64, 64, "Player 4", getPlace(), 4, 4, 1);
+            getPlace().addCamera4For4(player4, 1024, 256);
+            getPlace().addPlayer(player4);
+            player4.addCamera(getPlace().cam4);
+            player4.addMenu((MyMenu) menu);
         }
         runFlag = true;
+    }
+
+    public void endGame() {
+        runFlag = false;
+        place = null;
+        player1 = player2 = player3 = player4 = null;
     }
 
     public void resume() {
@@ -128,7 +203,7 @@ public class Game {
 
     public void update() {
         if (runFlag) {
-            place.update();
+            getPlace().update();
         } else {
             menu.update();
         }
@@ -136,7 +211,7 @@ public class Game {
 
     public void render() {
         if (runFlag) {
-            place.render();
+            getPlace().render();
         } else {
             menu.render();
         }
@@ -148,5 +223,9 @@ public class Game {
 
     public void setDesktopFullScreen() {
         fullScreen = true;
+    }
+
+    public Place getPlace() {
+        return place;
     }
 }

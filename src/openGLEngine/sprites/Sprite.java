@@ -5,9 +5,12 @@
  */
 package openGLEngine.sprites;
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -22,12 +25,20 @@ public class Sprite {
 
     private int sx;
     private int sy;
+    private String key;
 
     public Sprite(String textureKey, int sx, int sy) {
         if (textureKey != null) {
             Sprite.class.getResourceAsStream(textureKey);
             this.texture = loadTexture(textureKey);
-        }        
+        }
+        this.sx = sx;
+        this.sy = sy;
+        this.key = textureKey;
+    }
+
+    public Sprite(Texture texture, int sx, int sy) {
+        this.texture = texture;
         this.sx = sx;
         this.sy = sy;
     }
@@ -35,6 +46,15 @@ public class Sprite {
     public static Texture loadTexture(String key) {
         try {
             return TextureLoader.getTexture("png", Sprite.class.getResourceAsStream("/res/" + key + ".png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public BufferedImage getImg() {
+        try {
+            return ImageIO.read(Sprite.class.getResourceAsStream("/res/" + key + ".png"));
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
         }

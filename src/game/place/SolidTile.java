@@ -13,9 +13,9 @@ import static game.place.Tile.SIZE;
  */
 public class SolidTile extends Tile {
 
-    public SolidTile(String tex, int size) {
+    public SolidTile(String tex, String name, int size) {
         super(tex, size, true, false);
-        init(tex, 1, 1, SIZE, SIZE);
+        init(tex, name, 1, 1, SIZE, SIZE);
     }
 
     @Override

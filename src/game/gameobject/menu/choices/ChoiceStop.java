@@ -12,15 +12,16 @@ import game.gameobject.menu.MyMenu;
  *
  * @author przemek
  */
-public class ChoiceResume extends MenuChoice {
+public class ChoiceStop extends MenuChoice {
 
-    public ChoiceResume(String label, MyMenu menu) {
+    public ChoiceStop(String label, MyMenu menu) {
         super(label, menu);
-    }    
-    
+    }
+
     @Override
     public void action() {
-        menu.game.resume();
+        if (menu.game.getPlace() != null) {
+            menu.game.endGame();
+        }
     }
-    
 }

@@ -5,10 +5,11 @@
  */
 package game.gameobject;
 
+import game.Game;
 import game.place.Tile;
 import game.place.SolidTile;
 import game.place.BasicTile;
-import game.place.Camera;
+import game.place.cameras.Camera;
 import game.place.Place;
 import java.awt.Font;
 import openGLEngine.FontsHandler;
@@ -19,11 +20,11 @@ import openGLEngine.FontsHandler;
  */
 public class MyPlace extends Place {
 
-    final Tile GRASS = new BasicTile("grass", sTile);
-    final Tile ROCK = new SolidTile("rock", sTile);
+    final Tile GRASS = new BasicTile("grass", "Grass", sTile);
+    final Tile ROCK = new SolidTile("rock", "Rock", sTile);
 
-    public MyPlace(int width, int height, int tileSize) {
-        super(width, height, tileSize);
+    public MyPlace(Game game, int width, int height, int tileSize) {
+        super(game, width, height, tileSize);
         generate();
     }
 
@@ -40,15 +41,15 @@ public class MyPlace extends Place {
         }
         addObj(new Mob(512, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
         addObj(new Mob(512, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
-        this.r = 1f;
-        this.g = 1f;
-        this.b = 1f;
+        this.r = 0.5f;
+        this.g = 0.5f;
+        this.b = 0.5f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, 24);
     }
 
     @Override
-    public void update() {                
+    public void update() {
         for (Mob mob : sMobs) {
             mob.update(players);
         }

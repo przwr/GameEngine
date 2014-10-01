@@ -16,11 +16,24 @@ public class ChoiceStart extends MenuChoice {
 
     public ChoiceStart(String label, MyMenu menu) {
         super(label, menu);
-    }    
-    
+    }
+
     @Override
     public void action() {
-        menu.game.startGame(menu.nrPlayers);
+        if (menu.game.getPlace() == null) {
+            menu.game.startGame(menu.nrPlayers);
+        } else {
+            menu.game.resume();
+        }
     }
-    
+
+    @Override
+    public String getLabel() {
+        if (menu.game.getPlace() == null) {
+            return "Start";
+        } else {
+            return "Wznów";
+        }
+    }
+
 }

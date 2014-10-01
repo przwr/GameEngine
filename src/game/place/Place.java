@@ -5,11 +5,17 @@
  */
 package game.place;
 
+import game.Game;
+import game.place.cameras.Camera;
+import game.place.cameras.CameraFor2V;
+import game.place.cameras.CameraFor1;
 import game.gameobject.Mob;
 import game.gameobject.Player;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
+import game.place.cameras.CameraFor2H;
+import game.place.cameras.CameraFor4;
 import openGLEngine.Physics;
 import openGLEngine.FontsHandler;
 import org.lwjgl.opengl.Display;
@@ -21,6 +27,8 @@ import org.newdawn.slick.Color;
  * @author przemek
  */
 public abstract class Place {
+
+    public Game game;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -44,12 +52,13 @@ public abstract class Place {
 
     public final Tile[] tiles;
 
-    public Place(int width, int height, int sTile) {
+    public Place(Game game, int width, int height, int sTile) {
         this.width = width;
         this.height = height;
         this.sTile = sTile;
         tiles = new Tile[width / sTile * height / sTile];
         fonts = null;
+        this.game = game;
     }
 
     public void addPlayer(Player player) {
@@ -60,20 +69,36 @@ public abstract class Place {
         this.cam1 = new CameraFor1(this, go, x, y);
     }
 
-    public void addCamera1(GameObject go, int x, int y) {
+    public void addCamera1For2V(GameObject go, int x, int y) {
         this.cam1 = new CameraFor2V(this, go, x, y);
     }
 
-    public void addCamera2(GameObject go, int x, int y) {
+    public void addCamera1For2H(GameObject go, int x, int y) {
+        this.cam1 = new CameraFor2H(this, go, x, y);
+    }
+
+    public void addCamera2For2H(GameObject go, int x, int y) {
+        this.cam2 = new CameraFor2H(this, go, x, y);
+    }
+
+    public void addCamera2For2V(GameObject go, int x, int y) {
         this.cam2 = new CameraFor2V(this, go, x, y);
     }
 
-    public void addCamera3(GameObject go, int x, int y) {
-        this.cam3 = new CameraFor2V(this, go, x, y);
+    public void addCamera1For4(GameObject go, int x, int y) {
+        this.cam1 = new CameraFor4(this, go, x, y);
     }
 
-    public void addCamera4(GameObject go, int x, int y) {
-        this.cam4 = new CameraFor2V(this, go, x, y);
+    public void addCamera2For4(GameObject go, int x, int y) {
+        this.cam2 = new CameraFor4(this, go, x, y);
+    }
+
+    public void addCamera3For4(GameObject go, int x, int y) {
+        this.cam3 = new CameraFor4(this, go, x, y);
+    }
+
+    public void addCamera4For4(GameObject go, int x, int y) {
+        this.cam4 = new CameraFor4(this, go, x, y);
     }
 
     public abstract void generate();
@@ -92,12 +117,54 @@ public abstract class Place {
         Camera cam;
         for (GameObject player : players) {
             cam = (((Player) player).getCam());
-            if (players.size() > 1) {
-                if (player == players.get(0)) {
-                    glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
-                    glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+            if (players.size() == 2) {
+                if (game.splitMode) {
+                    if (player == players.get(0)) {
+                        glViewport(0, 0, Display.getWidth(), Display.getHeight() / 2);
+                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+                    } else {
+                        glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
+                    }
                 } else {
-                    glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
+                    if (player == players.get(0)) {
+                        glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
+                        glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+                    } else {
+                        glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
+                    }
+                }
+            } else if (players.size() == 3) {
+                if (game.splitMode) {
+                    if (player == players.get(0)) {
+                        glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
+                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+                    } else if (player == players.get(1)) {
+                        glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                        glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+                    } else if (player == players.get(2)) {
+                        glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    }
+                } else {
+                    if (player == players.get(0)) {
+                        glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
+                        glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+                    } else if (player == players.get(1)) {
+                        glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+                    } else if (player == players.get(2)) {
+                        glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                    }
+                }
+            } else if (players.size() == 4) {
+                if (player == players.get(0)) {
+                    glViewport(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
+                } else if (player == players.get(1)) {
+                    glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                } else if (player == players.get(2)) {
+                    glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                } else if (player == players.get(3)) {
+                    glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                 }
             }
             glColor3f(r, g, b);
@@ -127,7 +194,6 @@ public abstract class Place {
     protected abstract void renderText(Camera cam);
 
     protected void renderLights(Camera cam) {
-        //glBlendFunc(GL_DST_COLOR, GL_ONE);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (GameObject emitter : emitters) {
             if (emitter.isEmits()) {
@@ -178,7 +244,9 @@ public abstract class Place {
                 }
             }
         }
-        thisPl.render(cam.getXOffEffect() - getXOff(((Player) thisPl).getCam()), cam.getYOffEffect() - getYOff(((Player) thisPl).getCam()));
+        if (thisPl != null) {
+            thisPl.render(cam.getXOffEffect() - getXOff(((Player) thisPl).getCam()), cam.getYOffEffect() - getYOff(((Player) thisPl).getCam()));
+        }
     }
 
     private void renderTop(Camera cam) {
@@ -211,6 +279,9 @@ public abstract class Place {
                     thisPl = (Player) go;
                 }
             }
+        }
+        if (thisPl != null) {
+            thisPl.render(cam.getXOffEffect() - getXOff(((Player) thisPl).getCam()), cam.getYOffEffect() - getYOff(((Player) thisPl).getCam()));
         }
     }
 

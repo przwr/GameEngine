@@ -3,20 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place;
+package game.place.cameras;
 
 import openGLEngine.Delay;
 import game.gameobject.GameObject;
+import game.place.Place;
 import org.lwjgl.opengl.Display;
 
 /**
  *
  * @author przemek
  */
-public class CameraFor2V extends Camera {
+public class CameraFor1 extends Camera {
 
 
-    CameraFor2V(Place place, GameObject go, int xStart, int yStart) {
+    public CameraFor1(Place place, GameObject go, int xStart, int yStart) {
         this.place = place;
         this.go = go;
         if (go.getX() - xStart > 0) {
@@ -26,10 +27,10 @@ public class CameraFor2V extends Camera {
             } else {
                 go.setX(xStart);
             }
-        } else if (go.getX() - xStart < -(place.getWidth() - Display.getWidth()/2)) {
-            xOffset = -(place.getWidth() - Display.getWidth()/2);
-            if (xStart + go.getSX() + go.getWidth() > Display.getWidth()/2) {
-                go.setX(Display.getWidth()/2 - (go.getSX() + go.getWidth()));
+        } else if (go.getX() - xStart < -(place.getWidth() - Display.getWidth())) {
+            xOffset = -(place.getWidth() - Display.getWidth());
+            if (xStart + go.getSX() + go.getWidth() > Display.getWidth()) {
+                go.setX(Display.getWidth() - (go.getSX() + go.getWidth()));
             } else {
                 go.setX(xStart);
             }
@@ -60,10 +61,10 @@ public class CameraFor2V extends Camera {
 
     @Override
     public synchronized void move(int xPos, int yPos) {
-        int Dwidth = Display.getWidth()/2 / 2;
+        int Dwidth = Display.getWidth() / 2;
         int Dheight = Display.getHeight() / 2;
-        if (xOffset - xPos > 0 || xOffset - xPos < -(place.getWidth() - Display.getWidth()/2)) {
-            if (!((go.getBegOfX() + xPos < 0) || go.getEndOfX() + xPos > Display.getWidth()/2)) {
+        if (xOffset - xPos > 0 || xOffset - xPos < -(place.getWidth() - Display.getWidth())) {
+            if (!((go.getBegOfX() + xPos < 0) || go.getEndOfX() + xPos > Display.getWidth())) {
                 go.addX(xPos);
             }
         } else if (go.getMidX() != Dwidth) {

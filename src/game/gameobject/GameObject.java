@@ -9,9 +9,10 @@ package game.gameobject;
  *
  * @author przemek
  */
-import game.place.Camera;
+import game.place.cameras.Camera;
 import game.place.Light;
 import game.place.Place;
+import java.awt.image.BufferedImage;
 import openGLEngine.sprites.Sprite;
 
 public abstract class GameObject {
@@ -28,12 +29,14 @@ public abstract class GameObject {
     protected boolean emits;
     protected Sprite spr;
     protected Light light;
+    protected String name;
 
     public abstract void render(int xEffect, int yEffect);
 
-    protected void init(String textureKey, int x, int y, int sx, int sy) {
+    protected void init(String textureKey, String name, int x, int y, int sx, int sy) {
         this.x = x;
         this.y = y;
+        this.name = name;
         this.spr = new Sprite(textureKey, sx, sy);
     }
 
@@ -125,7 +128,11 @@ public abstract class GameObject {
 
     public void renderLight(Place place, int x, int y) {
         if (light != null) {
-            light.render(this, x, y);
+            light.render(this, place, x, y);
         }
+    }
+    
+    public String getName(){
+        return name;
     }
 }
