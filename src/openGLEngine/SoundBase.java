@@ -37,7 +37,7 @@ public class SoundBase {
         for (File file : fileList) {
             String[] temp = file.getName().split("\\.");
             try {
-                Audio dzwiek = AudioLoader.getAudio("WAV", ResourceLoader.getResourceAsStream(file.getPath()));
+                Audio dzwiek = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
                 list.add(new Sound(temp[0], dzwiek));
             } catch (IOException e) {
                 System.out.println(e.toString());
@@ -60,7 +60,7 @@ public class SoundBase {
                 search(target, fileList);
             } else {
                 String[] temp = target.getName().split("\\.");
-                if (temp.length > 1 && temp[1].equals("wav")) {
+                if (temp.length > 1 && temp[1].equals("ogg")) {
                     fileList.add(target);
                 }
             }
