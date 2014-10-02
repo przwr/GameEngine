@@ -14,6 +14,7 @@ import game.place.Place;
 import java.awt.Font;
 import openGLEngine.FontsHandler;
 import openGLEngine.SoundBase;
+import org.newdawn.slick.openal.SoundStore;
 
 /**
  *
@@ -50,6 +51,7 @@ public class MyPlace extends Place {
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, 24);
         sounds.getSound("MumboMountain").playAsMusic(1.0f , 1.0f, true);
+        SoundStore.get().poll(0);
     }
 
     @Override
