@@ -29,9 +29,9 @@ public class ChoiceBrightness extends MenuChoice {
             menu.game.getPlace().g = fl;
             menu.game.getPlace().b = fl;
             if (menu.game.getPlace().r > 1.00f) {
-                menu.game.getPlace().r = 0.05f;
-                menu.game.getPlace().g = 0.05f;
-                menu.game.getPlace().b = 0.05f;
+                menu.game.getPlace().r = 0.0f;
+                menu.game.getPlace().g = 0.0f;
+                menu.game.getPlace().b = 0.0f;
             }
         }
     }

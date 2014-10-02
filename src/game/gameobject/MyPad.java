@@ -14,7 +14,7 @@ import org.lwjgl.input.Controllers;
 public class MyPad extends Controler {
 
     private final int padNr;
-    private boolean isPressed[] = new boolean[24];
+    private final boolean isPressed[] = new boolean[24];
 
     public MyPad(Entity inControl, int padNr) {
         super(inControl);
