@@ -5,6 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
+import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MyMenu;
 
@@ -14,8 +15,8 @@ import game.gameobject.menu.MyMenu;
  */
 public class ChoiceSplitScreen extends MenuChoice {
 
-    public ChoiceSplitScreen(String label, MyMenu menu) {
-        super(label, menu);
+    public ChoiceSplitScreen(String label, MyMenu menu, Settings settings) {
+        super(label, menu, settings);
     }
 
     @Override

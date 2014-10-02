@@ -17,6 +17,7 @@ import org.lwjgl.openal.AL;
  */
 public class Game {
 
+    private final Settings settings;
     private final Player menuPl;
     private Player player1;
     private Player player2;
@@ -30,9 +31,10 @@ public class Game {
     public boolean fullScreen;
     public boolean splitMode;
 
-    public Game(String title) {
+    public Game(String title, Settings settings) {
+        this.settings = settings;
         this.title = title;
-        menu = new MyMenu(this, 2048, 2048, 64);
+        menu = new MyMenu(this, 2048, 2048, 64, settings);
         menuPl = new Player(0, 0, 0, 0, 0, 0, "", menu, 2, 2, 0);
         menu.addCamera1For1(menuPl, 128, 128);
         menu.addPlayer(menuPl);
@@ -96,7 +98,7 @@ public class Game {
     }
 
     public void startGame(int nrPl) {
-        place = new MyPlace(this, 2048, 2048, 64);
+        place = new MyPlace(this, 2048, 2048, 64, settings);
         if (nrPl == 1) {
             player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 2, 2, 0); // 2 i 2 to tryb SS - nie zmieniać tego!
             getPlace().addCamera1For1(player1, 256, 256);

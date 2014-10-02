@@ -6,6 +6,7 @@
 package game.gameobject.menu;
 
 import game.Game;
+import game.Settings;
 import game.gameobject.Player;
 import game.gameobject.menu.choices.ChoiceBrightness;
 import game.gameobject.menu.choices.ChoiceDesktopFullScreen;
@@ -31,12 +32,12 @@ import org.newdawn.slick.Color;
 public class MyMenu extends Place {
 
     private int cur;
-    public int nrPlayers = 1;
+    public int nrPlayers = 1;    
 
     private MenuOpt[] menus;
 
-    public MyMenu(Game game, int width, int height, int tileSize) {
-        super(game, width, height, tileSize);
+    public MyMenu(Game game, int width, int height, int tileSize, Settings settings) {
+        super(game, width, height, tileSize, settings);
         generate();
     }
 
@@ -44,15 +45,15 @@ public class MyMenu extends Place {
     public void generate() {
         menus = new MenuOpt[5];
         menus[0] = new MenuOpt(10, "Menu");
-        menus[0].addChoice(new ChoiceStart("Start", this));
-        menus[0].addChoice(new ChoiceSettings("Opcje", this));
-        menus[0].addChoice(new ChoiceStop("Zakończ", this));
-        menus[0].addChoice(new ChoiceExit("Wyjdź", this));
+        menus[0].addChoice(new ChoiceStart("Start", this, settings));
+        menus[0].addChoice(new ChoiceSettings("Opcje", this, settings));
+        menus[0].addChoice(new ChoiceStop("Zakończ", this, settings));
+        menus[0].addChoice(new ChoiceExit("Wyjdź", this, settings));
         menus[1] = new MenuOpt(10, "Opcje");
-        menus[1].addChoice(new ChoicePlayers("Liczba graczy: ", this));
-        menus[1].addChoice(new ChoiceSplitScreen("Dzielenie Ekranu: ", this));
-        menus[1].addChoice(new ChoiceBrightness("Jasność: ", this));
-        menus[1].addChoice(new ChoiceDesktopFullScreen("Pełny Ekran", this));
+        menus[1].addChoice(new ChoicePlayers("Liczba graczy: ", this, settings));
+        menus[1].addChoice(new ChoiceSplitScreen("Dzielenie Ekranu: ", this, settings));
+        menus[1].addChoice(new ChoiceBrightness("Jasność: ", this, settings));
+        menus[1].addChoice(new ChoiceDesktopFullScreen("Pełny Ekran: ", this, settings));
         this.r = 1f;
         this.g = 1f;
         this.b = 1f;

@@ -6,6 +6,7 @@
 package game.place;
 
 import game.Game;
+import game.Settings;
 import game.place.cameras.Camera;
 import game.place.cameras.CameraFor2V;
 import game.place.cameras.CameraFor1;
@@ -29,6 +30,7 @@ import org.newdawn.slick.Color;
 public abstract class Place {
 
     public Game game;
+    public Settings settings;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -52,10 +54,11 @@ public abstract class Place {
 
     public final Tile[] tiles;
 
-    public Place(Game game, int width, int height, int sTile) {
+    public Place(Game game, int width, int height, int sTile, Settings settings) {
         this.width = width;
         this.height = height;
         this.sTile = sTile;
+        this.settings = settings;
         tiles = new Tile[width / sTile * height / sTile];
         fonts = null;
         this.game = game;

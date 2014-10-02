@@ -5,6 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
+import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MyMenu;
 
@@ -15,8 +16,8 @@ import game.gameobject.menu.MyMenu;
 public class ChoicePlayers extends MenuChoice {
 
 
-    public ChoicePlayers(String label, MyMenu menu) {
-        super(label, menu);
+    public ChoicePlayers(String label, MyMenu menu, Settings settings) {
+        super(label, menu, settings);
     }
 
     @Override

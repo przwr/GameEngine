@@ -16,6 +16,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
@@ -37,18 +38,15 @@ public class Main {
         display = new DisplayDevice();
         settings = new Settings();
         IO.ReadFile(new File("res/settings.ini"), settings);
-
         initDisplay();
         initGL();
         initGame();
-
         gameLoop();
-
         cleanUp();
     }
 
     private static void initGame() {
-        game = new Game("Engine");
+        game = new Game("Engine", settings);
         Display.setTitle(game.getTitle());
     }
 
@@ -60,17 +58,17 @@ public class Main {
     }
 
     private static void desktopFullScreen() {
-        if (Display.isFullscreen()) {
-            try {
-                Display.setFullscreen(false);
-            } catch (LWJGLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (settings.fullscreen) {
+//            try {
+//                Display.setFullscreen(false);
+//            } catch (LWJGLException ex) {
+//                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             settings.fullscreen = false;
             Analizer.Save(settings);
             game.fullScreen = false;
         } else {
-            setDisplayMode(display.getWidth(), display.getHeight(), true);
+//            setDisplayMode(Display.getWidth(), Display.getHeight(), true);
             settings.fullscreen = true;
             Analizer.Save(settings);
             game.fullScreen = false;
@@ -89,9 +87,7 @@ public class Main {
     private static void render() {
         glClear(GL_COLOR_BUFFER_BIT);
         glLoadIdentity();
-
         game.render();
-
         Display.sync(60);
         Display.update();
     }
@@ -126,6 +122,7 @@ public class Main {
             Logger.getLogger(Main.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+        AL.destroy();
         Display.destroy();
         Keyboard.destroy();
         Mouse.destroy();
@@ -156,21 +153,17 @@ public class Main {
     }
 
     private static void setDisplayMode(int width, int height, boolean fullscreen) {
-
         // return if requested DisplayMode is already set
         if ((Display.getDisplayMode().getWidth() == width)
                 && (Display.getDisplayMode().getHeight() == height)
                 && (Display.isFullscreen() == fullscreen)) {
             return;
         }
-
         try {
             DisplayMode targetDisplayMode = null;
-
             if (fullscreen) {
                 DisplayMode[] modes = Display.getAvailableDisplayModes();
                 int freq = 0;
-
                 for (DisplayMode current : modes) {
                     if ((current.getWidth() == width) && (current.getHeight() == height)) {
                         if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
@@ -192,15 +185,12 @@ public class Main {
             } else {
                 targetDisplayMode = new DisplayMode(width, height);
             }
-
             if (targetDisplayMode == null) {
                 System.out.println("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
                 return;
             }
-
             Display.setDisplayMode(targetDisplayMode);
             Display.setFullscreen(fullscreen);
-
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }

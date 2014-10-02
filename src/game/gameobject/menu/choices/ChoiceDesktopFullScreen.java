@@ -5,6 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
+import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MyMenu;
 
@@ -14,13 +15,21 @@ import game.gameobject.menu.MyMenu;
  */
 public class ChoiceDesktopFullScreen extends MenuChoice {
 
-    public ChoiceDesktopFullScreen(String label, MyMenu menu) {
-        super(label, menu);
-    }    
-    
+    public ChoiceDesktopFullScreen(String label, MyMenu menu, Settings settings) {
+        super(label, menu, settings);
+    }
+
     @Override
     public void action() {
         menu.game.setDesktopFullScreen();
     }
-    
+
+    @Override
+    public String getLabel() {
+        if (settings.fullscreen) {
+            return label + "Wł";
+        } else {
+            return label + "Wył";
+        }
+    }
 }
