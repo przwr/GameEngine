@@ -51,7 +51,7 @@ public class MyPlace extends Place {
         this.b = 0.5f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, 24);
-        //sounds.getSound("MumboMountain").playAsMusic(1.0f, 1.0f, true);
+        sounds.getSound("MumboMountain").playAsMusic(1.0f , 1.0f, true);
         SoundStore.get().poll(0);
     }
 
