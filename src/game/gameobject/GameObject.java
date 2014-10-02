@@ -12,7 +12,6 @@ package game.gameobject;
 import game.place.cameras.Camera;
 import game.place.Light;
 import game.place.Place;
-import java.awt.image.BufferedImage;
 import openGLEngine.sprites.Sprite;
 
 public abstract class GameObject {

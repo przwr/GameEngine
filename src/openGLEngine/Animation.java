@@ -19,7 +19,7 @@ public class Animation {
     private int flip;
     private int curFrame;
 
-    public Animation(int num, Sprite spr, int sx, int sy, int delay) {
+    public Animation(int num, Sprite spr, int delay) {
         frames = new Frame[num];
         this.spr = spr;
         for (float i = 0; i < num; i++) {

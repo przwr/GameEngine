@@ -5,7 +5,6 @@
  */
 package game.place.cameras;
 
-import game.gameobject.Entity;
 import openGLEngine.Delay;
 import game.gameobject.GameObject;
 import game.place.Place;

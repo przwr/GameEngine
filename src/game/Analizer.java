@@ -5,6 +5,11 @@
  */
 package game;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author przemek
@@ -13,8 +18,14 @@ public class Analizer {
     /* @args Grid
      * */
 
-    public static void AnalizeSetting(String name) {
-        if (0 == name.compareTo("Remove")) {
+    public static void AnalizeSetting(String name, Settings settings) {
+        String[] p = name.split("\\s+");
+        if (0 == p[0].compareTo("FullScreen:")) {
+            if (0 == p[1].compareTo("On")) {
+                settings.fullscreen = true;
+            } else if (0 == p[1].compareTo("Off")) {
+                settings.fullscreen = false;
+            }
         } else if (0 == name.compareTo("FullScreen:")) {
 
         } else if (0 == name.compareTo("Tail")) {
@@ -32,7 +43,23 @@ public class Analizer {
         } else if (0 == name.compareTo("XOR")) {
 
         }
+        Save(settings);
+    }
 
+    public static void Save(Settings settings) {
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter("res/settings.ini");
+
+            if (settings.fullscreen) {
+                fw.write("FullScreen: On");
+            } else {
+                fw.write("FullScreen: Off");
+            }
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Analizer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void AnalizeSetting1(String s) {

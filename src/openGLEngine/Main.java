@@ -5,7 +5,11 @@
  */
 package openGLEngine;
 
+import game.Analizer;
 import game.Game;
+import game.IO;
+import game.Settings;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -25,11 +29,14 @@ public class Main {
 
     private static Game game;
     private static DisplayDevice display;
+    private static Settings settings;
 //    public static int fragmentShader;
 //    public static int shaderProgram;
 
     public static void main(String[] args) {
         display = new DisplayDevice();
+        settings = new Settings();
+        IO.ReadFile(new File("res/settings.ini"), settings);
 
         initDisplay();
         initGL();
@@ -47,7 +54,7 @@ public class Main {
 
     private static void getInput() {
         game.getInput();
-        if(game.fullScreen){
+        if (game.fullScreen) {
             desktopFullScreen();
         }
     }
@@ -59,9 +66,13 @@ public class Main {
             } catch (LWJGLException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
+            settings.fullscreen = false;
+            Analizer.Save(settings);
             game.fullScreen = false;
         } else {
             setDisplayMode(display.getWidth(), display.getHeight(), true);
+            settings.fullscreen = true;
+            Analizer.Save(settings);
             game.fullScreen = false;
         }
         try {
@@ -72,7 +83,7 @@ public class Main {
     }
 
     private static void update() {
-        game.update();   
+        game.update();
     }
 
     private static void render() {
@@ -123,7 +134,7 @@ public class Main {
 
     private static void initDisplay() {
         try {
-            setDisplayMode(display.getWidth(), display.getHeight(), true);
+            setDisplayMode(display.getWidth(), display.getHeight(), settings.fullscreen);
             //Display.setDisplayMode(new DisplayMode(display.getWidth(), display.getHeight()));
             Display.create(new PixelFormat(0, 16, 1));
             Display.setResizable(false);

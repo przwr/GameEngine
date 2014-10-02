@@ -208,8 +208,7 @@ public abstract class Place {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public void renderMessage(int i, int x, int y, String message, Color color) {
-        String ms = fonts.PL(message);
+    public void renderMessage(int i, int x, int y, String ms, Color color) {
         fonts.write(i).drawString(x - fonts.write(i).getWidth(ms) / 2, y - (4 * fonts.write(i).getHeight()) / 3, ms, color);
     }
 

@@ -6,7 +6,6 @@
 package game.gameobject;
 
 import game.place.cameras.Camera;
-import game.place.Light;
 import game.place.Place;
 import java.util.ArrayList;
 import openGLEngine.Physics;
