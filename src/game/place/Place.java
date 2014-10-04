@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import game.gameobject.GameObject;
 import game.place.cameras.CameraFor2H;
 import game.place.cameras.CameraFor4;
+import java.nio.ByteBuffer;
 import openGLEngine.Physics;
 import openGLEngine.FontsHandler;
 import org.lwjgl.opengl.Display;
@@ -31,6 +32,9 @@ public abstract class Place {
 
     public Game game;
     public Settings settings;
+
+    private int lightTex;
+    private int lightStrength;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -62,6 +66,7 @@ public abstract class Place {
         tiles = new Tile[width / sTile * height / sTile];
         fonts = null;
         this.game = game;
+        lightTex = makeTexture(null, 2048, 2048);
     }
 
     public void addPlayer(Player player) {
@@ -120,24 +125,44 @@ public abstract class Place {
         Camera cam;
         for (GameObject player : players) {
             cam = (((Player) player).getCam());
+            float camXStart = 0f;
+            float camXSize = 0f;
+            float camYStart = 0f;
+            float camYSize = 0f;
             if (players.size() == 2) {
-                if (game.splitMode) {
+                if (game.hSplitMode) {
                     if (player == players.get(0)) {
-                        glViewport(0, 0, Display.getWidth(), Display.getHeight() / 2);
-                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                    } else {
                         glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
+                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+                        camXStart = 0f;
+                        camXSize = 0f;
+                        camYStart = 0.5f;
+                        camYSize = 0.5f;
+                    } else {
+                        glViewport(0, 0, Display.getWidth(), Display.getHeight() / 2);
+                        camXStart = 0f;
+                        camXSize = 0f;
+                        camYStart = 0f;
+                        camYSize = 0.5f;
                     }
                 } else {
                     if (player == players.get(0)) {
                         glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
                         glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+                        camXStart = 0f;
+                        camXSize = 0.0f;
+                        camYStart = 0f;
+                        camYSize = 0f;
                     } else {
                         glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
+                        camXStart = 0.5f;
+                        camXSize = 0.0f;
+                        camYStart = 0f;
+                        camYSize = 0f;
                     }
                 }
             } else if (players.size() == 3) {
-                if (game.splitMode) {
+                if (game.hSplitMode) {
                     if (player == players.get(0)) {
                         glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                         glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
@@ -170,12 +195,54 @@ public abstract class Place {
                     glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                 }
             }
+            preRenderLights(cam, camXStart, camYStart, camXSize, camYSize);
             glColor3f(r, g, b);
             renderBack(cam);
             renderObj(cam);
-            renderLights(cam);
             renderText(cam);
+            renderLights();
         }
+    }
+
+    public static int allocateTexture() {
+        int textureHandle = glGenTextures();
+        return textureHandle;
+    }
+
+    public static int makeTexture(ByteBuffer pixels, int w, int h) {
+        int textureHandle = allocateTexture();
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); //GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        return textureHandle;
+    }
+
+    public void frameSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
+        int w = Display.getWidth();
+        int h = Display.getHeight();
+        glColor4f(1, 1, 1, 1);
+        glReadBuffer(GL_BACK);
+        glBindTexture(GL_TEXTURE_2D, txtrHandle);
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, (int) (w * xSize), (int) (h * ySize), (int) (xStart * w), (int) (yStart * h), w, h);
+    }
+
+    public static void drawQuad(int textureHandle, float w, float h) {
+        glPushMatrix();
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, h / 2048.0f);
+        glVertex2f(0, 0);
+        glTexCoord2f(w / 2048.0f, h / 2048.0f);
+        glVertex2f(w, 0);
+        glTexCoord2f(w / 2048.0f, 0);
+        glVertex2f(w, h);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, h);
+        glEnd();
+        glPopMatrix();
     }
 
     protected void renderBack(Camera cam) {
@@ -196,8 +263,8 @@ public abstract class Place {
 
     protected abstract void renderText(Camera cam);
 
-    protected void renderLights(Camera cam) {
-        glBlendFunc(GL_DST_COLOR, GL_ONE);
+    protected void preRenderLights(Camera cam, float xStart, float yStart, float xSize, float ySize) {
+        glBlendFunc(GL_ONE, GL_ONE);
         for (GameObject emitter : emitters) {
             if (emitter.isEmits()) {
                 emitter.renderLight(this, cam.getXOffEffect(), cam.getYOffEffect());
@@ -208,7 +275,32 @@ public abstract class Place {
                 player.renderLight(this, cam);
             }
         }
+        frameSave(lightTex, xStart, yStart, xSize, ySize);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    protected void renderLights() {
+        float brightness = Math.max(b, Math.max(r, g));
+        float brightnessRest = (10 * brightness) - (int) (10 * brightness);
+        float strength = 4 - (int) (10 * brightness);
+        float val = 0;
+        float dif = 0;
+        if (strength <= 1) {
+            strength = 1;
+            val = 1f - brightness;
+            //val = (1f - brightness) * 1.5f + 0.4f;
+        } else {
+            dif = 1f - ((float) (strength - 1)) / strength;
+            val = 1f - brightnessRest * dif;
+        }
+        //System.out.println("" + brightness + " " + strength + " " + dif + " " + brightnessRest + " " + val);
+        glColor3f(val, val, val);
+        glBlendFunc(GL_DST_COLOR, GL_ONE);
+        for (int i = 0; i < 2; i++) {
+            drawQuad(lightTex, Display.getWidth(), Display.getHeight());
+        }
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     }
 
     public void renderMessage(int i, int x, int y, String ms, Color color) {

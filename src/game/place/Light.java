@@ -33,19 +33,7 @@ public class Light {
 
     public void render(GameObject emitter, Place place, Camera cam) {
 
-        float rr = r - place.r;
-        float rg = g - place.g;
-        float rb = b - place.b;
-        if (rr <= 0) {
-            rr = 0.08f;
-        }
-        if (rg <= 0) {
-            rg = 0.08f;
-        }
-        if (rb <= 0) {
-            rb = 0.08f;
-        }
-        glColor3f(rr, rg, rb);
+        glColor3f(r, g, b);
         glPushMatrix();
         if (emitter.getClass() == Player.class) {
             glTranslatef(emitter.getMidX() - light.getSx() / 2 - place.getXOff(((Player) emitter).getCam()) + place.getXOff(cam), emitter.getMidY() - light.getSy() / 2 - place.getYOff(((Player) emitter).getCam()) + place.getYOff(cam), 0);
@@ -74,19 +62,7 @@ public class Light {
     }
 
     public void render(GameObject emitter, Place place, int x, int y) {
-        float rr = r - place.r;
-        float rg = g - place.g;
-        float rb = b - place.b;
-        if (rr <= 0) {
-            rr = 0.08f;
-        }
-        if (rg <= 0) {
-            rg = 0.08f;
-        }
-        if (rb <= 0) {
-            rb = 0.08f;
-        }
-        glColor3f(rr, rg, rb);
+        glColor3f(r, g, b);
         glPushMatrix();
         glTranslatef(emitter.getMidX() - light.getSx() / 2 + x, emitter.getMidY() - light.getSy() / 2 + y, 0);
         for (int i = 0; i < strength; i++) {
