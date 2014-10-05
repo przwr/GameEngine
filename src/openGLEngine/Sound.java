@@ -12,7 +12,7 @@ import org.newdawn.slick.openal.Audio;
  */
 public class Sound {
 
-    private Audio sndEff;
+    private final Audio sndEff;
     String name;
     
     public Sound(String name, Audio sndEff) {

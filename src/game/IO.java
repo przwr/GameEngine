@@ -20,14 +20,12 @@ public class IO {
         try {
             FileReader fr = new FileReader(f);
             BufferedReader r = new BufferedReader(fr);
-            String s = null;
+            String s;
             while ((s = r.readLine()) != null) {
                 System.out.println("Przeczytano: " + s);
                 Analizer.AnalizeSetting(s, settings);
             }
-        } catch (IOException e) {
-            System.out.println(e);
-        } catch (IllegalStateException e) {
+        } catch (IOException | IllegalStateException e) {
             System.out.println(e);
         }
     }

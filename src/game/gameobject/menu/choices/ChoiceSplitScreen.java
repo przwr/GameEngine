@@ -5,6 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
+import game.Analizer;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MyMenu;
@@ -22,24 +23,25 @@ public class ChoiceSplitScreen extends MenuChoice {
     @Override
     public void action() {
         if (menu.game.getPlace() == null) {
-            menu.game.splitMode = !menu.game.splitMode;
+            settings.hSplitScreen = !settings.hSplitScreen;
+            Analizer.Save(settings);
         }
     }
 
     @Override
     public String getLabel() {
         if (menu.game.getPlace() != null) {
-            if (menu.game.splitMode) {
+            if (settings.hSplitScreen) {
                 return label + "Zakończ grę by zmienić";
             } else {
                 return label + "Zakończ grę by zmienić";
             }
 
         } else {
-            if (menu.game.splitMode) {
-                return label + "Poziomo";
+            if (settings.hSplitScreen) {
+                return label + "Poziomo (H)";
             } else {
-                return label + "Pionowo";
+                return label + "Pionowo (V)";
             }
         }
     }

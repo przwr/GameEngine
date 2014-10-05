@@ -11,5 +11,7 @@ package game;
  */
 public class Settings {
 
-    public boolean fullscreen = true;
+    public boolean fullScreen = true;
+    public boolean hSplitScreen;
+    public int nrPlayers = 1;
 }

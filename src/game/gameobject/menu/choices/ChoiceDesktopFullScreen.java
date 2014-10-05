@@ -26,7 +26,7 @@ public class ChoiceDesktopFullScreen extends MenuChoice {
 
     @Override
     public String getLabel() {
-        if (settings.fullscreen) {
+        if (settings.fullScreen) {
             return label + "Wł";
         } else {
             return label + "Wył";

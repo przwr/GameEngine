@@ -17,7 +17,7 @@ public class FontsHandler {
     protected final TrueTypeFont[] fonts;
     protected final int size;
     protected int n;
-    private char[] chars = {'ą', 'ę', 'ć', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ó', 'Ś', 'Ż', 'Ź',};
+    private final char[] chars = {'ą', 'ę', 'ć', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ó', 'Ś', 'Ż', 'Ź',};
 
     public FontsHandler(int size) {
         n = 0;

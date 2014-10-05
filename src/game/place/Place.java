@@ -33,8 +33,7 @@ public abstract class Place {
     public Game game;
     public Settings settings;
 
-    private int lightTex;
-    private int lightStrength;
+    private final int lightTex;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -130,7 +129,7 @@ public abstract class Place {
             float camYStart = 0f;
             float camYSize = 0f;
             if (players.size() == 2) {
-                if (game.hSplitMode) {
+                if (settings.hSplitScreen) {
                     if (player == players.get(0)) {
                         glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                         glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
@@ -150,7 +149,7 @@ public abstract class Place {
                         glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
                         glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
                         camXStart = 0f;
-                        camXSize = 0.0f;
+                        camXSize = 0f;
                         camYStart = 0f;
                         camYSize = 0f;
                     } else {
@@ -162,37 +161,77 @@ public abstract class Place {
                     }
                 }
             } else if (players.size() == 3) {
-                if (game.hSplitMode) {
+                if (settings.hSplitScreen) {
                     if (player == players.get(0)) {
                         glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                         glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+                        camXStart = 0f;
+                        camXSize = 0f;
+                        camYStart = 0.5f;
+                        camYSize = 0.5f;
                     } else if (player == players.get(1)) {
                         glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                         glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+                        camXStart = 0f;
+                        camXSize = 0f;
+                        camYStart = 0f;
+                        camYSize = 0.5f;
                     } else if (player == players.get(2)) {
                         glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                        camXStart = 0.5f;
+                        camXSize = 0f;
+                        camYStart = 0f;
+                        camYSize = 0.5f;
                     }
                 } else {
                     if (player == players.get(0)) {
                         glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
                         glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+                        camXStart = 0f;
+                        camXSize = 0f;
+                        camYStart = 0f;
+                        camYSize = 0f;
                     } else if (player == players.get(1)) {
-                        glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                    } else if (player == players.get(2)) {
                         glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+                        camXStart = 0.5f;
+                        camXSize = 0f;
+                        camYStart = 0f;
+                        camYSize = 0f;
+                    } else if (player == players.get(2)) {
+                        glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                        camXStart = 0.5f;
+                        camXSize = 0f;
+                        camYStart = 0f;
+                        camYSize = 0.5f;
                     }
                 }
             } else if (players.size() == 4) {
                 if (player == players.get(0)) {
                     glViewport(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
                     glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
+                    camXStart = 0.0f;
+                    camXSize = 0.0f;
+                    camYStart = 0.5f;
+                    camYSize = 0.5f;
                 } else if (player == players.get(1)) {
                     glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                    camXStart = 0.5f;
+                    camXSize = 0f;
+                    camYStart = 0f;
+                    camYSize = 0f;
                 } else if (player == players.get(2)) {
                     glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    camXStart = 0f;
+                    camXSize = 0f;
+                    camYStart = 0f;
+                    camYSize = 0.5f;
                 } else if (player == players.get(3)) {
                     glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    camXStart = 0.5f;
+                    camXSize = 0f;
+                    camYStart = 0f;
+                    camYSize = 0.5f;
                 }
             }
             preRenderLights(cam, camXStart, camYStart, camXSize, camYSize);
@@ -281,26 +320,21 @@ public abstract class Place {
 
     protected void renderLights() {
         float brightness = Math.max(b, Math.max(r, g));
-        float brightnessRest = (10 * brightness) - (int) (10 * brightness);
-        float strength = 4 - (int) (10 * brightness);
-        float val = 0;
-        float dif = 0;
-        if (strength <= 1) {
-            strength = 1;
-            val = 1f - brightness;
-            //val = (1f - brightness) * 1.5f + 0.4f;
+        float strength = 6 - (int) (10 * brightness);
+        float val;
+        if (strength <= 2) {
+            strength = 2;
+            val = 1.00f - 0.95f * brightness;
         } else {
-            dif = 1f - ((float) (strength - 1)) / strength;
-            val = 1f - brightnessRest * dif;
+            strength = 3;
+            val = 1.00f - 1.5f * brightness;
         }
-        //System.out.println("" + brightness + " " + strength + " " + dif + " " + brightnessRest + " " + val);
         glColor3f(val, val, val);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < strength; i++) {
             drawQuad(lightTex, Display.getWidth(), Display.getHeight());
         }
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     }
 
     public void renderMessage(int i, int x, int y, String ms, Color color) {

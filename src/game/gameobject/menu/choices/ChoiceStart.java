@@ -22,7 +22,7 @@ public class ChoiceStart extends MenuChoice {
     @Override
     public void action() {
         if (menu.game.getPlace() == null) {
-            menu.game.startGame(menu.nrPlayers);
+            menu.game.startGame(settings.nrPlayers);
         } else {
             menu.game.resume();
         }

@@ -29,7 +29,6 @@ public class Game {
     private boolean runFlag;
     public boolean exitFlag;
     public boolean fullScreen;
-    public boolean splitMode;
 
     public Game(String title, Settings settings) {
         this.settings = settings;
@@ -106,7 +105,7 @@ public class Game {
             player1.addCamera(getPlace().cam1);
             player1.addMenu((MyMenu) menu);
         } else if (nrPl == 2) {
-            if (splitMode) {
+            if (settings.hSplitScreen) {
                 player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 2, 4, 0);
                 getPlace().addCamera1For2H(player1, 256, 256);
                 getPlace().addPlayer(player1);
@@ -130,7 +129,7 @@ public class Game {
                 player2.addMenu((MyMenu) menu);
             }
         } else if (nrPl == 3) {
-            if (splitMode) {
+            if (settings.hSplitScreen) {
                 player1 = new Player(4, 4, 56, 56, 64, 64, "Player 1", getPlace(), 2, 4, 0);
                 getPlace().addCamera1For2H(player1, 256, 256);
                 getPlace().addPlayer(player1);

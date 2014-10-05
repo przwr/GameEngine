@@ -37,7 +37,7 @@ public class MyPlace extends Place {
        // sounds.init("res");
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
-                if ((x * y) < 200) {
+                if ((x * y) < 300) {
                     tiles[x + y * height / sTile] = GRASS;
                 } else {
                     tiles[x + y * height / sTile] = ROCK;
@@ -46,9 +46,9 @@ public class MyPlace extends Place {
         }
         addObj(new Mob(512, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
         addObj(new Mob(512, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
-        this.r = 0.3f;
-        this.g = 0.3f;
-        this.b = 0.3f;
+        this.r = 0.2f;
+        this.g = 0.2f;
+        this.b = 0.2f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, 24);
         //sounds.getSound("MumboMountain").playAsMusic(1.0f , 1.0f, true);

@@ -31,8 +31,7 @@ import org.newdawn.slick.Color;
  */
 public class MyMenu extends Place {
 
-    private int cur;
-    public int nrPlayers = 1;    
+    private int cur;  
 
     private MenuOpt[] menus;
 
@@ -42,7 +41,7 @@ public class MyMenu extends Place {
     }
 
     @Override
-    public void generate() {
+    public final void generate() {
         menus = new MenuOpt[5];
         menus[0] = new MenuOpt(10, "Menu");
         menus[0].addChoice(new ChoiceStart("Start", this, settings));
@@ -107,11 +106,11 @@ public class MyMenu extends Place {
     }
 
     public void addPlayer() {
-        nrPlayers++;
+        settings.nrPlayers++;
     }
 
     public void setToOnePlayer() {
-        nrPlayers = 1;
+        settings.nrPlayers = 1;
     }
 
     public void back() {

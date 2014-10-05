@@ -58,18 +58,18 @@ public class Main {
     }
 
     private static void desktopFullScreen() {
-        if (settings.fullscreen) {
+        if (settings.fullScreen) {
 //            try {
 //                Display.setFullscreen(false);
 //            } catch (LWJGLException ex) {
 //                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 //            }
-            settings.fullscreen = false;
+            settings.fullScreen = false;
             Analizer.Save(settings);
             game.fullScreen = false;
         } else {
 //            setDisplayMode(Display.getWidth(), Display.getHeight(), true);
-            settings.fullscreen = true;
+            settings.fullScreen = true;
             Analizer.Save(settings);
             game.fullScreen = false;
         }
@@ -131,7 +131,7 @@ public class Main {
 
     private static void initDisplay() {
         try {
-            setDisplayMode(display.getWidth(), display.getHeight(), settings.fullscreen);
+            setDisplayMode(display.getWidth(), display.getHeight(), settings.fullScreen);
             //Display.setDisplayMode(new DisplayMode(display.getWidth(), display.getHeight()));
             Display.create(new PixelFormat(0, 16, 1));
             Display.setResizable(false);

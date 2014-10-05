@@ -18,7 +18,7 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class SoundBase {
 
-    private ArrayList<Sound> list;
+    private final ArrayList<Sound> list;
 
     public SoundBase() {
         list = new ArrayList<>();
