@@ -29,13 +29,9 @@ import org.lwjgl.opengl.PixelFormat;
 public class Main {
 
     private static Game game;
-    private static DisplayDevice display;
     private static Settings settings;
-//    public static int fragmentShader;
-//    public static int shaderProgram;
 
     public static void main(String[] args) {
-        display = new DisplayDevice();
         settings = new Settings();
         IO.ReadFile(new File("res/settings.ini"), settings);
         initDisplay();
@@ -59,16 +55,10 @@ public class Main {
 
     private static void desktopFullScreen() {
         if (settings.fullScreen) {
-//            try {
-//                Display.setFullscreen(false);
-//            } catch (LWJGLException ex) {
-//                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//            }
             settings.fullScreen = false;
             Analizer.Save(settings);
             game.fullScreen = false;
         } else {
-//            setDisplayMode(Display.getWidth(), Display.getHeight(), true);
             settings.fullScreen = true;
             Analizer.Save(settings);
             game.fullScreen = false;
@@ -131,15 +121,13 @@ public class Main {
 
     private static void initDisplay() {
         try {
-            setDisplayMode(display.getWidth(), display.getHeight(), settings.fullScreen);
-            //Display.setDisplayMode(new DisplayMode(display.getWidth(), display.getHeight()));
+            setDisplayMode(settings.resWidth, settings.resHeight, settings.fullScreen);
             Display.create(new PixelFormat(0, 16, 1));
             Display.setResizable(false);
             Keyboard.create();
             Mouse.create();
             Controllers.create();
             Display.setVSyncEnabled(true);
-
         } catch (LWJGLException ex) {
             Logger.getLogger(Main.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -162,9 +150,8 @@ public class Main {
         try {
             DisplayMode targetDisplayMode = null;
             if (fullscreen) {
-                DisplayMode[] modes = Display.getAvailableDisplayModes();
                 int freq = 0;
-                for (DisplayMode current : modes) {
+                for (DisplayMode current : settings.modes) {
                     if ((current.getWidth() == width) && (current.getHeight() == height)) {
                         if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
                             if ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel())) {
@@ -187,6 +174,14 @@ public class Main {
             }
             if (targetDisplayMode == null) {
                 System.out.println("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
+                settings.resWidth = Display.getDesktopDisplayMode().getWidth();
+                settings.resHeight = Display.getDesktopDisplayMode().getHeight();
+                for (int i = 0; i < settings.modesLength; i++) {
+                    if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight) {
+                        settings.curMode = i;
+                    }
+                }
+                Analizer.Save(settings);
                 return;
             }
             Display.setDisplayMode(targetDisplayMode);

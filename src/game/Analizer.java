@@ -39,9 +39,30 @@ public class Analizer {
             } else {
                 settings.nrPlayers = n;
             }
-
-        } else if (0 == name.compareTo("Wire")) {
-
+        } else if (0 == p[0].compareTo("Resolution_Width:")) {
+            int w = Integer.parseInt(p[1]);
+            if (settings.resWidth <= 0 || w <= 0) {
+                settings.resWidth = settings.display.getWidth();
+            } else {
+                settings.resWidth = w;
+            }
+            for (int i = 0; i < settings.modesLength; i++) {
+                if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight) {
+                    settings.curMode = i;
+                }
+            }
+        } else if (0 == p[0].compareTo("Resolution_Hight:")) {
+            int h = Integer.parseInt(p[1]);
+            if (settings.resHeight <= 0 || h <= 0) {
+                settings.resHeight = settings.display.getHeight();
+            } else {
+                settings.resHeight = h;
+            }
+            for (int i = 0; i < settings.modesLength; i++) {
+                if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight) {
+                    settings.curMode = i;
+                }
+            }
         } else if (0 == name.compareTo("Diode")) {
 
         } else if (0 == name.compareTo("Copy")) {
@@ -71,6 +92,8 @@ public class Analizer {
                 fw.write("SplitMode: V\n");
             }
             fw.write("Number_Of_Players: " + settings.nrPlayers + "\n");
+            fw.write("Resolution_Width: " + settings.resWidth + "\n");
+            fw.write("Resolution_Hight: " + settings.resHeight + "\n");
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(Analizer.class.getName()).log(Level.SEVERE, null, ex);

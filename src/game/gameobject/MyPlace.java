@@ -34,7 +34,7 @@ public class MyPlace extends Place {
 
     @Override
     public final void generate() {
-       // sounds.init("res");
+        //sounds.init("res");
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 300) {
