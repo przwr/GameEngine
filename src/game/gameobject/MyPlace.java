@@ -15,6 +15,7 @@ import game.place.Place;
 import java.awt.Font;
 import openGLEngine.FontsHandler;
 import openGLEngine.SoundBase;
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
@@ -34,7 +35,7 @@ public class MyPlace extends Place {
 
     @Override
     public final void generate() {
-        //sounds.init("res");
+        sounds.init("res");
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 300) {
@@ -51,12 +52,42 @@ public class MyPlace extends Place {
         this.b = 0.2f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, 24);
-        //sounds.getSound("MumboMountain").playAsMusic(1.0f , 1.0f, true);
         SoundStore.get().poll(0);
     }
 
     @Override
     public void update() {
+        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+            sounds.getSound("MumboMountain").resume();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+            sounds.getSound("MumboMountain").pause();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+            sounds.getSound("MumboMountain").stop();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
+            sounds.getSound("MumboMountain").addPitch(0.05f);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+            sounds.getSound("MumboMountain").addPitch(-0.05f);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+            sounds.getSound("MumboMountain").addGain(0.05f);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
+            sounds.getSound("MumboMountain").addGain(-0.05f);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
+            sounds.getSound("MumboMountain").resume();
+            sounds.getSound("MumboMountain").smoothStart(0.5);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
+            sounds.getSound("MumboMountain").fade(0.5, true);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
+            sounds.getSound("MumboMountain").fade(0.5, false);
+        }
         for (Mob mob : sMobs) {
             mob.update(players);
         }
