@@ -243,47 +243,6 @@ public abstract class Place {
         }
     }
 
-    public static int allocateTexture() {
-        int textureHandle = glGenTextures();
-        return textureHandle;
-    }
-
-    public static int makeTexture(ByteBuffer pixels, int w, int h) {
-        int textureHandle = allocateTexture();
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); //GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        return textureHandle;
-    }
-
-    public void frameSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
-        int w = Display.getWidth();
-        int h = Display.getHeight();
-        glColor4f(1, 1, 1, 1);
-        glReadBuffer(GL_BACK);
-        glBindTexture(GL_TEXTURE_2D, txtrHandle);
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, (int) (w * xSize), (int) (h * ySize), (int) (xStart * w), (int) (yStart * h), w, h);
-    }
-
-    public static void drawQuad(int textureHandle, float w, float h) {
-        glPushMatrix();
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, h / 2048.0f);
-        glVertex2f(0, 0);
-        glTexCoord2f(w / 2048.0f, h / 2048.0f);
-        glVertex2f(w, 0);
-        glTexCoord2f(w / 2048.0f, 0);
-        glVertex2f(w, h);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, h);
-        glEnd();
-        glPopMatrix();
-    }
-
     protected void renderBack(Camera cam) {
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
@@ -411,6 +370,47 @@ public abstract class Place {
         if (thisPl != null) {
             thisPl.render(cam.getXOffEffect() - getXOff(((Player) thisPl).getCam()), cam.getYOffEffect() - getYOff(((Player) thisPl).getCam()));
         }
+    }
+
+    public static int allocateTexture() {
+        int textureHandle = glGenTextures();
+        return textureHandle;
+    }
+
+    public static int makeTexture(ByteBuffer pixels, int w, int h) {
+        int textureHandle = allocateTexture();
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); //GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        return textureHandle;
+    }
+
+    public void frameSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
+        int w = Display.getWidth();
+        int h = Display.getHeight();
+        glColor4f(1, 1, 1, 1);
+        glReadBuffer(GL_BACK);
+        glBindTexture(GL_TEXTURE_2D, txtrHandle);
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, (int) (w * xSize), (int) (h * ySize), (int) (xStart * w), (int) (yStart * h), w, h);
+    }
+
+    public static void drawQuad(int textureHandle, float w, float h) {
+        glPushMatrix();
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, h / 2048.0f);
+        glVertex2f(0, 0);
+        glTexCoord2f(w / 2048.0f, h / 2048.0f);
+        glVertex2f(w, 0);
+        glTexCoord2f(w / 2048.0f, 0);
+        glVertex2f(w, h);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, h);
+        glEnd();
+        glPopMatrix();
     }
 
     protected void addObj(GameObject go) {
