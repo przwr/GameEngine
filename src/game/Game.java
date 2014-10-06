@@ -111,7 +111,7 @@ public class Game {
                 getPlace().addPlayer(player1);
                 player1.addCamera(getPlace().cam1);
                 player1.addMenu((MyMenu) menu);
-                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 2, 4, 1);
+                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 2, 4, 0);
                 getPlace().addCamera2For2H(player2, 1024, 512);
                 getPlace().addPlayer(player2);
                 player2.addCamera(getPlace().cam2);
@@ -122,7 +122,7 @@ public class Game {
                 getPlace().addPlayer(player1);
                 player1.addCamera(getPlace().cam1);
                 player1.addMenu((MyMenu) menu);
-                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 4, 2, 1);
+                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 4, 2, 0);
                 getPlace().addCamera2For2V(player2, 1024, 512);
                 getPlace().addPlayer(player2);
                 player2.addCamera(getPlace().cam2);

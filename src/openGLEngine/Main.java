@@ -30,7 +30,7 @@ public class Main {
 
     private static Game game;
     private static Settings settings;
-
+    
     public static void main(String[] args) {
         settings = new Settings();
         IO.ReadFile(new File("res/settings.ini"), settings);

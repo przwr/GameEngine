@@ -31,6 +31,7 @@ public class SoundBase {
             String[] temp = file.getName().split("\\.");
             try {
                 Audio dzwiek = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
+                System.out.println(temp[0]);
                 list.add(new Sound(temp[0], dzwiek));
             } catch (IOException e) {
                 System.out.println(e.toString());
@@ -38,11 +39,11 @@ public class SoundBase {
         }
     }
 
-    public Audio getSound(String name) {
+    public Sound getSound(String name) {
         for (Sound snd : list) {
             //System.out.println(tex.podajNazwe());
             if (snd.getName().equals(name))
-                return snd.getSound();
+                return snd;
         }
         return null;
     }
