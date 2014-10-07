@@ -17,7 +17,7 @@ public class Sound {
 
     private final Settings settings;
     private final Audio sndEff;
-    private String name;
+    private final String name;
     private boolean paused;         //czy jest zastopowany
     private boolean wasPaused;      //przy przejściu do menu zaznacza, żeby wiedzieć, które dźwięki wznowić, a które nie.
     private float position = 0.0f;
@@ -238,7 +238,7 @@ public class Sound {
             }
             float targetVol = savedGainModifier;
             while (vol >= 0 && vol <= targetVol) {
-                try {
+                try {                   
                     Thread.sleep(T);
                     vol += delta;
                     snd.setGainModifier(vol);
