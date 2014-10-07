@@ -5,6 +5,7 @@
  */
 package openGLEngine;
 
+import game.Settings;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class SoundBase {
         list = new ArrayList<>();
     }
 
-    public void init(String folder) {
+    public void init(String folder, Settings settings) {
         ArrayList<File> fileList = new ArrayList<>();
         search(new File(folder), fileList);
         for (File file : fileList) {
@@ -32,22 +33,24 @@ public class SoundBase {
             try {
                 Audio dzwiek = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
                 System.out.println(temp[0]);
-                list.add(new Sound(temp[0], dzwiek));
+                list.add(new Sound(temp[0], dzwiek, settings));
             } catch (IOException e) {
                 System.out.println(e.toString());
             }
         }
+        settings.sounds = this;
     }
 
     public Sound getSound(String name) {
         for (Sound snd : list) {
             //System.out.println(tex.podajNazwe());
-            if (snd.getName().equals(name))
+            if (snd.getName().equals(name)) {
                 return snd;
+            }
         }
         return null;
     }
-    
+
     private void search(File folder, ArrayList<File> fileList) {
         for (File target : folder.listFiles()) {
             if (target.isDirectory()) {
@@ -59,5 +62,9 @@ public class SoundBase {
                 }
             }
         }
+    }
+
+    public ArrayList<Sound> getSoundsList() {
+        return list;
     }
 }

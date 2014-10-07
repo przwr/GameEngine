@@ -45,6 +45,7 @@ public class MyMenu extends Place {
         menus[1].addChoice(new ChoicePlayers("Liczba graczy: ", this, settings));
         menus[1].addChoice(new ChoiceSplitScreen("Dzielenie Ekranu: ", this, settings));
         menus[1].addChoice(new ChoiceBrightness("Jasność: ", this, settings));
+        menus[1].addChoice(new ChoiceVolume("Głośność: ", this, settings));
         menus[1].addChoice(new ChoiceResolution("Rozdzielczość: ", this, settings));
         menus[1].addChoice(new ChoiceDesktopFullScreen("Pełny Ekran: ", this, settings));
         this.r = 1f;

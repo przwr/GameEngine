@@ -8,6 +8,7 @@ package game;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import openGLEngine.DisplayDevice;
+import openGLEngine.SoundBase;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.Display;
@@ -25,6 +26,8 @@ public class Settings {
     public boolean fullScreen = true;
     public boolean hSplitScreen;
     public int nrPlayers = 1;
+    public float volume = 0.5f;
+    public SoundBase sounds;
     public int resWidth = display.getWidth();
     public int resHeight = display.getHeight();
 

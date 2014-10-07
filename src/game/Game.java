@@ -9,7 +9,7 @@ import game.gameobject.menu.MyMenu;
 import game.gameobject.MyPlace;
 import game.gameobject.Player;
 import game.place.Place;
-import org.lwjgl.openal.AL;
+import openGLEngine.Sound;
 
 /**
  *
@@ -45,23 +45,27 @@ public class Game {
         if (runFlag) {
             if (player1.isMenuOn()) {
                 runFlag = false;
+                soundPause();
             }
             player1.getInput();
             if (player2 != null && runFlag == true) {
                 if (player2.isMenuOn()) {
                     runFlag = false;
+                    soundPause();
                 }
                 player2.getInput();
             }
             if (player3 != null && runFlag == true) {
                 if (player3.isMenuOn()) {
                     runFlag = false;
+                    soundPause();
                 }
                 player3.getInput();
             }
             if (player4 != null && runFlag == true) {
                 if (player4.isMenuOn()) {
                     runFlag = false;
+                    soundPause();
                 }
                 player4.getInput();
             }
@@ -111,7 +115,7 @@ public class Game {
                 getPlace().addPlayer(player1);
                 player1.addCamera(getPlace().cam1);
                 player1.addMenu((MyMenu) menu);
-                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 2, 4, 0);
+                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 2, 4, 1);
                 getPlace().addCamera2For2H(player2, 1024, 512);
                 getPlace().addPlayer(player2);
                 player2.addCamera(getPlace().cam2);
@@ -122,7 +126,7 @@ public class Game {
                 getPlace().addPlayer(player1);
                 player1.addCamera(getPlace().cam1);
                 player1.addMenu((MyMenu) menu);
-                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 4, 2, 0);
+                player2 = new Player(4, 4, 56, 56, 64, 64, "Player 2", getPlace(), 4, 2, 1);
                 getPlace().addCamera2For2V(player2, 1024, 512);
                 getPlace().addPlayer(player2);
                 player2.addCamera(getPlace().cam2);
@@ -191,16 +195,17 @@ public class Game {
         runFlag = false;
         place = null;
         player1 = player2 = player3 = player4 = null;
+        settings.sounds = null;
     }
 
     public void resume() {
         if (player1 != null) {
             runFlag = true;
+            soundResume();
         }
     }
 
     public void exit() {
-        AL.destroy();
         exitFlag = true;
     }
 
@@ -230,5 +235,26 @@ public class Game {
 
     public Place getPlace() {
         return place;
+    }
+
+    private void soundPause() {
+        if (settings.sounds != null) {
+            for (Sound s : settings.sounds.getSoundsList()) {
+                if (s.isPlaying()) {
+                    s.fade(0.01, true);
+                }
+            }
+        }
+    }
+
+    private void soundResume() {
+        if (settings.sounds != null) {
+            for (Sound s : settings.sounds.getSoundsList()) {
+                if (s.isPaused()) {
+                    s.resume();
+                    s.smoothStart(0.5);
+                }
+            }
+        }
     }
 }

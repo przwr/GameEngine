@@ -8,6 +8,7 @@ package game.gameobject.menu.choices;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MyMenu;
+import openGLEngine.Sound;
 
 /**
  *
@@ -22,6 +23,11 @@ public class ChoiceStop extends MenuChoice {
     @Override
     public void action() {
         if (menu.game.getPlace() != null) {
+            if (settings.sounds != null) {
+                for (Sound s : settings.sounds.getSoundsList()) {
+                    s.stop();
+                }
+            }
             menu.game.endGame();
         }
     }

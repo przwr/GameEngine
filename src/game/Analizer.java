@@ -63,8 +63,12 @@ public class Analizer {
                     settings.curMode = i;
                 }
             }
-        } else if (0 == name.compareTo("Diode")) {
-
+        } else if (0 == p[0].compareTo("Volume:")) {
+            float v = Float.parseFloat(p[1]);
+            System.out.println("" + v);
+            if (v >= -0.01f && v <= 1.01f) {
+                settings.volume = v;
+            }
         } else if (0 == name.compareTo("Copy")) {
 
         } else if (0 == name.compareTo("Clock")) {
@@ -94,29 +98,14 @@ public class Analizer {
             fw.write("Number_Of_Players: " + settings.nrPlayers + "\n");
             fw.write("Resolution_Width: " + settings.resWidth + "\n");
             fw.write("Resolution_Hight: " + settings.resHeight + "\n");
+            {
+                int v = (int) (settings.volume * 10);
+                float vol = (float) v / 10;
+                fw.write("Volume: " + vol + "\n");
+            }
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(Analizer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public static void AnalizeSetting1(String s) {
-        int row = 0;
-        int col = 0;
-        String[] p = s.split("\\s+");
-        try {
-            col = Integer.parseInt(p[0]);
-            row = Integer.parseInt(p[1]);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IllegalStateException("W linii \"" + s + "\" - zbyt mało danych!");
-        } catch (NumberFormatException e) {
-            throw new IllegalStateException("W linii \"" + s + "\" - powinny być tylko liczby całkowiete!");
-        }
-
-        if (row > 1000 || col > 1000) {
-            throw new IllegalStateException("Za duże wymiary siatki: " + col + " x " + row + " Maksymalny wymiar to 1000!");
-        } else {
-        }
-    }
-
 }

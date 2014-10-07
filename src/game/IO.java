@@ -29,39 +29,4 @@ public class IO {
             System.out.println(e);
         }
     }
-
-//    public static void SaveFile(File f, Controler controler, Grid g, GridCRS gcrs, int gen) {
-//        String[] str = g.GetStr();
-//        try {
-//            FileWriter out;
-//            if (f != null) {
-//                out = new FileWriter(f.toString() + "_gen_" + gen);
-//            } else {
-//                out = new FileWriter("edited_gen_" + gen);
-//            }
-//            int in = 0;
-//            out.write(str[in]);
-//            in++;
-//            for (; in < g.GetLinesNr(); in++) {
-//                out.write("\n" + str[in]);
-//            }
-//            for (int i = 0; i < g.GetRow(); i++) {
-//                int j = gcrs.GetRowPtr(i) - 1;
-//                int next = gcrs.GetRowPtr(i + 1) - 1;
-//                for (; j < next; j++) {
-//                    char state = gcrs.GetCellFromIndex(j + 1).GetState();
-//                    int row = i + 1;
-//                    int col = gcrs.GetColInd(j);
-//                    if (state == 'H') {
-//                        out.write("\nHead " + col + " " + row);
-//                    } else if (state == 'T') {
-//                        out.write("\nTail " + col + " " + row);
-//                    }
-//                }
-//            }
-//            out.close();
-//        } catch (IOException e) {
-//            controler.Error(e.getMessage());
-//        }
-//    }
 }

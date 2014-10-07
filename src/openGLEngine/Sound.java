@@ -6,6 +6,7 @@
 package openGLEngine;
 
 import game.Methods;
+import game.Settings;
 import org.newdawn.slick.openal.Audio;
 
 /**
@@ -14,17 +15,21 @@ import org.newdawn.slick.openal.Audio;
  */
 public class Sound {
 
+    private final Settings settings;
     private final Audio sndEff;
     private String name;
+    private boolean paused;
     private float position = 0.0f;
     private float pitch = 1.0f;
-    private float gain = 1.0f;
+    private float gain;
     private boolean isLooped = true;
     private boolean fading = false;
 
-    public Sound(String name, Audio sndEff) {
+    public Sound(String name, Audio sndEff, Settings settings) {
+        this.settings = settings;
         this.sndEff = sndEff;
         this.name = name;
+        this.gain = settings.volume;
     }
 
     public String getName() {
@@ -39,6 +44,7 @@ public class Sound {
         if (sndEff.isPlaying()) {
             position = 0;
             sndEff.stop();
+            paused = false;
         }
     }
 
@@ -46,6 +52,7 @@ public class Sound {
         if (sndEff.isPlaying()) {
             position = sndEff.getPosition();
             sndEff.stop();
+            paused = true;
         }
     }
 
@@ -75,6 +82,16 @@ public class Sound {
         gain = Methods.Interval(0, a, 1);
         sndEff.playAsSoundEffect(pitch, gain, isLooped);
         sndEff.setPosition(position);
+    }
+
+    public void setGain() {
+        if (sndEff.isPlaying()) {
+            pause();
+            gain = Methods.Interval(0, settings.volume, 1);
+            resume();
+        } else {
+            gain = Methods.Interval(0, settings.volume, 1);
+        }
     }
 
     public void addGain(float a) {
@@ -110,12 +127,12 @@ public class Sound {
             return 0;
         }
     }
-    
+
     public int playAsSoundEffect(float f, float f1, boolean bln) {
         if (!sndEff.isPlaying()) {
             int temp = sndEff.playAsSoundEffect(f, f1, bln);
             pitch = Math.max(0, f);
-            gain = Methods.Interval(0, f1, 1);
+            gain = Methods.Interval(0, settings.volume * f1, 1);
             isLooped = bln;
             sndEff.setPosition(position);
             return temp;
@@ -128,7 +145,7 @@ public class Sound {
         if (!sndEff.isPlaying()) {
             int temp = sndEff.playAsSoundEffect(f, f1, bln, f2, f3, f4);
             pitch = Math.max(0, f);
-            gain = Methods.Interval(0, f1, 1);
+            gain = Methods.Interval(0, settings.volume * f1, 1);
             isLooped = bln;
             sndEff.setPosition(position);
             return temp;
@@ -139,9 +156,9 @@ public class Sound {
 
     public int playAsMusic(float f, float f1, boolean bln) {
         if (!sndEff.isPlaying()) {
-            int temp = sndEff.playAsMusic(f, f1, bln);
+            int temp = sndEff.playAsMusic(f, settings.volume * f1, bln);
             pitch = Math.max(0, f);
-            gain = Methods.Interval(0, f1, 1);
+            gain = Methods.Interval(0, settings.volume * f1, 1);
             isLooped = bln;
             sndEff.setPosition(position);
             return temp;
@@ -158,13 +175,17 @@ public class Sound {
         return sndEff.getPosition();
     }
 
+    public boolean isPaused() {
+        return paused;
+    }
+
     private class Fader implements Runnable {
 
-        private double time;
-        private Sound snd;
-        private long T;
-        private boolean fade;
-        private boolean pause;
+        private final double time;
+        private final Sound snd;
+        private final long T;
+        private final boolean fade;
+        private final boolean pause;
 
         public Fader(double time, Sound snd, int T, boolean fade, boolean pause) {
             this.time = time;
@@ -187,11 +208,11 @@ public class Sound {
 
         @Override
         public void run() {
-            float vol = fade ? 1.0f : 0.0f;
-            float delta = (float) (1.0f / (1000 * time / T));
+            float vol = fade ? settings.volume : 0.0f;
+            float delta = (float) (settings.volume / (1000 * time / T));
             delta = fade ? -delta : delta;
 
-            while (vol >= 0 && vol <= 1) {
+            while (vol >= 0 && vol <= settings.volume) {
                 try {
                     Thread.sleep(T);
                     vol += delta;
