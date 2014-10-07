@@ -241,7 +241,11 @@ public class Game {
         if (settings.sounds != null) {
             for (Sound s : settings.sounds.getSoundsList()) {
                 if (s.isPlaying()) {
-                    s.fade(0.01, true);
+                    if (s.isPaused()) {
+                        s.setWasPaused(true);
+                    } else {
+                        s.fade(0.01, true);
+                    }
                 }
             }
         }
@@ -250,11 +254,14 @@ public class Game {
     private void soundResume() {
         if (settings.sounds != null) {
             for (Sound s : settings.sounds.getSoundsList()) {
-                if (s.isPaused()) {
+                if (s.werePaused()) {
+                    s.setWasPaused(false);
+                } else {
                     s.resume();
                     s.smoothStart(0.5);
                 }
             }
         }
     }
+
 }

@@ -65,7 +65,6 @@ public class Analizer {
             }
         } else if (0 == p[0].compareTo("Volume:")) {
             float v = Float.parseFloat(p[1]);
-            System.out.println("" + v);
             if (v >= -0.01f && v <= 1.01f) {
                 settings.volume = v;
             }

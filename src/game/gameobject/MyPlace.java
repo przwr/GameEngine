@@ -73,10 +73,10 @@ public class MyPlace extends Place {
             sounds.getSound("MumboMountain").addPitch(-0.05f);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
-            sounds.getSound("MumboMountain").addGain(0.05f);
+            sounds.getSound("MumboMountain").addGainModifier(0.05f);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
-            sounds.getSound("MumboMountain").addGain(-0.05f);
+            sounds.getSound("MumboMountain").addGainModifier(-0.05f);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
             sounds.getSound("MumboMountain").resume();

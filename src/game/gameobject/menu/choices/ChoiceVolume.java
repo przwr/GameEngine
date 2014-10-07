@@ -29,7 +29,7 @@ public class ChoiceVolume extends MenuChoice {
         }
         if(settings.sounds != null){
             for(Sound s: settings.sounds.getSoundsList()){
-                s.setGain();
+                s.updateGain();
             }
         }
         Analizer.Save(settings);

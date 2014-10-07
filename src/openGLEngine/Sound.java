@@ -18,10 +18,13 @@ public class Sound {
     private final Settings settings;
     private final Audio sndEff;
     private String name;
-    private boolean paused;
+    private boolean paused;         //czy jest zastopowany
+    private boolean wasPaused;      //przy przejściu do menu zaznacza, żeby wiedzieć, które dźwięki wznowić, a które nie.
     private float position = 0.0f;
     private float pitch = 1.0f;
-    private float gain;
+    private float gain;                  //zmieniany pośrednio przez ogólną głośność z ustawień i gainModifier
+    private float gainModifier = 1.0f;   //tutaj można ustawić głośność konkretnego dźwięku
+    private float savedGainModifier;     //potrzebne, by wznowił do takiej głośności, jaka była poprzednio, wcześniej było ustawione sztywno na 1
     private boolean isLooped = true;
     private boolean fading = false;
 
@@ -29,7 +32,7 @@ public class Sound {
         this.settings = settings;
         this.sndEff = sndEff;
         this.name = name;
-        this.gain = settings.volume;
+        this.gain = settings.volume * gainModifier;
     }
 
     public String getName() {
@@ -71,31 +74,39 @@ public class Sound {
     }
 
     public void setPitch(float a) {
-        pause();
-        pitch = Math.max(0, a);
-        sndEff.playAsSoundEffect(pitch, gain, isLooped);
-        sndEff.setPosition(position);
-    }
-
-    public void setGain(float a) {
-        pause();
-        gain = Methods.Interval(0, a, 1);
-        sndEff.playAsSoundEffect(pitch, gain, isLooped);
-        sndEff.setPosition(position);
-    }
-
-    public void setGain() {
         if (sndEff.isPlaying()) {
             pause();
-            gain = Methods.Interval(0, settings.volume, 1);
+            pitch = Math.max(0, a);
             resume();
         } else {
-            gain = Methods.Interval(0, settings.volume, 1);
+            pitch = Math.max(0, a);
         }
     }
 
-    public void addGain(float a) {
-        setGain(gain + a);
+    public void updateGain() {
+        if (sndEff.isPlaying()) {
+            pause();
+            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
+            resume();
+        } else {
+            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
+        }
+    }
+
+    public void setGainModifier(float a) {
+        if (sndEff.isPlaying()) {
+            pause();
+            gainModifier = a;
+            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
+            resume();
+        } else {
+            gainModifier = a;
+            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
+        }
+    }
+
+    public void addGainModifier(float a) {
+        setGainModifier(gainModifier + a);
     }
 
     public void addPitch(float a) {
@@ -122,6 +133,7 @@ public class Sound {
         if (!sndEff.isPlaying()) {
             int temp = sndEff.playAsSoundEffect(pitch, gain, isLooped);
             sndEff.setPosition(position);
+            paused = false;
             return temp;
         } else {
             return 0;
@@ -130,9 +142,10 @@ public class Sound {
 
     public int playAsSoundEffect(float f, float f1, boolean bln) {
         if (!sndEff.isPlaying()) {
-            int temp = sndEff.playAsSoundEffect(f, f1, bln);
+            gainModifier = f1;
+            int temp = sndEff.playAsSoundEffect(f, settings.volume * gainModifier, bln);
             pitch = Math.max(0, f);
-            gain = Methods.Interval(0, settings.volume * f1, 1);
+            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
             isLooped = bln;
             sndEff.setPosition(position);
             return temp;
@@ -143,9 +156,10 @@ public class Sound {
 
     public int playAsSoundEffect(float f, float f1, boolean bln, float f2, float f3, float f4) {
         if (!sndEff.isPlaying()) {
-            int temp = sndEff.playAsSoundEffect(f, f1, bln, f2, f3, f4);
+            gainModifier = f1;
+            int temp = sndEff.playAsSoundEffect(f, settings.volume * gainModifier, bln, f2, f3, f4);
             pitch = Math.max(0, f);
-            gain = Methods.Interval(0, settings.volume * f1, 1);
+            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
             isLooped = bln;
             sndEff.setPosition(position);
             return temp;
@@ -156,9 +170,9 @@ public class Sound {
 
     public int playAsMusic(float f, float f1, boolean bln) {
         if (!sndEff.isPlaying()) {
-            int temp = sndEff.playAsMusic(f, settings.volume * f1, bln);
+            int temp = sndEff.playAsMusic(f, settings.volume * gainModifier, bln);
             pitch = Math.max(0, f);
-            gain = Methods.Interval(0, settings.volume * f1, 1);
+            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
             isLooped = bln;
             sndEff.setPosition(position);
             return temp;
@@ -177,6 +191,14 @@ public class Sound {
 
     public boolean isPaused() {
         return paused;
+    }
+
+    public boolean werePaused() {
+        return wasPaused;
+    }
+
+    public void setWasPaused(boolean wasPaused) {
+        this.wasPaused = wasPaused;
     }
 
     private class Fader implements Runnable {
@@ -208,21 +230,23 @@ public class Sound {
 
         @Override
         public void run() {
-            float vol = fade ? settings.volume : 0.0f;
-            float delta = (float) (settings.volume / (1000 * time / T));
+            float vol = fade ? gainModifier : 0.0f;
+            float delta = (float) (gainModifier / (1000 * time / T));
             delta = fade ? -delta : delta;
-
-            while (vol >= 0 && vol <= settings.volume) {
+            if (!fade) {
+                savedGainModifier = gainModifier;
+            }
+            float targetVol = savedGainModifier;
+            while (vol >= 0 && vol <= targetVol) {
                 try {
                     Thread.sleep(T);
                     vol += delta;
-                    snd.setGain(vol);
+                    snd.setGainModifier(vol);
                 } catch (InterruptedException e) {
                     end();
                 }
             }
             end();
         }
-
     }
 }
