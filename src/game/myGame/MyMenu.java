@@ -50,7 +50,7 @@ public class MyMenu extends Place {
         menus[1].addChoice(new ChoiceBrightness(settings.language.Brigthness, this, settings));
         menus[1].addChoice(new ChoiceVolume(settings.language.Volume, this, settings));
         menus[1].addChoice(new ChoiceResolution(settings.language.Resolution, this, settings));
-        menus[1].addChoice(new ChoiceDesktopFullScreen(settings.language.FullScreen, this, settings));
+        menus[1].addChoice(new ChoiceFullScreen(settings.language.FullScreen, this, settings));
         
         this.r = 1f;
         this.g = 1f;

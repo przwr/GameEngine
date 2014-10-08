@@ -23,9 +23,9 @@ public class ChoiceSplitScreen extends MenuChoice {
     @Override
     public void action() {
         if (menu.game.getPlace() == null) {
-            settings.hSplitScreen = !settings.hSplitScreen;
-            Analizer.Save(settings);
+            settings.hSplitScreen = !settings.hSplitScreen;            
         }
+        Analizer.Save(settings);
     }
 
     @Override

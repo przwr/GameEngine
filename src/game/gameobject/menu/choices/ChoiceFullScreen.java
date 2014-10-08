@@ -5,6 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
+import game.Analizer;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
@@ -13,15 +14,16 @@ import game.myGame.MyMenu;
  *
  * @author przemek
  */
-public class ChoiceDesktopFullScreen extends MenuChoice {
+public class ChoiceFullScreen extends MenuChoice {
 
-    public ChoiceDesktopFullScreen(String label, MyMenu menu, Settings settings) {
+    public ChoiceFullScreen(String label, MyMenu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        menu.game.setDesktopFullScreen();
+        settings.fullScreen = !settings.fullScreen;
+        Analizer.Save(settings);
     }
 
     @Override

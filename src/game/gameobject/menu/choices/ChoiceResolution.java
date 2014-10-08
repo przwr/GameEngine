@@ -5,6 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
+import game.Analizer;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
@@ -22,16 +23,17 @@ public class ChoiceResolution extends MenuChoice {
     @Override
     public void action() {
         settings.curMode++;
-        if (settings.curMode >= settings.modesLength) {
+        if (settings.curMode >= settings.modes.length) {
             settings.curMode = 0;
         }
         settings.resWidth = settings.modes[settings.curMode].getWidth();
         settings.resHeight = settings.modes[settings.curMode].getHeight();
+        settings.freq = settings.modes[settings.curMode].getFrequency();     
+        Analizer.Save(settings);
     }
 
     @Override
     public String getLabel() {
-        return label + settings.resWidth + " x " + settings.resHeight;
-
+        return label + settings.resWidth + " x " + settings.resHeight + " @ " + settings.freq + " Hz";
     }
 }

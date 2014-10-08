@@ -30,7 +30,7 @@ public class Main {
 
     private static Game game;
     private static Settings settings;
-    
+
     public static void main(String[] args) {
         settings = new Settings();
         IO.ReadFile(new File("res/settings.ini"), settings);
@@ -48,27 +48,8 @@ public class Main {
 
     private static void getInput() {
         game.getInput();
-        if (game.fullScreen) {
-            desktopFullScreen();
-        }
     }
 
-    private static void desktopFullScreen() {
-        if (settings.fullScreen) {
-            settings.fullScreen = false;
-            Analizer.Save(settings);
-            game.fullScreen = false;
-        } else {
-            settings.fullScreen = true;
-            Analizer.Save(settings);
-            game.fullScreen = false;
-        }
-        try {
-            Display.setDisplayConfiguration(2f, 0f, 1.0f);
-        } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     private static void update() {
         game.update();
@@ -121,7 +102,7 @@ public class Main {
 
     private static void initDisplay() {
         try {
-            setDisplayMode(settings.resWidth, settings.resHeight, settings.fullScreen);
+            setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
             Display.create(new PixelFormat(0, 16, 1));
             Display.setResizable(false);
             Keyboard.create();
@@ -140,7 +121,7 @@ public class Main {
         }
     }
 
-    private static void setDisplayMode(int width, int height, boolean fullscreen) {
+    private static void setDisplayMode(int width, int height, int freq, boolean fullscreen) {
         // return if requested DisplayMode is already set
         if ((Display.getDisplayMode().getWidth() == width)
                 && (Display.getDisplayMode().getHeight() == height)
@@ -150,13 +131,11 @@ public class Main {
         try {
             DisplayMode targetDisplayMode = null;
             if (fullscreen) {
-                int freq = 0;
                 for (DisplayMode current : settings.modes) {
-                    if ((current.getWidth() == width) && (current.getHeight() == height)) {
+                    if ((current.getWidth() == width) && (current.getHeight() == height) && (current.getFrequency() == freq)) {
                         if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
                             if ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel())) {
                                 targetDisplayMode = current;
-                                freq = targetDisplayMode.getFrequency();
                             }
                         }
                         // if we've found a match for bpp and frequence against the 
@@ -176,8 +155,8 @@ public class Main {
                 System.out.println("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
                 settings.resWidth = Display.getDesktopDisplayMode().getWidth();
                 settings.resHeight = Display.getDesktopDisplayMode().getHeight();
-                for (int i = 0; i < settings.modesLength; i++) {
-                    if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight) {
+                for (int i = 0; i < settings.modes.length; i++) {
+                    if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
                         settings.curMode = i;
                     }
                 }

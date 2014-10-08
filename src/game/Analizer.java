@@ -41,25 +41,36 @@ public class Analizer {
             }
         } else if (0 == p[0].compareTo("Resolution_Width:")) {
             int w = Integer.parseInt(p[1]);
-            if (settings.resWidth <= 0 || w <= 0) {
+            if (w <= 0) {
                 settings.resWidth = settings.display.getWidth();
             } else {
                 settings.resWidth = w;
             }
-            for (int i = 0; i < settings.modesLength; i++) {
-                if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight) {
+            for (int i = 0; i < settings.modes.length; i++) {
+                if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
                     settings.curMode = i;
                 }
             }
         } else if (0 == p[0].compareTo("Resolution_Hight:")) {
             int h = Integer.parseInt(p[1]);
-            if (settings.resHeight <= 0 || h <= 0) {
+            if (h <= 0) {
                 settings.resHeight = settings.display.getHeight();
             } else {
                 settings.resHeight = h;
             }
-            for (int i = 0; i < settings.modesLength; i++) {
-                if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight) {
+            for (int i = 0; i < settings.modes.length; i++) {
+                if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
+                    settings.curMode = i;
+                }
+            }
+        } else if (0 == p[0].compareTo("Resolution_Freq:")) {
+            int f = Integer.parseInt(p[1]);
+            if (f <= 0) {                
+            } else {
+                settings.freq = f;
+            }
+            for (int i = 0; i < settings.modes.length; i++) {
+                if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
                     settings.curMode = i;
                 }
             }
@@ -103,6 +114,7 @@ public class Analizer {
             fw.write("Number_Of_Players: " + settings.nrPlayers + "\n");
             fw.write("Resolution_Width: " + settings.resWidth + "\n");
             fw.write("Resolution_Hight: " + settings.resHeight + "\n");
+            fw.write("Resolution_Freq: " + settings.freq + "\n");
             {
                 int v = (int) (settings.volume * 10);
                 float vol = (float) v / 10;
