@@ -5,6 +5,7 @@
  */
 package game.gameobject.menu;
 
+import game.myGame.MyMenu;
 import game.Settings;
 
 /**

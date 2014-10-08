@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject.menu;
+package game.myGame;
 
+import game.gameobject.Player;
 import game.Game;
 import game.Settings;
-import game.gameobject.Player;
+import game.gameobject.menu.MenuChoice;
+import game.gameobject.menu.MenuOpt;
 import game.gameobject.menu.choices.*;
 import game.place.cameras.Camera;
 import game.place.Place;
@@ -24,7 +26,7 @@ import org.newdawn.slick.Color;
  */
 public class MyMenu extends Place {
 
-    private int cur;  
+    private int cur;
 
     private MenuOpt[] menus;
 
@@ -36,18 +38,20 @@ public class MyMenu extends Place {
     @Override
     public final void generate() {
         menus = new MenuOpt[5];
-        menus[0] = new MenuOpt(10, "Menu");
-        menus[0].addChoice(new ChoiceStart("Start", this, settings));
-        menus[0].addChoice(new ChoiceSettings("Opcje", this, settings));
-        menus[0].addChoice(new ChoiceStop("Zakończ", this, settings));
-        menus[0].addChoice(new ChoiceExit("Wyjdź", this, settings));
-        menus[1] = new MenuOpt(10, "Opcje");
-        menus[1].addChoice(new ChoicePlayers("Liczba graczy: ", this, settings));
-        menus[1].addChoice(new ChoiceSplitScreen("Dzielenie Ekranu: ", this, settings));
-        menus[1].addChoice(new ChoiceBrightness("Jasność: ", this, settings));
-        menus[1].addChoice(new ChoiceVolume("Głośność: ", this, settings));
-        menus[1].addChoice(new ChoiceResolution("Rozdzielczość: ", this, settings));
-        menus[1].addChoice(new ChoiceDesktopFullScreen("Pełny Ekran: ", this, settings));
+        menus[0] = new MenuOpt(10, settings.language.Menu);
+        menus[0].addChoice(new ChoiceStart(settings.language.Start, this, settings));
+        menus[0].addChoice(new ChoiceSettings(settings.language.Options, this, settings));
+        menus[0].addChoice(new ChoiceStop(settings.language.End, this, settings));
+        menus[0].addChoice(new ChoiceExit(settings.language.Quit, this, settings));
+        menus[1] = new MenuOpt(10, settings.language.Options);
+        menus[1].addChoice(new ChoicePlayers(settings.language.Number_Of_Players, this, settings));
+        menus[1].addChoice(new ChoiceSplitScreen(settings.language.SplitScreen, this, settings));
+        menus[1].addChoice(new ChoiceLanguage(settings.language.Language, this, settings));
+        menus[1].addChoice(new ChoiceBrightness(settings.language.Brigthness, this, settings));
+        menus[1].addChoice(new ChoiceVolume(settings.language.Volume, this, settings));
+        menus[1].addChoice(new ChoiceResolution(settings.language.Resolution, this, settings));
+        menus[1].addChoice(new ChoiceDesktopFullScreen(settings.language.FullScreen, this, settings));
+        
         this.r = 1f;
         this.g = 1f;
         this.b = 1f;

@@ -7,7 +7,7 @@ package game.gameobject.menu.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.gameobject.menu.MyMenu;
+import game.myGame.MyMenu;
 
 /**
  *
@@ -31,9 +31,9 @@ public class ChoiceStart extends MenuChoice {
     @Override
     public String getLabel() {
         if (menu.game.getPlace() == null) {
-            return "Start";
+            return label;
         } else {
-            return "Wznów";
+            return settings.language.Resume;
         }
     }
 

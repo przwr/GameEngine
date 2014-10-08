@@ -15,14 +15,14 @@ import openGLEngine.Time;
  */
 public abstract class Entity extends GameObject {
 
-    protected int speed;
+    private int speed;
 
     public void canMove(int magX, int magY) {
         if (magX != 0 && magY != 0) {
             canMove(magX, 0);
             canMove(0, magY);
         } else {
-            for (int i = 0; i < this.speed; i++) {
+            for (int i = 0; i < this.getSpeed(); i++) {
                 int xPos = (int) (magX * Time.getDelta());
                 int yPos = (int) (magY * Time.getDelta());
                 if (!isColided(magX, magY)) {
@@ -37,4 +37,12 @@ public abstract class Entity extends GameObject {
     protected abstract void move(int xPos, int yPos);
 
     protected abstract void renderName(Place place, Camera cam);
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 }

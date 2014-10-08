@@ -7,7 +7,7 @@ package game.gameobject.menu.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.gameobject.menu.MyMenu;
+import game.myGame.MyMenu;
 
 /**
  *
@@ -27,9 +27,9 @@ public class ChoiceDesktopFullScreen extends MenuChoice {
     @Override
     public String getLabel() {
         if (settings.fullScreen) {
-            return label + "Wł";
+            return label + settings.language.On;
         } else {
-            return label + "Wył";
+            return label + settings.language.Off;
         }
     }
 }

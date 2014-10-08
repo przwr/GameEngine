@@ -8,7 +8,7 @@ package game.gameobject.menu.choices;
 import game.Analizer;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.gameobject.menu.MyMenu;
+import game.myGame.MyMenu;
 import openGLEngine.Sound;
 
 /**

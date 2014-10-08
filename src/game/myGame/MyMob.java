@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject;
+package game.myGame;
 
+import game.gameobject.GameObject;
+import game.gameobject.Mob;
 import game.place.Place;
 import java.util.ArrayList;
 

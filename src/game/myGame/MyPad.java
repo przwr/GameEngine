@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject;
+package game.myGame;
 
+import game.gameobject.Player;
+import game.gameobject.Controler;
+import game.gameobject.Entity;
 import org.lwjgl.input.Controllers;
 
 /**
@@ -29,10 +32,10 @@ public class MyPad extends Controler {
             int xPad = Controllers.getController(2 * padNr).getXAxisValue() > 0.1 ? 1 : Controllers.getController(2 * padNr).getXAxisValue() < -0.1 ? -1 : 0;
             if (xPad == 1) {
                 inControl.canMove(xPad, 0);
-                ((Player) inControl).anim.setFlip(1);
+                ((Player) inControl).getAnim().setFlip(1);
             } else if (xPad == -1) {
                 inControl.canMove(xPad, 0);
-                ((Player) inControl).anim.setFlip(0);
+                ((Player) inControl).getAnim().setFlip(0);
             }
         }
         if (Controllers.getController(2 * padNr).getYAxisValue() != 0.0) {
@@ -42,16 +45,16 @@ public class MyPad extends Controler {
             }
         }
         if (Controllers.getController(2 * padNr + 1).isButtonPressed(7)) {
-            inControl.speed = 16;
+            inControl.setSpeed(16);
         } else {
-            inControl.speed = 8;
+            inControl.setSpeed(8);
         }
 
         {
             int key = 3;
             if (Controllers.getController(2 * padNr + 1).isButtonPressed(key)) {
                 if (!isPressed[key]) {
-                    ((Player) inControl).emits = !((Player) inControl).emits;
+                    ((Player) inControl).setEmits(!((Player) inControl).isEmits());
                     isPressed[key] = true;
                 }
             } else {
@@ -59,7 +62,7 @@ public class MyPad extends Controler {
             }
         }
         if (Controllers.getController(2 * padNr + 1).isButtonPressed(6)) {
-            ((Player) inControl).place.shakeCam(((Player) inControl).getCam());
+            ((Player) inControl).getPlace().shakeCam(((Player) inControl).getCam());
         }
     }
 

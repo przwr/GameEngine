@@ -68,8 +68,14 @@ public class Analizer {
             if (v >= -0.01f && v <= 1.01f) {
                 settings.volume = v;
             }
-        } else if (0 == name.compareTo("Copy")) {
-
+        } else if (0 == p[0].compareTo("Language:")) {
+            if (0 == p[1].compareTo("PL")) {
+                settings.lang = "PL";
+                settings.language = settings.languages.get(0);
+            } else if (0 == p[1].compareTo("ENG")) {
+                settings.lang = "ENG";
+                settings.language = settings.languages.get(1);
+            }
         } else if (0 == name.compareTo("Clock")) {
 
         } else if (0 == name.compareTo("OR")) {
@@ -102,6 +108,7 @@ public class Analizer {
                 float vol = (float) v / 10;
                 fw.write("Volume: " + vol + "\n");
             }
+            fw.write("Language: " + settings.lang);
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(Analizer.class.getName()).log(Level.SEVERE, null, ex);

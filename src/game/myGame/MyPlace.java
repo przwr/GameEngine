@@ -3,15 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject;
+package game.myGame;
 
+import game.gameobject.Player;
 import game.Game;
 import game.Settings;
+import game.gameobject.GameObject;
+import game.gameobject.Mob;
 import game.place.Tile;
 import game.place.SolidTile;
 import game.place.BasicTile;
+import game.place.BasicTile;
 import game.place.cameras.Camera;
 import game.place.Place;
+import game.place.Place;
+import game.place.SolidTile;
+import game.place.Tile;
 import java.awt.Font;
 import openGLEngine.FontsHandler;
 import openGLEngine.SoundBase;

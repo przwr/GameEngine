@@ -24,11 +24,12 @@ public abstract class GameObject {
     protected int sY;
     protected boolean solid;
     protected boolean emitter;
-    protected boolean top;
-    protected boolean emits;
+    private boolean emits;
+    protected boolean top;    
     protected Sprite spr;
     protected Light light;
     protected String name;
+    
 
     public abstract void render(int xEffect, int yEffect);
 
@@ -133,5 +134,9 @@ public abstract class GameObject {
     
     public String getName(){
         return name;
+    }
+
+    public void setEmits(boolean emits) {
+        this.emits = emits;
     }
 }

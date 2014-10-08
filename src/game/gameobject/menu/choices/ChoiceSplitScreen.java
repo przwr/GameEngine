@@ -8,7 +8,7 @@ package game.gameobject.menu.choices;
 import game.Analizer;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.gameobject.menu.MyMenu;
+import game.myGame.MyMenu;
 
 /**
  *
@@ -32,16 +32,16 @@ public class ChoiceSplitScreen extends MenuChoice {
     public String getLabel() {
         if (menu.game.getPlace() != null) {
             if (settings.hSplitScreen) {
-                return label + "Zakończ grę by zmienić";
+                return label + settings.language.End_Game;
             } else {
-                return label + "Zakończ grę by zmienić";
+                return label + settings.language.End_Game;
             }
 
         } else {
             if (settings.hSplitScreen) {
-                return label + "Poziomo (H)";
+                return label + settings.language.Horizontal;
             } else {
-                return label + "Pionowo (V)";
+                return label + settings.language.Vertical;
             }
         }
     }

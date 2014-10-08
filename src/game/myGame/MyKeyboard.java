@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject;
+package game.myGame;
 
+import game.gameobject.Player;
+import game.gameobject.Controler;
+import game.gameobject.Entity;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -30,26 +33,26 @@ public class MyKeyboard extends Controler {
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
             inControl.canMove(-1, 0);
-            ((Player) inControl).anim.setFlip(0);
+            ((Player) inControl).getAnim().setFlip(0);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
             inControl.canMove(1, 0);
-            ((Player) inControl).anim.setFlip(1);
+            ((Player) inControl).getAnim().setFlip(1);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            ((Player) inControl).place.shakeCam(((Player) inControl).getCam());
+            ((Player) inControl).getPlace().shakeCam(((Player) inControl).getCam());
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            inControl.speed = 16;
+            inControl.setSpeed(16);
         } else {
-            inControl.speed = 8;
+            inControl.setSpeed(8);
         }
 
         {
             int key = (int) Keyboard.KEY_F;
             if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
                 if (!isPressed[key]) {
-                    ((Player) inControl).emits = !((Player) inControl).emits;
+                    ((Player) inControl).setEmits(!((Player) inControl).isEmits());
                     isPressed[key] = true;
                 }
             } else {
@@ -57,7 +60,7 @@ public class MyKeyboard extends Controler {
             }
         }
         if (Mouse.isButtonDown(0)) {
-            ((Player) inControl).place.shakeCam(((Player) inControl).getCam());
+            ((Player) inControl).getPlace().shakeCam(((Player) inControl).getCam());
         }
     }
 

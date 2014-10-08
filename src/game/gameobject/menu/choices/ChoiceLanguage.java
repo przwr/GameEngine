@@ -14,24 +14,30 @@ import game.myGame.MyMenu;
  *
  * @author przemek
  */
-public class ChoicePlayers extends MenuChoice {
+public class ChoiceLanguage extends MenuChoice {
 
-
-    public ChoicePlayers(String label, MyMenu menu, Settings settings) {
+    public ChoiceLanguage(String label, MyMenu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-       menu.addPlayer();
-        if (settings.nrPlayers > 4) {
-            menu.setToOnePlayer();
+        int i;
+        for (i = 0; i < settings.languages.size(); i++) {
+            if (0 == settings.languages.get(i).Lang.compareTo(settings.lang)) {
+                i++;
+                break;
+            }
         }
+        if (i >= settings.languages.size()) {
+            i = 0;
+        }
+        settings.lang = settings.languages.get(i).Lang;
         Analizer.Save(settings);
     }
 
     @Override
     public String getLabel() {
-        return label + settings.nrPlayers;
+        return label + settings.lang;
     }
 }

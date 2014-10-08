@@ -32,7 +32,7 @@ public class Mob extends Entity {
         this.sY = startY;
         this.place = place;
         this.top = true;
-        this.speed = speed;
+        this.setSpeed(speed);
         this.range = range;
         init("rabbit", name, x, y, sx, sy);
     }

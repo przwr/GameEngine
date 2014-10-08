@@ -5,8 +5,8 @@
  */
 package game;
 
-import game.gameobject.menu.MyMenu;
-import game.gameobject.MyPlace;
+import game.myGame.MyMenu;
+import game.myGame.MyPlace;
 import game.gameobject.Player;
 import game.place.Place;
 import openGLEngine.Sound;
@@ -242,10 +242,12 @@ public class Game {
             for (Sound s : settings.sounds.getSoundsList()) {
                 if (s.isPlaying()) {
                     if (s.isPaused()) {
-                        s.setWasPaused(true);
+                        s.setNotPlaying(true);
                     } else {
                         s.fade(0.01, true);
                     }
+                } else {
+                    s.setNotPlaying(true);
                 }
             }
         }
@@ -255,7 +257,7 @@ public class Game {
         if (settings.sounds != null) {
             for (Sound s : settings.sounds.getSoundsList()) {
                 if (s.werePaused()) {
-                    s.setWasPaused(false);
+                    s.setNotPlaying(false);
                 } else {
                     s.resume();
                     s.smoothStart(0.5);

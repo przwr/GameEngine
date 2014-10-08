@@ -5,7 +5,9 @@
  */
 package game.gameobject;
 
-import game.gameobject.menu.MyMenu;
+import game.myGame.MyKeyboard;
+import game.myGame.MyMenu;
+import game.myGame.MyPad;
 import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
@@ -22,9 +24,9 @@ import org.newdawn.slick.Color;
  */
 public class Player extends Entity {
 
-    protected final Place place;
+    private final Place place;
     public MyMenu menu;
-    protected final Animation anim;
+    private final Animation anim;
     private boolean animate;
     private Controler ctrl;
     private Camera cam;
@@ -37,7 +39,7 @@ public class Player extends Entity {
         this.sY = startY;
         this.place = place;
         this.top = false;
-        this.speed = 8;
+        this.setSpeed(8);
         this.emitter = true;
         init("apple", name, Display.getWidth() / ssModeX - width / 2 - sX, Display.getHeight() / ssModeY - width / 2 - sY, sx, sy);
         this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024); // 0.8f - najlepsze ustawienie!
@@ -75,12 +77,12 @@ public class Player extends Entity {
     @Override
     protected boolean isColided(int magX, int magY
     ) {
-        return (place.isPlCTl(magX, magY, this, cam) || place.isPlCObj(magX, magY, this));
+        return (getPlace().isPlCTl(magX, magY, this, cam) || getPlace().isPlCObj(magX, magY, this));
     }
 
     @Override
     protected void move(int xPos, int yPos) {
-        place.moveCam(xPos, yPos, cam);
+        getPlace().moveCam(xPos, yPos, cam);
     }
 
     public void renderName(Place place, Player player, Camera cam) {
@@ -98,7 +100,7 @@ public class Player extends Entity {
         if (spr != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            anim.render(animate);
+            getAnim().render(animate);
             glPopMatrix();
         }
     }
@@ -117,5 +119,13 @@ public class Player extends Entity {
 
     public void addMenu(MyMenu menu) {
         this.menu = menu;
+    }
+
+    public Animation getAnim() {
+        return anim;
+    }
+
+    public Place getPlace() {
+        return place;
     }
 }

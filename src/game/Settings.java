@@ -5,6 +5,7 @@
  */
 package game;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import openGLEngine.DisplayDevice;
@@ -30,6 +31,9 @@ public class Settings {
     public SoundBase sounds;
     public int resWidth = display.getWidth();
     public int resHeight = display.getHeight();
+    public String lang = "PL";
+    public ArrayList<Language> languages = new ArrayList<>();
+    public Language language;               // ustawiony w konstruktorze na domyślny
 
     public Settings() {
         try {
@@ -65,5 +69,8 @@ public class Settings {
         if (modes[modesLength - 2].getWidth() == modes[modesLength - 1].getWidth() && modes[modesLength - 2].getHeight() == modes[modesLength - 1].getHeight()) {
             modesLength--;
         }
+        languages.add(new LangPL());
+        languages.add(new LangENG());
+        language = languages.get(0);
     }
 }

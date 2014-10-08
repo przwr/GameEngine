@@ -7,7 +7,7 @@ package game.gameobject.menu.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.gameobject.menu.MyMenu;
+import game.myGame.MyMenu;
 
 /**
  *
@@ -41,7 +41,7 @@ public class ChoiceBrightness extends MenuChoice {
         if (menu.game.getPlace() != null) {
             return label + menu.game.getPlace().r;
         } else {
-            return label + "Uruchom grę!";
+            return label + settings.language.Start_Game;
         }
     }
 }

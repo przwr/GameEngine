@@ -19,7 +19,7 @@ public class Sound {
     private final Audio sndEff;
     private final String name;
     private boolean paused;         //czy jest zastopowany
-    private boolean wasPaused;      //przy przejściu do menu zaznacza, żeby wiedzieć, które dźwięki wznowić, a które nie.
+    private boolean notPlaying;      //przy przejściu do menu zaznacza, żeby wiedzieć, które dźwięki wznowić, a które nie.
     private float position = 0.0f;
     private float pitch = 1.0f;
     private float gain;                  //zmieniany pośrednio przez ogólną głośność z ustawień i gainModifier
@@ -194,11 +194,11 @@ public class Sound {
     }
 
     public boolean werePaused() {
-        return wasPaused;
+        return notPlaying;
     }
 
-    public void setWasPaused(boolean wasPaused) {
-        this.wasPaused = wasPaused;
+    public void setNotPlaying(boolean wasPaused) {
+        this.notPlaying = wasPaused;
     }
 
     private class Fader implements Runnable {
