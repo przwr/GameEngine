@@ -10,12 +10,8 @@ import game.Game;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
-import game.place.Tile;
-import game.place.SolidTile;
-import game.place.BasicTile;
 import game.place.BasicTile;
 import game.place.cameras.Camera;
-import game.place.Place;
 import game.place.Place;
 import game.place.SolidTile;
 import game.place.Tile;
@@ -54,9 +50,9 @@ public class MyPlace extends Place {
         }
         addObj(new Mob(512, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
         addObj(new Mob(512, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
-        this.r = 0.2f;
-        this.g = 0.2f;
-        this.b = 0.2f;
+        this.r = 0.5f;
+        this.g = 0.5f;
+        this.b = 0.5f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, 24);
         SoundStore.get().poll(0);
