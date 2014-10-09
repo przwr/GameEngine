@@ -17,6 +17,9 @@ public abstract class Camera {
 
     protected GameObject go;
     protected Place place;
+
+    protected int Dwidth;
+    protected int Dheight;
     protected int xOffset;
     protected int yOffset;
     protected int xEffect;
@@ -25,8 +28,9 @@ public abstract class Camera {
     protected Delay shakeDelay;
     protected int shakeAmp = 8;
     boolean shakeUp = true;
-    
+
     public abstract void move(int xPos, int yPos);
+
     public abstract void shake();
 
     public GameObject getGo() {

@@ -24,7 +24,7 @@ public abstract class GameObject {
     protected int sY;
     protected boolean solid;
     protected boolean emitter;
-    private boolean emits;
+    protected boolean emits;
     protected boolean top;    
     protected Sprite spr;
     protected Light light;

@@ -29,10 +29,11 @@ import org.lwjgl.opengl.PixelFormat;
 public class Main {
 
     private static Game game;
-    private static Settings settings;
+    private static final Settings settings = new Settings();
+
+    ;
 
     public static void main(String[] args) {
-        settings = new Settings();
         IO.ReadFile(new File("res/settings.ini"), settings);
         initDisplay();
         initGL();
@@ -49,7 +50,6 @@ public class Main {
     private static void getInput() {
         game.getInput();
     }
-
 
     private static void update() {
         game.update();
@@ -105,19 +105,13 @@ public class Main {
             setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
             Display.create(new PixelFormat(0, 16, 1));
             Display.setResizable(false);
+            Display.setVSyncEnabled(true);
+            Display.setDisplayConfiguration(2f, 0f, 1.0f);
             Keyboard.create();
             Mouse.create();
             Controllers.create();
-            Display.setVSyncEnabled(true);
         } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            Display.setDisplayConfiguration(2f, 0f, 1.0f);
-        } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -169,5 +163,4 @@ public class Main {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
     }
-
 }

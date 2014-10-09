@@ -11,7 +11,7 @@ package openGLEngine;
  */
 public class Time {
 
-    private static final float DAMPING = 16000000;    
+    private static final float DAMPING = 16000000;
     private static long curTime;
     private static long lastTime;
 

@@ -51,7 +51,7 @@ public class Physics {
     public static GameObject sphereCollideWPl(int x, int y, int radius, ArrayList<GameObject> objects, Place place) {
 
         for (GameObject go : objects) {
-            if (dist(go.getX() + go.getSX() + go.getWidth() / 2, go.getY() + go.getSY() + go.getHeight() / 2, x + place.getXOff(((Player) go).getCam()), y + place.getYOff(((Player) go).getCam())) < radius) {
+            if (dist(go.getX() + go.getSX() + go.getWidth() / 2, go.getY() + go.getSY() + go.getHeight() / 2, x, y) < radius) {
                 return go;
             }
         }

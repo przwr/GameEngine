@@ -8,15 +8,12 @@ package game.place;
 import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
-import game.place.cameras.CameraFor2V;
-import game.place.cameras.CameraFor1;
 import game.gameobject.Mob;
 import game.gameobject.Player;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
-import game.place.cameras.CameraFor2H;
-import game.place.cameras.CameraFor4;
+import game.place.cameras.PlayersCamera;
 import java.nio.ByteBuffer;
 import openGLEngine.Physics;
 import openGLEngine.FontsHandler;
@@ -72,49 +69,25 @@ public abstract class Place {
         players.add(player);
     }
 
-    public void addCamera1For1(GameObject go, int x, int y) {
-        this.cam1 = new CameraFor1(this, go, x, y);
+    public void addCamera1(GameObject go, int ssX, int ssY) {
+        this.cam1 = new PlayersCamera(this, go, ssX, ssY);
     }
 
-    public void addCamera1For2V(GameObject go, int x, int y) {
-        this.cam1 = new CameraFor2V(this, go, x, y);
+    public void addCamera2(GameObject go, int ssX, int ssY) {
+        this.cam2 = new PlayersCamera(this, go, ssX, ssY);
     }
 
-    public void addCamera1For2H(GameObject go, int x, int y) {
-        this.cam1 = new CameraFor2H(this, go, x, y);
+    public void addCamera3(GameObject go, int ssX, int ssY) {
+        this.cam3 = new PlayersCamera(this, go, ssX, ssY);
     }
 
-    public void addCamera2For2H(GameObject go, int x, int y) {
-        this.cam2 = new CameraFor2H(this, go, x, y);
-    }
-
-    public void addCamera2For2V(GameObject go, int x, int y) {
-        this.cam2 = new CameraFor2V(this, go, x, y);
-    }
-
-    public void addCamera1For4(GameObject go, int x, int y) {
-        this.cam1 = new CameraFor4(this, go, x, y);
-    }
-
-    public void addCamera2For4(GameObject go, int x, int y) {
-        this.cam2 = new CameraFor4(this, go, x, y);
-    }
-
-    public void addCamera3For4(GameObject go, int x, int y) {
-        this.cam3 = new CameraFor4(this, go, x, y);
-    }
-
-    public void addCamera4For4(GameObject go, int x, int y) {
-        this.cam4 = new CameraFor4(this, go, x, y);
+    public void addCamera4(GameObject go, int ssX, int ssY) {
+        this.cam4 = new PlayersCamera(this, go, ssX, ssY);
     }
 
     public abstract void generate();
 
     public abstract void update();
-
-    public void moveCam(int xPos, int yPos, Camera cam) {
-        cam.move(xPos, yPos);
-    }
 
     public void shakeCam(Camera cam) {
         cam.shake();
@@ -270,7 +243,7 @@ public abstract class Place {
         }
         for (GameObject player : players) {
             if (player.isEmitter() && player.isEmits()) {
-                player.renderLight(this, cam);
+                player.renderLight(this, cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
         frameSave(lightTex, xStart, yStart, xSize, ySize);
@@ -321,18 +294,10 @@ public abstract class Place {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
-        Player thisPl = null;
         for (GameObject go : players) {
             if (!go.isOnTop()) {
-                if (((Player) go).getCam() != cam) {
-                    go.render(cam.getXOffEffect() - getXOff(((Player) go).getCam()), cam.getYOffEffect() - getYOff(((Player) go).getCam()));
-                } else {
-                    thisPl = (Player) go;
-                }
+                go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
-        }
-        if (thisPl != null) {
-            thisPl.render(cam.getXOffEffect() - getXOff(((Player) thisPl).getCam()), cam.getYOffEffect() - getYOff(((Player) thisPl).getCam()));
         }
     }
 
@@ -416,6 +381,7 @@ public abstract class Place {
     protected void addObj(GameObject go) {
         if (go.isEmitter()) {
             emitters.add(go);
+
         }
         if (go.getClass() == Mob.class) {
             if (go.isSolid()) {
@@ -536,13 +502,13 @@ public abstract class Place {
         Camera cam = player.getCam();
         Rectangle rec = new Rectangle();
         for (GameObject go : sMobs) {
-            rec.setRect(go.getBegOfX() + cam.getXOff(), go.getBegOfY() + cam.getYOff(), go.getWidth(), go.getHeight());
+            rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
             if (Physics.checkCollision(rec, player, magX, magY) != null) {
                 return true;
             }
         }
         for (GameObject go : solidObj) {
-            rec.setRect(go.getBegOfX() + cam.getXOff(), go.getBegOfY() + cam.getYOff(), go.getWidth(), go.getHeight());
+            rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
             if (Physics.checkCollision(rec, player, magX, magY) != null) {
                 return true;
             }
@@ -551,6 +517,33 @@ public abstract class Place {
     }
 
     public boolean isObjCObj(int magX, int magY, GameObject gameObject) {
+        Rectangle rec = new Rectangle();
+        for (GameObject player : players) {
+            rec.setRect(player.getBegOfX(), player.getBegOfY(), player.getWidth(), player.getHeight());
+            if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
+                return true;
+            }
+        }
+        for (GameObject go : sMobs) {
+            if (gameObject != go) {
+                rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
+                if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
+                    return true;
+                }
+            }
+        }
+        for (GameObject go : solidObj) {
+            if (gameObject != go) {
+                rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
+                if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isPCObj(int magX, int magY, GameObject gameObject) {
         Rectangle rec = new Rectangle();
         for (GameObject player : players) {
             rec.setRect(player.getBegOfX() - ((Player) player).getCam().getXOff(), player.getBegOfY() - ((Player) player).getCam().getYOff(), player.getWidth(), player.getHeight());

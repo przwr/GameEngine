@@ -5,6 +5,7 @@
  */
 package game.gameobject;
 
+import game.place.Light;
 import game.place.cameras.Camera;
 import game.place.Place;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class Mob extends Entity {
 
     @Override
     protected boolean isColided(int magX, int magY) {
-        if ((x + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (y + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
+        if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
             return true;
         }
         return (place.isObjCTl(magX, magY, this) || place.isObjCObj(magX, magY, this));
@@ -67,11 +68,11 @@ public class Mob extends Entity {
         if (prey != null) {
             int xToGo = 0;
             int yToGo = 0;
-            if (prey.getMidX() != place.getXOff(((Player)prey).getCam()) + getMidX()) {
-                xToGo = prey.getMidX() > place.getXOff(((Player)prey).getCam()) + getMidX() ? 1 : -1;
+            if (prey.getMidX() != getMidX()) {
+                xToGo = prey.getMidX() > getMidX() ? 1 : -1;
             }
-            if (prey.getMidY() != place.getYOff(((Player)prey).getCam()) + getMidY()) {
-                yToGo = prey.getMidY() > place.getYOff(((Player)prey).getCam()) + getMidY() ? 1 : -1;
+            if (prey.getMidY() != getMidY()) {
+                yToGo = prey.getMidY() > getMidY() ? 1 : -1;
             }
             canMove(xToGo, yToGo);
         }

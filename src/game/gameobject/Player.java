@@ -12,7 +12,6 @@ import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
 import openGLEngine.Animation;
-import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -31,7 +30,7 @@ public class Player extends Entity {
     private Controler ctrl;
     private Camera cam;
 
-    public Player(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int ssModeX, int ssModeY, int playerNr) {
+    public Player(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y, int playerNr) {
         this.name = name;
         this.width = width;
         this.height = height;
@@ -41,8 +40,8 @@ public class Player extends Entity {
         this.top = false;
         this.setSpeed(8);
         this.emitter = true;
-        init("apple", name, Display.getWidth() / ssModeX - width / 2 - sX, Display.getHeight() / ssModeY - width / 2 - sY, sx, sy);
-        this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024); // 0.8f - najlepsze ustawienie!
+        init("apple", name, x, y, sx, sy);
+        this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024);
         this.anim = new Animation(2, spr, 500);
         animate = true;
         initControler(playerNr);
@@ -55,6 +54,8 @@ public class Player extends Entity {
             ctrl = new MyPad(this, 0);
         } else if (playerNr == 2) {
             ctrl = new MyPad(this, 1);
+        } else if (playerNr == 3) {
+            ctrl = new MyPad(this, 2);
         }
     }
 
@@ -75,24 +76,22 @@ public class Player extends Entity {
     }
 
     @Override
-    protected boolean isColided(int magX, int magY
-    ) {
-        return (getPlace().isPlCTl(magX, magY, this, cam) || getPlace().isPlCObj(magX, magY, this));
+    protected boolean isColided(int magX, int magY) {
+        if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
+            return true;
+        }
+        return (getPlace().isObjCTl(magX, magY, this) || getPlace().isPlCObj(magX, magY, this));
     }
 
     @Override
     protected void move(int xPos, int yPos) {
-        getPlace().moveCam(xPos, yPos, cam);
+        this.x = x + xPos;
+        this.y = y + yPos;
+        cam.move(xPos, yPos);
     }
 
     public void renderName(Place place, Player player, Camera cam) {
-        if (cam == player.getCam()) {
-            if (player == this) {
-                place.renderMessage(0, getMidX(), getBegOfY(), name, new Color(place.r, place.g, place.b));
-            }
-        } else {
-            place.renderMessage(0, getMidX() - place.getXOff(player.getCam()) + place.getXOff(cam), getBegOfY() - place.getYOff(player.getCam()) + place.getYOff(cam), name, new Color(place.r, place.g, place.b));
-        }
+        place.renderMessage(0, place.getXOff(cam) + getMidX(), place.getYOff(cam) + getBegOfY(), name, new Color(place.r, place.g, place.b));
     }
 
     @Override

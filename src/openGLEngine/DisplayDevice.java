@@ -17,10 +17,12 @@ public class DisplayDevice {
     private final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     private final int width;
     private final int height;
+    private final int freq;
 
     public DisplayDevice() {
         this.width = device.getDisplayMode().getWidth();
         this.height = device.getDisplayMode().getHeight();
+        this.freq = device.getDisplayMode().getRefreshRate();
     }
 
     public int getWidth() {
@@ -28,6 +30,10 @@ public class DisplayDevice {
     }
 
     public int getHeight() {
+        return height;
+    }
+
+    public int getFreq() {
         return height;
     }
 }

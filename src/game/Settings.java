@@ -30,7 +30,7 @@ public class Settings {
     public SoundBase sounds;
     public int resWidth = display.getWidth();
     public int resHeight = display.getHeight();
-    public int freq;
+    public int freq = display.getFreq();
     public String lang = "PL";
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;                                   // ustawiony w konstruktorze na domyślny
@@ -61,15 +61,8 @@ public class Settings {
                 }
             }
         }
-        for (DisplayMode mode : modes) {
-            if (mode.getWidth() == resWidth && mode.getHeight() == resHeight) {
-                freq = mode.getFrequency();
-                break;   
-            }
-        }
         languages.add(new LangPL());
         languages.add(new LangENG());
         language = languages.get(0);
-
     }
 }
