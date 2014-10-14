@@ -49,5 +49,6 @@ public class LangPL extends Language {
         Actions[9] = "Bieg";
         Actions[10] = "Światło";
         PushButton = "Naciśnij Przycisk!";
+        Unchangable = "Niezmienny!";
     }
 }

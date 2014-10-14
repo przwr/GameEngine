@@ -49,5 +49,6 @@ public class LangENG extends Language {
         Actions[9] = "Run";
         Actions[10] = "Light";
         PushButton = "Push the Button!";
+        Unchangable = "Unchangable!";
     }
 }

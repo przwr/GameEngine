@@ -37,10 +37,7 @@ public class Settings {
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny
     public int actionsNr;
-    public Player player1;
-    public Player player2;
-    public Player player3;
-    public Player player4;
+    public Player[] players;
     public Controller[] controllers;
 
     public Settings() {
@@ -74,12 +71,9 @@ public class Settings {
         language = languages.get(0);
     }
 
-    public void Up(int nr, Player player1, Player player2, Player player3, Player player4, Controller[] controllers) {
+    public void Up(int nr, Player[]players, Controller[] controllers) {
         actionsNr = nr;
-        this.player1 = player1;
-        this.player2 = player2;
-        this.player3 = player3;
-        this.player4 = player4;
+        this.players = players;
         this.controllers = controllers;
     }
 }

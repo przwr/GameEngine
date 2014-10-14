@@ -12,22 +12,29 @@ import org.lwjgl.input.Controller;
  *
  * @author przemek
  */
-public class InputPadKey extends AnyInput {
+public class InputPadStick extends AnyInput {
 
     private final Controller[] controllers;
+    private final int axisNr;
+    private final boolean isPlus;
 
-    public InputPadKey(Controller[] controllers, int padNr, int key) {
-        this.key = key;
+    public InputPadStick(Controller[] controllers, int padNr, int axisNr, boolean isPlus) {
         this.controllers = controllers;
         this.padNr = padNr;
-        this.type = 2;
-        label = "pad" + padNr + "_" + key + "button";
+        this.axisNr = axisNr;
+        this.isPlus = isPlus;
+        this.type = 4;
+        label = "pad" + padNr + "_" + axisNr + (isPlus ? "+" : "-");
     }
 
     @Override
     public boolean isPut() {
         if (padNr < controllers.length) {
-            return controllers[padNr].isButtonPressed(key);
+            if (isPlus) {
+                return controllers[padNr].getAxisValue(axisNr) > 0.1f;
+            } else {
+                return controllers[padNr].getAxisValue(axisNr) < -0.1f;
+            }
         }
         return false;
     }
@@ -39,6 +46,6 @@ public class InputPadKey extends AnyInput {
 
     @Override
     public String toString() {
-        return type + " " + padNr + " " + key;
+        return type + " " + padNr + " " + axisNr + " " + (isPlus ? 1 : 0);
     }
 }

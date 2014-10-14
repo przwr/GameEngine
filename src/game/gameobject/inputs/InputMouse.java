@@ -17,16 +17,24 @@ public class InputMouse extends AnyInput {
     public InputMouse(int key) {
         this.key = key;
         this.type = 1;
-        label = "mousebutton " + key;
+        label = "mouse" + key + "button";
     }
 
     @Override
     public boolean isPut() {
-        return Mouse.isButtonDown(key);
+        if (Mouse.isCreated()) {
+            return Mouse.isButtonDown(key);
+        }
+        return false;
     }
 
     @Override
     public String getLabel() {
         return label;
+    }
+
+    @Override
+    public String toString() {
+        return type + " " + key;
     }
 }

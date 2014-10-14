@@ -40,4 +40,5 @@ public abstract class Language {
     public String Player4;
     public String[] Actions = new String[36];
     public String PushButton;
+    public String Unchangable;
 }

@@ -47,10 +47,11 @@ public abstract class Place {
     public float r;
     public float g;
     public float b;
-    public Camera cam1;
-    public Camera cam2;
-    public Camera cam3;
-    public Camera cam4;
+//    public Camera cam1;
+//    public Camera cam2;
+//    public Camera cam3;
+//    public Camera cam4;
+    public Camera[] cams = new Camera[4];
 
     public final Tile[] tiles;
 
@@ -69,21 +70,21 @@ public abstract class Place {
         players.add(player);
     }
 
-    public void addCamera1(GameObject go, int ssX, int ssY) {
-        this.cam1 = new PlayersCamera(this, go, ssX, ssY);
+    public void addCamera(GameObject go, int ssX, int ssY, int num) {
+        this.cams[num] = new PlayersCamera(this, go, ssX, ssY);
     }
 
-    public void addCamera2(GameObject go, int ssX, int ssY) {
-        this.cam2 = new PlayersCamera(this, go, ssX, ssY);
-    }
-
-    public void addCamera3(GameObject go, int ssX, int ssY) {
-        this.cam3 = new PlayersCamera(this, go, ssX, ssY);
-    }
-
-    public void addCamera4(GameObject go, int ssX, int ssY) {
-        this.cam4 = new PlayersCamera(this, go, ssX, ssY);
-    }
+//    public void addCamera2(GameObject go, int ssX, int ssY) {
+//        this.cam2 = new PlayersCamera(this, go, ssX, ssY);
+//    }
+//
+//    public void addCamera3(GameObject go, int ssX, int ssY) {
+//        this.cam3 = new PlayersCamera(this, go, ssX, ssY);
+//    }
+//
+//    public void addCamera4(GameObject go, int ssX, int ssY) {
+//        this.cam4 = new PlayersCamera(this, go, ssX, ssY);
+//    }
 
     public abstract void generate();
 

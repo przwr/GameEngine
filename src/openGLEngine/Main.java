@@ -8,10 +8,9 @@ package openGLEngine;
 import game.AnalizerSettings;
 import game.Game;
 import game.IO;
+import game.Methods;
 import game.Settings;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
@@ -34,12 +33,16 @@ public class Main {
     private static Controller[] controllers;
 
     public static void main(String[] args) {
-        IO.ReadFile(new File("res/settings.ini"), settings);
-        initDisplay();
-        initGL();
-        initGame();
-        gameLoop();
-        cleanUp();
+        try {
+            IO.ReadFile(new File("res/settings.ini"), settings, true);
+            initDisplay();
+            initGL();
+            initGame();
+            gameLoop();
+            cleanUp();
+        } catch (Exception ex) {
+            Methods.Exception(ex);
+        }
     }
 
     private static void initGame() {
@@ -59,7 +62,7 @@ public class Main {
         glClear(GL_COLOR_BUFFER_BIT);
         glLoadIdentity();
         game.render();
-        Display.sync(60);
+        Display.sync(60);        
         Display.update();
     }
 
@@ -90,8 +93,7 @@ public class Main {
             Display.setDisplayConfiguration(1f, 0f, 1.0f);
 
         } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Methods.Exception(ex);
         }
         AL.destroy();
         Display.destroy();
@@ -112,7 +114,7 @@ public class Main {
             Controllers.create();
             controllers = Controlers.init();
         } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Methods.Exception(ex);
         }
     }
 

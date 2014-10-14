@@ -22,11 +22,19 @@ public class InputKeyBoard extends AnyInput {
 
     @Override
     public boolean isPut() {
-        return Keyboard.isKeyDown(key);
+        if (Keyboard.isCreated()) {
+            return Keyboard.isKeyDown(key);
+        }
+        return false;
     }
 
     @Override
     public String getLabel() {
         return label;
+    }
+
+    @Override
+    public String toString() {
+        return type + " " + key;
     }
 }

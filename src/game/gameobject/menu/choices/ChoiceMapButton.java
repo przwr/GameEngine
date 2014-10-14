@@ -48,7 +48,7 @@ public class ChoiceMapButton extends MenuChoice {
                                 if (in != null) {
                                     if (i < 4) {
                                         for (int k = 0; k < 4; k++) {
-                                            if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.getType() == in.getType() && ctrl.actions[k].in.getKey() == in.getKey() && ctrl.actions[k].in.getPadNr() == in.getPadNr()) {
+                                            if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
                                                 AnyInput temp = ctrl.actions[i].in;
                                                 ctrl.actions[k].in = temp;
                                                 ctrl.actions[i].in = in;
@@ -59,7 +59,7 @@ public class ChoiceMapButton extends MenuChoice {
                                         }
                                     } else {
                                         for (int k = 4; k < ctrl.actions.length; k++) {
-                                            if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.getType() == in.getType() && ctrl.actions[k].in.getKey() == in.getKey() && ctrl.actions[k].in.getPadNr() == in.getPadNr()) {
+                                            if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
                                                 AnyInput temp = ctrl.actions[i].in;
                                                 ctrl.actions[k].in = temp;
                                                 ctrl.actions[i].in = in;
@@ -72,7 +72,7 @@ public class ChoiceMapButton extends MenuChoice {
                                     ctrl.actions[i].in = in;
                                     thread = null;
                                     AnalizerInput.Update(settings);
-                                    break main;
+                                    break;
                                 }
                             }
                         }

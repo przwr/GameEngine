@@ -5,7 +5,6 @@
  */
 package game.gameobject;
 
-import game.place.Light;
 import game.place.cameras.Camera;
 import game.place.Place;
 import java.util.ArrayList;

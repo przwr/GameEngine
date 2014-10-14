@@ -112,7 +112,6 @@ public class MyController extends Controler {
 
     @Override
     public boolean isMenuOn() {
-        // 3 - ESCAPE
         if (actions[3].in != null) {
             if (actions[3].in.isPut()) {
                 if (!actions[3].in.isPressed()) {

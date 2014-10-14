@@ -8,7 +8,6 @@ package game;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 
 /**
  *
@@ -16,31 +15,20 @@ import java.io.IOException;
  */
 public class IO {
 
-    public static void ReadFile(File f, Settings settings) {
+    public static void ReadFile(File f, Settings settings, boolean isSettings) {
         try {
             FileReader fr = new FileReader(f);
             BufferedReader r = new BufferedReader(fr);
             String s;
             while ((s = r.readLine()) != null) {
-                System.out.println("Przeczytano: " + s);
-                AnalizerSettings.AnalizeSetting(s, settings);
+                if (isSettings) {
+                    AnalizerSettings.AnalizeSetting(s, settings);
+                } else {
+                    AnalizerInput.AnalizeInput(s, settings);
+                }
             }
-        } catch (IOException | IllegalStateException e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void ReadFileInput(File f, Settings settings) {
-        try {
-            FileReader fr = new FileReader(f);
-            BufferedReader r = new BufferedReader(fr);
-            String s;
-            while ((s = r.readLine()) != null) {
-                System.out.println("Przeczytano: " + s);
-                AnalizerInput.AnalizeInput(s, settings);
-            }
-        } catch (IOException | IllegalStateException e) {
-            System.out.println(e);
+        } catch (Exception e) {
+           Methods.Exception(e);
         }
     }
 }

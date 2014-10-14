@@ -28,7 +28,6 @@ public class ChoiceNMapButton extends MenuChoice {
         } else {
             this.ctrl = ctrl.ctrl;
         }
-
     }
 
     @Override
@@ -39,9 +38,9 @@ public class ChoiceNMapButton extends MenuChoice {
     @Override
     public String getLabel() {
         if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].in != null) {
-            return label + ": <" + ctrl.inputs[i].getLabel() + "> - Niezmienny!";
+            return label + ": <" + ctrl.inputs[i].getLabel() + "> - " + settings.language.Unchangable;
         } else {
-            return label + ": " + "<brak>" + " - Niezmienny!";
+            return label + ": " + "<brak>" + " - " + settings.language.Unchangable;
         }
     }
 }

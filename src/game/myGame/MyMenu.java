@@ -60,22 +60,22 @@ public class MyMenu extends Place {
         menus[3] = new MenuOpt(16, settings.language.Player1);
         int i = 0;
         for (; i < 4; i++) {
-            menus[3].addChoice(new ChoiceNMapButton(settings.language.Actions[i], this, settings, game.player1, i));
+            menus[3].addChoice(new ChoiceNMapButton(settings.language.Actions[i], this, settings, settings.players[0], i));
         }
         for (; i < settings.actionsNr; i++) {
-            menus[3].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, game.player1, i));
+            menus[3].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[0], i));
         }
         menus[4] = new MenuOpt(16, settings.language.Player2);
         for (i = 0; i < settings.actionsNr; i++) {
-            menus[4].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, game.player2, i));
+            menus[4].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[1], i));
         }
         menus[5] = new MenuOpt(16, settings.language.Player3);
         for (i = 0; i < settings.actionsNr; i++) {
-            menus[5].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, game.player3, i));
+            menus[5].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[2], i));
         }
         menus[6] = new MenuOpt(16, settings.language.Player4);
         for (i = 0; i < settings.actionsNr; i++) {
-            menus[6].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, game.player4, i));
+            menus[6].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[3], i));
         }
         this.r = 1f;
         this.g = 1f;

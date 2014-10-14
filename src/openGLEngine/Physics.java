@@ -6,7 +6,6 @@
 package openGLEngine;
 
 import game.gameobject.GameObject;
-import game.gameobject.Player;
 import game.place.Place;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -22,14 +21,13 @@ public class Physics {
     }
 
     public static GameObject checkCollision(Rectangle r1, GameObject go2, int magX, int magY) {
-
         Rectangle r2 = new Rectangle(go2.getSX() + go2.getX() + magX, go2.getSY() + go2.getY() + magY, go2.getWidth(), go2.getHeight());
-
         if (r1.intersects(r2)) {
             return go2;
         }
         return null;
-    }
+    }    
+
 
     public static int dist(float x1, float y1, float x2, float y2) {
         double x = x2 - x1;
@@ -39,7 +37,6 @@ public class Physics {
     }
 
     public static GameObject sphereCollide(int x, int y, int radius, ArrayList<GameObject> objects, Place place) {
-
         for (GameObject go : objects) {
             if (dist(go.getX() + go.getSX() + go.getWidth() / 2, go.getY() + go.getSY() + go.getHeight() / 2, x, y) < radius) {
                 return go;

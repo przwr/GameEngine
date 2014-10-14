@@ -22,5 +22,6 @@ public abstract class ActionSingleClick extends Action {
         }
     }
 
+    @Override
     public abstract void Act();
 }

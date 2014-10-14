@@ -23,7 +23,7 @@ public class Controlers {
     public static Controller[] init() {
         int j = 0;
         for (int i = 0; i < Controllers.getControllerCount(); i++) {
-            if (Controllers.getController(i).getAxisCount() > 1 && Controllers.getController(i).getButtonCount() > 10) {
+            if (Controllers.getController(i).getAxisCount() > 1 && Controllers.getController(i).getButtonCount() > 8) {
                 controllers[j++] = Controllers.getController(i);
             }
         }
@@ -68,9 +68,16 @@ public class Controlers {
 //            if (Controllers.getController(i).getZAxisValue() != 0.0f) {
 //                System.out.println("Gałka: Z  z kontrolera: " + i);
 //            }
+//
+//        for (int i = 0; i < controllers.length; i++) {
+//            for (int j = 0; j < controllers[i].getAxisCount(); j++) {
+//                if (controllers[i].getAxisValue(j) != 0.0f) {
+//                    System.out.println("Kontroler " + i + " Oś: " + j + " Wartość: " + controllers[i].getAxisValue(j) + " Liczba Osi: " + controllers[i].getAxisCount());
+//                }
+//            }
 //        }
+//
 //    }
-
     public static AnyInput mapInput() {
         for (int k = 0; k < Keyboard.KEYBOARD_SIZE; k++) {
             if (Keyboard.isCreated() && k != Keyboard.KEY_ESCAPE && k != Keyboard.KEY_RETURN && Keyboard.isKeyDown(k)) {
@@ -90,56 +97,27 @@ public class Controlers {
                     }
                 }
                 if (controllers[c].getPovX() > 0.1f) {
-                    return new InputPadPovRight(controllers, c);
+                    return new InputPadDPad(controllers, c, true, true);
                 }
                 if (controllers[c].getPovX() < -0.1f) {
-                    return new InputPadPovLeft(controllers, c);
+                    return new InputPadDPad(controllers, c, true, false);
                 }
                 if (controllers[c].getPovY() > 0.1f) {
-                    return new InputPadPovDown(controllers, c);
+                    return new InputPadDPad(controllers, c, false, true);
                 }
                 if (controllers[c].getPovY() < -0.1f) {
-                    return new InputPadPovUp(controllers, c);
+                    return new InputPadDPad(controllers, c, false, false);
                 }
-                if (controllers[c].getXAxisValue() > 0.1f) {
-                    return new InputPadLSRight(controllers, c);
-                }
-                if (controllers[c].getXAxisValue() < -0.1f) {
-                    return new InputPadLSLeft(controllers, c);
-                }
-                if (controllers[c].getYAxisValue() > 0.1f) {
-                    return new InputPadLSDown(controllers, c);
-                }
-                if (controllers[c].getYAxisValue() < -0.1f) {
-                    return new InputPadLSUp(controllers, c);
-                }
-                if (controllers[c].getRXAxisValue() > 0.1f) {
-                    return new InputPadRSRight(controllers, c);
-                }
-                if (controllers[c].getRXAxisValue() < -0.1f) {
-                    return new InputPadRSLeft(controllers, c);
-                }
-                if (controllers[c].getRYAxisValue() > 0.1f) {
-                    return new InputPadRSDown(controllers, c);
-                }
-                if (controllers[c].getRYAxisValue() < -0.1f) {
-                    return new InputPadRSUp(controllers, c);
-                }
-                if (controllers[c].getRZAxisValue() > 0.1f) {
-                    return new InputPadRZRight(controllers, c);
-                }
-                if (controllers[c].getRZAxisValue() < -0.1f) {
-                    return new InputPadRZLeft(controllers, c);
-                }
-                if (controllers[c].getZAxisValue() > 0.1f) {
-                    return new InputPadRZDown(controllers, c);
-                }
-                if (controllers[c].getZAxisValue() < -0.1f) {
-                    return new InputPadRZUp(controllers, c);
+                for (int a = 0; a < controllers[c].getAxisCount() - 1; a++) {
+                    if (controllers[c].getAxisValue(a) > 0.1f) {
+                        return new InputPadStick(controllers, c, a, true);
+                    }
+                    if (controllers[c].getAxisValue(a) < -0.1f) {
+                        return new InputPadStick(controllers, c, a, false);
+                    }
                 }
             }
         }
-
         return null;
     }
 

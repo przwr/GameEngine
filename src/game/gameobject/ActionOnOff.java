@@ -29,6 +29,7 @@ public abstract class ActionOnOff extends Action {
         }
     }
 
+    @Override
     public abstract void Act();
 
 }

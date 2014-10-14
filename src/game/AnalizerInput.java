@@ -6,6 +6,7 @@
 package game;
 
 import game.gameobject.AnyInput;
+import game.gameobject.Player;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -21,72 +22,43 @@ public class AnalizerInput {
 
     public static void AnalizeInput(String name, Settings settings) {
         String[] p = name.split("\\s+");
-        if (0 == p[0].compareTo("1")) {
-            int act = Integer.parseInt(p[1]);
-            if (act > 3) {
-                int type = Integer.parseInt(p[2]);
-                int padnr = Integer.parseInt(p[3]);
-                int key = Integer.parseInt(p[4]);
-                settings.player1.ctrl.actions[act].in = AnyInput.CreateInput(type, padnr, key, settings);
-            }
-        } else if (0 == p[0].compareTo("2")) {
-            int act = Integer.parseInt(p[1]);
-            int type = Integer.parseInt(p[2]);
-            int padnr = Integer.parseInt(p[3]);
-            int key = Integer.parseInt(p[4]);
-            settings.player2.ctrl.actions[act].in = AnyInput.CreateInput(type, padnr, key, settings);
-        } else if (0 == p[0].compareTo("3")) {
-            int act = Integer.parseInt(p[1]);
-            int type = Integer.parseInt(p[2]);
-            int padnr = Integer.parseInt(p[3]);
-            int key = Integer.parseInt(p[4]);
-            settings.player3.ctrl.actions[act].in = AnyInput.CreateInput(type, padnr, key, settings);
-        } else if (0 == p[0].compareTo("4")) {
-            int act = Integer.parseInt(p[1]);
-            int type = Integer.parseInt(p[2]);
-            int padnr = Integer.parseInt(p[3]);
-            int key = Integer.parseInt(p[4]);
-            settings.player4.ctrl.actions[act].in = AnyInput.CreateInput(type, padnr, key, settings);
+        int pl = Integer.parseInt(p[0]);
+        int act = Integer.parseInt(p[1]);
+        int type = Integer.parseInt(p[2]);
+        int[] table = new int[p.length - 3];
+        for (int i = 0; i < p.length - 3; i++) {
+            table[i] = Integer.parseInt(p[i + 3]);
         }
-        Update(settings);
+        if (pl != 1 || act >= 4) {
+            settings.players[pl - 1].ctrl.actions[act].in = AnyInput.CreateInput(type, table, settings);
+        }
     }
 
     public static void Update(Settings settings) {
         FileWriter fw;
         try {
             fw = new FileWriter("res/input.ini");
-            if (settings.player1.ctrl != null) {
-                fw.write("Player 1\n");
-                for (int i = 4; i < settings.actionsNr; i++) {
-                    if (settings.player1.ctrl.actions[i].in != null) {
-                        fw.write("1 " + i + " " + settings.player1.ctrl.actions[i].in.getType() + " " + settings.player1.ctrl.actions[i].in.getPadNr() + " " + settings.player1.ctrl.actions[i].in.getKey() + "\n");
+//            for (int p = 0; p < settings.players.length; p++) {
+//                if (settings.players[p].ctrl != null) {
+//                    for (int i = 0; i < settings.actionsNr; i++) {
+//                        if (settings.players[p].ctrl.actions[i].in != null) {
+//                            fw.write((p + 1) + " " + i + " " + settings.players[p].ctrl.actions[i].in.toString() + "\n");
+//                        }
+//                    }
+//                }
+//            }
+            int p = 1;
+            for (Player pl : settings.players) {
+                if (pl.ctrl != null) {
+                    for (int i = 0; i < settings.actionsNr; i++) {
+                        if (pl.ctrl.actions[i].in != null) {
+                            fw.write(p + " " + i + " " + pl.ctrl.actions[i].in.toString() + "\n");
+                        }
                     }
                 }
+                p++;
             }
-            if (settings.player2.ctrl != null) {
-                fw.write("Player 2\n");
-                for (int i = 0; i < settings.actionsNr; i++) {
-                    if (settings.player2.ctrl.actions[i].in != null) {
-                        fw.write("2 " + i + " " + settings.player2.ctrl.actions[i].in.getType() + " " + settings.player2.ctrl.actions[i].in.getPadNr() + " " + settings.player2.ctrl.actions[i].in.getKey() + "\n");
-                    }
-                }
-            }
-            if (settings.player3.ctrl != null) {
-                fw.write("Player 3\n");
-                for (int i = 0; i < settings.actionsNr; i++) {
-                    if (settings.player3.ctrl.actions[i].in != null) {
-                        fw.write("3 " + i + " " + settings.player3.ctrl.actions[i].in.getType() + " " + settings.player3.ctrl.actions[i].in.getPadNr() + " " + settings.player3.ctrl.actions[i].in.getKey() + "\n");
-                    }
-                }
-            }
-            if (settings.player4.ctrl != null) {
-                fw.write("Player 4\n");
-                for (int i = 0; i < settings.actionsNr; i++) {
-                    if (settings.player4.ctrl.actions[i].in != null) {
-                        fw.write("4 " + i + " " + settings.player4.ctrl.actions[i].in.getType() + " " + settings.player4.ctrl.actions[i].in.getPadNr() + " " + settings.player4.ctrl.actions[i].in.getKey() + "\n");
-                    }
-                }
-            }
+
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(AnalizerInput.class.getName()).log(Level.SEVERE, null, ex);

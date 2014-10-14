@@ -9,7 +9,7 @@ package openGLEngine.sprites;
  *
  * @author przemek
  */
-public class SpriteSheet extends Sprite {
+public final class SpriteSheet extends Sprite {
 
     private final int xTiles;
     private final int yTiles;
