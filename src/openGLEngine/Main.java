@@ -5,7 +5,7 @@
  */
 package openGLEngine;
 
-import game.Analizer;
+import game.AnalizerSettings;
 import game.Game;
 import game.IO;
 import game.Settings;
@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -30,8 +31,7 @@ public class Main {
 
     private static Game game;
     private static final Settings settings = new Settings();
-
-    ;
+    private static Controller[] controllers;
 
     public static void main(String[] args) {
         IO.ReadFile(new File("res/settings.ini"), settings);
@@ -43,7 +43,7 @@ public class Main {
     }
 
     private static void initGame() {
-        game = new Game("Engine", settings);
+        game = new Game("Engine", settings, controllers);
         Display.setTitle(game.getTitle());
     }
 
@@ -110,6 +110,7 @@ public class Main {
             Keyboard.create();
             Mouse.create();
             Controllers.create();
+            controllers = Controlers.init();
         } catch (LWJGLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -154,7 +155,7 @@ public class Main {
                         settings.curMode = i;
                     }
                 }
-                Analizer.Save(settings);
+                AnalizerSettings.Update(settings);
                 return;
             }
             Display.setDisplayMode(targetDisplayMode);

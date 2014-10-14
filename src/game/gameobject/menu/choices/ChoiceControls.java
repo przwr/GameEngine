@@ -5,7 +5,6 @@
  */
 package game.gameobject.menu.choices;
 
-import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
@@ -14,24 +13,15 @@ import game.myGame.MyMenu;
  *
  * @author przemek
  */
-public class ChoicePlayers extends MenuChoice {
+public class ChoiceControls extends MenuChoice {
 
-
-    public ChoicePlayers(String label, MyMenu menu, Settings settings) {
+    public ChoiceControls(String label, MyMenu menu, Settings settings) {
         super(label, menu, settings);
-    }
-
+    }    
+    
     @Override
     public void action() {
-       menu.addPlayer();
-        if (settings.nrPlayers > 4) {
-            menu.setToOnePlayer();
-        }
-        AnalizerSettings.Update(settings);
+        menu.setCurrent(2);
     }
-
-    @Override
-    public String getLabel() {
-        return label + settings.nrPlayers;
-    }
+    
 }

@@ -99,7 +99,7 @@ public class MyPlace extends Place {
     @Override
     protected void renderText(Camera cam) {
         for (GameObject player : players) {
-            ((Player) player).renderName(this, (Player) player, cam);
+            ((Player) player).renderName(this, cam);
         }
 
         for (Mob mob : sMobs) {

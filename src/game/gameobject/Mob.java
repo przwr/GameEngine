@@ -80,7 +80,7 @@ public class Mob extends Entity {
 
     @Override
     public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, place.getXOff(cam) + getMidX(), place.getYOff(cam) + getBegOfY(), name, new Color(place.r, place.g, place.b));
+        place.renderMessage(0, cam.getXOff() + getMidX(), cam.getYOff() + getBegOfY(), name, new Color(place.r, place.g, place.b));
     }
 
     @Override

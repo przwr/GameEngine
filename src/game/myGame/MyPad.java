@@ -8,6 +8,7 @@ package game.myGame;
 import game.gameobject.Player;
 import game.gameobject.Controler;
 import game.gameobject.Entity;
+import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
 
 /**
@@ -16,12 +17,14 @@ import org.lwjgl.input.Controllers;
  */
 public class MyPad extends Controler {
 
+    private final Controller[] controllers;
     private final int padNr;
     private final boolean isPressed[] = new boolean[24];
 
-    public MyPad(Entity inControl, int padNr) {
+    public MyPad(Controller[] controllers, Entity inControl, int padNr) {
         super(inControl);
         this.padNr = padNr;
+        this.controllers = controllers;
     }
 
     //if (Controllers.getControllerCount() > 0) !!!                <-----

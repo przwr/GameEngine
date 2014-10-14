@@ -9,17 +9,17 @@ package game.gameobject;
  *
  * @author przemek
  */
-public abstract class Controler {
+public abstract class Action {
 
-    protected final Entity inControl;
+    public AnyInput in;
+    public Entity inControl;
 
-    public Controler(Entity inControl) {
+    public Action(AnyInput in, Entity inControl) {
+        this.in = in;
         this.inControl = inControl;
     }
 
-    protected abstract void getInput();
-    
-    protected abstract boolean isMenuOn();
-    
-    protected abstract void getMenuInput();
+    public abstract void Do();
+
+    public abstract void Act();
 }

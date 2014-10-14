@@ -17,24 +17,34 @@ import org.lwjgl.input.Mouse;
  */
 public class MyKeyboard extends Controler {
 
-    private boolean isPressed[] = new boolean[256];
+    private final boolean isPressed[] = new boolean[256];
+    private final int[] actions = new int[128];
 
+    // 0 - UP
+    // 1 - DOWN
+    // 2 - LEFT
+    // 3 - RIGHT
+    // 4 - 
     public MyKeyboard(Entity inControl) {
         super(inControl);
     }
 
     @Override
     protected void getInput() {
+        // 1
         if (Keyboard.isKeyDown(Keyboard.KEY_W) || Keyboard.isKeyDown(Keyboard.KEY_UP)) {
             inControl.canMove(0, -1);
         }
+        // 2
         if (Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
             inControl.canMove(0, 1);
         }
+        // 3
         if (Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
             inControl.canMove(-1, 0);
             ((Player) inControl).getAnim().setFlip(0);
         }
+        // 4
         if (Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
             inControl.canMove(1, 0);
             ((Player) inControl).getAnim().setFlip(1);

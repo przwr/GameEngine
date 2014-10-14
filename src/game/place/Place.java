@@ -322,18 +322,10 @@ public abstract class Place {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
-        Player thisPl = null;
         for (GameObject go : players) {
             if (go.isOnTop()) {
-                if (((Player) go).getCam() != cam) {
-                    go.render(cam.getXOffEffect() - getXOff(((Player) go).getCam()), cam.getYOffEffect() - getYOff(((Player) go).getCam()));
-                } else {
-                    thisPl = (Player) go;
-                }
+                go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
-        }
-        if (thisPl != null) {
-            thisPl.render(cam.getXOffEffect() - getXOff(((Player) thisPl).getCam()), cam.getYOffEffect() - getYOff(((Player) thisPl).getCam()));
         }
     }
 
@@ -381,7 +373,6 @@ public abstract class Place {
     protected void addObj(GameObject go) {
         if (go.isEmitter()) {
             emitters.add(go);
-
         }
         if (go.getClass() == Mob.class) {
             if (go.isSolid()) {
@@ -397,57 +388,7 @@ public abstract class Place {
             }
         }
     }
-
-    public boolean isPlCTl(int magX, int magY, GameObject go, Camera cam) {
-        int ySizeInTiles = height / sTile;
-        int xBeg = (go.getX() + go.getSX() + -cam.getXOff()) / sTile;
-        int yBeg = (go.getY() + go.getSY() + -cam.getYOff()) / sTile;
-        int xEnd = ((go.getWidth() % sTile != 0) ? 1 : 0) + xBeg + go.getWidth() / sTile;
-        int yEnd = ((go.getHeight() % sTile != 0) ? 1 : 0) + yBeg + go.getHeight() / sTile;
-        Rectangle rec = new Rectangle();
-        for (int i = xBeg - 1; i <= xEnd; i++) {
-            try {
-                if (tiles[i + (yBeg - 1) * ySizeInTiles].isSolid()) {
-                    rec.setRect(i * sTile + cam.getXOff(), (yBeg - 1) * sTile + cam.getYOff(), sTile, sTile);
-                    if (Physics.checkCollision(rec, go, 0, magY) != null) {
-                        return true;
-                    }
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-            try {
-                if (tiles[i + (yEnd) * ySizeInTiles].isSolid()) {
-                    rec.setRect(i * sTile + cam.getXOff(), (yEnd) * sTile + cam.getYOff(), sTile, sTile);
-                    if (Physics.checkCollision(rec, go, 0, magY) != null) {
-                        return true;
-                    }
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        }
-        for (int i = yBeg - 1; i <= yEnd; i++) {
-            try {
-                if (tiles[(xBeg - 1) + i * ySizeInTiles].isSolid()) {
-                    rec.setRect((xBeg - 1) * sTile + cam.getXOff(), i * sTile + cam.getYOff(), sTile, sTile);
-                    if (Physics.checkCollision(rec, go, magX, 0) != null) {
-                        return true;
-                    }
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-            try {
-                if (tiles[(xEnd) + i * ySizeInTiles].isSolid()) {
-                    rec.setRect((xEnd) * sTile + cam.getXOff(), i * sTile + cam.getYOff(), sTile, sTile);
-                    if (Physics.checkCollision(rec, go, magX, 0) != null) {
-                        return true;
-                    }
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        }
-        return false;
-    }
-
+    
     public boolean isObjCTl(int magX, int magY, GameObject go) {
         int ySizeInTiles = height / sTile;
         int xBegInTile = (go.getX() + go.getSX()) / sTile;
@@ -499,7 +440,6 @@ public abstract class Place {
     }
 
     public boolean isPlCObj(int magX, int magY, Player player) {
-        Camera cam = player.getCam();
         Rectangle rec = new Rectangle();
         for (GameObject go : sMobs) {
             rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
@@ -541,41 +481,6 @@ public abstract class Place {
             }
         }
         return false;
-    }
-
-    public boolean isPCObj(int magX, int magY, GameObject gameObject) {
-        Rectangle rec = new Rectangle();
-        for (GameObject player : players) {
-            rec.setRect(player.getBegOfX() - ((Player) player).getCam().getXOff(), player.getBegOfY() - ((Player) player).getCam().getYOff(), player.getWidth(), player.getHeight());
-            if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
-                return true;
-            }
-        }
-        for (GameObject go : sMobs) {
-            if (gameObject != go) {
-                rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
-                if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
-                    return true;
-                }
-            }
-        }
-        for (GameObject go : solidObj) {
-            if (gameObject != go) {
-                rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
-                if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public int getXOff(Camera cam) {
-        return cam.getXOff();
-    }
-
-    public int getYOff(Camera cam) {
-        return cam.getYOff();
     }
 
     public int getWidth() {

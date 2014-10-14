@@ -32,12 +32,9 @@ public class Light {
     }
 
     public void render(GameObject emitter, Place place, Camera cam) {
-
         glColor3f(r, g, b);
         glPushMatrix();
-        if (emitter.getClass() == Player.class) {
-            glTranslatef(emitter.getMidX() - light.getSx() / 2 - place.getXOff(((Player) emitter).getCam()) + place.getXOff(cam), emitter.getMidY() - light.getSy() / 2 - place.getYOff(((Player) emitter).getCam()) + place.getYOff(cam), 0);
-        } else {
+        {
             glTranslatef(emitter.getMidX() - light.getSx() / 2, emitter.getMidY() - light.getSy() / 2, 0);
         }
         for (int i = 0; i < strength; i++) {

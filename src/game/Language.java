@@ -10,9 +10,9 @@ package game;
  * @author przemek
  */
 public abstract class Language {
-      
+
     public String Lang;
-    
+
     //Menu
     public String Menu;
     public String Start;
@@ -33,4 +33,11 @@ public abstract class Language {
     public String End_Game;
     public String Start_Game;
     public String Language;
+    public String Controls;
+    public String Player1;
+    public String Player2;
+    public String Player3;
+    public String Player4;
+    public String[] Actions = new String[36];
+    public String PushButton;
 }

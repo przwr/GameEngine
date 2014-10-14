@@ -5,7 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
-import game.Analizer;
+import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
@@ -33,7 +33,7 @@ public class ChoiceLanguage extends MenuChoice {
             i = 0;
         }
         settings.lang = settings.languages.get(i).Lang;
-        Analizer.Save(settings);
+        AnalizerSettings.Update(settings);
     }
 
     @Override

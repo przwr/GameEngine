@@ -5,7 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
-import game.Analizer;
+import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
@@ -32,7 +32,7 @@ public class ChoiceVolume extends MenuChoice {
                 s.updateGain();
             }
         }
-        Analizer.Save(settings);
+        AnalizerSettings.Update(settings);
     }
 
     @Override

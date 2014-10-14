@@ -5,7 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
-import game.Analizer;
+import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
@@ -25,7 +25,7 @@ public class ChoiceSplitScreen extends MenuChoice {
         if (menu.game.getPlace() == null) {
             settings.hSplitScreen = !settings.hSplitScreen;            
         }
-        Analizer.Save(settings);
+        AnalizerSettings.Update(settings);
     }
 
     @Override

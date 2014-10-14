@@ -5,12 +5,14 @@
  */
 package game;
 
+import game.gameobject.Player;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import openGLEngine.DisplayDevice;
 import openGLEngine.SoundBase;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.Display;
 
@@ -33,7 +35,13 @@ public class Settings {
     public int freq = display.getFreq();
     public String lang = "PL";
     public ArrayList<Language> languages = new ArrayList<>();
-    public Language language;                                   // ustawiony w konstruktorze na domyślny
+    public Language language;           // ustawiony w konstruktorze na domyślny
+    public int actionsNr;
+    public Player player1;
+    public Player player2;
+    public Player player3;
+    public Player player4;
+    public Controller[] controllers;
 
     public Settings() {
         try {
@@ -64,5 +72,14 @@ public class Settings {
         languages.add(new LangPL());
         languages.add(new LangENG());
         language = languages.get(0);
+    }
+
+    public void Up(int nr, Player player1, Player player2, Player player3, Player player4, Controller[] controllers) {
+        actionsNr = nr;
+        this.player1 = player1;
+        this.player2 = player2;
+        this.player3 = player3;
+        this.player4 = player4;
+        this.controllers = controllers;
     }
 }

@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author przemek
  */
-public class Analizer {
+public class AnalizerSettings {
     /* @args Grid
      * */
 
@@ -94,10 +94,10 @@ public class Analizer {
         } else if (0 == name.compareTo("XOR")) {
 
         }
-        Save(settings);
+        Update(settings);
     }
 
-    public static void Save(Settings settings) {
+    public static void Update(Settings settings) {
         FileWriter fw;
         try {
             fw = new FileWriter("res/settings.ini");
@@ -123,7 +123,7 @@ public class Analizer {
             fw.write("Language: " + settings.lang);
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(Analizer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AnalizerSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

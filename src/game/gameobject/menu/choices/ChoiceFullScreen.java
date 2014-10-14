@@ -5,7 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
-import game.Analizer;
+import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
@@ -23,7 +23,7 @@ public class ChoiceFullScreen extends MenuChoice {
     @Override
     public void action() {
         settings.fullScreen = !settings.fullScreen;
-        Analizer.Save(settings);
+        AnalizerSettings.Update(settings);
     }
 
     @Override

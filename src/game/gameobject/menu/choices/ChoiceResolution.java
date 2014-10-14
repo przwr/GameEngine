@@ -5,7 +5,7 @@
  */
 package game.gameobject.menu.choices;
 
-import game.Analizer;
+import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
@@ -29,7 +29,7 @@ public class ChoiceResolution extends MenuChoice {
         settings.resWidth = settings.modes[settings.curMode].getWidth();
         settings.resHeight = settings.modes[settings.curMode].getHeight();
         settings.freq = settings.modes[settings.curMode].getFrequency();     
-        Analizer.Save(settings);
+        AnalizerSettings.Update(settings);
     }
 
     @Override

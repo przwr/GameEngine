@@ -5,13 +5,15 @@
  */
 package game.gameobject;
 
-import game.myGame.MyKeyboard;
+import game.gameobject.inputs.*;
+import game.myGame.MyController;
 import game.myGame.MyMenu;
-import game.myGame.MyPad;
 import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
 import openGLEngine.Animation;
+import org.lwjgl.input.Controller;
+import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -23,14 +25,14 @@ import org.newdawn.slick.Color;
  */
 public class Player extends Entity {
 
-    private final Place place;
+    private Place place;
     public MyMenu menu;
-    private final Animation anim;
+    private Animation anim;
     private boolean animate;
-    private Controler ctrl;
+    public MyController ctrl;
     private Camera cam;
 
-    public Player(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y, int playerNr) {
+    public Player(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y, Controller[] controllers, int playerNr) {
         this.name = name;
         this.width = width;
         this.height = height;
@@ -44,18 +46,46 @@ public class Player extends Entity {
         this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024);
         this.anim = new Animation(2, spr, 500);
         animate = true;
-        initControler(playerNr);
+        initControler(playerNr, controllers);
     }
 
-    private void initControler(int playerNr) {
+    public Player(Controller[] controllers, int playerNr) {
+        initControler(playerNr, controllers);
+    }
+
+    public void init(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y) {
+        this.name = name;
+        this.width = width;
+        this.height = height;
+        this.sX = startX;
+        this.sY = startY;
+        this.place = place;
+        this.top = false;
+        this.setSpeed(8);
+        this.emitter = true;
+        init("apple", name, x, y, sx, sy);
+        this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024);
+        this.anim = new Animation(2, spr, 500);
+        animate = true;
+    }
+
+    private void initControler(int playerNr, Controller[] controllers) {
         if (playerNr == 0) {
-            ctrl = new MyKeyboard(this);
+            ctrl = new MyController(this);
+            ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+            ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+            ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+            ctrl.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+            ctrl.init();
         } else if (playerNr == 1) {
-            ctrl = new MyPad(this, 0);
+            ctrl = new MyController(this);
+            ctrl.init();
         } else if (playerNr == 2) {
-            ctrl = new MyPad(this, 1);
+            ctrl = new MyController(this);
+            ctrl.init();
         } else if (playerNr == 3) {
-            ctrl = new MyPad(this, 2);
+            ctrl = new MyController(this);
+            ctrl.init();
         }
     }
 
@@ -90,8 +120,9 @@ public class Player extends Entity {
         cam.move(xPos, yPos);
     }
 
-    public void renderName(Place place, Player player, Camera cam) {
-        place.renderMessage(0, place.getXOff(cam) + getMidX(), place.getYOff(cam) + getBegOfY(), name, new Color(place.r, place.g, place.b));
+    @Override
+    public void renderName(Place place, Camera cam) {
+        place.renderMessage(0, cam.getXOff() + getMidX(), cam.getYOff() + getBegOfY(), name, new Color(place.r, place.g, place.b));
     }
 
     @Override
@@ -110,10 +141,6 @@ public class Player extends Entity {
 
     public Camera getCam() {
         return cam;
-    }
-
-    @Override
-    protected void renderName(Place place, Camera cam) {
     }
 
     public void addMenu(MyMenu menu) {
