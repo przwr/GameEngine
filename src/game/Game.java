@@ -5,7 +5,6 @@
  */
 package game;
 
-import engine.Controlers;
 import game.myGame.MyMenu;
 import game.myGame.MyPlace;
 import game.gameobject.Player;
