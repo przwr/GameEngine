@@ -5,13 +5,13 @@
  */
 package game;
 
-import Engine.Controlers;
+import engine.Controlers;
 import game.myGame.MyMenu;
 import game.myGame.MyPlace;
 import game.gameobject.Player;
 import game.place.Place;
 import java.io.File;
-import Engine.Sound;
+import engine.Sound;
 import org.lwjgl.input.Controller;
 
 /**
@@ -71,7 +71,6 @@ public class Game {
                 }
             }
         }
-        Controlers.getJoyInput();
     }
 
     public void startGame(int nrPl) {

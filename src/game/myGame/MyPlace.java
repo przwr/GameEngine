@@ -16,8 +16,8 @@ import game.place.Place;
 import game.place.SolidTile;
 import game.place.Tile;
 import java.awt.Font;
-import Engine.FontsHandler;
-import Engine.SoundBase;
+import engine.FontsHandler;
+import engine.SoundBase;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 

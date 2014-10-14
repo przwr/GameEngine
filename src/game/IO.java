@@ -5,7 +5,7 @@
  */
 package game;
 
-import Engine.Main;
+import engine.Main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -31,7 +31,7 @@ public class IO {
                     AnalizerInput.AnalizeInput(s, settings);
                 }
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine;
+package engine;
 
 import game.gameobject.AnyInput;
 import game.gameobject.inputs.*;
@@ -19,6 +19,7 @@ import org.lwjgl.input.Mouse;
 public class Controlers {
 
     public static Controller[] controllers = new Controller[Controllers.getControllerCount()];
+    public static int noiseAx = -1;
 
     public static Controller[] init() {
         int j = 0;
@@ -27,10 +28,19 @@ public class Controlers {
                 controllers[j++] = Controllers.getController(i);
             }
         }
+        ax:
+        for (int k = 0; k < j; k++) {
+            for (int a = 0; a < controllers[k].getAxisCount(); a++) {
+                if (controllers[k].getAxisValue(a) > 0.9f || controllers[k].getAxisValue(a) < -0.9f) {
+                    noiseAx = a;
+                    break ax;
+                }
+            }
+        }
         return controllers;
     }
 
-    public static void getJoyInput() {
+//    public static void getJoyInput() {
 //        for (int k = 0;
 //                k < Keyboard.KEYBOARD_SIZE;
 //                k++) {
@@ -69,18 +79,19 @@ public class Controlers {
 //                System.out.println("Gałka: Z  z kontrolera: " + i);
 //            }
 //
-        for (int i = 0; i < controllers.length; i++) {
-            for (int j = 0; j < controllers[i].getAxisCount(); j++) {
-                if (controllers[i].getAxisValue(j) != 0.0f) {
-                    System.out.println("Kontroler " + i + " Oś: " + controllers[i].getAxisName(j) + " " + j + " Wartość: " + controllers[i].getAxisValue(j) + " Liczba Osi: " + controllers[i].getAxisCount());
-                }
-            }
-        }
+//        for (int i = 0; i < controllers.length; i++) {
+//            if (controllers != null && controllers[i] != null) {
+//                for (int j = 0; j < controllers[i].getAxisCount(); j++) {
+//                    if (controllers[i].getAxisValue(j) != 0.0f) {
+//                        System.out.println("Kontroler " + i + " Oś: " + controllers[i].getAxisName(j) + " " + j + " Wartość: " + controllers[i].getAxisValue(j) + " Liczba Osi: " + controllers[i].getAxisCount());
+//                    }
+//                }
+//            }
+//        }
 //
-    }
-
+//    }
     public static AnyInput mapInput() {
-        if(Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+        if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             return new InputExitMapping();
         }
         for (int k = 0; k < Keyboard.KEYBOARD_SIZE; k++) {
@@ -113,16 +124,17 @@ public class Controlers {
                     return new InputPadDPad(controllers, c, false, false);
                 }
                 for (int a = 0; a < controllers[c].getAxisCount(); a++) {
-                    if (!controllers[c].getAxisName(a).equals("slider") && controllers[c].getAxisValue(a) > 0.1f) {
-                        return new InputPadStick(controllers, c, a, true);
-                    }
-                    if (!controllers[c].getAxisName(a).equals("slider") && controllers[c].getAxisValue(a) < -0.1f) {
-                        return new InputPadStick(controllers, c, a, false);
+                    if (a != noiseAx) {
+                        if (controllers[c].getAxisValue(a) > 0.1f) {
+                            return new InputPadStick(controllers, c, a, true);
+                        }
+                        if (controllers[c].getAxisValue(a) < -0.1f) {
+                            return new InputPadStick(controllers, c, a, false);
+                        }
                     }
                 }
             }
         }
         return null;
     }
-
 }

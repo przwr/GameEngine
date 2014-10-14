@@ -1,7 +1,7 @@
 package game.place;
 
 import game.gameobject.GameObject;
-import Engine.sprites.Sprite;
+import engine.Sprite;
 import static org.lwjgl.opengl.GL11.*;
 
 public abstract class Tile extends GameObject {

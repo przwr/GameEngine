@@ -14,7 +14,7 @@ import game.gameobject.menu.choices.*;
 import game.place.cameras.Camera;
 import game.place.Place;
 import java.awt.Font;
-import Engine.FontsHandler;
+import engine.FontsHandler;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glViewport;

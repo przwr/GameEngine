@@ -5,7 +5,7 @@
  */
 package game.place.cameras;
 
-import Engine.Delay;
+import engine.Delay;
 import game.gameobject.GameObject;
 import game.place.Place;
 import org.lwjgl.opengl.Display;

@@ -9,7 +9,7 @@ import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
-import Engine.Sound;
+import engine.Sound;
 
 /**
  *

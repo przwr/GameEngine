@@ -12,7 +12,7 @@ package game.gameobject;
 import game.place.cameras.Camera;
 import game.place.Light;
 import game.place.Place;
-import Engine.sprites.Sprite;
+import engine.Sprite;
 
 public abstract class GameObject {
 
