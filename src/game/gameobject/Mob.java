@@ -8,7 +8,7 @@ package game.gameobject;
 import game.place.cameras.Camera;
 import game.place.Place;
 import java.util.ArrayList;
-import openGLEngine.Physics;
+import Engine.Physics;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;

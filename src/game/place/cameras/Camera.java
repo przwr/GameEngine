@@ -7,7 +7,7 @@ package game.place.cameras;
 
 import game.gameobject.GameObject;
 import game.place.Place;
-import openGLEngine.Delay;
+import Engine.Delay;
 
 /**
  *

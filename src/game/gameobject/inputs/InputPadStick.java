@@ -24,7 +24,7 @@ public class InputPadStick extends AnyInput {
         this.axisNr = axisNr;
         this.isPlus = isPlus;
         this.type = 4;
-        label = "pad" + padNr + "_" + axisNr + (isPlus ? "+" : "-");
+        label = "pad_" + padNr + "_ax_" + axisNr + (isPlus ? "+" : "-");
     }
 
     @Override

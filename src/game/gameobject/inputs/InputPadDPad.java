@@ -24,7 +24,7 @@ public class InputPadDPad extends AnyInput {
         this.isX = isX;
         this.isPlus = isPlus;
         this.type = 3;
-        label = "pad" + padNr + "_" + (isX ? "x" : "y") + (isPlus ? "+" : "-");
+        label = "pad_" + padNr + "_" + (isX ? "x" : "y") + (isPlus ? "+" : "-");
     }
 
     @Override

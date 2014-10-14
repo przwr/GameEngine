@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package openGLEngine.sprites;
+package Engine.sprites;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

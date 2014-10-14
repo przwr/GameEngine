@@ -21,7 +21,7 @@ public class InputPadKey extends AnyInput {
         this.controllers = controllers;
         this.padNr = padNr;
         this.type = 2;
-        label = "pad" + padNr + "_" + key + "button";
+        label = "pad_" + padNr + "_" + key + "_button";
     }
 
     @Override

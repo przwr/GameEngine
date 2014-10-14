@@ -11,7 +11,7 @@ import game.myGame.MyMenu;
 import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
-import openGLEngine.Animation;
+import Engine.Animation;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;

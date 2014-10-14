@@ -7,7 +7,7 @@ package game.place;
 
 import game.place.cameras.Camera;
 import game.gameobject.GameObject;
-import openGLEngine.sprites.Sprite;
+import Engine.sprites.Sprite;
 import static org.lwjgl.opengl.GL11.*;
 
 /**

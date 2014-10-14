@@ -5,9 +5,13 @@
  */
 package game;
 
+import Engine.Main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,8 +31,8 @@ public class IO {
                     AnalizerInput.AnalizeInput(s, settings);
                 }
             }
-        } catch (Exception e) {
-           Methods.Exception(e);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

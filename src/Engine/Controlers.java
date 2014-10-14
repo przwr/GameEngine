@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package openGLEngine;
+package Engine;
 
 import game.gameobject.AnyInput;
 import game.gameobject.inputs.*;
@@ -30,7 +30,7 @@ public class Controlers {
         return controllers;
     }
 
-//    public static void getJoyInput() {
+    public static void getJoyInput() {
 //        for (int k = 0;
 //                k < Keyboard.KEYBOARD_SIZE;
 //                k++) {
@@ -69,18 +69,22 @@ public class Controlers {
 //                System.out.println("Gałka: Z  z kontrolera: " + i);
 //            }
 //
-//        for (int i = 0; i < controllers.length; i++) {
-//            for (int j = 0; j < controllers[i].getAxisCount(); j++) {
-//                if (controllers[i].getAxisValue(j) != 0.0f) {
-//                    System.out.println("Kontroler " + i + " Oś: " + j + " Wartość: " + controllers[i].getAxisValue(j) + " Liczba Osi: " + controllers[i].getAxisCount());
-//                }
-//            }
-//        }
+        for (int i = 0; i < controllers.length; i++) {
+            for (int j = 0; j < controllers[i].getAxisCount(); j++) {
+                if (controllers[i].getAxisValue(j) != 0.0f) {
+                    System.out.println("Kontroler " + i + " Oś: " + controllers[i].getAxisName(j) + " " + j + " Wartość: " + controllers[i].getAxisValue(j) + " Liczba Osi: " + controllers[i].getAxisCount());
+                }
+            }
+        }
 //
-//    }
+    }
+
     public static AnyInput mapInput() {
+        if(Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+            return new InputExitMapping();
+        }
         for (int k = 0; k < Keyboard.KEYBOARD_SIZE; k++) {
-            if (Keyboard.isCreated() && k != Keyboard.KEY_ESCAPE && k != Keyboard.KEY_RETURN && Keyboard.isKeyDown(k)) {
+            if (Keyboard.isCreated() && Keyboard.isKeyDown(k) && k != Keyboard.KEY_ESCAPE && k != Keyboard.KEY_RETURN) {
                 return new InputKeyBoard(k);
             }
         }
@@ -108,11 +112,11 @@ public class Controlers {
                 if (controllers[c].getPovY() < -0.1f) {
                     return new InputPadDPad(controllers, c, false, false);
                 }
-                for (int a = 0; a < controllers[c].getAxisCount() - 1; a++) {
-                    if (controllers[c].getAxisValue(a) > 0.1f) {
+                for (int a = 0; a < controllers[c].getAxisCount(); a++) {
+                    if (!controllers[c].getAxisName(a).equals("slider") && controllers[c].getAxisValue(a) > 0.1f) {
                         return new InputPadStick(controllers, c, a, true);
                     }
-                    if (controllers[c].getAxisValue(a) < -0.1f) {
+                    if (!controllers[c].getAxisName(a).equals("slider") && controllers[c].getAxisValue(a) < -0.1f) {
                         return new InputPadStick(controllers, c, a, false);
                     }
                 }

@@ -17,8 +17,6 @@ import java.util.logging.Logger;
  * @author przemek
  */
 public class AnalizerInput {
-    /* @args Grid
-     * */
 
     public static void AnalizeInput(String name, Settings settings) {
         String[] p = name.split("\\s+");
@@ -38,15 +36,6 @@ public class AnalizerInput {
         FileWriter fw;
         try {
             fw = new FileWriter("res/input.ini");
-//            for (int p = 0; p < settings.players.length; p++) {
-//                if (settings.players[p].ctrl != null) {
-//                    for (int i = 0; i < settings.actionsNr; i++) {
-//                        if (settings.players[p].ctrl.actions[i].in != null) {
-//                            fw.write((p + 1) + " " + i + " " + settings.players[p].ctrl.actions[i].in.toString() + "\n");
-//                        }
-//                    }
-//                }
-//            }
             int p = 1;
             for (Player pl : settings.players) {
                 if (pl.ctrl != null) {

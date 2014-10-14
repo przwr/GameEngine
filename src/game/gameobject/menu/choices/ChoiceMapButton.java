@@ -12,8 +12,7 @@ import game.gameobject.Player;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyController;
 import game.myGame.MyMenu;
-import openGLEngine.Controlers;
-import org.lwjgl.input.Keyboard;
+import Engine.Controlers;
 
 /**
  *
@@ -43,16 +42,18 @@ public class ChoiceMapButton extends MenuChoice {
                         @Override
                         public void run() {
                             main:
-                            while (!Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+                            while (true) {
                                 AnyInput in = Controlers.mapInput();
                                 if (in != null) {
+                                    if (in.getType() == -1) {
+                                        break;
+                                    }
                                     if (i < 4) {
                                         for (int k = 0; k < 4; k++) {
                                             if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
                                                 AnyInput temp = ctrl.actions[i].in;
                                                 ctrl.actions[k].in = temp;
                                                 ctrl.actions[i].in = in;
-                                                thread = null;
                                                 AnalizerInput.Update(settings);
                                                 break main;
                                             }
@@ -63,18 +64,18 @@ public class ChoiceMapButton extends MenuChoice {
                                                 AnyInput temp = ctrl.actions[i].in;
                                                 ctrl.actions[k].in = temp;
                                                 ctrl.actions[i].in = in;
-                                                thread = null;
                                                 AnalizerInput.Update(settings);
                                                 break main;
                                             }
                                         }
                                     }
                                     ctrl.actions[i].in = in;
-                                    thread = null;
                                     AnalizerInput.Update(settings);
                                     break;
                                 }
                             }
+                            thread.interrupt();
+                            thread = null;
                         }
                     });
             thread.start();

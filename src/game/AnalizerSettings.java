@@ -15,8 +15,6 @@ import java.util.logging.Logger;
  * @author przemek
  */
 public class AnalizerSettings {
-    /* @args Grid
-     * */
 
     public static void AnalizeSetting(String name, Settings settings) {
         String[] p = name.split("\\s+");
@@ -26,65 +24,76 @@ public class AnalizerSettings {
                     settings.fullScreen = true;
                 } else if (0 == p[1].compareTo("Off")) {
                     settings.fullScreen = false;
-                }   break;
+                }
+                break;
             case "SplitMode:":
                 if (0 == p[1].compareTo("H")) {
                     settings.hSplitScreen = true;
                 } else if (0 == p[1].compareTo("V")) {
                     settings.hSplitScreen = false;
-            }   break;
+                }
+                break;
             case "Number_Of_Players:":
                 int n = Integer.parseInt(p[1]);
                 if (n > 4 || n < 1) {
                     settings.nrPlayers = 1;
                 } else {
                     settings.nrPlayers = n;
-            }   break;
+                }
+                break;
             case "Resolution_Width:":
                 int w = Integer.parseInt(p[1]);
                 if (w <= 0) {
                     settings.resWidth = settings.display.getWidth();
                 } else {
                     settings.resWidth = w;
-                }   for (int i = 0; i < settings.modes.length; i++) {
+                }
+                for (int i = 0; i < settings.modes.length; i++) {
                     if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
                         settings.curMode = i;
+                    }
                 }
-                }   break;
+                break;
             case "Resolution_Hight:":
                 int h = Integer.parseInt(p[1]);
                 if (h <= 0) {
                     settings.resHeight = settings.display.getHeight();
                 } else {
                     settings.resHeight = h;
-                }   for (int i = 0; i < settings.modes.length; i++) {
-                    if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
-                    settings.curMode = i;
-                    }
-                }   break;
-            case "Resolution_Freq:":
-                int f = Integer.parseInt(p[1]);
-                if (f <= 0) {
-            } else {
-                    settings.freq = f;
-                }   for (int i = 0; i < settings.modes.length; i++) {
+                }
+                for (int i = 0; i < settings.modes.length; i++) {
                     if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
                         settings.curMode = i;
                     }
-                }   break;
+                }
+                break;
+            case "Resolution_Freq:":
+                int f = Integer.parseInt(p[1]);
+                if (f <= 0) {
+                } else {
+                    settings.freq = f;
+                }
+                for (int i = 0; i < settings.modes.length; i++) {
+                    if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
+                        settings.curMode = i;
+                    }
+                }
+                break;
             case "Volume:":
                 float v = Float.parseFloat(p[1]);
                 if (v >= -0.01f && v <= 1.01f) {
                     settings.volume = v;
-                }   break;
+                }
+                break;
             case "Language:":
                 if (0 == p[1].compareTo("PL")) {
                     settings.lang = "PL";
                     settings.language = settings.languages.get(0);
                 } else if (0 == p[1].compareTo("ENG")) {
-                settings.lang = "ENG";
-                settings.language = settings.languages.get(1);
-            }   break;
+                    settings.lang = "ENG";
+                    settings.language = settings.languages.get(1);
+                }
+                break;
         }
     }
 

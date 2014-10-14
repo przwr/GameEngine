@@ -5,12 +5,13 @@
  */
 package game;
 
+import Engine.Controlers;
 import game.myGame.MyMenu;
 import game.myGame.MyPlace;
 import game.gameobject.Player;
 import game.place.Place;
 import java.io.File;
-import openGLEngine.Sound;
+import Engine.Sound;
 import org.lwjgl.input.Controller;
 
 /**
@@ -21,10 +22,6 @@ public class Game {
 
     private final Settings settings;
     private final Player menuPl;
-//    private Player players[0];
-//    private Player players[1];
-//    private Player players[2];
-//    private Player players[3];
     private final Player[] players = new Player[4];
     private final Place menu;
     private Place place;
@@ -74,6 +71,7 @@ public class Game {
                 }
             }
         }
+        Controlers.getJoyInput();
     }
 
     public void startGame(int nrPl) {
