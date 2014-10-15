@@ -27,8 +27,9 @@ import org.newdawn.slick.Color;
 public class MyMenu extends Place {
 
     private int cur;
-
     private MenuOpt[] menus;
+
+    public boolean isMapping;
 
     public MyMenu(Game game, int width, int height, int tileSize, Settings settings) {
         super(game, width, height, tileSize, settings);
@@ -138,14 +139,17 @@ public class MyMenu extends Place {
     }
 
     public void back() {
-        if (cur > 2) {
-            cur = 2;
-        } else if (cur == 2) {
-            cur = 1;
-        } else if (cur != 0) {
-            cur = 0;
-        } else if (game.getPlace() != null) {
-            game.resume();
+        if (!isMapping) {
+            if (cur > 2) {
+                cur = 2;
+            } else if (cur == 2) {
+                cur = 1;
+            } else if (cur != 0) {
+                cur = 0;
+            } else if (game.getPlace() != null) {
+                game.resume();
+            }
         }
     }
 }
+

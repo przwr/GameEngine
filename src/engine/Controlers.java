@@ -19,22 +19,12 @@ import org.lwjgl.input.Mouse;
 public class Controlers {
 
     public static Controller[] controllers = new Controller[Controllers.getControllerCount()];
-    public static int noiseAx = -1;
 
     public static Controller[] init() {
         int j = 0;
         for (int i = 0; i < Controllers.getControllerCount(); i++) {
             if (Controllers.getController(i).getAxisCount() > 1 && Controllers.getController(i).getButtonCount() > 8) {
                 controllers[j++] = Controllers.getController(i);
-            }
-        }
-        ax:
-        for (int k = 0; k < j; k++) {
-            for (int a = 0; a < controllers[k].getAxisCount(); a++) {
-                if (controllers[k].getAxisValue(a) > 0.9f || controllers[k].getAxisValue(a) < -0.9f) {
-                    noiseAx = a;
-                    break ax;
-                }
             }
         }
         return controllers;
@@ -90,7 +80,7 @@ public class Controlers {
 //        }
 //
 //    }
-    public static AnyInput mapInput() {
+    public static AnyInput mapInput(int noiseAx[]) {
         if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             return new InputExitMapping();
         }
@@ -124,7 +114,7 @@ public class Controlers {
                     return new InputPadDPad(controllers, c, false, false);
                 }
                 for (int a = 0; a < controllers[c].getAxisCount(); a++) {
-                    if (a != noiseAx) {
+                    if (a != noiseAx[c]) {
                         if (controllers[c].getAxisValue(a) > 0.1f) {
                             return new InputPadStick(controllers, c, a, true);
                         }

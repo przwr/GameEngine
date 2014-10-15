@@ -13,6 +13,8 @@ import game.gameobject.menu.MenuChoice;
 import game.myGame.MyController;
 import game.myGame.MyMenu;
 import engine.Controlers;
+import static engine.Controlers.controllers;
+import org.lwjgl.input.Controllers;
 
 /**
  *
@@ -37,13 +39,25 @@ public class ChoiceMapButton extends MenuChoice {
     @Override
     public void action() {
         if (ctrl != null && ctrl.actions[i] != null) {
+            menu.isMapping = true;
             thread = new Thread(
                     new Runnable() {
                         @Override
                         public void run() {
+                            int noiseAx[] = new int[Controllers.getControllerCount()];
+                            for (int k = 0; k < Controllers.getControllerCount(); k++) {
+                                if (controllers[k] != null) {
+                                    for (int a = 0; a < controllers[k].getAxisCount(); a++) {
+                                        if (controllers[k].getAxisValue(a) > 0.9f || controllers[k].getAxisValue(a) < -0.9f) {
+                                            noiseAx[k] = a;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                             main:
                             while (true) {
-                                AnyInput in = Controlers.mapInput();
+                                AnyInput in = Controlers.mapInput(noiseAx);
                                 if (in != null) {
                                     if (in.getType() == -1) {
                                         break;
@@ -74,8 +88,11 @@ public class ChoiceMapButton extends MenuChoice {
                                     break;
                                 }
                             }
-                            thread.interrupt();
+                            if(thread != null){
+                                thread.interrupt();
+                            }
                             thread = null;
+                            menu.isMapping = false;
                         }
                     });
             thread.start();
@@ -91,5 +108,5 @@ public class ChoiceMapButton extends MenuChoice {
         } else {
             return label + ": " + "<brak>";
         }
-    }
+    }    
 }
