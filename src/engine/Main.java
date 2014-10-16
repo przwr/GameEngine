@@ -43,6 +43,7 @@ public class Main {
     }
 
     private static void initGame() {
+        
         game = new Game("Engine", settings, controllers);
         Display.setTitle(game.getTitle());
     }
@@ -125,7 +126,7 @@ public class Main {
         try {
             DisplayMode targetDisplayMode = null;
             if (fullscreen) {
-                for (DisplayMode current : settings.modes) {
+                for (DisplayMode current : settings.tmpmodes) {
                     if ((current.getWidth() == width) && (current.getHeight() == height) && (current.getFrequency() == freq)) {
                         if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
                             if ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel())) {
@@ -149,8 +150,8 @@ public class Main {
                 System.out.println("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
                 settings.resWidth = Display.getDesktopDisplayMode().getWidth();
                 settings.resHeight = Display.getDesktopDisplayMode().getHeight();
-                for (int i = 0; i < settings.modes.length; i++) {
-                    if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
+                for (int i = 0; i < settings.tmpmodes.length; i++) {
+                    if (settings.tmpmodes[i].getWidth() == settings.resWidth && settings.tmpmodes[i].getHeight() == settings.resHeight && settings.tmpmodes[i].getFrequency() == settings.freq) {
                         settings.curMode = i;
                     }
                 }

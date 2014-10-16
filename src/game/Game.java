@@ -50,11 +50,13 @@ public class Game {
     public void getInput() {
         if (runFlag) {
             for (Player pl : players) {
-                if (pl.isMenuOn()) {
-                    runFlag = false;
-                    soundPause();
+                if (pl.getPlace() != null) {
+                    if (pl.isMenuOn()) {
+                        runFlag = false;
+                        soundPause();
+                    }
+                    pl.getInput();
                 }
-                pl.getInput();
             }
         } else {
             if (place == null) {
@@ -78,6 +80,9 @@ public class Game {
             players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
             place.addCamera(players[0], 2, 2, 0); // 2 i 2 to tryb SS
         } else if (nrPl == 2) {
+            if (place == null) {
+                System.out.println("NULL");
+            }
             players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
             players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024);
             if (settings.hSplitScreen) {
@@ -113,6 +118,7 @@ public class Game {
             players[i].addCamera(place.cams[i]);
             players[i].addMenu((MyMenu) menu);
         }
+        place.makeShadows();
         runFlag = true;
     }
 
@@ -123,7 +129,7 @@ public class Game {
     }
 
     public void resume() {
-        if (players[0] != null) {
+        if (place != null) {
             soundResume();
             runFlag = true;
         }

@@ -28,12 +28,12 @@ public class ChoiceResolution extends MenuChoice {
         }
         settings.resWidth = settings.modes[settings.curMode].getWidth();
         settings.resHeight = settings.modes[settings.curMode].getHeight();
-        settings.freq = settings.modes[settings.curMode].getFrequency();     
+        settings.freq = settings.modes[settings.curMode].getFrequency();
         AnalizerSettings.Update(settings);
     }
 
     @Override
     public String getLabel() {
-        return label + settings.resWidth + " x " + settings.resHeight + " @ " + settings.freq + " Hz";
+        return label + settings.resWidth + " x " + settings.resHeight + " @ " + settings.freq + " Hz [" + (settings.curMode + 1) + "/" + settings.modes.length + "]";
     }
 }

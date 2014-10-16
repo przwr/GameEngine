@@ -81,7 +81,7 @@ public class MyController extends Controler {
         actions[8] = new ActionSingleClick(inputs[8], inControl) {
             @Override
             public void Act() {
-                ((Player) inControl).getPlace().shakeCam(((Player) inControl).getCam());
+                ((Player) inControl).getCam().shake();
             }
         };
         actions[9] = new ActionWhileClicked(inputs[9], inControl) {

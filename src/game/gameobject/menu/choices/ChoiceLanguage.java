@@ -16,13 +16,15 @@ import game.myGame.MyMenu;
  */
 public class ChoiceLanguage extends MenuChoice {
 
+    private int i;
+
     public ChoiceLanguage(String label, MyMenu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        int i;
+
         for (i = 0; i < settings.languages.size(); i++) {
             if (0 == settings.languages.get(i).Lang.compareTo(settings.lang)) {
                 i++;
@@ -38,6 +40,6 @@ public class ChoiceLanguage extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + settings.lang;
+        return label + settings.lang + " [" + (i + 1) + "/" + settings.languages.size() + "]";
     }
 }

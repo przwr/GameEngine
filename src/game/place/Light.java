@@ -5,7 +5,6 @@
  */
 package game.place;
 
-import game.place.cameras.Camera;
 import game.gameobject.GameObject;
 import engine.Sprite;
 import static org.lwjgl.opengl.GL11.*;
@@ -30,18 +29,6 @@ public class Light {
         this.light = new Sprite(lightName, sx, sy);
     }
 
-    public void render(GameObject emitter, Place place, Camera cam) {
-        glColor3f(r, g, b);
-        glPushMatrix();
-        {
-            glTranslatef(emitter.getMidX() - light.getSx() / 2, emitter.getMidY() - light.getSy() / 2, 0);
-        }
-        for (int i = 0; i < strength; i++) {
-            light.render();
-        }
-        glPopMatrix();
-    }
-
     public void setSize(int sx, int sy) {
         light.setSx(sx);
         light.setSy(sy);
@@ -58,12 +45,35 @@ public class Light {
     }
 
     public void render(GameObject emitter, Place place, int x, int y) {
-        glColor3f(r, g, b);
-        glPushMatrix();
-        glTranslatef(emitter.getMidX() - light.getSx() / 2 + x, emitter.getMidY() - light.getSy() / 2 + y, 0);
-        for (int i = 0; i < strength; i++) {
-            light.render();
+        if (light != null) {
+            glColor3f(r, g, b);
+            glPushMatrix();
+            glTranslatef(emitter.getMidX() - light.getSx() / 2 + x, emitter.getMidY() - light.getSy() / 2 + y, 0);
+            for (int i = 0; i < strength; i++) {
+                light.render();
+            }
+            glPopMatrix();
         }
-        glPopMatrix();
     }
+
+    public void renderShadowed(GameObject emitter, Place place, int x, int y) {
+        if (light != null) {
+            glColor3f(r, g, b);
+            glPushMatrix();
+            glTranslatef(emitter.getMidX() - light.getSx() / 2 + x, emitter.getMidY() - light.getSy() / 2 + y, 0);
+            for (int i = 0; i < strength; i++) {
+                light.render();
+            }
+            glPopMatrix();
+        }
+    }
+
+    public int getSX() {
+        return light.getSx();
+    }
+
+    public int getSY() {
+        return light.getSy();
+    }
+
 }

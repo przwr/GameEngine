@@ -23,7 +23,7 @@ public class ChoiceSplitScreen extends MenuChoice {
     @Override
     public void action() {
         if (menu.game.getPlace() == null) {
-            settings.hSplitScreen = !settings.hSplitScreen;            
+            settings.hSplitScreen = !settings.hSplitScreen;
         }
         AnalizerSettings.Update(settings);
     }
@@ -31,17 +31,12 @@ public class ChoiceSplitScreen extends MenuChoice {
     @Override
     public String getLabel() {
         if (menu.game.getPlace() != null) {
-            if (settings.hSplitScreen) {
-                return label + settings.language.End_Game;
-            } else {
-                return label + settings.language.End_Game;
-            }
-
+            return label + settings.language.End_Game;
         } else {
             if (settings.hSplitScreen) {
-                return label + settings.language.Horizontal;
+                return label + settings.language.Horizontal + " [2/2]";
             } else {
-                return label + settings.language.Vertical;
+                return label + settings.language.Vertical + " [1/2]";
             }
         }
     }

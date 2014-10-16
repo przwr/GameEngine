@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import engine.DisplayDevice;
 import engine.SoundBase;
+import game.place.Place;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.DisplayMode;
@@ -22,7 +23,9 @@ import org.lwjgl.opengl.Display;
  */
 public class Settings {
 
+    public DisplayMode[] tmpmodes;
     public DisplayMode[] modes;
+    public int modesNr;
     public DisplayDevice display = new DisplayDevice();
     public int curMode;
     public boolean fullScreen = true;
@@ -39,31 +42,37 @@ public class Settings {
     public int actionsNr;
     public Player[] players;
     public Controller[] controllers;
+    public int emptyTex;
 
     public Settings() {
+        int minW = 800;
+        int maxW = 1920;
+
         try {
-            modes = Display.getAvailableDisplayModes();
+            tmpmodes = Display.getAvailableDisplayModes();
         } catch (LWJGLException ex) {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         DisplayMode temp;
-        for (int k = 0; k < modes.length - 1; k++) {
-            for (int i = 0; i < modes.length - 1; i++) {
-                if (modes[i].getWidth() > modes[i + 1].getWidth()) {
-                    temp = modes[i];
-                    modes[i] = modes[i + 1];
-                    modes[i + 1] = temp;
-                } else if (modes[i].getWidth() == modes[i + 1].getWidth()) {
-                    if (modes[i].getHeight() > modes[i + 1].getHeight()) {
-                        temp = modes[i];
-                        modes[i] = modes[i + 1];
-                        modes[i + 1] = temp;
-                    } else if (modes[i].getFrequency() > modes[i + 1].getFrequency()) {
-                        temp = modes[i];
-                        modes[i] = modes[i + 1];
-                        modes[i + 1] = temp;
-                    }
-                }
+        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getHeight() <= maxW) {
+            modesNr++;
+        }
+        for (int i = 1; i < tmpmodes.length; i++) {
+            if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getHeight() <= maxW) {
+                modesNr++;
+            }
+            temp = tmpmodes[i];
+            int j;
+            for (j = i; j > 0 && isBiger(tmpmodes[j - 1], temp); j--) {
+                tmpmodes[j] = tmpmodes[j - 1];
+            }
+            tmpmodes[j] = temp;
+        }
+        modes = new DisplayMode[modesNr];
+        int i = 0;
+        for (DisplayMode mode : tmpmodes) {
+            if (mode.getWidth() >= minW && mode.getHeight() <= maxW) {
+                modes[i++] = mode;
             }
         }
         languages.add(new LangPL());
@@ -71,9 +80,27 @@ public class Settings {
         language = languages.get(0);
     }
 
-    public void Up(int nr, Player[]players, Controller[] controllers) {
+    private boolean isBiger(DisplayMode checked, DisplayMode temp) {
+        if (checked.getWidth() > temp.getWidth()) {
+            return true;
+        } else if (checked.getWidth() == temp.getWidth() && checked.getHeight() > temp.getHeight()) {
+            return true;
+        } else if (checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void makeEmptyTex() {
+        emptyTex = Place.makeTexture(null, 2048, 2048);
+        Place.frameSave(emptyTex, 0, 0, 0, 0);
+    }
+
+    public void Up(int nr, Player[] players, Controller[] controllers) {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
+        makeEmptyTex();
     }
 }

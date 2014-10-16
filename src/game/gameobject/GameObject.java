@@ -9,7 +9,6 @@ package game.gameobject;
  *
  * @author przemek
  */
-import game.place.cameras.Camera;
 import game.place.Light;
 import game.place.Place;
 import engine.Sprite;
@@ -25,11 +24,10 @@ public abstract class GameObject {
     protected boolean solid;
     protected boolean emitter;
     protected boolean emits;
-    protected boolean top;    
+    protected boolean top;
     protected Sprite spr;
     protected Light light;
     protected String name;
-    
 
     public abstract void render(int xEffect, int yEffect);
 
@@ -46,12 +44,6 @@ public abstract class GameObject {
 
     public void addY(int y) {
         this.y += y;
-    }
-
-    public void renderLight(Place place, Camera cam) {
-        if (light != null) {
-            light.render(this, place, cam);
-        }
     }
 
     public void setX(int x) {
@@ -131,12 +123,22 @@ public abstract class GameObject {
             light.render(this, place, x, y);
         }
     }
-    
-    public String getName(){
+
+    public void renderShadowedLight(Place place, int x, int y) {
+        if (light != null) {
+            light.renderShadowed(this, place, x, y);
+        }
+    }
+
+    public String getName() {
         return name;
     }
 
     public void setEmits(boolean emits) {
         this.emits = emits;
+    }
+
+    public Light getLight() {
+        return light;
     }
 }

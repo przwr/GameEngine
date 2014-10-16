@@ -31,6 +31,9 @@ public abstract class Place {
     public Settings settings;
 
     private final int lightTex;
+    private int savedShadowed;
+    protected int[] shadows;
+    private final int emptyTex;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -47,10 +50,6 @@ public abstract class Place {
     public float r;
     public float g;
     public float b;
-//    public Camera cam1;
-//    public Camera cam2;
-//    public Camera cam3;
-//    public Camera cam4;
     public Camera[] cams = new Camera[4];
 
     public final Tile[] tiles;
@@ -64,6 +63,7 @@ public abstract class Place {
         fonts = null;
         this.game = game;
         lightTex = makeTexture(null, 2048, 2048);
+        emptyTex = settings.emptyTex;
     }
 
     public void addPlayer(Player player) {
@@ -74,25 +74,9 @@ public abstract class Place {
         this.cams[num] = new PlayersCamera(this, go, ssX, ssY);
     }
 
-//    public void addCamera2(GameObject go, int ssX, int ssY) {
-//        this.cam2 = new PlayersCamera(this, go, ssX, ssY);
-//    }
-//
-//    public void addCamera3(GameObject go, int ssX, int ssY) {
-//        this.cam3 = new PlayersCamera(this, go, ssX, ssY);
-//    }
-//
-//    public void addCamera4(GameObject go, int ssX, int ssY) {
-//        this.cam4 = new PlayersCamera(this, go, ssX, ssY);
-//    }
-
     public abstract void generate();
 
     public abstract void update();
-
-    public void shakeCam(Camera cam) {
-        cam.shake();
-    }
 
     public void render() {
         Camera cam;
@@ -208,7 +192,10 @@ public abstract class Place {
                     camYSize = 0.5f;
                 }
             }
+
             preRenderLights(cam, camXStart, camYStart, camXSize, camYSize);
+            //preRenderShadows(cam, camXStart, camYStart, camXSize, camYSize);
+            //preRenderShadowedLights(cam, camXStart, camYStart, camXSize, camYSize);
             glColor3f(r, g, b);
             renderBack(cam);
             renderObj(cam);
@@ -234,6 +221,45 @@ public abstract class Place {
     }
 
     protected abstract void renderText(Camera cam);
+
+    protected void preRenderShadows(Camera cam, float xStart, float yStart, float xSize, float ySize) {
+        glBlendFunc(GL_ONE, GL_ONE);
+        int i = 0;
+        for (GameObject emitter : emitters) {
+            if (emitter.isEmits()) {
+                emitter.renderLight(this, cam.getXOffEffect(), cam.getYOffEffect());
+                //Tutaj renderuj cienie dla danego światła
+                frameSave(shadows[i++], xStart, yStart, xSize, ySize);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                drawQuad(emptyTex, Display.getWidth(), Display.getHeight());
+                glBlendFunc(GL_ONE, GL_ONE);
+            }
+        }
+        for (GameObject player : players) {
+            if (player.isEmitter() && player.isEmits()) {
+                player.renderLight(this, cam.getXOffEffect(), cam.getYOffEffect());
+                glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                //glColor4f(1f,1f, 1f, 1f);
+                sMobs.get(0).render(cam.getXOffEffect()-64, cam.getYOffEffect()-64);
+                //Tutaj renderuj cienie dla danego światła
+                frameSave(shadows[i++], xStart, yStart, xSize, ySize);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                drawQuad(emptyTex, Display.getWidth(), Display.getHeight());
+                glBlendFunc(GL_ONE, GL_ONE);
+            }
+        }
+        savedShadowed = i;
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    protected void preRenderShadowedLights(Camera cam, float xStart, float yStart, float xSize, float ySize) {
+        glBlendFunc(GL_ONE, GL_ONE);
+        for (int i = 0; i < savedShadowed; i++) {
+            drawQuad(shadows[i], Display.getWidth(), Display.getHeight());
+        }
+        frameSave(lightTex, xStart, yStart, xSize, ySize);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     protected void preRenderLights(Camera cam, float xStart, float yStart, float xSize, float ySize) {
         glBlendFunc(GL_ONE, GL_ONE);
@@ -346,7 +372,7 @@ public abstract class Place {
         return textureHandle;
     }
 
-    public void frameSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
+    public static void frameSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
         int w = Display.getWidth();
         int h = Display.getHeight();
         glColor4f(1, 1, 1, 1);
@@ -389,7 +415,7 @@ public abstract class Place {
             }
         }
     }
-    
+
     public boolean isObjCTl(int magX, int magY, GameObject go) {
         int ySizeInTiles = height / sTile;
         int xBegInTile = (go.getX() + go.getSX()) / sTile;
@@ -490,5 +516,13 @@ public abstract class Place {
 
     public int getHeight() {
         return height;
+    }
+
+    public void makeShadows() {
+        shadows = new int[emitters.size() + players.size()];
+        for (int i = 0; i < emitters.size() + players.size(); i++) {
+            shadows[i] = makeTexture(null, 2048, 2048);
+        }
+
     }
 }

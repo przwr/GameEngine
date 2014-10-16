@@ -42,6 +42,13 @@ public class Methods {
         return ret >= 0 ? ret : ret + 360;
     }
 
+    public static double ThreePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
+        double AO = Math.sqrt(Math.pow(xO - xA, 2) + Math.pow(yO - yA, 2));
+        double OB = Math.sqrt(Math.pow(xO - xB, 2) + Math.pow(yO - yB, 2));
+        double AB = Math.sqrt(Math.pow(xB - xA, 2) + Math.pow(yB - yA, 2));
+        return Math.acos((OB * OB + AO * AO - AB * AB) / (2 * OB * AO));
+    }
+
     public static int Interval(int leftBorder, int x, int rightBorder) {
         return Math.max(leftBorder, Math.min(rightBorder, x));
     }

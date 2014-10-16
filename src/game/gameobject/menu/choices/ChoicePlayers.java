@@ -16,14 +16,13 @@ import game.myGame.MyMenu;
  */
 public class ChoicePlayers extends MenuChoice {
 
-
     public ChoicePlayers(String label, MyMenu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-       menu.addPlayer();
+        menu.addPlayer();
         if (settings.nrPlayers > 4) {
             menu.setToOnePlayer();
         }
@@ -32,6 +31,6 @@ public class ChoicePlayers extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + settings.nrPlayers;
+        return label + "[" + settings.nrPlayers + "/4]";
     }
 }

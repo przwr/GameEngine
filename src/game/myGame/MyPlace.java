@@ -48,6 +48,7 @@ public class MyPlace extends Place {
                 }
             }
         }
+        tiles[6 + 6 * height / sTile] = ROCK;
         addObj(new Mob(512, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
         addObj(new Mob(512, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
         this.r = 0.5f;
