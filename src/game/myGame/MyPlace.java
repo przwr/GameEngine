@@ -27,9 +27,8 @@ import org.newdawn.slick.openal.SoundStore;
  */
 public class MyPlace extends Place {
 
-    private final SoundBase sounds = new SoundBase();
-    final Tile GRASS = new BasicTile("grass", "Grass", sTile);
-    final Tile ROCK = new SolidTile("rock", "Rock", sTile);
+    final Tile GRASS = new BasicTile("grass", "Grass", sTile, this);
+    final Tile ROCK = new SolidTile("rock", "Rock", sTile, this);
 
     public MyPlace(Game game, int width, int height, int tileSize, Settings settings) {
         super(game, width, height, tileSize, settings);

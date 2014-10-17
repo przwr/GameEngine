@@ -20,7 +20,6 @@ import org.newdawn.slick.Color;
  */
 public class Mob extends Entity {
 
-    protected final Place place;
     protected final int range;
     protected GameObject prey;
 
@@ -30,11 +29,10 @@ public class Mob extends Entity {
         this.solid = solid;
         this.sX = startX;
         this.sY = startY;
-        this.place = place;
         this.top = true;
         this.setSpeed(speed);
         this.range = range;
-        init("rabbit", name, x, y, sx, sy);
+        init("rabbit", name, x, y, sx, sy, place);
     }
 
     @Override

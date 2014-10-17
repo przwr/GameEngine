@@ -5,6 +5,8 @@
  */
 package engine;
 
+import sprites.Sprite;
+
 /**
  *
  * @author przemek

@@ -17,9 +17,12 @@ import game.place.cameras.PlayersCamera;
 import java.nio.ByteBuffer;
 import engine.Physics;
 import engine.FontsHandler;
+import engine.SoundBase;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
+import sprites.Sprite;
+import sprites.SpriteBase;
 
 /**
  *
@@ -29,6 +32,8 @@ public abstract class Place {
 
     public Game game;
     public Settings settings;
+    protected final SoundBase sounds;
+    protected final SpriteBase sprites;
 
     private final int lightTex;
     private int savedShadowed;
@@ -64,6 +69,8 @@ public abstract class Place {
         this.game = game;
         lightTex = makeTexture(null, 2048, 2048);
         emptyTex = settings.emptyTex;
+        sounds = new SoundBase();
+        sprites = new SpriteBase();
     }
 
     public void addPlayer(Player player) {
@@ -74,6 +81,18 @@ public abstract class Place {
         this.cams[num] = new PlayersCamera(this, go, ssX, ssY);
     }
 
+    public SpriteBase getSprites() {
+        return sprites;
+    }
+    
+    public Sprite getSprite(String textureKey, int sx, int sy) {
+        return sprites.getSprite(textureKey, sx, sy);
+    }
+    
+    public SoundBase getSounds() {
+        return sounds;
+    }
+    
     public abstract void generate();
 
     public abstract void update();

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine;
+package sprites;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -23,11 +23,13 @@ public class Sprite {
 
     private Texture texture;
 
+    private SpriteBase base;
     private int sx;
     private int sy;
     private String key;
+    private int id;
 
-    public Sprite(String textureKey, int sx, int sy) {
+    public Sprite(String textureKey, int sx, int sy, SpriteBase base) {
         if (textureKey != null) {
             Sprite.class.getResourceAsStream(textureKey);
             this.texture = loadTexture(textureKey);
@@ -35,6 +37,7 @@ public class Sprite {
         this.sx = sx;
         this.sy = sy;
         this.key = textureKey;
+        this.base = base;
     }
 
     public Sprite(Texture texture, int sx, int sy) {
@@ -61,8 +64,23 @@ public class Sprite {
         return null;
     }
 
+    private void bindCheck(Texture texture) {
+        if (base.getLastTex() != id) {
+            texture.bind();
+            base.setLastTex(id);
+        }
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int i) {
+        id = i;
+    }
+
     public void render() {
-        texture.bind();
+        bindCheck(texture);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
         glVertex2f(0, 0);
@@ -76,7 +94,7 @@ public class Sprite {
     }
 
     public void render(boolean flip) {
-        texture.bind();
+        bindCheck(texture);
         glBegin(GL_QUADS);
         if (flip) {
             glTexCoord2f(0.5f, 0);
@@ -101,7 +119,7 @@ public class Sprite {
     }
 
     public void render(int flip) {
-        texture.bind();
+        bindCheck(texture);
         glBegin(GL_QUADS);
         if (flip == 0) {
             glTexCoord2f(1, 0);
@@ -144,7 +162,7 @@ public class Sprite {
     }
 
     public void render(int flip, float bx, float ex, float by, float ey) {
-        texture.bind();
+        bindCheck(texture);
         glBegin(GL_QUADS);
         if (flip == 0) {
             glTexCoord2f(ex, by);
@@ -200,6 +218,14 @@ public class Sprite {
 
     public void setSy(int sy) {
         this.sy = sy;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void bind() {

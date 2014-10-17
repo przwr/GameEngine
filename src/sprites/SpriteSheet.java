@@ -5,7 +5,7 @@
  */
 package sprites;
 
-import engine.Sprite;
+import game.place.Place;
 
 /**
  *
@@ -16,8 +16,8 @@ public final class SpriteSheet extends Sprite {
     private final int xTiles;
     private final int yTiles;
 
-    public SpriteSheet(String sprite, int sx, int sy, int sTile) {
-        super(sprite, sx, sy);
+    public SpriteSheet(String sprite, int sx, int sy, int sTile, Place place) {
+        super(sprite, sx, sy, place.getSprites());
         this.xTiles = sx / sTile;
         this.yTiles = sy / sTile;
         render(0, 15);

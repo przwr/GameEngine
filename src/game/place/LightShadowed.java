@@ -5,7 +5,7 @@
  */
 package game.place;
 
-import engine.Sprite;
+import sprites.Sprite;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
