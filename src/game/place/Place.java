@@ -23,6 +23,7 @@ import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteBase;
+import sprites.SpriteSheet;
 
 /**
  *
@@ -87,6 +88,10 @@ public abstract class Place {
     
     public Sprite getSprite(String textureKey, int sx, int sy) {
         return sprites.getSprite(textureKey, sx, sy);
+    }
+    
+    public SpriteSheet getSpriteSheet(String textureKey, int sx, int sy) {
+        return sprites.getSpriteSheet(textureKey, sx, sy);
     }
     
     public SoundBase getSounds() {

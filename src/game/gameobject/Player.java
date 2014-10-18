@@ -61,7 +61,7 @@ public class Player extends Entity {
         this.emitter = true;
         init("apple", name, x, y, sx, sy, place);
         this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024, place);
-        this.anim = new Animation(2, spr, 500);
+        this.anim = new Animation(4, spr, 200);
         animate = true;
     }
 
@@ -121,6 +121,7 @@ public class Player extends Entity {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             getAnim().render(animate);
+            //place.getSpriteSheet("tlo", 64, 64).render(1, x/64, y/64);
             glPopMatrix();
         }
     }

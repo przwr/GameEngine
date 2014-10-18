@@ -28,6 +28,17 @@ public class SpriteBase {
         return temp;
     }
     
+    public SpriteSheet getSpriteSheet(String textureKey, int sx, int sy) {
+        for (Sprite s : list) {
+            if (s.getKey().equals(textureKey))
+                return (SpriteSheet) s;
+        }
+        SpriteSheet temp = new SpriteSheet(textureKey, sx, sy, 64, 64, this);
+        list.add(temp);
+        temp.setId(texCounter++);
+        return temp;
+    }
+    
     public int getLastTex() {
         return lastTex;
     }

@@ -6,6 +6,7 @@
 package game.place;
 
 import static game.place.Tile.SIZE;
+import sprites.SpriteSheet;
 
 /**
  *
@@ -13,9 +14,9 @@ import static game.place.Tile.SIZE;
  */
 public class SolidTile extends Tile {
 
-    public SolidTile(String tex, String name, int size, Place place) {
-        super(tex, size, true, false, place);
-        init(tex, name, 1, 1, SIZE, SIZE, place);
+    public SolidTile(SpriteSheet sh, String name, int size, int xSheet, int ySheet, Place place) {
+        super(sh, size, true, false, xSheet, ySheet, place);
+        init(name, 1, 1, SIZE, SIZE, place);
     }
 
     @Override

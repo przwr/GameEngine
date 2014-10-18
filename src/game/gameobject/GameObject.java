@@ -39,6 +39,13 @@ public abstract class GameObject {
         this.place = place;
         this.spr = place.getSprite(textureKey, sx, sy);
     }
+    
+    protected void init(String name, int x, int y, int sx, int sy, Place place) {
+        this.x = x;
+        this.y = y;
+        this.name = name;
+        this.place = place;
+    }
 
     public void addX(int x) {
         this.x += x;

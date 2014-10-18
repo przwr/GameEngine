@@ -5,15 +5,17 @@
  */
 package game.place;
 
+import sprites.SpriteSheet;
+
 /**
  *
  * @author przemek
  */
 public class BasicTile extends Tile {
 
-    public BasicTile(String tex, String name, int size, Place place) {
-        super(tex, size, false, false, place);
-        init(tex, name, 1, 1, SIZE, SIZE, place);
+    public BasicTile(SpriteSheet sh, String name, int size, int xSheet, int ySheet, Place place) {
+        super(sh, size, false, false, xSheet, ySheet, place);
+        init(name, 1, 1, SIZE, SIZE, place);
     }
 
     @Override

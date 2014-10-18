@@ -21,17 +21,17 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class Sprite {
 
-    private Texture texture;
+    protected Texture texture;
 
-    private SpriteBase base;
-    private int sx;
-    private int sy;
-    private String key;
-    private int id;
+    protected SpriteBase base;
+    protected int sx;
+    protected int sy;
+    protected String key;
+    protected int id;
 
     public Sprite(String textureKey, int sx, int sy, SpriteBase base) {
         if (textureKey != null) {
-            Sprite.class.getResourceAsStream(textureKey);
+            //Sprite.class.getResourceAsStream(textureKey);
             this.texture = loadTexture(textureKey);
         }
         this.sx = sx;
@@ -64,7 +64,7 @@ public class Sprite {
         return null;
     }
 
-    private void bindCheck(Texture texture) {
+    public void bindCheck() {
         if (base.getLastTex() != id) {
             texture.bind();
             base.setLastTex(id);
@@ -80,7 +80,7 @@ public class Sprite {
     }
 
     public void render() {
-        bindCheck(texture);
+        bindCheck();
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
         glVertex2f(0, 0);
@@ -94,7 +94,7 @@ public class Sprite {
     }
 
     public void render(boolean flip) {
-        bindCheck(texture);
+        bindCheck();
         glBegin(GL_QUADS);
         if (flip) {
             glTexCoord2f(0.5f, 0);
@@ -119,7 +119,7 @@ public class Sprite {
     }
 
     public void render(int flip) {
-        bindCheck(texture);
+        bindCheck();
         glBegin(GL_QUADS);
         if (flip == 0) {
             glTexCoord2f(1, 0);
@@ -162,8 +162,10 @@ public class Sprite {
     }
 
     public void render(int flip, float bx, float ex, float by, float ey) {
-        bindCheck(texture);
-        glBegin(GL_QUADS);
+        bindCheck();
+        glBegin(GL_QUADS);        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         if (flip == 0) {
             glTexCoord2f(ex, by);
             glVertex2f(0, 0);
@@ -226,9 +228,5 @@ public class Sprite {
 
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public void bind() {
-        texture.bind();
     }
 }

@@ -5,34 +5,40 @@
  */
 package sprites;
 
-import game.place.Place;
-
 /**
  *
  * @author przemek
  */
 public final class SpriteSheet extends Sprite {
 
-    private final int xTiles;
-    private final int yTiles;
+    private final int w;
+    private final int h;
+    private final float xTiles;
+    private final float yTiles;
 
-    public SpriteSheet(String sprite, int sx, int sy, int sTile, Place place) {
-        super(sprite, sx, sy, place.getSprites());
-        this.xTiles = sx / sTile;
-        this.yTiles = sy / sTile;
-        render(0, 15);
+    public SpriteSheet(String sprite, int sx, int sy, int w, int h, SpriteBase base) {
+        super(sprite, sx, sy, base);
+        this.w = w;
+        this.h = h;
+        this.xTiles = texture.getImageWidth() / w;
+        this.yTiles = texture.getImageHeight() / h;
     }
-
-    public void render(int flip, int texKey) {
-        int y = texKey / yTiles;
-        int x = texKey % yTiles;
-        System.out.println("x: " + x + " y: " + y);
-        float bx = ((float) x) / xTiles;
-        float ex = ((float) (x + 1)) / xTiles;
-        float by = ((float) y) / yTiles;
-        float ey = ((float) (y + 1)) / yTiles;
-        System.out.println("bx: " + bx + " ex: " + ex);
-        System.out.println("by: " + by + " ey: " + ey);
+    
+    public void render(int flip, int i) {
+        if (i > xTiles * yTiles) 
+            return;
+        int x = (int) (i % xTiles);
+        int y = (int) (i / yTiles);
+        render(flip, x, y);
+    }
+    
+    public void render(int flip, int x, int y) {
+        if (x > xTiles || y > yTiles) 
+            return;
+        float bx = (float) x / xTiles;
+        float by = (float) y / yTiles;
+        float ex = (float) (x + 1) / xTiles;
+        float ey = (float) (y + 1) / yTiles;
         render(flip, bx, ex, by, ey);
     }
 }

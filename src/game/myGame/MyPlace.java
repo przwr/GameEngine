@@ -20,6 +20,7 @@ import engine.FontsHandler;
 import engine.SoundBase;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
+import sprites.SpriteSheet;
 
 /**
  *
@@ -27,8 +28,8 @@ import org.newdawn.slick.openal.SoundStore;
  */
 public class MyPlace extends Place {
 
-    final Tile GRASS = new BasicTile("grass", "Grass", sTile, this);
-    final Tile ROCK = new SolidTile("rock", "Rock", sTile, this);
+    final Tile GRASS = new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Grass", sTile, 1, 8, this);
+    final Tile ROCK = new SolidTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this);
 
     public MyPlace(Game game, int width, int height, int tileSize, Settings settings) {
         super(game, width, height, tileSize, settings);
@@ -37,7 +38,7 @@ public class MyPlace extends Place {
 
     @Override
     public final void generate() {
-        sounds.init("res", settings);
+        //sounds.init("res", settings);
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 300) {
@@ -60,6 +61,7 @@ public class MyPlace extends Place {
 
     @Override
     public void update() {
+        /*
         if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
             sounds.getSound("MumboMountain").resume();
         }
@@ -91,6 +93,7 @@ public class MyPlace extends Place {
         if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
             sounds.getSound("MumboMountain").fade(0.5, false);
         }
+                */
         for (Mob mob : sMobs) {
             mob.update(players);
         }
