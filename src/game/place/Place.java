@@ -17,12 +17,16 @@ import game.place.cameras.PlayersCamera;
 import java.nio.ByteBuffer;
 import engine.Physics;
 import engine.FontsHandler;
+import engine.SoundBase;
 import engine.Point;
 import engine.Sprite;
 import game.Methods;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
+import sprites.Sprite;
+import sprites.SpriteBase;
+import sprites.SpriteSheet;
 
 /**
  *
@@ -32,6 +36,8 @@ public abstract class Place {
 
     public Game game;
     public Settings settings;
+    protected final SoundBase sounds;
+    protected final SpriteBase sprites;
 
     private final int lightTex;
     private int savedShadowed;
@@ -73,6 +79,9 @@ public abstract class Place {
         fonts = null;
         this.game = game;
         lightTex = makeTexture(null, 2048, 2048);
+        emptyTex = settings.emptyTex;
+        sounds = new SoundBase();
+        sprites = new SpriteBase();
         for (int i = 0; i < 4; i++) {
             points[i] = new Point(0, 0);
             tempPoints[i] = new Point(0, 0);
@@ -91,6 +100,26 @@ public abstract class Place {
     public void addCamera(GameObject go, int ssX, int ssY, int num) {
         this.cams[num] = new PlayersCamera(this, go, ssX, ssY);
     }
+
+    public SpriteBase getSprites() {
+        return sprites;
+    }
+    
+    public Sprite getSprite(String textureKey, int sx, int sy) {
+        return sprites.getSprite(textureKey, sx, sy);
+    }
+    
+    public SpriteSheet getSpriteSheet(String textureKey, int sx, int sy) {
+        return sprites.getSpriteSheet(textureKey, sx, sy);
+    }
+    
+    public SoundBase getSounds() {
+        return sounds;
+    }
+    
+    public abstract void generate();
+
+    public abstract void update();
 
     public void render() {
         Camera cam;

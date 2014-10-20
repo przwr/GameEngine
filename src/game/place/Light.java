@@ -6,7 +6,7 @@
 package game.place;
 
 import game.gameobject.GameObject;
-import engine.Sprite;
+import sprites.Sprite;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -21,12 +21,12 @@ public class Light {
     protected float b;
     protected int strength;
 
-    public Light(String lightName, float r, float g, float b, int strength, int sx, int sy) {
+    public Light(String lightName, float r, float g, float b, int strength, int sx, int sy, Place place) {
         this.r = r;
         this.g = g;
         this.b = b;
         this.strength = strength;
-        this.light = new Sprite(lightName, sx, sy);
+        this.light = place.getSprite(lightName, sx, sy);
     }
 
     public void setSize(int sx, int sy) {

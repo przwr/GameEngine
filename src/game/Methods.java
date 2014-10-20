@@ -67,10 +67,12 @@ public class Methods {
         for (StackTraceElement stackTrace : ex.getStackTrace()) {
             err += stackTrace + "\n";
         }
+        System.out.println(err);
         JOptionPane.showMessageDialog(null, err, "Problem!", 0);
     }
 
     public static void Error(String message) {
+        System.out.println(message);
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
     }
 }

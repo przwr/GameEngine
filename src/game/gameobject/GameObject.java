@@ -11,7 +11,7 @@ package game.gameobject;
  */
 import game.place.Light;
 import game.place.Place;
-import engine.Sprite;
+import sprites.Sprite;
 
 public abstract class GameObject {
 
@@ -30,16 +30,23 @@ public abstract class GameObject {
     protected Sprite lit;
     protected Light light;
     protected String name;
+    protected Place place;
 
     public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit);
-
-    protected void init(String textureKey, String name, int x, int y, int sx, int sy) {
+    protected void init(String textureKey, String name, int x, int y, int sx, int sy, Place place) {
         this.x = x;
         this.y = y;
         this.name = name;
-        this.sprite = new Sprite(textureKey, sx, sy);
+        this.place = place;
+        this.spr = place.getSprite(textureKey, sx, sy);
+    }
+    
+    protected void init(String name, int x, int y, int sx, int sy, Place place) {
+        this.x = x;
+        this.y = y;
+        this.name = name;
+        this.place = place;
     }
 
     public void addX(int x) {

@@ -5,6 +5,8 @@
  */
 package engine;
 
+import sprites.Sprite;
+
 /**
  *
  * @author przemek
@@ -28,7 +30,7 @@ public class Animation {
     }
 
     public void render(boolean anim) {
-        spr.bind();
+        spr.bindCheck();
         if (anim) {
             if (animDelay.isOver()) {
                 frames[curFrame++].render(spr, flip);

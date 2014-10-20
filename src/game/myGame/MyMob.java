@@ -18,7 +18,7 @@ public class MyMob extends Mob {
 
     public MyMob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid) {
         super(x, y, startX, startY, width, height, sx, sy, speed, range, name, place, solid);
-        init("rabbit", name, x, y, sx, sy);
+        init("rabbit", name, x, y, sx, sy, place);
     }
 
     @Override
