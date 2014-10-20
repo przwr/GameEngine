@@ -24,9 +24,8 @@ public class ChoiceLanguage extends MenuChoice {
 
     @Override
     public void action() {
-
         for (i = 0; i < settings.languages.size(); i++) {
-            if (0 == settings.languages.get(i).Lang.compareTo(settings.lang)) {
+            if (settings.languages.get(i).Lang.equals(settings.lang)) {
                 i++;
                 break;
             }
@@ -40,6 +39,16 @@ public class ChoiceLanguage extends MenuChoice {
 
     @Override
     public String getLabel() {
+        for (i = 0; i < settings.languages.size(); i++) {
+            if (settings.languages.get(i).Lang.equals(settings.lang)) {
+                i++;
+                break;
+            }
+        }
+        i--;
+        if (i >= settings.languages.size()) {
+            i = 0;
+        }
         return label + settings.lang + " [" + (i + 1) + "/" + settings.languages.size() + "]";
     }
 }

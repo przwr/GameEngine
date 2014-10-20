@@ -12,14 +12,40 @@ public abstract class Tile extends GameObject {
         SIZE = size;
         this.solid = isSolid;
         this.emitter = isEmitter;
-        this.spr = new Sprite(tex, size, size);
+        this.sprite = new Sprite(tex, size, size);
     }
 
     public void render(int flip, int x, int y) {
         glPushMatrix();
         glTranslatef(x, y, 0);
-        spr.render(flip);
+        sprite.render(flip);
         glPopMatrix();
     }
 
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
+        if (nLit != null) {
+            glPushMatrix();
+            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            if (isLit) {
+                lit.render();
+            } else {
+                nLit.render();
+            }
+            glPopMatrix();
+        }
+    }
+
+    public void renderShadow(int x, int y, int xEffect, int yEffect, boolean isLit) {
+        if (nLit != null) {
+            glPushMatrix();
+            glTranslatef(x + xEffect, y + yEffect, 0);
+            if (isLit) {
+                lit.render();
+            } else {
+                nLit.render();
+            }
+            glPopMatrix();
+        }
+    }
 }

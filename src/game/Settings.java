@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import engine.DisplayDevice;
 import engine.SoundBase;
-import game.place.Place;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.DisplayMode;
@@ -42,7 +41,6 @@ public class Settings {
     public int actionsNr;
     public Player[] players;
     public Controller[] controllers;
-    public int emptyTex;
 
     public Settings() {
         int minW = 800;
@@ -92,15 +90,9 @@ public class Settings {
         }
     }
 
-    private void makeEmptyTex() {
-        emptyTex = Place.makeTexture(null, 2048, 2048);
-        Place.frameSave(emptyTex, 0, 0, 0, 0);
-    }
-
     public void Up(int nr, Player[] players, Controller[] controllers) {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
-        makeEmptyTex();
     }
 }

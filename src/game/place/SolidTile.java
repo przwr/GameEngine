@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.Sprite;
 import static game.place.Tile.SIZE;
 
 /**
@@ -16,10 +17,11 @@ public class SolidTile extends Tile {
     public SolidTile(String tex, String name, int size) {
         super(tex, size, true, false);
         init(tex, name, 1, 1, SIZE, SIZE);
+        lit = new Sprite("rockw", 64, 64);
+        nLit = new Sprite("rockb", 64, 64);
     }
 
     @Override
     public void render(int xEffect, int yEffect) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

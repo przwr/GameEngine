@@ -25,17 +25,21 @@ public abstract class GameObject {
     protected boolean emitter;
     protected boolean emits;
     protected boolean top;
-    protected Sprite spr;
+    protected Sprite sprite;
+    protected Sprite nLit;
+    protected Sprite lit;
     protected Light light;
     protected String name;
 
     public abstract void render(int xEffect, int yEffect);
 
+    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit);
+
     protected void init(String textureKey, String name, int x, int y, int sx, int sy) {
         this.x = x;
         this.y = y;
         this.name = name;
-        this.spr = new Sprite(textureKey, sx, sy);
+        this.sprite = new Sprite(textureKey, sx, sy);
     }
 
     public void addX(int x) {
@@ -121,12 +125,6 @@ public abstract class GameObject {
     public void renderLight(Place place, int x, int y) {
         if (light != null) {
             light.render(this, place, x, y);
-        }
-    }
-
-    public void renderShadowedLight(Place place, int x, int y) {
-        if (light != null) {
-            light.renderShadowed(this, place, x, y);
         }
     }
 

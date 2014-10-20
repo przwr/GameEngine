@@ -38,7 +38,7 @@ public class MyPlace extends Place {
 
     @Override
     public final void generate() {
-        sounds.init("res", settings);
+        //sounds.init("res", settings);
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 300) {
@@ -49,8 +49,8 @@ public class MyPlace extends Place {
             }
         }
         tiles[6 + 6 * height / sTile] = ROCK;
-        addObj(new Mob(512, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
-        addObj(new Mob(512, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
+        addObj(new Mob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
+        addObj(new Mob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
         this.r = 0.5f;
         this.g = 0.5f;
         this.b = 0.5f;

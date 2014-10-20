@@ -2,24 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/gameobject/GameObject.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/myGame/MyPlace.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/place/cameras/Camera.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/gameobject/Player.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/place/cameras/CameraFor2V.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/place/Place.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/place/cameras/CameraFor1.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/gameobject/Controler.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/place/cameras/CameraFor4.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/openGLEngine/Physics.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/Analizer.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/myGame/MyKeyboard.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/gameobject/Entity.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/gameobject/Mob.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/Game.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/myGame/MyMob.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine_Copy/src/game/place/cameras/CameraFor2H.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

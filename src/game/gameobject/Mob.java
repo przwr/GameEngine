@@ -84,10 +84,24 @@ public class Mob extends Entity {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        if (spr != null) {
+        if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            spr.render();
+            sprite.render();
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
+        if (nLit != null) {
+            glPushMatrix();
+            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            if (isLit) {
+                lit.render();
+            } else {
+                nLit.render();
+            }
             glPopMatrix();
         }
     }

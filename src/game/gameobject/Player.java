@@ -47,7 +47,6 @@ public class Player extends Entity {
 //        animate = true;
 //        initControler(isFirst);
 //    }
-
     public Player(boolean isFirst) {
         initControler(isFirst);
     }
@@ -64,8 +63,9 @@ public class Player extends Entity {
         this.emitter = true;
         init("apple", name, x, y, sx, sy);
         this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024);
-        this.anim = new Animation(2, spr, 500);
+        this.anim = new Animation(2, sprite, 500);
         animate = true;
+        emits = false;
     }
 
     private void initControler(boolean isFirst) {
@@ -117,10 +117,24 @@ public class Player extends Entity {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        if (spr != null) {
+        if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             getAnim().render(animate);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
+        if (nLit != null) {
+            glPushMatrix();
+            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            if (isLit) {
+                lit.render();
+            } else {
+                nLit.render();
+            }
             glPopMatrix();
         }
     }
