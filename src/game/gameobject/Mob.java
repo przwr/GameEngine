@@ -90,7 +90,6 @@ public class Mob extends Entity {
         }
     }
 
-    @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null) {
             glPushMatrix();

@@ -14,13 +14,9 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
 import game.place.cameras.PlayersCamera;
-import java.nio.ByteBuffer;
 import engine.Physics;
 import engine.FontsHandler;
 import engine.SoundBase;
-import engine.Point;
-import engine.Sprite;
-import game.Methods;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
@@ -38,22 +34,10 @@ public abstract class Place {
     public Settings settings;
     protected final SoundBase sounds;
     protected final SpriteBase sprites;
+    
+    public boolean isResize = false;
 
-    private final int lightTex;
-    private int savedShadowed;
-    protected int[] shadows, lights;
-    Point center;
-    Point[] tempPoints = new Point[4];
-    Point[] points = new Point[4];
-    Sprite sprb = new Sprite("rockb", 64, 64);
-    Sprite sprw = new Sprite("rockw", 64, 64);
-    Sprite alpha = new Sprite("alpha", 2048, 2048);
-    int shDif = 1024;
-    int shP1 = 0;
-    int shP2 = 2;
-    int shX, shY;
     float camXStart, camXSize, camYStart, camYSize;
-    double angle, temp, al1, bl1, al2, bl2;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -78,15 +62,10 @@ public abstract class Place {
         tiles = new Tile[width / sTile * height / sTile];
         fonts = null;
         this.game = game;
-        lightTex = makeTexture(null, 2048, 2048);
-        emptyTex = settings.emptyTex;
+
         sounds = new SoundBase();
         sprites = new SpriteBase();
-        for (int i = 0; i < 4; i++) {
-            points[i] = new Point(0, 0);
-            tempPoints[i] = new Point(0, 0);
-        }
-        center = new Point(0, 0);
+
     }
 
     public abstract void generate();
@@ -104,28 +83,23 @@ public abstract class Place {
     public SpriteBase getSprites() {
         return sprites;
     }
-    
+
     public Sprite getSprite(String textureKey, int sx, int sy) {
         return sprites.getSprite(textureKey, sx, sy);
     }
-    
+
     public SpriteSheet getSpriteSheet(String textureKey, int sx, int sy) {
         return sprites.getSpriteSheet(textureKey, sx, sy);
     }
-    
+
     public SoundBase getSounds() {
         return sounds;
     }
-    
-    public abstract void generate();
-
-    public abstract void update();
 
     public void render() {
         Camera cam;
         for (GameObject player : players) {
             cam = (((Player) player).getCam());
-
             if (players.size() == 2) {
                 if (settings.hSplitScreen) {
                     if (player == players.get(0)) {
@@ -202,16 +176,18 @@ public abstract class Place {
                     camXSize = camYStart = 0f;
                 }
             }
-
-            preRenderShadows(cam, camXStart, camYStart, camXSize, camYSize);
-            preRenderLights(cam, camXStart, camYStart, camXSize, camYSize);
-            preRenderShadowedLights(cam, camXStart, camYStart, camXSize, camYSize);
+            Renderer.preRenderShadows(cam, camXStart, camYStart, camXSize, camYSize, emitters, players);
+            Renderer.preRenderLights(cam, camXStart, camYStart, camXSize, camYSize, emitters, players, this);
+            Renderer.preRenderShadowedLights(cam, camXStart, camYStart, camXSize, camYSize);
             glColor3f(r, g, b);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             renderBack(cam);
             renderObj(cam);
             renderText(cam);
-            renderLights();
+            Renderer.renderLights(r, g, b);
+            if (isResize) {
+                Resizer.resize(camXStart, camYStart, camXSize, camYSize);
+            }
         }
     }
 
@@ -233,224 +209,8 @@ public abstract class Place {
 
     protected abstract void renderText(Camera cam);
 
-    protected void preRenderShadows(Camera cam, float xStart, float yStart, float xSize, float ySize) {
-        glBlendFunc(GL_ONE, GL_ONE);
-        int nr = 0;
-        for (GameObject emitter : emitters) {
-            if (emitter.isEmits()) {
-//                ... jak u graczy
-            }
-        }
-        for (GameObject player : players) {
-            if (player.isEmitter() && player.isEmits()) {
-                glDisable(GL_BLEND);
-                glColor3f(1f, 1f, 1f);
-                alpha.render();
-                {
-//              dla każdego obiektu rzucającego światło
-                    calculateShadow(player, tiles[6 + 6 * height / sTile], 384, 384);
-                    drawShadow(cam);
-                }
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-                glColor3f(1f, 1f, 1f);
-                {
-//              dla każdego obiektu rzucającego światło
-                    tiles[6 + 6 * height / sTile].renderShadow(384, 384, cam.getXOffEffect(), cam.getYOffEffect(), player.getMidY() > 416);
-                }
-                frameSave(shadows[nr++], xStart, yStart, xSize, ySize);
-            }
-        }
-    }
-
-    private void calculateShadow(GameObject src, GameObject shade, int xS, int yS) {
-        center.set(src.getMidX(), src.getMidY());
-        tempPoints[0].set(xS, yS);
-        tempPoints[1].set(xS + sTile, yS);
-        tempPoints[2].set(xS, yS + sTile);
-        tempPoints[3].set(xS + sTile, yS + sTile);
-        angle = 0;
-        for (int p = 0; p < 4; p++) {
-            for (int s = p + 1; s < 4; s++) {
-                temp = Methods.ThreePointAngle(tempPoints[p].getX(), tempPoints[p].getY(), tempPoints[s].getX(), tempPoints[s].getY(), center.getX(), center.getY());
-                if (temp > angle) {
-                    angle = temp;
-                    shP1 = p;
-                    shP2 = s;
-                }
-            }
-        }
-        points[0] = tempPoints[shP1];
-        points[1] = tempPoints[shP2];
-        
-        if (points[0].getX() == center.getX()) {
-            points[2].set(points[0].getX(), points[0].getY() + (points[0].getY() > center.getY() ? shDif : -shDif));
-        } else if (points[0].getY() == center.getY()) {
-            points[2].set(points[0].getX() + (points[0].getX() > center.getX() ? shDif : -shDif), points[0].getY());
-        } else {
-            al1 = ((double) center.getY() - (double) points[0].getY()) / ((double) center.getX() - (double) points[0].getX());
-            bl1 = (double) points[0].getY() - al1 * (double) points[0].getX();
-            if (al1 > 0) {
-                shX = points[0].getX() + (points[0].getY() > center.getY() ? shDif : -shDif);
-                shY = (int) (al1 * (double) shX + bl1);
-            } else if (al1 < 0) {
-                shX = points[0].getX() + (points[0].getY() > center.getY() ? -shDif : shDif);
-                shY = (int) (al1 * (double) shX + bl1);
-            } else {
-                shX = points[0].getX();
-                shY = points[0].getY() + (points[0].getY() > center.getY() ? shDif : -shDif);
-            }
-            points[2].set(shX, shY);
-        }
-
-        if (points[1].getX() == center.getX()) {
-            points[3].set(points[1].getX(), points[1].getY() + (points[1].getY() > center.getY() ? shDif : -shDif));
-        } else if (points[1].getY() == center.getY()) {
-            points[3].set(points[1].getX() + (points[1].getX() > center.getX() ? shDif : -shDif), points[1].getY());
-        } else {
-            al2 = ((double) center.getY() - (double) points[1].getY()) / ((double) center.getX() - (double) points[1].getX());
-            bl2 = (double) points[1].getY() - al2 * (double) points[1].getX();
-            if (al2 > 0) {
-                shX = points[1].getX() + (points[1].getY() > center.getY() ? shDif : -shDif);
-                shY = (int) (al2 * (double) shX + bl2);
-            } else if (al2 < 0) {
-                shX = points[1].getX() + (points[1].getY() > center.getY() ? -shDif : shDif);
-                shY = (int) (al2 * (double) shX + bl2);
-            } else {
-                shX = points[1].getX();
-                shY = points[1].getY() + (points[1].getY() > center.getY() ? shDif : -shDif);
-            }
-            points[3].set(shX, shY);
-        }
-    }
-
-    public void drawShadow(Camera cam) {
-        glColor3f(0, 0, 0);
-        glDisable(GL_BLEND);
-        glPushMatrix();
-        glTranslatef(cam.getXOffEffect(), cam.getYOffEffect(), 0);
-        glBegin(GL_QUADS);
-        glVertex2f(points[0].getX(), points[0].getY());
-        glVertex2f(points[2].getX(), points[2].getY());
-        glVertex2f(points[3].getX(), points[3].getY());
-        glVertex2f(points[1].getX(), points[1].getY());
-        glEnd();
-        glPopMatrix();
-        glEnable(GL_BLEND);
-    }
-
-    public static void clearScreen(float color) {
-        glDisable(GL_BLEND);
-        glColor3f(color, color, color);
-        glBegin(GL_QUADS);
-        glVertex2f(0, 0);
-        glVertex2f(0, 2048);
-        glVertex2f(2048, 2048);
-        glVertex2f(2048, 0);
-        glEnd();
-        glEnable(GL_BLEND);
-    }
-
-    protected void preRenderLights(Camera cam, float xStart, float yStart, float xSize, float ySize) {
-        int nr = 0;
-        for (GameObject emitter : emitters) {
-            if (emitter.isEmits()) {
-//                ... jak u graczy
-            }
-        }
-        for (GameObject player : players) {
-            if (player.isEmitter() && player.isEmits()) {
-                clearScreen(0);
-                glColor3f(1, 1, 1);
-                glBlendFunc(GL_ONE, GL_ONE);
-                player.renderLight(this, cam.getXOffEffect(), cam.getYOffEffect());
-                glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-                drawTex(shadows[nr], Display.getWidth(), Display.getHeight());
-                frameSave(lights[nr++], xStart, yStart, xSize, ySize);
-            }
-        }
-        savedShadowed = nr;
-    }
-
-    protected void preRenderShadowedLights(Camera cam, float xStart, float yStart, float xSize, float ySize) {
-        clearScreen(0);
-        glColor3f(1, 1, 1);
-        glBlendFunc(GL_ONE, GL_ONE);
-        for (int i = 0; i < savedShadowed; i++) {
-            drawTex(lights[i], Display.getWidth(), Display.getHeight());
-        }
-        frameSave(lightTex, xStart, yStart, xSize, ySize);
-    }
-
-    protected void renderLights() {
-        float brightness = Math.max(b, Math.max(r, g));
-        float strength = 6 - (int) (10 * brightness);
-        float val;
-        if (strength <= 2) {
-            strength = 2;
-            val = 1.00f - 0.95f * brightness;
-        } else {
-            strength = 3;
-            val = 1.00f - 1.5f * brightness;
-        }
-        glColor3f(val, val, val);
-        glBlendFunc(GL_DST_COLOR, GL_ONE);
-        for (int i = 0; i < strength; i++) {
-            drawTex(lightTex, Display.getWidth(), Display.getHeight());
-        }
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    public static int allocateTexture() {
-        int textureHandle = glGenTextures();
-        return textureHandle;
-    }
-
-    public static int makeTexture(ByteBuffer pixels, int w, int h) {
-        int textureHandle = allocateTexture();
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); //GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        return textureHandle;
-    }
-
-    public static void frameSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
-        int w = Display.getWidth();
-        int h = Display.getHeight();
-        glColor3f(1, 1, 1);
-        glReadBuffer(GL_BACK);
-        glBindTexture(GL_TEXTURE_2D, txtrHandle);
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, (int) (w * xSize), (int) (h * ySize), (int) (xStart * w), (int) (yStart * h), w, h);
-    }
-
-    public static void drawTex(int textureHandle, float w, float h) {
-        glPushMatrix();
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, h / 2048.0f);
-        glVertex2f(0, 0);
-        glTexCoord2f(w / 2048.0f, h / 2048.0f);
-        glVertex2f(w, 0);
-        glTexCoord2f(w / 2048.0f, 0);
-        glVertex2f(w, h);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, h);
-        glEnd();
-        glPopMatrix();
-    }
-
     public void makeShadows() {
-        shadows = new int[emitters.size() + players.size()];
-        for (int i = 0; i < emitters.size() + players.size(); i++) {
-            shadows[i] = makeTexture(null, 2048, 2048);
-        }
-        lights = new int[emitters.size() + players.size()];
-        for (int i = 0; i < emitters.size() + players.size(); i++) {
-            lights[i] = makeTexture(null, 2048, 2048);
-        }
+        Renderer.makeShadows(emitters, players);
     }
 
     public void renderMessage(int i, int x, int y, String ms, Color color) {

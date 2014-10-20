@@ -26,7 +26,7 @@ public class Light {
         this.g = g;
         this.b = b;
         this.strength = strength;
-        this.light = place.getSprite(lightName, sx, sy);
+        this.light = new Sprite(lightName, sx, sy, null);
     }
 
     public void setSize(int sx, int sy) {

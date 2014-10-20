@@ -65,7 +65,9 @@ public class Sprite {
     }
 
     public void bindCheck() {
-        if (base.getLastTex() != id) {
+        if (base == null) {
+            texture.bind();
+        } else if (base.getLastTex() != id) {
             texture.bind();
             base.setLastTex(id);
         }
@@ -163,7 +165,7 @@ public class Sprite {
 
     public void render(int flip, float bx, float ex, float by, float ey) {
         bindCheck();
-        glBegin(GL_QUADS);        
+        glBegin(GL_QUADS);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         if (flip == 0) {

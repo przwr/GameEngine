@@ -19,8 +19,13 @@ public class PlayersCamera extends Camera {
     public PlayersCamera(Place place, GameObject go, int ssX, int ssY) {
         this.place = place;
         this.go = go;
-        Dwidth = Display.getWidth() / ssX;
-        Dheight = Display.getHeight() / ssY;
+        if (place.isResize) {
+            Dwidth = (Display.getWidth()) / ssX;
+            Dheight = Display.getHeight() / ssY;
+        } else {
+            Dwidth = Display.getWidth() / ssX;
+            Dheight = Display.getHeight() / ssY;
+        }
         xOffset = Dwidth - go.getMidX();
         yOffset = Dheight - go.getMidY();
         if (go.getMidX() <= Dwidth) {

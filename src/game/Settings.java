@@ -43,7 +43,7 @@ public class Settings {
     public Controller[] controllers;
 
     public Settings() {
-        int minW = 800;
+        int minW = 1024;
         int maxW = 1920;
 
         try {
@@ -52,11 +52,11 @@ public class Settings {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         DisplayMode temp;
-        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getHeight() <= maxW) {
+        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getHeight() <= maxW && tmpmodes[0].getBitsPerPixel() == 24) {
             modesNr++;
         }
         for (int i = 1; i < tmpmodes.length; i++) {
-            if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getHeight() <= maxW) {
+            if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getHeight() <= maxW && tmpmodes[i].getBitsPerPixel() == 24) {
                 modesNr++;
             }
             temp = tmpmodes[i];
@@ -79,15 +79,13 @@ public class Settings {
     }
 
     private boolean isBiger(DisplayMode checked, DisplayMode temp) {
-        if (checked.getWidth() > temp.getWidth()) {
+        if (checked.getBitsPerPixel() > temp.getBitsPerPixel()) {
+            return true;
+        } else if (checked.getWidth() > temp.getWidth()) {
             return true;
         } else if (checked.getWidth() == temp.getWidth() && checked.getHeight() > temp.getHeight()) {
             return true;
-        } else if (checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency()) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency();
     }
 
     public void Up(int nr, Player[] players, Controller[] controllers) {

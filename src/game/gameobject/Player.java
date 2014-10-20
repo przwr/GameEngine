@@ -61,7 +61,7 @@ public class Player extends Entity {
         this.emitter = true;
         init("apple", name, x, y, sx, sy, place);
         this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024, place);
-        this.anim = new Animation(4, spr, 200);
+        this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
     }
@@ -127,7 +127,6 @@ public class Player extends Entity {
         }
     }
 
-    @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null) {
             glPushMatrix();

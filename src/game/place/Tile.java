@@ -7,9 +7,9 @@ import sprites.SpriteSheet;
 public abstract class Tile extends GameObject {
 
     public static int SIZE;
-    private SpriteSheet sh;
-    private int xSheet;
-    private int ySheet;
+    private final SpriteSheet sh;
+    private final int xSheet;
+    private final int ySheet;
 
     public Tile(SpriteSheet sh, int size, boolean isSolid, boolean isEmitter, int xSheet, int ySheet, Place place) {
         SIZE = size;
@@ -30,7 +30,6 @@ public abstract class Tile extends GameObject {
         glPopMatrix();
     }
 
-    @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null) {
             glPushMatrix();

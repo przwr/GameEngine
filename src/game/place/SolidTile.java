@@ -5,7 +5,6 @@
  */
 package game.place;
 
-import engine.Sprite;
 import static game.place.Tile.SIZE;
 import sprites.SpriteSheet;
 
