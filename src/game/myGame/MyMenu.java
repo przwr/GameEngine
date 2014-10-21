@@ -5,6 +5,7 @@
  */
 package game.myGame;
 
+import engine.Delay;
 import game.gameobject.Player;
 import game.Game;
 import game.Settings;
@@ -30,6 +31,7 @@ public class MyMenu extends Place {
     private MenuOpt[] menus;
 
     public boolean isMapping;
+    public Delay delay = new Delay(25);
 
     public MyMenu(Game game, int width, int height, int tileSize, Settings settings) {
         super(game, width, height, tileSize, settings);
@@ -38,6 +40,7 @@ public class MyMenu extends Place {
 
     @Override
     public final void generate() {
+        delay.restart();
         menus = new MenuOpt[10];
         menus[0] = new MenuOpt(10, settings.language.Menu);
         menus[0].addChoice(new ChoiceStart(settings.language.Start, this, settings));
@@ -53,6 +56,8 @@ public class MyMenu extends Place {
         menus[1].addChoice(new ChoiceVolume(settings.language.Volume, this, settings));
         menus[1].addChoice(new ChoiceResolution(settings.language.Resolution, this, settings));
         menus[1].addChoice(new ChoiceFullScreen(settings.language.FullScreen, this, settings));
+        menus[1].addChoice(new ChoiceVSync(settings.language.VSync, this, settings));
+        menus[1].addChoice(new ChoiceAntiAliasing(settings.language.AA, this, settings));
         menus[2] = new MenuOpt(10, settings.language.Controls);
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player1, this, settings));
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player2, this, settings));
@@ -119,15 +124,21 @@ public class MyMenu extends Place {
     }
 
     public void setChoosen(int i) {
-        menus[cur].setChoosen(i);
+        if (!isMapping && delay.isOver()) {
+            menus[cur].setChoosen(i);
+        }
     }
 
     public void choice() {
-        menus[cur].getChoosen().action();
+        if (!isMapping && delay.isOver()) {
+            menus[cur].getChoosen().action();
+        }
     }
 
     public void setCurrent(int i) {
-        cur = i;
+        if (!isMapping && delay.isOver()) {
+            cur = i;
+        }
     }
 
     public void addPlayer() {
@@ -139,7 +150,7 @@ public class MyMenu extends Place {
     }
 
     public void back() {
-        if (!isMapping) {
+        if (!isMapping && delay.isOver()) {
             if (cur > 2) {
                 cur = 2;
             } else if (cur == 2) {

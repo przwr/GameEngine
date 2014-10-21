@@ -18,12 +18,7 @@ public abstract class Camera {
     protected GameObject go;
     protected Place place;
 
-    protected int Dwidth;
-    protected int Dheight;
-    protected int xOffset;
-    protected int yOffset;
-    protected int xEffect;
-    protected int yEffect;
+    protected int Dwidth, Dheight, xOffset, yOffset, xEffect, yEffect, xLeft, xRight, yDown, yUp;
     protected int delaylenght;
     protected Delay shakeDelay;
     protected int shakeAmp = 8;

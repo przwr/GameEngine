@@ -41,4 +41,6 @@ public abstract class Language {
     public String[] Actions = new String[36];
     public String PushButton;
     public String Unchangable;
+    public String VSync;
+    public String AA;
 }

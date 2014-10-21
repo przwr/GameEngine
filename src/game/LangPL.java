@@ -50,5 +50,7 @@ public class LangPL extends Language {
         Actions[10] = "Światło";
         PushButton = "Naciśnij Przycisk!";
         Unchangable = "Niezmienny!";
+        VSync = "Synchronizacja Pionowa: ";
+        AA = "Wygładzanie Krawędzi (Cieni): ";
     }
 }

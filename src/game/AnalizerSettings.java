@@ -33,6 +33,21 @@ public class AnalizerSettings {
                     settings.hSplitScreen = false;
                 }
                 break;
+            case "VSync:":
+                if (0 == p[1].compareTo("On")) {
+                    settings.vSync = true;
+                } else if (0 == p[1].compareTo("Off")) {
+                    settings.vSync = false;
+                }
+                break;
+
+            case "Anti-Aliasing:":
+                if (0 == p[1].compareTo("On")) {
+                    settings.aa = true;
+                } else if (0 == p[1].compareTo("Off")) {
+                    settings.aa = false;
+                }
+                break;
             case "Number_Of_Players:":
                 int n = Integer.parseInt(p[1]);
                 if (n > 4 || n < 1) {
@@ -110,6 +125,16 @@ public class AnalizerSettings {
                 fw.write("SplitMode: H\n");
             } else {
                 fw.write("SplitMode: V\n");
+            }
+            if (settings.vSync) {
+                fw.write("VSync: On\n");
+            } else {
+                fw.write("VSync: Off\n");
+            }
+            if (settings.aa) {
+                fw.write("Anti-Aliasing: On\n");
+            } else {
+                fw.write("Anti-Aliasing: Off\n");
             }
             fw.write("Number_Of_Players: " + settings.nrPlayers + "\n");
             fw.write("Resolution_Width: " + settings.resWidth + "\n");

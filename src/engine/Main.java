@@ -43,7 +43,7 @@ public class Main {
     }
 
     private static void initGame() {
-        
+
         game = new Game("Engine", settings, controllers);
         Display.setTitle(game.getTitle());
     }
@@ -60,7 +60,7 @@ public class Main {
         glClear(GL_COLOR_BUFFER_BIT);
         glLoadIdentity();
         game.render();
-        Display.sync(60);        
+        Display.sync(60);
         Display.update();
     }
 
@@ -74,6 +74,10 @@ public class Main {
         glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
         glMatrixMode(GL_MODELVIEW);
         glClearColor(0, 0, 0, 0);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     }
 
     private static void gameLoop() {
@@ -103,9 +107,17 @@ public class Main {
     private static void initDisplay() {
         try {
             setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
-            Display.create(new PixelFormat(0, 16, 1));
+            if (settings.aa) {
+                Display.create(new PixelFormat(32, 0, 24, 0, 4));
+            } else {
+                Display.create(new PixelFormat(32, 0, 24, 0, 0));
+            }
             Display.setResizable(false);
-            Display.setVSyncEnabled(true);
+            if (settings.vSync) {
+                Display.setVSyncEnabled(true);
+            } else {
+                Display.setVSyncEnabled(false);
+            }
             Display.setDisplayConfiguration(2f, 0f, 1.0f);
             Keyboard.create();
             Mouse.create();

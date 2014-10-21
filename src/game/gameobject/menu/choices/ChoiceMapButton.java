@@ -57,12 +57,16 @@ public class ChoiceMapButton extends MenuChoice {
                             }
                             main:
                             while (true) {
-                                AnyInput in = Controlers.mapInput(noiseAx);
+                                AnyInput in = Controlers.mapInput(noiseAx, ctrl.actions[2].in);
                                 if (in != null) {
                                     if (in.getType() == -1) {
                                         break;
                                     }
+                                    if (ctrl.actions[3] != null && ctrl.actions[3].in != null && ctrl.actions[3].in.toString().equals(in.toString())) {
+                                        break;
+                                    }
                                     if (i < 4) {
+
                                         for (int k = 0; k < 4; k++) {
                                             if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
                                                 AnyInput temp = ctrl.actions[i].in;
@@ -74,6 +78,7 @@ public class ChoiceMapButton extends MenuChoice {
                                         }
                                     } else {
                                         for (int k = 4; k < ctrl.actions.length; k++) {
+
                                             if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
                                                 AnyInput temp = ctrl.actions[i].in;
                                                 ctrl.actions[k].in = temp;
@@ -88,10 +93,11 @@ public class ChoiceMapButton extends MenuChoice {
                                     break;
                                 }
                             }
-                            if(thread != null){
+                            if (thread != null) {
                                 thread.interrupt();
                             }
                             thread = null;
+                            menu.delay.restart();
                             menu.isMapping = false;
                         }
                     });
@@ -108,5 +114,5 @@ public class ChoiceMapButton extends MenuChoice {
         } else {
             return label + ": " + "<brak>";
         }
-    }    
+    }
 }

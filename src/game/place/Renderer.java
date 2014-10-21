@@ -21,6 +21,8 @@ import sprites.Sprite;
  */
 public class Renderer {
 
+    private static final int w = Display.getWidth();
+    private static final int h = Display.getHeight();
     private static final int lightTex = makeTexture(null, 2048, 2048);
     private static int savedShadowed;
     private static int[] shadows, lights;
@@ -52,23 +54,46 @@ public class Renderer {
                 {
 //              dla każdego obiektu rzucającego światło
                     calculateShadow(player, null, 384, 384);
-                    drawShadow(cam);
+                    // na 8
+//                    drawShadow(cam, 0.875f, 0);
+//                    drawShadow(cam, 0.75f, 1);
+//                    drawShadow(cam, 0.625f, 2);
+//                    drawShadow(cam, 0.5f, 3);
+//                    drawShadow(cam, 0.375f, 4);
+//                    drawShadow(cam, 0.25f, 5);
+//                    drawShadow(cam, 0.125f, 6);
+//                    drawShadow(cam, 0.0f, 7);
+                    // na 5
+                    drawShadow(cam, 0.8f, 0);
+                    drawShadow(cam, 0.6f, 1);
+                    drawShadow(cam, 0.4f, 2);
+                    drawShadow(cam, 0.2f, 3);
+                    drawShadow(cam, 0.0f, 4);
+                    // na 4
+//                    drawShadow(cam, 0.75f, 0);
+//                    drawShadow(cam, 0.5f, 1);
+//                    drawShadow(cam, 0.25f, 2);
+//                    drawShadow(cam, 0.0f, 3);
+                    // na 3
+//                    drawShadow(cam, 0.8f, 0);
+//                    drawShadow(cam, 0.4f, 1);
+//                    drawShadow(cam, 0.0f, 2);
+                    // na 1
+//                    drawShadow(cam, 0.0f, 0);
                 }
+
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 glColor3f(1f, 1f, 1f);
-                {
-//              dla każdego obiektu rzucającego światło
-                    //tiles[6 + 6 * height / sTile].renderShadow(384, 384, cam.getXOffEffect(), cam.getYOffEffect(), player.getMidY() > 416);
-                    glPushMatrix();
-                    glTranslatef(384 + cam.getXOffEffect(), 384 + cam.getYOffEffect(), 0);
-                    if (player.getMidY() > 416) {
-                        sprw.render();
-                    } else {
-                        sprb.render();
-                    }
-                    glPopMatrix();
+                glPushMatrix();
+                glTranslatef(384 + cam.getXOffEffect(), 384 + cam.getYOffEffect(), 0);
+                if (player.getMidY() > 416) {
+                    sprw.render();
+                } else {
+                    sprb.render();
                 }
+                glPopMatrix();
+
                 frameSave(shadows[nr++], xStart, yStart, xSize, ySize);
             }
         }
@@ -135,19 +160,38 @@ public class Renderer {
         }
     }
 
-    public static void drawShadow(Camera cam) {
-        glColor3f(0, 0, 0);
-        glDisable(GL_BLEND);
+    public static void drawShadow(Camera cam, float color, int off) {
+        glColor3f(color, color, color);
+
         glPushMatrix();
         glTranslatef(cam.getXOffEffect(), cam.getYOffEffect(), 0);
         glBegin(GL_QUADS);
-        glVertex2f(points[0].getX(), points[0].getY());
-        glVertex2f(points[2].getX(), points[2].getY());
-        glVertex2f(points[3].getX(), points[3].getY());
-        glVertex2f(points[1].getX(), points[1].getY());
+        if (points[0].getX() > points[1].getX()) {
+            glVertex2f(points[0].getX() - off, points[0].getY());
+            glVertex2f(points[2].getX(), points[2].getY());
+            glVertex2f(points[3].getX(), points[3].getY());
+            glVertex2f(points[1].getX() + off, points[1].getY());
+
+        } else if (points[0].getX() < points[1].getX()) {
+            glVertex2f(points[0].getX() + off, points[0].getY());
+            glVertex2f(points[2].getX(), points[2].getY());
+            glVertex2f(points[3].getX(), points[3].getY());
+            glVertex2f(points[1].getX() - off, points[1].getY());
+        } else {
+            if (points[0].getY() > points[1].getY()) {
+                glVertex2f(points[0].getX(), points[0].getY() - off);
+                glVertex2f(points[2].getX(), points[2].getY());
+                glVertex2f(points[3].getX(), points[3].getY());
+                glVertex2f(points[1].getX(), points[1].getY() + off);
+            } else {
+                glVertex2f(points[0].getX(), points[0].getY() + off);
+                glVertex2f(points[2].getX(), points[2].getY());
+                glVertex2f(points[3].getX(), points[3].getY());
+                glVertex2f(points[1].getX(), points[1].getY() - off);
+            }
+        }
         glEnd();
         glPopMatrix();
-        glEnable(GL_BLEND);
     }
 
     public static void clearScreen(float color) {
@@ -176,7 +220,7 @@ public class Renderer {
                 glBlendFunc(GL_ONE, GL_ONE);
                 player.renderLight(place, cam.getXOffEffect(), cam.getYOffEffect());
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-                drawTex(shadows[nr], Display.getWidth(), Display.getHeight());
+                drawTex(shadows[nr], w, h);
                 frameSave(lights[nr++], xStart, yStart, xSize, ySize);
             }
         }
@@ -188,7 +232,7 @@ public class Renderer {
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
         for (int i = 0; i < savedShadowed; i++) {
-            drawTex(lights[i], Display.getWidth(), Display.getHeight());
+            drawTex(lights[i], w, h);
         }
         frameSave(lightTex, xStart, yStart, xSize, ySize);
     }
@@ -207,7 +251,7 @@ public class Renderer {
         glColor3f(val, val, val);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < strength; i++) {
-            drawTex(lightTex, Display.getWidth(), Display.getHeight());
+            drawTex(lightTex, w, h);
         }
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
@@ -229,8 +273,6 @@ public class Renderer {
     }
 
     public static void frameSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
-        int w = Display.getWidth();
-        int h = Display.getHeight();
         glColor3f(1, 1, 1);
         glReadBuffer(GL_BACK);
         glBindTexture(GL_TEXTURE_2D, txtrHandle);
@@ -265,6 +307,73 @@ public class Renderer {
         for (int i = 0; i < 4; i++) {
             points[i] = new Point(0, 0);
             tempPoints[i] = new Point(0, 0);
+        }
+    }
+
+    public static void border(int ssMode) {
+        glViewport(0, 0, w, h);
+        if (ssMode != 0) {
+            glDisable(GL_BLEND);
+            glColor3f(0, 0, 0);
+            if (ssMode == 1) {
+                glBegin(GL_QUADS);
+                glVertex2f(0, h / 4 - 1);
+                glVertex2f(0, h / 4 + 1);
+                glVertex2f(w, h / 4 + 1);
+                glVertex2f(w, h / 4 - 1);
+                glEnd();
+                glEnable(GL_BLEND);
+            } else if (ssMode == 2) {
+                glBegin(GL_QUADS);
+                glVertex2f(w / 4 - 1, 0);
+                glVertex2f(w / 4 - 1, h);
+                glVertex2f(w / 4 + 1, h);
+                glVertex2f(w / 4 + 1, 0);
+                glEnd();
+                glEnable(GL_BLEND);
+            } else if (ssMode == 3) {
+                glBegin(GL_QUADS);
+                glVertex2f(0, h / 4 - 1);
+                glVertex2f(0, h / 4 + 1);
+                glVertex2f(w / 2, h / 4 + 1);
+                glVertex2f(w / 2, h / 4 - 1);
+                glEnd();
+                glBegin(GL_QUADS);
+                glVertex2f(w / 4 - 1, h / 4);
+                glVertex2f(w / 4 - 1, h / 2);
+                glVertex2f(w / 4 + 1, h / 2);
+                glVertex2f(w / 4 + 1, h / 4);
+                glEnd();
+                glEnable(GL_BLEND);
+            } else if (ssMode == 4) {
+                glBegin(GL_QUADS);
+                glVertex2f(w / 4, h / 4 - 1);
+                glVertex2f(w / 4, h / 4 + 1);
+                glVertex2f(w / 2, h / 4 + 1);
+                glVertex2f(w / 2, h / 4 - 1);
+                glEnd();
+                glBegin(GL_QUADS);
+                glVertex2f(w / 4 - 1, 0);
+                glVertex2f(w / 4 - 1, h / 2);
+                glVertex2f(w / 4 + 1, h / 2);
+                glVertex2f(w / 4 + 1, 0);
+                glEnd();
+                glEnable(GL_BLEND);
+            } else if (ssMode == 5) {
+                glBegin(GL_QUADS);
+                glVertex2f(0, h / 4 - 1);
+                glVertex2f(0, h / 4 + 1);
+                glVertex2f(w, h / 4 + 1);
+                glVertex2f(w, h / 4 - 1);
+                glEnd();
+                glBegin(GL_QUADS);
+                glVertex2f(w / 4 - 1, 0);
+                glVertex2f(w / 4 - 1, h);
+                glVertex2f(w / 4 + 1, h);
+                glVertex2f(w / 4 + 1, 0);
+                glEnd();
+                glEnable(GL_BLEND);
+            }
         }
     }
 }

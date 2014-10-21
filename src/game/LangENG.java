@@ -50,5 +50,7 @@ public class LangENG extends Language {
         Actions[10] = "Light";
         PushButton = "Push the Button!";
         Unchangable = "Unchangable!";
+        VSync = "Vertical Synchronization: ";
+        AA = "Anti-Aliasing (Shadows): ";
     }
 }

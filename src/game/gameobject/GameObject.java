@@ -11,6 +11,9 @@ package game.gameobject;
  */
 import game.place.Light;
 import game.place.Place;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.Sprite;
 
 public abstract class GameObject {
@@ -41,7 +44,7 @@ public abstract class GameObject {
         this.place = place;
         this.sprite = place.getSprite(textureKey, sx, sy);
     }
-    
+
     protected void init(String name, int x, int y, int sx, int sy, Place place) {
         this.x = x;
         this.y = y;

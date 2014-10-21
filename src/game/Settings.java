@@ -35,6 +35,8 @@ public class Settings {
     public int resWidth = display.getWidth();
     public int resHeight = display.getHeight();
     public int freq = display.getFreq();
+    public boolean aa = true;
+    public boolean vSync = true;
     public String lang = "PL";
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny

@@ -80,51 +80,55 @@ public class Controlers {
 //        }
 //
 //    }
-    public static AnyInput mapInput(int noiseAx[]) {
+    public static AnyInput mapInput(int noiseAx[], AnyInput in) {
         if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             return new InputExitMapping();
         }
-        for (int k = 0; k < Keyboard.KEYBOARD_SIZE; k++) {
-            if (Keyboard.isCreated() && Keyboard.isKeyDown(k) && k != Keyboard.KEY_ESCAPE && k != Keyboard.KEY_RETURN) {
-                return new InputKeyBoard(k);
+        if (in.isPut()) {
+            return null;
+        } else {
+            for (int k = 0; k < Keyboard.KEYBOARD_SIZE; k++) {
+                if (Keyboard.isCreated() && Keyboard.isKeyDown(k) && k != Keyboard.KEY_ESCAPE && k != Keyboard.KEY_RETURN) {
+                    return new InputKeyBoard(k);
+                }
             }
-        }
-        for (int m = 0; m < Mouse.getButtonCount(); m++) {
-            if (Mouse.isCreated() && Mouse.isButtonDown(m)) {
-                return new InputMouse(m);
+            for (int m = 0; m < Mouse.getButtonCount(); m++) {
+                if (Mouse.isCreated() && Mouse.isButtonDown(m)) {
+                    return new InputMouse(m);
+                }
             }
-        }
-        for (int c = 0; c < controllers.length; c++) {
-            if (controllers[c] != null) {
-                for (int b = 0; b < controllers[c].getButtonCount(); b++) {
-                    if (controllers[c].isButtonPressed(b)) {
-                        return new InputPadKey(controllers, c, b);
-                    }
-                }
-                if (controllers[c].getPovX() > 0.1f) {
-                    return new InputPadDPad(controllers, c, true, true);
-                }
-                if (controllers[c].getPovX() < -0.1f) {
-                    return new InputPadDPad(controllers, c, true, false);
-                }
-                if (controllers[c].getPovY() > 0.1f) {
-                    return new InputPadDPad(controllers, c, false, true);
-                }
-                if (controllers[c].getPovY() < -0.1f) {
-                    return new InputPadDPad(controllers, c, false, false);
-                }
-                for (int a = 0; a < controllers[c].getAxisCount(); a++) {
-                    if (a != noiseAx[c]) {
-                        if (controllers[c].getAxisValue(a) > 0.1f) {
-                            return new InputPadStick(controllers, c, a, true);
-                        }
-                        if (controllers[c].getAxisValue(a) < -0.1f) {
-                            return new InputPadStick(controllers, c, a, false);
+            for (int c = 0; c < controllers.length; c++) {
+                if (controllers[c] != null) {
+                    for (int b = 0; b < controllers[c].getButtonCount(); b++) {
+                        if (controllers[c].isButtonPressed(b)) {
+                            return new InputPadKey(controllers, c, b);
                         }
                     }
+                    if (controllers[c].getPovX() > 0.1f) {
+                        return new InputPadDPad(controllers, c, true, true);
+                    }
+                    if (controllers[c].getPovX() < -0.1f) {
+                        return new InputPadDPad(controllers, c, true, false);
+                    }
+                    if (controllers[c].getPovY() > 0.1f) {
+                        return new InputPadDPad(controllers, c, false, true);
+                    }
+                    if (controllers[c].getPovY() < -0.1f) {
+                        return new InputPadDPad(controllers, c, false, false);
+                    }
+                    for (int a = 0; a < controllers[c].getAxisCount(); a++) {
+                        if (a != noiseAx[c]) {
+                            if (controllers[c].getAxisValue(a) > 0.1f) {
+                                return new InputPadStick(controllers, c, a, true);
+                            }
+                            if (controllers[c].getAxisValue(a) < -0.1f) {
+                                return new InputPadStick(controllers, c, a, false);
+                            }
+                        }
+                    }
                 }
             }
+            return null;
         }
-        return null;
     }
 }

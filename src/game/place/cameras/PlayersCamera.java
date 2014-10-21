@@ -16,9 +16,65 @@ import org.lwjgl.opengl.Display;
  */
 public class PlayersCamera extends Camera {
 
-    public PlayersCamera(Place place, GameObject go, int ssX, int ssY) {
+    public PlayersCamera(Place place, GameObject go, int ssX, int ssY, int num) {
         this.place = place;
         this.go = go;
+        if (place.settings.nrPlayers > 1) {
+            if (place.settings.nrPlayers == 2) {
+                if (place.settings.hSplitScreen) {
+                    if (num == 0) {
+                        yDown = 2;
+                    } else {
+                        yUp = 2;
+                    }
+                } else {
+                    if (num == 0) {
+                        xRight = 2;
+                    } else {
+                        xLeft = 2;
+                    }
+                }
+            } else if (place.settings.nrPlayers == 3) {
+                if (place.settings.hSplitScreen) {
+                    if (num == 0) {
+                        yDown = 2;
+                    } else if (num == 1) {
+                        xRight = 2;
+                        yUp = 2;
+                    } else {
+                        xLeft = 2;
+                        yUp = 2;
+
+                    }
+                } else {
+                    if (num == 0) {
+                        xRight = 2;
+                    } else if (num == 1) {
+                        xLeft = 2;
+                        yDown = 2;
+                    } else {
+                        xLeft = 2;
+                        yUp = 2;
+                    }
+                }
+            } else if (place.settings.nrPlayers == 4) {
+                if (place.settings.hSplitScreen) {
+                    if (num == 0) {
+                        xRight = 2;
+                        yDown = 2;
+                    } else if (num == 1) {
+                        xLeft = 2;
+                        yDown = 2;
+                    } else if (num == 2) {
+                        xRight = 2;
+                        yUp = 2;
+                    } else {
+                        xLeft = 2;
+                        yUp = 2;
+                    }
+                }
+            }
+        }
         if (place.isResize) {
             Dwidth = (Display.getWidth()) / ssX;
             Dheight = Display.getHeight() / ssY;
@@ -28,17 +84,17 @@ public class PlayersCamera extends Camera {
         }
         xOffset = Dwidth - go.getMidX();
         yOffset = Dheight - go.getMidY();
-        if (go.getMidX() <= Dwidth) {
-            xOffset = 0;
+        if (go.getMidX() <= Dwidth - xLeft) {
+            xOffset = xLeft;
         }
-        if (go.getMidX() >= place.width - Dwidth) {
-            xOffset = -place.width + 2 * Dwidth;
+        if (go.getMidX() >= place.width - Dwidth + xRight) {
+            xOffset = -place.width + 2 * Dwidth - xRight;
         }
-        if (go.getMidY() <= Dheight) {
-            yOffset = 0;
+        if (go.getMidY() <= Dheight - yUp) {
+            yOffset = yUp;
         }
-        if (go.getMidY() >= place.height - Dheight) {
-            yOffset = -place.height + 2 * Dheight;
+        if (go.getMidY() >= place.height - Dheight + yDown) {
+            yOffset = -place.height + 2 * Dheight - yDown;
         }
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
@@ -46,20 +102,21 @@ public class PlayersCamera extends Camera {
     }
 
     @Override
-    public synchronized void move(int xPos, int yPos) {
+    public synchronized void move(int xPos, int yPos
+    ) {
         xOffset -= xPos;
         yOffset -= yPos;
-        if (go.getMidX() <= Dwidth) {
-            xOffset = 0;
+        if (go.getMidX() <= Dwidth - xLeft) {
+            xOffset = xLeft;
         }
-        if (go.getMidX() >= place.width - Dwidth) {
-            xOffset = -place.width + 2 * Dwidth;
+        if (go.getMidX() >= place.width - Dwidth + xRight) {
+            xOffset = -place.width + 2 * Dwidth - xRight;
         }
-        if (go.getMidY() <= Dheight) {
-            yOffset = 0;
+        if (go.getMidY() <= Dheight - yUp) {
+            yOffset = yUp;
         }
-        if (go.getMidY() >= place.height - Dheight) {
-            yOffset = -place.height + 2 * Dheight;
+        if (go.getMidY() >= place.height - Dheight + yDown) {
+            yOffset = -place.height + 2 * Dheight - yDown;
         }
     }
 

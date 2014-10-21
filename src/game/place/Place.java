@@ -34,8 +34,9 @@ public abstract class Place {
     public Settings settings;
     protected final SoundBase sounds;
     protected final SpriteBase sprites;
-    
+
     public boolean isResize = false;
+    public int ssMode;
 
     float camXStart, camXSize, camYStart, camYSize;
 
@@ -62,7 +63,6 @@ public abstract class Place {
         tiles = new Tile[width / sTile * height / sTile];
         fonts = null;
         this.game = game;
-
         sounds = new SoundBase();
         sprites = new SpriteBase();
 
@@ -77,7 +77,7 @@ public abstract class Place {
     }
 
     public void addCamera(GameObject go, int ssX, int ssY, int num) {
-        this.cams[num] = new PlayersCamera(this, go, ssX, ssY);
+        this.cams[num] = new PlayersCamera(this, go, ssX, ssY, num);
     }
 
     public SpriteBase getSprites() {
@@ -102,6 +102,7 @@ public abstract class Place {
             cam = (((Player) player).getCam());
             if (players.size() == 2) {
                 if (settings.hSplitScreen) {
+                    ssMode = 1;
                     if (player == players.get(0)) {
                         glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                         glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
@@ -113,6 +114,7 @@ public abstract class Place {
                         camYSize = 0.5f;
                     }
                 } else {
+                    ssMode = 2;
                     if (player == players.get(0)) {
                         glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
                         glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
@@ -125,6 +127,7 @@ public abstract class Place {
                 }
             } else if (players.size() == 3) {
                 if (settings.hSplitScreen) {
+                    ssMode = 3;
                     if (player == players.get(0)) {
                         glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                         glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
@@ -141,6 +144,7 @@ public abstract class Place {
                         camXSize = camYStart = 0f;
                     }
                 } else {
+                    ssMode = 4;
                     if (player == players.get(0)) {
                         glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
                         glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
@@ -157,6 +161,7 @@ public abstract class Place {
                     }
                 }
             } else if (players.size() == 4) {
+                ssMode = 5;
                 if (player == players.get(0)) {
                     glViewport(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
                     glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
@@ -189,6 +194,7 @@ public abstract class Place {
                 Resizer.resize(camXStart, camYStart, camXSize, camYSize);
             }
         }
+        Renderer.border(ssMode);
     }
 
     protected void renderBack(Camera cam) {
