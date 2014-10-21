@@ -60,7 +60,7 @@ public class Player extends Entity {
         this.setSpeed(8);
         this.emitter = true;
         init("apple", name, x, y, sx, sy, place);
-        this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024, place);
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, 1024, 1024, place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;

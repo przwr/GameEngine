@@ -48,7 +48,7 @@ public class Sprite {
 
     public static Texture loadTexture(String key) {
         try {
-            return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/" + key + ".png"));
+            return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/" + key + ".png"), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
         }
