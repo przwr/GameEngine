@@ -71,7 +71,7 @@ public class Settings {
         modes = new DisplayMode[modesNr];
         int i = 0;
         for (DisplayMode mode : tmpmodes) {
-            if (mode.getWidth() >= minW && mode.getHeight() <= maxW) {
+            if (mode.getWidth() >= minW && mode.getHeight() <= maxW && tmpmodes[0].getBitsPerPixel() == 24) {
                 modes[i++] = mode;
             }
         }
