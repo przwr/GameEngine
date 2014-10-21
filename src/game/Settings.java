@@ -43,6 +43,7 @@ public class Settings {
     public int actionsNr;
     public Player[] players;
     public Controller[] controllers;
+    public int worldSeed;
 
     public Settings() {
         int minW = 1024;
