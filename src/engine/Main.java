@@ -43,7 +43,6 @@ public class Main {
     }
 
     private static void initGame() {
-
         game = new Game("Engine", settings, controllers);
         Display.setTitle(game.getTitle());
     }
