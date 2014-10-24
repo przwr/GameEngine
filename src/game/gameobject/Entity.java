@@ -25,7 +25,7 @@ public abstract class Entity extends GameObject {
             for (int i = 0; i < this.getSpeed(); i++) {
                 int xPos = (int) (magX * Time.getDelta());
                 int yPos = (int) (magY * Time.getDelta());
-                if (!isColided(magX, magY)) {
+                if (!isColided(xPos, yPos)) {
                     move(xPos, yPos);
                 }
             }

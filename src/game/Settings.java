@@ -35,6 +35,7 @@ public class Settings {
     public int resWidth = display.getWidth();
     public int resHeight = display.getHeight();
     public int freq = display.getFreq();
+    public int depth = display.getDepth();
     public boolean aa = true;
     public boolean vSync = true;
     public String lang = "PL";
@@ -54,12 +55,13 @@ public class Settings {
         } catch (LWJGLException ex) {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
+            
         DisplayMode temp;
-        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getHeight() <= maxW && tmpmodes[0].getBitsPerPixel() == 24) {
+        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getHeight() <= maxW && tmpmodes[0].getBitsPerPixel() == depth) {
             modesNr++;
         }
         for (int i = 1; i < tmpmodes.length; i++) {
-            if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getHeight() <= maxW && tmpmodes[i].getBitsPerPixel() == 24) {
+            if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getHeight() <= maxW && tmpmodes[i].getBitsPerPixel() == depth) {
                 modesNr++;
             }
             temp = tmpmodes[i];
@@ -72,7 +74,7 @@ public class Settings {
         modes = new DisplayMode[modesNr];
         int i = 0;
         for (DisplayMode mode : tmpmodes) {
-            if (mode.getWidth() >= minW && mode.getHeight() <= maxW && mode.getBitsPerPixel() == 24) {
+            if (mode.getWidth() >= minW && mode.getHeight() <= maxW && mode.getBitsPerPixel() == depth) {
                 modes[i++] = mode;
             }
         }

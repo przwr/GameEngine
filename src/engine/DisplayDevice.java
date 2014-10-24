@@ -18,11 +18,13 @@ public class DisplayDevice {
     private final int width;
     private final int height;
     private final int freq;
+    private final int depth;
 
     public DisplayDevice() {
         this.width = device.getDisplayMode().getWidth();
         this.height = device.getDisplayMode().getHeight();
         this.freq = device.getDisplayMode().getRefreshRate();
+        this.depth = device.getDisplayMode().getBitDepth();
     }
 
     public int getWidth() {
@@ -35,5 +37,9 @@ public class DisplayDevice {
 
     public int getFreq() {
         return height;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 }

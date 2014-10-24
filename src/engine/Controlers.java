@@ -84,7 +84,7 @@ public class Controlers {
         if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             return new InputExitMapping();
         }
-        if (in.isPut()) {
+        if (in != null && in.isPut()) {
             return null;
         } else {
             for (int k = 0; k < Keyboard.KEYBOARD_SIZE; k++) {
