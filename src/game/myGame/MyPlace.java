@@ -17,10 +17,7 @@ import game.place.SolidTile;
 import game.place.Tile;
 import java.awt.Font;
 import engine.FontsHandler;
-import engine.SoundBase;
-import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
-import sprites.SpriteSheet;
 
 /**
  *
@@ -62,38 +59,41 @@ public class MyPlace extends Place {
     @Override
     public void update() {
         /*
-        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
-            sounds.getSound("MumboMountain").resume();
+         if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+         sounds.getSound("MumboMountain").resume();
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+         sounds.getSound("MumboMountain").pause();
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+         sounds.getSound("MumboMountain").stop();
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
+         sounds.getSound("MumboMountain").addPitch(0.05f);
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+         sounds.getSound("MumboMountain").addPitch(-0.05f);
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+         sounds.getSound("MumboMountain").addGainModifier(0.05f);
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
+         sounds.getSound("MumboMountain").addGainModifier(-0.05f);
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
+         sounds.getSound("MumboMountain").resume();
+         sounds.getSound("MumboMountain").smoothStart(0.5);
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
+         sounds.getSound("MumboMountain").fade(0.5, true);
+         }
+         if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
+         sounds.getSound("MumboMountain").fade(0.5, false);
+         }
+         */
+        for (Camera cam : cams) {
+            cam.update();
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-            sounds.getSound("MumboMountain").pause();
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
-            sounds.getSound("MumboMountain").stop();
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
-            sounds.getSound("MumboMountain").addPitch(0.05f);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
-            sounds.getSound("MumboMountain").addPitch(-0.05f);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
-            sounds.getSound("MumboMountain").addGainModifier(0.05f);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
-            sounds.getSound("MumboMountain").addGainModifier(-0.05f);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
-            sounds.getSound("MumboMountain").resume();
-            sounds.getSound("MumboMountain").smoothStart(0.5);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
-            sounds.getSound("MumboMountain").fade(0.5, true);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
-            sounds.getSound("MumboMountain").fade(0.5, false);
-        }
-                */
         for (Mob mob : sMobs) {
             mob.update(players);
         }
