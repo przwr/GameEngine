@@ -108,6 +108,7 @@ public class Player extends Entity {
     protected void move(int xPos, int yPos) {
         this.x = x + xPos;
         this.y = y + yPos;
+        cam.move(xPos, yPos);
     }
 
     @Override

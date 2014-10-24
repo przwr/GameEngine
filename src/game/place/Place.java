@@ -51,7 +51,7 @@ public abstract class Place {
 
     public final int width, height, sTile;
     public float r, g, b;
-    public Camera[] cams;
+    public Camera[] cams = new Camera[4];
 
     public final Tile[] tiles;
 
@@ -65,7 +65,7 @@ public abstract class Place {
         this.game = game;
         sounds = new SoundBase();
         sprites = new SpriteBase();
-        cams = new Camera[settings.nrPlayers];
+
     }
 
     public abstract void generate();

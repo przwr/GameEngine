@@ -24,8 +24,6 @@ public class Renderer {
     private static final int w = Display.getWidth();
     private static final int h = Display.getHeight();
     private static final int lightTex = makeTexture(null, 2048, 2048);
-    private static final int wS = (w % 4 == 0) ? w : w + 4 - (w %4);
-    private static final int hS = (h % 4 == 0) ? h : h + 4 - (h %4);
     private static int savedShadowed;
     private static int[] shadows, lights;
     private static final Point center = new Point(0, 0);
@@ -319,57 +317,60 @@ public class Renderer {
             glColor3f(0, 0, 0);
             if (ssMode == 1) {
                 glBegin(GL_QUADS);
-                glVertex2f(0, hS / 4 - 1);
-                glVertex2f(0, hS / 4 + 1);
-                glVertex2f(wS, hS / 4 + 1);
-                glVertex2f(wS, hS / 4 - 1);
+                glVertex2f(0, h / 4 - 1);
+                glVertex2f(0, h / 4 + 1);
+                glVertex2f(w, h / 4 + 1);
+                glVertex2f(w, h / 4 - 1);
                 glEnd();
                 glEnable(GL_BLEND);
             } else if (ssMode == 2) {
                 glBegin(GL_QUADS);
-                glVertex2f(wS / 4 - 1, 0);
-                glVertex2f(wS / 4 - 1, hS);
-                glVertex2f(wS / 4 + 1, hS);
-                glVertex2f(wS / 4 + 1, 0);
+                glVertex2f(w / 4 - 1, 0);
+                glVertex2f(w / 4 - 1, h);
+                glVertex2f(w / 4 + 1, h);
+                glVertex2f(w / 4 + 1, 0);
                 glEnd();
                 glEnable(GL_BLEND);
             } else if (ssMode == 3) {
                 glBegin(GL_QUADS);
-                glVertex2f(0, hS / 4 - 1);
-                glVertex2f(0, hS / 4 + 1);
-                glVertex2f(wS / 2, hS / 4 + 1);
-                glVertex2f(wS / 2, hS / 4 - 1);
-
-                glVertex2f(wS / 4 - 1, hS / 4);
-                glVertex2f(wS / 4 - 1, hS / 2);
-                glVertex2f(wS / 4 + 1, hS / 2);
-                glVertex2f(wS / 4 + 1, hS / 4);
+                glVertex2f(0, h / 4 - 1);
+                glVertex2f(0, h / 4 + 1);
+                glVertex2f(w / 2, h / 4 + 1);
+                glVertex2f(w / 2, h / 4 - 1);
+                glEnd();
+                glBegin(GL_QUADS);
+                glVertex2f(w / 4 - 1, h / 4);
+                glVertex2f(w / 4 - 1, h / 2);
+                glVertex2f(w / 4 + 1, h / 2);
+                glVertex2f(w / 4 + 1, h / 4);
                 glEnd();
                 glEnable(GL_BLEND);
             } else if (ssMode == 4) {
                 glBegin(GL_QUADS);
-                glVertex2f(wS / 4, hS / 4 - 1);
-                glVertex2f(wS / 4, hS / 4 + 1);
-                glVertex2f(wS / 2, hS / 4 + 1);
-                glVertex2f(wS / 2, hS / 4 - 1);
-
-                glVertex2f(wS / 4 - 1, 0);
-                glVertex2f(wS / 4 - 1, hS / 2);
-                glVertex2f(wS / 4 + 1, hS / 2);
-                glVertex2f(wS / 4 + 1, 0);
+                glVertex2f(w / 4, h / 4 - 1);
+                glVertex2f(w / 4, h / 4 + 1);
+                glVertex2f(w / 2, h / 4 + 1);
+                glVertex2f(w / 2, h / 4 - 1);
+                glEnd();
+                glBegin(GL_QUADS);
+                glVertex2f(w / 4 - 1, 0);
+                glVertex2f(w / 4 - 1, h / 2);
+                glVertex2f(w / 4 + 1, h / 2);
+                glVertex2f(w / 4 + 1, 0);
                 glEnd();
                 glEnable(GL_BLEND);
             } else if (ssMode == 5) {
                 glBegin(GL_QUADS);
-                glVertex2f(0, hS / 4 - 1);
-                glVertex2f(0, hS / 4 + 1);
-                glVertex2f(wS, hS / 4 + 1);
-                glVertex2f(wS, hS / 4 - 1);
-
-                glVertex2f(wS / 4 - 1, 0);
-                glVertex2f(wS / 4 - 1, hS);
-                glVertex2f(wS / 4 + 1, hS);
-                glVertex2f(wS / 4 + 1, 0);
+                glVertex2f(0, h / 4 - 1);
+                glVertex2f(0, h / 4 + 1);
+                glVertex2f(w, h / 4 + 1);
+                glVertex2f(w, h / 4 - 1);
+                glEnd();
+                glBegin(GL_QUADS);
+                glVertex2f(w / 4 - 1, 0);
+                glVertex2f(w / 4 - 1, h);
+                glVertex2f(w / 4 + 1, h);
+                glVertex2f(w / 4 + 1, 0);
                 glEnd();
                 glEnable(GL_BLEND);
             }
