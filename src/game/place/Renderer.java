@@ -88,7 +88,8 @@ public class Renderer {
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 glPushMatrix();     //384 i 384 to współrzędne obiektu dającego cień 512 to połowa wielkości światła
-                glTranslatef(384 + player.getLight().getSX() / 2 - (player.getMidX()), 384 + player.getLight().getSY() / 2 - (player.getMidY()), 0);
+                int lY = 768;
+                glTranslatef(384 + player.getLight().getSX() / 2 - (player.getMidX()), 384 + player.getLight().getSY() / 2 - (player.getMidY()) + h - lY, 0);
                 if (player.getMidY() > 416) { // 416 - x środka obiektu rzucającego cień
                     sprw.render();
                 } else {
@@ -97,7 +98,7 @@ public class Renderer {
                 glPopMatrix();
                 glColor3f(1, 1, 1);
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-                player.getLight().render();
+                player.getLight().render(h - lY);
                 fbo[nr].deactivate();
                 activeEmitters[nr] = player; //zapisanie emittera do korespondującej tablicy
                 nr++;
@@ -216,7 +217,7 @@ public class Renderer {
         int lY = 768;
         glColor3f(0, 0, 0);
         glPushMatrix();
-        glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY(), 0);
+        glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
         glBegin(GL_QUADS);
         glVertex2f(points[0].getX(), points[0].getY());
         glVertex2f(points[2].getX(), points[2].getY());
@@ -241,7 +242,7 @@ public class Renderer {
         int lX = 768;
         int lY = 768;
         glPushMatrix();
-        glTranslatef(emitter.getMidX() - emitter.getLight().getSX() / 2 + cam.getXOffEffect(), emitter.getMidY() - emitter.getLight().getSY() / 2 + cam.getYOffEffect() + h - 768, 0);
+        glTranslatef(emitter.getMidX() - emitter.getLight().getSX() / 2 + cam.getXOffEffect(), emitter.getMidY() - emitter.getLight().getSY() / 2 + cam.getYOffEffect(), 0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 1);
