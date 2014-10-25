@@ -231,4 +231,8 @@ public class Sprite {
     public void setKey(String key) {
         this.key = key;
     }
+    
+    public Texture getTex(){
+        return texture;
+    }
 }

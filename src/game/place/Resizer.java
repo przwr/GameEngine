@@ -17,9 +17,8 @@ public class Resizer {
 
     public static void resize(float camXStart, float camYStart, float camXSize, float camYSize) {
         Renderer.frameSave(frame, camXStart, camYStart, camXSize, camYSize);
-        Renderer.clearScreen(0);
+        Renderer.clearScreen(0);        
         glColor3f(1, 1, 1);
-        glDisable(GL_BLEND);
         drawFrame(frame, Display.getWidth(), Display.getHeight());
         glEnable(GL_BLEND);
     }

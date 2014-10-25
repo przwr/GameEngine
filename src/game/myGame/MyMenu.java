@@ -17,6 +17,9 @@ import game.place.Place;
 import java.awt.Font;
 import engine.FontsHandler;
 import org.lwjgl.opengl.Display;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glViewport;
 import org.newdawn.slick.Color;
@@ -108,6 +111,7 @@ public class MyMenu extends Place {
 
     @Override
     public void render() {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Camera cam;
         cam = (((Player) players.get(0)).getCam());
         glViewport(0, 0, Display.getWidth(), Display.getHeight());

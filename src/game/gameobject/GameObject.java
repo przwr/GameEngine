@@ -11,9 +11,6 @@ package game.gameobject;
  */
 import game.place.Light;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.Sprite;
 
 public abstract class GameObject {

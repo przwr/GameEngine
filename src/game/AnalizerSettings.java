@@ -85,6 +85,7 @@ public class AnalizerSettings {
             case "Resolution_Freq:":
                 int f = Integer.parseInt(p[1]);
                 if (f <= 0) {
+                    settings.freq = settings.display.getFrequency();
                 } else {
                     settings.freq = f;
                 }

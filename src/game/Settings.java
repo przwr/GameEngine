@@ -9,7 +9,6 @@ import game.gameobject.Player;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import engine.DisplayDevice;
 import engine.SoundBase;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
@@ -25,7 +24,7 @@ public class Settings {
     public DisplayMode[] tmpmodes;
     public DisplayMode[] modes;
     public int modesNr;
-    public DisplayDevice display = new DisplayDevice();
+    public DisplayMode display = Display.getDesktopDisplayMode();
     public int curMode;
     public boolean fullScreen = true;
     public boolean hSplitScreen;
@@ -34,8 +33,8 @@ public class Settings {
     public SoundBase sounds;
     public int resWidth = display.getWidth();
     public int resHeight = display.getHeight();
-    public int freq = display.getFreq();
-    public int depth = display.getDepth();
+    public int freq = display.getFrequency();
+    public int depth = display.getBitsPerPixel();
     public boolean aa = true;
     public boolean vSync = true;
     public String lang = "PL";
@@ -49,13 +48,11 @@ public class Settings {
     public Settings() {
         int minW = 1024;
         int maxW = 1920;
-
         try {
             tmpmodes = Display.getAvailableDisplayModes();
         } catch (LWJGLException ex) {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
         DisplayMode temp;
         if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getHeight() <= maxW && tmpmodes[0].getBitsPerPixel() == depth) {
             modesNr++;
@@ -90,7 +87,9 @@ public class Settings {
             return true;
         } else if (checked.getWidth() == temp.getWidth() && checked.getHeight() > temp.getHeight()) {
             return true;
-        } else return checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency();
+        } else {
+            return checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency();
+        }
     }
 
     public void Up(int nr, Player[] players, Controller[] controllers) {

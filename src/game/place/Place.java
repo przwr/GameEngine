@@ -97,6 +97,7 @@ public abstract class Place {
     }
 
     public void render() {
+        Renderer.preRenderShadows(camXStart, camYStart, camXSize, camYSize, this, emitters, players);
         Camera cam;
         for (GameObject player : players) {
             cam = (((Player) player).getCam());
@@ -181,8 +182,7 @@ public abstract class Place {
                     camXSize = camYStart = 0f;
                 }
             }
-            Renderer.preRenderShadows(cam, camXStart, camYStart, camXSize, camYSize, emitters, players);
-            Renderer.preRenderLights(cam, camXStart, camYStart, camXSize, camYSize, emitters, players, this);
+            //Renderer.rendertoFBO();
             Renderer.preRenderShadowedLights(cam, camXStart, camYStart, camXSize, camYSize);
             glColor3f(r, g, b);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -216,7 +216,7 @@ public abstract class Place {
     protected abstract void renderText(Camera cam);
 
     public void makeShadows() {
-        Renderer.makeShadows(emitters, players);
+        Renderer.initVariables(emitters, players);
     }
 
     public void renderMessage(int i, int x, int y, String ms, Color color) {

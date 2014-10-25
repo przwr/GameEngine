@@ -56,6 +56,16 @@ public class Light {
         }
     }
 
+    public void render() {
+        if (light != null) {
+            glColor3f(r, g, b);
+            glPushMatrix();
+            //glTranslatef(light.getSx() / 2, light.getSy()/2, 0);
+            light.render();
+            glPopMatrix();
+        }
+    }
+
     public int getSX() {
         return light.getSx();
     }
