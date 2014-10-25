@@ -9,7 +9,7 @@ import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
 import game.gameobject.Mob;
-import game.gameobject.Player;
+import game.myGame.MyPlayer;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
@@ -72,7 +72,7 @@ public abstract class Place {
 
     public abstract void update();
 
-    public void addPlayer(Player player) {
+    public void addPlayer(MyPlayer player) {
         players.add(player);
     }
 
@@ -97,10 +97,11 @@ public abstract class Place {
     }
 
     public void render() {
-        Renderer.preRenderShadows(camXStart, camYStart, camXSize, camYSize, this, emitters, players);
+        Renderer.preRendLightsFBO(camXStart, camXStart, camXSize, camXSize, this, emitters, players);
+        // Renderer.preRenderShadows(camXStart, camYStart, camXSize, camYSize, this, emitters, players);
         Camera cam;
         for (GameObject player : players) {
-            cam = (((Player) player).getCam());
+            cam = (((MyPlayer) player).getCam());
             if (players.size() == 2) {
                 if (settings.hSplitScreen) {
                     ssMode = 1;
@@ -183,7 +184,7 @@ public abstract class Place {
                 }
             }
             //Renderer.rendertoFBO();
-            Renderer.preRenderShadowedLights(cam, camXStart, camYStart, camXSize, camYSize);
+            Renderer.preRenderShadowedLightsFBO(cam, camXStart, camYStart, camXSize, camYSize);
             glColor3f(r, g, b);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             renderBack(cam);
@@ -349,7 +350,7 @@ public abstract class Place {
         return false;
     }
 
-    public boolean isPlCObj(int magX, int magY, Player player) {
+    public boolean isPlCObj(int magX, int magY, MyPlayer player) {
         Rectangle rec = new Rectangle();
         for (GameObject go : sMobs) {
             rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());

@@ -12,7 +12,6 @@ import game.gameobject.ActionWhileClicked;
 import game.gameobject.AnyInput;
 import game.gameobject.Controler;
 import game.gameobject.Entity;
-import game.gameobject.Player;
 
 /**
  *
@@ -31,25 +30,25 @@ public class MyController extends Controler {
         actions[0] = new ActionOnOff(inputs[0], inControl) {
             @Override
             public void Act() {
-                ((Player) inControl).menu.setChoosen(-1);
+                ((MyPlayer) inControl).menu.setChoosen(-1);
             }
         };
         actions[1] = new ActionOnOff(inputs[1], inControl) {
             @Override
             public void Act() {
-                ((Player) inControl).menu.setChoosen(1);
+                ((MyPlayer) inControl).menu.setChoosen(1);
             }
         };
         actions[2] = new ActionOnOff(inputs[2], inControl) {
             @Override
             public void Act() {
-                ((Player) inControl).menu.choice();
+                ((MyPlayer) inControl).menu.choice();
             }
         };
         actions[3] = new ActionOnOff(inputs[3], inControl) {
             @Override
             public void Act() {
-                ((Player) inControl).menu.back();
+                ((MyPlayer) inControl).menu.back();
             }
         };
         actions[4] = new ActionSingleClick(inputs[4], inControl) {
@@ -68,20 +67,20 @@ public class MyController extends Controler {
             @Override
             public void Act() {
                 inControl.canMove(-1, 0);
-                ((Player) inControl).getAnim().setFlip(0);
+                ((MyPlayer) inControl).getAnim().setFlip(0);
             }
         };
         actions[7] = new ActionSingleClick(inputs[7], inControl) {
             @Override
             public void Act() {
                 inControl.canMove(1, 0);
-                ((Player) inControl).getAnim().setFlip(1);
+                ((MyPlayer) inControl).getAnim().setFlip(1);
             }
         };
         actions[8] = new ActionSingleClick(inputs[8], inControl) {
             @Override
             public void Act() {
-                ((Player) inControl).getCam().shake();
+                ((MyPlayer) inControl).getCam().shake();
             }
         };
         actions[9] = new ActionWhileClicked(inputs[9], inControl) {
@@ -98,7 +97,7 @@ public class MyController extends Controler {
         actions[10] = new ActionOnOff(inputs[10], inControl) {
             @Override
             public void Act() {
-                ((Player) inControl).setEmits(!((Player) inControl).isEmits());
+                ((MyPlayer) inControl).setEmits(!((MyPlayer) inControl).isEmits());
             }
         };
     }

@@ -5,8 +5,8 @@
  */
 package game.myGame;
 
-import game.gameobject.GameObject;
 import game.gameobject.Mob;
+import game.gameobject.GameObject;
 import game.place.Place;
 import java.util.ArrayList;
 

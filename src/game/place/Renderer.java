@@ -25,9 +25,8 @@ public class Renderer {
     private static final int h = Display.getHeight();
     private static final int texW = (w > 1024) ? 2048 : 1024;
     private static final int texH = (h > 1024) ? 2048 : 1024;
-    private static final int lightTex = makeTexture(null, texW, texH);
+    private static final int lightTex = makeTexture(null, 2048, 2048);
     private static int savedShadowed;
-    private static int[] lights;
     private static GameObject[] activeEmitters;
     private static final Point center = new Point(0, 0);
     private static final Point[] tempPoints = new Point[4];
@@ -35,30 +34,14 @@ public class Renderer {
     private static final Sprite sprb = new Sprite("rockb", 64, 64, null);
     private static final Sprite sprw = new Sprite("rockw", 64, 64, null);
     private static final Sprite alpha = new Sprite("alpha", 2048, 2048, null);
-    private static final int shDif = 1024;
+    private static final int shDif = (int) (768 / 2 * Math.sqrt(2.0));
     private static int shP1 = 0;
     private static int shP2 = 2;
     private static int shX, shY;
     private static double angle, temp, al1, bl1, al2, bl2;
     private static FBORenderer[] fbo;
 
-    public static void rendertoFBO() {
-        fbo[0].activate();
-        glDisable(GL_BLEND);
-        glColor3f(1f, 1f, 1f);
-        alpha.render();
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glPushMatrix();     //384 i 384 to współrzędne obiektu dającego cień 512 to połowa wielkości światła
-        glTranslatef(384, 384, 0);
-        sprw.render();
-        glPopMatrix();
-        fbo[0].deactivate();
-        drawTex(fbo[0].getTexture(), w, h);
-
-    }
-
-    public static void preRenderShadows(float xStart, float yStart, float xSize, float ySize, Place place, ArrayList<GameObject> emitters, ArrayList<GameObject> players) {
+    public static void preRendLightsFBO(float xStart, float yStart, float xSize, float ySize, Place place, ArrayList<GameObject> emitters, ArrayList<GameObject> players) {
         int nr = 0;
         for (GameObject emitter : emitters) {
             if (emitter.isEmits()) {
@@ -67,13 +50,12 @@ public class Renderer {
         }
         for (GameObject player : players) {
             if (player.isEmitter() && player.isEmits()) {
+                calculateShadow(player, null, 384, 384);
+                fbo[nr].activate();
                 glDisable(GL_BLEND);
                 glColor3f(1f, 1f, 1f);
                 alpha.render();
-                {
-//              dla każdego obiektu rzucającego światło
-                    calculateShadow(player, null, 384, 384);
-                    // na 8
+                // na 8
 //                    drawShadow(cam, 0.875f, 0);
 //                    drawShadow(cam, 0.75f, 1);
 //                    drawShadow(cam, 0.625f, 2);
@@ -82,27 +64,26 @@ public class Renderer {
 //                    drawShadow(cam, 0.25f, 5);
 //                    drawShadow(cam, 0.125f, 6);
 //                    drawShadow(cam, 0.0f, 7);
-                    // na 5
+                // na 5
 //                    drawShadow(cam, 0.8f, 0);
 //                    drawShadow(cam, 0.6f, 1);
 //                    drawShadow(cam, 0.4f, 2);
 //                    drawShadow(cam, 0.2f, 3);
 //                    drawShadow(cam, 0.0f, 4);
-                    // na 4
+                // na 4
 //                    drawShadow(cam, 0.75f, 0);
 //                    drawShadow(cam, 0.5f, 1);
 //                    drawShadow(cam, 0.25f, 2);
 //                    drawShadow(cam, 0.0f, 3);
-                    // na 3
+                // na 3
 //                    drawShadow(cam, 0.8f, 0);
 //                    drawShadow(cam, 0.4f, 1);
 //                    drawShadow(cam, 0.0f, 2);
-                    // na 2
+                // na 2
 //                    drawShadow(cam, 0.5f, 0);
 //                    drawShadow(cam, 0.0f, 1);                    
-                    // na 1
-                    drawShadow(player);
-                }
+                // na 1
+                drawShadow(player);
                 glColor3f(1f, 1f, 1f);
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -117,11 +98,23 @@ public class Renderer {
                 glColor3f(1, 1, 1);
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 player.getLight().render();
+                fbo[nr].deactivate();
                 activeEmitters[nr] = player; //zapisanie emittera do korespondującej tablicy
-                lightSave(lights[nr++], xStart, yStart, xSize, ySize);
+                nr++;
             }
         }
         savedShadowed = nr;
+    }
+
+    public static void preRenderShadowedLightsFBO(Camera cam, float xStart, float yStart, float xSize, float ySize) {
+        clearScreen(0);
+        glColor3f(1, 1, 1);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+        for (int i = 0; i < savedShadowed; i++) {
+            drawLight(fbo[i].getTexture(), w, h, activeEmitters[i], cam);
+        }
+        frameSave(lightTex, xStart, yStart, xSize, ySize);
     }
 
     private static void calculateShadow(GameObject src, GameObject shade, int xS, int yS) {
@@ -219,9 +212,11 @@ public class Renderer {
     }
 
     public static void drawShadow(GameObject emitter) {
+        int lX = 768;
+        int lY = 768;
         glColor3f(0, 0, 0);
         glPushMatrix();
-        glTranslatef(512 - emitter.getMidX(), 512 - emitter.getMidY(), 0);
+        glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY(), 0);
         glBegin(GL_QUADS);
         glVertex2f(points[0].getX(), points[0].getY());
         glVertex2f(points[2].getX(), points[2].getY());
@@ -242,22 +237,11 @@ public class Renderer {
         glEnd();
     }
 
-    public static void preRenderShadowedLights(Camera cam, float xStart, float yStart, float xSize, float ySize) {
-        clearScreen(0);
-        glColor3f(1, 1, 1);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE);
-        for (int i = 0; i < savedShadowed; i++) {
-            drawLight(lights[i], w, h, activeEmitters[i], cam);
-        }
-        frameSave(lightTex, xStart, yStart, xSize, ySize);
-    }
-
     public static void drawLight(int textureHandle, float w, float h, GameObject emitter, Camera cam) {
-        int lX = 1024;
-        int lY = 1024;
+        int lX = 768;
+        int lY = 768;
         glPushMatrix();
-        glTranslatef(emitter.getMidX() - emitter.getLight().getSX() / 2 + cam.getXOffEffect(), emitter.getMidY() - emitter.getLight().getSY() / 2 + cam.getYOffEffect(), 0);
+        glTranslatef(emitter.getMidX() - emitter.getLight().getSX() / 2 + cam.getXOffEffect(), emitter.getMidY() - emitter.getLight().getSY() / 2 + cam.getYOffEffect() + h - 768, 0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 1);
@@ -286,7 +270,7 @@ public class Renderer {
         glColor3f(val, val, val);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < strength; i++) {
-            drawTex(lightTex, w, h);
+            drawTexold(lightTex, w, h);
         }
     }
 
@@ -313,15 +297,12 @@ public class Renderer {
         glCopyTexSubImage2D(GL_TEXTURE_2D, 0, (int) (w * xSize), (int) (h * ySize), (int) (xStart * w), (int) (yStart * h), w, h);
     }
 
-    public static void lightSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
-        glColor3f(1, 1, 1);
-        glReadBuffer(GL_BACK);
-        glBindTexture(GL_TEXTURE_2D, txtrHandle);
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, h - 1024, 1024, 1024);
-        // System.out.println("sum: " + (cam.getXOffEffect() + emitter.getMidX() - 512) + " " + (cam.getYOffEffect() + emitter.getMidY() - 512));
-
-    }
-
+//    public static void lightSave(int txtrHandle, float xStart, float yStart, float xSize, float ySize) {
+//        glColor3f(1, 1, 1);
+//        glReadBuffer(GL_BACK);
+//        glBindTexture(GL_TEXTURE_2D, txtrHandle);
+//        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, h - 1024, 1024, 1024);
+//    }
     public static void drawTex(int textureHandle, float w, float h) {
         glPushMatrix();
         glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -338,15 +319,31 @@ public class Renderer {
         glPopMatrix();
     }
 
+    public static void drawTexold(int textureHandle, float w, float h) {
+        glPushMatrix();
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, h / 2048);
+        glVertex2f(0, 0);
+        glTexCoord2f(w / 2048, h / 2048);
+        glVertex2f(w, 0);
+        glTexCoord2f(w / 2048, 0);
+        glVertex2f(w, h);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, h);
+        glEnd();
+        glPopMatrix();
+    }
+
     public static void initVariables(ArrayList<GameObject> emitters, ArrayList<GameObject> players) {
-        lights = new int[emitters.size() + players.size()];
-        for (int i = 0; i < emitters.size() + players.size(); i++) {
-            lights[i] = makeTexture(null, 1024, 1024);
-        }
         activeEmitters = new GameObject[emitters.size() + players.size()];
         for (int i = 0; i < 4; i++) {
             points[i] = new Point(0, 0);
             tempPoints[i] = new Point(0, 0);
+        }
+        fbo = new FBORenderer[emitters.size() + players.size()];
+        for (int i = 0; i < emitters.size() + players.size(); i++) {
+            fbo[i] = new FBORenderer(768, 768, glGenTextures());
         }
     }
 

@@ -5,7 +5,7 @@
  */
 package game;
 
-import game.gameobject.Player;
+import game.myGame.MyPlayer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,7 +41,7 @@ public class Settings {
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny
     public int actionsNr;
-    public Player[] players;
+    public MyPlayer[] players;
     public Controller[] controllers;
     public int worldSeed;
 
@@ -92,7 +92,7 @@ public class Settings {
         }
     }
 
-    public void Up(int nr, Player[] players, Controller[] controllers) {
+    public void Up(int nr, MyPlayer[] players, Controller[] controllers) {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;

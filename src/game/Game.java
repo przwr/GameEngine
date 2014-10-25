@@ -7,7 +7,7 @@ package game;
 
 import game.myGame.MyMenu;
 import game.myGame.MyPlace;
-import game.gameobject.Player;
+import game.myGame.MyPlayer;
 import game.place.Place;
 import java.io.File;
 import engine.Sound;
@@ -20,8 +20,8 @@ import org.lwjgl.input.Controller;
 public class Game {
 
     private final Settings settings;
-    private final Player menuPl;
-    private final Player[] players = new Player[4];
+    private final MyPlayer menuPl;
+    private final MyPlayer[] players = new MyPlayer[4];
     private final Place menu;
     private Place place;
     private final String title;
@@ -32,15 +32,15 @@ public class Game {
         this.settings = settings;
         this.title = title;
 
-        players[0] = new Player(true);
-        players[1] = new Player(false);
-        players[2] = new Player(false);
-        players[3] = new Player(false);
+        players[0] = new MyPlayer(true);
+        players[1] = new MyPlayer(false);
+        players[2] = new MyPlayer(false);
+        players[3] = new MyPlayer(false);
 
         settings.Up(players[1].ctrl.getActionsCount(), players, controllers);
         IO.ReadFile(new File("res/input.ini"), settings, false);
         menu = new MyMenu(this, 2048, 2048, 64, settings);
-        menuPl = new Player(true);
+        menuPl = new MyPlayer(true);
         menu.addCamera(menuPl, 2, 2, 0);
         menu.addPlayer(menuPl);
         menuPl.addCamera(menu.cams[0]);
@@ -49,7 +49,7 @@ public class Game {
 
     public void getInput() {
         if (runFlag) {
-            for (Player pl : players) {
+            for (MyPlayer pl : players) {
                 if (pl.getPlace() != null) {
                     if (pl.isMenuOn()) {
                         runFlag = false;
@@ -62,7 +62,7 @@ public class Game {
             if (place == null) {
                 menuPl.getMenuInput();
             } else {
-                for (Player pl : players) {
+                for (MyPlayer pl : players) {
                     if (pl.menu != null) {
                         if (pl.isMenuOn()) {
                             ((MyMenu) menu).back();

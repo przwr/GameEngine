@@ -9,6 +9,8 @@ import game.place.cameras.Camera;
 import game.place.Place;
 import java.util.ArrayList;
 import engine.Physics;
+import game.gameobject.Entity;
+import game.gameobject.GameObject;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;

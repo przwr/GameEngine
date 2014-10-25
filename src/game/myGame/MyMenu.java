@@ -6,7 +6,6 @@
 package game.myGame;
 
 import engine.Delay;
-import game.gameobject.Player;
 import game.Game;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
@@ -113,7 +112,7 @@ public class MyMenu extends Place {
     public void render() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Camera cam;
-        cam = (((Player) players.get(0)).getCam());
+        cam = (((MyPlayer) players.get(0)).getCam());
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
         glColor3f(r, g, b);
         renderText(cam);

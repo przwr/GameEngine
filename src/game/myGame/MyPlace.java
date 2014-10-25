@@ -5,11 +5,10 @@
  */
 package game.myGame;
 
-import game.gameobject.Player;
+import game.gameobject.Mob;
 import game.Game;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.gameobject.Mob;
 import game.place.BasicTile;
 import game.place.cameras.Camera;
 import game.place.Place;
@@ -102,7 +101,7 @@ public class MyPlace extends Place {
     @Override
     protected void renderText(Camera cam) {
         for (GameObject player : players) {
-            ((Player) player).renderName(this, cam);
+            ((MyPlayer) player).renderName(this, cam);
         }
 
         for (Mob mob : sMobs) {

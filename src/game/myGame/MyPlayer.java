@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject;
+package game.myGame;
 
 import game.gameobject.inputs.*;
-import game.myGame.MyController;
-import game.myGame.MyMenu;
 import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
 import engine.Animation;
+import game.gameobject.Entity;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -22,7 +21,7 @@ import org.newdawn.slick.Color;
  *
  * @author przemek
  */
-public class Player extends Entity {
+public class MyPlayer extends Entity {
 
     public MyMenu menu;
     private Animation anim;
@@ -46,7 +45,7 @@ public class Player extends Entity {
 //        animate = true;
 //        initControler(isFirst);
 //    }
-    public Player(boolean isFirst) {
+    public MyPlayer(boolean isFirst) {
         initControler(isFirst);
     }
 
@@ -60,7 +59,7 @@ public class Player extends Entity {
         this.setSpeed(8);
         this.emitter = true;
         init("apple", name, x, y, sx, sy, place);
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, 1024, 1024, place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, 768, 768, place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
