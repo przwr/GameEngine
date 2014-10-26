@@ -24,10 +24,10 @@ public abstract class Camera {
     protected int shakeAmp = 8;
     boolean shakeUp = true;
 
-    public abstract void move(int xPos, int yPos);
+    public abstract void update();
 
     public abstract void shake();
-
+    
     public GameObject getGo() {
         return go;
     }
@@ -78,6 +78,10 @@ public abstract class Camera {
 
     public void setYOff(int yOffset) {
         this.yOffset = yOffset;
+    }
+
+    public void setGo(GameObject go) {
+        this.go = go;
     }
 
 }

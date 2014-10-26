@@ -14,21 +14,21 @@ import game.myGame.MyMenu;
  *
  * @author przemek
  */
-public class ChoiceAntiAliasing extends MenuChoice {
+public class ChoiceJoinSS extends MenuChoice {
 
-    public ChoiceAntiAliasing(String label, MyMenu menu, Settings settings) {
+    public ChoiceJoinSS(String label, MyMenu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        settings.aa = !settings.aa;
+        settings.fullScreen = !settings.fullScreen;
         AnalizerSettings.Update(settings);
     }
 
     @Override
     public String getLabel() {
-        if (settings.aa) {
+        if (settings.fullScreen) {
             return label + settings.language.On;
         } else {
             return label + settings.language.Off;

@@ -11,6 +11,7 @@ import game.myGame.MyPlayer;
 import game.place.Place;
 import java.io.File;
 import engine.Sound;
+import game.gameobject.GameObject;
 import org.lwjgl.input.Controller;
 
 /**
@@ -42,7 +43,8 @@ public class Game {
         menu = new MyMenu(this, 2048, 2048, 64, settings);
         menuPl = new MyPlayer(true);
         menu.addCamera(menuPl, 2, 2, 0);
-        menu.addPlayer(menuPl);
+        menu.players = new GameObject[1];
+        menu.players[0] = menuPl;
         menuPl.addCamera(menu.cams[0]);
         menuPl.addMenu((MyMenu) menu);
     }
@@ -76,13 +78,11 @@ public class Game {
 
     public void startGame(int nrPl) {
         place = new MyPlace(this, 2048, 2048, 64, settings);
+        place.players = new GameObject[nrPl];
         if (nrPl == 1) {
             players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
             place.addCamera(players[0], 2, 2, 0); // 2 i 2 to tryb SS
         } else if (nrPl == 2) {
-            if (place == null) {
-                System.out.println("NULL");
-            }
             players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
             players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024);
             if (settings.hSplitScreen) {
@@ -92,6 +92,7 @@ public class Game {
                 place.addCamera(players[0], 4, 2, 0);
                 place.addCamera(players[1], 4, 2, 1);
             }
+            place.addCamerasFor2(players[0], players[1]);
         } else if (nrPl == 3) {
             players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
             players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024);
@@ -114,7 +115,7 @@ public class Game {
             place.addCamera(players[3], 4, 4, 3);
         }
         for (int i = 0; i < nrPl; i++) {
-            place.addPlayer(players[i]);
+            place.players[i] = players[i];
             players[i].addCamera(place.cams[i]);
             players[i].addMenu((MyMenu) menu);
         }

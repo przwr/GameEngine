@@ -79,6 +79,7 @@ public class Main {
         Time.init();
         while (!Display.isCloseRequested() && !game.exitFlag) {
             Time.update();
+            Display.setTitle("FPS: " + (int) (60 / Time.getDelta()));
             getInput();
             update();
             render();
@@ -102,11 +103,9 @@ public class Main {
     private static void initDisplay() {
         try {
             setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
-            if (settings.aa) {
-                Display.create(new PixelFormat(32, 0, 24, 0, 4));
-            } else {
-                Display.create(new PixelFormat(32, 0, 24, 0, 0));
-            }
+
+            Display.create(new PixelFormat(32, 0, 24, 0, 0));
+
             Display.setResizable(false);
             if (settings.vSync) {
                 Display.setVSyncEnabled(true);

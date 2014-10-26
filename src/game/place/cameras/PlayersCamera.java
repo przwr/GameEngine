@@ -6,6 +6,7 @@
 package game.place.cameras;
 
 import engine.Delay;
+import game.Methods;
 import game.gameobject.GameObject;
 import game.place.Place;
 import org.lwjgl.opengl.Display;
@@ -75,49 +76,19 @@ public class PlayersCamera extends Camera {
                 }
             }
         }
-        if (place.isResize) {
-            Dwidth = (Display.getWidth()) / ssX;
-            Dheight = Display.getHeight() / ssY;
-        } else {
-            Dwidth = Display.getWidth() / ssX;
-            Dheight = Display.getHeight() / ssY;
-        }
-        xOffset = Dwidth - go.getMidX();
-        yOffset = Dheight - go.getMidY();
-        if (go.getMidX() <= Dwidth - xLeft) {
-            xOffset = xLeft;
-        }
-        if (go.getMidX() >= place.width - Dwidth + xRight) {
-            xOffset = -place.width + 2 * Dwidth - xRight;
-        }
-        if (go.getMidY() <= Dheight - yUp) {
-            yOffset = yUp;
-        }
-        if (go.getMidY() >= place.height - Dheight + yDown) {
-            yOffset = -place.height + 2 * Dheight - yDown;
-        }
+        Dwidth = Display.getWidth() / ssX;
+        Dheight = Display.getHeight() / ssY;
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth - xRight, Dwidth - go.getMidX(), xLeft);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight - yDown, Dheight - go.getMidY(), yUp);
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
         shakeDelay.restart();
     }
 
     @Override
-    public synchronized void move(int xPos, int yPos
-    ) {
-        xOffset -= xPos;
-        yOffset -= yPos;
-        if (go.getMidX() <= Dwidth - xLeft) {
-            xOffset = xLeft;
-        }
-        if (go.getMidX() >= place.width - Dwidth + xRight) {
-            xOffset = -place.width + 2 * Dwidth - xRight;
-        }
-        if (go.getMidY() <= Dheight - yUp) {
-            yOffset = yUp;
-        }
-        if (go.getMidY() >= place.height - Dheight + yDown) {
-            yOffset = -place.height + 2 * Dheight - yDown;
-        }
+    public synchronized void update() {
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth - xRight, Dwidth - getGo().getMidX(), xLeft);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight - yDown, Dheight - getGo().getMidY(), yUp);
     }
 
     @Override
@@ -135,4 +106,28 @@ public class PlayersCamera extends Camera {
             shakeDelay.restart();
         }
     }
+
+    public void reInit(int num) {
+        if (place.settings.nrPlayers == 2) {
+            if (place.settings.hSplitScreen) {
+                if (num == 0) {
+                    yDown = 2;
+                    xLeft = xRight = yUp = 0;
+                } else {
+                    yUp = 2;
+                    xLeft = xRight = yDown = 0;
+                }
+            } else {
+                if (num == 0) {
+                    xRight = 2;
+                    xLeft = yUp = yDown = 0;
+                } else {
+                    xLeft = 2;
+                    xRight = yUp = yDown = 0;
+
+                }
+            }
+        }
+    }
+
 }

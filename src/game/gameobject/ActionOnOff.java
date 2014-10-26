@@ -21,7 +21,7 @@ public abstract class ActionOnOff extends Action {
             if (in.isPut()) {
                 if (!in.isPressed()) {
                     in.setPressed(true);
-                    Act();                    
+                    Act();
                 }
             } else {
                 in.setPressed(false);

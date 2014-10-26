@@ -8,7 +8,6 @@ package game.myGame;
 import game.gameobject.Mob;
 import game.gameobject.GameObject;
 import game.place.Place;
-import java.util.ArrayList;
 
 /**
  *
@@ -22,7 +21,7 @@ public class MyMob extends Mob {
     }
 
     @Override
-    public void update(ArrayList<GameObject> players) {
+    public void update(GameObject[] players) {
         if (prey != null) {
             chase(prey);
         } else {

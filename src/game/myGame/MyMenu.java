@@ -52,6 +52,7 @@ public class MyMenu extends Place {
         menus[1] = new MenuOpt(10, settings.language.Options);
         menus[1].addChoice(new ChoicePlayers(settings.language.Number_Of_Players, this, settings));
         menus[1].addChoice(new ChoiceSplitScreen(settings.language.SplitScreen, this, settings));
+        menus[1].addChoice(new ChoiceJoinSS(settings.language.JoinedSS, this, settings));
         menus[1].addChoice(new ChoiceLanguage(settings.language.Language, this, settings));
         menus[1].addChoice(new ChoiceControls(settings.language.Controls, this, settings));
         menus[1].addChoice(new ChoiceBrightness(settings.language.Brigthness, this, settings));
@@ -59,7 +60,6 @@ public class MyMenu extends Place {
         menus[1].addChoice(new ChoiceResolution(settings.language.Resolution, this, settings));
         menus[1].addChoice(new ChoiceFullScreen(settings.language.FullScreen, this, settings));
         menus[1].addChoice(new ChoiceVSync(settings.language.VSync, this, settings));
-        menus[1].addChoice(new ChoiceAntiAliasing(settings.language.AA, this, settings));
         menus[2] = new MenuOpt(10, settings.language.Controls);
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player1, this, settings));
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player2, this, settings));
@@ -112,7 +112,7 @@ public class MyMenu extends Place {
     public void render() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Camera cam;
-        cam = (((MyPlayer) players.get(0)).getCam());
+        cam = (((MyPlayer) players[0]).getCam());
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
         glColor3f(r, g, b);
         renderText(cam);

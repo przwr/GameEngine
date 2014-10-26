@@ -51,7 +51,7 @@ public class Mob extends Entity {
         y += yPos;
     }
 
-    public void update(ArrayList<GameObject> players) {
+    public void update(GameObject[] players) {
         if (prey != null) {
             chase(prey);
         } else {
@@ -59,7 +59,7 @@ public class Mob extends Entity {
         }
     }
 
-    public synchronized void look(ArrayList<GameObject> players) {
+    public synchronized void look(GameObject[] players) {
         prey = Physics.sphereCollideWPl(getMidX(), getMidY(), range, players, place);
     }
 
