@@ -97,7 +97,7 @@ public abstract class Place {
     }
 
     public void render() {
-        Renderer.preRendLightsFBO(camXStart, camXStart, camXSize, camXSize, this, emitters, players);        
+        Renderer.preRendLightsFBO(camXStart, camXStart, camXSize, camXSize, this, emitters, players);
         Camera cam;
         for (GameObject player : players) {
             cam = (((MyPlayer) player).getCam());
@@ -188,7 +188,7 @@ public abstract class Place {
             renderBack(cam);
             renderObj(cam);
             renderText(cam);
-            Renderer.renderLights(r, g, b);
+                Renderer.renderLights(r, g, b);
             if (isResize) {
                 Resizer.resize(camXStart, camYStart, camXSize, camYSize);
             }
