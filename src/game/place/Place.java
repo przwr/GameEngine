@@ -96,7 +96,7 @@ public abstract class Place {
 
     public void render() {
         Renderer.preRendLightsFBO(camXStart, camXStart, this, emitters, players);
-        Camera cam;
+        Camera cam;        
         for (int p = 0; p < players.length; p++) {
             GameObject player = players[p];
             cam = (((MyPlayer) player).getCam());

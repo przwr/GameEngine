@@ -22,13 +22,13 @@ public class ChoiceJoinSS extends MenuChoice {
 
     @Override
     public void action() {
-        settings.fullScreen = !settings.fullScreen;
+        settings.joinSS = !settings.joinSS;
         AnalizerSettings.Update(settings);
     }
 
     @Override
     public String getLabel() {
-        if (settings.fullScreen) {
+        if (settings.joinSS) {
             return label + settings.language.On;
         } else {
             return label + settings.language.Off;
