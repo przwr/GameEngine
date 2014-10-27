@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import collision.Rectangle;
 import static game.place.Tile.SIZE;
 import sprites.SpriteSheet;
 

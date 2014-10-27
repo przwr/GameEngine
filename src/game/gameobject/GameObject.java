@@ -9,18 +9,16 @@ package game.gameobject;
  *
  * @author przemek
  */
+import collision.Figure;
 import game.place.Light;
 import game.place.Place;
+import java.util.Objects;
 import sprites.Sprite;
 
 public abstract class GameObject {
 
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
-    protected int sX;
-    protected int sY;
+    protected double x;
+    protected double y;
     protected boolean solid;
     protected boolean emitter;
     protected boolean emits;
@@ -31,6 +29,12 @@ public abstract class GameObject {
     protected Light light;
     protected String name;
     protected Place place;
+    protected Figure collision;
+    
+    protected int sX;
+    protected int sY;    
+    protected int width;
+    protected int height;
 
     public abstract void render(int xEffect, int yEffect);
 
@@ -40,8 +44,40 @@ public abstract class GameObject {
         this.name = name;
         this.place = place;
         this.sprite = place.getSprite(textureKey, sx, sy);
+        
     }
 
+    @Override
+    public boolean equals(Object o) {
+        try {
+            GameObject go = (GameObject) o;
+            if (go.getX() == getX() && go.getY() == getY() && go.getName().equals(getName()))
+                return true;
+        } catch(Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        hash = 83 * hash + (this.solid ? 1 : 0);
+        hash = 83 * hash + Objects.hashCode(this.sprite);
+        hash = 83 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+    
+    public Figure getCollision(){
+        return collision;
+    }
+    
+    public void setCollision(Figure f){
+        collision = f;
+    }
+    
     protected void init(String name, int x, int y, int sx, int sy, Place place) {
         this.x = x;
         this.y = y;
@@ -66,35 +102,35 @@ public abstract class GameObject {
     }
 
     public int getMidX() {
-        return sX + x + width / 2;
+        return (int) (sX + x + width / 2);
     }
 
     public int getMidY() {
-        return sY + y + height / 2;
+        return (int) (sY + y + height / 2);
     }
 
     public int getBegOfX() {
-        return sX + x;
+        return (int) (sX + x);
     }
 
     public int getBegOfY() {
-        return sY + y;
+        return (int) (sY + y);
     }
 
     public int getEndOfX() {
-        return sX + x + width;
+        return (int) (sX + x + width);
     }
 
     public int getEndOfY() {
-        return sY + y + height;
+        return (int) (sY + y + height);
     }
 
     public int getX() {
-        return x;
+        return (int) x;
     }
 
     public int getY() {
-        return y;
+        return (int) y;
     }
 
     public int getWidth() {

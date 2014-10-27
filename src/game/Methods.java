@@ -21,8 +21,8 @@ public class Methods {
         return Math.sin(Math.toRadians(angle)) * rad;
     }
 
-    public static double PointDistance(int x, int y, int xa, int ya) {
-        return Math.sqrt(Math.pow(xa - x, 2) + Math.pow(ya - y, 2));
+    public static int PointDistance(int x, int y, int xa, int ya) {
+        return (int)Math.sqrt(Math.pow(xa - x, 2) + Math.pow(ya - y, 2));
     }
 
     public static int PointDifference(int x, int y, int xa, int ya) {

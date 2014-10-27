@@ -5,6 +5,7 @@
  */
 package game.myGame;
 
+import collision.Rectangle;
 import game.gameobject.inputs.*;
 import game.place.cameras.Camera;
 import game.place.Place;
@@ -63,6 +64,7 @@ public class MyPlayer extends Entity {
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
+        setCollision(new Rectangle(width, height, this));
     }
 
     private void initControler(boolean isFirst) {
@@ -95,19 +97,26 @@ public class MyPlayer extends Entity {
     @Override
     protected boolean isColided(int magX, int magY) {
         if (place != null) {
-            if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
-                return true;
-            }
-            return (getPlace().isObjCTl(magX, magY, this) || getPlace().isPlCObj(magX, magY, this));
+            //return collision.ifCollide(getMidX() + magX, getMidY() + magY, place);
+            /*if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
+             return true;
+             }
+             return (getPlace().isObjCTl(magX, magY, this) || getPlace().isPlCObj(magX, magY, this));*/
         }
         return false;
     }
 
     @Override
     protected void move(int xPos, int yPos) {
-        this.x = x + xPos;
-        this.y = y + yPos;
-        cam.move(xPos, yPos);
+        x += xPos;
+        y += yPos;
+        cam.update();
+    }
+
+    @Override
+    protected void setPosition(int xPos, int yPos) {
+        x = xPos;
+        y = yPos;
     }
 
     @Override

@@ -18,7 +18,6 @@ public abstract class Tile extends GameObject {
         this.sh = sh;
         this.xSheet = xSheet;
         this.ySheet = ySheet;
-        //this.spr = place.getSprite(tex, size, size);
         this.place = place;
     }
 
@@ -26,7 +25,6 @@ public abstract class Tile extends GameObject {
         glPushMatrix();
         glTranslatef(x, y, 0);
         sh.render(1, xSheet, ySheet);
-        //spr.render(flip);
         glPopMatrix();
     }
 

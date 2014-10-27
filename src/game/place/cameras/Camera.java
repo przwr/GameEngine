@@ -18,26 +18,33 @@ public abstract class Camera {
     protected GameObject go;
     protected Place place;
 
-    protected int Dwidth, Dheight, xOffset, yOffset, xEffect, yEffect, xLeft, xRight, yDown, yUp;
+    protected int Dwidth, Dheight, xEffect, yEffect, xLeft, xRight, yDown, yUp;
+    protected double xOffset, yOffset;
     protected int delaylenght;
     protected Delay shakeDelay;
     protected int shakeAmp = 8;
     boolean shakeUp = true;
 
-    public abstract void move(int xPos, int yPos);
+    public abstract void move(double xPos, double yPos);
+    
+    public abstract void setPosition(int xPos, int yPos);
 
     public abstract void shake();
+    
+    public void update() {
+        setPosition((int)Dwidth - go.getMidX(), (int)Dheight - go.getMidY());
+    }
 
     public GameObject getGo() {
         return go;
     }
 
     public int getXOffEffect() {
-        return xOffset + xEffect;
+        return (int) (xOffset + xEffect);
     }
 
     public int getYOffEffect() {
-        return yOffset + yEffect;
+        return (int) (yOffset + yEffect);
     }
 
     public int getShakeAmp() {
@@ -57,11 +64,11 @@ public abstract class Camera {
     }
 
     public int getXOff() {
-        return xOffset;
+        return (int) xOffset;
     }
 
     public int getYOff() {
-        return yOffset;
+        return (int) yOffset;
     }
 
     public int getXEffect() {

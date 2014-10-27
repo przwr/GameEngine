@@ -5,12 +5,12 @@
  */
 package game.gameobject;
 
+import collision.Circle;
+import collision.Rectangle;
+import game.Methods;
 import game.place.cameras.Camera;
 import game.place.Place;
 import java.util.ArrayList;
-import engine.Physics;
-import game.gameobject.Entity;
-import game.gameobject.GameObject;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -35,20 +35,28 @@ public class Mob extends Entity {
         this.setSpeed(speed);
         this.range = range;
         init("rabbit", name, x, y, sx, sy, place);
+        setCollision(new Rectangle(width, height, this));
     }
 
     @Override
     protected boolean isColided(int magX, int magY) {
-        if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
-            return true;
-        }
-        return (place.isObjCTl(magX, magY, this) || place.isObjCObj(magX, magY, this));
+        return collision.ifCollide(getBegOfX() + magX, getBegOfY() + magY, place);
+        /*if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
+         return true;
+         }
+         return (place.isObjCTl(magX, magY, this) || place.isObjCObj(magX, magY, this));*/
     }
 
     @Override
     protected void move(int xPos, int yPos) {
         x += xPos;
         y += yPos;
+    }
+
+    @Override
+    protected void setPosition(int xPos, int yPos) {
+        x = xPos;
+        y = yPos;
     }
 
     public void update(ArrayList<GameObject> players) {
@@ -60,7 +68,10 @@ public class Mob extends Entity {
     }
 
     public synchronized void look(ArrayList<GameObject> players) {
-        prey = Physics.sphereCollideWPl(getMidX(), getMidY(), range, players, place);
+        for (GameObject g : players) {
+            if (Methods.PointDistance(g.getX(), g.getY(), getX(), getY()) < range)
+                prey = g;
+        }
     }
 
     public synchronized void chase(GameObject prey) {

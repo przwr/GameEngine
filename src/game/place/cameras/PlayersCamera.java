@@ -6,6 +6,7 @@
 package game.place.cameras;
 
 import engine.Delay;
+import game.Methods;
 import game.gameobject.GameObject;
 import game.place.Place;
 import org.lwjgl.opengl.Display;
@@ -102,22 +103,15 @@ public class PlayersCamera extends Camera {
     }
 
     @Override
-    public synchronized void move(int xPos, int yPos
-    ) {
-        xOffset -= xPos;
-        yOffset -= yPos;
-        if (go.getMidX() <= Dwidth - xLeft) {
-            xOffset = xLeft;
-        }
-        if (go.getMidX() >= place.width - Dwidth + xRight) {
-            xOffset = -place.width + 2 * Dwidth - xRight;
-        }
-        if (go.getMidY() <= Dheight - yUp) {
-            yOffset = yUp;
-        }
-        if (go.getMidY() >= place.height - Dheight + yDown) {
-            yOffset = -place.height + 2 * Dheight - yDown;
-        }
+    public synchronized void move(double xPos, double yPos) {
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth - xRight, xOffset - xPos, xLeft);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight - yDown, yOffset - yPos, yUp);
+    }
+
+    @Override
+    public synchronized void setPosition(int xPos, int yPos) {
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth - xRight, xPos, xLeft);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight - yDown, yPos, yUp);
     }
 
     @Override

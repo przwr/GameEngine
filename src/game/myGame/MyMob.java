@@ -5,6 +5,7 @@
  */
 package game.myGame;
 
+import collision.Rectangle;
 import game.gameobject.Mob;
 import game.gameobject.GameObject;
 import game.place.Place;
@@ -24,7 +25,7 @@ public class MyMob extends Mob {
     @Override
     public void update(ArrayList<GameObject> players) {
         if (prey != null) {
-            chase(prey);
+            //chase(prey);
         } else {
             look(players);
         }

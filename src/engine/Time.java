@@ -26,6 +26,7 @@ public class Time {
     public static void update() {
         lastTime = curTime;
         curTime = getTime();
+        //System.out.println(60 / getDelta());
     }
 
     public static void init() {
