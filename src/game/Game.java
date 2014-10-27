@@ -77,7 +77,7 @@ public class Game {
     }
 
     public void startGame(int nrPl) {
-        place = new MyPlace(this, 2048, 2048, 64, settings);
+        place = new MyPlace(this, 4096, 4096, 64, settings);
         place.players = new GameObject[nrPl];
         if (nrPl == 1) {
             players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
@@ -104,6 +104,7 @@ public class Game {
             }
             place.addCamera(players[1], 4, 4, 1);
             place.addCamera(players[2], 4, 4, 2);
+            place.addCameraFor3(players[0], players[1], players[2]);
         } else if (nrPl == 4) {
             players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
             players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024);
@@ -113,6 +114,7 @@ public class Game {
             place.addCamera(players[1], 4, 4, 1);
             place.addCamera(players[2], 4, 4, 2);
             place.addCamera(players[3], 4, 4, 3);
+            place.addCameraFor4(players[0], players[1], players[2], players[3]);
         }
         for (int i = 0; i < nrPl; i++) {
             place.players[i] = players[i];

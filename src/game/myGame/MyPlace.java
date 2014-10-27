@@ -28,18 +28,18 @@ import org.newdawn.slick.openal.SoundStore;
  */
 public class MyPlace extends Place {
 
-    final Action changeSSMode;
+    final Action changeSplitScreenMode;
 
     final Tile GRASS = new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Grass", sTile, 1, 8, this);
     final Tile ROCK = new SolidTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this);
 
     public MyPlace(Game game, int width, int height, int tileSize, Settings settings) {
         super(game, width, height, tileSize, settings);
-        this.changeSSMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT), null) {
+        this.changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT), null) {
 
             @Override
             public void Act() {
-                changeSS = true;
+                changeSSMode = true;
             }
         };
         generate();
@@ -50,7 +50,7 @@ public class MyPlace extends Place {
         //sounds.init("res", settings);
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
-                if ((x * y) < 300) {
+                if ((x * y) < 850) {
                     tiles[x + y * height / sTile] = GRASS;
                 } else {
                     tiles[x + y * height / sTile] = ROCK;
@@ -103,10 +103,14 @@ public class MyPlace extends Place {
          sounds.getSound("MumboMountain").fade(0.5, false);
          }
          */
-
         if (players.length == 2) {
-            changeSSMode.Do();
+            changeSplitScreenMode.Do();
             camfor2.update();
+        } else if (players.length == 3) {
+            changeSplitScreenMode.Do();
+            camfor3.update();
+        } else if (players.length == 4) {
+            camfor4.update();
         }
         for (Mob mob : sMobs) {
             mob.update(players);

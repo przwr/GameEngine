@@ -20,6 +20,36 @@ public class PlayersCamera extends Camera {
     public PlayersCamera(Place place, GameObject go, int ssX, int ssY, int num) {
         this.place = place;
         this.go = go;
+        init(ssX, ssY, num);
+        delaylenght = 50;
+        shakeDelay = new Delay(delaylenght);
+        shakeDelay.restart();
+    }
+
+    @Override
+    public final synchronized void update() {
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth - xRight, Dwidth - getGo().getMidX(), xLeft);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight - yDown, Dheight - getGo().getMidY(), yUp);
+    }
+
+    @Override
+    public synchronized void shake() {
+        if (shakeDelay.isOver()) {
+            if (shakeUp) {
+                xEffect += shakeAmp;
+                yEffect += shakeAmp / 2;
+                shakeUp = false;
+            } else {
+                xEffect -= shakeAmp;
+                yEffect -= shakeAmp / 2;
+                shakeUp = true;
+            }
+            shakeDelay.restart();
+        }
+    }
+
+    public final void init(int ssX, int ssY, int num) {
+        yUp = yDown = xLeft = xRight = 0;
         if (place.settings.nrPlayers > 1) {
             if (place.settings.nrPlayers == 2) {
                 if (place.settings.hSplitScreen) {
@@ -78,33 +108,7 @@ public class PlayersCamera extends Camera {
         }
         Dwidth = Display.getWidth() / ssX;
         Dheight = Display.getHeight() / ssY;
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth - xRight, Dwidth - go.getMidX(), xLeft);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight - yDown, Dheight - go.getMidY(), yUp);
-        delaylenght = 50;
-        shakeDelay = new Delay(delaylenght);
-        shakeDelay.restart();
-    }
-
-    @Override
-    public synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth - xRight, Dwidth - getGo().getMidX(), xLeft);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight - yDown, Dheight - getGo().getMidY(), yUp);
-    }
-
-    @Override
-    public synchronized void shake() {
-        if (shakeDelay.isOver()) {
-            if (shakeUp) {
-                xEffect += shakeAmp;
-                yEffect += shakeAmp / 2;
-                shakeUp = false;
-            } else {
-                xEffect -= shakeAmp;
-                yEffect -= shakeAmp / 2;
-                shakeUp = true;
-            }
-            shakeDelay.restart();
-        }
+        update();
     }
 
     public void reInit(int num) {
