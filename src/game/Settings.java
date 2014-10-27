@@ -28,6 +28,7 @@ public class Settings {
     public int curMode;
     public boolean fullScreen = true;
     public boolean hSplitScreen;
+    public boolean joinSS;
     public int nrPlayers = 1;
     public float volume = 0.5f;
     public SoundBase sounds;
@@ -35,7 +36,6 @@ public class Settings {
     public int resHeight = display.getHeight();
     public int freq = display.getFrequency();
     public int depth = display.getBitsPerPixel();
-    public boolean aa = true;
     public boolean vSync = true;
     public String lang = "PL";
     public ArrayList<Language> languages = new ArrayList<>();

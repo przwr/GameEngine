@@ -17,7 +17,9 @@ import game.place.cameras.PlayersCamera;
 import engine.Physics;
 import engine.FontsHandler;
 import engine.SoundBase;
-import org.lwjgl.opengl.Display;
+import game.place.cameras.FourPlayersCamera;
+import game.place.cameras.ThreePlayersCamera;
+import game.place.cameras.TwoPlayersCamera;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
@@ -35,23 +37,29 @@ public abstract class Place {
     protected final SoundBase sounds;
     protected final SpriteBase sprites;
 
-    public boolean isResize = false;
+    public final int width, height, sTile;
+    public float r, g, b;
+
+    public Camera cam;
+    public Camera[] cams = new Camera[4];
+    public Camera[] camsfor2 = new Camera[4];
+    public Camera camfor2;
+    public Camera camfor3;
+    public Camera camfor4;
+    public boolean isSplit;
+    public boolean changeSSMode;
     public int ssMode;
 
-    float camXStart, camXSize, camYStart, camYSize;
+    float camXStart, camYStart;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
     public ArrayList<GameObject> solidObj = new ArrayList<>();
     public ArrayList<GameObject> flatObj = new ArrayList<>();
-    public ArrayList<GameObject> players = new ArrayList<>();
+    public GameObject[] players;
     public ArrayList<GameObject> emitters = new ArrayList<>();
 
     public FontsHandler fonts;
-
-    public final int width, height, sTile;
-    public float r, g, b;
-    public Camera[] cams = new Camera[4];
 
     public final Tile[] tiles;
 
@@ -65,19 +73,30 @@ public abstract class Place {
         this.game = game;
         sounds = new SoundBase();
         sprites = new SpriteBase();
-
     }
 
     public abstract void generate();
 
     public abstract void update();
 
-    public void addPlayer(MyPlayer player) {
-        players.add(player);
-    }
-
     public void addCamera(GameObject go, int ssX, int ssY, int num) {
         this.cams[num] = new PlayersCamera(this, go, ssX, ssY, num);
+    }
+
+    public void addCamerasFor2(GameObject player1, GameObject player2) {
+        camfor2 = new TwoPlayersCamera(this, player1, player2);
+        camsfor2[0] = new PlayersCamera(this, player1, 2, 4, 0);
+        camsfor2[1] = new PlayersCamera(this, player1, 4, 2, 0);
+        camsfor2[2] = new PlayersCamera(this, player2, 2, 4, 1);
+        camsfor2[3] = new PlayersCamera(this, player2, 4, 2, 1);
+    }
+
+    public void addCameraFor3(GameObject player1, GameObject player2, GameObject player3) {
+        camfor3 = new ThreePlayersCamera(this, player1, player2, player3);
+    }
+
+    public void addCameraFor4(GameObject player1, GameObject player2, GameObject player3, GameObject player4) {
+        camfor4 = new FourPlayersCamera(this, player1, player2, player3, player4);
     }
 
     public SpriteBase getSprites() {
@@ -97,106 +116,25 @@ public abstract class Place {
     }
 
     public void render() {
-        Renderer.preRendLightsFBO(camXStart, camXStart, camXSize, camXSize, this, emitters, players);
-        Camera cam;
-        for (GameObject player : players) {
+        Renderer.preRendLightsFBO(camXStart, camXStart, this, emitters, players);
+        for (int p = 0; p < players.length; p++) {
+            GameObject player = players[p];
             cam = (((MyPlayer) player).getCam());
-            if (players.size() == 2) {
-                if (settings.hSplitScreen) {
-                    ssMode = 1;
-                    if (player == players.get(0)) {
-                        glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
-                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                        camXStart = camXSize = 0f;
-                        camYStart = camYSize = 0.5f;
-                    } else {
-                        glViewport(0, 0, Display.getWidth(), Display.getHeight() / 2);
-                        camXStart = camXSize = camYStart = 0f;
-                        camYSize = 0.5f;
-                    }
-                } else {
-                    ssMode = 2;
-                    if (player == players.get(0)) {
-                        glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
-                        glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                        camXStart = camXSize = camYStart = camYSize = 0f;
-                    } else {
-                        glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
-                        camXStart = 0.5f;
-                        camXSize = camYStart = camYSize = 0f;
-                    }
-                }
-            } else if (players.size() == 3) {
-                if (settings.hSplitScreen) {
-                    ssMode = 3;
-                    if (player == players.get(0)) {
-                        glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
-                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                        camXStart = camXSize = 0f;
-                        camYStart = camYSize = 0.5f;
-                    } else if (player == players.get(1)) {
-                        glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                        glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                        camXStart = camXSize = camYStart = 0f;
-                        camYSize = 0.5f;
-                    } else if (player == players.get(2)) {
-                        glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                        camXStart = camYSize = 0.5f;
-                        camXSize = camYStart = 0f;
-                    }
-                } else {
-                    ssMode = 4;
-                    if (player == players.get(0)) {
-                        glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
-                        glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                        camXStart = camXSize = camYStart = camYSize = 0f;
-                    } else if (player == players.get(1)) {
-                        glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
-                        glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                        camXStart = 0.5f;
-                        camXSize = camYStart = camYSize = 0f;
-                    } else if (player == players.get(2)) {
-                        glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                        camXStart = camYSize = 0.5f;
-                        camXSize = camYStart = 0f;
-                    }
-                }
-            } else if (players.size() == 4) {
-                ssMode = 5;
-                if (player == players.get(0)) {
-                    glViewport(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
-                    glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
-                    camXStart = camXSize = 0.0f;
-                    camYStart = camYSize = 0.5f;
-                } else if (player == players.get(1)) {
-                    glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
-                    camXStart = 0.5f;
-                    camXSize = camYStart = camYSize = 0f;
-                } else if (player == players.get(2)) {
-                    glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                    camXStart = camXSize = camYStart = 0f;
-                    camYSize = 0.5f;
-                } else if (player == players.get(3)) {
-                    glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                    camXStart = camYSize = 0.5f;
-                    camXSize = camYStart = 0f;
-                }
+            if (players.length > 1) {
+                SplitScreen.setSplitScreen(this, player);
             }
-            Renderer.preRenderShadowedLightsFBO(cam, camXStart, camYStart, camXSize, camYSize);
-            glColor3f(r, g, b);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            Renderer.preRenderShadowedLightsFBO(cam, camXStart, camYStart, p);
             renderBack(cam);
             renderObj(cam);
             renderText(cam);
-                Renderer.renderLights(r, g, b);
-            if (isResize) {
-                Resizer.resize(camXStart, camYStart, camXSize, camYSize);
-            }
+            Renderer.renderLights(r, g, b, p);
         }
         Renderer.border(ssMode);
     }
 
     protected void renderBack(Camera cam) {
+        glColor3f(r, g, b);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 Tile t = tiles[x + y * height / sTile];

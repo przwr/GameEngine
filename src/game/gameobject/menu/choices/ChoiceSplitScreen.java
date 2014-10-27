@@ -9,6 +9,7 @@ import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyMenu;
+import game.place.SplitScreen;
 
 /**
  *
@@ -24,20 +25,24 @@ public class ChoiceSplitScreen extends MenuChoice {
     public void action() {
         if (menu.game.getPlace() == null) {
             settings.hSplitScreen = !settings.hSplitScreen;
+        } else {
+            if (menu.game.getPlace().players.length == 2) {
+                menu.game.getPlace().changeSSMode = true;
+                SplitScreen.changeSSMode2(menu.game.getPlace());
+            } else if (menu.game.getPlace().players.length == 3) {
+                menu.game.getPlace().changeSSMode = true;
+                SplitScreen.changeSSMode3(menu.game.getPlace());
+            }
         }
         AnalizerSettings.Update(settings);
     }
 
     @Override
     public String getLabel() {
-        if (menu.game.getPlace() != null) {
-            return label + settings.language.End_Game;
+        if (settings.hSplitScreen) {
+            return label + settings.language.Horizontal + " [2/2]";
         } else {
-            if (settings.hSplitScreen) {
-                return label + settings.language.Horizontal + " [2/2]";
-            } else {
-                return label + settings.language.Vertical + " [1/2]";
-            }
+            return label + settings.language.Vertical + " [1/2]";
         }
     }
 }

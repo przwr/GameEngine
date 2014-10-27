@@ -24,18 +24,17 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
     public RandomGen(int seed) {
         state = new long[16];
         index = 0;
-
         setSeed(seed);
     }
-    
-    public void setSeed(int seed) {
+
+    public final void setSeed(int seed) {
         this.seed = seed;
         seed = Math.abs(seed);
         for (int i = 0; i < 16; i++) {
             state[i] = (seed + 1) * ((seed + 1) << 2) * i;
         }
     }
-    
+
     public int getSeed() {
         return seed;
     }
@@ -71,7 +70,7 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
     public double preciseRandom(double limit, double prec) {
         return (double) (random((int) ((double) limit / prec)) * prec);
     }
-    
+
     public int randomRange(int a, int b) { //generuje x losowe: a < x < b lub b < x < a
         if (a < b) {
             return random(b - a) + a;
@@ -87,7 +86,7 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
             return preciseRandom(a - b, prec) + b;
         }
     }
-    
+
     public boolean chance(int chance) {
         return random(100) <= (chance);
     }

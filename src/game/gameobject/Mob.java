@@ -59,7 +59,7 @@ public class Mob extends Entity {
         y = yPos;
     }
 
-    public void update(ArrayList<GameObject> players) {
+    public void update(GameObject[] players) {
         if (prey != null) {
             chase(prey);
         } else {

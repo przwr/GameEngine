@@ -88,7 +88,7 @@ public class Controlers {
             return null;
         } else {
             for (int k = 0; k < Keyboard.KEYBOARD_SIZE; k++) {
-                if (Keyboard.isCreated() && Keyboard.isKeyDown(k) && k != Keyboard.KEY_ESCAPE && k != Keyboard.KEY_RETURN) {
+                if (Keyboard.isCreated() && Keyboard.isKeyDown(k) && k != Keyboard.KEY_ESCAPE && k != Keyboard.KEY_RETURN && k != Keyboard.KEY_INSERT) {
                     return new InputKeyBoard(k);
                 }
             }
