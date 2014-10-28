@@ -67,7 +67,7 @@ public class Mob extends Entity {
         }
     }
 
-    public synchronized void look(ArrayList<GameObject> players) {
+    public synchronized void look(GameObject[] players) {
         for (GameObject g : players) {
             if (Methods.PointDistance(g.getX(), g.getY(), getX(), getY()) < range)
                 prey = g;

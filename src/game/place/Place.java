@@ -42,7 +42,6 @@ public abstract class Place {
 
     public Camera cam;
     public Camera[] cams = new Camera[4];
-    public Camera[] camsfor2 = new Camera[4];
     public Camera camfor2;
     public Camera camfor3;
     public Camera camfor4;
@@ -85,10 +84,6 @@ public abstract class Place {
 
     public void addCamerasFor2(GameObject player1, GameObject player2) {
         camfor2 = new TwoPlayersCamera(this, player1, player2);
-        camsfor2[0] = new PlayersCamera(this, player1, 2, 4, 0);
-        camsfor2[1] = new PlayersCamera(this, player1, 4, 2, 0);
-        camsfor2[2] = new PlayersCamera(this, player2, 2, 4, 1);
-        camsfor2[3] = new PlayersCamera(this, player2, 4, 2, 1);
     }
 
     public void addCameraFor3(GameObject player1, GameObject player2, GameObject player3) {

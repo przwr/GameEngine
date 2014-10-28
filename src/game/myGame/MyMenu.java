@@ -32,6 +32,8 @@ public class MyMenu extends Place {
     private int cur;
     private MenuOpt[] menus;
 
+    private final int dWidth = Display.getWidth();
+    private final int dHeight = Display.getHeight(); //(int) (dWidth * ((double) Display.getHeight() / (double) Display.getWidth()));
     public boolean isMapping;
     public Delay delay = new Delay(25);
 
@@ -100,10 +102,10 @@ public class MyMenu extends Place {
     @Override
     protected void renderText(Camera cam) {
         int positions = menus[cur].getNr() + 1;
-        renderMessage(1, Display.getWidth() / 2, Display.getHeight() / 2 - (int) ((1.5 * positions - (menus[cur].getNr() + 1)) * fonts.write(0).getHeight() * 0.7), menus[cur].getLabel(), new Color(r, g, b));
+        renderMessage(1, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getNr() + 1)) * fonts.write(0).getHeight() * 0.7), menus[cur].getLabel(), new Color(r, g, b));
         positions--;
         for (int i = 0; i < menus[cur].getNr(); i++) {
-            renderMessage(0, Display.getWidth() / 2, Display.getHeight() / 2 - (int) ((1.5 * positions - (menus[cur].getNr() + 1)) * fonts.write(0).getHeight() * 0.7), menus[cur].getChoice(i).getLabel(), getColor(menus[cur].getChoice(i)));
+            renderMessage(0, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getNr() + 1)) * fonts.write(0).getHeight() * 0.7), menus[cur].getChoice(i).getLabel(), getColor(menus[cur].getChoice(i)));
             positions--;
         }
     }
@@ -113,7 +115,7 @@ public class MyMenu extends Place {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Camera cam;
         cam = (((MyPlayer) players[0]).getCam());
-        glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        glViewport(0, 0, dWidth, dHeight);
         glColor3f(r, g, b);
         renderText(cam);
     }
