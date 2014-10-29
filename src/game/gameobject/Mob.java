@@ -40,7 +40,7 @@ public abstract class Mob extends Entity {
 
     @Override
     protected boolean isColided(int magX, int magY) {
-        return collision.ifCollide(getBegOfX() + magX, getBegOfY() + magY, place);
+        return collision.ifCollideSolid(getX() + magX, getY() + magY, place) || collision.ifCollide(getX() + magX, getY() + magY, place.players);
         /*if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
          return true;
          }

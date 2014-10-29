@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import collision.Area;
 import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
@@ -58,6 +59,7 @@ public abstract class Place {
     public ArrayList<GameObject> flatObj = new ArrayList<>();
     public GameObject[] players;
     public ArrayList<GameObject> emitters = new ArrayList<>();
+    public ArrayList<Area> areas = new ArrayList<>();
 
     public FontsHandler fonts;
 
