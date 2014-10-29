@@ -18,109 +18,131 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public class SplitScreen {
 
-    public static void setSplitScreen(Place pl, GameObject player) {
+    public static void setSplitScreen(Place pl, int p) {
+
+        GameObject player = pl.players[p];
         if ((pl.players.length == 2 && !SplitScreen.isClose2(pl))) {
             if (pl.changeSSMode) {
                 changeSSMode2(pl);
             }
-            pl.cam = (((MyPlayer) player).getCam());
             if (pl.settings.hSplitScreen) {
                 pl.ssMode = 1;
-                if (player == pl.players[0]) {
+                if (p == 0) {
                     glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                    pl.camYStart = pl.camXStart = 0f;
+                    pl.camXStart = pl.camXTStart = 0f;
+                    pl.camYStart = pl.camYTStart = -0.5f;
+                    pl.camXEnd = pl.camXTEnd = 1f;
+                    pl.camYEnd = pl.camYTEnd = 0.5f;
                 } else {
                     glViewport(0, 0, Display.getWidth(), Display.getHeight() / 2);
-                    pl.camYStart = 0f;
-                    pl.camYStart = -0.5f;
+                    pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+                    pl.camXEnd = pl.camXTEnd = 1f;
+                    pl.camYEnd = pl.camYTEnd = 0.5f;
                 }
             } else {
                 pl.ssMode = 2;
-                if (player == pl.players[0]) {
+                if (p == 0) {
                     glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                    pl.camXStart = pl.camYStart = 0f;
+                    pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
+                    pl.camXEnd = pl.camXTEnd = 0.5f;
+                    pl.camYEnd = pl.camYTEnd = 1f;
                 } else {
                     glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
-                    pl.camXStart = 0.5f;
-                    pl.camYStart = 0f;
+                    pl.camXTStart = pl.camXEnd = 0.5f;
+                    pl.camXTEnd = pl.camYTEnd = pl.camYEnd = 1f;
+                    pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                 }
             }
         } else if (pl.players.length == 2 && SplitScreen.isClose2(pl)) {
             pl.cam = pl.camfor2;
             pl.ssMode = 0;
-            if (player == pl.players[0]) {
-                pl.camYStart = pl.camXStart = 0f;
+            if (p == 0) {
+                pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+                pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
             }
         } else if (pl.players.length == 3 && !SplitScreen.isClose3(pl)) {
             if (pl.changeSSMode) {
                 changeSSMode3(pl);
             }
-            pl.cam = (((MyPlayer) player).getCam());
             if (pl.settings.hSplitScreen) {
                 pl.ssMode = 3;
-                if (player == pl.players[0]) {
+                if (p == 0) {
                     glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                    pl.camXStart = pl.camYStart = 0f;
-                } else if (player == pl.players[1]) {
+                    pl.camXStart = pl.camXTStart = 0f;
+                    pl.camYStart = pl.camYTStart = -0.5f;
+                    pl.camXEnd = pl.camXTEnd = 1f;
+                    pl.camYEnd = pl.camYTEnd = 0.5f;
+                } else if (p == 1) {
                     glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                    pl.camXStart = 0f;
-                    pl.camYStart = -0.5f;
-                } else if (player == pl.players[2]) {
+                    pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
+                    pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
+                } else if (p == 2) {
                     glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                    pl.camXStart = 0.5f;
-                    pl.camYStart = -0.5f;
+                    pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
+                    pl.camXTEnd = 1f;
+                    pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
                 }
             } else {
                 pl.ssMode = 4;
-                if (player == pl.players[0]) {
+                if (p == 0) {
                     glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                    pl.camXStart = pl.camYStart = 0f;
-                } else if (player == pl.players[1]) {
+                    pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
+                    pl.camXEnd = pl.camXTEnd = 0.5f;
+                    pl.camYEnd = pl.camYTEnd = 1f;
+                } else if (p == 1) {
                     glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                    pl.camXStart = 0.5f;
-                    pl.camYStart = 0f;
-                } else if (player == pl.players[2]) {
+                    pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
+                    pl.camXTEnd = pl.camYTEnd = 1f;
+                    pl.camXStart = pl.camYStart = 0f;
+                } else if (p == 2) {
                     glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                    pl.camXStart = 0.5f;
-                    pl.camYStart = -0.5f;
+                    pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
+                    pl.camXTEnd = 1f;
+                    pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
                 }
             }
         } else if (pl.players.length == 3 && SplitScreen.isClose3(pl)) {
             pl.cam = pl.camfor3;
             pl.ssMode = 0;
-            if (player == pl.players[0]) {
-                pl.camYStart = pl.camXStart = 0f;
+            if (p == 0) {
+                pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+                pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
             }
         } else if (pl.players.length == 4 && !SplitScreen.isClose4(pl)) {
             pl.ssMode = 5;
-            if (player == pl.players[0]) {
+            if (p == 0) {
                 glViewport(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
                 glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
-                pl.camXStart = pl.camYStart = 0.0f;
-            } else if (player == pl.players[1]) {
+                pl.camXStart = pl.camXTStart = 0f;
+                pl.camYStart = pl.camYTStart = -0.5f;
+                pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
+            } else if (p == 1) {
                 glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
-                pl.camXStart = 0.5f;
-                pl.camYStart = 0f;
-            } else if (player == pl.players[2]) {
+                pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
+                pl.camXTEnd = pl.camYTEnd = 1f;
+                pl.camXStart = pl.camYStart = 0f;
+            } else if (p == 2) {
                 glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                pl.camXStart = 0f;
-                pl.camYStart = -0.5f;
-            } else if (player == pl.players[3]) {
+                pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
+                pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
+            } else if (p == 3) {
                 glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                pl.camXStart = 0.5f;
-                pl.camYStart = -0.5f;
+                pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
+                pl.camXTEnd = 1f;
+                pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
             }
         } else if (pl.players.length == 4 && SplitScreen.isClose4(pl)) {
             pl.cam = pl.camfor4;
             pl.ssMode = 0;
-            if (player == pl.players[0]) {
-                pl.camYStart = pl.camXStart = 0f;
+            if (p == 0) {
+                pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+                pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
             }
         }
     }

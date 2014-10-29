@@ -34,6 +34,7 @@ public class Settings {
     public SoundBase sounds;
     public int resWidth = display.getWidth();
     public int resHeight = display.getHeight();
+    public double SCALE;
     public int freq = display.getFrequency();
     public int depth = display.getBitsPerPixel();
     public boolean vSync = true;
@@ -47,18 +48,20 @@ public class Settings {
 
     public Settings() {
         int minW = 1024;
+        int minH = 768;
         int maxW = 1920;
+        int maxH = 1200;
         try {
             tmpmodes = Display.getAvailableDisplayModes();
         } catch (LWJGLException ex) {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         DisplayMode temp;
-        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getHeight() <= maxW && tmpmodes[0].getBitsPerPixel() == depth) {
+        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getWidth() <= maxW && tmpmodes[0].getHeight() >= minH && tmpmodes[0].getHeight() <= maxH && tmpmodes[0].getBitsPerPixel() == depth) {
             modesNr++;
         }
         for (int i = 1; i < tmpmodes.length; i++) {
-            if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getHeight() <= maxW && tmpmodes[i].getBitsPerPixel() == depth) {
+            if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getWidth() <= maxW && tmpmodes[i].getHeight() >= minH && tmpmodes[i].getHeight() <= maxH && tmpmodes[i].getBitsPerPixel() == depth) {
                 modesNr++;
             }
             temp = tmpmodes[i];
@@ -71,7 +74,7 @@ public class Settings {
         modes = new DisplayMode[modesNr];
         int i = 0;
         for (DisplayMode mode : tmpmodes) {
-            if (mode.getWidth() >= minW && mode.getHeight() <= maxW && mode.getBitsPerPixel() == depth) {
+            if (mode.getWidth() >= minW && mode.getWidth() <= maxW && mode.getHeight() >= minH && mode.getHeight() <= maxH && mode.getBitsPerPixel() == depth) {
                 modes[i++] = mode;
             }
         }
@@ -96,5 +99,6 @@ public class Settings {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
+        this.SCALE = (int) (((double) resHeight / 1200d / 0.03125)) * 0.03125;
     }
 }

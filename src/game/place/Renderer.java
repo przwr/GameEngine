@@ -22,8 +22,9 @@ import sprites.Sprite;
 public class Renderer {
 
     private static final int w = Display.getWidth();
-    private static final int h = Display.getHeight();//(int) (w * ((double) Display.getHeight() / (double) Display.getWidth()));
+    private static final int h = Display.getHeight();
     private static final FBORenderer fbFrame = new FBORenderer(w, h, makeTexture(null, w, h));
+    //private static final int lightTex = makeTexture(null, w, h);
     private static int savedShadowed;
     private static GameObject[] activeEmitters;
     private static final Point center = new Point(0, 0);
@@ -35,10 +36,10 @@ public class Renderer {
     private static boolean isRightWall;
     private static int leftWallColor;
     private static int rightWallColor;
-    private static final Sprite sprb = new Sprite("rockb", 64, 64, null);
-    private static final Sprite sprw = new Sprite("rockw", 64, 64, null);
+    private static final double SCALE = (int) (((double) h / 1200d / 0.03125)) * 0.03125;
+    private static final Sprite sprb = new Sprite("rockb", (int) (SCALE * 64), (int) (SCALE * 64), null);
+    private static final Sprite sprw = new Sprite("rockw", (int) (SCALE * 64), (int) (SCALE * 64), null);
     private static final Sprite alpha = new Sprite("alpha", w, h, null);
-    private static final int shDif = (int) (768 * Math.sqrt(2.0));
 
     private static int shP1 = 0;
     private static int shP2 = 2;
@@ -59,12 +60,12 @@ public class Renderer {
                 glColor3f(1f, 1f, 1f);
                 glDisable(GL_BLEND);
                 alpha.render();
-                int lY = 768;
+                int lY = player.getLight().getSY();
                 int numberOfShadows = 1;
                 glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
                 glEnable(GL_LINE_SMOOTH);
                 for (int i = 0; i < numberOfShadows; i++) {
-                    calculateShadow(player, null, 384, 384);
+                    calculateShadow(player, null, (int) (SCALE * 384), (int) (SCALE * 384));
                     calculateWalls();
                     drawShadow(player);
                     drawWalls(player);
@@ -72,8 +73,8 @@ public class Renderer {
                     glEnable(GL_BLEND);
                     glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                     glPushMatrix();     //384 i 384 to współrzędne obiektu dającego cień 512 to połowa wielkości światła
-                    glTranslatef(384 + player.getLight().getSX() / 2 - (player.getMidX()), 384 + player.getLight().getSY() / 2 - (player.getMidY()) + h - lY, 0);
-                    if (player.getMidY() > 416) { // 416 - x środka obiektu rzucającego cień
+                    glTranslatef((float) (SCALE * 384) + player.getLight().getSX() / 2 - (player.getMidX()), (float) (SCALE * 384) + player.getLight().getSY() / 2 - (player.getMidY()) + h - lY, 0);
+                    if (player.getMidY() > SCALE * 416) { // 416 - x środka obiektu rzucającego cień
                         sprw.render();
                     } else {
                         sprb.render();
@@ -91,7 +92,7 @@ public class Renderer {
         savedShadowed = nr;
     }
 
-    public static void preRenderShadowedLightsFBO(Camera cam, float xStart, float yStart, int index) {
+    public static void preRenderShadowedLightsFBO(Camera cam) {
         fbFrame.activate();
         clearScreen(0);
         glColor3f(1, 1, 1);
@@ -100,15 +101,16 @@ public class Renderer {
         for (int i = 0; i < savedShadowed; i++) {
             drawLight(fbo[i].getTexture(), w, h, activeEmitters[i], cam);
         }
+        //frameSave(lightTex, xStart, yStart);
         fbFrame.deactivate();
     }
 
     private static void calculateShadow(GameObject src, GameObject shade, int xS, int yS) {
         center.set(src.getMidX(), src.getMidY());
-        tempPoints[0].set(xS, yS + 32);
-        tempPoints[1].set(xS + 64, yS + 32);
-        tempPoints[2].set(xS, yS + 64);
-        tempPoints[3].set(xS + 64, yS + 64);
+        tempPoints[0].set(xS, yS + (int) (SCALE * 32));
+        tempPoints[1].set(xS + (int) (SCALE * 64), yS + (int) (SCALE * 32));
+        tempPoints[2].set(xS, yS + (int) (SCALE * 64));
+        tempPoints[3].set(xS + (int) (SCALE * 64), yS + (int) (SCALE * 64));
         angle = 0;
         for (int p = 0; p < 4; p++) {
             for (int s = p + 1; s < 4; s++) {
@@ -122,6 +124,8 @@ public class Renderer {
         }
         points[0] = tempPoints[shP1];
         points[1] = tempPoints[shP2];
+
+        int shDif = (int) (Math.sqrt(src.getLight().getSX() * src.getLight().getSX() + src.getLight().getSY() * src.getLight().getSY())) / 2;
 
         if (points[0].getX() == center.getX()) {
             points[2].set(points[0].getX(), points[0].getY() + (points[0].getY() > center.getY() ? shDif : -shDif));
@@ -165,9 +169,9 @@ public class Renderer {
 
     private static void calculateWalls() {
         if (false) {
-            int Y = 320;
-            int hight = 64;
-            if (true) { //dodaj światło
+            int Y = (int) (SCALE * 320);
+            int hight = (int) (SCALE * 64);
+            if (false) { //dodaj światło
                 int XL1 = (int) ((Y - bl1) / al1);
                 leftWallPoints[0].set(XL1, Y - hight);
                 leftWallPoints[1].set(XL1, Y);
@@ -187,9 +191,9 @@ public class Renderer {
         }
         next:
         if (false) {
-            int Y = 320;
-            int hight = 64;
-            if (true) {// dodaj światło
+            int Y = (int) (SCALE * 320);
+            int hight = (int) (SCALE * 64);
+            if (false) {// dodaj światło
                 int XR1 = (int) ((Y - bl2) / al2) + 1;
                 rightWallPoints[0].set(XR1, Y - hight);
                 rightWallPoints[1].set(XR1, Y);
@@ -210,8 +214,8 @@ public class Renderer {
     }
 
     public static void drawWalls(GameObject emitter) {
-        int lX = 768;
-        int lY = 768;
+        int lX = emitter.getLight().getSX();
+        int lY = emitter.getLight().getSY();
         if (isLeftWall) {
             glColor3f(leftWallColor, leftWallColor, leftWallColor);
             glPushMatrix();
@@ -239,8 +243,8 @@ public class Renderer {
     }
 
     public static void drawShadow(GameObject emitter, float color, int off) {
-        int lX = 768;
-        int lY = 768;
+        int lX = emitter.getLight().getSX();
+        int lY = emitter.getLight().getSY();
         glColor3f(color, color, color);
         glPushMatrix();
         glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
@@ -274,8 +278,8 @@ public class Renderer {
     }
 
     public static void drawShadow(GameObject emitter) {
-        int lX = 768;
-        int lY = 768;
+        int lX = emitter.getLight().getSX();
+        int lY = emitter.getLight().getSY();
         glColor3f(0, 0, 0);
         glPushMatrix();
         glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
@@ -300,8 +304,8 @@ public class Renderer {
     }
 
     public static void drawLight(int textureHandle, float w, float h, GameObject emitter, Camera cam) {
-        int lX = 768;
-        int lY = 768;
+        int lX = (int) emitter.getLight().getSX();
+        int lY = (int) emitter.getLight().getSY();
         glPushMatrix();
         glTranslatef(emitter.getMidX() - emitter.getLight().getSX() / 2 + cam.getXOffEffect(), emitter.getMidY() - emitter.getLight().getSY() / 2 + cam.getYOffEffect(), 0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -318,7 +322,7 @@ public class Renderer {
         glPopMatrix();
     }
 
-    public static void renderLights(float r, float g, float b, int index) {
+    public static void renderLights(float r, float g, float b, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
         float brightness = Math.max(b, Math.max(r, g));
         float strength = 6 - (int) (10 * brightness);
         float val;
@@ -332,7 +336,8 @@ public class Renderer {
         glColor3f(val, val, val);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < strength; i++) {
-            drawTex(fbFrame.getTexture(), w, h);
+            drawTex(fbFrame.getTexture(), w, h, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
+            //drawTex(lightTex, w, h);
         }
     }
 
@@ -359,18 +364,18 @@ public class Renderer {
         glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (int) (xStart * w), (int) (yStart * h), w, h);
     }
 
-    public static void drawTex(int textureHandle, float w, float h) {
+    public static void drawTex(int textureHandle, float w, float h, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
         glPushMatrix();
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);
-        glVertex2f(0, 0);
-        glTexCoord2f(1, 1);
-        glVertex2f(w, 0);
-        glTexCoord2f(1, 0);
-        glVertex2f(w, h);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, h);
+        glTexCoord2f(xTStart, yTEnd);
+        glVertex2f(xStart * w, yStart * h);
+        glTexCoord2f(xTEnd, yTEnd);
+        glVertex2f(xEnd * w, yStart * h);
+        glTexCoord2f(xTEnd, yTStart);
+        glVertex2f(xEnd * w, yEnd * h);
+        glTexCoord2f(xTStart, yTStart);
+        glVertex2f(xStart * w, yEnd * h);
         glEnd();
         glPopMatrix();
     }
@@ -387,7 +392,7 @@ public class Renderer {
         }
         fbo = new FBORenderer[emitters.size() + players.length];
         for (int i = 0; i < emitters.size() + players.length; i++) {
-            fbo[i] = new FBORenderer(768, 768, glGenTextures());
+            fbo[i] = new FBORenderer((int) (SCALE * 1200), (int) (SCALE * 1200), glGenTextures());
         }
     }
 

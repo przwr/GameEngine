@@ -5,12 +5,10 @@
  */
 package game.gameobject;
 
-import collision.Circle;
 import collision.Rectangle;
 import game.Methods;
 import game.place.cameras.Camera;
 import game.place.Place;
-import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -20,23 +18,25 @@ import org.newdawn.slick.Color;
  *
  * @author przemek
  */
-public class Mob extends Entity {
+public abstract class Mob extends Entity {
 
     protected final int range;
     protected GameObject prey;
 
-    public Mob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid) {
-        this.width = width;
-        this.height = height;
+    public Mob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid, double SCALE) {
+        this.width = (int) (SCALE * width);
+        this.height = (int) (SCALE * height);
         this.solid = solid;
-        this.sX = startX;
-        this.sY = startY;
+        this.sX = (int) (SCALE * startX);
+        this.sY = (int) (SCALE * startY);
         this.top = true;
-        this.setSpeed(speed);
-        this.range = range;
-        init("rabbit", name, x, y, sx, sy, place);
-        setCollision(new Rectangle(width, height, this));
+        this.setSpeed((int) (SCALE * speed));
+        this.range = (int) (SCALE * range);
+        init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
+        setCollision(new Rectangle(this.width, this.height, this));
     }
+
+    public abstract void update(Place place);
 
     @Override
     protected boolean isColided(int magX, int magY) {
@@ -59,18 +59,11 @@ public class Mob extends Entity {
         y = yPos;
     }
 
-    public void update(GameObject[] players) {
-        if (prey != null) {
-            chase(prey);
-        } else {
-            look(players);
-        }
-    }
-
     public synchronized void look(GameObject[] players) {
         for (GameObject g : players) {
-            if (Methods.PointDistance(g.getX(), g.getY(), getX(), getY()) < range)
+            if (Methods.PointDistance(g.getX(), g.getY(), getX(), getY()) < range) {
                 prey = g;
+            }
         }
     }
 

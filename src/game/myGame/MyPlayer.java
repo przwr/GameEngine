@@ -50,21 +50,21 @@ public class MyPlayer extends Entity {
         initControler(isFirst);
     }
 
-    public void init(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y) {
+    public void init(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y, double SCALE) {
         this.name = name;
-        this.width = width;
-        this.height = height;
-        this.sX = startX;
-        this.sY = startY;
+        this.width = (int) (SCALE * width);
+        this.height = (int) (SCALE * height);
+        this.sX = (int) (SCALE * startX);
+        this.sY = (int) (SCALE * startY);
         this.top = false;
-        this.setSpeed(8);
+        this.setSpeed((int) (SCALE * 8));
         this.emitter = true;
-        init("apple", name, x, y, sx, sy, place);
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, 768, 768, place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        init("apple", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, (int) (SCALE * 1200), (int) (SCALE * 1200), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
-        setCollision(new Rectangle(width, height, this));
+        setCollision(new Rectangle(this.width, this.height, this));
     }
 
     private void initControler(boolean isFirst) {

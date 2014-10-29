@@ -60,8 +60,9 @@ public class MyPlace extends Place {
         tiles[6 + 6 * height / sTile] = ROCK;
         tiles[5 + 4 * height / sTile] = ROCK;
         tiles[7 + 4 * height / sTile] = ROCK;
-        addObj(new Mob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
-        addObj(new Mob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true));
+        addObj(new MyMob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true, settings.SCALE));
+        addObj(new MyMob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 256, "rabbit", this, true, settings.SCALE));
+
         this.r = 0.5f;
         this.g = 0.5f;
         this.b = 0.5f;
@@ -115,7 +116,7 @@ public class MyPlace extends Place {
             camfor4.update();
         }
         for (Mob mob : sMobs) {
-            mob.update(players);
+            mob.update(this);
         }
     }
 

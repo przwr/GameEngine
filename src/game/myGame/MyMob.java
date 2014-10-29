@@ -5,9 +5,7 @@
  */
 package game.myGame;
 
-import collision.Rectangle;
 import game.gameobject.Mob;
-import game.gameobject.GameObject;
 import game.place.Place;
 
 /**
@@ -16,17 +14,16 @@ import game.place.Place;
  */
 public class MyMob extends Mob {
 
-    public MyMob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid) {
-        super(x, y, startX, startY, width, height, sx, sy, speed, range, name, place, solid);
-        init("rabbit", name, x, y, sx, sy, place);
+    public MyMob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid, double SCALE) {
+        super(x, y, startX, startY, width, height, sx, sy, speed, range, name, place, solid, SCALE);
     }
 
     @Override
-    public void update(GameObject[] players) {
+    public void update(Place place) {
         if (prey != null) {
-            //chase(prey);
+            chase(prey);
         } else {
-            look(players);
+            look(place.players);
         }
     }
 

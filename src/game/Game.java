@@ -40,7 +40,7 @@ public class Game {
 
         settings.Up(players[1].ctrl.getActionsCount(), players, controllers);
         IO.ReadFile(new File("res/input.ini"), settings, false);
-        menu = new MyMenu(this, 2048, 2048, 64, settings);
+        menu = new MyMenu(this, 2, 2, 1, settings);
         menuPl = new MyPlayer(true);
         menu.addCamera(menuPl, 2, 2, 0);
         menu.players = new GameObject[1];
@@ -77,14 +77,14 @@ public class Game {
     }
 
     public void startGame(int nrPl) {
-        place = new MyPlace(this, 4096, 4096, 64, settings);
+        place = new MyPlace(this, (int) (settings.SCALE * 4096), (int) (settings.SCALE * 4096), (int) (settings.SCALE * 64), settings);
         place.players = new GameObject[nrPl];
         if (nrPl == 1) {
-            players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
+            players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256, settings.SCALE);
             place.addCamera(players[0], 2, 2, 0); // 2 i 2 to tryb SS
         } else if (nrPl == 2) {
-            players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
-            players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024);
+                       players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256, settings.SCALE);
+            players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024, settings.SCALE);
             if (settings.hSplitScreen) {
                 place.addCamera(players[0], 2, 4, 0);
                 place.addCamera(players[1], 2, 4, 1);
@@ -94,9 +94,9 @@ public class Game {
             }
             place.addCamerasFor2(players[0], players[1]);
         } else if (nrPl == 3) {
-            players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
-            players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024);
-            players[2].init(4, 4, 56, 56, 64, 64, "Player 3", place, 1024, 512);
+            players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256, settings.SCALE);
+            players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024, settings.SCALE);
+            players[2].init(4, 4, 56, 56, 64, 64, "Player 3", place, 1024, 512, settings.SCALE);
             if (settings.hSplitScreen) {
                 place.addCamera(players[0], 2, 4, 0);
             } else {
@@ -106,10 +106,10 @@ public class Game {
             place.addCamera(players[2], 4, 4, 2);
             place.addCameraFor3(players[0], players[1], players[2]);
         } else if (nrPl == 4) {
-            players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256);
-            players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024);
-            players[2].init(4, 4, 56, 56, 64, 64, "Player 3", place, 1024, 512);
-            players[3].init(4, 4, 56, 56, 64, 64, "Player 4", place, 1024, 1024);
+            players[0].init(4, 4, 56, 56, 64, 64, "Player 1", place, 256, 256, settings.SCALE);
+            players[1].init(4, 4, 56, 56, 64, 64, "Player 2", place, 512, 1024, settings.SCALE);
+            players[2].init(4, 4, 56, 56, 64, 64, "Player 3", place, 1024, 512, settings.SCALE);
+            players[3].init(4, 4, 56, 56, 64, 64, "Player 4", place, 1024, 1024, settings.SCALE);
             place.addCamera(players[0], 4, 4, 0);
             place.addCamera(players[1], 4, 4, 1);
             place.addCamera(players[2], 4, 4, 2);

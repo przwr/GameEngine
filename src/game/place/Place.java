@@ -17,6 +17,7 @@ import game.place.cameras.PlayersCamera;
 import engine.Physics;
 import engine.FontsHandler;
 import engine.SoundBase;
+import game.myGame.MyMob;
 import game.place.cameras.FourPlayersCamera;
 import game.place.cameras.ThreePlayersCamera;
 import game.place.cameras.TwoPlayersCamera;
@@ -49,7 +50,7 @@ public abstract class Place {
     public boolean changeSSMode;
     public int ssMode;
 
-    float camXStart, camYStart;
+    float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -113,16 +114,18 @@ public abstract class Place {
     public void render() {
         Renderer.preRendLightsFBO(camXStart, camXStart, this, emitters, players);
         for (int p = 0; p < players.length; p++) {
-            GameObject player = players[p];
-            cam = (((MyPlayer) player).getCam());
-            if (players.length > 1) {
-                SplitScreen.setSplitScreen(this, player);
+            cam = (((MyPlayer) players[p]).getCam());
+            camXStart = camYStart = camXTStart = camYTStart = 0f;
+            camXEnd = camYEnd = camXTEnd = camYTEnd = 1f;
+
+            if (players.length > 0) {
+                SplitScreen.setSplitScreen(this, p);
             }
-            Renderer.preRenderShadowedLightsFBO(cam, camXStart, camYStart, p);
+            Renderer.preRenderShadowedLightsFBO(cam);
             renderBack(cam);
             renderObj(cam);
             renderText(cam);
-            Renderer.renderLights(r, g, b, p);
+            Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
         }
         Renderer.border(ssMode);
     }
@@ -214,9 +217,8 @@ public abstract class Place {
     protected void addObj(GameObject go) {
         if (go.isEmitter()) {
             emitters.add(go);
-
         }
-        if (go.getClass() == Mob.class) {
+        if (go.getClass() == MyMob.class) {
             if (go.isSolid()) {
                 sMobs.add((Mob) go);
             } else {
@@ -331,5 +333,9 @@ public abstract class Place {
 
     public int getHeight() {
         return height;
+    }
+
+    public double SCALE() {
+        return settings.SCALE;
     }
 }

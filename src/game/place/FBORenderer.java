@@ -35,7 +35,6 @@ public class FBORenderer {
     }
 
     public final void activate() {
-
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
     }
 

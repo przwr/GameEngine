@@ -43,8 +43,7 @@ public abstract class GameObject {
         this.y = y;
         this.name = name;
         this.place = place;
-        this.sprite = place.getSprite(textureKey, sx, sy);
-        
+        this.sprite = place.getSprite(textureKey, sx, sy);        
     }
 
     @Override
