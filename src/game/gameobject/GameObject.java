@@ -19,6 +19,8 @@ public abstract class GameObject {
 
     protected double x;
     protected double y;
+    protected int width;
+    protected int height;
     protected boolean solid;
     protected boolean emitter;
     protected boolean emits;
@@ -33,8 +35,6 @@ public abstract class GameObject {
     
     protected int sX;
     protected int sY;    
-    protected int width;
-    protected int height;
 
     public abstract void render(int xEffect, int yEffect);
 

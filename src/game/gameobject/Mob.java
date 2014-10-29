@@ -5,12 +5,10 @@
  */
 package game.gameobject;
 
-import collision.Circle;
 import collision.Rectangle;
 import game.Methods;
 import game.place.cameras.Camera;
 import game.place.Place;
-import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -35,12 +33,12 @@ public class Mob extends Entity {
         this.setSpeed(speed);
         this.range = range;
         init("rabbit", name, x, y, sx, sy, place);
-        setCollision(new Rectangle(width, height, this));
+        setCollision(new Rectangle(0, 0, width, height, this));
     }
 
     @Override
     protected boolean isColided(int magX, int magY) {
-        return collision.ifCollide(getBegOfX() + magX, getBegOfY() + magY, place);
+        return collision.ifCollideSolid(getX() + magX, getY() + magY, place) || collision.ifCollide(getX() + magX, getY() + magY, place.players);
         /*if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
          return true;
          }
@@ -67,7 +65,7 @@ public class Mob extends Entity {
         }
     }
 
-    public synchronized void look(ArrayList<GameObject> players) {
+    public synchronized void look(GameObject[] players) {
         for (GameObject g : players) {
             if (Methods.PointDistance(g.getX(), g.getY(), getX(), getY()) < range)
                 prey = g;

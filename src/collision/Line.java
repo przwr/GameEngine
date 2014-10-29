@@ -16,36 +16,37 @@ import java.awt.geom.Line2D;
 public class Line extends Figure {
     private final int xk;
     private final int yk;
-    private final int d;
-    private final int A;
-    private final int B;
+    private boolean startDoubled;
+    private boolean endDoubled;
     
-    public Line(int xs, int ys, int d, int A, int B, GameObject owner) {  // Środek prostokąta (xs,ys) dla (0,0) jest w lewym górnym rogu prostokąta
+    public Line(int xs, int ys, int dx, int dy, GameObject owner) {  // Środek prostokąta (xs,ys) dla (0,0) jest w lewym górnym rogu prostokąta
         super(xs, ys, owner);
-        this.d = d;
-        this.A = A;
-        this.B = B;
-        this.type = 1;
-        xk = d * A;
-        yk = d * B;
+        xk = dx;
+        yk = dy;
         this.type = 3;
+        centralize();
     }
     
-    public Line(int d, int A, int B, GameObject owner) {  
+    public Line(int dx, int dy, GameObject owner) {  
         super(0, 0, owner);
-        this.d = d;
-        this.A = A;
-        this.B = B;
-        this.type = 1;
-        xk = d * A;
-        yk = d * B;
+        xk = dx;
+        yk = dy;
         this.type = 3;
+        centralize();
+    }
+
+    @Override
+    public void centralize() {
+        width = xk;
+        height = yk;
+        xCentr = xk/2;
+        yCentr = yk/2;
     }
 
     @Override
     public Point[] listPoints() {
-        Point[] list = {new Point(super.getX(), super.getY()), 
-                        new Point(super.getX() + xk, super.getY() + yk)};
+        Point[] list = {startDoubled ? null : new Point(super.getX(), super.getY()), 
+                        endDoubled ? null : new Point(super.getX() + xk, super.getY() + yk)};
         return list;
     }
 
@@ -75,19 +76,19 @@ public class Line extends Figure {
         return false;
     }
     
-    public int getA() {
-        return A;
-    }
-    
-    public int getB() {
-        return B;
-    }
-    
     public int getXk() {
         return xk;
     }
     
     public int getYk() {
         return yk;
+    }
+    
+    public void ifStartReturn(boolean a) {
+        startDoubled = a;
+    }  
+    
+    public void ifEndReturn(boolean a) {
+        endDoubled = a;
     }
 }

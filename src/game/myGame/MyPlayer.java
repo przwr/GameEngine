@@ -64,7 +64,7 @@ public class MyPlayer extends Entity {
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
-        setCollision(new Rectangle(width, height, this));
+        setCollision(new Rectangle(0, 0, width, height, this));
     }
 
     private void initControler(boolean isFirst) {
@@ -97,7 +97,7 @@ public class MyPlayer extends Entity {
     @Override
     protected boolean isColided(int magX, int magY) {
         if (place != null) {
-            //return collision.ifCollide(getMidX() + magX, getMidY() + magY, place);
+            return collision.ifCollideSolid(getX() + magX, getY() + magY, place);
             /*if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
              return true;
              }
@@ -130,7 +130,7 @@ public class MyPlayer extends Entity {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             getAnim().render(animate);
-            //place.getSpriteSheet("tlo", 64, 64).render(1, x/64, y/64);
+            //glRectf(0f,0f, width, height);
             glPopMatrix();
         }
     }
