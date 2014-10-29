@@ -133,72 +133,20 @@ public class SplitScreen {
             } else if (!pl.isSplit) {
                 if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY())) {
                     pl.settings.hSplitScreen = true;
-                    if (pl.players[0].getMidY() > pl.players[1].getMidY()) {
-                        GameObject temp = pl.players[0];
-                        pl.players[0] = pl.players[1];
-                        pl.players[1] = temp;
-                        pl.camsfor2[0].setGo(pl.players[0]);
-                        pl.camsfor2[1].setGo(pl.players[0]);
-                        pl.camsfor2[2].setGo(pl.players[1]);
-                        pl.camsfor2[3].setGo(pl.players[1]);
-                    }
-                    ((MyPlayer) pl.players[0]).addCamera(pl.camsfor2[0]);
-                    ((MyPlayer) pl.players[1]).addCamera(pl.camsfor2[2]);
+                    swampY(pl);
                 } else {
                     pl.settings.hSplitScreen = false;
-                    if (pl.players[0].getMidX() > pl.players[1].getMidX()) {
-                        GameObject temp = pl.players[0];
-                        pl.players[0] = pl.players[1];
-                        pl.players[1] = temp;
-                        pl.camsfor2[0].setGo(pl.players[0]);
-                        pl.camsfor2[1].setGo(pl.players[0]);
-                        pl.camsfor2[2].setGo(pl.players[1]);
-                        pl.camsfor2[3].setGo(pl.players[1]);
-                    }
-                    ((MyPlayer) pl.players[0]).addCamera(pl.camsfor2[1]);
-                    ((MyPlayer) pl.players[1]).addCamera(pl.camsfor2[3]);
+                    swampX(pl);
                 }
-                ((PlayersCamera) pl.camsfor2[0]).reInit(0);
-                ((PlayersCamera) pl.camsfor2[1]).reInit(0);
-                ((PlayersCamera) pl.camsfor2[2]).reInit(1);
-                ((PlayersCamera) pl.camsfor2[3]).reInit(1);
-                ((MyPlayer) pl.players[0]).getCam().update();
-                ((MyPlayer) pl.players[1]).getCam().update();
                 pl.isSplit = true;
             } else if (pl.changeSSMode) {
                 if (pl.settings.hSplitScreen) {
                     pl.settings.hSplitScreen = false;
-                    if (pl.players[0].getMidX() > pl.players[1].getMidX()) {
-                        GameObject temp = pl.players[0];
-                        pl.players[0] = pl.players[1];
-                        pl.players[1] = temp;
-                        pl.camsfor2[0].setGo(pl.players[0]);
-                        pl.camsfor2[1].setGo(pl.players[0]);
-                        pl.camsfor2[2].setGo(pl.players[1]);
-                        pl.camsfor2[3].setGo(pl.players[1]);
-                    }
-                    ((MyPlayer) pl.players[0]).addCamera(pl.camsfor2[1]);
-                    ((MyPlayer) pl.players[1]).addCamera(pl.camsfor2[3]);
+                    swampX(pl);
                 } else {
                     pl.settings.hSplitScreen = true;
-                    if (pl.players[0].getMidY() > pl.players[1].getMidY()) {
-                        GameObject temp = pl.players[0];
-                        pl.players[0] = pl.players[1];
-                        pl.players[1] = temp;
-                        pl.camsfor2[0].setGo(pl.players[0]);
-                        pl.camsfor2[1].setGo(pl.players[0]);
-                        pl.camsfor2[2].setGo(pl.players[1]);
-                        pl.camsfor2[3].setGo(pl.players[1]);
-                    }
-                    ((MyPlayer) pl.players[0]).addCamera(pl.camsfor2[0]);
-                    ((MyPlayer) pl.players[1]).addCamera(pl.camsfor2[2]);
+                    swampY(pl);
                 }
-                ((PlayersCamera) pl.camsfor2[0]).reInit(0);
-                ((PlayersCamera) pl.camsfor2[1]).reInit(0);
-                ((PlayersCamera) pl.camsfor2[2]).reInit(1);
-                ((PlayersCamera) pl.camsfor2[3]).reInit(1);
-                ((MyPlayer) pl.players[0]).getCam().update();
-                ((MyPlayer) pl.players[1]).getCam().update();
                 pl.changeSSMode = false;
             }
         }
@@ -253,5 +201,25 @@ public class SplitScreen {
             ((PlayersCamera) ((MyPlayer) pl.players[2]).getCam()).init(4, 4, 2);
         }
         pl.changeSSMode = false;
+    }
+
+    private static void swampY(Place pl) {
+        if (pl.players[0].getMidY() > pl.players[1].getMidY()) {
+            GameObject temp = pl.players[0];
+            pl.players[0] = pl.players[1];
+            pl.players[1] = temp;
+        }
+        ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(2, 4, 0);
+        ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(2, 4, 1);
+    }
+
+    private static void swampX(Place pl) {
+        if (pl.players[0].getMidX() > pl.players[1].getMidX()) {
+            GameObject temp = pl.players[0];
+            pl.players[0] = pl.players[1];
+            pl.players[1] = temp;
+        }
+        ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(4, 2, 0);
+        ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(4, 2, 1);
     }
 }

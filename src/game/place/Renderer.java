@@ -22,17 +22,24 @@ import sprites.Sprite;
 public class Renderer {
 
     private static final int w = Display.getWidth();
-    private static final int h = Display.getHeight();
-    private static final int lightTex = makeTexture(null, w, h);
+    private static final int h = Display.getHeight();//(int) (w * ((double) Display.getHeight() / (double) Display.getWidth()));
+    private static final FBORenderer fbFrame = new FBORenderer(w, h, makeTexture(null, w, h));
     private static int savedShadowed;
     private static GameObject[] activeEmitters;
     private static final Point center = new Point(0, 0);
     private static final Point[] tempPoints = new Point[4];
     private static final Point[] points = new Point[4];
+    private static final Point[] leftWallPoints = new Point[3];
+    private static final Point[] rightWallPoints = new Point[3];
+    private static boolean isLeftWall;
+    private static boolean isRightWall;
+    private static int leftWallColor;
+    private static int rightWallColor;
     private static final Sprite sprb = new Sprite("rockb", 64, 64, null);
     private static final Sprite sprw = new Sprite("rockw", 64, 64, null);
-    private static final Sprite alpha = new Sprite("alpha", 2048, 2048, null);
-    private static final int shDif = (int) (768 / 2 * Math.sqrt(2.0));
+    private static final Sprite alpha = new Sprite("alpha", w, h, null);
+    private static final int shDif = (int) (768 * Math.sqrt(2.0));
+
     private static int shP1 = 0;
     private static int shP2 = 2;
     private static int shX, shY;
@@ -48,52 +55,31 @@ public class Renderer {
         }
         for (GameObject player : players) {
             if (player.isEmitter() && player.isEmits()) {
-                calculateShadow(player, null, 384, 384);
                 fbo[nr].activate();
+                glColor3f(1f, 1f, 1f);
                 glDisable(GL_BLEND);
-                glColor3f(1f, 1f, 1f);
                 alpha.render();
-                // na 8
-//                    drawShadow(player, 0.875f, 0);
-//                    drawShadow(player, 0.75f, 1);
-//                    drawShadow(player, 0.625f, 2);
-//                    drawShadow(player, 0.5f, 3);
-//                    drawShadow(player, 0.375f, 4);
-//                    drawShadow(player, 0.25f, 5);
-//                    drawShadow(player, 0.125f, 6);
-//                    drawShadow(player, 0.0f, 7);
-                // na 5
-//                    drawShadow(player, 0.8f, 0);
-//                    drawShadow(player, 0.6f, 1);
-//                    drawShadow(player, 0.4f, 2);
-//                    drawShadow(player, 0.2f, 3);
-//                    drawShadow(player, 0.0f, 4);
-                // na 4
-//                    drawShadow(player, 0.75f, 0);
-//                    drawShadow(player, 0.5f, 1);
-//                    drawShadow(player, 0.25f, 2);
-//                    drawShadow(player, 0.0f, 3);
-                // na 3
-//                    drawShadow(player, 0.8f, 0);
-//                    drawShadow(player, 0.4f, 1);
-//                    drawShadow(player, 0.0f, 2);
-                // na 2
-//                    drawShadow(player, 0.5f, 0);
-//                    drawShadow(player, 0.0f, 1);                    
-                // na 1
-                drawShadow(player);
-                glColor3f(1f, 1f, 1f);
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-                glPushMatrix();     //384 i 384 to współrzędne obiektu dającego cień 512 to połowa wielkości światła
                 int lY = 768;
-                glTranslatef(384 + player.getLight().getSX() / 2 - (player.getMidX()), 384 + player.getLight().getSY() / 2 - (player.getMidY()) + h - lY, 0);
-                if (player.getMidY() > 416) { // 416 - x środka obiektu rzucającego cień
-                    sprw.render();
-                } else {
-                    sprb.render();
+                int numberOfShadows = 1;
+                glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+                glEnable(GL_LINE_SMOOTH);
+                for (int i = 0; i < numberOfShadows; i++) {
+                    calculateShadow(player, null, 384, 384);
+                    calculateWalls();
+                    drawShadow(player);
+                    drawWalls(player);
+                    glColor3f(1f, 1f, 1f);
+                    glEnable(GL_BLEND);
+                    glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                    glPushMatrix();     //384 i 384 to współrzędne obiektu dającego cień 512 to połowa wielkości światła
+                    glTranslatef(384 + player.getLight().getSX() / 2 - (player.getMidX()), 384 + player.getLight().getSY() / 2 - (player.getMidY()) + h - lY, 0);
+                    if (player.getMidY() > 416) { // 416 - x środka obiektu rzucającego cień
+                        sprw.render();
+                    } else {
+                        sprb.render();
+                    }
+                    glPopMatrix();
                 }
-                glPopMatrix();
                 glColor3f(1, 1, 1);
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 player.getLight().render(h - lY);
@@ -106,6 +92,7 @@ public class Renderer {
     }
 
     public static void preRenderShadowedLightsFBO(Camera cam, float xStart, float yStart, int index) {
+        fbFrame.activate();
         clearScreen(0);
         glColor3f(1, 1, 1);
         glEnable(GL_BLEND);
@@ -113,7 +100,7 @@ public class Renderer {
         for (int i = 0; i < savedShadowed; i++) {
             drawLight(fbo[i].getTexture(), w, h, activeEmitters[i], cam);
         }
-        frameSave(lightTex, xStart, yStart);
+        fbFrame.deactivate();
     }
 
     private static void calculateShadow(GameObject src, GameObject shade, int xS, int yS) {
@@ -155,7 +142,6 @@ public class Renderer {
             }
             points[2].set(shX, shY);
         }
-
         if (points[1].getX() == center.getX()) {
             points[3].set(points[1].getX(), points[1].getY() + (points[1].getY() > center.getY() ? shDif : -shDif));
         } else if (points[1].getY() == center.getY()) {
@@ -174,6 +160,81 @@ public class Renderer {
                 shY = points[1].getY() + (points[1].getY() > center.getY() ? shDif : -shDif);
             }
             points[3].set(shX, shY);
+        }
+    }
+
+    private static void calculateWalls() {
+        if (false) {
+            int Y = 320;
+            int hight = 64;
+            if (true) { //dodaj światło
+                int XL1 = (int) ((Y - bl1) / al1);
+                leftWallPoints[0].set(XL1, Y - hight);
+                leftWallPoints[1].set(XL1, Y);
+                int XL2 = (int) ((Y - hight - bl1) / al1);
+                leftWallPoints[2].set(XL2, Y - hight);
+                leftWallColor = 1;
+                isLeftWall = true;
+            } else { //dodaj cień
+                int XL1 = (int) ((Y - bl1) / al1);
+                leftWallPoints[0].set(XL1, Y);
+                leftWallPoints[1].set(XL1, Y - hight);
+                int XL2 = (int) ((Y + hight - bl2) / al2);
+                leftWallPoints[2].set(XL2, Y - hight);
+                leftWallColor = 0;
+                isLeftWall = true;
+            }
+        }
+        next:
+        if (false) {
+            int Y = 320;
+            int hight = 64;
+            if (true) {// dodaj światło
+                int XR1 = (int) ((Y - bl2) / al2) + 1;
+                rightWallPoints[0].set(XR1, Y - hight);
+                rightWallPoints[1].set(XR1, Y);
+                int XR2 = (int) ((Y - hight - bl2) / al2) + 1;
+                rightWallPoints[2].set(XR2, Y - hight);
+                rightWallColor = 1;
+                isRightWall = true;
+            } else { //dodaj cień
+                int XL1 = (int) ((Y - bl1) / al1);
+                rightWallPoints[0].set(XL1, Y);
+                rightWallPoints[1].set(XL1, Y - hight);
+                int XL2 = (int) ((Y + hight - bl2) / al2);
+                rightWallPoints[2].set(XL2, Y - hight);
+                rightWallColor = 0;
+                isRightWall = true;
+            }
+        }
+    }
+
+    public static void drawWalls(GameObject emitter) {
+        int lX = 768;
+        int lY = 768;
+        if (isLeftWall) {
+            glColor3f(leftWallColor, leftWallColor, leftWallColor);
+            glPushMatrix();
+            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
+            glBegin(GL_TRIANGLES);
+            glVertex2f(leftWallPoints[0].getX(), leftWallPoints[0].getY());
+            glVertex2f(leftWallPoints[1].getX(), leftWallPoints[1].getY());
+            glVertex2f(leftWallPoints[2].getX(), leftWallPoints[2].getY());
+            glEnd();
+            glPopMatrix();
+            isLeftWall = false;
+        }
+        if (isRightWall) {
+            glColor3f(rightWallColor, rightWallColor, rightWallColor);
+            glPushMatrix();
+            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
+            glBegin(GL_TRIANGLES);
+            glVertex2f(rightWallPoints[0].getX(), rightWallPoints[0].getY());
+            glVertex2f(rightWallPoints[1].getX(), rightWallPoints[1].getY());
+            glVertex2f(rightWallPoints[2].getX(), rightWallPoints[2].getY());
+            glEnd();
+            glPopMatrix();
+            isRightWall = false;
         }
     }
 
@@ -271,7 +332,7 @@ public class Renderer {
         glColor3f(val, val, val);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < strength; i++) {
-            drawTex(lightTex, w, h);
+            drawTex(fbFrame.getTexture(), w, h);
         }
     }
 
@@ -319,6 +380,10 @@ public class Renderer {
         for (int i = 0; i < 4; i++) {
             points[i] = new Point(0, 0);
             tempPoints[i] = new Point(0, 0);
+        }
+        for (int i = 0; i < 3; i++) {
+            leftWallPoints[i] = new Point(0, 0);
+            rightWallPoints[i] = new Point(0, 0);
         }
         fbo = new FBORenderer[emitters.size() + players.length];
         for (int i = 0; i < emitters.size() + players.length; i++) {
