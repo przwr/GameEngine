@@ -64,7 +64,7 @@ public class MyPlayer extends Entity {
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
-        setCollision(new Rectangle(this.width, this.height, this));
+        setCollision(new Rectangle(sX, sY, this.width, this.height, this));
     }
 
     private void initControler(boolean isFirst) {

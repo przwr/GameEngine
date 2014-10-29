@@ -33,7 +33,7 @@ public abstract class Mob extends Entity {
         this.setSpeed((int) (SCALE * speed));
         this.range = (int) (SCALE * range);
         init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
-        setCollision(new Rectangle(this.width, this.height, this));
+        setCollision(new Rectangle(sX, sY, this.width, this.height, this));
     }
 
     public abstract void update(Place place);

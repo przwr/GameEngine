@@ -24,7 +24,6 @@ public class Renderer {
     private static final int w = Display.getWidth();
     private static final int h = Display.getHeight();
     private static final FBORenderer fbFrame = new FBORenderer(w, h, makeTexture(null, w, h));
-    //private static final int lightTex = makeTexture(null, w, h);
     private static int savedShadowed;
     private static GameObject[] activeEmitters;
     private static final Point center = new Point(0, 0);
@@ -101,7 +100,6 @@ public class Renderer {
         for (int i = 0; i < savedShadowed; i++) {
             drawLight(fbo[i].getTexture(), w, h, activeEmitters[i], cam);
         }
-        //frameSave(lightTex, xStart, yStart);
         fbFrame.deactivate();
     }
 
@@ -337,7 +335,6 @@ public class Renderer {
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < strength; i++) {
             drawTex(fbFrame.getTexture(), w, h, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
-            //drawTex(lightTex, w, h);
         }
     }
 
