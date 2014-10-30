@@ -12,6 +12,7 @@ import game.place.Place;
 import java.io.File;
 import engine.Sound;
 import game.gameobject.GameObject;
+import game.place.SplitScreen;
 import game.place.cameras.PlayersCamera;
 import org.lwjgl.input.Controller;
 
@@ -147,7 +148,11 @@ public class Game {
                 place.players[p] = tempP;
             }
             place.playersLength++;
+            if (!players[0].isFirst) {
+                SplitScreen.swampFirstWithSecond(place);
+            }
             updatePlayersCam();
+
         }
     }
 
