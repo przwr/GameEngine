@@ -70,7 +70,6 @@ public abstract class Place {
         this.sTile = sTile;
         this.settings = settings;
         tiles = new Tile[width / sTile * height / sTile];
-        fonts = null;
         this.game = game;
         sounds = new SoundBase();
         sprites = new SpriteBase();
@@ -80,7 +79,7 @@ public abstract class Place {
 
     public abstract void update();
 
-    public void addCamerasFor2(GameObject player1, GameObject player2) {
+    public void addCameraFor2(GameObject player1, GameObject player2) {
         camfor2 = new TwoPlayersCamera(this, player1, player2);
     }
 

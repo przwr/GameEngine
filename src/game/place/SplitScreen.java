@@ -225,9 +225,7 @@ public class SplitScreen {
 
     private static void swampY(Place pl) {
         if (pl.players[0].getMidY() > pl.players[1].getMidY()) {
-            GameObject temp = pl.players[0];
-            pl.players[0] = pl.players[1];
-            pl.players[1] = temp;
+            swampFirstWithSecond(pl);
         }
         ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(2, 4, 0);
         ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(2, 4, 1);
@@ -235,11 +233,18 @@ public class SplitScreen {
 
     private static void swampX(Place pl) {
         if (pl.players[0].getMidX() > pl.players[1].getMidX()) {
-            GameObject temp = pl.players[0];
-            pl.players[0] = pl.players[1];
-            pl.players[1] = temp;
+            swampFirstWithSecond(pl);
         }
         ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(4, 2, 0);
         ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(4, 2, 1);
+    }
+
+    private static void swampFirstWithSecond(Place pl) {
+        GameObject temp = pl.players[0];
+        MyPlayer tempG = pl.game.players[0];
+        pl.players[0] = pl.players[1];
+        pl.game.players[0] = pl.game.players[1];
+        pl.players[1] = temp;
+        pl.game.players[1] = tempG;
     }
 }

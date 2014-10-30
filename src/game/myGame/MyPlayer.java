@@ -29,6 +29,7 @@ public class MyPlayer extends Entity {
     private boolean animate;
     public MyController ctrl;
     private Camera cam;
+    public boolean isFirst = false;
 
 //    public Player(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y, boolean isFirst) {
 //        this.name = name;
@@ -46,12 +47,12 @@ public class MyPlayer extends Entity {
 //        animate = true;
 //        initControler(isFirst);
 //    }
-    public MyPlayer(boolean isFirst) {
+    public MyPlayer(boolean isFirst, String name) {
+        this.name = name;
         initControler(isFirst);
     }
 
-    public void init(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y, double SCALE) {
-        this.name = name;
+    public void init(int startX, int startY, int width, int height, int sx, int sy, Place place, int x, int y, double SCALE) {
         this.width = (int) (SCALE * width);
         this.height = (int) (SCALE * height);
         this.sX = (int) (SCALE * startX);
@@ -70,6 +71,7 @@ public class MyPlayer extends Entity {
     private void initControler(boolean isFirst) {
         ctrl = new MyController(this);
         if (isFirst) {
+            this.isFirst = true;
             ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
             ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
             ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
@@ -166,5 +168,9 @@ public class MyPlayer extends Entity {
 
     public Place getPlace() {
         return place;
+    }
+
+    public void setPlaceToNull() {
+        place = null;
     }
 }
