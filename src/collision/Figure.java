@@ -6,7 +6,6 @@
 package collision;
 
 import engine.Point;
-import game.Methods;
 import game.gameobject.GameObject;
 import game.place.Place;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public abstract class Figure {
     protected int yCentr;
 
     protected int type;
-    
+
     protected GameObject owner;
 
     public Figure(int xs, int ys, GameObject owner) {
@@ -33,7 +32,7 @@ public abstract class Figure {
         this.ys = ys;
         this.owner = owner;
     }
-    
+
     public boolean ifCollideSolid(int x, int y, Place p) {
         for (GameObject obj : p.sMobs) {
             if (checkCollison(x, y, obj)) {
@@ -89,16 +88,16 @@ public abstract class Figure {
         }
         return null;
     }
-    
-    public boolean ifCollide(int x, int y, GameObject[] gos) {
-        for (GameObject obj : gos) {
-            if (checkCollison(x, y, obj)) {
+
+    public boolean ifCollide(int x, int y, Place place) {
+        for (int p = 0; p < place.playersLength; p++) {
+            if (checkCollison(x, y, place.players[p])) {
                 return true;
             }
         }
         return false;
     }
-    
+
     public GameObject whatCollide(int x, int y, GameObject[] gos) {
         for (GameObject obj : gos) {
             if (checkCollison(x, y, obj)) {
@@ -107,86 +106,90 @@ public abstract class Figure {
         }
         return null;
     }
-    
+
     public int getX() {
         return owner.getX() + xs;
     }
-    
+
     public int getY() {
         return owner.getY() + ys;
     }
-    
+
     public int getX(int x) {
         return x + xs;
     }
-    
+
     public int getY(int y) {
         return y + ys;
     }
-    
+
     public void setXs(int x) {
         xs = x;
     }
-    
+
     public void setYs(int y) {
         ys = y;
     }
-    
+
     public int getXs() {
         return xs;
     }
-    
+
     public int getYs() {
         return ys;
     }
-    
+
     public int getCentralX() {
         return owner.getX() + xs + xCentr;
     }
-    
+
     public int getCentralY() {
         return owner.getY() + ys + yCentr;
     }
-    
+
     public int getCentralX(int x) {
         return x + ys + xCentr;
     }
-    
+
     public int getCentralY(int y) {
         return y + ys + yCentr;
     }
-    
+
     public int getWidth() {
         return width;
     }
-    
+
     public int getHeight() {
         return height;
     }
-    
+
     private boolean checkCollison(int x, int y, GameObject obj) {
-        if (obj.equals(owner))
+        if (obj.equals(owner)) {
             return false;
+        }
         Figure f = obj.getCollision();
-        if (f == null/* || !ifGoodDistance(x, y, f)*/)
+        if (f == null/* || !ifGoodDistance(x, y, f)*/) {
             return false;
-        
+        }
+
         return ifCollideSngl(x, y, f);
     }
-    
+
     public boolean ifGoodDistance(int x, int y, Figure f) {
-        if (f.getType() == 1) return true;
-        int dx = Math.abs(getCentralX(x) - f.getCentralX()); 
+        if (f.getType() == 1) {
+            return true;
+        }
+        int dx = Math.abs(getCentralX(x) - f.getCentralX());
         int dy = Math.abs(getCentralY(y) - f.getCentralY());
         return (dx <= (getWidth() + f.getWidth()) / 2 && dy <= (getWidth() + f.getWidth()) / 2);
     }
-    
+
     public abstract boolean ifCollideSngl(int x, int y, Figure f);
 
     public abstract Point[] listPoints();
 
     public abstract void centralize();
-    
+
     public int getType() {
         return type;
     }

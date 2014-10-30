@@ -110,28 +110,4 @@ public class PlayersCamera extends Camera {
         Dheight = Display.getHeight() / ssY;
         update();
     }
-
-    public void reInit(int num) {
-        if (place.settings.nrPlayers == 2) {
-            if (place.settings.hSplitScreen) {
-                if (num == 0) {
-                    yDown = 2;
-                    xLeft = xRight = yUp = 0;
-                } else {
-                    yUp = 2;
-                    xLeft = xRight = yDown = 0;
-                }
-            } else {
-                if (num == 0) {
-                    xRight = 2;
-                    xLeft = yUp = yDown = 0;
-                } else {
-                    xLeft = 2;
-                    xRight = yUp = yDown = 0;
-
-                }
-            }
-        }
-    }
-
 }

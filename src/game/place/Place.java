@@ -14,7 +14,6 @@ import game.myGame.MyPlayer;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
-import game.place.cameras.PlayersCamera;
 import engine.Physics;
 import engine.FontsHandler;
 import engine.SoundBase;
@@ -43,7 +42,6 @@ public abstract class Place {
     public float r, g, b;
 
     public Camera cam;
-    public Camera[] cams = new Camera[4];
     public Camera camfor2;
     public Camera camfor3;
     public Camera camfor4;
@@ -58,6 +56,7 @@ public abstract class Place {
     public ArrayList<GameObject> solidObj = new ArrayList<>();
     public ArrayList<GameObject> flatObj = new ArrayList<>();
     public GameObject[] players;
+    public int playersLength;
     public ArrayList<GameObject> emitters = new ArrayList<>();
     public ArrayList<Area> areas = new ArrayList<>();
 
@@ -80,10 +79,6 @@ public abstract class Place {
     public abstract void generate();
 
     public abstract void update();
-
-    public void addCamera(GameObject go, int ssX, int ssY, int num) {
-        this.cams[num] = new PlayersCamera(this, go, ssX, ssY, num);
-    }
 
     public void addCamerasFor2(GameObject player1, GameObject player2) {
         camfor2 = new TwoPlayersCamera(this, player1, player2);
@@ -114,13 +109,12 @@ public abstract class Place {
     }
 
     public void render() {
-        Renderer.preRendLightsFBO(camXStart, camXStart, this, emitters, players);
-        for (int p = 0; p < players.length; p++) {
+        Renderer.preRendLightsFBO(camXStart, camXStart, this);
+        for (int p = 0; p < playersLength; p++) {
             cam = (((MyPlayer) players[p]).getCam());
             camXStart = camYStart = camXTStart = camYTStart = 0f;
             camXEnd = camYEnd = camXTEnd = camYTEnd = 1f;
-
-            if (players.length > 0) {
+            if (playersLength > 1) {
                 SplitScreen.setSplitScreen(this, p);
             }
             Renderer.preRenderShadowedLightsFBO(cam);
@@ -181,9 +175,9 @@ public abstract class Place {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
-        for (GameObject go : players) {
-            if (!go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
+        for (int p = 0; p < playersLength; p++) {
+            if (!players[p].isOnTop()) {
+                players[p].render(cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
     }
@@ -209,9 +203,10 @@ public abstract class Place {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
-        for (GameObject go : players) {
-            if (go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
+
+        for (int p = 0; p < playersLength; p++) {
+            if (players[p].isOnTop()) {
+                players[p].render(cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
     }

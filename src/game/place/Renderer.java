@@ -24,6 +24,7 @@ public class Renderer {
     private static final int w = Display.getWidth();
     private static final int h = Display.getHeight();
     private static final FBORenderer fbFrame = new FBORenderer(w, h, makeTexture(null, w, h));
+    //private static final int lightTex = makeTexture(null, w, h);
     private static int savedShadowed;
     private static GameObject[] activeEmitters;
     private static final Point center = new Point(0, 0);
@@ -46,14 +47,17 @@ public class Renderer {
     private static double angle, temp, al1, bl1, al2, bl2;
     private static FBORenderer[] fbo;
 
-    public static void preRendLightsFBO(float xStart, float yStart, Place place, ArrayList<GameObject> emitters, GameObject[] players) {
+    public static void preRendLightsFBO(float xStart, float yStart, Place place) {
         int nr = 0;
-        for (GameObject emitter : emitters) {
+
+        for (GameObject emitter : place.emitters) {
             if (emitter.isEmits()) {
 //                ... jak u graczy
             }
         }
-        for (GameObject player : players) {
+        GameObject player;
+        for (int p = 0; p < place.playersLength; p++) {
+            player = place.players[p];
             if (player.isEmitter() && player.isEmits()) {
                 fbo[nr].activate();
                 glColor3f(1f, 1f, 1f);
@@ -100,6 +104,7 @@ public class Renderer {
         for (int i = 0; i < savedShadowed; i++) {
             drawLight(fbo[i].getTexture(), w, h, activeEmitters[i], cam);
         }
+        //frameSave(lightTex, xStart, yStart);
         fbFrame.deactivate();
     }
 
@@ -335,6 +340,7 @@ public class Renderer {
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < strength; i++) {
             drawTex(fbFrame.getTexture(), w, h, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
+            //drawTex(lightTex, w, h);
         }
     }
 
@@ -378,7 +384,7 @@ public class Renderer {
     }
 
     public static void initVariables(ArrayList<GameObject> emitters, GameObject[] players) {
-        activeEmitters = new GameObject[emitters.size() + players.length];
+        activeEmitters = new GameObject[emitters.size() + 4];
         for (int i = 0; i < 4; i++) {
             points[i] = new Point(0, 0);
             tempPoints[i] = new Point(0, 0);
@@ -387,8 +393,8 @@ public class Renderer {
             leftWallPoints[i] = new Point(0, 0);
             rightWallPoints[i] = new Point(0, 0);
         }
-        fbo = new FBORenderer[emitters.size() + players.length];
-        for (int i = 0; i < emitters.size() + players.length; i++) {
+        fbo = new FBORenderer[4];
+        for (int i = 0; i < emitters.size() + 4; i++) {
             fbo[i] = new FBORenderer((int) (SCALE * 1200), (int) (SCALE * 1200), glGenTextures());
         }
     }

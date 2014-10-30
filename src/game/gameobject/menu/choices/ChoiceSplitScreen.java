@@ -26,12 +26,14 @@ public class ChoiceSplitScreen extends MenuChoice {
         if (menu.game.getPlace() == null) {
             settings.hSplitScreen = !settings.hSplitScreen;
         } else {
-            if (menu.game.getPlace().players.length == 2) {
+            if (menu.game.getPlace().playersLength == 2) {
                 menu.game.getPlace().changeSSMode = true;
                 SplitScreen.changeSSMode2(menu.game.getPlace());
-            } else if (menu.game.getPlace().players.length == 3) {
+            } else if (menu.game.getPlace().playersLength == 3) {
                 menu.game.getPlace().changeSSMode = true;
                 SplitScreen.changeSSMode3(menu.game.getPlace());
+            } else {
+                settings.hSplitScreen = !settings.hSplitScreen;
             }
         }
         AnalizerSettings.Update(settings);

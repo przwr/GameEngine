@@ -19,9 +19,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 public class SplitScreen {
 
     public static void setSplitScreen(Place pl, int p) {
-
-        GameObject player = pl.players[p];
-        if ((pl.players.length == 2 && !SplitScreen.isClose2(pl))) {
+        if ((pl.playersLength == 2 && !SplitScreen.isClose2(pl))) {
             if (pl.changeSSMode) {
                 changeSSMode2(pl);
             }
@@ -55,14 +53,14 @@ public class SplitScreen {
                     pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                 }
             }
-        } else if (pl.players.length == 2 && SplitScreen.isClose2(pl)) {
+        } else if (pl.playersLength == 2 && SplitScreen.isClose2(pl)) {
             pl.cam = pl.camfor2;
             pl.ssMode = 0;
             if (p == 0) {
                 pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
                 pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
             }
-        } else if (pl.players.length == 3 && !SplitScreen.isClose3(pl)) {
+        } else if (pl.playersLength == 3 && !SplitScreen.isClose3(pl)) {
             if (pl.changeSSMode) {
                 changeSSMode3(pl);
             }
@@ -107,14 +105,14 @@ public class SplitScreen {
                     pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
                 }
             }
-        } else if (pl.players.length == 3 && SplitScreen.isClose3(pl)) {
+        } else if (pl.playersLength == 3 && SplitScreen.isClose3(pl)) {
             pl.cam = pl.camfor3;
             pl.ssMode = 0;
             if (p == 0) {
                 pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
                 pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
             }
-        } else if (pl.players.length == 4 && !SplitScreen.isClose4(pl)) {
+        } else if (pl.playersLength == 4 && !SplitScreen.isClose4(pl)) {
             pl.ssMode = 5;
             if (p == 0) {
                 glViewport(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
@@ -137,7 +135,7 @@ public class SplitScreen {
                 pl.camXTEnd = 1f;
                 pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
             }
-        } else if (pl.players.length == 4 && SplitScreen.isClose4(pl)) {
+        } else if (pl.playersLength == 4 && SplitScreen.isClose4(pl)) {
             pl.cam = pl.camfor4;
             pl.ssMode = 0;
             if (p == 0) {

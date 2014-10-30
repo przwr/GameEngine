@@ -40,7 +40,7 @@ public abstract class Mob extends Entity {
 
     @Override
     protected boolean isColided(int magX, int magY) {
-        return collision.ifCollideSolid(getX() + magX, getY() + magY, place) || collision.ifCollide(getX() + magX, getY() + magY, place.players);
+        return collision.ifCollideSolid(getX() + magX, getY() + magY, place) || collision.ifCollide(getX() + magX, getY() + magY, place);
         /*if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
          return true;
          }
@@ -60,7 +60,9 @@ public abstract class Mob extends Entity {
     }
 
     public synchronized void look(GameObject[] players) {
-        for (GameObject g : players) {
+        GameObject g;
+        for (int i = 0; i < place.playersLength; i++) {
+            g = players[i];
             if (Methods.PointDistance(g.getX(), g.getY(), getX(), getY()) < range) {
                 prey = g;
             }

@@ -56,8 +56,9 @@ public class MyPlace extends Place {
                 if ((x * y) < 850) {
                     tiles[x + y * height / sTile] = GRASS;
                 } else {
-                    if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS)
+                    if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
                         a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, a));
+                    }
                     tiles[x + y * height / sTile] = ROCK;
                 }
             }
@@ -116,13 +117,13 @@ public class MyPlace extends Place {
          sounds.getSound("MumboMountain").fade(0.5, false);
          }
          */
-        if (players.length == 2) {
+        if (playersLength == 2) {
             changeSplitScreenMode.Do();
             camfor2.update();
-        } else if (players.length == 3) {
+        } else if (playersLength == 3) {
             changeSplitScreenMode.Do();
             camfor3.update();
-        } else if (players.length == 4) {
+        } else if (playersLength == 4) {
             camfor4.update();
         }
         for (Mob mob : sMobs) {
@@ -132,8 +133,8 @@ public class MyPlace extends Place {
 
     @Override
     protected void renderText(Camera cam) {
-        for (GameObject player : players) {
-            ((MyPlayer) player).renderName(this, cam);
+        for (int p = 0; p < playersLength; p++) {
+            ((MyPlayer) players[p]).renderName(this, cam);
         }
 
         for (Mob mob : sMobs) {
