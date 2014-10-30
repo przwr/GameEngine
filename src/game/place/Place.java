@@ -33,7 +33,7 @@ import sprites.SpriteSheet;
  */
 public abstract class Place {
 
-    public Game game;
+    public final Game game;
     public Settings settings;
     protected final SoundBase sounds;
     protected final SpriteBase sprites;

@@ -99,6 +99,6 @@ public class Settings {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
-        this.SCALE = (int) (((double) resHeight / 1200d / 0.03125)) * 0.03125;
+        this.SCALE = ((int) (((double) resHeight / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) (((double) resHeight / 1024d / 0.03125)) * 0.03125;
     }
 }

@@ -239,7 +239,7 @@ public class SplitScreen {
         ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(4, 2, 1);
     }
 
-    private static void swampFirstWithSecond(Place pl) {
+    public static void swampFirstWithSecond(Place pl) {
         GameObject temp = pl.players[0];
         MyPlayer tempG = pl.game.players[0];
         pl.players[0] = pl.players[1];

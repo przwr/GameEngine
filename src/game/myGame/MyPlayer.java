@@ -61,7 +61,7 @@ public class MyPlayer extends Entity {
         this.setSpeed((int) (SCALE * 8));
         this.emitter = true;
         init("apple", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, (int) (SCALE * 1200), (int) (SCALE * 1200), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;

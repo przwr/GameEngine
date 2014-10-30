@@ -36,7 +36,7 @@ public class Renderer {
     private static boolean isRightWall;
     private static int leftWallColor;
     private static int rightWallColor;
-    private static final double SCALE = (int) (((double) h / 1200d / 0.03125)) * 0.03125;
+    private static final double SCALE = ((int) (((double) h / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) (((double) h / 1024d / 0.03125)) * 0.03125;
     private static final Sprite sprb = new Sprite("rockb", (int) (SCALE * 64), (int) (SCALE * 64), null);
     private static final Sprite sprw = new Sprite("rockw", (int) (SCALE * 64), (int) (SCALE * 64), null);
     private static final Sprite alpha = new Sprite("alpha", w, h, null);
@@ -395,7 +395,7 @@ public class Renderer {
         }
         fbo = new FBORenderer[4];
         for (int i = 0; i < emitters.size() + 4; i++) {
-            fbo[i] = new FBORenderer((int) (SCALE * 1200), (int) (SCALE * 1200), glGenTextures());
+            fbo[i] = new FBORenderer((int) (SCALE * 1024), (int) (SCALE * 1024), glGenTextures());
         }
     }
 

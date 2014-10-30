@@ -90,7 +90,7 @@ public class Game {
     }
 
     public void startGame(int nrPl) {
-        place = new MyPlace(this, (int) (settings.SCALE * 4096), (int) (settings.SCALE * 4096), (int) (settings.SCALE * 64), settings);
+        place = new MyPlace(this, (int) (settings.SCALE * 2304), (int) (settings.SCALE * 2304), (int) (settings.SCALE * 64), settings);
         place.players = new GameObject[4];
         place.playersLength = nrPl;
         if (nrPl == 1) {

@@ -10,7 +10,6 @@ import collision.Rectangle;
 import game.gameobject.Mob;
 import game.Game;
 import game.Settings;
-import game.gameobject.GameObject;
 import game.place.BasicTile;
 import game.place.cameras.Camera;
 import game.place.Place;
@@ -31,17 +30,25 @@ import org.newdawn.slick.openal.SoundStore;
 public class MyPlace extends Place {
 
     final Action changeSplitScreenMode;
+    final Action changeSplitScreenJoin;
 
     final Tile GRASS = new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Grass", sTile, 1, 8, this);
     final Tile ROCK = new SolidTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this);
 
-    public MyPlace(Game game, int width, int height, int tileSize, Settings settings) {
-        super(game, width, height, tileSize, settings);
+    public MyPlace(Game game, int width, int height, int tileSize, Settings settnig) {
+        super(game, width, height, tileSize, settnig);
         this.changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT), null) {
 
             @Override
             public void Act() {
                 changeSSMode = true;
+            }
+        };
+        this.changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END), null) {
+
+            @Override
+            public void Act() {
+                settings.joinSS = !settings.joinSS;
             }
         };
         generate();
@@ -53,7 +60,7 @@ public class MyPlace extends Place {
         Area a = new Area(13 * sTile, 13 * sTile);
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
-                if ((x * y) < 850) {
+                if ((x * y) < 600) {
                     tiles[x + y * height / sTile] = GRASS;
                 } else {
                     if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
@@ -78,7 +85,7 @@ public class MyPlace extends Place {
         this.g = 0.5f;
         this.b = 0.5f;
         fonts = new FontsHandler(20);
-        fonts.add("Arial", Font.PLAIN, 24);
+        fonts.add("Arial", Font.PLAIN, (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);
     }
 
@@ -118,12 +125,15 @@ public class MyPlace extends Place {
          }
          */
         if (playersLength == 2) {
+            changeSplitScreenJoin.Do();
             changeSplitScreenMode.Do();
             camfor2.update();
         } else if (playersLength == 3) {
+            changeSplitScreenJoin.Do();
             changeSplitScreenMode.Do();
             camfor3.update();
         } else if (playersLength == 4) {
+            changeSplitScreenJoin.Do();
             camfor4.update();
         }
         for (Mob mob : sMobs) {
