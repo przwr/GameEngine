@@ -9,8 +9,7 @@ import game.gameobject.GameObject;
 import game.myGame.MyPlayer;
 import game.place.cameras.PlayersCamera;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -27,6 +26,7 @@ public class SplitScreen {
                 pl.ssMode = 1;
                 if (p == 0) {
                     glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
+                    glScissor(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
                     pl.camXStart = pl.camXTStart = 0f;
                     pl.camYStart = pl.camYTStart = -0.5f;
@@ -34,6 +34,7 @@ public class SplitScreen {
                     pl.camYEnd = pl.camYTEnd = 0.5f;
                 } else {
                     glViewport(0, 0, Display.getWidth(), Display.getHeight() / 2);
+                    glScissor(0, 0, Display.getWidth(), Display.getHeight() / 2);
                     pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
                     pl.camXEnd = pl.camXTEnd = 1f;
                     pl.camYEnd = pl.camYTEnd = 0.5f;
@@ -42,12 +43,14 @@ public class SplitScreen {
                 pl.ssMode = 2;
                 if (p == 0) {
                     glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
+                    glScissor(0, 0, Display.getWidth() / 2, Display.getHeight());
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
                     pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
                     pl.camXEnd = pl.camXTEnd = 0.5f;
                     pl.camYEnd = pl.camYTEnd = 1f;
                 } else {
                     glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
+                    glScissor(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
                     pl.camXTStart = pl.camXEnd = 0.5f;
                     pl.camXTEnd = pl.camYTEnd = pl.camYEnd = 1f;
                     pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
@@ -68,6 +71,7 @@ public class SplitScreen {
                 pl.ssMode = 3;
                 if (p == 0) {
                     glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
+                    glScissor(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
                     pl.camXStart = pl.camXTStart = 0f;
                     pl.camYStart = pl.camYTStart = -0.5f;
@@ -75,11 +79,13 @@ public class SplitScreen {
                     pl.camYEnd = pl.camYTEnd = 0.5f;
                 } else if (p == 1) {
                     glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glScissor(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
                     pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
                     pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
                 } else if (p == 2) {
                     glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glScissor(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                     pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                     pl.camXTEnd = 1f;
                     pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
@@ -88,18 +94,21 @@ public class SplitScreen {
                 pl.ssMode = 4;
                 if (p == 0) {
                     glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
+                    glScissor(0, 0, Display.getWidth() / 2, Display.getHeight());
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
                     pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
                     pl.camXEnd = pl.camXTEnd = 0.5f;
                     pl.camYEnd = pl.camYTEnd = 1f;
                 } else if (p == 1) {
                     glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glScissor(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
                     pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
                     pl.camXTEnd = pl.camYTEnd = 1f;
                     pl.camXStart = pl.camYStart = 0f;
                 } else if (p == 2) {
                     glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glScissor(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                     pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                     pl.camXTEnd = 1f;
                     pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
@@ -116,21 +125,25 @@ public class SplitScreen {
             pl.ssMode = 5;
             if (p == 0) {
                 glViewport(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                glScissor(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
                 glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
                 pl.camXStart = pl.camXTStart = 0f;
                 pl.camYStart = pl.camYTStart = -0.5f;
                 pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
             } else if (p == 1) {
                 glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                glScissor(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
                 pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
                 pl.camXTEnd = pl.camYTEnd = 1f;
                 pl.camXStart = pl.camYStart = 0f;
             } else if (p == 2) {
                 glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                glScissor(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                 pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
                 pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
             } else if (p == 3) {
                 glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                glScissor(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
                 pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                 pl.camXTEnd = 1f;
                 pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;

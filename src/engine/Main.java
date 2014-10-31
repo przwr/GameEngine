@@ -72,6 +72,7 @@ public class Main {
         glLoadIdentity();
         glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
         glMatrixMode(GL_MODELVIEW);
+glEnable( GL_LINE_SMOOTH );
         glClearColor(0, 0, 0, 0);
     }
 

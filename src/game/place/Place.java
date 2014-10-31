@@ -21,6 +21,7 @@ import game.myGame.MyMob;
 import game.place.cameras.FourPlayersCamera;
 import game.place.cameras.ThreePlayersCamera;
 import game.place.cameras.TwoPlayersCamera;
+import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
@@ -110,17 +111,21 @@ public abstract class Place {
     public void render() {
         Renderer.preRendLightsFBO(camXStart, camXStart, this);
         for (int p = 0; p < playersLength; p++) {
+            glEnable(GL_SCISSOR_TEST);
             cam = (((MyPlayer) players[p]).getCam());
-            camXStart = camYStart = camXTStart = camYTStart = 0f;
-            camXEnd = camYEnd = camXTEnd = camYTEnd = 1f;
             if (playersLength > 1) {
                 SplitScreen.setSplitScreen(this, p);
+            } else {
+                camXStart = camYStart = camXTStart = camYTStart = 0f;
+                camXEnd = camYEnd = camXTEnd = camYTEnd = 1f;
+                glScissor(0, 0, Display.getWidth(), Display.getHeight());
             }
             Renderer.preRenderShadowedLightsFBO(cam);
             renderBack(cam);
             renderObj(cam);
             renderText(cam);
             Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+            glDisable(GL_SCISSOR_TEST);
         }
         Renderer.border(ssMode);
     }

@@ -82,8 +82,9 @@ public class Game {
                 for (MyPlayer pl : players) {
                     if (pl.isMenuOn()) {
                         ((MyMenu) menu).back();
+                    } else {
+                        pl.getMenuInput();
                     }
-                    pl.getMenuInput();
                 }
             }
         }

@@ -166,8 +166,6 @@ public class Sprite {
     public void render(int flip, float bx, float ex, float by, float ey) {
         bindCheck();
         glBegin(GL_QUADS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         if (flip == 0) {
             glTexCoord2f(ex, by);
             glVertex2f(0, 0);
@@ -231,8 +229,8 @@ public class Sprite {
     public void setKey(String key) {
         this.key = key;
     }
-    
-    public Texture getTex(){
+
+    public Texture getTex() {
         return texture;
     }
 }
