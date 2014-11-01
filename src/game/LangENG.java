@@ -51,6 +51,7 @@ public class LangENG extends Language {
         PushButton = "Push the Button!";
         Unchangable = "Unchangable!";
         VSync = "Vertical Synchronization: ";
+        SmoothShadows = "Smooth Shadows: ";
         JoinedSS = "Join SplitScreen: ";
     }
 }

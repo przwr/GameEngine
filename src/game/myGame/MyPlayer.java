@@ -58,7 +58,8 @@ public class MyPlayer extends Entity {
         this.sX = (int) (SCALE * startX);
         this.sY = (int) (SCALE * startY);
         this.top = false;
-        this.setSpeed((int) (SCALE * 8));
+        this.setSpeed(SCALE * 8);
+        this.defaultSpeed = getSpeed();
         this.emitter = true;
         init("apple", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień

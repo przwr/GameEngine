@@ -86,12 +86,12 @@ public class MyController extends Controler {
         actions[9] = new ActionWhileClicked(inputs[9], inControl) {
             @Override
             public void Act() {
-                inControl.setSpeed(16);
+                inControl.setSpeed(inControl.defaultSpeed * 2);
             }
 
             @Override
             public void noAct() {
-                inControl.setSpeed(8);
+                inControl.setSpeed(inControl.defaultSpeed);
             }
         };
         actions[10] = new ActionOnOff(inputs[10], inControl) {

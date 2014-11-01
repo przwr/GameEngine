@@ -15,24 +15,24 @@ import engine.Time;
  */
 public abstract class Entity extends GameObject {
 
-    private int speed;
+    protected double speed;
+    public double defaultSpeed;
 
     public void canMove(int magX, int magY) {
         /*if (magX != 0 && magY != 0) {
-            canMove(magX, 0);
-            canMove(0, magY);
-        } else {
-            int sp = (int) (this.getSpeed() * Time.getDelta());
-            for (int i = 0; i < sp; i++) {
-                if (!isColided(magX, magY)) {
-                    move(magX, magY);
-                } else {
-                    break;
-                }
-            }
-        }*/
-
-        int sp = (int) (this.getSpeed() * Time.getDelta());
+         canMove(magX, 0);
+         canMove(0, magY);
+         } else {
+         int sp = (int) (this.getSpeed() * Time.getDelta());
+         for (int i = 0; i < sp; i++) {
+         if (!isColided(magX, magY)) {
+         move(magX, magY);
+         } else {
+         break;
+         }
+         }
+         }*/
+        int sp = (int) (speed * Time.getDelta());
         for (int i = 0; i < sp; i++) {
             if (magY != 0 && !isColided(0, magY)) {
                 move(0, magY);
@@ -51,11 +51,11 @@ public abstract class Entity extends GameObject {
 
     protected abstract void renderName(Place place, Camera cam);
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 }

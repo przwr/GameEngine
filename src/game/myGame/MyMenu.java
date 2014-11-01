@@ -50,7 +50,7 @@ public class MyMenu extends Place {
         menus[0].addChoice(new ChoiceSettings(settings.language.Options, this, settings));
         menus[0].addChoice(new ChoiceStop(settings.language.End, this, settings));
         menus[0].addChoice(new ChoiceExit(settings.language.Quit, this, settings));
-        menus[1] = new MenuOpt(10, settings.language.Options);
+        menus[1] = new MenuOpt(12, settings.language.Options);
         menus[1].addChoice(new ChoicePlayers(settings.language.Number_Of_Players, this, settings));
         menus[1].addChoice(new ChoiceSplitScreen(settings.language.SplitScreen, this, settings));
         menus[1].addChoice(new ChoiceJoinSS(settings.language.JoinedSS, this, settings));
@@ -61,6 +61,7 @@ public class MyMenu extends Place {
         menus[1].addChoice(new ChoiceResolution(settings.language.Resolution, this, settings));
         menus[1].addChoice(new ChoiceFullScreen(settings.language.FullScreen, this, settings));
         menus[1].addChoice(new ChoiceVSync(settings.language.VSync, this, settings));
+        menus[1].addChoice(new ChoiceSmoothShadows(settings.language.SmoothShadows, this, settings));
         menus[2] = new MenuOpt(10, settings.language.Controls);
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player1, this, settings));
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player2, this, settings));

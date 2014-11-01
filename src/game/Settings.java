@@ -26,7 +26,7 @@ public class Settings {
     public int modesNr;
     public DisplayMode display = Display.getDesktopDisplayMode();
     public int curMode;
-    public boolean fullScreen = true;
+    public boolean fullScreen;
     public boolean hSplitScreen;
     public boolean joinSS;
     public int nrPlayers = 1;
@@ -37,7 +37,8 @@ public class Settings {
     public double SCALE;
     public int freq = display.getFrequency();
     public int depth = display.getBitsPerPixel();
-    public boolean vSync = true;
+    public boolean vSync;
+    public boolean smoothShadows;
     public String lang = "PL";
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny

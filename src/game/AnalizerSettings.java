@@ -47,6 +47,13 @@ public class AnalizerSettings {
                     settings.vSync = false;
                 }
                 break;
+            case "SmoothShadows:":
+                if (0 == p[1].compareTo("On")) {
+                    settings.smoothShadows = true;
+                } else if (0 == p[1].compareTo("Off")) {
+                    settings.smoothShadows = false;
+                }
+                break;
             case "Number_Of_Players:":
                 int n = Integer.parseInt(p[1]);
                 if (n > 4 || n < 1) {
@@ -135,6 +142,11 @@ public class AnalizerSettings {
                 fw.write("VSync: On\n");
             } else {
                 fw.write("VSync: Off\n");
+            }
+            if (settings.smoothShadows) {
+                fw.write("SmoothShadows: On\n");
+            } else {
+                fw.write("SmoothShadows: Off\n");
             }
             fw.write("Number_Of_Players: " + settings.nrPlayers + "\n");
             fw.write("Resolution_Width: " + settings.resWidth + "\n");

@@ -104,9 +104,7 @@ glEnable( GL_LINE_SMOOTH );
     private static void initDisplay() {
         try {
             setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
-
             Display.create(new PixelFormat(32, 0, 24, 0, 0));
-
             Display.setResizable(false);
             if (settings.vSync) {
                 Display.setVSyncEnabled(true);

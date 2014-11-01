@@ -20,7 +20,7 @@ import org.newdawn.slick.Color;
  */
 public abstract class Mob extends Entity {
 
-    protected final int range;
+    protected final double range;
     protected GameObject prey;
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid, double SCALE) {
@@ -30,8 +30,9 @@ public abstract class Mob extends Entity {
         this.sX = (int) (SCALE * startX);
         this.sY = (int) (SCALE * startY);
         this.top = true;
-        this.setSpeed((int) (SCALE * speed));
-        this.range = (int) (SCALE * range);
+        this.speed = SCALE * speed;
+        this.defaultSpeed = speed;
+        this.range = SCALE * range;
         init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
         setCollision(new Rectangle(sX, sY, this.width, this.height, this));
     }

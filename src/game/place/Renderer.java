@@ -20,7 +20,7 @@ import sprites.Sprite;
  * @author przemek
  */
 public class Renderer {
-    
+
     private static final int w = Display.getWidth();
     private static final int h = Display.getHeight();
     private static final FBORenderer fbFrame = new FBORenderer(w, h, makeTexture(null, w, h));
@@ -40,16 +40,16 @@ public class Renderer {
     private static final Sprite sprb = new Sprite("rockb", (int) (SCALE * 64), (int) (SCALE * 64), null);
     private static final Sprite sprw = new Sprite("rockw", (int) (SCALE * 64), (int) (SCALE * 64), null);
     private static final Sprite alpha = new Sprite("alpha", w, h, null);
-    
+
     private static int shP1 = 0;
     private static int shP2 = 2;
     private static int shX, shY;
     private static double angle, temp, al1, bl1, al2, bl2;
     private static FBORenderer[] fbo;
-    
+
     public static void preRendLightsFBO(float xStart, float yStart, Place place) {
         int nr = 0;
-        
+
         for (GameObject emitter : place.emitters) {
             if (emitter.isEmits()) {
 //                ... jak u graczy
@@ -68,7 +68,7 @@ public class Renderer {
                 for (int i = 0; i < numberOfShadows; i++) {
                     calculateShadow(player, null, (int) (SCALE * 384), (int) (SCALE * 384));
                     calculateWalls();
-                    drawShadow(player);
+                    drawShadow(player, place.settings.smoothShadows);
                     drawWalls(player);
                     glColor3f(1f, 1f, 1f);
                     glEnable(GL_BLEND);
@@ -92,7 +92,7 @@ public class Renderer {
         }
         savedShadowed = nr;
     }
-    
+
     public static void preRenderShadowedLightsFBO(Camera cam) {
         fbFrame.activate();
         clearScreen(0);
@@ -105,7 +105,7 @@ public class Renderer {
         //frameSave(lightTex, xStart, yStart);
         fbFrame.deactivate();
     }
-    
+
     private static void calculateShadow(GameObject src, GameObject shade, int xS, int yS) {
         center.set(src.getMidX(), src.getMidY());
         tempPoints[0].set(xS, yS + (int) (SCALE * 32));
@@ -125,9 +125,9 @@ public class Renderer {
         }
         points[0] = tempPoints[shP1];
         points[1] = tempPoints[shP2];
-        
+
         int shDif = (int) (Math.sqrt(src.getLight().getSX() * src.getLight().getSX() + src.getLight().getSY() * src.getLight().getSY())) / 2;
-        
+
         if (points[0].getX() == center.getX()) {
             points[2].set(points[0].getX(), points[0].getY() + (points[0].getY() > center.getY() ? shDif : -shDif));
         } else if (points[0].getY() == center.getY()) {
@@ -167,16 +167,16 @@ public class Renderer {
             points[3].set(shX, shY);
         }
     }
-    
+
     private static void calculateWalls() {
-        if (false) {
+        if (false) {     //czy lewy koniec pada na ścianę?
             int Y = (int) (SCALE * 320);
             int hight = (int) (SCALE * 64);
-            if (false) { //dodaj światło
+            if (true) { //dodaj światło
                 int XL1 = (int) ((Y - bl1) / al1);
                 leftWallPoints[0].set(XL1, Y - hight);
                 leftWallPoints[1].set(XL1, Y);
-                int XL2 = (int) ((Y - hight - bl1) / al1);
+                int XL2 = (int) ((Y - hight - bl1) / al1);//- (int) (al1 / Math.abs(al1)) * 2;
                 leftWallPoints[2].set(XL2, Y - hight);
                 leftWallColor = 1;
                 isLeftWall = true;
@@ -190,19 +190,18 @@ public class Renderer {
                 isLeftWall = true;
             }
         }
-        next:
-        if (false) {
+        if (false) {     //czy prawy koniec pada na ścianę?
             int Y = (int) (SCALE * 320);
             int hight = (int) (SCALE * 64);
             if (false) {// dodaj światło
-                int XR1 = (int) ((Y - bl2) / al2) + 1;
+                int XR1 = (int) ((Y - bl2) / al2);
                 rightWallPoints[0].set(XR1, Y - hight);
-                rightWallPoints[1].set(XR1, Y);
-                int XR2 = (int) ((Y - hight - bl2) / al2) + 1;
+                rightWallPoints[1].set(XR1, Y + 4);
+                int XR2 = (int) ((Y - hight - bl2 - 100) / al2);// - (int) (al2 / Math.abs(al2)) * 2;
                 rightWallPoints[2].set(XR2, Y - hight);
                 rightWallColor = 1;
                 isRightWall = true;
-            } else { //dodaj cień
+            } else { //dodaj cień       //jeśli trzeba dodać tylko jeden cień, to wystarczy to zrobić w jednej funkcji - nie można dodawać cieni po obu stronach cienia!
                 int XL1 = (int) ((Y - bl1) / al1);
                 rightWallPoints[0].set(XL1, Y);
                 rightWallPoints[1].set(XL1, Y - hight);
@@ -213,7 +212,7 @@ public class Renderer {
             }
         }
     }
-    
+
     public static void drawWalls(GameObject emitter) {
         int lX = emitter.getLight().getSX();
         int lY = emitter.getLight().getSY();
@@ -242,7 +241,7 @@ public class Renderer {
             isRightWall = false;
         }
     }
-    
+
     public static void drawShadow(GameObject emitter, float color, int off) {
         int lX = emitter.getLight().getSX();
         int lY = emitter.getLight().getSY();
@@ -255,7 +254,7 @@ public class Renderer {
             glVertex2f(points[2].getX(), points[2].getY());
             glVertex2f(points[3].getX(), points[3].getY());
             glVertex2f(points[1].getX() + off, points[1].getY());
-            
+
         } else if (points[0].getX() < points[1].getX()) {
             glVertex2f(points[0].getX() + off, points[0].getY());
             glVertex2f(points[2].getX(), points[2].getY());
@@ -277,23 +276,46 @@ public class Renderer {
         glEnd();
         glPopMatrix();
     }
-    
-    public static void drawShadow(GameObject emitter) {
+
+    public static void drawShadow(GameObject emitter, boolean isSmooth) {
 
         int lX = emitter.getLight().getSX();
         int lY = emitter.getLight().getSY();
         glColor3f(0, 0, 0);
         glPushMatrix();
         glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
-        glBegin(GL_QUADS);
-        glVertex2f(points[0].getX(), points[0].getY());
-        glVertex2f(points[2].getX(), points[2].getY());
-        glVertex2f(points[3].getX(), points[3].getY());
-        glVertex2f(points[1].getX(), points[1].getY());
-        glEnd();
+        if (isSmooth) {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+            glEnable(GL_POLYGON_SMOOTH);
+
+            glBegin(GL_LINES);
+            glVertex2f(points[0].getX(), points[0].getY());
+            glVertex2f(points[3].getX(), points[3].getY());
+            glEnd();
+
+            glBegin(GL_QUADS);
+            glVertex2f(points[0].getX(), points[0].getY());
+            glVertex2f(points[2].getX(), points[2].getY());
+            glVertex2f(points[3].getX(), points[3].getY());
+            glVertex2f(points[1].getX(), points[1].getY());
+            glEnd();
+
+            glDisable(GL_POLYGON_SMOOTH);
+            glDisable(GL_BLEND);
+        } else {
+            glBegin(GL_QUADS);
+            glVertex2f(points[0].getX(), points[0].getY());
+            glVertex2f(points[2].getX(), points[2].getY());
+            glVertex2f(points[3].getX(), points[3].getY());
+            glVertex2f(points[1].getX(), points[1].getY());
+            glEnd();
+        }
         glPopMatrix();
+
     }
-    
+
     public static void clearScreen(float color) {
         glDisable(GL_BLEND);
         glColor3f(color, color, color);
@@ -304,7 +326,7 @@ public class Renderer {
         glVertex2f(w, 0);
         glEnd();
     }
-    
+
     public static void drawLight(int textureHandle, float w, float h, GameObject emitter, Camera cam) {
         int lX = (int) emitter.getLight().getSX();
         int lY = (int) emitter.getLight().getSY();
@@ -323,7 +345,7 @@ public class Renderer {
         glEnd();
         glPopMatrix();
     }
-    
+
     public static void renderLights(float r, float g, float b, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
         float brightness = Math.max(b, Math.max(r, g));
         float strength = 6 - (int) (10 * brightness);
@@ -342,12 +364,12 @@ public class Renderer {
             //drawTex(lightTex, w, h);
         }
     }
-    
+
     public static int allocateTexture() {
         int textureHandle = glGenTextures();
         return textureHandle;
     }
-    
+
     public static int makeTexture(ByteBuffer pixels, int w, int h) {
         int textureHandle = allocateTexture();
         glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -358,14 +380,14 @@ public class Renderer {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
         return textureHandle;
     }
-    
+
     public static void frameSave(int txtrHandle, float xStart, float yStart) {
         glColor3f(1, 1, 1);
         glReadBuffer(GL_BACK);
         glBindTexture(GL_TEXTURE_2D, txtrHandle);
         glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (int) (xStart * w), (int) (yStart * h), w, h);
     }
-    
+
     public static void drawTex(int textureHandle, float w, float h, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
         glPushMatrix();
         glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -381,7 +403,7 @@ public class Renderer {
         glEnd();
         glPopMatrix();
     }
-    
+
     public static void initVariables(ArrayList<GameObject> emitters, GameObject[] players) {
         activeEmitters = new GameObject[emitters.size() + 4];
         for (int i = 0; i < 4; i++) {
@@ -397,7 +419,7 @@ public class Renderer {
             fbo[i] = new FBORenderer((int) (SCALE * 1024), (int) (SCALE * 1024), glGenTextures());
         }
     }
-    
+
     public static void border(int ssMode) {
         glViewport(0, 0, w, h);
         if (ssMode != 0) {
