@@ -58,8 +58,8 @@ public class Rectangle extends Figure {
         if (f.getType() == 1) {         // Z Prostokątem
 
             Rectangle r = (Rectangle) f;
-            if (((super.getX(x) > r.getX() && super.getX(x) - r.getX() <= r.getWidth()) || (super.getX(x) <= r.getX() && r.getX() - super.getX(x) <= w))
-                    && ((super.getY(y) > r.getY() && super.getY(y) - r.getY() <= r.getHeight()) || (super.getY(y) <= r.getY() && r.getY() - super.getY(y) <= h))) {
+            if (((super.getX(x) > r.getX() && super.getX(x) - r.getX() < r.getWidth()) || (super.getX(x) <= r.getX() && r.getX() - super.getX(x) < w))
+                    && ((super.getY(y) > r.getY() && super.getY(y) - r.getY() < r.getHeight()) || (super.getY(y) <= r.getY() && r.getY() - super.getY(y) < h))) {
                 return true;
             }
 

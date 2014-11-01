@@ -19,13 +19,14 @@ public class Light {
     protected float r;
     protected float g;
     protected float b;
-    protected int strength;
 
-    public Light(String lightName, float r, float g, float b, int strength, int sx, int sy, Place place) {
+    protected final FBORenderer fbo;
+
+    public Light(String lightName, float r, float g, float b, int sx, int sy, Place place) {
         this.r = r;
         this.g = g;
         this.b = b;
-        this.strength = strength;
+        fbo = new FBORenderer(sx, sy, glGenTextures());
         this.light = new Sprite(lightName, sx, sy, null);
     }
 
@@ -40,18 +41,12 @@ public class Light {
         this.b = b;
     }
 
-    public void setStrength(int strenght) {
-        this.strength = strenght;
-    }
-
     public void render(GameObject emitter, Place place, int x, int y) {
         if (light != null) {
             glColor3f(r, g, b);
             glPushMatrix();
             glTranslatef(emitter.getMidX() - light.getSx() / 2 + x, emitter.getMidY() - light.getSy() / 2 + y, 0);
-            for (int i = 0; i < strength; i++) {
-                light.render();
-            }
+            light.render();
             glPopMatrix();
         }
     }
@@ -81,6 +76,10 @@ public class Light {
 
     public int getSY() {
         return light.getSy();
+    }
+    
+    public FBORenderer getFBO(){
+        return fbo;
     }
 
 }

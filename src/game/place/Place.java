@@ -109,7 +109,7 @@ public abstract class Place {
     }
 
     public void render() {
-        Renderer.preRendLightsFBO(camXStart, camXStart, this);
+        Renderer.preRendLightsFBO(this);
         for (int p = 0; p < playersLength; p++) {
             glEnable(GL_SCISSOR_TEST);
             cam = (((MyPlayer) players[p]).getCam());

@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Area extends GameObject {
 
-    private ArrayList<Figure> parts;
+    public ArrayList<Figure> parts;
     protected int xCentr;
     protected int yCentr;
 
