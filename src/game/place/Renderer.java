@@ -25,7 +25,7 @@ public class Renderer {
 
     private static final int w = Display.getWidth();
     private static final int h = Display.getHeight();
-    private static final FBORenderer fbFrame = new FBORenderer(w, h, makeTexture(null, w, h));
+    private static final FBORendererRegular fbFrame = new FBORendererRegular(w, h);
     //private static final int lightTex = makeTexture(null, w, h);
     private static int savedShadowed;
     private static GameObject[] activeEmitters;
@@ -47,7 +47,7 @@ public class Renderer {
     private static int shP2 = 2;
     private static int shX, shY;
     private static double angle, temp, al1, bl1, al2, bl2;
-    private static FBORenderer[] fbo;
+    //private static FBORenderer[] fbo;
 
     public static void preRendLightsFBO(Place place) {
         int nr = 0;
@@ -62,7 +62,7 @@ public class Renderer {
             player = place.players[p];
             if (player.isEmitter() && player.isEmits()) {
                 //findShades(player, place);
-                fbo[nr].activate();
+                player.getLight().fbo.activate();
                 glColor3f(1f, 1f, 1f);
                 glDisable(GL_BLEND);
                 alpha.render();
@@ -87,9 +87,9 @@ public class Renderer {
                     for (Figure f : a.parts) {
                         calculateShadow(player, f, (int) (SCALE * 384), (int) (SCALE * 384));
                         //calculateWalls(f);
-                        drawShadow(player, place.settings.smoothShadows);
+                        drawShadow(player);
                         //drawWalls(player);
-                        
+
                         glColor3f(1f, 1f, 1f);
                         glEnable(GL_BLEND);
                         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -108,7 +108,7 @@ public class Renderer {
                 glColor3f(1, 1, 1);
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 player.getLight().render(h - lY);
-                fbo[nr].deactivate();
+                player.getLight().fbo.deactivate();
                 activeEmitters[nr] = player; //zapisanie emittera do korespondującej tablicy
                 nr++;
             }
@@ -134,7 +134,7 @@ public class Renderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
         for (int i = 0; i < savedShadowed; i++) {
-            drawLight(fbo[i].getTexture(), w, h, activeEmitters[i], cam);
+            drawLight(activeEmitters[i].getLight().fbo.getTexture(), w, h, activeEmitters[i], cam);
         }
         //frameSave(lightTex, xStart, yStart);
         fbFrame.deactivate();
@@ -318,43 +318,43 @@ public class Renderer {
         glPopMatrix();
     }
 
-    public static void drawShadow(GameObject emitter, boolean isSmooth) {
-
+    public static void drawShadow(GameObject emitter) {
         int lX = emitter.getLight().getSX();
         int lY = emitter.getLight().getSY();
         glColor3f(0, 0, 0);
         glPushMatrix();
         glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
-        if (isSmooth) {
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
-            glEnable(GL_POLYGON_SMOOTH);
-
-            glBegin(GL_LINES);
-            glVertex2f(points[0].getX(), points[0].getY());
-            glVertex2f(points[3].getX(), points[3].getY());
-            glEnd();
-
-            glBegin(GL_QUADS);
-            glVertex2f(points[0].getX(), points[0].getY());
-            glVertex2f(points[2].getX(), points[2].getY());
-            glVertex2f(points[3].getX(), points[3].getY());
-            glVertex2f(points[1].getX(), points[1].getY());
-            glEnd();
-
-            glDisable(GL_POLYGON_SMOOTH);
-            glDisable(GL_BLEND);
-        } else {
-            glBegin(GL_QUADS);
-            glVertex2f(points[0].getX(), points[0].getY());
-            glVertex2f(points[2].getX(), points[2].getY());
-            glVertex2f(points[3].getX(), points[3].getY());
-            glVertex2f(points[1].getX(), points[1].getY());
-            glEnd();
-        }
+        glBegin(GL_QUADS);
+        glVertex2f(points[0].getX(), points[0].getY());
+        glVertex2f(points[2].getX(), points[2].getY());
+        glVertex2f(points[3].getX(), points[3].getY());
+        glVertex2f(points[1].getX(), points[1].getY());
+        glEnd();
         glPopMatrix();
-
+//        if (isSmooth) {
+//            glPushMatrix();
+//            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
+//            glEnable(GL_BLEND);
+//            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//            glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+//            glEnable(GL_POLYGON_SMOOTH);
+//
+//            glBegin(GL_LINES);
+//            glVertex2f(points[0].getX(), points[0].getY());
+//            glVertex2f(points[3].getX(), points[3].getY());
+//            glEnd();
+//
+//            glBegin(GL_QUADS);
+//            glVertex2f(points[0].getX(), points[0].getY());
+//            glVertex2f(points[2].getX(), points[2].getY());
+//            glVertex2f(points[3].getX(), points[3].getY());
+//            glVertex2f(points[1].getX(), points[1].getY());
+//            glEnd();
+//
+//            glDisable(GL_POLYGON_SMOOTH);
+//            glDisable(GL_BLEND);
+//            glPopMatrix();
+//        }
     }
 
     public static void clearScreen(float color) {
@@ -411,17 +411,6 @@ public class Renderer {
         return textureHandle;
     }
 
-    public static int makeTexture(ByteBuffer pixels, int w, int h) {
-        int textureHandle = allocateTexture();
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); //GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        return textureHandle;
-    }
-
     public static void frameSave(int txtrHandle, float xStart, float yStart) {
         glColor3f(1, 1, 1);
         glReadBuffer(GL_BACK);
@@ -455,10 +444,10 @@ public class Renderer {
             leftWallPoints[i] = new Point(0, 0);
             rightWallPoints[i] = new Point(0, 0);
         }
-        fbo = new FBORenderer[emitters.size() + 4];
-        for (int i = 0; i < emitters.size() + 4; i++) {
-            fbo[i] = new FBORenderer(players[0].getLight().getSX(), players[0].getLight().getSY(), glGenTextures());
-        }
+//        fbo = new FBORenderer[emitters.size() + 4];
+//        for (int i = 0; i < emitters.size() + 4; i++) {
+//            fbo[i] = new FBORenderer(players[0].getLight().getSX(), players[0].getLight().getSY(), glGenTextures(), 8);
+//        }
     }
 
     public static void border(int ssMode) {

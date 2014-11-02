@@ -47,14 +47,15 @@ public class AnalizerSettings {
                     settings.vSync = false;
                 }
                 break;
-            case "SmoothShadows:":
-                if (0 == p[1].compareTo("On")) {
-                    settings.smoothShadows = true;
-                } else if (0 == p[1].compareTo("Off")) {
-                    settings.smoothShadows = false;
+            case "NumberOfSamples:":
+                int ns = Integer.parseInt(p[1]);
+                if (ns > 8 || ns < 1) {
+                    settings.nrSamples = 1;
+                } else {
+                    settings.nrSamples = ns;
                 }
                 break;
-            case "Number_Of_Players:":
+            case "NumberOfPlayers:":
                 int n = Integer.parseInt(p[1]);
                 if (n > 4 || n < 1) {
                     settings.nrPlayers = 1;
@@ -62,7 +63,7 @@ public class AnalizerSettings {
                     settings.nrPlayers = n;
                 }
                 break;
-            case "Resolution_Width:":
+            case "ResolutionWidth:":
                 int w = Integer.parseInt(p[1]);
                 if (w <= 0) {
                     settings.resWidth = settings.display.getWidth();
@@ -75,7 +76,7 @@ public class AnalizerSettings {
                     }
                 }
                 break;
-            case "Resolution_Hight:":
+            case "ResolutionHight:":
                 int h = Integer.parseInt(p[1]);
                 if (h <= 0) {
                     settings.resHeight = settings.display.getHeight();
@@ -88,7 +89,7 @@ public class AnalizerSettings {
                     }
                 }
                 break;
-            case "Resolution_Freq:":
+            case "ResolutionFreq:":
                 int f = Integer.parseInt(p[1]);
                 if (f <= 0) {
                     settings.freq = settings.display.getFrequency();
@@ -143,15 +144,11 @@ public class AnalizerSettings {
             } else {
                 fw.write("VSync: Off\n");
             }
-            if (settings.smoothShadows) {
-                fw.write("SmoothShadows: On\n");
-            } else {
-                fw.write("SmoothShadows: Off\n");
-            }
-            fw.write("Number_Of_Players: " + settings.nrPlayers + "\n");
-            fw.write("Resolution_Width: " + settings.resWidth + "\n");
-            fw.write("Resolution_Hight: " + settings.resHeight + "\n");
-            fw.write("Resolution_Freq: " + settings.freq + "\n");
+            fw.write("NumberOfPlayers: " + settings.nrPlayers + "\n");
+            fw.write("NumberOfSamples: " + settings.nrSamples + "\n");
+            fw.write("ResolutionWidth: " + settings.resWidth + "\n");
+            fw.write("ResolutionHight: " + settings.resHeight + "\n");
+            fw.write("ResolutionFreq: " + settings.freq + "\n");
             {
                 int v = (int) (settings.volume * 10);
                 float vol = (float) v / 10;

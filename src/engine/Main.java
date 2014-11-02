@@ -17,6 +17,7 @@ import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import org.lwjgl.opengl.PixelFormat;
 
 /**
@@ -66,13 +67,14 @@ public class Main {
     private static void initGL() {
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
+        glShadeModel(GL_SMOOTH);
+        glEnable(GL_MULTISAMPLE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
         glMatrixMode(GL_MODELVIEW);
-glEnable( GL_LINE_SMOOTH );
         glClearColor(0, 0, 0, 0);
     }
 

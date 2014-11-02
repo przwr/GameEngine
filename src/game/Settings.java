@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 import engine.SoundBase;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 /**
  *
@@ -38,7 +38,7 @@ public class Settings {
     public int freq = display.getFrequency();
     public int depth = display.getBitsPerPixel();
     public boolean vSync;
-    public boolean smoothShadows;
+    public int nrSamples = 2;
     public String lang = "PL";
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny
@@ -58,10 +58,13 @@ public class Settings {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         DisplayMode temp;
-        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getWidth() <= maxW && tmpmodes[0].getHeight() >= minH && tmpmodes[0].getHeight() <= maxH && tmpmodes[0].getBitsPerPixel() == depth) {
+        if (tmpmodes[0].getWidth()
+                >= minW && tmpmodes[0].getWidth() <= maxW && tmpmodes[0].getHeight() >= minH && tmpmodes[0].getHeight() <= maxH && tmpmodes[0].getBitsPerPixel() == depth) {
             modesNr++;
         }
-        for (int i = 1; i < tmpmodes.length; i++) {
+        for (int i = 1;
+                i < tmpmodes.length;
+                i++) {
             if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getWidth() <= maxW && tmpmodes[i].getHeight() >= minH && tmpmodes[i].getHeight() <= maxH && tmpmodes[i].getBitsPerPixel() == depth) {
                 modesNr++;
             }
@@ -79,8 +82,11 @@ public class Settings {
                 modes[i++] = mode;
             }
         }
-        languages.add(new LangPL());
-        languages.add(new LangENG());
+
+        languages.add(
+                new LangPL());
+        languages.add(
+                new LangENG());
         language = languages.get(0);
     }
 

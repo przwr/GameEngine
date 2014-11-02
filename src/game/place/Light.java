@@ -26,7 +26,11 @@ public class Light {
         this.r = r;
         this.g = g;
         this.b = b;
-        fbo = new FBORenderer(sx, sy, glGenTextures());
+        if (place.settings.nrSamples > 1) {
+            fbo = new FBORendererMS(sx, sy, place.settings.nrSamples);
+        } else {
+            fbo = new FBORendererRegular(sx, sy);
+        }
         this.light = new Sprite(lightName, sx, sy, null);
     }
 
@@ -77,8 +81,8 @@ public class Light {
     public int getSY() {
         return light.getSy();
     }
-    
-    public FBORenderer getFBO(){
+
+    public FBORenderer getFBO() {
         return fbo;
     }
 

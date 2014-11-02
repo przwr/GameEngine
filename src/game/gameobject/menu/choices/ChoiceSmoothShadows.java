@@ -22,16 +22,18 @@ public class ChoiceSmoothShadows extends MenuChoice {
 
     @Override
     public void action() {
-        settings.smoothShadows = !settings.smoothShadows;
+        settings.nrSamples = settings.nrSamples * 2;
+        if (settings.nrSamples > 8) {
+            settings.nrSamples = 1;
+        }
         AnalizerSettings.Update(settings);
     }
 
     @Override
     public String getLabel() {
-        if (settings.smoothShadows) {
-            return label + settings.language.On;
-        } else {
+        if (settings.nrSamples == 1) {
             return label + settings.language.Off;
         }
+        return label + settings.nrSamples + "x";
     }
 }
