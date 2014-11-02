@@ -20,7 +20,7 @@ public class MyMob extends Mob {
 
     @Override
     public void update(Place place) {
-        if (prey != null) {
+        if (prey != null && ((MyPlayer) prey).getPlace() != null) {
             chase(prey);
         } else {
             look(place.players);
