@@ -57,25 +57,25 @@ public class MyPlace extends Place {
     @Override
     public final void generate() {
         //sounds.init("res", settings);
-        Area a = new Area(13 * sTile, 13 * sTile);
+        Area a = new Area(13 * sTile, 13 * sTile, "rockb", "rockb", sTile);
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 600) {
                     tiles[x + y * height / sTile] = GRASS;
                 } else {
                     if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
-                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, a));
+                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, 0, a));
                     }
                     tiles[x + y * height / sTile] = ROCK;
                 }
             }
         }
-        Area test = new Area(6 * sTile, 6 * sTile);
-        test.addFigure(new Rectangle(0, 0, sTile, sTile, test));
+        Area test = new Area(6 * sTile, 6 * sTile, "rockw", "rockb", sTile);
+        test.addFigure(new Rectangle(0, 0, sTile, sTile, sTile / 2, test));
         tiles[6 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, test));
+        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, sTile / 2, test));
         tiles[8 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(1 * sTile, 1 * sTile, sTile, sTile, test));
+        test.addFigure(new Rectangle(1 * sTile, 1 * sTile, sTile, sTile, sTile / 2, test));
         tiles[7 + 7 * height / sTile] = ROCK;
         areas.add(a);
         areas.add(test);

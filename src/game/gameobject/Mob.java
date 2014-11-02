@@ -34,7 +34,7 @@ public abstract class Mob extends Entity {
         this.defaultSpeed = speed;
         this.range = SCALE * range;
         init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
-        setCollision(new Rectangle(sX, sY, this.width, this.height, this));
+        setCollision(new Rectangle(sX, sY, this.width, this.height, 0, this));
     }
 
     public abstract void update(Place place);
@@ -99,6 +99,7 @@ public abstract class Mob extends Entity {
         }
     }
 
+    @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null) {
             glPushMatrix();

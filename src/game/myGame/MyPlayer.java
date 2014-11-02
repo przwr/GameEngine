@@ -66,7 +66,7 @@ public class MyPlayer extends Entity {
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
-        setCollision(new Rectangle(sX, sY, this.width, this.height, this));
+        setCollision(new Rectangle(sX, sY, this.width, this.height, 0, this));
     }
 
     private void initControler(boolean isFirst) {
@@ -138,6 +138,7 @@ public class MyPlayer extends Entity {
         }
     }
 
+    @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null) {
             glPushMatrix();
