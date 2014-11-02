@@ -284,7 +284,7 @@ public class Renderer {
         }
         if (left != null) {     //czy lewy koniec pada na ścianę?
             int Y = left.getY() + left.getHeight();
-            System.out.println("Left Y: " + Y + " X: " + left.getX());
+            //System.out.println("Left Y: " + Y + " X: " + left.getX());
             int hight = left.getHeight() - left.getShadowHeight();
             //System.out.println(f.getCentralY());
             if (true) { //dodaj światło
