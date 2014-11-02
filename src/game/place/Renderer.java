@@ -251,7 +251,7 @@ public class Renderer {
         Figure right = null;
         for (int i = 0; i < nrShades; i++) {
             other = shades[i];
-            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getY() < src.getY()) {
+            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getY() + other.getHeight() < src.getMidY()) {
                 int Y = other.getY() + other.getHeight();
                 int X = (int) ((Y - bl1) / al1);
                 System.out.println("Y: " + Y + " X: " + X);
@@ -268,7 +268,7 @@ public class Renderer {
         }
         for (int i = 0; i < nrShades; i++) {
             other = shades[i];
-            if (other != f && other.getShadowHeight() != 0 && other.getCentralY() < f.getCentralY() && other.getY() < src.getY()) {
+            if (other != f && other.getShadowHeight() != 0 && other.getCentralY() < f.getCentralY() && other.getY() + other.getHeight() < src.getMidY()) {
                 int Y = other.getY() + other.getHeight();
                 int X = (int) ((Y - bl2) / al2);
                 if (X > other.getX() && X < (other.getX() + other.getWidth())) {
