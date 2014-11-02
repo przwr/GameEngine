@@ -287,7 +287,7 @@ public class Renderer {
             System.out.println("Left Y: " + Y + " X: " + left.getX());
             int hight = left.getHeight() - left.getShadowHeight();
             //System.out.println(f.getCentralY());
-            if (f.getCentralY() == 480) { //dodaj światło
+            if (true) { //dodaj światło
                 int XL1 = (int) ((Y - bl1) / al1);
                 leftWallPoints[0].set(XL1, Y - hight);
                 leftWallPoints[1].set(XL1, Y);
@@ -311,7 +311,7 @@ public class Renderer {
         if (right != null) {     //czy prawy koniec pada na ścianę?
             int Y = right.getY() + right.getHeight();
             int hight = right.getHeight() - right.getShadowHeight();
-            if (f.getCentralY() == 480) {// dodaj światło
+            if (true) {// dodaj światło
                 int XR1 = (int) ((Y - bl2) / al2);
                 rightWallPoints[0].set(XR1, Y - hight);
                 rightWallPoints[1].set(XR1, Y);
