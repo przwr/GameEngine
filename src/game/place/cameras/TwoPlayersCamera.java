@@ -34,8 +34,8 @@ public class TwoPlayersCamera extends Camera {
 
     @Override
     public synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((getGo().getMidX() + go2.getMidX()) / 2), 0);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((getGo().getMidY() + go2.getMidY()) / 2), 0);
+        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getMidX() + go2.getMidX()) / 2), 0);
+        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getMidY() + go2.getMidY()) / 2), 0);
     }
 
     @Override

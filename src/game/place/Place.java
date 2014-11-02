@@ -35,7 +35,7 @@ import sprites.SpriteSheet;
 public abstract class Place {
 
     public final Game game;
-    public Settings settings;
+    public final Settings settings;
     protected final SoundBase sounds;
     protected final SpriteBase sprites;
 
@@ -51,6 +51,7 @@ public abstract class Place {
     public int ssMode;
 
     float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
+    int SX, SY, EX, EY;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -133,13 +134,22 @@ public abstract class Place {
     protected void renderBack(Camera cam) {
         glColor3f(r, g, b);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        SX = cam.getGo().getMidX() - (cam.getGo().getMidX() + cam.getXOffEffect());
+        EX = cam.getGo().getMidX() - (cam.getGo().getMidX() + cam.getXOffEffect()) + cam.getDwidth() * 2;
+        SY = cam.getGo().getMidY() - (cam.getGo().getMidY() + cam.getYOffEffect());
+        EY = cam.getGo().getMidY() - (cam.getGo().getMidY() + cam.getYOffEffect()) + cam.getDheight() * 2;
         for (int y = 0; y < height / sTile; y++) {
-            for (int x = 0; x < width / sTile; x++) {
-                Tile t = tiles[x + y * height / sTile];
-                if (t != null) {
-                    t.render(0, cam.getXOffEffect() + x * sTile, cam.getYOffEffect() + y * sTile);
+            if (SY < (y + 1) * sTile && EY > y * sTile) {
+                for (int x = 0; x < width / sTile; x++) {
+                    if (SX < (x + 1) * sTile && EX > x * sTile) {
+                        Tile t = tiles[x + y * height / sTile];
+                        if (t != null) {
+                            t.render(0, cam.getXOffEffect() + x * sTile, cam.getYOffEffect() + y * sTile);
+                        }
+                    }
                 }
             }
+
         }
     }
 
