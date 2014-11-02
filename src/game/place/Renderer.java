@@ -254,7 +254,7 @@ public class Renderer {
             if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getY() + other.getHeight() < src.getMidY()) {
                 int Y = other.getY() + other.getHeight();
                 int X = (int) ((Y - bl1) / al1);
-                //System.out.println("Y: " + Y + " X: " + X);
+                System.out.println("Y: " + Y + " X: " + X);
                 if (X > other.getX() && X < (other.getX() + other.getWidth())) {
                     if (left != null) {
                         if (Math.abs(f.getY() - other.getY()) < Math.abs(f.getY() - left.getY())) {
