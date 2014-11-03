@@ -5,28 +5,51 @@
  */
 package game.gameobject;
 
+import game.myGame.MyController;
+
 /**
  *
  * @author przemek
  */
-public abstract class ActionWhileClicked extends Action {
+public class ActionWhileClicked extends Action {
 
-    public ActionWhileClicked(AnyInput in, Entity inControl) {
+    private int[] states;
+    private int i;
+
+    public ActionWhileClicked(AnyInput in, Entity inControl, int[] states, int i) {
         super(in, inControl);
+        this.states = states;
+        this.i = i;
     }
 
     @Override
     public void Do() {
         if (in != null && in.isPut()) {
-            Act();
+            if (states[i] <= 0) {
+                states[i] = 2;
+            } else {
+                states[i] = 1;
+            }
         } else {
-            noAct();
+            if (states[i] >= 0) {
+                states[i] = -1;
+            } else {
+                states[i] = 0;
+            }
         }
+        /*if (in != null && in.isPut()) {
+         Act();
+         } else {
+         noAct();
+         }*/
     }
 
     @Override
-    public abstract void Act();
+    public void Act() {
+    }
+;/*
     
-    public abstract void noAct();
+ public abstract void noAct();*/
+
 
 }

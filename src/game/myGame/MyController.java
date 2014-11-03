@@ -7,7 +7,6 @@ package game.myGame;
 
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
-import game.gameobject.ActionSingleClick;
 import game.gameobject.ActionWhileClicked;
 import game.gameobject.AnyInput;
 import game.gameobject.Controler;
@@ -19,8 +18,17 @@ import game.gameobject.Entity;
  */
 public class MyController extends Controler {
 
+    public static final int UP = 0;
+    public static final int DOWN = 1;
+    public static final int LEFT = 2;
+    public static final int RIGHT = 3;
+    public static final int SHAKE = 4;
+    public static final int RUN = 5;
+    public static final int LIGHT = 6;
+
     public final AnyInput[] inputs = new AnyInput[36];
     public final Action[] actions = new Action[36]; // 4 pierwsze to menu
+    private int[] states = new int[10];
 
     public MyController(Entity inControl) {
         super(inControl);
@@ -51,55 +59,25 @@ public class MyController extends Controler {
                 ((MyPlayer) inControl).menu.back();
             }
         };
-        actions[4] = new ActionSingleClick(inputs[4], inControl) {
-            @Override
-            public void Act() {
-                inControl.canMove(0, -1);
-            }
-        };
-        actions[5] = new ActionSingleClick(inputs[5], inControl) {
-            @Override
-            public void Act() {
-                inControl.canMove(0, 1);
-            }
-        };
-        actions[6] = new ActionSingleClick(inputs[6], inControl) {
-            @Override
-            public void Act() {
-                inControl.canMove(-1, 0);
-                ((MyPlayer) inControl).getAnim().setFlip(0);
-            }
-        };
-        actions[7] = new ActionSingleClick(inputs[7], inControl) {
-            @Override
-            public void Act() {
-                inControl.canMove(1, 0);
-                ((MyPlayer) inControl).getAnim().setFlip(1);
-            }
-        };
-        actions[8] = new ActionSingleClick(inputs[8], inControl) {
-            @Override
-            public void Act() {
-                ((MyPlayer) inControl).getCam().shake();
-            }
-        };
-        actions[9] = new ActionWhileClicked(inputs[9], inControl) {
-            @Override
-            public void Act() {
-                inControl.setSpeed(16);
-            }
+        for (int i = 0; i < 7; i++) {
+            actions[i + 4] = new ActionWhileClicked(inputs[i + 4], inControl, states, i);
+        }
+    }
 
-            @Override
-            public void noAct() {
-                inControl.setSpeed(8);
-            }
-        };
-        actions[10] = new ActionOnOff(inputs[10], inControl) {
-            @Override
-            public void Act() {
-                ((MyPlayer) inControl).setEmits(!((MyPlayer) inControl).isEmits());
-            }
-        };
+    public boolean isPressed(int i) {
+        return states[i] > 0;
+    }
+
+    public boolean isClicked(int i) {
+        return states[i] == 2;
+    }
+
+    public boolean isReleased(int i) {
+        return states[i] == -1;
+    }
+
+    public boolean isMoving() {
+        return states[0] > 0 || states[1] > 0 || states[2] > 0 || states[3] > 0;
     }
 
     @Override

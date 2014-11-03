@@ -30,23 +30,7 @@ public class MyPlayer extends Entity {
     public MyController ctrl;
     private Camera cam;
     public boolean isFirst = false;
-
-//    public Player(int startX, int startY, int width, int height, int sx, int sy, String name, Place place, int x, int y, boolean isFirst) {
-//        this.name = name;
-//        this.width = width;
-//        this.height = height;
-//        this.sX = startX;
-//        this.sY = startY;
-//        this.place = place;
-//        this.top = false;
-//        this.setSpeed(8);
-//        this.emitter = true;
-//        init("apple", name, x, y, sx, sy);
-//        this.light = new Light("light", 1f, 1f, 1f, 1, 1024, 1024);
-//        this.anim = new Animation(2, spr, 500);
-//        animate = true;
-//        initControler(isFirst);
-//    }
+    
     public MyPlayer(boolean isFirst, String name) {
         this.name = name;
         initControler(isFirst);
@@ -58,13 +42,14 @@ public class MyPlayer extends Entity {
         this.sX = (int) (SCALE * startX);
         this.sY = (int) (SCALE * startY);
         this.top = false;
-        this.setSpeed((int) (SCALE * 8));
+        this.setWeight(1);
         this.emitter = true;
         init("apple", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, 1, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
+        scale = SCALE;
         setCollision(new Rectangle(sX, sY, this.width, this.height, this));
     }
 
@@ -98,13 +83,8 @@ public class MyPlayer extends Entity {
 
     @Override
     protected boolean isColided(int magX, int magY) {
-        if (place != null) {
+        if (place != null) 
             return collision.ifCollideSolid(getX() + magX, getY() + magY, place);
-            /*if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
-             return true;
-             }
-             return (getPlace().isObjCTl(magX, magY, this) || getPlace().isPlCObj(magX, magY, this));*/
-        }
         return false;
     }
 
@@ -150,6 +130,34 @@ public class MyPlayer extends Entity {
         }
     }
 
+    public void update(Place place) {
+        if (ctrl.isPressed(MyController.UP)) {
+            addSpeed(0, -4, true);
+        } else if (ctrl.isPressed(MyController.DOWN)) {
+            addSpeed(0, 4, true);
+        } else {
+            brake(1);
+        }
+        if (ctrl.isPressed(MyController.LEFT)) {
+            addSpeed(-4, 0, true);
+        } else if (ctrl.isPressed(MyController.RIGHT)) {
+            addSpeed(4, 0, true);
+        } else {
+            brake(0);
+        }
+        if (ctrl.isPressed(MyController.SHAKE))
+            cam.shake();
+        if (ctrl.isPressed(MyController.RUN))
+            setMaxSpeed(16);
+        else
+            setMaxSpeed(8);
+        if (ctrl.isClicked(MyController.LIGHT))
+            setEmits(!emits);
+        brakeOthers();
+        canMove((int)(hspeed + myHspeed),(int) (vspeed + myVspeed));
+        System.err.println((int)myHspeed + " " + (int)myVspeed + " | " + maxSpeed);
+    }
+    
     public void setAnimate(boolean animate) {
         this.animate = animate;
     }
