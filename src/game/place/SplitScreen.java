@@ -57,6 +57,7 @@ public class SplitScreen {
                 }
             }
         } else if (pl.playersLength == 2 && SplitScreen.isClose2(pl)) {
+            glScissor(0, 0, Display.getWidth(), Display.getHeight());
             pl.cam = pl.camfor2;
             pl.ssMode = 0;
             if (p == 0) {
@@ -115,6 +116,7 @@ public class SplitScreen {
                 }
             }
         } else if (pl.playersLength == 3 && SplitScreen.isClose3(pl)) {
+            glScissor(0, 0, Display.getWidth(), Display.getHeight());
             pl.cam = pl.camfor3;
             pl.ssMode = 0;
             if (p == 0) {
@@ -149,6 +151,7 @@ public class SplitScreen {
                 pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
             }
         } else if (pl.playersLength == 4 && SplitScreen.isClose4(pl)) {
+            glScissor(0, 0, Display.getWidth(), Display.getHeight());
             pl.cam = pl.camfor4;
             pl.ssMode = 0;
             if (p == 0) {

@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 import engine.SoundBase;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 /**
  *
@@ -26,7 +26,7 @@ public class Settings {
     public int modesNr;
     public DisplayMode display = Display.getDesktopDisplayMode();
     public int curMode;
-    public boolean fullScreen = true;
+    public boolean fullScreen;
     public boolean hSplitScreen;
     public boolean joinSS;
     public int nrPlayers = 1;
@@ -37,7 +37,8 @@ public class Settings {
     public double SCALE;
     public int freq = display.getFrequency();
     public int depth = display.getBitsPerPixel();
-    public boolean vSync = true;
+    public boolean vSync;
+    public int nrSamples = 2;
     public String lang = "PL";
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny
@@ -57,33 +58,37 @@ public class Settings {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         DisplayMode temp;
-        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getWidth() <= maxW && tmpmodes[0].getHeight() >= minH && tmpmodes[0].getHeight() <= maxH && tmpmodes[0].getBitsPerPixel() == depth) {
+        if (tmpmodes[0].getWidth()
+                >= minW && tmpmodes[0].getWidth() <= maxW && tmpmodes[0].getHeight() >= minH && tmpmodes[0].getHeight() <= maxH && tmpmodes[0].getBitsPerPixel() == depth) {
             modesNr++;
         }
-        for (int i = 1; i < tmpmodes.length; i++) {
+        int i, j;
+        for (i = 1; i < tmpmodes.length; i++) {
             if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getWidth() <= maxW && tmpmodes[i].getHeight() >= minH && tmpmodes[i].getHeight() <= maxH && tmpmodes[i].getBitsPerPixel() == depth) {
                 modesNr++;
             }
             temp = tmpmodes[i];
-            int j;
-            for (j = i; j > 0 && isBiger(tmpmodes[j - 1], temp); j--) {
+            for (j = i; j > 0 && isBigger(tmpmodes[j - 1], temp); j--) {
                 tmpmodes[j] = tmpmodes[j - 1];
             }
             tmpmodes[j] = temp;
         }
         modes = new DisplayMode[modesNr];
-        int i = 0;
+        i = 0;
         for (DisplayMode mode : tmpmodes) {
             if (mode.getWidth() >= minW && mode.getWidth() <= maxW && mode.getHeight() >= minH && mode.getHeight() <= maxH && mode.getBitsPerPixel() == depth) {
                 modes[i++] = mode;
             }
         }
-        languages.add(new LangPL());
-        languages.add(new LangENG());
+
+        languages.add(
+                new LangPL());
+        languages.add(
+                new LangENG());
         language = languages.get(0);
     }
 
-    private boolean isBiger(DisplayMode checked, DisplayMode temp) {
+    private boolean isBigger(DisplayMode checked, DisplayMode temp) {
         if (checked.getBitsPerPixel() > temp.getBitsPerPixel()) {
             return true;
         } else if (checked.getWidth() > temp.getWidth()) {

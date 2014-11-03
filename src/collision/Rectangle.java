@@ -19,10 +19,11 @@ public class Rectangle extends Figure {
     private final int w;
     private final int h;
 
-    public Rectangle(int xs, int ys, int w, int h, GameObject owner) {  // Środek prostokąta (xs,ys) dla (0,0) jest w lewym górnym rogu prostokąta
+    public Rectangle(int xs, int ys, int w, int h, int shadowH, GameObject owner) {  // Środek prostokąta (xs,ys) dla (0,0) jest w lewym górnym rogu prostokąta
         super(xs, ys, owner);
         this.w = w;
         this.h = h;
+        ShadowHeight = shadowH;
         this.type = 1;
         centralize();
     }
@@ -36,7 +37,7 @@ public class Rectangle extends Figure {
     }
 
     @Override
-    public void centralize() {
+    public final void centralize() {
         width = w;
         height = h;
         xCentr = w / 2;
@@ -58,8 +59,8 @@ public class Rectangle extends Figure {
         if (f.getType() == 1) {         // Z Prostokątem
 
             Rectangle r = (Rectangle) f;
-            if (((super.getX(x) > r.getX() && super.getX(x) - r.getX() <= r.getWidth()) || (super.getX(x) <= r.getX() && r.getX() - super.getX(x) <= w))
-                    && ((super.getY(y) > r.getY() && super.getY(y) - r.getY() <= r.getHeight()) || (super.getY(y) <= r.getY() && r.getY() - super.getY(y) <= h))) {
+            if (((super.getX(x) > r.getX() && super.getX(x) - r.getX() < r.getWidth()) || (super.getX(x) <= r.getX() && r.getX() - super.getX(x) < w))
+                    && ((super.getY(y) > r.getY() && super.getY(y) - r.getY() < r.getHeight()) || (super.getY(y) <= r.getY() && r.getY() - super.getY(y) < h))) {
                 return true;
             }
 
@@ -95,20 +96,22 @@ public class Rectangle extends Figure {
                 new Point(super.getX(x), super.getY(y) + h),
                 new Point(super.getX(x) + w, super.getY(y) + h),
                 new Point(super.getX(x) + w, super.getY(y))};
-            int[] w = {r.getX(), r.getY(), r.getX() + r.getXk(), r.getY() + r.getYk()};
-            return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], list[0].getX(), list[0].getY(), list[1].getX(), list[1].getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], list[1].getX(), list[1].getY(), list[2].getX(), list[2].getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], list[2].getX(), list[2].getY(), list[3].getX(), list[3].getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], list[3].getX(), list[3].getY(), list[0].getX(), list[0].getY()));
+            int[] ln = {r.getX(), r.getY(), r.getX() + r.getXk(), r.getY() + r.getYk()};
+            return (Line2D.linesIntersect(ln[0], ln[1], ln[2], ln[3], list[0].getX(), list[0].getY(), list[1].getX(), list[1].getY())
+                    || Line2D.linesIntersect(ln[0], ln[1], ln[2], ln[3], list[1].getX(), list[1].getY(), list[2].getX(), list[2].getY())
+                    || Line2D.linesIntersect(ln[0], ln[1], ln[2], ln[3], list[2].getX(), list[2].getY(), list[3].getX(), list[3].getY())
+                    || Line2D.linesIntersect(ln[0], ln[1], ln[2], ln[3], list[3].getX(), list[3].getY(), list[0].getX(), list[0].getY()));
 
         }
         return false;
     }
 
+    @Override
     public int getWidth() {
         return w;
     }
 
+    @Override
     public int getHeight() {
         return h;
     }

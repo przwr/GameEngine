@@ -8,6 +8,10 @@ package collision;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.util.ArrayList;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import sprites.Sprite;
 
 /**
  *
@@ -15,15 +19,17 @@ import java.util.ArrayList;
  */
 public class Area extends GameObject {
 
-    private ArrayList<Figure> parts;
+    public ArrayList<Figure> parts;
     protected int xCentr;
     protected int yCentr;
 
-    public Area(int x, int y) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
+    public Area(int x, int y, String lit, String nLit, int sTile) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
         this.x = x;
         this.y = y;
         this.parts = new ArrayList<>();
         solid = true;
+        this.lit = new Sprite(lit, sTile, sTile, null);
+        this.nLit = new Sprite(nLit, sTile, sTile, null);
     }
 
     public void addFigure(Figure f) {
@@ -98,5 +104,19 @@ public class Area extends GameObject {
                 + "If you wanna test me, I'm sure you'll find\n"
                 + "The things I'll teach ya is sure to beat ya\n"
                 + "But nevertheless you'll get a lesson from teacher");
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
+        if (nLit != null && lit != null) {
+            glPushMatrix();
+            glTranslatef(xEffect, yEffect, 0);
+            if (isLit) {
+                lit.render();
+            } else {
+                nLit.render();
+            }
+            glPopMatrix();
+        }
     }
 }

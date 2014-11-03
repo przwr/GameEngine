@@ -19,13 +19,14 @@ public abstract class Figure {
     protected int xs;
     protected int ys;
     protected int width;
+    protected int ShadowHeight;
     protected int height;
     protected int xCentr;
     protected int yCentr;
 
     protected int type;
 
-    protected GameObject owner;
+    private GameObject owner;
 
     public Figure(int xs, int ys, GameObject owner) {
         this.xs = xs;
@@ -108,11 +109,11 @@ public abstract class Figure {
     }
 
     public int getX() {
-        return owner.getX() + xs;
+        return getOwner().getX() + xs;
     }
 
     public int getY() {
-        return owner.getY() + ys;
+        return getOwner().getY() + ys;
     }
 
     public int getX(int x) {
@@ -140,11 +141,11 @@ public abstract class Figure {
     }
 
     public int getCentralX() {
-        return owner.getX() + xs + xCentr;
+        return getOwner().getX() + xs + xCentr;
     }
 
     public int getCentralY() {
-        return owner.getY() + ys + yCentr;
+        return getOwner().getY() + ys + yCentr;
     }
 
     public int getCentralX(int x) {
@@ -164,7 +165,7 @@ public abstract class Figure {
     }
 
     private boolean checkCollison(int x, int y, GameObject obj) {
-        if (obj.equals(owner)) {
+        if (obj.equals(getOwner())) {
             return false;
         }
         Figure f = obj.getCollision();
@@ -192,5 +193,13 @@ public abstract class Figure {
 
     public int getType() {
         return type;
+    }
+
+    public int getShadowHeight() {
+        return ShadowHeight;
+    }
+
+    public GameObject getOwner() {
+        return owner;
     }
 }

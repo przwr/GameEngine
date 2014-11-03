@@ -42,5 +42,7 @@ public abstract class Language {
     public String PushButton;
     public String Unchangable;
     public String VSync;
+    public String SmoothShadows;
+    public String Samples;
     public String JoinedSS;
 }

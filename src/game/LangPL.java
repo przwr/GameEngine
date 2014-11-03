@@ -51,6 +51,7 @@ public class LangPL extends Language {
         PushButton = "Naciśnij Przycisk!";
         Unchangable = "Niezmienny!";
         VSync = "Synchronizacja Pionowa: ";
+        SmoothShadows = "Gładkie Cienie: ";
         JoinedSS = "Łącz Ekrany: ";
     }
 }

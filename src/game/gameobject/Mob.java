@@ -20,7 +20,7 @@ import org.newdawn.slick.Color;
  */
 public abstract class Mob extends Entity {
 
-    protected final int range;
+    protected final double range;
     protected GameObject prey;
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid, double SCALE) {
@@ -33,7 +33,7 @@ public abstract class Mob extends Entity {
         this.setMaxSpeed((int) (SCALE * speed));
         this.range = (int) (SCALE * range);
         init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
-        setCollision(new Rectangle(sX, sY, this.width, this.height, this));
+        setCollision(new Rectangle(sX, sY, this.width, this.height, 0, this));
     }
 
     public abstract void update(Place place);
@@ -98,6 +98,7 @@ public abstract class Mob extends Entity {
         }
     }
 
+    @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null) {
             glPushMatrix();

@@ -23,18 +23,20 @@ public final class SpriteSheet extends Sprite {
         this.xTiles = texture.getImageWidth() / w;
         this.yTiles = texture.getImageHeight() / h;
     }
-    
+
     public void render(int flip, int i) {
-        if (i > xTiles * yTiles) 
+        if (i > xTiles * yTiles) {
             return;
+        }
         int x = (int) (i % xTiles);
         int y = (int) (i / yTiles);
         render(flip, x, y);
     }
-    
+
     public void render(int flip, int x, int y) {
-        if (x > xTiles || y > yTiles) 
+        if (x > xTiles || y > yTiles) {
             return;
+        }
         float bx = (float) x / xTiles;
         float by = (float) y / yTiles;
         float ex = (float) (x + 1) / xTiles;

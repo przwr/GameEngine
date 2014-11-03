@@ -38,8 +38,8 @@ public class FourPlayersCamera extends Camera {
 
     @Override
     public synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((getGo().getMidX() + go2.getMidX() + go3.getMidX() + go4.getMidX()) / 4), 0);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((getGo().getMidY() + go2.getMidY() + go3.getMidY() + go4.getMidY()) / 4), 0);
+        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getMidX() + go2.getMidX() + go3.getMidX() + go4.getMidX()) / 4), 0);
+        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getMidY() + go2.getMidY() + go3.getMidY() + go4.getMidY()) / 4), 0);
     }
 
     @Override

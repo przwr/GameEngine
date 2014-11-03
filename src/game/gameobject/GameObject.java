@@ -32,27 +32,30 @@ public abstract class GameObject {
     protected String name;
     protected Place place;
     protected Figure collision;
-    
+
     protected int sX;
-    protected int sY;    
+    protected int sY;
 
     public abstract void render(int xEffect, int yEffect);
+
+    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit);
 
     protected void init(String textureKey, String name, int x, int y, int sx, int sy, Place place) {
         this.x = x;
         this.y = y;
         this.name = name;
         this.place = place;
-        this.sprite = place.getSprite(textureKey, sx, sy);        
+        this.sprite = place.getSprite(textureKey, sx, sy);
     }
 
     @Override
     public boolean equals(Object o) {
         try {
             GameObject go = (GameObject) o;
-            if (go.getX() == getX() && go.getY() == getY() && go.getName().equals(getName()))
+            if (go.getX() == getX() && go.getY() == getY() && go.getName().equals(getName())) {
                 return true;
-        } catch(Exception e) {
+            }
+        } catch (Exception e) {
             return false;
         }
         return false;
@@ -68,15 +71,15 @@ public abstract class GameObject {
         hash = 83 * hash + Objects.hashCode(this.name);
         return hash;
     }
-    
-    public Figure getCollision(){
+
+    public Figure getCollision() {
         return collision;
     }
-    
-    public void setCollision(Figure f){
+
+    public void setCollision(Figure f) {
         collision = f;
     }
-    
+
     protected void init(String name, int x, int y, int sx, int sy, Place place) {
         this.x = x;
         this.y = y;

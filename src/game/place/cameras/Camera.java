@@ -17,8 +17,10 @@ public abstract class Camera {
 
     protected GameObject go;
     protected Place place;
+    protected int Dwidth;
+    protected int Dheight;
 
-    protected int Dwidth, Dheight, xEffect, yEffect, xLeft, xRight, yDown, yUp;
+    protected int  xEffect, yEffect, xLeft, xRight, yDown, yUp;
     protected double xOffset, yOffset;
     protected int delaylenght;
     protected Delay shakeDelay;
@@ -83,6 +85,14 @@ public abstract class Camera {
 
     public void setGo(GameObject go) {
         this.go = go;
+    }
+
+    public int getDwidth() {
+        return Dwidth;
+    }
+
+    public int getDheight() {
+        return Dheight;
     }
 
 }
