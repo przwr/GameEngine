@@ -11,16 +11,16 @@ import game.Settings;
 import game.place.cameras.Camera;
 import game.gameobject.Mob;
 import game.myGame.MyPlayer;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
-import engine.Physics;
 import engine.FontsHandler;
 import engine.SoundBase;
 import game.myGame.MyMob;
 import game.place.cameras.FourPlayersCamera;
 import game.place.cameras.ThreePlayersCamera;
 import game.place.cameras.TwoPlayersCamera;
+import java.util.Collections;
+import java.util.Comparator;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
@@ -61,6 +61,9 @@ public abstract class Place {
     public int playersLength;
     public ArrayList<GameObject> emitters = new ArrayList<>();
     public ArrayList<Area> areas = new ArrayList<>();
+
+    public ArrayList<GameObject> depthObj = new ArrayList<>();
+    public ArrayList<GameObject> onTopObject = new ArrayList<>();
 
     public FontsHandler fonts;
 
@@ -169,173 +172,77 @@ public abstract class Place {
     }
 
     private void renderBottom(Camera cam) {
-        for (GameObject go : flatObj) {
-            if (!go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
-        }
-        for (GameObject go : solidObj) {
-            if (!go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
-        }
-        for (GameObject go : fMobs) {
-            if (!go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
-        }
-        for (GameObject go : sMobs) {
-            if (!go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
-        }
-        for (int p = 0; p < playersLength; p++) {
-            if (!players[p].isOnTop()) {
-                players[p].render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
+        sortObjects(false);
+        for (GameObject go : depthObj) {
+            go.render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
 
     private void renderTop(Camera cam) {
-        for (GameObject go : flatObj) {
-            if (go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
-        }
-        for (GameObject go : solidObj) {
-            if (go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
-        }
-        for (GameObject go : fMobs) {
-            if (go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
-        }
-        for (GameObject go : sMobs) {
-            if (go.isOnTop()) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
-        }
-
-        for (int p = 0; p < playersLength; p++) {
-            if (players[p].isOnTop()) {
-                players[p].render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
+        sortObjects(true);
+        for (GameObject go : onTopObject) {
+            go.render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
 
-    protected void addObj(GameObject go) {
-        if (go.isEmitter()) {
-            emitters.add(go);
-        }
-        if (go.getClass() == MyMob.class) {
-            if (go.isSolid()) {
-                sMobs.add((Mob) go);
-            } else {
-                fMobs.add((Mob) go);
-            }
+    public void sortObjects(boolean top) {
+        if (top) {
+            Collections.sort(onTopObject, new ObjectsComparator());
         } else {
-            if (go.isSolid()) {
-                solidObj.add(go);
+            Collections.sort(depthObj, new ObjectsComparator());
+        }
+    }
+
+    public void addObj(GameObject go) {
+        if (go.getClass() != MyPlayer.class) {
+            if (go.isEmitter()) {
+                emitters.add(go);
+            }
+            if (go.getClass() == MyMob.class) {
+                if (go.isSolid()) {
+                    sMobs.add((Mob) go);
+                } else {
+                    fMobs.add((Mob) go);
+                }
             } else {
-                flatObj.add(go);
+                if (go.isSolid()) {
+                    solidObj.add(go);
+                } else {
+                    flatObj.add(go);
+                }
             }
+        }
+        if (go.isOnTop()) {
+            onTopObject.add(go);
+        } else {
+            depthObj.add(go);
         }
     }
 
-    public boolean isObjCTl(int magX, int magY, GameObject go) {
-        int ySizeInTiles = height / sTile;
-        int xBegInTile = (go.getX() + go.getSX()) / sTile;
-        int yBegInTile = (go.getY() + go.getSY()) / sTile;
-        int xEndInTile = ((go.getWidth() % sTile != 0) ? 1 : 0) + xBegInTile + go.getWidth() / sTile;
-        int yEndInTile = ((go.getHeight() % sTile != 0) ? 1 : 0) + yBegInTile + go.getHeight() / sTile;
-        Rectangle rec = new Rectangle();
-        for (int i = xBegInTile - 1; i <= xEndInTile; i++) {
-            try {
-                if (tiles[i + (yBegInTile - 1) * ySizeInTiles].isSolid()) {
-                    rec.setRect(i * sTile, (yBegInTile - 1) * sTile, sTile, sTile);
-                    if (Physics.checkCollision(rec, go, 0, magY) != null) {
-                        return true;
-                    }
+    public void deleteObj(GameObject go) {
+        if (go.getClass() != MyPlayer.class) {
+            if (go.isEmitter()) {
+                emitters.remove(go);
+            }
+            if (go.getClass() == MyMob.class) {
+                if (go.isSolid()) {
+                    sMobs.remove((Mob) go);
+                } else {
+                    fMobs.remove((Mob) go);
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-            try {
-                if (tiles[i + (yEndInTile) * ySizeInTiles].isSolid()) {
-                    rec.setRect(i * sTile, (yEndInTile) * sTile, sTile, sTile);
-                    if (Physics.checkCollision(rec, go, 0, magY) != null) {
-                        return true;
-                    }
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        }
-        for (int i = yBegInTile - 1; i <= yEndInTile; i++) {
-            try {
-                if (tiles[(xBegInTile - 1) + i * ySizeInTiles].isSolid()) {
-                    rec.setRect((xBegInTile - 1) * sTile, i * sTile, sTile, sTile);
-                    if (Physics.checkCollision(rec, go, magX, 0) != null) {
-                        return true;
-                    }
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-            try {
-                if (tiles[(xEndInTile) + i * ySizeInTiles].isSolid()) {
-                    rec.setRect((xEndInTile) * sTile, i * sTile, sTile, sTile);
-                    if (Physics.checkCollision(rec, go, magX, 0) != null) {
-                        return true;
-                    }
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        }
-        return false;
-    }
-
-    public boolean isPlCObj(int magX, int magY, MyPlayer player) {
-        Rectangle rec = new Rectangle();
-        for (GameObject go : sMobs) {
-            rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
-            if (Physics.checkCollision(rec, player, magX, magY) != null) {
-                return true;
-            }
-        }
-        for (GameObject go : solidObj) {
-            rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
-            if (Physics.checkCollision(rec, player, magX, magY) != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isObjCObj(int magX, int magY, GameObject gameObject) {
-        Rectangle rec = new Rectangle();
-        for (GameObject player : players) {
-            rec.setRect(player.getBegOfX(), player.getBegOfY(), player.getWidth(), player.getHeight());
-            if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
-                return true;
-            }
-        }
-        for (GameObject go : sMobs) {
-            if (gameObject != go) {
-                rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
-                if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
-                    return true;
+            } else {
+                if (go.isSolid()) {
+                    solidObj.remove(go);
+                } else {
+                    flatObj.remove(go);
                 }
             }
         }
-        for (GameObject go : solidObj) {
-            if (gameObject != go) {
-                rec.setRect(go.getBegOfX(), go.getBegOfY(), go.getWidth(), go.getHeight());
-                if (Physics.checkCollision(rec, gameObject, magX, magY) != null) {
-                    return true;
-                }
-            }
+        if (go.isOnTop()) {
+            onTopObject.remove(go);
+        } else {
+            depthObj.remove(go);
         }
-        return false;
     }
 
     public int getWidth() {
@@ -348,5 +255,14 @@ public abstract class Place {
 
     public double SCALE() {
         return settings.SCALE;
+    }
+
+    private class ObjectsComparator implements Comparator<GameObject> {
+
+        @Override
+        public int compare(GameObject o1, GameObject o2) {
+            return o1.getDepth() - o2.getDepth();
+        }
+
     }
 }

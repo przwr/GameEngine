@@ -32,6 +32,7 @@ public abstract class GameObject {
     protected String name;
     protected Place place;
     protected Figure collision;
+    protected int depth;
 
     protected int sX;
     protected int sY;
@@ -43,6 +44,7 @@ public abstract class GameObject {
     protected void init(String textureKey, String name, int x, int y, int sx, int sy, Place place) {
         this.x = x;
         this.y = y;
+        depth = y;
         this.name = name;
         this.place = place;
         this.sprite = place.getSprite(textureKey, sx, sy);
@@ -72,6 +74,14 @@ public abstract class GameObject {
         return hash;
     }
 
+    public int getDepth() {
+        return depth;
+    }
+    
+    public void setDepth(int d) {
+        depth = d;
+    }
+    
     public Figure getCollision() {
         return collision;
     }
@@ -145,6 +155,10 @@ public abstract class GameObject {
 
     public boolean isOnTop() {
         return top;
+    }
+    
+    public void setOnTop(boolean top) {
+        this.top = top;
     }
 
     public boolean isSolid() {

@@ -29,11 +29,12 @@ public abstract class Mob extends Entity {
         this.solid = solid;
         this.sX = (int) (SCALE * startX);
         this.sY = (int) (SCALE * startY);
-        this.top = true;
-        this.setMaxSpeed((int) (SCALE * speed));
+        this.top = false;
         this.range = (int) (SCALE * range);
+        scale = SCALE;
         init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
-        setCollision(new Rectangle(sX, sY, this.width, this.height, 0, this));
+        setCollision(new Rectangle(sX + this.width / 4, sY + 2 * this.height / 3, this.width / 2, this.height / 3, 0, this));
+        this.setMaxSpeed(speed);
     }
 
     public abstract void update(Place place);
@@ -41,10 +42,6 @@ public abstract class Mob extends Entity {
     @Override
     protected boolean isColided(int magX, int magY) {
         return collision.ifCollideSolid(getX() + magX, getY() + magY, place) || collision.ifCollide(getX() + magX, getY() + magY, place);
-        /*if ((getBegOfX() + magX) < 0 || (getEndOfX() + magX) > place.getWidth() || (getBegOfY() + magY) < 0 || (getEndOfY() + magY) > place.getHeight()) {
-         return true;
-         }
-         return (place.isObjCTl(magX, magY, this) || place.isObjCObj(magX, magY, this));*/
     }
 
     @Override
@@ -71,15 +68,9 @@ public abstract class Mob extends Entity {
 
     public synchronized void chase(GameObject prey) {
         if (prey != null) {
-            int xToGo = 0;
-            int yToGo = 0;
-            if (prey.getMidX() != getMidX()) {
-                xToGo = prey.getMidX() > getMidX() ? 1 : -1;
-            }
-            if (prey.getMidY() != getMidY()) {
-                yToGo = prey.getMidY() > getMidY() ? 1 : -1;
-            }
-            canMove(xToGo, yToGo);
+            double angle = Methods.PointAngle360(getMidX(), getMidY(), prey.getMidX(), prey.getMidY());
+            myHspeed = Methods.xRadius(angle, maxSpeed);
+            myVspeed = Methods.yRadius(angle, maxSpeed);
         }
     }
 

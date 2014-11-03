@@ -15,6 +15,7 @@ import game.gameobject.Entity;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glRectf;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 
@@ -50,7 +51,8 @@ public class MyPlayer extends Entity {
         animate = true;
         emits = false;
         scale = SCALE;
-        setCollision(new Rectangle(sX, sY, this.width, this.height, this));
+        place.addObj(this);
+        setCollision(new Rectangle(sX + this.width/4, sY + 2 * this.height/3, this.width/2, this.height/3, 0, this));
     }
 
     private void initControler(boolean isFirst) {
@@ -154,9 +156,8 @@ public class MyPlayer extends Entity {
             setMaxSpeed(8);
         if (ctrl.isClicked(MyController.LIGHT))
             setEmits(!emits);
-        brakeOthers();
         canMove((int)(hspeed + myHspeed),(int) (vspeed + myVspeed));
-        System.err.println((int)myHspeed + " " + (int)myVspeed + " | " + maxSpeed);
+        brakeOthers();
     }
     
     public void setAnimate(boolean animate) {

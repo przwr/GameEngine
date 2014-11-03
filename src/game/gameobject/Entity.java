@@ -21,7 +21,7 @@ public abstract class Entity extends GameObject {
     protected double vspeed;
     protected double myHspeed;    // prędkości uzyskiwane przez gracza
     protected double myVspeed;
-    protected double weight = 4;  // 1 - idealny balans, im więcej tym gorzej
+    protected double weight = 1;  // 1 - idealny balans, im więcej tym gorzej
     protected double maxSpeed;
     protected double scale;
 
@@ -43,6 +43,7 @@ public abstract class Entity extends GameObject {
             if (ypos != 0) {
                 if (!isColided(0, yd)) {
                     move(0, yd);
+                    depth = (int) y;
                     ypos -= yd;
                 } else {
                     ypos = 0;
