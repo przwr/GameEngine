@@ -19,6 +19,7 @@ import java.awt.Font;
 import engine.FontsHandler;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
+import game.gameobject.GameObject;
 import game.gameobject.inputs.InputKeyBoard;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
@@ -135,6 +136,9 @@ public class MyPlace extends Place {
         } else if (playersLength == 4) {
             changeSplitScreenJoin.Do();
             camfor4.update();
+        }
+        for (GameObject pl : players) {
+            ((MyPlayer) pl).update(this);
         }
         for (Mob mob : sMobs) {
             mob.update(this);

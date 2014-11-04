@@ -5,6 +5,7 @@
  */
 package game.myGame;
 
+import game.Methods;
 import game.gameobject.Mob;
 import game.place.Place;
 
@@ -22,9 +23,15 @@ public class MyMob extends Mob {
     public void update(Place place) {
         if (prey != null && ((MyPlayer) prey).getPlace() != null) {
             chase(prey);
+            if (Methods.PointDistance(getMidX(), getMidY(), prey.getMidX(), prey.getMidY()) > range * 1.5) {
+                prey = null;
+            }
         } else {
             look(place.players);
+            brake(2);
         }
+        canMove((int) (hspeed + myHspeed), (int) (vspeed + myVspeed));
+        brakeOthers();
     }
 
 }
