@@ -16,9 +16,6 @@ import game.gameobject.GameObject;
 import engine.FontsHandler;
 import engine.SoundBase;
 import game.myGame.MyMob;
-import game.place.cameras.FourPlayersCamera;
-import game.place.cameras.ThreePlayersCamera;
-import game.place.cameras.TwoPlayersCamera;
 import java.util.Collections;
 import java.util.Comparator;
 import org.lwjgl.opengl.Display;
@@ -38,35 +35,23 @@ public abstract class Place {
     public final Settings settings;
     protected final SoundBase sounds;
     protected final SpriteBase sprites;
-
+    protected FontsHandler fonts;
     public final int width, height, sTile;
-    public float r, g, b;
 
-    public Camera cam;
-    public Camera camfor2;
-    public Camera camfor3;
-    public Camera camfor4;
-    public boolean isSplit;
-    public boolean changeSSMode;
-    public int ssMode;
-
-    float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
-    int SX, SY, EX, EY;
+    public Camera cam, camfor2, camfor3, camfor4;
+    public boolean isSplit, changeSSMode;
+    public float r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
+    public int ssMode, SX, SY, EX, EY, playersLength;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
     public ArrayList<GameObject> solidObj = new ArrayList<>();
     public ArrayList<GameObject> flatObj = new ArrayList<>();
     public GameObject[] players;
-    public int playersLength;
     public ArrayList<GameObject> emitters = new ArrayList<>();
     public ArrayList<Area> areas = new ArrayList<>();
-
     public ArrayList<GameObject> depthObj = new ArrayList<>();
     public ArrayList<GameObject> onTopObject = new ArrayList<>();
-
-    public FontsHandler fonts;
-
     public final Tile[] tiles;
 
     public Place(Game game, int width, int height, int sTile, Settings settings) {
@@ -83,18 +68,6 @@ public abstract class Place {
     public abstract void generate();
 
     public abstract void update();
-
-    public void addCameraFor2(GameObject player1, GameObject player2) {
-        camfor2 = new TwoPlayersCamera(this, player1, player2);
-    }
-
-    public void addCameraFor3(GameObject player1, GameObject player2, GameObject player3) {
-        camfor3 = new ThreePlayersCamera(this, player1, player2, player3);
-    }
-
-    public void addCameraFor4(GameObject player1, GameObject player2, GameObject player3, GameObject player4) {
-        camfor4 = new FourPlayersCamera(this, player1, player2, player3, player4);
-    }
 
     public SpriteBase getSprites() {
         return sprites;

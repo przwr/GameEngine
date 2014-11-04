@@ -26,7 +26,7 @@ public abstract class Figure {
 
     protected int type;
 
-    private GameObject owner;
+    private final GameObject owner;
 
     public Figure(int xs, int ys, GameObject owner) {
         this.xs = xs;
@@ -116,6 +116,14 @@ public abstract class Figure {
         return getOwner().getY() + ys;
     }
 
+    public int getEndX() {
+        return getOwner().getX() + xs + width;
+    }
+
+    public int getEndY() {
+        return getOwner().getY() + ys + height;
+    }
+
     public int getX(int x) {
         return x + xs;
     }
@@ -197,6 +205,10 @@ public abstract class Figure {
 
     public int getShadowHeight() {
         return ShadowHeight;
+    }
+
+    public int getYOfShadow() {
+        return getOwner().getY() + ys + ShadowHeight;
     }
 
     public GameObject getOwner() {

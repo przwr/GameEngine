@@ -13,7 +13,11 @@ import java.io.File;
 import engine.Sound;
 import game.gameobject.GameObject;
 import game.place.SplitScreen;
+import game.place.cameras.Camera;
+import game.place.cameras.FourPlayersCamera;
 import game.place.cameras.PlayersCamera;
+import game.place.cameras.ThreePlayersCamera;
+import game.place.cameras.TwoPlayersCamera;
 import org.lwjgl.input.Controller;
 
 /**
@@ -107,7 +111,7 @@ public class Game {
                 players[0].addCamera(new PlayersCamera(place, players[0], 4, 2, 0));
                 players[1].addCamera(new PlayersCamera(place, players[1], 4, 2, 1));
             }
-            place.addCameraFor2(players[0], players[1]);
+            place.camfor2 = new TwoPlayersCamera(place, players[0], players[1]);
         } else if (nrPl == 3) {
             players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256, settings.SCALE);
             players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024, settings.SCALE);
@@ -119,7 +123,7 @@ public class Game {
             }
             players[1].addCamera(new PlayersCamera(place, players[1], 4, 4, 1));
             players[2].addCamera(new PlayersCamera(place, players[2], 4, 4, 2));
-            place.addCameraFor3(players[0], players[1], players[2]);
+            place.camfor3 = new ThreePlayersCamera(place, players[0], players[1], players[2]);
         } else if (nrPl == 4) {
             players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256, settings.SCALE);
             players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024, settings.SCALE);
@@ -129,7 +133,7 @@ public class Game {
             players[1].addCamera(new PlayersCamera(place, players[1], 4, 4, 1));
             players[2].addCamera(new PlayersCamera(place, players[2], 4, 4, 2));
             players[3].addCamera(new PlayersCamera(place, players[3], 4, 4, 3));
-            place.addCameraFor4(players[0], players[1], players[2], players[3]);
+            place.camfor4 = new FourPlayersCamera(place, players[0], players[1], players[2], players[3]);
         }
         System.arraycopy(players, 0, place.players, 0, 4);
         place.makeShadows();
@@ -180,7 +184,7 @@ public class Game {
                 ((PlayersCamera) ((MyPlayer) place.players[0]).getCam()).init(2, 2, 0);
             } else if (place.playersLength == 2) {
                 if (place.camfor2 == null) {
-                    place.addCameraFor2(players[0], players[1]);
+                    place.camfor2 = new TwoPlayersCamera(place, players[0], players[1]);
                 }
                 if (settings.hSplitScreen) {
                     ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(2, 4, c);
@@ -189,7 +193,7 @@ public class Game {
                 }
             } else if (place.playersLength == 3) {
                 if (place.camfor3 == null) {
-                    place.addCameraFor3(players[0], players[1], players[2]);
+                    place.camfor3 = new ThreePlayersCamera(place, players[0], players[1], players[2]);
                 }
                 if (c == 0) {
                     if (settings.hSplitScreen) {
@@ -202,7 +206,7 @@ public class Game {
                 }
             } else {
                 if (place.camfor4 == null) {
-                    place.addCameraFor4(players[0], players[1], players[2], players[3]);
+                    place.camfor4 = new FourPlayersCamera(place, players[0], players[1], players[2], players[3]);
                 }
                 ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(4, 4, c);
             }

@@ -17,6 +17,11 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class SplitScreen {
 
+    private static final int width2o3 = (Display.getWidth() << 1) / 3;
+    private static final int heigth2o3 = (Display.getHeight() << 1) / 3;
+    private static final int width1o2 = Display.getWidth() >> 1;
+    private static final int heigth1o2 = Display.getHeight() >> 1;
+
     public static void setSplitScreen(Place pl, int p) {
         if ((pl.playersLength == 2 && !SplitScreen.isClose2(pl))) {
             if (pl.changeSSMode) {
@@ -25,16 +30,16 @@ public class SplitScreen {
             if (pl.settings.hSplitScreen) {
                 pl.ssMode = 1;
                 if (p == 0) {
-                    glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
-                    glScissor(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
+                    glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
+                    glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
                     pl.camXStart = pl.camXTStart = 0f;
                     pl.camYStart = pl.camYTStart = -0.5f;
                     pl.camXEnd = pl.camXTEnd = 1f;
                     pl.camYEnd = pl.camYTEnd = 0.5f;
                 } else {
-                    glViewport(0, 0, Display.getWidth(), Display.getHeight() / 2);
-                    glScissor(0, 0, Display.getWidth(), Display.getHeight() / 2);
+                    glViewport(0, 0, Display.getWidth(), heigth1o2);
+                    glScissor(0, 0, Display.getWidth(), heigth1o2);
                     pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
                     pl.camXEnd = pl.camXTEnd = 1f;
                     pl.camYEnd = pl.camYTEnd = 0.5f;
@@ -42,15 +47,15 @@ public class SplitScreen {
             } else {
                 pl.ssMode = 2;
                 if (p == 0) {
-                    glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
-                    glScissor(0, 0, Display.getWidth() / 2, Display.getHeight());
+                    glViewport(0, 0, width1o2, Display.getHeight());
+                    glScissor(0, 0, width1o2, Display.getHeight());
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
                     pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
                     pl.camXEnd = pl.camXTEnd = 0.5f;
                     pl.camYEnd = pl.camYTEnd = 1f;
                 } else {
-                    glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
-                    glScissor(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight());
+                    glViewport(width1o2, 0, width1o2, Display.getHeight());
+                    glScissor(width1o2, 0, width1o2, Display.getHeight());
                     pl.camXTStart = pl.camXEnd = 0.5f;
                     pl.camXTEnd = pl.camYTEnd = pl.camYEnd = 1f;
                     pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
@@ -71,22 +76,22 @@ public class SplitScreen {
             if (pl.settings.hSplitScreen) {
                 pl.ssMode = 3;
                 if (p == 0) {
-                    glViewport(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
-                    glScissor(0, Display.getHeight() / 2, Display.getWidth(), Display.getHeight() / 2);
+                    glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
+                    glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
                     pl.camXStart = pl.camXTStart = 0f;
                     pl.camYStart = pl.camYTStart = -0.5f;
                     pl.camXEnd = pl.camXTEnd = 1f;
                     pl.camYEnd = pl.camYTEnd = 0.5f;
                 } else if (p == 1) {
-                    glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                    glScissor(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glViewport(0, 0, width1o2, heigth1o2);
+                    glScissor(0, 0, width1o2, heigth1o2);
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
                     pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
                     pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
                 } else if (p == 2) {
-                    glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                    glScissor(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glViewport(width1o2, 0, width1o2, heigth1o2);
+                    glScissor(width1o2, 0, width1o2, heigth1o2);
                     pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                     pl.camXTEnd = 1f;
                     pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
@@ -94,22 +99,22 @@ public class SplitScreen {
             } else {
                 pl.ssMode = 4;
                 if (p == 0) {
-                    glViewport(0, 0, Display.getWidth() / 2, Display.getHeight());
-                    glScissor(0, 0, Display.getWidth() / 2, Display.getHeight());
+                    glViewport(0, 0, width1o2, Display.getHeight());
+                    glScissor(0, 0, width1o2, Display.getHeight());
                     glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
                     pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
                     pl.camXEnd = pl.camXTEnd = 0.5f;
                     pl.camYEnd = pl.camYTEnd = 1f;
                 } else if (p == 1) {
-                    glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
-                    glScissor(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
+                    glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
                     glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
                     pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
                     pl.camXTEnd = pl.camYTEnd = 1f;
                     pl.camXStart = pl.camYStart = 0f;
                 } else if (p == 2) {
-                    glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                    glScissor(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                    glViewport(width1o2, 0, width1o2, heigth1o2);
+                    glScissor(width1o2, 0, width1o2, heigth1o2);
                     pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                     pl.camXTEnd = 1f;
                     pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
@@ -126,26 +131,26 @@ public class SplitScreen {
         } else if (pl.playersLength == 4 && !SplitScreen.isClose4(pl)) {
             pl.ssMode = 5;
             if (p == 0) {
-                glViewport(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
-                glScissor(0, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                glViewport(0, heigth1o2, width1o2, heigth1o2);
+                glScissor(0, heigth1o2, width1o2, heigth1o2);
                 glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
                 pl.camXStart = pl.camXTStart = 0f;
                 pl.camYStart = pl.camYTStart = -0.5f;
                 pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
             } else if (p == 1) {
-                glViewport(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
-                glScissor(Display.getWidth() / 2, Display.getHeight() / 2, Display.getWidth() / 2, Display.getHeight() / 2);
+                glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
+                glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
                 pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
                 pl.camXTEnd = pl.camYTEnd = 1f;
                 pl.camXStart = pl.camYStart = 0f;
             } else if (p == 2) {
-                glViewport(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                glScissor(0, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                glViewport(0, 0, width1o2, heigth1o2);
+                glScissor(0, 0, width1o2, heigth1o2);
                 pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
                 pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
             } else if (p == 3) {
-                glViewport(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
-                glScissor(Display.getWidth() / 2, 0, Display.getWidth() / 2, Display.getHeight() / 2);
+                glViewport(width1o2, 0, width1o2, heigth1o2);
+                glScissor(width1o2, 0, width1o2, heigth1o2);
                 pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                 pl.camXTEnd = 1f;
                 pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
@@ -163,7 +168,7 @@ public class SplitScreen {
 
     public static boolean isClose2(Place pl) {
         if (pl.settings.joinSS) {
-            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < Display.getWidth() / 2 && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < Display.getHeight() / 2) {
+            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < heigth2o3) {
                 pl.isSplit = false;
                 return true;
             } else if (!pl.isSplit) {
@@ -191,9 +196,7 @@ public class SplitScreen {
 
     public static boolean isClose3(Place pl) {
         if (pl.settings.joinSS) {
-            int dW = 2 * Display.getWidth() / 3;
-            int dH = 2 * Display.getHeight() / 3;
-            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < dW && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < dH && Math.abs(pl.players[0].getMidX() - pl.players[2].getMidX()) < dW && Math.abs(pl.players[0].getMidY() - pl.players[2].getMidY()) < dH && Math.abs(pl.players[1].getMidX() - pl.players[2].getMidX()) < dW && Math.abs(pl.players[1].getMidY() - pl.players[2].getMidY()) < dH) {
+            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < heigth2o3 && Math.abs(pl.players[0].getMidX() - pl.players[2].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[2].getMidY()) < heigth2o3 && Math.abs(pl.players[1].getMidX() - pl.players[2].getMidX()) < width2o3 && Math.abs(pl.players[1].getMidY() - pl.players[2].getMidY()) < heigth2o3) {
                 return true;
             }
         }
@@ -202,9 +205,7 @@ public class SplitScreen {
 
     public static boolean isClose4(Place pl) {
         if (pl.settings.joinSS) {
-            int dW = 2 * Display.getWidth() / 3;
-            int dH = 2 * Display.getHeight() / 3;
-            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < dW && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < dH && Math.abs(pl.players[0].getMidX() - pl.players[2].getMidX()) < dW && Math.abs(pl.players[0].getMidY() - pl.players[2].getMidY()) < dH && Math.abs(pl.players[1].getMidX() - pl.players[2].getMidX()) < dW && Math.abs(pl.players[1].getMidY() - pl.players[2].getMidY()) < dH && Math.abs(pl.players[0].getMidX() - pl.players[3].getMidX()) < dW && Math.abs(pl.players[0].getMidY() - pl.players[3].getMidY()) < dH && Math.abs(pl.players[1].getMidX() - pl.players[3].getMidX()) < dW && Math.abs(pl.players[1].getMidY() - pl.players[3].getMidY()) < dH && Math.abs(pl.players[2].getMidX() - pl.players[3].getMidX()) < dW && Math.abs(pl.players[2].getMidY() - pl.players[3].getMidY()) < dH) {
+            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < heigth2o3 && Math.abs(pl.players[0].getMidX() - pl.players[2].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[2].getMidY()) < heigth2o3 && Math.abs(pl.players[1].getMidX() - pl.players[2].getMidX()) < width2o3 && Math.abs(pl.players[1].getMidY() - pl.players[2].getMidY()) < heigth2o3 && Math.abs(pl.players[0].getMidX() - pl.players[3].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[3].getMidY()) < heigth2o3 && Math.abs(pl.players[1].getMidX() - pl.players[3].getMidX()) < width2o3 && Math.abs(pl.players[1].getMidY() - pl.players[3].getMidY()) < heigth2o3 && Math.abs(pl.players[2].getMidX() - pl.players[3].getMidX()) < width2o3 && Math.abs(pl.players[2].getMidY() - pl.players[3].getMidY()) < heigth2o3) {
                 return true;
             }
         }

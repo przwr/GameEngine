@@ -91,7 +91,9 @@ public abstract class Mob extends Entity {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
-        if (nLit != null) {
+        if (nLit != null && lit != null) {
+            glPushMatrix();
+            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             if (isLit) {
