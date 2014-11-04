@@ -24,7 +24,6 @@ public class Renderer {
     private static final int w = Display.getWidth();
     private static final int h = Display.getHeight();
     private static final FBORendererRegular fbFrame = new FBORendererRegular(w, h);
-    //private static final int lightTex = makeTexture(null, w, h);
     private static final Figure[] shades = new Figure[4096];
     private static int nrShades;
     private static int savedShadowed;
@@ -36,18 +35,16 @@ public class Renderer {
     private static final Point[] rightWallPoints = new Point[4];
     private static boolean isLeftWall;
     private static boolean isRightWall;
-    private static int leftWallColor;
-    private static int rightWallColor;
-    private static final double SCALE = ((int) (((double) h / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) (((double) h / 1024d / 0.03125)) * 0.03125;
+    private static boolean leftWallColor;
+    private static boolean rightWallColor;
+//    private static final double SCALE = ((int) (((double) h / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) (((double) h / 1024d / 0.03125)) * 0.03125;
 //    private static final Sprite sprb = new Sprite("rockb", (int) (SCALE * 64), (int) (SCALE * 64), null);
 //    private static final Sprite sprw = new Sprite("rockw", (int) (SCALE * 64), (int) (SCALE * 64), null);
-
     private static int shP1 = 0;
     private static int shP2 = 2;
     private static int shX, shY;
     private static double angle, temp, al1, bl1, al2, bl2;
     private static float shadeColor;
-    //private static FBORenderer[] fbo;
 
     public static void preRendLightsFBO(Place place) {
         int nr = 0;
@@ -65,42 +62,9 @@ public class Renderer {
                 player.getLight().fbo.activate();
                 glDisable(GL_TEXTURE_2D);
                 clearScreen(1);
+                glEnable(GL_BLEND);
                 glEnable(GL_TEXTURE_2D);
-//                    calculateShadow(player, place.sMobs.get(0), (int) (SCALE * 384), (int) (SCALE * 384));
-//                    calculateWalls();
-//                    drawShadow(player, place.settings.smoothShadows);
-//                    drawWalls(player);
-//                    glColor3f(1f, 1f, 1f);
-//                    glEnable(GL_BLEND);
-//                    glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-//                    glPushMatrix();     //384 i 384 to współrzędne obiektu dającego cień 512 to połowa wielkości światła
-//                    glTranslatef((float) (SCALE * 384) + player.getLight().getSX() / 2 - (player.getMidX()), (float) (SCALE * 384) + player.getLight().getSY() / 2 - (player.getMidY()) + h - lY, 0);
-//                    if (player.getMidY() > SCALE * 416) { // 416 - x środka obiektu rzucającego cień
-//                        sprw.render();
-//                    } else {
-//                        sprb.render();
-//                    }
-//                    glPopMatrix();
-
-//                for (Area a : place.areas) {    //iteracja po Shades - tych co dają cień
-//                    for (Figure f : a.parts) {
-//                        calculateShadow(player, f);
-//                        drawShadow(player);
-//                        //calculateWalls(f);
-//                        //drawWalls(player);                        
-//                        glColor3f(1f, 1f, 1f);
-//                        glEnable(GL_BLEND);
-//                        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-//                        glPushMatrix();
-//                        glTranslatef((float) (f.getX()) + player.getLight().getSX() / 2 - (player.getMidX()), f.getY() + player.getLight().getSY() / 2 - (player.getMidY()) + h - lY, 0);
-//                        if (player.getMidY() > f.getCentralY()) { // 416 - x środka obiektu rzucającego cień
-//                            sprw.render();
-//                        } else {
-//                            sprb.render();
-//                        }
-//                        glPopMatrix();
-//                    }
-//                }
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 for (int f = 0; f < nrShades; f++) {    //iteracja po Shades - tych co dają cień
                     calculateShadow(player, shades[f]);
                     drawShadow(player);
@@ -108,8 +72,6 @@ public class Renderer {
                     drawWalls(player);
                     shadeColor = ((float) player.getMidY() - (float) shades[f].getCentralY()) / (shades[f].getHeight() - shades[f].getShadowHeight());
                     glColor3f(shadeColor, shadeColor, shadeColor);
-                    glEnable(GL_BLEND);
-                    glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                     shades[f].getOwner().renderShadow((shades[f].getX()) + player.getLight().getSX() / 2 - (player.getMidX()), shades[f].getY() + player.getLight().getSY() / 2 - (player.getMidY()) + h - player.getLight().getSY(), player.getMidY() > shades[f].getCentralY());
                 }
                 glColor3f(1f, 1f, 1f);
@@ -174,7 +136,6 @@ public class Renderer {
         for (int i = 0; i < savedShadowed; i++) {
             drawLight(activeEmitters[i].getLight().fbo.getTexture(), w, h, activeEmitters[i], cam);
         }
-        //frameSave(lightTex, xStart, yStart);
         fbFrame.deactivate();
     }
 
@@ -185,10 +146,6 @@ public class Renderer {
         tempPoints[2].set(shade.getX(), shade.getY() + shade.getHeight());
         tempPoints[3].set(shade.getX() + shade.getWidth(), shade.getY() + shade.getHeight());
 //        System.arraycopy(shade.getCollision().listPoints(), 0, tempPoints, 0, 4);
-//        tempPoints[0].set(xS, yS + (int) (SCALE * 32));
-//        tempPoints[1].set(xS + (int) (SCALE * 64), yS + (int) (SCALE * 32));
-//        tempPoints[2].set(xS, yS + (int) (SCALE * 64));
-//        tempPoints[3].set(xS + (int) (SCALE * 64), yS + (int) (SCALE * 64));        
         angle = 0;
         for (int p = 0; p < 4; p++) {
             for (int s = p + 1; s < 4; s++) {
@@ -249,13 +206,14 @@ public class Renderer {
         Figure other;
         Figure left = null;
         Figure right = null;
+        int XL1 = 0;
+        int YL = 0;
         for (int i = 0; i < nrShades; i++) {
             other = shades[i];
-            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getY() + other.getHeight() < src.getMidY()) {
-                int Y = other.getY() + other.getHeight();
-                int X = (int) ((Y - bl1) / al1);
-                //System.out.println("Y: " + Y + " X: " + X);
-                if (X > other.getX() && X < (other.getX() + other.getWidth())) {
+            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getY() + other.getHeight() < src.getMidY() && f.getY() + f.getHeight() < src.getMidY()) {
+                double XO = ((other.getY() + other.getHeight() - bl1) / al1);
+                double XO2 = ((other.getY() + other.getHeight() - other.getShadowHeight() - bl1) / al1);
+                if ((XO > other.getX() && XO < (other.getX() + other.getWidth())) || (XO2 >= other.getX() && XO2 <= (other.getX() + other.getWidth()))) {
                     if (left != null) {
                         if (Math.abs(f.getY() - other.getY()) < Math.abs(f.getY() - left.getY())) {
                             left = other;
@@ -268,10 +226,9 @@ public class Renderer {
         }
         for (int i = 0; i < nrShades; i++) {
             other = shades[i];
-            if (other != f && other.getShadowHeight() != 0 && other.getCentralY() < f.getCentralY() && other.getY() + other.getHeight() < src.getMidY()) {
-                int Y = other.getY() + other.getHeight();
-                int X = (int) ((Y - bl2) / al2);
-                if (X > other.getX() && X < (other.getX() + other.getWidth())) {
+            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getY() + other.getHeight() < src.getMidY() && f.getY() + f.getHeight() < src.getMidY()) {
+                double XO = ((other.getY() + other.getHeight() - bl2) / al2);
+                if (XO > other.getX() && XO < (other.getX() + other.getWidth())) {
                     if (right != null) {
                         if (Math.abs(f.getY() - other.getY()) < Math.abs(f.getY() - right.getY())) {
                             right = other;
@@ -282,124 +239,53 @@ public class Renderer {
                 }
             }
         }
+        if (left != null) {
+            YL = left.getY() + left.getHeight();
+            XL1 = (int) ((YL - bl1) / al1);
+        }
         if (left != null) {     //czy lewy koniec pada na ścianę?
-            int Y = left.getY() + left.getHeight();
-            //System.out.println("Left Y: " + Y + " X: " + left.getX());
             int hight = left.getHeight() - left.getShadowHeight();
-            //System.out.println(f.getCentralY());
-            if (true) { //dodaj światło
-                int XL1 = (int) ((Y - bl1) / al1);
-                leftWallPoints[0].set(XL1, Y - hight);
-                leftWallPoints[1].set(XL1, Y);
-                //int XL2 = (int) ((Y - hight - bl1) / al1);//- (int) (al1 / Math.abs(al1)) * 2;
+            if (Math.abs(al1) >= 1 && XL1 >= left.getX() && XL1 <= (left.getX() + left.getWidth())) { //dodaj światło
+                leftWallPoints[0].set(XL1, YL - hight);
+                leftWallPoints[1].set(XL1, YL);
                 int XL2 = al1 > 0 ? left.getX() : left.getX() + left.getWidth();
-                leftWallPoints[2].set(XL2, Y);
-                leftWallPoints[3].set(XL2, Y - hight);
-                leftWallColor = 1;
+                leftWallPoints[2].set(XL2, YL);
+                leftWallPoints[3].set(XL2, YL - hight);
+                leftWallColor = true;
                 isLeftWall = true;
-            } else if (f.getCentralY() == 480) { //dodaj cień
-                int XL1 = (int) ((Y - bl1) / al1);
-                leftWallPoints[0].set(XL1, Y);
-                leftWallPoints[1].set(XL1, Y - hight);
-                int XL2 = (int) ((Y + hight - bl2) / al2);
-                leftWallPoints[2].set(XL2, Y - hight);
-                leftWallPoints[3].set(XL2, Y);
-                leftWallColor = 0;
+            } else if (XL1 > left.getX() && XL1 < (left.getX() + left.getWidth())) { //dodaj cień
+                leftWallPoints[0].set(XL1, YL);
+                leftWallPoints[1].set(XL1, YL - hight);
+                int XL2 = al1 > 0 ? left.getX() : left.getX() + left.getWidth();
+                leftWallPoints[2].set(XL2, YL - hight);
+                leftWallPoints[3].set(XL2, YL);
+                leftWallColor = false;
                 isLeftWall = true;
+            } else {
+                left.getOwner().renderShadow((left.getX()) + src.getLight().getSX() / 2 - (src.getMidX()), left.getY() + src.getLight().getSY() / 2 - (src.getMidY()) + h - src.getLight().getSY(), false);
             }
         }
         if (right != null) {     //czy prawy koniec pada na ścianę?
-            int Y = right.getY() + right.getHeight();
+            int YR = right.getY() + right.getHeight();
             int hight = right.getHeight() - right.getShadowHeight();
-            if (true) {// dodaj światło
-                int XR1 = (int) ((Y - bl2) / al2);
-                rightWallPoints[0].set(XR1, Y - hight);
-                rightWallPoints[1].set(XR1, Y);
-                //int XR2 = (int) ((Y - hight - bl2 - 100) / al2);// - (int) (al2 / Math.abs(al2)) * 2;
-                //int XR2 = right.getX() - right.getWidth();
+            double XR1 = ((YR - bl2) / al2);
+            if (Math.abs(al2) > 1 && XR1 >= right.getX() && XR1 <= (right.getX() + right.getWidth())) {// dodaj światło
+                rightWallPoints[0].set((int) XR1, YR - hight);
+                rightWallPoints[1].set((int) XR1, YR);
                 int XR2 = al2 > 0 ? right.getX() : right.getX() + right.getWidth();
-                rightWallPoints[2].set(XR2, Y);
-                rightWallPoints[3].set(XR2, Y - hight);
-                rightWallColor = 1;
-                isRightWall = true;
-            } else if (f.getCentralY() == 480) { //dodaj cień. Jeśli trzeba dodać tylko jeden cień, to wystarczy to zrobić w jednej funkcji - nie można dodawać cieni po obu stronach cienia!
-                int XR1 = (int) ((Y - bl1) / al1);
-                rightWallPoints[0].set(XR1, Y);
-                rightWallPoints[1].set(XR1, Y - hight);
-                int XR2 = (int) ((Y + hight - bl2) / al2);
-                rightWallPoints[2].set(XR2, Y - hight);
-                rightWallPoints[3].set(XR2, Y);
-                rightWallColor = 0;
+                rightWallPoints[2].set(XR2, YR);
+                rightWallPoints[3].set(XR2, YR - hight);
                 isRightWall = true;
             }
         }
     }
 
-//    private static void calculateWalls(Figure f) {
-//        if (true) {     //czy lewy koniec pada na ścianę?
-//            int Y = (int) (SCALE * 448);
-//            int hight = (int) (SCALE * 32);
-//            if (false) { //dodaj światło
-//                int XL1 = (int) ((Y - bl1) / al1);
-//                leftWallPoints[0].set(XL1, Y - hight);
-//                leftWallPoints[1].set(XL1, Y);
-//                int XL2 = (int) ((Y - hight - bl1) / al1);//- (int) (al1 / Math.abs(al1)) * 2;
-//                leftWallPoints[2].set(XL2, Y - hight);
-//                leftWallColor = 1;
-//                isLeftWall = true;
-//            } else if (f.getCentralY() == 480) { //dodaj cień
-//                int XL1 = (int) ((Y - bl1) / al1);
-//                leftWallPoints[0].set(XL1, Y);
-//                leftWallPoints[1].set(XL1, Y - hight);
-//                int XL2 = (int) ((Y + hight - bl2) / al2);
-//                leftWallPoints[2].set(XL2, Y - hight);
-//                leftWallPoints[3].set(XL2, Y);
-//                leftWallColor = 0;
-//                isLeftWall = true;
-//            }
-//        }
-//        if (true) {     //czy prawy koniec pada na ścianę?
-//            int Y = (int) (SCALE * 448);
-//            int hight = (int) (SCALE * 32);
-//            if (false) {// dodaj światło
-//                int XR1 = (int) ((Y - bl2) / al2);
-//                rightWallPoints[0].set(XR1, Y - hight);
-//                rightWallPoints[1].set(XR1, Y + 4);
-//                int XR2 = (int) ((Y - hight - bl2 - 100) / al2);// - (int) (al2 / Math.abs(al2)) * 2;
-//                rightWallPoints[2].set(XR2, Y - hight);
-//                rightWallColor = 1;
-//                isRightWall = true;
-//            } else if (f.getCentralY() == 480) { //dodaj cień. Jeśli trzeba dodać tylko jeden cień, to wystarczy to zrobić w jednej funkcji - nie można dodawać cieni po obu stronach cienia!
-//                int XR1 = (int) ((Y - bl1) / al1);
-//                rightWallPoints[0].set(XR1, Y);
-//                rightWallPoints[1].set(XR1, Y - hight);
-//                int XR2 = (int) ((Y + hight - bl2) / al2);
-//                rightWallPoints[2].set(XR2, Y - hight);
-//                rightWallPoints[3].set(XR2, Y);
-//                rightWallColor = 0;
-//                isRightWall = true;
-//            }
-//        }
-//    }
     public static void drawWalls(GameObject emitter) {
         glDisable(GL_TEXTURE_2D);
         int lX = emitter.getLight().getSX();
         int lY = emitter.getLight().getSY();
-        if (isLeftWall) {
-            glColor3f(leftWallColor, leftWallColor, leftWallColor);
-            glPushMatrix();
-            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
-            glBegin(GL_QUADS);
-            glVertex2f(leftWallPoints[0].getX(), leftWallPoints[0].getY());
-            glVertex2f(leftWallPoints[1].getX(), leftWallPoints[1].getY());
-            glVertex2f(leftWallPoints[2].getX(), leftWallPoints[2].getY());
-            glVertex2f(leftWallPoints[3].getX(), leftWallPoints[3].getY());
-            glEnd();
-            glPopMatrix();
-            isLeftWall = false;
-        }
         if (isRightWall) {
-            glColor3f(rightWallColor, rightWallColor, rightWallColor);
+            glColor3f(1, 1, 1);
             glPushMatrix();
             glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
             glBegin(GL_QUADS);
@@ -411,39 +297,26 @@ public class Renderer {
             glPopMatrix();
             isRightWall = false;
         }
+        if (isLeftWall) {
+            if (leftWallColor) {
+                glColor3f(1, 1, 1);
+            } else {
+                glColor3f(0, 0, 0);
+            }
+            glPushMatrix();
+            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
+            glBegin(GL_QUADS);
+            glVertex2f(leftWallPoints[0].getX(), leftWallPoints[0].getY());
+            glVertex2f(leftWallPoints[1].getX(), leftWallPoints[1].getY());
+            glVertex2f(leftWallPoints[2].getX(), leftWallPoints[2].getY());
+            glVertex2f(leftWallPoints[3].getX(), leftWallPoints[3].getY());
+            glEnd();
+            glPopMatrix();
+            isLeftWall = false;
+        }
         glEnable(GL_TEXTURE_2D);
     }
 
-//    public static void drawWalls(GameObject emitter) {
-//        glDisable(GL_TEXTURE_2D);
-//        int lX = emitter.getLight().getSX();
-//        int lY = emitter.getLight().getSY();
-//        if (isLeftWall) {
-//            glColor3f(leftWallColor, leftWallColor, leftWallColor);
-//            glPushMatrix();
-//            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
-//            glBegin(GL_TRIANGLES);
-//            glVertex2f(leftWallPoints[0].getX(), leftWallPoints[0].getY());
-//            glVertex2f(leftWallPoints[1].getX(), leftWallPoints[1].getY());
-//            glVertex2f(leftWallPoints[2].getX(), leftWallPoints[2].getY());
-//            glEnd();
-//            glPopMatrix();
-//            isLeftWall = false;
-//        }
-//        if (isRightWall) {
-//            glColor3f(rightWallColor, rightWallColor, rightWallColor);
-//            glPushMatrix();
-//            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
-//            glBegin(GL_TRIANGLES);
-//            glVertex2f(rightWallPoints[0].getX(), rightWallPoints[0].getY());
-//            glVertex2f(rightWallPoints[1].getX(), rightWallPoints[1].getY());
-//            glVertex2f(rightWallPoints[2].getX(), rightWallPoints[2].getY());
-//            glEnd();
-//            glPopMatrix();
-//            isRightWall = false;
-//        }
-//        glEnable(GL_TEXTURE_2D);
-//    }
     public static void drawShadow(GameObject emitter, float color, int off) {
         int lX = emitter.getLight().getSX();
         int lY = emitter.getLight().getSY();
@@ -563,7 +436,6 @@ public class Renderer {
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < strength; i++) {
             drawTex(fbFrame.getTexture(), w, h, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
-            //drawTex(lightTex, w, h);
         }
     }
 
@@ -605,10 +477,6 @@ public class Renderer {
             leftWallPoints[i] = new Point(0, 0);
             rightWallPoints[i] = new Point(0, 0);
         }
-//        fbo = new FBORenderer[emitters.size() + 4];
-//        for (int i = 0; i < emitters.size() + 4; i++) {
-//            fbo[i] = new FBORenderer(players[0].getLight().getSX(), players[0].getLight().getSY(), glGenTextures(), 8);
-//        }
     }
 
     public static void border(int ssMode) {

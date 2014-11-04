@@ -9,6 +9,7 @@ import collision.Rectangle;
 import game.Methods;
 import game.place.cameras.Camera;
 import game.place.Place;
+import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -101,7 +102,7 @@ public abstract class Mob extends Entity {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
-        if (nLit != null) {
+        if (nLit != null && lit != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             if (isLit) {
