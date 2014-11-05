@@ -53,5 +53,6 @@ public class LangPL extends Language {
         VSync = "Synchronizacja Pionowa: ";
         SmoothShadows = "Gładkie Cienie: ";
         JoinedSS = "Łącz Ekrany: ";
+        FBOError = "FrameBufferedObject jest nieobsługiwany. Upewnij się, że masz aktualne sterowniki karty graficznej!";
     }
 }

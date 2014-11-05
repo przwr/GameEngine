@@ -67,9 +67,9 @@ public class Main {
     private static void initGL() {
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
-        glShadeModel(GL_SMOOTH);
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_BLEND);
+        glEnable(GL_SCISSOR_TEST);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();

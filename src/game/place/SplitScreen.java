@@ -23,7 +23,12 @@ public class SplitScreen {
     private static final int heigth1o2 = Display.getHeight() >> 1;
 
     public static void setSplitScreen(Place pl, int p) {
-        if ((pl.playersLength == 2 && !SplitScreen.isClose2(pl))) {
+        if (pl.playersLength == 1) {
+            glViewport(0, 0, Display.getWidth(), Display.getHeight());
+            glScissor(0, 0, Display.getWidth(), Display.getHeight());
+            pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+            pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
+        } else if ((pl.playersLength == 2 && !SplitScreen.isClose2(pl))) {
             if (pl.changeSSMode) {
                 changeSSMode2(pl);
             }

@@ -45,4 +45,5 @@ public abstract class Language {
     public String SmoothShadows;
     public String Samples;
     public String JoinedSS;
+    public String FBOError;
 }

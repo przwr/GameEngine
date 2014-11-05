@@ -8,6 +8,7 @@ package game.place.cameras;
 import game.gameobject.GameObject;
 import game.place.Place;
 import engine.Delay;
+import game.Methods;
 
 /**
  *
@@ -20,17 +21,45 @@ public abstract class Camera {
     protected int Dwidth;
     protected int Dheight;
 
-    protected int  xEffect, yEffect, xLeft, xRight, yDown, yUp;
+    protected int xEffect, yEffect, xLeft, xRight, yDown, yUp;
     protected double xOffset, yOffset;
-    protected int delaylenght;
+    protected int delaylenght, SX, EX, SY, EY;
     protected Delay shakeDelay;
     protected int shakeAmp = 8;
     boolean shakeUp = true;
 
-    public abstract void update();
+    public Camera(Place place, GameObject go) {
+        this.place = place;
+        this.go = go;
+        delaylenght = 50;
+        shakeDelay = new Delay(delaylenght);
+        shakeDelay.restart();
+    }
 
-    public abstract void shake();
-    
+    public final synchronized void update() {
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - getMidX(), 0);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - getMidY(), 0);
+    }
+
+    public synchronized void shake() {
+        if (shakeDelay.isOver()) {
+            if (shakeUp) {
+                xEffect += shakeAmp;
+                yEffect += shakeAmp / 2;
+                shakeUp = false;
+            } else {
+                xEffect -= shakeAmp;
+                yEffect -= shakeAmp / 2;
+                shakeUp = true;
+            }
+            shakeDelay.restart();
+        }
+    }
+
+    public abstract int getMidX();
+
+    public abstract int getMidY();
+
     public GameObject getGo() {
         return go;
     }
@@ -93,6 +122,22 @@ public abstract class Camera {
 
     public int getDheight() {
         return Dheight;
+    }
+
+    public int getSX() {
+        return getMidX() - (getMidX() + getXOffEffect());
+    }
+
+    public int getEX() {
+        return getMidX() - (getMidX() + getXOffEffect()) + Dwidth * 2;
+    }
+
+    public int getSY() {
+        return getMidY() - (getMidY() + getYOffEffect());
+    }
+
+    public int getEY() {
+        return getMidY() - (getMidY() + getYOffEffect()) + Dheight * 2;
     }
 
 }

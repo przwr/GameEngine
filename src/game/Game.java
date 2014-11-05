@@ -13,7 +13,6 @@ import java.io.File;
 import engine.Sound;
 import game.gameobject.GameObject;
 import game.place.SplitScreen;
-import game.place.cameras.Camera;
 import game.place.cameras.FourPlayersCamera;
 import game.place.cameras.PlayersCamera;
 import game.place.cameras.ThreePlayersCamera;

@@ -27,9 +27,9 @@ public class Light {
         this.g = g;
         this.b = b;
         if (place.settings.nrSamples > 1) {
-            fbo = new FBORendererMS(sx, sy, place.settings.nrSamples);
+            fbo = new FBORendererMS(sx, sy, place.settings);
         } else {
-            fbo = new FBORendererRegular(sx, sy);
+            fbo = new FBORendererRegular(sx, sy, place.settings);
         }
         this.light = new Sprite(lightName, sx, sy, null);
     }

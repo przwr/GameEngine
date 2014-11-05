@@ -13,10 +13,7 @@ import game.place.Light;
 import engine.Animation;
 import game.gameobject.Entity;
 import org.lwjgl.input.Keyboard;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRectf;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 
 /**

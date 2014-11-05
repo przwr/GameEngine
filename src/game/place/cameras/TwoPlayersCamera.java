@@ -5,8 +5,6 @@
  */
 package game.place.cameras;
 
-import engine.Delay;
-import game.Methods;
 import game.gameobject.GameObject;
 import game.place.Place;
 import org.lwjgl.opengl.Display;
@@ -20,22 +18,11 @@ public class TwoPlayersCamera extends Camera {
     private final GameObject go2;
 
     public TwoPlayersCamera(Place place, GameObject go, GameObject go2) {
-        this.place = place;
-        this.go = go;
+        super(place, go);
         this.go2 = go2;
         Dwidth = Display.getWidth() / 2;
         Dheight = Display.getHeight() / 2;
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((go.getMidX() + go2.getMidX()) / 2), 0);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((go.getMidY() + go2.getMidY()) / 2), 0);
-        delaylenght = 50;
-        shakeDelay = new Delay(delaylenght);
-        shakeDelay.restart();
-    }
-
-    @Override
-    public synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getMidX() + go2.getMidX()) / 2), 0);
-        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getMidY() + go2.getMidY()) / 2), 0);
+        update();
     }
 
     @Override
@@ -52,5 +39,15 @@ public class TwoPlayersCamera extends Camera {
             }
             shakeDelay.restart();
         }
+    }
+
+    @Override
+    public int getMidX() {
+        return (getGo().getMidX() + go2.getMidX()) / 2;
+    }
+
+    @Override
+    public int getMidY() {
+        return (getGo().getMidY() + go2.getMidY()) / 2;
     }
 }

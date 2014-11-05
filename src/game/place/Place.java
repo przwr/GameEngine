@@ -18,7 +18,6 @@ import engine.SoundBase;
 import game.myGame.MyMob;
 import java.util.Collections;
 import java.util.Comparator;
-import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
@@ -49,6 +48,7 @@ public abstract class Place {
     public ArrayList<GameObject> flatObj = new ArrayList<>();
     public GameObject[] players;
     public ArrayList<GameObject> emitters = new ArrayList<>();
+    public ArrayList<GameObject> visibleLights = new ArrayList<>();
     public ArrayList<Area> areas = new ArrayList<>();
     public ArrayList<GameObject> depthObj = new ArrayList<>();
     public ArrayList<GameObject> onTopObject = new ArrayList<>();
@@ -86,34 +86,29 @@ public abstract class Place {
     }
 
     public void render() {
+        Renderer.findVisibleLights(this);
         Renderer.preRendLightsFBO(this);
+        glEnable(GL_SCISSOR_TEST);
         for (int p = 0; p < playersLength; p++) {
-            glEnable(GL_SCISSOR_TEST);
             cam = (((MyPlayer) players[p]).getCam());
-            if (playersLength > 1) {
-                SplitScreen.setSplitScreen(this, p);
-            } else {
-                camXStart = camYStart = camXTStart = camYTStart = 0f;
-                camXEnd = camYEnd = camXTEnd = camYTEnd = 1f;
-                glScissor(0, 0, Display.getWidth(), Display.getHeight());
-            }
+            SplitScreen.setSplitScreen(this, p);
             Renderer.preRenderShadowedLightsFBO(cam);
             renderBack(cam);
             renderObj(cam);
             renderText(cam);
             Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-            glDisable(GL_SCISSOR_TEST);
         }
+        glDisable(GL_SCISSOR_TEST);
         Renderer.border(ssMode);
     }
 
     protected void renderBack(Camera cam) {
         glColor3f(r, g, b);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        SX = cam.getGo().getMidX() - (cam.getGo().getMidX() + cam.getXOffEffect());
-        EX = cam.getGo().getMidX() - (cam.getGo().getMidX() + cam.getXOffEffect()) + cam.getDwidth() * 2;
-        SY = cam.getGo().getMidY() - (cam.getGo().getMidY() + cam.getYOffEffect());
-        EY = cam.getGo().getMidY() - (cam.getGo().getMidY() + cam.getYOffEffect()) + cam.getDheight() * 2;
+        SX = cam.getSX();
+        EX = cam.getEX();
+        SY = cam.getSY();
+        EY = cam.getEY();
         for (int y = 0; y < height / sTile; y++) {
             if (SY < (y + 1) * sTile && EY > y * sTile) {
                 for (int x = 0; x < width / sTile; x++) {
@@ -137,7 +132,7 @@ public abstract class Place {
     protected abstract void renderText(Camera cam);
 
     public void makeShadows() {
-        Renderer.initVariables(emitters, players);
+        Renderer.initVariables(this);
     }
 
     public void renderMessage(int i, int x, int y, String ms, Color color) {

@@ -14,6 +14,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
 
 /**
  *
@@ -46,6 +48,7 @@ public class Settings {
     public MyPlayer[] players;
     public Controller[] controllers;
     public int worldSeed;
+    public int isSupfboVer3;
 
     public Settings() {
         int minW = 1024;
@@ -105,5 +108,17 @@ public class Settings {
         this.players = players;
         this.controllers = controllers;
         this.SCALE = ((int) (((double) resHeight / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) (((double) resHeight / 1024d / 0.03125)) * 0.03125;
+        try {
+            GL30.glGenFramebuffers();
+            isSupfboVer3 = 0;
+        } catch (Exception e) {
+            if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
+                isSupfboVer3 = 1;
+            } else if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {
+                isSupfboVer3 = 2;
+            } else {
+                Methods.Error(language.FBOError);
+            }
+        }
     }
 }

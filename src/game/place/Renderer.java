@@ -10,8 +10,8 @@ import collision.Figure;
 import engine.Point;
 import game.Methods;
 import game.gameobject.GameObject;
+import game.myGame.MyPlayer;
 import game.place.cameras.Camera;
-import java.util.ArrayList;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -23,7 +23,7 @@ public class Renderer {
 
     private static final int w = Display.getWidth();
     private static final int h = Display.getHeight();
-    private static final FBORendererRegular fbFrame = new FBORendererRegular(w, h);
+    private static FBORendererRegular fbFrame;
     private static final Figure[] shades = new Figure[4096];
     private static GameObject[] activeEmitters;
     private static GameObject player;
@@ -32,11 +32,70 @@ public class Renderer {
     private static final Point[] points = new Point[4];
     private static final Point[] leftWallPoints = new Point[4];
     private static final Point[] rightWallPoints = new Point[4];
-    private static boolean isLeftWall, isRightWall, leftWallColor;
+    private static final int[] SX = new int[7];
+    private static final int[] EX = new int[7];
+    private static final int[] SY = new int[7];
+    private static final int[] EY = new int[7];
+    private static boolean isLeftWall, isRightWall, leftWallColor, isVisible;
     private static Figure tmp, other, left, right;
     private static int nrShades, savedShadowed, shDif, dist, distFromCenter, lightX, lightY, shP1, shP2, shX, shY, XL1, XL2, XR1, XR2, YL, YR;
     private static double angle, temp, al1, bl1, al2, bl2, XOL, XO2, XOR;
     private static float shadeColor, lightColor, lightBrightness, lightStrength;
+    private static Camera cam;
+
+    public static void findVisibleLights(Place place) {
+        for (int p = 0; p < place.playersLength; p++) {
+            cam = (((MyPlayer) place.players[p]).getCam());
+            SX[p] = cam.getSX();
+            EX[p] = cam.getEX();
+            SY[p] = cam.getSY();
+            EY[p] = cam.getEY();
+        }
+        if (place.camfor2 != null) {
+            SX[4] = place.camfor2.getSX();
+            EX[4] = place.camfor2.getEX();
+            SY[4] = place.camfor2.getSY();
+            EY[4] = place.camfor2.getEY();
+        }
+        if (place.camfor3 != null) {
+            SX[5] = place.camfor3.getSX();
+            EX[5] = place.camfor3.getEX();
+            SY[5] = place.camfor3.getSY();
+            EY[5] = place.camfor3.getEY();
+        }
+        if (place.camfor4 != null) {
+            SX[6] = place.camfor4.getSX();
+            EX[6] = place.camfor4.getEX();
+            SY[6] = place.camfor4.getSY();
+            EY[6] = place.camfor4.getEY();
+        }
+        for (GameObject emitter : place.emitters) {
+            // jak dla graczy
+        }
+        for (int p = 0; p < place.playersLength; p++) {
+            GameObject emitter = place.players[p];
+            if (place.isSplit && place.settings.joinSS && place.playersLength > 1) {
+                if (emitter.isEmits() && SY[2 + place.playersLength] < emitter.getMidY() + emitter.getLight().getSY() / 2 && EY[2 + place.playersLength] > emitter.getMidY() - emitter.getLight().getSY() / 2
+                        && SX[2 + place.playersLength] < emitter.getMidX() + emitter.getLight().getSX() / 2 && EX[2 + place.playersLength] > emitter.getMidX() - emitter.getLight().getSX() / 2) {
+                    isVisible = true;
+                    //System.out.println(emitter.getName() + " " + System.nanoTime());
+                }
+            } else {
+                for (int pi = 0; pi < place.playersLength; pi++) {
+                    if (emitter.isEmits() && SY[pi] < emitter.getMidY() + emitter.getLight().getSY() / 2 && EY[pi] > emitter.getMidY() - emitter.getLight().getSY() / 2
+                            && SX[pi] < emitter.getMidX() + emitter.getLight().getSX() / 2 && EX[pi] > emitter.getMidX() - emitter.getLight().getSX() / 2) {
+                        isVisible = true;
+                        //System.out.println(emitter.getName() + " " + System.nanoTime());
+                    }
+                }
+            }
+            if (isVisible) {
+                place.visibleLights.add(emitter);
+                isVisible = false;
+            }
+        }
+
+    }
 
     public static void preRendLightsFBO(Place place) {
         savedShadowed = 0;
@@ -395,8 +454,8 @@ public class Renderer {
         glPopMatrix();
     }
 
-    public static void initVariables(ArrayList<GameObject> emitters, GameObject[] players) {
-        activeEmitters = new GameObject[emitters.size() + 4];
+    public static void initVariables(Place place) {
+        activeEmitters = new GameObject[place.emitters.size() + 4];
         for (int i = 0; i < 4; i++) {
             points[i] = new Point(0, 0);
             tempPoints[i] = new Point(0, 0);
@@ -405,6 +464,7 @@ public class Renderer {
             leftWallPoints[i] = new Point(0, 0);
             rightWallPoints[i] = new Point(0, 0);
         }
+        fbFrame = new FBORendererRegular(w, h, place.settings);
     }
 
     public static void border(int ssMode) {
