@@ -16,8 +16,8 @@ public final class SpriteSheet extends Sprite {
     private final float xTiles;
     private final float yTiles;
 
-    public SpriteSheet(String sprite, int sx, int sy, int w, int h, SpriteBase base) {
-        super(sprite, sx, sy, base);
+    public SpriteSheet(String sprite, int width, int height, int w, int h, SpriteBase base) {
+        super(sprite, width, height, base);
         this.w = w;
         this.h = h;
         this.xTiles = texture.getImageWidth() / w;
@@ -41,6 +41,6 @@ public final class SpriteSheet extends Sprite {
         float by = (float) y / yTiles;
         float ex = (float) (x + 1) / xTiles;
         float ey = (float) (y + 1) / yTiles;
-        render(flip, bx, ex, by, ey);
+        renderTexPart(bx, ex, by, ey);
     }
 }

@@ -25,7 +25,7 @@ public class Frame {
         this.endY = endY;
     }
 
-    public void render(Sprite spr, int flip) {
-        spr.render(flip, begX, endX, begY, endY);
+    public void render(Sprite spr, boolean flip) {
+        spr.renderPartMirrored(flip, begX, endX, begY, endY);
     }
 }

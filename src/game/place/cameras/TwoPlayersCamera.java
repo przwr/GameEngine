@@ -25,8 +25,8 @@ public class TwoPlayersCamera extends Camera {
         this.go2 = go2;
         Dwidth = Display.getWidth() / 2;
         Dheight = Display.getHeight() / 2;
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((go.getMidX() + go2.getMidX()) / 2), 0);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((go.getMidY() + go2.getMidY()) / 2), 0);
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((go.getX() + go2.getX()) / 2), 0);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((go.getY() + go2.getY()) / 2), 0);
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
         shakeDelay.restart();
@@ -34,8 +34,8 @@ public class TwoPlayersCamera extends Camera {
 
     @Override
     public synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getMidX() + go2.getMidX()) / 2), 0);
-        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getMidY() + go2.getMidY()) / 2), 0);
+        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getX() + go2.getX()) / 2), 0);
+        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getY() + go2.getY()) / 2), 0);
     }
 
     @Override

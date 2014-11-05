@@ -27,8 +27,8 @@ public class ThreePlayersCamera extends Camera {
         this.go3 = go3;
         Dwidth = Display.getWidth() / 2;
         Dheight = Display.getHeight() / 2;
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((getGo().getMidX() + go2.getMidX() + go3.getMidX()) / 3), 0);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((getGo().getMidY() + go2.getMidY() + go3.getMidY()) / 3), 0);
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((getGo().getX() + go2.getX() + go3.getX()) / 3), 0);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((getGo().getY() + go2.getY() + go3.getY()) / 3), 0);
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
         shakeDelay.restart();
@@ -36,8 +36,8 @@ public class ThreePlayersCamera extends Camera {
 
     @Override
     public synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getMidX() + go2.getMidX() + go3.getMidX()) / 3), 0);
-        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getMidY() + go2.getMidY() + go3.getMidY()) / 3), 0);
+        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getX() + go2.getX() + go3.getX()) / 3), 0);
+        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getY() + go2.getY() + go3.getY()) / 3), 0);
     }
 
     @Override

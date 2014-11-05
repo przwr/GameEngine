@@ -50,8 +50,11 @@ public abstract class Place {
     public GameObject[] players;
     public ArrayList<GameObject> emitters = new ArrayList<>();
     public ArrayList<Area> areas = new ArrayList<>();
+
     public ArrayList<GameObject> depthObj = new ArrayList<>();
+    public ArrayList<GameObject> staleDepthObj = new ArrayList<>();
     public ArrayList<GameObject> onTopObject = new ArrayList<>();
+
     public final Tile[] tiles;
 
     public Place(Game game, int width, int height, int sTile, Settings settings) {
@@ -73,8 +76,12 @@ public abstract class Place {
         return sprites;
     }
 
-    public Sprite getSprite(String textureKey, int sx, int sy) {
-        return sprites.getSprite(textureKey, sx, sy);
+    public Sprite getSprite(String textureKey, int w, int h) {
+        return sprites.getSprite(textureKey, w, h);
+    }
+
+    public Sprite getSprite(String textureKey, int w, int h, int sx, int sy) {
+        return sprites.getSprite(textureKey, w, h, sx, sy);
     }
 
     public SpriteSheet getSpriteSheet(String textureKey, int sx, int sy) {
@@ -110,10 +117,10 @@ public abstract class Place {
     protected void renderBack(Camera cam) {
         glColor3f(r, g, b);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        SX = cam.getGo().getMidX() - (cam.getGo().getMidX() + cam.getXOffEffect());
-        EX = cam.getGo().getMidX() - (cam.getGo().getMidX() + cam.getXOffEffect()) + cam.getDwidth() * 2;
-        SY = cam.getGo().getMidY() - (cam.getGo().getMidY() + cam.getYOffEffect());
-        EY = cam.getGo().getMidY() - (cam.getGo().getMidY() + cam.getYOffEffect()) + cam.getDheight() * 2;
+        SX = cam.getGo().getX() - (cam.getGo().getX() + cam.getXOffEffect());
+        EX = cam.getGo().getX() - (cam.getGo().getX() + cam.getXOffEffect()) + cam.getDwidth() * 2;
+        SY = cam.getGo().getY() - (cam.getGo().getY() + cam.getYOffEffect());
+        EY = cam.getGo().getY() - (cam.getGo().getY() + cam.getYOffEffect()) + cam.getDheight() * 2;
         for (int y = 0; y < height / sTile; y++) {
             if (SY < (y + 1) * sTile && EY > y * sTile) {
                 for (int x = 0; x < width / sTile; x++) {
@@ -145,25 +152,29 @@ public abstract class Place {
     }
 
     private void renderBottom(Camera cam) {
-        sortObjects(false);
+        sortObjects(depthObj);
+        int i = 0;
         for (GameObject go : depthObj) {
+            try {
+                while (staleDepthObj.get(i).getDepth() < go.getDepth()) {
+                    staleDepthObj.get(i).render(cam.getXOffEffect(), cam.getYOffEffect());
+                    i++;
+                }
+            } catch (IndexOutOfBoundsException e) {
+            }
             go.render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
 
     private void renderTop(Camera cam) {
-        sortObjects(true);
+        sortObjects(onTopObject);
         for (GameObject go : onTopObject) {
             go.render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
 
-    public void sortObjects(boolean top) {
-        if (top) {
-            Collections.sort(onTopObject, new ObjectsComparator());
-        } else {
-            Collections.sort(depthObj, new ObjectsComparator());
-        }
+    public void sortObjects(ArrayList<GameObject> a) {
+        Collections.sort(a, new ObjectsComparator());
     }
 
     public void addObj(GameObject go) {
@@ -188,7 +199,12 @@ public abstract class Place {
         if (go.isOnTop()) {
             onTopObject.add(go);
         } else {
-            depthObj.add(go);
+            if (go.isStale()) {
+                staleDepthObj.add(go);
+                sortObjects(staleDepthObj);
+            } else {
+                depthObj.add(go);
+            }
         }
     }
 
@@ -214,7 +230,12 @@ public abstract class Place {
         if (go.isOnTop()) {
             onTopObject.remove(go);
         } else {
-            depthObj.remove(go);
+            if (go.isStale()) {
+                staleDepthObj.remove(go);
+                sortObjects(staleDepthObj);
+            } else {
+                depthObj.remove(go);
+            }
         }
     }
 

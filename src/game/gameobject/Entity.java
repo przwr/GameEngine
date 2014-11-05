@@ -9,7 +9,6 @@ import game.place.cameras.Camera;
 import game.place.Place;
 import engine.Time;
 import game.Methods;
-import java.lang.reflect.Method;
 
 /**
  *
@@ -23,6 +22,7 @@ public abstract class Entity extends GameObject {
     protected double myVspeed;
     protected double weight = 1;  // 1 - idealny balans, im więcej tym gorzej
     protected double maxSpeed;
+    protected double jump;
     protected double scale;
 
     public void canMove(int magX, int magY) {
@@ -92,6 +92,14 @@ public abstract class Entity extends GameObject {
         this.maxSpeed = maxSpeed * scale;
     }
 
+    public double getJump() {
+        return jump;
+    }
+
+    public void setJump(double jump) {
+        this.jump = jump;
+    }
+    
     public void brake(int axis) {  // 0 OX, 1 OY, 2 oba
         brake(weight, axis);
     }

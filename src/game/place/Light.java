@@ -35,8 +35,8 @@ public class Light {
     }
 
     public void setSize(int sx, int sy) {
-        light.setSx(sx);
-        light.setSy(sy);
+        light.setWidth(sx);
+        light.setHeight(sy);
     }
 
     public void setColor(float r, float g, float b) {
@@ -49,7 +49,7 @@ public class Light {
         if (light != null) {
             glColor3f(r, g, b);
             glPushMatrix();
-            glTranslatef(emitter.getMidX() - light.getSx() / 2 + x, emitter.getMidY() - light.getSy() / 2 + y, 0);
+            glTranslatef(emitter.getX() - light.getWidth() / 2 + x, emitter.getY() - light.getHeight() / 2 + y, 0);
             light.render();
             glPopMatrix();
         }
@@ -75,11 +75,11 @@ public class Light {
     }
 
     public int getSX() {
-        return light.getSx();
+        return light.getWidth();
     }
 
     public int getSY() {
-        return light.getSy();
+        return light.getHeight();
     }
 
     public FBORenderer getFBO() {

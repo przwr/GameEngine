@@ -23,7 +23,7 @@ public class MyMob extends Mob {
     public void update(Place place) {
         if (prey != null && ((MyPlayer) prey).getPlace() != null) {
             chase(prey);
-            if (Methods.PointDistance(getMidX(), getMidY(), prey.getMidX(), prey.getMidY()) > range * 1.5) {
+            if (Methods.PointDistance(getX(), getY(), prey.getX(), prey.getY()) > range * 1.5) {
                 prey = null;
             }
         } else {

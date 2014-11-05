@@ -29,8 +29,8 @@ public class FourPlayersCamera extends Camera {
         this.go4 = go4;
         Dwidth = Display.getWidth() / 2;
         Dheight = Display.getHeight() / 2;
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((getGo().getMidX() + go2.getMidX() + go3.getMidX() + go4.getMidX()) / 4), 0);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((getGo().getMidY() + go2.getMidY() + go3.getMidY() + go4.getMidY()) / 4), 0);
+        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - ((getGo().getX() + go2.getX() + go3.getX() + go4.getX()) / 4), 0);
+        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - ((getGo().getY() + go2.getY() + go3.getY() + go4.getY()) / 4), 0);
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
         shakeDelay.restart();
@@ -38,8 +38,8 @@ public class FourPlayersCamera extends Camera {
 
     @Override
     public synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getMidX() + go2.getMidX() + go3.getMidX() + go4.getMidX()) / 4), 0);
-        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getMidY() + go2.getMidY() + go3.getMidY() + go4.getMidY()) / 4), 0);
+        xOffset = Methods.Interval(-place.width + 2 * getDwidth(), getDwidth() - ((getGo().getX() + go2.getX() + go3.getX() + go4.getX()) / 4), 0);
+        yOffset = Methods.Interval(-place.height + 2 * getDheight(), getDheight() - ((getGo().getY() + go2.getY() + go3.getY() + go4.getY()) / 4), 0);
     }
 
     @Override

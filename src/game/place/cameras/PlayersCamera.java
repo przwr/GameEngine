@@ -28,8 +28,8 @@ public class PlayersCamera extends Camera {
 
     @Override
     public final synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * getDwidth() - xRight, getDwidth() - getGo().getMidX(), xLeft);
-        yOffset = Methods.Interval(-place.height + 2 * getDheight() - yDown, getDheight() - getGo().getMidY(), yUp);
+        xOffset = Methods.Interval(-place.width + 2 * getDwidth() - xRight, getDwidth() - getGo().getX(), xLeft);
+        yOffset = Methods.Interval(-place.height + 2 * getDheight() - yDown, getDheight() - getGo().getY(), yUp);
     }
 
     @Override
