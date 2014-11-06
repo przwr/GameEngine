@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.myGame;
+package myGame;
 
 import collision.Rectangle;
 import game.gameobject.inputs.*;
@@ -13,7 +13,7 @@ import game.place.Place;
 import game.place.Light;
 import engine.Animation;
 import engine.Drawer;
-import game.Methods;
+import engine.Methods;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
@@ -50,7 +50,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    protected final void initControler(boolean isFirst) {
+    public final void initControler(boolean isFirst) {
         ctrl = new MyController(this);
         if (isFirst) {
             this.isFirst = true;

@@ -5,7 +5,6 @@
  */
 package engine;
 
-import game.Methods;
 import game.place.Place;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;

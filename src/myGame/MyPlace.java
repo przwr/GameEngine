@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.myGame;
+package myGame;
 
 import collision.Area;
 import collision.Line;
@@ -73,18 +73,12 @@ public class MyPlace extends Place {
             }
         }
         Area test = new Area(6 * sTile, 6 * sTile, "rockw", "rockb", sTile);
-        test.addFigure(new Rectangle(0, 0, sTile, sTile, 0, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 6 * sTile, 6 * sTile, 6 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
-        //tiles[6 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, 0, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 8 * sTile, 6 * sTile, 6 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 8 * sTile, 5 * sTile, 6 * sTile, true);
-        //tiles[8 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(1 * sTile, 1 * sTile, sTile, sTile, 0, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
-        //tiles[7 + 7 * height / sTile] = ROCK;
+        test.addFigure(new Rectangle(0, 0, sTile, sTile, sTile / 2, test));
+        tiles[6 + 6 * height / sTile] = ROCK;
+        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, sTile / 2, test));
+        tiles[8 + 6 * height / sTile] = ROCK;
+        test.addFigure(new Rectangle(1 * sTile, 1 * sTile, sTile, sTile, sTile / 2, test));
+        tiles[7 + 7 * height / sTile] = ROCK;
         Area border = new Area(0, 0, null, null, sTile);
         border.addFigure(new Line(0, 0, width, 0, border));
         border.addFigure(new Line(0, 0, 0, height, border));
@@ -161,11 +155,17 @@ public class MyPlace extends Place {
     @Override
     protected void renderText(Camera cam) {
         for (int p = 0; p < playersLength; p++) {
-            ((MyPlayer) players[p]).renderName(this, cam);
+            if (cam.getSY() <= players[p].getY() + (players[p].getHeight() << 2) && cam.getEY() >= players[p].getY() - (players[p].getHeight() << 2)
+                    && cam.getSX() <= players[p].getY() + (players[p].getWidth() << 2) && cam.getEX() >= players[p].getX() - (players[p].getWidth() << 2)) {
+                ((MyPlayer) players[p]).renderName(this, cam);
+            }
         }
 
         for (Mob mob : sMobs) {
-            mob.renderName(this, cam);
+            if (cam.getSY() <= mob.getY() + (mob.getHeight() << 2) && cam.getEY() >= mob.getY() - (mob.getHeight() << 2)
+                    && cam.getSX() <= mob.getY() + (mob.getWidth() << 2) && cam.getEX() >= mob.getX() - (mob.getWidth() << 2)) {
+                mob.renderName(this, cam);
+            }
         }
     }
 }

@@ -9,10 +9,10 @@ import game.AnalizerInput;
 import game.Settings;
 import game.gameobject.AnyInput;
 import game.gameobject.menu.MenuChoice;
-import game.myGame.MyController;
 import game.place.Menu;
 import engine.Controlers;
 import static engine.Controlers.controllers;
+import game.gameobject.Controler;
 import game.gameobject.Player;
 import org.lwjgl.input.Controllers;
 
@@ -22,7 +22,7 @@ import org.lwjgl.input.Controllers;
  */
 public class ChoiceMapButton extends MenuChoice {
 
-    private final MyController ctrl;
+    private final Controler ctrl;
     private final int i;
     private Thread thread;
 

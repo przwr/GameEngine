@@ -6,7 +6,7 @@
 package collision;
 
 import engine.Point;
-import game.Methods;
+import engine.Methods;
 import game.gameobject.GameObject;
 import java.awt.geom.Line2D;
 

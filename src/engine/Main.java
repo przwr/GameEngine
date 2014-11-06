@@ -8,7 +8,7 @@ package engine;
 import game.AnalizerSettings;
 import game.Game;
 import game.IO;
-import game.Methods;
+import myGame.MyGame;
 import game.Settings;
 import java.io.File;
 import org.lwjgl.LWJGLException;
@@ -45,7 +45,7 @@ public class Main {
     }
 
     private static void initGame() {
-        game = new Game("Engine", settings, controllers);
+        game = new MyGame("Pervert Rabbits Attack", settings, controllers);
         Display.setTitle(game.getTitle());
     }
 
@@ -83,7 +83,7 @@ public class Main {
         Time.init();
         while (!Display.isCloseRequested() && !game.exitFlag) {
             Time.update();
-            Display.setTitle("FPS: " + (int) (60 / Time.getDelta()));
+            Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
             getInput();
             update();
             render();
@@ -106,7 +106,7 @@ public class Main {
     private static void initDisplay() {
         try {
             setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
-            Display.create(new PixelFormat(32, 0, 24, 0, 0));
+            Display.create(new PixelFormat(32, 0, 24, 0, 0));            
             Display.setResizable(false);
             if (settings.vSync) {
                 Display.setVSyncEnabled(true);

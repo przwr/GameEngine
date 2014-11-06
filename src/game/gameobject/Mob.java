@@ -6,7 +6,7 @@
 package game.gameobject;
 
 import collision.Rectangle;
-import game.Methods;
+import engine.Methods;
 import game.place.cameras.Camera;
 import game.place.Place;
 import static org.lwjgl.opengl.GL11.glPopMatrix;

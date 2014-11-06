@@ -8,7 +8,6 @@ package game.gameobject;
 import game.place.cameras.Camera;
 import game.place.Place;
 import engine.Animation;
-import game.myGame.MyController;
 import game.place.Menu;
 
 /**
@@ -20,7 +19,7 @@ public abstract class Player extends Entity {
     public Menu menu;
     protected Animation anim;
     protected boolean animate;
-    public MyController ctrl;
+    public Controler ctrl;
     protected Camera cam;
     public boolean isFirst;
 
@@ -28,7 +27,7 @@ public abstract class Player extends Entity {
         this.name = name;
     }
 
-    protected abstract void initControler(boolean isFirst);
+    public abstract void initControler(boolean isFirst);
 
     public abstract void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y, double SCALE);
 

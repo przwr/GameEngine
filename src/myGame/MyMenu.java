@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.myGame;
+package myGame;
 
 import game.Game;
 import game.Settings;
@@ -124,7 +124,7 @@ public class MyMenu extends Menu {
             } else if (cur != 0) {
                 cur = 0;
             } else if (game.getPlace() != null) {
-                game.resume();
+                game.resumeGame();
             }
         }
     }

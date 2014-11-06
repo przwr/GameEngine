@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import game.gameobject.GameObject;
 import engine.SoundBase;
 import game.gameobject.Player;
-import game.myGame.MyMob;
 import java.util.Collections;
 import java.util.Comparator;
 import static org.lwjgl.opengl.GL11.*;
@@ -153,7 +152,10 @@ public abstract class Place extends ScreenPlace {
     private void renderTop(Camera cam) {
         sortObjects(onTopObject);
         for (GameObject go : onTopObject) {
-            go.render(cam.getXOffEffect(), cam.getYOffEffect());
+            if (cam.getSY() <= go.getY() + (go.getHeight() >> 1) && cam.getEY() >= go.getY() - (go.getHeight() >> 1)
+                    && cam.getSX() <= go.getY() + (go.getWidth() >> 2) && cam.getEX() >= go.getX() - (go.getWidth() >> 2)) {
+                go.render(cam.getXOffEffect(), cam.getYOffEffect());
+            }
         }
     }
 
@@ -196,7 +198,7 @@ public abstract class Place extends ScreenPlace {
             if (go.isEmitter()) {
                 emitters.add(go);
             }
-            if (go.getClass() == MyMob.class) {
+            if (Mob.class.isAssignableFrom(go.getClass())) {
                 if (go.isSolid()) {
                     sMobs.add((Mob) go);
                 } else {
@@ -222,7 +224,7 @@ public abstract class Place extends ScreenPlace {
             if (go.isEmitter()) {
                 emitters.remove(go);
             }
-            if (go.getClass() == MyMob.class) {
+            if (Mob.class.isAssignableFrom(go.getClass())) {
                 if (go.isSolid()) {
                     sMobs.remove((Mob) go);
                 } else {
