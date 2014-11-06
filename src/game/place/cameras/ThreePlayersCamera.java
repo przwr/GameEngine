@@ -5,8 +5,6 @@
  */
 package game.place.cameras;
 
-import engine.Delay;
-import game.Methods;
 import game.gameobject.GameObject;
 import game.place.Place;
 import org.lwjgl.opengl.Display;
@@ -47,11 +45,11 @@ public class ThreePlayersCamera extends Camera {
     
     @Override
     public final int getMidX() {
-        return (getGo().getMidX() + go2.getMidX() + go3.getMidX()) / 3;
+        return (getGo().getX() + go2.getX() + go3.getX()) / 3;
     }
     
     @Override
     public final int getMidY() {
-        return (getGo().getMidY() + go2.getMidY() + go3.getMidY()) / 3;
+        return (getGo().getY() + go2.getY() + go3.getY()) / 3;
     }
 }

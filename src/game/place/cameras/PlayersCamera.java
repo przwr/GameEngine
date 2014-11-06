@@ -102,11 +102,11 @@ public class PlayersCamera extends Camera {
     
     @Override
     public int getMidX() {
-        return go.getMidX();
+        return go.getX();
     }
     
     @Override
     public int getMidY() {
-        return go.getMidY();
+        return go.getY();
     }
 }

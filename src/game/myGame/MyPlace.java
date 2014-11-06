@@ -128,14 +128,14 @@ public class MyPlace extends Place {
         if (playersLength == 2) {
             changeSplitScreenJoin.Do();
             changeSplitScreenMode.Do();
-            camfor2.update();
+            cams[0].update();
         } else if (playersLength == 3) {
             changeSplitScreenJoin.Do();
             changeSplitScreenMode.Do();
-            camfor3.update();
+            cams[1].update();
         } else if (playersLength == 4) {
             changeSplitScreenJoin.Do();
-            camfor4.update();
+            cams[2].update();
         }
         for (GameObject pl : players) {
             ((MyPlayer) pl).update(this);
