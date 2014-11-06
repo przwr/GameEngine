@@ -5,7 +5,7 @@
  */
 package game.myGame;
 
-import game.Methods;
+import engine.Methods;
 import game.gameobject.Mob;
 import game.place.Place;
 

@@ -8,7 +8,7 @@ package engine;
 import game.AnalizerSettings;
 import game.Game;
 import game.IO;
-import game.Methods;
+import game.myGame.MyGame;
 import game.Settings;
 import java.io.File;
 import org.lwjgl.LWJGLException;
@@ -45,7 +45,7 @@ public class Main {
     }
 
     private static void initGame() {
-        game = new Game("Engine", settings, controllers);
+        game = new MyGame("Engine", settings, controllers);
         Display.setTitle(game.getTitle());
     }
 
@@ -83,7 +83,7 @@ public class Main {
         Time.init();
         while (!Display.isCloseRequested() && !game.exitFlag) {
             Time.update();
-            Display.setTitle("FPS: " + (int) (60 / Time.getDelta()));
+            Display.setTitle(game.getTitle() + "[FPS: " + (int) (60 / Time.getDelta()) + "]");
             getInput();
             update();
             render();

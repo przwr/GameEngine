@@ -8,7 +8,7 @@ package game.place;
 import collision.Area;
 import collision.Figure;
 import engine.Point;
-import game.Methods;
+import engine.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.cameras.Camera;

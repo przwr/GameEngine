@@ -13,7 +13,7 @@ import game.place.Place;
 import game.place.Light;
 import engine.Animation;
 import engine.Drawer;
-import game.Methods;
+import engine.Methods;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;

@@ -8,7 +8,7 @@ package game.gameobject;
 import game.place.cameras.Camera;
 import game.place.Place;
 import engine.Time;
-import game.Methods;
+import engine.Methods;
 
 /**
  *

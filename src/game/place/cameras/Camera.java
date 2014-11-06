@@ -8,7 +8,7 @@ package game.place.cameras;
 import game.gameobject.GameObject;
 import game.place.Place;
 import engine.Delay;
-import game.Methods;
+import engine.Methods;
 
 /**
  *

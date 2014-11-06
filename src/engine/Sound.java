@@ -5,7 +5,6 @@
  */
 package engine;
 
-import game.Methods;
 import game.Settings;
 import org.newdawn.slick.openal.Audio;
 
