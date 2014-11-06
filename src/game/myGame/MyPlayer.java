@@ -11,6 +11,8 @@ import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
 import engine.Animation;
+import engine.Drawer;
+import game.Methods;
 import game.gameobject.Entity;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
@@ -21,7 +23,7 @@ import org.newdawn.slick.Color;
  * @author przemek
  */
 public class MyPlayer extends Entity {
-
+    
     public MyMenu menu;
     private Animation anim;
     private boolean animate;
@@ -33,8 +35,8 @@ public class MyPlayer extends Entity {
         this.name = name;
         initControler(isFirst);
     }
-
-    public void init(int startX, int startY, int width, int height, int sx, int sy, Place place, int x, int y, double SCALE) {
+    
+    public void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y, double SCALE) {
         this.width = (int) (SCALE * width);
         this.height = (int) (SCALE * height);
         this.sX = (int) (SCALE * startX);
@@ -42,16 +44,16 @@ public class MyPlayer extends Entity {
         this.top = false;
         this.setWeight(1);
         this.emitter = true;
-        init("apple", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
+        init("apple", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sw), (int) (SCALE * sh), place);
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation(4, sprite, 200);
         animate = true;
         emits = false;
         scale = SCALE;
         place.addObj(this);
-        setCollision(new Rectangle(sX + this.width/4, sY + 2 * this.height/3, this.width/2, this.height/3, 0, this));
+        setCollision(new Rectangle(this.width / 2, this.height / 3, this));
     }
-
+    
     private void initControler(boolean isFirst) {
         ctrl = new MyController(this);
         if (isFirst) {
@@ -63,59 +65,67 @@ public class MyPlayer extends Entity {
         }
         ctrl.init();
     }
-
+    
     public void addCamera(Camera cam) {
         this.cam = cam;
     }
-
+    
     public void getInput() {
         ctrl.getInput();
     }
-
+    
     public boolean isMenuOn() {
         return ctrl.isMenuOn();
     }
-
+    
     public void getMenuInput() {
         ctrl.getMenuInput();
     }
-
+    
     @Override
     protected boolean isColided(int magX, int magY) {
-        if (place != null) 
+        if (place != null) {
             return collision.ifCollideSolid(getX() + magX, getY() + magY, place);
+        }
         return false;
     }
-
+    
     @Override
     protected void move(int xPos, int yPos) {
         x += xPos;
         y += yPos;
         cam.update();
     }
-
+    
     @Override
     protected void setPosition(int xPos, int yPos) {
         x = xPos;
         y = yPos;
     }
-
+    
     @Override
     public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, cam.getXOff() + getMidX(), cam.getYOff() + getBegOfY(), name, new Color(place.r, place.g, place.b));
+        place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() - sprite.getSy() + 15 - jump),
+                name, new Color(place.r, place.g, place.b));
     }
-
+    
     @Override
     public void render(int xEffect, int yEffect) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            
+            Drawer.setColor(new Color(0, 0, 0, 51));
+            Drawer.drawCircle(0, 0, 20, (int) (x/64));
+            Drawer.refreshColor();
+            
+            glTranslatef(0, (int) -jump, 0);
             getAnim().render(animate);
-            //glRectf(0f,0f, width, height);
+            glTranslatef(0, (int) jump, 0);
             glPopMatrix();
         }
     }
-
+    
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null && lit != null) {
@@ -129,7 +139,9 @@ public class MyPlayer extends Entity {
             glPopMatrix();
         }
     }
-
+    
+    int a = 0;  //TYLKO TYMCZASOWE!
+    
     public void update(Place place) {
         if (ctrl.isPressed(MyController.UP)) {
             addSpeed(0, -4, true);
@@ -145,38 +157,43 @@ public class MyPlayer extends Entity {
         } else {
             brake(0);
         }
-        if (ctrl.isPressed(MyController.SHAKE))
+        if (ctrl.isPressed(MyController.SHAKE)) {
             cam.shake();
-        if (ctrl.isPressed(MyController.RUN))
+        }
+        if (ctrl.isPressed(MyController.RUN)) {
             setMaxSpeed(16);
-        else
+        } else {
             setMaxSpeed(8);
-        if (ctrl.isClicked(MyController.LIGHT))
+        }
+        if (ctrl.isClicked(MyController.LIGHT)) {
             setEmits(!emits);
-        canMove((int)(hspeed + myHspeed),(int) (vspeed + myVspeed));
+        }
+        jump = Math.abs(Methods.xRadius(a * 4, 70));
+        a++;
+        canMove((int) (hspeed + myHspeed), (int) (vspeed + myVspeed));
         brakeOthers();
     }
     
     public void setAnimate(boolean animate) {
         this.animate = animate;
     }
-
+    
     public Camera getCam() {
         return cam;
     }
-
+    
     public void addMenu(MyMenu menu) {
         this.menu = menu;
     }
-
+    
     public Animation getAnim() {
         return anim;
     }
-
+    
     public Place getPlace() {
         return place;
     }
-
+    
     public void setPlaceToNull() {
         place = null;
     }

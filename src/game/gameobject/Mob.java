@@ -33,7 +33,7 @@ public abstract class Mob extends Entity {
         this.range = (int) (SCALE * range);
         scale = SCALE;
         init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
-        setCollision(new Rectangle(sX + this.width / 4, sY + 2 * this.height / 3, this.width / 2, this.height / 3, 0, this));
+        setCollision(new Rectangle(this.width / 2, this.height / 3, this));
         this.setMaxSpeed(speed);
     }
 
@@ -68,7 +68,7 @@ public abstract class Mob extends Entity {
 
     public synchronized void chase(GameObject prey) {
         if (prey != null) {
-            double angle = Methods.PointAngle360(getMidX(), getMidY(), prey.getMidX(), prey.getMidY());
+            double angle = Methods.PointAngle360(getX(), getY(), prey.getX(), prey.getY());
             myHspeed = Methods.xRadius(angle, maxSpeed);
             myVspeed = Methods.yRadius(angle, maxSpeed);
         }
@@ -76,7 +76,8 @@ public abstract class Mob extends Entity {
 
     @Override
     public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, cam.getXOff() + getMidX(), cam.getYOff() + getBegOfY(), name, new Color(place.r, place.g, place.b));
+        place.renderMessage(0, cam.getXOff() + getX(), cam.getYOff() + getY() - (sprite.getSy() - 15),
+                name, new Color(place.r, place.g, place.b));
     }
 
     @Override

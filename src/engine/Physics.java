@@ -5,16 +5,14 @@
  */
 package engine;
 
-import game.gameobject.GameObject;
-import game.place.Place;
-import java.awt.Rectangle;
-import java.util.ArrayList;
+/*USUNĄĆ ? 
+    Nic tego nie używa, chyba całą funkcjonalność zabrały figury... (>'o')>   <(^-^<) */
 
 /**
  *
  * @author przemek
  */
-public class Physics {
+/*public class Physics {
 
     public static GameObject checkCollision(GameObject go1, GameObject go2) {
         return checkCollision(new Rectangle(go2.getSX() + go2.getX(), go2.getSY() + go2.getY(), go2.getWidth(), go2.getHeight()), go2, 0, 0);
@@ -62,4 +60,4 @@ public class Physics {
         }
         return null;
     }
-}
+}*/

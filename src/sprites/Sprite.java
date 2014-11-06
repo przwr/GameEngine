@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import static org.lwjgl.opengl.GL11.*;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
@@ -24,26 +25,39 @@ public class Sprite {
     protected Texture texture;
 
     protected SpriteBase base;
+    protected int width;
+    protected int height;
     protected int sx;
     protected int sy;
     protected String key;
     protected int id;
 
-    public Sprite(String textureKey, int sx, int sy, SpriteBase base) {
-        if (textureKey != null) {
-            //Sprite.class.getResourceAsStream(textureKey);
-            this.texture = loadTexture(textureKey);
-        }
-        this.sx = sx;
-        this.sy = sy;
-        this.key = textureKey;
-        this.base = base;
+    public Sprite(String textureKey, int width, int height, SpriteBase base) {
+        this(textureKey, width, height, 0, 0, base);
     }
 
-    public Sprite(Texture texture, int sx, int sy) {
+    public Sprite(Texture texture, int width, int height) {
+        this(texture, width, height, 0, 0);
+    }
+
+    public Sprite(String textureKey, int width, int height, int sx, int sy, SpriteBase base) {
+        if (textureKey != null) {
+            this.texture = loadTexture(textureKey);
+        }
+        this.key = textureKey;
+        this.base = base;
+        this.sx = -sx;
+        this.sy = -sy;
+        this.width = width;
+        this.height = height;
+    }
+
+    public Sprite(Texture texture, int width, int height, int sx, int sy) {
         this.texture = texture;
-        this.sx = sx;
-        this.sy = sy;
+        this.sx = -sx;
+        this.sy = -sy;
+        this.width = width;
+        this.height = height;
     }
 
     public static Texture loadTexture(String key) {
@@ -83,143 +97,129 @@ public class Sprite {
 
     public void render() {
         bindCheck();
+        glTranslatef(sx, sy, 0);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
         glVertex2f(0, 0);
         glTexCoord2f(0, 1);
-        glVertex2f(0, sy);
+        glVertex2f(0, height);
         glTexCoord2f(1, 1);
-        glVertex2f(sx, sy);
+        glVertex2f(width, height);
         glTexCoord2f(1, 0);
-        glVertex2f(sx, 0);
+        glVertex2f(width, 0);
         glEnd();
     }
 
-    public void render(boolean flip) {
+    public void renderFlipped() {
         bindCheck();
+        glTranslatef(sx, sy, 0);
+        glBegin(GL_QUADS);
+        glTexCoord2f(1, 0);
+        glVertex2f(0, 0);
+        glTexCoord2f(0, 0);
+        glVertex2f(width, 0);
+        glTexCoord2f(0, 1);
+        glVertex2f(width, height);
+        glTexCoord2f(1, 1);
+        glVertex2f(0, height);
+        glEnd();
+    }
+
+    public void renderMirrored(boolean flip) {
+        if (flip) {
+            renderFlipped();
+        } else {
+            render();
+        }
+    }
+
+    public void renderRotated(double angle) {
+        glRotatef((float) angle, 0, 0, 1);
+        render();
+    }
+
+    public void renderTexPart(float bx, float ex, float by, float ey) {
+        bindCheck();
+        glBegin(GL_QUADS);
+        glTexCoord2f(bx, by);
+        glVertex2f(0, 0);
+        glTexCoord2f(bx, ey);
+        glVertex2f(0, height);
+        glTexCoord2f(ex, ey);
+        glVertex2f(width, height);
+        glTexCoord2f(ex, by);
+        glVertex2f(width, 0);
+        glEnd();
+    }
+
+    public void renderPartMirrored(boolean flip, float bx, float ex, float by, float ey) {
+        bindCheck();
+        glTranslatef(sx, sy, 0);
         glBegin(GL_QUADS);
         if (flip) {
-            glTexCoord2f(0.5f, 0);
+            glTexCoord2f(ex, by);
             glVertex2f(0, 0);
-            glTexCoord2f(0, 0);
-            glVertex2f(sx, 0);
-            glTexCoord2f(0, 1);
-            glVertex2f(sx, sy);
-            glTexCoord2f(0.5f, 1);
-            glVertex2f(0, sy);
+            glTexCoord2f(bx, by);
+            glVertex2f(width, 0);
+            glTexCoord2f(bx, ey);
+            glVertex2f(width, height);
+            glTexCoord2f(ex, ey);
+            glVertex2f(0, height);
         } else {
-            glTexCoord2f(0, 0);
+            glTexCoord2f(bx, by);
             glVertex2f(0, 0);
-            glTexCoord2f(0, 1);
-            glVertex2f(0, sy);
-            glTexCoord2f(0.5f, 1);
-            glVertex2f(sx, sy);
-            glTexCoord2f(0.5f, 0);
-            glVertex2f(sx, 0);
+            glTexCoord2f(bx, ey);
+            glVertex2f(0, height);
+            glTexCoord2f(ex, ey);
+            glVertex2f(width, height);
+            glTexCoord2f(ex, by);
+            glVertex2f(width, 0);
         }
         glEnd();
     }
 
-    public void render(int flip) {
-        bindCheck();
-        glBegin(GL_QUADS);
-        if (flip == 0) {
-            glTexCoord2f(1, 0);
-            glVertex2f(0, 0);
-            glTexCoord2f(0, 0);
-            glVertex2f(sx, 0);
-            glTexCoord2f(0, 1);
-            glVertex2f(sx, sy);
-            glTexCoord2f(1, 1);
-            glVertex2f(0, sy);
-        } else if (flip == 1) {
-            glTexCoord2f(0, 0);
-            glVertex2f(0, 0);
-            glTexCoord2f(0, 1);
-            glVertex2f(0, sy);
-            glTexCoord2f(1, 1);
-            glVertex2f(sx, sy);
-            glTexCoord2f(1, 0);
-            glVertex2f(sx, 0);
-        } else if (flip == 2) {
-            glTexCoord2f(0, 1);
-            glVertex2f(0, 0);
-            glTexCoord2f(1, 1);
-            glVertex2f(sx, 0);
-            glTexCoord2f(1, 0);
-            glVertex2f(sx, sy);
-            glTexCoord2f(0, 0);
-            glVertex2f(0, sy);
-        } else {
-            glTexCoord2f(1, 1);
-            glVertex2f(0, 0);
-            glTexCoord2f(0, 1);
-            glVertex2f(sx, 0);
-            glTexCoord2f(0, 0);
-            glVertex2f(sx, sy);
-            glTexCoord2f(1, 0);
-            glVertex2f(0, sy);
-        }
-        glEnd();
+    public void renderPartRotated(double angle, float bx, float ex, float by, float ey) {
+        glRotatef((float) angle, 0, 0, 1);
+        renderTexPart(bx, ex, by, ey);
     }
 
-    public void render(int flip, float bx, float ex, float by, float ey) {
-        bindCheck();
-        glBegin(GL_QUADS);
-        if (flip == 0) {
-            glTexCoord2f(ex, by);
-            glVertex2f(0, 0);
-            glTexCoord2f(bx, by);
-            glVertex2f(sx, 0);
-            glTexCoord2f(bx, ey);
-            glVertex2f(sx, sy);
-            glTexCoord2f(ex, ey);
-            glVertex2f(0, sy);
-        } else if (flip == 1) {
-            glTexCoord2f(bx, by);
-            glVertex2f(0, 0);
-            glTexCoord2f(bx, ey);
-            glVertex2f(0, sy);
-            glTexCoord2f(ex, ey);
-            glVertex2f(sx, sy);
-            glTexCoord2f(ex, by);
-            glVertex2f(sx, 0);
-        } else if (flip == 2) {
-            glTexCoord2f(bx, ey);
-            glVertex2f(0, 0);
-            glTexCoord2f(ex, ey);
-            glVertex2f(sx, 0);
-            glTexCoord2f(ex, by);
-            glVertex2f(sx, sy);
-            glTexCoord2f(bx, by);
-            glVertex2f(0, sy);
-        } else {
-            glTexCoord2f(ex, ey);
-            glVertex2f(0, 0);
-            glTexCoord2f(bx, ey);
-            glVertex2f(sx, 0);
-            glTexCoord2f(bx, by);
-            glVertex2f(sx, sy);
-            glTexCoord2f(ex, by);
-            glVertex2f(0, sy);
-        }
-        glEnd();
+    public void renderFaded(Color c) {
+        System.err.println(c.r + " " + c.g + " " + c.b);
+        glColor4f(c.r, c.g, c.b, c.a);
+        render();
+        glColor4f(0.5f, 0.5f, 0.5f, 1f);
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setWidth(int w) {
+        this.width = w;
+    }
+
+    public void setHeight(int h) {
+        this.height = h;
+    }
+    
     public int getSx() {
-        return sx;
+        return width;
     }
 
     public int getSy() {
-        return sy;
+        return height;
     }
 
     public void setSx(int sx) {
-        this.sx = sx;
+        this.sx = -sx;
     }
 
     public void setSy(int sy) {
-        this.sy = sy;
+        this.sy = -sy;
     }
 
     public String getKey() {

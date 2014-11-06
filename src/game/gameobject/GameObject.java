@@ -25,6 +25,7 @@ public abstract class GameObject {
     protected boolean emitter;
     protected boolean emits;
     protected boolean top;
+    protected boolean stale;
     protected Sprite sprite;
     protected Sprite nLit;
     protected Sprite lit;
@@ -41,13 +42,13 @@ public abstract class GameObject {
 
     public abstract void renderShadow(int xEffect, int yEffect, boolean isLit);
 
-    protected void init(String textureKey, String name, int x, int y, int sx, int sy, Place place) {
+    protected void init(String textureKey, String name, int x, int y, int sw, int sh, Place place) {
         this.x = x;
         this.y = y;
         depth = y;
         this.name = name;
         this.place = place;
-        this.sprite = place.getSprite(textureKey, sx, sy);
+        this.sprite = place.getSprite(textureKey, sw, sh, sw/2, sh - 10);
     }
 
     @Override
@@ -113,28 +114,20 @@ public abstract class GameObject {
         this.y = y;
     }
 
-    public int getMidX() {
-        return (int) (sX + x + width / 2);
-    }
-
-    public int getMidY() {
-        return (int) (sY + y + height / 2);
-    }
-
     public int getBegOfX() {
-        return (int) (sX + x);
+        return (int) (x - collision.getWidth()/2);
     }
 
     public int getBegOfY() {
-        return (int) (sY + y);
+        return (int) (y - collision.getHeight()/2);
     }
 
     public int getEndOfX() {
-        return (int) (sX + x + width);
+        return (int) (x - collision.getWidth()/2);
     }
 
     public int getEndOfY() {
-        return (int) (sY + y + height);
+        return (int) (y + collision.getHeight()/2);
     }
 
     public int getX() {
@@ -161,6 +154,14 @@ public abstract class GameObject {
         this.top = top;
     }
 
+    public boolean isStale() {
+        return stale;
+    }
+    
+    public void setStale(boolean st) {
+        this.stale = st;
+    }
+    
     public boolean isSolid() {
         return solid;
     }

@@ -50,8 +50,11 @@ public abstract class Place {
     public ArrayList<GameObject> emitters = new ArrayList<>();
     public ArrayList<GameObject> visibleLights = new ArrayList<>();
     public ArrayList<Area> areas = new ArrayList<>();
+
     public ArrayList<GameObject> depthObj = new ArrayList<>();
+    public ArrayList<GameObject> staleDepthObj = new ArrayList<>();
     public ArrayList<GameObject> onTopObject = new ArrayList<>();
+
     public final Tile[] tiles;
 
     public Place(Game game, int width, int height, int sTile, Settings settings) {
@@ -73,8 +76,12 @@ public abstract class Place {
         return sprites;
     }
 
-    public Sprite getSprite(String textureKey, int sx, int sy) {
-        return sprites.getSprite(textureKey, sx, sy);
+    public Sprite getSprite(String textureKey, int w, int h) {
+        return sprites.getSprite(textureKey, w, h);
+    }
+
+    public Sprite getSprite(String textureKey, int w, int h, int sx, int sy) {
+        return sprites.getSprite(textureKey, w, h, sx, sy);
     }
 
     public SpriteSheet getSpriteSheet(String textureKey, int sx, int sy) {
@@ -140,25 +147,29 @@ public abstract class Place {
     }
 
     private void renderBottom(Camera cam) {
-        sortObjects(false);
+        sortObjects(depthObj);
+        int i = 0;
         for (GameObject go : depthObj) {
+            try {
+                while (staleDepthObj.get(i).getDepth() < go.getDepth()) {
+                    staleDepthObj.get(i).render(cam.getXOffEffect(), cam.getYOffEffect());
+                    i++;
+                }
+            } catch (IndexOutOfBoundsException e) {
+            }
             go.render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
 
     private void renderTop(Camera cam) {
-        sortObjects(true);
+        sortObjects(onTopObject);
         for (GameObject go : onTopObject) {
             go.render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
 
-    public void sortObjects(boolean top) {
-        if (top) {
-            Collections.sort(onTopObject, new ObjectsComparator());
-        } else {
-            Collections.sort(depthObj, new ObjectsComparator());
-        }
+    public void sortObjects(ArrayList<GameObject> a) {
+        Collections.sort(a, new ObjectsComparator());
     }
 
     public void addObj(GameObject go) {
@@ -183,7 +194,12 @@ public abstract class Place {
         if (go.isOnTop()) {
             onTopObject.add(go);
         } else {
-            depthObj.add(go);
+            if (go.isStale()) {
+                staleDepthObj.add(go);
+                sortObjects(staleDepthObj);
+            } else {
+                depthObj.add(go);
+            }
         }
     }
 
@@ -209,7 +225,12 @@ public abstract class Place {
         if (go.isOnTop()) {
             onTopObject.remove(go);
         } else {
-            depthObj.remove(go);
+            if (go.isStale()) {
+                staleDepthObj.remove(go);
+                sortObjects(staleDepthObj);
+            } else {
+                depthObj.remove(go);
+            }
         }
     }
 

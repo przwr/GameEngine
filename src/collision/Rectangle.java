@@ -29,7 +29,7 @@ public class Rectangle extends Figure {
     }
 
     public Rectangle(int w, int h, GameObject owner) {  //Środek w środku
-        super(w / 2, h / 2, owner);
+        super(-w / 2, -h / 2, owner);
         this.w = w;
         this.h = h;
         this.type = 1;

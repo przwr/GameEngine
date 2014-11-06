@@ -173,11 +173,11 @@ public class SplitScreen {
 
     public static boolean isClose2(Place pl) {
         if (pl.settings.joinSS) {
-            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < heigth2o3) {
+            if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3) {
                 pl.isSplit = false;
                 return true;
             } else if (!pl.isSplit) {
-                if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY())) {
+                if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < Math.abs(pl.players[0].getY() - pl.players[1].getY())) {
                     pl.settings.hSplitScreen = true;
                     swampY(pl);
                 } else {
@@ -201,7 +201,7 @@ public class SplitScreen {
 
     public static boolean isClose3(Place pl) {
         if (pl.settings.joinSS) {
-            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < heigth2o3 && Math.abs(pl.players[0].getMidX() - pl.players[2].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[2].getMidY()) < heigth2o3 && Math.abs(pl.players[1].getMidX() - pl.players[2].getMidX()) < width2o3 && Math.abs(pl.players[1].getMidY() - pl.players[2].getMidY()) < heigth2o3) {
+            if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3 && Math.abs(pl.players[0].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth2o3 && Math.abs(pl.players[1].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth2o3) {
                 return true;
             }
         }
@@ -210,7 +210,7 @@ public class SplitScreen {
 
     public static boolean isClose4(Place pl) {
         if (pl.settings.joinSS) {
-            if (Math.abs(pl.players[0].getMidX() - pl.players[1].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[1].getMidY()) < heigth2o3 && Math.abs(pl.players[0].getMidX() - pl.players[2].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[2].getMidY()) < heigth2o3 && Math.abs(pl.players[1].getMidX() - pl.players[2].getMidX()) < width2o3 && Math.abs(pl.players[1].getMidY() - pl.players[2].getMidY()) < heigth2o3 && Math.abs(pl.players[0].getMidX() - pl.players[3].getMidX()) < width2o3 && Math.abs(pl.players[0].getMidY() - pl.players[3].getMidY()) < heigth2o3 && Math.abs(pl.players[1].getMidX() - pl.players[3].getMidX()) < width2o3 && Math.abs(pl.players[1].getMidY() - pl.players[3].getMidY()) < heigth2o3 && Math.abs(pl.players[2].getMidX() - pl.players[3].getMidX()) < width2o3 && Math.abs(pl.players[2].getMidY() - pl.players[3].getMidY()) < heigth2o3) {
+            if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3 && Math.abs(pl.players[0].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth2o3 && Math.abs(pl.players[1].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth2o3 && Math.abs(pl.players[0].getX() - pl.players[3].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[3].getY()) < heigth2o3 && Math.abs(pl.players[1].getX() - pl.players[3].getX()) < width2o3 && Math.abs(pl.players[1].getY() - pl.players[3].getY()) < heigth2o3 && Math.abs(pl.players[2].getX() - pl.players[3].getX()) < width2o3 && Math.abs(pl.players[2].getY() - pl.players[3].getY()) < heigth2o3) {
                 return true;
             }
         }
@@ -246,7 +246,7 @@ public class SplitScreen {
     }
 
     private static void swampY(Place pl) {
-        if (pl.players[0].getMidY() > pl.players[1].getMidY()) {
+        if (pl.players[0].getY() > pl.players[1].getY()) {
             swampFirstWithSecond(pl);
         }
         ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(2, 4, 0);
@@ -254,7 +254,7 @@ public class SplitScreen {
     }
 
     private static void swampX(Place pl) {
-        if (pl.players[0].getMidX() > pl.players[1].getMidX()) {
+        if (pl.players[0].getX() > pl.players[1].getX()) {
             swampFirstWithSecond(pl);
         }
         ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(4, 2, 0);

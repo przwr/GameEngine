@@ -110,10 +110,10 @@ public class Renderer {
                     drawShadow(emitter);
                     calculateWalls(shades[f], emitter);
                     drawWalls(emitter);
-                    shadeColor = (emitter.getMidY() - shades[f].getCentralY()) / (shades[f].getShadowHeight());
+                    shadeColor = (emitter.getY() - shades[f].getCentralY()) / (shades[f].getShadowHeight());
                     glColor3f(shadeColor, shadeColor, shadeColor);
-                    shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getMidX()),
-                            shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getMidY()) + h - emitter.getLight().getSY(), emitter.getMidY() > shades[f].getCentralY());
+                    shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
+                            shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() > shades[f].getCentralY());
                 }
                 glColor3f(1f, 1f, 1f);
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -136,10 +136,10 @@ public class Renderer {
                     drawShadow(player);
                     calculateWalls(shades[f], player);
                     drawWalls(player);
-                    shadeColor = ((float) player.getMidY() - (float) shades[f].getCentralY()) / (shades[f].getShadowHeight());
+                    shadeColor = ((float) player.getY() - (float) shades[f].getCentralY()) / (shades[f].getShadowHeight());
                     glColor3f(shadeColor, shadeColor, shadeColor);
-                    shades[f].getOwner().renderShadow((shades[f].getX()) + player.getLight().getSX() / 2 - (player.getMidX()),
-                            shades[f].getY() + player.getLight().getSY() / 2 - (player.getMidY()) + h - player.getLight().getSY(), player.getMidY() > shades[f].getCentralY());
+                    shades[f].getOwner().renderShadow((shades[f].getX()) + player.getLight().getSX() / 2 - (player.getX()),
+                            shades[f].getY() + player.getLight().getSY() / 2 - (player.getY()) + h - player.getLight().getSY(), player.getY() > shades[f].getCentralY());
                 }
                 glColor3f(1f, 1f, 1f);
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -160,7 +160,7 @@ public class Renderer {
             for (Figure f : a.parts) {
                 distFromCenter = (int) ((Math.sqrt(src.getWidth() * src.getWidth() + src.getHeight() * src.getHeight())) / 2
                         + (Math.sqrt(f.getWidth() * f.getWidth() + f.getHeight() * f.getHeight())) / 2);
-                if (Methods.PointDistance(f.getCentralX(), f.getCentralY(), src.getMidX(), src.getMidY()) < dist + distFromCenter) {
+                if (Methods.PointDistance(f.getCentralX(), f.getCentralY(), src.getX(), src.getY()) < dist + distFromCenter) {
                     shades[nrShades++] = f;
                 }
             }
@@ -185,8 +185,8 @@ public class Renderer {
         if (checked.getCentralY() > temp.getCentralY()) {
             return true;
         } else if (checked.getCentralY() == temp.getCentralY()
-                && Methods.PointDistance(src.getMidX(), src.getMidY(), checked.getX() + checked.getWidth() / 2, checked.getY() + checked.getHeight() / 2)
-                > Methods.PointDistance(src.getMidX(), src.getMidY(), temp.getX() + temp.getWidth() / 2, temp.getY() + temp.getHeight() / 2)) {
+                && Methods.PointDistance(src.getX(), src.getY(), checked.getX() + checked.getWidth() / 2, checked.getY() + checked.getHeight() / 2)
+                > Methods.PointDistance(src.getX(), src.getY(), temp.getX() + temp.getWidth() / 2, temp.getY() + temp.getHeight() / 2)) {
             return true;
         }
         return false;
@@ -204,7 +204,7 @@ public class Renderer {
     }
 
     private static void calculateShadow(GameObject src, Figure shade) {
-        center.set(src.getMidX(), src.getMidY());
+        center.set(src.getX(), src.getY());
         tempPoints[0].set(shade.getX(), shade.getY() + shade.getShadowHeight());
         tempPoints[1].set(shade.getEndX(), shade.getY() + shade.getShadowHeight());
         tempPoints[2].set(shade.getX(), shade.getEndY());
@@ -269,7 +269,7 @@ public class Renderer {
         right = null;
         for (int i = 0; i < nrShades; i++) {
             other = shades[i];
-            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getEndY() < src.getMidY() && f.getYOfShadow() < src.getMidY()) {
+            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getEndY() < src.getY() && f.getYOfShadow() < src.getY()) {
                 XOL = ((other.getEndY() - bl1) / al1);
                 XO2 = ((other.getYOfShadow() - bl1) / al1);
                 XOR = ((other.getEndY() - bl2) / al2);
@@ -312,8 +312,8 @@ public class Renderer {
                 leftWallColor = false;
                 isLeftWall = true;
             } else {
-                left.getOwner().renderShadow((left.getX()) + src.getLight().getSX() / 2 - (src.getMidX()),
-                        left.getY() + src.getLight().getSY() / 2 - (src.getMidY()) + h - src.getLight().getSY(), false);
+                left.getOwner().renderShadow((left.getX()) + src.getLight().getSX() / 2 - (src.getX()),
+                        left.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false);
             }
         }
         if (right != null) {     //czy prawy koniec pada na ścianę?
@@ -337,7 +337,7 @@ public class Renderer {
         if (isRightWall) {
             glColor3f(1, 1, 1);
             glPushMatrix();
-            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
+            glTranslatef(lX / 2 - emitter.getX(), lY / 2 - emitter.getY() + h - lY, 0);
             glBegin(GL_QUADS);
             glVertex2f(rightWallPoints[0].getX(), rightWallPoints[0].getY());
             glVertex2f(rightWallPoints[1].getX(), rightWallPoints[1].getY());
@@ -354,7 +354,7 @@ public class Renderer {
                 glColor3f(0, 0, 0);
             }
             glPushMatrix();
-            glTranslatef(lX / 2 - emitter.getMidX(), lY / 2 - emitter.getMidY() + h - lY, 0);
+            glTranslatef(lX / 2 - emitter.getX(), lY / 2 - emitter.getY() + h - lY, 0);
             glBegin(GL_QUADS);
             glVertex2f(leftWallPoints[0].getX(), leftWallPoints[0].getY());
             glVertex2f(leftWallPoints[1].getX(), leftWallPoints[1].getY());
@@ -371,7 +371,7 @@ public class Renderer {
         lightY = emitter.getLight().getSY();
         glColor3f(0, 0, 0);
         glPushMatrix();
-        glTranslatef(emitter.getLight().getSX() / 2 - emitter.getMidX(), lightY / 2 - emitter.getMidY() + h - lightY, 0);
+        glTranslatef(emitter.getLight().getSX() / 2 - emitter.getX(), lightY / 2 - emitter.getY() + h - lightY, 0);
         glBegin(GL_QUADS);
         glVertex2f(points[0].getX(), points[0].getY());
         glVertex2f(points[2].getX(), points[2].getY());
@@ -399,7 +399,7 @@ public class Renderer {
         lightX = (int) emitter.getLight().getSX();
         lightY = (int) emitter.getLight().getSY();
         glPushMatrix();
-        glTranslatef(emitter.getMidX() - emitter.getLight().getSX() / 2 + cam.getXOffEffect(), emitter.getMidY() - emitter.getLight().getSY() / 2 + cam.getYOffEffect(), 0);
+        glTranslatef(emitter.getX() - emitter.getLight().getSX() / 2 + cam.getXOffEffect(), emitter.getY() - emitter.getLight().getSY() / 2 + cam.getYOffEffect(), 0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 1);

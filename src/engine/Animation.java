@@ -16,7 +16,7 @@ public class Animation {
     private final Frame[] frames;
     private final Sprite spr;    
     private final Delay animDelay;
-    private int flip;
+    private boolean flip;
     private int curFrame;
 
     public Animation(int num, Sprite spr, int delay) {
@@ -46,7 +46,7 @@ public class Animation {
         }
     }
 
-    public void setFlip(int flip) {
+    public void setFlip(boolean flip) {
         this.flip = flip;
     }
 }
