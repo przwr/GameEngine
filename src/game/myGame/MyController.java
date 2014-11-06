@@ -28,7 +28,7 @@ public class MyController extends Controler {
 
     public final AnyInput[] inputs = new AnyInput[36];
     public final Action[] actions = new Action[36]; // 4 pierwsze to menu
-    private int[] states = new int[10];
+    private final int[] states = new int[10];
 
     public MyController(Entity inControl) {
         super(inControl);

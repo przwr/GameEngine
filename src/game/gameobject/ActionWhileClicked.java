@@ -5,16 +5,14 @@
  */
 package game.gameobject;
 
-import game.myGame.MyController;
-
 /**
  *
  * @author przemek
  */
 public class ActionWhileClicked extends Action {
 
-    private int[] states;
-    private int i;
+    private final int[] states;
+    private final int i;
 
     public ActionWhileClicked(AnyInput in, Entity inControl, int[] states, int i) {
         super(in, inControl);
