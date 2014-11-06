@@ -26,6 +26,8 @@ public abstract class Camera {
     protected int delaylenght, SX, EX, SY, EY;
     protected Delay shakeDelay;
     protected int shakeAmp = 8;
+    public GameObject[] visibleLights = new GameObject[2048];
+    public int nrVLights;
     boolean shakeUp = true;
 
     public Camera(Place place, GameObject go) {

@@ -25,8 +25,7 @@ public class Renderer {
     private static final int h = Display.getHeight();
     private static FBORendererRegular fbFrame;
     private static final Figure[] shades = new Figure[4096];
-    private static GameObject[] activeEmitters;
-    private static GameObject player;
+    private static GameObject emitter, light;
     private static final Point center = new Point(0, 0);
     private static final Point[] tempPoints = new Point[4];
     private static final Point[] points = new Point[4];
@@ -38,7 +37,7 @@ public class Renderer {
     private static final int[] EY = new int[7];
     private static boolean isLeftWall, isRightWall, leftWallColor, isVisible;
     private static Figure tmp, other, left, right;
-    private static int nrShades, savedShadowed, shDif, dist, distFromCenter, lightX, lightY, shP1, shP2, shX, shY, XL1, XL2, XR1, XR2, YL, YR;
+    private static int nrShades, shDif, dist, distFromCenter, lightX, lightY, shP1, shP2, shX, shY, XL1, XL2, XR1, XR2, YL, YR;
     private static double angle, temp, al1, bl1, al2, bl2, XOL, XO2, XOR;
     private static float shadeColor, lightColor, lightBrightness, lightStrength;
     private static Camera cam;
@@ -46,51 +45,46 @@ public class Renderer {
     public static void findVisibleLights(Place place) {
         for (int p = 0; p < place.playersLength; p++) {
             cam = (((MyPlayer) place.players[p]).getCam());
+            cam.nrVLights = 0;
             SX[p] = cam.getSX();
             EX[p] = cam.getEX();
             SY[p] = cam.getSY();
             EY[p] = cam.getEY();
         }
-        if (place.camfor2 != null) {
-            SX[4] = place.camfor2.getSX();
-            EX[4] = place.camfor2.getEX();
-            SY[4] = place.camfor2.getSY();
-            EY[4] = place.camfor2.getEY();
+        for (int c = 0; c < 3; c++) {
+            if (place.cams[c] != null) {
+                cam = place.cams[c];
+                cam.nrVLights = 0;
+                SX[4 + c] = cam.getSX();
+                EX[4 + c] = cam.getEX();
+                SY[4 + c] = cam.getSY();
+                EY[4 + c] = cam.getEY();
+            }
         }
-        if (place.camfor3 != null) {
-            SX[5] = place.camfor3.getSX();
-            EX[5] = place.camfor3.getEX();
-            SY[5] = place.camfor3.getSY();
-            EY[5] = place.camfor3.getEY();
-        }
-        if (place.camfor4 != null) {
-            SX[6] = place.camfor4.getSX();
-            EX[6] = place.camfor4.getEX();
-            SY[6] = place.camfor4.getSY();
-            EY[6] = place.camfor4.getEY();
-        }
-        for (GameObject emitter : place.emitters) {
+        place.nrVLights = 0;
+        for (GameObject light : place.emitters) {
             // jak dla graczy
         }
+        // Docelowo iteracja po graczach nie będzie potrzebna - nie będą oni źródłem światła, a raczej jakieś obiekty.
         for (int p = 0; p < place.playersLength; p++) {
-            GameObject emitter = place.players[p];
-            if (place.isSplit && place.settings.joinSS && place.playersLength > 1) {
-                if (emitter.isEmits() && SY[2 + place.playersLength] < emitter.getMidY() + emitter.getLight().getSY() / 2 && EY[2 + place.playersLength] > emitter.getMidY() - emitter.getLight().getSY() / 2
-                        && SX[2 + place.playersLength] < emitter.getMidX() + emitter.getLight().getSX() / 2 && EX[2 + place.playersLength] > emitter.getMidX() - emitter.getLight().getSX() / 2) {
+            light = place.players[p];
+            if (place.singleCam && place.playersLength > 1) {
+                if (light.isEmits() && SY[2 + place.playersLength] <= light.getY() + light.getLight().getSY() / 2 && EY[2 + place.playersLength] >= light.getY() - light.getLight().getSY() / 2
+                        && SX[2 + place.playersLength] <= light.getX() + light.getLight().getSX() / 2 && EX[2 + place.playersLength] >= light.getX() - light.getLight().getSX() / 2) {
                     isVisible = true;
-                    //System.out.println(emitter.getName() + " " + System.nanoTime());
+                    place.cams[place.playersLength - 2].visibleLights[place.cams[place.playersLength - 2].nrVLights++] = light;
                 }
             } else {
                 for (int pi = 0; pi < place.playersLength; pi++) {
-                    if (emitter.isEmits() && SY[pi] < emitter.getMidY() + emitter.getLight().getSY() / 2 && EY[pi] > emitter.getMidY() - emitter.getLight().getSY() / 2
-                            && SX[pi] < emitter.getMidX() + emitter.getLight().getSX() / 2 && EX[pi] > emitter.getMidX() - emitter.getLight().getSX() / 2) {
+                    if (light.isEmits() && SY[pi] <= light.getY() + light.getLight().getSY() / 2 && EY[pi] >= light.getY() - light.getLight().getSY() / 2
+                            && SX[pi] <= light.getX() + light.getLight().getSX() / 2 && EX[pi] >= light.getX() - light.getLight().getSX() / 2) {
                         isVisible = true;
-                        //System.out.println(emitter.getName() + " " + System.nanoTime());
+                        (((MyPlayer) place.players[pi]).getCam()).visibleLights[(((MyPlayer) place.players[pi]).getCam()).nrVLights++] = light;
                     }
                 }
             }
             if (isVisible) {
-                place.visibleLights.add(emitter);
+                place.visibleLights[place.nrVLights++] = light;
                 isVisible = false;
             }
         }
@@ -98,8 +92,8 @@ public class Renderer {
     }
 
     public static void preRendLightsFBO(Place place) {
-        savedShadowed = 0;
-        for (GameObject emitter : place.emitters) {
+        for (int l = 0; l < place.nrVLights; l++) {
+            emitter = place.visibleLights[l];
             if (emitter.isEmits()) {
                 findShades(emitter, place);
                 emitter.getLight().fbo.activate();
@@ -110,7 +104,11 @@ public class Renderer {
                     drawShadow(emitter);
                     calculateWalls(shades[f], emitter);
                     drawWalls(emitter);
-                    shadeColor = (emitter.getY() - shades[f].getCentralY()) / (shades[f].getShadowHeight());
+                    if (shades[f].getShadowHeight() > 0) {
+                        shadeColor = (emitter.getY() - shades[f].getCentralY()) / (shades[f].getShadowHeight());
+                    } else {
+                        shadeColor = 1f;
+                    }
                     glColor3f(shadeColor, shadeColor, shadeColor);
                     shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
                             shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() > shades[f].getCentralY());
@@ -119,34 +117,6 @@ public class Renderer {
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 emitter.getLight().render(h - emitter.getLight().getSY());
                 emitter.getLight().fbo.deactivate();
-                activeEmitters[savedShadowed] = emitter; //zapisanie emittera do korespondującej tablicy
-                savedShadowed++;
-            }
-        }
-        // Docelowo iteracja po graczach nie będzie potrzebna - nie będą oni źródłem światła, a raczej jakieś obiekty.
-        for (int p = 0; p < place.playersLength; p++) {
-            player = place.players[p];
-            if (player.isEmitter() && player.isEmits()) {
-                findShades(player, place);
-                player.getLight().fbo.activate();
-                clearScreen(1);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-                for (int f = 0; f < nrShades; f++) {    //iteracja po Shades - tych co dają cień
-                    calculateShadow(player, shades[f]);
-                    drawShadow(player);
-                    calculateWalls(shades[f], player);
-                    drawWalls(player);
-                    shadeColor = ((float) player.getY() - (float) shades[f].getCentralY()) / (shades[f].getShadowHeight());
-                    glColor3f(shadeColor, shadeColor, shadeColor);
-                    shades[f].getOwner().renderShadow((shades[f].getX()) + player.getLight().getSX() / 2 - (player.getX()),
-                            shades[f].getY() + player.getLight().getSY() / 2 - (player.getY()) + h - player.getLight().getSY(), player.getY() > shades[f].getCentralY());
-                }
-                glColor3f(1f, 1f, 1f);
-                glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-                player.getLight().render(h - player.getLight().getSY());
-                player.getLight().fbo.deactivate();
-                activeEmitters[savedShadowed] = player; //zapisanie emittera do korespondującej tablicy
-                savedShadowed++;
             }
         }
     }
@@ -197,8 +167,8 @@ public class Renderer {
         clearScreen(0);
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
-        for (int i = 0; i < savedShadowed; i++) {
-            drawLight(activeEmitters[i].getLight().fbo.getTexture(), w, h, activeEmitters[i], cam);
+        for (int i = 0; i < cam.nrVLights; i++) {
+            drawLight(cam.visibleLights[i].getLight().fbo.getTexture(), w, h, cam.visibleLights[i], cam);
         }
         fbFrame.deactivate();
     }
@@ -223,7 +193,8 @@ public class Renderer {
         }
         points[0] = tempPoints[shP1];
         points[1] = tempPoints[shP2];
-        shDif = (int) (Math.sqrt(src.getLight().getSX() * src.getLight().getSX() + src.getLight().getSY() * src.getLight().getSY()));
+        //shDif = (int) (Math.sqrt(src.getLight().getSX() * src.getLight().getSX() + src.getLight().getSY() * src.getLight().getSY()));
+        shDif = src.getLight().getSX() + src.getLight().getSY();
         if (points[0].getX() == center.getX()) {
             points[2].set(points[0].getX(), points[0].getY() + (points[0].getY() > center.getY() ? shDif : -shDif));
         } else if (points[0].getY() == center.getY()) {
@@ -455,12 +426,9 @@ public class Renderer {
     }
 
     public static void initVariables(Place place) {
-        activeEmitters = new GameObject[place.emitters.size() + 4];
         for (int i = 0; i < 4; i++) {
             points[i] = new Point(0, 0);
             tempPoints[i] = new Point(0, 0);
-        }
-        for (int i = 0; i < 4; i++) {
             leftWallPoints[i] = new Point(0, 0);
             rightWallPoints[i] = new Point(0, 0);
         }

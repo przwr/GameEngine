@@ -40,6 +40,7 @@ public class Main {
             cleanUp();
         } catch (Exception ex) {
             Methods.Exception(ex);
+            cleanUp();
         }
     }
 
@@ -92,7 +93,6 @@ public class Main {
     private static void cleanUp() {
         try {
             Display.setDisplayConfiguration(1f, 0f, 1.0f);
-
         } catch (LWJGLException ex) {
             Methods.Exception(ex);
         }
