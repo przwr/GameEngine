@@ -12,6 +12,7 @@ import game.place.Place;
 import java.io.File;
 import engine.Sound;
 import game.gameobject.GameObject;
+import game.place.Menu;
 import game.place.SplitScreen;
 import game.place.cameras.FourPlayersCamera;
 import game.place.cameras.PlayersCamera;
@@ -28,7 +29,7 @@ public class Game {
     private final Settings settings;
     private final MyPlayer menuPl;
     public final MyPlayer[] players = new MyPlayer[4];
-    private final Place menu;
+    private final Menu menu;
     private Place place;
     private final String title;
     private boolean runFlag;
@@ -49,7 +50,6 @@ public class Game {
         menuPl = new MyPlayer(true, "Menu");
         menu.players = new GameObject[1];
         menu.players[0] = menuPl;
-        menuPl.addCamera(new PlayersCamera(menu, menuPl, 2, 2, 0));
         menuPl.addMenu((MyMenu) menu);
         players[0].addMenu((MyMenu) menu);
         players[1].addMenu((MyMenu) menu);

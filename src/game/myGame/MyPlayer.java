@@ -14,6 +14,7 @@ import engine.Animation;
 import engine.Drawer;
 import game.Methods;
 import game.gameobject.Entity;
+import game.place.Menu;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
@@ -24,7 +25,7 @@ import org.newdawn.slick.Color;
  */
 public class MyPlayer extends Entity {
     
-    public MyMenu menu;
+    public Menu menu;
     private Animation anim;
     private boolean animate;
     public MyController ctrl;
@@ -182,7 +183,7 @@ public class MyPlayer extends Entity {
         return cam;
     }
     
-    public void addMenu(MyMenu menu) {
+    public void addMenu(Menu menu) {
         this.menu = menu;
     }
     

@@ -13,13 +13,11 @@ import game.gameobject.Mob;
 import game.myGame.MyPlayer;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
-import engine.FontsHandler;
 import engine.SoundBase;
 import game.myGame.MyMob;
 import java.util.Collections;
 import java.util.Comparator;
 import static org.lwjgl.opengl.GL11.*;
-import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteBase;
 import sprites.SpriteSheet;
@@ -28,26 +26,22 @@ import sprites.SpriteSheet;
  *
  * @author przemek
  */
-public abstract class Place {
+public abstract class Place extends ScreenPlace {
 
-    public final Game game;
-    public final Settings settings;
     protected final SoundBase sounds;
     protected final SpriteBase sprites;
-    protected FontsHandler fonts;
-    public final int width, height, sTile;
+    public final int sTile;
 
     public Camera cam;
     public Camera[] cams = new Camera[3];
     public boolean isSplit, changeSSMode, singleCam;
-    public float r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
+    public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int ssMode, playersLength, nrVLights;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
     public ArrayList<GameObject> solidObj = new ArrayList<>();
     public ArrayList<GameObject> flatObj = new ArrayList<>();
-    public GameObject[] players;
     public ArrayList<GameObject> emitters = new ArrayList<>();
     public GameObject[] visibleLights = new GameObject[2048];
     public ArrayList<Area> areas = new ArrayList<>();
@@ -59,18 +53,17 @@ public abstract class Place {
     public final Tile[] tiles;
 
     public Place(Game game, int width, int height, int sTile, Settings settings) {
-        this.width = width;
-        this.height = height;
+        super(game, width, height, settings);
         this.sTile = sTile;
-        this.settings = settings;
         tiles = new Tile[width / sTile * height / sTile];
-        this.game = game;
         sounds = new SoundBase();
         sprites = new SpriteBase();
     }
 
+    @Override
     public abstract void generate();
 
+    @Override
     public abstract void update();
 
     public SpriteBase getSprites() {
@@ -93,6 +86,7 @@ public abstract class Place {
         return sounds;
     }
 
+    @Override
     public void render() {
         Renderer.findVisibleLights(this);
         Renderer.preRendLightsFBO(this);
@@ -139,10 +133,6 @@ public abstract class Place {
 
     public void makeShadows() {
         Renderer.initVariables(this);
-    }
-
-    public void renderMessage(int i, int x, int y, String ms, Color color) {
-        fonts.write(i).drawString(x - fonts.write(i).getWidth(ms) / 2, y - (4 * fonts.write(i).getHeight()) / 3, ms, color);
     }
 
     private void renderBottom(Camera cam) {
@@ -231,18 +221,6 @@ public abstract class Place {
                 depthObj.remove(go);
             }
         }
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public double SCALE() {
-        return settings.SCALE;
     }
 
     private class ObjectsComparator implements Comparator<GameObject> {

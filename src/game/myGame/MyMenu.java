@@ -5,41 +5,26 @@
  */
 package game.myGame;
 
-import engine.Delay;
 import game.Game;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MenuOpt;
 import game.gameobject.menu.choices.*;
-import game.place.cameras.Camera;
-import game.place.Place;
 import java.awt.Font;
 import engine.FontsHandler;
+import game.place.Menu;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glScissor;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 
 /**
  *
  * @author przemek
  */
-public class MyMenu extends Place {
-
-    private int cur;
-    private MenuOpt[] menus;
-
-    private final int dWidth = Display.getWidth();
-    private final int dHeight = Display.getHeight(); //(int) (dWidth * ((double) Display.getHeight() / (double) Display.getWidth()));
-    public boolean isMapping;
-    public Delay delay = new Delay(25);
+public class MyMenu extends Menu {
 
     public MyMenu(Game game, int width, int height, int tileSize, Settings settings) {
-        super(game, width, height, tileSize, settings);
+        super(game, width, height, settings);
         generate();
     }
 
@@ -102,7 +87,16 @@ public class MyMenu extends Place {
     }
 
     @Override
-    protected void renderText(Camera cam) {
+    public void render() {
+        glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        glScissor(0, 0, Display.getWidth(), Display.getHeight());
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor3f(r, g, b);
+        renderText();
+    }
+
+    @Override
+    protected void renderText() {
         int positions = menus[cur].getNr() + 1;
         renderMessage(1, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getNr() + 1)) * fonts.write(0).getHeight() * 0.7), menus[cur].getLabel(), new Color(r, g, b));
         positions--;
@@ -112,38 +106,11 @@ public class MyMenu extends Place {
         }
     }
 
-    @Override
-    public void render() {
-        glViewport(0, 0, Display.getWidth(), Display.getHeight());
-        glScissor(0, 0, Display.getWidth(), Display.getHeight());
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(r, g, b);
-        renderText(cam);
-    }
-
     public Color getColor(MenuChoice choice) {
         if (choice == menus[cur].getChoosen()) {
             return new Color(1f, 1f, 0.5f);
         } else {
             return new Color(1f, 1f, 1f);
-        }
-    }
-
-    public void setChoosen(int i) {
-        if (!isMapping && delay.isOver()) {
-            menus[cur].setChoosen(i);
-        }
-    }
-
-    public void choice() {
-        if (!isMapping && delay.isOver()) {
-            menus[cur].getChoosen().action();
-        }
-    }
-
-    public void setCurrent(int i) {
-        if (!isMapping && delay.isOver()) {
-            cur = i;
         }
     }
 
@@ -155,6 +122,7 @@ public class MyMenu extends Place {
         settings.nrPlayers = 1;
     }
 
+    @Override
     public void back() {
         if (!isMapping && delay.isOver()) {
             if (cur > 2) {
