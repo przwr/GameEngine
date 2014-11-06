@@ -7,9 +7,9 @@ import sprites.SpriteSheet;
 public abstract class Tile extends GameObject {
 
     public static int SIZE;
-    private final SpriteSheet sh;
-    private final int xSheet;
-    private final int ySheet;
+    protected final SpriteSheet sh;
+    protected final int xSheet;
+    protected final int ySheet;
 
     public Tile(SpriteSheet sh, int size, boolean isSolid, boolean isEmitter, int xSheet, int ySheet, Place place) {
         SIZE = size;
@@ -20,7 +20,7 @@ public abstract class Tile extends GameObject {
         this.ySheet = ySheet;
         this.place = place;
     }
-
+    
     public void render(int flip, int x, int y) {
         glPushMatrix();
         glTranslatef(x, y, 0);

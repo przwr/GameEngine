@@ -47,7 +47,7 @@ public abstract class Place extends ScreenPlace {
     public ArrayList<Area> areas = new ArrayList<>();
 
     public ArrayList<GameObject> depthObj = new ArrayList<>();
-    public ArrayList<GameObject> staleDepthObj = new ArrayList<>();
+    public ArrayList<GameObject> foregroundTiles = new ArrayList<>();
     public ArrayList<GameObject> onTopObject = new ArrayList<>();
 
     public final Tile[] tiles;
@@ -137,16 +137,16 @@ public abstract class Place extends ScreenPlace {
 
     private void renderBottom(Camera cam) {
         sortObjects(depthObj);
-        int i = 0;
+        int y = 0;
         for (GameObject go : depthObj) {
-            try {
-                while (staleDepthObj.get(i).getDepth() < go.getDepth()) {
-                    staleDepthObj.get(i).render(cam.getXOffEffect(), cam.getYOffEffect());
-                    i++;
-                }
-            } catch (IndexOutOfBoundsException e) {
+            while (y != foregroundTiles.size() && foregroundTiles.get(y).getDepth() < go.getDepth()) {
+                foregroundTiles.get(y).render(cam.getXOffEffect(), cam.getYOffEffect());
+                y++;
             }
             go.render(cam.getXOffEffect(), cam.getYOffEffect());
+        }
+        for (int i = y; i < foregroundTiles.size(); i++) {
+            foregroundTiles.get(y).render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
 
@@ -159,6 +159,36 @@ public abstract class Place extends ScreenPlace {
 
     public void sortObjects(ArrayList<GameObject> a) {
         Collections.sort(a, new ObjectsComparator());
+    }
+
+    public void addFGTile(GameObject t, int x, int y, int depth, boolean replace) {
+        if (replace) {
+            tiles[x / sTile + y / sTile * height / sTile] = null;
+            for (GameObject s : foregroundTiles) {
+                if (s.getX() == x && s.getY() == y) {
+                    foregroundTiles.remove(s);
+                }
+            }
+        }
+        t.setX(x);
+        t.setY(y);
+        t.setDepth(depth);
+        foregroundTiles.add(t);
+        sortObjects(foregroundTiles);
+    }
+
+    public void deleteFGTile(GameObject t) {
+        foregroundTiles.remove(t);
+        sortObjects(foregroundTiles);
+    }
+
+    public void deleteFGTile(int x, int y) {
+        for (GameObject s : foregroundTiles) {
+            if (s.getX() == x && s.getY() == y) {
+                foregroundTiles.remove(s);
+            }
+        }
+        sortObjects(foregroundTiles);
     }
 
     public void addObj(GameObject go) {
@@ -183,12 +213,7 @@ public abstract class Place extends ScreenPlace {
         if (go.isOnTop()) {
             onTopObject.add(go);
         } else {
-            if (go.isStale()) {
-                staleDepthObj.add(go);
-                sortObjects(staleDepthObj);
-            } else {
-                depthObj.add(go);
-            }
+            depthObj.add(go);
         }
     }
 
@@ -214,12 +239,7 @@ public abstract class Place extends ScreenPlace {
         if (go.isOnTop()) {
             onTopObject.remove(go);
         } else {
-            if (go.isStale()) {
-                staleDepthObj.remove(go);
-                sortObjects(staleDepthObj);
-            } else {
-                depthObj.remove(go);
-            }
+            depthObj.remove(go);
         }
     }
 

@@ -5,6 +5,9 @@
  */
 package game.place;
 
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
 
 /**
@@ -20,5 +23,9 @@ public class BasicTile extends Tile {
     
     @Override
     public void render(int xEffect, int yEffect) {
+        glPushMatrix();
+        glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+        sh.render(1, xSheet, ySheet);
+        glPopMatrix();
     }   
 }

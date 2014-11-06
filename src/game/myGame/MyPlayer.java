@@ -16,12 +16,6 @@ import engine.Drawer;
 import game.Methods;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_COMBINE_ALPHA;
-import static org.lwjgl.opengl.GL13.GL_COMBINE_RGB;
-import static org.lwjgl.opengl.GL13.GL_PRIMARY_COLOR;
-import static org.lwjgl.opengl.GL14.glBlendColor;
-import static org.lwjgl.opengl.GL15.GL_SRC0_ALPHA;
-import static org.lwjgl.opengl.GL15.GL_SRC0_RGB;
 import org.newdawn.slick.Color;
 
 /**
