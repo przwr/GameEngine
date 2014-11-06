@@ -5,8 +5,8 @@
  */
 package game.gameobject.menu;
 
-import game.myGame.MyMenu;
 import game.Settings;
+import game.place.Menu;
 
 /**
  *
@@ -15,10 +15,10 @@ import game.Settings;
 public abstract class MenuChoice {
 
     protected String label;
-    protected MyMenu menu;
+    protected Menu menu;
     protected Settings settings;
 
-    public MenuChoice(String label, MyMenu menu, Settings settings) {
+    public MenuChoice(String label, Menu menu, Settings settings) {
         this.label = label;
         this.menu = menu;
         this.settings = settings;

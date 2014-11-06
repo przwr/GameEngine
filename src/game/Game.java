@@ -7,12 +7,12 @@ package game;
 
 import game.myGame.MyMenu;
 import game.myGame.MyPlace;
-import game.myGame.MyPlayer;
 import game.place.Place;
 import java.io.File;
 import engine.Sound;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
+import game.myGame.MyPlayer;
 import game.place.Menu;
 import game.place.SplitScreen;
 import game.place.cameras.FourPlayersCamera;
@@ -29,7 +29,7 @@ public class Game {
 
     private final Settings settings;
     private final Player menuPl;
-    public final Player[] players = new MyPlayer[4];
+    public final Player[] players = new Player[4];
     private final Menu menu;
     private Place place;
     private final String title;
@@ -51,11 +51,11 @@ public class Game {
         menuPl = new MyPlayer(true, "Menu");
         menu.players = new GameObject[1];
         menu.players[0] = menuPl;
-        menuPl.addMenu((MyMenu) menu);
-        players[0].addMenu((MyMenu) menu);
-        players[1].addMenu((MyMenu) menu);
-        players[2].addMenu((MyMenu) menu);
-        players[3].addMenu((MyMenu) menu);
+        menuPl.addMenu(menu);
+        players[0].addMenu(menu);
+        players[1].addMenu(menu);
+        players[2].addMenu(menu);
+        players[3].addMenu(menu);
     }
 
     public void getInput() {
@@ -85,7 +85,7 @@ public class Game {
             } else {
                 for (Player pl : players) {
                     if (pl.isMenuOn()) {
-                        ((MyMenu) menu).back();
+                        menu.back();
                     } else {
                         pl.getMenuInput();
                     }

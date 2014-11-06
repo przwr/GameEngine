@@ -8,7 +8,7 @@ package game.gameobject.menu.choices;
 import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.myGame.MyMenu;
+import game.place.Menu;
 
 /**
  *
@@ -18,7 +18,7 @@ public class ChoiceLanguage extends MenuChoice {
 
     private int i;
 
-    public ChoiceLanguage(String label, MyMenu menu, Settings settings) {
+    public ChoiceLanguage(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

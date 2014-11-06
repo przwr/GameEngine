@@ -8,7 +8,7 @@ package game.gameobject.menu.choices;
 import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.myGame.MyMenu;
+import game.place.Menu;
 import engine.Sound;
 
 /**
@@ -17,7 +17,7 @@ import engine.Sound;
  */
 public class ChoiceVolume extends MenuChoice {
 
-    public ChoiceVolume(String label, MyMenu menu, Settings settings) {
+    public ChoiceVolume(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

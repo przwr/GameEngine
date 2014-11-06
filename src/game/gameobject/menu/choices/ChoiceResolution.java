@@ -8,7 +8,7 @@ package game.gameobject.menu.choices;
 import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.myGame.MyMenu;
+import game.place.Menu;
 
 /**
  *
@@ -16,7 +16,7 @@ import game.myGame.MyMenu;
  */
 public class ChoiceResolution extends MenuChoice {
 
-    public ChoiceResolution(String label, MyMenu menu, Settings settings) {
+    public ChoiceResolution(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

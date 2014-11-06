@@ -114,14 +114,6 @@ public class MyMenu extends Menu {
         }
     }
 
-    public void addPlayer() {
-        settings.nrPlayers++;
-    }
-
-    public void setToOnePlayer() {
-        settings.nrPlayers = 1;
-    }
-
     @Override
     public void back() {
         if (!isMapping && delay.isOver()) {

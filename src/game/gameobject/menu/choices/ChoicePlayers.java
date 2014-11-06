@@ -8,7 +8,7 @@ package game.gameobject.menu.choices;
 import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.myGame.MyMenu;
+import game.place.Menu;
 
 /**
  *
@@ -16,15 +16,15 @@ import game.myGame.MyMenu;
  */
 public class ChoicePlayers extends MenuChoice {
 
-    public ChoicePlayers(String label, MyMenu menu, Settings settings) {
+    public ChoicePlayers(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        menu.addPlayer();
+        settings.nrPlayers++;
         if (settings.nrPlayers > 4) {
-            menu.setToOnePlayer();
+            settings.nrPlayers = 1;
         }
         AnalizerSettings.Update(settings);
     }

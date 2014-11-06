@@ -7,7 +7,7 @@ package game.gameobject.menu.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.myGame.MyMenu;
+import game.place.Menu;
 
 /**
  *
@@ -15,7 +15,7 @@ import game.myGame.MyMenu;
  */
 public class ChoicePlayerCtrl extends MenuChoice {
 
-    public ChoicePlayerCtrl(String label, MyMenu menu, Settings settings) {
+    public ChoicePlayerCtrl(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

@@ -8,7 +8,7 @@ package game.gameobject.menu.choices;
 import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.myGame.MyMenu;
+import game.place.Menu;
 import game.place.SplitScreen;
 
 /**
@@ -17,7 +17,7 @@ import game.place.SplitScreen;
  */
 public class ChoiceSplitScreen extends MenuChoice {
 
-    public ChoiceSplitScreen(String label, MyMenu menu, Settings settings) {
+    public ChoiceSplitScreen(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

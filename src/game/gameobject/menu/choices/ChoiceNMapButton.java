@@ -9,7 +9,7 @@ import game.Settings;
 import game.gameobject.Player;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyController;
-import game.myGame.MyMenu;
+import game.place.Menu;
 
 /**
  *
@@ -20,7 +20,7 @@ public class ChoiceNMapButton extends MenuChoice {
     private final MyController ctrl;
     private final int i;
 
-    public ChoiceNMapButton(String label, MyMenu menu, Settings settings, Player ctrl, int i) {
+    public ChoiceNMapButton(String label, Menu menu, Settings settings, Player ctrl, int i) {
         super(label, menu, settings);
         this.i = i;
         if (ctrl == null) {

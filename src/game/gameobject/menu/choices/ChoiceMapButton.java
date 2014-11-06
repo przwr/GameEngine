@@ -8,10 +8,9 @@ package game.gameobject.menu.choices;
 import game.AnalizerInput;
 import game.Settings;
 import game.gameobject.AnyInput;
-import game.myGame.MyPlayer;
 import game.gameobject.menu.MenuChoice;
 import game.myGame.MyController;
-import game.myGame.MyMenu;
+import game.place.Menu;
 import engine.Controlers;
 import static engine.Controlers.controllers;
 import game.gameobject.Player;
@@ -27,7 +26,7 @@ public class ChoiceMapButton extends MenuChoice {
     private final int i;
     private Thread thread;
 
-    public ChoiceMapButton(String label, MyMenu menu, Settings settings, Player ctrl, int i) {
+    public ChoiceMapButton(String label, Menu menu, Settings settings, Player ctrl, int i) {
         super(label, menu, settings);
         this.i = i;
         if (ctrl == null) {

@@ -8,7 +8,7 @@ package game.gameobject.menu.choices;
 import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.myGame.MyMenu;
+import game.place.Menu;
 
 /**
  *
@@ -16,7 +16,7 @@ import game.myGame.MyMenu;
  */
 public class ChoiceSmoothShadows extends MenuChoice {
 
-    public ChoiceSmoothShadows(String label, MyMenu menu, Settings settings) {
+    public ChoiceSmoothShadows(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
