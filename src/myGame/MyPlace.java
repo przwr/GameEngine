@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.myGame;
+package myGame;
 
 import collision.Area;
 import collision.Line;
@@ -155,11 +155,17 @@ public class MyPlace extends Place {
     @Override
     protected void renderText(Camera cam) {
         for (int p = 0; p < playersLength; p++) {
-            ((MyPlayer) players[p]).renderName(this, cam);
+            if (cam.getSY() <= players[p].getY() + (players[p].getHeight() << 2) && cam.getEY() >= players[p].getY() - (players[p].getHeight() << 2)
+                    && cam.getSX() <= players[p].getY() + (players[p].getWidth() << 2) && cam.getEX() >= players[p].getX() - (players[p].getWidth() << 2)) {
+                ((MyPlayer) players[p]).renderName(this, cam);
+            }
         }
 
         for (Mob mob : sMobs) {
-            mob.renderName(this, cam);
+            if (cam.getSY() <= mob.getY() + (mob.getHeight() << 2) && cam.getEY() >= mob.getY() - (mob.getHeight() << 2)
+                    && cam.getSX() <= mob.getY() + (mob.getWidth() << 2) && cam.getEX() >= mob.getX() - (mob.getWidth() << 2)) {
+                mob.renderName(this, cam);
+            }
         }
     }
 }

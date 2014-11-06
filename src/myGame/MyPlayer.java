@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.myGame;
+package myGame;
 
 import collision.Rectangle;
 import game.gameobject.inputs.*;
@@ -16,12 +16,6 @@ import engine.Drawer;
 import engine.Methods;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_COMBINE_ALPHA;
-import static org.lwjgl.opengl.GL13.GL_COMBINE_RGB;
-import static org.lwjgl.opengl.GL13.GL_PRIMARY_COLOR;
-import static org.lwjgl.opengl.GL14.glBlendColor;
-import static org.lwjgl.opengl.GL15.GL_SRC0_ALPHA;
-import static org.lwjgl.opengl.GL15.GL_SRC0_RGB;
 import org.newdawn.slick.Color;
 
 /**
@@ -56,7 +50,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    protected final void initControler(boolean isFirst) {
+    public final void initControler(boolean isFirst) {
         ctrl = new MyController(this);
         if (isFirst) {
             this.isFirst = true;

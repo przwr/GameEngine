@@ -7,7 +7,7 @@ package game.place;
 
 import game.gameobject.GameObject;
 import game.gameobject.Player;
-import game.myGame.MyPlayer;
+import myGame.MyPlayer;
 import game.place.cameras.PlayersCamera;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;

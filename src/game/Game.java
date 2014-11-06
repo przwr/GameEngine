@@ -5,20 +5,9 @@
  */
 package game;
 
-import game.myGame.MyMenu;
-import game.myGame.MyPlace;
 import game.place.Place;
-import java.io.File;
-import engine.Sound;
-import game.gameobject.GameObject;
 import game.gameobject.Player;
-import game.myGame.MyPlayer;
 import game.place.Menu;
-import game.place.SplitScreen;
-import game.place.cameras.FourPlayersCamera;
-import game.place.cameras.PlayersCamera;
-import game.place.cameras.ThreePlayersCamera;
-import game.place.cameras.TwoPlayersCamera;
 import org.lwjgl.input.Controller;
 
 /**

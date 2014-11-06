@@ -69,15 +69,15 @@ public class Renderer {
         for (int p = 0; p < place.playersLength; p++) {
             light = place.players[p];
             if (place.singleCam && place.playersLength > 1) {
-                if (light.isEmits() && SY[2 + place.playersLength] <= light.getY() + light.getLight().getSY() / 2 && EY[2 + place.playersLength] >= light.getY() - light.getLight().getSY() / 2
-                        && SX[2 + place.playersLength] <= light.getX() + light.getLight().getSX() / 2 && EX[2 + place.playersLength] >= light.getX() - light.getLight().getSX() / 2) {
+                if (light.isEmits() && SY[2 + place.playersLength] <= light.getY() + (light.getLight().getSY() >> 1) && EY[2 + place.playersLength] >= light.getY() - (light.getLight().getSY() >> 1)
+                        && SX[2 + place.playersLength] <= light.getX() + (light.getLight().getSX() >> 1) && EX[2 + place.playersLength] >= light.getX() - (light.getLight().getSX() >> 1)) {
                     isVisible = true;
                     place.cams[place.playersLength - 2].visibleLights[place.cams[place.playersLength - 2].nrVLights++] = light;
                 }
             } else {
                 for (int pi = 0; pi < place.playersLength; pi++) {
-                    if (light.isEmits() && SY[pi] <= light.getY() + light.getLight().getSY() / 2 && EY[pi] >= light.getY() - light.getLight().getSY() / 2
-                            && SX[pi] <= light.getX() + light.getLight().getSX() / 2 && EX[pi] >= light.getX() - light.getLight().getSX() / 2) {
+                    if (light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() >> 1) && EY[pi] >= light.getY() - (light.getLight().getSY() >> 1)
+                            && SX[pi] <= light.getX() + (light.getLight().getSX() >> 1) && EX[pi] >= light.getX() - (light.getLight().getSX() >> 1)) {
                         isVisible = true;
                         (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
                     }

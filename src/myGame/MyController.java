@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.myGame;
+package myGame;
 
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
@@ -26,14 +26,14 @@ public class MyController extends Controler {
     public static final int RUN = 5;
     public static final int LIGHT = 6;
 
-    public final AnyInput[] inputs = new AnyInput[36];
-    public final Action[] actions = new Action[36]; // 4 pierwsze to menu
-    private final int[] states = new int[10];
-
     public MyController(Entity inControl) {
         super(inControl);
+        inputs = new AnyInput[36];
+        actions = new Action[36]; // 4 pierwsze to menu
+        states = new int[10];
     }
 
+    @Override
     public void init() {
         actions[0] = new ActionOnOff(inputs[0], inControl) {
             @Override
@@ -64,18 +64,22 @@ public class MyController extends Controler {
         }
     }
 
+    @Override
     public boolean isPressed(int i) {
         return states[i] > 0;
     }
 
+    @Override
     public boolean isClicked(int i) {
         return states[i] == 2;
     }
 
+    @Override
     public boolean isReleased(int i) {
         return states[i] == -1;
     }
 
+    @Override
     public boolean isMoving() {
         return states[0] > 0 || states[1] > 0 || states[2] > 0 || states[3] > 0;
     }
