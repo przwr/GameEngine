@@ -16,6 +16,12 @@ import engine.Drawer;
 import game.Methods;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_COMBINE_ALPHA;
+import static org.lwjgl.opengl.GL13.GL_COMBINE_RGB;
+import static org.lwjgl.opengl.GL13.GL_PRIMARY_COLOR;
+import static org.lwjgl.opengl.GL14.glBlendColor;
+import static org.lwjgl.opengl.GL15.GL_SRC0_ALPHA;
+import static org.lwjgl.opengl.GL15.GL_SRC0_RGB;
 import org.newdawn.slick.Color;
 
 /**
@@ -46,7 +52,7 @@ public class MyPlayer extends Player {
         emits = false;
         scale = SCALE;
         place.addObj(this);
-        setCollision(new Rectangle(this.width / 2, this.height / 3, this));
+        setCollision(new Rectangle(this.width, this.height / 2, this));
     }
 
     @Override
@@ -96,11 +102,16 @@ public class MyPlayer extends Player {
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
 
             Drawer.setColor(new Color(0, 0, 0, 51));
-            Drawer.drawCircle(0, 0, 20, (int) (x / 64));
-            Drawer.refreshColor();
+            Drawer.drawElipse(0, 0, collision.getWidth() / 2, collision.getHeight() / 2, 15);
+            Drawer.refreshColor(place);
 
             glTranslatef(0, (int) -jump, 0);
+            //Drawer.setColor(Color.white);
+            //glBlendFunc(GL_DST_ALPHA, GL_DST_ALPHA);
+            //glDisable(GL_TEXTURE_2D);
             getAnim().render(animate);
+            //Drawer.refreshColor(place);
+            //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glTranslatef(0, (int) jump, 0);
             glPopMatrix();
         }

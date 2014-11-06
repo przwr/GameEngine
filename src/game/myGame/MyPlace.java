@@ -6,6 +6,7 @@
 package game.myGame;
 
 import collision.Area;
+import collision.Line;
 import collision.Rectangle;
 import game.gameobject.Mob;
 import game.Game;
@@ -78,13 +79,19 @@ public class MyPlace extends Place {
         tiles[8 + 6 * height / sTile] = ROCK;
         test.addFigure(new Rectangle(1 * sTile, 1 * sTile, sTile, sTile, sTile / 2, test));
         tiles[7 + 7 * height / sTile] = ROCK;
+        Area border = new Area(0, 0, null, null, sTile);
+        border.addFigure(new Line(0, 0, width, 0, border));
+        border.addFigure(new Line(0, 0, 0, height, border));
+        border.addFigure(new Line(width, 0, 0, height, border));
+        border.addFigure(new Line(0, height, width, 0, border));
         areas.add(a);
         areas.add(test);
+        areas.add(border);
         addObj(new MyMob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
         addObj(new MyMob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
-        this.r = 0.5f;
-        this.g = 0.5f;
-        this.b = 0.5f;
+        this.r = 0.8f;
+        this.g = 0.8f;
+        this.b = 0.8f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);

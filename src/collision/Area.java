@@ -28,8 +28,8 @@ public class Area extends GameObject {
         this.y = y;
         this.parts = new ArrayList<>();
         solid = true;
-        this.lit = new Sprite(lit, sTile, sTile, null);
-        this.nLit = new Sprite(nLit, sTile, sTile, null);
+        this.lit = lit != null ? new Sprite(lit, sTile, sTile, null) : null;
+        this.nLit = nLit != null ? new Sprite(nLit, sTile, sTile, null) : null;
     }
 
     public void addFigure(Figure f) {
