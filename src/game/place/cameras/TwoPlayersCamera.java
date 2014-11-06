@@ -43,11 +43,11 @@ public class TwoPlayersCamera extends Camera {
 
     @Override
     public int getMidX() {
-        return (getGo().getX() + go2.getX()) / 2;
+        return (getGo().getMidX() + go2.getMidX()) / 2;
     }
 
     @Override
     public int getMidY() {
-        return (getGo().getY() + go2.getY()) / 2;
+        return (getGo().getMidY() + go2.getMidY()) / 2;
     }
 }

@@ -37,11 +37,10 @@ public abstract class Place {
     protected FontsHandler fonts;
     public final int width, height, sTile;
 
-    public Camera cam;
-    public Camera[] cams = new Camera[3];
-    public boolean isSplit, changeSSMode, singleCam;
+    public Camera cam, camfor2, camfor3, camfor4;
+    public boolean isSplit, changeSSMode;
     public float r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
-    public int ssMode, playersLength, nrVLights;
+    public int ssMode, SX, SY, EX, EY, playersLength;
 
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -49,7 +48,7 @@ public abstract class Place {
     public ArrayList<GameObject> flatObj = new ArrayList<>();
     public GameObject[] players;
     public ArrayList<GameObject> emitters = new ArrayList<>();
-    public GameObject[] visibleLights = new GameObject[2048];
+    public ArrayList<GameObject> visibleLights = new ArrayList<>();
     public ArrayList<Area> areas = new ArrayList<>();
 
     public ArrayList<GameObject> depthObj = new ArrayList<>();
@@ -96,29 +95,31 @@ public abstract class Place {
     public void render() {
         Renderer.findVisibleLights(this);
         Renderer.preRendLightsFBO(this);
+        glEnable(GL_SCISSOR_TEST);
         for (int p = 0; p < playersLength; p++) {
             cam = (((MyPlayer) players[p]).getCam());
             SplitScreen.setSplitScreen(this, p);
-            if (p == 0 || !singleCam) {
-                glEnable(GL_SCISSOR_TEST);
-                Renderer.preRenderShadowedLightsFBO(cam);
-                renderBack(cam);
-                renderObj(cam);
-                renderText(cam);
-                Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                glDisable(GL_SCISSOR_TEST);
-            }
+            Renderer.preRenderShadowedLightsFBO(cam);
+            renderBack(cam);
+            renderObj(cam);
+            renderText(cam);
+            Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
         }
+        glDisable(GL_SCISSOR_TEST);
         Renderer.border(ssMode);
     }
 
     protected void renderBack(Camera cam) {
         glColor3f(r, g, b);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        SX = cam.getSX();
+        EX = cam.getEX();
+        SY = cam.getSY();
+        EY = cam.getEY();
         for (int y = 0; y < height / sTile; y++) {
-            if (cam.getSY() < (y + 1) * sTile && cam.getEY() > y * sTile) {
+            if (SY < (y + 1) * sTile && EY > y * sTile) {
                 for (int x = 0; x < width / sTile; x++) {
-                    if (cam.getSX() < (x + 1) * sTile && cam.getEX() > x * sTile) {
+                    if (SX < (x + 1) * sTile && EX > x * sTile) {
                         Tile t = tiles[x + y * height / sTile];
                         if (t != null) {
                             t.render(0, cam.getXOffEffect() + x * sTile, cam.getYOffEffect() + y * sTile);

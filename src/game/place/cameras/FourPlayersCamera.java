@@ -31,11 +31,11 @@ public class FourPlayersCamera extends Camera {
 
     @Override
     public final int getMidX() {
-        return ((getGo().getX() + go2.getX() + go3.getX() + go4.getX()) / 4);
+        return ((getGo().getMidX() + go2.getMidX() + go3.getMidX() + go4.getMidX()) / 4);
     }
 
     @Override
     public final int getMidY() {
-        return ((getGo().getY() + go2.getY() + go3.getY() + go4.getY()) / 4);
+        return ((getGo().getMidY() + go2.getMidY() + go3.getMidY() + go4.getMidY()) / 4);
     }
 }
