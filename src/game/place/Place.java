@@ -10,10 +10,10 @@ import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
 import game.gameobject.Mob;
-import game.myGame.MyPlayer;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
 import engine.SoundBase;
+import game.gameobject.Player;
 import game.myGame.MyMob;
 import java.util.Collections;
 import java.util.Comparator;
@@ -91,7 +91,7 @@ public abstract class Place extends ScreenPlace {
         Renderer.findVisibleLights(this);
         Renderer.preRendLightsFBO(this);
         for (int p = 0; p < playersLength; p++) {
-            cam = (((MyPlayer) players[p]).getCam());
+            cam = (((Player) players[p]).getCam());
             SplitScreen.setSplitScreen(this, p);
             if (p == 0 || !singleCam) {
                 glEnable(GL_SCISSOR_TEST);
@@ -162,7 +162,7 @@ public abstract class Place extends ScreenPlace {
     }
 
     public void addObj(GameObject go) {
-        if (go.getClass() != MyPlayer.class) {
+        if (go.getClass() != Player.class) {
             if (go.isEmitter()) {
                 emitters.add(go);
             }
@@ -193,7 +193,7 @@ public abstract class Place extends ScreenPlace {
     }
 
     public void deleteObj(GameObject go) {
-        if (go.getClass() != MyPlayer.class) {
+        if (go.getClass() != Player.class) {
             if (go.isEmitter()) {
                 emitters.remove(go);
             }

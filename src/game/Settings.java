@@ -5,11 +5,11 @@
  */
 package game;
 
-import game.myGame.MyPlayer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import engine.SoundBase;
+import game.gameobject.Player;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.Display;
@@ -45,7 +45,7 @@ public class Settings {
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny
     public int actionsNr;
-    public MyPlayer[] players;
+    public Player[] players;
     public Controller[] controllers;
     public int worldSeed;
     public int isSupfboVer3;
@@ -103,7 +103,7 @@ public class Settings {
         }
     }
 
-    public void Up(int nr, MyPlayer[] players, Controller[] controllers) {
+    public void Up(int nr, Player[] players, Controller[] controllers) {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;

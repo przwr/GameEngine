@@ -10,7 +10,7 @@ import collision.Figure;
 import engine.Point;
 import game.Methods;
 import game.gameobject.GameObject;
-import game.myGame.MyPlayer;
+import game.gameobject.Player;
 import game.place.cameras.Camera;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
@@ -44,7 +44,7 @@ public class Renderer {
 
     public static void findVisibleLights(Place place) {
         for (int p = 0; p < place.playersLength; p++) {
-            cam = (((MyPlayer) place.players[p]).getCam());
+            cam = (((Player) place.players[p]).getCam());
             cam.nrVLights = 0;
             SX[p] = cam.getSX();
             EX[p] = cam.getEX();
@@ -79,7 +79,7 @@ public class Renderer {
                     if (light.isEmits() && SY[pi] <= light.getY() + light.getLight().getSY() / 2 && EY[pi] >= light.getY() - light.getLight().getSY() / 2
                             && SX[pi] <= light.getX() + light.getLight().getSX() / 2 && EX[pi] >= light.getX() - light.getLight().getSX() / 2) {
                         isVisible = true;
-                        (((MyPlayer) place.players[pi]).getCam()).visibleLights[(((MyPlayer) place.players[pi]).getCam()).nrVLights++] = light;
+                        (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
                     }
                 }
             }

@@ -14,6 +14,7 @@ import game.myGame.MyController;
 import game.myGame.MyMenu;
 import engine.Controlers;
 import static engine.Controlers.controllers;
+import game.gameobject.Player;
 import org.lwjgl.input.Controllers;
 
 /**
@@ -26,7 +27,7 @@ public class ChoiceMapButton extends MenuChoice {
     private final int i;
     private Thread thread;
 
-    public ChoiceMapButton(String label, MyMenu menu, Settings settings, MyPlayer ctrl, int i) {
+    public ChoiceMapButton(String label, MyMenu menu, Settings settings, Player ctrl, int i) {
         super(label, menu, settings);
         this.i = i;
         if (ctrl == null) {

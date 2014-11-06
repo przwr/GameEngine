@@ -6,6 +6,7 @@
 package game.place;
 
 import game.gameobject.GameObject;
+import game.gameobject.Player;
 import game.myGame.MyPlayer;
 import game.place.cameras.PlayersCamera;
 import org.lwjgl.opengl.Display;
@@ -218,12 +219,12 @@ public class SplitScreen {
     public static void changeSSMode2(Place pl) {
         if (pl.settings.hSplitScreen) {
             pl.settings.hSplitScreen = false;
-            ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(4, 2, 0);
-            ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(4, 2, 1);
+            ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(4, 2, 0);
+            ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(4, 2, 1);
         } else {
             pl.settings.hSplitScreen = true;
-            ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(2, 4, 0);
-            ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(2, 4, 1);
+            ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(2, 4, 0);
+            ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(2, 4, 1);
         }
         pl.changeSSMode = false;
     }
@@ -231,14 +232,14 @@ public class SplitScreen {
     public static void changeSSMode3(Place pl) {
         if (pl.settings.hSplitScreen) {
             pl.settings.hSplitScreen = false;
-            ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(4, 2, 0);
-            ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(4, 4, 1);
-            ((PlayersCamera) ((MyPlayer) pl.players[2]).getCam()).init(4, 4, 2);
+            ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(4, 2, 0);
+            ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(4, 4, 1);
+            ((PlayersCamera) ((Player) pl.players[2]).getCam()).init(4, 4, 2);
         } else {
             pl.settings.hSplitScreen = true;
-            ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(2, 4, 0);
-            ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(4, 4, 1);
-            ((PlayersCamera) ((MyPlayer) pl.players[2]).getCam()).init(4, 4, 2);
+            ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(2, 4, 0);
+            ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(4, 4, 1);
+            ((PlayersCamera) ((Player) pl.players[2]).getCam()).init(4, 4, 2);
         }
         pl.changeSSMode = false;
     }
@@ -247,21 +248,21 @@ public class SplitScreen {
         if (pl.players[0].getY() > pl.players[1].getY()) {
             swampFirstWithSecond(pl);
         }
-        ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(2, 4, 0);
-        ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(2, 4, 1);
+        ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(2, 4, 0);
+        ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(2, 4, 1);
     }
 
     private static void swampX(Place pl) {
         if (pl.players[0].getX() > pl.players[1].getX()) {
             swampFirstWithSecond(pl);
         }
-        ((PlayersCamera) ((MyPlayer) pl.players[0]).getCam()).init(4, 2, 0);
-        ((PlayersCamera) ((MyPlayer) pl.players[1]).getCam()).init(4, 2, 1);
+        ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(4, 2, 0);
+        ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(4, 2, 1);
     }
 
     public static void swampFirstWithSecond(Place pl) {
         GameObject temp = pl.players[0];
-        MyPlayer tempG = pl.game.players[0];
+        Player tempG = pl.game.players[0];
         pl.players[0] = pl.players[1];
         pl.game.players[0] = pl.game.players[1];
         pl.players[1] = temp;

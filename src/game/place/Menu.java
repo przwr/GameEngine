@@ -9,7 +9,6 @@ import engine.Delay;
 import game.Game;
 import game.Settings;
 import game.gameobject.menu.MenuOpt;
-import game.place.cameras.Camera;
 import org.lwjgl.opengl.Display;
 
 /**

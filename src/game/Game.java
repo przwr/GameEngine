@@ -12,6 +12,7 @@ import game.place.Place;
 import java.io.File;
 import engine.Sound;
 import game.gameobject.GameObject;
+import game.gameobject.Player;
 import game.place.Menu;
 import game.place.SplitScreen;
 import game.place.cameras.FourPlayersCamera;
@@ -27,8 +28,8 @@ import org.lwjgl.input.Controller;
 public class Game {
 
     private final Settings settings;
-    private final MyPlayer menuPl;
-    public final MyPlayer[] players = new MyPlayer[4];
+    private final Player menuPl;
+    public final Player[] players = new MyPlayer[4];
     private final Menu menu;
     private Place place;
     private final String title;
@@ -59,7 +60,7 @@ public class Game {
 
     public void getInput() {
         if (runFlag) {
-            MyPlayer pl;
+            Player pl;
             for (int p = 0; p < players.length; p++) {
                 pl = players[p];
                 if (pl.isMenuOn()) {
@@ -82,7 +83,7 @@ public class Game {
             if (place == null) {
                 menuPl.getMenuInput();
             } else {
-                for (MyPlayer pl : players) {
+                for (Player pl : players) {
                     if (pl.isMenuOn()) {
                         ((MyMenu) menu).back();
                     } else {
@@ -144,7 +145,7 @@ public class Game {
             players[p].init(4, 4, 56, 56, 64, 64, place, p * 256, p * 265, settings.SCALE);
             ((MyPlayer) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
             if (p != place.playersLength) {
-                MyPlayer tempG = players[place.playersLength];
+                Player tempG = players[place.playersLength];
                 GameObject tempP = place.players[place.playersLength];
                 players[place.playersLength] = players[p];
                 place.players[place.playersLength] = place.players[p];
@@ -164,7 +165,7 @@ public class Game {
         if (place.playersLength > 1 && !((MyPlayer) players[p]).isFirst) {
             ((MyPlayer) place.players[p]).setPlaceToNull();
             if (p != place.playersLength - 1) {
-                MyPlayer tempG = players[place.playersLength - 1];
+                Player tempG = players[place.playersLength - 1];
                 GameObject tempP = place.players[place.playersLength - 1];
                 players[place.playersLength - 1] = players[p];
                 place.players[place.playersLength - 1] = place.players[p];
@@ -216,7 +217,7 @@ public class Game {
         runFlag = false;
         place = null;
         settings.sounds = null;
-        for (MyPlayer pl : players) {
+        for (Player pl : players) {
             pl.setPlaceToNull();
         }
     }
