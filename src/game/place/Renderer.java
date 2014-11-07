@@ -175,8 +175,8 @@ public class Renderer {
 
     private static void calculateShadow(GameObject src, Figure shade) {
         center.set(src.getX(), src.getY());
-        tempPoints[0].set(shade.getX(), shade.getY() + shade.getShadowHeight());
-        tempPoints[1].set(shade.getEndX(), shade.getY() + shade.getShadowHeight());
+        tempPoints[0].set(shade.getX(), shade.getY());
+        tempPoints[1].set(shade.getEndX(), shade.getY());
         tempPoints[2].set(shade.getX(), shade.getEndY());
         tempPoints[3].set(shade.getEndX(), shade.getEndY());
 //        System.arraycopy(shade.getCollision().listPoints(), 0, tempPoints, 0, 4);
@@ -267,24 +267,27 @@ public class Renderer {
         if (left != null) {     //czy lewy koniec pada na ścianę?
             YL = left.getEndY();
             XL1 = (int) ((YL - bl1) / al1);
-            if (Math.abs(al1) >= 1 && XL1 >= left.getX() && XL1 <= (left.getEndX())) { //dodaj światło
+            if (/*Math.abs(al1) >= 1 && */XL1 >= left.getX() && XL1 <= (left.getEndX())) { //dodaj światło
                 XL2 = al1 > 0 ? left.getX() : left.getEndX();
-                leftWallPoints[0].set(XL1, YL - left.getShadowHeight());
+                leftWallPoints[0].set(XL1, YL - left.getHeight());
                 leftWallPoints[1].set(XL1, YL);
                 leftWallPoints[2].set(XL2, YL);
-                leftWallPoints[3].set(XL2, YL - left.getShadowHeight());
+                leftWallPoints[3].set(XL2, YL - left.getHeight());
                 leftWallColor = isLeftWall = true;
+                //System.out.println("Light: al1:" + Math.abs(al1) + " XL1: " + XL1 + " leftX: " + left.getX() + " leftEndX: " + left.getEndX());
             } else if (XL1 > left.getX() && XL1 < (left.getEndX())) { //dodaj cień
                 XL2 = al1 > 0 ? left.getX() : left.getEndX();
                 leftWallPoints[0].set(XL1, YL);
-                leftWallPoints[1].set(XL1, YL - left.getShadowHeight());
-                leftWallPoints[2].set(XL2, YL - left.getShadowHeight());
+                leftWallPoints[1].set(XL1, YL - left.getHeight());
+                leftWallPoints[2].set(XL2, YL - left.getHeight());
                 leftWallPoints[3].set(XL2, YL);
                 leftWallColor = false;
                 isLeftWall = true;
+                //System.out.println("Shadow: al1:" + Math.abs(al1) + " XL1: " + XL1 + " leftX: " + left.getX() + " leftEndX: " + left.getEndX());
             } else {
                 left.getOwner().renderShadow((left.getX()) + src.getLight().getSX() / 2 - (src.getX()),
                         left.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false);
+                //System.out.println("Ciemno");
             }
         }
         if (right != null) {     //czy prawy koniec pada na ścianę?
@@ -292,11 +295,12 @@ public class Renderer {
             XR1 = (int) ((YR - bl2) / al2);
             if (Math.abs(al2) > 1 && XR1 >= right.getX() && XR1 <= (right.getEndX())) {     // dodaj światło
                 XR2 = al2 > 0 ? right.getX() : right.getEndX();
-                rightWallPoints[0].set(XR1, YR - right.getShadowHeight());
+                rightWallPoints[0].set(XR1, YR - right.getHeight());
                 rightWallPoints[1].set(XR1, YR);
                 rightWallPoints[2].set(XR2, YR);
-                rightWallPoints[3].set(XR2, YR - right.getShadowHeight());
+                rightWallPoints[3].set(XR2, YR - right.getHeight());
                 isRightWall = true;
+                //System.out.println("Right");
             }
         }
     }

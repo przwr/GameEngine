@@ -73,15 +73,15 @@ public class MyPlace extends Place {
             }
         }
         Area test = new Area(6 * sTile, 6 * sTile, "rockw", "rockb", sTile);
-        test.addFigure(new Rectangle(0, 0, sTile, sTile, 0, test));
+        test.addFigure(new Rectangle(0, 0, sTile, sTile, sTile, test));
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 6 * sTile, 6 * sTile, 6 * sTile, true);
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
         //tiles[6 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, 0, test));
+        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, sTile, test));
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 8 * sTile, 6 * sTile, 6 * sTile, true);
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 8 * sTile, 5 * sTile, 6 * sTile, true);
         //tiles[8 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(1 * sTile, 1 * sTile, sTile, sTile, 0, test));
+        test.addFigure(new Rectangle(1 * sTile, 1 * sTile, sTile, sTile, sTile, test));
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;
