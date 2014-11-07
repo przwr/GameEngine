@@ -32,33 +32,33 @@ public class Drawer {
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLE_FAN);
         int step = 360 / steps;
-        glVertex2f(0, 0);        
+        glVertex2f(0, 0);
         for (int i = 0; i <= 360; i += step) {
-            glVertex2f((float)Methods.xRadius(i, r), (float)Methods.yRadius(i, r));
+            glVertex2f((float) Methods.xRadius(i, r), (float) Methods.yRadius(i, r));
         }
-        glVertex2f(r, 0);        
+        glVertex2f(r, 0);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
-    
+
     public static void drawElipse(int xs, int ys, int rx, int ry, int steps) {   //dla małych ilości kroków wychodzą figury foremne (trójkąt, czworokąt, itp.)
         glTranslatef(xs, ys, 0);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLE_FAN);
         int step = 360 / steps;
-        glVertex2f(0, 0);        
+        glVertex2f(0, 0);
         for (int i = 0; i <= 360; i += step) {
-            glVertex2f((float)Methods.xRadius(i, rx), (float)Methods.yRadius(i, ry));
+            glVertex2f((float) Methods.xRadius(i, rx), (float) Methods.yRadius(i, ry));
         }
-        glVertex2f(rx, 0);        
+        glVertex2f(rx, 0);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
-    
+
     public static void setColor(Color c) {
         glColor4f(c.r, c.g, c.b, c.a);
     }
-    
+
     public static void refreshColor(Place p) {
         glColor4f(p.r, p.g, p.b, 1.0f);
     }

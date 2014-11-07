@@ -43,6 +43,14 @@ public abstract class FBORenderer {
         return texture;
     }
 
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
     protected interface activate {
 
         void activate();

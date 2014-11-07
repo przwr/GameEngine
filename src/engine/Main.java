@@ -73,7 +73,6 @@ public class Main {
         glEnable(GL_SCISSOR_TEST);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
         glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
         glMatrixMode(GL_MODELVIEW);
         glClearColor(0, 0, 0, 0);
@@ -106,7 +105,7 @@ public class Main {
     private static void initDisplay() {
         try {
             setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
-            Display.create(new PixelFormat(32, 0, 24, 0, 0));            
+            Display.create(new PixelFormat(32, 0, 24, 0, 0));
             Display.setResizable(false);
             if (settings.vSync) {
                 Display.setVSyncEnabled(true);

@@ -97,7 +97,7 @@ public class Renderer {
             if (emitter.isEmits()) {
                 findShades(emitter, place);
                 emitter.getLight().fbo.activate();
-                clearScreen(1);
+                clearFBO(1, emitter.getLight().fbo);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 for (int f = 0; f < nrShades; f++) {    //iteracja po Shades - tych co dają cień
                     calculateShadow(emitter, shades[f]);
@@ -352,7 +352,7 @@ public class Renderer {
         glPopMatrix();
     }
 
-    private static void clearScreen(float color) {
+    public static void clearScreen(float color) {
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
         glColor3f(color, color, color);
@@ -361,6 +361,20 @@ public class Renderer {
         glVertex2f(0, h);
         glVertex2f(w, h);
         glVertex2f(w, 0);
+        glEnd();
+        glEnable(GL_BLEND);
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    public static void clearFBO(float color, FBORenderer fbo) {
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_BLEND);
+        glColor3f(color, color, color);
+        glBegin(GL_QUADS);
+        glVertex2f(0, 0);
+        glVertex2f(0, fbo.getHeight());
+        glVertex2f(fbo.getWidth(), fbo.getHeight());
+        glVertex2f(fbo.getWidth(), 0);
         glEnd();
         glEnable(GL_BLEND);
         glEnable(GL_TEXTURE_2D);
