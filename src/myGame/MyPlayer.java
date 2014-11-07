@@ -108,6 +108,7 @@ public class MyPlayer extends Player {
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glTranslatef(0, (int) jump, 0);
             glPopMatrix();
+            Drawer.refreshColor(place);
         }
     }
 

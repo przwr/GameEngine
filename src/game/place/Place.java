@@ -152,10 +152,10 @@ public abstract class Place extends ScreenPlace {
     private void renderTop(Camera cam) {
         sortObjects(onTopObject);
         for (GameObject go : onTopObject) {
-            if (cam.getSY() <= go.getY() + (go.getHeight() >> 1) && cam.getEY() >= go.getY() - (go.getHeight() >> 1)
-                    && cam.getSX() <= go.getY() + (go.getWidth() >> 2) && cam.getEX() >= go.getX() - (go.getWidth() >> 2)) {
+           // if (cam.getSY() <= go.getY() + (go.getHeight() >> 1) && cam.getEY() >= go.getY() - (go.getHeight() >> 1)
+           //         && cam.getSX() <= go.getX() + (go.getWidth() >> 2) && cam.getEX() >= go.getX() - (go.getWidth() >> 2)) {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            }
+            //}
         }
     }
 

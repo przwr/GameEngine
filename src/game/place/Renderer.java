@@ -105,7 +105,7 @@ public class Renderer {
                     calculateWalls(shades[f], emitter);
                     drawWalls(emitter);
                     if (shades[f].getShadowHeight() > 0) {
-                        shadeColor = (emitter.getY() - shades[f].getCentralY()) / (shades[f].getShadowHeight());
+                        shadeColor = (float)(emitter.getY() - shades[f].getCentralY()) / (float)(shades[f].getShadowHeight());                        
                     } else {
                         shadeColor = 1f;
                     }
@@ -240,7 +240,7 @@ public class Renderer {
         right = null;
         for (int i = 0; i < nrShades; i++) {
             other = shades[i];
-            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getEndY() < src.getY() && f.getYOfShadow() < src.getY()) {
+            if (other != f && other.getShadowHeight() != 0 && other.getY() < f.getY() && other.getEndY() < src.getY() && f.getYOfShadow() < src.getY()) {                
                 XOL = ((other.getEndY() - bl1) / al1);
                 XO2 = ((other.getYOfShadow() - bl1) / al1);
                 XOR = ((other.getEndY() - bl2) / al2);

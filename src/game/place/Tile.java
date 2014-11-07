@@ -28,6 +28,7 @@ public abstract class Tile extends GameObject {
         glPopMatrix();
     }
 
+    @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null) {
             glPushMatrix();

@@ -95,9 +95,9 @@ public class MyPlace extends Place {
         areas.add(border);
         addObj(new MyMob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
         addObj(new MyMob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
-        this.r = 0.8f;
-        this.g = 0.8f;
-        this.b = 0.8f;
+        this.r = 0.45f;
+        this.g = 0.45f;
+        this.b = 0.45f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);
@@ -161,15 +161,15 @@ public class MyPlace extends Place {
     @Override
     protected void renderText(Camera cam) {
         for (int p = 0; p < playersLength; p++) {
-            if (cam.getSY() <= players[p].getY() + (players[p].getHeight() << 2) && cam.getEY() >= players[p].getY() - (players[p].getHeight() << 2)
-                    && cam.getSX() <= players[p].getY() + (players[p].getWidth() << 2) && cam.getEX() >= players[p].getX() - (players[p].getWidth() << 2)) {
+            if (cam.getSY() <= players[p].getY() + (players[p].getHeight()  << 2) && cam.getEY() >= players[p].getY() - (players[p].getHeight()  << 2)
+                    && cam.getSX() <= players[p].getX() + (players[p].getWidth() << 2) && cam.getEX() >= players[p].getX() - (players[p].getWidth()  << 2)) {
                 ((MyPlayer) players[p]).renderName(this, cam);
             }
         }
 
         for (Mob mob : sMobs) {
             if (cam.getSY() <= mob.getY() + (mob.getHeight() << 2) && cam.getEY() >= mob.getY() - (mob.getHeight() << 2)
-                    && cam.getSX() <= mob.getY() + (mob.getWidth() << 2) && cam.getEX() >= mob.getX() - (mob.getWidth() << 2)) {
+                    && cam.getSX() <= mob.getX() + (mob.getWidth() << 2) && cam.getEX() >= mob.getX() - (mob.getWidth() << 2)) {
                 mob.renderName(this, cam);
             }
         }
