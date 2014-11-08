@@ -110,6 +110,20 @@ public class Sprite {
         glEnd();
     }
 
+    public void renderFull() {
+        bindCheck();
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, 0);
+        glTexCoord2f(0, 1);
+        glVertex2f(0, height);
+        glTexCoord2f(1, 1);
+        glVertex2f(width, height);
+        glTexCoord2f(1, 0);
+        glVertex2f(width, 0);
+        glEnd();
+    }
+
     public void renderFlipped() {
         bindCheck();
         glTranslatef(sx, sy, 0);
@@ -205,7 +219,7 @@ public class Sprite {
     public void setHeight(int h) {
         this.height = h;
     }
-    
+
     public int getSx() {
         return width;
     }

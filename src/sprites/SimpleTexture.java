@@ -30,7 +30,7 @@ public class SimpleTexture {
     }
 
     public void render() {
-        
+       
         glBindTexture(GL_TEXTURE_2D, texture);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 1);

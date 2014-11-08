@@ -19,10 +19,10 @@ public abstract class Figure {
     protected int xs;
     protected int ys;
     protected int width;
-    protected int ShadowHeight;
     protected int height;
     protected int xCentr;
     protected int yCentr;
+    protected boolean canBeLit;
 
     protected int type;
 
@@ -203,12 +203,8 @@ public abstract class Figure {
         return type;
     }
 
-    public int getShadowHeight() {
-        return ShadowHeight;
-    }
-
-    public int getYOfShadow() {
-        return getOwner().getY() + ys + ShadowHeight;
+    public boolean canBeLit() {
+        return canBeLit;
     }
 
     public GameObject getOwner() {

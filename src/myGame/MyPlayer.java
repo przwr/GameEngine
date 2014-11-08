@@ -16,6 +16,7 @@ import engine.Drawer;
 import engine.Methods;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendColor;
 import org.newdawn.slick.Color;
 
 /**
@@ -103,12 +104,19 @@ public class MyPlayer extends Player {
             //Drawer.setColor(Color.white);
             //glBlendFunc(GL_DST_ALPHA, GL_DST_ALPHA);
             //glDisable(GL_TEXTURE_2D);
+            //glBlendColor(1f, 1f, 1f, 1f);
+            //glColor3f(1f, 1f, 1f);
+            //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
             getAnim().render(animate);
+           
+
+            
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
             //Drawer.refreshColor(place);
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glTranslatef(0, (int) jump, 0);
+            //glTranslatef(0, (int) jump, 0);
             glPopMatrix();
-            Drawer.refreshColor(place);
         }
     }
 

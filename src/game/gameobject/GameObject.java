@@ -199,4 +199,11 @@ public abstract class GameObject {
     public Light getLight() {
         return light;
     }
+
+    /**
+     * @return the sprite
+     */
+    public Sprite getSprite() {
+        return sprite;
+    }
 }

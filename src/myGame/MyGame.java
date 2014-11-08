@@ -154,6 +154,7 @@ public class MyGame extends Game {
     private void removePlayer(int p) {
         if (place.playersLength > 1 && !((MyPlayer) players[p]).isFirst) {
             ((MyPlayer) place.players[p]).setPlaceToNull();
+            place.deleteObj( place.players[p]);
             if (p != place.playersLength - 1) {
                 Player tempG = players[place.playersLength - 1];
                 GameObject tempP = place.players[place.playersLength - 1];
