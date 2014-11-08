@@ -19,19 +19,22 @@ public class Rectangle extends Figure {
     private final int w;
     private final int h;
 
-    public Rectangle(int xs, int ys, int w, int h, boolean canBeLit, GameObject owner) {  // Środek prostokąta (xs,ys) dla (0,0) jest w lewym górnym rogu prostokąta
+    public Rectangle(int xs, int ys, int w, int h, boolean canBeLit, boolean canGiveShadow, GameObject owner) {  // Środek prostokąta (xs,ys) dla (0,0) jest w lewym górnym rogu prostokąta
         super(xs, ys, owner);
         this.w = w;
         this.h = h;
         this.canBeLit = canBeLit;
+        this.canGiveShadow = canGiveShadow;
         this.type = 1;
         centralize();
     }
 
-    public Rectangle(int w, int h, GameObject owner) {  //Środek w środku
+    public Rectangle(int w, int h, boolean canBeLit, boolean canGiveShadow, GameObject owner) {  //Środek w środku
         super(-w / 2, -h / 2, owner);
         this.w = w;
         this.h = h;
+        this.canBeLit = canBeLit;
+        this.canGiveShadow = canGiveShadow;
         this.type = 1;
         centralize();
     }

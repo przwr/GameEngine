@@ -10,6 +10,7 @@ import collision.Figure;
 import engine.Point;
 import engine.Methods;
 import game.gameobject.GameObject;
+import game.gameobject.Mob;
 import game.gameobject.Player;
 import game.place.cameras.Camera;
 import org.lwjgl.opengl.Display;
@@ -44,7 +45,6 @@ public class Renderer {
 
 //    private static final Sprite white = new Sprite("alpha", 1024, 1024, null);
 //    private static final Sprite sp = new Sprite("rabbit", 64, 64, null);
-
     public static void findVisibleLights(Place place) {
         for (int p = 0; p < place.playersLength; p++) {
             cam = (((Player) place.players[p]).getCam());
@@ -103,18 +103,29 @@ public class Renderer {
                 clearFBO(1, emitter.getLight().fbo);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 for (int f = 0; f < nrShades; f++) {    //iteracja po Shades - tych co dają cień
-                    calculateShadow(emitter, shades[f]);
-                    drawShadow(emitter);
-                    calculateWalls(shades[f], emitter);
-                    drawWalls(emitter);
-                    if (shades[f].canBeLit()) {
-                        shadeColor = (float) (emitter.getY() - shades[f].getCentralY()) / (float) (shades[f].getHeight());
-                    } else {
+                    if (shades[f].canGiveShadow()) {
+                        calculateShadow(emitter, shades[f]);
+                        drawShadow(emitter);
+                        calculateWalls(shades[f], emitter);
+                        drawWalls(emitter);
+                        if (shades[f].canBeLit()) {
+                            shadeColor = (float) (emitter.getY() - shades[f].getCentralY()) / (float) (shades[f].getHeight());
+                        } else {
                         shadeColor = 1f;
+                        }
+                        glColor3f(shadeColor, shadeColor, shadeColor);
+                        shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
+                                shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() > shades[f].getCentralY());
+                    } else {
+                        if (shades[f].canBeLit()) {
+                            shadeColor = (float) (emitter.getY() - shades[f].getCentralY()) / (float) (shades[f].getHeight());
+                        } else {
+                        shadeColor = 1f;
+                        }
+                        glColor3f(shadeColor, shadeColor, shadeColor);
+                        shades[f].getOwner().renderShadow(shades[f].getOwner().getX() - shades[f].getOwner().getWidth()/2+ emitter.getLight().getSX() / 2 - (emitter.getX()),
+                                shades[f].getOwner().getY() - shades[f].getOwner().getHeight() -5+ emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() > shades[f].getY());
                     }
-                    glColor3f(shadeColor, shadeColor, shadeColor);
-                    shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
-                            shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() > shades[f].getCentralY());
                 }
                 glColor3f(1f, 1f, 1f);
                 glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -134,6 +145,13 @@ public class Renderer {
                         && (Math.abs(f.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (f.getWidth() >> 1))) {
                     shades[nrShades++] = f;
                 }
+            }
+        }
+        for (Mob mob : place.sMobs) {
+            Figure f = mob.getCollision();
+            if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
+                    && (Math.abs(f.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (f.getWidth() >> 1))) {
+                shades[nrShades++] = f;
             }
         }
         for (int i = 1, j; i < nrShades; i++) {
@@ -245,7 +263,7 @@ public class Renderer {
         if (left != null) {    //czy lewy koniec pada na ścianę?
             YL = left.getEndY();
             XL1 = (int) ((YL - bl1) / al1);
-            if (Math.abs(al1) > 1 && XL1 > left.getX() && XL1 <= (left.getEndX())) { //dodaj światło
+            if (Math.abs(al1) > 1 && XL1 >= left.getX() && XL1 <= (left.getEndX())) { //dodaj światło
                 XL2 = al1 > 0 ? left.getX() : left.getEndX();
                 leftWallPoints[0].set(XL1, YL - left.getHeight());
                 leftWallPoints[1].set(XL1, YL);
@@ -268,7 +286,7 @@ public class Renderer {
         if (right != null) {     //czy prawy koniec pada na ścianę?
             YR = right.getEndY();
             XR1 = (int) ((YR - bl2) / al2);
-            if (Math.abs(al2) > 1 && XR1 >= right.getX() && XR1 < (right.getEndX())) {     // dodaj światło
+            if (Math.abs(al2) > 1 && XR1 >= right.getX() && XR1 <= (right.getEndX())) {     // dodaj światło
                 XR2 = al2 > 0 ? right.getX() : right.getEndX();
                 rightWallPoints[0].set(XR1, YR - right.getHeight());
                 rightWallPoints[1].set(XR1, YR);
@@ -452,7 +470,6 @@ public class Renderer {
 //        fbo.deactivate();
 //        return new SimpleTexture(fbo.getTexture(), s.getWidth(), s.getHeight());
 //    }
-
     public static void border(int ssMode) {
         glViewport(0, 0, w, h);
         if (ssMode != 0) {

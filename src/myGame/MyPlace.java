@@ -66,22 +66,22 @@ public class MyPlace extends Place {
                     tiles[x + y * height / sTile] = GRASS;
                 } else {
                     if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
-                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, a));
+                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, true, a));
                     }
                     tiles[x + y * height / sTile] = ROCK;
                 }
             }
         }
         Area test = new Area(6 * sTile, 5 * sTile, "rockw", "rockb", sTile);
-        test.addFigure(new Rectangle(0, 0, sTile, sTile, true, test));
+        test.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, test));
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 6 * sTile, 4 * sTile, 6 * sTile, true);
         //tiles[6 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, true, test));
+        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, true, true, test));
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 8 * sTile, 5 * sTile, 6 * sTile, true);
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 8 * sTile, 4 * sTile, 6 * sTile, true);
         //tiles[8 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(1 * sTile, 2 * sTile, sTile, sTile, true, test));
+        test.addFigure(new Rectangle(1 * sTile, 2 * sTile, sTile, sTile, true, true, test));
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
         addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;

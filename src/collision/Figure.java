@@ -23,6 +23,7 @@ public abstract class Figure {
     protected int xCentr;
     protected int yCentr;
     protected boolean canBeLit;
+    protected boolean canGiveShadow;
 
     protected int type;
 
@@ -205,6 +206,10 @@ public abstract class Figure {
 
     public boolean canBeLit() {
         return canBeLit;
+    }
+
+    public boolean canGiveShadow() {
+        return canGiveShadow;
     }
 
     public GameObject getOwner() {

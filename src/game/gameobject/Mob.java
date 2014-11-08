@@ -9,10 +9,13 @@ import collision.Rectangle;
 import engine.Methods;
 import game.place.cameras.Camera;
 import game.place.Place;
+import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_ZERO;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
+import sprites.Sprite;
 
 /**
  *
@@ -33,7 +36,9 @@ public abstract class Mob extends Entity {
         this.range = (int) (SCALE * range);
         scale = SCALE;
         init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
-        setCollision(new Rectangle(this.width / 2, this.height / 3, this));
+        this.lit = new Sprite("rabbitw", (int) (SCALE * sx), (int) (SCALE * sy), null);
+        this.nLit = new Sprite("rabbitb", (int) (SCALE * sx), (int) (SCALE * sy), null);
+        setCollision(new Rectangle(this.width / 2, this.height / 3, true, false, this));
         this.setMaxSpeed(speed);
     }
 
@@ -94,9 +99,7 @@ public abstract class Mob extends Entity {
     public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null && lit != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(xEffect, yEffect, 0);
             if (isLit) {
                 lit.render();
             } else {

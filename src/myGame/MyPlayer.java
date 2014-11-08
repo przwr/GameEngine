@@ -16,7 +16,6 @@ import engine.Drawer;
 import engine.Methods;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendColor;
 import org.newdawn.slick.Color;
 
 /**
@@ -47,7 +46,7 @@ public class MyPlayer extends Player {
         emits = false;
         scale = SCALE;
         place.addObj(this);
-        setCollision(new Rectangle(this.width, this.height / 2, this));
+        setCollision(new Rectangle(this.width, this.height / 2, true, false, this));
     }
 
     @Override
