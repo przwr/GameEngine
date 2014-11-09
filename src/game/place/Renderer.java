@@ -111,20 +111,20 @@ public class Renderer {
                         if (shades[f].canBeLit()) {
                             shadeColor = (float) (emitter.getY() - shades[f].getCentralY()) / (float) (shades[f].getHeight());
                         } else {
-                        shadeColor = 1f;
+                            shadeColor = 1f;
                         }
                         glColor3f(shadeColor, shadeColor, shadeColor);
                         shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
-                                shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() > shades[f].getCentralY());
+                                shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getCentralY());
                     } else {
                         if (shades[f].canBeLit()) {
                             shadeColor = (float) (emitter.getY() - shades[f].getCentralY()) / (float) (shades[f].getHeight());
                         } else {
-                        shadeColor = 1f;
+                            shadeColor = 1f;
                         }
                         glColor3f(shadeColor, shadeColor, shadeColor);
-                        shades[f].getOwner().renderShadow(shades[f].getOwner().getX() - shades[f].getOwner().getWidth()/2+ emitter.getLight().getSX() / 2 - (emitter.getX()),
-                                shades[f].getOwner().getY() - shades[f].getOwner().getHeight() -5+ emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() > shades[f].getY());
+                        shades[f].getOwner().renderShadow(shades[f].getOwner().getX() - shades[f].getOwner().getWidth() / 2 + emitter.getLight().getSX() / 2 - (emitter.getX()),
+                                shades[f].getOwner().getY() - shades[f].getOwner().getHeight() - 5 + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getY());
                     }
                 }
                 glColor3f(1f, 1f, 1f);
@@ -147,6 +147,13 @@ public class Renderer {
                 }
             }
         }
+//        for (int p = 0; p < place.playersLength; p++) {
+//            Figure f = place.players[p].getCollision();
+//            if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
+//                    && (Math.abs(f.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (f.getWidth() >> 1))) {
+//                shades[nrShades++] = f;
+//            }
+//        }
         for (Mob mob : place.sMobs) {
             Figure f = mob.getCollision();
             if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
@@ -171,6 +178,11 @@ public class Renderer {
                 > Methods.PointDistance(src.getX(), src.getY(), temp.getX() + temp.getWidth() / 2, temp.getY() + temp.getHeight() / 2)) {
             return true;
         }
+//        } else if (checked.getCentralY() == temp.getCentralY()
+//                && Methods.PointDistance(src.getX(), src.getY(), checked.getOwner().getX() + checked.getOwner().getWidth() / 2, checked.getOwner().getY() + checked.getOwner().getHeight() / 2)
+//                > Methods.PointDistance(src.getX(), src.getY(), temp.getOwner().getX() + temp.getOwner().getWidth() / 2, temp.getOwner().getY() + temp.getOwner().getHeight() / 2)) {
+//            return true;
+//        }
         return false;
     }
 
