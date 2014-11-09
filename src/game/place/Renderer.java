@@ -124,7 +124,7 @@ public class Renderer {
                         }
                         glColor3f(shadeColor, shadeColor, shadeColor);
                         shades[f].getOwner().renderShadow(shades[f].getOwner().getX() - shades[f].getOwner().getWidth() / 2 + emitter.getLight().getSX() / 2 - (emitter.getX()),
-                                shades[f].getOwner().getY() - shades[f].getOwner().getHeight() - 5 + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getY());
+                                shades[f].getOwner().getY() - shades[f].getOwner().getHeight() - 2 + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getY());
                     }
                 }
                 glColor3f(1f, 1f, 1f);
@@ -171,11 +171,10 @@ public class Renderer {
     }
 
     private static boolean isSmaller(Figure checked, Figure temp, GameObject src) {
-        if (checked.getCentralY() > temp.getCentralY()) {
+        if (checked.getY() > temp.getY()) {
             return true;
-        } else if (checked.getCentralY() == temp.getCentralY()
-                && Methods.PointDistance(src.getX(), src.getY(), checked.getX() + checked.getWidth() / 2, checked.getY() + checked.getHeight() / 2)
-                > Methods.PointDistance(src.getX(), src.getY(), temp.getX() + temp.getWidth() / 2, temp.getY() + temp.getHeight() / 2)) {
+        } else if (checked.getY() == temp.getY()
+                && Math.abs(src.getX() - checked.getX()) > Math.abs(src.getX() - temp.getX())) {
             return true;
         }
 //        } else if (checked.getCentralY() == temp.getCentralY()
@@ -259,7 +258,7 @@ public class Renderer {
         left = right = null;
         for (int i = 0; i < nrShades; i++) {
             other = shades[i];
-            if (f.getY() < src.getY() && other.canBeLit() && other != f && other.getY() < f.getY() && other.getEndY() < src.getY()) {
+            if (f.getY() < src.getY() && other.canGiveShadow() && other != f && other.getY() < f.getY() && other.getEndY() < src.getY()) {
                 XOL = ((other.getEndY() - bl1) / al1);
                 XOL2 = ((other.getY() - bl1) / al1);
                 XOR = ((other.getEndY() - bl2) / al2);
@@ -275,14 +274,15 @@ public class Renderer {
         if (left != null) {    //czy lewy koniec pada na ścianę?
             YL = left.getEndY();
             XL1 = (int) ((YL - bl1) / al1);
-            if (Math.abs(al1) > 1 && XL1 >= left.getX() && XL1 <= (left.getEndX())) { //dodaj światło
+            if (Math.abs(al1) > 1 && XL1 > left.getX() && XL1 <= (left.getEndX())) { //dodaj światło
                 XL2 = al1 > 0 ? left.getX() : left.getEndX();
                 leftWallPoints[0].set(XL1, YL - left.getHeight());
                 leftWallPoints[1].set(XL1, YL);
                 leftWallPoints[2].set(XL2, YL);
                 leftWallPoints[3].set(XL2, YL - left.getHeight());
                 leftWallColor = isLeftWall = true;
-            } else if (XL1 > left.getX() && XL1 <= (left.getEndX())) { //dodaj cień
+//                System.out.println("L: Light");
+            } else if (XL1 >= left.getX() && XL1 <= (left.getEndX())) { //dodaj cień
                 XL2 = al1 > 0 ? left.getX() : left.getEndX();
                 leftWallPoints[0].set(XL1, YL);
                 leftWallPoints[1].set(XL1, YL - left.getHeight());
@@ -290,22 +290,25 @@ public class Renderer {
                 leftWallPoints[3].set(XL2, YL);
                 leftWallColor = false;
                 isLeftWall = true;
+//                System.out.println("L: Shadow");
             } else {
                 left.getOwner().renderShadow((left.getX()) + src.getLight().getSX() / 2 - (src.getX()),
                         left.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false);
+//                System.out.println("L: Dark");
             }
         }
         if (right != null) {     //czy prawy koniec pada na ścianę?
             YR = right.getEndY();
             XR1 = (int) ((YR - bl2) / al2);
-            if (Math.abs(al2) > 1 && XR1 >= right.getX() && XR1 <= (right.getEndX())) {     // dodaj światło
+            if (Math.abs(al2) >= 1 && XR1 >= right.getX() && XR1 < (right.getEndX())) {     // dodaj światło
                 XR2 = al2 > 0 ? right.getX() : right.getEndX();
                 rightWallPoints[0].set(XR1, YR - right.getHeight());
                 rightWallPoints[1].set(XR1, YR);
                 rightWallPoints[2].set(XR2, YR);
                 rightWallPoints[3].set(XR2, YR - right.getHeight());
                 isRightWall = rightWallColor = true;
-            } else if (XR1 >= right.getX() && XR1 < (right.getEndX())) { //dodaj cień
+//                System.out.println("R: Light");
+            } else if (XR1 >= right.getX() && XR1 <= (right.getEndX())) { //dodaj cień
                 XR2 = al2 > 0 ? right.getX() : right.getEndX();
                 rightWallPoints[0].set(XR1, YR);
                 rightWallPoints[1].set(XR1, YR - right.getHeight());
@@ -313,9 +316,11 @@ public class Renderer {
                 rightWallPoints[3].set(XR2, YR);
                 rightWallColor = false;
                 isRightWall = true;
+//                System.out.println("R: Shadow");
             } else {
                 right.getOwner().renderShadow((right.getX()) + src.getLight().getSX() / 2 - (src.getX()),
                         right.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false);
+//                System.out.println("R: Dark");
             }
         }
     }

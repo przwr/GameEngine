@@ -94,27 +94,13 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-
+            
             Drawer.setColor(new Color(0, 0, 0, 51));
             Drawer.drawElipse(0, 0, collision.getWidth() / 2, collision.getHeight() / 2, 15);
             Drawer.refreshColor(place);
-
             glTranslatef(0, (int) -jump, 0);
-            //Drawer.setColor(Color.white);
-            //glBlendFunc(GL_DST_ALPHA, GL_DST_ALPHA);
-            //glDisable(GL_TEXTURE_2D);
-            //glBlendColor(1f, 1f, 1f, 1f);
-            //glColor3f(1f, 1f, 1f);
-            //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-            getAnim().render(animate);
-           
-
             
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-            //Drawer.refreshColor(place);
-            //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            //glTranslatef(0, (int) jump, 0);
+            getAnim().render(animate);
             glPopMatrix();
         }
     }

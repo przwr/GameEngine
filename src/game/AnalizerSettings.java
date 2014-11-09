@@ -66,7 +66,7 @@ public class AnalizerSettings {
             case "ResolutionWidth:":
                 int w = Integer.parseInt(p[1]);
                 if (w <= 0) {
-                    settings.resWidth = settings.display.getWidth();
+                    settings.resWidth = settings.modes[0].getWidth();
                 } else {
                     settings.resWidth = w;
                 }
@@ -76,10 +76,10 @@ public class AnalizerSettings {
                     }
                 }
                 break;
-            case "ResolutionHight:":
+            case "ResolutionHeight:":
                 int h = Integer.parseInt(p[1]);
                 if (h <= 0) {
-                    settings.resHeight = settings.display.getHeight();
+                    settings.resHeight = settings.modes[0].getHeight();
                 } else {
                     settings.resHeight = h;
                 }
@@ -92,7 +92,7 @@ public class AnalizerSettings {
             case "ResolutionFreq:":
                 int f = Integer.parseInt(p[1]);
                 if (f <= 0) {
-                    settings.freq = settings.display.getFrequency();
+                    settings.freq = settings.modes[0].getFrequency();
                 } else {
                     settings.freq = f;
                 }
@@ -147,7 +147,7 @@ public class AnalizerSettings {
             fw.write("NumberOfPlayers: " + settings.nrPlayers + "\n");
             fw.write("NumberOfSamples: " + settings.nrSamples + "\n");
             fw.write("ResolutionWidth: " + settings.resWidth + "\n");
-            fw.write("ResolutionHight: " + settings.resHeight + "\n");
+            fw.write("ResolutionHeight: " + settings.resHeight + "\n");
             fw.write("ResolutionFreq: " + settings.freq + "\n");
             {
                 int v = (int) (settings.volume * 10);
