@@ -13,9 +13,13 @@ import engine.SoundBase;
 import game.gameobject.Player;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
+import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.ARBTextureMultisample;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GLContext;
 
 /**
@@ -50,6 +54,7 @@ public class Settings {
     public Controller[] controllers;
     public int worldSeed;
     public int isSupfboVer3;
+    public boolean isSupfboMS;
 
     public Settings() {
         int minW = 1024;
@@ -113,15 +118,27 @@ public class Settings {
         this.SCALE = ((int) (((double) resHeight / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) (((double) resHeight / 1024d / 0.03125)) * 0.03125;
         try {
             GL30.glGenFramebuffers();
+            GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
+            GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
             isSupfboVer3 = 0;
+            isSupfboMS = true;
         } catch (Exception e) {
             if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
                 isSupfboVer3 = 1;
+                try {
+                    ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
+                    ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
+                    isSupfboMS = true;
+                } catch (Exception em) {
+                    isSupfboMS = false;
+                }
             } else if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {
                 isSupfboVer3 = 2;
+                isSupfboMS = false;
             } else {
                 Methods.Error(language.FBOError);
             }
         }
+        System.out.println(isSupfboVer3 + "isSupfboMS" + isSupfboMS);
     }
 }

@@ -99,7 +99,7 @@ public abstract class Entity extends GameObject {
     public void setJump(double jump) {
         this.jump = jump;
     }
-    
+
     public void brake(int axis) {  // 0 OX, 1 OY, 2 oba
         brake(weight, axis);
     }

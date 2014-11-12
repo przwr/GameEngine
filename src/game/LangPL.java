@@ -54,5 +54,6 @@ public class LangPL extends Language {
         SmoothShadows = "Gładkie Cienie: ";
         JoinedSS = "Łącz Ekrany: ";
         FBOError = "FrameBufferedObject jest nieobsługiwany. Upewnij się, że masz aktualne sterowniki karty graficznej!";
+        Unsupported = "nieobsługiwane";
     }
 }

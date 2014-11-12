@@ -94,7 +94,7 @@ public class MyPlace extends Place {
         areas.add(test);
         areas.add(border);
         addObj(new MyMob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
-        addObj(new MyMob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
+       // addObj(new MyMob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
         this.r = 0.45f;
         this.g = 0.45f;
         this.b = 0.45f;

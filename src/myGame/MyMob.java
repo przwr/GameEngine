@@ -8,6 +8,20 @@ package myGame;
 import engine.Methods;
 import game.gameobject.Mob;
 import game.place.Place;
+import static org.lwjgl.opengl.GL11.GL_ADD;
+import static org.lwjgl.opengl.GL11.GL_MODULATE;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_ENV;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_ENV_MODE;
+import static org.lwjgl.opengl.GL11.GL_ZERO;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTexEnvi;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  *
@@ -33,5 +47,4 @@ public class MyMob extends Mob {
         canMove((int) (hspeed + myHspeed), (int) (vspeed + myVspeed));
         brakeOthers();
     }
-
 }

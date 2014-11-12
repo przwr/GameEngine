@@ -46,4 +46,5 @@ public abstract class Language {
     public String Samples;
     public String JoinedSS;
     public String FBOError;
+    public String Unsupported;
 }

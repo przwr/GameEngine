@@ -145,7 +145,7 @@ public abstract class Place extends ScreenPlace {
             go.render(cam.getXOffEffect(), cam.getYOffEffect());
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
-            foregroundTiles.get(y).render(cam.getXOffEffect(), cam.getYOffEffect());
+            foregroundTiles.get(i).render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
 

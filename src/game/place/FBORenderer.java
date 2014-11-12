@@ -12,6 +12,7 @@ public abstract class FBORenderer {
     protected final int texture;
     protected final int fbo;
     protected final int fboVer;
+    protected final boolean fboMSSup;
     protected final activate[] activates;
     protected final deactivate[] deactivates;
     protected final makeTexture[] makeTextures;
@@ -30,6 +31,8 @@ public abstract class FBORenderer {
             fbo = EXTFramebufferObject.glGenFramebuffersEXT();
             fboVer = 2;
         }
+        fboMSSup = settings.isSupfboMS;
+        
         activates = new activate[3];
         deactivates = new deactivate[3];
         makeTextures = new makeTexture[3];

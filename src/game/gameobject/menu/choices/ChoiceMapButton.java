@@ -44,12 +44,22 @@ public class ChoiceMapButton extends MenuChoice {
                     new Runnable() {
                         @Override
                         public void run() {
-                            int noiseAx[] = new int[Controllers.getControllerCount()];
+                            int noiseAx[] = new int[2 * Controllers.getControllerCount()];
+                            for (int i = 0; i < noiseAx.length; i++) {
+                                noiseAx[i] = -1;
+                            }
                             for (int k = 0; k < Controllers.getControllerCount(); k++) {
                                 if (controllers[k] != null) {
-                                    for (int a = 0; a < controllers[k].getAxisCount(); a++) {
+                                    int a;
+                                    for (a = 0; a < controllers[k].getAxisCount(); a++) {
                                         if (controllers[k].getAxisValue(a) > 0.9f || controllers[k].getAxisValue(a) < -0.9f) {
                                             noiseAx[k] = a;
+                                            break;
+                                        }
+                                    }
+                                    for (a = 0; a < controllers[k].getAxisCount(); a++) {
+                                        if (a != noiseAx[k] && controllers[k].getAxisValue(a) > 0.9f || controllers[k].getAxisValue(a) < -0.9f) {
+                                            noiseAx[Controllers.getControllerCount() + k] = a;
                                             break;
                                         }
                                     }
@@ -63,6 +73,10 @@ public class ChoiceMapButton extends MenuChoice {
                                         break;
                                     }
                                     if (ctrl.actions[3] != null && ctrl.actions[3].in != null && ctrl.actions[3].in.toString().equals(in.toString())) {
+                                        break;
+                                    }
+                                    if (in.getType() == -2) {
+                                        ctrl.actions[i].in = null;
                                         break;
                                     }
                                     if (i < 4) {

@@ -42,6 +42,7 @@ public class Renderer {
     private static double angle, temp, al1, bl1, al2, bl2, XOL, XOL2, XOR, XOR2;
     private static float shadeColor, lightColor, lightBrightness, lightStrength;
     private static Camera cam;
+    private static final int white = glGenTextures();
 
 //    private static final Sprite white = new Sprite("alpha", 1024, 1024, null);
 //    private static final Sprite sp = new Sprite("rabbit", 64, 64, null);
@@ -91,7 +92,6 @@ public class Renderer {
                 isVisible = false;
             }
         }
-
     }
 
     public static void preRendLightsFBO(Place place) {
@@ -109,22 +109,20 @@ public class Renderer {
                         calculateWalls(shades[f], emitter);
                         drawWalls(emitter);
                         if (shades[f].canBeLit()) {
-                            shadeColor = (float) (emitter.getY() - shades[f].getCentralY()) / (float) (shades[f].getHeight());
+                            shadeColor = (float) (emitter.getY() - (float) shades[f].getCentralY()) / (float) (shades[f].getHeight());
                         } else {
                             shadeColor = 1f;
                         }
-                        glColor3f(shadeColor, shadeColor, shadeColor);
                         shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
-                                shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getCentralY());
+                                shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getCentralY(), white, shadeColor);
                     } else {
                         if (shades[f].canBeLit()) {
-                            shadeColor = (float) (emitter.getY() - shades[f].getCentralY()) / (float) (shades[f].getHeight());
+                            shadeColor = (float) (emitter.getY() - (float) shades[f].getCentralY()) / (float) (shades[f].getHeight());
                         } else {
                             shadeColor = 1f;
                         }
-                        glColor3f(shadeColor, shadeColor, shadeColor);
-                        shades[f].getOwner().renderShadow(shades[f].getOwner().getX() - shades[f].getOwner().getWidth() / 2 + emitter.getLight().getSX() / 2 - (emitter.getX()),
-                                shades[f].getOwner().getY() - shades[f].getOwner().getHeight() - 2 + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getY());
+                        shades[f].getOwner().renderShadow((shades[f].getOwner().getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
+                                shades[f].getOwner().getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getCentralY(), white, shadeColor);
                     }
                 }
                 glColor3f(1f, 1f, 1f);
@@ -293,7 +291,7 @@ public class Renderer {
 //                System.out.println("L: Shadow");
             } else {
                 left.getOwner().renderShadow((left.getX()) + src.getLight().getSX() / 2 - (src.getX()),
-                        left.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false);
+                        left.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, white, shadeColor);
 //                System.out.println("L: Dark");
             }
         }
@@ -319,7 +317,7 @@ public class Renderer {
 //                System.out.println("R: Shadow");
             } else {
                 right.getOwner().renderShadow((right.getX()) + src.getLight().getSX() / 2 - (src.getX()),
-                        right.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false);
+                        right.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, white, shadeColor);
 //                System.out.println("R: Dark");
             }
         }
@@ -328,6 +326,7 @@ public class Renderer {
     private static void drawWalls(GameObject emitter) {
         int lX = emitter.getLight().getSX();
         int lY = emitter.getLight().getSY();
+        glDisable(GL_TEXTURE_2D);
         if (isRightWall) {
             if (rightWallColor) {
                 glColor3f(1, 1, 1);
@@ -362,10 +361,12 @@ public class Renderer {
             glPopMatrix();
             isLeftWall = false;
         }
+        glEnable(GL_TEXTURE_2D);
     }
 
     private static void drawShadow(GameObject emitter) {
         lightY = emitter.getLight().getSY();
+        glDisable(GL_TEXTURE_2D);
         glColor3f(0, 0, 0);
         glPushMatrix();
         glTranslatef(emitter.getLight().getSX() / 2 - emitter.getX(), lightY / 2 - emitter.getY() + h - lightY, 0);
@@ -376,6 +377,7 @@ public class Renderer {
         glVertex2f(points[1].getX(), points[1].getY());
         glEnd();
         glPopMatrix();
+        glEnable(GL_TEXTURE_2D);
     }
 
     public static void clearScreen(float color) {

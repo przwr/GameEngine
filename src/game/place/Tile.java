@@ -20,7 +20,7 @@ public abstract class Tile extends GameObject {
         this.ySheet = ySheet;
         this.place = place;
     }
-    
+
     public void render(int flip, int x, int y) {
         glPushMatrix();
         glTranslatef(x, y, 0);
@@ -29,10 +29,11 @@ public abstract class Tile extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, int white, float color) {
         if (nLit != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glColor3f(1, 1, 1);
             if (isLit) {
                 lit.render();
             } else {

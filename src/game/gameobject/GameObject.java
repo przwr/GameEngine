@@ -40,7 +40,7 @@ public abstract class GameObject {
 
     public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit);
+    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, int white, float color);
 
     protected void init(String textureKey, String name, int x, int y, int sw, int sh, Place place) {
         this.x = x;
@@ -48,7 +48,7 @@ public abstract class GameObject {
         depth = y;
         this.name = name;
         this.place = place;
-        this.sprite = place.getSprite(textureKey, sw, sh, sw/2, sh - 10);
+        this.sprite = place.getSprite(textureKey, sw, sh, sw / 2, sh - 10);
     }
 
     @Override
@@ -78,11 +78,11 @@ public abstract class GameObject {
     public int getDepth() {
         return depth;
     }
-    
+
     public void setDepth(int d) {
         depth = d;
     }
-    
+
     public Figure getCollision() {
         return collision;
     }
@@ -115,19 +115,19 @@ public abstract class GameObject {
     }
 
     public int getBegOfX() {
-        return (int) (x - collision.getWidth()/2);
+        return (int) (x - collision.getWidth() / 2);
     }
 
     public int getBegOfY() {
-        return (int) (y - collision.getHeight()/2);
+        return (int) (y - collision.getHeight() / 2);
     }
 
     public int getEndOfX() {
-        return (int) (x - collision.getWidth()/2);
+        return (int) (x - collision.getWidth() / 2);
     }
 
     public int getEndOfY() {
-        return (int) (y + collision.getHeight()/2);
+        return (int) (y + collision.getHeight() / 2);
     }
 
     public int getX() {
@@ -149,7 +149,7 @@ public abstract class GameObject {
     public boolean isOnTop() {
         return top;
     }
-    
+
     public void setOnTop(boolean top) {
         this.top = top;
     }
@@ -157,11 +157,11 @@ public abstract class GameObject {
     public boolean isStale() {
         return stale;
     }
-    
+
     public void setStale(boolean st) {
         this.stale = st;
     }
-    
+
     public boolean isSolid() {
         return solid;
     }
@@ -200,9 +200,6 @@ public abstract class GameObject {
         return light;
     }
 
-    /**
-     * @return the sprite
-     */
     public Sprite getSprite() {
         return sprite;
     }

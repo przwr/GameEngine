@@ -8,6 +8,7 @@ package collision;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.util.ArrayList;
+import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -107,10 +108,11 @@ public class Area extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, int white, float color) {
         if (nLit != null && lit != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
+            glColor3f(1, 1, 1);
             if (isLit) {
                 lit.render();
             } else {

@@ -79,12 +79,13 @@ public class Sprite {
     }
 
     public void bindCheck() {
-        if (base == null) {
-            texture.bind();
-        } else if (base.getLastTex() != id) {
-            texture.bind();
-            base.setLastTex(id);
-        }
+        texture.bind();
+//        if (base == null) {
+//            texture.bind();
+//        } else if (base.getLastTex() != id) {
+//            texture.bind();
+//            base.setLastTex(id);
+//        }
     }
 
     public int getId() {
@@ -97,6 +98,20 @@ public class Sprite {
 
     public void render() {
         bindCheck();
+        glTranslatef(sx, sy, 0);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, 0);
+        glTexCoord2f(0, 1);
+        glVertex2f(0, height);
+        glTexCoord2f(1, 1);
+        glVertex2f(width, height);
+        glTexCoord2f(1, 0);
+        glVertex2f(width, 0);
+        glEnd();
+    }
+
+    public void renderNotBind() {
         glTranslatef(sx, sy, 0);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);

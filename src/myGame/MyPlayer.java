@@ -94,22 +94,23 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            
+
             Drawer.setColor(new Color(0, 0, 0, 51));
             Drawer.drawElipse(0, 0, collision.getWidth() / 2, collision.getHeight() / 2, 15);
             Drawer.refreshColor(place);
             glTranslatef(0, (int) -jump, 0);
-            
+
             getAnim().render(animate);
             glPopMatrix();
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, int white, float shadeColor) {
         if (nLit != null && lit != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glColor3f(1, 1, 1);
             if (isLit) {
                 lit.render();
             } else {

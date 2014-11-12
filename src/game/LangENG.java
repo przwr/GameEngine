@@ -54,5 +54,6 @@ public class LangENG extends Language {
         SmoothShadows = "Smooth Shadows: ";
         JoinedSS = "Join SplitScreen: ";
         FBOError = "FrameBufferedObject is unsupported. Make sure you have current video card drivers!";
+                Unsupported = "unsupported";
     }
 }
