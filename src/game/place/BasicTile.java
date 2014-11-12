@@ -13,11 +13,11 @@ import sprites.SpriteSheet;
 /**
  *
  * @author przemek
- */
-public class BasicTile extends Tile {
+ *//*
+public class BasicTile extends Tile {        <(-.- )> WELL, THAT ESCALATED QUICKLY!
 
     public BasicTile(SpriteSheet sh, String name, int size, int xSheet, int ySheet, Place place) {
-        super(sh, size, false, false, xSheet, ySheet, place);
+        //super(sh, size, false, false, xSheet, ySheet, place);
         init(name, 1, 1, SIZE, SIZE, place);
     }
     
@@ -29,3 +29,4 @@ public class BasicTile extends Tile {
         glPopMatrix();
     }   
 }
+*/

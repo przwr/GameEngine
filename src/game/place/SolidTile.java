@@ -12,8 +12,8 @@ import sprites.SpriteSheet;
 /**
  *
  * @author przemek
- */
-public class SolidTile extends Tile {
+ *//*                                                        .'.'.'.
+public class SolidTile extends Tile {           HUGS TO ALL! \(^o^)/
 
     public SolidTile(SpriteSheet sh, String name, int size, int xSheet, int ySheet, Place place) {
         super(sh, size, true, false, xSheet, ySheet, place);
@@ -24,3 +24,4 @@ public class SolidTile extends Tile {
     public void render(int xEffect, int yEffect) {
     }
 }
+*/

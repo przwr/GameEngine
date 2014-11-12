@@ -24,16 +24,16 @@ public final class SpriteSheet extends Sprite {
         this.yTiles = texture.getImageHeight() / h;
     }
 
-    public void render(int flip, int i) {
+    public void render(int i) {
         if (i > xTiles * yTiles) {
             return;
         }
         int x = (int) (i % xTiles);
         int y = (int) (i / yTiles);
-        render(flip, x, y);
+        render(x, y);
     }
 
-    public void render(int flip, int x, int y) {
+    public void render(int x, int y) {
         if (x > xTiles || y > yTiles) {
             return;
         }
@@ -42,5 +42,16 @@ public final class SpriteSheet extends Sprite {
         float ex = (float) (x + 1) / xTiles;
         float ey = (float) (y + 1) / yTiles;
         renderTexPart(bx, ex, by, ey);
+    }
+    
+    public void renderMirrored(boolean flip, int x, int y) {
+        if (x > xTiles || y > yTiles) {
+            return;
+        }
+        float bx = (float) x / xTiles;
+        float by = (float) y / yTiles;
+        float ex = (float) (x + 1) / xTiles;
+        float ey = (float) (y + 1) / yTiles;
+        renderPartMirrored(flip, bx, ex, by, ey);
     }
 }

@@ -35,7 +35,7 @@ public abstract class GameObject {
     protected Figure collision;
     protected int depth;
 
-    protected int sX;
+    protected int sX;   // *--<('~'<) BEGONE YOU EVIL SX AND SY!
     protected int sY;
 
     public abstract void render(int xEffect, int yEffect);

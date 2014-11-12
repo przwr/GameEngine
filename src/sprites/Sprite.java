@@ -40,6 +40,18 @@ public class Sprite {
         this(texture, width, height, 0, 0);
     }
 
+    public Sprite(String textureKey, SpriteBase base) {
+        if (textureKey != null) {
+            this.texture = loadTexture(textureKey);
+        }
+        this.key = textureKey;
+        this.base = base;
+        this.sx = 0;
+        this.sy = 0;
+        this.width = texture.getTextureWidth();
+        this.height = texture.getTextureHeight();
+    }
+    
     public Sprite(String textureKey, int width, int height, int sx, int sy, SpriteBase base) {
         if (textureKey != null) {
             this.texture = loadTexture(textureKey);

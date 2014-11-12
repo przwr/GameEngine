@@ -11,10 +11,8 @@ import collision.Rectangle;
 import game.gameobject.Mob;
 import game.Game;
 import game.Settings;
-import game.place.BasicTile;
 import game.place.cameras.Camera;
 import game.place.Place;
-import game.place.SolidTile;
 import game.place.Tile;
 import java.awt.Font;
 import engine.FontsHandler;
@@ -22,6 +20,7 @@ import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.GameObject;
 import game.gameobject.inputs.InputKeyBoard;
+import game.place.FGTile;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 
@@ -34,8 +33,8 @@ public class MyPlace extends Place {
     final Action changeSplitScreenMode;
     final Action changeSplitScreenJoin;
 
-    final Tile GRASS = new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Grass", sTile, 1, 8, this);
-    final Tile ROCK = new SolidTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this);
+    final Tile GRASS = new Tile(getSpriteSheet("tlo", sTile, sTile), sTile, 1, 8, this);
+    final Tile ROCK = new Tile(getSpriteSheet("tlo", sTile, sTile), sTile, 1, 1, this);
 
     public MyPlace(Game game, int width, int height, int tileSize, Settings settnig) {
         super(game, width, height, tileSize, settnig);
@@ -73,17 +72,17 @@ public class MyPlace extends Place {
             }
         }
         Area test = new Area(6 * sTile, 5 * sTile, "rockw", "rockb", sTile);
-        test.addFigure(new Rectangle(0, 0, sTile, sTile, true, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rocka", sTile, 7, 2, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rockb", sTile, 1, 1, this), 6 * sTile, 4 * sTile, 6 * sTile, true);
+        test.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, test));
+        addFGTile(new FGTile(getSpriteSheet("tlo", sTile, sTile), sTile, 7, 2, true, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo", sTile, sTile), sTile, 1, 1, false, this), 6 * sTile, 4 * sTile, 6 * sTile, true);
         //tiles[6 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, true, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rockc", sTile, 7, 2, this), 8 * sTile, 5 * sTile, 6 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rockd", sTile, 1, 1, this), 8 * sTile, 4 * sTile, 6 * sTile, true);
+        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, true, true, test));
+        addFGTile(new FGTile(getSpriteSheet("tlo", sTile, sTile), sTile, 7, 2, true, this), 8 * sTile, 5 * sTile, 6 * sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo", sTile, sTile), sTile, 1, 1, false, this), 8 * sTile, 4 * sTile, 6 * sTile, true);
         //tiles[8 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(1 * sTile, 2 * sTile, sTile, sTile, true, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rocke", sTile, 7, 2, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rockf", sTile, 1, 1, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
+        test.addFigure(new Rectangle(1 * sTile, 2 * sTile, sTile, sTile, true, true, test));
+        addFGTile(new FGTile(getSpriteSheet("tlo", sTile, sTile), sTile, 7, 2, true, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo", sTile, sTile), sTile, 1, 1, false, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;
         Area border = new Area(0, 0, null, null, sTile);
         border.addFigure(new Line(0, 0, width, 0, border));
