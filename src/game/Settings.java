@@ -35,13 +35,13 @@ public class Settings {
     public int nrPlayers = 1;
     public float volume = 0.5f;
     public SoundBase sounds;
-    public int resWidth = display.getWidth();
-    public int resHeight = display.getHeight();
+    public int resWidth;
+    public int resHeight;
     public double SCALE;
-    public int freq = display.getFrequency();
+    public int freq;
     public int depth = display.getBitsPerPixel();
     public boolean vSync;
-    public int nrSamples = 2;
+    public int nrSamples = 1;
     public String lang = "PL";
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny
@@ -84,7 +84,9 @@ public class Settings {
                 modes[i++] = mode;
             }
         }
-
+        resWidth = modes[0].getWidth();
+        resHeight = modes[0].getHeight();
+        freq = modes[0].getFrequency();
         languages.add(
                 new LangPL());
         languages.add(

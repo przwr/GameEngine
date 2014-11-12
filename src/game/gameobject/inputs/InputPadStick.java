@@ -29,7 +29,7 @@ public class InputPadStick extends AnyInput {
 
     @Override
     public boolean isPut() {
-        if (controllers[padNr] != null/* && padNr < controllers.length*/) {
+        if (padNr < controllers.length && controllers[padNr] != null) {
             if (isPlus) {
                 return controllers[padNr].getAxisValue(axisNr) > 0.1f;
             } else {

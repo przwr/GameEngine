@@ -29,8 +29,7 @@ public class SimpleTexture {
         this.h = h;
     }
 
-    public void render() {
-       
+    public void render() {       
         glBindTexture(GL_TEXTURE_2D, texture);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 1);

@@ -66,7 +66,7 @@ public class MyPlace extends Place {
                     tiles[x + y * height / sTile] = GRASS;
                 } else {
                     if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
-                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, a));
+                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, true, a));
                     }
                     tiles[x + y * height / sTile] = ROCK;
                 }
