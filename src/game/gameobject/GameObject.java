@@ -139,11 +139,11 @@ public abstract class GameObject {
     }
 
     public int getWidth() {
-        return width;
+        return collision != null ? collision.getWidth() : width;
     }
 
     public int getHeight() {
-        return height;
+        return collision != null ? collision.getHeight() : height;
     }
 
     public boolean isOnTop() {
@@ -200,9 +200,6 @@ public abstract class GameObject {
         return light;
     }
 
-    /**
-     * @return the sprite
-     */
     public Sprite getSprite() {
         return sprite;
     }

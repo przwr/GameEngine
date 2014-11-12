@@ -74,16 +74,16 @@ public class MyPlace extends Place {
         }
         Area test = new Area(6 * sTile, 5 * sTile, "rockw", "rockb", sTile);
         test.addFigure(new Rectangle(0, 0, sTile, sTile, true, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 6 * sTile, 4 * sTile, 6 * sTile, true);
+        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rocka", sTile, 7, 2, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
+        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rockb", sTile, 1, 1, this), 6 * sTile, 4 * sTile, 6 * sTile, true);
         //tiles[6 + 6 * height / sTile] = ROCK;
         test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, true, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 8 * sTile, 5 * sTile, 6 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 8 * sTile, 4 * sTile, 6 * sTile, true);
+        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rockc", sTile, 7, 2, this), 8 * sTile, 5 * sTile, 6 * sTile, true);
+        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rockd", sTile, 1, 1, this), 8 * sTile, 4 * sTile, 6 * sTile, true);
         //tiles[8 + 6 * height / sTile] = ROCK;
         test.addFigure(new Rectangle(1 * sTile, 2 * sTile, sTile, sTile, true, test));
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 7, 2, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
-        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rock", sTile, 1, 1, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
+        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rocke", sTile, 7, 2, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
+        addFGTile(new BasicTile(getSpriteSheet("tlo", sTile, sTile), "Rockf", sTile, 1, 1, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;
         Area border = new Area(0, 0, null, null, sTile);
         border.addFigure(new Line(0, 0, width, 0, border));
@@ -95,9 +95,9 @@ public class MyPlace extends Place {
         areas.add(border);
         addObj(new MyMob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
         addObj(new MyMob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
-        this.r = 0.45f;
-        this.g = 0.45f;
-        this.b = 0.45f;
+        this.r = 0.8f;
+        this.g = 0.8f;
+        this.b = 0.8f;
         fonts = new FontsHandler(20);
         fonts.add("Arial", Font.PLAIN, (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);

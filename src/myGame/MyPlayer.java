@@ -14,9 +14,9 @@ import game.place.Light;
 import engine.Animation;
 import engine.Drawer;
 import engine.Methods;
+import engine.Time;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendColor;
 import org.newdawn.slick.Color;
 
 /**
@@ -108,11 +108,6 @@ public class MyPlayer extends Player {
             //glColor3f(1f, 1f, 1f);
             //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
             getAnim().render(animate);
-           
-
-            
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
             //Drawer.refreshColor(place);
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             //glTranslatef(0, (int) jump, 0);
@@ -163,7 +158,7 @@ public class MyPlayer extends Player {
             setEmits(!emits);
         }
         jump = Math.abs(Methods.xRadius(a * 4, 70));
-        a++;
+        a += Time.getDelta();
         canMove((int) (hspeed + myHspeed), (int) (vspeed + myVspeed));
         brakeOthers();
     }

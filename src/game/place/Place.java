@@ -6,6 +6,7 @@
 package game.place;
 
 import collision.Area;
+import engine.Drawer;
 import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
@@ -95,6 +96,8 @@ public abstract class Place extends ScreenPlace {
             if (p == 0 || !singleCam) {
                 glEnable(GL_SCISSOR_TEST);
                 Renderer.preRenderShadowedLightsFBO(cam);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                sprites.setLastTex(-1);
                 renderBack(cam);
                 renderObj(cam);
                 renderText(cam);
@@ -106,20 +109,18 @@ public abstract class Place extends ScreenPlace {
     }
 
     protected void renderBack(Camera cam) {
-        glColor3f(r, g, b);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        Drawer.refresh(this);
         for (int y = 0; y < height / sTile; y++) {
             if (cam.getSY() < (y + 1) * sTile && cam.getEY() > y * sTile) {
                 for (int x = 0; x < width / sTile; x++) {
                     if (cam.getSX() < (x + 1) * sTile && cam.getEX() > x * sTile) {
                         Tile t = tiles[x + y * height / sTile];
                         if (t != null) {
-                            t.render(0, cam.getXOffEffect() + x * sTile, cam.getYOffEffect() + y * sTile);
+                            t.renderSpecific(0, cam.getXOffEffect() + x * sTile, cam.getYOffEffect() + y * sTile);
                         }
                     }
                 }
             }
-
         }
     }
 
@@ -135,24 +136,27 @@ public abstract class Place extends ScreenPlace {
     }
 
     private void renderBottom(Camera cam) {
+        Drawer.refresh(this);
         sortObjects(depthObj);
         int y = 0;
         for (GameObject go : depthObj) {
-            while (y != foregroundTiles.size() && foregroundTiles.get(y).getDepth() < go.getDepth()) {
+            while (y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < go.getDepth()) {
                 foregroundTiles.get(y).render(cam.getXOffEffect(), cam.getYOffEffect());
                 y++;
             }
             go.render(cam.getXOffEffect(), cam.getYOffEffect());
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
-            foregroundTiles.get(y).render(cam.getXOffEffect(), cam.getYOffEffect());
+            foregroundTiles.get(i).render(cam.getXOffEffect(), cam.getYOffEffect());
+            //System.err.println(i + " " + foregroundTiles.size());
         }
     }
 
     private void renderTop(Camera cam) {
+        Drawer.refresh(this);
         sortObjects(onTopObject);
         for (GameObject go : onTopObject) {
-           // if (cam.getSY() <= go.getY() + (go.getHeight() >> 1) && cam.getEY() >= go.getY() - (go.getHeight() >> 1)
+            // if (cam.getSY() <= go.getY() + (go.getHeight() >> 1) && cam.getEY() >= go.getY() - (go.getHeight() >> 1)
             //         && cam.getSX() <= go.getX() + (go.getWidth() >> 2) && cam.getEX() >= go.getX() - (go.getWidth() >> 2)) {
             go.render(cam.getXOffEffect(), cam.getYOffEffect());
             //}

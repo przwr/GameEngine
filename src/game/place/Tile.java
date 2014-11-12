@@ -20,9 +20,9 @@ public abstract class Tile extends GameObject {
         this.ySheet = ySheet;
         this.place = place;
     }
-    
-    public void render(int flip, int x, int y) {
-        glPushMatrix();
+
+    public void renderSpecific(int flip, int x, int y) {    //Renderuje w konkretnym miejscu nie 
+        glPushMatrix();                                     //patrząc na zmienne wewnętrzne
         glTranslatef(x, y, 0);
         sh.render(1, xSheet, ySheet);
         glPopMatrix();
