@@ -6,7 +6,7 @@
 package engine;
 
 /*USUNĄĆ ? 
-    Nic tego nie używa, chyba całą funkcjonalność zabrały figury... (>'o')>   <(^-^<) */
+    Nic tego nie używa, chyba całą funkcjonalność zabrały figury... (>'3')>   <(^-^<) */
 
 /**
  *

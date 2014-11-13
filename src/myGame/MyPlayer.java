@@ -14,6 +14,7 @@ import game.place.Light;
 import engine.Animation;
 import engine.Drawer;
 import engine.Methods;
+import engine.Time;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
@@ -94,23 +95,22 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-
+            
             Drawer.setColor(new Color(0, 0, 0, 51));
             Drawer.drawElipse(0, 0, collision.getWidth() / 2, collision.getHeight() / 2, 15);
             Drawer.refreshColor(place);
             glTranslatef(0, (int) -jump, 0);
-
+            
             getAnim().render(animate);
             glPopMatrix();
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, int white, float shadeColor) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
         if (nLit != null && lit != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            glColor3f(1, 1, 1);
             if (isLit) {
                 lit.render();
             } else {
@@ -149,7 +149,7 @@ public class MyPlayer extends Player {
             setEmits(!emits);
         }
         jump = Math.abs(Methods.xRadius(a * 4, 70));
-        a++;
+        a += Time.getDelta();
         canMove((int) (hspeed + myHspeed), (int) (vspeed + myVspeed));
         brakeOthers();
     }

@@ -35,7 +35,7 @@ public abstract class GameObject {
     protected Figure collision;
     protected int depth;
 
-    protected int sX;
+    protected int sX;   // *--<('~'<) BEGONE YOU EVIL SX AND SY!
     protected int sY;
 
     public abstract void render(int xEffect, int yEffect);
@@ -139,11 +139,11 @@ public abstract class GameObject {
     }
 
     public int getWidth() {
-        return width;
+        return collision != null ? collision.getWidth() : width;
     }
 
     public int getHeight() {
-        return height;
+        return collision != null ? collision.getHeight() : height;
     }
 
     public boolean isOnTop() {

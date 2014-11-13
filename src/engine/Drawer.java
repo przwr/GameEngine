@@ -62,4 +62,13 @@ public class Drawer {
     public static void refreshColor(Place p) {
         glColor4f(p.r, p.g, p.b, 1.0f);
     }
+    
+    public static void refreshBlending() {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    
+    public static void refresh(Place p) {
+        refreshColor(p);
+        refreshBlending();
+    }
 }
