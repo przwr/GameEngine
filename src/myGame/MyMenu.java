@@ -22,7 +22,7 @@ import org.newdawn.slick.Color;
  * @author przemek
  */
 public class MyMenu extends Menu {
-
+    
     public MyMenu(Game game, int width, int height, int tileSize, Settings settings) {
         super(game, width, height, settings);
         generate();
