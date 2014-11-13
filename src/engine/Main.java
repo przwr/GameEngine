@@ -10,6 +10,7 @@ import game.Game;
 import game.IO;
 import myGame.MyGame;
 import game.Settings;
+import gameDesigner.GameDesigner;
 import java.io.File;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.*;
@@ -29,6 +30,7 @@ public class Main {
     private static Game game;
     private static final Settings settings = new Settings();
     private static Controller[] controllers;
+    private static GameDesigner designer;
 
     public static void main(String[] args) {
         try {
@@ -42,15 +44,22 @@ public class Main {
             Methods.Exception(ex);
             cleanUp();
         }
+        System.exit(0); //Zabija wszystkie wątki
     }
 
     private static void initGame() {
         game = new MyGame("Pervert Rabbits Attack", settings, controllers);
         Display.setTitle(game.getTitle());
+        designer = new GameDesigner();
     }
 
     private static void getInput() {
         game.getInput();
+        
+        //-----PROJEKTOWANIE GRY! (>^o')>= ==== ----//
+        if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+            designer.setVisible(true);
+        }
     }
 
     private static void update() {
@@ -100,6 +109,7 @@ public class Main {
         Keyboard.destroy();
         Mouse.destroy();
         Controllers.destroy();
+        //designer.dispose();
     }
 
     private static void initDisplay() {
@@ -113,6 +123,7 @@ public class Main {
                 Display.setVSyncEnabled(false);
             }
             Display.setDisplayConfiguration(2f, 0f, 1.0f);
+            System.err.println((Display.getParent()));
             Keyboard.create();
             Mouse.create();
             Controllers.create();
