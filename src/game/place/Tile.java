@@ -27,7 +27,7 @@ public class Tile extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, int white, float color) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
         if (nLit != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);

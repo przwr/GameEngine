@@ -108,11 +108,11 @@ public class Area extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, int white, float color) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
         if (nLit != null && lit != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
-            glColor3f(1, 1, 1);
+            glColor3f(color, color, color);
             if (isLit) {
                 lit.render();
             } else {

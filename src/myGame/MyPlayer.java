@@ -42,7 +42,7 @@ public class MyPlayer extends Player {
         this.emitter = true;
         init("apple", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sw), (int) (SCALE * sh), place);
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.anim = new Animation(4, sprite, 200);
+        this.anim = new Animation(4, sprite, 200, this);
         animate = true;
         emits = false;
         scale = SCALE;
@@ -95,26 +95,29 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            
+
             Drawer.setColor(new Color(0, 0, 0, 51));
             Drawer.drawElipse(0, 0, collision.getWidth() / 2, collision.getHeight() / 2, 15);
             Drawer.refreshColor(place);
             glTranslatef(0, (int) -jump, 0);
-            
+
             getAnim().render(animate);
             glPopMatrix();
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit) {
-        if (nLit != null && lit != null) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+        // glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+        if (sprite != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(xEffect, yEffect + (int) -jump, 0);
             if (isLit) {
-                lit.render();
+                Drawer.drawShapeInColor(anim, color, color, color, 1);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             } else {
-                nLit.render();
+                Drawer.drawShapeInBlack(anim);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
             glPopMatrix();
         }

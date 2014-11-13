@@ -26,6 +26,7 @@ public class Renderer {
     private static final int h = Display.getHeight();
     private static FBORendererRegular fbFrame;
     private static final Figure[] shades = new Figure[4096];
+    private static final GameObject[] darks = new GameObject[4096];
     private static GameObject emitter, light;
     private static final Point center = new Point(0, 0);
     private static final Point[] tempPoints = new Point[32];
@@ -38,11 +39,10 @@ public class Renderer {
     private static final int[] EY = new int[7];
     private static boolean isLeftWall, isRightWall, leftWallColor, rightWallColor, isVisible;
     private static Figure tmp, other, left, right;
-    private static int nrShades, shDif, nrPoints, lightX, lightY, shP1, shP2, shX, shY, XL1, XL2, XR1, XR2, YL, YR;
+    private static int nrShades, nrDarks, shDif, nrPoints, lightX, lightY, shP1, shP2, shX, shY, XL1, XL2, XR1, XR2, YL, YR;
     private static double angle, temp, al1, bl1, al2, bl2, XOL, XOL2, XOR, XOR2;
     private static float shadeColor, lightColor, lightBrightness, lightStrength;
     private static Camera cam;
-    private static final int white = glGenTextures();
 
 //    private static final Sprite white = new Sprite("alpha", 1024, 1024, null);
 //    private static final Sprite sp = new Sprite("rabbit", 64, 64, null);
@@ -103,26 +103,27 @@ public class Renderer {
                 clearFBO(1, emitter.getLight().fbo);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                 for (int f = 0; f < nrShades; f++) {    //iteracja po Shades - tych co dają cień
-                    if (shades[f].canGiveShadow()) {
-                        calculateShadow(emitter, shades[f]);
-                        drawShadow(emitter);
-                        calculateWalls(shades[f], emitter);
-                        drawWalls(emitter);
-                        if (shades[f].canBeLit()) {
-                            shadeColor = (float) (emitter.getY() - (float) shades[f].getCentralY()) / (float) (shades[f].getHeight());
+                    if (shades[f].canBeLit()) {         // canBeLit czy Lightproof <-------------------------------------------------------------- CZYTAJ!!!
+                        if (shades[f] != emitter.getCollision()) {
+                            shadeColor = (float) (emitter.getY() - shades[f].getCentralY()) / (float) (shades[f].getHeight());
+                            if (shades[f].canGiveShadow()) {
+                                calculateShadow(emitter, shades[f]);
+                                drawShadow(emitter);
+                                calculateWalls(shades[f], emitter);
+                                drawWalls(emitter);
+                                shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
+                                        shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getCentralY(), shadeColor);
+                            } else {
+                                shades[f].getOwner().renderShadow((shades[f].getOwner().getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
+                                        shades[f].getOwner().getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getCentralY(), shadeColor);
+                            }
                         } else {
-                            shadeColor = 1f;
+                            emitter.renderShadow(emitter.getLight().getSX() / 2, emitter.getLight().getSY() / 2 + h - emitter.getLight().getSY(), true, 1);
                         }
-                        shades[f].getOwner().renderShadow((shades[f].getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
-                                shades[f].getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getCentralY(), white, shadeColor);
                     } else {
-                        if (shades[f].canBeLit()) {
-                            shadeColor = (float) (emitter.getY() - (float) shades[f].getCentralY()) / (float) (shades[f].getHeight());
-                        } else {
-                            shadeColor = 1f;
-                        }
                         shades[f].getOwner().renderShadow((shades[f].getOwner().getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
-                                shades[f].getOwner().getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), emitter.getY() >= shades[f].getCentralY(), white, shadeColor);
+                                shades[f].getOwner().getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), false, 0);
+
                     }
                 }
                 glColor3f(1f, 1f, 1f);
@@ -136,7 +137,21 @@ public class Renderer {
     private static void findShades(GameObject src, Place place) {
         // Powinno sortować według wysoskości - najpier te, które są najwyżej na planszy, a później coraz niższe,
         // obiekty tej samej wysokości powinny być renderowane w kolejności od najdalszych od źródła, do najbliższych.
-        nrShades = 0;
+        nrShades = nrDarks = 0;
+        for (Mob mob : place.sMobs) {
+            tmp = mob.getCollision();
+            if ((Math.abs(tmp.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getHeight() >> 1))
+                    && (Math.abs(tmp.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getWidth() >> 1))) {
+                shades[nrShades++] = tmp;
+            }
+        }
+        for (int p = 0; p < place.playersLength; p++) {
+            tmp = place.players[p].getCollision();
+            if ((Math.abs(tmp.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getHeight() >> 1))
+                    && (Math.abs(tmp.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getWidth() >> 1))) {
+                shades[nrShades++] = tmp;
+            }
+        }
         for (Area a : place.areas) {    //iteracja po Shades - tych co dają cień
             for (Figure f : a.parts) {
                 if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
@@ -145,20 +160,14 @@ public class Renderer {
                 }
             }
         }
-//        for (int p = 0; p < place.playersLength; p++) {
-//            Figure f = place.players[p].getCollision();
-//            if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
-//                    && (Math.abs(f.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (f.getWidth() >> 1))) {
-//                shades[nrShades++] = f;
+//        for (GameObject tile : place.foregroundTiles) {   // FGTiles muszą mieć Collision, choćby pustą, jedynie z polem Owner.
+//            tmp = tile.getCollision();
+//            if (!((FGTile) tmp.getOwner()).isLightproof() && (Math.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getOwner().getHeight() >> 1))
+//                    && (Math.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getOwner().getWidth() >> 1))) {
+//                shades[nrShades++] = tmp;
 //            }
 //        }
-        for (Mob mob : place.sMobs) {
-            Figure f = mob.getCollision();
-            if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
-                    && (Math.abs(f.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (f.getWidth() >> 1))) {
-                shades[nrShades++] = f;
-            }
-        }
+
         for (int i = 1, j; i < nrShades; i++) {
             tmp = shades[i];
             for (j = i; j > 0 && isSmaller(shades[j - 1], shades[j], src); j--) {
@@ -291,7 +300,7 @@ public class Renderer {
 //                System.out.println("L: Shadow");
             } else {
                 left.getOwner().renderShadow((left.getX()) + src.getLight().getSX() / 2 - (src.getX()),
-                        left.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, white, shadeColor);
+                        left.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, shadeColor);
 //                System.out.println("L: Dark");
             }
         }
@@ -317,7 +326,7 @@ public class Renderer {
 //                System.out.println("R: Shadow");
             } else {
                 right.getOwner().renderShadow((right.getX()) + src.getLight().getSX() / 2 - (src.getX()),
-                        right.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, white, shadeColor);
+                        right.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, shadeColor);
 //                System.out.println("R: Dark");
             }
         }

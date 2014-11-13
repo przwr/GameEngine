@@ -17,8 +17,7 @@ import game.place.Menu;
 public abstract class Player extends Entity {
 
     public Menu menu;
-    protected Animation anim;
-    protected boolean animate;
+    protected Animation anim;   
     public Controler ctrl;
     protected Camera cam;
     public boolean isFirst;

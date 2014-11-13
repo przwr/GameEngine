@@ -28,4 +28,8 @@ public class Frame {
     public void render(Sprite spr, boolean flip) {
         spr.renderPartMirrored(flip, begX, endX, begY, endY);
     }
+
+    public void renderNotBind(Sprite spr, boolean flip) {
+        spr.renderPartMirroredNotBind(flip, begX, endX, begY, endY);
+    }
 }

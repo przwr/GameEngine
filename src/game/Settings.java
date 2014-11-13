@@ -139,6 +139,5 @@ public class Settings {
                 Methods.Error(language.FBOError);
             }
         }
-        System.out.println(isSupfboVer3 + "isSupfboMS" + isSupfboMS);
     }
 }

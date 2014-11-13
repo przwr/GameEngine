@@ -26,6 +26,7 @@ public abstract class GameObject {
     protected boolean emits;
     protected boolean top;
     protected boolean stale;
+    protected boolean animate;
     protected Sprite sprite;
     protected Sprite nLit;
     protected Sprite lit;
@@ -40,7 +41,7 @@ public abstract class GameObject {
 
     public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, int white, float color);
+    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color);
 
     protected void init(String textureKey, String name, int x, int y, int sw, int sh, Place place) {
         this.x = x;
@@ -202,5 +203,9 @@ public abstract class GameObject {
 
     public Sprite getSprite() {
         return sprite;
+    }
+
+    public boolean isAnimate() {
+        return animate;
     }
 }

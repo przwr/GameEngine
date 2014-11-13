@@ -163,5 +163,6 @@ public abstract class Entity extends GameObject {
             myHspeed = xmove;
             myVspeed = ymove;
         }
-    }
+    }  
+
 }

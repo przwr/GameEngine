@@ -51,7 +51,7 @@ public class Sprite {
         this.width = texture.getTextureWidth();
         this.height = texture.getTextureHeight();
     }
-    
+
     public Sprite(String textureKey, int width, int height, int sx, int sy, SpriteBase base) {
         if (textureKey != null) {
             this.texture = loadTexture(textureKey);
@@ -91,13 +91,12 @@ public class Sprite {
     }
 
     public void bindCheck() {
-        texture.bind();
-//        if (base == null) {
-//            texture.bind();
-//        } else if (base.getLastTex() != id) {
-//            texture.bind();
-//            base.setLastTex(id);
-//        }
+        if (base == null) {
+            texture.bind();
+        } else if (base.getLastTex() != id) {
+            texture.bind();
+            base.setLastTex(id);
+        }
     }
 
     public int getId() {
@@ -194,6 +193,32 @@ public class Sprite {
     }
 
     public void renderPartMirrored(boolean flip, float bx, float ex, float by, float ey) {
+        bindCheck();
+        glTranslatef(sx, sy, 0);
+        glBegin(GL_QUADS);
+        if (flip) {
+            glTexCoord2f(ex, by);
+            glVertex2f(0, 0);
+            glTexCoord2f(bx, by);
+            glVertex2f(width, 0);
+            glTexCoord2f(bx, ey);
+            glVertex2f(width, height);
+            glTexCoord2f(ex, ey);
+            glVertex2f(0, height);
+        } else {
+            glTexCoord2f(bx, by);
+            glVertex2f(0, 0);
+            glTexCoord2f(bx, ey);
+            glVertex2f(0, height);
+            glTexCoord2f(ex, ey);
+            glVertex2f(width, height);
+            glTexCoord2f(ex, by);
+            glVertex2f(width, 0);
+        }
+        glEnd();
+    }
+    
+        public void renderPartMirroredNotBind(boolean flip, float bx, float ex, float by, float ey) {
         bindCheck();
         glTranslatef(sx, sy, 0);
         glBegin(GL_QUADS);
