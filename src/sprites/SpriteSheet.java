@@ -5,6 +5,8 @@
  */
 package sprites;
 
+import org.newdawn.slick.opengl.Texture;
+
 /**
  *
  * @author przemek
@@ -18,6 +20,14 @@ public final class SpriteSheet extends Sprite {
 
     public SpriteSheet(String sprite, int width, int height, int w, int h, SpriteBase base) {
         super(sprite, width, height, base);
+        this.w = w;
+        this.h = h;
+        this.xTiles = texture.getImageWidth() / w;
+        this.yTiles = texture.getImageHeight() / h;
+    }
+    
+    public SpriteSheet(Texture tex, int width, int height, int sx, int sy, int w, int h, SpriteBase base) {
+        super(tex, width, height, sx, sy, base);
         this.w = w;
         this.h = h;
         this.xTiles = texture.getImageWidth() / w;

@@ -36,8 +36,8 @@ public class Sprite {
         this(textureKey, width, height, 0, 0, base);
     }
 
-    public Sprite(Texture texture, int width, int height) {
-        this(texture, width, height, 0, 0);
+    public Sprite(Texture texture, int width, int height, SpriteBase base) {
+        this(texture, width, height, 0, 0, base);
     }
 
     public Sprite(String textureKey, SpriteBase base) {
@@ -64,8 +64,9 @@ public class Sprite {
         this.height = height;
     }
 
-    public Sprite(Texture texture, int width, int height, int sx, int sy) {
+    public Sprite(Texture texture, int width, int height, int sx, int sy, SpriteBase base) {
         this.texture = texture;
+        this.base = base;
         this.sx = -sx;
         this.sy = -sy;
         this.width = width;
@@ -217,8 +218,8 @@ public class Sprite {
         }
         glEnd();
     }
-    
-        public void renderPartMirroredNotBind(boolean flip, float bx, float ex, float by, float ey) {
+
+    public void renderPartMirroredNotBind(boolean flip, float bx, float ex, float by, float ey) {
         bindCheck();
         glTranslatef(sx, sy, 0);
         glBegin(GL_QUADS);

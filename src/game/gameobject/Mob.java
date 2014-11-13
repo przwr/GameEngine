@@ -35,7 +35,10 @@ public abstract class Mob extends Entity {
         this.top = false;
         this.range = (int) (SCALE * range);
         scale = SCALE;
-        init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
+        init(name, (int) (SCALE * x), (int) (SCALE * y), place);
+        //int sw = (int) (SCALE * sx);
+        //int sh = (int) (SCALE * sy);
+        this.sprite = place.getSprite("rabbit");
         this.lit = new Sprite("rabbitw", (int) (SCALE * sx), (int) (SCALE * sy), null);
         this.nLit = new Sprite("rabbitb", (int) (SCALE * sx), (int) (SCALE * sy), null);
         setCollision(new Rectangle(this.width / 2, this.height / 3, true, false, this));

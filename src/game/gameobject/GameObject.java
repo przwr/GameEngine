@@ -43,13 +43,12 @@ public abstract class GameObject {
 
     public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color);
 
-    protected void init(String textureKey, String name, int x, int y, int sw, int sh, Place place) {
+    protected void init(String name, int x, int y, Place place) {
         this.x = x;
         this.y = y;
         depth = y;
         this.name = name;
         this.place = place;
-        this.sprite = place.getSprite(textureKey, sw, sh, sw / 2, sh - 10);
     }
 
     @Override

@@ -57,7 +57,7 @@ public abstract class Place extends ScreenPlace {
         this.sTile = sTile;
         tiles = new Tile[width / sTile * height / sTile];
         sounds = new SoundBase();
-        sprites = new SpriteBase();
+        sprites = new SpriteBase(SCALE());
     }
 
     @Override
@@ -70,6 +70,14 @@ public abstract class Place extends ScreenPlace {
         return sprites;
     }
 
+    public Sprite getSprite(String textureKey) {
+        return sprites.getSprite(textureKey);
+    }
+    
+    public SpriteSheet getSpriteSheet(String textureKey) {
+        return sprites.getSpriteSheet(textureKey);
+    }
+    
     public Sprite getSprite(String textureKey, int w, int h) {
         return sprites.getSprite(textureKey, w, h);
     }

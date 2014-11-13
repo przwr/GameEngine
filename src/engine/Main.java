@@ -12,6 +12,9 @@ import myGame.MyGame;
 import game.Settings;
 import gameDesigner.GameDesigner;
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import javax.imageio.ImageIO;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.*;
 import org.lwjgl.openal.AL;
@@ -20,6 +23,7 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import org.lwjgl.opengl.PixelFormat;
+import org.newdawn.slick.opengl.ImageIOImageData;
 
 /**
  *
@@ -55,7 +59,7 @@ public class Main {
 
     private static void getInput() {
         game.getInput();
-        
+
         //-----PROJEKTOWANIE GRY! (>^o')>= ==== ----//
         if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
             designer.setVisible(true);
@@ -123,7 +127,13 @@ public class Main {
                 Display.setVSyncEnabled(false);
             }
             Display.setDisplayConfiguration(2f, 0f, 1.0f);
-            System.err.println((Display.getParent()));
+            try {
+                Display.setIcon(new ByteBuffer[]{
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon32.png")), false, false, null),
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon16.png")), false, false, null)
+                });
+            } catch (IOException e) {
+            }
             Keyboard.create();
             Mouse.create();
             Controllers.create();

@@ -92,7 +92,7 @@ public class GameDesigner extends javax.swing.JFrame {
 
     @Override
     public void dispose() {
-        super.dispose();
+        setVisible(false);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -35,11 +35,11 @@ public class Area extends GameObject {
 
     public void addFigure(Figure f) {
         if (width < f.getXs() + f.getWidth()) {
-            width = f.getXs() + f.getWidth();
+            width = f.getXs() + f.getWidth() * 2;
             xCentr = (int) x + width / 2;
         }
         if (height < f.getYs() + f.getHeight()) {
-            height = f.getYs() + f.getHeight();
+            height = f.getYs() + f.getHeight() * 2;
             yCentr = (int) y + height / 2;
         }
 

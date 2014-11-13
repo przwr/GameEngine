@@ -40,7 +40,10 @@ public class MyPlayer extends Player {
         this.top = false;
         this.setWeight(1);
         this.emitter = true;
-        init("apple", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sw), (int) (SCALE * sh), place);
+        init(name, (int) (SCALE * x), (int) (SCALE * y), place);
+        int sw2 = (int) (SCALE * sw);
+        int sh2 = (int) (SCALE * sw);
+        this.sprite = place.getSprite("apple", sw2, sh2, sw2 / 2, sh2 - 10);
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation(4, sprite, 200, this);
         animate = true;
