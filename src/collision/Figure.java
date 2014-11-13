@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Wojtek
  */
-public abstract class Figure {
+public abstract class Figure implements Comparable<Object> {
 
     protected int xs;
     protected int ys;
@@ -24,6 +24,7 @@ public abstract class Figure {
     protected int yCentr;
     protected boolean canBeLit;
     protected boolean canGiveShadow;
+    private int distFromLight;
 
     protected int type;
 
@@ -214,5 +215,21 @@ public abstract class Figure {
 
     public GameObject getOwner() {
         return owner;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if ((getCentralY() - ((Figure) o).getCentralY()) == 0) {
+            return (getDistFromLight() - ((Figure) o).getDistFromLight());
+        }
+        return getCentralY() - ((Figure) o).getCentralY();
+    }
+
+    public int getDistFromLight() {
+        return distFromLight;
+    }
+
+    public void setDistFromLight(int distFromLight) {
+        this.distFromLight = distFromLight;
     }
 }

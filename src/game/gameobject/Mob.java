@@ -32,9 +32,11 @@ public abstract class Mob extends Entity {
         this.solid = solid;
         this.sX = (int) (SCALE * startX);
         this.sY = (int) (SCALE * startY);
-        this.top = false;
         this.range = (int) (SCALE * range);
         scale = SCALE;
+//        this.emitter = true;
+//        setEmits(true);
+//        this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place);
         init("rabbit", name, (int) (SCALE * x), (int) (SCALE * y), (int) (SCALE * sx), (int) (SCALE * sy), place);
         this.lit = new Sprite("rabbitw", (int) (SCALE * sx), (int) (SCALE * sy), null);
         this.nLit = new Sprite("rabbitb", (int) (SCALE * sx), (int) (SCALE * sy), null);
@@ -99,7 +101,7 @@ public abstract class Mob extends Entity {
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
         if (sprite != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
             if (isLit) {
                 Drawer.drawShapeInColor(sprite, color, color, color, 1);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);

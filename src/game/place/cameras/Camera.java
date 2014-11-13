@@ -9,6 +9,7 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import engine.Delay;
 import engine.Methods;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,7 +17,7 @@ import engine.Methods;
  */
 public abstract class Camera {
 
-    protected GameObject go;
+    protected final ArrayList<GameObject> gos = new ArrayList<>();
     protected Place place;
     protected int Dwidth;
     protected int Dheight;
@@ -32,7 +33,7 @@ public abstract class Camera {
 
     public Camera(Place place, GameObject go) {
         this.place = place;
-        this.go = go;
+        gos.add(go);
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
         shakeDelay.restart();
@@ -58,14 +59,25 @@ public abstract class Camera {
         }
     }
 
-    public abstract int getMidX();
-
-    public abstract int getMidY();
-
-    public GameObject getGo() {
-        return go;
+    public int getMidX() {
+        int X = 0;
+        for (GameObject go : gos) {
+            X += go.getX();
+        }
+        return X / gos.size();
     }
 
+    public int getMidY() {
+        int X = 0;
+        for (GameObject go : gos) {
+            X += go.getY();
+        }
+        return X / gos.size();
+    }
+
+//    public GameObject getGo() {
+//        return gos.get(0);
+//    }
     public int getXOffEffect() {
         return (int) (xOffset + xEffect);
     }
@@ -112,10 +124,6 @@ public abstract class Camera {
 
     public void setYOff(int yOffset) {
         this.yOffset = yOffset;
-    }
-
-    public void setGo(GameObject go) {
-        this.go = go;
     }
 
     public int getDwidth() {

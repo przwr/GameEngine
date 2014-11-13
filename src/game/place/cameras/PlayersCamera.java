@@ -14,29 +14,39 @@ import org.lwjgl.opengl.Display;
  * @author przemek
  */
 public class PlayersCamera extends Camera {
-    
+
     public PlayersCamera(Place place, GameObject go, int ssX, int ssY, int num) {
         super(place, go);
         init(ssX, ssY, num);
-        
     }
-    
-    @Override
-    public synchronized void shake() {
-        if (shakeDelay.isOver()) {
-            if (shakeUp) {
-                xEffect += shakeAmp;
-                yEffect += shakeAmp / 2;
-                shakeUp = false;
-            } else {
-                xEffect -= shakeAmp;
-                yEffect -= shakeAmp / 2;
-                shakeUp = true;
-            }
-            shakeDelay.restart();
-        }
+
+    public PlayersCamera(Place place, GameObject go, GameObject go2) {
+        super(place, go);
+        gos.add(go2);
+        Dwidth = Display.getWidth() / 2;
+        Dheight = Display.getHeight() / 2;
+        update();
     }
-    
+
+    public PlayersCamera(Place place, GameObject go, GameObject go2, GameObject go3) {
+        super(place, go);
+        gos.add(go2);
+        gos.add(go3);
+        Dwidth = Display.getWidth() / 2;
+        Dheight = Display.getHeight() / 2;
+        update();
+    }
+
+    public PlayersCamera(Place place, GameObject go, GameObject go2, GameObject go3, GameObject go4) {
+        super(place, go);
+        gos.add(go2);
+        gos.add(go3);
+        gos.add(go4);
+        Dwidth = Display.getWidth() / 2;
+        Dheight = Display.getHeight() / 2;
+        update();
+    }
+
     public final void init(int ssX, int ssY, int num) {
         yUp = yDown = xLeft = xRight = 0;
         if (place.settings.nrPlayers > 1) {
@@ -64,7 +74,7 @@ public class PlayersCamera extends Camera {
                     } else {
                         xLeft = 2;
                         yUp = 2;
-                        
+
                     }
                 } else {
                     if (num == 0) {
@@ -98,15 +108,5 @@ public class PlayersCamera extends Camera {
         Dwidth = Display.getWidth() / ssX;
         Dheight = Display.getHeight() / ssY;
         update();
-    }
-    
-    @Override
-    public int getMidX() {
-        return go.getX();
-    }
-    
-    @Override
-    public int getMidY() {
-        return go.getY();
     }
 }

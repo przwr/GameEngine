@@ -13,10 +13,7 @@ import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.SplitScreen;
-import game.place.cameras.FourPlayersCamera;
 import game.place.cameras.PlayersCamera;
-import game.place.cameras.ThreePlayersCamera;
-import game.place.cameras.TwoPlayersCamera;
 import org.lwjgl.input.Controller;
 
 /**
@@ -24,14 +21,14 @@ import org.lwjgl.input.Controller;
  * @author przemek
  */
 public class MyGame extends Game {
-    
+
     public MyGame(String title, Settings settings, Controller[] controllers) {
         super(title, settings, controllers);
         players = new Player[4];
         players[0] = new MyPlayer(true, "Player 1");
         players[1] = new MyPlayer(false, "Player 2");
         players[2] = new MyPlayer(false, "Player 3");
-        players[3] = new MyPlayer(false, "Player 4");        
+        players[3] = new MyPlayer(false, "Player 4");
         settings.Up(players[1].ctrl.getActionsCount(), players, controllers);
         IO.ReadFile(new File("res/input.ini"), settings, false);
         menu = new MyMenu(this, 2, 2, 1, settings);
@@ -44,7 +41,7 @@ public class MyGame extends Game {
         players[2].addMenu(menu);
         players[3].addMenu(menu);
     }
-    
+
     @Override
     public void getInput() {
         if (runFlag) {
@@ -81,7 +78,7 @@ public class MyGame extends Game {
             }
         }
     }
-    
+
     @Override
     public void startGame() {
         int nrPl = settings.nrPlayers;
@@ -101,7 +98,7 @@ public class MyGame extends Game {
                 players[0].addCamera(new PlayersCamera(place, players[0], 4, 2, 0));
                 players[1].addCamera(new PlayersCamera(place, players[1], 4, 2, 1));
             }
-            place.cams[0] = new TwoPlayersCamera(place, players[0], players[1]);
+            place.cams[0] = new PlayersCamera(place, players[0], players[1]);
         } else if (nrPl == 3) {
             players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256, settings.SCALE);
             players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024, settings.SCALE);
@@ -113,7 +110,7 @@ public class MyGame extends Game {
             }
             players[1].addCamera(new PlayersCamera(place, players[1], 4, 4, 1));
             players[2].addCamera(new PlayersCamera(place, players[2], 4, 4, 2));
-            place.cams[1] = new ThreePlayersCamera(place, players[0], players[1], players[2]);
+            place.cams[1] = new PlayersCamera(place, players[0], players[1], players[2]);
         } else if (nrPl == 4) {
             players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256, settings.SCALE);
             players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024, settings.SCALE);
@@ -123,13 +120,13 @@ public class MyGame extends Game {
             players[1].addCamera(new PlayersCamera(place, players[1], 4, 4, 1));
             players[2].addCamera(new PlayersCamera(place, players[2], 4, 4, 2));
             players[3].addCamera(new PlayersCamera(place, players[3], 4, 4, 3));
-            place.cams[2] = new FourPlayersCamera(place, players[0], players[1], players[2], players[3]);
+            place.cams[2] = new PlayersCamera(place, players[0], players[1], players[2], players[3]);
         }
         System.arraycopy(players, 0, place.players, 0, 4);
         place.makeShadows();
         runFlag = true;
     }
-    
+
     private void addPlayer(int p) {
         if (p < 4 && place.playersLength < 4) {
             players[p].init(4, 4, 56, 56, 64, 64, place, p * 256, p * 265, settings.SCALE);
@@ -147,14 +144,14 @@ public class MyGame extends Game {
                 SplitScreen.swampFirstWithSecond(place);
             }
             updatePlayersCam();
-            
+
         }
     }
-    
+
     private void removePlayer(int p) {
         if (place.playersLength > 1 && !((MyPlayer) players[p]).isFirst) {
             ((MyPlayer) place.players[p]).setPlaceToNull();
-            place.deleteObj( place.players[p]);
+            place.deleteObj(place.players[p]);
             if (p != place.playersLength - 1) {
                 Player tempG = players[place.playersLength - 1];
                 GameObject tempP = place.players[place.playersLength - 1];
@@ -168,14 +165,14 @@ public class MyGame extends Game {
             updatePlayersCam();
         }
     }
-    
+
     private void updatePlayersCam() {
         for (int c = 0; c < place.playersLength; c++) {
             if (place.playersLength == 1) {
                 ((PlayersCamera) ((MyPlayer) place.players[0]).getCam()).init(2, 2, 0);
             } else if (place.playersLength == 2) {
                 if (place.cams[0] == null) {
-                    place.cams[0] = new TwoPlayersCamera(place, players[0], players[1]);
+                    place.cams[0] = new PlayersCamera(place, players[0], players[1]);
                 }
                 if (settings.hSplitScreen) {
                     ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(2, 4, c);
@@ -184,7 +181,7 @@ public class MyGame extends Game {
                 }
             } else if (place.playersLength == 3) {
                 if (place.cams[1] == null) {
-                    place.cams[1] = new ThreePlayersCamera(place, players[0], players[1], players[2]);
+                    place.cams[1] = new PlayersCamera(place, players[0], players[1], players[2]);
                 }
                 if (c == 0) {
                     if (settings.hSplitScreen) {
@@ -197,13 +194,13 @@ public class MyGame extends Game {
                 }
             } else {
                 if (place.cams[2] == null) {
-                    place.cams[2] = new FourPlayersCamera(place, players[0], players[1], players[2], players[3]);
+                    place.cams[2] = new PlayersCamera(place, players[0], players[1], players[2], players[3]);
                 }
                 ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(4, 4, c);
             }
         }
     }
-    
+
     @Override
     public void endGame() {
         runFlag = false;
@@ -213,7 +210,7 @@ public class MyGame extends Game {
             pl.setPlaceToNull();
         }
     }
-    
+
     @Override
     public void resumeGame() {
         if (place != null) {
@@ -222,7 +219,6 @@ public class MyGame extends Game {
         }
     }
 
-    
     @Override
     public void update() {
         if (runFlag) {
@@ -231,7 +227,7 @@ public class MyGame extends Game {
             menu.update();
         }
     }
-    
+
     @Override
     public void render() {
         if (runFlag) {
@@ -256,7 +252,7 @@ public class MyGame extends Game {
             }
         }
     }
-    
+
     private void soundResume() {
         if (settings.sounds != null) {
             for (Sound s : settings.sounds.getSoundsList()) {

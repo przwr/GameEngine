@@ -198,7 +198,7 @@ public abstract class Place extends ScreenPlace {
     }
 
     public void addObj(GameObject go) {
-        if (go.getClass() != Player.class) {
+        if (!Player.class.isAssignableFrom(go.getClass())) {
             if (go.isEmitter()) {
                 emitters.add(go);
             }
@@ -224,7 +224,7 @@ public abstract class Place extends ScreenPlace {
     }
 
     public void deleteObj(GameObject go) {
-        if (go.getClass() != Player.class) {
+        if (!Player.class.isAssignableFrom(go.getClass())) {
             if (go.isEmitter()) {
                 emitters.remove(go);
             }
