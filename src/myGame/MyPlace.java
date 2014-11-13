@@ -84,7 +84,7 @@ public class MyPlace extends Place {
         addFGTile(new FGTile(getSpriteSheet("tlo", sTile, sTile), sTile, 7, 2, true, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
         addFGTile(new FGTile(getSpriteSheet("tlo", sTile, sTile), sTile, 1, 1, false, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;
-        Area border = new Area(0, 0, null, null, sTile);
+        Area border = new Area(0, 0, null, null, sTile, true);
         border.addFigure(new Line(0, 0, width, 0, border));
         border.addFigure(new Line(0, 0, 0, height, border));
         border.addFigure(new Line(width, 0, 0, height, border));
@@ -93,7 +93,7 @@ public class MyPlace extends Place {
         areas.add(test);
         areas.add(border);
         addObj(new MyMob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
-       // addObj(new MyMob(1280, 256, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
+        addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
         this.r = 0.45f;
         this.g = 0.45f;
         this.b = 0.45f;
@@ -160,8 +160,8 @@ public class MyPlace extends Place {
     @Override
     protected void renderText(Camera cam) {
         for (int p = 0; p < playersLength; p++) {
-            if (cam.getSY() <= players[p].getY() + (players[p].getHeight()  << 2) && cam.getEY() >= players[p].getY() - (players[p].getHeight()  << 2)
-                    && cam.getSX() <= players[p].getX() + (players[p].getWidth() << 2) && cam.getEX() >= players[p].getX() - (players[p].getWidth()  << 2)) {
+            if (cam.getSY() <= players[p].getY() + (players[p].getHeight() << 2) && cam.getEY() >= players[p].getY() - (players[p].getHeight() << 2)
+                    && cam.getSX() <= players[p].getX() + (players[p].getWidth() << 2) && cam.getEX() >= players[p].getX() - (players[p].getWidth() << 2)) {
                 ((MyPlayer) players[p]).renderName(this, cam);
             }
         }

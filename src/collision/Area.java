@@ -23,12 +23,23 @@ public class Area extends GameObject {
     public ArrayList<Figure> parts;
     protected int xCentr;
     protected int yCentr;
+    protected boolean isBorder;
 
     public Area(int x, int y, String lit, String nLit, int sTile) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
         this.x = x;
         this.y = y;
         this.parts = new ArrayList<>();
         solid = true;
+        this.lit = lit != null ? new Sprite(lit, sTile, sTile, null) : null;
+        this.nLit = nLit != null ? new Sprite(nLit, sTile, sTile, null) : null;
+    }
+
+    public Area(int x, int y, String lit, String nLit, int sTile, boolean isBorder) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
+        this.x = x;
+        this.y = y;
+        this.parts = new ArrayList<>();
+        solid = true;
+        this.isBorder = isBorder;
         this.lit = lit != null ? new Sprite(lit, sTile, sTile, null) : null;
         this.nLit = nLit != null ? new Sprite(nLit, sTile, sTile, null) : null;
     }
@@ -120,5 +131,9 @@ public class Area extends GameObject {
             }
             glPopMatrix();
         }
+    }
+
+    public boolean isBorder() {
+        return isBorder;
     }
 }

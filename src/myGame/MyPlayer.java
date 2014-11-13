@@ -37,7 +37,6 @@ public class MyPlayer extends Player {
         this.height = (int) (SCALE * height);
         this.sX = (int) (SCALE * startX);
         this.sY = (int) (SCALE * startY);
-        this.top = false;
         this.setWeight(1);
         this.emitter = true;
         init(name, (int) (SCALE * x), (int) (SCALE * y), place);
@@ -114,7 +113,7 @@ public class MyPlayer extends Player {
         // glTranslatef(getX() + xEffect, getY() + yEffect, 0);
         if (sprite != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect + (int) -jump, 0);
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
             if (isLit) {
                 Drawer.drawShapeInColor(anim, color, color, color, 1);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);

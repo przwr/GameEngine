@@ -32,7 +32,6 @@ public abstract class Mob extends Entity {
         this.solid = solid;
         this.sX = (int) (SCALE * startX);
         this.sY = (int) (SCALE * startY);
-        this.top = false;
         this.range = (int) (SCALE * range);
         scale = SCALE;
         init(name, (int) (SCALE * x), (int) (SCALE * y), place);
@@ -102,7 +101,7 @@ public abstract class Mob extends Entity {
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
         if (sprite != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
             if (isLit) {
                 Drawer.drawShapeInColor(sprite, color, color, color, 1);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);

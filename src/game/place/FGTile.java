@@ -7,6 +7,9 @@ package game.place;
 
 import collision.Rectangle;
 import engine.Drawer;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -29,7 +32,7 @@ public class FGTile extends Tile {
         this.isItWall = isItWall;
         this.simpleLighting = true;
         this.lightproof = isItWall;
-        //setCollision(new Rectangle(sh.getWidth(), sh.getHeight(), false, false, this));
+        setCollision(new Rectangle(0, sh.getHeight(), sh.getWidth(), sh.getHeight(), false, false, this));
     }
 
     public boolean isItWall() {
@@ -66,21 +69,21 @@ public class FGTile extends Tile {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+        glPushMatrix();
+        glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
         if (simpleLighting) {
-            glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
             glColor4f(0f, 0f, 0f, 1f);
             Drawer.drawRectangle(0, 0, sh.getWidth(), sh.getHeight());
-            glPopMatrix();
-        } else if (nLit != null) {
-            glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glColor4f(1f, 1f, 1f, 1f);
+        } else if (sprite != null) {
             if (isLit) {
-                //lit.render(); COŚTAM JASNEGO!
+                Drawer.drawShapeInColor(sprite, color, color, color, 1);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             } else {
-                //nLit.render(); COŚTAM CIEMNEGO!
+                Drawer.drawShapeInBlack(sprite);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
-            glPopMatrix();
         }
+        glPopMatrix();
     }
 }
