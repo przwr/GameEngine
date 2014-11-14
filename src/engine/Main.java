@@ -35,6 +35,7 @@ public class Main {
     private static final Settings settings = new Settings();
     private static Controller[] controllers;
     private static GameDesigner designer;
+    private static boolean designerActive = false;
 
     public static void main(String[] args) {
         try {
@@ -61,9 +62,13 @@ public class Main {
         game.getInput();
 
         //-----PROJEKTOWANIE GRY! (>^o')>= ==== ----//
-        if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_F1) && !designerActive) {
             designer.setVisible(true);
+            designerActive = true;
         }
+        if (designerActive && !designer.isVisible())
+            designerActive = false;
+        //------------------------------------------//
     }
 
     private static void update() {

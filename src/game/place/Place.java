@@ -78,18 +78,6 @@ public abstract class Place extends ScreenPlace {
         return sprites.getSpriteSheet(textureKey);
     }
     
-    public Sprite getSprite(String textureKey, int w, int h) {
-        return sprites.getSprite(textureKey, w, h);
-    }
-
-    public Sprite getSprite(String textureKey, int w, int h, int sx, int sy) {
-        return sprites.getSprite(textureKey, w, h, sx, sy);
-    }
-
-    public SpriteSheet getSpriteSheet(String textureKey, int sx, int sy) {
-        return sprites.getSpriteSheet(textureKey, sx, sy);
-    }
-
     public SoundBase getSounds() {
         return sounds;
     }
@@ -187,6 +175,11 @@ public abstract class Place extends ScreenPlace {
         t.setX(x);
         t.setY(y);
         t.setDepth(depth);
+        foregroundTiles.add(t);
+        sortObjects(foregroundTiles);
+    }
+    
+    public void addFGTile(GameObject t) {
         foregroundTiles.add(t);
         sortObjects(foregroundTiles);
     }

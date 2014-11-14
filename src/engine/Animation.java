@@ -7,6 +7,7 @@ package engine;
 
 import game.gameobject.GameObject;
 import sprites.Sprite;
+import sprites.SpriteSheet;
 
 /**
  *
@@ -15,56 +16,60 @@ import sprites.Sprite;
 public class Animation {
 
     private final GameObject owner;
-    private final Frame[] frames;
-    private final Sprite sprite;
+    private final SpriteSheet sprite;
     private final Delay animDelay;
     private boolean flip;
-    private int curFrame;
+    private int curFrame, start, end;
 
-    public Animation(int num, Sprite spr, int delay, GameObject owner) {
+    public Animation(int start, int end, SpriteSheet spr, int delay, GameObject owner) {
         this.owner = owner;
-        frames = new Frame[num];
         this.sprite = spr;
-        for (float i = 0; i < num; i++) {
-            frames[(int) i] = new Frame(i / (float) num, (i + 1) / (float) num, 0, 1);
-        }
+        this.start = start >= 0 ? start : 0;
+        this.end = sprite.getLenght() - 1 <= end ? end : sprite.getLenght() - 1;
         animDelay = new Delay(delay);
         animDelay.restart();
+        curFrame = start;
+    }
+
+    public Animation(SpriteSheet spr, int delay, GameObject owner) {
+        this.owner = owner;
+        this.sprite = spr;
+        this.start = 0;
+        this.end = sprite.getLenght() - 1;
+        animDelay = new Delay(delay);
+        animDelay.restart();
+        curFrame = 0;
     }
 
     public void render(boolean anim) {
         sprite.bindCheck();
+        sprite.render(curFrame);
         if (anim) {
             if (animDelay.isOver()) {
-                frames[curFrame++].render(sprite, flip);
+                curFrame++;
                 animDelay.restart();
-                if (curFrame == frames.length) {
-                    curFrame = 0;
+                if (curFrame > getEnd()) {
+                    curFrame = getStart();
                 }
-            } else {
-                frames[curFrame].render(sprite, flip);
             }
-        } else {
-            frames[0].render(sprite, flip);
         }
     }
 
     public void renderNotBind(boolean anim) {
+        sprite.render(curFrame);
         if (anim) {
             if (animDelay.isOver()) {
-                frames[curFrame++].render(sprite, flip);
+                curFrame++;
                 animDelay.restart();
-                if (curFrame == frames.length) {
-                    curFrame = 0;
+                if (curFrame > getEnd()) {
+                    curFrame = getStart();
                 }
-            } else {
-                frames[curFrame].render(sprite, flip);
             }
-        } else {
-            frames[0].render(sprite, flip);
         }
     }
 
+    
+    
     public void setFlip(boolean flip) {
         this.flip = flip;
     }
@@ -75,5 +80,21 @@ public class Animation {
 
     public GameObject getOwner() {
         return owner;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+    public void setEnd(int end) {
+        this.end = end;
     }
 }

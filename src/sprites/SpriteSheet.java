@@ -13,25 +13,13 @@ import org.newdawn.slick.opengl.Texture;
  */
 public final class SpriteSheet extends Sprite {
 
-    private final int w;
-    private final int h;
     private final float xTiles;
     private final float yTiles;
 
-    public SpriteSheet(String sprite, int width, int height, int w, int h, SpriteBase base) {
-        super(sprite, width, height, base);
-        this.w = w;
-        this.h = h;
-        this.xTiles = texture.getImageWidth() / w;
-        this.yTiles = texture.getImageHeight() / h;
-    }
-    
-    public SpriteSheet(Texture tex, int width, int height, int sx, int sy, int w, int h, SpriteBase base) {
-        super(tex, width, height, sx, sy, base);
-        this.w = w;
-        this.h = h;
-        this.xTiles = texture.getImageWidth() / w;
-        this.yTiles = texture.getImageHeight() / h;
+    public SpriteSheet(Texture tex, int width, int height, int sx, int sy, SpriteBase base) {
+        super(tex, (int) (width * base.getScale()), (int) (height * base.getScale()), sx, sy, base);
+        this.xTiles = texture.getImageWidth() / width;
+        this.yTiles = texture.getImageHeight() / height;
     }
 
     public void render(int i) {
@@ -39,7 +27,7 @@ public final class SpriteSheet extends Sprite {
             return;
         }
         int x = (int) (i % xTiles);
-        int y = (int) (i / yTiles);
+        int y = (int) (i / xTiles);
         render(x, y);
     }
 
@@ -53,7 +41,7 @@ public final class SpriteSheet extends Sprite {
         float ey = (float) (y + 1) / yTiles;
         renderTexPart(bx, ex, by, ey);
     }
-    
+
     public void renderMirrored(boolean flip, int x, int y) {
         if (x > xTiles || y > yTiles) {
             return;
@@ -63,5 +51,17 @@ public final class SpriteSheet extends Sprite {
         float ex = (float) (x + 1) / xTiles;
         float ey = (float) (y + 1) / yTiles;
         renderPartMirrored(flip, bx, ex, by, ey);
+    }
+
+    public int getXlimit() {
+        return (int) xTiles;
+    }
+
+    public int getYlimit() {
+        return (int) yTiles;
+    }
+
+    public int getLenght() {
+        return (int) (xTiles * yTiles);
     }
 }

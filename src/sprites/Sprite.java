@@ -71,6 +71,7 @@ public class Sprite {
         this.sy = -sy;
         this.width = width;
         this.height = height;
+        System.err.println(width + " " + height);
     }
 
     public static Texture loadTexture(String key) {
@@ -181,6 +182,7 @@ public class Sprite {
 
     public void renderTexPart(float bx, float ex, float by, float ey) {
         bindCheck();
+        glTranslatef(sx, sy, 0);
         glBegin(GL_QUADS);
         glTexCoord2f(bx, by);
         glVertex2f(0, 0);
@@ -220,7 +222,6 @@ public class Sprite {
     }
 
     public void renderPartMirroredNotBind(boolean flip, float bx, float ex, float by, float ey) {
-        bindCheck();
         glTranslatef(sx, sy, 0);
         glBegin(GL_QUADS);
         if (flip) {

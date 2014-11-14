@@ -54,56 +54,7 @@ public class SpriteBase {
         temp.setId(texCounter++);
         return temp;
     }
-    
-    //                                                                   ?
-    //---PONIŻSZE METODY TRZEBA SPRÓBOWAĆ JAKOŚ WYCIACHAĆ, LUB COŚ... <(-.-)>
-    
-    public Sprite getSprite(String textureKey, int w, int h) {
-        for (Sprite s : list) {
-            if (s.getKey().equals(textureKey)) {
-                s.setWidth(w);
-                s.setHeight(h);
-                return s;
-            }
-        }
-        Sprite temp = new Sprite(textureKey, w, h, this);
-        list.add(temp);
-        temp.setId(texCounter++);
-        return temp;
-    }
-
-    public Sprite getSprite(String textureKey, int w, int h, int sx, int sy) {
-        for (Sprite s : list) {
-            if (s.getKey().equals(textureKey)) {
-                s.setWidth(w);
-                s.setHeight(h);
-                s.setSx(sx);
-                s.setSy(sy);
-                return s;
-            }
-        }
-        Sprite temp = new Sprite(textureKey, w, h, sx, sy, this);
-        list.add(temp);
-        temp.setId(texCounter++);
-        return temp;
-    }
-    
-    public SpriteSheet getSpriteSheet(String textureKey, int sx, int sy) {
-        for (Sprite s : list) {
-            if (s.getKey().equals(textureKey)) {
-                s.setWidth(sx);
-                s.setHeight(sy);
-                return (SpriteSheet) s;
-            }
-        }
-        SpriteSheet temp = new SpriteSheet(textureKey, sx, sy, 64, 64, this);
-        list.add(temp);
-        temp.setId(texCounter++);
-        return temp;
-    }
-    
-    //----------------------------------------------------//
-    
+        
     public Sprite loadSprite(String name) {
         int width, height, sx, sy, w, h;
         boolean sprSheet;
@@ -141,7 +92,7 @@ public class SpriteBase {
             return null;
         }
         if (sprSheet) {
-            lst = new SpriteSheet(tmp, width, height, w, h, sx, sy, this);
+            lst = new SpriteSheet(tmp, w, h, sx, sy, this);
         } else {
             lst = new Sprite(tmp, width, height, sx, sy, this);
         }
@@ -155,5 +106,9 @@ public class SpriteBase {
 
     public void setLastTex(int i) {
         lastTex = i;
+    }
+    
+    public double getScale() {
+        return scale;
     }
 }

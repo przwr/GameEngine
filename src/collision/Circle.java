@@ -17,6 +17,7 @@ import java.awt.geom.Line2D;
 public class Circle extends Figure {
 
     private final int r;
+    private final int prec = 16;    //Tyle punktów z siebie wyrzuci przy listPoints()
 
     public Circle(int xs, int ys, int r, GameObject owner) {
         super(xs, ys, owner);
@@ -42,15 +43,11 @@ public class Circle extends Figure {
 
     @Override
     public Point[] listPoints() {
-        int root = (int) ((double) r * 0.70711);
-        Point[] list = {new Point(super.getX() + r, super.getY()),
-            new Point(super.getX(), super.getY() + r),
-            new Point(super.getX() - r, super.getY()),
-            new Point(super.getX(), super.getY() - r),
-            new Point(super.getX() + root, super.getY()),
-            new Point(super.getX(), super.getY() + root),
-            new Point(super.getX() - root, super.getY()),
-            new Point(super.getX(), super.getY() - root),};
+        Point[] list = new Point[prec];
+        int step = 360 / prec;
+        for (int i = 0; i < prec; i++) {
+            list[i] = new Point((int) Methods.xRadius(i * step, r), (int) Methods.yRadius(i * step, r));
+        }
         return list;
     }
 

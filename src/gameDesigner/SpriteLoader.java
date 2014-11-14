@@ -156,8 +156,12 @@ public class SpriteLoader extends javax.swing.JFrame {
 
                 line = wczyt.readLine();
                 t = line.split(";");
-                SSWidthSp.setValue(Integer.parseInt(t[0]));
-                SSHeightSp.setValue(Integer.parseInt(t[1]));
+                int ssw = Integer.parseInt(t[0]);
+                int ssh = Integer.parseInt(t[1]);
+                xm = ssw;
+                ym = ssh;
+                SSWidthSp.setValue(ssw);
+                SSHeightSp.setValue(ssh);
             } catch (IOException e) {
                 System.err.println("File not found!");
             }
@@ -300,14 +304,16 @@ public class SpriteLoader extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(SSPanelPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(SSPanelPLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(4, 4, 4)
-                        .addComponent(SSHeightSp, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE))
+                        .addComponent(GridCB)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(SSPanelPLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(7, 7, 7)
-                        .addComponent(SSWidthSp))
-                    .addComponent(GridCB))
+                        .addGroup(SSPanelPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
+                        .addGap(4, 4, 4)
+                        .addGroup(SSPanelPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(SSWidthSp)
+                            .addComponent(SSHeightSp, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         SSPanelPLayout.setVerticalGroup(
@@ -349,12 +355,14 @@ public class SpriteLoader extends javax.swing.JFrame {
             }
         });
 
+        XCSp.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         XCSp.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 XCSpStateChanged(evt);
             }
         });
 
+        YCSp.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         YCSp.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 YCSpStateChanged(evt);
@@ -592,12 +600,32 @@ public class SpriteLoader extends javax.swing.JFrame {
     }//GEN-LAST:event_SSPanelPPropertyChange
 
     private void SSWidthSpStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_SSWidthSpStateChanged
-        xm = (int) SSWidthSp.getValue();
+        int tmp = (int) SSWidthSp.getValue();
+        if (xm - tmp > 0) {
+            if (xm > 2) {
+                xm /= 2;
+            }
+        } else if (xm - tmp < 0) {
+            if (xm < 512) {
+                xm *= 2;
+            }
+        }
+        SSWidthSp.setValue(xm);
         repaint();
     }//GEN-LAST:event_SSWidthSpStateChanged
 
     private void SSHeightSpStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_SSHeightSpStateChanged
-        ym = (int) SSHeightSp.getValue();
+        int tmp = (int) SSHeightSp.getValue();
+        if (ym - tmp > 0) {
+            if (ym > 2) {
+                ym /= 2;
+            }
+        } else if (ym - tmp < 0) {
+            if (ym < 512) {
+                ym *= 2;
+            }
+        }
+        SSHeightSp.setValue(ym);
         repaint();
     }//GEN-LAST:event_SSHeightSpStateChanged
 

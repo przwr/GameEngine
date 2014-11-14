@@ -18,6 +18,7 @@ import engine.Time;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
+import sprites.SpriteSheet;
 
 /**
  *
@@ -37,14 +38,12 @@ public class MyPlayer extends Player {
         this.height = (int) (SCALE * height);
         this.sX = (int) (SCALE * startX);
         this.sY = (int) (SCALE * startY);
-        this.setWeight(1);
+        this.setWeight(2);
         this.emitter = true;
         init(name, (int) (SCALE * x), (int) (SCALE * y), place);
-        int sw2 = (int) (SCALE * sw);
-        int sh2 = (int) (SCALE * sw);
-        this.sprite = place.getSprite("apple", sw2, sh2, sw2 / 2, sh2 - 10);
+        this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.anim = new Animation(4, sprite, 200, this);
+        this.anim = new Animation((SpriteSheet)sprite, 200, this);
         animate = true;
         emits = false;
         scale = SCALE;
