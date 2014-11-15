@@ -11,7 +11,7 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author przemek
  */
-public final class SpriteSheet extends Sprite {
+public class SpriteSheet extends Sprite {
 
     private final float xTiles;
     private final float yTiles;

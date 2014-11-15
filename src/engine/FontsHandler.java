@@ -6,7 +6,13 @@
 package engine;
 
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.util.ResourceLoader;
 
 /**
  *
@@ -26,9 +32,19 @@ public class FontsHandler {
     }
 
     public void add(String name, int type, int size) {
-        if (n < size) {
-            fonts[n] = new TrueTypeFont(new Font(name, type, size), true, chars);
-            n++;
+        if (n < this.size) {
+            fonts[n++] = new TrueTypeFont(new Font(name, type, size), true, chars);
+        }
+    }
+
+    public void add(String name, int size) {
+        try {
+            InputStream inputStream = ResourceLoader.getResourceAsStream("/res/" + name + ".ttf");
+            Font awtFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            awtFont = awtFont.deriveFont((float) size);
+            fonts[n++] = new TrueTypeFont(awtFont, true, chars);
+        } catch (FontFormatException | IOException ex) {
+            Logger.getLogger(FontsHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

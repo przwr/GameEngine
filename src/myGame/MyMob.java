@@ -15,8 +15,8 @@ import game.place.Place;
  */
 public class MyMob extends Mob {
 
-    public MyMob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid, double SCALE) {
-        super(x, y, startX, startY, width, height, sx, sy, speed, range, name, place, solid, SCALE);
+    public MyMob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid) {
+        super(x, y, startX, startY, width, height, speed, range, name, place, solid);
     }
 
     @Override

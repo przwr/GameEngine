@@ -5,6 +5,7 @@
  */
 package sprites;
 
+import engine.Methods;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class SpriteBase {
             w = Integer.parseInt(t[0]);
             h = Integer.parseInt(t[1]);
         } catch (IOException e) {
-            System.err.println("File " + name + " not found!\n" + e.getMessage());
+            Methods.Error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
         try {

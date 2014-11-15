@@ -10,12 +10,13 @@ import engine.Drawer;
 import engine.Methods;
 import game.place.cameras.Camera;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
-import sprites.Sprite;
 
 /**
  *
@@ -26,7 +27,8 @@ public abstract class Mob extends Entity {
     protected final double range;
     protected GameObject prey;
 
-    public Mob(int x, int y, int startX, int startY, int width, int height, int sx, int sy, int speed, int range, String name, Place place, boolean solid, double SCALE) {
+    public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid) {
+        double SCALE = place.settings.SCALE;
         this.width = (int) (SCALE * width);
         this.height = (int) (SCALE * height);
         this.solid = solid;
@@ -35,11 +37,7 @@ public abstract class Mob extends Entity {
         this.range = (int) (SCALE * range);
         scale = SCALE;
         init(name, (int) (SCALE * x), (int) (SCALE * y), place);
-        //int sw = (int) (SCALE * sx);
-        //int sh = (int) (SCALE * sy);
         this.sprite = place.getSprite("rabbit");
-        this.lit = new Sprite("rabbitw", (int) (SCALE * sx), (int) (SCALE * sy), null);
-        this.nLit = new Sprite("rabbitb", (int) (SCALE * sx), (int) (SCALE * sy), null);
         setCollision(new Rectangle(this.width / 2, this.height / 3, true, false, this));
         this.setMaxSpeed(speed);
     }

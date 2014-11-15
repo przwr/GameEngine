@@ -27,9 +27,8 @@ public abstract class GameObject {
     protected boolean top;
     protected boolean stale;
     protected boolean animate;
+    protected boolean simpleLighting;
     protected Sprite sprite;
-    protected Sprite nLit;
-    protected Sprite lit;
     protected Light light;
     protected String name;
     protected Place place;
@@ -207,8 +206,8 @@ public abstract class GameObject {
     public boolean isAnimate() {
         return animate;
     }
-
-    public Place getPlace() {
+    
+    public Place getPlace(){
         return place;
     }
 }

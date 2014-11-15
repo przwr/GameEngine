@@ -61,7 +61,7 @@ public abstract class Place extends ScreenPlace {
     }
 
     @Override
-    public abstract void generate();
+    protected abstract void generate();
 
     @Override
     public abstract void update();

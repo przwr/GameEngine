@@ -67,8 +67,8 @@ public class Settings {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         DisplayMode temp;
-        if (tmpmodes[0].getWidth()
-                >= minW && tmpmodes[0].getWidth() <= maxW && tmpmodes[0].getHeight() >= minH && tmpmodes[0].getHeight() <= maxH && tmpmodes[0].getBitsPerPixel() == depth) {
+        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getWidth() <= maxW
+                && tmpmodes[0].getHeight() >= minH && tmpmodes[0].getHeight() <= maxH && tmpmodes[0].getBitsPerPixel() == depth) {
             modesNr++;
         }
         int i, j;
@@ -92,10 +92,8 @@ public class Settings {
         resWidth = modes[0].getWidth();
         resHeight = modes[0].getHeight();
         freq = modes[0].getFrequency();
-        languages.add(
-                new LangPL());
-        languages.add(
-                new LangENG());
+        languages.add(new LangPL());
+        languages.add(new LangENG());
         language = languages.get(0);
     }
 
@@ -115,8 +113,8 @@ public class Settings {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
-        this.SCALE = ((int) (( resHeight / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) ((resHeight / 1024d / 0.03125)) * 0.03125;
-        
+        this.SCALE = ((int) ((resHeight / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) ((resHeight / 1024d / 0.03125)) * 0.03125;
+
         try {
             GL30.glGenFramebuffers();
             GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);

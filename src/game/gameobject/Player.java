@@ -28,7 +28,7 @@ public abstract class Player extends Entity {
 
     protected abstract void initControler(boolean isFirst);
 
-    public abstract void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y, double SCALE);
+    public abstract void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y);
 
     public void addCamera(Camera cam) {
         this.cam = cam;

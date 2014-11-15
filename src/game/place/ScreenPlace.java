@@ -22,7 +22,7 @@ public abstract class ScreenPlace {
     public final int width, height;
     public float r, g, b;
     protected FontsHandler fonts;
-        public GameObject[] players;
+    public GameObject[] players;
 
     public ScreenPlace(Game game, int width, int height, Settings settings) {
         this.width = width;
@@ -31,7 +31,7 @@ public abstract class ScreenPlace {
         this.game = game;
     }
 
-    public abstract void generate();
+    protected abstract void generate();
 
     public abstract void update();
 

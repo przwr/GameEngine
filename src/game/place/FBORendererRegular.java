@@ -21,7 +21,6 @@ import org.lwjgl.opengl.GL30;
 public class FBORendererRegular extends FBORenderer {
 
     public FBORendererRegular(int w, int h, Settings settings) {
-
         super(w, h, settings);
         activates[0] = new activate() {
             @Override

@@ -14,7 +14,6 @@ import game.Settings;
 import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Tile;
-import java.awt.Font;
 import engine.FontsHandler;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
@@ -56,7 +55,7 @@ public class MyPlace extends Place {
     }
 
     @Override
-    public final void generate() {
+    public void generate() {
         //sounds.init("res", settings);
         Area a = new Area(13 * sTile, 13 * sTile, "rockb", "rockb", sTile);
         for (int y = 0; y < height / sTile; y++) {
@@ -92,13 +91,13 @@ public class MyPlace extends Place {
         areas.add(a);
         areas.add(test);
         areas.add(border);
-        addObj(new MyMob(1280, 512, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
-        addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 128, 128, 4, 512, "rabbit", this, true, settings.SCALE));
+        addObj(new MyMob(1280, 512, 0, 8, 128, 112, 4, 512, "rabbit", this, true));
+        addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true));
         this.r = 0.45f;
         this.g = 0.45f;
         this.b = 0.45f;
         fonts = new FontsHandler(20);
-        fonts.add("Arial", Font.PLAIN, (int) (settings.SCALE * 24));
+        fonts.add("ArchitectsDaughter", (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);
     }
 

@@ -48,4 +48,5 @@ public abstract class Language {
     public String FBOError;
     public String Unsupported;
     public String MustBeClose;
+    public String Empty;
 }

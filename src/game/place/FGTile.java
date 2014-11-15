@@ -23,8 +23,7 @@ import sprites.SpriteSheet;
 public class FGTile extends Tile {
 
     private boolean isItWall;   //true - Ściana (bok), false - szczyt "słupa" (góra)
-    private boolean lightproof; //Czy światło ma w ogóle szansę na to świecić
-    private boolean simpleLighting; //Czy rysuje tekstury (false), czy prostokąty (true)
+    private boolean lightproof; //Czy światło ma w ogóle szansę na to świecić  
     private int highness;
 
     public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, Place place) {

@@ -49,12 +49,13 @@ public class LangENG extends Language {
         Actions[9] = "Run";
         Actions[10] = "Light";
         PushButton = "Push the Button!";
-        Unchangable = "Unchangable!";
+        Unchangable = "unchangable!";
         VSync = "Vertical Synchronization: ";
         SmoothShadows = "Smooth Shadows: ";
         JoinSS = "Join Screens: ";
         FBOError = "FrameBufferedObject is unsupported. Make sure you have current video card drivers!";
         Unsupported = "unsupported";
         MustBeClose = " (Players must be close)";
+        Empty = "empty!";
     }
 }

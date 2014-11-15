@@ -85,11 +85,11 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersLength = nrPl;
         if (nrPl == 1) {
-            players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256, settings.SCALE);
+            players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256);
             players[0].addCamera(new PlayersCamera(place, players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         } else if (nrPl == 2) {
-            players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256, settings.SCALE);
-            players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024, settings.SCALE);
+            players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256);
+            players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024);
             if (settings.hSplitScreen) {
                 players[0].addCamera(new PlayersCamera(place, players[0], 2, 4, 0));
                 players[1].addCamera(new PlayersCamera(place, players[1], 2, 4, 1));
@@ -99,9 +99,9 @@ public class MyGame extends Game {
             }
             place.cams[0] = new PlayersCamera(place, players[0], players[1]);
         } else if (nrPl == 3) {
-            players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256, settings.SCALE);
-            players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024, settings.SCALE);
-            players[2].init(4, 4, 56, 56, 64, 64, place, 1024, 512, settings.SCALE);
+            players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256);
+            players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024);
+            players[2].init(4, 4, 56, 56, 64, 64, place, 1024, 512);
             if (settings.hSplitScreen) {
                 players[0].addCamera(new PlayersCamera(place, players[0], 2, 4, 0));
             } else {
@@ -111,10 +111,10 @@ public class MyGame extends Game {
             players[2].addCamera(new PlayersCamera(place, players[2], 4, 4, 2));
             place.cams[1] = new PlayersCamera(place, players[0], players[1], players[2]);
         } else if (nrPl == 4) {
-            players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256, settings.SCALE);
-            players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024, settings.SCALE);
-            players[2].init(4, 4, 56, 56, 64, 64, place, 1024, 512, settings.SCALE);
-            players[3].init(4, 4, 56, 56, 64, 64, place, 1024, 1024, settings.SCALE);
+            players[0].init(4, 4, 56, 56, 64, 64, place, 256, 256);
+            players[1].init(4, 4, 56, 56, 64, 64, place, 512, 1024);
+            players[2].init(4, 4, 56, 56, 64, 64, place, 1024, 512);
+            players[3].init(4, 4, 56, 56, 64, 64, place, 1024, 1024);
             players[0].addCamera(new PlayersCamera(place, players[0], 4, 4, 0));
             players[1].addCamera(new PlayersCamera(place, players[1], 4, 4, 1));
             players[2].addCamera(new PlayersCamera(place, players[2], 4, 4, 2));
@@ -128,7 +128,7 @@ public class MyGame extends Game {
 
     private void addPlayer(int p) {
         if (p < 4 && place.playersLength < 4) {
-            players[p].init(4, 4, 56, 56, 64, 64, place, p * 256, p * 265, settings.SCALE);
+            players[p].init(4, 4, 56, 56, 64, 64, place, p * 256, p * 265);
             ((Player) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
             if (p != place.playersLength) {
                 Player tempG = players[place.playersLength];
@@ -168,15 +168,15 @@ public class MyGame extends Game {
     private void updatePlayersCam() {
         for (int c = 0; c < place.playersLength; c++) {
             if (place.playersLength == 1) {
-                ((PlayersCamera) ((Player) place.players[0]).getCam()).init(2, 2, 0);
+                ((PlayersCamera) ((Player) place.players[0]).getCam()).reInit(2, 2);
             } else if (place.playersLength == 2) {
                 if (place.cams[0] == null) {
                     place.cams[0] = new PlayersCamera(place, players[0], players[1]);
                 }
                 if (settings.hSplitScreen) {
-                    ((PlayersCamera) ((Player) place.players[c]).getCam()).init(2, 4, c);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(2, 4);
                 } else {
-                    ((PlayersCamera) ((Player) place.players[c]).getCam()).init(4, 2, c);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 2);
                 }
             } else if (place.playersLength == 3) {
                 if (place.cams[1] == null) {
@@ -184,18 +184,18 @@ public class MyGame extends Game {
                 }
                 if (c == 0) {
                     if (settings.hSplitScreen) {
-                        ((PlayersCamera) ((Player) place.players[c]).getCam()).init(2, 4, c);
+                        ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(2, 4);
                     } else {
-                        ((PlayersCamera) ((Player) place.players[c]).getCam()).init(4, 2, c);
+                        ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 2);
                     }
                 } else {
-                    ((PlayersCamera) ((Player) place.players[c]).getCam()).init(4, 4, c);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 4);
                 }
             } else {
                 if (place.cams[2] == null) {
                     place.cams[2] = new PlayersCamera(place, players[0], players[1], players[2], players[3]);
                 }
-                ((PlayersCamera) ((Player) place.players[c]).getCam()).init(4, 4, c);
+                ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 4);
             }
         }
     }

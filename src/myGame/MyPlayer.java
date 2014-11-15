@@ -6,7 +6,6 @@
 package myGame;
 
 import collision.Rectangle;
-import game.gameobject.inputs.*;
 import game.gameobject.Player;
 import game.place.cameras.Camera;
 import game.place.Place;
@@ -15,6 +14,7 @@ import engine.Animation;
 import engine.Drawer;
 import engine.Methods;
 import engine.Time;
+import game.gameobject.inputs.InputKeyBoard;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
@@ -33,7 +33,8 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y, double SCALE) {
+    public void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y) {
+        double SCALE = place.settings.SCALE;
         this.width = (int) (SCALE * width);
         this.height = (int) (SCALE * height);
         this.sX = (int) (SCALE * startX);
@@ -43,7 +44,7 @@ public class MyPlayer extends Player {
         init(name, (int) (SCALE * x), (int) (SCALE * y), place);
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.anim = new Animation((SpriteSheet)sprite, 200, this);
+        this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
         scale = SCALE;
@@ -52,7 +53,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public final void initControler(boolean isFirst) {
+    public void initControler(boolean isFirst) {
         ctrl = new MyController(this);
         if (isFirst) {
             this.isFirst = true;

@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.io.BufferedReader;
@@ -28,7 +29,7 @@ public class PuzzleObject {
             String[] t = line.split(";");
             //if (t[0].equals("b"))
         } catch (IOException e) {
-            System.err.println("File " + file + " not found!\n" + e.getMessage());
+            Methods.Error("File " + file + " not found!\n" + e.getMessage());
         }
     }
     

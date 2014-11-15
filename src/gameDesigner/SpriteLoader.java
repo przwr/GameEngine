@@ -655,7 +655,7 @@ public class SpriteLoader extends javax.swing.JFrame {
     }//GEN-LAST:event_EditBtActionPerformed
 
     /*-----------------------------------------------*/
-    class SpriteDisplayer extends javax.swing.JPanel {
+    private class SpriteDisplayer extends javax.swing.JPanel {
 
         @Override
         public void paintComponent(Graphics g) {

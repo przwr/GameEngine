@@ -29,7 +29,6 @@ import myGame.choices.ChoiceStop;
 import myGame.choices.ChoiceVSync;
 import myGame.choices.ChoiceVolume;
 import game.place.Menu;
-import java.awt.Font;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -44,21 +43,40 @@ import org.newdawn.slick.Color;
  * @author przemek
  */
 public class MyMenu extends Menu {
-    
+
     public MyMenu(Game game, int width, int height, int tileSize, Settings settings) {
         super(game, width, height, settings);
         generate();
     }
 
     @Override
-    public void generate() {
+    protected void generate() {
         delay.restart();
-        menus = new MenuOpt[10];
+        menus = new MenuOpt[7];
+        generateM0();
+        generateM1();
+        generateM2();
+        generateM3();
+        generateM4();
+        generateM5();
+        generateM6();
+        this.r = 1f;
+        this.g = 1f;
+        this.b = 1f;
+        fonts = new FontsHandler(20);
+        fonts.add("ArchitectsDaughter", (int) (settings.SCALE * 28));
+        fonts.add("ArchitectsDaughter", (int) (settings.SCALE * 42));
+    }
+
+    private void generateM0() {
         menus[0] = new MenuOpt(10, settings.language.Menu);
         menus[0].addChoice(new ChoiceStart(settings.language.Start, this, settings));
         menus[0].addChoice(new ChoiceSettings(settings.language.Options, this, settings));
         menus[0].addChoice(new ChoiceStop(settings.language.End, this, settings));
         menus[0].addChoice(new ChoiceExit(settings.language.Quit, this, settings));
+    }
+
+    private void generateM1() {
         menus[1] = new MenuOpt(12, settings.language.Options);
         menus[1].addChoice(new ChoicePlayers(settings.language.Number_Of_Players, this, settings));
         menus[1].addChoice(new ChoiceSplitScreen(settings.language.SplitScreen, this, settings));
@@ -71,37 +89,46 @@ public class MyMenu extends Menu {
         menus[1].addChoice(new ChoiceFullScreen(settings.language.FullScreen, this, settings));
         menus[1].addChoice(new ChoiceVSync(settings.language.VSync, this, settings));
         menus[1].addChoice(new ChoiceSmoothShadows(settings.language.SmoothShadows, this, settings));
+    }
+
+    private void generateM2() {
         menus[2] = new MenuOpt(10, settings.language.Controls);
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player1, this, settings));
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player2, this, settings));
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player3, this, settings));
         menus[2].addChoice(new ChoicePlayerCtrl(settings.language.Player4, this, settings));
+    }
+
+    private void generateM3() {
         menus[3] = new MenuOpt(16, settings.language.Player1);
-        int i = 0;
-        for (; i < 4; i++) {
+        int i;
+        for (i = 0; i < 4; i++) {
             menus[3].addChoice(new ChoiceNMapButton(settings.language.Actions[i], this, settings, settings.players[0], i));
         }
         for (; i < settings.actionsNr; i++) {
-            menus[3].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[0], i));
+            menus[3].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[0].ctrl, i));
         }
+    }
+
+    private void generateM4() {
         menus[4] = new MenuOpt(16, settings.language.Player2);
-        for (i = 0; i < settings.actionsNr; i++) {
-            menus[4].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[1], i));
+        for (int i = 0; i < settings.actionsNr; i++) {
+            menus[4].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[1].ctrl, i));
         }
+    }
+
+    private void generateM5() {
         menus[5] = new MenuOpt(16, settings.language.Player3);
-        for (i = 0; i < settings.actionsNr; i++) {
-            menus[5].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[2], i));
+        for (int i = 0; i < settings.actionsNr; i++) {
+            menus[5].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[2].ctrl, i));
         }
+    }
+
+    private void generateM6() {
         menus[6] = new MenuOpt(16, settings.language.Player4);
-        for (i = 0; i < settings.actionsNr; i++) {
-            menus[6].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[3], i));
+        for (int i = 0; i < settings.actionsNr; i++) {
+            menus[6].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[3].ctrl, i));
         }
-        this.r = 1f;
-        this.g = 1f;
-        this.b = 1f;
-        fonts = new FontsHandler(20);
-        fonts.add("Arial", Font.PLAIN, 24);
-        fonts.add("Arial", Font.PLAIN, 36);
     }
 
     @Override

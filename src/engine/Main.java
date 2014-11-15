@@ -8,15 +8,18 @@ package engine;
 import game.AnalizerSettings;
 import game.Game;
 import game.IO;
-import myGame.MyGame;
 import game.Settings;
 import gameDesigner.GameDesigner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
+import myGame.MyGame;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.*;
+import org.lwjgl.input.Controller;
+import org.lwjgl.input.Controllers;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -179,7 +182,7 @@ public class Main {
                 targetDisplayMode = new DisplayMode(width, height);
             }
             if (targetDisplayMode == null) {
-                System.out.println("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
+                Methods.Error("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
                 settings.resWidth = Display.getDesktopDisplayMode().getWidth();
                 settings.resHeight = Display.getDesktopDisplayMode().getHeight();
                 for (int i = 0; i < settings.tmpmodes.length; i++) {
@@ -193,7 +196,7 @@ public class Main {
             Display.setDisplayMode(targetDisplayMode);
             Display.setFullscreen(fullscreen);
         } catch (LWJGLException e) {
-            System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
+            Methods.Error("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
     }
 }

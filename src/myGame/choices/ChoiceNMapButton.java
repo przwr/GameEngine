@@ -40,7 +40,7 @@ public class ChoiceNMapButton extends MenuChoice {
         if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].in != null) {
             return label + ": <" + ctrl.inputs[i].getLabel() + "> - " + settings.language.Unchangable;
         } else {
-            return label + ": " + "<brak>" + " - " + settings.language.Unchangable;
+            return label + ": " + settings.language.Empty + " - " + settings.language.Unchangable;
         }
     }
 }

@@ -252,7 +252,7 @@ public class Sprite {
     }
 
     public void renderFaded(Color c) {
-        System.err.println(c.r + " " + c.g + " " + c.b);
+        //System.err.println(c.r + " " + c.g + " " + c.b);
         glColor4f(c.r, c.g, c.b, c.a);
         render();
         glColor4f(0.5f, 0.5f, 0.5f, 1f);

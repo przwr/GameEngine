@@ -114,6 +114,7 @@ public class MyController extends Controler {
         }
     }
 
+    @Override
     public int getActionsCount() {
         int nr = 0;
         for (Action a : actions) {

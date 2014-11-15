@@ -8,6 +8,7 @@ package game;
 import game.gameobject.Player;
 import game.place.Menu;
 import game.place.Place;
+import game.place.SplitScreen;
 import org.lwjgl.input.Controller;
 
 /**
@@ -28,6 +29,7 @@ public abstract class Game {
     public Game(String title, Settings settings, Controller[] controllers) {
         this.settings = settings;
         this.title = title;
+        SplitScreen.init();
     }
 
     public abstract void getInput();

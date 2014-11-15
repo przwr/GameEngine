@@ -215,8 +215,8 @@ public class FBORendererMS extends FBORenderer {
     private void makeMultiSample(int nrSamples) {
         makeMultiSamples[fboVer].makeMultiSample(nrSamples);
     }
-    
-        private interface makeMultiSample {
+
+    private interface makeMultiSample {
 
         void makeMultiSample(int nrSamples);
     }

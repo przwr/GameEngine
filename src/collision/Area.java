@@ -5,14 +5,17 @@
  */
 package collision;
 
+import engine.Drawer;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.util.ArrayList;
-import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
-import sprites.Sprite;
 
 /**
  *
@@ -30,8 +33,7 @@ public class Area extends GameObject {
         this.y = y;
         this.parts = new ArrayList<>();
         solid = true;
-        this.lit = lit != null ? new Sprite(lit, sTile, sTile, null) : null;
-        this.nLit = nLit != null ? new Sprite(nLit, sTile, sTile, null) : null;
+        simpleLighting = true;
     }
 
     public Area(int x, int y, String lit, String nLit, int sTile, boolean isBorder) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
@@ -39,9 +41,8 @@ public class Area extends GameObject {
         this.y = y;
         this.parts = new ArrayList<>();
         solid = true;
+        simpleLighting = true;
         this.isBorder = isBorder;
-        this.lit = lit != null ? new Sprite(lit, sTile, sTile, null) : null;
-        this.nLit = nLit != null ? new Sprite(nLit, sTile, sTile, null) : null;
     }
 
     public void addFigure(Figure f) {
@@ -112,25 +113,30 @@ public class Area extends GameObject {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        System.err.println("Kick! Punch! It's all in the mind\n"
-                + "If you wanna test me, I'm sure you'll find\n"
-                + "The things I'll teach ya is sure to beat ya\n"
-                + "But nevertheless you'll get a lesson from teacher");
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
-        if (nLit != null && lit != null) {
-            glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glColor3f(color, color, color);
+        glPushMatrix();
+        glTranslatef(xEffect, yEffect, 0);
+        if (simpleLighting) {
             if (isLit) {
-                lit.render();
+                glColor4f(color, color, color, 1f);
             } else {
-                nLit.render();
+                glColor4f(0f, 0f, 0f, 1f);
             }
-            glPopMatrix();
+            Drawer.drawRectangle(0, 0, parts.get(0).width, parts.get(0).height);
+            glColor4f(1f, 1f, 1f, 1f);
+        } else if (sprite != null) {
+            if (isLit) {
+                Drawer.drawShapeInColor(sprite, color, color, color, 1);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            } else {
+                Drawer.drawShapeInBlack(sprite);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            }
         }
+        glPopMatrix();
     }
 
     public boolean isBorder() {

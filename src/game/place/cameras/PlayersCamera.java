@@ -15,9 +15,31 @@ import org.lwjgl.opengl.Display;
  */
 public class PlayersCamera extends Camera {
 
-    public PlayersCamera(Place place, GameObject go, int ssX, int ssY, int num) {
+    private initCam[] inits;
+
+    public PlayersCamera(final Place place, GameObject go, int ssX, int ssY, final int num) {
         super(place, go);
-        init(ssX, ssY, num);
+        inits = new initCam[3];
+        inits[0] = new initCam() {
+            @Override
+            public void initCam() {
+                if (place.settings.hSplitScreen) {
+                    if (num == 0) {
+                        yDown = 2;
+                    } else {
+                        yUp = 2;
+                    }
+                } else {
+                    if (num == 0) {
+                        xRight = 2;
+                    } else {
+                        xLeft = 2;
+                    }
+                }
+            }
+        };
+        initsRest(place, num);
+        init(ssX, ssY);
     }
 
     public PlayersCamera(Place place, GameObject go, GameObject go2) {
@@ -47,47 +69,52 @@ public class PlayersCamera extends Camera {
         update();
     }
 
-    public void init(int ssX, int ssY, int num) {
+    private void init(int ssX, int ssY) {
         yUp = yDown = xLeft = xRight = 0;
         if (place.settings.nrPlayers > 1) {
-            if (place.settings.nrPlayers == 2) {
-                if (place.settings.hSplitScreen) {
-                    if (num == 0) {
-                        yDown = 2;
-                    } else {
-                        yUp = 2;
-                    }
-                } else {
-                    if (num == 0) {
-                        xRight = 2;
-                    } else {
-                        xLeft = 2;
-                    }
-                }
-            } else if (place.settings.nrPlayers == 3) {
-                if (place.settings.hSplitScreen) {
-                    if (num == 0) {
-                        yDown = 2;
-                    } else if (num == 1) {
-                        xRight = 2;
-                        yUp = 2;
-                    } else {
-                        xLeft = 2;
-                        yUp = 2;
+            inits[place.settings.nrPlayers - 2].initCam();
+        }
+        Dwidth = Display.getWidth() / ssX;
+        Dheight = Display.getHeight() / ssY;
+        update();
+    }
 
+    public void reInit(int ssX, int ssY) {
+        yUp = yDown = xLeft = xRight = 0;
+        if (place.settings.nrPlayers > 1) {
+            inits[place.settings.nrPlayers - 2].initCam();
+        }
+        Dwidth = Display.getWidth() / ssX;
+        Dheight = Display.getHeight() / ssY;
+        update();
+    }
+
+    private void initsRest(final Place place, final int num) {
+        inits[1] = new initCam() {
+            @Override
+            public void initCam() {
+                if (place.settings.hSplitScreen) {
+                    if (num == 0) {
+                        yDown = 2;
+                    } else if (num == 1) {
+                        xRight = yUp = 2;
+                    } else {
+                        xLeft = yUp = 2;
                     }
                 } else {
                     if (num == 0) {
                         xRight = 2;
                     } else if (num == 1) {
-                        xLeft = 2;
-                        yDown = 2;
+                        xLeft = yDown = 2;
                     } else {
-                        xLeft = 2;
-                        yUp = 2;
+                        xLeft = yUp = 2;
                     }
                 }
-            } else if (place.settings.nrPlayers == 4) {
+            }
+        };
+        inits[2] = new initCam() {
+            @Override
+            public void initCam() {
                 if (place.settings.hSplitScreen) {
                     if (num == 0) {
                         xRight = 2;
@@ -104,9 +131,11 @@ public class PlayersCamera extends Camera {
                     }
                 }
             }
-        }
-        Dwidth = Display.getWidth() / ssX;
-        Dheight = Display.getHeight() / ssY;
-        update();
+        };
+    }
+
+    private interface initCam {
+
+        void initCam();
     }
 }

@@ -9,7 +9,6 @@ import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
-
 /**
  *
  * @author przemek
@@ -22,9 +21,8 @@ public class ChoiceBrightness extends MenuChoice {
 
     @Override
     public void action() {
-
         if (menu.game.getPlace() != null) {
-            float fl = (100 * menu.game.getPlace().r + 5f)/ 100;
+            float fl = (100 * menu.game.getPlace().r + 5f) / 100;
             menu.game.getPlace().r = fl;
             menu.game.getPlace().g = fl;
             menu.game.getPlace().b = fl;

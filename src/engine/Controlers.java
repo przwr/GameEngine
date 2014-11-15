@@ -56,39 +56,43 @@ public class Controlers {
                     return new InputMouse(m);
                 }
             }
-            for (int c = 0; c < controllers.length; c++) {
-                if (controllers[c] != null) {
-                    for (int b = 0; b < controllers[c].getButtonCount(); b++) {
-                        if (controllers[c].isButtonPressed(b)) {
-                            return new InputPadKey(controllers, c, b);
+            return checkControllers(noiseAx);
+        }
+    }
+
+    private static AnyInput checkControllers(int noiseAx[]) {
+        for (int c = 0; c < controllers.length; c++) {
+            if (controllers[c] != null) {
+                for (int b = 0; b < controllers[c].getButtonCount(); b++) {
+                    if (controllers[c].isButtonPressed(b)) {
+                        return new InputPadKey(controllers, c, b);
+                    }
+                }
+                if (controllers[c].getPovX() > 0.1f) {
+                    return new InputPadDPad(controllers, c, true, true);
+                }
+                if (controllers[c].getPovX() < -0.1f) {
+                    return new InputPadDPad(controllers, c, true, false);
+                }
+                if (controllers[c].getPovY() > 0.1f) {
+                    return new InputPadDPad(controllers, c, false, true);
+                }
+                if (controllers[c].getPovY() < -0.1f) {
+                    return new InputPadDPad(controllers, c, false, false);
+                }
+                for (int a = 0; a < controllers[c].getAxisCount(); a++) {
+                    if (a != noiseAx[c] && a != noiseAx[Controllers.getControllerCount() + c]) {
+                        if (controllers[c].getAxisValue(a) > 0.1f) {
+                            return new InputPadStick(controllers, c, a, true);
                         }
-                    }
-                    if (controllers[c].getPovX() > 0.1f) {
-                        return new InputPadDPad(controllers, c, true, true);
-                    }
-                    if (controllers[c].getPovX() < -0.1f) {
-                        return new InputPadDPad(controllers, c, true, false);
-                    }
-                    if (controllers[c].getPovY() > 0.1f) {
-                        return new InputPadDPad(controllers, c, false, true);
-                    }
-                    if (controllers[c].getPovY() < -0.1f) {
-                        return new InputPadDPad(controllers, c, false, false);
-                    }
-                    for (int a = 0; a < controllers[c].getAxisCount(); a++) {
-                        if (a != noiseAx[c] && a != noiseAx[Controllers.getControllerCount() + c]) {
-                            if (controllers[c].getAxisValue(a) > 0.1f) {
-                                return new InputPadStick(controllers, c, a, true);
-                            }
-                            if (controllers[c].getAxisValue(a) < -0.1f) {
-                                return new InputPadStick(controllers, c, a, false);
-                            }
+                        if (controllers[c].getAxisValue(a) < -0.1f) {
+                            return new InputPadStick(controllers, c, a, false);
                         }
                     }
                 }
             }
-            return null;
         }
+        return null;
     }
 
     public static Controller[] getControllers() {
