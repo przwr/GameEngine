@@ -208,10 +208,10 @@ public class Sound {
         private final boolean fade;
         private final boolean pause;
 
-        public Fader(double time, Sound snd, int T, boolean fade, boolean pause) {
+        private Fader(double time, Sound snd, int T, boolean fade, boolean pause) {
             this.time = time;
             this.snd = snd;
-            this.T = (long) T;
+            this.T = T;
             this.fade = fade;
             this.pause = pause;
         }
@@ -237,7 +237,7 @@ public class Sound {
             }
             float targetVol = savedGainModifier;
             while (vol >= 0 && vol <= targetVol) {
-                try {                   
+                try {
                     Thread.sleep(T);
                     vol += delta;
                     snd.setGainModifier(vol);

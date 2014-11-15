@@ -30,7 +30,7 @@ public class LangPL extends Language {
         Off = "Wył.";
         Resume = "Wznów";
         End_Game = "Zakończ Grę!";
-        Start_Game = "Uruchom Grę!";
+        StartGame = "Uruchom Grę!";
         Language = "Język: ";
         Controls = "Sterowanie";
         Player1 = "Gracz 1";
@@ -52,8 +52,9 @@ public class LangPL extends Language {
         Unchangable = "Niezmienny!";
         VSync = "Synchronizacja Pionowa: ";
         SmoothShadows = "Gładkie Cienie: ";
-        JoinedSS = "Łącz Ekrany: ";
+        JoinSS = "Połącz Ekrany: ";
         FBOError = "FrameBufferedObject jest nieobsługiwany. Upewnij się, że masz aktualne sterowniki karty graficznej!";
         Unsupported = "nieobsługiwane";
+        MustBeClose = " (Gracze muszą być blisko)";
     }
 }

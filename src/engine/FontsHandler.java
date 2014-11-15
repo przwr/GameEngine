@@ -16,7 +16,7 @@ public class FontsHandler {
 
     protected final TrueTypeFont[] fonts;
     protected final int size;
-    protected int n;
+    private int n;
     private final char[] chars = {'ą', 'ę', 'ć', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ó', 'Ś', 'Ż', 'Ź',};
 
     public FontsHandler(int size) {
@@ -29,8 +29,6 @@ public class FontsHandler {
         if (n < size) {
             fonts[n] = new TrueTypeFont(new Font(name, type, size), true, chars);
             n++;
-        } else {
-            System.out.println("Za mało miejsca!");
         }
     }
 

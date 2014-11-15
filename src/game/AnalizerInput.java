@@ -53,4 +53,7 @@ public class AnalizerInput {
             Logger.getLogger(AnalizerInput.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    private AnalizerInput() {
+    }
 }

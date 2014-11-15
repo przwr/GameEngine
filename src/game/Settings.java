@@ -6,11 +6,11 @@
 package game;
 
 import engine.Methods;
+import engine.SoundBase;
+import game.gameobject.Player;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import engine.SoundBase;
-import game.gameobject.Player;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.ARBFramebufferObject;
@@ -115,7 +115,8 @@ public class Settings {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
-        this.SCALE = ((int) (((double) resHeight / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) (((double) resHeight / 1024d / 0.03125)) * 0.03125;
+        this.SCALE = ((int) (( resHeight / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) ((resHeight / 1024d / 0.03125)) * 0.03125;
+        
         try {
             GL30.glGenFramebuffers();
             GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);

@@ -26,11 +26,11 @@ public class MenuOpt {
     }
 
     public void setChoosen(int i) {
-        choosenNr = choosenNr + i;
-        if (choosenNr > nr-1) {
+        choosenNr += i;
+        if (choosenNr > nr - 1) {
             choosenNr = 0;
         } else if (choosenNr < 0) {
-            choosenNr = nr-1;
+            choosenNr = nr - 1;
         }
     }
 

@@ -5,8 +5,8 @@
  */
 package collision;
 
-import engine.Point;
 import engine.Methods;
+import engine.Point;
 import game.gameobject.GameObject;
 import java.awt.geom.Line2D;
 
@@ -40,7 +40,7 @@ public class Rectangle extends Figure {
     }
 
     @Override
-    public final void centralize() {
+    public void centralize() {
         width = w;
         height = h;
         xCentr = w / 2;

@@ -5,10 +5,10 @@
  */
 package game.gameobject;
 
-import game.place.cameras.Camera;
-import game.place.Place;
 import engine.Animation;
 import game.place.Menu;
+import game.place.Place;
+import game.place.cameras.Camera;
 
 /**
  *
@@ -26,7 +26,7 @@ public abstract class Player extends Entity {
         this.name = name;
     }
 
-    public abstract void initControler(boolean isFirst);
+    protected abstract void initControler(boolean isFirst);
 
     public abstract void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y, double SCALE);
 
@@ -60,10 +60,6 @@ public abstract class Player extends Entity {
 
     public Animation getAnim() {
         return anim;
-    }
-
-    public Place getPlace() {
-        return place;
     }
 
     public void setPlaceToNull() {

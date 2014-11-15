@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject.menu.choices;
+package myGame.choices;
 
 import game.AnalizerSettings;
 import game.Settings;
@@ -14,21 +14,21 @@ import game.place.Menu;
  *
  * @author przemek
  */
-public class ChoiceJoinSS extends MenuChoice {
+public class ChoiceVSync extends MenuChoice {
 
-    public ChoiceJoinSS(String label, Menu menu, Settings settings) {
+    public ChoiceVSync(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        settings.joinSS = !settings.joinSS;
+        settings.vSync = !settings.vSync;
         AnalizerSettings.Update(settings);
     }
 
     @Override
     public String getLabel() {
-        if (settings.joinSS) {
+        if (settings.vSync) {
             return label + settings.language.On;
         } else {
             return label + settings.language.Off;

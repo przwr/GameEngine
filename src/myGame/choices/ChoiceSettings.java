@@ -3,26 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject.menu.choices;
+package myGame.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
-
 /**
  *
  * @author przemek
  */
-public class ChoiceExit extends MenuChoice {
+public class ChoiceSettings extends MenuChoice {
 
-    public ChoiceExit(String label, Menu menu, Settings settings) {
+    public ChoiceSettings(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }    
     
     @Override
     public void action() {
-        menu.game.exit();
+        menu.setCurrent(1);
     }
     
 }

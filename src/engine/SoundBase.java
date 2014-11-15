@@ -32,10 +32,10 @@ public class SoundBase {
             String[] temp = file.getName().split("\\.");
             try {
                 Audio dzwiek = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
-                System.out.println(temp[0]);
+                //System.out.println(temp[0]);
                 list.add(new Sound(temp[0], dzwiek, settings));
             } catch (IOException e) {
-                System.out.println(e.toString());
+                Methods.Error(e.toString());
             }
         }
         settings.sounds = this;

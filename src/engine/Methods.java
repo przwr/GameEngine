@@ -22,7 +22,7 @@ public class Methods {
     }
 
     public static int PointDistance(int x, int y, int xa, int ya) {
-        return (int)Math.sqrt(Math.pow(xa - x, 2) + Math.pow(ya - y, 2));
+        return (int) Math.sqrt(Math.pow(xa - x, 2) + Math.pow(ya - y, 2));
     }
 
     public static int PointDifference(int x, int y, int xa, int ya) {
@@ -43,9 +43,9 @@ public class Methods {
     }
 
     public static double ThreePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
-        double AO = Math.sqrt(Math.pow((double)xO - (double)xA, 2) + Math.pow((double)yO - (double)yA, 2));
-        double OB = Math.sqrt(Math.pow((double)xO - (double)xB, 2) + Math.pow((double)yO - (double)yB, 2));
-        double AB = Math.sqrt(Math.pow((double)xB - (double)xA, 2) + Math.pow((double)yB - (double)yA, 2));
+        double AO = Math.sqrt(Math.pow(xO - xA, 2) + Math.pow(yO - yA, 2));
+        double OB = Math.sqrt(Math.pow(xO - xB, 2) + Math.pow(yO - yB, 2));
+        double AB = Math.sqrt(Math.pow(xB - xA, 2) + Math.pow(yB - yA, 2));
         return Math.acos((OB * OB + AO * AO - AB * AB) / (2 * OB * AO));
     }
 
@@ -74,5 +74,8 @@ public class Methods {
     public static void Error(String message) {
         System.out.println(message);
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
+    }
+
+    private Methods() {
     }
 }

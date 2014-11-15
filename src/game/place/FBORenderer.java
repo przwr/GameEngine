@@ -1,9 +1,10 @@
 package game.place;
 
 import game.Settings;
-
-import static org.lwjgl.opengl.GL11.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.EXTFramebufferObject;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import org.lwjgl.opengl.GL30;
 
 public abstract class FBORenderer {
 

@@ -136,4 +136,8 @@ public class Area extends GameObject {
     public boolean isBorder() {
         return isBorder;
     }
+
+    public ArrayList<Figure> getParts() {
+        return parts;
+    }
 }

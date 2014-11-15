@@ -2,8 +2,26 @@ package game.place;
 
 import game.Settings;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
-import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.ARBTextureMultisample;
+import org.lwjgl.opengl.EXTFramebufferObject;
+import static org.lwjgl.opengl.GL11.GL_BYTE;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_REPEAT;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
 
 public class FBORendererMS extends FBORenderer {
 
@@ -29,36 +47,12 @@ public class FBORendererMS extends FBORenderer {
                     GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fboMS);
                 }
             };
-        } else {
-            activates[0] = new activate() {
-                @Override
-                public void activate() {
-                    GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fbo);
-                }
-            };
-        }
-        if (fboMSSup) {
             activates[1] = new activate() {
                 @Override
                 public void activate() {
                     ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, fboMS);
                 }
             };
-        } else {
-            activates[1] = new activate() {
-                @Override
-                public void activate() {
-                    ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, fbo);
-                }
-            };
-        }
-        activates[2] = new activate() {
-            @Override
-            public void activate() {
-                EXTFramebufferObject.glBindFramebufferEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, fbo);
-            }
-        };
-        if (fboMSSup) {
             deactivates[0] = new deactivate() {
                 @Override
                 public void deactivate() {
@@ -68,15 +62,6 @@ public class FBORendererMS extends FBORenderer {
                     GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
                 }
             };
-        } else {
-            deactivates[0] = new deactivate() {
-                @Override
-                public void deactivate() {
-                    GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-                }
-            };
-        }
-        if (fboMSSup) {
             deactivates[1] = new deactivate() {
                 @Override
                 public void deactivate() {
@@ -86,14 +71,68 @@ public class FBORendererMS extends FBORenderer {
                     ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
                 }
             };
+            makeMultiSamples[0] = new makeMultiSample() {
+                @Override
+                public void makeMultiSample(int nrSamples) {
+                    glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, texture2);
+                    GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, width, height, false);
+                    GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fboMS);
+                    GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL32.GL_TEXTURE_2D_MULTISAMPLE, texture2, 0);
+                }
+            };
+            makeMultiSamples[1] = new makeMultiSample() {
+
+                @Override
+                public void makeMultiSample(int nrSamples) {
+                    glBindTexture(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, texture2);
+                    ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, width, height, false);
+                    ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_FRAMEBUFFER, fboMS);
+                    ARBFramebufferObject.glFramebufferTexture2D(ARBFramebufferObject.GL_FRAMEBUFFER, ARBFramebufferObject.GL_COLOR_ATTACHMENT0, ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, texture2, 0);
+                }
+            };
         } else {
+            activates[0] = new activate() {
+                @Override
+                public void activate() {
+                    GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fbo);
+                }
+            };
+            activates[1] = new activate() {
+                @Override
+                public void activate() {
+                    ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, fbo);
+                }
+            };
+            deactivates[0] = new deactivate() {
+                @Override
+                public void deactivate() {
+                    GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
+                }
+            };
             deactivates[1] = new deactivate() {
                 @Override
                 public void deactivate() {
                     ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
                 }
             };
+            makeMultiSamples[0] = new makeMultiSample() {
+                @Override
+                public void makeMultiSample(int nrSamples) {
+                }
+            };
+            makeMultiSamples[1] = new makeMultiSample() {
+
+                @Override
+                public void makeMultiSample(int nrSamples) {
+                }
+            };
         }
+        activates[2] = new activate() {
+            @Override
+            public void activate() {
+                EXTFramebufferObject.glBindFramebufferEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, fbo);
+            }
+        };
         deactivates[2] = new deactivate() {
             @Override
             public void deactivate() {
@@ -142,43 +181,6 @@ public class FBORendererMS extends FBORenderer {
                 EXTFramebufferObject.glFramebufferTexture2DEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, EXTFramebufferObject.GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texture, 0);
             }
         };
-        if (fboMSSup) {
-            makeMultiSamples[0] = new makeMultiSample() {
-                @Override
-                public void makeMultiSample(int nrSamples) {
-                    glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, texture2);
-                    GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, width, height, false);
-                    GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fboMS);
-                    GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL32.GL_TEXTURE_2D_MULTISAMPLE, texture2, 0);
-                }
-            };
-        } else {
-            makeMultiSamples[0] = new makeMultiSample() {
-                @Override
-                public void makeMultiSample(int nrSamples) {
-                }
-            };
-        }
-        if (fboMSSup) {
-            makeMultiSamples[1] = new makeMultiSample() {
-
-                @Override
-                public void makeMultiSample(int nrSamples) {
-                    glBindTexture(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, texture2);
-                    ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, width, height, false);
-                    ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_FRAMEBUFFER, fboMS);
-                    ARBFramebufferObject.glFramebufferTexture2D(ARBFramebufferObject.GL_FRAMEBUFFER, ARBFramebufferObject.GL_COLOR_ATTACHMENT0, ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, texture2, 0);
-                }
-            };
-        } else {
-            makeMultiSamples[1] = new makeMultiSample() {
-
-                @Override
-                public void makeMultiSample(int nrSamples) {
-                }
-            };
-        }
-
         makeMultiSamples[2] = new makeMultiSample() {
 
             @Override
@@ -197,12 +199,12 @@ public class FBORendererMS extends FBORenderer {
     }
 
     @Override
-    public final void activate() {
+    public void activate() {
         activates[fboVer].activate();
     }
 
     @Override
-    public final void deactivate() {
+    public void deactivate() {
         deactivates[fboVer].deactivate();
     }
 
@@ -210,13 +212,13 @@ public class FBORendererMS extends FBORenderer {
         makeTextures[fboVer].makeTexture();
     }
 
-    private interface makeMultiSample {
-
-        void makeMultiSample(int nrSamples);
-    }
-
     private void makeMultiSample(int nrSamples) {
         makeMultiSamples[fboVer].makeMultiSample(nrSamples);
+    }
+    
+        private interface makeMultiSample {
+
+        void makeMultiSample(int nrSamples);
     }
 
 }

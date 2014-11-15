@@ -5,10 +5,10 @@
  */
 package game.place.cameras;
 
-import game.gameobject.GameObject;
-import game.place.Place;
 import engine.Delay;
 import engine.Methods;
+import game.gameobject.GameObject;
+import game.place.Place;
 import java.util.ArrayList;
 
 /**
@@ -39,7 +39,7 @@ public abstract class Camera {
         shakeDelay.restart();
     }
 
-    public final synchronized void update() {
+    public synchronized void update() {
         xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - getMidX(), 0);
         yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - getMidY(), 0);
     }

@@ -5,12 +5,12 @@
  */
 package game.place;
 
-import game.gameobject.GameObject;
 import game.gameobject.Player;
-import myGame.MyPlayer;
 import game.place.cameras.PlayersCamera;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glScissor;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  *
@@ -18,6 +18,8 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class SplitScreen {
 
+    private static final int width3o4 = (Display.getWidth() * 3) >> 2;
+    private static final int heigth3o4 = (Display.getHeight() * 3) >> 2;
     private static final int width2o3 = (Display.getWidth() << 1) / 3;
     private static final int heigth2o3 = (Display.getHeight() << 1) / 3;
     private static final int width1o2 = Display.getWidth() >> 1;
@@ -30,7 +32,7 @@ public class SplitScreen {
             glScissor(0, 0, Display.getWidth(), Display.getHeight());
             pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
             pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
-        } else if ((pl.playersLength == 2 && !SplitScreen.isClose2(pl))) {
+        } else if (pl.playersLength == 2 && (!pl.settings.joinSS || isFar(pl))) {
             if (pl.changeSSMode) {
                 changeSSMode2(pl);
             }
@@ -68,14 +70,14 @@ public class SplitScreen {
                     pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
                 }
             }
-        } else if (pl.playersLength == 2 && SplitScreen.isClose2(pl)) {
+        } else if (pl.playersLength == 2 && pl.settings.joinSS) {
             glScissor(0, 0, Display.getWidth(), Display.getHeight());
             pl.cam = pl.cams[0];
             pl.ssMode = 0;
             pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
             pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
             pl.singleCam = true;
-        } else if (pl.playersLength == 3 && !SplitScreen.isClose3(pl)) {
+        } else if (pl.playersLength == 3 && (!pl.settings.joinSS || isFar(pl))) {
             if (pl.changeSSMode) {
                 changeSSMode3(pl);
             }
@@ -126,14 +128,14 @@ public class SplitScreen {
                     pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
                 }
             }
-        } else if (pl.playersLength == 3 && SplitScreen.isClose3(pl)) {
+        } else if (pl.playersLength == 3 && pl.settings.joinSS) {
             glScissor(0, 0, Display.getWidth(), Display.getHeight());
             pl.cam = pl.cams[1];
             pl.ssMode = 0;
             pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
             pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
             pl.singleCam = true;
-        } else if (pl.playersLength == 4 && !SplitScreen.isClose4(pl)) {
+        } else if (pl.playersLength == 4 && (!pl.settings.joinSS || isFar(pl))) {
             pl.ssMode = 5;
             if (p == 0) {
                 glViewport(0, heigth1o2, width1o2, heigth1o2);
@@ -160,7 +162,7 @@ public class SplitScreen {
                 pl.camXTEnd = 1f;
                 pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
             }
-        } else if (pl.playersLength == 4 && SplitScreen.isClose4(pl)) {
+        } else if (pl.playersLength == 4 && pl.settings.joinSS) {
             glScissor(0, 0, Display.getWidth(), Display.getHeight());
             pl.cam = pl.cams[2];
             pl.ssMode = 0;
@@ -170,47 +172,72 @@ public class SplitScreen {
         }
     }
 
+//    public static boolean isClose2(Place pl) {
+//        if (pl.settings.joinSS) {
+//            if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3) {
+//                pl.isSplit = false;
+//                return true;
+//            } else if (!pl.isSplit) {
+//                if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < Math.abs(pl.players[0].getY() - pl.players[1].getY())) {
+//                    pl.settings.hSplitScreen = true;
+//                    swampY(pl);
+//                } else {
+//                    pl.settings.hSplitScreen = false;
+//                    swampX(pl);
+//                }
+//                pl.isSplit = true;
+//            } else if (pl.changeSSMode) {
+//                if (pl.settings.hSplitScreen) {
+//                    pl.settings.hSplitScreen = false;
+//                    swampX(pl);
+//                } else {
+//                    pl.settings.hSplitScreen = true;
+//                    swampY(pl);
+//                }
+//                pl.changeSSMode = false;
+//            }
+//        }
+//        return false;
+//    }
+    public static boolean isClose(Place pl) {
+        if (pl.playersLength == 2) {
+            return isClose2(pl);
+        } else if (pl.playersLength == 3) {
+            return isClose3(pl);
+        } else if (pl.playersLength == 4) {
+            return isClose4(pl);
+        }
+        return false;
+    }
+
     public static boolean isClose2(Place pl) {
-        if (pl.settings.joinSS) {
-            if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3) {
-                pl.isSplit = false;
-                return true;
-            } else if (!pl.isSplit) {
-                if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < Math.abs(pl.players[0].getY() - pl.players[1].getY())) {
-                    pl.settings.hSplitScreen = true;
-                    swampY(pl);
-                } else {
-                    pl.settings.hSplitScreen = false;
-                    swampX(pl);
-                }
-                pl.isSplit = true;
-            } else if (pl.changeSSMode) {
-                if (pl.settings.hSplitScreen) {
-                    pl.settings.hSplitScreen = false;
-                    swampX(pl);
-                } else {
-                    pl.settings.hSplitScreen = true;
-                    swampY(pl);
-                }
-                pl.changeSSMode = false;
-            }
+        if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width3o4 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth3o4) {
+            return true;
         }
         return false;
     }
 
     public static boolean isClose3(Place pl) {
-        if (pl.settings.joinSS) {
-            if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3 && Math.abs(pl.players[0].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth2o3 && Math.abs(pl.players[1].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth2o3) {
-                return true;
-            }
+        if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3 && Math.abs(pl.players[0].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth2o3 && Math.abs(pl.players[1].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth2o3) {
+            return true;
         }
         return false;
     }
 
     public static boolean isClose4(Place pl) {
-        if (pl.settings.joinSS) {
-            if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3 && Math.abs(pl.players[0].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth2o3 && Math.abs(pl.players[1].getX() - pl.players[2].getX()) < width2o3 && Math.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth2o3 && Math.abs(pl.players[0].getX() - pl.players[3].getX()) < width2o3 && Math.abs(pl.players[0].getY() - pl.players[3].getY()) < heigth2o3 && Math.abs(pl.players[1].getX() - pl.players[3].getX()) < width2o3 && Math.abs(pl.players[1].getY() - pl.players[3].getY()) < heigth2o3 && Math.abs(pl.players[2].getX() - pl.players[3].getX()) < width2o3 && Math.abs(pl.players[2].getY() - pl.players[3].getY()) < heigth2o3) {
-                return true;
+        if (Math.abs(pl.players[0].getX() - pl.players[1].getX()) < width1o2 && Math.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth1o2 && Math.abs(pl.players[0].getX() - pl.players[2].getX()) < width1o2 && Math.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth1o2 && Math.abs(pl.players[1].getX() - pl.players[2].getX()) < width1o2 && Math.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth1o2 && Math.abs(pl.players[0].getX() - pl.players[3].getX()) < width1o2 && Math.abs(pl.players[0].getY() - pl.players[3].getY()) < heigth1o2 && Math.abs(pl.players[1].getX() - pl.players[3].getX()) < width1o2 && Math.abs(pl.players[1].getY() - pl.players[3].getY()) < heigth1o2 && Math.abs(pl.players[2].getX() - pl.players[3].getX()) < width1o2 && Math.abs(pl.players[2].getY() - pl.players[3].getY()) < heigth1o2) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isFar(Place pl) {
+        if (!pl.singleCam) {
+            for (int p = 0; p < pl.playersLength; p++) {
+                if (pl.players[p].getX() > pl.cams[pl.playersLength - 2].getEX() || pl.players[p].getX() < pl.cams[pl.playersLength - 2].getSX() || pl.players[p].getY() > pl.cams[pl.playersLength - 2].getEY() || pl.players[p].getY() < pl.cams[pl.playersLength - 2].getSY()) {
+                    pl.settings.joinSS = false;
+                    return true;
+                }
             }
         }
         return false;
@@ -244,28 +271,29 @@ public class SplitScreen {
         pl.changeSSMode = false;
     }
 
-    private static void swampY(Place pl) {
-        if (pl.players[0].getY() > pl.players[1].getY()) {
-            swampFirstWithSecond(pl);
-        }
-        ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(2, 4, 0);
-        ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(2, 4, 1);
-    }
-
-    private static void swampX(Place pl) {
-        if (pl.players[0].getX() > pl.players[1].getX()) {
-            swampFirstWithSecond(pl);
-        }
-        ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(4, 2, 0);
-        ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(4, 2, 1);
-    }
-
-    public static void swampFirstWithSecond(Place pl) {
-        GameObject temp = pl.players[0];
-        Player tempG = pl.game.players[0];
-        pl.players[0] = pl.players[1];
-        pl.game.players[0] = pl.game.players[1];
-        pl.players[1] = temp;
-        pl.game.players[1] = tempG;
+//    private static void swampY(Place pl) {
+//        if (pl.players[0].getY() > pl.players[1].getY()) {
+//            swampFirstWithSecond(pl);
+//        }
+//        ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(2, 4, 0);
+//        ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(2, 4, 1);
+//    }
+//
+//    private static void swampX(Place pl) {
+//        if (pl.players[0].getX() > pl.players[1].getX()) {
+//            swampFirstWithSecond(pl);
+//        }
+//        ((PlayersCamera) ((Player) pl.players[0]).getCam()).init(4, 2, 0);
+//        ((PlayersCamera) ((Player) pl.players[1]).getCam()).init(4, 2, 1);
+//    }
+//    public static void swampFirstWithSecond(Place pl) {
+//        GameObject temp = pl.players[0];
+//        Player tempG = pl.game.players[0];
+//        pl.players[0] = pl.players[1];
+//        pl.game.players[0] = pl.game.players[1];
+//        pl.players[1] = temp;
+//        pl.game.players[1] = tempG;
+//    }
+    private SplitScreen() {
     }
 }

@@ -207,4 +207,8 @@ public abstract class GameObject {
     public boolean isAnimate() {
         return animate;
     }
+
+    public Place getPlace() {
+        return place;
+    }
 }

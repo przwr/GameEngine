@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject.menu.choices;
+package myGame.choices;
 
+import engine.Sound;
 import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
-import engine.Sound;
 
 /**
  *

@@ -47,7 +47,7 @@ public class PlayersCamera extends Camera {
         update();
     }
 
-    public final void init(int ssX, int ssY, int num) {
+    public void init(int ssX, int ssY, int num) {
         yUp = yDown = xLeft = xRight = 0;
         if (place.settings.nrPlayers > 1) {
             if (place.settings.nrPlayers == 2) {

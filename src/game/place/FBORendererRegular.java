@@ -2,8 +2,21 @@ package game.place;
 
 import game.Settings;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
-import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.EXTFramebufferObject;
+import static org.lwjgl.opengl.GL11.GL_BYTE;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_REPEAT;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import org.lwjgl.opengl.GL30;
 
 public class FBORendererRegular extends FBORenderer {
 
@@ -67,22 +80,22 @@ public class FBORendererRegular extends FBORenderer {
                 EXTFramebufferObject.glFramebufferTexture2DEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, EXTFramebufferObject.GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texture, 0);
             }
         };
-        activate();
+        activates[fboVer].activate();
         makeTexture();
-        deactivate();
+        deactivates[fboVer].deactivate();
     }
 
     @Override
-    public final void activate() {
+    public void activate() {
         activates[fboVer].activate();
     }
 
     @Override
-    public final void deactivate() {
+    public void deactivate() {
         deactivates[fboVer].deactivate();
     }
 
-    public final void makeTexture() {
+    private void makeTexture() {
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

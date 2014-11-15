@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject.menu.choices;
+package myGame.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
@@ -24,8 +24,7 @@ public class ChoiceBrightness extends MenuChoice {
     public void action() {
 
         if (menu.game.getPlace() != null) {
-            float fl = (100 * menu.game.getPlace().r + 5f);
-            fl = fl / 100;
+            float fl = (100 * menu.game.getPlace().r + 5f)/ 100;
             menu.game.getPlace().r = fl;
             menu.game.getPlace().g = fl;
             menu.game.getPlace().b = fl;
@@ -42,7 +41,7 @@ public class ChoiceBrightness extends MenuChoice {
         if (menu.game.getPlace() != null) {
             return label + menu.game.getPlace().r;
         } else {
-            return label + settings.language.Start_Game;
+            return label + settings.language.StartGame;
         }
     }
 }

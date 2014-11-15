@@ -5,10 +5,10 @@
  */
 package game.gameobject;
 
-import game.place.cameras.Camera;
-import game.place.Place;
-import engine.Time;
 import engine.Methods;
+import engine.Time;
+import game.place.Place;
+import game.place.cameras.Camera;
 
 /**
  *
@@ -141,8 +141,8 @@ public abstract class Entity extends GameObject {
     }
 
     public void addSpeed(double mhspeed, double mvspeed, boolean isLimited) {
-        double xmove = myHspeed + (double) mhspeed / weight * scale;
-        double ymove = myVspeed + (double) mvspeed / weight * scale;
+        double xmove = myHspeed + mhspeed / weight * scale;
+        double ymove = myVspeed + mvspeed / weight * scale;
         setSpeed(xmove, ymove, isLimited);
     }
 
@@ -163,6 +163,6 @@ public abstract class Entity extends GameObject {
             myHspeed = xmove;
             myVspeed = ymove;
         }
-    }  
+    }
 
 }

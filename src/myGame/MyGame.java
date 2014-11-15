@@ -5,15 +5,14 @@
  */
 package myGame;
 
-import java.io.File;
 import engine.Sound;
 import game.Game;
 import game.IO;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
-import game.place.SplitScreen;
 import game.place.cameras.PlayersCamera;
+import java.io.File;
 import org.lwjgl.input.Controller;
 
 /**
@@ -50,7 +49,7 @@ public class MyGame extends Game {
                 pl = players[p];
                 if (pl.isMenuOn()) {
                     if (pl.getPlace() != null) {
-                        if (!((MyPlayer) pl).isFirst) {
+                        if (!pl.isFirst) {
                             removePlayer(p);
                         } else {
                             runFlag = false;
@@ -130,7 +129,7 @@ public class MyGame extends Game {
     private void addPlayer(int p) {
         if (p < 4 && place.playersLength < 4) {
             players[p].init(4, 4, 56, 56, 64, 64, place, p * 256, p * 265, settings.SCALE);
-            ((MyPlayer) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
+            ((Player) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
             if (p != place.playersLength) {
                 Player tempG = players[place.playersLength];
                 GameObject tempP = place.players[place.playersLength];
@@ -140,17 +139,17 @@ public class MyGame extends Game {
                 place.players[p] = tempP;
             }
             place.playersLength++;
-            if (!players[0].isFirst) {
-                SplitScreen.swampFirstWithSecond(place);
-            }
+            settings.joinSS = false;
+//            if (!players[0].isFirst) {
+//                SplitScreen.swampFirstWithSecond(place);
+//            }
             updatePlayersCam();
-
         }
     }
 
     private void removePlayer(int p) {
-        if (place.playersLength > 1 && !((MyPlayer) players[p]).isFirst) {
-            ((MyPlayer) place.players[p]).setPlaceToNull();
+        if (place.playersLength > 1 && !players[p].isFirst) {
+            ((Player) place.players[p]).setPlaceToNull();
             place.deleteObj(place.players[p]);
             if (p != place.playersLength - 1) {
                 Player tempG = players[place.playersLength - 1];
@@ -169,15 +168,15 @@ public class MyGame extends Game {
     private void updatePlayersCam() {
         for (int c = 0; c < place.playersLength; c++) {
             if (place.playersLength == 1) {
-                ((PlayersCamera) ((MyPlayer) place.players[0]).getCam()).init(2, 2, 0);
+                ((PlayersCamera) ((Player) place.players[0]).getCam()).init(2, 2, 0);
             } else if (place.playersLength == 2) {
                 if (place.cams[0] == null) {
                     place.cams[0] = new PlayersCamera(place, players[0], players[1]);
                 }
                 if (settings.hSplitScreen) {
-                    ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(2, 4, c);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).init(2, 4, c);
                 } else {
-                    ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(4, 2, c);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).init(4, 2, c);
                 }
             } else if (place.playersLength == 3) {
                 if (place.cams[1] == null) {
@@ -185,18 +184,18 @@ public class MyGame extends Game {
                 }
                 if (c == 0) {
                     if (settings.hSplitScreen) {
-                        ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(2, 4, c);
+                        ((PlayersCamera) ((Player) place.players[c]).getCam()).init(2, 4, c);
                     } else {
-                        ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(4, 2, c);
+                        ((PlayersCamera) ((Player) place.players[c]).getCam()).init(4, 2, c);
                     }
                 } else {
-                    ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(4, 4, c);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).init(4, 4, c);
                 }
             } else {
                 if (place.cams[2] == null) {
                     place.cams[2] = new PlayersCamera(place, players[0], players[1], players[2], players[3]);
                 }
-                ((PlayersCamera) ((MyPlayer) place.players[c]).getCam()).init(4, 4, c);
+                ((PlayersCamera) ((Player) place.players[c]).getCam()).init(4, 4, c);
             }
         }
     }

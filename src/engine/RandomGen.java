@@ -27,7 +27,7 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
         setSeed(seed);
     }
 
-    public final void setSeed(int seed) {
+    private void setSeed(int seed) {       // seed ma być abs czy nie?
         this.seed = seed;
         seed = Math.abs(seed);
         for (int i = 0; i < 16; i++) {
@@ -64,11 +64,11 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
             temp /= 2;
             i++;
         }
-        return (int) ((double) limit * (next(i) / (Math.pow(2, i) - 1)));
+        return (int) (limit * (next(i) / (Math.pow(2, i) - 1)));
     }
 
     public double preciseRandom(double limit, double prec) {
-        return (double) (random((int) ((double) limit / prec)) * prec);
+        return (random((int) (limit / prec)) * prec);
     }
 
     public int randomRange(int a, int b) { //generuje x losowe: a < x < b lub b < x < a
@@ -92,6 +92,6 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
     }
 
     public boolean preciseChance(double chance, double prec) { //precyzja - (np. 0.1, 0.0001) nie może być 0 
-        return random((int) ((double) 100 / prec)) <= (chance / prec);  //stosować tylko gdy potrzeba np. 81.345% czegoś
+        return random((int) (100 / prec)) <= (chance / prec);  //stosować tylko gdy potrzeba np. 81.345% czegoś
     }
 }

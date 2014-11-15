@@ -30,7 +30,7 @@ public class LangENG extends Language {
         Off = "Off";
         Resume = "Resume";
         End_Game = "End Game!";
-        Start_Game = "Start Game!";
+        StartGame = "Start Game!";
         Language = "Language: ";
         Controls = "Controls";
         Player1 = "Player 1";
@@ -52,8 +52,9 @@ public class LangENG extends Language {
         Unchangable = "Unchangable!";
         VSync = "Vertical Synchronization: ";
         SmoothShadows = "Smooth Shadows: ";
-        JoinedSS = "Join SplitScreen: ";
+        JoinSS = "Join Screens: ";
         FBOError = "FrameBufferedObject is unsupported. Make sure you have current video card drivers!";
-                Unsupported = "unsupported";
+        Unsupported = "unsupported";
+        MustBeClose = " (Players must be close)";
     }
 }

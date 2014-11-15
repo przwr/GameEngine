@@ -5,16 +5,38 @@
  */
 package myGame;
 
+import engine.FontsHandler;
 import game.Game;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MenuOpt;
-import game.gameobject.menu.choices.*;
-import java.awt.Font;
-import engine.FontsHandler;
+import myGame.choices.ChoiceBrightness;
+import myGame.choices.ChoiceControls;
+import myGame.choices.ChoiceExit;
+import myGame.choices.ChoiceFullScreen;
+import myGame.choices.ChoiceJoinSS;
+import myGame.choices.ChoiceLanguage;
+import myGame.choices.ChoiceMapButton;
+import myGame.choices.ChoiceNMapButton;
+import myGame.choices.ChoicePlayerCtrl;
+import myGame.choices.ChoicePlayers;
+import myGame.choices.ChoiceResolution;
+import myGame.choices.ChoiceSettings;
+import myGame.choices.ChoiceSmoothShadows;
+import myGame.choices.ChoiceSplitScreen;
+import myGame.choices.ChoiceStart;
+import myGame.choices.ChoiceStop;
+import myGame.choices.ChoiceVSync;
+import myGame.choices.ChoiceVolume;
 import game.place.Menu;
+import java.awt.Font;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glScissor;
+import static org.lwjgl.opengl.GL11.glViewport;
 import org.newdawn.slick.Color;
 
 /**
@@ -29,7 +51,7 @@ public class MyMenu extends Menu {
     }
 
     @Override
-    public final void generate() {
+    public void generate() {
         delay.restart();
         menus = new MenuOpt[10];
         menus[0] = new MenuOpt(10, settings.language.Menu);
@@ -40,7 +62,7 @@ public class MyMenu extends Menu {
         menus[1] = new MenuOpt(12, settings.language.Options);
         menus[1].addChoice(new ChoicePlayers(settings.language.Number_Of_Players, this, settings));
         menus[1].addChoice(new ChoiceSplitScreen(settings.language.SplitScreen, this, settings));
-        menus[1].addChoice(new ChoiceJoinSS(settings.language.JoinedSS, this, settings));
+        menus[1].addChoice(new ChoiceJoinSS(settings.language.JoinSS, this, settings));
         menus[1].addChoice(new ChoiceLanguage(settings.language.Language, this, settings));
         menus[1].addChoice(new ChoiceControls(settings.language.Controls, this, settings));
         menus[1].addChoice(new ChoiceBrightness(settings.language.Brigthness, this, settings));

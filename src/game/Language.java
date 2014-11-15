@@ -31,7 +31,7 @@ public abstract class Language {
     public String Off;
     public String Resume;
     public String End_Game;
-    public String Start_Game;
+    public String StartGame;
     public String Language;
     public String Controls;
     public String Player1;
@@ -44,7 +44,8 @@ public abstract class Language {
     public String VSync;
     public String SmoothShadows;
     public String Samples;
-    public String JoinedSS;
+    public String JoinSS;
     public String FBOError;
     public String Unsupported;
+    public String MustBeClose;
 }

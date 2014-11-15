@@ -6,7 +6,13 @@
 package engine;
 
 import game.gameobject.AnyInput;
-import game.gameobject.inputs.*;
+import game.gameobject.inputs.InputExitMapping;
+import game.gameobject.inputs.InputKeyBoard;
+import game.gameobject.inputs.InputMouse;
+import game.gameobject.inputs.InputNull;
+import game.gameobject.inputs.InputPadDPad;
+import game.gameobject.inputs.InputPadKey;
+import game.gameobject.inputs.InputPadStick;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
@@ -18,7 +24,7 @@ import org.lwjgl.input.Mouse;
  */
 public class Controlers {
 
-    public static Controller[] controllers = new Controller[Controllers.getControllerCount()];
+    private static final Controller[] controllers = new Controller[Controllers.getControllerCount()];
 
     public static Controller[] init() {
         int j = 0;
@@ -83,5 +89,12 @@ public class Controlers {
             }
             return null;
         }
+    }
+
+    public static Controller[] getControllers() {
+        return controllers;
+    }
+
+    private Controlers() {
     }
 }

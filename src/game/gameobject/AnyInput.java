@@ -6,7 +6,11 @@
 package game.gameobject;
 
 import game.Settings;
-import game.gameobject.inputs.*;
+import game.gameobject.inputs.InputKeyBoard;
+import game.gameobject.inputs.InputMouse;
+import game.gameobject.inputs.InputPadDPad;
+import game.gameobject.inputs.InputPadKey;
+import game.gameobject.inputs.InputPadStick;
 
 /**
  *

@@ -7,14 +7,35 @@ package game.place;
 
 import collision.Area;
 import collision.Figure;
-import engine.Point;
 import engine.Methods;
+import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.cameras.Camera;
 import java.util.Arrays;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
+import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_ZERO;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.glVertex2f;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  *
@@ -120,7 +141,7 @@ public class Renderer {
                         calculateWalls(shade, emitter);
                         drawWalls(emitter);
                     }
-                    shadeColor = (float) (emitter.getY() - shade.getCentralY()) / (float) (shade.getHeight() / 2 + emitter.getHeight() / 2);
+                    shadeColor = (emitter.getY() - shade.getCentralY()) / (float) ((shade.getHeight() + emitter.getHeight()) / 2);
                     if (shade.getOwner().getClass() == Area.class) {
                         shade.getOwner().renderShadow((shade.getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
                                 shade.getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), shade.canBeLit() && emitter.getY() >= shade.getCentralY(), shadeColor);
@@ -145,7 +166,7 @@ public class Renderer {
         nrShades = 0;
         for (Area a : place.areas) {    //iteracja po Shades - tych co dają cień
             if (!a.isBorder()) {
-                for (Figure f : a.parts) {
+                for (Figure f : a.getParts()) {
                     if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
                             && (Math.abs(f.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (f.getWidth() >> 1))) {
                         shades[nrShades++] = f;
@@ -212,14 +233,14 @@ public class Renderer {
         } else if (points[0].getY() == center.getY()) {
             points[2].set(points[0].getX() + (points[0].getX() > center.getX() ? shDif : -shDif), points[0].getY());
         } else {
-            al1 = ((double) center.getY() - (double) points[0].getY()) / ((double) center.getX() - (double) points[0].getX());
-            bl1 = (double) points[0].getY() - al1 * (double) points[0].getX();
+            al1 = (center.getY() - points[0].getY()) / (double) (center.getX() - points[0].getX());
+            bl1 = points[0].getY() - al1 * points[0].getX();
             if (al1 > 0) {
                 shX = points[0].getX() + (points[0].getY() > center.getY() ? shDif : -shDif);
-                shY = (int) (al1 * (double) shX + bl1);
+                shY = (int) (al1 * shX + bl1);
             } else if (al1 < 0) {
                 shX = points[0].getX() + (points[0].getY() > center.getY() ? -shDif : shDif);
-                shY = (int) (al1 * (double) shX + bl1);
+                shY = (int) (al1 * shX + bl1);
             } else {
                 shX = points[0].getX();
                 shY = points[0].getY() + (points[0].getY() > center.getY() ? shDif : -shDif);
@@ -231,14 +252,14 @@ public class Renderer {
         } else if (points[1].getY() == center.getY()) {
             points[3].set(points[1].getX() + (points[1].getX() > center.getX() ? shDif : -shDif), points[1].getY());
         } else {
-            al2 = ((double) center.getY() - (double) points[1].getY()) / ((double) center.getX() - (double) points[1].getX());
-            bl2 = (double) points[1].getY() - al2 * (double) points[1].getX();
+            al2 = (center.getY() - points[1].getY()) / (double) (center.getX() - points[1].getX());
+            bl2 = points[1].getY() - al2 * points[1].getX();
             if (al2 > 0) {
                 shX = points[1].getX() + (points[1].getY() > center.getY() ? shDif : -shDif);
-                shY = (int) (al2 * (double) shX + bl2);
+                shY = (int) (al2 * shX + bl2);
             } else if (al2 < 0) {
                 shX = points[1].getX() + (points[1].getY() > center.getY() ? -shDif : shDif);
-                shY = (int) (al2 * (double) shX + bl2);
+                shY = (int) (al2 * shX + bl2);
             } else {
                 shX = points[1].getX();
                 shY = points[1].getY() + (points[1].getY() > center.getY() ? shDif : -shDif);
@@ -389,8 +410,8 @@ public class Renderer {
     }
 
     public static void drawLight(int textureHandle, GameObject emitter, Camera cam) {
-        lightX = (int) emitter.getLight().getSX();
-        lightY = (int) emitter.getLight().getSY();
+        lightX = emitter.getLight().getSX();
+        lightY = emitter.getLight().getSY();
         glPushMatrix();
         glTranslatef(emitter.getX() - emitter.getLight().getSX() / 2 + cam.getXOffEffect(), emitter.getY() - emitter.getLight().getSY() / 2 + cam.getYOffEffect(), 0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -532,5 +553,8 @@ public class Renderer {
                 glEnd();
             }
         }
+    }
+
+    private Renderer() {
     }
 }

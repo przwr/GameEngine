@@ -5,9 +5,9 @@
  */
 package game;
 
-import game.place.Place;
 import game.gameobject.Player;
 import game.place.Menu;
+import game.place.Place;
 import org.lwjgl.input.Controller;
 
 /**

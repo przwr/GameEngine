@@ -11,6 +11,7 @@ import game.gameobject.ActionWhileClicked;
 import game.gameobject.AnyInput;
 import game.gameobject.Controler;
 import game.gameobject.Entity;
+import game.gameobject.Player;
 
 /**
  *
@@ -38,25 +39,25 @@ public class MyController extends Controler {
         actions[0] = new ActionOnOff(inputs[0], inControl) {
             @Override
             public void Act() {
-                ((MyPlayer) inControl).menu.setChoosen(-1);
+                ((Player) inControl).menu.setChoosen(-1);
             }
         };
         actions[1] = new ActionOnOff(inputs[1], inControl) {
             @Override
             public void Act() {
-                ((MyPlayer) inControl).menu.setChoosen(1);
+                ((Player) inControl).menu.setChoosen(1);
             }
         };
         actions[2] = new ActionOnOff(inputs[2], inControl) {
             @Override
             public void Act() {
-                ((MyPlayer) inControl).menu.choice();
+                ((Player) inControl).menu.choice();
             }
         };
         actions[3] = new ActionOnOff(inputs[3], inControl) {
             @Override
             public void Act() {
-                ((MyPlayer) inControl).menu.back();
+                ((Player) inControl).menu.back();
             }
         };
         for (int i = 0; i < 7; i++) {

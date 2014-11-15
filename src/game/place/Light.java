@@ -6,8 +6,11 @@
 package game.place;
 
 import game.gameobject.GameObject;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.Sprite;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  *

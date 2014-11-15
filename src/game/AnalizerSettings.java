@@ -33,13 +33,6 @@ public class AnalizerSettings {
                     settings.hSplitScreen = false;
                 }
                 break;
-            case "JoinSplitMode:":
-                if (0 == p[1].compareTo("On")) {
-                    settings.joinSS = true;
-                } else if (0 == p[1].compareTo("Off")) {
-                    settings.joinSS = false;
-                }
-                break;
             case "VSync:":
                 if (0 == p[1].compareTo("On")) {
                     settings.vSync = true;
@@ -134,11 +127,6 @@ public class AnalizerSettings {
             } else {
                 fw.write("SplitMode: V\n");
             }
-            if (settings.joinSS) {
-                fw.write("JoinSplitMode: On\n");
-            } else {
-                fw.write("JoinSplitMode: Off\n");
-            }
             if (settings.vSync) {
                 fw.write("VSync: On\n");
             } else {
@@ -159,5 +147,8 @@ public class AnalizerSettings {
         } catch (IOException ex) {
             Logger.getLogger(AnalizerSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private AnalizerSettings() {
     }
 }

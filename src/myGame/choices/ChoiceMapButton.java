@@ -3,17 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject.menu.choices;
+package myGame.choices;
 
+import engine.Controlers;
 import game.AnalizerInput;
 import game.Settings;
 import game.gameobject.AnyInput;
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
-import engine.Controlers;
-import static engine.Controlers.controllers;
 import game.gameobject.Controler;
 import game.gameobject.Player;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 import org.lwjgl.input.Controllers;
 
 /**
@@ -49,16 +48,16 @@ public class ChoiceMapButton extends MenuChoice {
                                 noiseAx[i] = -1;
                             }
                             for (int k = 0; k < Controllers.getControllerCount(); k++) {
-                                if (controllers[k] != null) {
+                                if (Controlers.getControllers()[k] != null) {
                                     int a;
-                                    for (a = 0; a < controllers[k].getAxisCount(); a++) {
-                                        if (controllers[k].getAxisValue(a) > 0.9f || controllers[k].getAxisValue(a) < -0.9f) {
+                                    for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
+                                        if (Controlers.getControllers()[k].getAxisValue(a) > 0.9f || Controlers.getControllers()[k].getAxisValue(a) < -0.9f) {
                                             noiseAx[k] = a;
                                             break;
                                         }
                                     }
-                                    for (a = 0; a < controllers[k].getAxisCount(); a++) {
-                                        if (a != noiseAx[k] && controllers[k].getAxisValue(a) > 0.9f || controllers[k].getAxisValue(a) < -0.9f) {
+                                    for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
+                                        if (a != noiseAx[k] && Controlers.getControllers()[k].getAxisValue(a) > 0.9f || Controlers.getControllers()[k].getAxisValue(a) < -0.9f) {
                                             noiseAx[Controllers.getControllerCount() + k] = a;
                                             break;
                                         }

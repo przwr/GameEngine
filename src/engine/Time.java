@@ -34,4 +34,6 @@ public class Time {
         curTime = getTime();
     }
 
+    private Time() {
+    }
 }
