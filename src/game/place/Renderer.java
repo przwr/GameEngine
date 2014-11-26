@@ -9,10 +9,13 @@ import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.cameras.Camera;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_ZERO;
 import static org.lwjgl.opengl.GL11.glBegin;
@@ -118,19 +121,25 @@ public class Renderer {
         place.nrVLights = 0;
     }
 
-    public static void preRendLightsFBO(Place place) {
-        for (int l = 0; l < place.nrVLights; l++) {
-            ShadowRenderer.preRendLight(place, l);
+    public static void preRendLights(Place place) {
+        if (!place.settings.shadowOff) {
+            for (int l = 0; l < place.nrVLights; l++) {
+                ShadowRenderer.preRendLight(place, l);
+            }
         }
     }
 
-    public static void preRenderShadowedLightsFBO(Camera cam) {
+    public static void preRenderShadowedLights(Place place, Camera cam) {
         fbFrame.activate();
         glClear(GL_COLOR_BUFFER_BIT);
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
         for (int i = 0; i < cam.nrVLights; i++) {
-            drawLight(cam.visibleLights[i].getLight().fbo.getTexture(), cam.visibleLights[i], cam);
+            if (!place.settings.shadowOff) {
+                drawLight(cam.visibleLights[i].getLight().fbo.getTexture(), cam.visibleLights[i], cam);
+            } else {
+                cam.visibleLights[i].getLight().render(cam.visibleLights[i], place, cam.getXOffEffect(), cam.getYOffEffect());
+            }
         }
         fbFrame.deactivate();
     }

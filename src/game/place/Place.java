@@ -94,13 +94,15 @@ public abstract class Place extends ScreenPlace {
             @Override
             public void render() {
                 Renderer.findVisibleLights(place, playersLength);
-                Renderer.preRendLightsFBO(place);
+                if (!settings.shadowOff) {
+                    Renderer.preRendLights(place);
+                }
                 for (int p = 0; p < playersLength; p++) {
                     cam = (((Player) players[p]).getCam());
                     SplitScreen.setSplitScreen(place, playersLength, p);
                     if (p == 0 || !singleCam) {
                         glEnable(GL_SCISSOR_TEST);
-                        Renderer.preRenderShadowedLightsFBO(cam);
+                        Renderer.preRenderShadowedLights(place, cam);
                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         sprites.setLastTex(-1);
 //                        float scale =1f;
@@ -120,11 +122,13 @@ public abstract class Place extends ScreenPlace {
             @Override
             public void render() {
                 Renderer.findVisibleLights(place, 1);
-                Renderer.preRendLightsFBO(place);
+                if (!settings.shadowOff) {
+                    Renderer.preRendLights(place);
+                }
                 cam = (((Player) players[0]).getCam());
                 SplitScreen.setSplitScreen(place, 1, 0);
                 glEnable(GL_SCISSOR_TEST);
-                Renderer.preRenderShadowedLightsFBO(cam);
+                Renderer.preRenderShadowedLights(place, cam);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 sprites.setLastTex(-1);
                 renderBack(cam);

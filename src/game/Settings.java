@@ -57,6 +57,7 @@ public class Settings {
     public int maxSamples;
     public int isSupfboVer3;
     public boolean isSupfboMS;
+    public boolean shadowOff;
     public String serverIP = "127.0.0.1";
 
     public Settings() {

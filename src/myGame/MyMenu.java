@@ -38,6 +38,7 @@ import myGame.choices.ChoiceRunServer;
 import myGame.choices.ChoiceServerIP;
 import myGame.choices.ChoiceServerPortTCP;
 import myGame.choices.ChoiceServerPortUDP;
+import myGame.choices.ChoiceShadowOff;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -100,6 +101,7 @@ public class MyMenu extends Menu {
         menus[1].addChoice(new ChoiceResolution(settings.language.Resolution, this, settings));
         menus[1].addChoice(new ChoiceFullScreen(settings.language.FullScreen, this, settings));
         menus[1].addChoice(new ChoiceVSync(settings.language.VSync, this, settings));
+        menus[1].addChoice(new ChoiceShadowOff(settings.language.ShadowOff, this, settings));
         menus[1].addChoice(new ChoiceSmoothShadows(settings.language.SmoothShadows, this, settings));
     }
 

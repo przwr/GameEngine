@@ -63,6 +63,7 @@ public class LangPL extends Language {
         PushButton = "Naciśnij przycisk!";
         Unchangable = "niezmienny!";
         VSync = "Synchronizacja pionowa: ";
+        ShadowOff = "Brak cieni: ";
         SmoothShadows = "Gładkie cienie: ";
         JoinSS = "Połącz ekrany: ";
         FBOError = "FrameBufferedObject jest nieobsługiwany. Upewnij się, że masz aktualne sterowniki karty graficznej!";

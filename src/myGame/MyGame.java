@@ -15,7 +15,6 @@ import game.gameobject.Player;
 import game.place.cameras.PlayersCamera;
 import java.io.File;
 import org.lwjgl.input.Controller;
-import org.lwjgl.input.Keyboard;
 
 /**
  *
@@ -25,13 +24,7 @@ public class MyGame extends Game {
 
     private final getInput[] ins = new getInput[2];
     private final update[] ups = new update[2];
-    private boolean PAUSE = true;
 
-//    private final change[] changes = new change[3];
-//    private final boolean[] isChanged = new boolean[3];
-//    private final NewMPlayer newPls[] = new NewMPlayer[3];
-//    private final int removeIDs[] = new int[3];
-//    private final PacketMPlayerUpdate[] plUps = new PacketMPlayerUpdate[4];
     public MyGame(String title, Settings settings, Controller[] controllers) {
         super(title, settings, controllers);
         players = new Player[4];
@@ -59,44 +52,44 @@ public class MyGame extends Game {
         ins[0] = new getInput() {
             @Override
             public void getInput() {
-//                if (!pauseFlag) {
-//                    pause();
-                if (runFlag) {
-                    Player pl;
-                    for (int p = 0; p < players.length; p++) {
-                        pl = players[p];
-                        if (pl.isMenuOn()) {
-                            if (pl.getPlace() != null) {
-                                if (!pl.isFirst) {
-                                    removePlayerOffline(p);
+                if (!pauseFlag) {
+                    pause();
+                    if (runFlag) {
+                        Player pl;
+                        for (int p = 0; p < players.length; p++) {
+                            pl = players[p];
+                            if (pl.isMenuOn()) {
+                                if (pl.getPlace() != null) {
+                                    if (!pl.isFirst) {
+                                        removePlayerOffline(p);
+                                    } else {
+                                        runFlag = false;
+                                        soundPause();
+                                    }
                                 } else {
-                                    runFlag = false;
-                                    soundPause();
+                                    addPlayerOffline(p);
                                 }
-                            } else {
-                                addPlayerOffline(p);
+                            }
+                            if (pl.getPlace() != null) {
+                                pl.getInput();
                             }
                         }
-                        if (pl.getPlace() != null) {
-                            pl.getInput();
+                    } else {
+                        if (place == null) {
+                            menuPl.getMenuInput();
+                        } else {
+                            for (Player pl : players) {
+                                if (pl.isMenuOn()) {
+                                    menu.back();
+                                } else {
+                                    pl.getMenuInput();
+                                }
+                            }
                         }
                     }
                 } else {
-                    if (place == null) {
-                        menuPl.getMenuInput();
-                    } else {
-                        for (Player pl : players) {
-                            if (pl.isMenuOn()) {
-                                menu.back();
-                            } else {
-                                pl.getMenuInput();
-                            }
-                        }
-                    }
+                    resume();
                 }
-//                } else {
-//                    resume();
-//                }
             }
         };
         ins[1] = new getInput() {
@@ -122,13 +115,13 @@ public class MyGame extends Game {
         ups[0] = new update() {
             @Override
             public void update() {
-//                if (!pauseFlag) {
-                if (runFlag) {
-                    place.update();
-                } else {
-                    menu.update();
+                if (!pauseFlag) {
+                    if (runFlag) {
+                        place.update();
+                    } else {
+                        menu.update();
+                    }
                 }
-//                }
             }
         };
         ups[1] = new update() {

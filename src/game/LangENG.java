@@ -63,6 +63,7 @@ public class LangENG extends Language {
         PushButton = "Push the button!";
         Unchangable = "unchangable!";
         VSync = "Vertical synchronization: ";
+        ShadowOff = "No shadows: ";
         SmoothShadows = "Smooth shadows: ";
         JoinSS = "Join screens: ";
         FBOError = "FrameBufferedObject is unsupported. Make sure you have current video card drivers!";
