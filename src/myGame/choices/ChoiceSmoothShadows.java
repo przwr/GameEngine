@@ -23,13 +23,16 @@ public class ChoiceSmoothShadows extends MenuChoice {
     @Override
     public void action() {
         if (settings.isSupfboMS) {
-            settings.nrSamples++;
-            if (settings.nrSamples > 8) {
-                settings.nrSamples = 1;
+            settings.nrSamples *= 2;
+            if (settings.nrSamples == 0) {
+                settings.nrSamples = 2;
+            }
+            if (settings.nrSamples > settings.maxSamples) {
+                settings.nrSamples = 0;
             }
             AnalizerSettings.Update(settings);
         } else {
-            settings.nrSamples = 1;
+            settings.nrSamples = 0;
             AnalizerSettings.Update(settings);
         }
     }
@@ -38,7 +41,7 @@ public class ChoiceSmoothShadows extends MenuChoice {
     public String getLabel() {
         if (!settings.isSupfboMS) {
             return label + settings.language.Off + " (" + settings.language.Unsupported + ")";
-        } else if (settings.nrSamples == 1) {
+        } else if (settings.nrSamples == 0) {
             return label + settings.language.Off;
         }
         return label + settings.nrSamples + "x";

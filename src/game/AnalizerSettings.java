@@ -42,19 +42,22 @@ public class AnalizerSettings {
                 break;
             case "NumberOfSamples:":
                 int ns = Integer.parseInt(p[1]);
-                if (ns > 8 || ns < 1) {
-                    settings.nrSamples = 1;
+                if (ns > 64 || ns < 0) {
+                    settings.nrSamples = 0;
                 } else {
                     settings.nrSamples = ns;
                 }
                 break;
             case "NumberOfPlayers:":
-                int n = Integer.parseInt(p[1]);
-                if (n > 4 || n < 1) {
+                int np = Integer.parseInt(p[1]);
+                if (np > 4 || np < 1) {
                     settings.nrPlayers = 1;
                 } else {
-                    settings.nrPlayers = n;
+                    settings.nrPlayers = np;
                 }
+                break;
+            case "ServerIP:":
+                settings.serverIP = p[1];
                 break;
             case "ResolutionWidth:":
                 int w = Integer.parseInt(p[1]);
@@ -132,7 +135,8 @@ public class AnalizerSettings {
             } else {
                 fw.write("VSync: Off\n");
             }
-            fw.write("NumberOfPlayers: " + settings.nrPlayers + "\n");
+            fw.write("ServerIP: " + settings.serverIP + "\n");
+            fw.write("NumberOfPlayers: " + settings.nrPlayers + "\n");            
             fw.write("NumberOfSamples: " + settings.nrSamples + "\n");
             fw.write("ResolutionWidth: " + settings.resWidth + "\n");
             fw.write("ResolutionHeight: " + settings.resHeight + "\n");

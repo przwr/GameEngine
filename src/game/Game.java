@@ -5,11 +5,13 @@
  */
 package game;
 
+import net.GameOnline;
 import game.gameobject.Player;
 import game.place.Menu;
 import game.place.Place;
 import game.place.SplitScreen;
 import org.lwjgl.input.Controller;
+import org.lwjgl.input.Keyboard;
 
 /**
  *
@@ -17,13 +19,14 @@ import org.lwjgl.input.Controller;
  */
 public abstract class Game {
 
-    protected final Settings settings;
+    public final Settings settings;
+    public GameOnline online;
+    protected final String title;
     protected Player menuPl;
     protected Menu menu;
-    protected Place place;
-    protected final String title;
-    public boolean runFlag;
-    public boolean exitFlag;
+    public Place place;
+    public int mode;
+    public boolean started, runFlag, pauseFlag, exitFlag, PAUSE;
     public Player[] players;
 
     public Game(String title, Settings settings, Controller[] controllers) {
@@ -40,6 +43,8 @@ public abstract class Game {
 
     public abstract void resumeGame();
 
+    public abstract void runClient();
+
     public abstract void update();
 
     public abstract void render();
@@ -54,5 +59,27 @@ public abstract class Game {
 
     public Place getPlace() {
         return place;
+    }
+
+    public void pause() {
+        if (Keyboard.isKeyDown(Keyboard.KEY_PAUSE)) {
+            if (!PAUSE) {
+                pauseFlag = true;
+                PAUSE = true;
+            }
+        } else {
+            PAUSE = false;
+        }
+    }
+
+    public void resume() {
+        if (Keyboard.isKeyDown(Keyboard.KEY_PAUSE)) {
+            if (!PAUSE) {
+                pauseFlag = false;
+                PAUSE = true;
+            }
+        } else {
+            PAUSE = false;
+        }
     }
 }

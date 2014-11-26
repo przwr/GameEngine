@@ -23,7 +23,7 @@ public abstract class Menu extends ScreenPlace {
     protected final int dWidth = Display.getWidth();
     protected final int dHeight = Display.getHeight(); //(int) (dWidth * ((double) Display.getHeight() / (double) Display.getWidth()));
     public boolean isMapping;
-    public Delay delay = new Delay(25);
+    public Delay delay;
 
     public Menu(Game game, int width, int height, Settings settings) {
         super(game, width, height, settings);

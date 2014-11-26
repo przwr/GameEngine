@@ -35,30 +35,26 @@ import org.newdawn.slick.opengl.ImageIOImageData;
 public class Main {
 
     private static Game game;
+    private static Popup pop;
     private static final Settings settings = new Settings();
     private static Controller[] controllers;
     private static GameDesigner designer;
     private static boolean designerActive = false;
+    public static boolean pause, ENTER = true;
 
-    public static void main(String[] args) {
-        try {
-            IO.ReadFile(new File("res/settings.ini"), settings, true);
-            initDisplay();
-            initGL();
-            initGame();
-            gameLoop();
-            cleanUp();
-        } catch (Exception ex) {
-            Methods.Exception(ex);
-            cleanUp();
-        }
-        System.exit(0); //Zabija wszystkie wątki
+    public static void run() {
+        IO.ReadFile(new File("res/settings.ini"), settings, true);
+        initDisplay();
+        initGL();
+        initGame();
+        gameLoop();
     }
 
     private static void initGame() {
         game = new MyGame("Pervert Rabbits Attack", settings, controllers);
         Display.setTitle(game.getTitle());
         designer = new GameDesigner();
+        pop = new Popup("Amble-Regular", settings.SCALE);
     }
 
     private static void getInput() {
@@ -69,8 +65,9 @@ public class Main {
             designer.setVisible(true);
             designerActive = true;
         }
-        if (designerActive && !designer.isVisible())
+        if (designerActive && !designer.isVisible()) {
             designerActive = false;
+        }
         //------------------------------------------//
     }
 
@@ -82,8 +79,20 @@ public class Main {
         glClear(GL_COLOR_BUFFER_BIT);
         glLoadIdentity();
         game.render();
+        if (pop.i != -1) {
+            pause = true;
+            pop.renderMesagges();
+        }
         Display.sync(60);
         Display.update();
+    }
+
+    public static void addMessage(String msg) {
+        pop.addMessage(msg);
+    }
+
+    public static String getTitle() {
+        return game.getTitle();
     }
 
     private static void initGL() {
@@ -104,13 +113,23 @@ public class Main {
         while (!Display.isCloseRequested() && !game.exitFlag) {
             Time.update();
             Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
-            getInput();
-            update();
+            if (!pause) {
+                getInput();
+                update();
+            } else {
+                if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                    if (!ENTER) {
+                        pop.popMessage();
+                    }
+                } else {
+                    ENTER = false;
+                }
+            }
             render();
         }
     }
 
-    private static void cleanUp() {
+    public static void cleanUp() {
         try {
             Display.setDisplayConfiguration(1f, 0f, 1.0f);
         } catch (LWJGLException ex) {
@@ -127,13 +146,24 @@ public class Main {
     private static void initDisplay() {
         try {
             setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
-            Display.create(new PixelFormat(32, 0, 24, 0, 0));
-            Display.setResizable(false);
-            if (settings.vSync) {
-                Display.setVSyncEnabled(true);
-            } else {
-                Display.setVSyncEnabled(false);
+            try {
+                Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples));
+            } catch (Exception e0) {
+                Display.destroy();
+                try {
+                    Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples / 2));
+                } catch (Exception e1) {
+                    Display.destroy();
+                    try {
+                        Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples / 4));
+                    } catch (Exception e2) {
+                        Display.destroy();
+                        Display.create(new PixelFormat(32, 0, 24, 0, 0));
+                    }
+                }
             }
+            Display.setResizable(false);
+            Display.setVSyncEnabled(settings.vSync);
             Display.setDisplayConfiguration(2f, 0f, 1.0f);
             try {
                 Display.setIcon(new ByteBuffer[]{

@@ -28,7 +28,7 @@ public class Area extends GameObject {
     protected int yCentr;
     protected boolean isBorder;
 
-    public Area(int x, int y, String lit, String nLit, int sTile) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
+    public Area(int x, int y, int sTile) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
         this.x = x;
         this.y = y;
         this.parts = new ArrayList<>();
@@ -36,7 +36,7 @@ public class Area extends GameObject {
         simpleLighting = true;
     }
 
-    public Area(int x, int y, String lit, String nLit, int sTile, boolean isBorder) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
+    public Area(int x, int y, int sTile, boolean isBorder) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
         this.x = x;
         this.y = y;
         this.parts = new ArrayList<>();

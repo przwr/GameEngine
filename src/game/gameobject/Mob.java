@@ -38,7 +38,7 @@ public abstract class Mob extends Entity {
         scale = SCALE;
         init(name, (int) (SCALE * x), (int) (SCALE * y), place);
         this.sprite = place.getSprite("rabbit");
-        setCollision(new Rectangle(this.width / 2, this.height / 3, true, false, this));
+        setCollision(new Rectangle(this.width, this.height / 4, true, false, this));
         this.setMaxSpeed(speed);
     }
 
@@ -51,14 +51,14 @@ public abstract class Mob extends Entity {
 
     @Override
     protected void move(int xPos, int yPos) {
-        x += xPos;
-        y += yPos;
+        setX(x + xPos);
+        setY(y + yPos);
     }
 
     @Override
     protected void setPosition(int xPos, int yPos) {
-        x = xPos;
-        y = yPos;
+        setX(xPos);
+        setY(yPos);
     }
 
     public synchronized void look(GameObject[] players) {

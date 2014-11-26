@@ -23,7 +23,7 @@ public class FontsHandler {
     protected final TrueTypeFont[] fonts;
     protected final int size;
     private int n;
-    private final char[] chars = {'ą', 'ę', 'ć', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ó', 'Ś', 'Ż', 'Ź',};
+    private final char[] chars = {'ą', 'ę', 'ć', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ó', 'Ś', 'Ż', 'Ź'};
 
     public FontsHandler(int size) {
         n = 0;
@@ -39,7 +39,7 @@ public class FontsHandler {
 
     public void add(String name, int size) {
         try {
-            InputStream inputStream = ResourceLoader.getResourceAsStream("/res/" + name + ".ttf");
+            InputStream inputStream = ResourceLoader.getResourceAsStream("/res/fonts/" + name + ".ttf");
             Font awtFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
             awtFont = awtFont.deriveFont((float) size);
             fonts[n++] = new TrueTypeFont(awtFont, true, chars);

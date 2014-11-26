@@ -11,15 +11,25 @@ package game.gameobject;
  */
 public abstract class Action {
 
-    public AnyInput in;
-    public Entity inControl;
+    protected boolean isOn;
 
-    public Action(AnyInput in, Entity inControl) {
+    public AnyInput in;
+
+    public Action(AnyInput in) {
         this.in = in;
-        this.inControl = inControl;
+    }
+
+    public boolean isOn() {
+        if (isOn) {
+            isOn = !isOn;
+            return !isOn;
+        }
+        return isOn;
+    }
+
+    public boolean isOnVal() {
+        return isOn;
     }
 
     public abstract void Do();
-
-    public abstract void Act();
 }

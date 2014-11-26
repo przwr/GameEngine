@@ -563,7 +563,8 @@ public class SpriteLoader extends javax.swing.JFrame {
             errMsg("The Output is not defined!");
             return;
         }
-        String p = output.getPath() + "\\" + NameTF.getText();
+        //String p = output.getPath() + "\\" + NameTF.getText();
+        String p = "res\\" + NameTF.getText();
         try (BufferedReader wczyt = new BufferedReader(new FileReader(p + ".spr"))) {
             if (!questMsg("Texture \"" + NameTF.getText() + "\" already exists in the selected folder!\n"
                     + "Replace?")) {

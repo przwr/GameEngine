@@ -26,6 +26,8 @@ import sprites.SpriteSheet;
  */
 public class MyPlayer extends Player {
 
+    private int hs, vs;
+
     public MyPlayer(boolean isFirst, String name) {
         super(name);
         this.isFirst = isFirst;
@@ -41,7 +43,28 @@ public class MyPlayer extends Player {
         this.sY = (int) (SCALE * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, (int) (SCALE * x), (int) (SCALE * y), place);
+        init(name, Methods.RoundHU((int) (SCALE * x)), Methods.RoundHU((int) (SCALE * y)), place);
+        this.sprite = place.getSpriteSheet("apple");
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.anim = new Animation((SpriteSheet) sprite, 200, this);
+        animate = true;
+        emits = false;
+        scale = SCALE;
+        place.addObj(this);
+        setCollision(new Rectangle(this.width, this.height / 2, true, false, this));
+    }
+
+    @Override
+    public void init(int startX, int startY, int width, int height, int sw, int sh, Place place) {
+        double SCALE = place.settings.SCALE;
+        this.width = (int) (SCALE * width);
+        this.height = (int) (SCALE * height);
+        this.sX = (int) (SCALE * startX);
+        this.sY = (int) (SCALE * startY);
+        this.setWeight(2);
+        this.emitter = true;
+        this.depth = (int) y;
+        this.place = place;
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
@@ -75,15 +98,20 @@ public class MyPlayer extends Player {
 
     @Override
     protected void move(int xPos, int yPos) {
-        x += xPos;
-        y += yPos;
-        cam.update();
+        setX(x + xPos);
+        setY(y + yPos);
+        if (cam != null) {
+            cam.update();
+        }
     }
 
     @Override
     protected void setPosition(int xPos, int yPos) {
-        x = xPos;
-        y = yPos;
+        setX(xPos);
+        setY(yPos);
+        if (cam != null) {
+            cam.update();
+        }
     }
 
     @Override
@@ -125,37 +153,40 @@ public class MyPlayer extends Player {
         }
     }
 
-    int a = 0;  //TYLKO TYMCZASOWE!
+    float a = 22.5f;  //TYLKO TYMCZASOWE!
 
+    @Override
     public void update(Place place) {
-        if (ctrl.isPressed(MyController.UP)) {
-            addSpeed(0, -4, true);
-        } else if (ctrl.isPressed(MyController.DOWN)) {
-            addSpeed(0, 4, true);
-        } else {
-            brake(1);
+        if (isJumping) {
+            jump = Math.abs(Methods.xRadius(a * 4, 70));
+            a += Time.getDelta();
+            if ((int) a == 68) {
+                isJumping = false;
+                a = 22.5f;
+            }
         }
-        if (ctrl.isPressed(MyController.LEFT)) {
-            addSpeed(-4, 0, true);
-        } else if (ctrl.isPressed(MyController.RIGHT)) {
-            addSpeed(4, 0, true);
-        } else {
-            brake(0);
-        }
-        if (ctrl.isPressed(MyController.SHAKE)) {
-            cam.shake();
-        }
-        if (ctrl.isPressed(MyController.RUN)) {
-            setMaxSpeed(16);
-        } else {
-            setMaxSpeed(8);
-        }
-        if (ctrl.isClicked(MyController.LIGHT)) {
-            setEmits(!emits);
-        }
-        jump = Math.abs(Methods.xRadius(a * 4, 70));
-        a += Time.getDelta();
-        canMove((int) (hspeed + myHspeed), (int) (vspeed + myVspeed));
+        hs = (int) (hspeed + myHspeed);
+        vs = (int) (vspeed + myVspeed);
+        canMove(hs, vs);
         brakeOthers();
+    }
+
+    @Override
+    public void sendUpdate(Place place) {
+        if (isJumping) {
+            jump = Math.abs(Methods.xRadius(a * 4, 70));
+            a += Time.getDelta();
+            if ((int) a == 68) {
+                isJumping = false;
+                a = 22.5f;
+            }
+        }
+        hs = (int) (hspeed + myHspeed);
+        vs = (int) (vspeed + myVspeed);
+        canMove(hs, vs);
+        brakeOthers();
+        if (place.game.online.server != null) {
+            place.game.online.server.sendPlayerUpdate(id, getX(), getY());
+        }
     }
 }

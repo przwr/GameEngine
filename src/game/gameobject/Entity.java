@@ -20,10 +20,11 @@ public abstract class Entity extends GameObject {
     protected double vspeed;
     protected double myHspeed;    // prędkości uzyskiwane przez gracza
     protected double myVspeed;
-    protected double weight = 1;  // 1 - idealny balans, im więcej tym gorzej
+    protected double weight = 2;  // 1 - idealny balans, im więcej tym gorzej
     protected double maxSpeed;
     protected double jump;
     protected double scale;
+    protected boolean isJumping;
 
     public void canMove(int magX, int magY) {
         int xpos = (int) (magX * Time.getDelta());
@@ -98,6 +99,14 @@ public abstract class Entity extends GameObject {
 
     public void setJump(double jump) {
         this.jump = jump;
+    }
+
+    public boolean isJumping() {
+        return isJumping;
+    }
+
+    public void setisJumping(boolean jump) {
+        this.isJumping = jump;
     }
 
     public void brake(int axis) {  // 0 OX, 1 OY, 2 oba

@@ -17,10 +17,11 @@ import game.place.cameras.Camera;
 public abstract class Player extends Entity {
 
     public Menu menu;
-    protected Animation anim;   
+    protected Animation anim;
     public Controler ctrl;
     protected Camera cam;
     public boolean isFirst;
+    public byte id;
 
     public Player(String name) {
         this.name = name;
@@ -29,6 +30,12 @@ public abstract class Player extends Entity {
     protected abstract void initControler(boolean isFirst);
 
     public abstract void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y);
+
+    public abstract void init(int startX, int startY, int width, int height, int sw, int sh, Place place);
+
+    public abstract void update(Place place);
+
+    public abstract void sendUpdate(Place place);
 
     public void addCamera(Camera cam) {
         this.cam = cam;
@@ -64,5 +71,9 @@ public abstract class Player extends Entity {
 
     public void setPlaceToNull() {
         place = null;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

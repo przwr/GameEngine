@@ -5,6 +5,7 @@
  */
 package myGame;
 
+import engine.Methods;
 import engine.Sound;
 import game.Game;
 import game.IO;
@@ -14,6 +15,7 @@ import game.gameobject.Player;
 import game.place.cameras.PlayersCamera;
 import java.io.File;
 import org.lwjgl.input.Controller;
+import org.lwjgl.input.Keyboard;
 
 /**
  *
@@ -21,6 +23,15 @@ import org.lwjgl.input.Controller;
  */
 public class MyGame extends Game {
 
+    private final getInput[] ins = new getInput[2];
+    private final update[] ups = new update[2];
+    private boolean PAUSE = true;
+
+//    private final change[] changes = new change[3];
+//    private final boolean[] isChanged = new boolean[3];
+//    private final NewMPlayer newPls[] = new NewMPlayer[3];
+//    private final int removeIDs[] = new int[3];
+//    private final PacketMPlayerUpdate[] plUps = new PacketMPlayerUpdate[4];
     public MyGame(String title, Settings settings, Controller[] controllers) {
         super(title, settings, controllers);
         players = new Player[4];
@@ -39,42 +50,133 @@ public class MyGame extends Game {
         players[1].addMenu(menu);
         players[2].addMenu(menu);
         players[3].addMenu(menu);
+        online = new MyGameOnline(this, 3, 4);
+        online.initChanges();
+        initMethods();
+    }
+
+    private void initMethods() {
+        ins[0] = new getInput() {
+            @Override
+            public void getInput() {
+//                if (!pauseFlag) {
+//                    pause();
+                if (runFlag) {
+                    Player pl;
+                    for (int p = 0; p < players.length; p++) {
+                        pl = players[p];
+                        if (pl.isMenuOn()) {
+                            if (pl.getPlace() != null) {
+                                if (!pl.isFirst) {
+                                    removePlayerOffline(p);
+                                } else {
+                                    runFlag = false;
+                                    soundPause();
+                                }
+                            } else {
+                                addPlayerOffline(p);
+                            }
+                        }
+                        if (pl.getPlace() != null) {
+                            pl.getInput();
+                        }
+                    }
+                } else {
+                    if (place == null) {
+                        menuPl.getMenuInput();
+                    } else {
+                        for (Player pl : players) {
+                            if (pl.isMenuOn()) {
+                                menu.back();
+                            } else {
+                                pl.getMenuInput();
+                            }
+                        }
+                    }
+                }
+//                } else {
+//                    resume();
+//                }
+            }
+        };
+        ins[1] = new getInput() {
+            @Override
+            public void getInput() {
+                if (runFlag) {
+                    if (players[0].isMenuOn()) {
+                        runFlag = false;
+                        soundPause();
+                    }
+                    if (players[0].getPlace() != null) {
+                        players[0].getInput();
+                    }
+                } else {
+                    if (place == null) {
+                        menuPl.getMenuInput();
+                    } else {
+                        players[0].getMenuInput();
+                    }
+                }
+            }
+        };
+        ups[0] = new update() {
+            @Override
+            public void update() {
+//                if (!pauseFlag) {
+                if (runFlag) {
+                    place.update();
+                } else {
+                    menu.update();
+                }
+//                }
+            }
+        };
+        ups[1] = new update() {
+            @Override
+            public void update() {
+                if (online.client != null && !online.client.isConnected) {
+                    endGame();
+                    mode = 0;
+                    Methods.Error(settings.language.Disconnected);
+                }
+                online.up();
+                if (runFlag) {
+                    place.update();
+                } else {
+                    if (place != null) {
+                        place.update();
+                    }
+                    menu.update();
+                }
+            }
+        };
     }
 
     @Override
+
     public void getInput() {
+        ins[mode].getInput();
+    }
+
+    @Override
+    public void update() {
+        ups[mode].update();
+    }
+
+    @Override
+    public void render() {
         if (runFlag) {
-            Player pl;
-            for (int p = 0; p < players.length; p++) {
-                pl = players[p];
-                if (pl.isMenuOn()) {
-                    if (pl.getPlace() != null) {
-                        if (!pl.isFirst) {
-                            removePlayer(p);
-                        } else {
-                            runFlag = false;
-                            soundPause();
-                        }
-                    } else {
-                        addPlayer(p);
-                    }
-                }
-                if (pl.getPlace() != null) {
-                    pl.getInput();
-                }
-            }
+            place.render();
         } else {
-            if (place == null) {
-                menuPl.getMenuInput();
-            } else {
-                for (Player pl : players) {
-                    if (pl.isMenuOn()) {
-                        menu.back();
-                    } else {
-                        pl.getMenuInput();
-                    }
-                }
-            }
+            menu.render();
+        }
+    }
+
+    @Override
+    public void resumeGame() {
+        if (place != null) {
+            soundResume();
+            runFlag = true;
         }
     }
 
@@ -123,10 +225,11 @@ public class MyGame extends Game {
         }
         System.arraycopy(players, 0, place.players, 0, 4);
         place.makeShadows();
-        runFlag = true;
+        mode = 0;
+        started = runFlag = true;
     }
 
-    private void addPlayer(int p) {
+    private void addPlayerOffline(int p) {
         if (p < 4 && place.playersLength < 4) {
             players[p].init(4, 4, 56, 56, 64, 64, place, p * 256, p * 265);
             ((Player) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
@@ -140,14 +243,11 @@ public class MyGame extends Game {
             }
             place.playersLength++;
             settings.joinSS = false;
-//            if (!players[0].isFirst) {
-//                SplitScreen.swampFirstWithSecond(place);
-//            }
             updatePlayersCam();
         }
     }
 
-    private void removePlayer(int p) {
+    private void removePlayerOffline(int p) {
         if (place.playersLength > 1 && !players[p].isFirst) {
             ((Player) place.players[p]).setPlaceToNull();
             place.deleteObj(place.players[p]);
@@ -201,39 +301,26 @@ public class MyGame extends Game {
     }
 
     @Override
+    public void runClient() {
+        place = new MyPlace(this, (int) (settings.SCALE * 2304), (int) (settings.SCALE * 2304), (int) (settings.SCALE * 64), settings);
+        place.players = new GameObject[4];
+        place.playersLength = 1;
+        players[0].init(4, 4, 56, 56, 64, 64, place);
+        players[0].addCamera(new PlayersCamera(place, players[0], 2, 2, 0)); // 2 i 2 to tryb SS
+        System.arraycopy(players, 0, place.players, 0, 1);
+        place.makeShadows();
+        started = runFlag = true;
+    }
+
+    @Override
     public void endGame() {
-        runFlag = false;
+        runFlag = started = false;
         place = null;
         settings.sounds = null;
         for (Player pl : players) {
             pl.setPlaceToNull();
         }
-    }
-
-    @Override
-    public void resumeGame() {
-        if (place != null) {
-            soundResume();
-            runFlag = true;
-        }
-    }
-
-    @Override
-    public void update() {
-        if (runFlag) {
-            place.update();
-        } else {
-            menu.update();
-        }
-    }
-
-    @Override
-    public void render() {
-        if (runFlag) {
-            place.render();
-        } else {
-            menu.render();
-        }
+        online.cleanUp();
     }
 
     private void soundPause() {
@@ -260,8 +347,19 @@ public class MyGame extends Game {
                 } else {
                     s.resume();
                     s.smoothStart(0.5);
+
                 }
             }
         }
+    }
+
+    private interface update {
+
+        void update();
+    }
+
+    private interface getInput {
+
+        void getInput();
     }
 }

@@ -11,17 +11,19 @@ package game.gameobject;
  */
 public abstract class Controler {
 
-    protected final Entity inControl;
-
-    public AnyInput[] inputs;
     public Action[] actions;
-    public int[] states;
+    public AnyInput[] inputs;
+    protected final Entity inControl;
+    protected boolean[] states;
+    protected boolean[] statesSample;
 
     public Controler(Entity inControl) {
         this.inControl = inControl;
     }
 
     public abstract void getInput();
+
+    public abstract void setInput(boolean[] inputs);
 
     public abstract boolean isMenuOn();
 
@@ -30,12 +32,4 @@ public abstract class Controler {
     public abstract int getActionsCount();
 
     public abstract void init();
-
-    public abstract boolean isPressed(int i);
-
-    public abstract boolean isClicked(int i);
-
-    public abstract boolean isReleased(int i);
-
-    public abstract boolean isMoving();
 }
