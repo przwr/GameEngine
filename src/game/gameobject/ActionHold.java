@@ -9,19 +9,16 @@ package game.gameobject;
  *
  * @author przemek
  */
-public abstract class ActionSingleClick extends Action {
+public class ActionHold extends Action {
 
-    public ActionSingleClick(AnyInput in, Entity inControl) {
-        super(in, inControl);
+    public ActionHold(AnyInput in) {
+        super(in);
     }
 
     @Override
     public void Do() {
-        if(in != null && in.isPut()){
-            Act();
+        if (in != null && in.isPut()) {
+            isOn = true;
         }
     }
-
-    @Override
-    public abstract void Act();
 }

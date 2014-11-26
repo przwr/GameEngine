@@ -33,20 +33,22 @@ public class SplitScreen {
     private static final int width1o2 = Display.getWidth() >> 1;
     private static final int heigth1o2 = Display.getHeight() >> 1;
 
-    public static void setSplitScreen(Place pl, int p) {
+    public static void setSplitScreen(Place pl, int playersLength, int p) {
         pl.singleCam = false;
-        splits[pl.playersLength - 1].setSplit(pl, p);
+        splits[playersLength - 1].setSplit(pl, p);
     }
 
     public static boolean isClose(Place pl) {
-        if (pl.playersLength == 2) {
-            return isClose2(pl);
-        } else if (pl.playersLength == 3) {
-            return isClose3(pl);
-        } else if (pl.playersLength == 4) {
-            return isClose4(pl);
+        switch (pl.getPlayersLenght()) {
+            case 2:
+                return isClose2(pl);
+            case 3:
+                return isClose3(pl);
+            case 4:
+                return isClose4(pl);
+            default:
+                return false;
         }
-        return false;
     }
 
     public static boolean isClose2(Place pl) {

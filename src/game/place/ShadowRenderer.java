@@ -93,7 +93,7 @@ public class ShadowRenderer {
                     if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
                             && (Math.abs(f.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (f.getWidth() >> 1))) {
                         shades[nrShades++] = f;
-                        f.setDistFromLight(Math.abs(src.getX() - f.getCentralX()));
+                        f.setDistFromLight((src.getCollision() == f) ? -1 : Math.abs(src.getX() - f.getCentralX()));
                     }
                 }
             }
@@ -103,7 +103,7 @@ public class ShadowRenderer {
             if (!((FGTile) tmp.getOwner()).isLightproof() && (Math.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getOwner().getHeight() >> 1))
                     && (Math.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getOwner().getWidth() >> 1))) {
                 shades[nrShades++] = tmp;
-                tmp.setDistFromLight(Math.abs(src.getX() - tmp.getCentralX()));
+                tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : Math.abs(src.getX() - tmp.getCentralX()));
             }
         }
         for (GameObject go : place.depthObj) {   // FGTiles muszą mieć Collision
@@ -111,7 +111,7 @@ public class ShadowRenderer {
             if ((Math.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getOwner().getHeight() >> 1))
                     && (Math.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getOwner().getWidth() >> 1))) {
                 shades[nrShades++] = tmp;
-                tmp.setDistFromLight(Math.abs(src.getX() - tmp.getCentralX()));
+                tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : Math.abs(src.getX() - tmp.getCentralX()));
             }
         }
         Arrays.sort(shades, 0, nrShades);

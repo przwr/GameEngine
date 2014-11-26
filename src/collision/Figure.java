@@ -220,7 +220,7 @@ public abstract class Figure implements Comparable<Object> {
     @Override
     public int compareTo(Object o) {
         if ((getCentralY() - ((Figure) o).getCentralY()) == 0) {
-            if (getDistFromLight() == 0) {
+            if (getDistFromLight() == -1) {
                 return 1;
             }
             return (getDistFromLight() - ((Figure) o).getDistFromLight());

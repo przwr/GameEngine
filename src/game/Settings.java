@@ -18,6 +18,7 @@ import org.lwjgl.opengl.ARBTextureMultisample;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL11.glGetInteger;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GLContext;
@@ -41,20 +42,22 @@ public class Settings {
     public SoundBase sounds;
     public int resWidth;
     public int resHeight;
-    public double SCALE;
+    public float SCALE;
     public int freq;
     public int depth = display.getBitsPerPixel();
     public boolean vSync;
-    public int nrSamples = 1;
-    public String lang = "PL";
+    public int nrSamples = 0;
+    public String lang;
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny
     public int actionsNr;
     public Player[] players;
     public Controller[] controllers;
     public int worldSeed;
+    public int maxSamples;
     public int isSupfboVer3;
     public boolean isSupfboMS;
+    public String serverIP = "127.0.0.1";
 
     public Settings() {
         int minW = 1024;
@@ -95,6 +98,7 @@ public class Settings {
         languages.add(new LangPL());
         languages.add(new LangENG());
         language = languages.get(0);
+        lang = language.Lang;
     }
 
     private boolean isBigger(DisplayMode checked, DisplayMode temp) {
@@ -113,14 +117,16 @@ public class Settings {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
-        this.SCALE = ((int) ((resHeight / 1024d / 0.03125)) * 0.03125) >= 1 ? 1 : (int) ((resHeight / 1024d / 0.03125)) * 0.03125;
-
+        this.SCALE = ((int) ((resHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resHeight / 1024f / 0.25f)) * 0.25f;
         try {
             GL30.glGenFramebuffers();
             GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
             GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
             isSupfboVer3 = 0;
             isSupfboMS = true;
+            maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) >> 2;
+            maxSamples = (glGetInteger(GL30.GL_MAX_SAMPLES) > 8) ? 8 : glGetInteger(GL30.GL_MAX_SAMPLES);
+            nrSamples = (nrSamples > maxSamples) ? maxSamples : nrSamples;
         } catch (Exception e) {
             if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
                 isSupfboVer3 = 1;
@@ -128,7 +134,9 @@ public class Settings {
                     ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
                     ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
                     isSupfboMS = true;
-                } catch (Exception em) {
+                    maxSamples = (glGetInteger(GL30.GL_MAX_SAMPLES) > 8) ? 8 : glGetInteger(GL30.GL_MAX_SAMPLES);
+                    nrSamples = (nrSamples > maxSamples) ? maxSamples : nrSamples;
+                } catch (Exception ex) {
                     isSupfboMS = false;
                 }
             } else if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {

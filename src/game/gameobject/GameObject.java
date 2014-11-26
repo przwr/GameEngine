@@ -137,6 +137,14 @@ public abstract class GameObject {
         return (int) y;
     }
 
+    public double getXInDouble() {
+        return x;
+    }
+
+    public double getYInDouble() {
+        return y;
+    }
+
     public int getWidth() {
         return collision != null ? collision.getWidth() : width;
     }
@@ -206,8 +214,20 @@ public abstract class GameObject {
     public boolean isAnimate() {
         return animate;
     }
-    
-    public Place getPlace(){
+
+    public Place getPlace() {
         return place;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void upDepth() {
+        this.depth = (int) y;
     }
 }

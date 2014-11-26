@@ -16,6 +16,18 @@ public abstract class Language {
     //Menu
     public String Menu;
     public String Start;
+    public String LocalGame;
+    public String OnlineGame;
+    public String RunServer;
+    public String JoinServer;
+    public String ServerIP;
+    public String Port;
+    public String FindServer;
+    public String Searching;
+    public String Found;
+    public String NotFound;
+    public String UnableToConnect;
+    public String Disconnected;
     public String Options;
     public String End;
     public String Quit;

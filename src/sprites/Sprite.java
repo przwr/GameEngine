@@ -71,7 +71,7 @@ public class Sprite {
         this.sy = -sy;
         this.width = width;
         this.height = height;
-        System.err.println(width + " " + height);
+        //System.err.println(width + " " + height);
     }
 
     public static Texture loadTexture(String key) {

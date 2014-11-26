@@ -1,7 +1,5 @@
 package engine;
 
-import javax.swing.JOptionPane;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -68,12 +66,25 @@ public class Methods {
             err += stackTrace + "\n";
         }
         System.out.println(err);
-        JOptionPane.showMessageDialog(null, err, "Problem!", 0);
+        Main.addMessage(err);
+        //JOptionPane.showMessageDialog(null, err, "Problem!", 0);
     }
 
     public static void Error(String message) {
         System.out.println(message);
-        JOptionPane.showMessageDialog(null, message, "Problem!", 0);
+        Main.addMessage(message);
+        //JOptionPane.showMessageDialog(null, message, "Problem!", 0);
+    }
+
+    public static int RoundHU(double d) {
+        double dAbs = Math.abs(d);
+        int i = (int) dAbs;
+        double result = dAbs - (double) i;
+        if (result < 0.5) {
+            return d < 0 ? -i : i;
+        } else {
+            return d < 0 ? -(i + 1) : i + 1;
+        }
     }
 
     private Methods() {

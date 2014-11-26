@@ -17,7 +17,7 @@ import game.place.Tile;
 import engine.FontsHandler;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
-import game.gameobject.GameObject;
+import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.FGTile;
 import org.lwjgl.input.Keyboard;
@@ -29,35 +29,27 @@ import org.newdawn.slick.openal.SoundStore;
  */
 public class MyPlace extends Place {
 
-    final Action changeSplitScreenMode;
-    final Action changeSplitScreenJoin;
+    private final Action changeSplitScreenMode;
+    private final Action changeSplitScreenJoin;
+    private final Place place;
 
-    final Tile GRASS = new Tile(getSpriteSheet("tlo"), sTile, 1, 8, this);
+    private final update[] ups = new update[2];
+
+    private final Tile GRASS = new Tile(getSpriteSheet("tlo"), sTile, 1, 8, this);
     final Tile ROCK = new Tile(getSpriteSheet("tlo"), sTile, 1, 1, this);
 
     public MyPlace(Game game, int width, int height, int tileSize, Settings settnig) {
         super(game, width, height, tileSize, settnig);
-        this.changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT), null) {
-
-            @Override
-            public void Act() {
-                changeSSMode = true;
-            }
-        };
-        this.changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END), null) {
-
-            @Override
-            public void Act() {
-                settings.joinSS = !settings.joinSS;
-            }
-        };
+        place = this;
+        changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
+        changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
         generate();
     }
 
     @Override
     public void generate() {
         //sounds.init("res", settings);
-        Area a = new Area(13 * sTile, 13 * sTile, "rockb", "rockb", sTile);
+        Area a = new Area(13 * sTile, 13 * sTile, sTile);
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 600) {
@@ -70,7 +62,7 @@ public class MyPlace extends Place {
                 }
             }
         }
-        Area test = new Area(6 * sTile, 5 * sTile, "rockw", "rockb", sTile);
+        Area test = new Area(6 * sTile, 5 * sTile, sTile);
         test.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, test));
         addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
         addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 6 * sTile, 4 * sTile, 6 * sTile, true);
@@ -83,7 +75,7 @@ public class MyPlace extends Place {
         addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
         addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;
-        Area border = new Area(0, 0, null, null, sTile, true);
+        Area border = new Area(0, 0, sTile, true);
         border.addFigure(new Line(0, 0, width, 0, border));
         border.addFigure(new Line(0, 0, 0, height, border));
         border.addFigure(new Line(width, 0, 0, height, border));
@@ -93,67 +85,18 @@ public class MyPlace extends Place {
         areas.add(border);
         addObj(new MyMob(1280, 512, 0, 8, 128, 112, 4, 512, "rabbit", this, true));
         addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true));
-        this.r = 0.45f;
-        this.g = 0.45f;
-        this.b = 0.45f;
+        this.r = 0.75f;
+        this.g = 0.75f;
+        this.b = 0.75f;
         fonts = new FontsHandler(20);
-        fonts.add("ArchitectsDaughter", (int) (settings.SCALE * 24));
+        fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);
+        initMethods();
     }
 
     @Override
     public void update() {
-        /*
-         if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
-         sounds.getSound("MumboMountain").resume();
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-         sounds.getSound("MumboMountain").pause();
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
-         sounds.getSound("MumboMountain").stop();
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
-         sounds.getSound("MumboMountain").addPitch(0.05f);
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
-         sounds.getSound("MumboMountain").addPitch(-0.05f);
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
-         sounds.getSound("MumboMountain").addGainModifier(0.05f);
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
-         sounds.getSound("MumboMountain").addGainModifier(-0.05f);
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
-         sounds.getSound("MumboMountain").resume();
-         sounds.getSound("MumboMountain").smoothStart(0.5);
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
-         sounds.getSound("MumboMountain").fade(0.5, true);
-         }
-         if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
-         sounds.getSound("MumboMountain").fade(0.5, false);
-         }
-         */
-        if (playersLength == 2) {
-            changeSplitScreenJoin.Do();
-            changeSplitScreenMode.Do();
-            cams[0].update();
-        } else if (playersLength == 3) {
-            changeSplitScreenJoin.Do();
-            changeSplitScreenMode.Do();
-            cams[1].update();
-        } else if (playersLength == 4) {
-            changeSplitScreenJoin.Do();
-            cams[2].update();
-        }
-        for (GameObject pl : players) {
-            ((MyPlayer) pl).update(this);
-        }
-        for (Mob mob : sMobs) {
-            mob.update(this);
-        }
+        ups[game.mode].update();
     }
 
     @Override
@@ -164,12 +107,95 @@ public class MyPlace extends Place {
                 ((MyPlayer) players[p]).renderName(this, cam);
             }
         }
-
         for (Mob mob : sMobs) {
             if (cam.getSY() <= mob.getY() + (mob.getHeight() << 2) && cam.getEY() >= mob.getY() - (mob.getHeight() << 2)
                     && cam.getSX() <= mob.getX() + (mob.getWidth() << 2) && cam.getEX() >= mob.getX() - (mob.getWidth() << 2)) {
                 mob.renderName(this, cam);
             }
         }
+    }
+
+    private void initMethods() {
+        ups[0] = new update() {
+            @Override
+            public void update() {
+                /*
+                 if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+                 sounds.getSound("MumboMountain").resume();
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+                 sounds.getSound("MumboMountain").pause();
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+                 sounds.getSound("MumboMountain").stop();
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
+                 sounds.getSound("MumboMountain").addPitch(0.05f);
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+                 sounds.getSound("MumboMountain").addPitch(-0.05f);
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+                 sounds.getSound("MumboMountain").addGainModifier(0.05f);
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
+                 sounds.getSound("MumboMountain").addGainModifier(-0.05f);
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
+                 sounds.getSound("MumboMountain").resume();
+                 sounds.getSound("MumboMountain").smoothStart(0.5);
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
+                 sounds.getSound("MumboMountain").fade(0.5, true);
+                 }
+                 if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
+                 sounds.getSound("MumboMountain").fade(0.5, false);
+                 }
+                 */
+                if (playersLength > 1) {
+                    changeSplitScreenJoin.Do();
+                    changeSplitScreenMode.Do();
+                    if (changeSplitScreenJoin.isOn()) {
+                        settings.joinSS = !settings.joinSS;
+                    }
+                    if (changeSplitScreenMode.isOn()) {
+                        changeSSMode = true;
+                    }
+                    cams[playersLength - 2].update();
+                }
+                for (int i = 0; i < playersLength; i++) {
+                    ((Player) players[i]).update(place);
+                }
+                for (Mob mob : sMobs) {
+                    mob.update(game.place);
+                }
+            }
+        };
+        ups[1] = new update() {
+            @Override
+            public void update() {
+                ((Player) players[0]).sendUpdate(place);
+                for (int i = 1; i < playersLength; i++) {
+                    ((Player) players[i]).update(place);
+                }
+                for (Mob mob : sMobs) {
+                    mob.update(place);
+                }
+            }
+        };
+    }
+
+    @Override
+    public int getPlayersLenght() {
+        if (game.mode == 0) {
+            return playersLength;
+        } else {
+            return 1;
+        }
+    }
+
+    private interface update {
+
+        void update();
     }
 }

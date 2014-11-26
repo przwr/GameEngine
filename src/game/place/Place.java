@@ -32,6 +32,9 @@ public abstract class Place extends ScreenPlace {
     protected final SpriteBase sprites;
     public final int sTile;
 
+    private final render[] rds = new render[2];
+    private final Place place;
+
     public Camera cam;
     public Camera[] cams = new Camera[3];
     public boolean isSplit, changeSSMode, singleCam;
@@ -58,6 +61,8 @@ public abstract class Place extends ScreenPlace {
         tiles = new Tile[width / sTile * height / sTile];
         sounds = new SoundBase();
         sprites = new SpriteBase(SCALE());
+        place = this;
+        initMethods();
     }
 
     @Override
@@ -66,6 +71,8 @@ public abstract class Place extends ScreenPlace {
     @Override
     public abstract void update();
 
+    protected abstract void renderText(Camera cam);
+
     public SpriteBase getSprites() {
         return sprites;
     }
@@ -73,23 +80,49 @@ public abstract class Place extends ScreenPlace {
     public Sprite getSprite(String textureKey) {
         return sprites.getSprite(textureKey);
     }
-    
+
     public SpriteSheet getSpriteSheet(String textureKey) {
         return sprites.getSpriteSheet(textureKey);
     }
-    
+
     public SoundBase getSounds() {
         return sounds;
     }
 
-    @Override
-    public void render() {
-        Renderer.findVisibleLights(this);
-        Renderer.preRendLightsFBO(this);
-        for (int p = 0; p < playersLength; p++) {
-            cam = (((Player) players[p]).getCam());
-            SplitScreen.setSplitScreen(this, p);
-            if (p == 0 || !singleCam) {
+    private void initMethods() {
+        rds[0] = new render() {
+            @Override
+            public void render() {
+                Renderer.findVisibleLights(place, playersLength);
+                Renderer.preRendLightsFBO(place);
+                for (int p = 0; p < playersLength; p++) {
+                    cam = (((Player) players[p]).getCam());
+                    SplitScreen.setSplitScreen(place, playersLength, p);
+                    if (p == 0 || !singleCam) {
+                        glEnable(GL_SCISSOR_TEST);
+                        Renderer.preRenderShadowedLightsFBO(cam);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        sprites.setLastTex(-1);
+//                        float scale =1f;
+//                        glOrtho(-1 / scale, 1 / scale, -1 / scale, 1 / scale, 1.0, -1.0);
+                        renderBack(cam);
+                        renderObj(cam);
+                        renderText(cam);
+                        Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                        glDisable(GL_SCISSOR_TEST);
+                    }
+                }
+                Renderer.resetOrtho(ssMode);
+                Renderer.border(ssMode);
+            }
+        };
+        rds[1] = new render() {
+            @Override
+            public void render() {
+                Renderer.findVisibleLights(place, 1);
+                Renderer.preRendLightsFBO(place);
+                cam = (((Player) players[0]).getCam());
+                SplitScreen.setSplitScreen(place, 1, 0);
                 glEnable(GL_SCISSOR_TEST);
                 Renderer.preRenderShadowedLightsFBO(cam);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -100,8 +133,12 @@ public abstract class Place extends ScreenPlace {
                 Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                 glDisable(GL_SCISSOR_TEST);
             }
-        }
-        Renderer.border(ssMode);
+        };
+    }
+
+    @Override
+    public void render() {
+        rds[game.mode].render();
     }
 
     protected void renderBack(Camera cam) {
@@ -124,8 +161,6 @@ public abstract class Place extends ScreenPlace {
         renderBottom(cam);
         renderTop(cam);
     }
-
-    protected abstract void renderText(Camera cam);
 
     public void makeShadows() {
         Renderer.initVariables(this);
@@ -178,7 +213,7 @@ public abstract class Place extends ScreenPlace {
         foregroundTiles.add(t);
         sortObjects(foregroundTiles);
     }
-    
+
     public void addFGTile(GameObject t) {
         foregroundTiles.add(t);
         sortObjects(foregroundTiles);
@@ -250,6 +285,10 @@ public abstract class Place extends ScreenPlace {
         }
     }
 
+    public int getPlayersLenght() {
+        return playersLength;
+    }
+
     private class ObjectsComparator implements Comparator<GameObject> {
 
         @Override
@@ -257,5 +296,10 @@ public abstract class Place extends ScreenPlace {
             return o1.getDepth() - o2.getDepth();
         }
 
+    }
+
+    private interface render {
+
+        void render();
     }
 }

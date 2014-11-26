@@ -9,10 +9,10 @@ package game.gameobject;
  *
  * @author przemek
  */
-public abstract class ActionOnOff extends Action {
+public class ActionOnOff extends Action {
 
-    public ActionOnOff(AnyInput in, Entity inControl) {
-        super(in, inControl);
+    public ActionOnOff(AnyInput in) {
+        super(in);
     }
 
     @Override
@@ -21,15 +21,11 @@ public abstract class ActionOnOff extends Action {
             if (in.isPut()) {
                 if (!in.isPressed()) {
                     in.setPressed(true);
-                    Act();
+                    isOn = true;
                 }
             } else {
                 in.setPressed(false);
             }
         }
     }
-
-    @Override
-    public abstract void Act();
-
 }

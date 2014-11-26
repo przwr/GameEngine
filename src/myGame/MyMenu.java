@@ -5,6 +5,7 @@
  */
 package myGame;
 
+import engine.Delay;
 import engine.FontsHandler;
 import game.Game;
 import game.Settings;
@@ -24,11 +25,19 @@ import myGame.choices.ChoiceResolution;
 import myGame.choices.ChoiceSettings;
 import myGame.choices.ChoiceSmoothShadows;
 import myGame.choices.ChoiceSplitScreen;
-import myGame.choices.ChoiceStart;
+import myGame.choices.ChoiceStartLocalGame;
 import myGame.choices.ChoiceStop;
 import myGame.choices.ChoiceVSync;
 import myGame.choices.ChoiceVolume;
 import game.place.Menu;
+import myGame.choices.ChoiceFindServer;
+import myGame.choices.ChoiceOnlineGameSettings;
+import myGame.choices.ChoiceStart;
+import myGame.choices.ChoiceJoinServer;
+import myGame.choices.ChoiceRunServer;
+import myGame.choices.ChoiceServerIP;
+import myGame.choices.ChoiceServerPortTCP;
+import myGame.choices.ChoiceServerPortUDP;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -51,8 +60,9 @@ public class MyMenu extends Menu {
 
     @Override
     protected void generate() {
+        delay = new Delay(25);
         delay.restart();
-        menus = new MenuOpt[7];
+        menus = new MenuOpt[9];
         generateM0();
         generateM1();
         generateM2();
@@ -60,12 +70,14 @@ public class MyMenu extends Menu {
         generateM4();
         generateM5();
         generateM6();
+        generateM7();
+        generateM8();
         this.r = 1f;
         this.g = 1f;
         this.b = 1f;
         fonts = new FontsHandler(20);
-        fonts.add("ArchitectsDaughter", (int) (settings.SCALE * 28));
-        fonts.add("ArchitectsDaughter", (int) (settings.SCALE * 42));
+        fonts.add("Amble-Regular", (int) (settings.SCALE * 38));
+        fonts.add("Amble-Regular", (int) (settings.SCALE * 64));
     }
 
     private void generateM0() {
@@ -131,6 +143,23 @@ public class MyMenu extends Menu {
         }
     }
 
+    private void generateM7() {
+        menus[7] = new MenuOpt(4, settings.language.Start);
+        menus[7].addChoice(new ChoiceStartLocalGame(settings.language.LocalGame, this, settings));
+        menus[7].addChoice(new ChoiceOnlineGameSettings(settings.language.OnlineGame, this, settings));
+        // menus[7].addChoice(new ChoiceStartOnlineGame(settings.language.OnlineGame, this, settings));
+    }
+
+    private void generateM8() {
+        menus[8] = new MenuOpt(6, settings.language.OnlineGame);
+        menus[8].addChoice(new ChoiceRunServer(settings.language.RunServer, this, settings));
+        menus[8].addChoice(new ChoiceJoinServer(settings.language.JoinServer, this, settings));
+        menus[8].addChoice(new ChoiceFindServer(settings.language.FindServer, this, settings));
+        menus[8].addChoice(new ChoiceServerIP(settings.language.ServerIP, this, settings));
+        menus[8].addChoice(new ChoiceServerPortTCP(settings.language.Port, this, settings));
+        menus[8].addChoice(new ChoiceServerPortUDP(settings.language.Port, this, settings));
+    }
+
     @Override
     public void update() {
     }
@@ -166,13 +195,15 @@ public class MyMenu extends Menu {
     @Override
     public void back() {
         if (!isMapping && delay.isOver()) {
-            if (cur > 2) {
+            if (cur > 2 && cur < 7) {
                 cur = 2;
             } else if (cur == 2) {
                 cur = 1;
+            } else if (cur == 8) {
+                cur = 7;
             } else if (cur != 0) {
                 cur = 0;
-            } else if (game.getPlace() != null) {
+            } else if (game.started) {
                 game.resumeGame();
             }
         }

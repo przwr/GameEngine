@@ -21,6 +21,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glOrtho;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
@@ -35,7 +36,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 public class Renderer {
 
     private static final int w = Display.getWidth(), h = Display.getHeight();
-    private static FBORendererRegular fbFrame;
+    private static FBORenderer fbFrame;
     private static GameObject light;
     private static final int[] SX = new int[7], EX = new int[7], SY = new int[7], EY = new int[7];
     private static boolean isVisible;
@@ -43,19 +44,20 @@ public class Renderer {
     private static float lightColor, lightBrightness, lightStrength;
     private static Camera cam;
     private static final drawBorder[] borders = new drawBorder[5];
+    private static final resetOrtho[] orthos = new resetOrtho[5];
 
-    public static void findVisibleLights(Place place) {
+    public static void findVisibleLights(Place place, int playersLength) {
         readyVarsToFindLights(place);
         for (GameObject light : place.emitters) {
-            for (int p = 0; p < place.playersLength; p++) {
-                if (place.singleCam && place.playersLength > 1) {
-                    if (light.isEmits() && SY[2 + place.playersLength] <= light.getY() + (light.getLight().getSY() >> 1) && EY[2 + place.playersLength] >= light.getY() - (light.getLight().getSY() >> 1)
-                            && SX[2 + place.playersLength] <= light.getX() + (light.getLight().getSX() >> 1) && EX[2 + place.playersLength] >= light.getX() - (light.getLight().getSX() >> 1)) {
+            for (int p = 0; p < playersLength; p++) {
+                if (place.singleCam && playersLength > 1) {
+                    if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getSY() >> 1) && EY[2 + playersLength] >= light.getY() - (light.getLight().getSY() >> 1)
+                            && SX[2 + playersLength] <= light.getX() + (light.getLight().getSX() >> 1) && EX[2 + playersLength] >= light.getX() - (light.getLight().getSX() >> 1)) {
                         isVisible = true;
-                        place.cams[place.playersLength - 2].visibleLights[place.cams[place.playersLength - 2].nrVLights++] = light;
+                        place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].nrVLights++] = light;
                     }
                 } else {
-                    for (int pi = 0; pi < place.playersLength; pi++) {
+                    for (int pi = 0; pi < playersLength; pi++) {
                         if (light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() >> 1) && EY[pi] >= light.getY() - (light.getLight().getSY() >> 1)
                                 && SX[pi] <= light.getX() + (light.getLight().getSX() >> 1) && EX[pi] >= light.getX() - (light.getLight().getSX() >> 1)) {
                             isVisible = true;
@@ -72,14 +74,14 @@ public class Renderer {
         // Docelowo iteracja po graczach nie będzie potrzebna - nie będą oni źródłem światła, a raczej jakieś obiekty.
         for (int p = 0; p < place.playersLength; p++) {
             light = place.players[p];
-            if (place.singleCam && place.playersLength > 1) {
-                if (light.isEmits() && SY[2 + place.playersLength] <= light.getY() + (light.getLight().getSY() >> 1) && EY[2 + place.playersLength] >= light.getY() - (light.getLight().getSY() >> 1)
-                        && SX[2 + place.playersLength] <= light.getX() + (light.getLight().getSX() >> 1) && EX[2 + place.playersLength] >= light.getX() - (light.getLight().getSX() >> 1)) {
+            if (place.singleCam && playersLength > 1) {
+                if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getSY() >> 1) && EY[2 + playersLength] >= light.getY() - (light.getLight().getSY() >> 1)
+                        && SX[2 + playersLength] <= light.getX() + (light.getLight().getSX() >> 1) && EX[2 + playersLength] >= light.getX() - (light.getLight().getSX() >> 1)) {
                     isVisible = true;
-                    place.cams[place.playersLength - 2].visibleLights[place.cams[place.playersLength - 2].nrVLights++] = light;
+                    place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].nrVLights++] = light;
                 }
             } else {
-                for (int pi = 0; pi < place.playersLength; pi++) {
+                for (int pi = 0; pi < playersLength; pi++) {
                     if (light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() >> 1) && EY[pi] >= light.getY() - (light.getLight().getSY() >> 1)
                             && SX[pi] <= light.getX() + (light.getLight().getSX() >> 1) && EX[pi] >= light.getX() - (light.getLight().getSX() >> 1)) {
                         isVisible = true;
@@ -95,7 +97,7 @@ public class Renderer {
     }
 
     private static void readyVarsToFindLights(Place place) {
-        for (int p = 0; p < place.playersLength; p++) {
+        for (int p = 0; p < place.getPlayersLenght(); p++) {
             cam = (((Player) place.players[p]).getCam());
             cam.nrVLights = 0;
             SX[p] = cam.getSX();
@@ -192,10 +194,10 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(0, h / 4 - 1);
-                glVertex2f(0, h / 4 + 1);
-                glVertex2f(w, h / 4 + 1);
-                glVertex2f(w, h / 4 - 1);
+                glVertex2f(0, h / 2 - 1);
+                glVertex2f(0, h / 2 + 1);
+                glVertex2f(w, h / 2 + 1);
+                glVertex2f(w, h / 2 - 1);
                 glEnd();
             }
         };
@@ -203,10 +205,10 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(w / 4 - 1, 0);
-                glVertex2f(w / 4 - 1, h);
-                glVertex2f(w / 4 + 1, h);
-                glVertex2f(w / 4 + 1, 0);
+                glVertex2f(w / 2 - 1, 0);
+                glVertex2f(w / 2 - 1, h);
+                glVertex2f(w / 2 + 1, h);
+                glVertex2f(w / 2 + 1, 0);
                 glEnd();
             }
         };
@@ -218,16 +220,16 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(0, h / 4 - 1);
-                glVertex2f(0, h / 4 + 1);
-                glVertex2f(w / 2, h / 4 + 1);
-                glVertex2f(w / 2, h / 4 - 1);
+                glVertex2f(0, h / 2 - 1);
+                glVertex2f(0, h / 2 + 1);
+                glVertex2f(w, h / 2 + 1);
+                glVertex2f(w, h / 2 - 1);
                 glEnd();
                 glBegin(GL_QUADS);
-                glVertex2f(w / 4 - 1, h / 4);
-                glVertex2f(w / 4 - 1, h / 2);
-                glVertex2f(w / 4 + 1, h / 2);
-                glVertex2f(w / 4 + 1, h / 4);
+                glVertex2f(w / 2 - 1, h / 2);
+                glVertex2f(w / 2 - 1, h);
+                glVertex2f(w / 2 + 1, h);
+                glVertex2f(w / 2 + 1, h / 2);
                 glEnd();
             }
         };
@@ -235,16 +237,16 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(w / 4, h / 4 - 1);
-                glVertex2f(w / 4, h / 4 + 1);
-                glVertex2f(w / 2, h / 4 + 1);
-                glVertex2f(w / 2, h / 4 - 1);
+                glVertex2f(w / 2, h / 2 - 1);
+                glVertex2f(w / 2, h / 2 + 1);
+                glVertex2f(w, h / 2 + 1);
+                glVertex2f(w, h / 2 - 1);
                 glEnd();
                 glBegin(GL_QUADS);
-                glVertex2f(w / 4 - 1, 0);
-                glVertex2f(w / 4 - 1, h / 2);
-                glVertex2f(w / 4 + 1, h / 2);
-                glVertex2f(w / 4 + 1, 0);
+                glVertex2f(w / 2 - 1, 0);
+                glVertex2f(w / 2 - 1, h);
+                glVertex2f(w / 2 + 1, h);
+                glVertex2f(w / 2 + 1, 0);
                 glEnd();
             }
         };
@@ -252,17 +254,36 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(0, h / 4 - 1);
-                glVertex2f(0, h / 4 + 1);
-                glVertex2f(w, h / 4 + 1);
-                glVertex2f(w, h / 4 - 1);
+                glVertex2f(0, h / 2 - 1);
+                glVertex2f(0, h / 2 + 1);
+                glVertex2f(w, h / 2 + 1);
+                glVertex2f(w, h / 2 - 1);
                 glEnd();
                 glBegin(GL_QUADS);
-                glVertex2f(w / 4 - 1, 0);
-                glVertex2f(w / 4 - 1, h);
-                glVertex2f(w / 4 + 1, h);
-                glVertex2f(w / 4 + 1, 0);
+                glVertex2f(w / 2 - 1, 0);
+                glVertex2f(w / 2 - 1, h);
+                glVertex2f(w / 2 + 1, h);
+                glVertex2f(w / 2 + 1, 0);
                 glEnd();
+            }
+        };
+
+        orthos[0] = new resetOrtho() {
+            @Override
+            public void reset() {
+                glOrtho(-1.0, 1.0, -2.0, 2.0, 1.0, -1.0);
+            }
+        };
+        orthos[1] = new resetOrtho() {
+            @Override
+            public void reset() {
+                glOrtho(-2.0, 2.0, -1.0, 1.0, 1.0, -1.0);
+            }
+        };
+        orthos[2] = orthos[3] = orthos[4] = new resetOrtho() {
+            @Override
+            public void reset() {
+                glOrtho(-2.0, 2.0, -2.0, 2.0, 1.0, -1.0);
             }
         };
     }
@@ -276,11 +297,22 @@ public class Renderer {
         }
     }
 
+    public static void resetOrtho(int ssMode) {
+        if (ssMode != 0) {
+            orthos[ssMode - 1].reset();
+        }
+    }
+
     private interface drawBorder {
 
         void draw();
     }
 
     private Renderer() {
+    }
+
+    private interface resetOrtho {
+
+        void reset();
     }
 }
