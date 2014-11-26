@@ -19,9 +19,7 @@ import java.util.logging.Logger;
 public class IO {
 
     public static void ReadFile(File f, Settings settings, boolean isSettings) {
-        try {
-            FileReader fr = new FileReader(f);
-            BufferedReader r = new BufferedReader(fr);
+        try (BufferedReader r = new BufferedReader(new FileReader(f));) {
             String s;
             while ((s = r.readLine()) != null) {
                 if (isSettings) {

@@ -28,6 +28,7 @@ public class PuzzleObject {
             String line = wczyt.readLine();
             String[] t = line.split(";");
             //if (t[0].equals("b"))
+            wczyt.close();
         } catch (IOException e) {
             Methods.Error("File " + file + " not found!\n" + e.getMessage());
         }

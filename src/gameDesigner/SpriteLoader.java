@@ -70,6 +70,7 @@ public class SpriteLoader extends javax.swing.JFrame {
                 output = new File(linia);
                 PathTF.setText(output.getPath() + "\\...");
             }
+            wczyt.close();
         } catch (IOException e) {
             System.err.println("File not found!");
         }
@@ -82,6 +83,7 @@ public class SpriteLoader extends javax.swing.JFrame {
             save.println(black ? 1 : 0);
             save.println(dir != null ? dir.getPath() : "err");
             save.println(output != null ? output.getPath() : "err");
+            save.close();
         } catch (FileNotFoundException e) {
             System.out.println(e);
         }
@@ -162,6 +164,7 @@ public class SpriteLoader extends javax.swing.JFrame {
                 ym = ssh;
                 SSWidthSp.setValue(ssw);
                 SSHeightSp.setValue(ssh);
+                wczyt.close();
             } catch (IOException e) {
                 System.err.println("File not found!");
             }
@@ -569,6 +572,7 @@ public class SpriteLoader extends javax.swing.JFrame {
                     + "Replace?")) {
                 return;
             }
+            wczyt.close();
         } catch (IOException e) {
         }
 
@@ -580,6 +584,7 @@ public class SpriteLoader extends javax.swing.JFrame {
             save.println(xc + ";" + yc);
             save.println(xm + ";" + ym);
             infoMsg("Texture \"" + NameTF.getText() + "\" was saved.");
+            save.close();
         } catch (FileNotFoundException e) {
             System.out.println(e);
         } catch (IOException e) {

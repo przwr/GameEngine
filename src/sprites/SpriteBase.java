@@ -82,6 +82,7 @@ public class SpriteBase {
             t = wczyt.readLine().split(";");
             w = Integer.parseInt(t[0]);
             h = Integer.parseInt(t[1]);
+            wczyt.close();
         } catch (IOException e) {
             Methods.Error("File " + name + " not found!\n" + e.getMessage());
             return null;
