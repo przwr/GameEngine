@@ -111,15 +111,24 @@ public class GameServer {
                             } else {
                                 connection.sendTCP(new PacketJoinResponse((byte) -1));
                             }
-                        } else if (obj instanceof PacketInput) {
-                            MPlayer curPl = findPlayer(((PacketInput) obj).getId());
+                        } else if (obj instanceof PacketMPlayerUpdate) {
+                            MPlayer curPl = findPlayer(((PacketMPlayerUpdate) obj).getId());
                             if (curPl != null) {
-                                curPl.inGame().ctrl.setInput(((PacketInput) obj).inputs());
-                                curPl.Update(curPl.inGame().getX(), curPl.inGame().getY(), SCALE);
+                                curPl.Update(((PacketMPlayerUpdate) obj).getX(), ((PacketMPlayerUpdate) obj).getY(), 1);
                                 PacketMPlayerUpdate mpup = new PacketMPlayerUpdate(curPl);
-                                sendToAll(mpup);
+                                sendToAllButOwner(mpup, ((PacketMPlayerUpdate) obj).getId());
+                                game.playerUpdate((((PacketMPlayerUpdate) obj)));
                             }
                         }
+//                        else if (obj instanceof PacketInput) {
+//                            MPlayer curPl = findPlayer(((PacketInput) obj).getId());
+//                            if (curPl != null) {
+//                                curPl.inGame().ctrl.setInput(((PacketInput) obj).inputs());
+//                                curPl.Update(curPl.inGame().getX(), curPl.inGame().getY(), SCALE);
+//                                PacketMPlayerUpdate mpup = new PacketMPlayerUpdate(curPl);
+//                                sendToAllButOwner(mpup, ((PacketInput) obj).getId());
+//                            }
+//                        }
                     } catch (Exception e) {
                         cleanUp(e);
                     }
@@ -211,6 +220,14 @@ public class GameServer {
     private void sendToAll(PacketMPlayerUpdate mpup) {
         for (int i = 1; i < nrPlayers; i++) {
             MPlayers[i].getConnection().sendTCP(mpup);
+        }
+    }
+
+    private void sendToAllButOwner(PacketMPlayerUpdate mpup, int id) {
+        for (int i = 1; i < nrPlayers; i++) {
+            if (MPlayers[i].getId() != id) {
+                MPlayers[i].getConnection().sendTCP(mpup);
+            }
         }
     }
 

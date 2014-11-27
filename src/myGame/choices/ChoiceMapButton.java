@@ -8,11 +8,11 @@ package myGame.choices;
 import engine.Controlers;
 import game.AnalizerInput;
 import game.Settings;
+import game.gameobject.Action;
 import game.gameobject.AnyInput;
 import game.gameobject.Controler;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
-import org.lwjgl.input.Controllers;
 
 /**
  *
@@ -32,8 +32,7 @@ public class ChoiceMapButton extends MenuChoice {
         run = new Runnable() {
             @Override
             public void run() {
-                int noiseAx[] = new int[2 * Controllers.getControllerCount()];
-                findNoiseAx(noiseAx);
+                int noiseAx[] = findNoiseAx();
                 main:
                 while (true) {
                     AnyInput in = Controlers.mapInput(noiseAx, ctrl.actions[2].in);
@@ -46,10 +45,10 @@ public class ChoiceMapButton extends MenuChoice {
                             break;
                         }
                         if (i < 4) {
-                            for (int k = 0; k < 4; k++) {
-                                if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
+                            for (Action action : ctrl.actions) {
+                                if (action != null && action.in != null && action.in.toString().equals(in.toString())) {
                                     AnyInput temp = ctrl.actions[i].in;
-                                    ctrl.actions[k].in = temp;
+                                    action.in = temp;
                                     set(in);
                                     break main;
                                 }
@@ -93,27 +92,48 @@ public class ChoiceMapButton extends MenuChoice {
         }
     }
 
-    private void findNoiseAx(int noiseAx[]) {
+    private int[] findNoiseAx() {
+        int size = Controlers.getControllers().length;
+        int noiseAx[] = new int[5 * size];
         for (int i = 0; i < noiseAx.length; i++) {
             noiseAx[i] = -1;
         }
-        for (int k = 0; k < Controllers.getControllerCount(); k++) {
+        int a;
+        for (int k = 0; k < size; k++) {
             if (Controlers.getControllers()[k] != null) {
-                int a;
                 for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (Controlers.getControllers()[k].getAxisValue(a) > 0.9f || Controlers.getControllers()[k].getAxisValue(a) < -0.9f) {
+                    if (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f) {
                         noiseAx[k] = a;
                         break;
                     }
                 }
                 for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (a != noiseAx[k] && Controlers.getControllers()[k].getAxisValue(a) > 0.9f || Controlers.getControllers()[k].getAxisValue(a) < -0.9f) {
-                        noiseAx[Controllers.getControllerCount() + k] = a;
+                    if (a != noiseAx[k] && (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f)) {
+                        noiseAx[size + k] = a;
+                        break;
+                    }
+                }
+                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
+                    if (a != noiseAx[k] && a != noiseAx[size + k] && (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f)) {
+                        noiseAx[2 * size + k] = a;
+                        break;
+                    }
+                }
+                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
+                    if (a != noiseAx[k] && a != noiseAx[size + k] && a != noiseAx[2 * size + k] && (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f)) {
+                        noiseAx[3 * size + k] = a;
+                        break;
+                    }
+                }
+                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
+                    if (a != noiseAx[k] && a != noiseAx[size + k] && a != noiseAx[2 * size + k] && a != noiseAx[3 * size + k] && (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f)) {
+                        noiseAx[4 * size + k] = a;
                         break;
                     }
                 }
             }
         }
+        return noiseAx;
     }
 
     private void set(AnyInput in) {

@@ -125,8 +125,8 @@ public class Settings {
             GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
             isSupfboVer3 = 0;
             isSupfboMS = true;
-            maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) >> 2;
-            maxSamples = (glGetInteger(GL30.GL_MAX_SAMPLES) > 8) ? 8 : glGetInteger(GL30.GL_MAX_SAMPLES);
+            maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
+            maxSamples = maxSamples > 8 ? 8 : maxSamples;
             nrSamples = (nrSamples > maxSamples) ? maxSamples : nrSamples;
         } catch (Exception e) {
             if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
@@ -135,7 +135,8 @@ public class Settings {
                     ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
                     ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
                     isSupfboMS = true;
-                    maxSamples = (glGetInteger(GL30.GL_MAX_SAMPLES) > 8) ? 8 : glGetInteger(GL30.GL_MAX_SAMPLES);
+                    maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
+                    maxSamples = maxSamples > 8 ? 8 : maxSamples;
                     nrSamples = (nrSamples > maxSamples) ? maxSamples : nrSamples;
                 } catch (Exception ex) {
                     isSupfboMS = false;

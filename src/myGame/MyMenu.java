@@ -126,21 +126,21 @@ public class MyMenu extends Menu {
 
     private void generateM4() {
         menus[4] = new MenuOpt(16, settings.language.Player2);
-        for (int i = 0; i < settings.actionsNr; i++) {
+        for (int i = 3; i < settings.actionsNr; i++) {
             menus[4].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[1].ctrl, i));
         }
     }
 
     private void generateM5() {
         menus[5] = new MenuOpt(16, settings.language.Player3);
-        for (int i = 0; i < settings.actionsNr; i++) {
+        for (int i = 3; i < settings.actionsNr; i++) {
             menus[5].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[2].ctrl, i));
         }
     }
 
     private void generateM6() {
         menus[6] = new MenuOpt(16, settings.language.Player4);
-        for (int i = 0; i < settings.actionsNr; i++) {
+        for (int i = 3; i < settings.actionsNr; i++) {
             menus[6].addChoice(new ChoiceMapButton(settings.language.Actions[i], this, settings, settings.players[3].ctrl, i));
         }
     }

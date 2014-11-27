@@ -158,6 +158,7 @@ public class MyPlayer extends Player {
     @Override
     public void update(Place place) {
         if (isJumping) {
+            hop = false;
             jump = Math.abs(Methods.xRadius(a * 4, 70));
             a += Time.getDelta();
             if ((int) a == 68) {
@@ -187,6 +188,8 @@ public class MyPlayer extends Player {
         brakeOthers();
         if (place.game.online.server != null) {
             place.game.online.server.sendPlayerUpdate(id, getX(), getY());
+        } else {
+            place.game.online.client.sendPlayerUpdate(id, getX(), getY(), isEmits(), isHop());
         }
     }
 }

@@ -150,7 +150,7 @@ public class MyGameOnline extends GameOnline {
                                     g.players[p].getCam().update();
                                 }
                                 if (plUp.isJumping()) {
-                                    g.players[p].setisJumping(true);
+                                    g.players[p].setIsJumping(true);
                                 }
                                 g.players[p].setEmits(plUp.isEmits());
                                 break;

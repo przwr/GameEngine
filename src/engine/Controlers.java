@@ -24,15 +24,18 @@ import org.lwjgl.input.Mouse;
  */
 public class Controlers {
 
-    private static final Controller[] controllers = new Controller[Controllers.getControllerCount()];
+    private static Controller[] controllers;
 
     public static Controller[] init() {
+        Controller[] tempControllers = new Controller[Controllers.getControllerCount()];
         int j = 0;
         for (int i = 0; i < Controllers.getControllerCount(); i++) {
             if (Controllers.getController(i).getAxisCount() > 1 && Controllers.getController(i).getButtonCount() > 8) {
-                controllers[j++] = Controllers.getController(i);
+                tempControllers[j++] = Controllers.getController(i);
             }
         }
+        controllers = new Controller[j];
+        System.arraycopy(tempControllers, 0, controllers, 0, j);
         return controllers;
     }
 
@@ -81,7 +84,7 @@ public class Controlers {
                     return new InputPadDPad(controllers, c, false, false);
                 }
                 for (int a = 0; a < controllers[c].getAxisCount(); a++) {
-                    if (a != noiseAx[c] && a != noiseAx[Controllers.getControllerCount() + c]) {
+                    if (a != noiseAx[c] && a != noiseAx[controllers.length + c] && a != noiseAx[2 * controllers.length + c] && a != noiseAx[3 * controllers.length + c] && a != noiseAx[4 * controllers.length + c]) {
                         if (controllers[c].getAxisValue(a) > 0.1f) {
                             return new InputPadStick(controllers, c, a, true);
                         }
