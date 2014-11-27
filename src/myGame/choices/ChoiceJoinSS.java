@@ -37,12 +37,12 @@ public class ChoiceJoinSS extends MenuChoice {
     public String getLabel() {
         if (menu.game.getPlace() != null) {
             if (settings.joinSS) {
-                return label + settings.language.On;
+                return label + settings.language.m.On;
             } else {
-                return label + settings.language.Off + settings.language.MustBeClose;
+                return label + settings.language.m.Off + settings.language.m.MustBeClose;
             }
         } else {
-            return label + settings.language.StartGame;
+            return label + settings.language.m.StartGame;
         }
     }
 }

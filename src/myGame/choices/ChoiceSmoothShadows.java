@@ -40,9 +40,9 @@ public class ChoiceSmoothShadows extends MenuChoice {
     @Override
     public String getLabel() {
         if (!settings.isSupfboMS) {
-            return label + settings.language.Off + " (" + settings.language.Unsupported + ")";
+            return label + settings.language.m.Off + " (" + settings.language.m.Unsupported + ")";
         } else if (settings.nrSamples == 0) {
-            return label + settings.language.Off;
+            return label + settings.language.m.Off;
         }
         return label + settings.nrSamples + "x";
 

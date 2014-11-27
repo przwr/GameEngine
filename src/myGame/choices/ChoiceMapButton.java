@@ -24,6 +24,8 @@ public class ChoiceMapButton extends MenuChoice {
     private final int i;
     private Thread thread;
     private final Runnable run;
+    private boolean mapped;
+    private int maxAxNr;
 
     public ChoiceMapButton(String label, final Menu menu, final Settings settings, final Controler ctrl, final int i) {
         super(label, menu, settings);
@@ -33,9 +35,9 @@ public class ChoiceMapButton extends MenuChoice {
             @Override
             public void run() {
                 int noiseAx[] = findNoiseAx();
-                main:
-                while (true) {
-                    AnyInput in = Controlers.mapInput(noiseAx, ctrl.actions[2].in);
+                mapped = true;
+                while (mapped) {
+                    AnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].in);
                     if (in != null) {
                         if (in.getType() == -1 || (ctrl.actions[3] != null && ctrl.actions[3].in != null && ctrl.actions[3].in.toString().equals(in.toString()))) {
                             break;
@@ -50,7 +52,6 @@ public class ChoiceMapButton extends MenuChoice {
                                     AnyInput temp = ctrl.actions[i].in;
                                     action.in = temp;
                                     set(in);
-                                    break main;
                                 }
                             }
                         } else {
@@ -59,12 +60,10 @@ public class ChoiceMapButton extends MenuChoice {
                                     AnyInput temp = ctrl.actions[i].in;
                                     ctrl.actions[k].in = temp;
                                     set(in);
-                                    break main;
                                 }
                             }
                         }
                         set(in);
-                        break;
                     }
                 }
                 end();
@@ -84,51 +83,32 @@ public class ChoiceMapButton extends MenuChoice {
     @Override
     public String getLabel() {
         if (thread != null) {
-            return label + ": " + settings.language.PushButton;
+            return label + ": " + settings.language.m.PushButton;
         } else if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].in != null) {
-            return label + ": <" + ctrl.actions[i].in.getLabel() + ">";
+            return label + ": [" + ctrl.actions[i].in.getLabel() + "]";
         } else {
-            return label + ": " + settings.language.Empty;
+            return label + ": " + settings.language.m.Empty;
         }
     }
 
     private int[] findNoiseAx() {
         int size = Controlers.getControllers().length;
-        int noiseAx[] = new int[5 * size];
+        maxAxNr = 0;
+        int curAxNr;
+        int a, k;
+        for (k = 0; k < size; k++) {
+            curAxNr = Controlers.getControllers()[k].getAxisCount();
+            maxAxNr = curAxNr > maxAxNr ? curAxNr : maxAxNr;
+        }
+        int noiseAx[] = new int[maxAxNr * size];
         for (int i = 0; i < noiseAx.length; i++) {
             noiseAx[i] = -1;
         }
-        int a;
-        for (int k = 0; k < size; k++) {
+        for (k = 0; k < size; k++) {
             if (Controlers.getControllers()[k] != null) {
                 for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
                     if (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f) {
-                        noiseAx[k] = a;
-                        break;
-                    }
-                }
-                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (a != noiseAx[k] && (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f)) {
-                        noiseAx[size + k] = a;
-                        break;
-                    }
-                }
-                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (a != noiseAx[k] && a != noiseAx[size + k] && (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f)) {
-                        noiseAx[2 * size + k] = a;
-                        break;
-                    }
-                }
-                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (a != noiseAx[k] && a != noiseAx[size + k] && a != noiseAx[2 * size + k] && (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f)) {
-                        noiseAx[3 * size + k] = a;
-                        break;
-                    }
-                }
-                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (a != noiseAx[k] && a != noiseAx[size + k] && a != noiseAx[2 * size + k] && a != noiseAx[3 * size + k] && (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f)) {
-                        noiseAx[4 * size + k] = a;
-                        break;
+                        noiseAx[k * maxAxNr + a] = a;
                     }
                 }
             }
@@ -139,6 +119,7 @@ public class ChoiceMapButton extends MenuChoice {
     private void set(AnyInput in) {
         ctrl.actions[i].in = in;
         AnalizerInput.Update(settings);
+        mapped = false;
     }
 
     private void end() {

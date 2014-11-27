@@ -16,7 +16,6 @@ import com.esotericsoftware.minlog.Log;
 import engine.Methods;
 import game.gameobject.Player;
 import java.io.IOException;
-import net.packets.PacketInput;
 import net.packets.PacketMPlayerUpdate;
 import net.packets.PacketRemoveMPlayer;
 
@@ -162,7 +161,7 @@ public class GameServer {
         server.start();
     }
 
-    public void Stop() {
+    public void Close() {
         server.stop();
         server.close();
     }

@@ -75,8 +75,7 @@ public class GameClient {
                             } else {
                                 System.out.println("Server is Full!");
                                 isConnected = false;
-                                client.stop();
-                                client.close();
+                                Close();
                             }
                         }
                     } catch (Exception e) {
@@ -86,6 +85,7 @@ public class GameClient {
 
                 @Override
                 public void disconnected(Connection connection) {
+                    System.out.println("Disconnected!");
                     isConnected = false;
                     client.stop();
                     client.close();

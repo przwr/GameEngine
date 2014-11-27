@@ -145,7 +145,7 @@ public class Settings {
                 isSupfboVer3 = 2;
                 isSupfboMS = false;
             } else {
-                Methods.Error(language.FBOError);
+                Methods.Error(language.m.FBOError);
             }
         }
     }

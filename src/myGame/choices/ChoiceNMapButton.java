@@ -38,9 +38,9 @@ public class ChoiceNMapButton extends MenuChoice {
     @Override
     public String getLabel() {
         if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].in != null) {
-            return label + ": <" + ctrl.inputs[i].getLabel() + "> - " + settings.language.Unchangable;
+            return label + ": [" + ctrl.inputs[i].getLabel() + "] - " + settings.language.m.Unchangable;
         } else {
-            return label + ": " + settings.language.Empty + " - " + settings.language.Unchangable;
+            return label + ": " + settings.language.m.Empty + " - " + settings.language.m.Unchangable;
         }
     }
 }

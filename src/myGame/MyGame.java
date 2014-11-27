@@ -130,7 +130,7 @@ public class MyGame extends Game {
                 if (online.client != null && !online.client.isConnected) {
                     endGame();
                     mode = 0;
-                    Methods.Error(settings.language.Disconnected);
+                    Methods.Error(settings.language.m.Disconnected);
                 }
                 online.up();
                 if (runFlag) {

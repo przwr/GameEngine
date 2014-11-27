@@ -29,9 +29,9 @@ public class ChoiceVSync extends MenuChoice {
     @Override
     public String getLabel() {
         if (settings.vSync) {
-            return label + settings.language.On;
+            return label + settings.language.m.On;
         } else {
-            return label + settings.language.Off;
+            return label + settings.language.m.Off;
         }
     }
 }

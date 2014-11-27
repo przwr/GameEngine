@@ -26,6 +26,6 @@ public class ChoiceServerPortUDP extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + " UDP: " + KryoUtil.UDP_PORT + " - " + settings.language.Unchangable;
+        return label + " UDP: " + KryoUtil.UDP_PORT + " - " + settings.language.m.Unchangable;
     }
 }

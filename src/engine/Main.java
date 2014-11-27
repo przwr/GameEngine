@@ -130,6 +130,7 @@ public class Main {
     }
 
     public static void cleanUp() {
+        game.endGame();
         try {
             Display.setDisplayConfiguration(1f, 0f, 1.0f);
         } catch (LWJGLException ex) {

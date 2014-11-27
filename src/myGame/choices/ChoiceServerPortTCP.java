@@ -26,6 +26,6 @@ public class ChoiceServerPortTCP extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + " TCP: " + KryoUtil.TCP_PORT + " - " + settings.language.Unchangable;
+        return label + " TCP: " + KryoUtil.TCP_PORT + " - " + settings.language.m.Unchangable;
     }
 }

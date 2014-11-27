@@ -33,7 +33,7 @@ public class ChoiceStart extends MenuChoice {
         if (!menu.game.started) {
             return label;
         } else {
-            return settings.language.Resume;
+            return settings.language.m.Resume;
         }
     }
 }

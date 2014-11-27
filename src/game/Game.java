@@ -51,6 +51,7 @@ public abstract class Game {
 
     public void exit() {
         exitFlag = true;
+        this.endGame();
     }
 
     public String getTitle() {
