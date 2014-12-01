@@ -71,24 +71,24 @@ public class Area extends GameObject {
     }
 
     public boolean ifCollide(int x, int y, Figure f) {
-        if (ifGoodDistance(x, y, f)) {
+        //if (ifGoodDistance(x, y, f)) {
             for (Figure part : parts) {
                 if (f.ifCollideSngl(x, y, part)) {
                     return true;
                 }
             }
-        }
+        //}
         return false;
     }
 
     public Figure whatCollide(int x, int y, Figure f) {
-        if (ifGoodDistance(x, y, f)) {
+        //if (ifGoodDistance(x, y, f)) {
             for (Figure part : parts) {
                 if (f.ifCollideSngl(x, y, part)) {
                     return part;
                 }
             }
-        }
+        //}
         return null;
     }
 

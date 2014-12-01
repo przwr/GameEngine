@@ -22,6 +22,8 @@ public class Launcher {
             System.exit(0);
         }
         cleanUp();
-        System.exit(0);
+        if (!Main.gameStop) {
+            System.exit(0);
+        }
     }
 }

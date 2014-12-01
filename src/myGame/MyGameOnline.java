@@ -145,7 +145,6 @@ public class MyGameOnline extends GameOnline {
                             if (plUp.getId() == g.players[p].id) {
                                 g.players[p].setX(Methods.RoundHU((g.settings.SCALE) * plUp.getX()));
                                 g.players[p].setY(Methods.RoundHU((g.settings.SCALE) * plUp.getY()));
-                                g.players[p].upDepth();
                                 if (g.players[p].getCam() != null) {
                                     g.players[p].getCam().update();
                                 }

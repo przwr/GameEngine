@@ -15,7 +15,6 @@ import game.gameobject.Player;
 import game.place.cameras.PlayersCamera;
 import java.io.File;
 import org.lwjgl.input.Controller;
-import org.lwjgl.input.Keyboard;
 
 /**
  *

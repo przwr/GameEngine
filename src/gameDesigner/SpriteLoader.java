@@ -20,12 +20,13 @@ import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
  * @author Wojtek
  */
-public class SpriteLoader extends javax.swing.JFrame {
+public class SpriteLoader extends FileGetter {
 
     private BufferedImage img = null;
     private File file = null;
@@ -125,7 +126,7 @@ public class SpriteLoader extends javax.swing.JFrame {
             h = img.getHeight();
             WymiaryL.setText("Dimensions: " + w + " x " + h);
         } catch (IOException e) {
-            errMsg("Selected file cannot be read!");
+            errMsg("Selected file cannot be read!\n" + e.getMessage() + "\n" + f);
         }
         repaint();
     }
@@ -148,8 +149,8 @@ public class SpriteLoader extends javax.swing.JFrame {
                 line = wczyt.readLine();
                 setImg(new File(line));
 
-                line = wczyt.readLine();
-                System.err.println(line);
+                wczyt.readLine();
+                //System.err.println(line);
 
                 line = wczyt.readLine();
                 t = line.split(";");
@@ -204,6 +205,7 @@ public class SpriteLoader extends javax.swing.JFrame {
         jLabel1.setText("jLabel1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Sprite Loader");
 
         FileP.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         FileP.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -505,7 +507,8 @@ public class SpriteLoader extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LoadBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadBtActionPerformed
-        PathFinder okno = new PathFinder(this, dir, 0);
+        PathFinder okno = new PathFinder(this, dir, new FileNameExtensionFilter(
+                "PNG files", "png"), javax.swing.JFileChooser.FILES_ONLY);
         okno.setVisible(true);
     }//GEN-LAST:event_LoadBtActionPerformed
 
@@ -566,8 +569,18 @@ public class SpriteLoader extends javax.swing.JFrame {
             errMsg("The Output is not defined!");
             return;
         }
-        //String p = output.getPath() + "\\" + NameTF.getText();
-        String p = "res\\" + NameTF.getText();
+        String[] t = output.getPath().split("\\\\");
+        int i;
+        for (i = t.length - 1; i < 0; i--) {
+            if (t[i].equals("res")) {
+                break;
+            }
+        }
+        String p = "";
+        while (i < t.length) {
+            p += t[i++] + "\\";
+        }
+        p += NameTF.getText();
         try (BufferedReader wczyt = new BufferedReader(new FileReader(p + ".spr"))) {
             if (!questMsg("Texture \"" + NameTF.getText() + "\" already exists in the selected folder!\n"
                     + "Replace?")) {
@@ -651,14 +664,31 @@ public class SpriteLoader extends javax.swing.JFrame {
     }//GEN-LAST:event_CentralizeBtActionPerformed
 
     private void OutputBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OutputBtActionPerformed
-        PathFinder okno = new PathFinder(this, output, 1);
+        PathFinder okno = new PathFinder(this, output, null, javax.swing.JFileChooser.DIRECTORIES_ONLY);
         okno.setVisible(true);
     }//GEN-LAST:event_OutputBtActionPerformed
 
     private void EditBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditBtActionPerformed
-        PathFinder okno = new PathFinder(this, output, 2);
+        PathFinder okno = new PathFinder(this, output, new FileNameExtensionFilter(
+                "Textures (.spr)", "spr"), javax.swing.JFileChooser.FILES_ONLY);
         okno.setVisible(true);
     }//GEN-LAST:event_EditBtActionPerformed
+
+    @Override
+    public void getFile(FileBox f) {
+        switch (f.getFileType()) {
+            case "png":
+                setImg(f.getSelectedFile());
+                ostDir(f.getDirectory());
+                break;
+            case "dir":
+                setOutput(f.getSelectedFile());
+                break;
+            case "spr":
+                openTex(f.getSelectedFile());
+                break;
+        }
+    }
 
     /*-----------------------------------------------*/
     private class SpriteDisplayer extends javax.swing.JPanel {

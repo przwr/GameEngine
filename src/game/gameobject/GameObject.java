@@ -45,7 +45,7 @@ public abstract class GameObject {
     protected void init(String name, int x, int y, Place place) {
         this.x = x;
         this.y = y;
-        depth = y;
+        depth = 0;
         this.name = name;
         this.place = place;
     }
@@ -75,6 +75,10 @@ public abstract class GameObject {
     }
 
     public int getDepth() {
+        return (int) (depth + y);
+    }
+
+    public int getPureDepth() {
         return depth;
     }
 

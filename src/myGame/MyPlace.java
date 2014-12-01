@@ -62,18 +62,27 @@ public class MyPlace extends Place {
                 }
             }
         }
-        Area test = new Area(6 * sTile, 5 * sTile, sTile);
-        test.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, test));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 6 * sTile, 5 * sTile, 6 * sTile, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 6 * sTile, 4 * sTile, 6 * sTile, true);
+        Area testa = new Area(6 * sTile, 5 * sTile, sTile);
+        Area testb = new Area(8 * sTile, 5 * sTile, sTile);
+        Area testc = new Area(7 * sTile, 7 * sTile, sTile);
+        Area testd = new Area(9 * sTile, 7 * sTile, sTile);
+        testa.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testa));
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 6 * sTile, 5 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 6 * sTile, 4 * sTile, sTile, true);
         //tiles[6 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(2 * sTile, 0, sTile, sTile, true, true, test));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 8 * sTile, 5 * sTile, 6 * sTile, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 8 * sTile, 4 * sTile, 6 * sTile, true);
+        testb.addFigure(new Rectangle(0, 0, 2 * sTile, sTile, true, true, testb));
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 8 * sTile, 5 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 8 * sTile, 4 * sTile, sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 9 * sTile, 5 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 9 * sTile, 4 * sTile, sTile, true);
         //tiles[8 + 6 * height / sTile] = ROCK;
-        test.addFigure(new Rectangle(1 * sTile, 2 * sTile, sTile, sTile, true, true, test));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 7 * sTile, 7 * sTile, 7 * sTile, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 7 * sTile, 6 * sTile, 7 * sTile, true);
+        testc.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testc));
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 7 * sTile, 7 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 7 * sTile, 6 * sTile, sTile, true);
+        testd.addFigure(new Rectangle(0, 0, sTile, 2 * sTile, true, true, testd));
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 9 * sTile, 8 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 9 * sTile, 7 * sTile, sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 9 * sTile, 6 * sTile, sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;
         Area border = new Area(0, 0, sTile, true);
         border.addFigure(new Line(0, 0, width, 0, border));
@@ -81,7 +90,10 @@ public class MyPlace extends Place {
         border.addFigure(new Line(width, 0, 0, height, border));
         border.addFigure(new Line(0, height, width, 0, border));
         areas.add(a);
-        areas.add(test);
+        areas.add(testa);
+        areas.add(testb);
+        areas.add(testc);
+        areas.add(testd);
         areas.add(border);
         addObj(new MyMob(1280, 512, 0, 8, 128, 112, 4, 512, "rabbit", this, true));
         addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true));

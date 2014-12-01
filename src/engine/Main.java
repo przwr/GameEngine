@@ -34,12 +34,12 @@ import org.newdawn.slick.opengl.ImageIOImageData;
  */
 public class Main {
 
-    private static Game game;
-    private static Popup pop;
-    private static final Settings settings = new Settings();
-    private static Controller[] controllers;
-    private static GameDesigner designer;
-    private static boolean designerActive = false;
+    public static Game game;
+    public static Popup pop;
+    public static final Settings settings = new Settings();
+    public static Controller[] controllers;
+    public static GameDesigner designer = null;
+    public static boolean gameStop = false;
     public static boolean pause, ENTER = true;
 
     public static void run() {
@@ -53,7 +53,6 @@ public class Main {
     private static void initGame() {
         game = new MyGame("Pervert Rabbits Attack", settings, controllers);
         Display.setTitle(game.getTitle());
-        designer = new GameDesigner();
         pop = new Popup("Amble-Regular", settings.SCALE);
     }
 
@@ -61,12 +60,12 @@ public class Main {
         game.getInput();
 
         //-----PROJEKTOWANIE GRY! (>^o')>= ==== ----//
-        if (Keyboard.isKeyDown(Keyboard.KEY_F1) && !designerActive) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_F1) && !gameStop) {
+            if (designer == null) {
+                designer = new GameDesigner();
+            }
             designer.setVisible(true);
-            designerActive = true;
-        }
-        if (designerActive && !designer.isVisible()) {
-            designerActive = false;
+            gameStop = true;
         }
         //------------------------------------------//
     }
@@ -112,20 +111,24 @@ public class Main {
         Time.init();
         while (!Display.isCloseRequested() && !game.exitFlag) {
             Time.update();
-            Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
-            if (!pause) {
-                getInput();
-                update();
-            } else {
-                if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                    if (!ENTER) {
-                        pop.popMessage();
-                    }
+            if (!gameStop) {
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
+                if (!pause) {
+                    getInput();
+                    update();
                 } else {
-                    ENTER = false;
+                    if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                        if (!ENTER) {
+                            pop.popMessage();
+                        }
+                    } else {
+                        ENTER = false;
+                    }
                 }
+                render();
+            } else {
+                Display.update();
             }
-            render();
         }
     }
 
@@ -140,7 +143,6 @@ public class Main {
         Keyboard.destroy();
         Mouse.destroy();
         Controllers.destroy();
-        //designer.dispose();
     }
 
     private static void initDisplay() {

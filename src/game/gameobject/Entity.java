@@ -44,7 +44,6 @@ public abstract class Entity extends GameObject {
             if (ypos != 0) {
                 if (!isColided(0, yd)) {
                     move(0, yd);
-                    depth = (int) y;
                     ypos -= yd;
                 } else {
                     ypos = 0;

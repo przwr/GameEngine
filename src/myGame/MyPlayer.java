@@ -63,7 +63,6 @@ public class MyPlayer extends Player {
         this.sY = (int) (SCALE * startY);
         this.setWeight(2);
         this.emitter = true;
-        this.depth = (int) y;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
