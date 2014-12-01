@@ -23,14 +23,20 @@ public class Light {
     protected float g;
     protected float b;
 
-    protected final FBORenderer fbo;
+    protected FBORenderer fbo;
 
     public Light(String lightName, float r, float g, float b, int sx, int sy, Place place) {
         this.r = r;
         this.g = g;
         this.b = b;
-        fbo = (place.settings.nrSamples > 0) ? new FBORendererMS(sx, sy, place.settings) : new FBORendererRegular(sx, sy, place.settings);
+        if (!place.settings.shadowOff) {
+            fbo = (place.settings.nrSamples > 0) ? new FBORendererMS(sx, sy, place.settings) : new FBORendererRegular(sx, sy, place.settings);
+        }
         this.light = new Sprite(lightName, sx, sy, null);
+    }
+    
+    public int getTexture(){
+        return light.getId();
     }
 
     public void setSize(int sx, int sy) {

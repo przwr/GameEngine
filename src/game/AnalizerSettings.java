@@ -22,22 +22,16 @@ public class AnalizerSettings {
             case "FullScreen:":
                 if (0 == p[1].compareTo("On")) {
                     settings.fullScreen = true;
-                } else if (0 == p[1].compareTo("Off")) {
-                    settings.fullScreen = false;
                 }
                 break;
             case "SplitMode:":
                 if (0 == p[1].compareTo("H")) {
                     settings.hSplitScreen = true;
-                } else if (0 == p[1].compareTo("V")) {
-                    settings.hSplitScreen = false;
                 }
                 break;
             case "VSync:":
                 if (0 == p[1].compareTo("On")) {
                     settings.vSync = true;
-                } else if (0 == p[1].compareTo("Off")) {
-                    settings.vSync = false;
                 }
                 break;
             case "NumberOfSamples:":
@@ -46,6 +40,11 @@ public class AnalizerSettings {
                     settings.nrSamples = 0;
                 } else {
                     settings.nrSamples = ns;
+                }
+                break;
+            case "ShadowOff:":
+                if (0 == p[1].compareTo("On")) {
+                    settings.shadowOff = true;
                 }
                 break;
             case "NumberOfPlayers:":
@@ -135,8 +134,13 @@ public class AnalizerSettings {
             } else {
                 fw.write("VSync: Off\n");
             }
+            if (settings.shadowOff) {
+                fw.write("ShadowOff: On\n");
+            } else {
+                fw.write("ShadowOff: Off\n");
+            }
             fw.write("ServerIP: " + settings.serverIP + "\n");
-            fw.write("NumberOfPlayers: " + settings.nrPlayers + "\n");            
+            fw.write("NumberOfPlayers: " + settings.nrPlayers + "\n");
             fw.write("NumberOfSamples: " + settings.nrSamples + "\n");
             fw.write("ResolutionWidth: " + settings.resWidth + "\n");
             fw.write("ResolutionHeight: " + settings.resHeight + "\n");

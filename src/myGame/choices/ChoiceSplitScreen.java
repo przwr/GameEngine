@@ -42,9 +42,9 @@ public class ChoiceSplitScreen extends MenuChoice {
     @Override
     public String getLabel() {
         if (settings.hSplitScreen) {
-            return label + settings.language.Horizontal + " [2/2]";
+            return label + settings.language.m.Horizontal + " [2/2]";
         } else {
-            return label + settings.language.Vertical + " [1/2]";
+            return label + settings.language.m.Vertical + " [1/2]";
         }
     }
 }

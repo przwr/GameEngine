@@ -12,7 +12,6 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
-import engine.Main;
 import engine.Methods;
 import game.gameobject.Player;
 import java.io.IOException;
@@ -76,8 +75,7 @@ public class GameClient {
                             } else {
                                 System.out.println("Server is Full!");
                                 isConnected = false;
-                                client.stop();
-                                client.close();
+                                Close();
                             }
                         }
                     } catch (Exception e) {
@@ -87,6 +85,7 @@ public class GameClient {
 
                 @Override
                 public void disconnected(Connection connection) {
+                    System.out.println("Disconnected!");
                     isConnected = false;
                     client.stop();
                     client.close();
@@ -110,6 +109,19 @@ public class GameClient {
 
     public void sendInput(PacketInput input) {
         server.sendTCP(input);
+    }
+
+    public void sendPlayerUpdate(MPlayerUpdate update) {
+        server.sendTCP(update);
+    }
+
+    public void sendPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop) {
+        try {
+            PacketMPlayerUpdate mpup = new PacketMPlayerUpdate(id, x, y, isEmits, isHop, SCALE);
+            server.sendTCP(mpup);
+        } catch (Exception e) {
+            cleanUp(e);
+        }
     }
 
     public void Close() {

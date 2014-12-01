@@ -31,7 +31,7 @@ public class MyGameOnline extends GameOnline {
         server = new GameServer(g.players[0], this);
         server.Start();
         if (!server.isRunning) {
-            server.Stop();
+            server.Close();
             server = null;
         } else {
             g.runClient();
@@ -149,7 +149,7 @@ public class MyGameOnline extends GameOnline {
                                     g.players[p].getCam().update();
                                 }
                                 if (plUp.isJumping()) {
-                                    g.players[p].setisJumping(true);
+                                    g.players[p].setIsJumping(true);
                                 }
                                 g.players[p].setEmits(plUp.isEmits());
                                 break;
@@ -176,7 +176,7 @@ public class MyGameOnline extends GameOnline {
     @Override
     public void cleanUp() {
         if (server != null) {
-            server.Stop();
+            server.Close();
             server = null;
         }
         if (client != null) {

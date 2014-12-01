@@ -38,9 +38,9 @@ public class ChoiceFindServer extends MenuChoice {
                 menu.isMapping = true;
                 InetAddress address = client.discoverHost(KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
                 if (address == null) {
-                    status = " - " + settings.language.NotFound;
+                    status = " - " + settings.language.m.NotFound;
                 } else {
-                    status = " - " + settings.language.Found;
+                    status = " - " + settings.language.m.Found;
                     settings.serverIP = address.toString().replace("/", "");
                     AnalizerSettings.Update(settings);
                 }
@@ -51,7 +51,7 @@ public class ChoiceFindServer extends MenuChoice {
 
     @Override
     public void action() {
-        status = " - " + settings.language.Searching;
+        status = " - " + settings.language.m.Searching;
         isSearching = true;
         thread = new Thread(run);
         thread.start();

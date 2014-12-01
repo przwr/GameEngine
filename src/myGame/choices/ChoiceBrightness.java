@@ -39,7 +39,7 @@ public class ChoiceBrightness extends MenuChoice {
         if (menu.game.getPlace() != null) {
             return label + menu.game.getPlace().r;
         } else {
-            return label + settings.language.StartGame;
+            return label + settings.language.m.StartGame;
         }
     }
 }

@@ -24,19 +24,23 @@ import org.lwjgl.input.Mouse;
  */
 public class Controlers {
 
-    private static final Controller[] controllers = new Controller[Controllers.getControllerCount()];
+    private static boolean noiseA;
+    private static Controller[] controllers;
 
     public static Controller[] init() {
+        Controller[] tempControllers = new Controller[Controllers.getControllerCount()];
         int j = 0;
         for (int i = 0; i < Controllers.getControllerCount(); i++) {
             if (Controllers.getController(i).getAxisCount() > 1 && Controllers.getController(i).getButtonCount() > 8) {
-                controllers[j++] = Controllers.getController(i);
+                tempControllers[j++] = Controllers.getController(i);
             }
         }
+        controllers = new Controller[j];
+        System.arraycopy(tempControllers, 0, controllers, 0, j);
         return controllers;
     }
 
-    public static AnyInput mapInput(int noiseAx[], AnyInput in) {
+    public static AnyInput mapInput(int noiseAx[], int maxAxNr, AnyInput in) {
         if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             return new InputExitMapping();
         }
@@ -56,11 +60,11 @@ public class Controlers {
                     return new InputMouse(m);
                 }
             }
-            return checkControllers(noiseAx);
+            return checkControllers(noiseAx, maxAxNr);
         }
     }
 
-    private static AnyInput checkControllers(int noiseAx[]) {
+    private static AnyInput checkControllers(int noiseAx[], int maxAxNr) {
         for (int c = 0; c < controllers.length; c++) {
             if (controllers[c] != null) {
                 for (int b = 0; b < controllers[c].getButtonCount(); b++) {
@@ -81,13 +85,21 @@ public class Controlers {
                     return new InputPadDPad(controllers, c, false, false);
                 }
                 for (int a = 0; a < controllers[c].getAxisCount(); a++) {
-                    if (a != noiseAx[c] && a != noiseAx[Controllers.getControllerCount() + c]) {
-                        if (controllers[c].getAxisValue(a) > 0.1f) {
-                            return new InputPadStick(controllers, c, a, true);
+                    int i;
+                    for (i = 0; i < controllers[c].getAxisCount(); i++) {
+                        if (a == noiseAx[c * maxAxNr + i]) {
+                            noiseA = true;
                         }
-                        if (controllers[c].getAxisValue(a) < -0.1f) {
-                            return new InputPadStick(controllers, c, a, false);
-                        }
+                    }
+                    if (noiseA) {
+                        noiseA = false;
+                        continue;
+                    }
+                    if (controllers[c].getAxisValue(a) > 0.1f) {
+                        return new InputPadStick(controllers, c, a, true);
+                    }
+                    if (controllers[c].getAxisValue(a) < -0.1f) {
+                        return new InputPadStick(controllers, c, a, false);
                     }
                 }
             }

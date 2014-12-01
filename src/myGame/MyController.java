@@ -12,7 +12,6 @@ import game.gameobject.AnyInput;
 import game.gameobject.Controler;
 import game.gameobject.Entity;
 import game.gameobject.Player;
-import net.packets.PacketInput;
 
 /**
  *
@@ -54,10 +53,10 @@ public class MyController extends Controler {
             actions[i].Do();
             states[i - 4] = actions[i].isOn();
         }
-        System.arraycopy(states, 0, statesSample, 0, statesSample.length);
-        if (inControl.getPlace().game.online.client != null) {
-            inControl.getPlace().game.online.client.sendInput(new PacketInput(((Player) inControl).id, statesSample));
-        }
+//        System.arraycopy(states, 0, statesSample, 0, statesSample.length);
+//        if (inControl.getPlace().game.online.client != null) {
+//            inControl.getPlace().game.online.client.sendInput(new PacketInput(((Player) inControl).id, statesSample));
+//        }
         if (states[UP]) {
             inControl.addSpeed(0, -4, true);
         } else if (states[DOWN]) {
@@ -73,7 +72,8 @@ public class MyController extends Controler {
             inControl.brake(0);
         }
         if (states[JUMP]) {
-            inControl.setisJumping(true);
+            inControl.setIsJumping(true);
+            inControl.setIsHop(true);
         }
         if (states[RUN]) {
             inControl.setMaxSpeed(16);
@@ -103,7 +103,7 @@ public class MyController extends Controler {
             inControl.brake(0);
         }
         if (states[JUMP]) {
-            inControl.setisJumping(true);
+            inControl.setIsJumping(true);
         }
         if (states[RUN]) {
             inControl.setMaxSpeed(16);

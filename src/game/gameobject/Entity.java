@@ -24,7 +24,7 @@ public abstract class Entity extends GameObject {
     protected double maxSpeed;
     protected double jump;
     protected double scale;
-    protected boolean isJumping;
+    protected boolean isJumping, hop;
 
     public void canMove(int magX, int magY) {
         int xpos = (int) (magX * Time.getDelta());
@@ -104,9 +104,17 @@ public abstract class Entity extends GameObject {
         return isJumping;
     }
 
-    public void setisJumping(boolean jump) {
+    public void setIsJumping(boolean jump) {
         this.isJumping = jump;
     }
+
+    public boolean isHop() {
+        return isJumping;
+    }
+
+    public void setIsHop(boolean hop) {
+        this.hop = hop;
+    }    
 
     public void brake(int axis) {  // 0 OX, 1 OY, 2 oba
         brake(weight, axis);

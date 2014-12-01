@@ -8,11 +8,11 @@ package myGame.choices;
 import engine.Controlers;
 import game.AnalizerInput;
 import game.Settings;
+import game.gameobject.Action;
 import game.gameobject.AnyInput;
 import game.gameobject.Controler;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
-import org.lwjgl.input.Controllers;
 
 /**
  *
@@ -24,6 +24,8 @@ public class ChoiceMapButton extends MenuChoice {
     private final int i;
     private Thread thread;
     private final Runnable run;
+    private boolean mapped;
+    private int maxAxNr;
 
     public ChoiceMapButton(String label, final Menu menu, final Settings settings, final Controler ctrl, final int i) {
         super(label, menu, settings);
@@ -32,11 +34,10 @@ public class ChoiceMapButton extends MenuChoice {
         run = new Runnable() {
             @Override
             public void run() {
-                int noiseAx[] = new int[2 * Controllers.getControllerCount()];
-                findNoiseAx(noiseAx);
-                main:
-                while (true) {
-                    AnyInput in = Controlers.mapInput(noiseAx, ctrl.actions[2].in);
+                int noiseAx[] = findNoiseAx();
+                mapped = true;
+                while (mapped) {
+                    AnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].in);
                     if (in != null) {
                         if (in.getType() == -1 || (ctrl.actions[3] != null && ctrl.actions[3].in != null && ctrl.actions[3].in.toString().equals(in.toString()))) {
                             break;
@@ -46,12 +47,11 @@ public class ChoiceMapButton extends MenuChoice {
                             break;
                         }
                         if (i < 4) {
-                            for (int k = 0; k < 4; k++) {
-                                if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
+                            for (Action action : ctrl.actions) {
+                                if (action != null && action.in != null && action.in.toString().equals(in.toString())) {
                                     AnyInput temp = ctrl.actions[i].in;
-                                    ctrl.actions[k].in = temp;
+                                    action.in = temp;
                                     set(in);
-                                    break main;
                                 }
                             }
                         } else {
@@ -60,12 +60,10 @@ public class ChoiceMapButton extends MenuChoice {
                                     AnyInput temp = ctrl.actions[i].in;
                                     ctrl.actions[k].in = temp;
                                     set(in);
-                                    break main;
                                 }
                             }
                         }
                         set(in);
-                        break;
                     }
                 }
                 end();
@@ -85,40 +83,43 @@ public class ChoiceMapButton extends MenuChoice {
     @Override
     public String getLabel() {
         if (thread != null) {
-            return label + ": " + settings.language.PushButton;
+            return label + ": " + settings.language.m.PushButton;
         } else if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].in != null) {
-            return label + ": <" + ctrl.actions[i].in.getLabel() + ">";
+            return label + ": [" + ctrl.actions[i].in.getLabel() + "]";
         } else {
-            return label + ": " + settings.language.Empty;
+            return label + ": " + settings.language.m.Empty;
         }
     }
 
-    private void findNoiseAx(int noiseAx[]) {
+    private int[] findNoiseAx() {
+        int size = Controlers.getControllers().length;
+        maxAxNr = 0;
+        int curAxNr;
+        int a, k;
+        for (k = 0; k < size; k++) {
+            curAxNr = Controlers.getControllers()[k].getAxisCount();
+            maxAxNr = curAxNr > maxAxNr ? curAxNr : maxAxNr;
+        }
+        int noiseAx[] = new int[maxAxNr * size];
         for (int i = 0; i < noiseAx.length; i++) {
             noiseAx[i] = -1;
         }
-        for (int k = 0; k < Controllers.getControllerCount(); k++) {
+        for (k = 0; k < size; k++) {
             if (Controlers.getControllers()[k] != null) {
-                int a;
                 for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (Controlers.getControllers()[k].getAxisValue(a) > 0.9f || Controlers.getControllers()[k].getAxisValue(a) < -0.9f) {
-                        noiseAx[k] = a;
-                        break;
-                    }
-                }
-                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (a != noiseAx[k] && Controlers.getControllers()[k].getAxisValue(a) > 0.9f || Controlers.getControllers()[k].getAxisValue(a) < -0.9f) {
-                        noiseAx[Controllers.getControllerCount() + k] = a;
-                        break;
+                    if (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f) {
+                        noiseAx[k * maxAxNr + a] = a;
                     }
                 }
             }
         }
+        return noiseAx;
     }
 
     private void set(AnyInput in) {
         ctrl.actions[i].in = in;
         AnalizerInput.Update(settings);
+        mapped = false;
     }
 
     private void end() {

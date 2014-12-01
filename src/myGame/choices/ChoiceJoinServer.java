@@ -31,7 +31,7 @@ public class ChoiceJoinServer extends MenuChoice {
         if (menu.game.online.client != null) {
             menu.setCurrent(0);
         } else {
-            status = " - " + settings.language.UnableToConnect;
+            status = " - " + settings.language.m.UnableToConnect;
             delay.restart();
         }
     }

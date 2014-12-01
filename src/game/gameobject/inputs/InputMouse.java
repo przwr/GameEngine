@@ -13,13 +13,13 @@ import org.lwjgl.input.Mouse;
  * @author przemek
  */
 public class InputMouse extends AnyInput {
-
+    
     public InputMouse(int key) {
         this.key = key;
         this.type = 1;
-        label = "mouse_" + key + "_button";
+        label = "MOUSE: " + Mouse.getButtonName(key).toUpperCase();
     }
-
+    
     @Override
     public boolean isPut() {
         if (Mouse.isCreated()) {
@@ -27,12 +27,12 @@ public class InputMouse extends AnyInput {
         }
         return false;
     }
-
+    
     @Override
     public String getLabel() {
         return label;
     }
-
+    
     @Override
     public String toString() {
         return type + " " + key;

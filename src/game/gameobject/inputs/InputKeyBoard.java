@@ -17,7 +17,7 @@ public class InputKeyBoard extends AnyInput {
     public InputKeyBoard(int key) {
         this.key = key;
         this.type = 0;
-        label = Keyboard.getKeyName(key).toLowerCase();
+        label = Keyboard.getKeyName(key).toUpperCase();
     }
 
     @Override

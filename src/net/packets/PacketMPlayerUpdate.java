@@ -16,7 +16,7 @@ public class PacketMPlayerUpdate {
     private byte id;
     private int x, y;
     private boolean isEmits;
-    private boolean isJumping;
+    private boolean isHop;
 
     public PacketMPlayerUpdate() {
     }
@@ -25,12 +25,20 @@ public class PacketMPlayerUpdate {
         this.id = id;
     }
 
+    public PacketMPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop, float SCALE) {
+        this.id = id;
+        this.x = (int) (((float) x) / SCALE);
+        this.y = (int) (((float) y) / SCALE);
+        this.isEmits = isEmits;
+        this.isHop = isHop;
+    }
+
     public PacketMPlayerUpdate(MPlayer pl) {
         this.id = pl.getId();
         this.x = pl.getX();
         this.y = pl.getY();
         this.isEmits = pl.inGame().isEmits();
-        this.isJumping = pl.inGame().isJumping();
+        this.isHop = pl.inGame().isJumping();
     }
 
     public byte getId() {
@@ -50,6 +58,6 @@ public class PacketMPlayerUpdate {
     }
 
     public boolean isJumping() {
-        return isJumping;
+        return isHop;
     }
 }

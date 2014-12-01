@@ -5,6 +5,7 @@
  */
 package myGame.choices;
 
+import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
@@ -13,27 +14,24 @@ import game.place.Menu;
  *
  * @author przemek
  */
-public class ChoiceStart extends MenuChoice {
+public class ChoiceShadowOff extends MenuChoice {
 
-    public ChoiceStart(String label, Menu menu, Settings settings) {
+    public ChoiceShadowOff(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        if (!menu.game.started) {
-            menu.setCurrent(7);
-        } else {
-            menu.game.resumeGame();
-        }
+        settings.shadowOff = !settings.shadowOff;
+        AnalizerSettings.Update(settings);
     }
 
     @Override
     public String getLabel() {
-        if (!menu.game.started) {
-            return label;
+        if (settings.shadowOff) {
+            return label + settings.language.m.On;
         } else {
-            return settings.language.m.Resume;
+            return label + settings.language.m.Off;
         }
     }
 }

@@ -63,7 +63,7 @@ public class Popup {
         int space = fonts.write(1).getHeight();
         int border = 3;
         int biggest = fonts.write(1).getWidth(Main.getTitle());
-        int middleOk = fonts.write(0).getWidth("Enter");
+        int middleOk = fonts.write(0).getWidth("[ENTER]");
         for (String line : lines) {
             biggest = fonts.write(0).getWidth(line) > biggest ? fonts.write(0).getWidth(line) : biggest;
         }
@@ -152,7 +152,7 @@ public class Popup {
         glEnd();
 
         GL11.glEnable(GL11.GL_BLEND);
-        renderLine(0, w2, h2 + hSize / 2, "Enter", Color.black);
+        renderLine(0, w2, h2 + hSize / 2, "[ENTER]", Color.black);
         renderLine(1, w2, h2 - hSize / 2 + space, Main.getTitle(), Color.black);
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
