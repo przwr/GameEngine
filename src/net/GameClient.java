@@ -5,6 +5,7 @@
  */
 package net;
 
+import net.packets.MPlayerUpdate;
 import net.packets.PacketMessage;
 import net.packets.PacketJoinResponse;
 import net.packets.PacketJoinRequest;
@@ -12,6 +13,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
+import engine.Delay;
 import engine.Methods;
 import game.gameobject.Player;
 import java.io.IOException;
@@ -19,6 +21,7 @@ import net.packets.PacketAddMPlayer;
 import net.packets.PacketInput;
 import net.packets.PacketMPlayerUpdate;
 import net.packets.PacketRemoveMPlayer;
+import net.packets.PacketUpdate;
 
 /**
  *
@@ -32,6 +35,7 @@ public class GameClient {
     private final float SCALE;
     private Connection server;
     public boolean isConnected;
+    private Delay delay;
 
     public GameClient(final Player pl, final GameOnline game, String IP) {
 
@@ -39,6 +43,8 @@ public class GameClient {
         this.game = game;
         this.SCALE = game.g.settings.SCALE;
         client = new Client();
+        delay = new Delay(33);
+        delay.terminate();
         try {
             Log.set(Log.LEVEL_DEBUG);
 
@@ -56,8 +62,9 @@ public class GameClient {
                 @Override
                 public void received(Connection connection, Object obj) {
                     try {
-                        if (obj instanceof PacketMPlayerUpdate) {
-                            game.playerUpdate((((PacketMPlayerUpdate) obj)));
+                        if (obj instanceof PacketUpdate) {
+                            //System.out.println(Methods.sizeInBytes((PacketUpdate) obj));
+                            game.update((PacketUpdate) obj);
                         }
                         if (obj instanceof PacketMessage) {
                             System.out.println("Recived from server: " + ((PacketMessage) obj).getMessage());
@@ -117,8 +124,11 @@ public class GameClient {
 
     public void sendPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop) {
         try {
-            PacketMPlayerUpdate mpup = new PacketMPlayerUpdate(id, x, y, isEmits, isHop, SCALE);
-            server.sendTCP(mpup);
+            if (delay.isOver()) {
+                PacketMPlayerUpdate mpup = new PacketMPlayerUpdate(id, x, y, isEmits, isHop, SCALE);
+                server.sendTCP(mpup);
+                delay.restart();
+            }
         } catch (Exception e) {
             cleanUp(e);
         }

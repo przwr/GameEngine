@@ -38,16 +38,15 @@ public class MyPlace extends Place {
     private final Tile GRASS = new Tile(getSpriteSheet("tlo"), sTile, 1, 8, this);
     final Tile ROCK = new Tile(getSpriteSheet("tlo"), sTile, 1, 1, this);
 
-    public MyPlace(Game game, int width, int height, int tileSize, Settings settnig) {
+    public MyPlace(Game game, int width, int height, int tileSize, Settings settnig, boolean isHost) {
         super(game, width, height, tileSize, settnig);
         place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
-        generate();
+        generate(isHost);
     }
 
-    @Override
-    public void generate() {
+    private void generate(boolean isHost) {
         //sounds.init("res", settings);
         Area a = new Area(13 * sTile, 13 * sTile, sTile);
         for (int y = 0; y < height / sTile; y++) {
@@ -67,22 +66,22 @@ public class MyPlace extends Place {
         Area testc = new Area(7 * sTile, 7 * sTile, sTile);
         Area testd = new Area(9 * sTile, 7 * sTile, sTile);
         testa.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testa));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 6 * sTile, 5 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 6 * sTile, 4 * sTile, sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 6 * sTile, 5 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 6 * sTile, 4 * sTile, sTile, true);
         //tiles[6 + 6 * height / sTile] = ROCK;
         testb.addFigure(new Rectangle(0, 0, 2 * sTile, sTile, true, true, testb));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 8 * sTile, 5 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 8 * sTile, 4 * sTile, sTile, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 9 * sTile, 5 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 9 * sTile, 4 * sTile, sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 8 * sTile, 5 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 8 * sTile, 4 * sTile, sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 9 * sTile, 5 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 9 * sTile, 4 * sTile, sTile, true);
         //tiles[8 + 6 * height / sTile] = ROCK;
         testc.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testc));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 7 * sTile, 7 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 7 * sTile, 6 * sTile, sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 7 * sTile, 7 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 7 * sTile, 6 * sTile, sTile, true);
         testd.addFigure(new Rectangle(0, 0, sTile, 2 * sTile, true, true, testd));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, this), 9 * sTile, 8 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 9 * sTile, 7 * sTile, sTile, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, this), 9 * sTile, 6 * sTile, sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 9 * sTile, 8 * sTile, 0, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 9 * sTile, 7 * sTile, sTile, true);
+        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 9 * sTile, 6 * sTile, sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;
         Area border = new Area(0, 0, sTile, true);
         border.addFigure(new Line(0, 0, width, 0, border));
@@ -95,8 +94,10 @@ public class MyPlace extends Place {
         areas.add(testc);
         areas.add(testd);
         areas.add(border);
-        addObj(new MyMob(1280, 512, 0, 8, 128, 112, 4, 512, "rabbit", this, true));
-        addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true));
+        if (isHost) {
+            addObj(new MyMob(1280, 512, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+            addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+        }
         this.r = 0.75f;
         this.g = 0.75f;
         this.b = 0.75f;
@@ -114,14 +115,14 @@ public class MyPlace extends Place {
     @Override
     protected void renderText(Camera cam) {
         for (int p = 0; p < playersLength; p++) {
-            if (cam.getSY() <= players[p].getY() + (players[p].getHeight() << 2) && cam.getEY() >= players[p].getY() - (players[p].getHeight() << 2)
-                    && cam.getSX() <= players[p].getX() + (players[p].getWidth() << 2) && cam.getEX() >= players[p].getX() - (players[p].getWidth() << 2)) {
+            if (cam.getSY() <= players[p].getY() + (players[p].Height() + fonts.write(0).getHeight()) && cam.getEY() >= players[p].getY() - (players[p].Height() + fonts.write(0).getHeight())
+                    && cam.getSX() <= players[p].getX() + (fonts.write(0).getWidth(players[p].getName())) && cam.getEX() >= players[p].getX() - (fonts.write(0).getWidth(players[p].getName()))) {
                 ((MyPlayer) players[p]).renderName(this, cam);
             }
         }
         for (Mob mob : sMobs) {
-            if (cam.getSY() <= mob.getY() + (mob.getHeight() << 2) && cam.getEY() >= mob.getY() - (mob.getHeight() << 2)
-                    && cam.getSX() <= mob.getX() + (mob.getWidth() << 2) && cam.getEX() >= mob.getX() - (mob.getWidth() << 2)) {
+            if (cam.getSY() <= mob.getY() + (mob.Height() + fonts.write(0).getHeight()) && cam.getEY() >= mob.getY() - (mob.Height() + fonts.write(0).getHeight())
+                    && cam.getSX() <= mob.getX() + (fonts.write(0).getWidth(mob.getName())) && cam.getEX() >= mob.getX() - (fonts.write(0).getWidth(mob.getName()))) {
                 mob.renderName(this, cam);
             }
         }
@@ -186,13 +187,19 @@ public class MyPlace extends Place {
         ups[1] = new update() {
             @Override
             public void update() {
+                if (game.online.server != null) {
+                    for (Mob mob : sMobs) {
+                        mob.update(place);
+                    }
+                } else {
+                    for (Mob mob : sMobs) {
+                        mob.updateHard();
+                    }
+//                    for (int i = 1; i < playersLength; i++) {
+//                        ((Entity) players[i]).updateSoft();
+//                    }
+                }
                 ((Player) players[0]).sendUpdate(place);
-                for (int i = 1; i < playersLength; i++) {
-                    ((Player) players[i]).update(place);
-                }
-                for (Mob mob : sMobs) {
-                    mob.update(place);
-                }
             }
         };
     }

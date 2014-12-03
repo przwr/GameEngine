@@ -5,59 +5,28 @@
  */
 package net.packets;
 
-import net.MPlayer;
+import java.io.Serializable;
 
 /**
  *
  * @author przemek
  */
-public class PacketMPlayerUpdate {
+public class PacketMPlayerUpdate implements Serializable{
 
-    private byte id;
-    private int x, y;
-    private boolean isEmits;
-    private boolean isHop;
+    private MPlayerUpdate mpu;
 
     public PacketMPlayerUpdate() {
     }
 
-    public PacketMPlayerUpdate(byte id) {
-        this.id = id;
-    }
-
     public PacketMPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop, float SCALE) {
-        this.id = id;
-        this.x = (int) (((float) x) / SCALE);
-        this.y = (int) (((float) y) / SCALE);
-        this.isEmits = isEmits;
-        this.isHop = isHop;
+        mpu = new MPlayerUpdate(id, (int) (((float) x) / SCALE), (int) (((float) y) / SCALE), isEmits, isHop);
     }
 
-    public PacketMPlayerUpdate(MPlayer pl) {
-        this.id = pl.getId();
-        this.x = pl.getX();
-        this.y = pl.getY();
-        this.isEmits = pl.inGame().isEmits();
-        this.isHop = pl.inGame().isJumping();
+    public synchronized void Upadte(int x, int y, boolean isEmits, boolean isHop, float SCALE) {
+        mpu.Update((int) (((float) x) / SCALE), (int) (((float) y) / SCALE), isEmits, isHop);
     }
 
-    public byte getId() {
-        return id;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public boolean isEmits() {
-        return isEmits;
-    }
-
-    public boolean isJumping() {
-        return isHop;
+    public synchronized MPlayerUpdate MPU() {
+        return mpu;
     }
 }

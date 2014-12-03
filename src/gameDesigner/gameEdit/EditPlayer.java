@@ -5,17 +5,18 @@
  */
 package gameDesigner.gameEdit;
 
-import myGame.*;
 import collision.Rectangle;
+import engine.Animation;
 import game.gameobject.Player;
 import game.place.cameras.Camera;
 import game.place.Place;
 import engine.Drawer;
 import engine.Methods;
-import game.gameobject.inputs.InputKeyBoard;
+import game.place.Light;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
+import sprites.SpriteSheet;
 
 /**
  *
@@ -32,19 +33,27 @@ public class EditPlayer extends Player {
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y) {
+    public void init(int startX, int startY, int width, int height, Place place, int x, int y) {
         double SCALE = place.settings.SCALE;
-        this.width = (int) (SCALE * width);
-        this.height = (int) (SCALE * height);
-        this.sX = (int) (SCALE * startX);
-        this.sY = (int) (SCALE * startY);
-        this.setWeight(1);
+        this.width = Methods.RoundHU((int) (SCALE * width));
+        this.height = Methods.RoundHU((int) (SCALE * height));
+        this.sX = Methods.RoundHU((int) (SCALE * startX));
+        this.sY = Methods.RoundHU((int) (SCALE * startY));
+        this.setWeight(2);
         this.emitter = true;
         init(name, Methods.RoundHU((int) (SCALE * x)), Methods.RoundHU((int) (SCALE * y)), place);
+        this.sprite = place.getSpriteSheet("apple");
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU((int) (SCALE * 1024)), Methods.RoundHU((int) (SCALE * 1024)), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.anim = new Animation((SpriteSheet) sprite, 200, this);
+        animate = true;
         emits = false;
         scale = SCALE;
         place.addObj(this);
-        setCollision(new Rectangle(0, 0, cam.getDwidth() * 2, cam.getDwidth() * 2, true, false, this));
+        setCollision(new Rectangle(this.width, this.height / 2, true, false, this));
+    }
+
+    @Override
+    public void init(int startX, int startY, int width, int height, Place place) {
     }
 
     @Override
@@ -113,10 +122,6 @@ public class EditPlayer extends Player {
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, int sw, int sh, Place place) {
-    }
-
-    @Override
     public void sendUpdate(Place place) {
     }
 
@@ -124,16 +129,15 @@ public class EditPlayer extends Player {
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
     }
 
-    @Override
-    public void initControler(boolean isFirst) {
-        ctrl = new MyController(this);
-        if (isFirst) {
-            this.isFirst = true;
-            ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
-            ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
-            ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
-            ctrl.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        }
-        ctrl.init();
-    }
+//    public void initControler(boolean isFirst) {
+//        ctrl = new MyController(this);
+//        if (isFirst) {
+//            this.isFirst = true;
+//            ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+//            ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+//            ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+//            ctrl.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+//        }
+//        ctrl.init();
+//    }
 }

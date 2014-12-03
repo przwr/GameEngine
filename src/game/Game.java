@@ -45,6 +45,8 @@ public abstract class Game {
 
     public abstract void runClient();
 
+    public abstract void runServer();
+
     public abstract void update();
 
     public abstract void render();

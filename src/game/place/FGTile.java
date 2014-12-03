@@ -22,32 +22,12 @@ import sprites.SpriteSheet;
  */
 public class FGTile extends Tile {
 
-    private boolean isItWall;   //true - Ściana (bok), false - szczyt "słupa" (góra)
-    private boolean lightproof; //Czy światło ma w ogóle szansę na to świecić  
     private int highness;
 
-    public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, Place place) {
+    public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, int height, Place place) {
         super(sh, size, xSheet, ySheet, place);
-        this.isItWall = isItWall;
         this.simpleLighting = true;
-        this.lightproof = isItWall;
-        setCollision(new Rectangle(0, sh.getHeight(), sh.getWidth(), sh.getHeight(), false, false, this));
-    }
-
-    public boolean isItWall() {
-        return isItWall;
-    }
-
-    public void setItWall(boolean isItWall) {
-        this.isItWall = isItWall;
-    }
-
-    public boolean isLightproof() {
-        return lightproof;
-    }
-
-    public void setLightproof(boolean lightproof) {
-        this.lightproof = lightproof;
+        setCollision(new Rectangle(0, height, sh.getWidth(), sh.getHeight(), isItWall, isItWall, this));
     }
 
     public boolean isSimpleLighting() {
@@ -71,7 +51,11 @@ public class FGTile extends Tile {
         glPushMatrix();
         glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
         if (simpleLighting) {
-            glColor4f(0f, 0f, 0f, 1f);
+            if (isLit) {
+                glColor4f(color, color, color, 1f);
+            } else {
+                glColor4f(0f, 0f, 0f, 1f);
+            }
             Drawer.drawRectangle(0, 0, sh.getWidth(), sh.getHeight());
             glColor4f(1f, 1f, 1f, 1f);
         } else if (sprite != null) {

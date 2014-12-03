@@ -41,6 +41,8 @@ public abstract class Place extends ScreenPlace {
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int ssMode, playersLength, nrVLights;
 
+    protected short mobID = 0;
+
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
     public ArrayList<GameObject> solidObj = new ArrayList<>();
@@ -64,9 +66,6 @@ public abstract class Place extends ScreenPlace {
         place = this;
         initMethods();
     }
-
-    @Override
-    protected abstract void generate();
 
     @Override
     public abstract void update();
@@ -105,8 +104,7 @@ public abstract class Place extends ScreenPlace {
                         Renderer.preRenderShadowedLights(place, cam);
                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         sprites.setLastTex(-1);
-//                        float scale =1f;
-//                        glOrtho(-1 / scale, 1 / scale, -1 / scale, 1 / scale, 1.0, -1.0);
+//                        glOrtho(-1 / settings.SCALE, 1 / settings.SCALE, -1 / settings.SCALE, 1 / settings.SCALE, 1.0, -1.0);
                         renderBack(cam);
                         renderObj(cam);
                         renderText(cam);
@@ -176,10 +174,19 @@ public abstract class Place extends ScreenPlace {
         int y = 0;
         for (GameObject go : depthObj) {
             while (y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < go.getDepth()) {
-                foregroundTiles.get(y).render(cam.getXOffEffect(), cam.getYOffEffect());
+                if (cam.getSY() <= foregroundTiles.get(y).getY() + (foregroundTiles.get(y).getHeight()) & cam.getEY() >= foregroundTiles.get(y).getY() - (foregroundTiles.get(y).getHeight())
+                        && cam.getSX() <= foregroundTiles.get(y).getX() + (foregroundTiles.get(y).getWidth()) && cam.getEX() >= foregroundTiles.get(y).getX() - (foregroundTiles.get(y).getWidth())) {
+                    foregroundTiles.get(y).render(cam.getXOffEffect(), cam.getYOffEffect());
+                }
                 y++;
             }
-            go.render(cam.getXOffEffect(), cam.getYOffEffect());
+            if (cam.getSY() <= go.getY() + (go.Height()) && cam.getEY() >= go.getY() - (go.Height())
+                    && cam.getSX() <= go.getX() + (go.Width()) && cam.getEX() >= go.getX() - (go.Width())) {
+                go.render(cam.getXOffEffect(), cam.getYOffEffect());
+//                if ((go instanceof Mob) && ((Mob) go).id == 0) {
+//                    System.out.println(go.getX());
+//                }
+            }
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
             foregroundTiles.get(i).render(cam.getXOffEffect(), cam.getYOffEffect());
@@ -191,10 +198,10 @@ public abstract class Place extends ScreenPlace {
         Drawer.refresh(this);
         sortObjects(onTopObject);
         for (GameObject go : onTopObject) {
-            // if (cam.getSY() <= go.getY() + (go.getHeight() >> 1) && cam.getEY() >= go.getY() - (go.getHeight() >> 1)
-            //         && cam.getSX() <= go.getX() + (go.getWidth() >> 2) && cam.getEX() >= go.getX() - (go.getWidth() >> 2)) {
-            go.render(cam.getXOffEffect(), cam.getYOffEffect());
-            //}
+            if (cam.getSY() <= go.getY() + (go.Height()) && cam.getEY() >= go.getY() - (go.Height())
+                    && cam.getSX() <= go.getX() + (go.Width()) && cam.getEX() >= go.getX() - (go.Width())) {
+                go.render(cam.getXOffEffect(), cam.getYOffEffect());
+            }
         }
     }
 

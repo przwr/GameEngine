@@ -31,7 +31,7 @@ public class SpriteBase {
     public SpriteBase(double s) {
         scale = s;
     }
-    
+
     public Sprite getSprite(String textureKey) {
         for (Sprite s : list) {
             if (s.getKey().equals(textureKey)) {
@@ -55,7 +55,7 @@ public class SpriteBase {
         temp.setId(texCounter++);
         return temp;
     }
-        
+
     public Sprite loadSprite(String name) {
         int width, height, sx, sy, w, h;
         boolean sprSheet;
@@ -109,7 +109,7 @@ public class SpriteBase {
     public void setLastTex(int i) {
         lastTex = i;
     }
-    
+
     public double getScale() {
         return scale;
     }

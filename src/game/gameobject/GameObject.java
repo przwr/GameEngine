@@ -157,6 +157,14 @@ public abstract class GameObject {
         return collision != null ? collision.getHeight() : height;
     }
 
+    public int Width() {
+        return width;
+    }
+
+    public int Height() {
+        return height;
+    }
+
     public boolean isOnTop() {
         return top;
     }

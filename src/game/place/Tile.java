@@ -60,7 +60,7 @@ public class Tile extends GameObject {
 
     public void renderShadow(int x, int y, int xEffect, int yEffect, boolean isLit, float color) {
         glPushMatrix();
-        glTranslatef(x + xEffect, y + yEffect, 0);
+        glTranslatef(xEffect, yEffect, 0);
         if (simpleLighting) {
             if (isLit) {
                 glColor4f(color, color, color, 1f);

@@ -85,35 +85,35 @@ public class MyController extends Controler {
         }
     }
 
-    @Override
-    public synchronized void setInput(boolean[] states) {
-        System.arraycopy(states, 0, this.states, 0, this.states.length);
-        if (states[UP]) {
-            inControl.addSpeed(0, -4, true);
-        } else if (states[DOWN]) {
-            inControl.addSpeed(0, 4, true);
-        } else {
-            inControl.brake(1);
-        }
-        if (states[LEFT]) {
-            inControl.addSpeed(-4, 0, true);
-        } else if (states[RIGHT]) {
-            inControl.addSpeed(4, 0, true);
-        } else {
-            inControl.brake(0);
-        }
-        if (states[JUMP]) {
-            inControl.setIsJumping(true);
-        }
-        if (states[RUN]) {
-            inControl.setMaxSpeed(16);
-        } else {
-            inControl.setMaxSpeed(8);
-        }
-        if (states[LIGHT]) {
-            inControl.setEmits(!inControl.isEmits());
-        }
-    }
+//    @Override
+//    public synchronized void setInput(boolean[] states) {
+//        System.arraycopy(states, 0, this.states, 0, this.states.length);
+//        if (states[UP]) {
+//            inControl.addSpeed(0, -4, true);
+//        } else if (states[DOWN]) {
+//            inControl.addSpeed(0, 4, true);
+//        } else {
+//            inControl.brake(1);
+//        }
+//        if (states[LEFT]) {
+//            inControl.addSpeed(-4, 0, true);
+//        } else if (states[RIGHT]) {
+//            inControl.addSpeed(4, 0, true);
+//        } else {
+//            inControl.brake(0);
+//        }
+//        if (states[JUMP]) {
+//            inControl.setIsJumping(true);
+//        }
+//        if (states[RUN]) {
+//            inControl.setMaxSpeed(16);
+//        } else {
+//            inControl.setMaxSpeed(8);
+//        }
+//        if (states[LIGHT]) {
+//            inControl.setEmits(!inControl.isEmits());
+//        }
+//    }
 
     @Override
     public boolean isMenuOn() {

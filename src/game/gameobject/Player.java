@@ -27,11 +27,9 @@ public abstract class Player extends Entity {
         this.name = name;
     }
 
-    protected abstract void initControler(boolean isFirst);
+    public abstract void init(int startX, int startY, int width, int height, Place place, int x, int y);
 
-    public abstract void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y);
-
-    public abstract void init(int startX, int startY, int width, int height, int sw, int sh, Place place);
+    public abstract void init(int startX, int startY, int width, int height, Place place);
 
     public abstract void update(Place place);
 
@@ -75,5 +73,10 @@ public abstract class Player extends Entity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Player getCollided(int magX, int magY) {
+        return null;
     }
 }

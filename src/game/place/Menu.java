@@ -30,9 +30,6 @@ public abstract class Menu extends ScreenPlace {
     }
 
     @Override
-    protected abstract void generate();
-
-    @Override
     public abstract void update();
 
     @Override

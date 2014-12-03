@@ -20,7 +20,7 @@ public class PacketRemoveMPlayer {
         this.id = id;
     }
 
-    public byte getId() {
+    public synchronized byte getId() {
         return id;
     }
 }

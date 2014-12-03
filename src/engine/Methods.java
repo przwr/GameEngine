@@ -1,5 +1,8 @@
 package engine;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -85,6 +88,16 @@ public class Methods {
         } else {
             return d < 0 ? -(i + 1) : i + 1;
         }
+    }
+
+    public static int sizeInBytes(Object obj) throws java.io.IOException {
+        ByteArrayOutputStream byteObject = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteObject);
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.flush();
+        objectOutputStream.close();
+        byteObject.close();
+        return byteObject.toByteArray().length;
     }
 
     private Methods() {

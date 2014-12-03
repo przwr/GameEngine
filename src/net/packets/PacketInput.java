@@ -23,11 +23,11 @@ public class PacketInput {
         this.inputs = inputs;
     }
 
-    public byte getId() {
+    public synchronized byte getId() {
         return id;
     }
 
-    public boolean[] inputs() {
+    public synchronized boolean[] inputs() {
         return inputs;
     }
 }

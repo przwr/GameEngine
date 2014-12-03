@@ -23,8 +23,6 @@ public abstract class Controler {
 
     public abstract void getInput();
 
-    public abstract void setInput(boolean[] inputs);
-
     public abstract boolean isMenuOn();
 
     public abstract void getMenuInput();

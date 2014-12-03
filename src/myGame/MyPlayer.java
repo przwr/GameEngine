@@ -35,17 +35,17 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, int sw, int sh, Place place, int x, int y) {
+    public void init(int startX, int startY, int width, int height, Place place, int x, int y) {
         double SCALE = place.settings.SCALE;
-        this.width = (int) (SCALE * width);
-        this.height = (int) (SCALE * height);
-        this.sX = (int) (SCALE * startX);
-        this.sY = (int) (SCALE * startY);
+        this.width = Methods.RoundHU((int) (SCALE * width));
+        this.height = Methods.RoundHU((int) (SCALE * height));
+        this.sX = Methods.RoundHU((int) (SCALE * startX));
+        this.sY = Methods.RoundHU((int) (SCALE * startY));
         this.setWeight(2);
         this.emitter = true;
         init(name, Methods.RoundHU((int) (SCALE * x)), Methods.RoundHU((int) (SCALE * y)), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU((int) (SCALE * 1024)), Methods.RoundHU((int) (SCALE * 1024)), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
@@ -55,17 +55,17 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, int sw, int sh, Place place) {
+    public void init(int startX, int startY, int width, int height, Place place) {
         double SCALE = place.settings.SCALE;
-        this.width = (int) (SCALE * width);
-        this.height = (int) (SCALE * height);
-        this.sX = (int) (SCALE * startX);
-        this.sY = (int) (SCALE * startY);
+        this.width = Methods.RoundHU((int) (SCALE * width));
+        this.height = Methods.RoundHU((int) (SCALE * height));
+        this.sX = Methods.RoundHU((int) (SCALE * startX));
+        this.sY = Methods.RoundHU((int) (SCALE * startY));
         this.setWeight(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, (int) (SCALE * 1024), (int) (SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU((int) (SCALE * 1024)), Methods.RoundHU((int) (SCALE * 1024)), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
@@ -74,8 +74,7 @@ public class MyPlayer extends Player {
         setCollision(new Rectangle(this.width, this.height / 2, true, false, this));
     }
 
-    @Override
-    public void initControler(boolean isFirst) {
+    private void initControler(boolean isFirst) {
         ctrl = new MyController(this);
         if (isFirst) {
             this.isFirst = true;
@@ -186,7 +185,7 @@ public class MyPlayer extends Player {
         canMove(hs, vs);
         brakeOthers();
         if (place.game.online.server != null) {
-            place.game.online.server.sendPlayerUpdate(id, getX(), getY());
+            place.game.online.server.sendUpdate(getX(), getY(), isEmits(), isHop());
         } else {
             place.game.online.client.sendPlayerUpdate(id, getX(), getY(), isEmits(), isHop());
         }

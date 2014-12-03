@@ -31,8 +31,6 @@ public abstract class ScreenPlace {
         this.game = game;
     }
 
-    protected abstract void generate();
-
     public abstract void update();
 
     public abstract void render();

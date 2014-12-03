@@ -5,16 +5,21 @@
  */
 package net;
 
+import net.packets.NewMPlayer;
+import net.packets.MPlayerUpdate;
 import net.packets.PacketMessage;
 import net.packets.PacketJoinResponse;
 import net.packets.PacketJoinRequest;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
+import java.util.ArrayList;
+import net.packets.MobUpdate;
 import net.packets.PacketAddMPlayer;
 import net.packets.PacketInput;
 import net.packets.PacketMPlayerUpdate;
 import net.packets.PacketRemoveMPlayer;
+import net.packets.PacketUpdate;
 
 /**
  *
@@ -34,16 +39,17 @@ public class KryoUtil {
     }
 
     private static void register(Kryo kryo) {
-        kryo.register(MPlayer.class);
         kryo.register(NewMPlayer.class);
         kryo.register(MPlayerUpdate.class);
+        kryo.register(MobUpdate.class);
         kryo.register(byte.class);
         kryo.register(boolean.class);
         kryo.register(boolean[].class);
         kryo.register(int.class);
         kryo.register(String.class);
+        kryo.register(Short.class);
+        kryo.register(ArrayList.class);
 
-        // network messages
         kryo.register(PacketJoinRequest.class);
         kryo.register(PacketJoinResponse.class);
         kryo.register(PacketAddMPlayer.class);
@@ -51,5 +57,6 @@ public class KryoUtil {
         kryo.register(PacketMPlayerUpdate.class);
         kryo.register(PacketInput.class);
         kryo.register(PacketMessage.class);
+        kryo.register(PacketUpdate.class);
     }
 }

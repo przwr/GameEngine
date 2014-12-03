@@ -65,14 +65,9 @@ public class ShadowRenderer {
                     calculateWalls(shade, emitter);
                     drawWalls(emitter);
                 }
-                shadeColor = (emitter.getY() - shade.getCentralY()) / (float) ((shade.getHeight() + emitter.getHeight()) / 2);
-                if (shade.getOwner().getClass() == Area.class) {
-                    shade.getOwner().renderShadow((shade.getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
-                            shade.getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), shade.canBeLit() && emitter.getY() >= shade.getCentralY(), shadeColor);
-                } else {
-                    shade.getOwner().renderShadow(emitter.getLight().getSX() / 2 - (emitter.getX()),
-                            emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), shade.canBeLit() && emitter.getY() >= shade.getCentralY(), shadeColor);
-                }
+                shadeColor = (emitter.getY() - shade.getEndY()) / (float) ((emitter.getHeight()) / 2);
+                shade.getOwner().renderShadow(emitter.getLight().getSX() / 2 - (emitter.getX()),
+                        emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), shade.canBeLit() && emitter.getY() >= shade.getEndY(), shadeColor);
             } else {
                 emitter.renderShadow(-emitter.getX() + emitter.getLight().getSX() / 2, -emitter.getY() + emitter.getLight().getSY() / 2 + h - emitter.getLight().getSY(), true, 1);
             }
@@ -84,23 +79,12 @@ public class ShadowRenderer {
     }
 
     private static void findShades(GameObject src, Place place) {
-        // Powinno sortować według wysoskości - najpier te, które są najwyżej na planszy, a później coraz niższe,
+        // Powinno sortować według wysoskości - najpierw te, które są najwyżej na planszy, a później coraz niższe,
         // obiekty tej samej wysokości powinny być renderowane w kolejności od najdalszych od źródła, do najbliższych.
         nrShades = 0;
-        for (Area a : place.areas) {    //iteracja po Shades - tych co dają cień
-            if (!a.isBorder()) {
-                for (Figure f : a.getParts()) {
-                    if ((Math.abs(f.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (f.getHeight() >> 1))
-                            && (Math.abs(f.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (f.getWidth() >> 1))) {
-                        shades[nrShades++] = f;
-                        f.setDistFromLight((src.getCollision() == f) ? -1 : Math.abs(src.getX() - f.getCentralX()));
-                    }
-                }
-            }
-        }
         for (GameObject tile : place.foregroundTiles) {   // FGTiles muszą mieć Collision
             tmp = tile.getCollision();
-            if (!((FGTile) tmp.getOwner()).isLightproof() && (Math.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getOwner().getHeight() >> 1))
+            if ((Math.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getOwner().getHeight() >> 1))
                     && (Math.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getOwner().getWidth() >> 1))) {
                 shades[nrShades++] = tmp;
                 tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : Math.abs(src.getX() - tmp.getCentralX()));
@@ -117,7 +101,7 @@ public class ShadowRenderer {
         Arrays.sort(shades, 0, nrShades);
 //        System.out.println("Posortowana: ");
 //        for (int i = 0; i < nrShades; i++) {
-//            System.out.println("Y: " + shades[i].getCentralY() + " X: " + shades[i].getDistFromLight() + " - Klasa:" + shades[i].getOwner().getClass());
+//            System.out.println("Y: " + shades[i].getEndY() + " X: " + shades[i].getDistFromLight() + " - Klasa:" + shades[i].getOwner().getClass());
 //        }
 //        System.out.print("\n");
     }
@@ -237,8 +221,9 @@ public class ShadowRenderer {
                 leftWallColor = false;
                 isLeftWall = true;
             } else {    // rysuj zaciemniony
-                left.getOwner().renderShadow((left.getX()) + src.getLight().getSX() / 2 - (src.getX()),
-                        left.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, shadeColor);
+                left.getOwner().renderShadow(src.getLight().getSX() / 2 - (src.getX()),
+                        src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, 0);
+
             }
         }
     }
@@ -263,8 +248,8 @@ public class ShadowRenderer {
                 rightWallColor = false;
                 isRightWall = true;
             } else {    // rysuj zaciemniony
-                right.getOwner().renderShadow((right.getX()) + src.getLight().getSX() / 2 - (src.getX()),
-                        right.getY() + src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, shadeColor);
+                right.getOwner().renderShadow(src.getLight().getSX() / 2 - (src.getX()),
+                        src.getLight().getSY() / 2 - (src.getY()) + h - src.getLight().getSY(), false, 0);
             }
         }
     }

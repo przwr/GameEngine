@@ -7,6 +7,7 @@ package net;
 
 import com.esotericsoftware.kryonet.Connection;
 import game.gameobject.Player;
+import net.packets.PacketUpdate;
 
 /**
  *
@@ -19,6 +20,7 @@ public class MPlayer {
     private String name;
     private int x, y;
     private Player pl;
+    private PacketUpdate pu;
 
     public MPlayer() {
     }
@@ -27,44 +29,53 @@ public class MPlayer {
         this.name = text;
         this.id = id;
         this.conection = connection;
+        pu = new PacketUpdate();
 
     }
 
-    public void setPlayer(Player pl) {
+    public synchronized void setPlayer(Player pl) {
         this.pl = pl;
     }
 
-    public byte getId() {
+    public synchronized byte getId() {
         return id;
     }
 
-    public String getName() {
+    public synchronized String getName() {
         return name;
     }
 
-    public Connection getConnection() {
+    public synchronized Connection getConnection() {
         return conection;
     }
 
-    public void setPosition(int x, int y) {
+    public synchronized void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return x;
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return y;
     }
 
-    public Player inGame() {
+    public synchronized Player inGame() {
         return pl;
     }
 
-    public void Update(int x, int y, float SCALE) {
+    public synchronized void Update(int x, int y, float SCALE) {
         this.x = (int) (((float) x) / SCALE);
         this.y = (int) (((float) y) / SCALE);
+    }
+
+    public synchronized PacketUpdate PU() {
+        return pu;
+    }
+
+    public synchronized void resetPU() {
+        pu.Reset();
     }
 }

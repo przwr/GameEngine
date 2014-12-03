@@ -5,8 +5,6 @@
  */
 package net.packets;
 
-import net.NewMPlayer;
-
 /**
  *
  * @author przemek
@@ -22,7 +20,7 @@ public class PacketAddMPlayer {
         this.pl = pl;
     }
 
-    public NewMPlayer getPlayer() {
+    public synchronized NewMPlayer getPlayer() {
         return pl;
     }
 }

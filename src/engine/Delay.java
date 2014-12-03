@@ -14,6 +14,7 @@ public class Delay {
     private final int length;
     private long endTime;
     private boolean started;
+    private long toEnd;
 
     public Delay(int length) {
         this.length = length;
@@ -22,9 +23,10 @@ public class Delay {
 
     public boolean isOver() {
         if (!started) {
+            toEnd = 0;
             return false;
         }
-        return Time.getTime() >= endTime;
+        return endTime <= Time.getTime();
     }
 
     public boolean isActive() {
@@ -36,6 +38,11 @@ public class Delay {
         endTime = length * 1000000 + Time.getTime();
     }
 
+    public void startAt(int start) {
+        started = true;
+        endTime = start * 1000000 + Time.getTime();
+    }
+
     public void stop() {
         started = false;
     }
@@ -43,5 +50,9 @@ public class Delay {
     public void terminate() {
         started = true;
         endTime = 0;
+    }
+
+    public long getToEnd() {
+        return toEnd;
     }
 }

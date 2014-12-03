@@ -21,7 +21,7 @@ public class InputPadKey extends AnyInput {
         this.controllers = controllers;
         this.padNr = padNr;
         this.type = 2;
-        label = "JOY " + padNr + ": " + controllers[padNr].getButtonName(key).toUpperCase();
+        label = "JOY " + padNr + ": BUTTON " + key;
     }
 
     @Override

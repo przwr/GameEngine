@@ -5,10 +5,13 @@
  */
 package net;
 
+import net.packets.NewMPlayer;
 import game.Game;
 import game.gameobject.Player;
-import net.packets.PacketInput;
+import net.packets.MPlayerUpdate;
+import net.packets.MobUpdate;
 import net.packets.PacketMPlayerUpdate;
+import net.packets.PacketUpdate;
 
 /**
  *
@@ -20,18 +23,20 @@ public abstract class GameOnline {
     protected final boolean[] isChanged;
     protected final NewMPlayer newPls[];
     protected final byte removeIDs[];
-    protected final PacketMPlayerUpdate[] plUps;
+    protected final MPlayerUpdate[] plUps;
+    protected MobUpdate[] newMob;
     public final Game g;
     public GameServer server;
     public GameClient client;
 
-    public GameOnline(Game game, int changes, int players) {
-        this.g = game;
-        this.changes = new change[changes];
-        this.isChanged = new boolean[changes];
-        this.newPls = new NewMPlayer[players];
-        this.removeIDs = new byte[players];
-        this.plUps = new PacketMPlayerUpdate[players];
+    public GameOnline(Game game, int nrChanges, int players) {
+        g = game;
+        changes = new change[nrChanges];
+        isChanged = new boolean[nrChanges];
+        newPls = new NewMPlayer[players];
+        removeIDs = new byte[players];
+        plUps = new MPlayerUpdate[players];
+        newMob = new MobUpdate[1024];
     }
 
     public abstract void runServer();
@@ -48,9 +53,9 @@ public abstract class GameOnline {
 
     public abstract void removePlayer(byte id);
 
-    public abstract void playerUpdate(PacketMPlayerUpdate mPlayerUpdate);
+    public abstract void update(PacketUpdate update);
 
-    public abstract void updatePlayersInput(Player pl, PacketInput input);
+    public abstract void playerUpdate(PacketMPlayerUpdate mPlayerUpdate);
 
     public abstract Player getPlayer(byte id);
 

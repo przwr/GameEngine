@@ -9,12 +9,16 @@ import engine.Methods;
 import game.Game;
 import net.GameOnline;
 import game.gameobject.GameObject;
+import game.gameobject.Mob;
 import game.gameobject.Player;
+import java.util.ArrayList;
 import net.GameClient;
 import net.GameServer;
-import net.NewMPlayer;
-import net.packets.PacketInput;
+import net.packets.MPlayerUpdate;
+import net.packets.MobUpdate;
+import net.packets.NewMPlayer;
 import net.packets.PacketMPlayerUpdate;
+import net.packets.PacketUpdate;
 
 /**
  *
@@ -34,7 +38,7 @@ public class MyGameOnline extends GameOnline {
             server.Close();
             server = null;
         } else {
-            g.runClient();
+            g.runServer();
             g.mode = 1;
         }
     }
@@ -75,21 +79,119 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void playerUpdate(PacketMPlayerUpdate pl) {
+    public synchronized void update(PacketUpdate pl) {
         if (g.place != null) {
-            for (int i = 0; i < g.place.playersLength; i++) {
-                if (g.players[i].id == pl.getId()) {
-                    plUps[i] = pl;
+            UpdateMobs(pl.mobs());
+            UpdatePlayers(pl.players());
+        }
+    }
+
+    private synchronized void UpdatePlayers(ArrayList<MPlayerUpdate> players) {
+        Player plr;
+        for (MPlayerUpdate plUp : players) {
+            for (int p = 0; p < g.place.playersLength; p++) {
+                if (plUp.getId() == g.players[p].id) {
+                    plr = g.players[p];
+                    plr.isReady = false;
+                    plr.prevX = Methods.RoundHU((g.settings.SCALE) * plUp.getX());
+                    plr.prevY = Methods.RoundHU((g.settings.SCALE) * plUp.getY());
+                    int xd = plr.prevX - plr.getX();
+                    int yd = plr.prevY - plr.getY();
+                    plr.setX(plr.prevX);
+                    plr.setY(plr.prevY);
+//                    plr.canMove(xd, yd);
+                    plr.isReady = true;
+                    if (plUp.isHop()) {
+                        plr.setIsJumping(true);
+                    }
+                    plr.setEmits(plUp.isEmits());
+                    break;
+
+//                    g.players[p].setX(Methods.RoundHU((g.settings.SCALE) * plUp.getX()));
+//                    g.players[p].setY(Methods.RoundHU((g.settings.SCALE) * plUp.getY()));
+//                    g.players[p].upDepth();
+//                    if (plUp.isHop()) {
+//                        g.players[p].setIsJumping(true);
+//                    }
+//                    g.players[p].setEmits(plUp.isEmits());
+//                    break;
+                }
+            }
+        }
+    }
+
+    private synchronized void UpdateMobs(ArrayList<MobUpdate> mobs) {
+        boolean found;
+        for (MobUpdate mUp : mobs) {
+            found = false;
+            for (Mob mob : g.place.sMobs) {
+                if (mUp.getId() == mob.id) {
+                    mob.isReady = false;
+                    found = true;
+                    mob.prevX = (Methods.RoundHU((g.settings.SCALE) * mUp.getX()));
+                    mob.prevY = (Methods.RoundHU((g.settings.SCALE) * mUp.getY()));
+                    int xd = mob.prevX - mob.getX();
+                    int yd = mob.prevY - mob.getY();
+                    Player p = mob.getCollided(xd, yd);
+                    if (p != null) {
+                        p.setX(p.getX() + xd);
+                        p.setY(p.getY() + yd);
+                        p.upDepth();
+                    }
+                    mob.setX(mob.prevX);
+                    mob.setY(mob.prevY);
+                    mob.upDepth();
+                    mob.dX = mUp.delsX();
+                    mob.dY = mUp.delsY();
+                    mob.dCount = 0;
+                    mob.isReady = true;
                     break;
                 }
             }
-            isChanged[2] = true;
+            if (!found) {
+                for (int i = 0; i < newMob.length; i++) {
+                    if (newMob[i] != null && newMob[i].getId() == mUp.getId()) {
+                        newMob[i] = mUp;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    for (int i = 0; i < newMob.length; i++) {
+                        if (newMob[i] == null) {
+                            newMob[i] = mUp;
+                            break;
+                        }
+                    }
+                }
+                isChanged[2] = true;
+            }
         }
     }
 
     @Override
-    public synchronized void updatePlayersInput(Player pl, PacketInput input) {
-        pl.ctrl.setInput(input.inputs());
+    public synchronized void playerUpdate(PacketMPlayerUpdate pl) {
+        Player plr;
+        if (g.place != null) {
+            for (int p = 0; p < g.place.playersLength; p++) {
+                if (pl.MPU().getId() == g.players[p].id) {
+                    plr = g.players[p];
+                    plr.isReady = false;
+                    plr.prevX = Methods.RoundHU((g.settings.SCALE) * pl.MPU().getX());
+                    plr.prevY = Methods.RoundHU((g.settings.SCALE) * pl.MPU().getY());
+                    int xd = plr.prevX - plr.getX();
+                    int yd = plr.prevY - plr.getY();
+                    plr.setX(plr.prevX);
+                    plr.setY(plr.prevY);
+//                    plr.canMove(xd, yd);
+                    if (pl.MPU().isHop()) {
+                        plr.setIsJumping(true);
+                    }
+                    plr.setEmits(pl.MPU().isEmits());
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -99,8 +201,8 @@ public class MyGameOnline extends GameOnline {
             public void change() {
                 for (int i = 0; i < newPls.length; i++) {
                     if (newPls[i] != null) {
-                        System.out.println("Adding player: " + newPls[i].getId() + " " + newPls[i].getName());
-                        g.players[g.place.playersLength].init(4, 4, 56, 56, 64, 64, g.place, newPls[i].getX(), newPls[i].getY());
+                        System.out.println("Adding player with ID: " + newPls[i].getId() + " - " + newPls[i].getName());
+                        g.players[g.place.playersLength].init(4, 4, 56, 56, g.place, newPls[i].getX(), newPls[i].getY());
                         g.players[g.place.playersLength].id = newPls[i].getId();
                         g.players[g.place.playersLength].setName(newPls[i].getName());
                         g.place.players[g.place.playersLength] = g.players[g.place.playersLength];
@@ -138,23 +240,12 @@ public class MyGameOnline extends GameOnline {
         };
         changes[2] = new change() {
             @Override
-            public void change() {
-                for (PacketMPlayerUpdate plUp : plUps) {
-                    if (plUp != null) {
-                        for (int p = 0; p < g.place.playersLength; p++) {
-                            if (plUp.getId() == g.players[p].id) {
-                                g.players[p].setX(Methods.RoundHU((g.settings.SCALE) * plUp.getX()));
-                                g.players[p].setY(Methods.RoundHU((g.settings.SCALE) * plUp.getY()));
-                                if (g.players[p].getCam() != null) {
-                                    g.players[p].getCam().update();
-                                }
-                                if (plUp.isJumping()) {
-                                    g.players[p].setIsJumping(true);
-                                }
-                                g.players[p].setEmits(plUp.isEmits());
-                                break;
-                            }
-                        }
+            public synchronized void change() {
+                for (int i = 0; i < newMob.length; i++) {
+                    if (newMob[i] != null) {
+                        System.out.println("Adding Mob with ID: " + newMob[i].getId());
+                        g.place.addObj(new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", g.place, true, newMob[i].getId()));
+                        newMob[i] = null;
                     }
                 }
             }
@@ -194,5 +285,4 @@ public class MyGameOnline extends GameOnline {
         }
         return null;
     }
-
 }

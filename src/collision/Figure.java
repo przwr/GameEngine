@@ -7,6 +7,7 @@ package collision;
 
 import engine.Point;
 import game.gameobject.GameObject;
+import game.gameobject.Player;
 import game.place.Place;
 import java.util.ArrayList;
 
@@ -99,6 +100,13 @@ public abstract class Figure implements Comparable<Object> {
             }
         }
         return false;
+    }
+
+    public Player getCollided(int x, int y, Place place) {
+        if (checkCollison(x, y, place.players[0])) {
+            return (Player) place.players[0];
+        }
+        return null;
     }
 
     public GameObject whatCollide(int x, int y, GameObject[] gos) {
@@ -219,13 +227,13 @@ public abstract class Figure implements Comparable<Object> {
 
     @Override
     public int compareTo(Object o) {
-        if ((getCentralY() - ((Figure) o).getCentralY()) == 0) {
+        if ((getEndY() - ((Figure) o).getEndY()) == 0) {
             if (getDistFromLight() == -1) {
                 return 1;
             }
             return (getDistFromLight() - ((Figure) o).getDistFromLight());
         }
-        return getCentralY() - ((Figure) o).getCentralY();
+        return getEndY() - ((Figure) o).getEndY();
     }
 
     public int getDistFromLight() {
@@ -235,4 +243,5 @@ public abstract class Figure implements Comparable<Object> {
     public void setDistFromLight(int distFromLight) {
         this.distFromLight = distFromLight;
     }
+
 }

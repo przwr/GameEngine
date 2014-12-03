@@ -5,17 +5,9 @@
  */
 package collision;
 
-import engine.Drawer;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.util.ArrayList;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  *
@@ -117,26 +109,6 @@ public class Area extends GameObject {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        if (simpleLighting) {
-            if (isLit) {
-                glColor4f(color, color, color, 1f);
-            } else {
-                glColor4f(0f, 0f, 0f, 1f);
-            }
-            Drawer.drawRectangle(0, 0, parts.get(0).width, parts.get(0).height);
-            glColor4f(1f, 1f, 1f, 1f);
-        } else if (sprite != null) {
-            if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color, 1);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            } else {
-                Drawer.drawShapeInBlack(sprite);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            }
-        }
-        glPopMatrix();
     }
 
     public boolean isBorder() {

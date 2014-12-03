@@ -6,8 +6,6 @@
  */
 package net.packets;
 
-import net.MPlayerUpdate;
-
 /**
  *
  * @author przemek
@@ -28,15 +26,15 @@ public class PacketJoinResponse {
         pl = new MPlayerUpdate(id);
     }
 
-    public byte getId() {
+    public synchronized byte getId() {
         return pl.getId();
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return pl.getX();
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return pl.getY();
     }
 

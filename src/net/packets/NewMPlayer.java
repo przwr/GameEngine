@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net;
+package net.packets;
+
+import net.MPlayer;
 
 /**
  *
@@ -30,24 +32,24 @@ public class NewMPlayer {
         this.y = pl.getY();
     }
 
-    public byte getId() {
+    public synchronized byte getId() {
         return id;
     }
 
-    public String getName() {
+    public synchronized String getName() {
         return name;
     }
 
-    public void setPosition(int x, int y) {
+    public synchronized void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return x;
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return y;
     }
 }

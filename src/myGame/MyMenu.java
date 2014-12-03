@@ -59,8 +59,7 @@ public class MyMenu extends Menu {
         generate();
     }
 
-    @Override
-    protected void generate() {
+    private void generate() {
         delay = new Delay(25);
         delay.restart();
         menus = new MenuOpt[9];

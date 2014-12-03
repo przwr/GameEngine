@@ -26,17 +26,18 @@ public abstract class Mob extends Entity {
 
     protected final double range;
     protected GameObject prey;
+    public short id;
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid) {
         double SCALE = place.settings.SCALE;
-        this.width = (int) (SCALE * width);
-        this.height = (int) (SCALE * height);
+        this.width = Methods.RoundHU((int) (SCALE * width));
+        this.height = Methods.RoundHU((int) (SCALE * height));
         this.solid = solid;
-        this.sX = (int) (SCALE * startX);
-        this.sY = (int) (SCALE * startY);
-        this.range = (int) (SCALE * range);
+        this.sX = Methods.RoundHU((int) (SCALE * startX));
+        this.sY = Methods.RoundHU((int) (SCALE * startY));
+        this.range = Methods.RoundHU((int) (SCALE * range));
         scale = SCALE;
-        init(name, (int) (SCALE * x), (int) (SCALE * y), place);
+        init(name, Methods.RoundHU((int) (SCALE * x)), Methods.RoundHU((int) (SCALE * y)), place);
         this.sprite = place.getSprite("rabbit");
         setCollision(new Rectangle(this.width, this.height / 4, true, false, this));
         this.setMaxSpeed(speed);
@@ -47,6 +48,11 @@ public abstract class Mob extends Entity {
     @Override
     protected boolean isColided(int magX, int magY) {
         return collision.ifCollideSolid(getX() + magX, getY() + magY, place) || collision.ifCollide(getX() + magX, getY() + magY, place);
+    }
+
+    @Override
+    public Player getCollided(int magX, int magY) {
+        return collision.getCollided(getX() + magX, getY() + magY, place);
     }
 
     @Override

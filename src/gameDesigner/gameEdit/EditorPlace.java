@@ -37,8 +37,8 @@ public class EditorPlace extends Place {
         generate();
     }
 
-    @Override
-    public void generate() {
+
+    private void generate() {
         Area border = new Area(0, 0, sTile, true);
         border.addFigure(new Line(0, 0, width, 0, border));
         border.addFigure(new Line(0, 0, 0, height, border));

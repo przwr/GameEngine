@@ -9,6 +9,7 @@ import engine.Methods;
 import engine.Time;
 import game.place.Place;
 import game.place.cameras.Camera;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,11 +17,17 @@ import game.place.cameras.Camera;
  */
 public abstract class Entity extends GameObject {
 
+    public int prevX = -1;
+    public int prevY = -1;
+    public ArrayList<Short> dX;
+    public ArrayList<Short> dY;
+    public boolean isReady;
+    public int dCount;
     protected double hspeed;      // prędkości ustawiane przez środowisko
     protected double vspeed;
     protected double myHspeed;    // prędkości uzyskiwane przez gracza
     protected double myVspeed;
-    protected double weight = 2;  // 1 - idealny balans, im więcej tym gorzej
+    protected double weight = 1;  // 1 - idealny balans, im więcej tym gorzej
     protected double maxSpeed;
     protected double jump;
     protected double scale;
@@ -52,7 +59,77 @@ public abstract class Entity extends GameObject {
         }
     }
 
+    public void movetoPoint(int magX, int magY) {
+        int xpos = (int) (magX * Time.getDelta());
+        int ypos = (int) (magY * Time.getDelta());
+        int xd = Integer.signum(xpos);
+        int yd = Integer.signum(ypos);
+
+        while (xpos != 0 || ypos != 0) {
+            Player colided;
+            if (xpos != 0) {
+                colided = getCollided(xd, 0);
+                if (colided == null) {
+                    move(xd, 0);
+                    xpos -= xd;
+                } else {
+                    colided.setX(colided.getX() + xd);
+                    if (colided.getCam() != null) {
+                        colided.getCam().update();
+                    }
+                    move(xd, 0);
+                    xpos -= xd;
+                }
+            }
+            if (ypos != 0) {
+                colided = getCollided(0, yd);
+                if (colided == null) {
+                    move(0, yd);
+                    depth = (int) y;
+                    ypos -= yd;
+                } else {
+                    colided.setY(colided.getY() + yd);
+                    colided.upDepth();
+                    if (colided.getCam() != null) {
+                        colided.getCam().update();
+                    }
+                    move(0, yd);
+                    depth = (int) y;
+                    ypos -= yd;
+                }
+            }
+        }
+    }
+
+    public void updateHard() {  // przesuwa graczy
+        int deltX = 0, deltY = 0, pX, pY;
+        if (dX != null && isReady && dCount < dX.size()) {
+            pX = prevX;
+            pY = prevY;
+            deltX = Methods.RoundHU((place.settings.SCALE) * dX.get(dCount));
+            deltY = Methods.RoundHU((place.settings.SCALE) * dY.get(dCount));
+            // System.out.println("dX: " + delsX.get(delC) + " dY: " + delsY.get(delC));
+            movetoPoint((pX - deltX) - getX(), (pY - deltY) - getY());
+            dCount++;
+        }
+    }
+
+    public void updateSoft() {  // nie przesuwa graczy
+        int deltX, deltY, pX, pY;
+        if (dX != null && isReady && dCount < dX.size()) {
+            pX = prevX;
+            pY = prevY;
+            deltX = Methods.RoundHU((place.settings.SCALE) * dX.get(dCount));
+            deltY = Methods.RoundHU((place.settings.SCALE) * dY.get(dCount));
+            // System.out.println("dX: " + delsX.get(delC) + " dY: " + delsY.get(delC));
+            canMove((pX - deltX) - getX(), (pY - deltY) - getY());
+            dCount++;
+        }
+    }
+
     protected abstract boolean isColided(int magX, int magY);
+
+    public abstract Player getCollided(int magX, int magY);
 
     protected abstract void move(int xPos, int yPos);
 
@@ -114,7 +191,7 @@ public abstract class Entity extends GameObject {
 
     public void setIsHop(boolean hop) {
         this.hop = hop;
-    }    
+    }
 
     public void brake(int axis) {  // 0 OX, 1 OY, 2 oba
         brake(weight, axis);
@@ -180,5 +257,4 @@ public abstract class Entity extends GameObject {
             myVspeed = ymove;
         }
     }
-
 }
