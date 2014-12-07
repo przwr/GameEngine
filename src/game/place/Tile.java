@@ -1,5 +1,6 @@
 package game.place;
 
+import collision.Figure;
 import engine.Drawer;
 import game.gameobject.GameObject;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
@@ -35,7 +36,7 @@ public class Tile extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         if (simpleLighting) {

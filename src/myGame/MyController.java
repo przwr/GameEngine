@@ -76,7 +76,7 @@ public class MyController extends Controler {
             inControl.setIsHop(true);
         }
         if (states[RUN]) {
-            inControl.setMaxSpeed(16);
+            inControl.setMaxSpeed(2);
         } else {
             inControl.setMaxSpeed(8);
         }

@@ -94,10 +94,6 @@ public class Area extends GameObject {
         return parts.remove(i);
     }
 
-    public void setSolid(boolean s) {
-        solid = s;
-    }
-
     public boolean ifCollide(int x, int y, Figure f) {
         //if (ifGoodDistance(x, y, f)) {
         for (Figure part : parts) {
@@ -127,17 +123,19 @@ public class Area extends GameObject {
     }
 
     private void upCollision() {
-        int maxX = 0, maxY = 0, minX = parts.get(0).listPoints()[0].getX(), minY = parts.get(0).listPoints()[0].getY();
+        int maxX = 0, maxY = 0, minX = 2147483647, minY = 2147483647;
         int x, y;
         for (Figure part : parts) {
-            Point[] pList = part.listPoints();
-            for (Point p : pList) {
-                x = p.getX();
-                y = p.getY();
-                maxX = maxX > x ? maxX : x;
-                maxY = maxY > y ? maxY : y;
-                minX = minX < x ? minX : x;
-                minY = minY < y ? minY : y;
+            if (part.canBeLit) {
+                Point[] pList = part.listPoints();
+                for (Point p : pList) {
+                    x = p.getX();
+                    y = p.getY();
+                    maxX = maxX > x ? maxX : x;
+                    maxY = maxY > y ? maxY : y;
+                    minX = minX < x ? minX : x;
+                    minY = minY < y ? minY : y;
+                }
             }
         }
         collision = new Rectangle(minX - getX(), minY - getY(), maxX - minX, maxY - minY, true, true, this);
@@ -161,16 +159,16 @@ public class Area extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
+        glTranslatef(f.getX() + xEffect, f.getY() + yEffect, 0);
         if (simpleLighting) {
             if (isLit) {
                 glColor4f(color, color, color, 1f);
             } else {
                 glColor4f(0f, 0f, 0f, 1f);
             }
-            Drawer.drawRectangle(0, 0, sTile, sTile);
+            Drawer.drawRectangle(0, 0, f.width, f.height);
             glColor4f(1f, 1f, 1f, 1f);
         } else if (sprite != null) {
             if (isLit) {

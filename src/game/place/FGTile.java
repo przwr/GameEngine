@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import collision.Figure;
 import collision.Rectangle;
 import engine.Drawer;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
@@ -28,7 +29,7 @@ public class FGTile extends Tile {
         super(sh, size, xSheet, ySheet, place);
         this.simpleLighting = true;
         this.solid = isItWall;
-        setCollision(new Rectangle(0, height, sh.getWidth(), sh.getHeight(), isItWall, isItWall, this));
+        setCollision(new Rectangle(0, height, size, size, isItWall, isItWall, this));
     }
 
     public boolean isSimpleLighting() {
@@ -48,9 +49,9 @@ public class FGTile extends Tile {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         glPushMatrix();
-        glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+        glTranslatef(getX() + xEffect, getY() + yEffect, 0);
         if (simpleLighting) {
             if (isLit) {
                 glColor4f(color, color, color, 1f);

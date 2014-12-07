@@ -64,55 +64,67 @@ public class MyPlace extends Place {
                 }
             }
         }
-        Area testa = new Area(6 * sTile, 5 * sTile, sTile, false, false);
-        Area testb = new Area(8 * sTile, 5 * sTile, sTile, false, false);
-        Area testc = new Area(7 * sTile, 7 * sTile, sTile, false, false);
-        Area testd = new Area(9 * sTile, 7 * sTile, sTile, false, false);
+        Area testa = new Area(6 * sTile, 5 * sTile, sTile, false, true);
+        Area testb = new Area(8 * sTile, 5 * sTile, sTile, false, true);
+        Area testc = new Area(7 * sTile, 7 * sTile, sTile, false, true);
+        Area testd = new Area(9 * sTile, 7 * sTile, sTile, false, true);
+        Area teste = new Area(11 * sTile, 7 * sTile, sTile, false, true);
 
-        //testa.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testa));
+//        testa.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testa));
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
-        testa.addPiece(fgt);
         addFGTile(fgt, 6 * sTile, 5 * sTile, 0, true);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         testa.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         addFGTile(fgt, 6 * sTile, 4 * sTile, 2 * sTile, true);
+        testa.addPiece(fgt);
 
-        //tiles[6 + 6 * height / sTile] = ROCK;
-        // testb.addFigure(new Rectangle(0, 0, 2 * sTile, sTile, true, true, testb));
+//        testb.addFigure(new Rectangle(0, 0, 2 * sTile, sTile, true, true, testb));
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
-        testb.addPiece(fgt);
         addFGTile(fgt, 8 * sTile, 5 * sTile, 0, true);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         testb.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         addFGTile(fgt, 8 * sTile, 4 * sTile, 2 * sTile, true);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
         testb.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
         addFGTile(fgt, 9 * sTile, 5 * sTile, 0, true);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         testb.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         addFGTile(fgt, 9 * sTile, 4 * sTile, 2 * sTile, true);
-        //tiles[8 + 6 * height / sTile] = ROCK;
-
-        //testc.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testc));
+        testb.addPiece(fgt);
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
-        testc.addPiece(fgt);
+        addFGTile(fgt, 10 * sTile, 5 * sTile, 0, true);
+        testb.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        addFGTile(fgt, 10 * sTile, 4 * sTile, 2 * sTile, true);
+        testb.addPiece(fgt);
+
+//        testc.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testc));
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
         addFGTile(fgt, 7 * sTile, 7 * sTile, 0, true);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         testc.addPiece(fgt);
-        addFGTile(fgt, 7 * sTile, 6 * sTile, 2 * sTile, true);
-
-        //testd.addFigure(new Rectangle(0, 0, sTile, 2 * sTile, true, true, testd));
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
-        testd.addPiece(fgt);
-        addFGTile(fgt, 9 * sTile, 8 * sTile, 0, true);
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        addFGTile(fgt, 7 * sTile, 6 * sTile, 2 * sTile, true);
+        testc.addPiece(fgt);
+
+//        testd.addFigure(new Rectangle(0, 0, sTile, 2 * sTile, true, true, testd));
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        addFGTile(fgt, 9 * sTile, 8 * sTile, 0, true);
         testd.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         addFGTile(fgt, 9 * sTile, 7 * sTile, 2 * sTile, true);
+        testd.addPiece(fgt);
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
         fgt.setSolid(true);
-        testd.addPiece(fgt);
         addFGTile(fgt, 9 * sTile, 6 * sTile, 2 * sTile, true);
-        //tiles[7 + 7 * height / sTile] = ROCK;
+        testd.addPiece(fgt);
+
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        addFGTile(fgt, 11 * sTile, 7 * sTile, 0, true);
+        teste.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        addFGTile(fgt, 11 * sTile, 6 * sTile, 2 * sTile, true);
+        teste.addPiece(fgt);
+
         Area border = new Area(0, 0, sTile, true, false);
         border.addFigure(new Line(0, 0, width, 0, border));
         border.addFigure(new Line(0, 0, 0, height, border));
@@ -123,9 +135,10 @@ public class MyPlace extends Place {
         areas.add(testb);
         areas.add(testc);
         areas.add(testd);
+        areas.add(teste);
         areas.add(border);
         if (isHost) {
-            addObj(new MyMob(1280, 512, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+            addObj(new MyMob(1280, 1024, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
             addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
         }
         this.r = 0.75f;

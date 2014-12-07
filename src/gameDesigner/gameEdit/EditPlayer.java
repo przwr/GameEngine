@@ -5,6 +5,7 @@
  */
 package gameDesigner.gameEdit;
 
+import collision.Figure;
 import collision.Rectangle;
 import engine.Animation;
 import game.gameobject.Player;
@@ -126,7 +127,7 @@ public class EditPlayer extends Player {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
     }
 
 //    public void initControler(boolean isFirst) {

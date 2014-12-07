@@ -5,6 +5,7 @@
  */
 package game.gameobject;
 
+import collision.Figure;
 import collision.Rectangle;
 import engine.Drawer;
 import engine.Methods;
@@ -102,7 +103,7 @@ public abstract class Mob extends Entity {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);

@@ -40,7 +40,7 @@ public abstract class GameObject {
 
     public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color);
+    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f);
 
     protected void init(String name, int x, int y, Place place) {
         this.x = x;

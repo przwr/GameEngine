@@ -5,6 +5,7 @@
  */
 package myGame;
 
+import collision.Figure;
 import collision.Rectangle;
 import game.gameobject.Player;
 import game.place.cameras.Camera;
@@ -135,7 +136,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         // glTranslatef(getX() + xEffect, getY() + yEffect, 0);
         if (sprite != null) {
             glPushMatrix();
