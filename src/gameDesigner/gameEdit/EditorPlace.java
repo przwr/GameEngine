@@ -39,7 +39,7 @@ public class EditorPlace extends Place {
 
 
     private void generate() {
-        Area border = new Area(0, 0, sTile, true);
+        Area border = new Area(0, 0, sTile, true, false);
         border.addFigure(new Line(0, 0, width, 0, border));
         border.addFigure(new Line(0, 0, 0, height, border));
         border.addFigure(new Line(width, 0, 0, height, border));

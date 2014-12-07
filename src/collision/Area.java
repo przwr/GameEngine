@@ -5,9 +5,17 @@
  */
 package collision;
 
+import engine.Drawer;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.util.ArrayList;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  *
@@ -16,25 +24,32 @@ import java.util.ArrayList;
 public class Area extends GameObject {
 
     public ArrayList<Figure> parts;
+    public ArrayList<GameObject> pieces;
+    public boolean isWhole;
     protected int xCentr;
     protected int yCentr;
+    protected int sTile;
     protected boolean isBorder;
 
     public Area(int x, int y, int sTile) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
         this.x = x;
         this.y = y;
+        this.sTile = sTile;
         this.parts = new ArrayList<>();
+        this.pieces = new ArrayList<>();
         solid = true;
         simpleLighting = true;
     }
 
-    public Area(int x, int y, int sTile, boolean isBorder) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
+    public Area(int x, int y, int sTile, boolean isBorder, boolean isWhole) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
         this.x = x;
         this.y = y;
         this.parts = new ArrayList<>();
+        this.pieces = new ArrayList<>();
         solid = true;
         simpleLighting = true;
         this.isBorder = isBorder;
+        this.isWhole = isWhole;
     }
 
     public void addFigure(Figure f) {
@@ -46,8 +61,29 @@ public class Area extends GameObject {
             height = f.getYs() + f.getHeight() * 2;
             yCentr = (int) y + height / 2;
         }
-
         parts.add(f);
+        if (isWhole) {
+            upCollision();
+        }
+    }
+
+    public void addPiece(GameObject g) {
+        Figure f = g.getCollision();
+        if (g.isSolid()) {
+            if (width < f.getXs() + f.getWidth()) {
+                width = f.getXs() + f.getWidth() * 2;
+                xCentr = (int) x + width / 2;
+            }
+            if (height < f.getYs() + f.getHeight()) {
+                height = f.getYs() + f.getHeight() * 2;
+                yCentr = (int) y + height / 2;
+            }
+        }
+        parts.add(f);
+        pieces.add(g);
+        if (isWhole) {
+            upCollision();
+        }
     }
 
     public Figure getFigure(int i) {
@@ -64,22 +100,22 @@ public class Area extends GameObject {
 
     public boolean ifCollide(int x, int y, Figure f) {
         //if (ifGoodDistance(x, y, f)) {
-            for (Figure part : parts) {
-                if (f.ifCollideSngl(x, y, part)) {
-                    return true;
-                }
+        for (Figure part : parts) {
+            if (f.ifCollideSngl(x, y, part)) {
+                return true;
             }
+        }
         //}
         return false;
     }
 
     public Figure whatCollide(int x, int y, Figure f) {
         //if (ifGoodDistance(x, y, f)) {
-            for (Figure part : parts) {
-                if (f.ifCollideSngl(x, y, part)) {
-                    return part;
-                }
+        for (Figure part : parts) {
+            if (f.ifCollideSngl(x, y, part)) {
+                return part;
             }
+        }
         //}
         return null;
     }
@@ -88,6 +124,23 @@ public class Area extends GameObject {
         int dx = Math.abs(xCentr - f.getCentralX(x));
         int dy = Math.abs(yCentr - f.getCentralY(y));
         return (dx <= (getWidth() + f.getWidth()) / 2 && dy <= (getWidth() + f.getWidth()) / 2);
+    }
+
+    private void upCollision() {
+        int maxX = 0, maxY = 0, minX = parts.get(0).listPoints()[0].getX(), minY = parts.get(0).listPoints()[0].getY();
+        int x, y;
+        for (Figure part : parts) {
+            Point[] pList = part.listPoints();
+            for (Point p : pList) {
+                x = p.getX();
+                y = p.getY();
+                maxX = maxX > x ? maxX : x;
+                maxY = maxY > y ? maxY : y;
+                minX = minX < x ? minX : x;
+                minY = minY < y ? minY : y;
+            }
+        }
+        collision = new Rectangle(minX - getX(), minY - getY(), maxX - minX, maxY - minY, true, true, this);
     }
 
     public Point[] listPoints() {
@@ -109,6 +162,26 @@ public class Area extends GameObject {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color) {
+        glPushMatrix();
+        glTranslatef(xEffect, yEffect, 0);
+        if (simpleLighting) {
+            if (isLit) {
+                glColor4f(color, color, color, 1f);
+            } else {
+                glColor4f(0f, 0f, 0f, 1f);
+            }
+            Drawer.drawRectangle(0, 0, sTile, sTile);
+            glColor4f(1f, 1f, 1f, 1f);
+        } else if (sprite != null) {
+            if (isLit) {
+                Drawer.drawShapeInColor(sprite, color, color, color, 1);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            } else {
+                Drawer.drawShapeInBlack(sprite);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            }
+        }
+        glPopMatrix();
     }
 
     public boolean isBorder() {

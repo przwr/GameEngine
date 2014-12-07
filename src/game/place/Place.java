@@ -104,7 +104,7 @@ public abstract class Place extends ScreenPlace {
                         Renderer.preRenderShadowedLights(place, cam);
                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         sprites.setLastTex(-1);
-//                        glOrtho(-1 / settings.SCALE, 1 / settings.SCALE, -1 / settings.SCALE, 1 / settings.SCALE, 1.0, -1.0);
+                        // glOrtho(-1 / settings.SCALE, 1 / settings.SCALE, -1 / settings.SCALE, 1 / settings.SCALE, 1.0, -1.0);
                         renderBack(cam);
                         renderObj(cam);
                         renderText(cam);
@@ -220,7 +220,7 @@ public abstract class Place extends ScreenPlace {
         }
         t.setX(x);
         t.setY(y);
-        t.setDepth(depth);
+        t.setDepth(y + depth);
         foregroundTiles.add(t);
         sortObjects(foregroundTiles);
     }

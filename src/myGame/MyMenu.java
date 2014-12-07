@@ -7,6 +7,7 @@ package myGame;
 
 import engine.Delay;
 import engine.FontsHandler;
+import engine.Methods;
 import game.Game;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
@@ -76,8 +77,8 @@ public class MyMenu extends Menu {
         this.g = 1f;
         this.b = 1f;
         fonts = new FontsHandler(20);
-        fonts.add("Amble-Regular", (int) (settings.SCALE * 38));
-        fonts.add("Amble-Regular", (int) (settings.SCALE * 64));
+        fonts.add("Amble-Regular", Methods.RoundHU (settings.SCALE * 38));
+        fonts.add("Amble-Regular", Methods.RoundHU (settings.SCALE * 64));
     }
 
     private void generateM0() {

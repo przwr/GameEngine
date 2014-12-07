@@ -176,7 +176,7 @@ public class MyGame extends Game {
     @Override
     public void startGame() {
         int nrPl = settings.nrPlayers;
-        place = new MyPlace(this, (int) (settings.SCALE * 2304), (int) (settings.SCALE * 2304), (int) (settings.SCALE * 64), settings, true);
+        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, true);
         place.players = new GameObject[4];
         place.playersLength = nrPl;
         if (nrPl == 1) {
@@ -295,7 +295,7 @@ public class MyGame extends Game {
 
     @Override
     public void runClient() {
-        place = new MyPlace(this, (int) (settings.SCALE * 2304), (int) (settings.SCALE * 2304), (int) (settings.SCALE * 64), settings, false);
+        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, false);
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].init(4, 4, 56, 56, place);
@@ -307,7 +307,7 @@ public class MyGame extends Game {
 
     @Override
     public void runServer() {
-        place = new MyPlace(this, (int) (settings.SCALE * 2304), (int) (settings.SCALE * 2304), (int) (settings.SCALE * 64), settings, true);
+        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, true);
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].init(4, 4, 56, 56, place);

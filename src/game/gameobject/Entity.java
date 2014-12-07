@@ -9,7 +9,7 @@ import engine.Methods;
 import engine.Time;
 import game.place.Place;
 import game.place.cameras.Camera;
-import java.util.ArrayList;
+import net.packets.Update;
 
 /**
  *
@@ -17,11 +17,10 @@ import java.util.ArrayList;
  */
 public abstract class Entity extends GameObject {
 
-    public int prevX = -1;
-    public int prevY = -1;
-    public ArrayList<Short> dX;
-    public ArrayList<Short> dY;
-    public boolean isReady;
+//    public int prevX1, prevX2, prevY1, prevY2;
+//    public ArrayList<Short> dX1, dX2, dY1, dY2;
+    public Update up1, up2;
+    protected boolean isFirst;
     public int dCount;
     protected double hspeed;      // prędkości ustawiane przez środowisko
     protected double vspeed;
@@ -52,6 +51,7 @@ public abstract class Entity extends GameObject {
                 if (!isColided(0, yd)) {
                     move(0, yd);
                     ypos -= yd;
+                    depth = (int) y;
                 } else {
                     ypos = 0;
                 }
@@ -103,27 +103,61 @@ public abstract class Entity extends GameObject {
 
     public void updateHard() {  // przesuwa graczy
         int deltX = 0, deltY = 0, pX, pY;
-        if (dX != null && isReady && dCount < dX.size()) {
-            pX = prevX;
-            pY = prevY;
-            deltX = Methods.RoundHU((place.settings.SCALE) * dX.get(dCount));
-            deltY = Methods.RoundHU((place.settings.SCALE) * dY.get(dCount));
-            // System.out.println("dX: " + delsX.get(delC) + " dY: " + delsY.get(delC));
-            movetoPoint((pX - deltX) - getX(), (pY - deltY) - getY());
-            dCount++;
+        if (isFirst) {
+            if (up1 != null && dCount < up1.delsX().size()) {
+                if (dCount >= 0) {
+                    deltX = up1.delsX().get(dCount);
+                    deltY = up1.delsY().get(dCount);
+                }
+                pX = up1.getX();
+                pY = up1.getY();
+                movetoPoint(Methods.RoundHU((pX - deltX) * scale) - getX(), Methods.RoundHU((pY - deltY) * scale) - getY());
+                dCount++;
+            }
+        } else {
+            if (up2 != null && dCount < up2.delsX().size()) {
+                if (dCount >= 0) {
+                    deltX = up2.delsX().get(dCount);
+                    deltY = up2.delsY().get(dCount);
+                }
+                pX = up2.getX();
+                pY = up2.getY();
+                movetoPoint(Methods.RoundHU((pX - deltX) * scale) - getX(), Methods.RoundHU((pY - deltY) * scale) - getY());
+                dCount++;
+            }
         }
     }
 
     public void updateSoft() {  // nie przesuwa graczy
-        int deltX, deltY, pX, pY;
-        if (dX != null && isReady && dCount < dX.size()) {
-            pX = prevX;
-            pY = prevY;
-            deltX = Methods.RoundHU((place.settings.SCALE) * dX.get(dCount));
-            deltY = Methods.RoundHU((place.settings.SCALE) * dY.get(dCount));
-            // System.out.println("dX: " + delsX.get(delC) + " dY: " + delsY.get(delC));
-            canMove((pX - deltX) - getX(), (pY - deltY) - getY());
-            dCount++;
+        int deltX = 0, deltY = 0, pX, pY;
+        if (isFirst) {
+            if (up1 != null && dCount < up1.delsX().size()) {
+                if (dCount >= 0) {
+                    deltX = up1.delsX().get(dCount);
+                    deltY = up1.delsY().get(dCount);
+                }
+                pX = up1.getX();
+                pY = up1.getY();
+                System.out.println("1: " + pX + " " + deltX);
+                canMove(Methods.RoundHU((pX - deltX) * scale) - getX(), Methods.RoundHU((pY - deltY) * scale) - getY());
+                dCount++;
+                return;
+            }
+            System.out.println("Lipa");
+        } else {
+            if (up2 != null && dCount < up2.delsX().size()) {
+                if (dCount >= 0) {
+                    deltX = up2.delsX().get(dCount);
+                    deltY = up2.delsY().get(dCount);
+                }
+                pX = up2.getX();
+                pY = up2.getY();
+                System.out.println("2: " + pX + " " + deltX);
+                canMove(Methods.RoundHU((pX - deltX) * scale) - getX(), Methods.RoundHU((pY - deltY) * scale) - getY());
+                dCount++;
+                return;
+            }
+            System.out.println("Lipa2");
         }
     }
 
@@ -256,5 +290,13 @@ public abstract class Entity extends GameObject {
             myHspeed = xmove;
             myVspeed = ymove;
         }
+    }
+
+    public void setIsFirst(boolean isFirst) {
+        this.isFirst = isFirst;
+    }
+
+    public boolean isFirst() {
+        return isFirst;
     }
 }

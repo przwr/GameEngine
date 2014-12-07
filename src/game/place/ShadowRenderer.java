@@ -66,6 +66,13 @@ public class ShadowRenderer {
                     drawWalls(emitter);
                 }
                 shadeColor = (emitter.getY() - shade.getEndY()) / (float) ((emitter.getHeight()) / 2);
+                if (shade.getOwner().getClass() == Area.class) {
+                    shade.getOwner().renderShadow((shade.getX()) + emitter.getLight().getSX() / 2 - (emitter.getX()),
+                            shade.getY() + emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), shade.canBeLit() && emitter.getY() >= shade.getCentralY(), shadeColor);
+                } else {
+                    shade.getOwner().renderShadow(emitter.getLight().getSX() / 2 - (emitter.getX()),
+                            emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), shade.canBeLit() && emitter.getY() >= shade.getCentralY(), shadeColor);
+                }
                 shade.getOwner().renderShadow(emitter.getLight().getSX() / 2 - (emitter.getX()),
                         emitter.getLight().getSY() / 2 - (emitter.getY()) + h - emitter.getLight().getSY(), shade.canBeLit() && emitter.getY() >= shade.getEndY(), shadeColor);
             } else {
@@ -82,14 +89,35 @@ public class ShadowRenderer {
         // Powinno sortować według wysoskości - najpierw te, które są najwyżej na planszy, a później coraz niższe,
         // obiekty tej samej wysokości powinny być renderowane w kolejności od najdalszych od źródła, do najbliższych.
         nrShades = 0;
-        for (GameObject tile : place.foregroundTiles) {   // FGTiles muszą mieć Collision
-            tmp = tile.getCollision();
-            if ((Math.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getOwner().getHeight() >> 1))
-                    && (Math.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getOwner().getWidth() >> 1))) {
-                shades[nrShades++] = tmp;
-                tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : Math.abs(src.getX() - tmp.getCentralX()));
+        for (Area a : place.areas) { //iteracja po Shades - tych co dają cień
+            if (!a.isBorder()) {
+                if (a.isWhole) {
+                    tmp = a.getCollision();
+                    if (tmp != null && (Math.abs(tmp.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getHeight() >> 1))
+                            && (Math.abs(tmp.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getWidth() >> 1))) {
+                        shades[nrShades++] = tmp;
+                        tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : Math.abs(src.getX() - tmp.getCentralX()));
+                    }
+                } else {
+                    for (Figure tmp : a.getParts()) {
+                        if (tmp != null && (Math.abs(tmp.getCentralY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getHeight() >> 1))
+                                && (Math.abs(tmp.getCentralX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getWidth() >> 1))) {
+                            shades[nrShades++] = tmp;
+                            tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : Math.abs(src.getX() - tmp.getCentralX()));
+                        }
+                    }
+                }
             }
         }
+
+//        for (GameObject tile : place.foregroundTiles) {   // FGTiles muszą mieć Collision
+//            tmp = tile.getCollision();
+//            if ((Math.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getOwner().getHeight() >> 1))
+//                    && (Math.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.getOwner().getWidth() >> 1))) {
+//                shades[nrShades++] = tmp;
+//                tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : Math.abs(src.getX() - tmp.getCentralX()));
+//            }
+//        }
         for (GameObject go : place.depthObj) {   // FGTiles muszą mieć Collision
             tmp = go.getCollision();
             if ((Math.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.getOwner().getHeight() >> 1))
@@ -186,7 +214,7 @@ public class ShadowRenderer {
         left = right = null;
         for (int i = 0; i < nrShades; i++) {
             other = shades[i];
-            if (f.getY() < src.getY() && other.canGiveShadow() && other != f && other.getY() < f.getY() && other.getEndY() < src.getY()) {
+            if (f.getEndY() < src.getY() && other.canGiveShadow() && other != f && other.getEndY() < f.getEndY() && other.getEndY() < src.getY()) {
                 XOL = ((other.getEndY() - bl1) / al1);
                 XOL2 = ((other.getY() - bl1) / al1);
                 XOR = ((other.getEndY() - bl2) / al2);

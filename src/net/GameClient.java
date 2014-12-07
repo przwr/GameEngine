@@ -28,17 +28,18 @@ import net.packets.PacketUpdate;
  * @author przemek
  */
 public class GameClient {
-
+    
     private final Client client;
     private final Player pl;
+    private PacketMPlayerUpdate mpup;
     private final GameOnline game;
     private final float SCALE;
     private Connection server;
     public boolean isConnected;
     private Delay delay;
-
+    
     public GameClient(final Player pl, final GameOnline game, String IP) {
-
+        
         this.pl = pl;
         this.game = game;
         this.SCALE = game.g.settings.SCALE;
@@ -47,18 +48,16 @@ public class GameClient {
         delay.terminate();
         try {
             Log.set(Log.LEVEL_DEBUG);
-
             KryoUtil.registerClientClass(client);
-
             new Thread(client).start();
-
+            
             client.addListener(new Listener() {
                 @Override
                 public void connected(Connection connection) {
                     PacketJoinRequest test = new PacketJoinRequest(pl.getName());
                     client.sendTCP(test);
                 }
-
+                
                 @Override
                 public void received(Connection connection, Object obj) {
                     try {
@@ -78,6 +77,7 @@ public class GameClient {
                                 pl.id = ((PacketJoinResponse) obj).getId();
                                 pl.setX(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getX()));
                                 pl.setY(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getY()));
+                                mpup = new PacketMPlayerUpdate(pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                                 System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
                             } else {
                                 System.out.println("Server is Full!");
@@ -89,7 +89,7 @@ public class GameClient {
                         cleanUp(e);
                     }
                 }
-
+                
                 @Override
                 public void disconnected(Connection connection) {
                     System.out.println("Disconnected!");
@@ -98,7 +98,7 @@ public class GameClient {
                     client.close();
                 }
             });
-
+            
             try {
                 /* Make sure to connect using both tcp and udp port */
                 client.connect(5000, IP, KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
@@ -113,32 +113,52 @@ public class GameClient {
             cleanUp(e);
         }
     }
-
+    
     public void sendInput(PacketInput input) {
         server.sendTCP(input);
     }
-
+    
     public void sendPlayerUpdate(MPlayerUpdate update) {
         server.sendTCP(update);
     }
-
+    
     public void sendPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop) {
         try {
+            mpup.Update(id, x, y, isEmits, isHop, SCALE);
             if (delay.isOver()) {
-                PacketMPlayerUpdate mpup = new PacketMPlayerUpdate(id, x, y, isEmits, isHop, SCALE);
                 server.sendTCP(mpup);
+                mpup.Reset();
                 delay.restart();
             }
+
+//                        MPlayers[0].Update(x, y, SCALE);
+//            for (int i = 1; i < nrPlayers; i++) {
+//                MPlayers[i].PU().PlayerUpdate(MPlayers[0], isEmits, isHop);
+//                for (Mob mob : game.g.getPlace().sMobs) {
+//                    MPlayers[i].PU().MobUpdate(mob.id, mob.getX(), mob.getY(), SCALE);
+//                }
+//            }
+//            if (delay.isOver()) {
+//                for (int i = 1; i < nrPlayers; i++) {
+//                    if (MPlayers[i] != null) {
+//                        MPlayers[i].getConnection().sendTCP(MPlayers[i].PU());
+//                    }
+//                    if (MPlayers[i] != null) {
+//                        MPlayers[i].resetPU();
+//                    }
+//                    delay.restart();
+//                }
+//            }
         } catch (Exception e) {
             cleanUp(e);
         }
     }
-
+    
     public void Close() {
         client.stop();
         client.close();
     }
-
+    
     private void cleanUp(Exception e) {
         game.g.endGame();
         Methods.Exception(e);

@@ -15,8 +15,10 @@ import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Tile;
 import engine.FontsHandler;
+import engine.Methods;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
+import game.gameobject.Entity;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.FGTile;
@@ -32,6 +34,7 @@ public class MyPlace extends Place {
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final Place place;
+    private FGTile fgt;
 
     private final update[] ups = new update[2];
 
@@ -61,29 +64,56 @@ public class MyPlace extends Place {
                 }
             }
         }
-        Area testa = new Area(6 * sTile, 5 * sTile, sTile);
-        Area testb = new Area(8 * sTile, 5 * sTile, sTile);
-        Area testc = new Area(7 * sTile, 7 * sTile, sTile);
-        Area testd = new Area(9 * sTile, 7 * sTile, sTile);
-        testa.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testa));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 6 * sTile, 5 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 6 * sTile, 4 * sTile, sTile, true);
+        Area testa = new Area(6 * sTile, 5 * sTile, sTile, false, false);
+        Area testb = new Area(8 * sTile, 5 * sTile, sTile, false, false);
+        Area testc = new Area(7 * sTile, 7 * sTile, sTile, false, false);
+        Area testd = new Area(9 * sTile, 7 * sTile, sTile, false, false);
+
+        //testa.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testa));
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        testa.addPiece(fgt);
+        addFGTile(fgt, 6 * sTile, 5 * sTile, 0, true);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        testa.addPiece(fgt);
+        addFGTile(fgt, 6 * sTile, 4 * sTile, 2 * sTile, true);
+
         //tiles[6 + 6 * height / sTile] = ROCK;
-        testb.addFigure(new Rectangle(0, 0, 2 * sTile, sTile, true, true, testb));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 8 * sTile, 5 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 8 * sTile, 4 * sTile, sTile, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 9 * sTile, 5 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 9 * sTile, 4 * sTile, sTile, true);
+        // testb.addFigure(new Rectangle(0, 0, 2 * sTile, sTile, true, true, testb));
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        testb.addPiece(fgt);
+        addFGTile(fgt, 8 * sTile, 5 * sTile, 0, true);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        testb.addPiece(fgt);
+        addFGTile(fgt, 8 * sTile, 4 * sTile, 2 * sTile, true);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        testb.addPiece(fgt);
+        addFGTile(fgt, 9 * sTile, 5 * sTile, 0, true);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        testb.addPiece(fgt);
+        addFGTile(fgt, 9 * sTile, 4 * sTile, 2 * sTile, true);
         //tiles[8 + 6 * height / sTile] = ROCK;
-        testc.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testc));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 7 * sTile, 7 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 7 * sTile, 6 * sTile, sTile, true);
-        testd.addFigure(new Rectangle(0, 0, sTile, 2 * sTile, true, true, testd));
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this), 9 * sTile, 8 * sTile, 0, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 9 * sTile, 7 * sTile, sTile, true);
-        addFGTile(new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this), 9 * sTile, 6 * sTile, sTile, true);
+
+        //testc.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testc));
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        testc.addPiece(fgt);
+        addFGTile(fgt, 7 * sTile, 7 * sTile, 0, true);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        testc.addPiece(fgt);
+        addFGTile(fgt, 7 * sTile, 6 * sTile, 2 * sTile, true);
+
+        //testd.addFigure(new Rectangle(0, 0, sTile, 2 * sTile, true, true, testd));
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        testd.addPiece(fgt);
+        addFGTile(fgt, 9 * sTile, 8 * sTile, 0, true);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        testd.addPiece(fgt);
+        addFGTile(fgt, 9 * sTile, 7 * sTile, 2 * sTile, true);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        fgt.setSolid(true);
+        testd.addPiece(fgt);
+        addFGTile(fgt, 9 * sTile, 6 * sTile, 2 * sTile, true);
         //tiles[7 + 7 * height / sTile] = ROCK;
-        Area border = new Area(0, 0, sTile, true);
+        Area border = new Area(0, 0, sTile, true, false);
         border.addFigure(new Line(0, 0, width, 0, border));
         border.addFigure(new Line(0, 0, 0, height, border));
         border.addFigure(new Line(width, 0, 0, height, border));
@@ -102,7 +132,7 @@ public class MyPlace extends Place {
         this.g = 0.75f;
         this.b = 0.75f;
         fonts = new FontsHandler(20);
-        fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
+        fonts.add("Amble-Regular", Methods.RoundHU(SCALE() * 24));
         SoundStore.get().poll(0);
         initMethods();
     }
@@ -195,11 +225,11 @@ public class MyPlace extends Place {
                     for (Mob mob : sMobs) {
                         mob.updateHard();
                     }
-//                    for (int i = 1; i < playersLength; i++) {
-//                        ((Entity) players[i]).updateSoft();
-//                    }
                 }
                 ((Player) players[0]).sendUpdate(place);
+                for (int i = 1; i < playersLength; i++) {
+                    ((Entity) players[i]).updateSoft();
+                }
             }
         };
     }

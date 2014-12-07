@@ -11,12 +11,9 @@ import java.util.ArrayList;
  *
  * @author przemek
  */
-public class MobUpdate {
+public class MobUpdate extends Update {
 
     private short id;
-    private int x, y;
-    private ArrayList<Short> delsX;
-    private ArrayList<Short> delsY;
 
     public MobUpdate() {
     }
@@ -51,22 +48,6 @@ public class MobUpdate {
 
     public synchronized short getId() {
         return id;
-    }
-
-    public synchronized int getX() {
-        return x;
-    }
-
-    public synchronized int getY() {
-        return y;
-    }
-
-    public synchronized ArrayList<Short> delsX() {
-        return delsX;
-    }
-
-    public synchronized ArrayList<Short> delsY() {
-        return delsY;
     }
 
     public synchronized void Trim() {

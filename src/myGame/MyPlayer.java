@@ -37,15 +37,15 @@ public class MyPlayer extends Player {
     @Override
     public void init(int startX, int startY, int width, int height, Place place, int x, int y) {
         double SCALE = place.settings.SCALE;
-        this.width = Methods.RoundHU((int) (SCALE * width));
-        this.height = Methods.RoundHU((int) (SCALE * height));
-        this.sX = Methods.RoundHU((int) (SCALE * startX));
-        this.sY = Methods.RoundHU((int) (SCALE * startY));
+        this.width = Methods.RoundHU(SCALE * width);
+        this.height = Methods.RoundHU(SCALE * height);
+        this.sX = Methods.RoundHU(SCALE * startX);
+        this.sY = Methods.RoundHU(SCALE * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, Methods.RoundHU((int) (SCALE * x)), Methods.RoundHU((int) (SCALE * y)), place);
+        init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU((int) (SCALE * 1024)), Methods.RoundHU((int) (SCALE * 1024)), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(SCALE * 1024), Methods.RoundHU(SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
@@ -57,15 +57,15 @@ public class MyPlayer extends Player {
     @Override
     public void init(int startX, int startY, int width, int height, Place place) {
         double SCALE = place.settings.SCALE;
-        this.width = Methods.RoundHU((int) (SCALE * width));
-        this.height = Methods.RoundHU((int) (SCALE * height));
-        this.sX = Methods.RoundHU((int) (SCALE * startX));
-        this.sY = Methods.RoundHU((int) (SCALE * startY));
+        this.width = Methods.RoundHU(SCALE * width);
+        this.height = Methods.RoundHU(SCALE * height);
+        this.sX = Methods.RoundHU(SCALE * startX);
+        this.sY = Methods.RoundHU(SCALE * startY);
         this.setWeight(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU((int) (SCALE * 1024)), Methods.RoundHU((int) (SCALE * 1024)), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(SCALE * 1024), Methods.RoundHU(SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
@@ -125,7 +125,7 @@ public class MyPlayer extends Player {
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
 
             Drawer.setColor(new Color(0, 0, 0, 51));
-            Drawer.drawElipse(0, 0, collision.getWidth() / 2, collision.getHeight() / 2, 15);
+            Drawer.drawElipse(0, 0, Methods.RoundHU((float)collision.getWidth() / 2), Methods.RoundHU((float)collision.getHeight() / 2), 15);
             Drawer.refreshColor(place);
             glTranslatef(0, (int) -jump, 0);
 

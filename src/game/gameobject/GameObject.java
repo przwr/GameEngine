@@ -181,6 +181,10 @@ public abstract class GameObject {
         this.stale = st;
     }
 
+    public void setSolid(boolean solid) {
+        this.solid = solid;
+    }
+
     public boolean isSolid() {
         return solid;
     }

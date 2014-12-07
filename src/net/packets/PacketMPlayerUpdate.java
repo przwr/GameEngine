@@ -11,22 +11,32 @@ import java.io.Serializable;
  *
  * @author przemek
  */
-public class PacketMPlayerUpdate implements Serializable{
+public class PacketMPlayerUpdate implements Serializable {
 
     private MPlayerUpdate mpu;
 
     public PacketMPlayerUpdate() {
     }
 
-    public PacketMPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop, float SCALE) {
-        mpu = new MPlayerUpdate(id, (int) (((float) x) / SCALE), (int) (((float) y) / SCALE), isEmits, isHop);
+    public PacketMPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop) {
+        mpu = new MPlayerUpdate(id, x, y, isEmits, isHop);
+        mpu.Trim();
     }
 
-    public synchronized void Upadte(int x, int y, boolean isEmits, boolean isHop, float SCALE) {
-        mpu.Update((int) (((float) x) / SCALE), (int) (((float) y) / SCALE), isEmits, isHop);
+    public synchronized void Update(byte id, int x, int y, boolean isEmits, boolean isHop, float SCALE) {
+        if (mpu != null) {
+            mpu.Update((int) (((float) x) / SCALE), (int) (((float) y) / SCALE));
+        } else {
+            mpu = new MPlayerUpdate(id, (int) (((float) x) / SCALE), (int) (((float) y) / SCALE), isEmits, isHop);
+        }
+        mpu.Trim();
     }
 
-    public synchronized MPlayerUpdate MPU() {
+    public synchronized void Reset() {
+        mpu = null;
+    }
+
+    public synchronized MPlayerUpdate Up() {
         return mpu;
     }
 }

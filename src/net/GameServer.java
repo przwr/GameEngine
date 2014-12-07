@@ -107,12 +107,12 @@ public class GameServer {
                         if (obj instanceof PacketMPlayerUpdate) {
                             PacketMPlayerUpdate pmpu = (PacketMPlayerUpdate) obj;
                             //System.out.println(ObjectSize.sizeInBytes(pmpu) + " BYTES");
-                            MPlayer curPl = findPlayer(pmpu.MPU().getId());
+                            MPlayer curPl = findPlayer(pmpu.Up().getId());
                             if (curPl != null) {
-                                curPl.Update(pmpu.MPU().getX(), pmpu.MPU().getY(), 1);
+                                curPl.Update(pmpu.Up().getX(), pmpu.Up().getY(), 1);
                                 for (int i = 1; i < nrPlayers; i++) {
-                                    if (MPlayers[i].getId() != pmpu.MPU().getId()) {
-                                        MPlayers[i].PU().PlayerUpdate(curPl, pmpu.MPU().isEmits(), pmpu.MPU().isHop());
+                                    if (MPlayers[i].getId() != pmpu.Up().getId()) {
+                                        MPlayers[i].PU().PlayerUpdate(curPl, pmpu.Up().isEmits(), pmpu.Up().isHop());
                                     }
                                 }
                                 game.playerUpdate(pmpu);
@@ -159,8 +159,8 @@ public class GameServer {
             MPlayers[0].setPlayer(pl);
             pl.setName(MPlayers[0].getName());
             pl.id = id++;
-            pl.setX(((float) MPlayers[0].getX()) * SCALE);
-            pl.setY(((float) MPlayers[0].getY()) * SCALE);
+            pl.setX(((float) MPlayers[0].getX()) / SCALE);
+            pl.setY(((float) MPlayers[0].getY()) / SCALE);
             nrPlayers++;
 
             isRunning = true;

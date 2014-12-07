@@ -12,15 +12,10 @@ import java.util.ArrayList;
  *
  * @author przemek
  */
-public class MPlayerUpdate implements Serializable{
+public class MPlayerUpdate extends Update implements Serializable {
 
     private byte id;
-    private int x, y;
     private boolean isEmits, isHop;
-    private ArrayList<Short> delsX;
-    private ArrayList<Short> delsY;
-    private ArrayList<Boolean> delsEmits;
-    private ArrayList<Boolean> delsHop;
 
     public MPlayerUpdate() {
     }
@@ -29,8 +24,6 @@ public class MPlayerUpdate implements Serializable{
         this.id = id;
         delsX = new ArrayList<>();
         delsY = new ArrayList<>();
-        delsEmits = new ArrayList<>();
-        delsHop = new ArrayList<>();
     }
 
     public MPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop) {
@@ -41,18 +34,14 @@ public class MPlayerUpdate implements Serializable{
         this.isHop = isHop;
         delsX = new ArrayList<>();
         delsY = new ArrayList<>();
-        delsEmits = new ArrayList<>();
-        delsHop = new ArrayList<>();
     }
 
-    public synchronized void Update(int x, int y, boolean isEmits, boolean isHop) {
+    public synchronized void Update(int x, int y) {
         int deltaX = this.x - x;
         int deltaY = this.y - y;
         if (Math.abs(deltaX) <= 32767 && Math.abs(deltaY) <= 32767) {
             delsX.add((short) deltaX);
             delsY.add((short) deltaY);
-            delsEmits.add(isEmits);
-            delsHop.add(isHop);
         }
     }
 
@@ -70,14 +59,6 @@ public class MPlayerUpdate implements Serializable{
         return id;
     }
 
-    public synchronized int getX() {
-        return x;
-    }
-
-    public synchronized int getY() {
-        return y;
-    }
-
     public synchronized boolean isEmits() {
         return isEmits;
     }
@@ -89,7 +70,5 @@ public class MPlayerUpdate implements Serializable{
     public synchronized void Trim() {
         delsX.trimToSize();
         delsY.trimToSize();
-        delsEmits.trimToSize();
-        delsHop.trimToSize();
     }
 }

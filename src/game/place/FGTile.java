@@ -27,6 +27,7 @@ public class FGTile extends Tile {
     public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, int height, Place place) {
         super(sh, size, xSheet, ySheet, place);
         this.simpleLighting = true;
+        this.solid = isItWall;
         setCollision(new Rectangle(0, height, sh.getWidth(), sh.getHeight(), isItWall, isItWall, this));
     }
 

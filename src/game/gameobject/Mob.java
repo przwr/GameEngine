@@ -30,14 +30,14 @@ public abstract class Mob extends Entity {
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid) {
         double SCALE = place.settings.SCALE;
-        this.width = Methods.RoundHU((int) (SCALE * width));
-        this.height = Methods.RoundHU((int) (SCALE * height));
+        this.width = Methods.RoundHU(SCALE * width);
+        this.height = Methods.RoundHU(SCALE * height);
         this.solid = solid;
-        this.sX = Methods.RoundHU((int) (SCALE * startX));
-        this.sY = Methods.RoundHU((int) (SCALE * startY));
-        this.range = Methods.RoundHU((int) (SCALE * range));
+        this.sX = Methods.RoundHU(SCALE * startX);
+        this.sY = Methods.RoundHU(SCALE * startY);
+        this.range = Methods.RoundHU(SCALE * range);
         scale = SCALE;
-        init(name, Methods.RoundHU((int) (SCALE * x)), Methods.RoundHU((int) (SCALE * y)), place);
+        init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
         this.sprite = place.getSprite("rabbit");
         setCollision(new Rectangle(this.width, this.height / 4, true, false, this));
         this.setMaxSpeed(speed);

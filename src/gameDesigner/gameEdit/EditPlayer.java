@@ -35,15 +35,15 @@ public class EditPlayer extends Player {
     @Override
     public void init(int startX, int startY, int width, int height, Place place, int x, int y) {
         double SCALE = place.settings.SCALE;
-        this.width = Methods.RoundHU((int) (SCALE * width));
-        this.height = Methods.RoundHU((int) (SCALE * height));
-        this.sX = Methods.RoundHU((int) (SCALE * startX));
-        this.sY = Methods.RoundHU((int) (SCALE * startY));
+        this.width = Methods.RoundHU(SCALE * width);
+        this.height = Methods.RoundHU(SCALE * height);
+        this.sX = Methods.RoundHU(SCALE * startX);
+        this.sY = Methods.RoundHU(SCALE * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, Methods.RoundHU((int) (SCALE * x)), Methods.RoundHU((int) (SCALE * y)), place);
+        init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU((int) (SCALE * 1024)), Methods.RoundHU((int) (SCALE * 1024)), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(SCALE * 1024), Methods.RoundHU(SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;

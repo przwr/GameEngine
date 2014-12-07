@@ -35,18 +35,18 @@ public class PacketUpdate implements Serializable {
             mp = new MPlayerUpdate(mpl.getId(), mpl.getX(), mpl.getY(), isEmits, isHop);
             players.add(mp);
         } else {
-            mp.Update(mpl.getX(), mpl.getY(), isEmits, isHop);
+            mp.Update(mpl.getX(), mpl.getY());
         }
         Trim();
     }
 
     public synchronized void MobUpdate(short id, int x, int y, float SCALE) {
         MobUpdate mp = getMob(id);
-        if (mp == null) {
+        if (mp != null) {
+            mp.Update((int) (((float) x) / SCALE), (int) (((float) y) / SCALE));
+        } else {
             mp = new MobUpdate(id, (int) (((float) x) / SCALE), (int) (((float) y) / SCALE));
             mobs.add(mp);
-        } else {
-            mp.Update((int) (((float) x) / SCALE), (int) (((float) y) / SCALE));
         }
         Trim();
     }

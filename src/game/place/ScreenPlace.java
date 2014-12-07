@@ -47,7 +47,7 @@ public abstract class ScreenPlace {
         return height;
     }
 
-    public double SCALE() {
+    public float SCALE() {
         return settings.SCALE;
     }
 }

@@ -3,7 +3,9 @@ package game.place;
 import game.Settings;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.EXTFramebufferObject;
+import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_BYTE;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_REPEAT;
@@ -14,8 +16,11 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glScissor;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.glViewport;
 import org.lwjgl.opengl.GL30;
 
 public class FBORendererRegular extends FBORenderer {
@@ -25,13 +30,13 @@ public class FBORendererRegular extends FBORenderer {
         activates[0] = new activate() {
             @Override
             public void activate() {
-                GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fbo);
+                GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fbo);
             }
         };
         activates[1] = new activate() {
             @Override
             public void activate() {
-                ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, fbo);
+                ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_FRAMEBUFFER, fbo);
             }
         };
         activates[2] = new activate() {
@@ -43,13 +48,13 @@ public class FBORendererRegular extends FBORenderer {
         deactivates[0] = new deactivate() {
             @Override
             public void deactivate() {
-                GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
+                GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
             }
         };
         deactivates[1] = new deactivate() {
             @Override
             public void deactivate() {
-                ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
+                ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_FRAMEBUFFER, 0);
             }
         };
         deactivates[2] = new deactivate() {
@@ -62,14 +67,14 @@ public class FBORendererRegular extends FBORenderer {
 
             @Override
             public void makeTexture() {
-                GL30.glFramebufferTexture2D(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+                GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
             }
         };
         makeTextures[1] = new makeTexture() {
 
             @Override
             public void makeTexture() {
-                ARBFramebufferObject.glFramebufferTexture2D(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, ARBFramebufferObject.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+                ARBFramebufferObject.glFramebufferTexture2D(ARBFramebufferObject.GL_FRAMEBUFFER, ARBFramebufferObject.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
             }
         };
         makeTextures[2] = new makeTexture() {
@@ -84,13 +89,20 @@ public class FBORendererRegular extends FBORenderer {
         deactivates[fboVer].deactivate();
     }
 
+   //double scale = 2;
+
     @Override
     public void activate() {
+       // glViewport(0, -Display.getHeight(), 2 * Display.getWidth(), 2 * Display.getHeight());
+       // glOrtho(-scale, scale, -scale, scale, 1.0, -1.0);
         activates[fboVer].activate();
     }
 
     @Override
     public void deactivate() {
+       // glOrtho(-1 / scale, 1 / scale, -1 / scale, 1 / scale, 1.0, -1.0);
+        //glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
+       // glViewport(0, 0, Display.getWidth(), Display.getHeight());
         deactivates[fboVer].deactivate();
     }
 
