@@ -69,6 +69,8 @@ public class Area extends GameObject {
 
     public void addPiece(GameObject g) {
         Figure f = g.getCollision();
+        parts.add(f);
+        pieces.add(g);
         if (g.isSolid()) {
             if (width < f.getXs() + f.getWidth()) {
                 width = f.getXs() + f.getWidth() * 2;
@@ -78,11 +80,9 @@ public class Area extends GameObject {
                 height = f.getYs() + f.getHeight() * 2;
                 yCentr = (int) y + height / 2;
             }
-        }
-        parts.add(f);
-        pieces.add(g);
-        if (isWhole) {
-            upCollision();
+            if (isWhole) {
+                upCollision();
+            }
         }
     }
 
@@ -123,10 +123,12 @@ public class Area extends GameObject {
     }
 
     private void upCollision() {
-        int maxX = 0, maxY = 0, minX = 2147483647, minY = 2147483647;
-        int x, y;
+        int maxX = 0, maxY = 0, minX = 2147483647, minY = 2147483647, shadowH = 0;
+        int x, y, sH;
         for (Figure part : parts) {
-            if (part.canBeLit) {
+            if (part.getOwner().isSolid()) {
+                sH = part.shadowHeight();
+                shadowH = shadowH > sH ? shadowH : sH;
                 Point[] pList = part.listPoints();
                 for (Point p : pList) {
                     x = p.getX();
@@ -138,7 +140,7 @@ public class Area extends GameObject {
                 }
             }
         }
-        collision = new Rectangle(minX - getX(), minY - getY(), maxX - minX, maxY - minY, true, true, this);
+        collision = new Rectangle(minX - getX(), minY - getY(), maxX - minX, maxY - minY, true, true, shadowH, this);
     }
 
     public Point[] listPoints() {
@@ -161,14 +163,14 @@ public class Area extends GameObject {
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         glPushMatrix();
-        glTranslatef(f.getX() + xEffect, f.getY() + yEffect, 0);
+        glTranslatef(f.getX() + xEffect, f.getY() - f.shadowHeight() + yEffect, 0);
         if (simpleLighting) {
             if (isLit) {
                 glColor4f(color, color, color, 1f);
             } else {
                 glColor4f(0f, 0f, 0f, 1f);
             }
-            Drawer.drawRectangle(0, 0, f.width, f.height);
+            Drawer.drawRectangle(0, 0, f.width, f.height + f.shadowHeight());
             glColor4f(1f, 1f, 1f, 1f);
         } else if (sprite != null) {
             if (isLit) {

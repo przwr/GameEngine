@@ -25,11 +25,11 @@ public class FGTile extends Tile {
 
     private int highness;
 
-    public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, int height, Place place) {
+    public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, int height, int shadowH, Place place) {
         super(sh, size, xSheet, ySheet, place);
         this.simpleLighting = true;
         this.solid = isItWall;
-        setCollision(new Rectangle(0, height, size, size, isItWall, isItWall, this));
+        setCollision(new Rectangle(0, height, size, size, isItWall, isItWall, shadowH, this));
     }
 
     public boolean isSimpleLighting() {
@@ -51,14 +51,14 @@ public class FGTile extends Tile {
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         glPushMatrix();
-        glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+        glTranslatef(getX() + xEffect, getY() - collision.shadowHeight() + yEffect, 0);
         if (simpleLighting) {
             if (isLit) {
                 glColor4f(color, color, color, 1f);
             } else {
                 glColor4f(0f, 0f, 0f, 1f);
             }
-            Drawer.drawRectangle(0, 0, sh.getWidth(), sh.getHeight());
+            Drawer.drawRectangle(0, 0, collision.getWidth(), collision.getHeight() + collision.shadowHeight());
             glColor4f(1f, 1f, 1f, 1f);
         } else if (sprite != null) {
             if (isLit) {

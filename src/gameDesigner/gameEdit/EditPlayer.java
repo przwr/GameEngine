@@ -50,7 +50,7 @@ public class EditPlayer extends Player {
         emits = false;
         scale = SCALE;
         place.addObj(this);
-        setCollision(new Rectangle(this.width, this.height / 2, true, false, this));
+        setCollision(new Rectangle(this.width, this.height / 2, true, false,0, this));
     }
 
     @Override

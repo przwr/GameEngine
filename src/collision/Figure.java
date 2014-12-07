@@ -25,6 +25,7 @@ public abstract class Figure implements Comparable<Object> {
     protected int yCentr;
     protected boolean canBeLit;
     protected boolean canGiveShadow;
+    protected int shadowHeight;
     private int distFromLight;
 
     protected int type;
@@ -242,6 +243,10 @@ public abstract class Figure implements Comparable<Object> {
 
     public void setDistFromLight(int distFromLight) {
         this.distFromLight = distFromLight;
+    }
+
+    public int shadowHeight() {
+        return shadowHeight;
     }
 
 }

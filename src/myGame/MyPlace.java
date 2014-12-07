@@ -58,7 +58,7 @@ public class MyPlace extends Place {
                     tiles[x + y * height / sTile] = GRASS;
                 } else {
                     if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
-                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, true, a));
+                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, true, 0, a));
                     }
                     tiles[x + y * height / sTile] = ROCK;
                 }
@@ -69,61 +69,73 @@ public class MyPlace extends Place {
         Area testc = new Area(7 * sTile, 7 * sTile, sTile, false, true);
         Area testd = new Area(9 * sTile, 7 * sTile, sTile, false, true);
         Area teste = new Area(11 * sTile, 7 * sTile, sTile, false, true);
+        Area testf = new Area(5 * sTile, 9 * sTile, sTile, false, true);
 
 //        testa.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testa));
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 6 * sTile, 5 * sTile, 0, true);
         testa.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
         addFGTile(fgt, 6 * sTile, 4 * sTile, 2 * sTile, true);
         testa.addPiece(fgt);
 
 //        testb.addFigure(new Rectangle(0, 0, 2 * sTile, sTile, true, true, testb));
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 8 * sTile, 5 * sTile, 0, true);
         testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
         addFGTile(fgt, 8 * sTile, 4 * sTile, 2 * sTile, true);
         testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 9 * sTile, 5 * sTile, 0, true);
         testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
         addFGTile(fgt, 9 * sTile, 4 * sTile, 2 * sTile, true);
         testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 10 * sTile, 5 * sTile, 0, true);
         testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
         addFGTile(fgt, 10 * sTile, 4 * sTile, 2 * sTile, true);
         testb.addPiece(fgt);
 
 //        testc.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testc));
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 7 * sTile, 7 * sTile, 0, true);
         testc.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
         addFGTile(fgt, 7 * sTile, 6 * sTile, 2 * sTile, true);
         testc.addPiece(fgt);
 
 //        testd.addFigure(new Rectangle(0, 0, sTile, 2 * sTile, true, true, testd));
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 9 * sTile, 8 * sTile, 0, true);
         testd.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
-        addFGTile(fgt, 9 * sTile, 7 * sTile, 2 * sTile, true);
-        testd.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
         fgt.setSolid(true);
-        addFGTile(fgt, 9 * sTile, 6 * sTile, 2 * sTile, true);
+        addFGTile(fgt, 9 * sTile, 7 * sTile, 0, true);
+        testd.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
+        addFGTile(fgt, 9 * sTile, 6 * sTile, 4 * sTile, true);
         testd.addPiece(fgt);
 
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 11 * sTile, 7 * sTile, 0, true);
         teste.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
         addFGTile(fgt, 11 * sTile, 6 * sTile, 2 * sTile, true);
         teste.addPiece(fgt);
+
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, sTile, this);
+        addFGTile(fgt, 5 * sTile, 9 * sTile, 0, true);
+        testf.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, sTile, 0, this);
+        fgt.setSolid(false);
+        addFGTile(fgt, 5 * sTile, 8 * sTile, 2 * sTile, true);
+        testf.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, 2 * sTile, 0, this);
+        addFGTile(fgt, 5 * sTile, 7 * sTile, 4 * sTile, true);
+        testf.addPiece(fgt);
 
         Area border = new Area(0, 0, sTile, true, false);
         border.addFigure(new Line(0, 0, width, 0, border));
@@ -136,6 +148,7 @@ public class MyPlace extends Place {
         areas.add(testc);
         areas.add(testd);
         areas.add(teste);
+        areas.add(testf);
         areas.add(border);
         if (isHost) {
             addObj(new MyMob(1280, 1024, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));

@@ -40,7 +40,7 @@ public abstract class Mob extends Entity {
         scale = SCALE;
         init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
         this.sprite = place.getSprite("rabbit");
-        setCollision(new Rectangle(this.width, this.height / 4, true, false, this));
+        setCollision(new Rectangle(this.width, this.height / 4, true, false, 0, this));
         this.setMaxSpeed(speed);
     }
 

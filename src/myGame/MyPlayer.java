@@ -52,7 +52,7 @@ public class MyPlayer extends Player {
         emits = false;
         scale = SCALE;
         place.addObj(this);
-        setCollision(new Rectangle(this.width, this.height / 2, true, false, this));
+        setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MyPlayer extends Player {
         emits = false;
         scale = SCALE;
         place.addObj(this);
-        setCollision(new Rectangle(this.width, this.height / 2, true, false, this));
+        setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
 
     private void initControler(boolean isFirst) {
@@ -126,7 +126,7 @@ public class MyPlayer extends Player {
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
 
             Drawer.setColor(new Color(0, 0, 0, 51));
-            Drawer.drawElipse(0, 0, Methods.RoundHU((float)collision.getWidth() / 2), Methods.RoundHU((float)collision.getHeight() / 2), 15);
+            Drawer.drawElipse(0, 0, Methods.RoundHU((float) collision.getWidth() / 2), Methods.RoundHU((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor(place);
             glTranslatef(0, (int) -jump, 0);
 
