@@ -71,7 +71,6 @@ public class MyPlace extends Place {
         Area teste = new Area(11 * sTile, 7 * sTile, sTile, false, true);
         Area testf = new Area(5 * sTile, 9 * sTile, sTile, false, true);
 
-//        testa.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testa));
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 6 * sTile, 5 * sTile, 0, true);
         testa.addPiece(fgt);
@@ -79,7 +78,6 @@ public class MyPlace extends Place {
         addFGTile(fgt, 6 * sTile, 4 * sTile, 2 * sTile, true);
         testa.addPiece(fgt);
 
-//        testb.addFigure(new Rectangle(0, 0, 2 * sTile, sTile, true, true, testb));
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 8 * sTile, 5 * sTile, 0, true);
         testb.addPiece(fgt);
@@ -99,7 +97,6 @@ public class MyPlace extends Place {
         addFGTile(fgt, 10 * sTile, 4 * sTile, 2 * sTile, true);
         testb.addPiece(fgt);
 
-//        testc.addFigure(new Rectangle(0, 0, sTile, sTile, true, true, testc));
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 7 * sTile, 7 * sTile, 0, true);
         testc.addPiece(fgt);
@@ -107,13 +104,12 @@ public class MyPlace extends Place {
         addFGTile(fgt, 7 * sTile, 6 * sTile, 2 * sTile, true);
         testc.addPiece(fgt);
 
-//        testd.addFigure(new Rectangle(0, 0, sTile, 2 * sTile, true, true, testd));
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, -sTile, this);
         addFGTile(fgt, 9 * sTile, 8 * sTile, 0, true);
         testd.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, 0, 0, this);
         fgt.setSolid(true);
-        addFGTile(fgt, 9 * sTile, 7 * sTile, 0, true);
+        addFGTile(fgt, 9 * sTile, 7 * sTile, 2 * sTile, true);
         testd.addPiece(fgt);
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
         addFGTile(fgt, 9 * sTile, 6 * sTile, 4 * sTile, true);
@@ -126,16 +122,16 @@ public class MyPlace extends Place {
         addFGTile(fgt, 11 * sTile, 6 * sTile, 2 * sTile, true);
         teste.addPiece(fgt);
 
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, sTile, this);
-        addFGTile(fgt, 5 * sTile, 9 * sTile, 0, true);
-        testf.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, sTile, 0, this);
-        fgt.setSolid(false);
-        addFGTile(fgt, 5 * sTile, 8 * sTile, 2 * sTile, true);
-        testf.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, 2 * sTile, 0, this);
-        addFGTile(fgt, 5 * sTile, 7 * sTile, 4 * sTile, true);
-        testf.addPiece(fgt);
+//        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, sTile, this);
+//        addFGTile(fgt, 5 * sTile, 9 * sTile, 0, true);
+//        testf.addPiece(fgt);
+//        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, sTile, 0, this);
+//        fgt.setSolid(false);
+//        addFGTile(fgt, 5 * sTile, 8 * sTile, 2 * sTile, true);
+//        testf.addPiece(fgt);
+//        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, 2 * sTile, 0, this);
+//        addFGTile(fgt, 5 * sTile, 7 * sTile, 4 * sTile, true);
+//        testf.addPiece(fgt);
 
         Area border = new Area(0, 0, sTile, true, false);
         border.addFigure(new Line(0, 0, width, 0, border));

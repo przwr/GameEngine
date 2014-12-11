@@ -5,8 +5,11 @@ import engine.Drawer;
 import game.gameobject.GameObject;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -71,13 +74,14 @@ public class Tile extends GameObject {
             Drawer.drawRectangle(0, 0, width, height);
             glColor4f(1f, 1f, 1f, 1f);
         } else if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
             if (isLit) {
                 Drawer.drawShapeInColor(sprite, color, color, color, 1);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             } else {
                 Drawer.drawShapeInBlack(sprite);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_TEXTURE_2D);
         }
         glPopMatrix();
     }

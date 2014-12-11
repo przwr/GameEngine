@@ -14,6 +14,9 @@ import java.io.ObjectOutputStream;
  */
 public class Methods {
 
+    private static double AO, OB, AB;
+    private static int xOA, yOA, xOB, yOB, xBA, yBA;
+
     public static double xRadius(double angle, double rad) {
         return Math.cos(Math.toRadians(angle)) * rad;
     }
@@ -24,6 +27,10 @@ public class Methods {
 
     public static int PointDistance(int x, int y, int xa, int ya) {
         return (int) Math.sqrt(Math.pow(xa - x, 2) + Math.pow(ya - y, 2));
+    }
+
+    public static int PointDistanceSimple(int x, int y, int xa, int ya) {
+        return ((xa - x) * (xa - x) + (ya - y) * (ya - y));
     }
 
     public static int PointDifference(int x, int y, int xa, int ya) {
@@ -44,10 +51,16 @@ public class Methods {
     }
 
     public static double ThreePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
-        double AO = Math.sqrt(Math.pow(xO - xA, 2) + Math.pow(yO - yA, 2));
-        double OB = Math.sqrt(Math.pow(xO - xB, 2) + Math.pow(yO - yB, 2));
-        double AB = Math.sqrt(Math.pow(xB - xA, 2) + Math.pow(yB - yA, 2));
-        return Math.acos((OB * OB + AO * AO - AB * AB) / (2 * OB * AO));
+        xOA = xO - xA;
+        yOA = yO - yA;
+        xOB = xO - xB;
+        yOB = yO - yB;
+        xBA = xB - xA;
+        yBA = yB - yA;
+        AO = Math.sqrt((xOA * xOA) + (yOA * yOA));
+        OB = Math.sqrt((xOB * xOB) + (yOB * yOB));
+        AB = Math.sqrt((xBA * xBA) + (yBA * yBA));
+        return Math.acos(((OB * OB) + (AO * AO) - (AB * AB)) / (2 * OB * AO));
     }
 
     public static int Interval(int leftBorder, int x, int rightBorder) {

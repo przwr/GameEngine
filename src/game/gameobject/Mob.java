@@ -13,7 +13,10 @@ import game.place.cameras.Camera;
 import game.place.Place;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -105,6 +108,7 @@ public abstract class Mob extends Entity {
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
             if (isLit) {
@@ -115,6 +119,7 @@ public abstract class Mob extends Entity {
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
             glPopMatrix();
+            glDisable(GL_TEXTURE_2D);
         }
     }
 }

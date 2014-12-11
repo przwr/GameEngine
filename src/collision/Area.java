@@ -11,8 +11,11 @@ import game.gameobject.GameObject;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -24,7 +27,6 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 public class Area extends GameObject {
 
     public ArrayList<Figure> parts;
-    public ArrayList<GameObject> pieces;
     public boolean isWhole;
     protected int xCentr;
     protected int yCentr;
@@ -36,7 +38,6 @@ public class Area extends GameObject {
         this.y = y;
         this.sTile = sTile;
         this.parts = new ArrayList<>();
-        this.pieces = new ArrayList<>();
         solid = true;
         simpleLighting = true;
     }
@@ -45,7 +46,6 @@ public class Area extends GameObject {
         this.x = x;
         this.y = y;
         this.parts = new ArrayList<>();
-        this.pieces = new ArrayList<>();
         solid = true;
         simpleLighting = true;
         this.isBorder = isBorder;
@@ -70,7 +70,6 @@ public class Area extends GameObject {
     public void addPiece(GameObject g) {
         Figure f = g.getCollision();
         parts.add(f);
-        pieces.add(g);
         if (g.isSolid()) {
             if (width < f.getXs() + f.getWidth()) {
                 width = f.getXs() + f.getWidth() * 2;
@@ -128,7 +127,7 @@ public class Area extends GameObject {
         for (Figure part : parts) {
             if (part.getOwner().isSolid()) {
                 sH = part.shadowHeight();
-                shadowH = shadowH > sH ? shadowH : sH;
+                shadowH = sH != 0 ? sH : shadowH;
                 Point[] pList = part.listPoints();
                 for (Point p : pList) {
                     x = p.getX();
@@ -173,13 +172,14 @@ public class Area extends GameObject {
             Drawer.drawRectangle(0, 0, f.width, f.height + f.shadowHeight());
             glColor4f(1f, 1f, 1f, 1f);
         } else if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
             if (isLit) {
                 Drawer.drawShapeInColor(sprite, color, color, color, 1);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             } else {
                 Drawer.drawShapeInBlack(sprite);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_TEXTURE_2D);
         }
         glPopMatrix();
     }

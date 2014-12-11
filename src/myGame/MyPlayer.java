@@ -139,6 +139,7 @@ public class MyPlayer extends Player {
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         // glTranslatef(getX() + xEffect, getY() + yEffect, 0);
         if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
             if (isLit) {
@@ -149,6 +150,7 @@ public class MyPlayer extends Player {
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
             glPopMatrix();
+            glDisable(GL_TEXTURE_2D);
         }
     }
 

@@ -5,6 +5,7 @@
  */
 package collision;
 
+import game.place.Shadow;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
@@ -27,6 +28,8 @@ public abstract class Figure implements Comparable<Object> {
     protected boolean canGiveShadow;
     protected int shadowHeight;
     private int distFromLight;
+    public float shadowColor;
+    public ArrayList<Shadow> shadows;
 
     protected int type;
 
@@ -36,6 +39,7 @@ public abstract class Figure implements Comparable<Object> {
         this.xs = xs;
         this.ys = ys;
         this.owner = owner;
+        shadows = new ArrayList<>();
     }
 
     public boolean ifCollideSolid(int x, int y, Place p) {

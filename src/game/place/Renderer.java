@@ -35,7 +35,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public class Renderer {
 
-    private static final int w = Display.getWidth(), h = Display.getHeight();
+    private static final int w = Display.getWidth(), h = Display.getHeight(), w1o2 = (w >> 1), h1o2 = (h >> 1);
     private static FBORenderer fbFrame;
     private static GameObject light;
     private static final int[] SX = new int[7], EX = new int[7], SY = new int[7], EY = new int[7];
@@ -200,10 +200,10 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(0, h / 2 - 1);
-                glVertex2f(0, h / 2 + 1);
-                glVertex2f(w, h / 2 + 1);
-                glVertex2f(w, h / 2 - 1);
+                glVertex2f(0, h1o2 - 1);
+                glVertex2f(0, h1o2 + 1);
+                glVertex2f(w, h1o2 + 1);
+                glVertex2f(w, h1o2 - 1);
                 glEnd();
             }
         };
@@ -211,10 +211,10 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(w / 2 - 1, 0);
-                glVertex2f(w / 2 - 1, h);
-                glVertex2f(w / 2 + 1, h);
-                glVertex2f(w / 2 + 1, 0);
+                glVertex2f(w1o2 - 1, 0);
+                glVertex2f(w1o2 - 1, h);
+                glVertex2f(w1o2 + 1, h);
+                glVertex2f(w1o2 + 1, 0);
                 glEnd();
             }
         };
@@ -226,16 +226,16 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(0, h / 2 - 1);
-                glVertex2f(0, h / 2 + 1);
-                glVertex2f(w, h / 2 + 1);
-                glVertex2f(w, h / 2 - 1);
+                glVertex2f(0, h1o2 - 1);
+                glVertex2f(0, h1o2 + 1);
+                glVertex2f(w, h1o2 + 1);
+                glVertex2f(w, h1o2 - 1);
                 glEnd();
                 glBegin(GL_QUADS);
-                glVertex2f(w / 2 - 1, h / 2);
-                glVertex2f(w / 2 - 1, h);
-                glVertex2f(w / 2 + 1, h);
-                glVertex2f(w / 2 + 1, h / 2);
+                glVertex2f(w1o2 - 1, h1o2);
+                glVertex2f(w1o2 - 1, h);
+                glVertex2f(w1o2 + 1, h);
+                glVertex2f(w1o2 + 1, h1o2);
                 glEnd();
             }
         };
@@ -243,16 +243,16 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(w / 2, h / 2 - 1);
-                glVertex2f(w / 2, h / 2 + 1);
-                glVertex2f(w, h / 2 + 1);
-                glVertex2f(w, h / 2 - 1);
+                glVertex2f(w1o2, h1o2 - 1);
+                glVertex2f(w1o2, h1o2 + 1);
+                glVertex2f(w, h1o2 + 1);
+                glVertex2f(w, h1o2 - 1);
                 glEnd();
                 glBegin(GL_QUADS);
-                glVertex2f(w / 2 - 1, 0);
-                glVertex2f(w / 2 - 1, h);
-                glVertex2f(w / 2 + 1, h);
-                glVertex2f(w / 2 + 1, 0);
+                glVertex2f(w1o2 - 1, 0);
+                glVertex2f(w1o2 - 1, h);
+                glVertex2f(w1o2 + 1, h);
+                glVertex2f(w1o2 + 1, 0);
                 glEnd();
             }
         };
@@ -260,16 +260,16 @@ public class Renderer {
             @Override
             public void draw() {
                 glBegin(GL_QUADS);
-                glVertex2f(0, h / 2 - 1);
-                glVertex2f(0, h / 2 + 1);
-                glVertex2f(w, h / 2 + 1);
-                glVertex2f(w, h / 2 - 1);
+                glVertex2f(0, h1o2 - 1);
+                glVertex2f(0, h1o2 + 1);
+                glVertex2f(w, h1o2 + 1);
+                glVertex2f(w, h1o2 - 1);
                 glEnd();
                 glBegin(GL_QUADS);
-                glVertex2f(w / 2 - 1, 0);
-                glVertex2f(w / 2 - 1, h);
-                glVertex2f(w / 2 + 1, h);
-                glVertex2f(w / 2 + 1, 0);
+                glVertex2f(w1o2 - 1, 0);
+                glVertex2f(w1o2 - 1, h);
+                glVertex2f(w1o2 + 1, h);
+                glVertex2f(w1o2 + 1, 0);
                 glEnd();
             }
         };

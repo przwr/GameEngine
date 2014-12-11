@@ -75,8 +75,6 @@ public class Main {
     }
 
     private static void render() {
-        glClear(GL_COLOR_BUFFER_BIT);
-        glLoadIdentity();
         game.render();
         if (pop.i != -1) {
             pause = true;

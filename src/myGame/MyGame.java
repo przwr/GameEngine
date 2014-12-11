@@ -15,6 +15,8 @@ import game.gameobject.Player;
 import game.place.cameras.PlayersCamera;
 import java.io.File;
 import org.lwjgl.input.Controller;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 
 /**
  *
@@ -161,6 +163,7 @@ public class MyGame extends Game {
         if (runFlag) {
             place.render();
         } else {
+            glClear(GL_COLOR_BUFFER_BIT);
             menu.render();
         }
     }
