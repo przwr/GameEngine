@@ -12,7 +12,7 @@ package game;
 public class LangENG extends Language {
 
     public LangENG() {
-        Lang = "ENG";
+        lang = "ENG";
         m.Menu = "Menu";
         m.Start = "Start";
         m.LocalGame = "Local game";
@@ -41,7 +41,7 @@ public class LangENG extends Language {
         m.On = "On";
         m.Off = "Off";
         m.Resume = "Resume";
-        m.End_Game = "End game!";
+        m.EndGame = "End game!";
         m.StartGame = "Start game!";
         m.Language = "Language: ";
         m.Controls = "Controls";

@@ -9,16 +9,16 @@ package game.gameobject;
  *
  * @author przemek
  */
-public class ActionHold extends Action {
+public class ActionHold extends AbstractAction {
 
-    public ActionHold(AnyInput in) {
+    public ActionHold(AbstractAnyInput in) {
         super(in);
     }
 
     @Override
-    public void Do() {
+    public void act() {
         if (in != null && in.isPut()) {
-            isOn = true;
+            on = true;
         }
     }
 }

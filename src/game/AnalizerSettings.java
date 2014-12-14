@@ -14,10 +14,10 @@ import java.util.logging.Logger;
  *
  * @author przemek
  */
-public class AnalizerSettings {
+public final class AnalizerSettings {
 
-    public static void AnalizeSetting(String name, Settings settings) {
-        String[] p = name.split("\\s+");
+    public static void analizeSetting(String name, Settings settings) {
+        final String[] p = name.split("\\s+");
         switch (p[0]) {
             case "FullScreen:":
                 if (0 == p[1].compareTo("On")) {
@@ -35,7 +35,7 @@ public class AnalizerSettings {
                 }
                 break;
             case "NumberOfSamples:":
-                int ns = Integer.parseInt(p[1]);
+                final int ns = Integer.parseInt(p[1]);
                 if (ns > 64 || ns < 0) {
                     settings.nrSamples = 0;
                 } else {
@@ -48,7 +48,7 @@ public class AnalizerSettings {
                 }
                 break;
             case "NumberOfPlayers:":
-                int np = Integer.parseInt(p[1]);
+                final int np = Integer.parseInt(p[1]);
                 if (np > 4 || np < 1) {
                     settings.nrPlayers = 1;
                 } else {
@@ -59,7 +59,7 @@ public class AnalizerSettings {
                 settings.serverIP = p[1];
                 break;
             case "ResolutionWidth:":
-                int w = Integer.parseInt(p[1]);
+                final int w = Integer.parseInt(p[1]);
                 if (w <= 0) {
                     settings.resWidth = settings.modes[0].getWidth();
                 } else {
@@ -72,7 +72,7 @@ public class AnalizerSettings {
                 }
                 break;
             case "ResolutionHeight:":
-                int h = Integer.parseInt(p[1]);
+                final int h = Integer.parseInt(p[1]);
                 if (h <= 0) {
                     settings.resHeight = settings.modes[0].getHeight();
                 } else {
@@ -85,7 +85,7 @@ public class AnalizerSettings {
                 }
                 break;
             case "ResolutionFreq:":
-                int f = Integer.parseInt(p[1]);
+                final int f = Integer.parseInt(p[1]);
                 if (f <= 0) {
                     settings.freq = settings.modes[0].getFrequency();
                 } else {
@@ -98,7 +98,7 @@ public class AnalizerSettings {
                 }
                 break;
             case "Volume:":
-                float v = Float.parseFloat(p[1]);
+                final float v = Float.parseFloat(p[1]);
                 if (v >= -0.01f && v <= 1.01f) {
                     settings.volume = v;
                 }
@@ -112,10 +112,11 @@ public class AnalizerSettings {
                     settings.language = settings.languages.get(1);
                 }
                 break;
+            default:
         }
     }
 
-    public static void Update(Settings settings) {
+    public static void update(Settings settings) {
         FileWriter fw;
         try {
             fw = new FileWriter("res/settings.ini");
@@ -146,8 +147,8 @@ public class AnalizerSettings {
             fw.write("ResolutionHeight: " + settings.resHeight + "\n");
             fw.write("ResolutionFreq: " + settings.freq + "\n");
             {
-                int v = (int) (settings.volume * 10);
-                float vol = (float) v / 10;
+                final int v = (int) (settings.volume * 10);
+                final float vol = (float) v / 10;
                 fw.write("Volume: " + vol + "\n");
             }
             fw.write("Language: " + settings.lang);

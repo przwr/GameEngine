@@ -2,6 +2,7 @@ package engine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+import net.jodk.lang.FastMath;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,15 +19,15 @@ public class Methods {
     private static int xOA, yOA, xOB, yOB, xBA, yBA;
 
     public static double xRadius(double angle, double rad) {
-        return Math.cos(Math.toRadians(angle)) * rad;
+        return FastMath.cos(FastMath.toRadians(angle)) * rad;
     }
 
     public static double yRadius(double angle, double rad) {
-        return Math.sin(Math.toRadians(angle)) * rad;
+        return FastMath.sin(FastMath.toRadians(angle)) * rad;
     }
 
     public static int PointDistance(int x, int y, int xa, int ya) {
-        return (int) Math.sqrt(Math.pow(xa - x, 2) + Math.pow(ya - y, 2));
+        return (int) FastMath.sqrt(FastMath.pow(xa - x, 2) + FastMath.pow(ya - y, 2));
     }
 
     public static int PointDistanceSimple(int x, int y, int xa, int ya) {
@@ -34,19 +35,19 @@ public class Methods {
     }
 
     public static int PointDifference(int x, int y, int xa, int ya) {
-        return Math.min(xa - x, ya - y);
+        return FastMath.min(xa - x, ya - y);
     }
 
     public static double PointAngle(int xSt, int ySt, int xEn, int yEn) {
         int deltaX = xEn - xSt;
         int deltaY = yEn - ySt;
-        return Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+        return FastMath.atan2(deltaY, deltaX) * 180 / FastMath.PI;
     }
 
     public static double PointAngle360(int xSt, int ySt, int xEn, int yEn) {
         int deltaX = xEn - xSt;
         int deltaY = yEn - ySt;
-        double ret = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+        double ret = FastMath.atan2(deltaY, deltaX) * 180 / FastMath.PI;
         return ret >= 0 ? ret : ret + 360;
     }
 
@@ -57,22 +58,22 @@ public class Methods {
         yOB = yO - yB;
         xBA = xB - xA;
         yBA = yB - yA;
-        AO = Math.sqrt((xOA * xOA) + (yOA * yOA));
-        OB = Math.sqrt((xOB * xOB) + (yOB * yOB));
-        AB = Math.sqrt((xBA * xBA) + (yBA * yBA));
-        return Math.acos(((OB * OB) + (AO * AO) - (AB * AB)) / (2 * OB * AO));
+        AO = FastMath.sqrt((xOA * xOA) + (yOA * yOA));
+        OB = FastMath.sqrt((xOB * xOB) + (yOB * yOB));
+        AB = FastMath.sqrt((xBA * xBA) + (yBA * yBA));
+        return FastMath.acos(((OB * OB) + (AO * AO) - (AB * AB)) / (2 * OB * AO));
     }
 
     public static int Interval(int leftBorder, int x, int rightBorder) {
-        return Math.max(leftBorder, Math.min(rightBorder, x));
+        return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
 
     public static double Interval(double leftBorder, double x, double rightBorder) {
-        return Math.max(leftBorder, Math.min(rightBorder, x));
+        return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
 
     public static float Interval(float leftBorder, float x, float rightBorder) {
-        return Math.max(leftBorder, Math.min(rightBorder, x));
+        return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
 
     public static void Exception(Exception ex) {
@@ -93,7 +94,7 @@ public class Methods {
     }
 
     public static int RoundHU(double d) {
-        double dAbs = Math.abs(d);
+        double dAbs = FastMath.abs(d);
         int i = (int) dAbs;
         double result = dAbs - (double) i;
         if (result < 0.5) {

@@ -5,13 +5,13 @@
  */
 package game.gameobject.inputs;
 
-import game.gameobject.AnyInput;
+import game.gameobject.AbstractAnyInput;
 
 /**
  *
  * @author przemek
  */
-public class InputNull extends AnyInput {
+public class InputNull extends AbstractAnyInput {
 
     public InputNull() {
         this.type = -2;

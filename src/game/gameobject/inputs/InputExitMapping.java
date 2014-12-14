@@ -5,13 +5,13 @@
  */
 package game.gameobject.inputs;
 
-import game.gameobject.AnyInput;
+import game.gameobject.AbstractAnyInput;
 
 /**
  *
  * @author przemek
  */
-public class InputExitMapping extends AnyInput {
+public class InputExitMapping extends AbstractAnyInput {
 
     public InputExitMapping() {
         this.type = -1;

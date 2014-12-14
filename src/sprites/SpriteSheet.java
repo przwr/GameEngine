@@ -26,8 +26,8 @@ public class SpriteSheet extends Sprite {
         if (i > xTiles * yTiles) {
             return;
         }
-        int x = (int) (i % xTiles);
-        int y = (int) (i / xTiles);
+        final int x = (int) (i % xTiles);
+        final int y = (int) (i / xTiles);
         render(x, y);
     }
 
@@ -35,22 +35,14 @@ public class SpriteSheet extends Sprite {
         if (x > xTiles || y > yTiles) {
             return;
         }
-        float bx = (float) x / xTiles;
-        float by = (float) y / yTiles;
-        float ex = (float) (x + 1) / xTiles;
-        float ey = (float) (y + 1) / yTiles;
-        renderTexPart(bx, ex, by, ey);
+        renderTexPart((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
     }
 
     public void renderMirrored(boolean flip, int x, int y) {
         if (x > xTiles || y > yTiles) {
             return;
         }
-        float bx = (float) x / xTiles;
-        float by = (float) y / yTiles;
-        float ex = (float) (x + 1) / xTiles;
-        float ey = (float) (y + 1) / yTiles;
-        renderPartMirrored(flip, bx, ex, by, ey);
+        renderPartMirrored(flip, (float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
     }
 
     public int getXlimit() {

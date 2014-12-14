@@ -20,11 +20,11 @@ public class PacketMessage {
         this.message = message;
     }
 
-    public synchronized String getMessage() {
+    public String getMessage() {
         return message;
     }
 
-    public synchronized void setMessage(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 }

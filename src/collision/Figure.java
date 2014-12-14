@@ -8,9 +8,10 @@ package collision;
 import game.place.Shadow;
 import engine.Point;
 import game.gameobject.GameObject;
-import game.gameobject.Player;
-import game.place.Place;
+import game.gameobject.AbstractPlayer;
+import game.place.AbstractPlace;
 import java.util.ArrayList;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -42,7 +43,7 @@ public abstract class Figure implements Comparable<Object> {
         shadows = new ArrayList<>();
     }
 
-    public boolean ifCollideSolid(int x, int y, Place p) {
+    public boolean ifCollideSolid(int x, int y, AbstractPlace p) {
         for (GameObject obj : p.sMobs) {
             if (checkCollison(x, y, obj)) {
                 return true;
@@ -61,7 +62,7 @@ public abstract class Figure implements Comparable<Object> {
         return false;
     }
 
-    public GameObject whatCollideSolid(int x, int y, Place p) {
+    public GameObject whatCollideSolid(int x, int y, AbstractPlace p) {
         for (GameObject obj : p.sMobs) {
             if (checkCollison(x, y, obj)) {
                 return obj;
@@ -98,7 +99,7 @@ public abstract class Figure implements Comparable<Object> {
         return null;
     }
 
-    public boolean ifCollide(int x, int y, Place place) {
+    public boolean ifCollide(int x, int y, AbstractPlace place) {
         for (int p = 0; p < place.playersLength; p++) {
             if (checkCollison(x, y, place.players[p])) {
                 return true;
@@ -107,9 +108,9 @@ public abstract class Figure implements Comparable<Object> {
         return false;
     }
 
-    public Player getCollided(int x, int y, Place place) {
+    public AbstractPlayer getCollided(int x, int y, AbstractPlace place) {
         if (checkCollison(x, y, place.players[0])) {
-            return (Player) place.players[0];
+            return (AbstractPlayer) place.players[0];
         }
         return null;
     }
@@ -203,8 +204,8 @@ public abstract class Figure implements Comparable<Object> {
         if (f.getType() == 1) {
             return true;
         }
-        int dx = Math.abs(getCentralX(x) - f.getCentralX());
-        int dy = Math.abs(getCentralY(y) - f.getCentralY());
+        int dx = FastMath.abs(getCentralX(x) - f.getCentralX());
+        int dy = FastMath.abs(getCentralY(y) - f.getCentralY());
         return (dx <= (getWidth() + f.getWidth()) / 2 && dy <= (getWidth() + f.getWidth()) / 2);
     }
 

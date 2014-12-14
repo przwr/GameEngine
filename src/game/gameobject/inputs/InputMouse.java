@@ -5,14 +5,14 @@
  */
 package game.gameobject.inputs;
 
-import game.gameobject.AnyInput;
+import game.gameobject.AbstractAnyInput;
 import org.lwjgl.input.Mouse;
 
 /**
  *
  * @author przemek
  */
-public class InputMouse extends AnyInput {
+public class InputMouse extends AbstractAnyInput {
     
     public InputMouse(int key) {
         this.key = key;

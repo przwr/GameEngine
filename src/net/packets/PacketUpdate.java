@@ -19,25 +19,28 @@ public class PacketUpdate implements Serializable {
     private final ArrayList<MobUpdate> mobs;
 
     public PacketUpdate() {
-        players = new ArrayList<>();
-        mobs = new ArrayList<>();
+        players = new ArrayList<>(8);
+        mobs = new ArrayList<>(8);
     }
 
     public PacketUpdate(MPlayerUpdate mp) {
-        players = new ArrayList<>();
+        players = new ArrayList<>(8);
         players.add(mp);
-        mobs = new ArrayList<>();
+        mobs = new ArrayList<>(8);
     }
 
-    public synchronized void PlayerUpdate(MPlayer mpl, boolean isEmits, boolean isHop) {
+    public synchronized void playerUpdate(MPlayer mpl, boolean isEmits, boolean isHop) {
         MPlayerUpdate mp = getPlayer(mpl.getId());
-        if (mp == null) {
+        if (mp != null) {
+            mp.Update(mpl.getX(), mpl.getY());
+        } else {
             mp = new MPlayerUpdate(mpl.getId(), mpl.getX(), mpl.getY(), isEmits, isHop);
             players.add(mp);
-        } else {
-            mp.Update(mpl.getX(), mpl.getY());
         }
-        Trim();
+    }
+
+    public synchronized void PlayerUpdate(MPlayerUpdate mpu) {
+        players.add(mpu);
     }
 
     public synchronized void MobUpdate(short id, int x, int y, float SCALE) {
@@ -48,7 +51,6 @@ public class PacketUpdate implements Serializable {
             mp = new MobUpdate(id, (int) (((float) x) / SCALE), (int) (((float) y) / SCALE));
             mobs.add(mp);
         }
-        Trim();
     }
 
     public synchronized MPlayerUpdate getPlayer(byte id) {

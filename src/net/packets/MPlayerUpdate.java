@@ -7,6 +7,7 @@ package net.packets;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -39,7 +40,7 @@ public class MPlayerUpdate extends Update implements Serializable {
     public synchronized void Update(int x, int y) {
         int deltaX = this.x - x;
         int deltaY = this.y - y;
-        if (Math.abs(deltaX) <= 32767 && Math.abs(deltaY) <= 32767) {
+        if (FastMath.abs(deltaX) <= 32767 && FastMath.abs(deltaY) <= 32767) {
             delsX.add((short) deltaX);
             delsY.add((short) deltaY);
         }

@@ -23,20 +23,20 @@ public class PacketMPlayerUpdate implements Serializable {
         mpu.Trim();
     }
 
-    public synchronized void Update(byte id, int x, int y, boolean isEmits, boolean isHop, float SCALE) {
-        if (mpu != null) {
-            mpu.Update((int) (((float) x) / SCALE), (int) (((float) y) / SCALE));
-        } else {
+    public void update(byte id, int x, int y, boolean isEmits, boolean isHop, float SCALE) {
+        if (mpu == null) {
             mpu = new MPlayerUpdate(id, (int) (((float) x) / SCALE), (int) (((float) y) / SCALE), isEmits, isHop);
+        } else {
+            mpu.Update((int) (((float) x) / SCALE), (int) (((float) y) / SCALE));
         }
         mpu.Trim();
     }
 
-    public synchronized void Reset() {
+    public void reset() {
         mpu = null;
     }
 
-    public synchronized MPlayerUpdate Up() {
+    public MPlayerUpdate up() {
         return mpu;
     }
 }

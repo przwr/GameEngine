@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -22,7 +23,7 @@ public class Tile extends GameObject {
     protected final int xSheet;
     protected final int ySheet;
 
-    public Tile(SpriteSheet sh, int size, int xSheet, int ySheet, Place place) {
+    public Tile(SpriteSheet sh, int size, int xSheet, int ySheet, AbstractPlace place) {
         SIZE = size;
         this.sh = sh;
         this.xSheet = xSheet;
@@ -44,20 +45,19 @@ public class Tile extends GameObject {
         glTranslatef(xEffect, yEffect, 0);
         if (simpleLighting) {
             if (isLit) {
-                glColor4f(color, color, color, 1f);
+                glColor3f(color, color, color);
             } else {
-                glColor4f(0f, 0f, 0f, 1f);
+                glColor3f(0f, 0f, 0f);
             }
             Drawer.drawRectangle(0, 0, width, height);
-            glColor4f(1f, 1f, 1f, 1f);
+            glColor3f(1f, 1f, 1f);
         } else if (sprite != null) {
             if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color, 1);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                Drawer.drawShapeInColor(sprite, color, color, color);
             } else {
                 Drawer.drawShapeInBlack(sprite);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         }
         glPopMatrix();
     }
@@ -76,7 +76,7 @@ public class Tile extends GameObject {
         } else if (sprite != null) {
             glEnable(GL_TEXTURE_2D);
             if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color, 1);
+                Drawer.drawShapeInColor(sprite, color, color, color);
             } else {
                 Drawer.drawShapeInBlack(sprite);
             }

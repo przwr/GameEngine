@@ -20,7 +20,7 @@ public class PacketAddMPlayer {
         this.pl = pl;
     }
 
-    public synchronized NewMPlayer getPlayer() {
+    public NewMPlayer getPlayer() {
         return pl;
     }
 }

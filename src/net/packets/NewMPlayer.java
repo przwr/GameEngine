@@ -32,24 +32,24 @@ public class NewMPlayer {
         this.y = pl.getY();
     }
 
-    public synchronized byte getId() {
+    public byte getId() {
         return id;
     }
 
-    public synchronized String getName() {
+    public String getName() {
         return name;
     }
 
-    public synchronized void setPosition(int x, int y) {
+    public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public synchronized int getX() {
+    public int getX() {
         return x;
     }
 
-    public synchronized int getY() {
+    public int getY() {
         return y;
     }
 }

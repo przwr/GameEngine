@@ -20,7 +20,7 @@ public class PacketJoinRequest {
         this.name = name;
     }
 
-    public synchronized String getName() {
+    public String getName() {
         return name;
     }
 }

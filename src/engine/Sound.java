@@ -6,6 +6,7 @@
 package engine;
 
 import game.Settings;
+import net.jodk.lang.FastMath;
 import org.newdawn.slick.openal.Audio;
 
 /**
@@ -75,10 +76,10 @@ public class Sound {
     public void setPitch(float a) {
         if (sndEff.isPlaying()) {
             pause();
-            pitch = Math.max(0, a);
+            pitch = FastMath.max(0, a);
             resume();
         } else {
-            pitch = Math.max(0, a);
+            pitch = FastMath.max(0, a);
         }
     }
 
@@ -143,7 +144,7 @@ public class Sound {
         if (!sndEff.isPlaying()) {
             gainModifier = f1;
             int temp = sndEff.playAsSoundEffect(f, settings.volume * gainModifier, bln);
-            pitch = Math.max(0, f);
+            pitch = FastMath.max(0, f);
             gain = Methods.Interval(0, settings.volume * gainModifier, 1);
             isLooped = bln;
             sndEff.setPosition(position);
@@ -157,7 +158,7 @@ public class Sound {
         if (!sndEff.isPlaying()) {
             gainModifier = f1;
             int temp = sndEff.playAsSoundEffect(f, settings.volume * gainModifier, bln, f2, f3, f4);
-            pitch = Math.max(0, f);
+            pitch = FastMath.max(0, f);
             gain = Methods.Interval(0, settings.volume * gainModifier, 1);
             isLooped = bln;
             sndEff.setPosition(position);
@@ -170,7 +171,7 @@ public class Sound {
     public int playAsMusic(float f, float f1, boolean bln) {
         if (!sndEff.isPlaying()) {
             int temp = sndEff.playAsMusic(f, settings.volume * gainModifier, bln);
-            pitch = Math.max(0, f);
+            pitch = FastMath.max(0, f);
             gain = Methods.Interval(0, settings.volume * gainModifier, 1);
             isLooped = bln;
             sndEff.setPosition(position);

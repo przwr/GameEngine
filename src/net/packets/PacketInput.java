@@ -13,21 +13,22 @@ package net.packets;
 public class PacketInput {
 
     private byte id;
-    private boolean[] inputs = new boolean[10];
+    private boolean[] inputs;
 
     public PacketInput() {
     }
 
     public PacketInput(byte id, boolean[] inputs) {
         this.id = id;
-        this.inputs = inputs;
+        this.inputs = new boolean[inputs.length];
+        System.arraycopy(inputs, 0, this.inputs, 0, inputs.length);
     }
 
-    public synchronized byte getId() {
+    public byte getId() {
         return id;
     }
 
-    public synchronized boolean[] inputs() {
+    public boolean[] getInputs() {
         return inputs;
     }
 }

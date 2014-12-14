@@ -11,6 +11,7 @@ import engine.Drawer;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -25,7 +26,7 @@ public class FGTile extends Tile {
 
     private int highness;
 
-    public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, int height, int shadowH, Place place) {
+    public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, int height, int shadowH, AbstractPlace place) {
         super(sh, size, xSheet, ySheet, place);
         this.simpleLighting = true;
         this.solid = isItWall;
@@ -54,20 +55,19 @@ public class FGTile extends Tile {
         glTranslatef(getX() + xEffect, getY() - collision.shadowHeight() + yEffect, 0);
         if (simpleLighting) {
             if (isLit) {
-                glColor4f(color, color, color, 1f);
+                glColor3f(color, color, color);
             } else {
-                glColor4f(0f, 0f, 0f, 1f);
+                glColor3f(0f, 0f, 0f);
             }
             Drawer.drawRectangle(0, 0, collision.getWidth(), collision.getHeight() + collision.shadowHeight());
-            glColor4f(1f, 1f, 1f, 1f);
+            glColor3f(1f, 1f, 1f);
         } else if (sprite != null) {
             if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color, 1);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                Drawer.drawShapeInColor(sprite, color, color, color);
             } else {
                 Drawer.drawShapeInBlack(sprite);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         }
         glPopMatrix();
     }

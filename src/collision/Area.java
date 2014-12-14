@@ -9,11 +9,12 @@ import engine.Drawer;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.util.ArrayList;
+import net.jodk.lang.FastMath;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
@@ -116,8 +117,8 @@ public class Area extends GameObject {
     }
 
     public boolean ifGoodDistance(int x, int y, Figure f) {
-        int dx = Math.abs(xCentr - f.getCentralX(x));
-        int dy = Math.abs(yCentr - f.getCentralY(y));
+        int dx = FastMath.abs(xCentr - f.getCentralX(x));
+        int dy = FastMath.abs(yCentr - f.getCentralY(y));
         return (dx <= (getWidth() + f.getWidth()) / 2 && dy <= (getWidth() + f.getWidth()) / 2);
     }
 
@@ -165,16 +166,17 @@ public class Area extends GameObject {
         glTranslatef(f.getX() + xEffect, f.getY() - f.shadowHeight() + yEffect, 0);
         if (simpleLighting) {
             if (isLit) {
-                glColor4f(color, color, color, 1f);
+                glColor3f(color, color, color);
             } else {
-                glColor4f(0f, 0f, 0f, 1f);
+                glColor3f(0f, 0f, 0f);
             }
             Drawer.drawRectangle(0, 0, f.width, f.height + f.shadowHeight());
-            glColor4f(1f, 1f, 1f, 1f);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glColor3f(1f, 1f, 1f);
         } else if (sprite != null) {
             glEnable(GL_TEXTURE_2D);
             if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color, 1);
+                Drawer.drawShapeInColor(sprite, color, color, color);
             } else {
                 Drawer.drawShapeInBlack(sprite);
             }

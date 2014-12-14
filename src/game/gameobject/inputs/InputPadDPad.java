@@ -5,14 +5,14 @@
  */
 package game.gameobject.inputs;
 
-import game.gameobject.AnyInput;
+import game.gameobject.AbstractAnyInput;
 import org.lwjgl.input.Controller;
 
 /**
  *
  * @author przemek
  */
-public class InputPadDPad extends AnyInput {
+public class InputPadDPad extends AbstractAnyInput {
 
     private final Controller[] controllers;
     private final boolean isX;

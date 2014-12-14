@@ -10,13 +10,11 @@ import collision.Rectangle;
 import engine.Drawer;
 import engine.Methods;
 import game.place.cameras.Camera;
-import game.place.Place;
+import game.place.AbstractPlace;
+import net.packets.Update;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -26,14 +24,14 @@ import org.newdawn.slick.Color;
  *
  * @author przemek
  */
-public abstract class Mob extends Entity {
+public abstract class Mob extends AbstractEntity {
 
     protected final double range;
     protected GameObject prey;
     public short id;
 
-    public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid) {
-        double SCALE = place.settings.SCALE;
+    public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, AbstractPlace place, boolean solid) {
+        float SCALE = place.settings.SCALE;
         this.width = Methods.RoundHU(SCALE * width);
         this.height = Methods.RoundHU(SCALE * height);
         this.solid = solid;
@@ -47,7 +45,7 @@ public abstract class Mob extends Entity {
         this.setMaxSpeed(speed);
     }
 
-    public abstract void update(Place place);
+    public abstract void update(AbstractPlace place);
 
     @Override
     protected boolean isColided(int magX, int magY) {
@@ -55,7 +53,7 @@ public abstract class Mob extends Entity {
     }
 
     @Override
-    public Player getCollided(int magX, int magY) {
+    public AbstractPlayer getCollided(int magX, int magY) {
         return collision.getCollided(getX() + magX, getY() + magY, place);
     }
 
@@ -90,7 +88,7 @@ public abstract class Mob extends Entity {
     }
 
     @Override
-    public void renderName(Place place, Camera cam) {
+    public void renderName(AbstractPlace place, Camera cam) {
         place.renderMessage(0, cam.getXOff() + getX(), cam.getYOff() + getY() - (sprite.getSy() - 15),
                 name, new Color(place.r, place.g, place.b));
     }
@@ -108,18 +106,23 @@ public abstract class Mob extends Entity {
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
         if (sprite != null) {
-            glEnable(GL_TEXTURE_2D);
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
             if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color, 1);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                Drawer.drawShapeInColor(sprite, color, color, color);
             } else {
                 Drawer.drawShapeInBlack(sprite);
-                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glPopMatrix();
-            glDisable(GL_TEXTURE_2D);
         }
+    }
+
+    @Override
+    public void updateRest(Update up) {
+    }
+
+    @Override
+    public void updateOnline() {
     }
 }

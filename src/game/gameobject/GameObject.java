@@ -11,7 +11,7 @@ package game.gameobject;
  */
 import collision.Figure;
 import game.place.Light;
-import game.place.Place;
+import game.place.AbstractPlace;
 import java.util.Objects;
 import sprites.Sprite;
 
@@ -31,7 +31,7 @@ public abstract class GameObject {
     protected Sprite sprite;
     protected Light light;
     protected String name;
-    protected Place place;
+    protected AbstractPlace place;
     protected Figure collision;
     protected int depth;
 
@@ -42,7 +42,7 @@ public abstract class GameObject {
 
     public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f);
 
-    protected void init(String name, int x, int y, Place place) {
+    protected void init(String name, int x, int y, AbstractPlace place) {
         this.x = x;
         this.y = y;
         depth = 0;
@@ -94,7 +94,7 @@ public abstract class GameObject {
         collision = f;
     }
 
-    protected void init(String name, int x, int y, int sx, int sy, Place place) {
+    protected void init(String name, int x, int y, int sx, int sy, AbstractPlace place) {
         this.x = x;
         this.y = y;
         this.name = name;
@@ -118,19 +118,19 @@ public abstract class GameObject {
     }
 
     public int getBegOfX() {
-        return (int) (x - collision.getWidth() / 2);
+        return (int) (x - collision.getWidth() / 2d);
     }
 
     public int getBegOfY() {
-        return (int) (y - collision.getHeight() / 2);
+        return (int) (y - collision.getHeight() / 2d);
     }
 
     public int getEndOfX() {
-        return (int) (x - collision.getWidth() / 2);
+        return (int) (x - collision.getWidth() / 2d);
     }
 
     public int getEndOfY() {
-        return (int) (y + collision.getHeight() / 2);
+        return (int) (y + collision.getHeight() / 2d);
     }
 
     public int getX() {
@@ -205,7 +205,7 @@ public abstract class GameObject {
         return sY;
     }
 
-    public void renderLight(Place place, int x, int y) {
+    public void renderLight(AbstractPlace place, int x, int y) {
         if (light != null) {
             light.render(this, place, x, y);
         }
@@ -231,7 +231,7 @@ public abstract class GameObject {
         return animate;
     }
 
-    public Place getPlace() {
+    public AbstractPlace getPlace() {
         return place;
     }
 

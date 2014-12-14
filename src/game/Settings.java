@@ -7,7 +7,7 @@ package game;
 
 import engine.Methods;
 import engine.SoundBase;
-import game.gameobject.Player;
+import game.gameobject.AbstractPlayer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +51,7 @@ public class Settings {
     public ArrayList<Language> languages = new ArrayList<>();
     public Language language;           // ustawiony w konstruktorze na domyślny
     public int actionsNr;
-    public Player[] players;
+    public AbstractPlayer[] players;
     public Controller[] controllers;
     public int worldSeed;
     public int maxSamples;
@@ -99,7 +99,7 @@ public class Settings {
         languages.add(new LangPL());
         languages.add(new LangENG());
         language = languages.get(0);
-        lang = language.Lang;
+        lang = language.lang;
     }
 
     private boolean isBigger(DisplayMode checked, DisplayMode temp) {
@@ -114,7 +114,7 @@ public class Settings {
         }
     }
 
-    public void Up(int nr, Player[] players, Controller[] controllers) {
+    public void Up(int nr, AbstractPlayer[] players, Controller[] controllers) {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;

@@ -6,6 +6,7 @@
 package engine;
 
 import java.util.Random;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -29,7 +30,7 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
 
     private void setSeed(int seed) {       // seed ma być abs czy nie?
         this.seed = seed;
-        seed = Math.abs(seed);
+        seed = FastMath.abs(seed);
         for (int i = 0; i < 16; i++) {
             state[i] = (seed + 1) * ((seed + 1) << 2) * i;
         }
@@ -64,7 +65,7 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
             temp /= 2;
             i++;
         }
-        return (int) (limit * (next(i) / (Math.pow(2, i) - 1)));
+        return (int) (limit * (next(i) / (FastMath.pow(2, i) - 1)));
     }
 
     public double preciseRandom(double limit, double prec) {

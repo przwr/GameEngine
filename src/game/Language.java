@@ -9,9 +9,9 @@ package game;
  *
  * @author przemek
  */
-public abstract class Language {
+public class Language {
 
-    public String Lang;
+    public String lang;
     public Menu m = new Menu();
 
     //Menu && Errors
@@ -45,7 +45,7 @@ public abstract class Language {
         public String On;
         public String Off;
         public String Resume;
-        public String End_Game;
+        public String EndGame;
         public String StartGame;
         public String Language;
         public String Controls;
@@ -66,5 +66,4 @@ public abstract class Language {
         public String MustBeClose;
         public String Empty;
     }
-
 }

@@ -9,6 +9,7 @@ import engine.Main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,19 +17,19 @@ import java.util.logging.Logger;
  *
  * @author przemek
  */
-public class IO {
+public final class IO {
 
-    public static void ReadFile(File f, Settings settings, boolean isSettings) {
-        try (BufferedReader r = new BufferedReader(new FileReader(f));) {
-            String s;
-            while ((s = r.readLine()) != null) {
+    public static void readFile(File file, Settings settings, boolean isSettings) {
+        try (BufferedReader read = new BufferedReader(new FileReader(file));) {
+            String str;
+            while ((str = read.readLine()) != null) {
                 if (isSettings) {
-                    AnalizerSettings.AnalizeSetting(s, settings);
+                    AnalizerSettings.analizeSetting(str, settings);
                 } else {
-                    AnalizerInput.AnalizeInput(s, settings);
+                    AnalizerInput.AnalizeInput(str, settings);
                 }
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

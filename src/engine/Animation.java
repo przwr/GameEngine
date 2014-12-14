@@ -18,7 +18,7 @@ public class Animation {
     private final GameObject owner;
     private final SpriteSheet sprite;
     private final Delay animDelay;
-    private boolean flip;
+    //private boolean flip;
     private int curFrame, start, end;
 
     public Animation(int start, int end, SpriteSheet spr, int delay, GameObject owner) {
@@ -44,36 +44,30 @@ public class Animation {
     public void render(boolean anim) {
         sprite.bindCheck();
         sprite.render(curFrame);
-        if (anim) {
-            if (animDelay.isOver()) {
-                curFrame++;
-                animDelay.restart();
-                if (curFrame > getEnd()) {
-                    curFrame = getStart();
-                }
+        if (anim && animDelay.isOver()) {
+            curFrame++;
+            animDelay.restart();
+            if (curFrame > getEnd()) {
+                curFrame = getStart();
             }
         }
+
     }
 
     public void renderNotBind(boolean anim) {
         sprite.render(curFrame);
-        if (anim) {
-            if (animDelay.isOver()) {
-                curFrame++;
-                animDelay.restart();
-                if (curFrame > getEnd()) {
-                    curFrame = getStart();
-                }
+        if (anim && animDelay.isOver()) {
+            curFrame++;
+            animDelay.restart();
+            if (curFrame > getEnd()) {
+                curFrame = getStart();
             }
         }
     }
 
-    
-    
-    public void setFlip(boolean flip) {
-        this.flip = flip;
-    }
-
+//    public void setFlip(boolean flip) {
+//        this.flip = flip;
+//    }
     public Sprite getSprite() {
         return sprite;
     }

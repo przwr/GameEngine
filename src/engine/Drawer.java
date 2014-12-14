@@ -5,7 +5,7 @@
  */
 package engine;
 
-import game.place.Place;
+import game.place.AbstractPlace;
 import static org.lwjgl.opengl.GL11.GL_MODULATE;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL11.GL_TRIANGLE_FAN;
 import static org.lwjgl.opengl.GL11.GL_ZERO;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -91,7 +92,7 @@ public class Drawer {
         glColor4f(c.r, c.g, c.b, c.a);
     }
 
-    public static void refreshColor(Place p) {
+    public static void refreshColor(AbstractPlace p) {
         glColor4f(p.r, p.g, p.b, 1.0f);
     }
 
@@ -99,14 +100,14 @@ public class Drawer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void refresh(Place p) {
+    public static void refresh(AbstractPlace p) {
         refreshColor(p);
         refreshBlending();
     }
 
-    public static void drawShapeInColor(Sprite sprite, float r, float g, float b, float alpha) {
+    public static void drawShapeInColor(Sprite sprite, float r, float g, float b) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(r, g, b, alpha);
+        glColor3f(r, g, b);
         glActiveTexture(white);
         sprite.getTex().bind();
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -117,12 +118,12 @@ public class Drawer {
         glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
         sprite.renderNotBind();
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glColor4f(1, 1, 1, 1);
+        glColor3f(1, 1, 1);
     }
 
-    public static void drawShapeInColor(Animation anim, float r, float g, float b, float alpha) {
+    public static void drawShapeInColor(Animation anim, float r, float g, float b) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(r, g, b, alpha);
+        glColor3f(r, g, b);
         glActiveTexture(white);
         anim.getSprite().getTex().bind();
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -133,7 +134,7 @@ public class Drawer {
         glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
         anim.renderNotBind(anim.getOwner().isAnimate());
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glColor4f(1, 1, 1, 1);
+        glColor3f(1, 1, 1);
     }
 
     public static void drawShapeInBlack(Sprite sprite) {

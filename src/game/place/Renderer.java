@@ -6,8 +6,9 @@
 package game.place;
 
 import game.gameobject.GameObject;
-import game.gameobject.Player;
+import game.gameobject.AbstractPlayer;
 import game.place.cameras.Camera;
+import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
@@ -46,7 +47,7 @@ public class Renderer {
     private static final drawBorder[] borders = new drawBorder[5];
     private static final resetOrtho[] orthos = new resetOrtho[5];
 
-    public static void findVisibleLights(Place place, int playersLength) {
+    public static void findVisibleLights(AbstractPlace place, int playersLength) {
         readyVarsToFindLights(place);
         for (GameObject light : place.emitters) {
             for (int p = 0; p < playersLength; p++) {
@@ -61,7 +62,7 @@ public class Renderer {
                         if (light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() >> 1) && EY[pi] >= light.getY() - (light.getLight().getSY() >> 1)
                                 && SX[pi] <= light.getX() + (light.getLight().getSX() >> 1) && EX[pi] >= light.getX() - (light.getLight().getSX() >> 1)) {
                             isVisible = true;
-                            (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
+                            (((AbstractPlayer) place.players[pi]).getCam()).visibleLights[(((AbstractPlayer) place.players[pi]).getCam()).nrVLights++] = light;
                         }
                     }
                 }
@@ -85,7 +86,7 @@ public class Renderer {
                     if (light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() >> 1) && EY[pi] >= light.getY() - (light.getLight().getSY() >> 1)
                             && SX[pi] <= light.getX() + (light.getLight().getSX() >> 1) && EX[pi] >= light.getX() - (light.getLight().getSX() >> 1)) {
                         isVisible = true;
-                        (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
+                        (((AbstractPlayer) place.players[pi]).getCam()).visibleLights[(((AbstractPlayer) place.players[pi]).getCam()).nrVLights++] = light;
                     }
                 }
             }
@@ -96,9 +97,9 @@ public class Renderer {
         }
     }
 
-    private static void readyVarsToFindLights(Place place) {
+    private static void readyVarsToFindLights(AbstractPlace place) {
         for (int p = 0; p < place.getPlayersLenght(); p++) {
-            cam = (((Player) place.players[p]).getCam());
+            cam = (((AbstractPlayer) place.players[p]).getCam());
             cam.nrVLights = 0;
             SX[p] = cam.getSX();
             EX[p] = cam.getEX();
@@ -118,7 +119,7 @@ public class Renderer {
         place.nrVLights = 0;
     }
 
-    public static void preRendLights(Place place) {
+    public static void preRendLights(AbstractPlace place) {
         if (!place.settings.shadowOff) {
             for (int l = 0; l < place.nrVLights; l++) {
                 ShadowRenderer.preRendLight(place, l);
@@ -126,7 +127,7 @@ public class Renderer {
         }
     }
 
-    public static void preRenderShadowedLights(Place place, Camera cam) {
+    public static void preRenderShadowedLights(AbstractPlace place, Camera cam) {
         fbFrame.activate();
         glClear(GL_COLOR_BUFFER_BIT);
         glColor3f(1, 1, 1);
@@ -161,7 +162,7 @@ public class Renderer {
     }
 
     public static void renderLights(float r, float g, float b, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
-        lightBrightness = Math.max(b, Math.max(r, g));
+        lightBrightness = FastMath.max(b, FastMath.max(r, g));
         lightStrength = 6 - (int) (10 * lightBrightness);
         if (lightStrength <= 2) {
             lightStrength = 2;
@@ -193,7 +194,7 @@ public class Renderer {
         glPopMatrix();
     }
 
-    public static void initVariables(Place place) {
+    public static void initVariables(AbstractPlace place) {
         ShadowRenderer.initVariables(place);
         fbFrame = new FBORendererRegular(w, h, place.settings);
         borders[0] = new drawBorder() {

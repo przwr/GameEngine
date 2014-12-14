@@ -6,7 +6,7 @@
 package net;
 
 import com.esotericsoftware.kryonet.Connection;
-import game.gameobject.Player;
+import game.gameobject.AbstractPlayer;
 import net.packets.PacketUpdate;
 
 /**
@@ -19,7 +19,7 @@ public class MPlayer {
     private byte id;
     private String name;
     private int x, y;
-    private Player pl;
+    private AbstractPlayer pl;
     private PacketUpdate pu;
 
     public MPlayer() {
@@ -33,49 +33,56 @@ public class MPlayer {
 
     }
 
-    public synchronized void setPlayer(Player pl) {
+    public void setPlayer(AbstractPlayer pl) {
         this.pl = pl;
     }
 
-    public synchronized byte getId() {
+    public byte getId() {
         return id;
     }
 
-    public synchronized String getName() {
+    public String getName() {
         return name;
     }
 
-    public synchronized Connection getConnection() {
+    public Connection getConnection() {
         return conection;
     }
 
-    public synchronized void setPosition(int x, int y) {
+    public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public synchronized int getX() {
+    public int getX() {
         return x;
     }
 
-    public synchronized int getY() {
+    public int getY() {
         return y;
     }
 
-    public synchronized Player inGame() {
+    public AbstractPlayer inGame() {
         return pl;
     }
 
-    public synchronized void Update(int x, int y, float SCALE) {
+    public void update(int x, int y, float SCALE) {
         this.x = (int) (((float) x) / SCALE);
         this.y = (int) (((float) y) / SCALE);
     }
 
-    public synchronized PacketUpdate PU() {
-        return pu;
+    public void update(float SCALE) {
+        this.x = (int) (((float) pl.getX()) / SCALE);
+        this.y = (int) (((float) pl.getY()) / SCALE);
     }
 
-    public synchronized void resetPU() {
+    public void sendUpTCP() {
+        pu.Trim();
+        conection.sendTCP(pu);
         pu.Reset();
+    }
+
+    public PacketUpdate getPU() {
+        return pu;
     }
 }

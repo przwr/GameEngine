@@ -9,7 +9,7 @@ package engine;
  *
  * @author przemek
  */
-public class Time {
+public final class Time {
 
     private static final float DAMPING = 16000000;
     private static long curTime;

@@ -31,7 +31,7 @@ package engine;
         double x = x2 - x1;
         double y = y2 - y1;
 
-        return (int) Math.sqrt((x * x) + (y * y));
+        return (int) FastMath.sqrt((x * x) + (y * y));
     }
 
     public static GameObject sphereCollide(int x, int y, int radius, ArrayList<GameObject> objects, Place place) {

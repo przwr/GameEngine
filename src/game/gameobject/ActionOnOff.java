@@ -9,19 +9,19 @@ package game.gameobject;
  *
  * @author przemek
  */
-public class ActionOnOff extends Action {
+public class ActionOnOff extends AbstractAction {
 
-    public ActionOnOff(AnyInput in) {
+    public ActionOnOff(AbstractAnyInput in) {
         super(in);
     }
 
     @Override
-    public void Do() {
+    public void act() {
         if (in != null) {
             if (in.isPut()) {
                 if (!in.isPressed()) {
                     in.setPressed(true);
-                    isOn = true;
+                    on = true;
                 }
             } else {
                 in.setPressed(false);
