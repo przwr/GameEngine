@@ -9,17 +9,17 @@ import collision.Area;
 import collision.Line;
 import collision.Rectangle;
 import game.gameobject.Mob;
-import game.AbstractGame;
+import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
-import game.place.AbstractPlace;
+import game.place.Place;
 import game.place.Tile;
 import engine.FontsHandler;
 import engine.Methods;
-import game.gameobject.AbstractAction;
+import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
-import game.gameobject.AbstractEntity;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Entity;
+import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.FGTile;
 import org.lwjgl.input.Keyboard;
@@ -29,11 +29,11 @@ import org.newdawn.slick.openal.SoundStore;
  *
  * @author przemek
  */
-public class Place extends AbstractPlace {
+public class MyPlace extends Place {
 
-    private final AbstractAction changeSplitScreenMode;
-    private final AbstractAction changeSplitScreenJoin;
-    private final AbstractPlace place;
+    private final Action changeSplitScreenMode;
+    private final Action changeSplitScreenJoin;
+    private final Place place;
     private FGTile fgt;
 
     private final update[] ups = new update[2];
@@ -41,7 +41,7 @@ public class Place extends AbstractPlace {
     private final Tile GRASS = new Tile(getSpriteSheet("tlo"), sTile, 1, 8, this);
     final Tile ROCK = new Tile(getSpriteSheet("tlo"), sTile, 1, 1, this);
 
-    public Place(AbstractGame game, int width, int height, int tileSize, Settings settnig, boolean isHost) {
+    public MyPlace(Game game, int width, int height, int tileSize, Settings settnig, boolean isHost) {
         super(game, width, height, tileSize, settnig);
         place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
@@ -156,8 +156,8 @@ public class Place extends AbstractPlace {
         areas.add(testg);
         areas.add(border);
         if (isHost) {
-            addObj(new Rabbit(1280, 1024, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
-            addObj(new Rabbit(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+            addObj(new MyMob(1280, 1024, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+            addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
         }
         this.r = 0.75f;
         this.g = 0.75f;
@@ -178,7 +178,7 @@ public class Place extends AbstractPlace {
         for (int p = 0; p < playersLength; p++) {
             if (cam.getSY() <= players[p].getY() + (players[p].Height() + fonts.write(0).getHeight()) && cam.getEY() >= players[p].getY() - (players[p].Height() + fonts.write(0).getHeight())
                     && cam.getSX() <= players[p].getX() + (fonts.write(0).getWidth(players[p].getName())) && cam.getEX() >= players[p].getX() - (fonts.write(0).getWidth(players[p].getName()))) {
-                ((Player) players[p]).renderName(this, cam);
+                ((MyPlayer) players[p]).renderName(this, cam);
             }
         }
         for (Mob mob : sMobs) {
@@ -238,7 +238,7 @@ public class Place extends AbstractPlace {
                     cams[playersLength - 2].update();
                 }
                 for (int i = 0; i < playersLength; i++) {
-                    ((AbstractPlayer) players[i]).update(place);
+                    ((Player) players[i]).update(place);
                 }
                 for (Mob mob : sMobs) {
                     mob.update(game.place);
@@ -257,10 +257,10 @@ public class Place extends AbstractPlace {
                         mob.updateHard();
                     }
                 }
-                ((AbstractPlayer) players[0]).sendUpdate(place);
+                ((Player) players[0]).sendUpdate(place);
                 for (int i = 1; i < playersLength; i++) {
-                    ((AbstractEntity) players[i]).updateSoft();
-                    ((AbstractEntity) players[i]).updateOnline();
+                    ((Entity) players[i]).updateSoft();
+                    ((Entity) players[i]).updateOnline();
                 }
             }
         };

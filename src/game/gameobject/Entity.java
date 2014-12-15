@@ -7,7 +7,7 @@ package game.gameobject;
 
 import engine.Methods;
 import engine.Time;
-import game.place.AbstractPlace;
+import game.place.Place;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
@@ -16,7 +16,7 @@ import net.packets.Update;
  *
  * @author przemek
  */
-public abstract class AbstractEntity extends GameObject {
+public abstract class Entity extends GameObject {
 
     public Update up, up2;
     public Update[] ups = new Update[4];
@@ -67,7 +67,7 @@ public abstract class AbstractEntity extends GameObject {
         final int yd = Integer.signum(ypos);
 
         while (xpos != 0 || ypos != 0) {
-            AbstractPlayer colided;
+            Player colided;
             if (xpos != 0) {
                 colided = getCollided(xd, 0);
                 move(xd, 0);
@@ -190,13 +190,13 @@ public abstract class AbstractEntity extends GameObject {
 
     protected abstract boolean isColided(int magX, int magY);
 
-    public abstract AbstractPlayer getCollided(int magX, int magY);
+    public abstract Player getCollided(int magX, int magY);
 
     protected abstract void move(int xPos, int yPos);
 
     protected abstract void setPosition(int xPos, int yPos);
 
-    protected abstract void renderName(AbstractPlace place, Camera cam);
+    protected abstract void renderName(Place place, Camera cam);
 
     public double getHSpeed() {
         return hspeed;

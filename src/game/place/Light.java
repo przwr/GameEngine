@@ -25,7 +25,7 @@ public class Light {
 
     protected FBORenderer fbo;
 
-    public Light(String lightName, float r, float g, float b, int sx, int sy, AbstractPlace place) {
+    public Light(String lightName, float r, float g, float b, int sx, int sy, Place place) {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -50,7 +50,7 @@ public class Light {
         this.b = b;
     }
 
-    public void render(GameObject emitter, AbstractPlace place, int x, int y) {
+    public void render(GameObject emitter, Place place, int x, int y) {
         if (light != null) {
             glColor3f(r, g, b);
             glPushMatrix();

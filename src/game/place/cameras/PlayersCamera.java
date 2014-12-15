@@ -6,7 +6,7 @@
 package game.place.cameras;
 
 import game.gameobject.GameObject;
-import game.place.AbstractPlace;
+import game.place.Place;
 import org.lwjgl.opengl.Display;
 
 /**
@@ -17,7 +17,7 @@ public class PlayersCamera extends Camera {
 
     private initCam[] inits;
 
-    public PlayersCamera(final AbstractPlace place, GameObject go, int ssX, int ssY, final int num) {
+    public PlayersCamera(final Place place, GameObject go, int ssX, int ssY, final int num) {
         super(place, go);
         inits = new initCam[3];
         inits[0] = new initCam() {
@@ -42,7 +42,7 @@ public class PlayersCamera extends Camera {
         init(ssX, ssY);
     }
 
-    public PlayersCamera(AbstractPlace place, GameObject go, GameObject go2) {
+    public PlayersCamera(Place place, GameObject go, GameObject go2) {
         super(place, go);
         gos.add(go2);
         Dwidth = Display.getWidth() / 2;
@@ -50,7 +50,7 @@ public class PlayersCamera extends Camera {
         update();
     }
 
-    public PlayersCamera(AbstractPlace place, GameObject go, GameObject go2, GameObject go3) {
+    public PlayersCamera(Place place, GameObject go, GameObject go2, GameObject go3) {
         super(place, go);
         gos.add(go2);
         gos.add(go3);
@@ -59,7 +59,7 @@ public class PlayersCamera extends Camera {
         update();
     }
 
-    public PlayersCamera(AbstractPlace place, GameObject go, GameObject go2, GameObject go3, GameObject go4) {
+    public PlayersCamera(Place place, GameObject go, GameObject go2, GameObject go3, GameObject go4) {
         super(place, go);
         gos.add(go2);
         gos.add(go3);
@@ -89,7 +89,7 @@ public class PlayersCamera extends Camera {
         update();
     }
 
-    private void initsRest(final AbstractPlace place, final int num) {
+    private void initsRest(final Place place, final int num) {
         inits[1] = new initCam() {
             @Override
             public void initCam() {

@@ -9,13 +9,13 @@ package game.gameobject;
  *
  * @author przemek
  */
-public abstract class AbstractAction {
+public abstract class Action {
 
     protected boolean on;
 
-    public AbstractAnyInput in;
+    public AnyInput in;
 
-    public AbstractAction(AbstractAnyInput in) {
+    public Action(AnyInput in) {
         this.in = in;
     }
 

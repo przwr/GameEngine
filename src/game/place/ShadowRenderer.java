@@ -56,7 +56,7 @@ public class ShadowRenderer {
     private static final renderShadow[] shads = new renderShadow[4];
     private static float LH1o2;
 
-    public static void preRendLight(AbstractPlace place, int l) {
+    public static void preRendLight(Place place, int l) {
         emitter = place.visibleLights[l];
         findShades(emitter, place);
         emitter.getLight().fbo.activate();
@@ -186,7 +186,7 @@ public class ShadowRenderer {
         }
     }
 
-    private static void findShades(GameObject src, AbstractPlace place) {
+    private static void findShades(GameObject src, Place place) {
         // Powinno sortować według wysoskości - najpierw te, które są najwyżej na planszy, a później coraz niższe,
         // obiekty tej samej wysokości powinny być renderowane w kolejności od najdalszych od źródła, do najbliższych.
         nrShades = 0;
@@ -530,7 +530,7 @@ public class ShadowRenderer {
         glPopMatrix();
     }
 
-    public static void initVariables(AbstractPlace place) {
+    public static void initVariables(Place place) {
         points[0] = new Point(0, 0);
         points[1] = new Point(0, 0);
         points[2] = new Point(0, 0);

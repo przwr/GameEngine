@@ -7,16 +7,16 @@ package mygame.choices;
 
 import engine.Sound;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceStop extends AbstractMenuChoice {
+public class ChoiceStop extends MenuChoice {
 
-    public ChoiceStop(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceStop(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

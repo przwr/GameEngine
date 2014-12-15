@@ -17,7 +17,7 @@ import com.esotericsoftware.minlog.Log;
 import engine.Delay;
 import engine.Methods;
 import game.gameobject.Mob;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import java.io.IOException;
 import net.packets.PacketMPlayerUpdate;
 import net.packets.PacketRemoveMPlayer;
@@ -29,8 +29,8 @@ import net.packets.PacketRemoveMPlayer;
 public class GameServer {
 
     private final Server server;
-    private final AbstractPlayer pl;
-    private final AbstractGameOnline game;
+    private final Player pl;
+    private final GameOnline game;
     private final float SCALE;
     public boolean isRunning;
     private MPlayer tmp;
@@ -40,7 +40,7 @@ public class GameServer {
     private byte id = 0;
     private Delay delay;
 
-    public GameServer(final AbstractPlayer pl, final AbstractGameOnline game) {
+    public GameServer(final Player pl, final GameOnline game) {
         this.pl = pl;
         this.game = game;
         this.SCALE = game.g.settings.SCALE;

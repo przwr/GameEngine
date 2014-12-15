@@ -5,33 +5,33 @@
  */
 package gamedesigner.gameEdit;
 
-import mygame.Player;
+import mygame.MyPlayer;
 import collision.Area;
 import collision.Line;
 import game.gameobject.Mob;
-import game.AbstractGame;
+import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
-import game.place.AbstractPlace;
+import game.place.Place;
 import game.place.Tile;
 import engine.FontsHandler;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
  *
  * @author przemek
  */
-public class EditorPlace extends AbstractPlace {
+public class EditorPlace extends Place {
 
-    private final AbstractPlace place;
+    private final Place place;
 
     private final update[] ups = new update[2];
 
     private final Tile GRASS = new Tile(getSpriteSheet("tlo"), sTile, 1, 8, this);
     final Tile ROCK = new Tile(getSpriteSheet("tlo"), sTile, 1, 1, this);
 
-    public EditorPlace(AbstractGame game, int width, int height, int tileSize, Settings settnig) {
+    public EditorPlace(Game game, int width, int height, int tileSize, Settings settnig) {
         super(game, width, height, tileSize, settnig);
         place = this;
         generate();
@@ -64,7 +64,7 @@ public class EditorPlace extends AbstractPlace {
         for (int p = 0; p < playersLength; p++) {
             if (cam.getSY() <= players[p].getY() + (players[p].getHeight() << 2) && cam.getEY() >= players[p].getY() - (players[p].getHeight() << 2)
                     && cam.getSX() <= players[p].getX() + (players[p].getWidth() << 2) && cam.getEX() >= players[p].getX() - (players[p].getWidth() << 2)) {
-                ((Player) players[p]).renderName(this, cam);
+                ((MyPlayer) players[p]).renderName(this, cam);
             }
         }
         for (Mob mob : sMobs) {
@@ -79,7 +79,7 @@ public class EditorPlace extends AbstractPlace {
         ups[0] = new update() {
             @Override
             public void update() {
-                ((AbstractPlayer) players[0]).update(place);
+                ((Player) players[0]).update(place);
                 for (Mob mob : sMobs) {
                     mob.update(game.place);
                 }
@@ -88,9 +88,9 @@ public class EditorPlace extends AbstractPlace {
         ups[1] = new update() {
             @Override
             public void update() {
-                ((AbstractPlayer) players[0]).sendUpdate(place);
+                ((Player) players[0]).sendUpdate(place);
                 for (int i = 1; i < playersLength; i++) {
-                    ((AbstractPlayer) players[i]).update(place);
+                    ((Player) players[i]).update(place);
                 }
                 for (Mob mob : sMobs) {
                     mob.update(place);

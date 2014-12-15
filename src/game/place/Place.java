@@ -7,14 +7,14 @@ package game.place;
 
 import collision.Area;
 import engine.Drawer;
-import game.AbstractGame;
+import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
 import game.gameobject.Mob;
 import java.util.ArrayList;
 import game.gameobject.GameObject;
 import engine.SoundBase;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import java.util.Collections;
 import java.util.Comparator;
 import static org.lwjgl.opengl.GL11.*;
@@ -26,14 +26,14 @@ import sprites.SpriteSheet;
  *
  * @author przemek
  */
-public abstract class AbstractPlace extends AbstractScreenPlace {
+public abstract class Place extends ScreenPlace {
 
     protected final SoundBase sounds;
     protected final SpriteBase sprites;
     public final int sTile;
 
     private final render[] rds = new render[2];
-    private final AbstractPlace place;
+    private final Place place;
 
     public Camera cam;
     public Camera[] cams = new Camera[3];
@@ -57,7 +57,7 @@ public abstract class AbstractPlace extends AbstractScreenPlace {
 
     public final Tile[] tiles;
 
-    public AbstractPlace(AbstractGame game, int width, int height, int sTile, Settings settings) {
+    public Place(Game game, int width, int height, int sTile, Settings settings) {
         super(game, width, height, settings);
         this.sTile = sTile;
         tiles = new Tile[width / sTile * height / sTile];
@@ -97,7 +97,7 @@ public abstract class AbstractPlace extends AbstractScreenPlace {
                     Renderer.preRendLights(place);
                 }
                 for (int p = 0; p < playersLength; p++) {
-                    cam = (((AbstractPlayer) players[p]).getCam());
+                    cam = (((Player) players[p]).getCam());
                     SplitScreen.setSplitScreen(place, playersLength, p);
                     if (p == 0 || !singleCam) {
                         glEnable(GL_SCISSOR_TEST);
@@ -123,7 +123,7 @@ public abstract class AbstractPlace extends AbstractScreenPlace {
                 if (!settings.shadowOff) {
                     Renderer.preRendLights(place);
                 }
-                cam = (((AbstractPlayer) players[0]).getCam());
+                cam = (((Player) players[0]).getCam());
                 SplitScreen.setSplitScreen(place, 1, 0);
                 glEnable(GL_SCISSOR_TEST);
                 Renderer.preRenderShadowedLights(place, cam);
@@ -245,7 +245,7 @@ public abstract class AbstractPlace extends AbstractScreenPlace {
     }
 
     public void addObj(GameObject go) {
-        if (!AbstractPlayer.class.isAssignableFrom(go.getClass())) {
+        if (!Player.class.isAssignableFrom(go.getClass())) {
             if (go.isEmitter()) {
                 emitters.add(go);
             }
@@ -271,7 +271,7 @@ public abstract class AbstractPlace extends AbstractScreenPlace {
     }
 
     public void deleteObj(GameObject go) {
-        if (!AbstractPlayer.class.isAssignableFrom(go.getClass())) {
+        if (!Player.class.isAssignableFrom(go.getClass())) {
             if (go.isEmitter()) {
                 emitters.remove(go);
             }

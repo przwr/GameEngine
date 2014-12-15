@@ -8,7 +8,7 @@ package game.place.cameras;
 import engine.Delay;
 import engine.Methods;
 import game.gameobject.GameObject;
-import game.place.AbstractPlace;
+import game.place.Place;
 import java.util.ArrayList;
 
 /**
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public abstract class Camera {
 
     protected final ArrayList<GameObject> gos = new ArrayList<>();
-    protected AbstractPlace place;
+    protected Place place;
     protected int Dwidth;
     protected int Dheight;
 
@@ -31,7 +31,7 @@ public abstract class Camera {
     public int nrVLights;
     boolean shakeUp = true;
 
-    public Camera(AbstractPlace place, GameObject go) {
+    public Camera(Place place, GameObject go) {
         this.place = place;
         gos.add(go);
         delaylenght = 50;

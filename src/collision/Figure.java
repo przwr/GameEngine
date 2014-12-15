@@ -8,8 +8,8 @@ package collision;
 import game.place.Shadow;
 import engine.Point;
 import game.gameobject.GameObject;
-import game.gameobject.AbstractPlayer;
-import game.place.AbstractPlace;
+import game.gameobject.Player;
+import game.place.Place;
 import java.util.ArrayList;
 import net.jodk.lang.FastMath;
 
@@ -43,7 +43,7 @@ public abstract class Figure implements Comparable<Object> {
         shadows = new ArrayList<>();
     }
 
-    public boolean ifCollideSolid(int x, int y, AbstractPlace p) {
+    public boolean ifCollideSolid(int x, int y, Place p) {
         for (GameObject obj : p.sMobs) {
             if (checkCollison(x, y, obj)) {
                 return true;
@@ -62,7 +62,7 @@ public abstract class Figure implements Comparable<Object> {
         return false;
     }
 
-    public GameObject whatCollideSolid(int x, int y, AbstractPlace p) {
+    public GameObject whatCollideSolid(int x, int y, Place p) {
         for (GameObject obj : p.sMobs) {
             if (checkCollison(x, y, obj)) {
                 return obj;
@@ -99,7 +99,7 @@ public abstract class Figure implements Comparable<Object> {
         return null;
     }
 
-    public boolean ifCollide(int x, int y, AbstractPlace place) {
+    public boolean ifCollide(int x, int y, Place place) {
         for (int p = 0; p < place.playersLength; p++) {
             if (checkCollison(x, y, place.players[p])) {
                 return true;
@@ -108,9 +108,9 @@ public abstract class Figure implements Comparable<Object> {
         return false;
     }
 
-    public AbstractPlayer getCollided(int x, int y, AbstractPlace place) {
+    public Player getCollided(int x, int y, Place place) {
         if (checkCollison(x, y, place.players[0])) {
-            return (AbstractPlayer) place.players[0];
+            return (Player) place.players[0];
         }
         return null;
     }

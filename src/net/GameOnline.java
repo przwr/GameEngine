@@ -6,8 +6,8 @@
 package net;
 
 import net.packets.NewMPlayer;
-import game.AbstractGame;
-import game.gameobject.AbstractPlayer;
+import game.Game;
+import game.gameobject.Player;
 import net.packets.MPlayerUpdate;
 import net.packets.MobUpdate;
 import net.packets.PacketMPlayerUpdate;
@@ -17,7 +17,7 @@ import net.packets.PacketUpdate;
  *
  * @author przemek
  */
-public abstract class AbstractGameOnline {
+public abstract class GameOnline {
 
     public PastPosition[] past = new PastPosition[256];
     protected final change[] changes;
@@ -27,11 +27,11 @@ public abstract class AbstractGameOnline {
     protected final MPlayerUpdate[] plUps;
     protected MobUpdate[] newMob;
     public int pastNr;
-    public final AbstractGame g;
+    public final Game g;
     public GameServer server;
     public GameClient client;
 
-    public AbstractGameOnline(AbstractGame game, int nrChanges, int players) {
+    public GameOnline(Game game, int nrChanges, int players) {
         g = game;
         changes = new change[nrChanges];
         isChanged = new boolean[nrChanges];
@@ -69,7 +69,7 @@ public abstract class AbstractGameOnline {
 
     public abstract void playerUpdate(PacketMPlayerUpdate mPlayerUpdate);
 
-    public abstract AbstractPlayer getPlayerByID(byte id);
+    public abstract Player getPlayerByID(byte id);
 
     protected interface change {
 

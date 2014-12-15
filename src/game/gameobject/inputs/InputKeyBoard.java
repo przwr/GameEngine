@@ -5,14 +5,14 @@
  */
 package game.gameobject.inputs;
 
-import game.gameobject.AbstractAnyInput;
+import game.gameobject.AnyInput;
 import org.lwjgl.input.Keyboard;
 
 /**
  *
  * @author przemek
  */
-public class InputKeyBoard extends AbstractAnyInput {
+public class InputKeyBoard extends AnyInput {
 
     public InputKeyBoard(int key) {
         this.key = key;

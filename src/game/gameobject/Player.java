@@ -6,36 +6,36 @@
 package game.gameobject;
 
 import engine.Animation;
-import game.place.AbstractMenu;
-import game.place.AbstractPlace;
+import game.place.Menu;
+import game.place.Place;
 import game.place.cameras.Camera;
-import net.AbstractGameOnline;
+import net.GameOnline;
 
 /**
  *
  * @author przemek
  */
-public abstract class AbstractPlayer extends AbstractEntity {
+public abstract class Player extends Entity {
 
-    public AbstractMenu menu;
+    public Menu menu;
     protected Animation anim;
-    public AbstractControler ctrl;
+    public Controler ctrl;
     protected Camera cam;
-    protected AbstractGameOnline online;
+    protected GameOnline online;
     public boolean isFirst;
     public byte id;
 
-    public AbstractPlayer(String name) {
+    public Player(String name) {
         this.name = name;
     }
 
-    public abstract void init(int startX, int startY, int width, int height, AbstractPlace place, int x, int y);
+    public abstract void init(int startX, int startY, int width, int height, Place place, int x, int y);
 
-    public abstract void init(int startX, int startY, int width, int height, AbstractPlace place);
+    public abstract void init(int startX, int startY, int width, int height, Place place);
 
-    public abstract void update(AbstractPlace place);
+    public abstract void update(Place place);
 
-    public abstract void sendUpdate(AbstractPlace place);
+    public abstract void sendUpdate(Place place);
 
     public void addCamera(Camera cam) {
         this.cam = cam;
@@ -61,7 +61,7 @@ public abstract class AbstractPlayer extends AbstractEntity {
         return cam;
     }
 
-    public void addMenu(AbstractMenu menu) {
+    public void addMenu(Menu menu) {
         this.menu = menu;
     }
 
@@ -78,7 +78,7 @@ public abstract class AbstractPlayer extends AbstractEntity {
     }
 
     @Override
-    public AbstractPlayer getCollided(int magX, int magY) {
+    public Player getCollided(int magX, int magY) {
         return null;
     }
 

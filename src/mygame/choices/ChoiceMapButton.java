@@ -8,26 +8,26 @@ package mygame.choices;
 import engine.Controlers;
 import game.AnalizerInput;
 import game.Settings;
-import game.gameobject.AbstractAction;
-import game.gameobject.AbstractAnyInput;
-import game.gameobject.AbstractControler;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.Action;
+import game.gameobject.AnyInput;
+import game.gameobject.Controler;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceMapButton extends AbstractMenuChoice {
+public class ChoiceMapButton extends MenuChoice {
 
-    private final AbstractControler ctrl;
+    private final Controler ctrl;
     private final int i;
     private Thread thread;
     private final Runnable run;
     private boolean mapped;
     private int maxAxNr;
 
-    public ChoiceMapButton(String label, final AbstractMenu menu, final Settings settings, final AbstractControler ctrl, final int i) {
+    public ChoiceMapButton(String label, final Menu menu, final Settings settings, final Controler ctrl, final int i) {
         super(label, menu, settings);
         this.i = i;
         this.ctrl = ctrl;
@@ -37,7 +37,7 @@ public class ChoiceMapButton extends AbstractMenuChoice {
                 int noiseAx[] = findNoiseAx();
                 mapped = true;
                 while (mapped) {
-                    AbstractAnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].in);
+                    AnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].in);
                     if (in != null) {
                         if (in.getType() == -1 || (ctrl.actions[3] != null && ctrl.actions[3].in != null && ctrl.actions[3].in.toString().equals(in.toString()))) {
                             break;
@@ -47,9 +47,9 @@ public class ChoiceMapButton extends AbstractMenuChoice {
                             break;
                         }
                         if (i < 4) {
-                            for (AbstractAction action : ctrl.actions) {
+                            for (Action action : ctrl.actions) {
                                 if (action != null && action.in != null && action.in.toString().equals(in.toString())) {
-                                    AbstractAnyInput temp = ctrl.actions[i].in;
+                                    AnyInput temp = ctrl.actions[i].in;
                                     action.in = temp;
                                     set(in);
                                 }
@@ -57,7 +57,7 @@ public class ChoiceMapButton extends AbstractMenuChoice {
                         } else {
                             for (int k = 4; k < ctrl.actions.length; k++) {
                                 if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
-                                    AbstractAnyInput temp = ctrl.actions[i].in;
+                                    AnyInput temp = ctrl.actions[i].in;
                                     ctrl.actions[k].in = temp;
                                     set(in);
                                 }
@@ -116,7 +116,7 @@ public class ChoiceMapButton extends AbstractMenuChoice {
         return noiseAx;
     }
 
-    private void set(AbstractAnyInput in) {
+    private void set(AnyInput in) {
         ctrl.actions[i].in = in;
         AnalizerInput.Update(settings);
         mapped = false;

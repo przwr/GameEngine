@@ -6,7 +6,7 @@
 package net;
 
 import com.esotericsoftware.kryonet.Connection;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import net.packets.PacketUpdate;
 
 /**
@@ -19,7 +19,7 @@ public class MPlayer {
     private byte id;
     private String name;
     private int x, y;
-    private AbstractPlayer pl;
+    private Player pl;
     private PacketUpdate pu;
 
     public MPlayer() {
@@ -33,7 +33,7 @@ public class MPlayer {
 
     }
 
-    public void setPlayer(AbstractPlayer pl) {
+    public void setPlayer(Player pl) {
         this.pl = pl;
     }
 
@@ -62,7 +62,7 @@ public class MPlayer {
         return y;
     }
 
-    public AbstractPlayer inGame() {
+    public Player inGame() {
         return pl;
     }
 

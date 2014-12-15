@@ -5,19 +5,19 @@
  */
 package mygame;
 
-import game.gameobject.AbstractAction;
+import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.ActionHold;
-import game.gameobject.AbstractAnyInput;
-import game.gameobject.AbstractControler;
-import game.gameobject.AbstractEntity;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.AnyInput;
+import game.gameobject.Controler;
+import game.gameobject.Entity;
+import game.gameobject.Player;
 
 /**
  *
  * @author przemek
  */
-public class Controller extends AbstractControler {
+public class MyController extends Controler {
 
     public static final int UP = 0;
     public static final int DOWN = 1;
@@ -27,10 +27,10 @@ public class Controller extends AbstractControler {
     public static final int RUN = 5;
     public static final int LIGHT = 6;
 
-    public Controller(AbstractEntity inControl) {
+    public MyController(Entity inControl) {
         super(inControl);
-        inputs = new AbstractAnyInput[36];
-        actions = new AbstractAction[36]; // 4 pierwsze to menu  
+        inputs = new AnyInput[36];
+        actions = new Action[36]; // 4 pierwsze to menu  
         states = new boolean[7];
         statesSample = new boolean[7];
     }
@@ -136,21 +136,21 @@ public class Controller extends AbstractControler {
             actions[i].act();
         }
         if (actions[0].isOn()) {
-            ((AbstractPlayer) inControl).menu.setChoosen(-1);
+            ((Player) inControl).menu.setChoosen(-1);
         } else if (actions[1].isOn()) {
-            ((AbstractPlayer) inControl).menu.setChoosen(1);
+            ((Player) inControl).menu.setChoosen(1);
         }
         if (actions[2].isOn()) {
-            ((AbstractPlayer) inControl).menu.choice();
+            ((Player) inControl).menu.choice();
         } else if (actions[3].isOn()) {
-            ((AbstractPlayer) inControl).menu.back();
+            ((Player) inControl).menu.back();
         }
     }
 
     @Override
     public int getActionsCount() {
         int nr = 0;
-        for (AbstractAction a : actions) {
+        for (Action a : actions) {
             if (a != null) {
                 nr++;
             }

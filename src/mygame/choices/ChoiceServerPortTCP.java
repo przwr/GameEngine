@@ -6,17 +6,17 @@
 package mygame.choices;
 
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 import net.KryoUtil;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceServerPortTCP extends AbstractMenuChoice {
+public class ChoiceServerPortTCP extends MenuChoice {
 
-    public ChoiceServerPortTCP(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceServerPortTCP(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

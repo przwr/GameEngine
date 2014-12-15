@@ -8,9 +8,9 @@ package mygame;
 import engine.Delay;
 import engine.FontsHandler;
 import engine.Methods;
-import game.AbstractGame;
+import game.Game;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
+import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MenuOpt;
 import mygame.choices.ChoiceBrightness;
 import mygame.choices.ChoiceControls;
@@ -30,7 +30,7 @@ import mygame.choices.ChoiceStartLocalGame;
 import mygame.choices.ChoiceStop;
 import mygame.choices.ChoiceVSync;
 import mygame.choices.ChoiceVolume;
-import game.place.AbstractMenu;
+import game.place.Menu;
 import mygame.choices.ChoiceFindServer;
 import mygame.choices.ChoiceOnlineGameSettings;
 import mygame.choices.ChoiceStart;
@@ -53,9 +53,9 @@ import org.newdawn.slick.Color;
  *
  * @author przemek
  */
-public class Menu extends AbstractMenu {
+public class MyMenu extends Menu {
 
-    public Menu(AbstractGame game, int width, int height, int tileSize, Settings settings) {
+    public MyMenu(Game game, int width, int height, int tileSize, Settings settings) {
         super(game, width, height, settings);
         generate();
     }
@@ -188,7 +188,7 @@ public class Menu extends AbstractMenu {
         }
     }
 
-    public Color getColor(AbstractMenuChoice choice) {
+    public Color getColor(MenuChoice choice) {
         if (choice == menus[cur].getChoosen()) {
             return new Color(1f, 1f, 0.5f);
         } else {

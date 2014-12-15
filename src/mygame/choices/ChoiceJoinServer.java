@@ -7,19 +7,19 @@ package mygame.choices;
 
 import engine.Delay;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceJoinServer extends AbstractMenuChoice {
+public class ChoiceJoinServer extends MenuChoice {
 
     private String status;
     private final Delay delay;
 
-    public ChoiceJoinServer(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceJoinServer(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
         status = "";
         delay = new Delay(2000);

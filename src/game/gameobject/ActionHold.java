@@ -9,9 +9,9 @@ package game.gameobject;
  *
  * @author przemek
  */
-public class ActionHold extends AbstractAction {
+public class ActionHold extends Action {
 
-    public ActionHold(AbstractAnyInput in) {
+    public ActionHold(AnyInput in) {
         super(in);
     }
 

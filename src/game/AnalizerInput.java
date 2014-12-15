@@ -5,8 +5,8 @@
  */
 package game;
 
-import game.gameobject.AbstractAnyInput;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.AnyInput;
+import game.gameobject.Player;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -28,7 +28,7 @@ public class AnalizerInput {
             table[i] = Integer.parseInt(p[i + 3]);
         }
         if (pl != 1 || act >= 4) {
-            settings.players[pl - 1].ctrl.actions[act].in = AbstractAnyInput.createInput(type, table, settings);
+            settings.players[pl - 1].ctrl.actions[act].in = AnyInput.createInput(type, table, settings);
         }
     }
 
@@ -37,7 +37,7 @@ public class AnalizerInput {
         try {
             fw = new FileWriter("res/input.ini");
             int p = 1;
-            for (AbstractPlayer pl : settings.players) {
+            for (Player pl : settings.players) {
                 if (pl.ctrl != null) {
                     for (int i = 0; i < settings.actionsNr; i++) {
                         if (pl.ctrl.actions[i].in != null) {

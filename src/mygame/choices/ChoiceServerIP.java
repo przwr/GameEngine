@@ -7,15 +7,15 @@ package mygame.choices;
 
 import game.AnalizerSettings;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 import org.lwjgl.input.Keyboard;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceServerIP extends AbstractMenuChoice {
+public class ChoiceServerIP extends MenuChoice {
 
     private Thread thread;
     private final Runnable run;
@@ -24,7 +24,7 @@ public class ChoiceServerIP extends AbstractMenuChoice {
     private int position;
     private boolean[] keys = new boolean[25];
 
-    public ChoiceServerIP(String label, final AbstractMenu menu, final Settings settings) {
+    public ChoiceServerIP(String label, final Menu menu, final Settings settings) {
         super(label, menu, settings);
         temp = new char[15];
         val = new String(temp);

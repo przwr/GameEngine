@@ -6,19 +6,19 @@
 package game.gameobject.menu;
 
 import game.Settings;
-import game.place.AbstractMenu;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public abstract class AbstractMenuChoice {
+public abstract class MenuChoice {
 
     protected String label;
-    protected AbstractMenu menu;
+    protected Menu menu;
     protected Settings settings;
 
-    public AbstractMenuChoice(String label, AbstractMenu menu, Settings settings) {
+    public MenuChoice(String label, Menu menu, Settings settings) {
         this.label = label;
         this.menu = menu;
         this.settings = settings;

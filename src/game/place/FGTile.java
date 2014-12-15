@@ -26,7 +26,7 @@ public class FGTile extends Tile {
 
     private int highness;
 
-    public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, int height, int shadowH, AbstractPlace place) {
+    public FGTile(SpriteSheet sh, int size, int xSheet, int ySheet, boolean isItWall, int height, int shadowH, Place place) {
         super(sh, size, xSheet, ySheet, place);
         this.simpleLighting = true;
         this.solid = isItWall;

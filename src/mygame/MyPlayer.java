@@ -7,9 +7,9 @@ package mygame;
 
 import collision.Figure;
 import collision.Rectangle;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import game.place.cameras.Camera;
-import game.place.AbstractPlace;
+import game.place.Place;
 import game.place.Light;
 import engine.Animation;
 import engine.Drawer;
@@ -28,18 +28,18 @@ import sprites.SpriteSheet;
  *
  * @author przemek
  */
-public class Player extends AbstractPlayer {
+public class MyPlayer extends Player {
 
     private int hs, vs;
 
-    public Player(boolean isFirst, String name) {
+    public MyPlayer(boolean isFirst, String name) {
         super(name);
         this.isFirst = isFirst;
         initControler(isFirst);
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, AbstractPlace place, int x, int y) {
+    public void init(int startX, int startY, int width, int height, Place place, int x, int y) {
         this.online = place.game.online;
         float SCALE = place.settings.SCALE;
         this.width = Methods.RoundHU(SCALE * width);
@@ -60,7 +60,7 @@ public class Player extends AbstractPlayer {
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, AbstractPlace place) {
+    public void init(int startX, int startY, int width, int height, Place place) {
         this.online = place.game.online;
         float SCALE = place.settings.SCALE;
         this.width = Methods.RoundHU(SCALE * width);
@@ -81,7 +81,7 @@ public class Player extends AbstractPlayer {
     }
 
     private void initControler(boolean isFirst) {
-        ctrl = new Controller(this);
+        ctrl = new MyController(this);
         if (isFirst) {
             this.isFirst = true;
             ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
@@ -119,7 +119,7 @@ public class Player extends AbstractPlayer {
     }
 
     @Override
-    public void renderName(AbstractPlace place, Camera cam) {
+    public void renderName(Place place, Camera cam) {
         place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() - sprite.getSy() + 15 - jump),
                 name, new Color(place.r, place.g, place.b));
     }
@@ -161,7 +161,7 @@ public class Player extends AbstractPlayer {
     float a = 22.5f;  //TYLKO TYMCZASOWE!
 
     @Override
-    public void update(AbstractPlace place) {
+    public void update(Place place) {
         if (jumping) {
             hop = false;
             jump = FastMath.abs(Methods.xRadius(a * 4, 70));
@@ -178,7 +178,7 @@ public class Player extends AbstractPlayer {
     }
 
     @Override
-    public void sendUpdate(AbstractPlace place) {
+    public void sendUpdate(Place place) {
         if (jumping) {
             jump = FastMath.abs(Methods.xRadius(a * 4, 70));
             a += Time.getDelta();

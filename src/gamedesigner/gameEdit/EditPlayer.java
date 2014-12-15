@@ -8,9 +8,9 @@ package gamedesigner.gameEdit;
 import collision.Figure;
 import collision.Rectangle;
 import engine.Animation;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import game.place.cameras.Camera;
-import game.place.AbstractPlace;
+import game.place.Place;
 import engine.Drawer;
 import engine.Methods;
 import game.place.Light;
@@ -24,7 +24,7 @@ import sprites.SpriteSheet;
  *
  * @author przemek
  */
-public class EditPlayer extends AbstractPlayer {
+public class EditPlayer extends Player {
 
     public boolean grid = true;
     private int hs, vs;
@@ -35,7 +35,7 @@ public class EditPlayer extends AbstractPlayer {
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, AbstractPlace place, int x, int y) {
+    public void init(int startX, int startY, int width, int height, Place place, int x, int y) {
         double SCALE = place.settings.SCALE;
         this.width = Methods.RoundHU(SCALE * width);
         this.height = Methods.RoundHU(SCALE * height);
@@ -55,7 +55,7 @@ public class EditPlayer extends AbstractPlayer {
     }
 
     @Override
-    public void init(int startX, int startY, int width, int height, AbstractPlace place) {
+    public void init(int startX, int startY, int width, int height, Place place) {
     }
 
     @Override
@@ -85,7 +85,7 @@ public class EditPlayer extends AbstractPlayer {
     }
 
     @Override
-    public void renderName(AbstractPlace place, Camera cam) {
+    public void renderName(Place place, Camera cam) {
         place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() - sprite.getSy() + 15 - jump),
                 name, new Color(place.r, place.g, place.b));
     }
@@ -102,7 +102,7 @@ public class EditPlayer extends AbstractPlayer {
     }
 
     @Override
-    public void update(AbstractPlace place) {
+    public void update(Place place) {
         int mspeed = 10;
         if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
             mspeed *= 2;
@@ -124,7 +124,7 @@ public class EditPlayer extends AbstractPlayer {
     }
 
     @Override
-    public void sendUpdate(AbstractPlace place) {
+    public void sendUpdate(Place place) {
     }
 
     @Override

@@ -8,16 +8,16 @@ package mygame.choices;
 import engine.Sound;
 import game.AnalizerSettings;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceVolume extends AbstractMenuChoice {
+public class ChoiceVolume extends MenuChoice {
 
-    public ChoiceVolume(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceVolume(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

@@ -9,9 +9,9 @@ package game.gameobject;
  *
  * @author przemek
  */
-public class ActionOnOff extends AbstractAction {
+public class ActionOnOff extends Action {
 
-    public ActionOnOff(AbstractAnyInput in) {
+    public ActionOnOff(AnyInput in) {
         super(in);
     }
 

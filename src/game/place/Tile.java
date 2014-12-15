@@ -23,7 +23,7 @@ public class Tile extends GameObject {
     protected final int xSheet;
     protected final int ySheet;
 
-    public Tile(SpriteSheet sh, int size, int xSheet, int ySheet, AbstractPlace place) {
+    public Tile(SpriteSheet sh, int size, int xSheet, int ySheet, Place place) {
         SIZE = size;
         this.sh = sh;
         this.xSheet = xSheet;

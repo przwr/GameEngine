@@ -10,7 +10,7 @@ import collision.Rectangle;
 import engine.Drawer;
 import engine.Methods;
 import game.place.cameras.Camera;
-import game.place.AbstractPlace;
+import game.place.Place;
 import net.packets.Update;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
@@ -24,13 +24,13 @@ import org.newdawn.slick.Color;
  *
  * @author przemek
  */
-public abstract class Mob extends AbstractEntity {
+public abstract class Mob extends Entity {
 
     protected final double range;
     protected GameObject prey;
     public short id;
 
-    public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, AbstractPlace place, boolean solid) {
+    public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid) {
         float SCALE = place.settings.SCALE;
         this.width = Methods.RoundHU(SCALE * width);
         this.height = Methods.RoundHU(SCALE * height);
@@ -45,7 +45,7 @@ public abstract class Mob extends AbstractEntity {
         this.setMaxSpeed(speed);
     }
 
-    public abstract void update(AbstractPlace place);
+    public abstract void update(Place place);
 
     @Override
     protected boolean isColided(int magX, int magY) {
@@ -53,7 +53,7 @@ public abstract class Mob extends AbstractEntity {
     }
 
     @Override
-    public AbstractPlayer getCollided(int magX, int magY) {
+    public Player getCollided(int magX, int magY) {
         return collision.getCollided(getX() + magX, getY() + magY, place);
     }
 
@@ -88,7 +88,7 @@ public abstract class Mob extends AbstractEntity {
     }
 
     @Override
-    public void renderName(AbstractPlace place, Camera cam) {
+    public void renderName(Place place, Camera cam) {
         place.renderMessage(0, cam.getXOff() + getX(), cam.getYOff() + getY() - (sprite.getSy() - 15),
                 name, new Color(place.r, place.g, place.b));
     }

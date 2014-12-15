@@ -5,7 +5,7 @@
  */
 package engine;
 
-import game.place.AbstractPlace;
+import game.place.Place;
 import static org.lwjgl.opengl.GL11.GL_MODULATE;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
@@ -92,7 +92,7 @@ public class Drawer {
         glColor4f(c.r, c.g, c.b, c.a);
     }
 
-    public static void refreshColor(AbstractPlace p) {
+    public static void refreshColor(Place p) {
         glColor4f(p.r, p.g, p.b, 1.0f);
     }
 
@@ -100,7 +100,7 @@ public class Drawer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void refresh(AbstractPlace p) {
+    public static void refresh(Place p) {
         refreshColor(p);
         refreshBlending();
     }

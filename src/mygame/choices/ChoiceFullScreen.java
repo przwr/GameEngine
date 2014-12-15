@@ -7,16 +7,16 @@ package mygame.choices;
 
 import game.AnalizerSettings;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceFullScreen extends AbstractMenuChoice {
+public class ChoiceFullScreen extends MenuChoice {
 
-    public ChoiceFullScreen(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceFullScreen(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

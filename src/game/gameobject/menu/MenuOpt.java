@@ -12,16 +12,16 @@ package game.gameobject.menu;
 public class MenuOpt {
 
     private final String label;
-    private final AbstractMenuChoice[] choices;
+    private final MenuChoice[] choices;
     private int nr;
     private int choosenNr;
 
     public MenuOpt(int size, String label) {
-        choices = new AbstractMenuChoice[size];
+        choices = new MenuChoice[size];
         this.label = label;
     }
 
-    public void addChoice(AbstractMenuChoice choice) {
+    public void addChoice(MenuChoice choice) {
         choices[nr++] = choice;
     }
 
@@ -34,11 +34,11 @@ public class MenuOpt {
         }
     }
 
-    public AbstractMenuChoice getChoosen() {
+    public MenuChoice getChoosen() {
         return choices[choosenNr];
     }
 
-    public AbstractMenuChoice getChoice(int i) {
+    public MenuChoice getChoice(int i) {
         return choices[i];
     }
 

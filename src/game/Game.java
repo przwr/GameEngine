@@ -5,10 +5,10 @@
  */
 package game;
 
-import net.AbstractGameOnline;
-import game.gameobject.AbstractPlayer;
-import game.place.AbstractMenu;
-import game.place.AbstractPlace;
+import net.GameOnline;
+import game.gameobject.Player;
+import game.place.Menu;
+import game.place.Place;
 import game.place.SplitScreen;
 import org.lwjgl.input.Keyboard;
 
@@ -16,19 +16,19 @@ import org.lwjgl.input.Keyboard;
  *
  * @author przemek
  */
-public abstract class AbstractGame {
+public abstract class Game {
 
     public final Settings settings;
-    public AbstractGameOnline online;
+    public GameOnline online;
     protected final String title;
-    protected AbstractPlayer menuPl;
-    protected AbstractMenu menu;
-    public AbstractPlace place;
+    protected Player menuPl;
+    protected Menu menu;
+    public Place place;
     public int mode;
     public boolean started, runFlag, pauseFlag, exitFlag, pause;
-    public AbstractPlayer[] players;
+    public Player[] players;
 
-    public AbstractGame(String title, Settings settings) {
+    public Game(String title, Settings settings) {
         this.settings = settings;
         this.title = title;
         SplitScreen.init();
@@ -59,7 +59,7 @@ public abstract class AbstractGame {
         return title;
     }
 
-    public AbstractPlace getPlace() {
+    public Place getPlace() {
         return place;
     }
 

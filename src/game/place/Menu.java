@@ -6,7 +6,7 @@
 package game.place;
 
 import engine.Delay;
-import game.AbstractGame;
+import game.Game;
 import game.Settings;
 import game.gameobject.menu.MenuOpt;
 import org.lwjgl.opengl.Display;
@@ -15,7 +15,7 @@ import org.lwjgl.opengl.Display;
  *
  * @author przemek
  */
-public abstract class AbstractMenu extends AbstractScreenPlace {
+public abstract class Menu extends ScreenPlace {
 
     protected int cur;
     protected MenuOpt[] menus;
@@ -25,7 +25,7 @@ public abstract class AbstractMenu extends AbstractScreenPlace {
     public boolean isMapping;
     public Delay delay;
 
-    public AbstractMenu(AbstractGame game, int width, int height, Settings settings) {
+    public Menu(Game game, int width, int height, Settings settings) {
         super(game, width, height, settings);
     }
 

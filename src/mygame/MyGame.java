@@ -7,11 +7,11 @@ package mygame;
 
 import engine.Methods;
 import engine.Sound;
-import game.AbstractGame;
+import game.Game;
 import game.IO;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import game.place.cameras.PlayersCamera;
 import java.io.File;
 import org.lwjgl.input.Controller;
@@ -22,22 +22,22 @@ import static org.lwjgl.opengl.GL11.glClear;
  *
  * @author przemek
  */
-public class Game extends AbstractGame {
+public class MyGame extends Game {
 
     private final getInput[] ins = new getInput[2];
     private final update[] ups = new update[2];
 
-    public Game(String title, Settings settings, Controller[] controllers) {
+    public MyGame(String title, Settings settings, Controller[] controllers) {
         super(title, settings);
-        players = new AbstractPlayer[4];
-        players[0] = new Player(true, "Player 1");
-        players[1] = new Player(false, "Player 2");
-        players[2] = new Player(false, "Player 3");
-        players[3] = new Player(false, "Player 4");
+        players = new Player[4];
+        players[0] = new MyPlayer(true, "Player 1");
+        players[1] = new MyPlayer(false, "Player 2");
+        players[2] = new MyPlayer(false, "Player 3");
+        players[3] = new MyPlayer(false, "Player 4");
         settings.Up(players[1].ctrl.getActionsCount(), players, controllers);
         IO.readFile(new File("res/input.ini"), settings, false);
-        menu = new Menu(this, 2, 2, 1, settings);
-        menuPl = new Player(true, "Menu");
+        menu = new MyMenu(this, 2, 2, 1, settings);
+        menuPl = new MyPlayer(true, "Menu");
         menu.players = new GameObject[1];
         menu.players[0] = menuPl;
         menuPl.addMenu(menu);
@@ -45,7 +45,7 @@ public class Game extends AbstractGame {
         players[1].addMenu(menu);
         players[2].addMenu(menu);
         players[3].addMenu(menu);
-        online = new GameOnline(this, 3, 4);
+        online = new MyGameOnline(this, 3, 4);
         online.initChanges();
         initMethods();
     }
@@ -57,7 +57,7 @@ public class Game extends AbstractGame {
                 if (!pauseFlag) {
                     pause();
                     if (runFlag) {
-                        AbstractPlayer pl;
+                        Player pl;
                         for (int p = 0; p < players.length; p++) {
                             pl = players[p];
                             if (pl.isMenuOn()) {
@@ -80,7 +80,7 @@ public class Game extends AbstractGame {
                         if (place == null) {
                             menuPl.getMenuInput();
                         } else {
-                            for (AbstractPlayer pl : players) {
+                            for (Player pl : players) {
                                 if (pl.isMenuOn()) {
                                     menu.back();
                                 } else {
@@ -179,7 +179,7 @@ public class Game extends AbstractGame {
     @Override
     public void startGame() {
         int nrPl = settings.nrPlayers;
-        place = new Place(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, true);
+        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, true);
         place.players = new GameObject[4];
         place.playersLength = nrPl;
         if (nrPl == 1) {
@@ -228,9 +228,9 @@ public class Game extends AbstractGame {
     private void addPlayerOffline(int p) {
         if (p < 4 && place.playersLength < 4) {
             players[p].init(4, 4, 56, 56, place, p * 256, p * 265);
-            ((AbstractPlayer) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
+            ((Player) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
             if (p != place.playersLength) {
-                AbstractPlayer tempG = players[place.playersLength];
+                Player tempG = players[place.playersLength];
                 GameObject tempP = place.players[place.playersLength];
                 players[place.playersLength] = players[p];
                 place.players[place.playersLength] = place.players[p];
@@ -245,10 +245,10 @@ public class Game extends AbstractGame {
 
     private void removePlayerOffline(int p) {
         if (place.playersLength > 1 && !players[p].isFirst) {
-            ((AbstractPlayer) place.players[p]).setPlaceToNull();
+            ((Player) place.players[p]).setPlaceToNull();
             place.deleteObj(place.players[p]);
             if (p != place.playersLength - 1) {
-                AbstractPlayer tempG = players[place.playersLength - 1];
+                Player tempG = players[place.playersLength - 1];
                 GameObject tempP = place.players[place.playersLength - 1];
                 players[place.playersLength - 1] = players[p];
                 place.players[place.playersLength - 1] = place.players[p];
@@ -264,15 +264,15 @@ public class Game extends AbstractGame {
     private void updatePlayersCam() {
         for (int c = 0; c < place.playersLength; c++) {
             if (place.playersLength == 1) {
-                ((PlayersCamera) ((AbstractPlayer) place.players[0]).getCam()).reInit(2, 2);
+                ((PlayersCamera) ((Player) place.players[0]).getCam()).reInit(2, 2);
             } else if (place.playersLength == 2) {
                 if (place.cams[0] == null) {
                     place.cams[0] = new PlayersCamera(place, players[0], players[1]);
                 }
                 if (settings.hSplitScreen) {
-                    ((PlayersCamera) ((AbstractPlayer) place.players[c]).getCam()).reInit(2, 4);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(2, 4);
                 } else {
-                    ((PlayersCamera) ((AbstractPlayer) place.players[c]).getCam()).reInit(4, 2);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 2);
                 }
             } else if (place.playersLength == 3) {
                 if (place.cams[1] == null) {
@@ -280,25 +280,25 @@ public class Game extends AbstractGame {
                 }
                 if (c == 0) {
                     if (settings.hSplitScreen) {
-                        ((PlayersCamera) ((AbstractPlayer) place.players[c]).getCam()).reInit(2, 4);
+                        ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(2, 4);
                     } else {
-                        ((PlayersCamera) ((AbstractPlayer) place.players[c]).getCam()).reInit(4, 2);
+                        ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 2);
                     }
                 } else {
-                    ((PlayersCamera) ((AbstractPlayer) place.players[c]).getCam()).reInit(4, 4);
+                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 4);
                 }
             } else {
                 if (place.cams[2] == null) {
                     place.cams[2] = new PlayersCamera(place, players[0], players[1], players[2], players[3]);
                 }
-                ((PlayersCamera) ((AbstractPlayer) place.players[c]).getCam()).reInit(4, 4);
+                ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 4);
             }
         }
     }
 
     @Override
     public void runClient() {
-        place = new Place(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, false);
+        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, false);
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].init(4, 4, 56, 56, place);
@@ -310,7 +310,7 @@ public class Game extends AbstractGame {
 
     @Override
     public void runServer() {
-        place = new Place(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, true);
+        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 2304), Methods.RoundHU(settings.SCALE * 64), settings, true);
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].init(4, 4, 56, 56, place);
@@ -325,7 +325,7 @@ public class Game extends AbstractGame {
         runFlag = started = false;
         place = null;
         settings.sounds = null;
-        for (AbstractPlayer pl : players) {
+        for (Player pl : players) {
             pl.setPlaceToNull();
         }
         online.cleanUp();

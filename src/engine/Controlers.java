@@ -5,7 +5,7 @@
  */
 package engine;
 
-import game.gameobject.AbstractAnyInput;
+import game.gameobject.AnyInput;
 import game.gameobject.inputs.InputExitMapping;
 import game.gameobject.inputs.InputKeyBoard;
 import game.gameobject.inputs.InputMouse;
@@ -40,7 +40,7 @@ public final class Controlers {
         return controllers;
     }
 
-    public static AbstractAnyInput mapInput(int noiseAx[], int maxAxNr, AbstractAnyInput in) {
+    public static AnyInput mapInput(int noiseAx[], int maxAxNr, AnyInput in) {
         if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             return new InputExitMapping();
         }
@@ -64,7 +64,7 @@ public final class Controlers {
         }
     }
 
-    private static AbstractAnyInput checkControllers(int noiseAx[], int maxAxNr) {
+    private static AnyInput checkControllers(int noiseAx[], int maxAxNr) {
         for (int c = 0; c < controllers.length; c++) {
             if (controllers[c] != null) {
                 for (int b = 0; b < controllers[c].getButtonCount(); b++) {

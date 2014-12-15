@@ -6,16 +6,16 @@
 package mygame.choices;
 
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceControls extends AbstractMenuChoice {
+public class ChoiceControls extends MenuChoice {
 
-    public ChoiceControls(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceControls(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }    
     

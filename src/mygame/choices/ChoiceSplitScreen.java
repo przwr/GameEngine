@@ -7,17 +7,17 @@ package mygame.choices;
 
 import game.AnalizerSettings;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 import game.place.SplitScreen;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceSplitScreen extends AbstractMenuChoice {
+public class ChoiceSplitScreen extends MenuChoice {
 
-    public ChoiceSplitScreen(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceSplitScreen(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

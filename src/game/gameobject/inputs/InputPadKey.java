@@ -5,14 +5,14 @@
  */
 package game.gameobject.inputs;
 
-import game.gameobject.AbstractAnyInput;
+import game.gameobject.AnyInput;
 import org.lwjgl.input.Controller;
 
 /**
  *
  * @author przemek
  */
-public class InputPadKey extends AbstractAnyInput {
+public class InputPadKey extends AnyInput {
 
     private final Controller[] controllers;
 

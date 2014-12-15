@@ -5,11 +5,11 @@
  */
 package gamedesigner.gameEdit;
 
-import game.AbstractGame;
+import game.Game;
 import game.IO;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import java.io.File;
 import org.lwjgl.input.Controller;
 
@@ -17,7 +17,7 @@ import org.lwjgl.input.Controller;
  *
  * @author przemek
  */
-public class EditorGame extends AbstractGame {
+public class EditorGame extends Game {
 
     private final getInput[] ins = new getInput[1];
     private final update[] ups = new update[1];
@@ -25,7 +25,7 @@ public class EditorGame extends AbstractGame {
 
     public EditorGame(String title, Settings settings, Controller[] controllers) {
         super(title, settings);
-        players = new AbstractPlayer[1];
+        players = new Player[1];
         players[0] = new EditPlayer(true, "Player 1");
         settings.Up(4, players, controllers);
         IO.readFile(new File("res/input.ini"), settings, false);
@@ -79,7 +79,7 @@ public class EditorGame extends AbstractGame {
         runFlag = started = false;
         place = null;
         settings.sounds = null;
-        for (AbstractPlayer pl : players) {
+        for (Player pl : players) {
             pl.setPlaceToNull();
         }
         online.cleanUp();

@@ -16,7 +16,7 @@ import game.gameobject.inputs.InputPadStick;
  *
  * @author przemek
  */
-public abstract class AbstractAnyInput {
+public abstract class AnyInput {
 
     protected String label;
     protected boolean pressed;
@@ -48,7 +48,7 @@ public abstract class AbstractAnyInput {
         return key;
     }
 
-    public static AbstractAnyInput createInput(int type, int[] table, Settings settings) {
+    public static AnyInput createInput(int type, int[] table, Settings settings) {
         if (type == 0) {
             return new InputKeyBoard(table[0]);
         } else if (type == 1) {

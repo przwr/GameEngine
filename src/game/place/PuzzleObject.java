@@ -34,7 +34,7 @@ public class PuzzleObject {
         }
     }
     
-    public void placePuzzle(int x, int y, AbstractPlace p) {
+    public void placePuzzle(int x, int y, Place p) {
         int ix;
         int iy;
         int col = p.height / p.sTile;

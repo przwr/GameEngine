@@ -7,16 +7,16 @@ package mygame.choices;
 
 import game.AnalizerSettings;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceVSync extends AbstractMenuChoice {
+public class ChoiceVSync extends MenuChoice {
 
-    public ChoiceVSync(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceVSync(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

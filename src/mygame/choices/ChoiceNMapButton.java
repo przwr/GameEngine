@@ -6,21 +6,21 @@
 package mygame.choices;
 
 import game.Settings;
-import game.gameobject.AbstractControler;
-import game.gameobject.AbstractPlayer;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.Controler;
+import game.gameobject.Player;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceNMapButton extends AbstractMenuChoice {
+public class ChoiceNMapButton extends MenuChoice {
 
-    private final AbstractControler ctrl;
+    private final Controler ctrl;
     private final int i;
 
-    public ChoiceNMapButton(String label, AbstractMenu menu, Settings settings, AbstractPlayer ctrl, int i) {
+    public ChoiceNMapButton(String label, Menu menu, Settings settings, Player ctrl, int i) {
         super(label, menu, settings);
         this.i = i;
         if (ctrl == null) {

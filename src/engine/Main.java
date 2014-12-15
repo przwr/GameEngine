@@ -6,7 +6,7 @@
 package engine;
 
 import game.AnalizerSettings;
-import game.AbstractGame;
+import game.Game;
 import game.IO;
 import game.Settings;
 import gamedesigner.GameDesigner;
@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
-import mygame.Game;
+import mygame.MyGame;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
@@ -34,7 +34,7 @@ import org.newdawn.slick.opengl.ImageIOImageData;
  */
 public class Main {
 
-    public static AbstractGame game;
+    public static Game game;
     public static Popup pop;
     public static final Settings settings = new Settings();
     public static Controller[] controllers;
@@ -51,7 +51,7 @@ public class Main {
     }
 
     private static void initGame() {
-        game = new Game("Pervert Rabbits Attack", settings, controllers);
+        game = new MyGame("Pervert Rabbits Attack", settings, controllers);
         Display.setTitle(game.getTitle());
         pop = new Popup("Amble-Regular", settings.SCALE);
     }

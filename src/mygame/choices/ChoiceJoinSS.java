@@ -6,17 +6,17 @@
 package mygame.choices;
 
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 import game.place.SplitScreen;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceJoinSS extends AbstractMenuChoice {
+public class ChoiceJoinSS extends MenuChoice {
 
-    public ChoiceJoinSS(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceJoinSS(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 

@@ -9,15 +9,15 @@ package game.gameobject;
  *
  * @author przemek
  */
-public abstract class AbstractControler {
+public abstract class Controler {
 
-    public AbstractAction[] actions;
-    public AbstractAnyInput[] inputs;
-    protected final AbstractEntity inControl;
+    public Action[] actions;
+    public AnyInput[] inputs;
+    protected final Entity inControl;
     protected boolean[] states;
     protected boolean[] statesSample;
 
-    public AbstractControler(AbstractEntity inControl) {
+    public Controler(Entity inControl) {
         this.inControl = inControl;
     }
 

@@ -9,8 +9,8 @@ import com.esotericsoftware.kryonet.Client;
 import engine.Delay;
 import game.AnalizerSettings;
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 import java.net.InetAddress;
 import net.KryoUtil;
 
@@ -18,7 +18,7 @@ import net.KryoUtil;
  *
  * @author przemek
  */
-public class ChoiceFindServer extends AbstractMenuChoice {
+public class ChoiceFindServer extends MenuChoice {
 
     private final Client client;
     private String status;
@@ -27,7 +27,7 @@ public class ChoiceFindServer extends AbstractMenuChoice {
     private final Delay delay;
     private boolean isSearching;
 
-    public ChoiceFindServer(String label, final AbstractMenu menu, final Settings settings) {
+    public ChoiceFindServer(String label, final Menu menu, final Settings settings) {
         super(label, menu, settings);
         client = new Client();
         status = "";

@@ -14,7 +14,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import engine.Delay;
 import engine.Methods;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import java.io.IOException;
 import net.packets.PacketAddMPlayer;
 import net.packets.PacketMPlayerUpdate;
@@ -28,15 +28,15 @@ import net.packets.PacketUpdate;
 public class GameClient {
 
     private final Client client;
-    private final AbstractPlayer pl;
+    private final Player pl;
     private PacketMPlayerUpdate mpup;
-    private final AbstractGameOnline game;
+    private final GameOnline game;
     private final float SCALE;
     private Connection server;
     public boolean isConnected;
     private Delay delay;
 
-    public GameClient(final AbstractPlayer pl, final AbstractGameOnline game, String IP) {
+    public GameClient(final Player pl, final GameOnline game, String IP) {
 
         this.pl = pl;
         this.game = game;

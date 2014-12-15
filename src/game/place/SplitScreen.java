@@ -5,7 +5,7 @@
  */
 package game.place;
 
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import game.place.cameras.PlayersCamera;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
@@ -34,12 +34,12 @@ public class SplitScreen {
     private static final int width1o2 = Display.getWidth() >> 1;
     private static final int heigth1o2 = Display.getHeight() >> 1;
 
-    public static void setSplitScreen(AbstractPlace pl, int playersLength, int p) {
+    public static void setSplitScreen(Place pl, int playersLength, int p) {
         pl.singleCam = false;
         splits[playersLength - 1].setSplit(pl, p);
     }
 
-    public static boolean isClose(AbstractPlace pl) {
+    public static boolean isClose(Place pl) {
         switch (pl.getPlayersLenght()) {
             case 2:
                 return isClose2(pl);
@@ -52,19 +52,19 @@ public class SplitScreen {
         }
     }
 
-    public static boolean isClose2(AbstractPlace pl) {
+    public static boolean isClose2(Place pl) {
         return FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width3o4 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth3o4;
     }
 
-    public static boolean isClose3(AbstractPlace pl) {
+    public static boolean isClose3(Place pl) {
         return FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3 && FastMath.abs(pl.players[0].getX() - pl.players[2].getX()) < width2o3 && FastMath.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth2o3 && FastMath.abs(pl.players[1].getX() - pl.players[2].getX()) < width2o3 && FastMath.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth2o3;
     }
 
-    public static boolean isClose4(AbstractPlace pl) {
+    public static boolean isClose4(Place pl) {
         return FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth1o2 && FastMath.abs(pl.players[0].getX() - pl.players[2].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth1o2 && FastMath.abs(pl.players[1].getX() - pl.players[2].getX()) < width1o2 && FastMath.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth1o2 && FastMath.abs(pl.players[0].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[3].getY()) < heigth1o2 && FastMath.abs(pl.players[1].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[1].getY() - pl.players[3].getY()) < heigth1o2 && FastMath.abs(pl.players[2].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[2].getY() - pl.players[3].getY()) < heigth1o2;
     }
 
-    public static boolean isFar(AbstractPlace pl) {
+    public static boolean isFar(Place pl) {
         if (!pl.singleCam) {
             for (int p = 0; p < pl.playersLength; p++) {
                 if (pl.players[p].getX() > pl.cams[pl.playersLength - 2].getEX() || pl.players[p].getX() < pl.cams[pl.playersLength - 2].getSX() || pl.players[p].getY() > pl.cams[pl.playersLength - 2].getEY() || pl.players[p].getY() < pl.cams[pl.playersLength - 2].getSY()) {
@@ -76,33 +76,33 @@ public class SplitScreen {
         return false;
     }
 
-    public static void changeSSMode2(AbstractPlace pl) {
+    public static void changeSSMode2(Place pl) {
         if (pl.changeSSMode) {
             if (pl.settings.hSplitScreen) {
                 pl.settings.hSplitScreen = false;
-                ((PlayersCamera) ((AbstractPlayer) pl.players[0]).getCam()).reInit(4, 2);
-                ((PlayersCamera) ((AbstractPlayer) pl.players[1]).getCam()).reInit(4, 2);
+                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInit(4, 2);
+                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInit(4, 2);
             } else {
                 pl.settings.hSplitScreen = true;
-                ((PlayersCamera) ((AbstractPlayer) pl.players[0]).getCam()).reInit(2, 4);
-                ((PlayersCamera) ((AbstractPlayer) pl.players[1]).getCam()).reInit(2, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInit(2, 4);
+                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInit(2, 4);
             }
             pl.changeSSMode = false;
         }
     }
 
-    public static void changeSSMode3(AbstractPlace pl) {
+    public static void changeSSMode3(Place pl) {
         if (pl.changeSSMode) {
             if (pl.settings.hSplitScreen) {
                 pl.settings.hSplitScreen = false;
-                ((PlayersCamera) ((AbstractPlayer) pl.players[0]).getCam()).reInit(4, 2);
-                ((PlayersCamera) ((AbstractPlayer) pl.players[1]).getCam()).reInit(4, 4);
-                ((PlayersCamera) ((AbstractPlayer) pl.players[2]).getCam()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInit(4, 2);
+                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[2]).getCam()).reInit(4, 4);
             } else {
                 pl.settings.hSplitScreen = true;
-                ((PlayersCamera) ((AbstractPlayer) pl.players[0]).getCam()).reInit(2, 4);
-                ((PlayersCamera) ((AbstractPlayer) pl.players[1]).getCam()).reInit(4, 4);
-                ((PlayersCamera) ((AbstractPlayer) pl.players[2]).getCam()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInit(2, 4);
+                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[2]).getCam()).reInit(4, 4);
             }
             pl.changeSSMode = false;
         }
@@ -111,7 +111,7 @@ public class SplitScreen {
     public static void init() {
         players2h[0] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
                 glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
                 glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
@@ -123,7 +123,7 @@ public class SplitScreen {
         };
         players2h[1] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(0, 0, Display.getWidth(), heigth1o2);
                 glScissor(0, 0, Display.getWidth(), heigth1o2);
                 pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
@@ -133,7 +133,7 @@ public class SplitScreen {
         };
         players2v[0] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(0, 0, width1o2, Display.getHeight());
                 glScissor(0, 0, width1o2, Display.getHeight());
                 glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
@@ -144,7 +144,7 @@ public class SplitScreen {
         };
         players2v[1] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(width1o2, 0, width1o2, Display.getHeight());
                 glScissor(width1o2, 0, width1o2, Display.getHeight());
                 pl.camXTStart = pl.camXEnd = 0.5f;
@@ -154,21 +154,21 @@ public class SplitScreen {
         };
         orients2[0] = new setOrient() {
             @Override
-            public void setOrient(AbstractPlace pl, int p) {
+            public void setOrient(Place pl, int p) {
                 pl.ssMode = 1;
                 players2h[p].setPlayer(pl);
             }
         };
         orients2[1] = new setOrient() {
             @Override
-            public void setOrient(AbstractPlace pl, int p) {
+            public void setOrient(Place pl, int p) {
                 pl.ssMode = 2;
                 players2v[p].setPlayer(pl);
             }
         };
         splits[0] = new setSplit() {
             @Override
-            public void setSplit(AbstractPlace pl, int p) {
+            public void setSplit(Place pl, int p) {
                 glViewport(0, 0, Display.getWidth(), Display.getHeight());
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
                 pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
@@ -177,7 +177,7 @@ public class SplitScreen {
         };
         splits[1] = new setSplit() {
             @Override
-            public void setSplit(AbstractPlace pl, int p) {
+            public void setSplit(Place pl, int p) {
                 if (!pl.settings.joinSS || isFar(pl)) {
                     changeSSMode2(pl);
                     orients2[pl.settings.hSplitScreen ? 0 : 1].setOrient(pl, p);
@@ -198,7 +198,7 @@ public class SplitScreen {
     private static void init2() {
         players3h[0] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
                 glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
                 glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
@@ -210,7 +210,7 @@ public class SplitScreen {
         };
         players3h[1] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(0, 0, width1o2, heigth1o2);
                 glScissor(0, 0, width1o2, heigth1o2);
                 glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
@@ -220,7 +220,7 @@ public class SplitScreen {
         };
         players3h[2] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(width1o2, 0, width1o2, heigth1o2);
                 glScissor(width1o2, 0, width1o2, heigth1o2);
                 pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
@@ -230,7 +230,7 @@ public class SplitScreen {
         };
         players3v[0] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(0, 0, width1o2, Display.getHeight());
                 glScissor(0, 0, width1o2, Display.getHeight());
                 glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
@@ -241,7 +241,7 @@ public class SplitScreen {
         };
         players3v[1] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
                 glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
                 glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
@@ -252,7 +252,7 @@ public class SplitScreen {
         };
         players3v[2] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(width1o2, 0, width1o2, heigth1o2);
                 glScissor(width1o2, 0, width1o2, heigth1o2);
                 pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
@@ -262,21 +262,21 @@ public class SplitScreen {
         };
         orients3[0] = new setOrient() {
             @Override
-            public void setOrient(AbstractPlace pl, int p) {
+            public void setOrient(Place pl, int p) {
                 pl.ssMode = 3;
                 players3h[p].setPlayer(pl);
             }
         };
         orients3[1] = new setOrient() {
             @Override
-            public void setOrient(AbstractPlace pl, int p) {
+            public void setOrient(Place pl, int p) {
                 pl.ssMode = 4;
                 players3v[p].setPlayer(pl);
             }
         };
         splits[2] = new setSplit() {
             @Override
-            public void setSplit(AbstractPlace pl, int p) {
+            public void setSplit(Place pl, int p) {
                 if (!pl.settings.joinSS || isFar(pl)) {
                     changeSSMode3(pl);
                     orients3[pl.settings.hSplitScreen ? 0 : 1].setOrient(pl, p);
@@ -295,7 +295,7 @@ public class SplitScreen {
     private static void init3() {
         players4[0] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(0, heigth1o2, width1o2, heigth1o2);
                 glScissor(0, heigth1o2, width1o2, heigth1o2);
                 glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
@@ -306,7 +306,7 @@ public class SplitScreen {
         };
         players4[1] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
                 glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
                 pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
@@ -316,7 +316,7 @@ public class SplitScreen {
         };
         players4[2] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(0, 0, width1o2, heigth1o2);
                 glScissor(0, 0, width1o2, heigth1o2);
                 pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
@@ -325,7 +325,7 @@ public class SplitScreen {
         };
         players4[3] = new setPlayer() {
             @Override
-            public void setPlayer(AbstractPlace pl) {
+            public void setPlayer(Place pl) {
                 glViewport(width1o2, 0, width1o2, heigth1o2);
                 glScissor(width1o2, 0, width1o2, heigth1o2);
                 pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
@@ -335,7 +335,7 @@ public class SplitScreen {
         };
         splits[3] = new setSplit() {
             @Override
-            public void setSplit(AbstractPlace pl, int p) {
+            public void setSplit(Place pl, int p) {
                 if (!pl.settings.joinSS || isFar(pl)) {
                     pl.ssMode = 5;
                     players4[p].setPlayer(pl);
@@ -353,17 +353,17 @@ public class SplitScreen {
 
     private interface setSplit {
 
-        void setSplit(AbstractPlace pl, int p);
+        void setSplit(Place pl, int p);
     }
 
     private interface setOrient {
 
-        void setOrient(AbstractPlace pl, int p);
+        void setOrient(Place pl, int p);
     }
 
     private interface setPlayer {
 
-        void setPlayer(AbstractPlace pl);
+        void setPlayer(Place pl);
     }
 
     private SplitScreen() {

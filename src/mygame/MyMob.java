@@ -7,22 +7,22 @@ package mygame;
 
 import engine.Methods;
 import game.gameobject.Mob;
-import game.place.AbstractPlace;
+import game.place.Place;
 
 /**
  *
  * @author przemek
  */
-public class Rabbit extends Mob {
+public class MyMob extends Mob {
 
-    public Rabbit(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, AbstractPlace place, boolean solid, short id) {
+    public MyMob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid, short id) {
         super(x, y, startX, startY, width, height, speed, range, name, place, solid);
         this.id = id;
     }
 
     @Override
-    public void update(AbstractPlace place) {
-        if (prey != null && ((Player) prey).getPlace() != null) {
+    public void update(Place place) {
+        if (prey != null && ((MyPlayer) prey).getPlace() != null) {
             chase(prey);
             if (Methods.PointDistance(getX(), getY(), prey.getX(), prey.getY()) > range * 1.5) {
                 prey = null;

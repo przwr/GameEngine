@@ -5,11 +5,11 @@
  */
 package mygame;
 
-import game.AbstractGame;
-import net.AbstractGameOnline;
+import game.Game;
+import net.GameOnline;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
-import game.gameobject.AbstractPlayer;
+import game.gameobject.Player;
 import java.util.ArrayList;
 import net.GameClient;
 import net.GameServer;
@@ -23,9 +23,9 @@ import net.packets.PacketUpdate;
  *
  * @author przemek
  */
-public class GameOnline extends AbstractGameOnline {
+public class MyGameOnline extends GameOnline {
 
-    public GameOnline(AbstractGame game, int changes, int players) {
+    public MyGameOnline(Game game, int changes, int players) {
         super(game, changes, players);
     }
 
@@ -86,7 +86,7 @@ public class GameOnline extends AbstractGameOnline {
     }
 
     private synchronized void UpdatePlayers(ArrayList<MPlayerUpdate> players) {
-        AbstractPlayer plr;
+        Player plr;
         for (MPlayerUpdate pUp : players) {
             for (int p = 1; p < g.place.playersLength; p++) {
                 if (pUp.getId() == g.players[p].id) {
@@ -142,7 +142,7 @@ public class GameOnline extends AbstractGameOnline {
 
     @Override
     public synchronized void playerUpdate(PacketMPlayerUpdate p) {
-        AbstractPlayer plr;
+        Player plr;
         if (g.place != null) {
             for (int i = 0; i < g.place.playersLength; i++) {
                 if (p.up().getId() == g.players[i].id) {
@@ -188,10 +188,10 @@ public class GameOnline extends AbstractGameOnline {
                 for (int i = 0; i < removeIDs.length; i++) {
                     for (int p = 1; p < g.place.playersLength; p++) {
                         if (g.players[p].id == removeIDs[i]) {
-                            ((AbstractPlayer) g.place.players[p]).setPlaceToNull();
+                            ((Player) g.place.players[p]).setPlaceToNull();
                             g.place.deleteObj(g.place.players[p]);
                             if (p != g.place.playersLength - 1) {
-                                AbstractPlayer tempG = g.players[g.place.playersLength - 1];
+                                Player tempG = g.players[g.place.playersLength - 1];
                                 GameObject tempP = g.place.players[g.place.playersLength - 1];
                                 g.players[g.place.playersLength - 1] = g.players[p];
                                 g.place.players[g.place.playersLength - 1] = g.place.players[p];
@@ -211,7 +211,7 @@ public class GameOnline extends AbstractGameOnline {
                 for (int i = 0; i < newMob.length; i++) {
                     if (newMob[i] != null) {
                         System.out.println("Adding Mob with ID: " + newMob[i].getId());
-                        Mob mob = new Rabbit(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", g.place, true, newMob[i].getId());
+                        Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", g.place, true, newMob[i].getId());
                         mob.upDepth();
                         g.place.addObj(mob);
                         newMob[i] = null;
@@ -234,8 +234,8 @@ public class GameOnline extends AbstractGameOnline {
     }
 
     @Override
-    public AbstractPlayer getPlayerByID(byte id) {
-        for (AbstractPlayer pl : g.players) {
+    public Player getPlayerByID(byte id) {
+        for (Player pl : g.players) {
             if (pl.id == id) {
                 return pl;
             }

@@ -6,17 +6,17 @@
 package mygame.choices;
 
 import game.Settings;
-import game.gameobject.menu.AbstractMenuChoice;
-import game.place.AbstractMenu;
+import game.gameobject.menu.MenuChoice;
+import game.place.Menu;
 import net.KryoUtil;
 
 /**
  *
  * @author przemek
  */
-public class ChoiceServerPortUDP extends AbstractMenuChoice {
+public class ChoiceServerPortUDP extends MenuChoice {
 
-    public ChoiceServerPortUDP(String label, AbstractMenu menu, Settings settings) {
+    public ChoiceServerPortUDP(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
