@@ -65,6 +65,17 @@ public class Animation {
         }
     }
 
+    public void renderNotBind(boolean anim, int xs, int xe) {
+        sprite.render(curFrame, xs, xe);
+        if (anim && animDelay.isOver()) {
+            curFrame++;
+            animDelay.restart();
+            if (curFrame > getEnd()) {
+                curFrame = getStart();
+            }
+        }
+    }
+
 //    public void setFlip(boolean flip) {
 //        this.flip = flip;
 //    }

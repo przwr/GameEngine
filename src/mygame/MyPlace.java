@@ -72,12 +72,12 @@ public class MyPlace extends Place {
         Area testf = new Area(5 * sTile, 9 * sTile, sTile, false, true);
         Area testg = new Area(9 * sTile, 11 * sTile, sTile, false, true);
 
-//        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
-//        addFGTile(fgt, 6 * sTile, 5 * sTile, 0, true);
-//        testa.addPiece(fgt);
-//        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-//        addFGTile(fgt, 6 * sTile, 4 * sTile, 2 * sTile, true);
-//        testa.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
+        addFGTile(fgt, 6 * sTile, 5 * sTile, 0, true);
+        testa.addPiece(fgt);
+        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
+        addFGTile(fgt, 6 * sTile, 4 * sTile, 2 * sTile, true);
+        testa.addPiece(fgt);
 
         fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
         addFGTile(fgt, 8 * sTile, 5 * sTile, 0, true);
@@ -146,6 +146,7 @@ public class MyPlace extends Place {
         border.addFigure(new Line(0, 0, 0, height, border));
         border.addFigure(new Line(width, 0, 0, height, border));
         border.addFigure(new Line(0, height, width, 0, border));
+
         areas.add(a);
         areas.add(testa);
         areas.add(testb);
@@ -176,13 +177,13 @@ public class MyPlace extends Place {
     @Override
     protected void renderText(Camera cam) {
         for (int p = 0; p < playersLength; p++) {
-            if (cam.getSY() <= players[p].getY() + (players[p].Height() + fonts.write(0).getHeight()) && cam.getEY() >= players[p].getY() - (players[p].Height() + fonts.write(0).getHeight())
+            if (cam.getSY() <= players[p].getY() + (players[p].Height() + fonts.write(0).getHeight()) && cam.getEY() >= players[p].getY() - (players[p].Height() << 2)
                     && cam.getSX() <= players[p].getX() + (fonts.write(0).getWidth(players[p].getName())) && cam.getEX() >= players[p].getX() - (fonts.write(0).getWidth(players[p].getName()))) {
                 ((MyPlayer) players[p]).renderName(this, cam);
             }
         }
         for (Mob mob : sMobs) {
-            if (cam.getSY() <= mob.getY() + (mob.Height() + fonts.write(0).getHeight()) && cam.getEY() >= mob.getY() - (mob.Height() + fonts.write(0).getHeight())
+            if (cam.getSY() <= mob.getY() + (mob.Height() + fonts.write(0).getHeight()) && cam.getEY() >= mob.getY() - (mob.Height() << 2)
                     && cam.getSX() <= mob.getX() + (fonts.write(0).getWidth(mob.getName())) && cam.getEX() >= mob.getX() - (fonts.write(0).getWidth(mob.getName()))) {
                 mob.renderName(this, cam);
             }

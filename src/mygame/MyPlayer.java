@@ -44,8 +44,8 @@ public class MyPlayer extends Player {
         float SCALE = place.settings.SCALE;
         this.width = Methods.RoundHU(SCALE * width);
         this.height = Methods.RoundHU(SCALE * height);
-        this.sX = Methods.RoundHU(SCALE * startX);
-        this.sY = Methods.RoundHU(SCALE * startY);
+        this.startX = Methods.RoundHU(SCALE * startX);
+        this.startY = Methods.RoundHU(SCALE * startY);
         this.setWeight(2);
         this.emitter = true;
         init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
@@ -65,8 +65,8 @@ public class MyPlayer extends Player {
         float SCALE = place.settings.SCALE;
         this.width = Methods.RoundHU(SCALE * width);
         this.height = Methods.RoundHU(SCALE * height);
-        this.sX = Methods.RoundHU(SCALE * startX);
-        this.sY = Methods.RoundHU(SCALE * startY);
+        this.startX = Methods.RoundHU(SCALE * startX);
+        this.startY = Methods.RoundHU(SCALE * startY);
         this.setWeight(2);
         this.emitter = true;
         this.place = place;
@@ -151,6 +151,24 @@ public class MyPlayer extends Player {
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             } else {
                 Drawer.drawShapeInBlack(anim);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            }
+            glPopMatrix();
+            glDisable(GL_TEXTURE_2D);
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe) {
+        if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            if (isLit) {
+                Drawer.drawShapeInColor(anim, color, color, color, xs, xe);
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            } else {
+                Drawer.drawShapeInBlack(anim, xs, xe);
                 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             }
             glPopMatrix();

@@ -21,10 +21,11 @@ public abstract class Camera {
     protected Place place;
     protected int Dwidth;
     protected int Dheight;
+    protected int XMid, YMid;
 
     protected int xEffect, yEffect, xLeft, xRight, yDown, yUp;
     protected double xOffset, yOffset;
-    protected int delaylenght, SX, EX, SY, EY;
+    protected int delaylenght;
     protected Delay shakeDelay;
     protected int shakeAmp = 8;
     public GameObject[] visibleLights = new GameObject[2048];
@@ -60,24 +61,21 @@ public abstract class Camera {
     }
 
     public int getMidX() {
-        int X = 0;
+        XMid = 0;
         for (GameObject go : gos) {
-            X += go.getX();
+            XMid += go.getX();
         }
-        return X / gos.size();
+        return XMid / gos.size();
     }
 
     public int getMidY() {
-        int X = 0;
+        YMid = 0;
         for (GameObject go : gos) {
-            X += go.getY();
+            YMid += go.getY();
         }
-        return X / gos.size();
+        return YMid / gos.size();
     }
 
-//    public GameObject getGo() {
-//        return gos.get(0);
-//    }
     public int getXOffEffect() {
         return (int) (xOffset + xEffect);
     }

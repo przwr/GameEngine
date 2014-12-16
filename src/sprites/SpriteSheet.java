@@ -31,11 +31,27 @@ public class SpriteSheet extends Sprite {
         render(x, y);
     }
 
+    public void render(int i, int xs, int xe) {
+        if (i > xTiles * yTiles) {
+            return;
+        }
+        final int x = (int) (i % xTiles);
+        final int y = (int) (i / xTiles);
+        render(x, y, xs, xe);
+    }
+
     public void render(int x, int y) {
         if (x > xTiles || y > yTiles) {
             return;
         }
         renderTexPart((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+    }
+
+    public void render(int x, int y, int xs, int xe) {
+        if (x > xTiles || y > yTiles) {
+            return;
+        }
+        renderTexPart((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xs, xe, xTiles);
     }
 
     public void renderMirrored(boolean flip, int x, int y) {

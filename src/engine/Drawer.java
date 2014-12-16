@@ -121,6 +121,22 @@ public class Drawer {
         glColor3f(1, 1, 1);
     }
 
+    public static void drawShapeInColor(Sprite sprite, float r, float g, float b, int xs, int xe) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor3f(r, g, b);
+        glActiveTexture(white);
+        sprite.getTex().bind();
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+        sprite.renderNotBind(xs, xe);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glColor3f(1, 1, 1);
+    }
+
     public static void drawShapeInColor(Animation anim, float r, float g, float b) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor3f(r, g, b);
@@ -137,16 +153,44 @@ public class Drawer {
         glColor3f(1, 1, 1);
     }
 
+    public static void drawShapeInColor(Animation anim, float r, float g, float b, int xs, int xe) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor3f(r, g, b);
+        glActiveTexture(white);
+        anim.getSprite().getTex().bind();
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+        anim.renderNotBind(anim.getOwner().isAnimate(), xs, xe);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glColor3f(1, 1, 1);
+    }
+
     public static void drawShapeInBlack(Sprite sprite) {
         sprite.getTex().bind();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         sprite.renderNotBind();
     }
 
+    public static void drawShapeInBlack(Sprite sprite, int xs, int xe) {
+        sprite.getTex().bind();
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        sprite.renderNotBind(xs, xe);
+    }
+
     public static void drawShapeInBlack(Animation anim) {
         anim.getSprite().getTex().bind();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        anim.render(anim.getOwner().isAnimate());
+        anim.renderNotBind(anim.getOwner().isAnimate());
+    }
+
+    public static void drawShapeInBlack(Animation anim, int xs, int xe) {
+        anim.getSprite().getTex().bind();
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        anim.renderNotBind(anim.getOwner().isAnimate(), xs, xe);
     }
 
     private Drawer() {

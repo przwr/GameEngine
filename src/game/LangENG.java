@@ -58,7 +58,7 @@ public class LangENG extends Language {
         m.Actions[6] = "Left";
         m.Actions[7] = "Right";
         m.Actions[8] = "Jump";
-        m.Actions[9] = "Run";
+        m.Actions[9] = "Walk";
         m.Actions[10] = "Light";
         m.PushButton = "Push the button!";
         m.Unchangable = "unchangable!";

@@ -76,7 +76,7 @@ public class MyController extends Controler {
             inControl.setIsHop(true);
         }
         if (states[RUN]) {
-            inControl.setMaxSpeed(2);
+            inControl.setMaxSpeed(4);
         } else {
             inControl.setMaxSpeed(8);
         }
@@ -114,7 +114,6 @@ public class MyController extends Controler {
 //            inControl.setEmits(!inControl.isEmits());
 //        }
 //    }
-
     @Override
     public boolean isMenuOn() {
         if (actions[3].in != null) {

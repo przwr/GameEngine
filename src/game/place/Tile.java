@@ -62,7 +62,8 @@ public class Tile extends GameObject {
         glPopMatrix();
     }
 
-    public void renderShadow(int x, int y, int xEffect, int yEffect, boolean isLit, float color) {
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         if (simpleLighting) {

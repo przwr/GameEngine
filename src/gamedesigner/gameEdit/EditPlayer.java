@@ -39,8 +39,8 @@ public class EditPlayer extends Player {
         double SCALE = place.settings.SCALE;
         this.width = Methods.RoundHU(SCALE * width);
         this.height = Methods.RoundHU(SCALE * height);
-        this.sX = Methods.RoundHU(SCALE * startX);
-        this.sY = Methods.RoundHU(SCALE * startY);
+        this.startX = Methods.RoundHU(SCALE * startX);
+        this.startY = Methods.RoundHU(SCALE * startY);
         this.setWeight(2);
         this.emitter = true;
         init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
@@ -129,6 +129,10 @@ public class EditPlayer extends Player {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe) {
     }
 
     @Override

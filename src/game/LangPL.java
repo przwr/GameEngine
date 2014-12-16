@@ -58,7 +58,7 @@ public class LangPL extends Language {
         m.Actions[6] = "Lewo";
         m.Actions[7] = "Prawo";
         m.Actions[8] = "Skok";
-        m.Actions[9] = "Bieg";
+        m.Actions[9] = "Chód";
         m.Actions[10] = "Światło";
         m.PushButton = "Naciśnij przycisk!";
         m.Unchangable = "niezmienny!";

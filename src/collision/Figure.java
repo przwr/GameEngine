@@ -125,19 +125,27 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public int getX() {
-        return getOwner().getX() + xs;
+        return owner.getX() + xs;
     }
 
     public int getY() {
-        return getOwner().getY() + ys;
+        return owner.getY() + ys;
     }
 
     public int getEndX() {
-        return getOwner().getX() + xs + width;
+        return owner.getX() + xs + width;
     }
 
     public int getEndY() {
-        return getOwner().getY() + ys + height;
+        return owner.getY() + ys + height;
+    }
+
+    public int getOwnEndY() {
+        return owner.getObjectEndY();
+    }
+
+    public int getOwnBegY() {
+        return owner.getObjectBegY();
     }
 
     public int getX(int x) {
@@ -165,11 +173,11 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public int getCentralX() {
-        return getOwner().getX() + xs + xCentr;
+        return owner.getX() + xs + xCentr;
     }
 
     public int getCentralY() {
-        return getOwner().getY() + ys + yCentr;
+        return owner.getY() + ys + yCentr;
     }
 
     public int getCentralX(int x) {
@@ -189,7 +197,7 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     private boolean checkCollison(int x, int y, GameObject obj) {
-        if (obj.equals(getOwner())) {
+        if (obj.equals(owner)) {
             return false;
         }
         Figure f = obj.getCollision();
@@ -227,7 +235,7 @@ public abstract class Figure implements Comparable<Object> {
         return canGiveShadow;
     }
 
-    public GameObject getOwner() {
+    public GameObject own() {
         return owner;
     }
 

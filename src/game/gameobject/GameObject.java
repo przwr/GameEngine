@@ -35,12 +35,14 @@ public abstract class GameObject {
     protected Figure collision;
     protected int depth;
 
-    protected int sX;   // *--<('~'<) BEGONE YOU EVIL SX AND SY!
-    protected int sY;
+    protected int startX;   // *--<('~'<) BEGONE YOU EVIL SX AND SY!
+    protected int startY;
 
     public abstract void render(int xEffect, int yEffect);
 
     public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f);
+
+    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe);
 
     protected void init(String name, int x, int y, Place place) {
         this.x = x;
@@ -118,19 +120,27 @@ public abstract class GameObject {
     }
 
     public int getBegOfX() {
-        return (int) (x - collision.getWidth() / 2d);
+        return (int) x - collision.getWidth() / 2;
     }
 
     public int getBegOfY() {
-        return (int) (y - collision.getHeight() / 2d);
+        return (int) y - collision.getHeight() / 2;
     }
 
     public int getEndOfX() {
-        return (int) (x - collision.getWidth() / 2d);
+        return (int) x + collision.getWidth() / 2;
     }
 
     public int getEndOfY() {
-        return (int) (y + collision.getHeight() / 2d);
+        return (int) y + collision.getHeight() / 2;
+    }
+
+    public int getObjectBegY() {
+        return (int) y + collision.getHeight() / 2 - height;
+    }
+
+    public int getObjectEndY() {
+        return (int) y + collision.getHeight() / 2;
     }
 
     public int getX() {
@@ -197,12 +207,12 @@ public abstract class GameObject {
         return emits;
     }
 
-    public int getSX() {
-        return sX;
+    public int getStartX() {
+        return startX;
     }
 
-    public int getSY() {
-        return sY;
+    public int getStartY() {
+        return startY;
     }
 
     public void renderLight(Place place, int x, int y) {

@@ -195,7 +195,7 @@ public class Renderer {
     }
 
     public static void initVariables(Place place) {
-        ShadowRenderer.initVariables(place);
+        ShadowRenderer.initRenderer(place);
         fbFrame = new FBORendererRegular(w, h, place.settings);
         borders[0] = new drawBorder() {
             @Override

@@ -35,8 +35,8 @@ public abstract class Mob extends Entity {
         this.width = Methods.RoundHU(SCALE * width);
         this.height = Methods.RoundHU(SCALE * height);
         this.solid = solid;
-        this.sX = Methods.RoundHU(SCALE * startX);
-        this.sY = Methods.RoundHU(SCALE * startY);
+        this.startX = Methods.RoundHU(SCALE * startX);
+        this.startY = Methods.RoundHU(SCALE * startY);
         this.range = Methods.RoundHU(SCALE * range);
         scale = SCALE;
         init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
@@ -112,6 +112,21 @@ public abstract class Mob extends Entity {
                 Drawer.drawShapeInColor(sprite, color, color, color);
             } else {
                 Drawer.drawShapeInBlack(sprite);
+            }
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            if (isLit) {
+                Drawer.drawShapeInColor(sprite, color, color, color, xs, xe);
+            } else {
+                Drawer.drawShapeInBlack(sprite, xs, xe);
             }
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glPopMatrix();

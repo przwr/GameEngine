@@ -138,6 +138,20 @@ public class Sprite {
         glEnd();
     }
 
+    public void renderNotBind(int xs, int xe) {
+        glTranslatef(sx, sy, 0);
+        glBegin(GL_QUADS);
+        glTexCoord2d(((double) xs / (double) width), 0);
+        glVertex2f(xs, 0);
+        glTexCoord2d(((double) xs / (double) width), 1);
+        glVertex2f(xs, height);
+        glTexCoord2d(((double) xe / (double) width), 1);
+        glVertex2f(xe, height);
+        glTexCoord2d(((double) xe / (double) width), 0);
+        glVertex2f(xe, 0);
+        glEnd();
+    }
+
     public void renderFull() {
         bindCheck();
         glBegin(GL_QUADS);
@@ -192,6 +206,23 @@ public class Sprite {
         glVertex2f(width, height);
         glTexCoord2f(ex, by);
         glVertex2f(width, 0);
+        glEnd();
+    }
+
+    public void renderTexPart(float bx, float ex, float by, float ey, int xs, int xe, float xTiles) {
+        bindCheck();
+        double xBeg = bx + ((double) xs) / (double) width / xTiles;
+        double xEnd = bx + ((double) xe) / (double) width / xTiles;
+        glTranslatef(sx, sy, 0);
+        glBegin(GL_QUADS);
+        glTexCoord2d(xBeg, by);
+        glVertex2f(xs, 0);
+        glTexCoord2d(xBeg, ey);
+        glVertex2f(xs, height);
+        glTexCoord2d(xEnd, ey);
+        glVertex2f(xe, height);
+        glTexCoord2d(xEnd, by);
+        glVertex2f(xe, 0);
         glEnd();
     }
 

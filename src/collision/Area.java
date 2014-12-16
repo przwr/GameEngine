@@ -126,7 +126,7 @@ public class Area extends GameObject {
         int maxX = 0, maxY = 0, minX = 2147483647, minY = 2147483647, shadowH = 0;
         int x, y, sH;
         for (Figure part : parts) {
-            if (part.getOwner().isSolid()) {
+            if (part.own().isSolid()) {
                 sH = part.shadowHeight();
                 shadowH = sH != 0 ? sH : shadowH;
                 Point[] pList = part.listPoints();
@@ -162,6 +162,32 @@ public class Area extends GameObject {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
+        glPushMatrix();
+        glTranslatef(f.getX() + xEffect, f.getY() - f.shadowHeight() + yEffect, 0);
+        if (simpleLighting) {
+            if (isLit) {
+                glColor3f(color, color, color);
+            } else {
+                glColor3f(0f, 0f, 0f);
+            }
+            Drawer.drawRectangle(0, 0, f.width, f.height + f.shadowHeight());
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glColor3f(1f, 1f, 1f);
+        } else if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
+            if (isLit) {
+                Drawer.drawShapeInColor(sprite, color, color, color);
+            } else {
+                Drawer.drawShapeInBlack(sprite);
+            }
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_TEXTURE_2D);
+        }
+        glPopMatrix();
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xStart, int yStart) {
         glPushMatrix();
         glTranslatef(f.getX() + xEffect, f.getY() - f.shadowHeight() + yEffect, 0);
         if (simpleLighting) {

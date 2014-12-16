@@ -180,7 +180,7 @@ public abstract class Place extends ScreenPlace {
                 }
                 y++;
             }
-            if (cam.getSY() <= go.getY() + (go.Height()) && cam.getEY() >= go.getY() - (go.Height())
+            if (cam.getSY() <= go.getY() + (go.Height()) && cam.getEY() >= go.getY() - (go.Height() << 2)
                     && cam.getSX() <= go.getX() + (go.Width()) && cam.getEX() >= go.getX() - (go.Width())) {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
 //                if ((go instanceof Mob) && ((Mob) go).id == 0) {
@@ -198,7 +198,7 @@ public abstract class Place extends ScreenPlace {
         Drawer.refresh(this);
         sortObjects(onTopObject);
         for (GameObject go : onTopObject) {
-            if (cam.getSY() <= go.getY() + (go.Height()) && cam.getEY() >= go.getY() - (go.Height())
+            if (cam.getSY() <= go.getY() + (go.Height()) && cam.getEY() >= go.getY() - (go.Height() << 2)
                     && cam.getSX() <= go.getX() + (go.Width()) && cam.getEX() >= go.getX() - (go.Width())) {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
