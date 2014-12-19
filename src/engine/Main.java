@@ -13,6 +13,8 @@ import gamedesigner.GameDesigner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import mygame.MyGame;
 import org.lwjgl.LWJGLException;
@@ -41,6 +43,7 @@ public class Main {
     public static GameDesigner designer = null;
     public static boolean gameStop = false;
     public static boolean pause, ENTER = true;
+    private static boolean lastFrame;
 
     public static void run() {
         IO.readFile(new File("res/settings.ini"), settings, true);
@@ -48,6 +51,7 @@ public class Main {
         initGL();
         initGame();
         gameLoop();
+        cleanUp();
     }
 
     private static void initGame() {
@@ -82,10 +86,31 @@ public class Main {
         }
         Display.sync(60);
         Display.update();
+        if (Display.isActive()) {
+            if (!lastFrame) {
+                try {
+                    Display.setDisplayConfiguration(1f, 0f, 1f);
+                    Display.setDisplayConfiguration(2f, 0f, 1f);
+                } catch (LWJGLException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else if (lastFrame) {
+            try {
+                Display.setDisplayConfiguration(2f, 0f, 1f);
+                Display.setDisplayConfiguration(1f, 0f, 1f);
+            } catch (LWJGLException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        lastFrame = Display.isActive();
     }
 
     public static void addMessage(String msg) {
-        pop.addMessage(msg);
+        try {
+            pop.addMessage(msg);
+        } catch (Exception e) {
+        }
     }
 
     public static String getTitle() {
@@ -132,16 +157,18 @@ public class Main {
 
     public static void cleanUp() {
         game.endGame();
-        try {
-            Display.setDisplayConfiguration(1f, 0f, 1.0f);
-        } catch (LWJGLException ex) {
-            Methods.Exception(ex);
-        }
         AL.destroy();
-        Display.destroy();
         Keyboard.destroy();
         Mouse.destroy();
         Controllers.destroy();
+//        try {
+//            Display.update();
+//            Display.setDisplayConfiguration(2f, 0f, 1f);
+//            Display.setDisplayConfiguration(1f, 0f, 1f);
+//        } catch (LWJGLException ex) {
+//        }
+        Display.destroy();
+        System.exit(0);
     }
 
     private static void initDisplay() {
@@ -165,7 +192,9 @@ public class Main {
             }
             Display.setResizable(false);
             Display.setVSyncEnabled(settings.vSync);
-            Display.setDisplayConfiguration(2f, 0f, 1.0f);
+//            Display.update();
+//            Display.setDisplayConfiguration(1f, 0f, 1f);
+            Display.setDisplayConfiguration(2f, 0f, 1f);
             try {
                 Display.setIcon(new ByteBuffer[]{
                     new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon32.png")), false, false, null),

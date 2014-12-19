@@ -41,20 +41,19 @@ public class MyPlayer extends Player {
     @Override
     public void init(int startX, int startY, int width, int height, Place place, int x, int y) {
         this.online = place.game.online;
-        float SCALE = place.settings.SCALE;
-        this.width = Methods.RoundHU(SCALE * width);
-        this.height = Methods.RoundHU(SCALE * height);
-        this.startX = Methods.RoundHU(SCALE * startX);
-        this.startY = Methods.RoundHU(SCALE * startY);
+        scale = place.settings.SCALE;
+        this.width = Methods.RoundHU(scale * width);
+        this.height = Methods.RoundHU(scale * height);
+        this.startX = Methods.RoundHU(scale * startX);
+        this.startY = Methods.RoundHU(scale * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
+        init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(SCALE * 1024), Methods.RoundHU(SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
-        scale = SCALE;
         place.addObj(this);
         setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
@@ -62,20 +61,19 @@ public class MyPlayer extends Player {
     @Override
     public void init(int startX, int startY, int width, int height, Place place) {
         this.online = place.game.online;
-        float SCALE = place.settings.SCALE;
-        this.width = Methods.RoundHU(SCALE * width);
-        this.height = Methods.RoundHU(SCALE * height);
-        this.startX = Methods.RoundHU(SCALE * startX);
-        this.startY = Methods.RoundHU(SCALE * startY);
+        scale = place.settings.SCALE;
+        this.width = Methods.RoundHU(scale * width);
+        this.height = Methods.RoundHU(scale * height);
+        this.startX = Methods.RoundHU(scale * startX);
+        this.startY = Methods.RoundHU(scale * startY);
         this.setWeight(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(SCALE * 1024), Methods.RoundHU(SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
-        scale = SCALE;
         place.addObj(this);
         setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
@@ -120,7 +118,7 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() - sprite.getSy() + 15 - jump),
+        place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() + sprite.getSy() + collision.getHeight() / 2 - jump),
                 name, new Color(place.r, place.g, place.b));
     }
 
@@ -211,12 +209,14 @@ public class MyPlayer extends Player {
         brakeOthers();
         if (online.server != null) {
             online.server.sendUpdate(getX(), getY(), isEmits(), isHop());
-        } else {
+        } else if (online.client != null) {
             online.client.sendPlayerUpdate(id, getX(), getY(), isEmits(), isHop());
             online.past[online.pastNr++].set(getX(), getY());
             if (online.pastNr >= online.past.length) {
                 online.pastNr = 0;
             }
+        } else {
+            online.g.endGame();
         }
     }
 

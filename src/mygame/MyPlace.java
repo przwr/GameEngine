@@ -7,7 +7,6 @@ package mygame;
 
 import collision.Area;
 import collision.Line;
-import collision.Rectangle;
 import game.gameobject.Mob;
 import game.Game;
 import game.Settings;
@@ -54,14 +53,14 @@ public class MyPlace extends Place {
         Area a = new Area(13 * sTile, 13 * sTile, sTile);
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
-                if ((x * y) < 600) {
-                    tiles[x + y * height / sTile] = GRASS;
-                } else {
-                    if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
-                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, true, 0, a));
-                    }
-                    tiles[x + y * height / sTile] = ROCK;
-                }
+//                if ((x * y) < 600) {
+                tiles[x + y * height / sTile] = GRASS;
+//                } else {
+//                    if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
+//                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, true, 0, a));
+//                    }
+//                    tiles[x + y * height / sTile] = ROCK;
+//                }
             }
         }
         Area testa = new Area(6 * sTile, 5 * sTile, sTile, false, true);
@@ -142,10 +141,10 @@ public class MyPlace extends Place {
         testg.addPiece(fgt);
 
         Area border = new Area(0, 0, sTile, true, false);
-        border.addFigure(new Line(0, 0, width, 0, border));
-        border.addFigure(new Line(0, 0, 0, height, border));
-        border.addFigure(new Line(width, 0, 0, height, border));
-        border.addFigure(new Line(0, height, width, 0, border));
+        border.addFigure(new Line(-1, -1, width, 0, border));
+        border.addFigure(new Line(-1, -1, 0, height, border));
+        border.addFigure(new Line(width, -1, 0, height, border));
+        border.addFigure(new Line(-1, height, width, 0, border));
 
         areas.add(a);
         areas.add(testa);
@@ -157,8 +156,11 @@ public class MyPlace extends Place {
         areas.add(testg);
         areas.add(border);
         if (isHost) {
-            addObj(new MyMob(1280, 1024, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
-            addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+            for (int i = 0; i < 1000; i++) {
+                addObj(new MyMob(192 + 192 * (i % 50), 1440 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+            }
+//            addObj(new MyMob(1280, 1024, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+//            addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
         }
         this.r = 0.75f;
         this.g = 0.75f;
@@ -253,7 +255,7 @@ public class MyPlace extends Place {
                     for (Mob mob : sMobs) {
                         mob.update(place);
                     }
-                } else {
+                } else if (game.online.client != null) {
                     for (Mob mob : sMobs) {
                         mob.updateHard();
                     }

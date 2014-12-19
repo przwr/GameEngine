@@ -41,14 +41,19 @@ public class GameClient {
         this.pl = pl;
         this.game = game;
         this.SCALE = game.g.settings.SCALE;
-        client = new Client();
-        delay = new Delay(50);
+        delay = new Delay(20);
         delay.terminate();
+        Client temp = null;
+        try {
+            temp = new Client(32768, 65536);
+        } catch (Exception e) {
+            cleanUp(e);
+        }
+        client = temp;
         try {
             Log.set(Log.LEVEL_DEBUG);
             KryoUtil.registerClientClass(client);
-            new Thread(client).start();
-
+            client.start();
             client.addListener(new Listener() {
                 @Override
                 public void connected(Connection connection) {
@@ -58,46 +63,36 @@ public class GameClient {
 
                 @Override
                 public void received(Connection connection, Object obj) {
-                    try {
-                        if (obj instanceof PacketUpdate) {
-                            //System.out.println(Methods.sizeInBytes((PacketUpdate) obj));
-                            game.update((PacketUpdate) obj);
+                    if (obj instanceof PacketUpdate) {
+                        //System.out.println(Methods.sizeInBytes((PacketUpdate) obj));
+                        game.update((PacketUpdate) obj);
+                    }
+                    if (obj instanceof PacketMessage) {
+                        System.out.println("Recived from server: " + ((PacketMessage) obj).getMessage());
+                    } else if (obj instanceof PacketAddMPlayer) {
+                        game.addPlayer(((PacketAddMPlayer) obj).getPlayer());
+                    } else if (obj instanceof PacketRemoveMPlayer) {
+                        game.removePlayer(((PacketRemoveMPlayer) obj).getId());
+                    } else if (obj instanceof PacketJoinResponse) {
+                        if (((PacketJoinResponse) obj).getId() != -1) {
+                            server = connection;
+                            pl.id = ((PacketJoinResponse) obj).getId();
+                            pl.setX(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getX()));
+                            pl.setY(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getY()));
+                            pl.upDepth();
+                            mpup = new PacketMPlayerUpdate(pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
+                            System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
+                        } else {
+                            cleanUp("Server is Full!");
                         }
-                        if (obj instanceof PacketMessage) {
-                            System.out.println("Recived from server: " + ((PacketMessage) obj).getMessage());
-                        } else if (obj instanceof PacketAddMPlayer) {
-                            game.addPlayer(((PacketAddMPlayer) obj).getPlayer());
-                        } else if (obj instanceof PacketRemoveMPlayer) {
-                            game.removePlayer(((PacketRemoveMPlayer) obj).getId());
-                        } else if (obj instanceof PacketJoinResponse) {
-                            if (((PacketJoinResponse) obj).getId() != -1) {
-                                server = connection;
-                                pl.id = ((PacketJoinResponse) obj).getId();
-                                pl.setX(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getX()));
-                                pl.setY(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getY()));
-                                pl.upDepth();
-                                mpup = new PacketMPlayerUpdate(pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
-                                System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
-                            } else {
-                                System.out.println("Server is Full!");
-                                isConnected = false;
-                                Close();
-                            }
-                        }
-                    } catch (Exception e) {
-                        cleanUp(e);
                     }
                 }
 
                 @Override
                 public void disconnected(Connection connection) {
-                    System.out.println("Disconnected!");
-                    isConnected = false;
-                    client.stop();
-                    client.close();
+                    cleanUp("Disconnected!");
                 }
             });
-
             try {
                 /* Make sure to connect using both tcp and udp port */
                 client.connect(5000, IP, KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
@@ -107,6 +102,16 @@ public class GameClient {
                 client.close();
                 return;
             }
+            client.getUpdateThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread t, Throwable e) {
+                    if (e instanceof Exception) {
+                        cleanUp((Exception) e);
+                    } else {
+                        cleanUp(e.getMessage());
+                    }
+                }
+            });
             isConnected = true;
         } catch (Exception e) {
             cleanUp(e);
@@ -120,17 +125,12 @@ public class GameClient {
 //    public void sendPlayerUpdate(MPlayerUpdate update) {
 //        server.sendTCP(update);
 //    }
-
     public void sendPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop) {
-        try {
-            mpup.update(id, x, y, isEmits, isHop, SCALE);
-            if (delay.isOver()) {
-                server.sendTCP(mpup);
-                mpup.reset();
-                delay.restart();
-            }
-        } catch (Exception e) {
-            cleanUp(e);
+        mpup.update(id, x, y, isEmits, isHop, SCALE);
+        if (delay.isOver()) {
+            server.sendTCP(mpup);
+            mpup.reset();
+            delay.restart();
         }
     }
 
@@ -140,7 +140,17 @@ public class GameClient {
     }
 
     private void cleanUp(Exception e) {
+        isConnected = false;
+        Close();
         game.g.endGame();
         Methods.Exception(e);
     }
+
+    private synchronized void cleanUp(String msg) {
+        isConnected = false;
+        Close();
+        game.g.endGame();
+        Methods.Error(msg);
+    }
+
 }

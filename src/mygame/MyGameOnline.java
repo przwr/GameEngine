@@ -11,6 +11,7 @@ import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
 import java.util.ArrayList;
+import java.util.Iterator;
 import net.GameClient;
 import net.GameServer;
 import net.packets.MPlayerUpdate;
@@ -79,7 +80,7 @@ public class MyGameOnline extends GameOnline {
 
     @Override
     public synchronized void update(PacketUpdate pl) {
-        if (g.place != null) {
+        if (g.started) {
             UpdateMobs(pl.mobs());
             UpdatePlayers(pl.players());
         }
@@ -104,40 +105,14 @@ public class MyGameOnline extends GameOnline {
     }
 
     private synchronized void UpdateMobs(ArrayList<MobUpdate> mobs) {
-        boolean found;
-        for (MobUpdate mUp : mobs) {
-            found = false;
-            for (Mob mob : g.place.sMobs) {
-                if (mUp.getId() == mob.id) {
-                    mob.ups[mob.lastAdded] = mUp;
-                    if (mob.lastAdded == 3) {
-                        mob.lastAdded = 0;
-                    } else {
-                        mob.lastAdded++;
-                    }
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                for (int i = 0; i < newMob.length; i++) {
-                    if (newMob[i] != null && newMob[i].getId() == mUp.getId()) {
-                        newMob[i] = mUp;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    for (int i = 0; i < newMob.length; i++) {
-                        if (newMob[i] == null) {
-                            newMob[i] = mUp;
-                            break;
-                        }
-                    }
-                }
-                isChanged[2] = true;
-            }
+        if (!isMUps1) {
+            mUps1 = mobs;
+            isMUps1 = true;
+        } else {
+            mUps2 = mobs;
+            isMUps1 = false;
         }
+        isChanged[2] = true;
     }
 
     @Override
@@ -208,13 +183,58 @@ public class MyGameOnline extends GameOnline {
         changes[2] = new change() {
             @Override
             public synchronized void doIt() {
-                for (int i = 0; i < newMob.length; i++) {
-                    if (newMob[i] != null) {
-                        System.out.println("Adding Mob with ID: " + newMob[i].getId());
-                        Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", g.place, true, newMob[i].getId());
-                        mob.upDepth();
-                        g.place.addObj(mob);
-                        newMob[i] = null;
+                boolean found;
+                boolean addNew = false;
+                ArrayList<MobUpdate> mobs;
+                if (isMUps1) {
+                    mobs = mUps1;
+                } else {
+                    mobs = mUps2;
+                }
+                for (MobUpdate mUp : mobs) {
+                    found = false;
+                    Mob mob;
+                    for (Iterator<Mob> it = g.place.sMobs.iterator(); it.hasNext();) {
+                        mob = it.next();
+                        if (mUp.getId() == mob.id) {
+                            mob.ups[mob.lastAdded] = mUp;
+                            if (mob.lastAdded == 3) {
+                                mob.lastAdded = 0;
+                            } else {
+                                mob.lastAdded++;
+                            }
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        addNew = true;
+                        for (int i = 0; i < newMob.length; i++) {
+                            if (newMob[i] != null && newMob[i].getId() == mUp.getId()) {
+                                newMob[i] = mUp;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            for (int i = 0; i < newMob.length; i++) {
+                                if (newMob[i] == null) {
+                                    newMob[i] = mUp;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (addNew) {
+                    for (int i = 0; i < newMob.length; i++) {
+                        if (newMob[i] != null) {
+                            System.out.println("Adding Mob with ID: " + newMob[i].getId());
+                            Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", g.place, true, newMob[i].getId());
+                            mob.upDepth();
+                            g.place.addObj(mob);
+                            newMob[i] = null;
+                        }
                     }
                 }
             }

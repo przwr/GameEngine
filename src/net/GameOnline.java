@@ -8,6 +8,7 @@ package net;
 import net.packets.NewMPlayer;
 import game.Game;
 import game.gameobject.Player;
+import java.util.ArrayList;
 import net.packets.MPlayerUpdate;
 import net.packets.MobUpdate;
 import net.packets.PacketMPlayerUpdate;
@@ -19,13 +20,16 @@ import net.packets.PacketUpdate;
  */
 public abstract class GameOnline {
 
-    public PastPosition[] past = new PastPosition[256];
+    public PastPosition[] past = new PastPosition[2048];
     protected final change[] changes;
     protected final boolean[] isChanged;
     protected final NewMPlayer newPls[];
     protected final byte removeIDs[];
     protected final MPlayerUpdate[] plUps;
     protected MobUpdate[] newMob;
+    protected ArrayList<MobUpdate> mUps1;
+    protected ArrayList<MobUpdate> mUps2;
+    protected boolean isMUps1;
     public int pastNr;
     public final Game g;
     public GameServer server;
@@ -39,7 +43,7 @@ public abstract class GameOnline {
         removeIDs = new byte[players];
         plUps = new MPlayerUpdate[players];
         newMob = new MobUpdate[1024];
-        for (int i = 0; i < 256; i += 8) {
+        for (int i = 0; i < past.length; i += 8) {
             past[i] = new PastPosition();
             past[i + 1] = new PastPosition();
             past[i + 2] = new PastPosition();

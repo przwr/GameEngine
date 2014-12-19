@@ -31,15 +31,14 @@ public abstract class Mob extends Entity {
     public short id;
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid) {
-        float SCALE = place.settings.SCALE;
-        this.width = Methods.RoundHU(SCALE * width);
-        this.height = Methods.RoundHU(SCALE * height);
+        scale = place.settings.SCALE;
+        this.width = Methods.RoundHU(scale * width);
+        this.height = Methods.RoundHU(scale * height);
         this.solid = solid;
-        this.startX = Methods.RoundHU(SCALE * startX);
-        this.startY = Methods.RoundHU(SCALE * startY);
-        this.range = Methods.RoundHU(SCALE * range);
-        scale = SCALE;
-        init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
+        this.startX = Methods.RoundHU(scale * startX);
+        this.startY = Methods.RoundHU(scale * startY);
+        this.range = Methods.RoundHU(scale * range);
+        init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
         this.sprite = place.getSprite("rabbit");
         setCollision(new Rectangle(this.width, this.height / 4, true, false, 0, this));
         this.setMaxSpeed(speed);
@@ -89,7 +88,7 @@ public abstract class Mob extends Entity {
 
     @Override
     public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, cam.getXOff() + getX(), cam.getYOff() + getY() - (sprite.getSy() - 15),
+        place.renderMessage(0, cam.getXOff() + getX(), cam.getYOff() + getY() + sprite.getSy() + collision.getHeight() / 2,
                 name, new Color(place.r, place.g, place.b));
     }
 

@@ -119,20 +119,28 @@ public abstract class GameObject {
         this.y = y;
     }
 
-    public int getBegOfX() {
-        return (int) x - collision.getWidth() / 2;
-    }
-
-    public int getBegOfY() {
-        return (int) y - collision.getHeight() / 2;
-    }
-
     public int getEndOfX() {
         return (int) x + collision.getWidth() / 2;
     }
 
     public int getEndOfY() {
         return (int) y + collision.getHeight() / 2;
+    }
+
+    public int getObjBegOfX() {
+        return (int) x + sprite.getSx() + startX;
+    }
+
+    public int getObjBegOfY() {
+        return (int) y + sprite.getSy() + startY;
+    }
+
+    public int getObjEndOfX() {
+        return (int) x + sprite.getSx() + startX + width;
+    }
+
+    public int getObjEndOfY() {
+        return (int) y + sprite.getSy() + startY + height;
     }
 
     public int getObjectBegY() {

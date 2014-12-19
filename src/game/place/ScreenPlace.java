@@ -21,7 +21,7 @@ public abstract class ScreenPlace {
     public final Settings settings;
     public final int width, height;
     public float r, g, b;
-    protected FontsHandler fonts;
+    public FontsHandler fonts;
     public GameObject[] players;
 
     public ScreenPlace(Game game, int width, int height, Settings settings) {

@@ -19,11 +19,10 @@ public class Launcher {
         } catch (Exception ex) {
             Methods.Exception(ex);
             cleanUp();
-            System.exit(0);
+        }
+        if (!Main.gameStop) {
+            cleanUp();
         }
         cleanUp();
-        if (!Main.gameStop) {
-            System.exit(0);
-        }
     }
 }

@@ -152,38 +152,6 @@ public abstract class Entity extends GameObject {
         }
     }
 
-//    public void updateSoft() {  // nie przesuwa graczy
-//        int deltX = 0, deltY = 0, pX, pY;
-//        if (isFirst) {
-//            if (up1 != null && dCount < up1.delsX().size()) {
-//                if (dCount >= 0) {
-//                    deltX = up1.delsX().get(dCount);
-//                    deltY = up1.delsY().get(dCount);
-//                }
-//                pX = up1.getX();
-//                pY = up1.getY();
-//                //System.out.println("1: " + pX + " " + deltX);
-//                canMove(Methods.RoundHU((pX - deltX) * scale) - getX(), Methods.RoundHU((pY - deltY) * scale) - getY());
-//                dCount++;
-//                return;
-//            }
-//            //  System.out.println("Lipa");
-//        } else {
-//            if (up2 != null && dCount < up2.delsX().size()) {
-//                if (dCount >= 0) {
-//                    deltX = up2.delsX().get(dCount);
-//                    deltY = up2.delsY().get(dCount);
-//                }
-//                pX = up2.getX();
-//                pY = up2.getY();
-//                // System.out.println("2: " + pX + " " + deltX);
-//                canMove(Methods.RoundHU((pX - deltX) * scale) - getX(), Methods.RoundHU((pY - deltY) * scale) - getY());
-//                dCount++;
-//                return;
-//            }
-//            // System.out.println("Lipa2");
-//        }
-//    }
     public abstract void updateOnline();
 
     public abstract void updateRest(Update up);

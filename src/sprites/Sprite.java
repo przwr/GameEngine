@@ -306,11 +306,11 @@ public class Sprite {
     }
 
     public int getSx() {
-        return width;
+        return sx;
     }
 
     public int getSy() {
-        return height;
+        return sy;
     }
 
     public void setSx(int sx) {
