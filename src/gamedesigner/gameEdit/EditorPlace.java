@@ -5,7 +5,7 @@
  */
 package gamedesigner.gameEdit;
 
-import mygame.MyPlayer;
+import MyGame.MyPlayer;
 import collision.Area;
 import collision.Line;
 import game.gameobject.Mob;
