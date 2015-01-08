@@ -8,6 +8,7 @@ package game.place.cameras;
 import engine.Delay;
 import engine.Methods;
 import game.gameobject.GameObject;
+import game.place.Map;
 import game.place.Place;
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public abstract class Camera {
 
     protected final ArrayList<GameObject> gos = new ArrayList<>();
     protected Place place;
+    public Map map;
     protected int Dwidth;
     protected int Dheight;
     protected int XMid, YMid;
@@ -41,8 +43,8 @@ public abstract class Camera {
     }
 
     public synchronized void update() {
-        xOffset = Methods.Interval(-place.width + 2 * Dwidth, Dwidth - getMidX(), 0);
-        yOffset = Methods.Interval(-place.height + 2 * Dheight, Dheight - getMidY(), 0);
+        xOffset = Methods.Interval(-map.width + 2 * Dwidth, Dwidth - getMidX(), 0);
+        yOffset = Methods.Interval(-map.height + 2 * Dheight, Dheight - getMidY(), 0);
     }
 
     public synchronized void shake() {
@@ -90,6 +92,14 @@ public abstract class Camera {
 
     public int getDelay() {
         return delaylenght;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
     }
 
     public void setShakeAmp(int shakeAmp) {

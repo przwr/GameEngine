@@ -34,20 +34,20 @@ public class PuzzleObject {
         }
     }
     
-    public void placePuzzle(int x, int y, Place p) {
+    public void placePuzzle(int x, int y, Map m) {
         int ix;
         int iy;
-        int col = p.height / p.sTile;
+        int col = m.height / m.sTile;
         for (int i = 0; i < bgTiles.length; i++) {
             ix = tilePlace[i].getX() + x;
             iy = tilePlace[i].getY() + y;
-            p.tiles[ix + iy * col] = bgTiles[i];
+            m.tiles[ix + iy * col] = bgTiles[i];
         }
         for (GameObject object : objects) {
-            p.addObj(object);
+            m.addObj(object);
         }
         for (FGTile tile : fgTiles) {
-            p.addFGTile(tile);
+            m.addFGTile(tile);
         }
     }
 }

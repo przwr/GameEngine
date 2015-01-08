@@ -47,7 +47,6 @@ public class PlayersCamera extends Camera {
         gos.add(go2);
         Dwidth = Display.getWidth() / 2;
         Dheight = Display.getHeight() / 2;
-        update();
     }
 
     public PlayersCamera(Place place, GameObject go, GameObject go2, GameObject go3) {
@@ -56,7 +55,6 @@ public class PlayersCamera extends Camera {
         gos.add(go3);
         Dwidth = Display.getWidth() / 2;
         Dheight = Display.getHeight() / 2;
-        update();
     }
 
     public PlayersCamera(Place place, GameObject go, GameObject go2, GameObject go3, GameObject go4) {
@@ -66,7 +64,6 @@ public class PlayersCamera extends Camera {
         gos.add(go4);
         Dwidth = Display.getWidth() / 2;
         Dheight = Display.getHeight() / 2;
-        update();
     }
 
     private void init(int ssX, int ssY) {
@@ -76,7 +73,6 @@ public class PlayersCamera extends Camera {
         }
         Dwidth = Display.getWidth() / ssX;
         Dheight = Display.getHeight() / ssY;
-        update();
     }
 
     public void reInit(int ssX, int ssY) {
@@ -86,7 +82,6 @@ public class PlayersCamera extends Camera {
         }
         Dwidth = Display.getWidth() / ssX;
         Dheight = Display.getHeight() / ssY;
-        update();
     }
 
     private void initsRest(final Place place, final int num) {

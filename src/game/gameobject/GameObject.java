@@ -11,6 +11,7 @@ package game.gameobject;
  */
 import collision.Figure;
 import game.place.Light;
+import game.place.Map;
 import game.place.Place;
 import java.util.Objects;
 import sprites.Sprite;
@@ -32,6 +33,7 @@ public abstract class GameObject {
     protected Light light;
     protected String name;
     protected Place place;
+    protected Map map;
     protected Figure collision;
     protected int depth;
 
@@ -96,6 +98,21 @@ public abstract class GameObject {
         collision = f;
     }
 
+    public Map getMap() {
+        return map;
+    }
+    
+    public void setMap(Map otherMap) {  //UWAGA! nie zmienia planszy! tylko ustawia
+        map = otherMap;
+    }
+    
+    public void changeMap(Map otherMap) {
+        if (map != null)
+            map.deleteObj(this);
+        otherMap.addObj(this);
+        map = otherMap;
+    }
+    
     protected void init(String name, int x, int y, int sx, int sy, Place place) {
         this.x = x;
         this.y = y;
@@ -252,6 +269,10 @@ public abstract class GameObject {
     public Place getPlace() {
         return place;
     }
+    
+    public void setPlace(Place p) {
+        place = p;
+    }
 
     public void setX(double x) {
         this.x = x;
@@ -259,9 +280,5 @@ public abstract class GameObject {
 
     public void setY(double y) {
         this.y = y;
-    }
-
-    public void upDepth() {
-        this.depth = (int) y;
     }
 }

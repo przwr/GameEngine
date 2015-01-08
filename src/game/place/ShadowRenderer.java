@@ -58,9 +58,9 @@ public class ShadowRenderer {
     private static boolean isChecked;
     private static final Polygon poly = new Polygon();
 
-    public static void preRendLight(Place place, int l) {
-        emitter = place.visibleLights[l];
-        findShades(emitter, place);
+    public static void preRendLight(Map m, int l) {
+        emitter = m.visibleLights[l];
+        findShades(emitter, m);
         emitter.getLight().fbo.activate();
         clearFBO(1);
         glDisable(GL_TEXTURE_2D);
@@ -153,11 +153,11 @@ public class ShadowRenderer {
         }
     }
 
-    private static void findShades(GameObject src, Place place) {
+    private static void findShades(GameObject src, Map m) {
         // Powinno sortować według wysoskości - najpierw te, które są najwyżej na planszy, a później coraz niższe,
         // obiekty tej samej wysokości powinny być renderowane w kolejności od najdalszych od źródła, do najbliższych.
         nrShades = 0;
-        for (Area a : place.areas) { //iteracja po Shades - tych co dają cień
+        for (Area a : m.areas) { //iteracja po Shades - tych co dają cień
             if (!a.isBorder()) {
                 if (a.isWhole) {
                     tmp = a.getCollision();
@@ -184,12 +184,14 @@ public class ShadowRenderer {
                 }
             }
         }
-        for (GameObject go : place.depthObj) {   // FGTiles muszą mieć Collision
+        for (GameObject go : m.depthObj) {   // FGTiles muszą mieć Collision
             tmp = go.getCollision();
-            if ((FastMath.abs(tmp.own().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.own().getHeight() >> 1))
-                    && (FastMath.abs(tmp.own().getX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.own().getWidth() >> 1))) {
-                shades[nrShades++] = tmp;
-                tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getCentralX()));
+            if (tmp != null) {
+                if ((FastMath.abs(tmp.own().getY() - src.getY()) <= (src.getLight().getSY() >> 1) + (tmp.own().getHeight() >> 1))
+                        && (FastMath.abs(tmp.own().getX() - src.getX()) <= (src.getLight().getSX() >> 1) + (tmp.own().getWidth() >> 1))) {
+                    shades[nrShades++] = tmp;
+                    tmp.setDistFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getCentralX()));
+                }
             }
         }
         Arrays.sort(shades, 0, nrShades);

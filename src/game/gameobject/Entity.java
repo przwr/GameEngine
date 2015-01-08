@@ -54,7 +54,6 @@ public abstract class Entity extends GameObject {
                 } else {
                     move(0, yd);
                     ypos -= yd;
-                    depth = (int) y;
                 }
             }
         }
@@ -84,7 +83,6 @@ public abstract class Entity extends GameObject {
             if (ypos != 0) {
                 colided = getCollided(0, yd);
                 move(0, yd);
-                depth = (int) y;
                 ypos -= yd;
                 if (colided != null) {
                     colided.setToLastNotCollided();
@@ -124,11 +122,10 @@ public abstract class Entity extends GameObject {
                 up = ups[curUp];
                 final int x = Methods.RoundHU((up.getX() - up.delsX().get(dCount)) * scale);
                 final int y = Methods.RoundHU((up.getY() - up.delsY().get(dCount)) * scale);
-                if (collision.ifCollideSolid(x, y, place)) {
+                if (collision.ifCollideSolid(x, y, map)) {
                     canMove(x - getX(), y - getY());
                 } else {
                     setPosition(x, y);
-                    upDepth();
                 }
                 dCount++;
             } else {
@@ -141,11 +138,10 @@ public abstract class Entity extends GameObject {
                 updateRest(up);
                 final int x = Methods.RoundHU(up.getX() * scale);
                 final int y = Methods.RoundHU(up.getY() * scale);
-                if (collision.ifCollideSolid(x, y, place)) {
+                if (collision.ifCollideSolid(x, y, map)) {
                     canMove(x - getX(), y - getY());
                 } else {
                     setPosition(x, y);
-                    upDepth();
                 }
                 dCount = 0;
             }

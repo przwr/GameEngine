@@ -44,7 +44,7 @@ public class EditorPlace extends Place {
         border.addFigure(new Line(0, 0, 0, height, border));
         border.addFigure(new Line(width, 0, 0, height, border));
         border.addFigure(new Line(0, height, width, 0, border));
-        areas.add(border);
+        //areas.add(border);
         this.r = 1f;
         this.g = 1f;
         this.b = 1f;
@@ -67,16 +67,16 @@ public class EditorPlace extends Place {
                 ((MyPlayer) players[p]).renderName(this, cam);
             }
         }
-        for (Mob mob : sMobs) {
+        /*for (Mob mob : sMobs) {
             if (cam.getSY() <= mob.getY() + (mob.getHeight() << 2) && cam.getEY() >= mob.getY() - (mob.getHeight() << 2)
                     && cam.getSX() <= mob.getX() + (mob.getWidth() << 2) && cam.getEX() >= mob.getX() - (mob.getWidth() << 2)) {
                 mob.renderName(this, cam);
             }
-        }
+        }*/
     }
 
     private void initMethods() {
-        ups[0] = new update() {
+        /*ups[0] = new update() {
             @Override
             public void update() {
                 ((Player) players[0]).update(place);
@@ -96,7 +96,7 @@ public class EditorPlace extends Place {
                     mob.update(place);
                 }
             }
-        };
+        };*/
     }
 
     @Override

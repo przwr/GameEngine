@@ -16,6 +16,7 @@ import engine.Drawer;
 import engine.Methods;
 import engine.Time;
 import game.gameobject.inputs.InputKeyBoard;
+import game.place.WarpPoint;
 import net.jodk.lang.FastMath;
 import net.packets.MPlayerUpdate;
 import net.packets.Update;
@@ -54,7 +55,7 @@ public class MyPlayer extends Player {
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
-        place.addObj(this);
+        //place.addObj(this);
         setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
 
@@ -74,7 +75,7 @@ public class MyPlayer extends Player {
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
-        place.addObj(this);
+        //place.addObj(this);
         setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
 
@@ -93,7 +94,7 @@ public class MyPlayer extends Player {
     @Override
     protected boolean isColided(int magX, int magY) {
         if (place != null) {
-            return collision.ifCollideSolid(getX() + magX, getY() + magY, place);
+            return collision.ifCollideSolid(getX() + magX, getY() + magY, map);
         }
         return false;
     }
@@ -190,6 +191,13 @@ public class MyPlayer extends Player {
         hs = (int) (hspeed + myHspeed);
         vs = (int) (vspeed + myVspeed);
         canMove(hs, vs);
+        for (WarpPoint w : map.warps) {
+            if (w.getCollision() != null) {
+                if (w.getCollision().ifCollideSngl(w.getX(), w.getY(), collision)) {
+                    w.Warp(this);
+                }
+            }
+        }
         brakeOthers();
     }
 

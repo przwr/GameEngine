@@ -12,6 +12,8 @@ import game.IO;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
+import game.place.Map;
+import game.place.cameras.Camera;
 import game.place.cameras.PlayersCamera;
 import java.io.File;
 import org.lwjgl.input.Controller;
@@ -223,12 +225,20 @@ public class MyGame extends Game {
         place.makeShadows();
         mode = 0;
         started = runFlag = true;
+        for (int p = 0; p < nrPl; p++) {
+            Map m = place.maps.get(0);
+            players[p].changeMap(m);
+            Camera cam = (((Player) players[p]).getCam());
+            cam.map = m;
+            cam.update();
+        }
     }
 
     private void addPlayerOffline(int p) {
         if (p < 4 && place.playersLength < 4) {
             players[p].init(4, 4, 56, 56, place, p * 256, p * 265);
             ((Player) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
+            players[p].changeMap(players[0].getMap());
             if (p != place.playersLength) {
                 Player tempG = players[place.playersLength];
                 GameObject tempP = place.players[place.playersLength];
@@ -246,7 +256,7 @@ public class MyGame extends Game {
     private void removePlayerOffline(int p) {
         if (place.playersLength > 1 && !players[p].isFirst) {
             ((Player) place.players[p]).setPlaceToNull();
-            place.deleteObj(place.players[p]);
+            place.players[p].getMap().deleteObj(place.players[p]);
             if (p != place.playersLength - 1) {
                 Player tempG = players[place.playersLength - 1];
                 GameObject tempP = place.players[place.playersLength - 1];

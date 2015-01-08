@@ -21,6 +21,7 @@ import game.gameobject.Entity;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.FGTile;
+import game.place.Map;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 
@@ -49,124 +50,21 @@ public class MyPlace extends Place {
     }
 
     private void generate(boolean isHost) {
-        //sounds.init("res", settings);
-        Area a = new Area(13 * sTile, 13 * sTile, sTile);
-        for (int y = 0; y < height / sTile; y++) {
-            for (int x = 0; x < width / sTile; x++) {
-//                if ((x * y) < 600) {
-                tiles[x + y * height / sTile] = GRASS;
-//                } else {
-//                    if (tiles[x - 1 + y * height / sTile] == GRASS || tiles[x + (y - 1) * height / sTile] == GRASS) {
-//                        a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, true, 0, a));
-//                    }
-//                    tiles[x + y * height / sTile] = ROCK;
-//                }
-            }
-        }
-        Area testa = new Area(6 * sTile, 5 * sTile, sTile, false, true);
-        Area testb = new Area(8 * sTile, 5 * sTile, sTile, false, true);
-        Area testc = new Area(7 * sTile, 7 * sTile, sTile, false, true);
-        Area testd = new Area(9 * sTile, 7 * sTile, sTile, false, true);
-        Area teste = new Area(11 * sTile, 7 * sTile, sTile, false, true);
-        Area testf = new Area(5 * sTile, 9 * sTile, sTile, false, true);
-        Area testg = new Area(9 * sTile, 11 * sTile, sTile, false, true);
-
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
-        addFGTile(fgt, 6 * sTile, 5 * sTile, 0, true);
-        testa.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-        addFGTile(fgt, 6 * sTile, 4 * sTile, 2 * sTile, true);
-        testa.addPiece(fgt);
-
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
-        addFGTile(fgt, 8 * sTile, 5 * sTile, 0, true);
-        testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-        addFGTile(fgt, 8 * sTile, 4 * sTile, 2 * sTile, true);
-        testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
-        addFGTile(fgt, 9 * sTile, 5 * sTile, 0, true);
-        testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-        addFGTile(fgt, 9 * sTile, 4 * sTile, 2 * sTile, true);
-        testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
-        addFGTile(fgt, 10 * sTile, 5 * sTile, 0, true);
-        testb.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-        addFGTile(fgt, 10 * sTile, 4 * sTile, 2 * sTile, true);
-        testb.addPiece(fgt);
-
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
-        addFGTile(fgt, 7 * sTile, 7 * sTile, 0, true);
-        testc.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-        addFGTile(fgt, 7 * sTile, 6 * sTile, 2 * sTile, true);
-        testc.addPiece(fgt);
-
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, -sTile, this);
-        addFGTile(fgt, 9 * sTile, 8 * sTile, 0, true);
-        testd.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, 0, 0, this);
-        fgt.setSolid(true);
-        addFGTile(fgt, 9 * sTile, 7 * sTile, 2 * sTile, true);
-        testd.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-        addFGTile(fgt, 9 * sTile, 6 * sTile, 4 * sTile, true);
-        testd.addPiece(fgt);
-
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
-        addFGTile(fgt, 11 * sTile, 7 * sTile, 0, true);
-        teste.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-        addFGTile(fgt, 11 * sTile, 6 * sTile, 2 * sTile, true);
-        teste.addPiece(fgt);
-
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, sTile, this);
-        addFGTile(fgt, 5 * sTile, 9 * sTile, 0, true);
-        testf.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, sTile, 0, this);
-        fgt.setSolid(false);
-        addFGTile(fgt, 5 * sTile, 8 * sTile, 2 * sTile, true);
-        testf.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, 2 * sTile, 0, this);
-        addFGTile(fgt, 5 * sTile, 7 * sTile, 4 * sTile, true);
-        testf.addPiece(fgt);
-
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 7, 2, true, 0, 0, this);
-        addFGTile(fgt, 9 * sTile, 11 * sTile, 0, true);
-        testg.addPiece(fgt);
-        fgt = new FGTile(getSpriteSheet("tlo"), sTile, 1, 1, false, sTile, 0, this);
-        addFGTile(fgt, 9 * sTile, 10 * sTile, 2 * sTile, true);
-        testg.addPiece(fgt);
-
-        Area border = new Area(0, 0, sTile, true, false);
-        border.addFigure(new Line(-1, -1, width, 0, border));
-        border.addFigure(new Line(-1, -1, 0, height, border));
-        border.addFigure(new Line(width, -1, 0, height, border));
-        border.addFigure(new Line(-1, height, width, 0, border));
-
-        areas.add(a);
-        areas.add(testa);
-        areas.add(testb);
-        areas.add(testc);
-        areas.add(testd);
-        areas.add(teste);
-        areas.add(testf);
-        areas.add(testg);
-        areas.add(border);
+        PolanaMap p = new PolanaMap(this, width, height, sTile);
+        KamiennaMap k = new KamiennaMap(this, width, height, sTile);
         if (isHost) {
             for (int i = 0; i < 1000; i++) {
-                addObj(new MyMob(192 + 192 * (i % 50), 1440 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+                p.addObj(new MyMob(192 + 192 * (i % 50), 1440 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
             }
-//            addObj(new MyMob(1280, 1024, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
-//            addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
         }
+        maps.add(p);
+        maps.add(k);
+        //sounds.init("res", settings);
         this.r = 0.75f;
         this.g = 0.75f;
         this.b = 0.75f;
         fonts = new FontsHandler(20);
-        fonts.add("Amble-Regular", Methods.RoundHU(scale() * 24));
+        fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);
         initMethods();
     }
@@ -178,18 +76,18 @@ public class MyPlace extends Place {
 
     @Override
     protected void renderText(Camera cam) {
-        for (int p = 0; p < playersLength; p++) {
-            if (cam.getSY() <= players[p].getY() + (players[p].Height() + fonts.write(0).getHeight()) && cam.getEY() >= players[p].getY() - (players[p].Height() << 2)
-                    && cam.getSX() <= players[p].getX() + (fonts.write(0).getWidth(players[p].getName())) && cam.getEX() >= players[p].getX() - (fonts.write(0).getWidth(players[p].getName()))) {
-                ((MyPlayer) players[p]).renderName(this, cam);
-            }
-        }
-        for (Mob mob : sMobs) {
-            if (cam.getSY() <= mob.getY() + (mob.Height() + fonts.write(0).getHeight()) && cam.getEY() >= mob.getY() - (mob.Height() << 2)
-                    && cam.getSX() <= mob.getX() + (fonts.write(0).getWidth(mob.getName())) && cam.getEX() >= mob.getX() - (fonts.write(0).getWidth(mob.getName()))) {
-                mob.renderName(this, cam);
-            }
-        }
+        /*       for (int p = 0; p < playersLength; p++) {
+         if (cam.getSY() <= players[p].getY() + (players[p].Height() + fonts.write(0).getHeight()) && cam.getEY() >= players[p].getY() - (players[p].Height() << 2)
+         && cam.getSX() <= players[p].getX() + (fonts.write(0).getWidth(players[p].getName())) && cam.getEX() >= players[p].getX() - (fonts.write(0).getWidth(players[p].getName()))) {
+         ((MyPlayer) players[p]).renderName(this, cam);
+         }
+         }
+         for (Mob mob : sMobs) {
+         if (cam.getSY() <= mob.getY() + (mob.Height() + fonts.write(0).getHeight()) && cam.getEY() >= mob.getY() - (mob.Height() << 2)
+         && cam.getSX() <= mob.getX() + (fonts.write(0).getWidth(mob.getName())) && cam.getEX() >= mob.getX() - (fonts.write(0).getWidth(mob.getName()))) {
+         mob.renderName(this, cam);
+         }
+         }*/
     }
 
     private void initMethods() {
@@ -238,33 +136,37 @@ public class MyPlace extends Place {
                     if (changeSplitScreenMode.isOn()) {
                         changeSSMode = true;
                     }
-                    cams[playersLength - 2].update();
+                    if (cams[playersLength - 2].map != null) {
+                        cams[playersLength - 2].update();
+                    }
                 }
                 for (int i = 0; i < playersLength; i++) {
                     ((Player) players[i]).update(place);
                 }
-                for (Mob mob : sMobs) {
-                    mob.update(game.place);
+                for (Map m : maps) {
+                    for (Mob mob : m.sMobs) {
+                        mob.update(game.place);
+                    }
                 }
             }
         };
         ups[1] = new update() {
             @Override
             public void update() {
-                if (game.online.server != null) {
-                    for (Mob mob : sMobs) {
-                        mob.update(place);
-                    }
-                } else if (game.online.client != null) {
-                    for (Mob mob : sMobs) {
-                        mob.updateHard();
-                    }
-                }
-                ((Player) players[0]).sendUpdate(place);
-                for (int i = 1; i < playersLength; i++) {
-                    ((Entity) players[i]).updateSoft();
-                    ((Entity) players[i]).updateOnline();
-                }
+                /*if (game.online.server != null) {
+                 for (Mob mob : sMobs) {
+                 mob.update(place);
+                 }
+                 } else if (game.online.client != null) {
+                 for (Mob mob : sMobs) {
+                 mob.updateHard();
+                 }
+                 }
+                 ((Player) players[0]).sendUpdate(place);
+                 for (int i = 1; i < playersLength; i++) {
+                 ((Entity) players[i]).updateSoft();
+                 ((Entity) players[i]).updateOnline();
+                 }*/
             }
         };
     }

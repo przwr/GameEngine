@@ -9,6 +9,7 @@ import game.place.Shadow;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
+import game.place.Map;
 import game.place.Place;
 import java.util.ArrayList;
 import net.jodk.lang.FastMath;
@@ -43,18 +44,18 @@ public abstract class Figure implements Comparable<Object> {
         shadows = new ArrayList<>();
     }
 
-    public boolean ifCollideSolid(int x, int y, Place p) {
-        for (GameObject obj : p.sMobs) {
+    public boolean ifCollideSolid(int x, int y, Map m) {
+        for (GameObject obj : m.sMobs) {
             if (checkCollison(x, y, obj)) {
                 return true;
             }
         }
-        for (GameObject obj : p.solidObj) {
+        for (GameObject obj : m.solidObj) {
             if (checkCollison(x, y, obj)) {
                 return true;
             }
         }
-        for (Area obj : p.areas) {
+        for (Area obj : m.areas) {
             if (obj.isSolid() && obj.ifCollide(x, y, this)) {
                 return true;
             }
@@ -62,18 +63,18 @@ public abstract class Figure implements Comparable<Object> {
         return false;
     }
 
-    public GameObject whatCollideSolid(int x, int y, Place p) {
-        for (GameObject obj : p.sMobs) {
+    public GameObject whatCollideSolid(int x, int y, Map m) {
+        for (GameObject obj : m.sMobs) {
             if (checkCollison(x, y, obj)) {
                 return obj;
             }
         }
-        for (GameObject obj : p.solidObj) {
+        for (GameObject obj : m.solidObj) {
             if (checkCollison(x, y, obj)) {
                 return obj;
             }
         }
-        for (Area obj : p.areas) {
+        for (Area obj : m.areas) {
             if (obj.isSolid() && obj.ifCollide(x, y, this)) {
                 return obj;
             }

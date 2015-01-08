@@ -50,7 +50,7 @@ public class EditPlayer extends Player {
         animate = true;
         emits = false;
         scale = SCALE;
-        place.addObj(this);
+        //place.addObj(this);
         setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
 
@@ -61,7 +61,7 @@ public class EditPlayer extends Player {
     @Override
     protected boolean isColided(int magX, int magY) {
         if (place != null) {
-            return collision.ifCollideSolid(getX() + magX, getY() + magY, place);
+            return collision.ifCollideSolid(getX() + magX, getY() + magY, map);
         }
         return false;
     }

@@ -182,9 +182,9 @@ public class GameServer {
             MPlayers[0].update(x, y, SCALE);
             for (int i = 1; i < nrPlayers; i++) {
                 tmp = MPlayers[i];
-                for (Mob mob : game.g.getPlace().sMobs) {
+                /*for (Mob mob : game.g.getPlace().sMobs) {
                     tmp.getPU().MobUpdate(mob.id, mob.getX(), mob.getY(), SCALE);
-                }
+                }*/
                 tmp.getPU().playerUpdate(MPlayers[0], isEmits, isHop);
             }
             if (delay.isOver()) {

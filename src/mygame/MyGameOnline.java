@@ -146,7 +146,6 @@ public class MyGameOnline extends GameOnline {
                         g.players[g.place.playersLength].init(4, 4, 56, 56, g.place, temp.getX(), temp.getY());
                         g.players[g.place.playersLength].id = temp.getId();
                         g.players[g.place.playersLength].setName(temp.getName());
-                        g.players[g.place.playersLength].upDepth();
                         g.place.players[g.place.playersLength] = g.players[g.place.playersLength];
                         if (server != null) {
                             server.findPlayer(temp.getId()).setPlayer(g.players[g.place.playersLength]);
@@ -164,7 +163,7 @@ public class MyGameOnline extends GameOnline {
                     for (int p = 1; p < g.place.playersLength; p++) {
                         if (g.players[p].id == removeIDs[i]) {
                             ((Player) g.place.players[p]).setPlaceToNull();
-                            g.place.deleteObj(g.place.players[p]);
+                            g.place.players[p].getMap().deleteObj(g.place.players[p]);
                             if (p != g.place.playersLength - 1) {
                                 Player tempG = g.players[g.place.playersLength - 1];
                                 GameObject tempP = g.place.players[g.place.playersLength - 1];
@@ -194,7 +193,7 @@ public class MyGameOnline extends GameOnline {
                 for (MobUpdate mUp : mobs) {
                     found = false;
                     Mob mob;
-                    for (Iterator<Mob> it = g.place.sMobs.iterator(); it.hasNext();) {
+                    /*for (Iterator<Mob> it = g.place.sMobs.iterator(); it.hasNext();) {
                         mob = it.next();
                         if (mUp.getId() == mob.id) {
                             mob.ups[mob.lastAdded] = mUp;
@@ -206,7 +205,7 @@ public class MyGameOnline extends GameOnline {
                             found = true;
                             break;
                         }
-                    }
+                    }*/
                     if (!found) {
                         addNew = true;
                         for (int i = 0; i < newMob.length; i++) {
@@ -231,8 +230,7 @@ public class MyGameOnline extends GameOnline {
                         if (newMob[i] != null) {
                             System.out.println("Adding Mob with ID: " + newMob[i].getId());
                             Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", g.place, true, newMob[i].getId());
-                            mob.upDepth();
-                            g.place.addObj(mob);
+                            /*g.place.addObj(mob); ----- <('o'<) TUUUUUUU*/
                             newMob[i] = null;
                         }
                     }

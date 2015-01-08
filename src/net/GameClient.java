@@ -79,7 +79,6 @@ public class GameClient {
                             pl.id = ((PacketJoinResponse) obj).getId();
                             pl.setX(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getX()));
                             pl.setY(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getY()));
-                            pl.upDepth();
                             mpup = new PacketMPlayerUpdate(pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
                         } else {

@@ -6,6 +6,7 @@
 package game.gameobject;
 
 import engine.Animation;
+import game.place.Map;
 import game.place.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
@@ -61,6 +62,12 @@ public abstract class Player extends Entity {
         return cam;
     }
 
+    @Override
+    public void changeMap(Map othermap) {
+        super.changeMap(othermap);
+        cam.map = othermap;
+    }
+    
     public void addMenu(Menu menu) {
         this.menu = menu;
     }
@@ -84,29 +91,27 @@ public abstract class Player extends Entity {
 
     public void setToLastNotCollided() {
         for (int i = online.pastNr - 1; i >= 0; i--) {
-            if (!collision.ifCollideSolid(online.past[i].x, online.past[i].y, place)) {
-                if (!collision.ifCollideSolid(online.past[i].x, getY(), place)) {
+            if (!collision.ifCollideSolid(online.past[i].x, online.past[i].y, map)) {
+                if (!collision.ifCollideSolid(online.past[i].x, getY(), map)) {
                     setPosition(online.past[i].x, getY());
-                } else if (!collision.ifCollideSolid(getX(), online.past[i].y, place)) {
+                } else if (!collision.ifCollideSolid(getX(), online.past[i].y, map)) {
                     setPosition(getX(), online.past[i].y);
                 } else {
                     setPosition(online.past[i].x, online.past[i].y);
                 }
-                upDepth();
                 cam.update();
                 return;
             }
         }
         for (int i = online.past.length - 1; i >= online.pastNr; i--) {
-            if (!collision.ifCollideSolid(online.past[i].x, online.past[i].y, place)) {
-                if (!collision.ifCollideSolid(online.past[i].x, getY(), place)) {
+            if (!collision.ifCollideSolid(online.past[i].x, online.past[i].y, map)) {
+                if (!collision.ifCollideSolid(online.past[i].x, getY(), map)) {
                     setPosition(online.past[i].x, getY());
-                } else if (!collision.ifCollideSolid(getX(), online.past[i].y, place)) {
+                } else if (!collision.ifCollideSolid(getX(), online.past[i].y, map)) {
                     setPosition(getX(), online.past[i].y);
                 } else {
                     setPosition(online.past[i].x, online.past[i].y);
                 }
-                upDepth();
                 cam.update();
                 return;
             }
