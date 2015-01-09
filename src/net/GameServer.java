@@ -49,7 +49,7 @@ public class GameServer {
         delay.terminate();
         Server temp = null;
         try {
-            temp = new Server(98304, 8192);
+            temp = new Server(99999999, 99999999);
         } catch (Exception e) {
             cleanUp(e);
         }

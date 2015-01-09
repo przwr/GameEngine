@@ -43,7 +43,7 @@ public class MyPlace extends Place {
         PolanaMap p = new PolanaMap(mapId++, this, width, height, sTile);
         KamiennaMap k = new KamiennaMap(mapId++, this, width, height, sTile);
         if (isHost) {
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 10; i++) {
                 p.addObj(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, p.mobID++));
             }
         }

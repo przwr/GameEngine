@@ -50,12 +50,10 @@ public class MyGameOnline extends GameOnline {
         client = new GameClient(g.players[0], this, g.settings.serverIP);
         Delay delay = new Delay(2000);
         delay.restart();
-        while (!delay.isOver()) {
-            if (client.isConnected) {
-                g.runClient(client.tempMapId);
-                g.mode = 1;
-                return;
-            }
+        if (client.isConnected) {
+            g.runClient((short) 0);
+            g.mode = 1;
+            return;
         }
         client.Close();
         client = null;

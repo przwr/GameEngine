@@ -16,6 +16,7 @@ import engine.Delay;
 import engine.Methods;
 import game.gameobject.Player;
 import java.io.IOException;
+import java.util.ArrayList;
 import net.packets.PacketAddMPlayer;
 import net.packets.PacketMPlayerUpdate;
 import net.packets.PacketRemoveMPlayer;
@@ -38,7 +39,6 @@ public class GameClient {
     private Delay delay;
 
     public GameClient(final Player pl, final GameOnline game, String IP) {
-
         this.pl = pl;
         this.game = game;
         this.SCALE = game.g.settings.SCALE;
@@ -46,7 +46,7 @@ public class GameClient {
         delay.terminate();
         Client temp = null;
         try {
-            temp = new Client(32768, 65536);
+            temp = new Client(99999999, 99999999);
         } catch (Exception e) {
             cleanUp(e);
         }
@@ -81,7 +81,6 @@ public class GameClient {
                             pl.id = ((PacketJoinResponse) obj).getId();
                             pl.setX(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getX()));
                             pl.setY(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getY()));
-                            isConnected = true;
                             mpup = new PacketMPlayerUpdate(tempMapId, pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
                         } else {
@@ -114,6 +113,7 @@ public class GameClient {
                     }
                 }
             });
+            isConnected = true;
         } catch (Exception e) {
             cleanUp(e);
         }
