@@ -20,9 +20,9 @@ import game.place.WarpPoint;
  */
 public class KamiennaMap extends Map {
 
-    public KamiennaMap(Place place, int width, int height, int sTile) {
-        super("Kamienna", place, width, height, sTile);
-        
+    public KamiennaMap(short id, Place place, int width, int height, int sTile) {
+        super(id, "Kamienna", place, width, height, sTile);
+
         FGTile fgt;
         Tile GROUND = new Tile(place.getSpriteSheet("tlo"), sTile, 2, 12, place);
         Tile ROCK = new Tile(place.getSpriteSheet("tlo"), sTile, 1, 1, place);
@@ -31,7 +31,7 @@ public class KamiennaMap extends Map {
         for (int y = 0; y < height / sTile; y++) {
             for (int x = 0; x < width / sTile; x++) {
                 if ((x * y) < 600) {
-                tiles[x + y * height / sTile] = GROUND;
+                    tiles[x + y * height / sTile] = GROUND;
                 } else {
                     if (tiles[x - 1 + y * height / sTile] == GROUND || tiles[x + (y - 1) * height / sTile] == GROUND) {
                         a.addFigure(new Rectangle(x * sTile - 13 * sTile, y * sTile - 13 * sTile, sTile, sTile, false, true, 0, a));

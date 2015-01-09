@@ -34,6 +34,7 @@ public class GameClient {
     private final float SCALE;
     private Connection server;
     public boolean isConnected;
+    public short tempMapId = -1;
     private Delay delay;
 
     public GameClient(final Player pl, final GameOnline game, String IP) {
@@ -76,10 +77,12 @@ public class GameClient {
                     } else if (obj instanceof PacketJoinResponse) {
                         if (((PacketJoinResponse) obj).getId() != -1) {
                             server = connection;
+                            tempMapId = ((PacketJoinResponse) obj).getMapId();
                             pl.id = ((PacketJoinResponse) obj).getId();
                             pl.setX(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getX()));
                             pl.setY(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getY()));
-                            mpup = new PacketMPlayerUpdate(pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
+                            isConnected = true;
+                            mpup = new PacketMPlayerUpdate(tempMapId, pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
                         } else {
                             cleanUp("Server is Full!");
@@ -89,7 +92,7 @@ public class GameClient {
 
                 @Override
                 public void disconnected(Connection connection) {
-                    cleanUp("Disconnected!");
+                    cleanUp(game.g.settings.language.m.Disconnected);
                 }
             });
             try {
@@ -111,7 +114,6 @@ public class GameClient {
                     }
                 }
             });
-            isConnected = true;
         } catch (Exception e) {
             cleanUp(e);
         }
@@ -124,8 +126,8 @@ public class GameClient {
 //    public void sendPlayerUpdate(MPlayerUpdate update) {
 //        server.sendTCP(update);
 //    }
-    public void sendPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop) {
-        mpup.update(id, x, y, isEmits, isHop, SCALE);
+    public void sendPlayerUpdate(short mapId, byte id, int x, int y, boolean isEmits, boolean isHop) {
+        mpup.update(mapId, id, x, y, isEmits, isHop, SCALE);
         if (delay.isOver()) {
             server.sendTCP(mpup);
             mpup.reset();
@@ -133,9 +135,15 @@ public class GameClient {
         }
     }
 
-    public void Close() {
+    public synchronized void Close() {
         client.stop();
         client.close();
+    }
+
+    private void cleanUp() {
+        isConnected = false;
+        Close();
+        game.g.endGame();
     }
 
     private void cleanUp(Exception e) {

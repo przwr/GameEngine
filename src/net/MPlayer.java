@@ -16,6 +16,7 @@ import net.packets.PacketUpdate;
 public class MPlayer {
 
     private Connection conection;
+    private short mapId;
     private byte id;
     private String name;
     private int x, y;
@@ -25,12 +26,24 @@ public class MPlayer {
     public MPlayer() {
     }
 
-    public MPlayer(String text, byte id, Connection connection) {
-        this.name = text;
+    public MPlayer(short mapId, byte id, String name, Connection connection) {
+        this.mapId = mapId;
         this.id = id;
+        this.name = name;
         this.conection = connection;
         pu = new PacketUpdate();
+    }
 
+    public void update(short mapId, int x, int y, float SCALE) {
+        this.mapId = mapId;
+        this.x = (int) (((float) x) / SCALE);
+        this.y = (int) (((float) y) / SCALE);
+    }
+
+    public void sendUpTCP() {
+        pu.Trim();
+        conection.sendTCP(pu);
+        pu.Reset();
     }
 
     public void setPlayer(Player pl) {
@@ -39,6 +52,14 @@ public class MPlayer {
 
     public byte getId() {
         return id;
+    }
+
+    public short getMapId() {
+        return mapId;
+    }
+
+    public void setMapId(short mapId) {
+        this.mapId = mapId;
     }
 
     public String getName() {
@@ -64,22 +85,6 @@ public class MPlayer {
 
     public Player inGame() {
         return pl;
-    }
-
-    public void update(int x, int y, float SCALE) {
-        this.x = (int) (((float) x) / SCALE);
-        this.y = (int) (((float) y) / SCALE);
-    }
-
-    public void update(float SCALE) {
-        this.x = (int) (((float) pl.getX()) / SCALE);
-        this.y = (int) (((float) pl.getY()) / SCALE);
-    }
-
-    public void sendUpTCP() {
-        pu.Trim();
-        conection.sendTCP(pu);
-        pu.Reset();
     }
 
     public PacketUpdate getPU() {

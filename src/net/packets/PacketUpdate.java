@@ -31,11 +31,11 @@ public class PacketUpdate implements Serializable {
 
     public synchronized void playerUpdate(MPlayer mpl, boolean isEmits, boolean isHop) {
         MPlayerUpdate mp = getPlayer(mpl.getId());
-        if (mp != null) {
-            mp.Update(mpl.getX(), mpl.getY());
-        } else {
-            mp = new MPlayerUpdate(mpl.getId(), mpl.getX(), mpl.getY(), isEmits, isHop);
+        if (mp == null || mp.getMapId() != mpl.getMapId()) {
+            mp = new MPlayerUpdate(mpl.getMapId(), mpl.getId(), mpl.getX(), mpl.getY(), isEmits, isHop);
             players.add(mp);
+        } else {
+            mp.Update(mpl.getX(), mpl.getY());
         }
     }
 

@@ -65,7 +65,9 @@ public abstract class Player extends Entity {
     @Override
     public void changeMap(Map othermap) {
         super.changeMap(othermap);
-        cam.setMap(othermap);
+        if (cam != null) {
+            cam.setMap(othermap);
+        }
     }
 
     public void addMenu(Menu menu) {

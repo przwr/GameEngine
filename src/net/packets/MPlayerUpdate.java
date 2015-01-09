@@ -6,7 +6,6 @@
 package net.packets;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import net.jodk.lang.FastMath;
 
 /**
@@ -21,20 +20,18 @@ public class MPlayerUpdate extends Update implements Serializable {
     public MPlayerUpdate() {
     }
 
-    public MPlayerUpdate(byte id) {
+    public MPlayerUpdate(short mapId, byte id) {
+        this.mapId = mapId;
         this.id = id;
-        delsX = new ArrayList<>();
-        delsY = new ArrayList<>();
     }
 
-    public MPlayerUpdate(byte id, int x, int y, boolean isEmits, boolean isHop) {
+    public MPlayerUpdate(short mapId, byte id, int x, int y, boolean isEmits, boolean isHop) {
+        this.mapId = mapId;
         this.id = id;
         this.x = x;
         this.y = y;
         this.isEmits = isEmits;
         this.isHop = isHop;
-        delsX = new ArrayList<>();
-        delsY = new ArrayList<>();
     }
 
     public synchronized void Update(int x, int y) {

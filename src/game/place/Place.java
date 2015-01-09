@@ -35,7 +35,7 @@ public abstract class Place extends ScreenPlace {
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int ssMode, playersLength;
 
-    protected short mobID = 0;
+    protected short mapId = 0;
 
 //    public ArrayList<Mob> sMobs = new ArrayList<>();
 //    public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -156,9 +156,21 @@ public abstract class Place extends ScreenPlace {
         maps.add(map);
     }
 
-    public Map getMap(String name) {
+    public Map getMapByName(String name) {
         for (Map m : maps) {
             if (m.name.equals(name)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public Map getMapById(short id) {
+        if (maps.get(id).getId() == id) {
+            return maps.get(id);
+        }
+        for (Map m : maps) {
+            if (m.getId() == id) {
                 return m;
             }
         }

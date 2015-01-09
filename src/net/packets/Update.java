@@ -13,9 +13,10 @@ import java.util.ArrayList;
  */
 public abstract class Update {
 
+    protected short mapId;
     protected int x, y;
-    protected ArrayList<Short> delsX;
-    protected ArrayList<Short> delsY;
+    protected ArrayList<Short> delsX = new ArrayList<>();
+    protected ArrayList<Short> delsY = new ArrayList<>();
 
     public synchronized int getX() {
         return x;
@@ -31,6 +32,10 @@ public abstract class Update {
 
     public synchronized ArrayList<Short> delsY() {
         return delsY;
+    }
+
+    public synchronized short getMapId() {
+        return mapId;
     }
 
 }

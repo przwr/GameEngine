@@ -53,21 +53,21 @@ public class SplitScreen {
     }
 
     public static boolean isClose2(Place pl) {
-        return FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width3o4 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth3o4;
+        return pl.players[0].getMap() == pl.players[1].getMap() && FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width3o4 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth3o4;
     }
 
     public static boolean isClose3(Place pl) {
-        return FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3 && FastMath.abs(pl.players[0].getX() - pl.players[2].getX()) < width2o3 && FastMath.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth2o3 && FastMath.abs(pl.players[1].getX() - pl.players[2].getX()) < width2o3 && FastMath.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth2o3;
+        return pl.players[0].getMap() == pl.players[1].getMap() && pl.players[0].getMap() == pl.players[2].getMap() && FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width2o3 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth2o3 && FastMath.abs(pl.players[0].getX() - pl.players[2].getX()) < width2o3 && FastMath.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth2o3 && FastMath.abs(pl.players[1].getX() - pl.players[2].getX()) < width2o3 && FastMath.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth2o3;
     }
 
     public static boolean isClose4(Place pl) {
-        return FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth1o2 && FastMath.abs(pl.players[0].getX() - pl.players[2].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth1o2 && FastMath.abs(pl.players[1].getX() - pl.players[2].getX()) < width1o2 && FastMath.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth1o2 && FastMath.abs(pl.players[0].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[3].getY()) < heigth1o2 && FastMath.abs(pl.players[1].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[1].getY() - pl.players[3].getY()) < heigth1o2 && FastMath.abs(pl.players[2].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[2].getY() - pl.players[3].getY()) < heigth1o2;
+        return pl.players[0].getMap() == pl.players[1].getMap() && pl.players[0].getMap() == pl.players[2].getMap() && pl.players[0].getMap() == pl.players[3].getMap() && FastMath.abs(pl.players[0].getX() - pl.players[1].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[1].getY()) < heigth1o2 && FastMath.abs(pl.players[0].getX() - pl.players[2].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[2].getY()) < heigth1o2 && FastMath.abs(pl.players[1].getX() - pl.players[2].getX()) < width1o2 && FastMath.abs(pl.players[1].getY() - pl.players[2].getY()) < heigth1o2 && FastMath.abs(pl.players[0].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[0].getY() - pl.players[3].getY()) < heigth1o2 && FastMath.abs(pl.players[1].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[1].getY() - pl.players[3].getY()) < heigth1o2 && FastMath.abs(pl.players[2].getX() - pl.players[3].getX()) < width1o2 && FastMath.abs(pl.players[2].getY() - pl.players[3].getY()) < heigth1o2;
     }
 
     public static boolean isFar(Place pl) {
         if (!pl.singleCam) {
             for (int p = 0; p < pl.playersLength; p++) {
-                if (pl.players[p].getX() > pl.cams[pl.playersLength - 2].getEX() || pl.players[p].getX() < pl.cams[pl.playersLength - 2].getSX() || pl.players[p].getY() > pl.cams[pl.playersLength - 2].getEY() || pl.players[p].getY() < pl.cams[pl.playersLength - 2].getSY()) {
+                if (pl.players[0].getMap() != pl.players[p].getMap() || pl.players[p].getX() > pl.cams[pl.playersLength - 2].getEX() || pl.players[p].getX() < pl.cams[pl.playersLength - 2].getSX() || pl.players[p].getY() > pl.cams[pl.playersLength - 2].getEY() || pl.players[p].getY() < pl.cams[pl.playersLength - 2].getSY()) {
                     pl.settings.joinSS = false;
                     return true;
                 }

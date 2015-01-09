@@ -5,13 +5,13 @@
  */
 package mygame;
 
+import engine.Delay;
 import game.Game;
 import net.GameOnline;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
 import game.place.Map;
-import game.place.cameras.Camera;
 import java.util.ArrayList;
 import java.util.Iterator;
 import net.GameClient;
@@ -33,7 +33,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public void runServer() {
+    public synchronized void runServer() {
         server = new GameServer(g.players[0], this);
         server.Start();
         if (!server.isRunning) {
@@ -46,18 +46,24 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public void joinServer() {
+    public synchronized void joinServer() {
         client = new GameClient(g.players[0], this, g.settings.serverIP);
-        if (client.isConnected) {
-            g.runClient();
-            g.mode = 1;
-        } else {
-            client = null;
+        Delay delay = new Delay(2000);
+        delay.restart();
+        while (!delay.isOver()) {
+            if (client.isConnected) {
+                g.runClient(client.tempMapId);
+                g.mode = 1;
+                return;
+            }
         }
+        client.Close();
+        client = null;
     }
 
     @Override
-    public synchronized void addPlayer(NewMPlayer pl) {
+    public synchronized void addPlayer(NewMPlayer pl
+    ) {
         if (newPls[0] == null) {
             newPls[0] = pl;
         } else if (newPls[1] == null) {
@@ -89,9 +95,13 @@ public class MyGameOnline extends GameOnline {
     }
 
     private synchronized void UpdatePlayers(ArrayList<MPlayerUpdate> players) {
+        tempPlace = g.place;
+        if (tempPlace == null) {
+            return;
+        }
         Player plr;
         for (MPlayerUpdate pUp : players) {
-            for (int p = 1; p < g.place.playersLength; p++) {
+            for (int p = 1; p < tempPlace.playersLength; p++) {
                 if (pUp.getId() == g.players[p].id) {
                     plr = g.players[p];
                     plr.ups[plr.lastAdded] = pUp;
@@ -119,25 +129,28 @@ public class MyGameOnline extends GameOnline {
 
     @Override
     public synchronized void playerUpdate(PacketMPlayerUpdate p) {
+        tempPlace = g.place;
+        if (tempPlace == null) {
+            return;
+        }
         Player plr;
-        if (g.place != null) {
-            for (int i = 0; i < g.place.playersLength; i++) {
-                if (p.up().getId() == g.players[i].id) {
-                    plr = g.players[i];
-                    plr.ups[plr.lastAdded] = p.up();
-                    if (plr.lastAdded == 3) {
-                        plr.lastAdded = 0;
-                    } else {
-                        plr.lastAdded++;
-                    }
-                    break;
+        for (int i = 0; i < tempPlace.playersLength; i++) {
+            if (p.up().getId() == g.players[i].id) {
+                plr = g.players[i];
+                plr.ups[plr.lastAdded] = p.up();
+                if (plr.lastAdded == 3) {
+                    plr.lastAdded = 0;
+                } else {
+                    plr.lastAdded++;
                 }
+                break;
             }
         }
+
     }
 
     @Override
-    public void initChanges() {
+    public synchronized void initChanges() {
         changes[0] = new change() {
             @Override
             public void doIt() {
@@ -145,17 +158,17 @@ public class MyGameOnline extends GameOnline {
                     if (newPls[i] != null) {
                         NewMPlayer temp = newPls[i];
                         System.out.println("Adding player with ID: " + temp.getId() + " - " + temp.getName());
-                        g.players[g.place.playersLength].init(4, 4, 56, 56, g.place, temp.getX(), temp.getY());
-                        g.players[g.place.playersLength].id = temp.getId();
-                        g.players[g.place.playersLength].setName(temp.getName());
-                        g.place.players[g.place.playersLength] = g.players[g.place.playersLength];
-                        Map m = g.place.maps.get(0);
-                        g.players[g.place.playersLength].setMap(m);
-                        m.addObj(g.players[g.place.playersLength]);
+                        g.players[tempPlace.playersLength].init(4, 4, 56, 56, tempPlace, temp.getX(), temp.getY());
+                        g.players[tempPlace.playersLength].id = temp.getId();
+                        g.players[tempPlace.playersLength].setName(temp.getName());
+                        tempPlace.players[tempPlace.playersLength] = g.players[tempPlace.playersLength];
+                        Map m = tempPlace.getMapById(newPls[i].getMapId());
+                        g.players[tempPlace.playersLength].setMap(m);
+                        m.addObj(g.players[tempPlace.playersLength]);
                         if (server != null) {
-                            server.findPlayer(temp.getId()).setPlayer(g.players[g.place.playersLength]);
+                            server.findPlayer(temp.getId()).setPlayer(g.players[tempPlace.playersLength]);
                         }
-                        g.place.playersLength++;
+                        tempPlace.playersLength++;
                         newPls[i] = null;
                     }
                 }
@@ -165,19 +178,19 @@ public class MyGameOnline extends GameOnline {
             @Override
             public void doIt() {
                 for (int i = 0; i < removeIDs.length; i++) {
-                    for (int p = 1; p < g.place.playersLength; p++) {
+                    for (int p = 1; p < tempPlace.playersLength; p++) {
                         if (g.players[p].id == removeIDs[i]) {
-                            ((Player) g.place.players[p]).setPlaceToNull();
-                            g.place.players[p].getMap().deleteObj(g.place.players[p]);
-                            if (p != g.place.playersLength - 1) {
-                                Player tempG = g.players[g.place.playersLength - 1];
-                                GameObject tempP = g.place.players[g.place.playersLength - 1];
-                                g.players[g.place.playersLength - 1] = g.players[p];
-                                g.place.players[g.place.playersLength - 1] = g.place.players[p];
+                            ((Player) tempPlace.players[p]).setPlaceToNull();
+                            tempPlace.players[p].getMap().deleteObj(tempPlace.players[p]);
+                            if (p != tempPlace.playersLength - 1) {
+                                Player tempG = g.players[tempPlace.playersLength - 1];
+                                GameObject tempP = tempPlace.players[tempPlace.playersLength - 1];
+                                g.players[tempPlace.playersLength - 1] = g.players[p];
+                                tempPlace.players[tempPlace.playersLength - 1] = tempPlace.players[p];
                                 g.players[p] = tempG;
-                                g.place.players[p] = tempP;
+                                tempPlace.players[p] = tempP;
                             }
-                            g.place.playersLength--;
+                            tempPlace.playersLength--;
                             removeIDs[i] = 0;
                         }
                     }
@@ -198,7 +211,8 @@ public class MyGameOnline extends GameOnline {
                 for (MobUpdate mUp : mobs) {
                     found = false;
                     Mob mob;
-                    for (Iterator<Mob> it = g.place.maps.get(0).sMobs.iterator(); it.hasNext();) {          // poprawić
+                    Map map = tempPlace.getMapById(mUp.getMapId());
+                    for (Iterator<Mob> it = map.sMobs.iterator(); it.hasNext();) {
                         mob = it.next();
                         if (mUp.getId() == mob.id) {
                             mob.ups[mob.lastAdded] = mUp;
@@ -234,9 +248,8 @@ public class MyGameOnline extends GameOnline {
                     for (int i = 0; i < newMob.length; i++) {
                         if (newMob[i] != null) {
                             System.out.println("Adding Mob with ID: " + newMob[i].getId());
-                            Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", g.place, true, newMob[i].getId());
-                            g.place.maps.get(0).addObj(mob); /*----- <('o'<) TUUUUUUU*/
-
+                            Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", tempPlace, true, newMob[i].getId());
+                            tempPlace.getMapById(newMob[i].getMapId()).addObj(mob);
                             newMob[i] = null;
                         }
                     }
@@ -246,19 +259,21 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public void up() {
-        if (g.place != null) {
-            for (int i = 0; i < isChanged.length; i++) {
-                if (isChanged[i]) {
-                    isChanged[i] = false;
-                    changes[i].doIt();
-                }
+    public synchronized void up() {
+        tempPlace = g.place;
+        if (tempPlace == null) {
+            return;
+        }
+        for (int i = 0; i < isChanged.length; i++) {
+            if (isChanged[i]) {
+                isChanged[i] = false;
+                changes[i].doIt();
             }
         }
     }
 
     @Override
-    public Player getPlayerByID(byte id) {
+    public synchronized Player getPlayerByID(byte id) {
         for (Player pl : g.players) {
             if (pl.id == id) {
                 return pl;
@@ -268,7 +283,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public void cleanUp() {
+    public synchronized void cleanUp() {
         if (server != null) {
             server.Close();
             server = null;

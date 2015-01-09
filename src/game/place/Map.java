@@ -22,15 +22,17 @@ import mygame.MyPlayer;
  * @author Wojtek
  */
 public class Map {
-    
+
     public final String name;
     public final Place place;
     public final Settings settings;
     public final int width, height;
-    
+    public final short id;
+    public short mobID = 0;
+
     public int nrVLights;
     public final int sTile;
-    
+
     public ArrayList<GameObject> objects = new ArrayList<>();
     public ArrayList<Mob> sMobs = new ArrayList<>();
     public ArrayList<Mob> fMobs = new ArrayList<>();
@@ -40,14 +42,15 @@ public class Map {
     public ArrayList<WarpPoint> warps = new ArrayList<>();
     public GameObject[] visibleLights = new GameObject[2048];
     public ArrayList<Area> areas = new ArrayList<>();
-    
+
     public ArrayList<GameObject> depthObj = new ArrayList<>();
     public ArrayList<GameObject> foregroundTiles = new ArrayList<>();
     public ArrayList<GameObject> onTopObject = new ArrayList<>();
-    
+
     public final Tile[] tiles;
-    
-    public Map(String name, Place place, int width, int height, int sTile) {
+
+    public Map(short id, String name, Place place, int width, int height, int sTile) {
+        this.id = id;
         this.name = name;
         this.width = width;
         this.height = height;
@@ -56,11 +59,11 @@ public class Map {
         tiles = new Tile[width / sTile * height / sTile];
         this.place = place;
     }
-    
+
     public void sortObjects(ArrayList<GameObject> a) {
         Collections.sort(a, new ObjectsComparator());
     }
-    
+
     public void addFGTile(GameObject t, int x, int y, int depth, boolean replace) {
         if (replace) {
             tiles[x / sTile + y / sTile * height / sTile] = null;
@@ -76,17 +79,17 @@ public class Map {
         foregroundTiles.add(t);
         sortObjects(foregroundTiles);
     }
-    
+
     public void addFGTile(GameObject t) {
         foregroundTiles.add(t);
         sortObjects(foregroundTiles);
     }
-    
+
     public void deleteFGTile(GameObject t) {
         foregroundTiles.remove(t);
         sortObjects(foregroundTiles);
     }
-    
+
     public void deleteFGTile(int x, int y) {
         for (GameObject s : foregroundTiles) {
             if (s.getX() == x && s.getY() == y) {
@@ -95,7 +98,7 @@ public class Map {
         }
         sortObjects(foregroundTiles);
     }
-    
+
     public void addObj(GameObject go) {
         go.setMap(this);
         objects.add(go);
@@ -127,7 +130,7 @@ public class Map {
             depthObj.add(go);
         }
     }
-    
+
     public void deleteObj(GameObject go) {
         go.setMap(null);
         objects.remove(go);
@@ -158,7 +161,7 @@ public class Map {
             depthObj.remove(go);
         }
     }
-    
+
     public void renderBack(Camera cam) {
         Drawer.refresh(place);
         for (int y = 0; y < height / sTile; y++) {
@@ -174,16 +177,16 @@ public class Map {
             }
         }
     }
-    
+
     public void renderObj(Camera cam) {
         renderBottom(cam);
         renderTop(cam);
     }
-    
+
     public void makeShadows() {
         Renderer.initVariables(place);
     }
-    
+
     public void renderBottom(Camera cam) {
         Drawer.refresh(place);
         sortObjects(depthObj);
@@ -205,7 +208,7 @@ public class Map {
             foregroundTiles.get(i).render(cam.getXOffEffect(), cam.getYOffEffect());
         }
     }
-    
+
     public void renderTop(Camera cam) {
         Drawer.refresh(place);
         sortObjects(onTopObject);
@@ -216,7 +219,7 @@ public class Map {
             }
         }
     }
-    
+
     protected void renderText(Camera cam) {
         for (int p = 0; p < place.playersLength; p++) {
             if (place.players[p].getMap().equals(this)) {
@@ -233,15 +236,16 @@ public class Map {
             }
         }
     }
-    
+
     public WarpPoint findWarp(String name) {
         for (WarpPoint w : warps) {
-            if (w.getName().equals(name))
+            if (w.getName().equals(name)) {
                 return w;
+            }
         }
         return null;
     }
-    
+
     public void clear() {
         for (GameObject go : objects) {
             if (go.getMap().equals(this)) {
@@ -260,13 +264,17 @@ public class Map {
         foregroundTiles.clear();
         onTopObject.clear();
     }
-    
+
     private class ObjectsComparator implements Comparator<GameObject> {
-        
+
         @Override
         public int compare(GameObject o1, GameObject o2) {
             return o1.getDepth() - o2.getDepth();
         }
-        
+
+    }
+
+    public short getId() {
+        return id;
     }
 }

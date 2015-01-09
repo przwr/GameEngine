@@ -8,6 +8,7 @@ package net;
 import net.packets.NewMPlayer;
 import game.Game;
 import game.gameobject.Player;
+import game.place.Place;
 import java.util.ArrayList;
 import net.packets.MPlayerUpdate;
 import net.packets.MobUpdate;
@@ -34,6 +35,7 @@ public abstract class GameOnline {
     public final Game g;
     public GameServer server;
     public GameClient client;
+    protected Place tempPlace;
 
     public GameOnline(Game game, int nrChanges, int players) {
         g = game;

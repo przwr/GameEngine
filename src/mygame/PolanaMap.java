@@ -20,8 +20,8 @@ import game.place.WarpPoint;
  */
 public class PolanaMap extends Map {
 
-    public PolanaMap(Place place, int width, int height, int sTile) {
-        super("Polana", place, width, height, sTile);
+    public PolanaMap(short id, Place place, int width, int height, int sTile) {
+        super(id, "Polana", place, width, height, sTile);
 
         FGTile fgt;
         Tile GRASS = new Tile(place.getSpriteSheet("tlo"), sTile, 1, 8, place);

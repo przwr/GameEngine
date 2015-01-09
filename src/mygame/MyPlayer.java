@@ -16,6 +16,7 @@ import engine.Drawer;
 import engine.Methods;
 import engine.Time;
 import game.gameobject.inputs.InputKeyBoard;
+import game.place.Map;
 import game.place.WarpPoint;
 import net.jodk.lang.FastMath;
 import net.packets.MPlayerUpdate;
@@ -212,11 +213,18 @@ public class MyPlayer extends Player {
         hs = (int) (hspeed + myHspeed);
         vs = (int) (vspeed + myVspeed);
         canMove(hs, vs);
+        for (WarpPoint w : map.warps) {
+            if (w.getCollision() != null) {
+                if (w.getCollision().ifCollideSngl(w.getX(), w.getY(), collision)) {
+                    w.Warp(this);
+                }
+            }
+        }
         brakeOthers();
         if (online.server != null) {
-            online.server.sendUpdate(getX(), getY(), isEmits(), isHop());
+            online.server.sendUpdate(map.getId(), getX(), getY(), isEmits(), isHop());
         } else if (online.client != null) {
-            online.client.sendPlayerUpdate(id, getX(), getY(), isEmits(), isHop());
+            online.client.sendPlayerUpdate(map.getId(), id, getX(), getY(), isEmits(), isHop());
             online.past[online.pastNr++].set(getX(), getY());
             if (online.pastNr >= online.past.length) {
                 online.pastNr = 0;
@@ -228,6 +236,10 @@ public class MyPlayer extends Player {
 
     @Override
     public void updateRest(Update up) {
+        Map map = place.getMapById(up.getMapId());
+        if (map != null) {
+            changeMap(map);
+        }
         if (((MPlayerUpdate) up).isHop()) {
             setIsJumping(true);
         }

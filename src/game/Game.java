@@ -42,7 +42,7 @@ public abstract class Game {
 
     public abstract void resumeGame();
 
-    public abstract void runClient();
+    public abstract void runClient(short mapId);
 
     public abstract void runServer();
 
@@ -57,6 +57,10 @@ public abstract class Game {
 
     public String getTitle() {
         return title;
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     public Place getPlace() {

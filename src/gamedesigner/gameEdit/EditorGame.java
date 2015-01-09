@@ -90,7 +90,7 @@ public class EditorGame extends Game {
     }
 
     @Override
-    public void runClient() {
+    public void runClient(short mapId) {
     }
 
     @Override

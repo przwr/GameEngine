@@ -75,7 +75,7 @@ public class WarpPoint extends GameObject {
                 if (dest != null) {
                     o.changeMap(dest);
                 } else if (strDest != null) {
-                    o.changeMap(map.place.getMap(strDest));
+                    o.changeMap(map.place.getMapByName(strDest));
                 }
                 o.setX(toX);
                 o.setY(toY);
@@ -85,7 +85,7 @@ public class WarpPoint extends GameObject {
                     o.changeMap(dest);
                     w = dest.findWarp(name);
                 } else {
-                    Map m = map.place.getMap(strDest);
+                    Map m = map.place.getMapByName(strDest);
                     o.changeMap(m);
                     w = m.findWarp(name);
                 }

@@ -5,7 +5,6 @@
  */
 package net.packets;
 
-import java.util.ArrayList;
 import net.jodk.lang.FastMath;
 
 /**
@@ -19,24 +18,21 @@ public class MobUpdate extends Update {
     public MobUpdate() {
     }
 
-    public MobUpdate(short id) {
+    public MobUpdate(short mapId, short id) {
+        this.mapId = id;
         this.id = id;
-        delsX = new ArrayList<>();
-        delsY = new ArrayList<>();
     }
 
     public MobUpdate(short id, int x, int y) {
         this.id = id;
         this.x = x;
         this.y = y;
-        delsX = new ArrayList<>();
-        delsY = new ArrayList<>();
     }
 
     public synchronized void Update(int x, int y) {
         int deltaX = this.x - x;
         int deltaY = this.y - y;
-        if (FastMath.abs(deltaX) <= 32767 && FastMath.abs(deltaY) <= 32767) {
+        if (FastMath.abs(deltaX) <= Short.MAX_VALUE && FastMath.abs(deltaY) <= Short.MAX_VALUE) {
             delsX.add((short) deltaX);
             delsY.add((short) deltaY);
         }

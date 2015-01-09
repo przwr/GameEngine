@@ -13,6 +13,7 @@ import net.MPlayer;
  */
 public class NewMPlayer {
 
+    private short mapId;
     private byte id;
     private String name;
     private int x, y;
@@ -20,36 +21,42 @@ public class NewMPlayer {
     public NewMPlayer() {
     }
 
-    public NewMPlayer(String text, byte id) {
-        this.name = text;
+    public NewMPlayer(short mapId, byte id, String name) {
+        this.mapId = mapId;
         this.id = id;
+        this.name = name;
     }
 
     public NewMPlayer(MPlayer pl) {
-        this.name = pl.getName();
+        this.mapId = pl.getMapId();
         this.id = pl.getId();
+        this.name = pl.getName();
         this.x = pl.getX();
         this.y = pl.getY();
     }
 
-    public byte getId() {
+    public synchronized short getMapId() {
+        return mapId;
+    }
+
+    public synchronized byte getId() {
         return id;
     }
 
-    public String getName() {
+    public synchronized String getName() {
         return name;
     }
 
-    public void setPosition(int x, int y) {
+    public synchronized void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return x;
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return y;
     }
 }

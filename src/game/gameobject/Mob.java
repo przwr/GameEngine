@@ -74,6 +74,7 @@ public abstract class Mob extends Entity {
             g = players[i];
             if (g.getMap() == map && Methods.PointDistance(g.getX(), g.getY(), getX(), getY()) < range) {
                 prey = g;
+                break;
             }
         }
     }

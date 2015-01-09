@@ -106,7 +106,7 @@ public class GameServer {
                         //System.out.println(ObjectSize.sizeInBytes(pmpu) + " BYTES");
                         MPlayer curPl = findPlayer(pmpu.up().getId());
                         if (curPl != null) {
-                            curPl.update(pmpu.up().getX(), pmpu.up().getY(), 1);
+                            curPl.update(pmpu.up().getMapId(), pmpu.up().getX(), pmpu.up().getY(), 1);
                             for (int i = 1; i < nrPlayers; i++) {
                                 if (MPlayers[i].getId() != pmpu.up().getId()) {
                                     MPlayers[i].getPU().PlayerUpdate(pmpu.up());
@@ -118,12 +118,14 @@ public class GameServer {
                     } else if (obj instanceof PacketJoinRequest) {
                         if (nrPlayers < 4) {
                             makeSureIdIsUnique();
-                            NewMPlayer nmp = addNewPlayer(((PacketJoinRequest) obj).getName(), connection);
-                            connection.sendTCP(new PacketJoinResponse(id++, MPlayers[nrPlayers].getX(), MPlayers[nrPlayers].getY()));
+                            NewMPlayer nmp = addNewPlayer(MPlayers[0].getMapId(), ((PacketJoinRequest) obj).getName(), connection);
+                            connection.sendTCP(new PacketJoinResponse(MPlayers[0].getMapId(), id++, MPlayers[0].getX(), MPlayers[0].getY()));
                             sendToAll(nmp);
                             sendToNew(connection);
                             nrPlayers++;
-                            System.out.println(MPlayers[nrPlayers - 1].getName() + " (" + MPlayers[nrPlayers - 1].getId() + ") connected");
+                            if (MPlayers[nrPlayers - 1] != null) {
+                                System.out.println(MPlayers[nrPlayers - 1].getName() + " (" + MPlayers[nrPlayers - 1].getId() + ") connected");
+                            }
                         } else {
                             connection.sendTCP(new PacketJoinResponse((byte) -1));
                         }
@@ -147,7 +149,7 @@ public class GameServer {
                 Methods.Error(ex.getMessage() + "!");
                 return;
             }
-            MPlayers[0] = new MPlayer("Server", id, null);
+            MPlayers[0] = new MPlayer((short) 0, id, "Server", null);
             MPlayers[0].setPosition(128 + id * 128, 256);
             MPlayers[0].setPlayer(pl);
             pl.setName(MPlayers[0].getName());
@@ -177,9 +179,9 @@ public class GameServer {
         server.close();
     }
 
-    public synchronized void sendUpdate(int x, int y, boolean isEmits, boolean isHop) {
+    public synchronized void sendUpdate(short mapId, int x, int y, boolean isEmits, boolean isHop) {
         try {
-            MPlayers[0].update(x, y, SCALE);
+            MPlayers[0].update(mapId, x, y, SCALE);
             for (int i = 1; i < nrPlayers; i++) {
                 tmp = MPlayers[i];
                 for (Mob mob : game.g.getPlace().maps.get(0).sMobs) {       // do poprawienia
@@ -202,7 +204,7 @@ public class GameServer {
 
     public synchronized MPlayer findPlayer(byte id) {
         for (int i = 1; i < nrPlayers; i++) {
-            if (MPlayers[i].getId() == id) {
+            if (MPlayers[i] != null && MPlayers[i].getId() == id) {
                 return MPlayers[i];
             }
         }
@@ -226,8 +228,8 @@ public class GameServer {
         }
     }
 
-    private synchronized NewMPlayer addNewPlayer(String name, Connection connection) {
-        MPlayers[nrPlayers] = new MPlayer(name, id, connection);
+    private synchronized NewMPlayer addNewPlayer(short mapId, String name, Connection connection) {
+        MPlayers[nrPlayers] = new MPlayer(mapId, id, name, connection);
         MPlayers[nrPlayers].setPosition(128 + id * 128, 256);
         NewMPlayer nmp = new NewMPlayer(MPlayers[nrPlayers]);
         game.addPlayer(nmp);

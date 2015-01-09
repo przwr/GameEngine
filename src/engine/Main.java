@@ -141,6 +141,7 @@ public class Main {
                     update();
                 } else {
                     if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Mouse.isButtonDown(0)) {
+                        game.getMenu().delay.restart();
                         if (!ENTER) {
                             pop.popMessage();
                         }

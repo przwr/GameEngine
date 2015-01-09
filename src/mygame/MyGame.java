@@ -55,7 +55,7 @@ public class MyGame extends Game {
     private void initMethods() {
         ins[0] = new getInput() {
             @Override
-            public void getInput() {
+            public void get() {
                 if (!pauseFlag) {
                     pause();
                     if (runFlag) {
@@ -98,7 +98,7 @@ public class MyGame extends Game {
         };
         ins[1] = new getInput() {
             @Override
-            public void getInput() {
+            public void get() {
                 if (runFlag) {
                     if (players[0].isMenuOn()) {
                         runFlag = false;
@@ -118,7 +118,7 @@ public class MyGame extends Game {
         };
         ups[0] = new update() {
             @Override
-            public void update() {
+            public void up() {
                 if (!pauseFlag) {
                     if (runFlag) {
                         place.update();
@@ -130,21 +130,17 @@ public class MyGame extends Game {
         };
         ups[1] = new update() {
             @Override
-            public void update() {
-                if (online.client != null && !online.client.isConnected) {
+            public void up() {
+                if ((online.client == null && online.server == null) || (online.client != null && !online.client.isConnected)) {
                     endGame();
-                    mode = 0;
                     Methods.Error(settings.language.m.Disconnected);
-                }
-                online.up();
-                if (runFlag) {
-                    place.update();
                 } else {
-                    if (place != null) {
-                        place.update();
-                    }
-                    menu.update();
+                    online.up();
                 }
+                if (place != null) {
+                    place.update();
+                }
+                menu.update();
             }
         };
     }
@@ -152,17 +148,17 @@ public class MyGame extends Game {
     @Override
 
     public void getInput() {
-        ins[mode].getInput();
+        ins[mode].get();
     }
 
     @Override
     public void update() {
-        ups[mode].update();
+        ups[mode].up();
     }
 
     @Override
     public void render() {
-        if (runFlag) {
+        if (runFlag && place != null) {
             place.render();
         } else {
             glClear(GL_COLOR_BUFFER_BIT);
@@ -283,7 +279,7 @@ public class MyGame extends Game {
                 }
             } else if (place.playersLength == 3) {
                 if (place.cams[1] == null) {
-                    place.cams[1] = new PlayersCamera(players[0].getMap(), players[0], players[1], players[2]);                   
+                    place.cams[1] = new PlayersCamera(players[0].getMap(), players[0], players[1], players[2]);
                 }
                 if (nr == 0) {
                     if (settings.hSplitScreen) {
@@ -304,16 +300,17 @@ public class MyGame extends Game {
     }
 
     @Override
-    public void runClient() {
+    public void runClient(short mapId) {
+        System.out.println(mapId);
         place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 64), settings, false);
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].init(4, 4, 56, 56, place);
-        players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 2, 2, 0)); // 2 i 2 to tryb SS
+        players[0].addCamera(new PlayersCamera(place.getMapById(mapId), players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();
         started = runFlag = true;
-        Map m = place.maps.get(0);
+        Map m = place.getMapById(mapId);
         players[0].changeMap(m);
         Camera cam = ((Player) players[0]).getCam();
         cam.getMap().addObj(players[0]);
@@ -326,11 +323,11 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].init(4, 4, 56, 56, place);
-        players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 2, 2, 0)); // 2 i 2 to tryb SS
+        players[0].addCamera(new PlayersCamera(place.getMapById((short) 0), players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();
         started = runFlag = true;
-        Map m = place.maps.get(0);
+        Map m = place.getMapById((short) 0);
         players[0].changeMap(m);
         Camera cam = (((Player) players[0]).getCam());
         cam.getMap().addObj(players[0]);
@@ -346,6 +343,7 @@ public class MyGame extends Game {
             pl.setPlaceToNull();
         }
         online.cleanUp();
+        mode = 0;
     }
 
     private void soundPause() {
@@ -380,11 +378,11 @@ public class MyGame extends Game {
 
     private interface update {
 
-        void update();
+        void up();
     }
 
     private interface getInput {
 
-        void getInput();
+        void get();
     }
 }

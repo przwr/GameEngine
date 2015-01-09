@@ -40,11 +40,11 @@ public class MyPlace extends Place {
     }
 
     private void generate(boolean isHost) {
-        PolanaMap p = new PolanaMap(this, width, height, sTile);
-        KamiennaMap k = new KamiennaMap(this, width, height, sTile);
+        PolanaMap p = new PolanaMap(mapId++, this, width, height, sTile);
+        KamiennaMap k = new KamiennaMap(mapId++, this, width, height, sTile);
         if (isHost) {
             for (int i = 0; i < 1000; i++) {
-                p.addObj(new MyMob(192 + 192 * (i % 50), 1440 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
+                p.addObj(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, p.mobID++));
             }
         }
         maps.add(p);
