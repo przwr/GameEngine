@@ -55,7 +55,6 @@ public class MyPlayer extends Player {
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
-        //place.addObj(this);
         setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
 
@@ -75,7 +74,6 @@ public class MyPlayer extends Player {
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
         animate = true;
         emits = false;
-        //place.addObj(this);
         setCollision(new Rectangle(this.width, this.height / 2, true, false, 0, this));
     }
 
@@ -175,17 +173,17 @@ public class MyPlayer extends Player {
         }
     }
 
-    float a = 22.5f;  //TYLKO TYMCZASOWE!
+    float a = 22.6f;  //TYLKO TYMCZASOWE!
 
     @Override
-    public void update(Place place) {
+    public void update() {
         if (jumping) {
             hop = false;
             jump = FastMath.abs(Methods.xRadius(a * 4, 70));
             a += Time.getDelta();
             if ((int) a == 68) {
                 jumping = false;
-                a = 22.5f;
+                a = 22.6f;
             }
         }
         hs = (int) (hspeed + myHspeed);

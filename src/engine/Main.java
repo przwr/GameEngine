@@ -140,7 +140,7 @@ public class Main {
                     getInput();
                     update();
                 } else {
-                    if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                    if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Mouse.isButtonDown(0)) {
                         if (!ENTER) {
                             pop.popMessage();
                         }

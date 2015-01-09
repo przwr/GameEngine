@@ -10,6 +10,8 @@ import net.GameOnline;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
+import game.place.Map;
+import game.place.cameras.Camera;
 import java.util.ArrayList;
 import java.util.Iterator;
 import net.GameClient;
@@ -147,6 +149,9 @@ public class MyGameOnline extends GameOnline {
                         g.players[g.place.playersLength].id = temp.getId();
                         g.players[g.place.playersLength].setName(temp.getName());
                         g.place.players[g.place.playersLength] = g.players[g.place.playersLength];
+                        Map m = g.place.maps.get(0);
+                        g.players[g.place.playersLength].setMap(m);
+                        m.addObj(g.players[g.place.playersLength]);
                         if (server != null) {
                             server.findPlayer(temp.getId()).setPlayer(g.players[g.place.playersLength]);
                         }
@@ -193,7 +198,7 @@ public class MyGameOnline extends GameOnline {
                 for (MobUpdate mUp : mobs) {
                     found = false;
                     Mob mob;
-                    /*for (Iterator<Mob> it = g.place.sMobs.iterator(); it.hasNext();) {
+                    for (Iterator<Mob> it = g.place.maps.get(0).sMobs.iterator(); it.hasNext();) {          // poprawić
                         mob = it.next();
                         if (mUp.getId() == mob.id) {
                             mob.ups[mob.lastAdded] = mUp;
@@ -205,7 +210,7 @@ public class MyGameOnline extends GameOnline {
                             found = true;
                             break;
                         }
-                    }*/
+                    }
                     if (!found) {
                         addNew = true;
                         for (int i = 0; i < newMob.length; i++) {
@@ -230,7 +235,8 @@ public class MyGameOnline extends GameOnline {
                         if (newMob[i] != null) {
                             System.out.println("Adding Mob with ID: " + newMob[i].getId());
                             Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", g.place, true, newMob[i].getId());
-                            /*g.place.addObj(mob); ----- <('o'<) TUUUUUUU*/
+                            g.place.maps.get(0).addObj(mob); /*----- <('o'<) TUUUUUUU*/
+
                             newMob[i] = null;
                         }
                     }

@@ -61,7 +61,7 @@ public class Renderer {
                         }
                     } else {
                         for (int pi = 0; pi < playersLength; pi++) {
-                            if (tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() >> 1) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() >> 1)
+                            if (place.players[pi].getMap() == m && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() >> 1) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() >> 1)
                                     && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getSX() >> 1) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getSX() >> 1)) {
                                 isVisible = true;
                                 (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = tmpLight;
@@ -76,9 +76,9 @@ public class Renderer {
             }
         }
         // Docelowo iteracja po graczach nie będzie potrzebna - nie będą oni źródłem światła, a raczej jakieś obiekty.
-        for (int p = 0; p < playersLength; p++) {
-            if (place.players[p].getMap() == m) {
-                light = place.players[p];
+        for (int p = 0; p < place.playersLength; p++) {
+            light = place.players[p];
+            if (light.getMap() == m) {
                 if (place.singleCam && playersLength > 1) {
                     if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getSY() >> 1) && EY[2 + playersLength] >= light.getY() - (light.getLight().getSY() >> 1)
                             && SX[2 + playersLength] <= light.getX() + (light.getLight().getSX() >> 1) && EX[2 + playersLength] >= light.getX() - (light.getLight().getSX() >> 1)) {
@@ -87,7 +87,7 @@ public class Renderer {
                     }
                 } else {
                     for (int pi = 0; pi < playersLength; pi++) {
-                        if (light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() >> 1) && EY[pi] >= light.getY() - (light.getLight().getSY() >> 1)
+                        if (place.players[pi].getMap() == m && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() >> 1) && EY[pi] >= light.getY() - (light.getLight().getSY() >> 1)
                                 && SX[pi] <= light.getX() + (light.getLight().getSX() >> 1) && EX[pi] >= light.getX() - (light.getLight().getSX() >> 1)) {
                             isVisible = true;
                             (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
@@ -105,12 +105,14 @@ public class Renderer {
     private static void readyVarsToFindLights(Map m) {
         Place place = m.place;
         for (int p = 0; p < place.getPlayersLenght(); p++) {
-            cam = (((Player) place.players[p]).getCam());
-            cam.nrVLights = 0;
-            SX[p] = cam.getSX();
-            EX[p] = cam.getEX();
-            SY[p] = cam.getSY();
-            EY[p] = cam.getEY();
+            if (m == place.players[p].getMap()) {
+                cam = (((Player) place.players[p]).getCam());
+                cam.nrVLights = 0;
+                SX[p] = cam.getSX();
+                EX[p] = cam.getEX();
+                SY[p] = cam.getSY();
+                EY[p] = cam.getEY();
+            }
         }
         for (int c = 0; c < 3; c++) {
             if (place.cams[c] != null) {
@@ -138,7 +140,6 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT);
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
-        System.out.println(cam.nrVLights);
         for (int i = 0; i < cam.nrVLights; i++) {
             if (!place.settings.shadowOff) {
                 drawLight(cam.visibleLights[i].getLight().fbo.getTexture(), cam.visibleLights[i], cam);

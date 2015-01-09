@@ -44,7 +44,8 @@ public abstract class Place extends ScreenPlace {
 //    public ArrayList<GameObject> emitters = new ArrayList<>();
 //    public GameObject[] visibleLights = new GameObject[2048];
 //    public ArrayList<Area> areas = new ArrayList<>();
-    public ArrayList<Map> maps = new ArrayList<>();
+    public final ArrayList<Map> maps = new ArrayList<>();
+    private final ArrayList<Map> preRendererdMaps = new ArrayList<>();
 //
 //    public ArrayList<GameObject> depthObj = new ArrayList<>();
 //    public ArrayList<GameObject> foregroundTiles = new ArrayList<>();
@@ -87,13 +88,20 @@ public abstract class Place extends ScreenPlace {
         rds[0] = new render() {
             @Override
             public void render() {
+                preRendererdMaps.clear();
+                for (int p = 0; p < playersLength; p++) {
+                    Map m = players[p].getMap();
+                    if (!preRendererdMaps.contains(m)) {
+                        Renderer.findVisibleLights(m, playersLength);   //Renderer zależy od place'a, czeba zmienić
+                        if (!settings.shadowOff) {
+                            Renderer.preRendLights(m);
+                        }
+                        preRendererdMaps.add(m);
+                    }
+                }
                 for (int p = 0; p < playersLength; p++) {
                     cam = (((Player) players[p]).getCam());
                     Map m = players[p].getMap();
-                    Renderer.findVisibleLights(m, playersLength);   //Renderer zależy od place'a, czeba zmienić
-                    if (!settings.shadowOff) {
-                        Renderer.preRendLights(m);
-                    }
                     SplitScreen.setSplitScreen(place, playersLength, p);    //+
                     if (p == 0 || !singleCam) {
                         glEnable(GL_SCISSOR_TEST);
@@ -117,9 +125,10 @@ public abstract class Place extends ScreenPlace {
         rds[1] = new render() {
             @Override
             public void render() {  //----- ????  Nie wiem jak tutaj naprawić...  ????? -----//
-                /*Renderer.findVisibleLights(place, 1);
+                Map m = players[0].getMap();
+                Renderer.findVisibleLights(m, 1);
                 if (!settings.shadowOff) {
-                    Renderer.preRendLights(place);
+                    Renderer.preRendLights(m);
                 }
                 cam = (((Player) players[0]).getCam());
                 SplitScreen.setSplitScreen(place, 1, 0);
@@ -127,11 +136,13 @@ public abstract class Place extends ScreenPlace {
                 Renderer.preRenderShadowedLights(place, cam);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 sprites.setLastTex(-1);
-                //renderBack(cam);
-                //renderObj(cam);
-                renderText(cam);
+                if (m != null) {
+                    m.renderBack(cam);
+                    m.renderObj(cam);
+                    m.renderText(cam);
+                }
                 Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                glDisable(GL_SCISSOR_TEST);*/
+                glDisable(GL_SCISSOR_TEST);
             }
         };
     }

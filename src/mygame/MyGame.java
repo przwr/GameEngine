@@ -186,40 +186,40 @@ public class MyGame extends Game {
         place.playersLength = nrPl;
         if (nrPl == 1) {
             players[0].init(4, 4, 56, 56, place, 256, 256);
-            players[0].addCamera(new PlayersCamera(place, players[0], 2, 2, 0)); // 2 i 2 to tryb SS
+            players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         } else if (nrPl == 2) {
             players[0].init(4, 4, 56, 56, place, 256, 256);
             players[1].init(4, 4, 56, 56, place, 512, 1024);
             if (settings.hSplitScreen) {
-                players[0].addCamera(new PlayersCamera(place, players[0], 2, 4, 0));
-                players[1].addCamera(new PlayersCamera(place, players[1], 2, 4, 1));
+                players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 2, 4, 0));
+                players[1].addCamera(new PlayersCamera(place.maps.get(0), players[1], 2, 4, 1));
             } else {
-                players[0].addCamera(new PlayersCamera(place, players[0], 4, 2, 0));
-                players[1].addCamera(new PlayersCamera(place, players[1], 4, 2, 1));
+                players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 4, 2, 0));
+                players[1].addCamera(new PlayersCamera(place.maps.get(0), players[1], 4, 2, 1));
             }
-            place.cams[0] = new PlayersCamera(place, players[0], players[1]);
+            place.cams[0] = new PlayersCamera(place.maps.get(0), players[0], players[1]);
         } else if (nrPl == 3) {
             players[0].init(4, 4, 56, 56, place, 256, 256);
             players[1].init(4, 4, 56, 56, place, 512, 1024);
             players[2].init(4, 4, 56, 56, place, 1024, 512);
             if (settings.hSplitScreen) {
-                players[0].addCamera(new PlayersCamera(place, players[0], 2, 4, 0));
+                players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 2, 4, 0));
             } else {
-                players[0].addCamera(new PlayersCamera(place, players[0], 4, 2, 0));
+                players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 4, 2, 0));
             }
-            players[1].addCamera(new PlayersCamera(place, players[1], 4, 4, 1));
-            players[2].addCamera(new PlayersCamera(place, players[2], 4, 4, 2));
-            place.cams[1] = new PlayersCamera(place, players[0], players[1], players[2]);
+            players[1].addCamera(new PlayersCamera(place.maps.get(0), players[1], 4, 4, 1));
+            players[2].addCamera(new PlayersCamera(place.maps.get(0), players[2], 4, 4, 2));
+            place.cams[1] = new PlayersCamera(place.maps.get(0), players[0], players[1], players[2]);
         } else if (nrPl == 4) {
             players[0].init(4, 4, 56, 56, place, 256, 256);
             players[1].init(4, 4, 56, 56, place, 512, 1024);
             players[2].init(4, 4, 56, 56, place, 1024, 512);
             players[3].init(4, 4, 56, 56, place, 1024, 1024);
-            players[0].addCamera(new PlayersCamera(place, players[0], 4, 4, 0));
-            players[1].addCamera(new PlayersCamera(place, players[1], 4, 4, 1));
-            players[2].addCamera(new PlayersCamera(place, players[2], 4, 4, 2));
-            players[3].addCamera(new PlayersCamera(place, players[3], 4, 4, 3));
-            place.cams[2] = new PlayersCamera(place, players[0], players[1], players[2], players[3]);
+            players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 4, 4, 0));
+            players[1].addCamera(new PlayersCamera(place.maps.get(0), players[1], 4, 4, 1));
+            players[2].addCamera(new PlayersCamera(place.maps.get(0), players[2], 4, 4, 2));
+            players[3].addCamera(new PlayersCamera(place.maps.get(0), players[3], 4, 4, 3));
+            place.cams[2] = new PlayersCamera(place.maps.get(0), players[0], players[1], players[2], players[3]);
         }
         System.arraycopy(players, 0, place.players, 0, 4);
         place.makeShadows();
@@ -228,16 +228,13 @@ public class MyGame extends Game {
         for (int p = 0; p < nrPl; p++) {
             Map m = place.maps.get(0);
             players[p].changeMap(m);
-            Camera cam = (((Player) players[p]).getCam());
-            cam.map = m;
-            cam.update();
         }
     }
 
     private void addPlayerOffline(int p) {
         if (p < 4 && place.playersLength < 4) {
             players[p].init(4, 4, 56, 56, place, p * 256, p * 265);
-            ((Player) place.players[p]).addCamera(new PlayersCamera(place, place.players[p], 2, 2, p));
+            ((Player) place.players[p]).addCamera(new PlayersCamera(players[0].getMap(), place.players[p], 2, 2, p));
             players[p].changeMap(players[0].getMap());
             if (p != place.playersLength) {
                 Player tempG = players[place.playersLength];
@@ -272,36 +269,36 @@ public class MyGame extends Game {
     }
 
     private void updatePlayersCam() {
-        for (int c = 0; c < place.playersLength; c++) {
+        for (int nr = 0; nr < place.playersLength; nr++) {
             if (place.playersLength == 1) {
                 ((PlayersCamera) ((Player) place.players[0]).getCam()).reInit(2, 2);
             } else if (place.playersLength == 2) {
                 if (place.cams[0] == null) {
-                    place.cams[0] = new PlayersCamera(place, players[0], players[1]);
+                    place.cams[0] = new PlayersCamera(players[0].getMap(), players[0], players[1]);
                 }
                 if (settings.hSplitScreen) {
-                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(2, 4);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCam()).reInit(2, 4);
                 } else {
-                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 2);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCam()).reInit(4, 2);
                 }
             } else if (place.playersLength == 3) {
                 if (place.cams[1] == null) {
-                    place.cams[1] = new PlayersCamera(place, players[0], players[1], players[2]);
+                    place.cams[1] = new PlayersCamera(players[0].getMap(), players[0], players[1], players[2]);                   
                 }
-                if (c == 0) {
+                if (nr == 0) {
                     if (settings.hSplitScreen) {
-                        ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(2, 4);
+                        ((PlayersCamera) ((Player) place.players[nr]).getCam()).reInit(2, 4);
                     } else {
-                        ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 2);
+                        ((PlayersCamera) ((Player) place.players[nr]).getCam()).reInit(4, 2);
                     }
                 } else {
-                    ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 4);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCam()).reInit(4, 4);
                 }
             } else {
                 if (place.cams[2] == null) {
-                    place.cams[2] = new PlayersCamera(place, players[0], players[1], players[2], players[3]);
+                    place.cams[2] = new PlayersCamera(players[0].getMap(), players[0], players[1], players[2], players[3]);
                 }
-                ((PlayersCamera) ((Player) place.players[c]).getCam()).reInit(4, 4);
+                ((PlayersCamera) ((Player) place.players[nr]).getCam()).reInit(4, 4);
             }
         }
     }
@@ -312,10 +309,15 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].init(4, 4, 56, 56, place);
-        players[0].addCamera(new PlayersCamera(place, players[0], 2, 2, 0)); // 2 i 2 to tryb SS
+        players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();
         started = runFlag = true;
+        Map m = place.maps.get(0);
+        players[0].changeMap(m);
+        Camera cam = ((Player) players[0]).getCam();
+        cam.getMap().addObj(players[0]);
+        cam.update();
     }
 
     @Override
@@ -324,10 +326,15 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].init(4, 4, 56, 56, place);
-        players[0].addCamera(new PlayersCamera(place, players[0], 2, 2, 0)); // 2 i 2 to tryb SS
+        players[0].addCamera(new PlayersCamera(place.maps.get(0), players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();
         started = runFlag = true;
+        Map m = place.maps.get(0);
+        players[0].changeMap(m);
+        Camera cam = (((Player) players[0]).getCam());
+        cam.getMap().addObj(players[0]);
+        cam.update();
     }
 
     @Override

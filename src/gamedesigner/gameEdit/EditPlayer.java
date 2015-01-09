@@ -102,7 +102,7 @@ public class EditPlayer extends Player {
     }
 
     @Override
-    public void update(Place place) {
+    public void update() {
         int mspeed = 10;
         if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
             mspeed *= 2;

@@ -34,7 +34,7 @@ public abstract class Player extends Entity {
 
     public abstract void init(int startX, int startY, int width, int height, Place place);
 
-    public abstract void update(Place place);
+    public abstract void update();
 
     public abstract void sendUpdate(Place place);
 
@@ -65,9 +65,9 @@ public abstract class Player extends Entity {
     @Override
     public void changeMap(Map othermap) {
         super.changeMap(othermap);
-        cam.map = othermap;
+        cam.setMap(othermap);
     }
-    
+
     public void addMenu(Menu menu) {
         this.menu = menu;
     }

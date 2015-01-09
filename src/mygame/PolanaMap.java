@@ -22,7 +22,7 @@ public class PolanaMap extends Map {
 
     public PolanaMap(Place place, int width, int height, int sTile) {
         super("Polana", place, width, height, sTile);
-        
+
         FGTile fgt;
         Tile GRASS = new Tile(place.getSpriteSheet("tlo"), sTile, 1, 8, place);
         Tile ROCK = new Tile(place.getSpriteSheet("tlo"), sTile, 1, 1, place);
@@ -136,9 +136,5 @@ public class PolanaMap extends Map {
         areas.add(testf);
         areas.add(testg);
         areas.add(border);
-        //if (place.isHost) {
-//            addObj(new MyMob(1280, 1024, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
-//            addObj(new MyMob(1024, 1664, 0, 8, 128, 112, 4, 512, "rabbit", this, true, mobID++));
-        //}
     }
 }
