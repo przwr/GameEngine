@@ -5,7 +5,6 @@
  */
 package mygame;
 
-import engine.Delay;
 import game.Game;
 import net.GameOnline;
 import game.gameobject.GameObject;
@@ -48,15 +47,14 @@ public class MyGameOnline extends GameOnline {
     @Override
     public synchronized void joinServer() {
         client = new GameClient(g.players[0], this, g.settings.serverIP);
-        Delay delay = new Delay(2000);
-        delay.restart();
         if (client.isConnected) {
-            g.runClient((short) 0);
+            g.runClient();
             g.mode = 1;
-            return;
+            g.players[0].changeMap(g.place.getMapById(client.tempMapId));
+        } else {
+            client.Close();
+            client = null;
         }
-        client.Close();
-        client = null;
     }
 
     @Override
@@ -247,7 +245,9 @@ public class MyGameOnline extends GameOnline {
                         if (newMob[i] != null) {
                             System.out.println("Adding Mob with ID: " + newMob[i].getId());
                             Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", tempPlace, true, newMob[i].getId());
-                            tempPlace.getMapById(newMob[i].getMapId()).addObj(mob);
+                            Map map = tempPlace.getMapById(newMob[i].getMapId());
+                            map.addObj(mob);
+                            mob.setMap(map);
                             newMob[i] = null;
                         }
                     }

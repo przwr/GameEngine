@@ -45,7 +45,7 @@ public abstract class Place extends ScreenPlace {
 //    public GameObject[] visibleLights = new GameObject[2048];
 //    public ArrayList<Area> areas = new ArrayList<>();
     public final ArrayList<Map> maps = new ArrayList<>();
-    private final ArrayList<Map> preRendererdMaps = new ArrayList<>();
+    protected final ArrayList<Map> tempMaps = new ArrayList<>();
 //
 //    public ArrayList<GameObject> depthObj = new ArrayList<>();
 //    public ArrayList<GameObject> foregroundTiles = new ArrayList<>();
@@ -88,20 +88,21 @@ public abstract class Place extends ScreenPlace {
         rds[0] = new render() {
             @Override
             public void render() {
-                preRendererdMaps.clear();
+                tempMaps.clear();
+                Map map;
                 for (int p = 0; p < playersLength; p++) {
-                    Map m = players[p].getMap();
-                    if (!preRendererdMaps.contains(m)) {
-                        Renderer.findVisibleLights(m, playersLength);   //Renderer zależy od place'a, czeba zmienić
+                    map = players[p].getMap();
+                    if (!tempMaps.contains(map)) {
+                        Renderer.findVisibleLights(map, playersLength);   //Renderer zależy od place'a, czeba zmienić
                         if (!settings.shadowOff) {
-                            Renderer.preRendLights(m);
+                            Renderer.preRendLights(map);
                         }
-                        preRendererdMaps.add(m);
+                        tempMaps.add(map);
                     }
                 }
                 for (int p = 0; p < playersLength; p++) {
                     cam = (((Player) players[p]).getCam());
-                    Map m = players[p].getMap();
+                    map = players[p].getMap();
                     SplitScreen.setSplitScreen(place, playersLength, p);    //+
                     if (p == 0 || !singleCam) {
                         glEnable(GL_SCISSOR_TEST);
@@ -109,10 +110,10 @@ public abstract class Place extends ScreenPlace {
                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         sprites.setLastTex(-1);
 //                        glOrtho(-1 / settings.SCALE, 1 / settings.SCALE, -1 / settings.SCALE, 1 / settings.SCALE, 1.0, -1.0);
-                        if (m != null) {
-                            m.renderBack(cam);
-                            m.renderObj(cam);
-                            m.renderText(cam);
+                        if (map != null) {
+                            map.renderBack(cam);
+                            map.renderObj(cam);
+                            map.renderText(cam);
                         }
                         Renderer.renderLights(r, g, b, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                         glDisable(GL_SCISSOR_TEST);

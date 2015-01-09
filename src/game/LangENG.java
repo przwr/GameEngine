@@ -27,6 +27,7 @@ public class LangENG extends Language {
         m.NotFound = "Not found!";
         m.UnableToConnect = "Unable to connect!";
         m.Disconnected = "Disconnected from server!";
+        m.FullServer = "Server is Full!";
         m.Options = "Options";
         m.End = "End";
         m.Quit = "Quit";

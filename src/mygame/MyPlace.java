@@ -125,13 +125,20 @@ public class MyPlace extends Place {
         ups[1] = new update() {
             @Override
             public void up() {
-                // do Poprawienia
-                Map map = players[0].getMap();
+                tempMaps.clear();
+                Map map;
                 if (game.online.server != null) {
-                    for (Mob mob : map.sMobs) {
-                        mob.update(place);
+                    for (int i = 0; i < playersLength; i++) {
+                        map = players[i].getMap();
+                        if (!tempMaps.contains(map)) {
+                            for (Mob mob : map.sMobs) {
+                                mob.update(place);
+                            }
+                            tempMaps.add(map);
+                        }
                     }
                 } else if (game.online.client != null) {
+                    map = players[0].getMap();
                     for (Mob mob : map.sMobs) {
                         mob.updateHard();
                     }

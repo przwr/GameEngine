@@ -38,7 +38,7 @@ public abstract class Player extends Entity {
 
     public abstract void sendUpdate(Place place);
 
-    public void addCamera(Camera cam) {
+    public void setCamera(Camera cam) {
         this.cam = cam;
     }
 

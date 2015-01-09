@@ -27,6 +27,7 @@ public class LangPL extends Language {
         m.NotFound = "Nie znaleziono!";
         m.UnableToConnect = "Nie można się połączyć!";
         m.Disconnected = "Połączenie z serwerem zostało zerwane!";
+        m.FullServer = "Serwer jest pełny!";
         m.Options = "Opcje";
         m.End = "Zakończ";
         m.Quit = "Wyjdź";

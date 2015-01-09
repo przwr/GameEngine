@@ -130,7 +130,7 @@ public class MyPlayer extends Player {
 
             Drawer.setColor(new Color(0, 0, 0, 51));
             Drawer.drawElipse(0, 0, Methods.RoundHU((float) collision.getWidth() / 2), Methods.RoundHU((float) collision.getHeight() / 2), 15);
-            Drawer.refreshColor(place);
+            Drawer.refreshColor(map.place);
             glTranslatef(0, (int) -jump, 0);
 
             getAnim().render(animate);
@@ -235,7 +235,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void updateRest(Update up) {
+    public synchronized void updateRest(Update up) {
         Map map = place.getMapById(up.getMapId());
         if (map != null) {
             changeMap(map);

@@ -67,7 +67,7 @@ public class EditorGame extends Game {
         place = new EditorPlace(this, (int) (settings.SCALE * 32000), (int) (settings.SCALE * 32000), (int) (settings.SCALE * 64), settings);
         place.players = new GameObject[1];
         players[0].init(4, 4, 56, 56, place, 256, 256);
-        players[0].addCamera(new EditCamera(place.maps.get(0), players[0], 2, 2, 0));
+        players[0].setCamera(new EditCamera(place.maps.get(0), players[0], 2, 2, 0));
         System.arraycopy(players, 0, place.players, 0, 4);
         place.makeShadows();
         mode = 0;
@@ -90,7 +90,7 @@ public class EditorGame extends Game {
     }
 
     @Override
-    public void runClient(short mapId) {
+    public void runClient() {
     }
 
     @Override

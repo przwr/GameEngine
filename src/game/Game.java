@@ -42,7 +42,7 @@ public abstract class Game {
 
     public abstract void resumeGame();
 
-    public abstract void runClient(short mapId);
+    public abstract void runClient();
 
     public abstract void runServer();
 

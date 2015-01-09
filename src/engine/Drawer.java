@@ -93,9 +93,7 @@ public class Drawer {
     }
 
     public static void refreshColor(Place p) {
-        if (p != null) {
-            glColor4f(p.r, p.g, p.b, 1.0f);
-        }
+        glColor4f(p.r, p.g, p.b, 1.0f);
     }
 
     public static void refreshBlending() {

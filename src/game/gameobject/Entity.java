@@ -99,8 +99,7 @@ public abstract class Entity extends GameObject {
     public void updateHard() {  // przesuwa graczy
         if (ups[3] != null && ((curUp != 3 || lastAdded != 0) && (curUp + 1 != lastAdded))) {
             if (dCount < ups[curUp].delsX().size()) {
-                up = ups[curUp];
-                
+                up = ups[curUp];                
                 movetoPoint(Methods.RoundHU((up.getX() - up.delsX().get(dCount)) * scale) - getX(), Methods.RoundHU((up.getY() - up.delsY().get(dCount)) * scale) - getY());
                 dCount++;
             } else {

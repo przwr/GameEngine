@@ -56,13 +56,11 @@ public abstract class GameObject {
 
     @Override
     public boolean equals(Object o) {
-        try {
+        if (o instanceof GameObject) {
             GameObject go = (GameObject) o;
             if (go.getX() == getX() && go.getY() == getY() && go.getName().equals(getName())) {
                 return true;
             }
-        } catch (Exception e) {
-            return false;
         }
         return false;
     }
@@ -101,18 +99,19 @@ public abstract class GameObject {
     public Map getMap() {
         return map;
     }
-    
+
     public void setMap(Map otherMap) {  //UWAGA! nie zmienia planszy! tylko ustawia
         map = otherMap;
     }
-    
+
     public void changeMap(Map otherMap) {
-        if (map != null)
+        if (map != null) {
             map.deleteObj(this);
-        otherMap.addObj(this);
+        }
         map = otherMap;
+        map.addObj(this);
     }
-    
+
     protected void init(String name, int x, int y, int sx, int sy, Place place) {
         this.x = x;
         this.y = y;
@@ -269,7 +268,7 @@ public abstract class GameObject {
     public Place getPlace() {
         return place;
     }
-    
+
     public void setPlace(Place p) {
         place = p;
     }

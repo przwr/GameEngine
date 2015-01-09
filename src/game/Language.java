@@ -31,6 +31,7 @@ public class Language {
         public String NotFound;
         public String UnableToConnect;
         public String Disconnected;
+        public String FullServer;
         public String Options;
         public String End;
         public String Quit;
