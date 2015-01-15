@@ -40,47 +40,63 @@ public class Tile extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         if (simpleLighting) {
-            if (isLit) {
-                glColor3f(color, color, color);
-            } else {
-                glColor3f(0f, 0f, 0f);
-            }
+            glColor3f(color, color, color);
             Drawer.drawRectangle(0, 0, width, height);
             glColor3f(1f, 1f, 1f);
         } else if (sprite != null) {
-            if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color);
-            } else {
-                Drawer.drawShapeInBlack(sprite);
-            }
+            Drawer.drawShapeInColor(sprite, color, color, color);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         }
         glPopMatrix();
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe) {
+    public void renderShadow(int xEffect, int yEffect, Figure figure) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         if (simpleLighting) {
-            if (isLit) {
-                glColor4f(color, color, color, 1f);
-            } else {
-                glColor4f(0f, 0f, 0f, 1f);
-            }
+            glColor3f(0f, 0f, 0f);
             Drawer.drawRectangle(0, 0, width, height);
-            glColor4f(1f, 1f, 1f, 1f);
+            glColor3f(1f, 1f, 1f);
+        } else if (sprite != null) {
+            Drawer.drawShapeInBlack(sprite);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        }
+        glPopMatrix();
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
+        glPushMatrix();
+        glTranslatef(xEffect, yEffect, 0);
+        if (simpleLighting) {
+            glColor3f(color, color, color);
+            Drawer.drawRectangle(0, 0, width, height);
+            glColor3f(1f, 1f, 1f);
         } else if (sprite != null) {
             glEnable(GL_TEXTURE_2D);
-            if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color);
-            } else {
-                Drawer.drawShapeInBlack(sprite);
-            }
+            Drawer.drawShapeInColor(sprite, color, color, color);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_TEXTURE_2D);
+        }
+        glPopMatrix();
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
+        glPushMatrix();
+        glTranslatef(xEffect, yEffect, 0);
+        if (simpleLighting) {
+            glColor3f(0f, 0f, 0f);
+            Drawer.drawRectangle(0, 0, width, height);
+            glColor3f(1f, 1f, 1f);
+        } else if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
+            Drawer.drawShapeInBlack(sprite);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glDisable(GL_TEXTURE_2D);
         }

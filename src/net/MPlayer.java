@@ -42,7 +42,9 @@ public class MPlayer {
 
     public void sendUpTCP() {
         pu.Trim();
-        conection.sendTCP(pu);
+        if (conection.isConnected()) {
+            conection.sendTCP(pu);
+        }
         pu.Reset();
     }
 

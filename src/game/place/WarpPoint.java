@@ -6,7 +6,9 @@
 package game.place;
 
 import collision.Figure;
+import engine.Main;
 import game.gameobject.GameObject;
+import game.gameobject.Player;
 
 /**
  *
@@ -91,20 +93,45 @@ public class WarpPoint extends GameObject {
                 }
                 o.setX(w.x);
                 o.setY(w.y);
+                if (o instanceof Player && ((Player) o).getCam() != null) {
+                    ((Player) o).getCam().update();
+                }
             }
         }
     }
 
     @Override
     public void render(int xEffect, int yEffect) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe) {
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xs, int xe) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
     }
 
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f, int xs, int xe) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
+    }
 }

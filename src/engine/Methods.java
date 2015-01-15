@@ -27,11 +27,13 @@ public class Methods {
     }
 
     public static int PointDistance(int x, int y, int xa, int ya) {
-        return (int) FastMath.sqrt(FastMath.pow(xa - x, 2) + FastMath.pow(ya - y, 2));
+        int dx = xa - x;
+        int dy = ya - y;
+        return (int) FastMath.sqrt(dx * dx + dy * dy);
     }
 
     public static int PointDistanceSimple(int x, int y, int xa, int ya) {
-        return ((xa - x) * (xa - x) + (ya - y) * (ya - y));
+        return (int) (FastMath.abs(xa - x) + FastMath.abs(ya - y));
     }
 
     public static int PointDifference(int x, int y, int xa, int ya) {

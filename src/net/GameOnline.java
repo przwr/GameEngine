@@ -30,6 +30,7 @@ public abstract class GameOnline {
     protected MobUpdate[] newMob;
     protected ArrayList<MobUpdate> mUps1;
     protected ArrayList<MobUpdate> mUps2;
+    protected short[] mapIdsForUpdate = new short[2];
     protected boolean isMUps1;
     public int pastNr;
     public final Game g;

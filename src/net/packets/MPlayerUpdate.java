@@ -15,6 +15,7 @@ import net.jodk.lang.FastMath;
 public class MPlayerUpdate extends Update implements Serializable {
 
     private byte id;
+    private short mapId;
     private boolean isEmits, isHop;
 
     public MPlayerUpdate() {
@@ -51,6 +52,10 @@ public class MPlayerUpdate extends Update implements Serializable {
     public synchronized void setBooleans(boolean isEmits, boolean isHop) {
         this.isEmits = isEmits;
         this.isHop = isHop;
+    }
+
+    public synchronized short getMapId() {
+        return mapId;
     }
 
     public synchronized byte getId() {

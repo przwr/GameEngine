@@ -36,7 +36,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public class Renderer {
 
-    private static final int w = Display.getWidth(), h = Display.getHeight(), w1o2 = (w >> 1), h1o2 = (h >> 1);
+    private static final int w = Display.getWidth(), h = Display.getHeight(), w1o2 = (w / 2), h1o2 = (h / 2);
     private static FBORenderer fbFrame;
     private static GameObject light;
     private static final int[] SX = new int[7], EX = new int[7], SY = new int[7], EY = new int[7];
@@ -54,15 +54,15 @@ public class Renderer {
             for (int p = 0; p < playersLength; p++) {
                 if (place.players[p].getMap() == m) {
                     if (place.singleCam && playersLength > 1) {
-                        if (tmpLight.isEmits() && SY[2 + playersLength] <= tmpLight.getY() + (tmpLight.getLight().getSY() >> 1) && EY[2 + playersLength] >= tmpLight.getY() - (tmpLight.getLight().getSY() >> 1)
-                                && SX[2 + playersLength] <= tmpLight.getX() + (tmpLight.getLight().getSX() >> 1) && EX[2 + playersLength] >= tmpLight.getX() - (tmpLight.getLight().getSX() >> 1)) {
+                        if (tmpLight.isEmits() && SY[2 + playersLength] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[2 + playersLength] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
+                                && SX[2 + playersLength] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[2 + playersLength] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
                             isVisible = true;
                             place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].nrVLights++] = tmpLight;
                         }
                     } else {
                         for (int pi = 0; pi < playersLength; pi++) {
-                            if (place.players[pi].getMap() == m && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() >> 1) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() >> 1)
-                                    && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getSX() >> 1) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getSX() >> 1)) {
+                            if (place.players[pi].getMap() == m && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
+                                    && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
                                 isVisible = true;
                                 (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = tmpLight;
                             }
@@ -80,15 +80,15 @@ public class Renderer {
             light = place.players[p];
             if (light.getMap() == m) {
                 if (place.singleCam && playersLength > 1) {
-                    if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getSY() >> 1) && EY[2 + playersLength] >= light.getY() - (light.getLight().getSY() >> 1)
-                            && SX[2 + playersLength] <= light.getX() + (light.getLight().getSX() >> 1) && EX[2 + playersLength] >= light.getX() - (light.getLight().getSX() >> 1)) {
+                    if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getSY() / 2) && EY[2 + playersLength] >= light.getY() - (light.getLight().getSY() / 2)
+                            && SX[2 + playersLength] <= light.getX() + (light.getLight().getSX() / 2) && EX[2 + playersLength] >= light.getX() - (light.getLight().getSX() / 2)) {
                         isVisible = true;
                         place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].nrVLights++] = light;
                     }
                 } else {
                     for (int pi = 0; pi < playersLength; pi++) {
-                        if (place.players[pi].getMap() == m && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() >> 1) && EY[pi] >= light.getY() - (light.getLight().getSY() >> 1)
-                                && SX[pi] <= light.getX() + (light.getLight().getSX() >> 1) && EX[pi] >= light.getX() - (light.getLight().getSX() >> 1)) {
+                        if (place.players[pi].getMap() == m && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() / 2) && EY[pi] >= light.getY() - (light.getLight().getSY() / 2)
+                                && SX[pi] <= light.getX() + (light.getLight().getSX() / 2) && EX[pi] >= light.getX() - (light.getLight().getSX() / 2)) {
                             isVisible = true;
                             (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
                         }

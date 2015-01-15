@@ -23,7 +23,6 @@ public class InputPadDPad extends AnyInput {
         this.padNr = padNr;
         this.isX = isX;
         this.isPlus = isPlus;
-        this.type = 3;
         label = "JOY " + padNr + ": D-PAD " + (isX ? "X" : "Y") + (isPlus ? "+" : "-");
     }
 
@@ -54,6 +53,6 @@ public class InputPadDPad extends AnyInput {
 
     @Override
     public String toString() {
-        return type + " " + padNr + " " + (isX ? 1 : 0) + " " + (isPlus ? 1 : 0);
+        return AnyInput.CONTROLLER_DPAD + " " + padNr + " " + (isX ? 1 : 0) + " " + (isPlus ? 1 : 0);
     }
 }

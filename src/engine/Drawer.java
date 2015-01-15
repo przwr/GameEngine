@@ -47,6 +47,7 @@ import sprites.Sprite;
 public class Drawer {
 
     private static final int white = glGenTextures();
+    private static Place place;
 
     public static void drawRectangle(int xs, int ys, int w, int h) {
         glTranslatef(xs, ys, 0);
@@ -92,16 +93,16 @@ public class Drawer {
         glColor4f(c.r, c.g, c.b, c.a);
     }
 
-    public static void refreshColor(Place p) {
-        glColor4f(p.r, p.g, p.b, 1.0f);
+    public static void refreshColor() {
+        glColor4f(place.r, place.g, place.b, 1.0f);
     }
 
     public static void refreshBlending() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void refresh(Place p) {
-        refreshColor(p);
+    public static void refresh() {
+        refreshColor();
         refreshBlending();
     }
 
@@ -194,5 +195,9 @@ public class Drawer {
     }
 
     private Drawer() {
+    }
+
+    public static void setPlace(Place place) {
+        Drawer.place = place;
     }
 }

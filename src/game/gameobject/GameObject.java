@@ -18,33 +18,25 @@ import sprites.Sprite;
 
 public abstract class GameObject {
 
-    protected double x;
-    protected double y;
-    protected int width;
-    protected int height;
-    protected boolean solid;
-    protected boolean emitter;
-    protected boolean emits;
-    protected boolean top;
-    protected boolean stale;
-    protected boolean animate;
-    protected boolean simpleLighting;
+    protected double x, y;
+    protected int width, height, depth, startX, startY;
+    protected boolean solid, emitter, emits, top, animate, simpleLighting;
     protected Sprite sprite;
     protected Light light;
     protected String name;
     protected Place place;
     protected Map map;
     protected Figure collision;
-    protected int depth;
-
-    protected int startX;   // *--<('~'<) BEGONE YOU EVIL SX AND SY!
-    protected int startY;
 
     public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f);
+    public abstract void renderShadowLit(int xEffect, int yEffect, float color, Figure f);
 
-    public abstract void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe);
+    public abstract void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xs, int xe);
+
+    public abstract void renderShadow(int xEffect, int yEffect, Figure f);
+
+    public abstract void renderShadow(int xEffect, int yEffect, Figure f, int xs, int xe);
 
     protected void init(String name, int x, int y, Place place) {
         this.x = x;
@@ -52,6 +44,14 @@ public abstract class GameObject {
         depth = 0;
         this.name = name;
         this.place = place;
+    }
+
+    public void changeMap(Map otherMap) {
+        if (map != null) {
+            map.deleteObj(this);
+        }
+        map = otherMap;
+        map.addObj(this);
     }
 
     @Override
@@ -76,63 +76,56 @@ public abstract class GameObject {
         return hash;
     }
 
+    public boolean isSolid() {
+        return solid;
+    }
+
+    public boolean isOnTop() {
+        return top;
+    }
+
+    public boolean isAnimate() {
+        return animate;
+    }
+
+    public boolean isEmitter() {
+        return emitter;
+    }
+
+    public boolean isEmits() {
+        return emits;
+    }
+
+    public int getX() {
+        return (int) x;
+    }
+
+    public int getY() {
+        return (int) y;
+    }
+
+    public double getXInDouble() {
+        return x;
+    }
+
+    public double getYInDouble() {
+        return y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public int getDepth() {
         return (int) (depth + y);
     }
 
     public int getPureDepth() {
         return depth;
-    }
-
-    public void setDepth(int d) {
-        depth = d;
-    }
-
-    public Figure getCollision() {
-        return collision;
-    }
-
-    public void setCollision(Figure f) {
-        collision = f;
-    }
-
-    public Map getMap() {
-        return map;
-    }
-
-    public void setMap(Map otherMap) {  //UWAGA! nie zmienia planszy! tylko ustawia
-        map = otherMap;
-    }
-
-    public void changeMap(Map otherMap) {
-        if (map != null) {
-            map.deleteObj(this);
-        }
-        map = otherMap;
-        map.addObj(this);
-    }
-
-    protected void init(String name, int x, int y, int sx, int sy, Place place) {
-        this.x = x;
-        this.y = y;
-        this.name = name;
-        this.place = place;
-    }
-
-    public void addX(int x) {
-        this.x += x;
-    }
-
-    public void addY(int y) {
-        this.y += y;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     public int getEndOfX() {
@@ -167,68 +160,20 @@ public abstract class GameObject {
         return (int) y + collision.getHeight() / 2;
     }
 
-    public int getX() {
-        return (int) x;
+    public Figure getCollision() {
+        return collision;
     }
 
-    public int getY() {
-        return (int) y;
+    public Map getMap() {
+        return map;
     }
 
-    public double getXInDouble() {
-        return x;
-    }
-
-    public double getYInDouble() {
-        return y;
-    }
-
-    public int getWidth() {
+    public int getCollisionWidth() {
         return collision != null ? collision.getWidth() : width;
     }
 
-    public int getHeight() {
+    public int getCollisionHeight() {
         return collision != null ? collision.getHeight() : height;
-    }
-
-    public int Width() {
-        return width;
-    }
-
-    public int Height() {
-        return height;
-    }
-
-    public boolean isOnTop() {
-        return top;
-    }
-
-    public void setOnTop(boolean top) {
-        this.top = top;
-    }
-
-    public boolean isStale() {
-        return stale;
-    }
-
-    public void setStale(boolean st) {
-        this.stale = st;
-    }
-
-    public void setSolid(boolean solid) {
-        this.solid = solid;
-    }
-
-    public boolean isSolid() {
-        return solid;
-    }
-
-    public boolean isEmitter() {
-        return emitter;
-    }
-
-    public boolean isEmits() {
-        return emits;
     }
 
     public int getStartX() {
@@ -239,18 +184,8 @@ public abstract class GameObject {
         return startY;
     }
 
-    public void renderLight(Place place, int x, int y) {
-        if (light != null) {
-            light.render(this, place, x, y);
-        }
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setEmits(boolean emits) {
-        this.emits = emits;
     }
 
     public Light getLight() {
@@ -261,16 +196,20 @@ public abstract class GameObject {
         return sprite;
     }
 
-    public boolean isAnimate() {
-        return animate;
-    }
-
     public Place getPlace() {
         return place;
     }
 
-    public void setPlace(Place p) {
-        place = p;
+    public void setSolid(boolean solid) {
+        this.solid = solid;
+    }
+
+    public void setOnTop(boolean top) {
+        this.top = top;
+    }
+
+    public void setEmits(boolean emits) {
+        this.emits = emits;
     }
 
     public void setX(double x) {
@@ -279,5 +218,29 @@ public abstract class GameObject {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public void setDepth(int d) {
+        depth = d;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setCollision(Figure f) {
+        collision = f;
+    }
+
+    public void setMap(Map otherMap) {  //UWAGA! nie zmienia planszy! tylko ustawia
+        map = otherMap;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 }

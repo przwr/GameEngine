@@ -32,8 +32,10 @@ public class GameServer {
     private final Player pl;
     private final GameOnline game;
     private final float SCALE;
+    private final int scopeX, scopeY;
     public boolean isRunning;
     private MPlayer tmp;
+    private Player tmpInGame;
     private MPlayer[] MPlayers = new MPlayer[4];
     private boolean[] isConnected = new boolean[4];
     private int nrPlayers = 0;
@@ -45,6 +47,8 @@ public class GameServer {
         this.pl = pl;
         this.game = game;
         this.SCALE = game.g.settings.SCALE;
+        this.scopeX = (int) (2400 * SCALE);
+        this.scopeY = (int) (1500 * SCALE);
         delay = new Delay(50);
         delay.terminate();
         Server temp = null;
@@ -182,20 +186,31 @@ public class GameServer {
     public synchronized void sendUpdate(short mapId, int x, int y, boolean isEmits, boolean isHop) {
         try {
             MPlayers[0].update(mapId, x, y, SCALE);
+            int mobX, mobY;
             for (int i = 1; i < nrPlayers; i++) {
                 tmp = MPlayers[i];
-                for (Mob mob : game.g.getPlace().maps.get(0).sMobs) {       // do poprawienia
-                    tmp.getPU().MobUpdate(mob.id, mob.getX(), mob.getY(), SCALE);
+                if (tmp != null) {
+                    tmpInGame = tmp.inGame();
+                    if (tmpInGame != null) {
+                        for (Mob mob : game.g.getPlace().getMapById(tmp.getMapId()).sMobs) {
+                            mobX = mob.getX();
+                            mobY = mob.getY();
+                            if (Math.abs(mobX - tmp.inGame().getX()) < scopeX && Math.abs(mobY - tmp.inGame().getY()) < scopeY) {
+                                tmp.getPU().MobUpdate(mob.id, mobX, mobY, SCALE);
+                            }
+                        }
+                    }
+                    tmp.getPU().playerUpdate(MPlayers[0], isEmits, isHop);
                 }
-                tmp.getPU().playerUpdate(MPlayers[0], isEmits, isHop);
             }
             if (delay.isOver()) {
                 for (int i = 1; i < nrPlayers; i++) {
-                    if (MPlayers[i] != null) {
-                        MPlayers[i].sendUpTCP();
+                    tmp = MPlayers[i];
+                    if (tmp != null) {
+                        tmp.sendUpTCP();
                     }
-                    delay.restart();
                 }
+                delay.restart();
             }
         } catch (Exception e) {
             cleanUp(e);

@@ -18,9 +18,9 @@ import game.gameobject.inputs.InputPadStick;
  */
 public abstract class AnyInput {
 
+    public final static int ERROR2 = -2, ERROR = -1, KEYBOARD = 0, MOUSE = 1, CONTROLLER_KEY = 2, CONTROLLER_DPAD = 3, CONTROLLER_STICK = 4;
     protected String label;
     protected boolean pressed;
-    protected int type; // 0 - Keyboard;  1 - Mouse; 2 - Controller_Key; 3 - Controller_Dpad; 4 - Controller_Stick;
     protected int key;
     protected int padNr;
 
@@ -36,10 +36,6 @@ public abstract class AnyInput {
         pressed = bl;
     }
 
-    public int getType() {
-        return type;
-    }
-
     public int getPadNr() {
         return padNr;
     }
@@ -49,17 +45,21 @@ public abstract class AnyInput {
     }
 
     public static AnyInput createInput(int type, int[] table, Settings settings) {
-        if (type == 0) {
+        if (type == KEYBOARD) {
             return new InputKeyBoard(table[0]);
-        } else if (type == 1) {
+        } else if (type == MOUSE) {
             return new InputMouse(table[0]);
-        } else if (type == 2) {
+        } else if (type == CONTROLLER_KEY) {
             return new InputPadKey(settings.controllers, table[0], table[1]);
-        } else if (type == 3) {
-            return new InputPadDPad(settings.controllers, table[0], (table[1] == 1), (table[2] == 1));
-        } else if (type == 4) {
-            return new InputPadStick(settings.controllers, table[0], table[1], (table[2] == 1));
+        } else if (type == CONTROLLER_DPAD) {
+            return new InputPadDPad(settings.controllers, table[0], isTrue(table[1]), isTrue(table[2]));
+        } else if (type == CONTROLLER_STICK) {
+            return new InputPadStick(settings.controllers, table[0], table[1], isTrue(table[2]));
         }
         return null;
+    }
+
+    private static boolean isTrue(int value) {
+        return value == 1;
     }
 }

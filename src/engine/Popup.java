@@ -23,7 +23,7 @@ import org.newdawn.slick.Color;
  */
 public class Popup {
 
-    private static final int w2 = Display.getWidth() >> 1, h2 = Display.getHeight() >> 1;
+    private static final int w2 = Display.getWidth() / 2, h2 = Display.getHeight() / 2;
     private static final String[] messages = new String[100];
     public int i = -1;
     private final FontsHandler fonts;

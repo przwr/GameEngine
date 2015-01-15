@@ -6,6 +6,7 @@
 package game.gameobject;
 
 import collision.Figure;
+import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
 import engine.Methods;
@@ -40,7 +41,7 @@ public abstract class Mob extends Entity {
         this.range = Methods.RoundHU(scale * range);
         init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
         this.sprite = place.getSprite("rabbit");
-        setCollision(new Rectangle(this.width, this.height / 4, true, false, 0, this));
+        setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
         this.setMaxSpeed(speed);
     }
 
@@ -48,12 +49,12 @@ public abstract class Mob extends Entity {
 
     @Override
     protected boolean isColided(int magX, int magY) {
-        return collision.ifCollideSolid(getX() + magX, getY() + magY, map) || collision.ifCollide(getX() + magX, getY() + magY, place);
+        return collision.isCollideSolid(getX() + magX, getY() + magY, map) || collision.isCollidePlayer(getX() + magX, getY() + magY, place);
     }
 
     @Override
     public Player getCollided(int magX, int magY) {
-        return collision.getCollided(getX() + magX, getY() + magY, place);
+        return collision.firstPlayerCollide(getX() + magX, getY() + magY, place);
     }
 
     @Override
@@ -99,36 +100,6 @@ public abstract class Mob extends Entity {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             sprite.render();
-            glPopMatrix();
-        }
-    }
-
-    @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
-            if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color);
-            } else {
-                Drawer.drawShapeInBlack(sprite);
-            }
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glPopMatrix();
-        }
-    }
-
-    @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xs, int xe) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
-            if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color, xs, xe);
-            } else {
-                Drawer.drawShapeInBlack(sprite, xs, xe);
-            }
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glPopMatrix();
         }
     }

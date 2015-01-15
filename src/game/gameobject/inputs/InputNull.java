@@ -14,7 +14,6 @@ import game.gameobject.AnyInput;
 public class InputNull extends AnyInput {
 
     public InputNull() {
-        this.type = -2;
     }
 
     @Override

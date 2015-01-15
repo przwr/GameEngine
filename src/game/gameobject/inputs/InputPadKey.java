@@ -20,7 +20,6 @@ public class InputPadKey extends AnyInput {
         this.key = key;
         this.controllers = controllers;
         this.padNr = padNr;
-        this.type = 2;
         label = "JOY " + padNr + ": BUTTON " + key;
     }
 
@@ -39,6 +38,6 @@ public class InputPadKey extends AnyInput {
 
     @Override
     public String toString() {
-        return type + " " + padNr + " " + key;
+        return AnyInput.CONTROLLER_KEY + " " + padNr + " " + key;
     }
 }

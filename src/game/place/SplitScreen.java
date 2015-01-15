@@ -31,8 +31,8 @@ public class SplitScreen {
     private static final int heigth3o4 = (Display.getHeight() * 3) >> 2;
     private static final int width2o3 = (Display.getWidth() << 1) / 3;
     private static final int heigth2o3 = (Display.getHeight() << 1) / 3;
-    private static final int width1o2 = Display.getWidth() >> 1;
-    private static final int heigth1o2 = Display.getHeight() >> 1;
+    private static final int width1o2 = Display.getWidth() / 2;
+    private static final int heigth1o2 = Display.getHeight() / 2;
 
     public static void setSplitScreen(Place pl, int playersLength, int p) {
         pl.singleCam = false;

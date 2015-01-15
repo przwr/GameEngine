@@ -8,6 +8,8 @@ package collision;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -15,29 +17,37 @@ import java.awt.geom.Line2D;
  */
 public class Line extends Figure {
 
-    private final int xk;
+    private final int xk; // WHAT ?
     private final int yk;
     private boolean startDoubled;
     private boolean endDoubled;
 
-    public Line(int xs, int ys, int dx, int dy, GameObject owner) {  // Środek prostokąta (xs,ys) dla (0,0) jest w lewym górnym rogu prostokąta
-        super(xs, ys, owner);
+    public static Line create(int dx, int dy, GameObject owner) {
+        return new Line(0, 0, dx, dy, owner);
+    }
+
+    public static Line create(int xStart, int yStart, int dx, int dy, GameObject owner) {
+        return new Line(xStart, yStart, dx, dy, owner);
+    }
+
+    private Line(int xStart, int yStart, int dx, int dy, GameObject owner) {
+        super(xStart, yStart, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
         xk = dx;
         yk = dy;
-        this.type = 3;
+        points.add(new Point(-1, -1));
+        points.add(new Point(-1, -1));
+        points.trimToSize();
         centralize();
     }
 
     public Line(int dx, int dy, GameObject owner) {
-        super(0, 0, owner);
+        super(0, 0, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
         xk = dx;
         yk = dy;
-        this.type = 3;
         centralize();
     }
 
-    @Override
-    public void centralize() {
+    private void centralize() {
         width = xk;
         height = yk;
         xCentr = xk / 2;
@@ -45,32 +55,35 @@ public class Line extends Figure {
     }
 
     @Override
-    public Point[] listPoints() {
-        Point[] list = {startDoubled ? null : new Point(super.getX(), super.getY()),
-            endDoubled ? null : new Point(super.getX() + xk, super.getY() + yk)};
-        return list;
+    public Collection<Point> getPoints() {
+        points.clear();
+        if (startDoubled) {
+            points.get(0).set(-1, -1);
+        } else {
+            points.get(0).set(super.getX(), super.getY());
+        }
+        if (endDoubled) {
+            points.get(1).set(-1, -1);
+        } else {
+            points.get(1).set(super.getX() + xk, super.getY() + yk);
+        }
+        return points;
     }
 
     @Override
-    public boolean ifCollideSngl(int x, int y, Figure f) {
-
-        if (f.getType() == 1) {         // Z Prostokątem
-
-            Point[] list = f.listPoints();
+    public boolean isCollideSingle(int x, int y, Figure figure) {
+        if (figure instanceof Rectangle) {
+            ArrayList<Point> points = (ArrayList< Point>) figure.getPoints();
             int[] w = {super.getX(x), super.getY(y), super.getX(x) + xk, super.getY(y) + yk};
-            return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], list[0].getX(), list[0].getY(), list[1].getX(), list[1].getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], list[1].getX(), list[1].getY(), list[2].getX(), list[2].getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], list[2].getX(), list[2].getY(), list[3].getX(), list[3].getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], list[3].getX(), list[3].getY(), list[0].getX(), list[0].getY()));
-
-        } else if (f.getType() == 2) {  // Z Okręgiem
-
-            Circle l = (Circle) f;
+            return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(0).getX(), points.get(0).getY(), points.get(1).getX(), points.get(1).getY())
+                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(1).getX(), points.get(1).getY(), points.get(2).getX(), points.get(2).getY())
+                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(2).getX(), points.get(2).getY(), points.get(3).getX(), points.get(3).getY())
+                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(3).getX(), points.get(3).getY(), points.get(0).getX(), points.get(0).getY()));
+        } else if (figure instanceof Circle) {
+            Circle l = (Circle) figure;
             return (Line2D.ptSegDist(super.getX(x), super.getY(y), super.getX(x) + xk, super.getY(y) + yk, l.getX(), l.getY()) <= l.getRadius());
-
-        } else if (f.getType() == 3) {  // Z Linią
-
-            Line l = (Line) f;
+        } else if (figure instanceof Line) {
+            Line l = (Line) figure;
             return (Line2D.linesIntersect(super.getX(x), super.getY(y), super.getX(x) + xk, super.getY(y) + yk,
                     l.getX(), l.getY(), l.getX() + l.getXk(), l.getY() + l.getYk()));
         }

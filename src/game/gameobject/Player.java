@@ -23,16 +23,16 @@ public abstract class Player extends Entity {
     public Controler ctrl;
     protected Camera cam;
     protected GameOnline online;
-    public boolean isFirst;
+    protected boolean first;
     public byte id;
 
     public Player(String name) {
         this.name = name;
     }
 
-    public abstract void init(int startX, int startY, int width, int height, Place place, int x, int y);
+    public abstract void initialize(int startX, int startY, int width, int height, Place place, int x, int y);
 
-    public abstract void init(int startX, int startY, int width, int height, Place place);
+    public abstract void initialize(int startX, int startY, int width, int height, Place place);
 
     public abstract void update();
 
@@ -93,10 +93,10 @@ public abstract class Player extends Entity {
 
     public void setToLastNotCollided() {
         for (int i = online.pastNr - 1; i >= 0; i--) {
-            if (!collision.ifCollideSolid(online.past[i].x, online.past[i].y, map)) {
-                if (!collision.ifCollideSolid(online.past[i].x, getY(), map)) {
+            if (!collision.isCollideSolid(online.past[i].x, online.past[i].y, map)) {
+                if (!collision.isCollideSolid(online.past[i].x, getY(), map)) {
                     setPosition(online.past[i].x, getY());
-                } else if (!collision.ifCollideSolid(getX(), online.past[i].y, map)) {
+                } else if (!collision.isCollideSolid(getX(), online.past[i].y, map)) {
                     setPosition(getX(), online.past[i].y);
                 } else {
                     setPosition(online.past[i].x, online.past[i].y);
@@ -106,10 +106,10 @@ public abstract class Player extends Entity {
             }
         }
         for (int i = online.past.length - 1; i >= online.pastNr; i--) {
-            if (!collision.ifCollideSolid(online.past[i].x, online.past[i].y, map)) {
-                if (!collision.ifCollideSolid(online.past[i].x, getY(), map)) {
+            if (!collision.isCollideSolid(online.past[i].x, online.past[i].y, map)) {
+                if (!collision.isCollideSolid(online.past[i].x, getY(), map)) {
                     setPosition(online.past[i].x, getY());
-                } else if (!collision.ifCollideSolid(getX(), online.past[i].y, map)) {
+                } else if (!collision.isCollideSolid(getX(), online.past[i].y, map)) {
                     setPosition(getX(), online.past[i].y);
                 } else {
                     setPosition(online.past[i].x, online.past[i].y);
@@ -118,5 +118,9 @@ public abstract class Player extends Entity {
                 return;
             }
         }
+    }
+
+    public boolean isFirst() {
+        return first;
     }
 }

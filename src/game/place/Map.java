@@ -15,7 +15,7 @@ import game.place.cameras.Camera;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import mygame.MyPlayer;
+import gamecontent.MyPlayer;
 
 /**
  *
@@ -64,19 +64,25 @@ public class Map {
         Collections.sort(a, new ObjectsComparator());
     }
 
-    public void addFGTile(GameObject t, int x, int y, int depth, boolean replace) {
-        if (replace) {
-            tiles[x / sTile + y / sTile * height / sTile] = null;
-            for (GameObject s : foregroundTiles) {
-                if (s.getX() == x && s.getY() == y) {
-                    foregroundTiles.remove(s);
-                }
+    public void addFGTile(GameObject tile, int x, int y, int depth) {
+        tile.setX(x);
+        tile.setY(y);
+        tile.setDepth(depth);
+        foregroundTiles.add(tile);
+        sortObjects(foregroundTiles);
+    }
+
+    public void addFGTileAndReplace(GameObject tile, int x, int y, int depth) {
+        tiles[x / sTile + y / sTile * height / sTile] = null;
+        for (GameObject s : foregroundTiles) {
+            if (s.getX() == x && s.getY() == y) {
+                foregroundTiles.remove(s);
             }
         }
-        t.setX(x);
-        t.setY(y);
-        t.setDepth(depth);
-        foregroundTiles.add(t);
+        tile.setX(x);
+        tile.setY(y);
+        tile.setDepth(depth);
+        foregroundTiles.add(tile);
         sortObjects(foregroundTiles);
     }
 
@@ -163,7 +169,7 @@ public class Map {
     }
 
     public void renderBack(Camera cam) {
-        Drawer.refresh(place);
+        Drawer.refresh();
         for (int y = 0; y < height / sTile; y++) {
             if (cam.getSY() < (y + 1) * sTile && cam.getEY() > y * sTile) {
                 for (int x = 0; x < width / sTile; x++) {
@@ -188,19 +194,19 @@ public class Map {
     }
 
     public void renderBottom(Camera cam) {
-        Drawer.refresh(place);
+        Drawer.refresh();
         sortObjects(depthObj);
         int y = 0;
         for (GameObject go : depthObj) {
             while (y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < go.getDepth()) {
-                if (cam.getSY() <= foregroundTiles.get(y).getY() + (foregroundTiles.get(y).getHeight()) & cam.getEY() >= foregroundTiles.get(y).getY() - (foregroundTiles.get(y).getHeight())
-                        && cam.getSX() <= foregroundTiles.get(y).getX() + (foregroundTiles.get(y).getWidth()) && cam.getEX() >= foregroundTiles.get(y).getX() - (foregroundTiles.get(y).getWidth())) {
+                if (cam.getSY() <= foregroundTiles.get(y).getY() + (foregroundTiles.get(y).getCollisionHeight()) & cam.getEY() >= foregroundTiles.get(y).getY() - (foregroundTiles.get(y).getCollisionHeight())
+                        && cam.getSX() <= foregroundTiles.get(y).getX() + (foregroundTiles.get(y).getCollisionWidth()) && cam.getEX() >= foregroundTiles.get(y).getX() - (foregroundTiles.get(y).getCollisionWidth())) {
                     foregroundTiles.get(y).render(cam.getXOffEffect(), cam.getYOffEffect());
                 }
                 y++;
             }
-            if (cam.getSY() <= go.getY() + (go.Height()) && cam.getEY() >= go.getY() - (go.Height())
-                    && cam.getSX() <= go.getX() + (go.Width()) && cam.getEX() >= go.getX() - (go.Width())) {
+            if (cam.getSY() <= go.getY() + (go.getHeight()) && cam.getEY() >= go.getY() - (go.getHeight())
+                    && cam.getSX() <= go.getX() + (go.getWidth()) && cam.getEX() >= go.getX() - (go.getWidth())) {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
@@ -210,11 +216,11 @@ public class Map {
     }
 
     public void renderTop(Camera cam) {
-        Drawer.refresh(place);
+        Drawer.refresh();
         sortObjects(onTopObject);
         for (GameObject go : onTopObject) {
-            if (cam.getSY() <= go.getY() + (go.Height()) && cam.getEY() >= go.getY() - (go.Height())
-                    && cam.getSX() <= go.getX() + (go.Width()) && cam.getEX() >= go.getX() - (go.Width())) {
+            if (cam.getSY() <= go.getY() + (go.getHeight()) && cam.getEY() >= go.getY() - (go.getHeight())
+                    && cam.getSX() <= go.getX() + (go.getWidth()) && cam.getEX() >= go.getX() - (go.getWidth())) {
                 go.render(cam.getXOffEffect(), cam.getYOffEffect());
             }
         }
@@ -223,14 +229,14 @@ public class Map {
     protected void renderText(Camera cam) {
         for (int p = 0; p < place.playersLength; p++) {
             if (place.players[p].getMap().equals(this)) {
-                if (cam.getSY() <= place.players[p].getY() + (place.players[p].Height() + place.fonts.write(0).getHeight()) && cam.getEY() >= place.players[p].getY() - (place.players[p].Height() + place.fonts.write(0).getHeight())
+                if (cam.getSY() <= place.players[p].getY() + (place.players[p].getHeight() + place.fonts.write(0).getHeight()) && cam.getEY() >= place.players[p].getY() - (place.players[p].getHeight() + place.fonts.write(0).getHeight())
                         && cam.getSX() <= place.players[p].getX() + (place.fonts.write(0).getWidth(place.players[p].getName())) && cam.getEX() >= place.players[p].getX() - (place.fonts.write(0).getWidth(place.players[p].getName()))) {
                     ((MyPlayer) place.players[p]).renderName(place, cam);
                 }
             }
         }
         for (Mob mob : sMobs) {
-            if (cam.getSY() <= mob.getY() + (mob.Height() + place.fonts.write(0).getHeight()) && cam.getEY() >= mob.getY() - (mob.Height() + place.fonts.write(0).getHeight())
+            if (cam.getSY() <= mob.getY() + (mob.getHeight() + place.fonts.write(0).getHeight()) && cam.getEY() >= mob.getY() - (mob.getHeight() + place.fonts.write(0).getHeight())
                     && cam.getSX() <= mob.getX() + (place.fonts.write(0).getWidth(mob.getName())) && cam.getEX() >= mob.getX() - (place.fonts.write(0).getWidth(mob.getName()))) {
                 mob.renderName(place, cam);
             }

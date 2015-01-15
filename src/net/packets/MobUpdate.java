@@ -18,11 +18,6 @@ public class MobUpdate extends Update {
     public MobUpdate() {
     }
 
-    public MobUpdate(short mapId, short id) {
-        this.mapId = id;
-        this.id = id;
-    }
-
     public MobUpdate(short id, int x, int y) {
         this.id = id;
         this.x = x;

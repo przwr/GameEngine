@@ -7,7 +7,7 @@ package gamedesigner;
 
 import engine.Main;
 import static gamedesigner.SpriteLoader.errMsg;
-import gamedesigner.gameEdit.EditorGame;
+import gamedesigner.editorgame.EditorGame;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;

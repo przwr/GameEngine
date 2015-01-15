@@ -5,12 +5,20 @@
  */
 package game.gameobject;
 
+import collision.Figure;
+import engine.Drawer;
 import engine.Methods;
 import engine.Time;
 import game.place.Place;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  *
@@ -75,8 +83,8 @@ public abstract class Entity extends GameObject {
                     colided.setToLastNotCollided();
                 }
                 for (int i = 1; i < place.playersLength; i++) {
-                    if (collision.ifCollideSngl(getX(), getY(), place.players[i].getCollision())) {
-                        place.players[i].setX(getX() + xd * ((width + place.players[i].getWidth()) >> 1));
+                    if (collision.isCollideSingle(getX(), getY(), place.players[i].getCollision())) {
+                        place.players[i].setX(getX() + xd * ((width + place.players[i].getCollisionWidth()) / 2));
                     }
                 }
             }
@@ -88,63 +96,73 @@ public abstract class Entity extends GameObject {
                     colided.setToLastNotCollided();
                 }
                 for (int i = 1; i < place.playersLength; i++) {
-                    if (collision.ifCollideSngl(getX(), getY(), place.players[i].getCollision())) {
-                        place.players[i].setY(getY() + yd * ((height + place.players[i].getHeight()) >> 1));
+                    if (collision.isCollideSingle(getX(), getY(), place.players[i].getCollision())) {
+                        place.players[i].setY(getY() + yd * ((height + place.players[i].getCollisionHeight()) / 2));
                     }
                 }
             }
         }
     }
 
-    public void updateHard() {  // przesuwa graczy
-        if (ups[3] != null && ((curUp != 3 || lastAdded != 0) && (curUp + 1 != lastAdded))) {
-            if (dCount < ups[curUp].delsX().size()) {
-                up = ups[curUp];                
-                movetoPoint(Methods.RoundHU((up.getX() - up.delsX().get(dCount)) * scale) - getX(), Methods.RoundHU((up.getY() - up.delsY().get(dCount)) * scale) - getY());
-                dCount++;
-            } else {
-                if (curUp == 3) {
-                    curUp = 0;
+    public synchronized void updateHard() {  // przesuwa graczy
+        try {
+            if (ups[3] != null && ((curUp != 3 || lastAdded != 0) && (curUp + 1 != lastAdded))) {
+                if (up != null && dCount < up.delsX().size()) {
+                    movetoPoint(Methods.RoundHU((up.getX() - up.delsX().get(dCount)) * scale) - getX(), Methods.RoundHU((up.getY() - up.delsY().get(dCount)) * scale) - getY());
+                    dCount++;
                 } else {
-                    curUp++;
+                    if (curUp == 3) {
+                        curUp = 0;
+                    } else {
+                        curUp++;
+                    }
+                    up = ups[curUp];
+                    if (up != null) {
+                        updateRest(up);
+                        movetoPoint(Methods.RoundHU(up.getX() * scale) - getX(), Methods.RoundHU(up.getY() * scale) - getY());
+                        dCount = 0;
+                    }
                 }
-                up = ups[curUp];
-                updateRest(up);
-                movetoPoint(Methods.RoundHU(up.getX() * scale) - getX(), Methods.RoundHU(up.getY() * scale) - getY());
-                dCount = 0;
             }
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 
-    public void updateSoft() {  // nie przesuwa graczy
-        if (ups[3] != null && ((curUp != 3 || lastAdded != 0) && (curUp + 1 != lastAdded))) {
-            if (dCount < ups[curUp].delsX().size()) {
-                up = ups[curUp];
-                final int x = Methods.RoundHU((up.getX() - up.delsX().get(dCount)) * scale);
-                final int y = Methods.RoundHU((up.getY() - up.delsY().get(dCount)) * scale);
-                if (collision.ifCollideSolid(x, y, map)) {
-                    canMove(x - getX(), y - getY());
+    public synchronized void updateSoft() {  // nie przesuwa graczy
+        try {
+            if (ups[3] != null && ((curUp != 3 || lastAdded != 0) && (curUp + 1 != lastAdded))) {
+                if (up != null && dCount < up.delsX().size()) {
+                    final int x = Methods.RoundHU((up.getX() - up.delsX().get(dCount)) * scale);
+                    final int y = Methods.RoundHU((up.getY() - up.delsY().get(dCount)) * scale);
+                    if (collision.isCollideSolid(x, y, map)) {
+                        canMove(x - getX(), y - getY());
+                    } else {
+                        setPosition(x, y);
+                    }
+                    dCount++;
                 } else {
-                    setPosition(x, y);
+                    if (curUp == 3) {
+                        curUp = 0;
+                    } else {
+                        curUp++;
+                    }
+                    up = ups[curUp];
+                    if (up != null) {
+                        updateRest(up);
+                        final int x = Methods.RoundHU(up.getX() * scale);
+                        final int y = Methods.RoundHU(up.getY() * scale);
+                        if (collision.isCollideSolid(x, y, map)) {
+                            canMove(x - getX(), y - getY());
+                        } else {
+                            setPosition(x, y);
+                        }
+                        dCount = 0;
+                    }
                 }
-                dCount++;
-            } else {
-                if (curUp == 3) {
-                    curUp = 0;
-                } else {
-                    curUp++;
-                }
-                up = ups[curUp];
-                updateRest(up);
-                final int x = Methods.RoundHU(up.getX() * scale);
-                final int y = Methods.RoundHU(up.getY() * scale);
-                if (collision.ifCollideSolid(x, y, map)) {
-                    canMove(x - getX(), y - getY());
-                } else {
-                    setPosition(x, y);
-                }
-                dCount = 0;
             }
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 
@@ -262,6 +280,50 @@ public abstract class Entity extends GameObject {
         setSpeed(myHspeed + mhspeed / weight * scale, myVspeed + mvspeed / weight * scale, isLimited);
     }
 
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            Drawer.drawShapeInColor(sprite, color, color, color);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            Drawer.drawShapeInBlack(sprite);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            Drawer.drawShapeInColor(sprite, color, color, color, xStart, xEnd);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            Drawer.drawShapeInBlack(sprite, xStart, xEnd);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glPopMatrix();
+        }
+    }
+
     public void setSpeed(double mhspeed, double mvspeed, boolean isLimited) {
         if (isLimited) {
             /*double angle = Methods.PointAngle360(0, 0, (int) xmove,
@@ -277,4 +339,5 @@ public abstract class Entity extends GameObject {
             myVspeed = mvspeed;
         }
     }
+
 }

@@ -24,7 +24,7 @@ public abstract class Place extends ScreenPlace {
 
     protected final SoundBase sounds;
     protected final SpriteBase sprites;
-    public final int sTile;
+    public final int tileSize;
 
     private final render[] rds = new render[2];
     private final Place place;
@@ -55,7 +55,7 @@ public abstract class Place extends ScreenPlace {
 
     public Place(Game game, int width, int height, int sTile, Settings settings) {
         super(game, width, height, settings);
-        this.sTile = sTile;
+        this.tileSize = sTile;
         tiles = new Tile[width / sTile * height / sTile];
         sounds = new SoundBase();
         sprites = new SpriteBase(scale());

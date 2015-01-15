@@ -17,6 +17,7 @@ public class PacketUpdate implements Serializable {
 
     private final ArrayList<MPlayerUpdate> players;
     private final ArrayList<MobUpdate> mobs;
+    private short mapId;
 
     public PacketUpdate() {
         players = new ArrayList<>(8);
@@ -69,6 +70,10 @@ public class PacketUpdate implements Serializable {
             }
         }
         return null;
+    }
+
+    public synchronized short getMapId() {
+        return mapId;
     }
 
     public synchronized void Trim() {

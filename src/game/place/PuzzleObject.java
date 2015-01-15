@@ -21,7 +21,7 @@ public class PuzzleObject {
     private Tile[] bgTiles;
     private Point[] tilePlace;
     private GameObject[] objects;
-    private FGTile[] fgTiles;
+    private ForeGroundTile[] fgTiles;
 
     public PuzzleObject(String file) {
         try (BufferedReader wczyt = new BufferedReader(new FileReader("obj/" + file + ".puz"))) {
@@ -46,7 +46,7 @@ public class PuzzleObject {
         for (GameObject object : objects) {
             m.addObj(object);
         }
-        for (FGTile tile : fgTiles) {
+        for (ForeGroundTile tile : fgTiles) {
             m.addFGTile(tile);
         }
     }

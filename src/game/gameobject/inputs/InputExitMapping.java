@@ -14,7 +14,6 @@ import game.gameobject.AnyInput;
 public class InputExitMapping extends AnyInput {
 
     public InputExitMapping() {
-        this.type = -1;
     }
 
     @Override

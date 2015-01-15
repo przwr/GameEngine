@@ -15,7 +15,6 @@ import com.esotericsoftware.minlog.Log;
 import engine.Delay;
 import engine.Methods;
 import game.gameobject.Player;
-import game.place.Map;
 import java.io.IOException;
 import net.packets.PacketAddMPlayer;
 import net.packets.PacketMPlayerUpdate;
@@ -80,7 +79,7 @@ public class GameClient {
                             pl.id = ((PacketJoinResponse) obj).getId();
                             pl.setX(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getX()));
                             pl.setY(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getY()));
-                            tempMapId = ((PacketJoinResponse) obj).getMapId();                            
+                            tempMapId = ((PacketJoinResponse) obj).getMapId();
                             mpup = new PacketMPlayerUpdate(tempMapId, pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
                         } else {
@@ -91,7 +90,11 @@ public class GameClient {
 
                 @Override
                 public void disconnected(Connection connection) {
-                    cleanUp(game.g.settings.language.m.Disconnected);
+                    if (game.g.started) {
+                        cleanUp(game.g.settings.language.m.Disconnected);
+                    } else {
+                        cleanUp();
+                    }
                 }
             });
             try {
@@ -138,6 +141,12 @@ public class GameClient {
     public synchronized void Close() {
         client.stop();
         client.close();
+    }
+
+    private synchronized void cleanUp() {
+        isConnected = false;
+        Close();
+        game.g.endGame();
     }
 
     private void cleanUp(Exception e) {

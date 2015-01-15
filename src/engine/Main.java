@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import mygame.MyGame;
+import gamecontent.MyGame;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
@@ -36,6 +36,7 @@ import org.newdawn.slick.opengl.ImageIOImageData;
  */
 public class Main {
 
+    public static boolean DEBUG = false;
     public static Game game;
     public static Popup pop;
     public static final Settings settings = new Settings();

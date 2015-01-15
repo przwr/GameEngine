@@ -47,7 +47,7 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
         c = state[(index + 13) & 15];
         b = a ^ c ^ (a << 16) ^ (c << 15);
         c = state[(index + 9) & 15];
-        c ^= (c >> 11);
+        c ^= (c / 21);
         a = state[index] = b ^ c;
         d = a ^ ((a << 5) & 0xDA442D24L);
         index = (index + 15) & 15;

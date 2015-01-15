@@ -23,7 +23,6 @@ public class InputPadStick extends AnyInput {
         this.padNr = padNr;
         this.axisNr = axisNr;
         this.isPlus = isPlus;
-        this.type = 4;
         label = "JOY " + padNr + ": AXIS " + axisNr + (isPlus ? "+" : "-");
     }
 
@@ -46,6 +45,6 @@ public class InputPadStick extends AnyInput {
 
     @Override
     public String toString() {
-        return type + " " + padNr + " " + axisNr + " " + (isPlus ? 1 : 0);
+        return AnyInput.CONTROLLER_STICK + " " + padNr + " " + axisNr + " " + (isPlus ? 1 : 0);
     }
 }

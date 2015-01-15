@@ -6,20 +6,15 @@
 package collision;
 
 import engine.Drawer;
+import engine.Main;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import net.jodk.lang.FastMath;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -27,63 +22,133 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
  */
 public class Area extends GameObject {
 
-    public ArrayList<Figure> parts;
-    public boolean isWhole;
-    protected int xCentr;
-    protected int yCentr;
-    protected int sTile;
-    protected boolean isBorder;
+    private static final Whole WHOLE = new Whole();
+    private static final Chunks CHUNKS = new Chunks();
+    private final ArrayList<Figure> parts = new ArrayList<>();
+    private final boolean border;
+    private final Integration type;
+    private int centralX, centralY;
 
-    public Area(int x, int y, int sTile) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
+    public static Area createBorder(int x, int y, int tileSize) {
+        return new Area(x, y, true, false);
+    }
+
+    public static Area createWhole(int x, int y, int tileSize) {
+        return new Area(x, y, false, true);
+    }
+
+    public static Area createInChunks(int x, int y, int tileSize) {
+        return new Area(x, y, false, false);
+    }
+
+    private Area(int x, int y, boolean border, boolean whole) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
         this.x = x;
         this.y = y;
-        this.sTile = sTile;
-        this.parts = new ArrayList<>();
-        solid = true;
-        simpleLighting = true;
+        this.border = border;
+        type = whole ? WHOLE : CHUNKS;
+        solid = simpleLighting = true;
     }
 
-    public Area(int x, int y, int sTile, boolean isBorder, boolean isWhole) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
-        this.x = x;
-        this.y = y;
-        this.parts = new ArrayList<>();
-        solid = true;
-        simpleLighting = true;
-        this.isBorder = isBorder;
-        this.isWhole = isWhole;
+    public void addFigure(Figure figure) {
+        parts.add(figure);
+        type.upProperties(this, figure);
     }
 
-    public void addFigure(Figure f) {
-        if (width < f.getXs() + f.getWidth()) {
-            width = f.getXs() + f.getWidth() * 2;
-            xCentr = (int) x + width / 2;
-        }
-        if (height < f.getYs() + f.getHeight()) {
-            height = f.getYs() + f.getHeight() * 2;
-            yCentr = (int) y + height / 2;
-        }
-        parts.add(f);
-        if (isWhole) {
-            upCollision();
+    public void addPiece(GameObject go) {
+        Figure figure = go.getCollision();
+        parts.add(figure);
+        if (go.isSolid()) {
+            type.upProperties(this, figure);
         }
     }
 
-    public void addPiece(GameObject g) {
-        Figure f = g.getCollision();
-        parts.add(f);
-        if (g.isSolid()) {
-            if (width < f.getXs() + f.getWidth()) {
-                width = f.getXs() + f.getWidth() * 2;
-                xCentr = (int) x + width / 2;
-            }
-            if (height < f.getYs() + f.getHeight()) {
-                height = f.getYs() + f.getHeight() * 2;
-                yCentr = (int) y + height / 2;
-            }
-            if (isWhole) {
-                upCollision();
+    protected void upCollision() {
+        int maxX = 0, maxY = 0, minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, shadowHeight = 0;
+        int x, y, tempShadowHeight;
+        for (Figure part : parts) {
+            if (part.getOwner().isSolid()) {
+                tempShadowHeight = part.getShadowHeight();
+                shadowHeight = tempShadowHeight != 0 ? tempShadowHeight : shadowHeight;
+                Collection<Point> points = part.getPoints();
+                for (Point point : points) {
+                    x = point.getX();
+                    y = point.getY();
+                    maxX = maxX > x ? maxX : x;
+                    maxY = maxY > y ? maxY : y;
+                    minX = minX < x ? minX : x;
+                    minY = minY < y ? minY : y;
+                }
             }
         }
+        collision = Rectangle.createShadowHeight(minX - getX(), minY - getY(), maxX - minX, maxY - minY, OpticProperties.FULL_SHADOW, shadowHeight, this);
+    }
+
+    protected void upBoundsForWhole() {
+        width = collision.width;
+        height = collision.height;
+    }
+
+    protected void upBoundsForChunks(Figure figure) {
+        int newWidth = figure.getXStart() + figure.getWidth();
+        int newHeight = figure.getYStart() + figure.getHeight();
+        if (width < newWidth) {
+            width = newWidth;
+        }
+        if (height < newHeight) {
+            height = newHeight;
+        }
+    }
+
+    protected void upCenter() {
+        centralX = width / 2;
+        centralY = height / 2;
+    }
+
+    public boolean isCollide(int x, int y, Figure figure) {
+        if (isClose(x, y, figure)) {
+            return type.isCollide(this, x, y, figure);
+        }
+        return false;
+    }
+
+    protected boolean isCollideWhole(int x, int y, Figure figure) {
+        return figure.isCollideSingle(x, y, collision);
+    }
+
+    protected boolean isCollideChunks(int x, int y, Figure figure) {
+        if (parts.stream().anyMatch((part) -> (figure.isCollideSingle(x, y, part)))) {
+            return true;
+        }
+        return false;
+    }
+
+    public Figure whatCollide(int x, int y, Figure figure) {
+        if (isClose(x, y, figure)) {
+            return type.whatCollide(this, x, y, figure);
+        }
+        return null;
+    }
+
+    protected Figure whatCollideWhole(int x, int y, Figure figure) {
+        if (figure.isCollideSingle(x, y, collision)) {
+            return collision;
+        }
+        return null;
+    }
+
+    protected Figure whatCollideChunks(int x, int y, Figure figure) {
+        for (Figure part : parts) {
+            if (figure.isCollideSingle(x, y, part)) {
+                return part;
+            }
+        }
+        return null;
+    }
+
+    private boolean isClose(int x, int y, Figure figure) {
+        int dx = FastMath.abs(getX() + centralX - figure.getCentralX(x));
+        int dy = FastMath.abs(getY() + centralY - figure.getCentralY(y));
+        return (dx <= (centralX + figure.getWidth()) && dy <= (centralY + figure.getHeight()));
     }
 
     public Figure getFigure(int i) {
@@ -94,92 +159,28 @@ public class Area extends GameObject {
         return parts.remove(i);
     }
 
-    public boolean ifCollide(int x, int y, Figure f) {
-        //if (ifGoodDistance(x, y, f)) {
-        for (Figure part : parts) {
-            if (f.ifCollideSngl(x, y, part)) {
-                return true;
-            }
-        }
-        //}
-        return false;
-    }
-
-    public Figure whatCollide(int x, int y, Figure f) {
-        //if (ifGoodDistance(x, y, f)) {
-        for (Figure part : parts) {
-            if (f.ifCollideSngl(x, y, part)) {
-                return part;
-            }
-        }
-        //}
-        return null;
-    }
-
-    public boolean ifGoodDistance(int x, int y, Figure f) {
-        int dx = FastMath.abs(xCentr - f.getCentralX(x));
-        int dy = FastMath.abs(yCentr - f.getCentralY(y));
-        return (dx <= (getWidth() + f.getWidth()) / 2 && dy <= (getWidth() + f.getWidth()) / 2);
-    }
-
-    private void upCollision() {
-        int maxX = 0, maxY = 0, minX = 2147483647, minY = 2147483647, shadowH = 0;
-        int x, y, sH;
-        for (Figure part : parts) {
-            if (part.own().isSolid()) {
-                sH = part.shadowHeight();
-                shadowH = sH != 0 ? sH : shadowH;
-                Point[] pList = part.listPoints();
-                for (Point p : pList) {
-                    x = p.getX();
-                    y = p.getY();
-                    maxX = maxX > x ? maxX : x;
-                    maxY = maxY > y ? maxY : y;
-                    minX = minX < x ? minX : x;
-                    minY = minY < y ? minY : y;
-                }
-            }
-        }
-        collision = new Rectangle(minX - getX(), minY - getY(), maxX - minX, maxY - minY, true, true, shadowH, this);
-    }
-
-    public Point[] listPoints() {
+    public Collection<Point> getPoints() {
         ArrayList<Point> temp = new ArrayList<>();
-        for (Figure part : parts) {
-            Point[] pList = part.listPoints();
-            for (Point p : pList) {
-                if (p != null && !temp.contains(p)) {
-                    temp.add(p);
-                }
-            }
-        }
-        return (Point[]) temp.toArray();
+        parts.stream().map((part) -> part.getPoints()).forEach((points) -> {
+            points.stream().filter((p) -> (p != null && !temp.contains(p))).forEach((p) -> {
+                temp.add(p);
+            });
+        });
+        return temp;
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
-    }
-
-    @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f) {
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
         glPushMatrix();
-        glTranslatef(f.getX() + xEffect, f.getY() - f.shadowHeight() + yEffect, 0);
+        glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
         if (simpleLighting) {
-            if (isLit) {
-                glColor3f(color, color, color);
-            } else {
-                glColor3f(0f, 0f, 0f);
-            }
-            Drawer.drawRectangle(0, 0, f.width, f.height + f.shadowHeight());
+            glColor3f(color, color, color);
+            Drawer.drawRectangle(0, 0, f.width, f.height + f.getShadowHeight());
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glColor3f(1f, 1f, 1f);
         } else if (sprite != null) {
             glEnable(GL_TEXTURE_2D);
-            if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color);
-            } else {
-                Drawer.drawShapeInBlack(sprite);
-            }
+            Drawer.drawShapeInColor(sprite, color, color, color);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glDisable(GL_TEXTURE_2D);
         }
@@ -187,25 +188,53 @@ public class Area extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, boolean isLit, float color, Figure f, int xStart, int yStart) {
+    public void renderShadow(int xEffect, int yEffect, Figure f) {
         glPushMatrix();
-        glTranslatef(f.getX() + xEffect, f.getY() - f.shadowHeight() + yEffect, 0);
+        glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
         if (simpleLighting) {
-            if (isLit) {
-                glColor3f(color, color, color);
-            } else {
-                glColor3f(0f, 0f, 0f);
-            }
-            Drawer.drawRectangle(0, 0, f.width, f.height + f.shadowHeight());
+            glColor3f(0f, 0f, 0f);
+            Drawer.drawRectangle(0, 0, f.width, f.height + f.getShadowHeight());
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glColor3f(1f, 1f, 1f);
         } else if (sprite != null) {
             glEnable(GL_TEXTURE_2D);
-            if (isLit) {
-                Drawer.drawShapeInColor(sprite, color, color, color);
-            } else {
-                Drawer.drawShapeInBlack(sprite);
-            }
+            Drawer.drawShapeInBlack(sprite);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_TEXTURE_2D);
+        }
+        glPopMatrix();
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int yStart) {
+        glPushMatrix();
+        glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
+        if (simpleLighting) {
+            glColor3f(color, color, color);
+            Drawer.drawRectangle(0, 0, f.width, f.height + f.getShadowHeight());
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glColor3f(1f, 1f, 1f);
+        } else if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
+            Drawer.drawShapeInColor(sprite, color, color, color);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_TEXTURE_2D);
+        }
+        glPopMatrix();
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int yStart) {
+        glPushMatrix();
+        glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
+        if (simpleLighting) {
+            glColor3f(0f, 0f, 0f);
+            Drawer.drawRectangle(0, 0, f.width, f.height + f.getShadowHeight());
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            glColor3f(1f, 1f, 1f);
+        } else if (sprite != null) {
+            glEnable(GL_TEXTURE_2D);
+            Drawer.drawShapeInBlack(sprite);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glDisable(GL_TEXTURE_2D);
         }
@@ -213,10 +242,21 @@ public class Area extends GameObject {
     }
 
     public boolean isBorder() {
-        return isBorder;
+        return border;
     }
 
-    public ArrayList<Figure> getParts() {
-        return parts;
+    public boolean isWhole() {
+        return type.isWhole();
+    }
+
+    public List<Figure> getParts() {
+        return Collections.unmodifiableList(parts);
+    }
+
+    @Override
+    public void render(int xEffect, int yEffect) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
     }
 }

@@ -16,7 +16,6 @@ public class InputMouse extends AnyInput {
     
     public InputMouse(int key) {
         this.key = key;
-        this.type = 1;
         label = "MOUSE: " + Mouse.getButtonName(key).toUpperCase();
     }
     
@@ -35,6 +34,6 @@ public class InputMouse extends AnyInput {
     
     @Override
     public String toString() {
-        return type + " " + key;
+        return AnyInput.MOUSE + " " + key;
     }
 }
