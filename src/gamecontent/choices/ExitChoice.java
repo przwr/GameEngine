@@ -3,27 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent.choice;
+package gamecontent.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
+
 /**
  *
  * @author przemek
  */
-public class RunServerChoice extends MenuChoice {
+public class ExitChoice extends MenuChoice {
 
-    public RunServerChoice(String label, Menu menu, Settings settings) {
+    public ExitChoice(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
-    }
-
+    }    
+    
     @Override
     public void action() {
-        menu.game.online.runServer();
-        if (menu.game.online.server != null) {
-            menu.setCurrent(0);
-        }
+        menu.game.exit();
     }
+    
 }

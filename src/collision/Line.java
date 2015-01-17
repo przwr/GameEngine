@@ -17,10 +17,8 @@ import java.util.Collection;
  */
 public class Line extends Figure {
 
-    private final int xk; // WHAT ?
-    private final int yk;
-    private boolean startDoubled;
-    private boolean endDoubled;
+    private final int xVector;
+    private final int yVector;
 
     public static Line create(int dx, int dy, GameObject owner) {
         return new Line(0, 0, dx, dy, owner);
@@ -32,8 +30,8 @@ public class Line extends Figure {
 
     private Line(int xStart, int yStart, int dx, int dy, GameObject owner) {
         super(xStart, yStart, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
-        xk = dx;
-        yk = dy;
+        xVector = dx;
+        yVector = dy;
         points.add(new Point(-1, -1));
         points.add(new Point(-1, -1));
         points.trimToSize();
@@ -42,67 +40,63 @@ public class Line extends Figure {
 
     public Line(int dx, int dy, GameObject owner) {
         super(0, 0, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
-        xk = dx;
-        yk = dy;
+        xVector = dx;
+        yVector = dy;
         centralize();
     }
 
     private void centralize() {
-        width = xk;
-        height = yk;
-        xCentr = xk / 2;
-        yCentr = yk / 2;
-    }
-
-    @Override
-    public Collection<Point> getPoints() {
-        points.clear();
-        if (startDoubled) {
-            points.get(0).set(-1, -1);
-        } else {
-            points.get(0).set(super.getX(), super.getY());
-        }
-        if (endDoubled) {
-            points.get(1).set(-1, -1);
-        } else {
-            points.get(1).set(super.getX() + xk, super.getY() + yk);
-        }
-        return points;
+        width = xVector;
+        height = yVector;
+        xCentr = xVector / 2;
+        yCentr = yVector / 2;
     }
 
     @Override
     public boolean isCollideSingle(int x, int y, Figure figure) {
         if (figure instanceof Rectangle) {
-            ArrayList<Point> points = (ArrayList< Point>) figure.getPoints();
-            int[] w = {super.getX(x), super.getY(y), super.getX(x) + xk, super.getY(y) + yk};
-            return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(0).getX(), points.get(0).getY(), points.get(1).getX(), points.get(1).getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(1).getX(), points.get(1).getY(), points.get(2).getX(), points.get(2).getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(2).getX(), points.get(2).getY(), points.get(3).getX(), points.get(3).getY())
-                    || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(3).getX(), points.get(3).getY(), points.get(0).getX(), points.get(0).getY()));
+            return rectangleCollision(x, y, figure);
         } else if (figure instanceof Circle) {
-            Circle l = (Circle) figure;
-            return (Line2D.ptSegDist(super.getX(x), super.getY(y), super.getX(x) + xk, super.getY(y) + yk, l.getX(), l.getY()) <= l.getRadius());
+            return circleCollision(x, y, figure);
         } else if (figure instanceof Line) {
-            Line l = (Line) figure;
-            return (Line2D.linesIntersect(super.getX(x), super.getY(y), super.getX(x) + xk, super.getY(y) + yk,
-                    l.getX(), l.getY(), l.getX() + l.getXk(), l.getY() + l.getYk()));
+            lineCollision(x, y, figure);
         }
         return false;
     }
 
-    public int getXk() {
-        return xk;
+    private boolean rectangleCollision(int x, int y, Figure figure) {
+        ArrayList<Point> points = (ArrayList< Point>) figure.getPoints();
+        int[] w = {getX(x), getY(y), getX(x) + xVector, getY(y) + yVector};
+        return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(0).getX(), points.get(0).getY(), points.get(1).getX(), points.get(1).getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(1).getX(), points.get(1).getY(), points.get(2).getX(), points.get(2).getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(2).getX(), points.get(2).getY(), points.get(3).getX(), points.get(3).getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(3).getX(), points.get(3).getY(), points.get(0).getX(), points.get(0).getY()));
     }
 
-    public int getYk() {
-        return yk;
+    private boolean circleCollision(int x, int y, Figure figure) {
+        Circle circle = (Circle) figure;
+        return (Line2D.ptSegDist(getX(x), getY(y), getX(x) + xVector, getY(y) + yVector, circle.getX(), circle.getY()) <= circle.getRadius());
     }
 
-    public void ifStartReturn(boolean a) {
-        startDoubled = a;
+    private boolean lineCollision(int x, int y, Figure figure) {
+        Line line = (Line) figure;
+        return (Line2D.linesIntersect(getX(x), getY(y), getX(x) + xVector, getY(y) + yVector,
+                line.getX(), line.getY(), line.getX() + line.getXVector(), line.getY() + line.getYVector()));
     }
 
-    public void ifEndReturn(boolean a) {
-        endDoubled = a;
+    @Override
+    public Collection<Point> getPoints() {
+        points.clear();
+        points.get(0).set(getX(), getY());
+        points.get(1).set(getX() + xVector, getY() + yVector);
+        return points;
+    }
+
+    public int getXVector() {
+        return xVector;
+    }
+
+    public int getYVector() {
+        return yVector;
     }
 }

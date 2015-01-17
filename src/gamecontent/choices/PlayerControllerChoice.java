@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent.choice;
+package gamecontent.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
@@ -13,14 +13,17 @@ import game.place.Menu;
  *
  * @author przemek
  */
-public class OnlineGameSettingsChoice extends MenuChoice {
+public class PlayerControllerChoice extends MenuChoice {
 
-    public OnlineGameSettingsChoice(String label, Menu menu, Settings settings) {
+    public PlayerControllerChoice(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        menu.setCurrent(8);
+        String[] p = label.split("\\s+");
+        int pos = Integer.parseInt(p[1]) + 2;
+        menu.setCurrent(pos);
     }
+
 }

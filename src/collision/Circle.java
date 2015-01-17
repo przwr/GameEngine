@@ -9,7 +9,6 @@ import engine.Point;
 import engine.Methods;
 import game.gameobject.GameObject;
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -48,33 +47,47 @@ public class Circle extends Figure {
     @Override
     public boolean isCollideSingle(int x, int y, Figure figure) {
         if (figure instanceof Rectangle) {
-            Rectangle rectangle = (Rectangle) figure;
-            int xp = ((super.getX(x) < rectangle.getX() ? -1 : 1) + (super.getX(x) <= (rectangle.getX() + rectangle.getWidth()) ? -1 : 1)) / 2;
-            int yp = ((super.getY(y) < rectangle.getY() ? -1 : 1) + (super.getY(y) <= (rectangle.getY() + rectangle.getHeight()) ? -1 : 1)) / 2;
-            if (xp == 0 && yp == 0) {
-                return true;
-            }
-            if (xp != 0 && yp != 0) {
-                int xtmp = (xp + 1) / 2;
-                int ytmp = (yp + 1) / 2;
-                return (Methods.PointDistance(super.getX(x), super.getY(y), rectangle.getPoint(xtmp + 2 * ytmp).getX(), rectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
-            }
-            if (yp == 0 && ((xp < 0 && rectangle.getX() - super.getX(x) <= radius) || (yp > 0 && super.getX(x) - rectangle.getX() - rectangle.getWidth() <= radius))) {
-                return true;
-            }
-            if ((yp < 0 && rectangle.getY() - super.getY(y) <= radius) || (yp > 0 && super.getY(y) - rectangle.getY() - rectangle.getHeight() <= radius)) {
-                return true;
-            }
+            return rectangleCollsion(x, y, figure);
         } else if (figure instanceof Circle) {
-            Circle circle = (Circle) figure;
-            if (Methods.PointDistance(super.getX(x), super.getY(y), circle.getX(), circle.getY()) <= (radius + circle.getRadius())) {
-                return true;
-            }
+            return circleCollsion(x, y, figure);
         } else if (figure instanceof Line) {
-            Line l = (Line) figure;
-            return (Line2D.ptSegDist(l.getX(), l.getY(), l.getX() + l.getXk(), l.getY() + l.getYk(), super.getX(x), super.getY(y)) <= radius);
+            return lineCollision(x, y, figure);
         }
         return false;
+    }
+
+    private boolean rectangleCollsion(int x, int y, Figure figure) {
+        Rectangle rectangle = (Rectangle) figure;
+        int xPosition = ((getX(x) < rectangle.getX() ? -1 : 1) + (getX(x) <= (rectangle.getX() + rectangle.getWidth()) ? -1 : 1)) / 2;
+        int yPosition = ((getY(y) < rectangle.getY() ? -1 : 1) + (getY(y) <= (rectangle.getY() + rectangle.getHeight()) ? -1 : 1)) / 2;
+        if (xPosition == 0 && yPosition == 0) {
+            return true;
+        }
+        if (xPosition != 0 && yPosition != 0) {
+            int xtmp = (xPosition + 1) / 2;
+            int ytmp = (yPosition + 1) / 2;
+            return (Methods.PointDistance(getX(x), getY(y), rectangle.getPoint(xtmp + 2 * ytmp).getX(), rectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
+        }
+        if (yPosition == 0 && ((xPosition < 0 && rectangle.getX() - getX(x) <= radius) || (yPosition > 0 && getX(x) - rectangle.getX() - rectangle.getWidth() <= radius))) {
+            return true;
+        }
+        if ((yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean circleCollsion(int x, int y, Figure figure) {
+        Circle circle = (Circle) figure;
+        if (Methods.PointDistance(getX(x), getY(y), circle.getX(), circle.getY()) <= (radius + circle.getRadius())) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean lineCollision(int x, int y, Figure figure) {
+        Line line = (Line) figure;
+        return (Line2D.ptSegDist(line.getX(), line.getY(), line.getX() + line.getXVector(), line.getY() + line.getYVector(), getX(x), getY(y)) <= radius);
     }
 
     @Override

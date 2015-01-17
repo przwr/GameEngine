@@ -24,10 +24,12 @@ public class Area extends GameObject {
 
     private static final Whole WHOLE = new Whole();
     private static final Chunks CHUNKS = new Chunks();
-    private final ArrayList<Figure> parts = new ArrayList<>();
     private final boolean border;
-    private final Integration type;
     private int centralX, centralY;
+    private final Integration type;
+    private final ArrayList<Figure> parts = new ArrayList<>();
+    private int maxX, maxY, minX, minY, shadowHeight;
+    private int tempX, tempY, tempShadowHeight;
 
     public static Area createBorder(int x, int y, int tileSize) {
         return new Area(x, y, true, false);
@@ -41,12 +43,12 @@ public class Area extends GameObject {
         return new Area(x, y, false, false);
     }
 
-    private Area(int x, int y, boolean border, boolean whole) {     //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
+    private Area(int x, int y, boolean border, boolean whole) {  //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
         this.x = x;
         this.y = y;
         this.border = border;
         type = whole ? WHOLE : CHUNKS;
-        solid = simpleLighting = true;
+        solid = true;
     }
 
     public void addFigure(Figure figure) {
@@ -63,24 +65,46 @@ public class Area extends GameObject {
     }
 
     protected void upCollision() {
-        int maxX = 0, maxY = 0, minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, shadowHeight = 0;
-        int x, y, tempShadowHeight;
-        for (Figure part : parts) {
-            if (part.getOwner().isSolid()) {
-                tempShadowHeight = part.getShadowHeight();
-                shadowHeight = tempShadowHeight != 0 ? tempShadowHeight : shadowHeight;
-                Collection<Point> points = part.getPoints();
-                for (Point point : points) {
-                    x = point.getX();
-                    y = point.getY();
-                    maxX = maxX > x ? maxX : x;
-                    maxY = maxY > y ? maxY : y;
-                    minX = minX < x ? minX : x;
-                    minY = minY < y ? minY : y;
-                }
-            }
-        }
+        maxX = maxY = shadowHeight = 0;
+        minX = minY = Integer.MAX_VALUE;
+        parts.stream().forEach((part) -> {
+            recalculateCollsion(part);
+        });
         collision = Rectangle.createShadowHeight(minX - getX(), minY - getY(), maxX - minX, maxY - minY, OpticProperties.FULL_SHADOW, shadowHeight, this);
+    }
+
+    private void recalculateCollsion(Figure part) {
+        if (part.getOwner().isSolid()) {
+            upShadowHeight(part);
+            Collection<Point> points = part.getPoints();
+            points.stream().forEach((point) -> {
+                findCorners(point);
+            });
+        }
+    }
+
+    private void upShadowHeight(Figure part) {
+        tempShadowHeight = part.getShadowHeight();
+        if (tempShadowHeight != 0) {
+            shadowHeight = tempShadowHeight;
+        }
+    }
+
+    private void findCorners(Point point) {
+        tempX = point.getX();
+        tempY = point.getY();
+        if (tempX > maxX) {
+            maxX = tempX;
+        }
+        if (tempY > maxY) {
+            maxY = tempY;
+        }
+        if (tempX < minX) {
+            minX = tempX;
+        }
+        if (tempY < minY) {
+            minY = tempY;
+        }
     }
 
     protected void upBoundsForWhole() {
@@ -151,12 +175,8 @@ public class Area extends GameObject {
         return (dx <= (centralX + figure.getWidth()) && dy <= (centralY + figure.getHeight()));
     }
 
-    public Figure getFigure(int i) {
-        return parts.get(i);
-    }
-
-    public Figure deleteFigure(int i) {
-        return parts.remove(i);
+    public Figure deleteFigure(int index) {
+        return parts.remove(index);
     }
 
     public Collection<Point> getPoints() {
@@ -170,20 +190,10 @@ public class Area extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
         glPushMatrix();
-        glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
-        if (simpleLighting) {
-            glColor3f(color, color, color);
-            Drawer.drawRectangle(0, 0, f.width, f.height + f.getShadowHeight());
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glColor3f(1f, 1f, 1f);
-        } else if (sprite != null) {
-            glEnable(GL_TEXTURE_2D);
-            Drawer.drawShapeInColor(sprite, color, color, color);
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glDisable(GL_TEXTURE_2D);
-        }
+        glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
+        Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
         glPopMatrix();
     }
 
@@ -191,35 +201,15 @@ public class Area extends GameObject {
     public void renderShadow(int xEffect, int yEffect, Figure f) {
         glPushMatrix();
         glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
-        if (simpleLighting) {
-            glColor3f(0f, 0f, 0f);
-            Drawer.drawRectangle(0, 0, f.width, f.height + f.getShadowHeight());
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glColor3f(1f, 1f, 1f);
-        } else if (sprite != null) {
-            glEnable(GL_TEXTURE_2D);
-            Drawer.drawShapeInBlack(sprite);
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glDisable(GL_TEXTURE_2D);
-        }
+        Drawer.drawRectangleInBlack(0, 0, f.width, f.height + f.getShadowHeight());
         glPopMatrix();
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int yStart) {
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int yStart) {
         glPushMatrix();
-        glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
-        if (simpleLighting) {
-            glColor3f(color, color, color);
-            Drawer.drawRectangle(0, 0, f.width, f.height + f.getShadowHeight());
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glColor3f(1f, 1f, 1f);
-        } else if (sprite != null) {
-            glEnable(GL_TEXTURE_2D);
-            Drawer.drawShapeInColor(sprite, color, color, color);
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glDisable(GL_TEXTURE_2D);
-        }
+        glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
+        Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
         glPopMatrix();
     }
 
@@ -227,18 +217,15 @@ public class Area extends GameObject {
     public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int yStart) {
         glPushMatrix();
         glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
-        if (simpleLighting) {
-            glColor3f(0f, 0f, 0f);
-            Drawer.drawRectangle(0, 0, f.width, f.height + f.getShadowHeight());
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glColor3f(1f, 1f, 1f);
-        } else if (sprite != null) {
-            glEnable(GL_TEXTURE_2D);
-            Drawer.drawShapeInBlack(sprite);
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-            glDisable(GL_TEXTURE_2D);
-        }
+        Drawer.drawRectangleInBlack(0, 0, f.width, f.height + f.getShadowHeight());
         glPopMatrix();
+    }
+
+    @Override
+    public void render(int xEffect, int yEffect) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
     }
 
     public boolean isBorder() {
@@ -253,10 +240,7 @@ public class Area extends GameObject {
         return Collections.unmodifiableList(parts);
     }
 
-    @Override
-    public void render(int xEffect, int yEffect) {
-        if (Main.DEBUG) {
-            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
-        }
+    public Figure getFigure(int index) {
+        return parts.get(index);
     }
 }

@@ -5,7 +5,6 @@
  */
 package gamedesigner.editorgame;
 
-import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Animation;
@@ -88,7 +87,7 @@ public class EditPlayer extends Player {
     @Override
     public void renderName(Place place, Camera cam) {
         place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() - height + sprite.getSy() + collision.getHeight() / 2 - jump),
-                name, new Color(place.r, place.g, place.b));
+                name, new Color(place.red, place.green, place.blue));
     }
 
     @Override

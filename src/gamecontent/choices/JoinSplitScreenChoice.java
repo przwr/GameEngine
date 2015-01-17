@@ -3,33 +3,32 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent.choice;
+package gamecontent.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
+import game.place.SplitScreen;
 
 /**
  *
  * @author przemek
  */
-public class BrightnessChoice extends MenuChoice {
+public class JoinSplitScreenChoice extends MenuChoice {
 
-    public BrightnessChoice(String label, Menu menu, Settings settings) {
+    public JoinSplitScreenChoice(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
         if (menu.game.getPlace() != null) {
-            float fl = (100 * menu.game.getPlace().r + 5f) / 100;
-            menu.game.getPlace().r = fl;
-            menu.game.getPlace().g = fl;
-            menu.game.getPlace().b = fl;
-            if (menu.game.getPlace().r > 1.00f) {
-                menu.game.getPlace().r = 0.0f;
-                menu.game.getPlace().g = 0.0f;
-                menu.game.getPlace().b = 0.0f;
+            if (settings.joinSS) {
+                settings.joinSS = false;
+            } else if (SplitScreen.isClose(menu.game.getPlace())) {
+                settings.joinSS = true;
+            } else {
+
             }
         }
     }
@@ -37,7 +36,11 @@ public class BrightnessChoice extends MenuChoice {
     @Override
     public String getLabel() {
         if (menu.game.getPlace() != null) {
-            return label + menu.game.getPlace().r;
+            if (settings.joinSS) {
+                return label + settings.language.m.On;
+            } else {
+                return label + settings.language.m.Off + settings.language.m.MustBeClose;
+            }
         } else {
             return label + settings.language.m.StartGame;
         }

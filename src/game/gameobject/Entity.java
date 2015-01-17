@@ -285,7 +285,7 @@ public abstract class Entity extends GameObject {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
-            Drawer.drawShapeInColor(sprite, color, color, color);
+            Drawer.drawShapeInShade(sprite, color);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glPopMatrix();
         }
@@ -297,7 +297,6 @@ public abstract class Entity extends GameObject {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
             Drawer.drawShapeInBlack(sprite);
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glPopMatrix();
         }
     }
@@ -307,8 +306,7 @@ public abstract class Entity extends GameObject {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
-            Drawer.drawShapeInColor(sprite, color, color, color, xStart, xEnd);
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            Drawer.drawShapeInShade(sprite, color, xStart, xEnd);
             glPopMatrix();
         }
     }
@@ -319,7 +317,6 @@ public abstract class Entity extends GameObject {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
             Drawer.drawShapeInBlack(sprite, xStart, xEnd);
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             glPopMatrix();
         }
     }

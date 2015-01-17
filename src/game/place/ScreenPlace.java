@@ -20,7 +20,7 @@ public abstract class ScreenPlace {
     public final Game game;
     public final Settings settings;
     public final int width, height;
-    public float r, g, b;
+    public float red, green, blue;
     public FontsHandler fonts;
     public GameObject[] players;
 

@@ -10,25 +10,7 @@ import game.gameobject.Player;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
-import static org.lwjgl.opengl.GL11.GL_ONE;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_ZERO;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex2f;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -36,7 +18,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public class Renderer {
 
-    private static final int w = Display.getWidth(), h = Display.getHeight(), w1o2 = (w / 2), h1o2 = (h / 2);
+    private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), halfDisplayWidth = (displayWidth / 2), halfDisplayHeight = (displayHeight / 2);
     private static FBORenderer fbFrame;
     private static GameObject light;
     private static final int[] SX = new int[7], EX = new int[7], SY = new int[7], EY = new int[7];
@@ -47,12 +29,12 @@ public class Renderer {
     private static final drawBorder[] borders = new drawBorder[5];
     private static final resetOrtho[] orthos = new resetOrtho[5];
 
-    public static void findVisibleLights(Map m, int playersLength) {
-        Place place = m.place;
-        readyVarsToFindLights(m);
-        for (GameObject tmpLight : m.emitters) {
+    public static void findVisibleLights(Map map, int playersLength) {
+        Place place = map.place;
+        readyVarsToFindLights(map);
+        map.getEmitters().stream().forEach((tmpLight) -> {
             for (int p = 0; p < playersLength; p++) {
-                if (place.players[p].getMap() == m) {
+                if (place.players[p].getMap() == map) {
                     if (place.singleCam && playersLength > 1) {
                         if (tmpLight.isEmits() && SY[2 + playersLength] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[2 + playersLength] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
                                 && SX[2 + playersLength] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[2 + playersLength] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
@@ -61,7 +43,7 @@ public class Renderer {
                         }
                     } else {
                         for (int pi = 0; pi < playersLength; pi++) {
-                            if (place.players[pi].getMap() == m && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
+                            if (place.players[pi].getMap() == map && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
                                     && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
                                 isVisible = true;
                                 (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = tmpLight;
@@ -69,16 +51,16 @@ public class Renderer {
                         }
                     }
                     if (isVisible) {
-                        m.visibleLights[m.nrVLights++] = tmpLight;
+                        map.visibleLights.add(tmpLight);
                         isVisible = false;
                     }
                 }
             }
-        }
+        });
         // Docelowo iteracja po graczach nie będzie potrzebna - nie będą oni źródłem światła, a raczej jakieś obiekty.
         for (int p = 0; p < place.playersLength; p++) {
             light = place.players[p];
-            if (light.getMap() == m) {
+            if (light.getMap() == map) {
                 if (place.singleCam && playersLength > 1) {
                     if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getSY() / 2) && EY[2 + playersLength] >= light.getY() - (light.getLight().getSY() / 2)
                             && SX[2 + playersLength] <= light.getX() + (light.getLight().getSX() / 2) && EX[2 + playersLength] >= light.getX() - (light.getLight().getSX() / 2)) {
@@ -87,7 +69,7 @@ public class Renderer {
                     }
                 } else {
                     for (int pi = 0; pi < playersLength; pi++) {
-                        if (place.players[pi].getMap() == m && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() / 2) && EY[pi] >= light.getY() - (light.getLight().getSY() / 2)
+                        if (place.players[pi].getMap() == map && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() / 2) && EY[pi] >= light.getY() - (light.getLight().getSY() / 2)
                                 && SX[pi] <= light.getX() + (light.getLight().getSX() / 2) && EX[pi] >= light.getX() - (light.getLight().getSX() / 2)) {
                             isVisible = true;
                             (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
@@ -95,17 +77,17 @@ public class Renderer {
                     }
                 }
                 if (isVisible) {
-                    m.visibleLights[m.nrVLights++] = light;
+                    map.visibleLights.add(light);
                     isVisible = false;
                 }
             }
         }
     }
 
-    private static void readyVarsToFindLights(Map m) {
-        Place place = m.place;
+    private static void readyVarsToFindLights(Map map) {
+        Place place = map.place ;
         for (int p = 0; p < place.getPlayersLenght(); p++) {
-            if (m == place.players[p].getMap()) {
+            if (map == place.players[p].getMap()) {
                 cam = (((Player) place.players[p]).getCam());
                 cam.nrVLights = 0;
                 SX[p] = cam.getSX();
@@ -124,14 +106,14 @@ public class Renderer {
                 EY[4 + c] = cam.getEY();
             }
         }
-        m.nrVLights = 0;
+        map.visibleLights.clear();
     }
 
-    public static void preRendLights(Map m) {
-        if (!m.settings.shadowOff) {
-            for (int l = 0; l < m.nrVLights; l++) {
-                ShadowRenderer.preRendLight(m, l);
-            }
+    public static void preRendLights(Map map) {
+        if (!map.settings.shadowOff) {
+            map.visibleLights.stream().forEach((emitter) -> {
+                ShadowRenderer.preRendLight(map, emitter);
+            });
         }
     }
 
@@ -182,7 +164,7 @@ public class Renderer {
         glColor3f(lightColor, lightColor, lightColor);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < lightStrength; i++) {
-            drawTex(fbFrame.getTexture(), w, h, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
+            drawTex(fbFrame.getTexture(), displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
         }
     }
 
@@ -204,107 +186,83 @@ public class Renderer {
 
     public static void initVariables(Place place) {
         ShadowRenderer.initRenderer(place);
-        fbFrame = new FBORendererRegular(w, h, place.settings);
-        borders[0] = new drawBorder() {
-            @Override
-            public void draw() {
-                glBegin(GL_QUADS);
-                glVertex2f(0, h1o2 - 1);
-                glVertex2f(0, h1o2 + 1);
-                glVertex2f(w, h1o2 + 1);
-                glVertex2f(w, h1o2 - 1);
-                glEnd();
-            }
+        fbFrame = new FBORendererRegular(displayWidth, displayHeight, place.settings);
+        borders[0] = () -> {
+            glBegin(GL_QUADS);
+            glVertex2f(0, halfDisplayHeight - 1);
+            glVertex2f(0, halfDisplayHeight + 1);
+            glVertex2f(displayWidth, halfDisplayHeight + 1);
+            glVertex2f(displayWidth, halfDisplayHeight - 1);
+            glEnd();
         };
-        borders[1] = new drawBorder() {
-            @Override
-            public void draw() {
-                glBegin(GL_QUADS);
-                glVertex2f(w1o2 - 1, 0);
-                glVertex2f(w1o2 - 1, h);
-                glVertex2f(w1o2 + 1, h);
-                glVertex2f(w1o2 + 1, 0);
-                glEnd();
-            }
+        borders[1] = () -> {
+            glBegin(GL_QUADS);
+            glVertex2f(halfDisplayWidth - 1, 0);
+            glVertex2f(halfDisplayWidth - 1, displayHeight);
+            glVertex2f(halfDisplayWidth + 1, displayHeight);
+            glVertex2f(halfDisplayWidth + 1, 0);
+            glEnd();
         };
         initBorders();
     }
 
     private static void initBorders() {
-        borders[2] = new drawBorder() {
-            @Override
-            public void draw() {
-                glBegin(GL_QUADS);
-                glVertex2f(0, h1o2 - 1);
-                glVertex2f(0, h1o2 + 1);
-                glVertex2f(w, h1o2 + 1);
-                glVertex2f(w, h1o2 - 1);
-                glEnd();
-                glBegin(GL_QUADS);
-                glVertex2f(w1o2 - 1, h1o2);
-                glVertex2f(w1o2 - 1, h);
-                glVertex2f(w1o2 + 1, h);
-                glVertex2f(w1o2 + 1, h1o2);
-                glEnd();
-            }
+        borders[2] = () -> {
+            glBegin(GL_QUADS);
+            glVertex2f(0, halfDisplayHeight - 1);
+            glVertex2f(0, halfDisplayHeight + 1);
+            glVertex2f(displayWidth, halfDisplayHeight + 1);
+            glVertex2f(displayWidth, halfDisplayHeight - 1);
+            glEnd();
+            glBegin(GL_QUADS);
+            glVertex2f(halfDisplayWidth - 1, halfDisplayHeight);
+            glVertex2f(halfDisplayWidth - 1, displayHeight);
+            glVertex2f(halfDisplayWidth + 1, displayHeight);
+            glVertex2f(halfDisplayWidth + 1, halfDisplayHeight);
+            glEnd();
         };
-        borders[3] = new drawBorder() {
-            @Override
-            public void draw() {
-                glBegin(GL_QUADS);
-                glVertex2f(w1o2, h1o2 - 1);
-                glVertex2f(w1o2, h1o2 + 1);
-                glVertex2f(w, h1o2 + 1);
-                glVertex2f(w, h1o2 - 1);
-                glEnd();
-                glBegin(GL_QUADS);
-                glVertex2f(w1o2 - 1, 0);
-                glVertex2f(w1o2 - 1, h);
-                glVertex2f(w1o2 + 1, h);
-                glVertex2f(w1o2 + 1, 0);
-                glEnd();
-            }
+        borders[3] = () -> {
+            glBegin(GL_QUADS);
+            glVertex2f(halfDisplayWidth, halfDisplayHeight - 1);
+            glVertex2f(halfDisplayWidth, halfDisplayHeight + 1);
+            glVertex2f(displayWidth, halfDisplayHeight + 1);
+            glVertex2f(displayWidth, halfDisplayHeight - 1);
+            glEnd();
+            glBegin(GL_QUADS);
+            glVertex2f(halfDisplayWidth - 1, 0);
+            glVertex2f(halfDisplayWidth - 1, displayHeight);
+            glVertex2f(halfDisplayWidth + 1, displayHeight);
+            glVertex2f(halfDisplayWidth + 1, 0);
+            glEnd();
         };
-        borders[4] = new drawBorder() {
-            @Override
-            public void draw() {
-                glBegin(GL_QUADS);
-                glVertex2f(0, h1o2 - 1);
-                glVertex2f(0, h1o2 + 1);
-                glVertex2f(w, h1o2 + 1);
-                glVertex2f(w, h1o2 - 1);
-                glEnd();
-                glBegin(GL_QUADS);
-                glVertex2f(w1o2 - 1, 0);
-                glVertex2f(w1o2 - 1, h);
-                glVertex2f(w1o2 + 1, h);
-                glVertex2f(w1o2 + 1, 0);
-                glEnd();
-            }
+        borders[4] = () -> {
+            glBegin(GL_QUADS);
+            glVertex2f(0, halfDisplayHeight - 1);
+            glVertex2f(0, halfDisplayHeight + 1);
+            glVertex2f(displayWidth, halfDisplayHeight + 1);
+            glVertex2f(displayWidth, halfDisplayHeight - 1);
+            glEnd();
+            glBegin(GL_QUADS);
+            glVertex2f(halfDisplayWidth - 1, 0);
+            glVertex2f(halfDisplayWidth - 1, displayHeight);
+            glVertex2f(halfDisplayWidth + 1, displayHeight);
+            glVertex2f(halfDisplayWidth + 1, 0);
+            glEnd();
         };
 
-        orthos[0] = new resetOrtho() {
-            @Override
-            public void reset() {
-                glOrtho(-1.0, 1.0, -2.0, 2.0, 1.0, -1.0);
-            }
+        orthos[0] = () -> {
+            glOrtho(-1.0, 1.0, -2.0, 2.0, 1.0, -1.0);
         };
-        orthos[1] = new resetOrtho() {
-            @Override
-            public void reset() {
-                glOrtho(-2.0, 2.0, -1.0, 1.0, 1.0, -1.0);
-            }
+        orthos[1] = () -> {
+            glOrtho(-2.0, 2.0, -1.0, 1.0, 1.0, -1.0);
         };
-        orthos[2] = orthos[3] = orthos[4] = new resetOrtho() {
-            @Override
-            public void reset() {
-                glOrtho(-2.0, 2.0, -2.0, 2.0, 1.0, -1.0);
-            }
+        orthos[2] = orthos[3] = orthos[4] = () -> {
+            glOrtho(-2.0, 2.0, -2.0, 2.0, 1.0, -1.0);
         };
     }
 
     public static void border(int ssMode) {
-        glViewport(0, 0, w, h);
+        glViewport(0, 0, displayWidth, displayHeight);
         if (ssMode != 0) {
             glBlendFunc(GL_ZERO, GL_ZERO);
             glColor3f(0, 0, 0);

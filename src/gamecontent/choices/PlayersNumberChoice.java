@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent.choice;
+package gamecontent.choices;
 
-import engine.Sound;
 import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
@@ -15,29 +14,23 @@ import game.place.Menu;
  *
  * @author przemek
  */
-public class VolumeChoice extends MenuChoice {
+public class PlayersNumberChoice extends MenuChoice {
 
-    public VolumeChoice(String label, Menu menu, Settings settings) {
+    public PlayersNumberChoice(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        settings.volume += 0.05f;
-        if (settings.volume > 1.01f) {
-            settings.volume = 0.00f;
-        }
-        if(settings.sounds != null){
-            for(Sound s: settings.sounds.getSoundsList()){
-                s.updateGain();
-            }
+        settings.nrPlayers++;
+        if (settings.nrPlayers > 4) {
+            settings.nrPlayers = 1;
         }
         AnalizerSettings.update(settings);
     }
 
     @Override
     public String getLabel() {
-        int v = (int)(settings.volume * 100);
-            return label + v + "%";
+        return label + "[" + settings.nrPlayers + "/4]";
     }
 }

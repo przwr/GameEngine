@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import game.gameobject.Player;
@@ -125,7 +126,7 @@ public class MyPlayer extends Player {
     @Override
     public void renderName(Place place, Camera cam) {
         place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() + sprite.getSy() + collision.getHeight() / 2 - jump),
-                name, new Color(place.r, place.g, place.b));
+                name, new Color(place.red, place.green, place.blue));
     }
 
     @Override
@@ -133,14 +134,10 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-
             Drawer.setColor(new Color(0, 0, 0, 51));
             Drawer.drawElipse(0, 0, Methods.RoundHU((float) collision.getWidth() / 2), Methods.RoundHU((float) collision.getHeight() / 2), 15);
-
             Drawer.refreshColor();
-
             glTranslatef(0, (int) -jump, 0);
-
             getAnim().render(animate);
             glPopMatrix();
         }
@@ -162,7 +159,7 @@ public class MyPlayer extends Player {
         hs = (int) (hspeed + myHspeed);
         vs = (int) (vspeed + myVspeed);
         canMove(hs, vs);
-        for (WarpPoint w : map.warps) {
+        for (WarpPoint w : map.getWarps()) {
             if (w.getCollision() != null) {
                 if (w.getCollision().isCollideSingle(w.getX(), w.getY(), collision)) {
                     w.Warp(this);
@@ -185,10 +182,10 @@ public class MyPlayer extends Player {
         hs = (int) (hspeed + myHspeed);
         vs = (int) (vspeed + myVspeed);
         canMove(hs, vs);
-        for (WarpPoint w : map.warps) {
-            if (w.getCollision() != null) {
-                if (w.getCollision().isCollideSingle(w.getX(), w.getY(), collision)) {
-                    w.Warp(this);
+        for (WarpPoint warp : map.getWarps()) {
+            if (warp.getCollision() != null) {
+                if (warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
+                    warp.Warp(this);
                 }
             }
         }
@@ -235,6 +232,46 @@ public class MyPlayer extends Player {
             }
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            Drawer.drawShapeInShade(anim, color);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            Drawer.drawShapeInBlack(anim);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            Drawer.drawShapeInShade(anim, color, xStart, xEnd);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            Drawer.drawShapeInBlack(anim, xStart, xEnd);
+            glPopMatrix();
         }
     }
 }

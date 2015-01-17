@@ -183,31 +183,28 @@ public class MyGameOnline extends GameOnline {
 
     @Override
     public synchronized void initChanges() {
-        changes[0] = new change() {
-            @Override
-            public void doIt() {
-                try {
-                    for (int i = 0; i < newPls.length; i++) {
-                        if (newPls[i] != null) {
-                            NewMPlayer temp = newPls[i];
-                            System.out.println("Adding player with ID: " + temp.getId() + " - " + temp.getName());
-                            g.players[tempPlace.playersLength].initialize(4, 4, 56, 56, tempPlace, temp.getX(), temp.getY());
-                            g.players[tempPlace.playersLength].id = temp.getId();
-                            g.players[tempPlace.playersLength].setName(temp.getName());
-                            tempPlace.players[tempPlace.playersLength] = g.players[tempPlace.playersLength];
-                            Map m = tempPlace.getMapById(newPls[i].getMapId());
-                            g.players[tempPlace.playersLength].setMap(m);
-                            m.addObj(g.players[tempPlace.playersLength]);
-                            if (server != null) {
-                                server.findPlayer(temp.getId()).setPlayer(g.players[tempPlace.playersLength]);
-                            }
-                            tempPlace.playersLength++;
-                            newPls[i] = null;
+        changes[0] = () -> {
+            try {
+                for (int i = 0; i < newPls.length; i++) {
+                    if (newPls[i] != null) {
+                        NewMPlayer temp = newPls[i];
+                        System.out.println("Adding player with ID: " + temp.getId() + " - " + temp.getName());
+                        g.players[tempPlace.playersLength].initialize(4, 4, 56, 56, tempPlace, temp.getX(), temp.getY());
+                        g.players[tempPlace.playersLength].id = temp.getId();
+                        g.players[tempPlace.playersLength].setName(temp.getName());
+                        tempPlace.players[tempPlace.playersLength] = g.players[tempPlace.playersLength];
+                        Map m = tempPlace.getMapById(newPls[i].getMapId());
+                        g.players[tempPlace.playersLength].setMap(m);
+                        m.addObj(g.players[tempPlace.playersLength]);
+                        if (server != null) {
+                            server.findPlayer(temp.getId()).setPlayer(g.players[tempPlace.playersLength]);
                         }
+                        tempPlace.playersLength++;
+                        newPls[i] = null;
                     }
-                } catch (Exception e) {
-                    System.out.println("ERROR: " + e.getMessage());
                 }
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
             }
         };
         changes[1] = new change() {
@@ -237,73 +234,70 @@ public class MyGameOnline extends GameOnline {
                 }
             }
         };
-        changes[2] = new change() {
-            @Override
-            public synchronized void doIt() {
-                try {
-                    boolean found;
-                    boolean addNew = false;
-                    ArrayList<MobUpdate> mobs;
-                    short mapId;
-                    if (isMUps1) {
-                        mapId = mapIdsForUpdate[0];
-                        mobs = mUps1;
-                    } else {
-                        mapId = mapIdsForUpdate[1];
-                        mobs = mUps2;
-                    }
-                    Map map = tempPlace.getMapById(mapId);
+        changes[2] = () -> {
+            try {
+                boolean found;
+                boolean addNew = false;
+                ArrayList<MobUpdate> mobs;
+                short mapId;
+                if (isMUps1) {
+                    mapId = mapIdsForUpdate[0];
+                    mobs = mUps1;
+                } else {
+                    mapId = mapIdsForUpdate[1];
+                    mobs = mUps2;
+                }
+                Map map = tempPlace.getMapById(mapId);
 //                    maxNrMobs = maxNrMobs > mobs.size() ? maxNrMobs : mobs.size();
 //                    System.out.println("Max Updating nr of Mobs: " + maxNrMobs);
-                    for (MobUpdate mUp : mobs) {
-                        found = false;
-                        Mob mob;
-                        for (Iterator<Mob> it = map.sMobs.iterator(); it.hasNext();) {
-                            mob = it.next();
-                            if (mUp.getId() == mob.id) {
-                                mob.ups[mob.lastAdded] = mUp;
-                                if (mob.lastAdded == 3) {
-                                    mob.lastAdded = 0;
-                                } else {
-                                    mob.lastAdded++;
-                                }
+                for (MobUpdate mUp : mobs) {
+                    found = false;
+                    Mob mob;
+                    for (Iterator<Mob> it = map.getSolidMobs().iterator(); it.hasNext();) {
+                        mob = it.next();
+                        if (mUp.getId() == mob.id) {
+                            mob.ups[mob.lastAdded] = mUp;
+                            if (mob.lastAdded == 3) {
+                                mob.lastAdded = 0;
+                            } else {
+                                mob.lastAdded++;
+                            }
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        addNew = true;
+                        for (int i = 0; i < newMob.length; i++) {
+                            if (newMob[i] != null && newMob[i].getId() == mUp.getId()) {
+                                newMob[i] = mUp;
                                 found = true;
                                 break;
                             }
                         }
                         if (!found) {
-                            addNew = true;
                             for (int i = 0; i < newMob.length; i++) {
-                                if (newMob[i] != null && newMob[i].getId() == mUp.getId()) {
+                                if (newMob[i] == null) {
                                     newMob[i] = mUp;
-                                    found = true;
                                     break;
                                 }
                             }
-                            if (!found) {
-                                for (int i = 0; i < newMob.length; i++) {
-                                    if (newMob[i] == null) {
-                                        newMob[i] = mUp;
-                                        break;
-                                    }
-                                }
-                            }
                         }
                     }
-                    if (addNew) {
-                        for (int i = 0; i < newMob.length; i++) {
-                            if (newMob[i] != null) {
-                                System.out.println("Adding Mob with ID: " + newMob[i].getId());
-                                Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", tempPlace, true, newMob[i].getId());
-                                map.addObj(mob);
-                                mob.setMap(map);
-                                newMob[i] = null;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println("ERROR: " + e.getMessage());
                 }
+                if (addNew) {
+                    for (int i = 0; i < newMob.length; i++) {
+                        if (newMob[i] != null) {
+                            System.out.println("Adding Mob with ID: " + newMob[i].getId());
+                            Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", tempPlace, true, newMob[i].getId());
+                            map.addObj(mob);
+                            mob.setMap(map);
+                            newMob[i] = null;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
             }
         };
     }

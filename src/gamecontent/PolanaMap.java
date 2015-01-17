@@ -38,7 +38,7 @@ public class PolanaMap extends Map {
         Area testf = Area.createWhole(5 * tileSize, 9 * tileSize, tileSize);
         Area testg = Area.createWhole(9 * tileSize, 11 * tileSize, tileSize);
 
-            ForeGroundTile fgt;
+        ForeGroundTile fgt;
         fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2, place);
         addFGTileAndReplace(fgt, 6 * tileSize, 5 * tileSize, 0);
         testa.addPiece(fgt);
@@ -107,17 +107,18 @@ public class PolanaMap extends Map {
         fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize, 0, place);
         addFGTileAndReplace(fgt, 9 * tileSize, 10 * tileSize, 2 * tileSize);
         testg.addPiece(fgt);
+        
         Area border = Area.createBorder(0, 0, tileSize);
         border.addFigure(Line.create(0, 0, width, 0, border));
         border.addFigure(Line.create(0, 0, 0, height, border));
         border.addFigure(Line.create(width, 0, 0, height, border));
         border.addFigure(Line.create(0, height, width, 0, border));
-        
+
         WarpPoint w = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         w.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, w));
         addObj(w);
         addObj(new WarpPoint("toPolana", 20 * tileSize, 17 * tileSize));
-        
+
         tiles[20 + 20 * height / tileSize] = PORTAL;
         areas.add(testa);
         areas.add(testb);

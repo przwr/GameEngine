@@ -138,17 +138,17 @@ public class Sprite {
         glEnd();
     }
 
-    public void renderNotBind(int xs, int xe) {
+    public void renderNotBind(int xStart, int xEnd) {
         glTranslatef(sx, sy, 0);
         glBegin(GL_QUADS);
-        glTexCoord2d(((double) xs / (double) width), 0);
-        glVertex2f(xs, 0);
-        glTexCoord2d(((double) xs / (double) width), 1);
-        glVertex2f(xs, height);
-        glTexCoord2d(((double) xe / (double) width), 1);
-        glVertex2f(xe, height);
-        glTexCoord2d(((double) xe / (double) width), 0);
-        glVertex2f(xe, 0);
+        glTexCoord2d(((double) xStart / (double) width), 0);
+        glVertex2f(xStart, 0);
+        glTexCoord2d(((double) xStart / (double) width), 1);
+        glVertex2f(xStart, height);
+        glTexCoord2d(((double) xEnd / (double) width), 1);
+        glVertex2f(xEnd, height);
+        glTexCoord2d(((double) xEnd / (double) width), 0);
+        glVertex2f(xEnd, 0);
         glEnd();
     }
 

@@ -25,6 +25,7 @@ import sprites.SpriteSheet;
 public class ForeGroundTile extends Tile {
 
     private int highness;
+    private boolean simpleLighting;
 
     public static ForeGroundTile createOrdinaryShadowHeight(SpriteSheet sh, int size, int xSheet, int ySheet, int yStart, int shadowHeight, Place place) {
         return new ForeGroundTile(sh, size, xSheet, ySheet, false, yStart, shadowHeight, place);
@@ -71,11 +72,9 @@ public class ForeGroundTile extends Tile {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() - collision.getShadowHeight() + yEffect, 0);
         if (simpleLighting) {
-            glColor3f(color, color, color);
-            Drawer.drawRectangle(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
-            glColor3f(1f, 1f, 1f);
+            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), color);
         } else if (sprite != null) {
-            Drawer.drawShapeInColor(sprite, color, color, color);
+            Drawer.drawShapeInShade(sprite, color);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         }
         glPopMatrix();
@@ -86,9 +85,7 @@ public class ForeGroundTile extends Tile {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() - collision.getShadowHeight() + yEffect, 0);
         if (simpleLighting) {
-            glColor3f(0f, 0f, 0f);
-            Drawer.drawRectangle(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
-            glColor3f(1f, 1f, 1f);
+            Drawer.drawRectangleInBlack(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
         } else if (sprite != null) {
             Drawer.drawShapeInBlack(sprite);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);

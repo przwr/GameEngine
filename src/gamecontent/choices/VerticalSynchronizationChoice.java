@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent.choice;
+package gamecontent.choices;
 
 import game.AnalizerSettings;
 import game.Settings;
@@ -14,21 +14,21 @@ import game.place.Menu;
  *
  * @author przemek
  */
-public class FullScreenChoice extends MenuChoice {
+public class VerticalSynchronizationChoice extends MenuChoice {
 
-    public FullScreenChoice(String label, Menu menu, Settings settings) {
+    public VerticalSynchronizationChoice(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        settings.fullScreen = !settings.fullScreen;
+        settings.vSync = !settings.vSync;
         AnalizerSettings.update(settings);
     }
 
     @Override
     public String getLabel() {
-        if (settings.fullScreen) {
+        if (settings.vSync) {
             return label + settings.language.m.On;
         } else {
             return label + settings.language.m.Off;

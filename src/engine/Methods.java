@@ -115,7 +115,7 @@ public class Methods {
         byteObject.close();
         return byteObject.toByteArray().length;
     }
-
+    
     private Methods() {
     }
 }

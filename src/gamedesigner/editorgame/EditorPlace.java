@@ -43,9 +43,9 @@ public class EditorPlace extends Place {
         border.addFigure(Line.create(width, 0, 0, height, border));
         border.addFigure(Line.create(0, height, width, 0, border));
         //areas.add(border);
-        this.r = 1f;
-        this.g = 1f;
-        this.b = 1f;
+        this.red = 1f;
+        this.green = 1f;
+        this.blue = 1f;
         fonts = new FontsHandler(20);
         fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);

@@ -3,37 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent.choice;
+package gamecontent.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
+import net.KryoUtil;
 
 /**
  *
  * @author przemek
  */
-public class StartChoice extends MenuChoice {
+public class ServerUDPPortChoice extends MenuChoice {
 
-    public StartChoice(String label, Menu menu, Settings settings) {
+    public ServerUDPPortChoice(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
-        if (!menu.game.started) {
-            menu.setCurrent(7);
-        } else {
-            menu.game.resumeGame();
-        }
     }
 
     @Override
     public String getLabel() {
-        if (!menu.game.started) {
-            return label;
-        } else {
-            return settings.language.m.Resume;
-        }
+        return label + " UDP: " + KryoUtil.UDP_PORT + " - " + settings.language.m.Unchangable;
     }
 }

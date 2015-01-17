@@ -13,7 +13,6 @@ import game.place.Place;
 import game.place.Shadow;
 import java.util.ArrayList;
 import java.util.Collection;
-import net.jodk.lang.FastMath;
 
 /**
  *
@@ -39,30 +38,30 @@ public abstract class Figure implements Comparable<Object> {
     public abstract Collection<Point> getPoints();
 
     public boolean isCollideSolid(int x, int y, Map map) {
-        if (map.sMobs.stream().anyMatch((obj) -> (checkCollison(x, y, obj)))) {
+        if (map.getSolidMobs().stream().anyMatch((obj) -> (checkCollison(x, y, obj)))) {
             return true;
         }
-        if (map.solidObj.stream().anyMatch((obj) -> (checkCollison(x, y, obj)))) {
+        if (map.getSolidObjects().stream().anyMatch((obj) -> (checkCollison(x, y, obj)))) {
             return true;
         }
-        if (map.areas.stream().anyMatch((obj) -> (obj.isSolid() && obj.isCollide(x, y, this)))) {
+        if (map.getAreas().stream().anyMatch((obj) -> (obj.isSolid() && obj.isCollide(x, y, this)))) {
             return true;
         }
         return false;
     }
 
     public GameObject whatCollideSolid(int x, int y, Map map) {
-        for (GameObject obj : map.sMobs) {
+        for (GameObject obj : map.getSolidMobs()) {
             if (checkCollison(x, y, obj)) {
                 return obj;
             }
         }
-        for (GameObject obj : map.solidObj) {
+        for (GameObject obj : map.getSolidObjects()) {
             if (checkCollison(x, y, obj)) {
                 return obj;
             }
         }
-        for (Area obj : map.areas) {
+        for (Area obj : map.getAreas()) {
             if (obj.isSolid() && obj.isCollide(x, y, this)) {
                 return obj;
             }
@@ -103,23 +102,11 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     private boolean checkCollison(int x, int y, GameObject obj) {
-        if (obj == owner) {
-            return false;
-        }
         Figure figure = obj.getCollision();
-        if (figure == null/* || !ifGoodDistance(x, y, f)*/) {                /// WHAT? CHECK!
+        if (obj == owner || figure == null) {
             return false;
         }
         return isCollideSingle(x, y, figure);
-    }
-
-    private boolean ifGoodDistance(int x, int y, Figure f) {              /// WHAT? CHECK!
-        if (f instanceof Rectangle) {
-            return true;
-        }
-        int dx = FastMath.abs(getCentralX(x) - f.getCentralX());
-        int dy = FastMath.abs(getCentralY(y) - f.getCentralY());
-        return (dx <= (getWidth() + f.getWidth()) / 2 && dy <= (getWidth() + f.getWidth()) / 2);
     }
 
     public void addShadow(Shadow shadow) {

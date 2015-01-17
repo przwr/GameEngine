@@ -3,29 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent.choice;
+package gamecontent.choices;
 
+import game.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
-import net.KryoUtil;
 
 /**
  *
  * @author przemek
  */
-public class ServerUDPPortChoice extends MenuChoice {
+public class ShadowsOffChoice extends MenuChoice {
 
-    public ServerUDPPortChoice(String label, Menu menu, Settings settings) {
+    public ShadowsOffChoice(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
     }
 
     @Override
     public void action() {
+        settings.shadowOff = !settings.shadowOff;
+        AnalizerSettings.update(settings);
     }
 
     @Override
     public String getLabel() {
-        return label + " UDP: " + KryoUtil.UDP_PORT + " - " + settings.language.m.Unchangable;
+        if (settings.shadowOff) {
+            return label + settings.language.m.On;
+        } else {
+            return label + settings.language.m.Off;
+        }
     }
 }

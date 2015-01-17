@@ -41,8 +41,8 @@ public abstract class Camera {
     }
 
     public synchronized void update() {
-        xOffset = Methods.Interval(-map.width + 2 * Dwidth, Dwidth - getMidX(), 0);
-        yOffset = Methods.Interval(-map.height + 2 * Dheight, Dheight - getMidY(), 0);
+        xOffset = Methods.Interval(-map.getWidth() + 2 * Dwidth, Dwidth - getMidX(), 0);
+        yOffset = Methods.Interval(-map.getHeight() + 2 * Dheight, Dheight - getMidY(), 0);
     }
 
     public synchronized void shake() {

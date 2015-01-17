@@ -13,9 +13,6 @@ import engine.Methods;
 import game.place.cameras.Camera;
 import game.place.Place;
 import net.packets.Update;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
@@ -91,7 +88,7 @@ public abstract class Mob extends Entity {
     @Override
     public void renderName(Place place, Camera cam) {
         place.renderMessage(0, cam.getXOff() + getX(), cam.getYOff() + getY() + sprite.getSy() + collision.getHeight() / 2,
-                name, new Color(place.r, place.g, place.b));
+                name, new Color(place.red, place.green, place.blue));
     }
 
     @Override
@@ -100,6 +97,46 @@ public abstract class Mob extends Entity {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             sprite.render();
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            Drawer.drawShapeInShade(sprite, color);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            Drawer.drawShapeInBlack(sprite);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            Drawer.drawShapeInShade(sprite, color, xStart, xEnd);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
+            Drawer.drawShapeInBlack(sprite, xStart, xEnd);
             glPopMatrix();
         }
     }

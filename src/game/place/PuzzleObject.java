@@ -33,21 +33,21 @@ public class PuzzleObject {
             Methods.Error("File " + file + " not found!\n" + e.getMessage());
         }
     }
-    
-    public void placePuzzle(int x, int y, Map m) {
+
+    public void placePuzzle(int x, int y, Map map) {
         int ix;
         int iy;
-        int col = m.height / m.sTile;
+        int col = map.getHeight() / map.getTileSize();
         for (int i = 0; i < bgTiles.length; i++) {
             ix = tilePlace[i].getX() + x;
             iy = tilePlace[i].getY() + y;
-            m.tiles[ix + iy * col] = bgTiles[i];
+            map.setTile(ix + iy * col, bgTiles[i]);
         }
-        for (GameObject object : objects) {
-            m.addObj(object);
+        for (GameObject obj : objects) {
+            map.addObj(obj);
         }
         for (ForeGroundTile tile : fgTiles) {
-            m.addFGTile(tile);
+            map.addFGTile(tile);
         }
     }
 }

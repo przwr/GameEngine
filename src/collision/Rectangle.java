@@ -38,10 +38,10 @@ public class Rectangle extends Figure {
         super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
         this.width = width;
         this.height = height;
-        points.add(new Point(super.getX(), super.getY()));
-        points.add(new Point(super.getX(), super.getY() + height));
-        points.add(new Point(super.getX() + width, super.getY() + height));
-        points.add(new Point(super.getX() + width, super.getY()));
+        points.add(new Point(getX(), getY()));
+        points.add(new Point(getX(), getY() + height));
+        points.add(new Point(getX() + width, getY() + height));
+        points.add(new Point(getX() + width, getY()));
         points.trimToSize();
         centralize();
     }
@@ -65,8 +65,8 @@ public class Rectangle extends Figure {
 
     private boolean rectangleCollsion(int x, int y, Figure figure) {
         Rectangle rectangle = (Rectangle) figure;
-        if (((super.getX(x) > rectangle.getX() && super.getX(x) - rectangle.getX() < rectangle.getWidth()) || (super.getX(x) <= rectangle.getX() && rectangle.getX() - super.getX(x) < width))
-                && ((super.getY(y) > rectangle.getY() && super.getY(y) - rectangle.getY() < rectangle.getHeight()) || (super.getY(y) <= rectangle.getY() && rectangle.getY() - super.getY(y) < height))) {
+        if (((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
+                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height))) {
             return true;
         }
         return false;
@@ -74,8 +74,8 @@ public class Rectangle extends Figure {
 
     private boolean circleCollision(int x, int y, Figure figure) {
         Circle circle = (Circle) figure;
-        int xPosition = ((super.getX(x) < circle.getX() ? -1 : 1) + (circle.getX() <= (super.getX(x) + width) ? -1 : 1)) / 2;
-        int yPosition = ((super.getY(y) < circle.getY() ? -1 : 1) + (circle.getY() <= (super.getY(y) + height) ? -1 : 1)) / 2;
+        int xPosition = ((getX(x) < circle.getX() ? -1 : 1) + (circle.getX() <= (getX(x) + width) ? -1 : 1)) / 2;
+        int yPosition = ((getY(y) < circle.getY() ? -1 : 1) + (circle.getY() <= (getY(y) + height) ? -1 : 1)) / 2;
         if (xPosition == 0 && yPosition == 0) {
             return true;
         }
@@ -84,10 +84,10 @@ public class Rectangle extends Figure {
                 points.get((xPosition + 1) + 3 * (yPosition + 1)).getY()) <= circle.getRadius()) {
             return true;
         }
-        if (yPosition == 0 && ((xPosition < 0 && super.getX(x) - circle.getX() <= circle.getRadius()) || (yPosition > 0 && circle.getX() - super.getX(x) - width <= circle.getRadius()))) {
+        if (yPosition == 0 && ((xPosition < 0 && getX(x) - circle.getX() <= circle.getRadius()) || (yPosition > 0 && circle.getX() - getX(x) - width <= circle.getRadius()))) {
             return true;
         }
-        if ((yPosition < 0 && super.getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - super.getY(y) - height <= circle.getRadius())) {
+        if ((yPosition < 0 && getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - getY(y) - height <= circle.getRadius())) {
             return true;
         }
         return false;
@@ -95,11 +95,11 @@ public class Rectangle extends Figure {
 
     private boolean lineCollision(int x, int y, Figure figure) {        // Dlaczego getX(x) a nie zwyczajnie getX()
         Line line = (Line) figure;
-        Point[] list = {new Point(super.getX(x), super.getY(y)),
-            new Point(super.getX(x), super.getY(y) + height),
-            new Point(super.getX(x) + width, super.getY(y) + height),
-            new Point(super.getX(x) + width, super.getY(y))};
-        int[] linePoints = {line.getX(), line.getY(), line.getX() + line.getXk(), line.getY() + line.getYk()};
+        Point[] list = {new Point(getX(x), getY(y)),
+            new Point(getX(x), getY(y) + height),
+            new Point(getX(x) + width, getY(y) + height),
+            new Point(getX(x) + width, getY(y))};
+        int[] linePoints = {line.getX(), line.getY(), line.getX() + line.getXVector(), line.getY() + line.getYVector()};
         return (Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[0].getX(), list[0].getY(), list[1].getX(), list[1].getY())
                 || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[1].getX(), list[1].getY(), list[2].getX(), list[2].getY())
                 || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[2].getX(), list[2].getY(), list[3].getX(), list[3].getY())
@@ -108,10 +108,10 @@ public class Rectangle extends Figure {
 
     @Override
     public Collection<Point> getPoints() {
-        points.get(0).set(super.getX(), super.getY());
-        points.get(1).set(super.getX(), super.getY() + height);
-        points.get(2).set(super.getX() + width, super.getY() + height);
-        points.get(3).set(super.getX() + width, super.getY());
+        points.get(0).set(getX(), getY());
+        points.get(1).set(getX(), getY() + height);
+        points.get(2).set(getX() + width, getY() + height);
+        points.get(3).set(getX() + width, getY());
         return Collections.unmodifiableCollection(points);
     }
 }

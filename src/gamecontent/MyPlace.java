@@ -40,19 +40,19 @@ public class MyPlace extends Place {
     }
 
     private void generate(boolean isHost) {
-        PolanaMap p = new PolanaMap(mapId++, this, width, height, tileSize);
-        KamiennaMap k = new KamiennaMap(mapId++, this, width, height, tileSize);
+        PolanaMap polana = new PolanaMap(mapId++, this, width, height, tileSize);
+        KamiennaMap kamienna = new KamiennaMap(mapId++, this, width, height, tileSize);
         if (isHost) {
             for (int i = 0; i < 1000; i++) {
-                p.addObj(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, p.mobID++));
+                polana.addObj(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, polana.mobId++));
             }
         }
-        maps.add(p);
-        maps.add(k);
+        maps.add(polana);
+        maps.add(kamienna);
         //sounds.init("res", settings);
-        this.r = 0.75f;
-        this.g = 0.75f;
-        this.b = 0.75f;
+        this.red = 0.75f;
+        this.green = 0.75f;
+        this.blue = 0.75f;
         fonts = new FontsHandler(20);
         fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);
@@ -115,39 +115,36 @@ public class MyPlace extends Place {
                 for (int i = 0; i < playersLength; i++) {
                     ((Player) players[i]).update();
                 }
-                for (Map m : maps) {
-                    for (Mob mob : m.sMobs) {
+                maps.stream().forEach((map) -> {
+                    map.getSolidMobs().stream().forEach((mob) -> {
                         mob.update(game.place);
-                    }
-                }
+                    });
+                });
             }
         };
-        ups[1] = new update() {
-            @Override
-            public void up() {
-                tempMaps.clear();
-                Map map;
-                if (game.online.server != null) {
-                    for (int i = 0; i < playersLength; i++) {
-                        map = players[i].getMap();
-                        if (!tempMaps.contains(map)) {
-                            for (Mob mob : map.sMobs) {
-                                mob.update(place);
-                            }
-                            tempMaps.add(map);
+        ups[1] = () -> {
+            tempMaps.clear();
+            Map map;
+            if (game.online.server != null) {
+                for (int i = 0; i < playersLength; i++) {
+                    map = players[i].getMap();
+                    if (!tempMaps.contains(map)) {
+                        for (Mob mob : map.getSolidMobs()) {
+                            mob.update(place);
                         }
-                    }
-                } else if (game.online.client != null) {
-                    map = players[0].getMap();
-                    for (Mob mob : map.sMobs) {
-                        mob.updateHard();
+                        tempMaps.add(map);
                     }
                 }
-                ((Player) players[0]).sendUpdate(place);
-                for (int i = 1; i < playersLength; i++) {
-                    ((Entity) players[i]).updateSoft();
-                    ((Entity) players[i]).updateOnline();
+            } else if (game.online.client != null) {
+                map = players[0].getMap();
+                for (Mob mob : map.getSolidMobs()) {
+                    mob.updateHard();
                 }
+            }
+            ((Player) players[0]).sendUpdate(place);
+            for (int i = 1; i < playersLength; i++) {
+                ((Entity) players[i]).updateSoft();
+                ((Entity) players[i]).updateOnline();
             }
         };
     }

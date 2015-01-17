@@ -3,29 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent.choice;
+package gamecontent.choices;
 
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
-import net.KryoUtil;
 
 /**
  *
  * @author przemek
  */
-public class ServerTCPPortChoice extends MenuChoice {
+public class SettingsChoice extends MenuChoice {
 
-    public ServerTCPPortChoice(String label, Menu menu, Settings settings) {
+    public SettingsChoice(String label, Menu menu, Settings settings) {
         super(label, menu, settings);
-    }
-
+    }    
+    
     @Override
     public void action() {
+        menu.setCurrent(1);
     }
-
-    @Override
-    public String getLabel() {
-        return label + " TCP: " + KryoUtil.TCP_PORT + " - " + settings.language.m.Unchangable;
-    }
+    
 }

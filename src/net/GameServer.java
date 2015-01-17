@@ -192,7 +192,7 @@ public class GameServer {
                 if (tmp != null) {
                     tmpInGame = tmp.inGame();
                     if (tmpInGame != null) {
-                        for (Mob mob : game.g.getPlace().getMapById(tmp.getMapId()).sMobs) {
+                        for (Mob mob : game.g.getPlace().getMapById(tmp.getMapId()).getSolidMobs()) {
                             mobX = mob.getX();
                             mobY = mob.getY();
                             if (Math.abs(mobX - tmp.inGame().getX()) < scopeX && Math.abs(mobY - tmp.inGame().getY()) < scopeY) {

@@ -49,149 +49,171 @@ public class Drawer {
     private static final int white = glGenTextures();
     private static Place place;
 
-    public static void drawRectangle(int xs, int ys, int w, int h) {
-        glTranslatef(xs, ys, 0);
+    public static void drawRectangleInShade(int xStart, int yStart, int width, int height, float color) {
+        glColor3f(color, color, color);
+        glTranslatef(xStart, yStart, 0);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
         glVertex2f(0, 0);
-        glVertex2f(0, h);
-        glVertex2f(w, h);
-        glVertex2f(w, 0);
+        glVertex2f(0, height);
+        glVertex2f(width, height);
+        glVertex2f(width, 0);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1f, 1f, 1f);
+    }
+
+    public static void drawRectangleInBlack(int xStart, int yStart, int width, int height) {
+        glColor3f(0f, 0f, 0f);
+        glTranslatef(xStart, yStart, 0);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_QUADS);
+        glVertex2f(0, 0);
+        glVertex2f(0, height);
+        glVertex2f(width, height);
+        glVertex2f(width, 0);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1f, 1f, 1f);
+    }
+
+    public static void drawCircle(int xStart, int yStart, int radius, int precision) {   //dla małych ilości kroków wychodzą figury foremne (trójkąt, czworokąt, itp.)
+        glTranslatef(xStart, yStart, 0);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_TRIANGLE_FAN);
+        int step = 360 / precision;
+        glVertex2f(0, 0);
+        for (int i = 0; i <= 360; i += step) {
+            glVertex2f((float) Methods.xRadius(i, radius), (float) Methods.yRadius(i, radius));
+        }
+        glVertex2f(radius, 0);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
 
-    public static void drawCircle(int xs, int ys, int r, int steps) {   //dla małych ilości kroków wychodzą figury foremne (trójkąt, czworokąt, itp.)
-        glTranslatef(xs, ys, 0);
+    public static void drawElipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {   //dla małych ilości kroków wychodzą figury foremne (trójkąt, czworokąt, itp.)
+        glTranslatef(xStart, yStart, 0);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLE_FAN);
-        int step = 360 / steps;
+        int step = 360 / precision;
         glVertex2f(0, 0);
         for (int i = 0; i <= 360; i += step) {
-            glVertex2f((float) Methods.xRadius(i, r), (float) Methods.yRadius(i, r));
+            glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
         }
-        glVertex2f(r, 0);
+        glVertex2f(xRadius, 0);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
 
-    public static void drawElipse(int xs, int ys, int rx, int ry, int steps) {   //dla małych ilości kroków wychodzą figury foremne (trójkąt, czworokąt, itp.)
-        glTranslatef(xs, ys, 0);
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLE_FAN);
-        int step = 360 / steps;
-        glVertex2f(0, 0);
-        for (int i = 0; i <= 360; i += step) {
-            glVertex2f((float) Methods.xRadius(i, rx), (float) Methods.yRadius(i, ry));
-        }
-        glVertex2f(rx, 0);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+    public static void setColor(float color) {
+        glColor3f(color, color, color);
+    }
+
+    public static void setColorToWhite() {
+        glColor3f(1f, 1f, 1f);
     }
 
     public static void setColor(Color c) {
         glColor4f(c.r, c.g, c.b, c.a);
     }
 
-    public static void refreshColor() {
-        glColor4f(place.r, place.g, place.b, 1.0f);
-    }
-
-    public static void refreshBlending() {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    public static void refresh() {
+    public static void refreshForRegularDrawing() {
         refreshColor();
-        refreshBlending();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void drawShapeInColor(Sprite sprite, float r, float g, float b) {
+    public static void refreshColor() {
+        glColor4f(place.red, place.green, place.blue, 1.0f);
+    }
+
+    public static void drawShapeInShade(Sprite sprite, float color) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(r, g, b);
+        glColor3f(color, color, color);
         glActiveTexture(white);
         sprite.getTex().bind();
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+        changeShapeToColor();
         sprite.renderNotBind();
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        setBlendAttributesForShadows();
         glColor3f(1, 1, 1);
+
     }
 
-    public static void drawShapeInColor(Sprite sprite, float r, float g, float b, int xs, int xe) {
+    public static void drawShapeInShade(Sprite sprite, float color, int xStart, int xEnd) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(r, g, b);
+        glColor3f(color, color, color);
         glActiveTexture(white);
         sprite.getTex().bind();
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-        sprite.renderNotBind(xs, xe);
+        changeShapeToColor();
+        sprite.renderNotBind(xStart, xEnd);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        setBlendAttributesForShadows();
         glColor3f(1, 1, 1);
     }
 
-    public static void drawShapeInColor(Animation anim, float r, float g, float b) {
+    public static void drawShapeInShade(Animation animation, float color) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(r, g, b);
+        glColor3f(color, color, color);
         glActiveTexture(white);
-        anim.getSprite().getTex().bind();
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-        anim.renderNotBind(anim.getOwner().isAnimate());
+        animation.getSprite().getTex().bind();
+        changeShapeToColor();
+        animation.renderNotBind(animation.getOwner().isAnimate());
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        setBlendAttributesForShadows();
         glColor3f(1, 1, 1);
     }
 
-    public static void drawShapeInColor(Animation anim, float r, float g, float b, int xs, int xe) {
+    public static void drawShapeInShade(Animation animation, float color, int xStart, int xEnd) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(r, g, b);
+        glColor3f(color, color, color);
         glActiveTexture(white);
-        anim.getSprite().getTex().bind();
+        animation.getSprite().getTex().bind();
+        changeShapeToColor();
+        animation.renderNotBind(animation.getOwner().isAnimate(), xStart, xEnd);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        setBlendAttributesForShadows();
+        glColor3f(1, 1, 1);
+    }
+
+    private static void changeShapeToColor() {
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
         glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
         glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
         glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
         glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-        anim.renderNotBind(anim.getOwner().isAnimate(), xs, xe);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glColor3f(1, 1, 1);
+    }
+
+    private static void setBlendAttributesForShadows() {
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public static void drawShapeInBlack(Sprite sprite) {
         sprite.getTex().bind();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         sprite.renderNotBind();
+        setBlendAttributesForShadows();
     }
 
-    public static void drawShapeInBlack(Sprite sprite, int xs, int xe) {
+    public static void drawShapeInBlack(Sprite sprite, int xStart, int xEnd) {
         sprite.getTex().bind();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        sprite.renderNotBind(xs, xe);
+        sprite.renderNotBind(xStart, xEnd);
+        setBlendAttributesForShadows();
     }
 
     public static void drawShapeInBlack(Animation anim) {
         anim.getSprite().getTex().bind();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         anim.renderNotBind(anim.getOwner().isAnimate());
+        setBlendAttributesForShadows();
     }
 
-    public static void drawShapeInBlack(Animation anim, int xs, int xe) {
+    public static void drawShapeInBlack(Animation anim, int xStart, int xEnd) {
         anim.getSprite().getTex().bind();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        anim.renderNotBind(anim.getOwner().isAnimate(), xs, xe);
+        anim.renderNotBind(anim.getOwner().isAnimate(), xStart, xEnd);
+        setBlendAttributesForShadows();
     }
 
     private Drawer() {
