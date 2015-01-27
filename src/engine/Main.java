@@ -9,7 +9,6 @@ import game.AnalizerSettings;
 import game.Game;
 import game.IO;
 import game.Settings;
-import gamedesigner.GameDesigner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -41,7 +40,6 @@ public class Main {
     public static Popup pop;
     public static final Settings settings = new Settings();
     public static Controller[] controllers;
-    public static GameDesigner designer = null;
     public static boolean gameStop = false;
     public static boolean pause, ENTER = true;
     private static boolean lastFrame;
@@ -63,16 +61,6 @@ public class Main {
 
     private static void getInput() {
         game.getInput();
-
-        //-----PROJEKTOWANIE GRY! (>^o')>= ==== ----//
-        if (Keyboard.isKeyDown(Keyboard.KEY_F1) && !gameStop) {
-            if (designer == null) {
-                designer = new GameDesigner();
-            }
-            designer.setVisible(true);
-            gameStop = true;
-        }
-        //------------------------------------------//
     }
 
     private static void update() {

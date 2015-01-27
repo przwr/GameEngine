@@ -225,7 +225,7 @@ public class Map {
             if (place.players[p].getMap().equals(this)) {
                 if (cam.getSY() <= place.players[p].getY() + (place.players[p].getHeight() + place.fonts.write(0).getHeight()) && cam.getEY() >= place.players[p].getY() - (place.players[p].getHeight() + place.fonts.write(0).getHeight())
                         && cam.getSX() <= place.players[p].getX() + (place.fonts.write(0).getWidth(place.players[p].getName())) && cam.getEX() >= place.players[p].getX() - (place.fonts.write(0).getWidth(place.players[p].getName()))) {
-                    ((MyPlayer) place.players[p]).renderName(place, cam);
+                    ((Player) place.players[p]).renderName(place, cam);
                 }
             }
         }
@@ -235,6 +235,14 @@ public class Map {
                 mob.renderName(place, cam);
             }
         }
+    }
+
+    public void renderAdditional(Camera cam) {
+        //TODO <(^.^<) COS CIEKAWEGO  (Dodatkowe rysowanie, jak sie chce...)
+    }
+    
+    public void updateAdditional(Camera cam) {
+        //TODO (>O.o)> COS FAJNEGO  (Dodatkowy update, jak sie chce...)
     }
 
     public WarpPoint findWarp(String name) {

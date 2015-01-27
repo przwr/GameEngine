@@ -178,7 +178,7 @@ public abstract class Entity extends GameObject {
 
     protected abstract void setPosition(int xPos, int yPos);
 
-    protected abstract void renderName(Place place, Camera cam);
+    public abstract void renderName(Place place, Camera cam);
 
     public double getHSpeed() {
         return hspeed;
