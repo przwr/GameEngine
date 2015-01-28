@@ -102,7 +102,7 @@ public class Map {
     }
 
     public void addObj(GameObject obj) {
-        obj.setMap(this);
+        obj.setMapNotChange(this);
         objects.add(obj);
         if (!(obj instanceof Player)) {
             if (obj.isEmitter()) {
@@ -133,7 +133,7 @@ public class Map {
     }
 
     public void deleteObj(GameObject obj) {
-        obj.setMap(null);
+        obj.setMapNotChange(null);
         objects.remove(obj);
         if (!(obj instanceof Player)) {
             if (obj.isEmitter()) {
@@ -248,7 +248,7 @@ public class Map {
 
     public void clear() {
         objects.stream().filter((obj) -> (obj.getMap().equals(this))).forEach((obj) -> {
-            obj.setMap(null);
+            obj.setMapNotChange(null);
         });
         objects.clear();
         solidMobs.clear();

@@ -194,7 +194,7 @@ public class MyGameOnline extends GameOnline {
                         g.players[tempPlace.playersLength].setName(temp.getName());
                         tempPlace.players[tempPlace.playersLength] = g.players[tempPlace.playersLength];
                         Map m = tempPlace.getMapById(newPls[i].getMapId());
-                        g.players[tempPlace.playersLength].setMap(m);
+                        g.players[tempPlace.playersLength].setMapNotChange(m);
                         m.addObj(g.players[tempPlace.playersLength]);
                         if (server != null) {
                             server.findPlayer(temp.getId()).setPlayer(g.players[tempPlace.playersLength]);
@@ -291,7 +291,7 @@ public class MyGameOnline extends GameOnline {
                             System.out.println("Adding Mob with ID: " + newMob[i].getId());
                             Mob mob = new MyMob(newMob[i].getX(), newMob[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", tempPlace, true, newMob[i].getId());
                             map.addObj(mob);
-                            mob.setMap(map);
+                            mob.setMapNotChange(map);
                             newMob[i] = null;
                         }
                     }

@@ -33,43 +33,40 @@ public class MapButtonChoice extends MenuChoice {
         super(label, menu, settings);
         this.i = i;
         this.ctrl = ctrl;
-        run = new Runnable() {
-            @Override
-            public void run() {
-                int noiseAx[] = findNoiseAx();
-                mapped = true;
-                while (mapped) {
-                    AnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].in);
-                    if (in != null) {
-                        if (in instanceof InputExitMapping || (ctrl.actions[3] != null && ctrl.actions[3].in != null && ctrl.actions[3].in.toString().equals(in.toString()))) {
-                            break;
-                        }
-                        if (in instanceof InputNull) {
-                            ctrl.actions[i].in = null;
-                            break;
-                        }
-                        if (i < 4) {
-                            for (Action action : ctrl.actions) {
-                                if (action != null && action.in != null && action.in.toString().equals(in.toString())) {
-                                    AnyInput temp = ctrl.actions[i].in;
-                                    action.in = temp;
-                                    set(in);
-                                }
-                            }
-                        } else {
-                            for (int k = 4; k < ctrl.actions.length; k++) {
-                                if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
-                                    AnyInput temp = ctrl.actions[i].in;
-                                    ctrl.actions[k].in = temp;
-                                    set(in);
-                                }
-                            }
-                        }
-                        set(in);
+        run = () -> {
+            int noiseAx[] = findNoiseAx();
+            mapped = true;
+            while (mapped) {
+                AnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].in);
+                if (in != null) {
+                    if (in instanceof InputExitMapping || (ctrl.actions[3] != null && ctrl.actions[3].in != null && ctrl.actions[3].in.toString().equals(in.toString()))) {
+                        break;
                     }
+                    if (in instanceof InputNull) {
+                        ctrl.actions[i].in = null;
+                        break;
+                    }
+                    if (i < 4) {
+                        for (Action action : ctrl.actions) {
+                            if (action != null && action.in != null && action.in.toString().equals(in.toString())) {
+                                AnyInput temp = ctrl.actions[i].in;
+                                action.in = temp;
+                                set(in);
+                            }
+                        }
+                    } else {
+                        for (int k = 4; k < ctrl.actions.length; k++) {
+                            if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
+                                AnyInput temp = ctrl.actions[i].in;
+                                ctrl.actions[k].in = temp;
+                                set(in);
+                            }
+                        }
+                    }
+                    set(in);
                 }
-                end();
             }
+            end();
         };
     }
 

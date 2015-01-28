@@ -20,7 +20,7 @@ public abstract class GameObject {
 
     protected double x, y;
     protected int width, height, depth, startX, startY;
-    protected boolean solid, emitter, emits, top, animate, simpleLighting;
+    protected boolean solid, emitter, emits, top, simpleLighting;
     protected Sprite sprite;
     protected Light light;
     protected String name;
@@ -82,10 +82,6 @@ public abstract class GameObject {
 
     public boolean isOnTop() {
         return top;
-    }
-
-    public boolean isAnimate() {
-        return animate;
     }
 
     public boolean isEmitter() {
@@ -236,7 +232,7 @@ public abstract class GameObject {
         collision = f;
     }
 
-    public void setMap(Map otherMap) {  //UWAGA! nie zmienia planszy! tylko ustawia
+    public void setMapNotChange(Map otherMap) {
         map = otherMap;
     }
 

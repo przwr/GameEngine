@@ -36,20 +36,18 @@ public class EditPlayer extends Player {
 
     @Override
     public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
-        double SCALE = place.settings.SCALE;
-        this.width = Methods.RoundHU(SCALE * width);
-        this.height = Methods.RoundHU(SCALE * height);
-        this.startX = Methods.RoundHU(SCALE * startX);
-        this.startY = Methods.RoundHU(SCALE * startY);
+        this.scale = place.settings.SCALE;
+        this.width = Methods.RoundHU(scale * width);
+        this.height = Methods.RoundHU(scale * height);
+        this.startX = Methods.RoundHU(scale * startX);
+        this.startY = Methods.RoundHU(scale * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, Methods.RoundHU(SCALE * x), Methods.RoundHU(SCALE * y), place);
+        init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(SCALE * 1024), Methods.RoundHU(SCALE * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.anim = new Animation((SpriteSheet) sprite, 200, this);
-        animate = true;
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
-        scale = SCALE;
         //place.addObj(this);
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
     }

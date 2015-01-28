@@ -19,7 +19,7 @@ import net.GameOnline;
 public abstract class Player extends Entity {
 
     public Menu menu;
-    protected Animation anim;
+    protected Animation animation;
     public Controler ctrl;
     protected Camera cam;
     protected GameOnline online;
@@ -54,10 +54,6 @@ public abstract class Player extends Entity {
         ctrl.getMenuInput();
     }
 
-    public void setAnimate(boolean animate) {
-        this.animate = animate;
-    }
-
     public Camera getCam() {
         return cam;
     }
@@ -74,8 +70,8 @@ public abstract class Player extends Entity {
         this.menu = menu;
     }
 
-    public Animation getAnim() {
-        return anim;
+    public Animation getAnimation() {
+        return animation;
     }
 
     public void setPlaceToNull() {

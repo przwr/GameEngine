@@ -72,8 +72,7 @@ public class MyPlayer extends Player {
         init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.anim = new Animation((SpriteSheet) sprite, 200, this);
-        animate = true;
+        this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
     }
@@ -91,8 +90,7 @@ public class MyPlayer extends Player {
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.anim = new Animation((SpriteSheet) sprite, 200, this);
-        animate = true;
+        this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
     }
@@ -138,7 +136,7 @@ public class MyPlayer extends Player {
             Drawer.drawElipse(0, 0, Methods.RoundHU((float) collision.getWidth() / 2), Methods.RoundHU((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jump, 0);
-            getAnim().render(animate);
+            getAnimation().render();
             glPopMatrix();
         }
     }
@@ -240,7 +238,7 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInShade(anim, color);
+            Drawer.drawShapeInShade(animation, color);
             glPopMatrix();
         }
     }
@@ -250,7 +248,7 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInBlack(anim);
+            Drawer.drawShapeInBlack(animation);
             glPopMatrix();
         }
     }
@@ -260,7 +258,7 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInShade(anim, color, xStart, xEnd);
+            Drawer.drawShapeInShade(animation, color, xStart, xEnd);
             glPopMatrix();
         }
     }
@@ -270,7 +268,7 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInBlack(anim, xStart, xEnd);
+            Drawer.drawShapeInBlack(animation, xStart, xEnd);
             glPopMatrix();
         }
     }
