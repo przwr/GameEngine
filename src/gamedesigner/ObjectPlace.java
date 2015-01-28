@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent;
+package gamedesigner;
 
-import game.gameobject.Mob;
 import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
@@ -13,10 +12,8 @@ import game.place.Place;
 import engine.FontsHandler;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
-import game.gameobject.Entity;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.Map;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 
@@ -24,14 +21,14 @@ import org.newdawn.slick.openal.SoundStore;
  *
  * @author przemek
  */
-public class MyPlace extends Place {
+public class ObjectPlace extends Place {
 
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final Place place;
     private final update[] ups = new update[2];
 
-    public MyPlace(Game game, int width, int height, int tileSize, Settings settnig, boolean isHost) {
+    public ObjectPlace(Game game, int width, int height, int tileSize, Settings settnig, boolean isHost) {
         super(game, width, height, tileSize, settnig);
         place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
@@ -40,15 +37,8 @@ public class MyPlace extends Place {
     }
 
     private void generate(boolean isHost) {
-        PolanaMap polana = new PolanaMap(mapId++, this, width, height, tileSize);
-        KamiennaMap kamienna = new KamiennaMap(mapId++, this, width, height, tileSize);
-        if (isHost) {
-            for (int i = 0; i < 1000; i++) {
-                polana.addObj(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, polana.mobId++));
-            }
-        }
+        ObjectMap polana = new ObjectMap(mapId++, this, width, height, tileSize);
         maps.add(polana);
-        maps.add(kamienna);
         //sounds.init("res", settings);
         this.red = 0.75f;
         this.green = 0.75f;
@@ -68,7 +58,7 @@ public class MyPlace extends Place {
         ups[0] = new update() {
             @Override
             public void up() {
-                
+                /*
                  if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                  sounds.getSound("MumboMountain").resume();
                  }
@@ -100,7 +90,7 @@ public class MyPlace extends Place {
                  if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
                  sounds.getSound("MumboMountain").fade(0.5, false);
                  }
-                 
+                 */
                 if (playersLength > 1) {
                     changeSplitScreenJoin.act();
                     changeSplitScreenMode.act();
@@ -123,29 +113,7 @@ public class MyPlace extends Place {
             }
         };
         ups[1] = () -> {
-            tempMaps.clear();
-            Map map;
-            if (game.online.server != null) {
-                for (int i = 0; i < playersLength; i++) {
-                    map = players[i].getMap();
-                    if (!tempMaps.contains(map)) {
-                        for (Mob mob : map.getSolidMobs()) {
-                            mob.update(place);
-                        }
-                        tempMaps.add(map);
-                    }
-                }
-            } else if (game.online.client != null) {
-                map = players[0].getMap();
-                for (Mob mob : map.getSolidMobs()) {
-                    mob.updateHard();
-                }
-            }
-            ((Player) players[0]).sendUpdate(place);
-            for (int i = 1; i < playersLength; i++) {
-                ((Entity) players[i]).updateSoft();
-                ((Entity) players[i]).updateOnline();
-            }
+            System.err.println("ONLINE?..... pfft....");
         };
     }
 

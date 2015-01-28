@@ -15,8 +15,11 @@ import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.Map;
 import game.place.cameras.PlayersCamera;
+import gamedesigner.ObjectPlace;
+import gamedesigner.ObjectPlayer;
 import java.io.File;
 import org.lwjgl.input.Controller;
+import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
@@ -28,6 +31,8 @@ public class MyGame extends Game {
 
     private final getInput[] ins = new getInput[2];
     private final update[] ups = new update[2];
+
+    private boolean designer = false;
 
     public MyGame(String title, Settings settings, Controller[] controllers) {
         super(title, settings);
@@ -123,6 +128,16 @@ public class MyGame extends Game {
                     if (runFlag) {
                         place.update();
                     } else {
+                        //---------------------- <('.'<) OBJECT DESIGNER ----------------------------//
+                        if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {   
+                            designer = true;
+                            players[0] = new ObjectPlayer(true, "Mapper");
+                            players[0].addMenu(menu);
+                            settings.nrPlayers = 1;
+                            startGame();
+                            menu.setCurrent(0);
+                        }
+                        //---------------------------------------------------------------------------//
                         menu.update();
                     }
                 }
@@ -177,7 +192,11 @@ public class MyGame extends Game {
     @Override
     public void startGame() {
         int nrPl = settings.nrPlayers;
-        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 64), settings, true);
+        if (!designer) {
+            place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 64), settings, true);
+        } else {
+            place = new ObjectPlace(this, Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 64), settings, true);
+        }
         Drawer.setPlace(place);
         place.players = new GameObject[4];
         place.playersLength = nrPl;

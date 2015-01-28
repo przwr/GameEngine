@@ -66,7 +66,7 @@ public abstract class Game {
     public Place getPlace() {
         return place;
     }
-
+    
     public void pause() {
         if (Keyboard.isKeyDown(Keyboard.KEY_PAUSE)) {
             if (!pause) {
