@@ -169,7 +169,7 @@ public class Drawer {
         glActiveTexture(white);
         animation.getSprite().getTex().bind();
         changeShapeToColor();
-        animation.renderNotBind(animation.getOwner().isAnimate());
+        animation.renderNotBind();
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         setBlendAttributesForShadows();
         glColor3f(1, 1, 1);
@@ -181,7 +181,7 @@ public class Drawer {
         glActiveTexture(white);
         animation.getSprite().getTex().bind();
         changeShapeToColor();
-        animation.renderNotBind(animation.getOwner().isAnimate(), xStart, xEnd);
+        animation.renderNotBind(xStart, xEnd);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         setBlendAttributesForShadows();
         glColor3f(1, 1, 1);
@@ -217,14 +217,14 @@ public class Drawer {
     public static void drawShapeInBlack(Animation anim) {
         anim.getSprite().getTex().bind();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        anim.renderNotBind(anim.getOwner().isAnimate());
+        anim.renderNotBind();
         setBlendAttributesForShadows();
     }
 
     public static void drawShapeInBlack(Animation anim, int xStart, int xEnd) {
         anim.getSprite().getTex().bind();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        anim.renderNotBind(anim.getOwner().isAnimate(), xStart, xEnd);
+        anim.renderNotBind(xStart, xEnd);
         setBlendAttributesForShadows();
     }
 
