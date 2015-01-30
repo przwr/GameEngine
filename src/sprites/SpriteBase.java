@@ -32,6 +32,13 @@ public class SpriteBase {
         scale = s;
     }
 
+    public void reset() {
+        Sprite t = getSprite("apple");
+        if (t != null) {
+            t.bindCheck();
+        }
+    }
+    
     public Sprite getSprite(String textureKey) {
         for (Sprite s : list) {
             if (s.getKey().equals(textureKey)) {

@@ -76,6 +76,18 @@ public class Drawer {
         glEnable(GL_TEXTURE_2D);
         glColor3f(1f, 1f, 1f);
     }
+    
+    public static void drawRectangle(int xStart, int yStart, int width, int height) {
+        glTranslatef(xStart, yStart, 0);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_QUADS);
+        glVertex2f(0, 0);
+        glVertex2f(0, height);
+        glVertex2f(width, height);
+        glVertex2f(width, 0);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
 
     public static void drawCircle(int xStart, int yStart, int radius, int precision) {   //dla małych ilości kroków wychodzą figury foremne (trójkąt, czworokąt, itp.)
         glTranslatef(xStart, yStart, 0);

@@ -5,8 +5,6 @@
  */
 package gamedesigner;
 
-import gamecontent.*;
-import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import game.gameobject.Player;
@@ -16,16 +14,10 @@ import game.place.Light;
 import engine.Animation;
 import engine.Drawer;
 import engine.Methods;
-import engine.Time;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.Map;
-import game.place.WarpPoint;
-import net.jodk.lang.FastMath;
-import net.packets.MPlayerUpdate;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
-import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
 /**
@@ -34,20 +26,26 @@ import sprites.SpriteSheet;
  */
 public class ObjectPlayer extends Player {
 
-    private int hs, vs;
+    private int hs, vs, maxtimer;
+    private int ix, iy;
+    int xtimer, ytimer;
+    private int tile;
+
+    private int[] tab = {GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR,
+        GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
+        GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA};
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
         this.first = first;
-        if (first) {
-            initControlerForFirst();
-        } else {
-            initControler();
-        }
+        maxtimer = 8;
+        xtimer = 0;
+        ytimer = 0;
+        initControler();
     }
 
-    private void initControlerForFirst() {
-        ctrl = new MyController(this);
+    private void initControler() {
+        ctrl = new ObjectController(this);
         ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
         ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
         ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
@@ -56,11 +54,6 @@ public class ObjectPlayer extends Player {
         ctrl.inputs[5] = new InputKeyBoard(Keyboard.KEY_DOWN);
         ctrl.inputs[6] = new InputKeyBoard(Keyboard.KEY_LEFT);
         ctrl.inputs[7] = new InputKeyBoard(Keyboard.KEY_RIGHT);
-        ctrl.init();
-    }
-
-    private void initControler() {
-        ctrl = new MyController(this);
         ctrl.init();
     }
 
@@ -78,9 +71,10 @@ public class ObjectPlayer extends Player {
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
-        animate = true;
+        animate = false;
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
+        tile = place.tileSize;
     }
 
     @Override
@@ -97,9 +91,10 @@ public class ObjectPlayer extends Player {
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.anim = new Animation((SpriteSheet) sprite, 200, this);
-        animate = true;
+        animate = false;
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
+        tile = place.tileSize;
     }
 
     @Override
@@ -112,10 +107,26 @@ public class ObjectPlayer extends Player {
 
     @Override
     protected void move(int xPos, int yPos) {
-        setX(x + xPos);
-        setY(y + yPos);
+        System.out.println(ix + " " + iy);
+
+        if (xtimer == 0) {
+            ix = Methods.Interval(0, ix + xPos, tab.length - 1);
+            setX(Methods.Interval(0, ix * tile, map.getWidth()));
+        }
+        if (ytimer == 0) {
+            iy = Methods.Interval(0, iy + yPos, tab.length - 1);
+            setY(Methods.Interval(0, iy * tile, map.getHeight()));
+        }
         if (cam != null) {
             cam.update();
+        }
+        xtimer++;
+        ytimer++;
+        if (xtimer >= maxtimer) {
+            xtimer = 0;
+        }
+        if (ytimer >= maxtimer) {
+            ytimer = 0;
         }
     }
 
@@ -129,154 +140,37 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() + sprite.getSy() + collision.getHeight() / 2 - jump),
-                name, new Color(place.red, place.green, place.blue));
-    }
-
-    @Override
     public void render(int xEffect, int yEffect) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.setColor(new Color(0, 0, 0, 51));
-            Drawer.drawElipse(0, 0, Methods.RoundHU((float) collision.getWidth() / 2), Methods.RoundHU((float) collision.getHeight() / 2), 15);
-            Drawer.refreshColor();
-            glTranslatef(0, (int) -jump, 0);
-            getAnim().render(animate);
+            glBlendFunc(tab[ix], tab[iy]);
+            glColor4f(1f, 1f, 1f, 1f);
+            Drawer.drawRectangle(0, 0, tile, tile);
+            Drawer.refreshForRegularDrawing();
             glPopMatrix();
         }
     }
-
-    float a = 22.6f;  //TYLKO TYMCZASOWE!
 
     @Override
     public void update() {
-        if (jumping) {
-            hop = false;
-            jump = FastMath.abs(Methods.xRadius(a * 4, 70));
-            a += Time.getDelta();
-            if ((int) a == 68) {
-                jumping = false;
-                a = 22.6f;
-            }
-        }
-        hs = (int) (hspeed + myHspeed);
-        vs = (int) (vspeed + myVspeed);
-        canMove(hs, vs);
-        for (WarpPoint w : map.getWarps()) {
-            if (w.getCollision() != null) {
-                if (w.getCollision().isCollideSingle(w.getX(), w.getY(), collision)) {
-                    w.Warp(this);
-                }
-            }
-        }
-        brakeOthers();
+
     }
 
     @Override
-    public synchronized void sendUpdate(Place place) {
-        if (jumping) {
-            jump = FastMath.abs(Methods.xRadius(a * 4, 70));
-            a += Time.getDelta();
-            if ((int) a == 68) {
-                jumping = false;
-                a = 22.5f;
-            }
-        }
-        hs = (int) (hspeed + myHspeed);
-        vs = (int) (vspeed + myVspeed);
-        canMove(hs, vs);
-        for (WarpPoint warp : map.getWarps()) {
-            if (warp.getCollision() != null) {
-                if (warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                    warp.Warp(this);
-                }
-            }
-        }
-        brakeOthers();
-        if (online.server != null) {
-            online.server.sendUpdate(map.getId(), getX(), getY(), isEmits(), isHop());
-        } else if (online.client != null) {
-            online.client.sendPlayerUpdate(map.getId(), id, getX(), getY(), isEmits(), isHop());
-            online.past[online.pastNr++].set(getX(), getY());
-            if (online.pastNr >= online.past.length) {
-                online.pastNr = 0;
-            }
-        } else {
-            online.g.endGame();
-        }
+    public void sendUpdate(Place place) {
     }
 
     @Override
-    public synchronized void updateRest(Update up) {
-        try {
-            Map map = place.getMapById(((MPlayerUpdate) up).getMapId());
-            if (map != null) {
-                changeMap(map);
-            }
-            if (((MPlayerUpdate) up).isHop()) {
-                setIsJumping(true);
-            }
-            setEmits(((MPlayerUpdate) up).isEmits());
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
+    public void updateOnline() {
     }
 
     @Override
-    public synchronized void updateOnline() {
-        try {
-            if (jumping) {
-                jump = FastMath.abs(Methods.xRadius(a * 4, 70));
-                a += Time.getDelta();
-                if ((int) a == 68) {
-                    jumping = false;
-                    a = 22.5f;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
+    public void updateRest(Update up) {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInShade(anim, color);
-            glPopMatrix();
-        }
+    public void renderName(Place place, Camera cam) {
     }
 
-    @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInBlack(anim);
-            glPopMatrix();
-        }
-    }
-
-    @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInShade(anim, color, xStart, xEnd);
-            glPopMatrix();
-        }
-    }
-
-    @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInBlack(anim, xStart, xEnd);
-            glPopMatrix();
-        }
-    }
 }

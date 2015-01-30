@@ -5,8 +5,6 @@
  */
 package gamedesigner;
 
-import collision.Area;
-import collision.Line;
 import game.place.Map;
 import game.place.Place;
 import game.place.Tile;
@@ -25,13 +23,5 @@ public class ObjectMap extends Map {
                 tiles[x + y * height / tileSize] = GRASS;
             }
         }
-                
-        Area border = Area.createBorder(0, 0, tileSize);
-        border.addFigure(Line.create(0, 0, width, 0, border));
-        border.addFigure(Line.create(0, 0, 0, height, border));
-        border.addFigure(Line.create(width, 0, 0, height, border));
-        border.addFigure(Line.create(0, height, width, 0, border));
-        
-        areas.add(border);
     }
 }

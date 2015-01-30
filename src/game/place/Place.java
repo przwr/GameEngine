@@ -104,10 +104,8 @@ public abstract class Place extends ScreenPlace {
                             map.renderObj(cam);
                             map.renderText(cam);
                         }
+                        sprites.reset();
                         Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                        if (map != null) {
-                            map.renderAdditional(cam);
-                        }
                         glDisable(GL_SCISSOR_TEST);
                     }
                 }
