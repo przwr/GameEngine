@@ -11,13 +11,13 @@ import game.gameobject.Player;
 import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
-import sprites.Animation;
 import engine.Drawer;
 import engine.Methods;
 import game.gameobject.inputs.InputKeyBoard;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
+import sprites.Animation;
 import sprites.SpriteSheet;
 
 /**
@@ -30,7 +30,7 @@ public class ObjectPlayer extends Player {
     private int ix, iy;
     int xtimer, ytimer;
     private int tile;
-
+    private int xStop, yStop;
     private int[] tab = {GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR,
         GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
         GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA};
@@ -38,9 +38,10 @@ public class ObjectPlayer extends Player {
     public ObjectPlayer(boolean first, String name) {
         super(name);
         this.first = first;
-        maxtimer = 8;
+        maxtimer = 7;
         xtimer = 0;
         ytimer = 0;
+        xStop = -1;
         initControler();
     }
 
@@ -105,15 +106,13 @@ public class ObjectPlayer extends Player {
 
     @Override
     protected void move(int xPos, int yPos) {
-        System.out.println(ix + " " + iy);
-
         if (xtimer == 0) {
-            ix = Methods.Interval(0, ix + xPos, tab.length - 1);
-            setX(Methods.Interval(0, ix * tile, map.getWidth()));
+            ix = Methods.Interval(0, ix + xPos, map.getTileWidth());
+            setX(ix * tile);
         }
         if (ytimer == 0) {
-            iy = Methods.Interval(0, iy + yPos, tab.length - 1);
-            setY(Methods.Interval(0, iy * tile, map.getHeight()));
+            iy = Methods.Interval(0, iy + yPos, map.getTileHeight());
+            setY(iy * tile);
         }
         if (cam != null) {
             cam.update();
@@ -141,10 +140,18 @@ public class ObjectPlayer extends Player {
     public void render(int xEffect, int yEffect) {
         if (sprite != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            //glBlendFunc(tab[ix], tab[iy]);
+            int d = 3;
+            int xd = (Math.abs(ix - xStop) + 1) * tile;
+            int yd = (Math.abs(iy - yStop) + 1) * tile;
+            glTranslatef(Math.min(ix, xStop) * tile + xEffect, Math.min(iy, yStop) * tile + yEffect, 0);
+            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
             glColor4f(1f, 1f, 1f, 1f);
-            Drawer.drawRectangle(0, 0, tile, tile);
+            Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
+            Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
+            Drawer.drawRectangle(0, -yd, d, yd);
+            Drawer.drawRectangle(xd + d, 0, d, yd);
+//Drawer.drawRectangle(0, 0, 0, tile);
+//Drawer.drawRectangle(0, tile, tile, tile);
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
         }
@@ -152,7 +159,10 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void update() {
-
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+            xStop = ix;
+            yStop = iy;
+        }
     }
 
     @Override
@@ -170,5 +180,4 @@ public class ObjectPlayer extends Player {
     @Override
     public void renderName(Place place, Camera cam) {
     }
-
 }
