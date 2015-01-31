@@ -24,7 +24,7 @@ public class Tile extends GameObject {
         this.place = place;
     }
 
-    public void renderSpecific(int flip, int x, int y) {    //Renderuje w konkretnym miejscu nie 
+    public void renderSpecific(int x, int y) {    //Renderuje w konkretnym miejscu nie 
         glPushMatrix();                                     //patrząc na zmienne wewnętrzne
         glTranslatef(x, y, 0);
         spriteSheet.render(xSheet, ySheet);

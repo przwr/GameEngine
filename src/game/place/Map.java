@@ -172,7 +172,7 @@ public class Map {
                     if (cam.getSX() < (x + 1) * tileSize && cam.getEX() > x * tileSize) {
                         Tile tile = tiles[x + y * height / tileSize];
                         if (tile != null) {
-                            tile.renderSpecific(0, cam.getXOffEffect() + x * tileSize, cam.getYOffEffect() + y * tileSize);
+                            tile.renderSpecific(cam.getXOffEffect() + x * tileSize, cam.getYOffEffect() + y * tileSize);
                         }
                     }
                 }

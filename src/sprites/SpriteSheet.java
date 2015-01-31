@@ -26,12 +26,19 @@ public class SpriteSheet extends Sprite {
         if (isValidPiece(piece)) {
             int x = (int) (piece % xTiles);
             int y = (int) (piece / xTiles);
-            render(x, y);
+            renderNotBind(x, y);
+        }
+    }
+
+    public void renderNotBind(int x, int y) {
+        if (areValidCoordinates(x, y)) {
+            renderPieceNotBind((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
         }
     }
 
     public void render(int x, int y) {
         if (areValidCoordinates(x, y)) {
+            bindCheck();
             renderPieceNotBind((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
         }
     }
