@@ -5,40 +5,55 @@
  */
 package gamedesigner;
 
+import gamedesigner.GUI.Help;
 import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
 import game.place.Place;
-import engine.FontBase;
+import engine.FontsHandler;
+import engine.Point;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
+import gamedesigner.GUI.FileBox;
+import gamedesigner.GUI.PathFinder;
+import java.io.File;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
+import sprites.SpriteSheet;
 
 /**
  *
  * @author przemek
  */
 public class ObjectPlace extends Place {
-
+    
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final Place place;
     private final update[] ups = new update[2];
-
+    private final Help help;
+    
+    private File lastFile = new File(".");
+    
+    private ObjectUI ui;
+    
     public ObjectPlace(Game game, int width, int height, int tileSize, Settings settnig, boolean isHost) {
         super(game, width, height, tileSize, settnig);
+        this.help = new Help();
         place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
         generate(isHost);
     }
-
+    
     private void generate(boolean isHost) {
         ObjectMap polana = new ObjectMap(mapId++, this, width, height, tileSize);
+        this.ui = new ObjectUI(tileSize, sprites.getSpriteSheet("tlo"), this);
         maps.add(polana);
+        polana.addObj(ui);
         //sounds.init("res", settings);
         this.red = 0.75f;
         this.green = 0.75f;
@@ -48,49 +63,24 @@ public class ObjectPlace extends Place {
         SoundStore.get().poll(0);
         initMethods();
     }
-
+    
     @Override
     public void update() {
         ups[game.mode].up();
     }
-
+    
     private void initMethods() {
         ups[0] = new update() {
             @Override
             public void up() {
-                /*
-                 if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
-                 sounds.getSound("MumboMountain").resume();
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-                 sounds.getSound("MumboMountain").pause();
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
-                 sounds.getSound("MumboMountain").stop();
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
-                 sounds.getSound("MumboMountain").addPitch(0.05f);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
-                 sounds.getSound("MumboMountain").addPitch(-0.05f);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
-                 sounds.getSound("MumboMountain").addGainModifier(0.05f);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
-                 sounds.getSound("MumboMountain").addGainModifier(-0.05f);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
-                 sounds.getSound("MumboMountain").resume();
-                 sounds.getSound("MumboMountain").smoothStart(0.5);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
-                 sounds.getSound("MumboMountain").fade(0.5, true);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
-                 sounds.getSound("MumboMountain").fade(0.5, false);
-                 }
-                 */
+                if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
+                    help.setVisible(true);
+                }
+                
+                if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
+                    loadTextures();
+                }
+                
                 if (playersLength > 1) {
                     changeSplitScreenJoin.act();
                     changeSplitScreenMode.act();
@@ -116,7 +106,7 @@ public class ObjectPlace extends Place {
             System.err.println("ONLINE?..... pfft....");
         };
     }
-
+    
     @Override
     public int getPlayersLenght() {
         if (game.mode == 0) {
@@ -125,13 +115,31 @@ public class ObjectPlace extends Place {
             return 1;
         }
     }
-
+    
+    public void loadTextures() {
+        PathFinder pf = new PathFinder(this, lastFile, new FileNameExtensionFilter(
+                "Textures (.spr)", "spr"), javax.swing.JFileChooser.FILES_ONLY);
+        pf.setVisible(true);
+        
+        while (pf.isVisible()) {
+            System.out.print("");
+        }
+    }
+    
+    public void getFile(FileBox f) {
+        lastFile = f.getDirectory();
+        String name = f.getSelectedFile().getName();
+        String sp = name.split("\\.")[0];
+        ui.setSpriteSheet(sprites.getSpriteSheet(sp));
+    }
+    
     @Override
     protected void renderText(Camera cam) {
+        
     }
-
+    
     private interface update {
-
+        
         void up();
     }
 }

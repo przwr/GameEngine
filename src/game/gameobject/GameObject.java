@@ -20,7 +20,7 @@ public abstract class GameObject {
 
     protected double x, y;
     protected int width, height, depth, startX, startY;
-    protected boolean solid, emitter, emits, top, simpleLighting;
+    protected boolean solid, emitter, emits, top, simpleLighting, alwaysVisible;
     protected Sprite sprite;
     protected Light light;
     protected String name;
@@ -210,6 +210,14 @@ public abstract class GameObject {
 
     public void setX(double x) {
         this.x = x;
+    }
+    
+    public void setAlwaysVisible(boolean vis) {
+        this.alwaysVisible = vis;
+    }
+    
+    public boolean isAlwaysVisible() {
+        return alwaysVisible;
     }
 
     public void setY(double y) {

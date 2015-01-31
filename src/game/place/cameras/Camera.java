@@ -139,6 +139,14 @@ public abstract class Camera {
     public int getDheight() {
         return Dheight;
     }
+    
+    public int getWidth() {
+        return Dwidth * 2;
+    }
+
+    public int getHeight() {
+        return Dheight * 2;
+    }
 
     public int getSX() {
         return getMidX() - (getMidX() + getXOffEffect());

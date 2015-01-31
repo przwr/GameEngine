@@ -19,6 +19,7 @@ import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import sprites.Animation;
 import sprites.SpriteSheet;
+import static org.lwjgl.input.Keyboard.*;
 
 /**
  *
@@ -31,9 +32,12 @@ public class ObjectPlayer extends Player {
     int xtimer, ytimer;
     private int tile;
     private int xStop, yStop;
-    private int[] tab = {GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR,
-        GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
-        GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA};
+    private boolean prevClick;
+
+    private ObjectUI ui;
+//    private final int[] tab = {GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR,
+//        GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
+//        GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA};
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
@@ -41,21 +45,20 @@ public class ObjectPlayer extends Player {
         maxtimer = 7;
         xtimer = 0;
         ytimer = 0;
-        xStop = -1;
         initControler();
     }
 
     private void initControler() {
-        controler = new ObjectController(this);
-        controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
-        controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
-        controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        controler.inputs[4] = new InputKeyBoard(Keyboard.KEY_UP);
-        controler.inputs[5] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        controler.inputs[6] = new InputKeyBoard(Keyboard.KEY_LEFT);
-        controler.inputs[7] = new InputKeyBoard(Keyboard.KEY_RIGHT);
-        controler.init();
+        ctrl = new ObjectController(this);
+        ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+        ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+        ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+        ctrl.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+        ctrl.init();
+    }
+
+    public void addUI(ObjectUI ui) {
+        this.ui = ui;
     }
 
     @Override
@@ -106,13 +109,21 @@ public class ObjectPlayer extends Player {
 
     @Override
     protected void move(int xPos, int yPos) {
+        boolean cltr = guzik(KEY_LCONTROL);
+
         if (xtimer == 0) {
             ix = Methods.Interval(0, ix + xPos, map.getTileWidth());
             setX(ix * tile);
+            if (!cltr) {
+                xStop = Methods.Interval(0, xStop + xPos, map.getTileWidth());
+            }
         }
         if (ytimer == 0) {
             iy = Methods.Interval(0, iy + yPos, map.getTileHeight());
             setY(iy * tile);
+            if (!cltr) {
+                yStop = Methods.Interval(0, yStop + yPos, map.getTileHeight());
+            }
         }
         if (cam != null) {
             cam.update();
@@ -150,8 +161,6 @@ public class ObjectPlayer extends Player {
             Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
             Drawer.drawRectangle(0, -yd, d, yd);
             Drawer.drawRectangle(xd + d, 0, d, yd);
-//Drawer.drawRectangle(0, 0, 0, tile);
-//Drawer.drawRectangle(0, tile, tile, tile);
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
         }
@@ -159,10 +168,45 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void update() {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+        boolean tileMove = false;
+        int xPos = 0;
+        int yPos = 0;
+
+        if (guzik(KEY_LCONTROL) && guzik(KEY_Z)) {
             xStop = ix;
             yStop = iy;
         }
+
+        if (guzik(KEY_UP)) {
+            yPos--;
+        } else if (guzik(KEY_DOWN)) {
+            yPos++;
+        } else {
+            ytimer = 0;
+        }
+        if (guzik(KEY_LEFT)) {
+            xPos--;
+        } else if (guzik(KEY_RIGHT)) {
+            xPos++;
+        } else {
+            xtimer = 0;
+        }
+
+        if (xPos != 0 || yPos != 0) {
+            if (guzik(KEY_T)) {
+                if (xtimer == 0 && ytimer == 0) {
+                    ui.changeCoordinates(xPos, yPos);
+                    xtimer = 1;
+                    ytimer = 1;
+                }
+            } else {
+                move(xPos, yPos);
+            }
+        }
+    }
+
+    private boolean guzik(int k) {
+        return Keyboard.isKeyDown(k);
     }
 
     @Override
