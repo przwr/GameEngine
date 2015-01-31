@@ -19,22 +19,28 @@ import java.util.logging.Logger;
  */
 public final class IO {
 
-    public static void readFile(File file, Settings settings, boolean isSettings) {
+    public static Settings getSettingsFromFile(File file) {
         try (BufferedReader read = new BufferedReader(new FileReader(file));) {
-            String str;
-            while ((str = read.readLine()) != null) {
-                if (isSettings) {
-                    AnalizerSettings.analizeSetting(str, settings);
-                } else {
-                    AnalizerInput.AnalizeInput(str, settings);
-                }
+            Settings settings = new Settings();
+            String line;
+            while ((line = read.readLine()) != null) {
+                AnalizerSettings.analizeSetting(line, settings);
+            }
+            return settings;
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static void loadInputFromFile(File file, Settings settings) {
+        try (BufferedReader read = new BufferedReader(new FileReader(file));) {
+            String line;
+            while ((line = read.readLine()) != null) {
+                AnalizerInput.AnalizeInput(line, settings);
             }
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    private IO() {
-    }
-
 }

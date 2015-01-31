@@ -26,7 +26,7 @@ public class NotMapButtonChoice extends MenuChoice {
         if (ctrl == null) {
             this.ctrl = null;
         } else {
-            this.ctrl = ctrl.ctrl;
+            this.ctrl = ctrl.controler;
         }
     }
 

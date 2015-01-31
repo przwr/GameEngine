@@ -27,7 +27,7 @@ public class Tile extends GameObject {
     public void renderSpecific(int x, int y) {    //Renderuje w konkretnym miejscu nie 
         glPushMatrix();                                     //patrząc na zmienne wewnętrzne
         glTranslatef(x, y, 0);
-        spriteSheet.render(xSheet, ySheet);
+        spriteSheet.renderPiece(xSheet, ySheet);
         glPopMatrix();
     }
 
@@ -69,7 +69,7 @@ public class Tile extends GameObject {
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-        spriteSheet.render(xSheet, ySheet);
+        spriteSheet.renderPiece(xSheet, ySheet);
         glPopMatrix();
     }
 }

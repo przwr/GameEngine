@@ -29,11 +29,11 @@ import org.lwjgl.opengl.GLContext;
  */
 public class Settings {
 
-    public DisplayMode[] tmpmodes;
+    public DisplayMode[] tempModes;
     public DisplayMode[] modes;
-    public int modesNr;
+    public int modesNumber;
     public DisplayMode display = Display.getDesktopDisplayMode();
-    public int curMode;
+    public int curentMode;
     public boolean fullScreen;
     public boolean hSplitScreen;
     public boolean joinSS;
@@ -49,7 +49,7 @@ public class Settings {
     public int nrSamples = 0;
     public String lang;
     public ArrayList<Language> languages = new ArrayList<>();
-    public Language language;           // ustawiony w konstruktorze na domyślny
+    public Language language;
     public int actionsNr;
     public Player[] players;
     public Controller[] controllers;
@@ -66,29 +66,29 @@ public class Settings {
         int maxW = 1920;
         int maxH = 1200;
         try {
-            tmpmodes = Display.getAvailableDisplayModes();
+            tempModes = Display.getAvailableDisplayModes();
         } catch (LWJGLException ex) {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         DisplayMode temp;
-        if (tmpmodes[0].getWidth() >= minW && tmpmodes[0].getWidth() <= maxW
-                && tmpmodes[0].getHeight() >= minH && tmpmodes[0].getHeight() <= maxH && tmpmodes[0].getBitsPerPixel() == depth) {
-            modesNr++;
+        if (tempModes[0].getWidth() >= minW && tempModes[0].getWidth() <= maxW
+                && tempModes[0].getHeight() >= minH && tempModes[0].getHeight() <= maxH && tempModes[0].getBitsPerPixel() == depth) {
+            modesNumber++;
         }
         int i, j;
-        for (i = 1; i < tmpmodes.length; i++) {
-            if (tmpmodes[i].getWidth() >= minW && tmpmodes[i].getWidth() <= maxW && tmpmodes[i].getHeight() >= minH && tmpmodes[i].getHeight() <= maxH && tmpmodes[i].getBitsPerPixel() == depth) {
-                modesNr++;
+        for (i = 1; i < tempModes.length; i++) {
+            if (tempModes[i].getWidth() >= minW && tempModes[i].getWidth() <= maxW && tempModes[i].getHeight() >= minH && tempModes[i].getHeight() <= maxH && tempModes[i].getBitsPerPixel() == depth) {
+                modesNumber++;
             }
-            temp = tmpmodes[i];
-            for (j = i; j > 0 && isBigger(tmpmodes[j - 1], temp); j--) {
-                tmpmodes[j] = tmpmodes[j - 1];
+            temp = tempModes[i];
+            for (j = i; j > 0 && isBigger(tempModes[j - 1], temp); j--) {
+                tempModes[j] = tempModes[j - 1];
             }
-            tmpmodes[j] = temp;
+            tempModes[j] = temp;
         }
-        modes = new DisplayMode[modesNr];
+        modes = new DisplayMode[modesNumber];
         i = 0;
-        for (DisplayMode mode : tmpmodes) {
+        for (DisplayMode mode : tempModes) {
             if (mode.getWidth() >= minW && mode.getWidth() <= maxW && mode.getHeight() >= minH && mode.getHeight() <= maxH && mode.getBitsPerPixel() == depth) {
                 modes[i++] = mode;
             }
@@ -114,7 +114,7 @@ public class Settings {
         }
     }
 
-    public void Up(int nr, Player[] players, Controller[] controllers) {
+    public void update(int nr, Player[] players, Controller[] controllers) {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
@@ -145,7 +145,7 @@ public class Settings {
                 isSupfboVer3 = 2;
                 isSupfboMS = false;
             } else {
-                Methods.Error(language.m.FBOError);
+                Methods.JavaError(language.m.FBOError);
             }
         }
     }

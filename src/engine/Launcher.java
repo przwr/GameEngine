@@ -16,13 +16,9 @@ public class Launcher {
     public static void main(String[] args) {
         try {
             Main.run();
-        } catch (Exception ex) {
-            Methods.Exception(ex);
+        } catch (Exception exception) {
+            Methods.Exception(exception);
             cleanUp();
         }
-        if (!Main.gameStop) {
-            cleanUp();
-        }
-        cleanUp();
     }
 }

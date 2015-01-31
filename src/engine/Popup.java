@@ -18,10 +18,10 @@ public class Popup {
     private static final int w2 = Display.getWidth() / 2, h2 = Display.getHeight() / 2;
     private static final String[] messages = new String[100];
     public int i = -1;
-    private final FontsHandler fonts;
+    private final FontBase fonts;
 
     public Popup(String font, float scale) {
-        fonts = new FontsHandler(2);
+        fonts = new FontBase(2);
         fonts.add(font, (int) (scale * 22));
         fonts.add(font, (int) (scale * 28));
     }

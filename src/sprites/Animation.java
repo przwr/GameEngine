@@ -11,7 +11,7 @@ import engine.Delay;
  *
  * @author przemek
  */
-public class Animation { // ANIMATION extends Sprite!
+public class Animation extends Appearance { // ANIMATION extends Sprite!
 
     private final SpriteSheet spriteSheet;
     private final Delay delay;
@@ -21,43 +21,39 @@ public class Animation { // ANIMATION extends Sprite!
     public Animation(SpriteSheet sprite, int delayTime) {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
-        this.end = spriteSheet.getLenght() - 1;
+        this.end = spriteSheet.getSize() - 1;
         delay = new Delay(delayTime);
         delay.start();
     }
 
+    @Override
+    public void bindCheck() {
+        spriteSheet.bindCheck();
+    }
+
+    @Override
     public void render() {
-        spriteSheet.bindCheck();
-        renderNotBind();
-    }
-
-    public void renderNotBind() {
-        spriteSheet.render(currentFrame);
+        spriteSheet.renderPiece(currentFrame);
         changeFrameIfNeeded();
     }
 
-    public void renderPart(int xStart, int xEnd) {
-        spriteSheet.bindCheck();
-        renderPartNotBind(xStart, xEnd);
-    }
-
-    public void renderPartNotBind(int xStart, int xEnd) {
-        spriteSheet.renderSpriteSheetPart(currentFrame, xStart, xEnd);
-        changeFrameIfNeeded();
-    }
-
+    @Override
     public void renderMirrored() {
-        spriteSheet.bindCheck();
-        renderMirroredNotBind();
-    }
-
-    public void renderMirroredNotBind() {
-        spriteSheet.renderSpriteSheetMirrored(currentFrame);
+        spriteSheet.renderPieceMirrored(currentFrame);
         changeFrameIfNeeded();
     }
-    
-    
 
+    @Override
+    public void renderPart(int partXStart, int partXEnd) {
+        spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
+        changeFrameIfNeeded();
+    }
+
+    @Override
+    public void renderPartMirrored(int partXStart, int partXEnd) {
+        spriteSheet.renderPiecePartMirrored(currentFrame, partXStart, partXEnd);
+        changeFrameIfNeeded();
+    }
 
     private void changeFrameIfNeeded() {
         if (animate && delay.isOver()) {
@@ -67,10 +63,6 @@ public class Animation { // ANIMATION extends Sprite!
                 currentFrame = start;
             }
         }
-    }
-
-    public Sprite getSpriteSheet() {
-        return spriteSheet;
     }
 
     public void setAnimate(boolean animate) {

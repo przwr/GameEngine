@@ -28,7 +28,7 @@ public class AnalizerInput {
             table[i] = Integer.parseInt(p[i + 3]);
         }
         if (pl != 1 || act >= 4) {
-            settings.players[pl - 1].ctrl.actions[act].in = AnyInput.createInput(type, table, settings);
+            settings.players[pl - 1].controler.actions[act].in = AnyInput.createInput(type, table, settings);
         }
     }
 
@@ -38,10 +38,10 @@ public class AnalizerInput {
             fw = new FileWriter("res/input.ini");
             int p = 1;
             for (Player pl : settings.players) {
-                if (pl.ctrl != null) {
+                if (pl.controler != null) {
                     for (int i = 0; i < settings.actionsNr; i++) {
-                        if (pl.ctrl.actions[i].in != null) {
-                            fw.write(p + " " + i + " " + pl.ctrl.actions[i].in.toString() + "\n");
+                        if (pl.controler.actions[i].in != null) {
+                            fw.write(p + " " + i + " " + pl.controler.actions[i].in.toString() + "\n");
                         }
                     }
                 }
@@ -52,8 +52,5 @@ public class AnalizerInput {
         } catch (IOException ex) {
             Logger.getLogger(AnalizerInput.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private AnalizerInput() {
     }
 }

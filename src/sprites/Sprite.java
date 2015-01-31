@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.lwjgl.opengl.GL11.*;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
@@ -18,7 +17,7 @@ import org.newdawn.slick.util.ResourceLoader;
  *
  * @author przemek
  */
-public class Sprite {
+public class Sprite extends Appearance {
 
     protected Texture texture;
 
@@ -28,7 +27,8 @@ public class Sprite {
     protected int xStart;
     protected int yStart;
     protected String key;
-    protected int id;
+
+    private double begin, ending;
 
     public static Sprite create(String textureKey, int width, int height, SpriteBase spriteBase) {
         return new Sprite(textureKey, width, height, 0, 0, spriteBase);
@@ -68,21 +68,16 @@ public class Sprite {
         this.height = height;
     }
 
-    protected void bindCheck() {
-        if (spriteBase == null) {
+    @Override
+    public void bindCheck() {
+        if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture.getTextureID()) {
             texture.bind();
-        } else if (spriteBase.getLastTex() != id) {
-            texture.bind();
-            spriteBase.setLastTex(id);
         }
     }
 
+    @Override
     public void render() {
         bindCheck();
-        renderNotBind();
-    }
-
-    public void renderNotBind() {
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
@@ -96,31 +91,9 @@ public class Sprite {
         glEnd();
     }
 
-    public void renderPart(int xStart, int xEnd) {
-        bindCheck();
-        renderPartNotBind(xStart, xEnd);
-    }
-
-    public void renderPartNotBind(int xStart, int xEnd) {
-        glTranslatef(this.xStart, yStart, 0);
-        glBegin(GL_QUADS);
-        glTexCoord2d(((double) xStart / (double) width), 0);
-        glVertex2f(xStart, 0);
-        glTexCoord2d(((double) xStart / (double) width), 1);
-        glVertex2f(xStart, height);
-        glTexCoord2d(((double) xEnd / (double) width), 1);
-        glVertex2f(xEnd, height);
-        glTexCoord2d(((double) xEnd / (double) width), 0);
-        glVertex2f(xEnd, 0);
-        glEnd();
-    }
-
+    @Override
     public void renderMirrored() {
         bindCheck();
-        renderMirroredNotBind();
-    }
-
-    public void renderMirroredNotBind() {
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
         glTexCoord2f(1, 0);
@@ -134,51 +107,40 @@ public class Sprite {
         glEnd();
     }
 
-    public void renderPartMirrored(int xStart, int xEnd) {
+    @Override
+    public void renderPart(int partXStart, int partXEnd) {
         bindCheck();
-        renderPartMirroredNotBind(xStart, xEnd);
-    }
-
-    public void renderPartMirroredNotBind(int xStart, int xEnd) {
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
-        glTexCoord2f(1, 0);
-        glVertex2f(0, 0);
-        glTexCoord2f(0, 0);
-        glVertex2f(width, 0);
-        glTexCoord2f(0, 1);
-        glVertex2f(width, height);
-        glTexCoord2f(1, 1);
-        glVertex2f(0, height);
-
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, 0);
-        glTexCoord2f(0, 1);
-        glVertex2f(0, height);
-        glTexCoord2f(1, 1);
-        glVertex2f(width, height);
-        glTexCoord2f(1, 0);
-        glVertex2f(width, 0);
-
-        glTexCoord2d(((double) xStart / (double) width), 0);
-        glVertex2f(xStart, 0);
-        glTexCoord2d(((double) xStart / (double) width), 1);
-        glVertex2f(xStart, height);
-        glTexCoord2d(((double) xEnd / (double) width), 1);
-        glVertex2f(xEnd, height);
-        glTexCoord2d(((double) xEnd / (double) width), 0);
-        glVertex2f(xEnd, 0);
-
+        glTexCoord2d(((double) partXStart / (double) width), 0);
+        glVertex2f(partXStart, 0);
+        glTexCoord2d(((double) partXStart / (double) width), 1);
+        glVertex2f(partXStart, height);
+        glTexCoord2d(((double) partXEnd / (double) width), 1);
+        glVertex2f(partXEnd, height);
+        glTexCoord2d(((double) partXEnd / (double) width), 0);
+        glVertex2f(partXEnd, 0);
         glEnd();
     }
 
-    public void renderRotated(double angle) { // DO WE NEED THIS??
-        glRotatef((float) angle, 0, 0, 1);
-        render();
+    @Override
+    public void renderPartMirrored(int partXstart, int partXend) {
+        bindCheck();
+        glTranslatef(xStart, yStart, 0);
+        glBegin(GL_QUADS);
+        glTexCoord2d(((double) partXend / (double) width), 0);
+        glVertex2f(partXstart, 0);
+        glTexCoord2d(((double) partXstart / (double) width), 0);
+        glVertex2f(partXend, 0);
+        glTexCoord2d(((double) partXstart / (double) width), 1);
+        glVertex2f(partXend, height);
+        glTexCoord2d(((double) partXend / (double) width), 1);
+        glVertex2f(partXstart, height);
+        glEnd();
     }
 
-    public void renderPieceNotBind(float xBegin, float xEnd, float yBegin, float yEnd) {
+    public void renderSpritePiece(float xBegin, float xEnd, float yBegin, float yEnd) {
+        bindCheck();
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
         glTexCoord2f(xBegin, yBegin);
@@ -192,9 +154,25 @@ public class Sprite {
         glEnd();
     }
 
-    public void renderPiecePartNotBind(float xBegin, float xEnd, float yBegin, float yEnd, int partXStart, int partXEnd, float xTiles) {
-        double begin = xBegin + ((double) partXStart) / (double) width / xTiles;
-        double ending = xBegin + ((double) partXEnd) / (double) width / xTiles;
+    public void renderSpritePieceMirrored(float xBegin, float xEnd, float yBegin, float yEnd) {
+        bindCheck();
+        glTranslatef(xStart, yStart, 0);
+        glBegin(GL_QUADS);
+        glTexCoord2f(xEnd, yBegin);
+        glVertex2f(0, 0);
+        glTexCoord2f(xBegin, yBegin);
+        glVertex2f(width, 0);
+        glTexCoord2f(xBegin, yEnd);
+        glVertex2f(width, height);
+        glTexCoord2f(xEnd, yEnd);
+        glVertex2f(0, height);
+        glEnd();
+    }
+
+    public void renderSpritePiecePart(float xBegin, float xEnd, float yBegin, float yEnd, int partXStart, int partXEnd, float xTiles) {
+        bindCheck();
+        begin = xBegin + ((double) partXStart) / (double) width / xTiles;
+        ending = xBegin + ((double) partXEnd) / (double) width / xTiles;
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
         glTexCoord2d(begin, yBegin);
@@ -208,27 +186,21 @@ public class Sprite {
         glEnd();
     }
 
-    public void renderPieceMirroredNotBind(float xBegin, float xEnd, float yBegin, float yEnd) {
+    public void renderSpritePiecePartMirrored(float xBegin, float xEnd, float yBegin, float yEnd, int partXStart, int partXEnd, float xTiles) { //NOT TESTED!
+        bindCheck();
+        begin = xBegin + ((double) partXStart) / (double) width / xTiles;
+        ending = xBegin + ((double) partXEnd) / (double) width / xTiles;
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
-        glTexCoord2f(xEnd, yBegin);
-        glVertex2f(0, 0);
-        glTexCoord2f(xBegin, yBegin);
-        glVertex2f(width, 0);
-        glTexCoord2f(xBegin, yEnd);
-        glVertex2f(width, height);
-        glTexCoord2f(xEnd, yEnd);
-        glVertex2f(0, height);
+        glTexCoord2d(ending, yBegin);
+        glVertex2f(partXStart, 0);
+        glTexCoord2d(begin, yBegin);
+        glVertex2f(partXEnd, 0);
+        glTexCoord2d(begin, yEnd);
+        glVertex2f(partXEnd, height);
+        glTexCoord2d(ending, yEnd);
+        glVertex2f(partXStart, height);
         glEnd();
-    }
-
-    public void renderPieceRotatedNotBind(double angle, float xBegin, float xEnd, float yBegin, float yEnd) {
-        glRotatef((float) angle, 0, 0, 1);
-        renderPieceNotBind(xBegin, xEnd, yBegin, yEnd);
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getWidth() {
@@ -257,10 +229,6 @@ public class Sprite {
 
     public Texture getTexture() {
         return texture;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setWidth(int w) {

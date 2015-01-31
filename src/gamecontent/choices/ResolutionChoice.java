@@ -22,18 +22,18 @@ public class ResolutionChoice extends MenuChoice {
 
     @Override
     public void action() {
-        settings.curMode++;
-        if (settings.curMode >= settings.modes.length) {
-            settings.curMode = 0;
+        settings.curentMode++;
+        if (settings.curentMode >= settings.modes.length) {
+            settings.curentMode = 0;
         }
-        settings.resWidth = settings.modes[settings.curMode].getWidth();
-        settings.resHeight = settings.modes[settings.curMode].getHeight();
-        settings.freq = settings.modes[settings.curMode].getFrequency();
+        settings.resWidth = settings.modes[settings.curentMode].getWidth();
+        settings.resHeight = settings.modes[settings.curentMode].getHeight();
+        settings.freq = settings.modes[settings.curentMode].getFrequency();
         AnalizerSettings.update(settings);
     }
 
     @Override
     public String getLabel() {
-        return label + settings.resWidth + " x " + settings.resHeight + " @ " + settings.freq + " Hz [" + (settings.curMode + 1) + "/" + settings.modes.length + "]";
+        return label + settings.resWidth + " x " + settings.resHeight + " @ " + settings.freq + " Hz [" + (settings.curentMode + 1) + "/" + settings.modes.length + "]";
     }
 }

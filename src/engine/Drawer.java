@@ -5,13 +5,12 @@
  */
 package engine;
 
-import sprites.Animation;
 import game.place.Place;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import org.newdawn.slick.Color;
-import sprites.Sprite;
+import sprites.Appearance;
 
 /**
  *
@@ -58,8 +57,6 @@ public class Drawer {
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
-    
-    
 
     public static void drawCircle(int xStart, int yStart, int radius, int precision) {
         drawElipse(xStart, yStart, radius, radius, precision);
@@ -78,78 +75,36 @@ public class Drawer {
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
-    
-    
 
-    public static void drawShapeInShade(Sprite sprite, float color) {
+    public static void drawShapeInShade(Appearance appearance, float color) {
         prepareDrawingShape(color);
-        sprite.getTexture().bind();
+        appearance.bindCheck();
         changeShapeToColor();
-        sprite.renderNotBind();
+        appearance.render();
         cleanAfterDrawingShape();
     }
 
-    public static void drawShapePartInShade(Sprite sprite, float color, int xStart, int xEnd) {
+    public static void drawShapePartInShade(Appearance appearance, float color, int partXStart, int partXEnd) {
         prepareDrawingShape(color);
-        sprite.getTexture().bind();
+        appearance.bindCheck();
         changeShapeToColor();
-        sprite.renderPartNotBind(xStart, xEnd);
-        cleanAfterDrawingShape();
-    }
-    
-    
-
-    public static void drawShapeInShade(Animation animation, float color) {
-        prepareDrawingShape(color);
-        animation.getSpriteSheet().getTexture().bind();
-        changeShapeToColor();
-        animation.renderNotBind();
+        appearance.renderPart(partXStart, partXEnd);
         cleanAfterDrawingShape();
     }
 
-    public static void drawShapePartInShade(Animation animation, float color, int xStart, int xEnd) {
-        prepareDrawingShape(color);
-        animation.getSpriteSheet().getTexture().bind();
-        changeShapeToColor();
-        animation.renderPartNotBind(xStart, xEnd);
-        cleanAfterDrawingShape();
-    }
-    
-    
-
-    public static void drawShapeInBlack(Sprite sprite) {
-        sprite.getTexture().bind();
+    public static void drawShapeInBlack(Appearance appearance) {
+        appearance.bindCheck();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        sprite.renderNotBind();
+        appearance.render();
         setBlendAttributesForShadows();
     }
 
-    public static void drawShapePartInBlack(Sprite sprite, int xStart, int xEnd) {
-        sprite.getTexture().bind();
+    public static void drawShapePartInBlack(Appearance appearance, int partXStart, int partXEnd) {
+        appearance.bindCheck();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        sprite.renderPartNotBind(xStart, xEnd);
+        appearance.renderPart(partXStart, partXEnd);
         setBlendAttributesForShadows();
     }
-    
-    
-
-    public static void drawShapeInBlack(Animation animation) {
-        animation.getSpriteSheet().getTexture().bind();
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        animation.renderNotBind();
-        setBlendAttributesForShadows();
-    }
-
-    public static void drawShapePartInBlack(Animation animation, int xStart, int xEnd) {
-        animation.getSpriteSheet().getTexture().bind();
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        animation.renderPartNotBind(xStart, xEnd);
-        setBlendAttributesForShadows();
-    }
-    
-    
-    
-    
 
     private static void prepareDrawingShape(float color) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

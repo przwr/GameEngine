@@ -5,7 +5,7 @@
  */
 package game.place;
 
-import engine.FontsHandler;
+import engine.FontBase;
 import game.Game;
 import game.Settings;
 import game.gameobject.GameObject;
@@ -21,7 +21,7 @@ public abstract class ScreenPlace {
     public final Settings settings;
     public final int width, height;
     public float red, green, blue;
-    public FontsHandler fonts;
+    public FontBase fonts;
     public GameObject[] players;
 
     public ScreenPlace(Game game, int width, int height, Settings settings) {

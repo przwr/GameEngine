@@ -9,8 +9,15 @@ package sprites;
  *
  * @author przemek
  */
-public class Appearance {
+public abstract class Appearance {
     
-    
-    
+    public abstract void bindCheck();
+
+    public abstract void render();
+
+    public abstract void renderMirrored();
+
+    public abstract void renderPart(int partXStart, int partXEnd);
+
+    public abstract void renderPartMirrored(int partXStart, int partXEnd);
 }

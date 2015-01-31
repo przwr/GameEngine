@@ -26,7 +26,7 @@ public abstract class Place extends ScreenPlace {
     protected final SpriteBase sprites;
     public final int tileSize;
 
-    private final render[] rds = new render[2];
+    private final renderType[] renders = new renderType[2];
     private final Place place;
 
     public Camera cam;
@@ -74,75 +74,65 @@ public abstract class Place extends ScreenPlace {
     }
 
     private void initMethods() {
-        rds[0] = new render() {
-            @Override
-            public void render() {
-                tempMaps.clear();
-                Map map;
-                for (int p = 0; p < playersLength; p++) {
-                    map = players[p].getMap();
-                    if (!tempMaps.contains(map)) {
-                        Renderer.findVisibleLights(map, playersLength);   //Renderer zależy od place'a, czeba zmienić
-                        if (!settings.shadowOff) {
-                            Renderer.preRendLights(map);
-                        }
-                        tempMaps.add(map);
+        renders[0] = () -> {
+            tempMaps.clear();
+            Map map;
+            for (int p = 0; p < playersLength; p++) {
+                map = players[p].getMap();
+                if (!tempMaps.contains(map)) {
+                    Renderer.findVisibleLights(map, playersLength);
+                    if (!settings.shadowOff) {
+                        Renderer.preRendLights(map);
                     }
+                    tempMaps.add(map);
                 }
-                for (int p = 0; p < playersLength; p++) {
-                    cam = (((Player) players[p]).getCam());
-                    map = players[p].getMap();
-                    SplitScreen.setSplitScreen(place, playersLength, p);    //+
-                    if (p == 0 || !singleCam) {
-                        glEnable(GL_SCISSOR_TEST);
-                        Renderer.preRenderShadowedLights(place, cam);
-                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        sprites.setLastTex(-1);
-//                        glOrtho(-1 / settings.SCALE, 1 / settings.SCALE, -1 / settings.SCALE, 1 / settings.SCALE, 1.0, -1.0);
-                        if (map != null) {
-                            map.renderBack(cam);
-                            map.renderObj(cam);
-                            map.renderText(cam);
-                            if (map.visibleLights.size() > 0) {
-                                Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                            }
-                        }
-                        //sprites.reset();
-                        glDisable(GL_SCISSOR_TEST);
-                    }
-                }
-                Renderer.resetOrtho(ssMode);
-                Renderer.border(ssMode);
             }
+            for (int p = 0; p < playersLength; p++) {
+                cam = (((Player) players[p]).getCam());
+                map = players[p].getMap();
+                SplitScreen.setSplitScreen(place, playersLength, p);
+                if (p == 0 || !singleCam) {
+                    glEnable(GL_SCISSOR_TEST);
+                    Renderer.preRenderShadowedLights(place, cam);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    if (map != null) {
+                        map.renderBack(cam);
+                        map.renderObj(cam);
+                        map.renderText(cam);
+                        if (map.visibleLights.size() > 0) {
+                            Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                        }
+                    }
+                    glDisable(GL_SCISSOR_TEST);
+                }
+            }
+            Renderer.resetOrtho(ssMode);
+            Renderer.border(ssMode);
         };
-        rds[1] = new render() {
-            @Override
-            public void render() {  //----- ????  Nie wiem jak tutaj naprawić...  ????? -----//
-                Map m = players[0].getMap();
-                Renderer.findVisibleLights(m, 1);
-                if (!settings.shadowOff) {
-                    Renderer.preRendLights(m);
-                }
-                cam = (((Player) players[0]).getCam());
-                SplitScreen.setSplitScreen(place, 1, 0);
-                glEnable(GL_SCISSOR_TEST);
-                Renderer.preRenderShadowedLights(place, cam);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                sprites.setLastTex(-1);
-                if (m != null) {
-                    m.renderBack(cam);
-                    m.renderObj(cam);
-                    m.renderText(cam);
-                }
-                Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                glDisable(GL_SCISSOR_TEST);
+        renders[1] = () -> {
+            Map m = players[0].getMap();
+            Renderer.findVisibleLights(m, 1);
+            if (!settings.shadowOff) {
+                Renderer.preRendLights(m);
             }
+            cam = (((Player) players[0]).getCam());
+            SplitScreen.setSplitScreen(place, 1, 0);
+            glEnable(GL_SCISSOR_TEST);
+            Renderer.preRenderShadowedLights(place, cam);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            if (m != null) {
+                m.renderBack(cam);
+                m.renderObj(cam);
+                m.renderText(cam);
+            }
+            Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+            glDisable(GL_SCISSOR_TEST);
         };
     }
 
     @Override
     public void render() {
-        rds[game.mode].render();
+        renders[game.mode].render();
     }
 
     public void addMap(Map map) {
@@ -178,7 +168,7 @@ public abstract class Place extends ScreenPlace {
         return playersLength;
     }
 
-    private interface render {
+    private interface renderType {
 
         void render();
     }

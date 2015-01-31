@@ -67,7 +67,7 @@ public final class AnalizerSettings {
                 }
                 for (int i = 0; i < settings.modes.length; i++) {
                     if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
-                        settings.curMode = i;
+                        settings.curentMode = i;
                     }
                 }
                 break;
@@ -80,7 +80,7 @@ public final class AnalizerSettings {
                 }
                 for (int i = 0; i < settings.modes.length; i++) {
                     if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
-                        settings.curMode = i;
+                        settings.curentMode = i;
                     }
                 }
                 break;
@@ -93,7 +93,7 @@ public final class AnalizerSettings {
                 }
                 for (int i = 0; i < settings.modes.length; i++) {
                     if (settings.modes[i].getWidth() == settings.resWidth && settings.modes[i].getHeight() == settings.resHeight && settings.modes[i].getFrequency() == settings.freq) {
-                        settings.curMode = i;
+                        settings.curentMode = i;
                     }
                 }
                 break;
@@ -117,42 +117,42 @@ public final class AnalizerSettings {
     }
 
     public static void update(Settings settings) {
-        FileWriter fw;
+        FileWriter writer;
         try {
-            fw = new FileWriter("res/settings.ini");
+            writer = new FileWriter("res/settings.ini");
             if (settings.fullScreen) {
-                fw.write("FullScreen: On\n");
+                writer.write("FullScreen: On\n");
             } else {
-                fw.write("FullScreen: Off\n");
+                writer.write("FullScreen: Off\n");
             }
             if (settings.hSplitScreen) {
-                fw.write("SplitMode: H\n");
+                writer.write("SplitMode: H\n");
             } else {
-                fw.write("SplitMode: V\n");
+                writer.write("SplitMode: V\n");
             }
             if (settings.vSync) {
-                fw.write("VSync: On\n");
+                writer.write("VSync: On\n");
             } else {
-                fw.write("VSync: Off\n");
+                writer.write("VSync: Off\n");
             }
             if (settings.shadowOff) {
-                fw.write("ShadowOff: On\n");
+                writer.write("ShadowOff: On\n");
             } else {
-                fw.write("ShadowOff: Off\n");
+                writer.write("ShadowOff: Off\n");
             }
-            fw.write("ServerIP: " + settings.serverIP + "\n");
-            fw.write("NumberOfPlayers: " + settings.nrPlayers + "\n");
-            fw.write("NumberOfSamples: " + settings.nrSamples + "\n");
-            fw.write("ResolutionWidth: " + settings.resWidth + "\n");
-            fw.write("ResolutionHeight: " + settings.resHeight + "\n");
-            fw.write("ResolutionFreq: " + settings.freq + "\n");
+            writer.write("ServerIP: " + settings.serverIP + "\n");
+            writer.write("NumberOfPlayers: " + settings.nrPlayers + "\n");
+            writer.write("NumberOfSamples: " + settings.nrSamples + "\n");
+            writer.write("ResolutionWidth: " + settings.resWidth + "\n");
+            writer.write("ResolutionHeight: " + settings.resHeight + "\n");
+            writer.write("ResolutionFreq: " + settings.freq + "\n");
             {
                 final int v = (int) (settings.volume * 10);
                 final float vol = (float) v / 10;
-                fw.write("Volume: " + vol + "\n");
+                writer.write("Volume: " + vol + "\n");
             }
-            fw.write("Language: " + settings.lang);
-            fw.close();
+            writer.write("Language: " + settings.lang);
+            writer.close();
         } catch (IOException ex) {
             Logger.getLogger(AnalizerSettings.class.getName()).log(Level.SEVERE, null, ex);
         }

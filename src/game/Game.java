@@ -5,11 +5,13 @@
  */
 package game;
 
+import static game.IO.loadInputFromFile;
 import net.GameOnline;
 import game.gameobject.Player;
 import game.place.Menu;
 import game.place.Place;
 import game.place.SplitScreen;
+import java.io.File;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -66,7 +68,7 @@ public abstract class Game {
     public Place getPlace() {
         return place;
     }
-    
+
     public void pause() {
         if (Keyboard.isKeyDown(Keyboard.KEY_PAUSE)) {
             if (!pause) {

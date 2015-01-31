@@ -6,7 +6,7 @@
 package gamecontent;
 
 import engine.Delay;
-import engine.FontsHandler;
+import engine.FontBase;
 import engine.Methods;
 import game.Game;
 import game.Settings;
@@ -76,7 +76,7 @@ public class MyMenu extends Menu {
         this.red = 1f;
         this.green = 1f;
         this.blue = 1f;
-        fonts = new FontsHandler(20);
+        fonts = new FontBase(20);
         fonts.add("Amble-Regular", Methods.RoundHU(settings.SCALE * 38));
         fonts.add("Amble-Regular", Methods.RoundHU(settings.SCALE * 64));
     }
@@ -120,28 +120,28 @@ public class MyMenu extends Menu {
             menus[3].addChoice(new NotMapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[0], i));
         }
         for (; i < settings.actionsNr; i++) {
-            menus[3].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[0].ctrl, i));
+            menus[3].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[0].controler, i));
         }
     }
 
     private void generateM4() {
         menus[4] = new MenuOpt(16, settings.language.m.Player2);
         for (int i = 3; i < settings.actionsNr; i++) {
-            menus[4].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[1].ctrl, i));
+            menus[4].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[1].controler, i));
         }
     }
 
     private void generateM5() {
         menus[5] = new MenuOpt(16, settings.language.m.Player3);
         for (int i = 3; i < settings.actionsNr; i++) {
-            menus[5].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[2].ctrl, i));
+            menus[5].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[2].controler, i));
         }
     }
 
     private void generateM6() {
         menus[6] = new MenuOpt(16, settings.language.m.Player4);
         for (int i = 3; i < settings.actionsNr; i++) {
-            menus[6].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[3].ctrl, i));
+            menus[6].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[3].controler, i));
         }
     }
 

@@ -2,6 +2,7 @@ package engine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+import javax.swing.JOptionPane;
 import net.jodk.lang.FastMath;
 
 /*
@@ -78,21 +79,24 @@ public class Methods {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
 
-    public static void Exception(Exception ex) {
+    public static void Exception(Exception exception) {
         String err = "";
-        err += ex + "\n";
-        for (StackTraceElement stackTrace : ex.getStackTrace()) {
+        err += exception + "\n";
+        for (StackTraceElement stackTrace : exception.getStackTrace()) {
             err += stackTrace + "\n";
         }
         System.out.println(err);
         Main.addMessage(err);
-        //JOptionPane.showMessageDialog(null, err, "Problem!", 0);
     }
 
     public static void Error(String message) {
         System.out.println(message);
         Main.addMessage(message);
-        //JOptionPane.showMessageDialog(null, message, "Problem!", 0);
+    }
+
+    public static void JavaError(String message) {
+        System.out.println(message);
+        JOptionPane.showMessageDialog(null, message, "Problem!", 0);
     }
 
     public static int RoundHU(double d) {
@@ -115,7 +119,7 @@ public class Methods {
         byteObject.close();
         return byteObject.toByteArray().length;
     }
-    
+
     private Methods() {
     }
 }

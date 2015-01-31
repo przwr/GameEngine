@@ -19,12 +19,12 @@ import org.newdawn.slick.util.ResourceLoader;
  *
  * @author przemek
  */
-public class FontsHandler {
+public class FontBase {
 
     protected final ArrayList<TrueTypeFont> fonts;
     private final char[] chars = {'ą', 'ę', 'ć', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ó', 'Ś', 'Ż', 'Ź'};
 
-    public FontsHandler(int size) {
+    public FontBase(int size) {
         fonts = new ArrayList<>(size);
     }
 
@@ -39,7 +39,7 @@ public class FontsHandler {
             awtFont = awtFont.deriveFont((float) size);
             fonts.add(new TrueTypeFont(awtFont, true, chars));
         } catch (FontFormatException | IOException ex) {
-            Logger.getLogger(FontsHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FontBase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

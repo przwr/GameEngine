@@ -23,98 +23,75 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class SpriteBase {
 
-    private int lastTex;
-    private final ArrayList<Sprite> list = new ArrayList<>();
-    private int texCounter = 0;
+    private final ArrayList<Sprite> sprites = new ArrayList<>();
     private final double scale;
 
-    public SpriteBase(double s) {
-        scale = s;
+    public SpriteBase(double scale) {
+        this.scale = scale;
     }
 
-    public void reset() {
-        Sprite t = getSprite("apple");
-        if (t != null) {
-            t.bindCheck();
-        }
-    }
-    
     public Sprite getSprite(String textureKey) {
-        for (Sprite s : list) {
-            if (s.getKey().equals(textureKey)) {
-                return s;
+        for (Sprite sprite : sprites) {
+            if (sprite.getKey().equals(textureKey)) {
+                return sprite;
             }
         }
-        Sprite temp = loadSprite(textureKey);
-        list.add(temp);
-        temp.setId(texCounter++);
-        return temp;
+        Sprite newSprite = loadSprite(textureKey);
+        sprites.add(newSprite);
+        return newSprite;
     }
 
     public SpriteSheet getSpriteSheet(String textureKey) {
-        for (Sprite s : list) {
-            if (s.getKey().equals(textureKey)) {
-                return (SpriteSheet) s;
+        for (Sprite sprite : sprites) {
+            if (sprite.getKey().equals(textureKey)) {
+                return (SpriteSheet) sprite;
             }
         }
         SpriteSheet temp = (SpriteSheet) loadSprite(textureKey);
-        list.add(temp);
-        temp.setId(texCounter++);
+        sprites.add(temp);
         return temp;
     }
 
     public Sprite loadSprite(String name) {
-        int width, height, startX, startY, w, h;
+        int width, height, startX, startY, pieceWidth, pieceHeight;
         boolean spriteSheet;
         String sprite, key;
-        Texture tempTexture;
-        Sprite lst;
-        try (BufferedReader wczyt = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
-            String line = wczyt.readLine();
-            String[] t = line.split(";");
-            key = t[0];
-            spriteSheet = t[1].equals("1");
-
-            line = wczyt.readLine();
+        Texture texture;
+        Sprite image;
+        try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
+            String line = input.readLine();
+            String[] data = line.split(";");
+            key = data[0];
+            spriteSheet = data[1].equals("1");
+            line = input.readLine();
             sprite = line;
-
-            t = wczyt.readLine().split(";");
-            width = (int) (Integer.parseInt(t[0]) * scale);
-            height = (int) (Integer.parseInt(t[1]) * scale);
-
-            t = wczyt.readLine().split(";");
-            startX = (int) (Integer.parseInt(t[0]) * scale);
-            startY = (int) (Integer.parseInt(t[1]) * scale);
-
-            t = wczyt.readLine().split(";");
-            w = Integer.parseInt(t[0]);
-            h = Integer.parseInt(t[1]);
-            wczyt.close();
+            data = input.readLine().split(";");
+            width = (int) (Integer.parseInt(data[0]) * scale);
+            height = (int) (Integer.parseInt(data[1]) * scale);
+            data = input.readLine().split(";");
+            startX = (int) (Integer.parseInt(data[0]) * scale);
+            startY = (int) (Integer.parseInt(data[1]) * scale);
+            data = input.readLine().split(";");
+            pieceWidth = Integer.parseInt(data[0]);
+            pieceHeight = Integer.parseInt(data[1]);
+            input.close();
         } catch (IOException e) {
             Methods.Error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
         try {
-            tempTexture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
+            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
         if (spriteSheet) {
-            lst = new SpriteSheet(tempTexture, w, h, startX, startY, this);
+            image = new SpriteSheet(texture, pieceWidth, pieceHeight, startX, startY, this);
         } else {
-            lst =  Sprite.create(tempTexture, width, height, startX, startY, this);
+            image = Sprite.create(texture, width, height, startX, startY, this);
         }
-        lst.setKey(key);
-        return lst;
-    }
-
-    public int getLastTex() {
-        return lastTex;
-    }
-
-    public void setLastTex(int i) {
-        lastTex = i;
+        image.setKey(key);
+        return image;
     }
 
     public double getScale() {

@@ -20,7 +20,7 @@ public abstract class Player extends Entity {
 
     public Menu menu;
     protected Animation animation;
-    public Controler ctrl;
+    public Controler controler;
     protected Camera cam;
     protected GameOnline online;
     protected boolean first;
@@ -43,15 +43,15 @@ public abstract class Player extends Entity {
     }
 
     public void getInput() {
-        ctrl.getInput();
+        controler.getInput();
     }
 
     public boolean isMenuOn() {
-        return ctrl.isMenuOn();
+        return controler.isMenuOn();
     }
 
     public void getMenuInput() {
-        ctrl.getMenuInput();
+        controler.getMenuInput();
     }
 
     public Camera getCam() {

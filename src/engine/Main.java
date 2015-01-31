@@ -7,7 +7,7 @@ package engine;
 
 import game.AnalizerSettings;
 import game.Game;
-import game.IO;
+import static game.IO.getSettingsFromFile;
 import game.Settings;
 import java.io.File;
 import java.io.IOException;
@@ -40,75 +40,130 @@ public class Main {
     public static boolean DEBUG = false;
     public static Game game;
     public static Popup pop;
-    public static final Settings settings = new Settings();
+    public static Settings settings;
     public static Controller[] controllers;
-    public static boolean gameStop = false;
     public static boolean pause, ENTER = true;
     private static boolean lastFrame;
 
     public static void run() {
-        IO.readFile(new File("res/settings.ini"), settings, true);
+        settings = getSettingsFromFile(new File("res/settings.ini"));
         initDisplay();
-        initGL();
+        initOpenGL();
         initGame();
         gameLoop();
         cleanUp();
     }
 
-    private static void initGame() {
-        game = new MyGame("Pervert Rabbits Attack", settings, controllers);
-        Display.setTitle(game.getTitle());
-        pop = new Popup("Amble-Regular", settings.SCALE);
-    }
-
-    private static void getInput() {
-        game.getInput();
-    }
-
-    private static void update() {
-        game.update();
-    }
-
-    private static void render() {
-        game.render();
-        if (pop.i != -1) {
-            pause = true;
-            pop.renderMesagges();
+    private static void initDisplay() {
+        try {
+            setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
+            createDisplay();
+            Display.setResizable(false);
+            Display.setVSyncEnabled(settings.vSync);
+            Display.setDisplayConfiguration(2f, 0f, 1f);
+            setIcon();
+            Keyboard.create();
+            Mouse.create();
+            Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
+            Mouse.setNativeCursor(emptyCursor);
+            Controllers.create();
+            controllers = Controlers.init();
+        } catch (LWJGLException exception) {
+            Methods.JavaError(exception.toString());
         }
-        Display.sync(60);
-        Display.update();
-        if (Display.isActive()) {
-            if (!lastFrame) {
-                try {
-                    Display.setDisplayConfiguration(1f, 0f, 1f);
-                    Display.setDisplayConfiguration(2f, 0f, 1f);
-                } catch (LWJGLException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    private static void setDisplayMode(int width, int height, int frequency, boolean fullscreen) {
+        if ((Display.getDisplayMode().getWidth() == width) && (Display.getDisplayMode().getHeight() == height) && (Display.isFullscreen() == fullscreen)) {
+            return;
+        }
+        setNewMode(width, height, frequency, fullscreen);
+    }
+
+    private static void setNewMode(int width, int height, int frequency, boolean fullscreen) {
+        try {
+            DisplayMode targetDisplayMode;
+            if (fullscreen) {
+                targetDisplayMode = setFullScreen(width, height, frequency);
+            } else {
+                targetDisplayMode = new DisplayMode(width, height);
+            }
+            if (targetDisplayMode == null) {
+                updateSettingsToDesktopMode();
+                Methods.Error("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
+                return;
+            }
+            Display.setDisplayMode(targetDisplayMode);
+            Display.setFullscreen(fullscreen);
+        } catch (LWJGLException exception) {
+            Methods.JavaError("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + " " + exception.getMessage());
+        }
+    }
+
+    private static DisplayMode setFullScreen(int width, int height, int frequency) {
+        DisplayMode targetDisplayMode = null;
+        for (DisplayMode current : settings.tempModes) {
+            if ((current.getWidth() == width) && (current.getHeight() == height) && (current.getFrequency() == frequency)) {
+                if (((targetDisplayMode == null) || (current.getFrequency() >= frequency))
+                        && ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel()))) {
+                    targetDisplayMode = current;
+                }
+                if ((current.getBitsPerPixel() == Display.getDesktopDisplayMode().getBitsPerPixel())
+                        && (current.getFrequency() == Display.getDesktopDisplayMode().getFrequency())) {
+                    return current;
                 }
             }
-        } else if (lastFrame) {
-            try {
-                Display.setDisplayConfiguration(2f, 0f, 1f);
-                Display.setDisplayConfiguration(1f, 0f, 1f);
-            } catch (LWJGLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    private static void updateSettingsToDesktopMode() {
+        settings.resWidth = Display.getDesktopDisplayMode().getWidth();
+        settings.resHeight = Display.getDesktopDisplayMode().getHeight();
+        for (int i = 0; i < settings.tempModes.length; i++) {
+            if (settings.tempModes[i].getWidth() == settings.resWidth && settings.tempModes[i].getHeight() == settings.resHeight
+                    && settings.tempModes[i].getFrequency() == settings.freq) {
+                settings.curentMode = i;
             }
         }
-        lastFrame = Display.isActive();
+        AnalizerSettings.update(settings);
     }
 
-    public static void addMessage(String msg) {
+    private static void createDisplay() {
         try {
-            pop.addMessage(msg);
-        } catch (Exception e) {
+            Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples));
+        } catch (Exception exception0) {
+            Display.destroy();
+            try {
+                Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples / 2));
+            } catch (Exception exception1) {
+                Display.destroy();
+                try {
+                    Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples / 4));
+                } catch (Exception exception2) {
+                    Display.destroy();
+                    try {
+                        Display.create(new PixelFormat(32, 0, 24, 0, 0));
+                    } catch (LWJGLException exception) {
+                        Methods.JavaError(exception.getMessage());
+                    }
+                }
+            }
         }
     }
 
-    public static String getTitle() {
-        return game.getTitle();
+    private static void setIcon() {
+        try {
+            Display.setIcon(new ByteBuffer[]{
+                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon32.png")), false, false, null),
+                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon16.png")), false, false, null)
+            });
+        } catch (IOException exception) {
+            System.out.println(exception.getMessage());
+        }
     }
 
-    private static void initGL() {
+    private static void initOpenGL() {
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_MULTISAMPLE);
@@ -121,30 +176,102 @@ public class Main {
         glClearColor(0, 0, 0, 0);
     }
 
+    private static void initGame() {
+        game = new MyGame("Pervert Rabbits Attack", settings, controllers);
+        Display.setTitle(game.getTitle());
+        pop = new Popup("Amble-Regular", settings.SCALE);
+    }
+
     private static void gameLoop() {
         Time.init();
-        while (!Display.isCloseRequested() && !game.exitFlag) {
+        while (isRunning()) {
             Time.update();
-            if (!gameStop) {
-                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
-                if (!pause) {
-                    getInput();
-                    update();
-                } else {
-                    if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                        game.getMenu().delay.start();
-                        if (!ENTER) {
-                            pop.popMessage();
-                        }
-                    } else {
-                        ENTER = false;
-                    }
-                }
-                render();
+            Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
+            if (!pause) {
+                update();
             } else {
-                Display.update();
+                resumeIfNeeded();
+            }
+            render();
+        }
+    }
+
+    private static boolean isRunning() {
+        return !Display.isCloseRequested() && !game.exitFlag;
+    }
+
+    private static void resumeIfNeeded() {
+        if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+            game.getMenu().delay.start();
+            if (!ENTER) {
+                pop.popMessage();
+            }
+        } else {
+            ENTER = false;
+        }
+    }
+
+    private static void update() {
+        game.getInput();
+        game.update();
+    }
+
+    private static void render() {
+        game.render();
+        popMessageIfNeeded();
+        Display.sync(60);
+        Display.update();
+        resolveGamma();
+        lastFrame = Display.isActive();
+    }
+
+    private static void popMessageIfNeeded() {
+        if (pop.i != -1) {
+            pause = true;
+            pop.renderMesagges();
+        }
+    }
+
+    private static void resolveGamma() {
+        if (Display.isActive()) {
+            refreshGamma();
+        } else if (lastFrame) {
+            resetGamma();
+        }
+    }
+
+    private static void refreshGamma() {
+        if (!lastFrame) {
+            try {
+                Display.setDisplayConfiguration(1f, 0f, 1f);
+                Display.setDisplayConfiguration(2f, 0f, 1f);
+            } catch (LWJGLException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    private static void resetGamma() {
+        if (!lastFrame) {
+            try {
+                Display.setDisplayConfiguration(2f, 0f, 1f);
+                Display.setDisplayConfiguration(1f, 0f, 1f);
+            } catch (LWJGLException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public static void addMessage(String message) {
+        try {
+            pop.addMessage(message);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    public static String getTitle() {
+        return game.getTitle();
     }
 
     public static void cleanUp() {
@@ -153,104 +280,8 @@ public class Main {
         Keyboard.destroy();
         Mouse.destroy();
         Controllers.destroy();
-//        try {
-//            Display.update();
-//            Display.setDisplayConfiguration(2f, 0f, 1f);
-//            Display.setDisplayConfiguration(1f, 0f, 1f);
-//        } catch (LWJGLException ex) {
-//        }
         Display.destroy();
         System.exit(0);
     }
 
-    private static void initDisplay() {
-        try {
-            setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
-            try {
-                Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples));
-            } catch (Exception e0) {
-                Display.destroy();
-                try {
-                    Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples / 2));
-                } catch (Exception e1) {
-                    Display.destroy();
-                    try {
-                        Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples / 4));
-                    } catch (Exception e2) {
-                        Display.destroy();
-                        Display.create(new PixelFormat(32, 0, 24, 0, 0));
-                    }
-                }
-            }
-            Display.setResizable(false);
-            Display.setVSyncEnabled(settings.vSync);
-//            Display.update();
-//            Display.setDisplayConfiguration(1f, 0f, 1f);
-            Display.setDisplayConfiguration(2f, 0f, 1f);
-            try {
-                Display.setIcon(new ByteBuffer[]{
-                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon32.png")), false, false, null),
-                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon16.png")), false, false, null)
-                });
-            } catch (IOException e) {
-            }
-            Keyboard.create();
-            Mouse.create();
-            Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
-            Mouse.setNativeCursor(emptyCursor);
-            Controllers.create();
-            controllers = Controlers.init();
-        } catch (LWJGLException ex) {
-            Methods.Exception(ex);
-        }
-    }
-
-    private static void setDisplayMode(int width, int height, int freq, boolean fullscreen) {
-        // return if requested DisplayMode is already set
-        if ((Display.getDisplayMode().getWidth() == width)
-                && (Display.getDisplayMode().getHeight() == height)
-                && (Display.isFullscreen() == fullscreen)) {
-            return;
-        }
-        try {
-            DisplayMode targetDisplayMode = null;
-            if (fullscreen) {
-                for (DisplayMode current : settings.tmpmodes) {
-                    if ((current.getWidth() == width) && (current.getHeight() == height) && (current.getFrequency() == freq)) {
-                        if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
-                            if ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel())) {
-                                targetDisplayMode = current;
-                            }
-                        }
-                        // if we've found a match for bpp and frequence against the 
-                        // original display mode then it's probably best to go for this one
-                        // since it's most likely compatible with the monitor
-                        if ((current.getBitsPerPixel() == Display.getDesktopDisplayMode().getBitsPerPixel())
-                                && (current.getFrequency() == Display.getDesktopDisplayMode().getFrequency())) {
-                            targetDisplayMode = current;
-                            break;
-                        }
-                    }
-                }
-            } else {
-                targetDisplayMode = new DisplayMode(width, height);
-            }
-            if (targetDisplayMode == null) {
-                Methods.Error("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
-                settings.resWidth = Display.getDesktopDisplayMode().getWidth();
-                settings.resHeight = Display.getDesktopDisplayMode().getHeight();
-                for (int i = 0; i < settings.tmpmodes.length; i++) {
-                    if (settings.tmpmodes[i].getWidth() == settings.resWidth && settings.tmpmodes[i].getHeight() == settings.resHeight && settings.tmpmodes[i].getFrequency() == settings.freq) {
-                        settings.curMode = i;
-                    }
-                }
-                AnalizerSettings.update(settings);
-                return;
-            }
-            Display.setDisplayMode(targetDisplayMode);
-            Display.setFullscreen(fullscreen);
-        } catch (LWJGLException e) {
-            Methods.Error("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
-        }
-    }
 }

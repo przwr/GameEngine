@@ -22,40 +22,41 @@ public class SpriteSheet extends Sprite {
         this.yTiles = texture.getImageHeight() / height;
     }
 
-    public void render(int piece) {
+    public void renderPiece(int piece) {
         if (isValidPiece(piece)) {
             int x = (int) (piece % xTiles);
             int y = (int) (piece / xTiles);
-            renderNotBind(x, y);
+            renderPiece(x, y);
         }
     }
 
-    public void renderNotBind(int x, int y) {
+    public void renderPiece(int x, int y) {
         if (areValidCoordinates(x, y)) {
-            renderPieceNotBind((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+            renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
         }
     }
 
-    public void render(int x, int y) {
-        if (areValidCoordinates(x, y)) {
-            bindCheck();
-            renderPieceNotBind((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
-        }
-    }
-
-    public void renderSpriteSheetPart(int id, int xStart, int xEnd) {
+    public void renderPiecePart(int id, int xStart, int xEnd) {
         int x = (int) (id % xTiles);
         int y = (int) (id / xTiles);
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
-            renderPiecePartNotBind((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
+            renderSpritePiecePart((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }
 
-    public void renderSpriteSheetMirrored(int id) {
+    public void renderPieceMirrored(int id) {
         int x = (int) (id % xTiles);
         int y = (int) (id / xTiles);
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
-            renderPieceMirroredNotBind((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+            renderSpritePieceMirrored((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+        }
+    }
+
+    public void renderPiecePartMirrored(int id, int xStart, int xEnd) {
+        int x = (int) (id % xTiles);
+        int y = (int) (id / xTiles);
+        if (isValidPiece(id) && areValidCoordinates(x, y)) {
+            renderSpritePiecePartMirrored((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }
 
@@ -81,7 +82,7 @@ public class SpriteSheet extends Sprite {
         return (int) yTiles;
     }
 
-    public int getLenght() {
+    public int getSize() {
         return (int) (xTiles * yTiles);
     }
 }

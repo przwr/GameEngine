@@ -46,17 +46,17 @@ public class MyPlayer extends Player {
     }
 
     private void initControlerForFirst() {
-        ctrl = new MyController(this);
-        ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
-        ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
-        ctrl.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        ctrl.init();
+        controler = new MyController(this);
+        controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+        controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+        controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+        controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+        controler.init();
     }
 
     private void initControler() {
-        ctrl = new MyController(this);
-        ctrl.init();
+        controler = new MyController(this);
+        controler.init();
     }
 
     @Override

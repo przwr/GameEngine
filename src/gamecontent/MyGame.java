@@ -10,6 +10,7 @@ import engine.Methods;
 import engine.Sound;
 import game.Game;
 import game.IO;
+import static game.IO.loadInputFromFile;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
@@ -41,8 +42,8 @@ public class MyGame extends Game {
         players[1] = new MyPlayer(false, "Player 2");
         players[2] = new MyPlayer(false, "Player 3");
         players[3] = new MyPlayer(false, "Player 4");
-        settings.Up(players[1].ctrl.getActionsCount(), players, controllers);
-        IO.readFile(new File("res/input.ini"), settings, false);
+        settings.update(players[1].controler.getActionsCount(), players, controllers);
+        loadInputFromFile(new File("res/input.ini"), settings);
         menu = new MyMenu(this, 2, 2, 1, settings);
         menuPl = new MyPlayer(true, "Menu");
         menu.players = new GameObject[1];
@@ -129,7 +130,7 @@ public class MyGame extends Game {
                         place.update();
                     } else {
                         //---------------------- <('.'<) OBJECT DESIGNER ----------------------------//
-                        if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {   
+                        if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
                             designer = true;
                             players[0] = new ObjectPlayer(true, "Mapper");
                             players[0].addMenu(menu);

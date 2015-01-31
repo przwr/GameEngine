@@ -9,7 +9,7 @@ import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
 import game.place.Place;
-import engine.FontsHandler;
+import engine.FontBase;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
@@ -43,7 +43,7 @@ public class ObjectPlace extends Place {
         this.red = 0.75f;
         this.green = 0.75f;
         this.blue = 0.75f;
-        fonts = new FontsHandler(20);
+        fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);
         initMethods();

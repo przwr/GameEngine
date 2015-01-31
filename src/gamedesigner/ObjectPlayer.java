@@ -46,16 +46,16 @@ public class ObjectPlayer extends Player {
     }
 
     private void initControler() {
-        ctrl = new ObjectController(this);
-        ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
-        ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
-        ctrl.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        ctrl.inputs[4] = new InputKeyBoard(Keyboard.KEY_UP);
-        ctrl.inputs[5] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        ctrl.inputs[6] = new InputKeyBoard(Keyboard.KEY_LEFT);
-        ctrl.inputs[7] = new InputKeyBoard(Keyboard.KEY_RIGHT);
-        ctrl.init();
+        controler = new ObjectController(this);
+        controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+        controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+        controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+        controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+        controler.inputs[4] = new InputKeyBoard(Keyboard.KEY_UP);
+        controler.inputs[5] = new InputKeyBoard(Keyboard.KEY_DOWN);
+        controler.inputs[6] = new InputKeyBoard(Keyboard.KEY_LEFT);
+        controler.inputs[7] = new InputKeyBoard(Keyboard.KEY_RIGHT);
+        controler.init();
     }
 
     @Override
