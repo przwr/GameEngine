@@ -57,22 +57,6 @@ public class ObjectController extends Controler {
 //        if (inControl.getPlace().game.online.client != null) {
 //            inControl.getPlace().game.online.client.sendInput(new PacketInput(((Player) inControl).id, statesSample));
 //        }
-        ObjectPlayer op = ((ObjectPlayer) inControl);
-        
-        if (states[UP]) {
-            op.move(0, -1);
-        } else if (states[DOWN]) {
-            op.move(0, 1);
-        } else {
-            op.ytimer = 0;
-        }
-        if (states[LEFT]) {
-            op.move(-1, 0);
-        } else if (states[RIGHT]) {
-            op.move(1, 0);
-        } else {
-            op.xtimer = 0;
-        }
     }
 
 //    @Override
