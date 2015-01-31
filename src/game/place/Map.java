@@ -33,6 +33,7 @@ public class Map {
     private final String name;
     private final short id;
     private final int width, height, tileSize;
+    private final int tilewidth, tileheight;
     private final ArrayList<GameObject> objects = new ArrayList<>();
     private final ArrayList<Mob> solidMobs = new ArrayList<>();
     private final ArrayList<Mob> flatMobs = new ArrayList<>();
@@ -56,7 +57,9 @@ public class Map {
         this.width = width;
         this.height = height;
         this.tileSize = tileSize;
-        tiles = new Tile[width / tileSize * height / tileSize];
+        tilewidth = width / tileSize;
+        tileheight = height / tileSize;
+        tiles = new Tile[tilewidth * tileheight];
     }
 
     public void sortObjects(ArrayList<GameObject> objects) {
@@ -270,6 +273,14 @@ public class Map {
         objectsOnTop.clear();
     }
 
+    public int getTileWidth() {
+        return tilewidth;
+    }
+    
+    public int getTileHeight() {
+        return tilewidth;
+    }
+    
     public int getWidth() {
         return width;
     }
