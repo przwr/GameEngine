@@ -210,7 +210,7 @@ public class GameServer {
                         tmp.sendUpTCP();
                     }
                 }
-                delay.restart();
+                delay.start();
             }
         } catch (Exception e) {
             cleanUp(e);

@@ -123,7 +123,7 @@ public class MapButtonChoice extends MenuChoice {
 
     private void end() {
         thread = null;
-        menu.delay.restart();
+        menu.delay.start();
         menu.isMapping = false;
     }
 }

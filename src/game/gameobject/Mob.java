@@ -126,7 +126,7 @@ public abstract class Mob extends Entity {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
-            Drawer.drawShapeInShade(sprite, color, xStart, xEnd);
+            Drawer.drawShapePartInShade(sprite, color, xStart, xEnd);
             glPopMatrix();
         }
     }
@@ -136,7 +136,7 @@ public abstract class Mob extends Entity {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
-            Drawer.drawShapeInBlack(sprite, xStart, xEnd);
+            Drawer.drawShapePartInBlack(sprite, xStart, xEnd);
             glPopMatrix();
         }
     }

@@ -613,45 +613,23 @@ public class ShadowRenderer {
         points[1] = new Point(0, 0);
         points[2] = new Point(0, 0);
         points[3] = new Point(0, 0);
-        shads[0] = new renderShadow() {
-            @Override
-            public void render(GameObject emitter, Figure shade, Point[] points) {
-                shade.getOwner().renderShadow((emitter.getLight().getSX() / 2) - (emitter.getX()),
-                        (emitter.getLight().getSY() / 2) - (emitter.getY()) + h - emitter.getLight().getSY(), shade);
-            }
+        shads[0] = (GameObject emitter1, Figure shade1, Point[] points1) -> {
+            shade1.getOwner().renderShadow((emitter1.getLight().getSX() / 2) - (emitter1.getX()), (emitter1.getLight().getSY() / 2) - (emitter1.getY()) + h - emitter1.getLight().getSY(), shade1);
         };
-        shads[1] = new renderShadow() {
-            @Override
-            public void render(GameObject emitter, Figure shade, Point[] points) {
-                shade.getOwner().renderShadowLit((emitter.getLight().getSX() / 2) - (emitter.getX()),
-                        (emitter.getLight().getSY() / 2) - (emitter.getY()) + h - emitter.getLight().getSY(), shade.getShadowColor(), shade);
-            }
+        shads[1] = (GameObject emitter1, Figure shade1, Point[] points1) -> {
+            shade1.getOwner().renderShadowLit((emitter1.getLight().getSX() / 2) - (emitter1.getX()), (emitter1.getLight().getSY() / 2) - (emitter1.getY()) + h - emitter1.getLight().getSY(), shade1.getShadowColor(), shade1);
         };
-        shads[2] = new renderShadow() {
-            @Override
-            public void render(GameObject emitter, Figure shade, Point[] points) {
-                drawWall(emitter, points, shade.getShadowColor());
-            }
+        shads[2] = (GameObject emitter1, Figure shade1, Point[] points1) -> {
+            drawWall(emitter1, points1, shade1.getShadowColor());
         };
-        shads[3] = new renderShadow() {
-            @Override
-            public void render(GameObject emitter, Figure shad, Point[] points) {
-                drawWall(emitter, points, 0);
-            }
+        shads[3] = (GameObject emitter1, Figure shad, Point[] points1) -> {
+            drawWall(emitter1, points1, 0);
         };
-        shads[4] = new renderShadow() {
-            @Override
-            public void render(GameObject emitter, Figure shad, Point[] points) {
-                shade.getOwner().renderShadowLit((emitter.getLight().getSX() / 2) - (emitter.getX()),
-                        (emitter.getLight().getSY() / 2) - (emitter.getY()) + h - emitter.getLight().getSY(), shade.getShadowColor(), shade, points[0].getX(), points[0].getY());
-            }
+        shads[4] = (GameObject emitter1, Figure shad, Point[] points1) -> {
+            shade.getOwner().renderShadowLit((emitter1.getLight().getSX() / 2) - (emitter1.getX()), (emitter1.getLight().getSY() / 2) - (emitter1.getY()) + h - emitter1.getLight().getSY(), shade.getShadowColor(), shade, points1[0].getX(), points1[0].getY());
         };
-        shads[5] = new renderShadow() {
-            @Override
-            public void render(GameObject emitter, Figure shad, Point[] points) {
-                shade.getOwner().renderShadow((emitter.getLight().getSX() / 2) - (emitter.getX()),
-                        (emitter.getLight().getSY() / 2) - (emitter.getY()) + h - emitter.getLight().getSY(), shade, points[0].getX(), points[0].getY());
-            }
+        shads[5] = (GameObject emitter1, Figure shad, Point[] points1) -> {
+            shade.getOwner().renderShadow((emitter1.getLight().getSX() / 2) - (emitter1.getX()), (emitter1.getLight().getSY() / 2) - (emitter1.getY()) + h - emitter1.getLight().getSY(), shade, points1[0].getX(), points1[0].getY());
         };
 
     }

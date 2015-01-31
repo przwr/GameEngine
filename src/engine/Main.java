@@ -16,9 +16,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import gamecontent.MyGame;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL;
@@ -129,8 +131,8 @@ public class Main {
                     getInput();
                     update();
                 } else {
-                    if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Mouse.isButtonDown(0)) {
-                        game.getMenu().delay.restart();
+                    if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                        game.getMenu().delay.start();
                         if (!ENTER) {
                             pop.popMessage();
                         }
@@ -194,6 +196,8 @@ public class Main {
             }
             Keyboard.create();
             Mouse.create();
+            Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
+            Mouse.setNativeCursor(emptyCursor);
             Controllers.create();
             controllers = Controlers.init();
         } catch (LWJGLException ex) {

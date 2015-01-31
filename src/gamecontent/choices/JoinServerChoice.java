@@ -32,7 +32,7 @@ public class JoinServerChoice extends MenuChoice {
             menu.setCurrent(0);
         } else {
             status = " - " + settings.language.m.UnableToConnect;
-            delay.restart();
+            delay.start();
         }
     }
 

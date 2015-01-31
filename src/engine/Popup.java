@@ -6,15 +6,7 @@
 package engine;
 
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glVertex2f;
+import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 
 /**
@@ -70,8 +62,8 @@ public class Popup {
         int wSize = Methods.Interval(w2 >> 2, biggest + shift, (w2 << 1) - (border << 1));
         int hSize = Methods.Interval(0, space + shift + (int) (shift * (lines.length + 1)) + 2 * border, (h2 << 1) - (border << 1));
 
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        glDisable(GL_BLEND);
+        glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
         glColor3f(1f, 1f, 1f);
         glVertex2f(w2 - wSize / 2, h2 + hSize / 2 - space);
@@ -79,7 +71,7 @@ public class Popup {
         glVertex2f(w2 + wSize / 2, h2 - hSize / 2 + space);
         glVertex2f(w2 - wSize / 2, h2 - hSize / 2 + space);
         glEnd();
-        GL11.glEnable(GL11.GL_BLEND);
+        glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         for (String line : lines) {
@@ -87,7 +79,7 @@ public class Popup {
             l++;
         }
 
-        GL11.glDisable(GL11.GL_BLEND);
+        glDisable(GL_BLEND);
         glBegin(GL_QUADS);
 
         glColor3f(1f, 1f, 1f);
@@ -151,11 +143,11 @@ public class Popup {
 
         glEnd();
 
-        GL11.glEnable(GL11.GL_BLEND);
+        glEnable(GL_BLEND);
         renderLine(0, w2, h2 + hSize / 2, "[ENTER]", Color.black);
         renderLine(1, w2, h2 - hSize / 2 + space, Main.getTitle(), Color.black);
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
     }
 
     public void renderLine(int i, int x, int y, String ms, Color color) {

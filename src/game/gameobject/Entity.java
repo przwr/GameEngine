@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+import org.newdawn.slick.Color;
 
 /**
  *
@@ -26,6 +27,7 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
  */
 public abstract class Entity extends GameObject {
 
+    protected static final Color jumpShadowColor = new Color(0, 0, 0, 51);
     public Update up, up2;
     public Update[] ups = new Update[4];
     public int lastAdded;
@@ -306,7 +308,7 @@ public abstract class Entity extends GameObject {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
-            Drawer.drawShapeInShade(sprite, color, xStart, xEnd);
+            Drawer.drawShapePartInShade(sprite, color, xStart, xEnd);
             glPopMatrix();
         }
     }
@@ -316,7 +318,7 @@ public abstract class Entity extends GameObject {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect, 0);
-            Drawer.drawShapeInBlack(sprite, xStart, xEnd);
+            Drawer.drawShapePartInBlack(sprite, xStart, xEnd);
             glPopMatrix();
         }
     }

@@ -5,7 +5,7 @@
  */
 package game.gameobject;
 
-import engine.Animation;
+import sprites.Animation;
 import game.place.Map;
 import game.place.Menu;
 import game.place.Place;

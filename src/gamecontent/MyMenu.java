@@ -62,7 +62,7 @@ public class MyMenu extends Menu {
 
     private void generate() {
         delay = new Delay(25);
-        delay.restart();
+        delay.start();
         menus = new MenuOpt[9];
         generateM0();
         generateM1();

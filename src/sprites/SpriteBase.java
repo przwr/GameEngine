@@ -64,27 +64,27 @@ public class SpriteBase {
     }
 
     public Sprite loadSprite(String name) {
-        int width, height, sx, sy, w, h;
-        boolean sprSheet;
-        String spr, key;
-        Texture tmp;
+        int width, height, startX, startY, w, h;
+        boolean spriteSheet;
+        String sprite, key;
+        Texture tempTexture;
         Sprite lst;
         try (BufferedReader wczyt = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
             String line = wczyt.readLine();
             String[] t = line.split(";");
             key = t[0];
-            sprSheet = t[1].equals("1");
+            spriteSheet = t[1].equals("1");
 
             line = wczyt.readLine();
-            spr = line;
+            sprite = line;
 
             t = wczyt.readLine().split(";");
             width = (int) (Integer.parseInt(t[0]) * scale);
             height = (int) (Integer.parseInt(t[1]) * scale);
 
             t = wczyt.readLine().split(";");
-            sx = (int) (Integer.parseInt(t[0]) * scale);
-            sy = (int) (Integer.parseInt(t[1]) * scale);
+            startX = (int) (Integer.parseInt(t[0]) * scale);
+            startY = (int) (Integer.parseInt(t[1]) * scale);
 
             t = wczyt.readLine().split(";");
             w = Integer.parseInt(t[0]);
@@ -95,15 +95,15 @@ public class SpriteBase {
             return null;
         }
         try {
-            tmp = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(spr), GL_LINEAR);
+            tempTexture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        if (sprSheet) {
-            lst = new SpriteSheet(tmp, w, h, sx, sy, this);
+        if (spriteSheet) {
+            lst = new SpriteSheet(tempTexture, w, h, startX, startY, this);
         } else {
-            lst = new Sprite(tmp, width, height, sx, sy, this);
+            lst =  Sprite.create(tempTexture, width, height, startX, startY, this);
         }
         lst.setKey(key);
         return lst;

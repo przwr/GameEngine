@@ -37,7 +37,7 @@ public abstract class Camera {
         gos.add(go);
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
-        shakeDelay.restart();
+        shakeDelay.start();
     }
 
     public synchronized void update() {
@@ -56,7 +56,7 @@ public abstract class Camera {
                 yEffect -= shakeAmp / 2;
                 shakeUp = true;
             }
-            shakeDelay.restart();
+            shakeDelay.start();
         }
     }
 

@@ -12,13 +12,13 @@ import sprites.SpriteSheet;
 public class Tile extends GameObject {
 
     public static int SIZE;
-    protected final SpriteSheet sh;
+    protected final SpriteSheet spriteSheet;
     protected final int xSheet;
     protected final int ySheet;
 
-    public Tile(SpriteSheet sh, int size, int xSheet, int ySheet, Place place) {
+    public Tile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, Place place) {
         SIZE = size;
-        this.sh = sh;
+        this.spriteSheet = spriteSheet;
         this.xSheet = xSheet;
         this.ySheet = ySheet;
         this.place = place;
@@ -27,7 +27,7 @@ public class Tile extends GameObject {
     public void renderSpecific(int flip, int x, int y) {    //Renderuje w konkretnym miejscu nie 
         glPushMatrix();                                     //patrząc na zmienne wewnętrzne
         glTranslatef(x, y, 0);
-        sh.render(xSheet, ySheet);
+        spriteSheet.render(xSheet, ySheet);
         glPopMatrix();
     }
 
@@ -69,7 +69,7 @@ public class Tile extends GameObject {
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-        sh.render(xSheet, ySheet);
+        spriteSheet.render(xSheet, ySheet);
         glPopMatrix();
     }
 }

@@ -14,16 +14,16 @@ public class Delay {
     private final int length;
     private long endTime;
     private boolean started;
-    private long toEnd;
+    private long tillEnd;
 
     public Delay(int length) {
         this.length = length;
-        this.started = false;
+        started = false;
     }
 
     public boolean isOver() {
         if (!started) {
-            toEnd = 0;
+            tillEnd = 0;
             return false;
         }
         return endTime <= Time.getTime();
@@ -33,7 +33,7 @@ public class Delay {
         return started;
     }
 
-    public void restart() {
+    public void start() {
         started = true;
         endTime = length * 1000000 + Time.getTime();
     }
@@ -52,7 +52,7 @@ public class Delay {
         endTime = 0;
     }
 
-    public long getToEnd() {
-        return toEnd;
+    public long getTillEnd() {
+        return tillEnd;
     }
 }

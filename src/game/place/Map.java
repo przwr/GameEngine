@@ -15,7 +15,6 @@ import game.place.cameras.Camera;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import gamecontent.MyPlayer;
 import java.util.Collection;
 
 /**

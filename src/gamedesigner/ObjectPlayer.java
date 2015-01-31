@@ -11,7 +11,7 @@ import game.gameobject.Player;
 import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
-import engine.Animation;
+import sprites.Animation;
 import engine.Drawer;
 import engine.Methods;
 import game.gameobject.inputs.InputKeyBoard;
@@ -70,8 +70,7 @@ public class ObjectPlayer extends Player {
         init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.anim = new Animation((SpriteSheet) sprite, 200, this);
-        animate = false;
+        this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
         tile = place.tileSize;
@@ -90,8 +89,7 @@ public class ObjectPlayer extends Player {
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.anim = new Animation((SpriteSheet) sprite, 200, this);
-        animate = false;
+        this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
         tile = place.tileSize;
@@ -144,7 +142,7 @@ public class ObjectPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            glBlendFunc(tab[ix], tab[iy]);
+            //glBlendFunc(tab[ix], tab[iy]);
             glColor4f(1f, 1f, 1f, 1f);
             Drawer.drawRectangle(0, 0, tile, tile);
             Drawer.refreshForRegularDrawing();

@@ -24,7 +24,6 @@ import org.lwjgl.input.Mouse;
  */
 public final class Controlers {
 
-    private static boolean noiseA;
     private static Controller[] controllers;
 
     public static Controller[] init() {
@@ -40,68 +39,86 @@ public final class Controlers {
         return controllers;
     }
 
-    public static AnyInput mapInput(int noiseAx[], int maxAxNr, AnyInput in) {
-        if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-            return new InputExitMapping();
+    public static AnyInput mapInput(int noiseAxes[], int maxAxesNumber, AnyInput input) {
+        if (Keyboard.isCreated()) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+                return new InputExitMapping();
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_DELETE)) {
+                return new InputNull();
+            }
         }
-        if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_DELETE)) {
-            return new InputNull();
-        }
-        if (in != null && in.isPut()) {
+        if (input != null && input.isPut()) {
             return null;
         } else {
-            for (int k = 0; k < Keyboard.KEYBOARD_SIZE; k++) {
-                if (Keyboard.isCreated() && Keyboard.isKeyDown(k) && k != Keyboard.KEY_ESCAPE && k != Keyboard.KEY_RETURN && k != Keyboard.KEY_INSERT && k != Keyboard.KEY_END && k != Keyboard.KEY_DELETE) {
-                    return new InputKeyBoard(k);
-                }
-            }
-            for (int m = 0; m < Mouse.getButtonCount(); m++) {
-                if (Mouse.isCreated() && Mouse.isButtonDown(m)) {
-                    return new InputMouse(m);
-                }
-            }
-            return checkControllers(noiseAx, maxAxNr);
+            return checkInputs(noiseAxes, maxAxesNumber);
         }
     }
 
-    private static AnyInput checkControllers(int noiseAx[], int maxAxNr) {
-        for (int c = 0; c < controllers.length; c++) {
-            if (controllers[c] != null) {
-                for (int b = 0; b < controllers[c].getButtonCount(); b++) {
-                    if (controllers[c].isButtonPressed(b)) {
-                        return new InputPadKey(controllers, c, b);
+    private static AnyInput checkInputs(int noiseAxes[], int maxAxesNumber) {
+        for (int key = 0; key < Keyboard.KEYBOARD_SIZE; key++) {
+            if (Keyboard.isCreated() && Keyboard.isKeyDown(key) && isNotSpecialKey(key)) {
+                return new InputKeyBoard(key);
+            }
+        }
+        for (int mouseButton = 0; mouseButton < Mouse.getButtonCount(); mouseButton++) {
+            if (Mouse.isCreated() && Mouse.isButtonDown(mouseButton)) {
+                return new InputMouse(mouseButton);
+            }
+        }
+        return checkControllers(noiseAxes, maxAxesNumber);
+    }
+
+    private static boolean isNotSpecialKey(int key) {
+        return key != Keyboard.KEY_ESCAPE && key != Keyboard.KEY_RETURN
+                && key != Keyboard.KEY_INSERT && key != Keyboard.KEY_END && key != Keyboard.KEY_DELETE;
+    }
+
+    private static AnyInput checkControllers(int noiseAxes[], int maxAxesNumber) {
+        for (int controler = 0; controler < controllers.length; controler++) {
+            if (controllers[controler] != null) {
+                for (int button = 0; button < controllers[controler].getButtonCount(); button++) {
+                    if (controllers[controler].isButtonPressed(button)) {
+                        return new InputPadKey(controllers, controler, button);
                     }
                 }
-                if (controllers[c].getPovX() > 0.1f) {
-                    return new InputPadDPad(controllers, c, true, true);
+                AnyInput dPad = checkDPad(controler);
+                if (dPad != null) {
+                    return dPad;
+                } else {
+                    return checkAxes(controler, noiseAxes, maxAxesNumber);
                 }
-                if (controllers[c].getPovX() < -0.1f) {
-                    return new InputPadDPad(controllers, c, true, false);
+            }
+        }
+        return null;
+    }
+
+    private static AnyInput checkDPad(int controler) {
+        if (controllers[controler].getPovX() > 0.1f) {
+            return new InputPadDPad(controllers, controler, true, true);
+        } else if (controllers[controler].getPovX() < -0.1f) {
+            return new InputPadDPad(controllers, controler, true, false);
+        } else if (controllers[controler].getPovY() > 0.1f) {
+            return new InputPadDPad(controllers, controler, false, true);
+        } else if (controllers[controler].getPovY() < -0.1f) {
+            return new InputPadDPad(controllers, controler, false, false);
+        }
+        return null;
+    }
+
+    private static AnyInput checkAxes(int controler, int noiseAxes[], int maxAxesNumber) {
+        boolean noisy = false;
+        for (int i = 0; i < controllers[controler].getAxisCount(); i++) {
+            for (int j = 0; j < controllers[controler].getAxisCount(); j++) {
+                if (i == noiseAxes[controler * maxAxesNumber + j]) {
+                    noisy = true;
                 }
-                if (controllers[c].getPovY() > 0.1f) {
-                    return new InputPadDPad(controllers, c, false, true);
-                }
-                if (controllers[c].getPovY() < -0.1f) {
-                    return new InputPadDPad(controllers, c, false, false);
-                }
-                for (int a = 0; a < controllers[c].getAxisCount(); a++) {
-                    int i;
-                    for (i = 0; i < controllers[c].getAxisCount(); i++) {
-                        if (a == noiseAx[c * maxAxNr + i]) {
-                            noiseA = true;
-                        }
-                    }
-                    if (noiseA) {
-                        noiseA = false;
-                        continue;
-                    }
-                    if (controllers[c].getAxisValue(a) > 0.1f) {
-                        return new InputPadStick(controllers, c, a, true);
-                    }
-                    if (controllers[c].getAxisValue(a) < -0.1f) {
-                        return new InputPadStick(controllers, c, a, false);
-                    }
-                }
+            }
+            if (noisy) {
+                noisy = false;
+            } else if (controllers[controler].getAxisValue(i) > 0.1f) {
+                return new InputPadStick(controllers, controler, i, true);
+            } else if (controllers[controler].getAxisValue(i) < -0.1f) {
+                return new InputPadStick(controllers, controler, i, false);
             }
         }
         return null;
@@ -113,4 +130,5 @@ public final class Controlers {
 
     private Controlers() {
     }
+
 }

@@ -12,7 +12,7 @@ import game.gameobject.Player;
 import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
-import engine.Animation;
+import sprites.Animation;
 import engine.Drawer;
 import engine.Methods;
 import engine.Time;
@@ -33,7 +33,7 @@ import sprites.SpriteSheet;
  */
 public class MyPlayer extends Player {
 
-    private int hs, vs;
+    private int xSpeed, ySpeed;
 
     public MyPlayer(boolean first, String name) {
         super(name);
@@ -132,7 +132,7 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.setColor(new Color(0, 0, 0, 51));
+            Drawer.setColor(jumpShadowColor);
             Drawer.drawElipse(0, 0, Methods.RoundHU((float) collision.getWidth() / 2), Methods.RoundHU((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jump, 0);
@@ -154,9 +154,9 @@ public class MyPlayer extends Player {
                 a = 22.6f;
             }
         }
-        hs = (int) (hspeed + myHspeed);
-        vs = (int) (vspeed + myVspeed);
-        canMove(hs, vs);
+        xSpeed = (int) (hspeed + myHspeed);
+        ySpeed = (int) (vspeed + myVspeed);
+        canMove(xSpeed, ySpeed);
         for (WarpPoint w : map.getWarps()) {
             if (w.getCollision() != null) {
                 if (w.getCollision().isCollideSingle(w.getX(), w.getY(), collision)) {
@@ -177,9 +177,9 @@ public class MyPlayer extends Player {
                 a = 22.5f;
             }
         }
-        hs = (int) (hspeed + myHspeed);
-        vs = (int) (vspeed + myVspeed);
-        canMove(hs, vs);
+        xSpeed = (int) (hspeed + myHspeed);
+        ySpeed = (int) (vspeed + myVspeed);
+        canMove(xSpeed, ySpeed);
         for (WarpPoint warp : map.getWarps()) {
             if (warp.getCollision() != null) {
                 if (warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
@@ -258,7 +258,7 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInShade(animation, color, xStart, xEnd);
+            Drawer.drawShapePartInShade(animation, color, xStart, xEnd);
             glPopMatrix();
         }
     }
@@ -268,7 +268,7 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
-            Drawer.drawShapeInBlack(animation, xStart, xEnd);
+            Drawer.drawShapePartInBlack(animation, xStart, xEnd);
             glPopMatrix();
         }
     }

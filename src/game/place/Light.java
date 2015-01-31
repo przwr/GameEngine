@@ -32,11 +32,7 @@ public class Light {
         if (!place.settings.shadowOff) {
             fbo = (place.settings.nrSamples > 0) ? new FBORendererMS(sx, sy, place.settings) : new FBORendererRegular(sx, sy, place.settings);
         }
-        this.light = new Sprite(lightName, sx, sy, null);
-    }
-    
-    public int getTexture(){
-        return light.getId();
+        this.light = Sprite.create(lightName, sx, sy, null);
     }
 
     public void setSize(int sx, int sy) {

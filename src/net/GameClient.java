@@ -134,7 +134,7 @@ public class GameClient {
         if (delay.isOver()) {
             server.sendTCP(mpup);
             mpup.reset();
-            delay.restart();
+            delay.start();
         }
     }
 
