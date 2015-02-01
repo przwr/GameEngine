@@ -39,4 +39,14 @@ public class Point {
         this.x = x;
         this.y = y;
     }
+    
+    @Override
+    public boolean equals(Object test) {
+        if (test instanceof Point) {
+            Point p = (Point) test;
+            if (x == p.x && y == p.y)
+                return true;
+        }
+        return false;
+    }
 }

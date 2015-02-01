@@ -61,7 +61,7 @@ public class Map {
         tileheight = height / tileSize;
         tiles = new Tile[tilewidth * tileheight];
     }
-
+    
     public void sortObjects(ArrayList<GameObject> objects) {
         Collections.sort(objects, depthComparator);
     }
@@ -75,7 +75,7 @@ public class Map {
     }
 
     public void addFGTileAndReplace(GameObject tile, int x, int y, int depth) {
-        tiles[x / tileSize + y / tileSize * height / tileSize] = null;
+        tiles[x / tileSize + y / tileSize * tileheight] = null;
         foregroundTiles.stream().filter((obj) -> (obj.getX() == x && obj.getY() == y)).forEach((obj) -> {
             foregroundTiles.remove(obj);
         });
@@ -166,11 +166,11 @@ public class Map {
 
     public void renderBack(Camera cam) {
         Drawer.refreshForRegularDrawing();
-        for (int y = 0; y < height / tileSize; y++) {
+        for (int y = 0; y < tileheight; y++) {
             if (cam.getSY() < (y + 1) * tileSize && cam.getEY() > y * tileSize) {
                 for (int x = 0; x < width / tileSize; x++) {
                     if (cam.getSX() < (x + 1) * tileSize && cam.getEX() > x * tileSize) {
-                        Tile tile = tiles[x + y * height / tileSize];
+                        Tile tile = tiles[x + y * tileheight];
                         if (tile != null) {
                             tile.renderSpecific(cam.getXOffEffect() + x * tileSize, cam.getYOffEffect() + y * tileSize);
                         }
@@ -292,7 +292,11 @@ public class Map {
     public int getTileSize() {
         return tileSize;
     }
-
+    
+    public Tile getTile(int x, int y) {
+        return tiles[x + y * tileheight];
+    }
+    
     public Tile getTile(int index) {
         return tiles[index];
     }
@@ -303,6 +307,14 @@ public class Map {
 
     public short getId() {
         return id;
+    }
+
+    public void setTile(int x, int y, Tile tile) {
+        tiles[x + y * tileheight] = tile;
+    }
+    
+    public void setTile(int index, Tile tile) {
+        tiles[index] = tile;
     }
 
     public Collection<Mob> getSolidMobs() {
@@ -339,9 +351,5 @@ public class Map {
 
     public Collection<WarpPoint> getWarps() {
         return Collections.unmodifiableList(warps);
-    }
-
-    public void setTile(int index, Tile tile) {
-        tiles[index] = tile;
     }
 }

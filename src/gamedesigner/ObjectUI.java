@@ -27,8 +27,9 @@ public class ObjectUI extends GameObject {
     private Camera cam;
     private final int tile;
     private SpriteSheet tex;
+    private boolean change;
 
-    private Point coord = new Point(0, 0);
+    private final Point coord = new Point(0, 0);
 
     public ObjectUI(int tile, SpriteSheet tex, Place p) {
         this.cam = null;
@@ -41,6 +42,8 @@ public class ObjectUI extends GameObject {
 
     public void setSpriteSheet(SpriteSheet tex) {
         this.tex = tex;
+        coord.setX(0);
+        coord.setY(0);
     }
 
     public void changeCoordinates(int x, int y) {
@@ -48,9 +51,25 @@ public class ObjectUI extends GameObject {
         int yLim = Methods.interval(0, coord.getY() + y, tex.getYlimit() - 1);
         coord.set(xLim, yLim);
     }
+
+    public SpriteSheet getSpriteSheet() {
+        return tex;
+    }
+    
+    public Point getCoordinates() {
+        return coord;
+    }
     
     public void setCamera(Camera cam) {
         this.cam = cam;
+    }
+
+    public void setChange(boolean ch) {
+        change = ch;
+    }
+    
+    public boolean isChanged() {
+        return change;
     }
 
     @Override
@@ -58,19 +77,35 @@ public class ObjectUI extends GameObject {
         if (cam != null) {
             glPushMatrix();
             int d = 2;
+            int xStart = tex.getSx();
+            int yStart = tex.getSy();
+            int wTex = tex.getWidth();
+            int hTex = tex.getHeight();
             glTranslatef(cam.getSX() + tile / 2 + xEffect, cam.getSY() + tile / 2 + yEffect, 0);
+
+            if (change) {
+                glColor4f(1f, 1f, 1f, 0.7f);
+                glTranslatef(-xStart - coord.getX() * wTex, -yStart - coord.getY() * hTex, 0);
+                tex.render();
+                glTranslatef(coord.getX() * wTex, coord.getY() * hTex, 0);
+            }
+
             glColor4f(1f, 1f, 1f, 1f);
-            Drawer.drawRectangle(0, 0, tile, tile);
+            Drawer.drawRectangle(0, 0, wTex, hTex);
+
+            glTranslatef(-xStart, -yStart, 0);
             tex.renderPiece(coord.getX(), coord.getY());
+
             glColor4f(0f, 0f, 0f, 1f);
-            Drawer.drawRectangle(-d, -d, tile + 2 * d, d - 1);
-            Drawer.drawRectangle(0, tile + d + 1, tile + 2 * d, d - 1);
-            Drawer.drawRectangle(0, -tile - 2, d - 1, tile + 2);
-            Drawer.drawRectangle(tile + d + 1, 0, d - 1, tile + 2);
+            Drawer.drawRectangle(-d, -d, wTex + 2 * d, d - 1);
+            Drawer.drawRectangle(0, hTex + d + 1, wTex + 2 * d, d - 1);
+            Drawer.drawRectangle(0, -hTex - 2, d - 1, hTex + 2);
+            Drawer.drawRectangle(wTex + d + 1, 0, d - 1, hTex + 2);
+
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
         } else {
-            ObjectPlayer pl = (ObjectPlayer)place.players[0];
+            ObjectPlayer pl = (ObjectPlayer) place.players[0];
             cam = pl.getCam();
             pl.addUI(this);
         }

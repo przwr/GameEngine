@@ -13,7 +13,9 @@ import game.place.Place;
 import game.place.Light;
 import engine.Drawer;
 import engine.Methods;
+import engine.Point;
 import game.gameobject.inputs.InputKeyBoard;
+import game.place.Tile;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
@@ -109,7 +111,7 @@ public class ObjectPlayer extends Player {
 
     @Override
     protected void move(int xPos, int yPos) {
-        boolean cltr = guzik(KEY_LCONTROL);
+        boolean cltr = key(KEY_LCONTROL);
 
         if (xtimer == 0) {
             ix = Methods.interval(0, ix + xPos, map.getTileWidth());
@@ -168,32 +170,34 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void update() {
-        boolean tileMove = false;
+        boolean pressed = false;
         int xPos = 0;
         int yPos = 0;
 
-        if (guzik(KEY_LCONTROL) && guzik(KEY_Z)) {
+        if (key(KEY_LCONTROL) && key(KEY_Z)) {
             xStop = ix;
             yStop = iy;
         }
 
-        if (guzik(KEY_UP)) {
+        if (key(KEY_UP)) {
             yPos--;
-        } else if (guzik(KEY_DOWN)) {
+        } else if (key(KEY_DOWN)) {
             yPos++;
         } else {
             ytimer = 0;
         }
-        if (guzik(KEY_LEFT)) {
+        if (key(KEY_LEFT)) {
             xPos--;
-        } else if (guzik(KEY_RIGHT)) {
+        } else if (key(KEY_RIGHT)) {
             xPos++;
         } else {
             xtimer = 0;
         }
 
+        ui.setChange(key(KEY_T));
+
         if (xPos != 0 || yPos != 0) {
-            if (guzik(KEY_T)) {
+            if (ui.isChanged()) {
                 if (xtimer == 0 && ytimer == 0) {
                     ui.changeCoordinates(xPos, yPos);
                     xtimer = 1;
@@ -203,9 +207,42 @@ public class ObjectPlayer extends Player {
                 move(xPos, yPos);
             }
         }
+
+        if (key(KEY_SPACE) && !prevClick) {
+            prevClick = true;
+            pressed = true;
+            int xStart = Math.min(ix, xStop);
+            int yStart = Math.min(iy, yStop);
+            int xEnd = Math.max(ix, xStop);
+            int yEnd = Math.max(iy, yStop);
+            for (int xTemp = xStart; xTemp <= xEnd; xTemp++) {
+                for (int yTemp = yStart; yTemp <= yEnd; yTemp++) {
+                    Point p = ui.getCoordinates();
+                    ((ObjectMap)map).addTile(xTemp, yTemp, p.getX(), p.getX(), ui.getSpriteSheet());
+                }
+            }
+        }
+
+        if (key(KEY_DELETE) && !prevClick) {
+            prevClick = true;
+            pressed = true;
+            int xStart = Math.min(ix, xStop);
+            int yStart = Math.min(iy, yStop);
+            int xEnd = Math.max(ix, xStop);
+            int yEnd = Math.max(iy, yStop);
+            for (int xTemp = xStart; xTemp <= xEnd; xTemp++) {
+                for (int yTemp = yStart; yTemp <= yEnd; yTemp++) {
+                    Tile newTile = map.getTile(xTemp, yTemp);
+                    newTile.popTileFromStack();
+                }
+            }
+        }
+        
+        if (!pressed)
+            prevClick = false;
     }
 
-    private boolean guzik(int k) {
+    private boolean key(int k) {
         return Keyboard.isKeyDown(k);
     }
 
