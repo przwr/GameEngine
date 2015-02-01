@@ -12,7 +12,7 @@ package engine;
 public final class Time {
 
     private static final float DAMPING = 16000000;
-    private static long curTime;
+    private static long curentTime;
     private static long lastTime;
 
     public static long getTime() {
@@ -20,18 +20,17 @@ public final class Time {
     }
 
     public static float getDelta() {
-        return (curTime - lastTime) / DAMPING;
+        return (curentTime - lastTime) / DAMPING;
     }
 
     public static void update() {
-        lastTime = curTime;
-        curTime = getTime();
-        //System.out.println(60 / getDelta());
+        lastTime = curentTime;
+        curentTime = getTime();
     }
 
     public static void init() {
         lastTime = getTime();
-        curTime = getTime();
+        curentTime = getTime();
     }
 
     private Time() {

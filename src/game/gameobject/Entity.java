@@ -110,7 +110,7 @@ public abstract class Entity extends GameObject {
         try {
             if (ups[3] != null && ((curUp != 3 || lastAdded != 0) && (curUp + 1 != lastAdded))) {
                 if (up != null && dCount < up.delsX().size()) {
-                    movetoPoint(Methods.RoundHU((up.getX() - up.delsX().get(dCount)) * scale) - getX(), Methods.RoundHU((up.getY() - up.delsY().get(dCount)) * scale) - getY());
+                    movetoPoint(Methods.roundHalfUp((up.getX() - up.delsX().get(dCount)) * scale) - getX(), Methods.roundHalfUp((up.getY() - up.delsY().get(dCount)) * scale) - getY());
                     dCount++;
                 } else {
                     if (curUp == 3) {
@@ -121,7 +121,7 @@ public abstract class Entity extends GameObject {
                     up = ups[curUp];
                     if (up != null) {
                         updateRest(up);
-                        movetoPoint(Methods.RoundHU(up.getX() * scale) - getX(), Methods.RoundHU(up.getY() * scale) - getY());
+                        movetoPoint(Methods.roundHalfUp(up.getX() * scale) - getX(), Methods.roundHalfUp(up.getY() * scale) - getY());
                         dCount = 0;
                     }
                 }
@@ -135,8 +135,8 @@ public abstract class Entity extends GameObject {
         try {
             if (ups[3] != null && ((curUp != 3 || lastAdded != 0) && (curUp + 1 != lastAdded))) {
                 if (up != null && dCount < up.delsX().size()) {
-                    final int x = Methods.RoundHU((up.getX() - up.delsX().get(dCount)) * scale);
-                    final int y = Methods.RoundHU((up.getY() - up.delsY().get(dCount)) * scale);
+                    final int x = Methods.roundHalfUp((up.getX() - up.delsX().get(dCount)) * scale);
+                    final int y = Methods.roundHalfUp((up.getY() - up.delsY().get(dCount)) * scale);
                     if (collision.isCollideSolid(x, y, map)) {
                         canMove(x - getX(), y - getY());
                     } else {
@@ -152,8 +152,8 @@ public abstract class Entity extends GameObject {
                     up = ups[curUp];
                     if (up != null) {
                         updateRest(up);
-                        final int x = Methods.RoundHU(up.getX() * scale);
-                        final int y = Methods.RoundHU(up.getY() * scale);
+                        final int x = Methods.roundHalfUp(up.getX() * scale);
+                        final int y = Methods.roundHalfUp(up.getY() * scale);
                         if (collision.isCollideSolid(x, y, map)) {
                             canMove(x - getX(), y - getY());
                         } else {
@@ -331,8 +331,8 @@ public abstract class Entity extends GameObject {
              double yMsp = FastMath.abs(Methods.yRadius(angle, maxSpeed));
              myHspeed = Methods.Interval(-xMsp, xmove, xMsp);
              myVspeed = Methods.Interval(-yMsp, ymove, yMsp);*/
-            myHspeed = Methods.Interval(-maxSpeed, mhspeed, maxSpeed);
-            myVspeed = Methods.Interval(-maxSpeed, mvspeed, maxSpeed);
+            myHspeed = Methods.interval(-maxSpeed, mhspeed, maxSpeed);
+            myVspeed = Methods.interval(-maxSpeed, mvspeed, maxSpeed);
         } else {
             myHspeed = mhspeed;
             myVspeed = mvspeed;

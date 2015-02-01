@@ -149,7 +149,7 @@ public class MyGame extends Game {
             public void up() {
                 if ((online.client == null && online.server == null) || (online.client != null && !online.client.isConnected)) {
                     endGame();
-                    Methods.Error(settings.language.m.Disconnected);
+                    Methods.error(settings.language.m.Disconnected);
                 } else {
                     online.up();
                 }
@@ -194,9 +194,9 @@ public class MyGame extends Game {
     public void startGame() {
         int nrPl = settings.nrPlayers;
         if (!designer) {
-            place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 64), settings, true);
+            place = new MyPlace(this, Methods.roundHalfUp(settings.SCALE * 10240), Methods.roundHalfUp(settings.SCALE * 10240), Methods.roundHalfUp(settings.SCALE * 64), settings, true);
         } else {
-            place = new ObjectPlace(this, Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 64), settings, true);
+            place = new ObjectPlace(this, Methods.roundHalfUp(settings.SCALE * 10240), Methods.roundHalfUp(settings.SCALE * 10240), Methods.roundHalfUp(settings.SCALE * 64), settings, true);
         }
         Drawer.setPlace(place);
         place.players = new GameObject[4];
@@ -322,7 +322,7 @@ public class MyGame extends Game {
 
     @Override
     public void runClient() {
-        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 64), settings, false);
+        place = new MyPlace(this, Methods.roundHalfUp(settings.SCALE * 10240), Methods.roundHalfUp(settings.SCALE * 10240), Methods.roundHalfUp(settings.SCALE * 64), settings, false);
         Drawer.setPlace(place);
         place.players = new GameObject[4];
         place.playersLength = 1;
@@ -337,7 +337,7 @@ public class MyGame extends Game {
 
     @Override
     public void runServer() {
-        place = new MyPlace(this, Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 10240), Methods.RoundHU(settings.SCALE * 64), settings, true);
+        place = new MyPlace(this, Methods.roundHalfUp(settings.SCALE * 10240), Methods.roundHalfUp(settings.SCALE * 10240), Methods.roundHalfUp(settings.SCALE * 64), settings, true);
         Drawer.setPlace(place);
         place.players = new GameObject[4];
         place.playersLength = 1;
@@ -367,12 +367,12 @@ public class MyGame extends Game {
             for (Sound s : settings.sounds.getSoundsList()) {
                 if (s.isPlaying()) {
                     if (s.isPaused()) {
-                        s.setNotPlaying(true);
+                        s.setStoped(true);
                     } else {
                         s.fade(0.01, true);
                     }
                 } else {
-                    s.setNotPlaying(true);
+                    s.setStoped(true);
                 }
             }
         }
@@ -381,8 +381,8 @@ public class MyGame extends Game {
     private void soundResume() {
         if (settings.sounds != null) {
             for (Sound s : settings.sounds.getSoundsList()) {
-                if (s.werePaused()) {
-                    s.setNotPlaying(false);
+                if (s.isStoped()) {
+                    s.setStoped(false);
                 } else {
                     s.resume();
                     s.smoothStart(0.5);

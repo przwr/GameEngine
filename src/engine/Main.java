@@ -47,57 +47,60 @@ public class Main {
 
     public static void run() {
         settings = getSettingsFromFile(new File("res/settings.ini"));
-        initDisplay();
+        tryInitDisplay();
         initOpenGL();
         initGame();
         gameLoop();
         cleanUp();
     }
 
-    private static void initDisplay() {
+    private static void tryInitDisplay() {
         try {
-            setDisplayMode(settings.resWidth, settings.resHeight, settings.freq, settings.fullScreen);
-            createDisplay();
-            Display.setResizable(false);
-            Display.setVSyncEnabled(settings.vSync);
-            Display.setDisplayConfiguration(2f, 0f, 1f);
-            setIcon();
-            Keyboard.create();
-            Mouse.create();
-            Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
-            Mouse.setNativeCursor(emptyCursor);
-            Controllers.create();
-            controllers = Controlers.init();
+            initDisplay();
         } catch (LWJGLException exception) {
-            Methods.JavaError(exception.toString());
+            Methods.javaError(exception.toString());
         }
+    }
+
+    private static void initDisplay() throws LWJGLException {
+        setDisplayMode(settings.resolutionWidth, settings.resolutionHeight, settings.frequency, settings.fullScreen);
+        createDisplay();
+        Display.setResizable(false);
+        Display.setVSyncEnabled(settings.vSync);
+        Display.setDisplayConfiguration(2f, 0f, 1f);
+        setIcon();
+        Keyboard.create();
+        Mouse.create();
+        Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
+        Mouse.setNativeCursor(emptyCursor);
+        Controllers.create();
+        controllers = Controlers.init();
     }
 
     private static void setDisplayMode(int width, int height, int frequency, boolean fullscreen) {
-        if ((Display.getDisplayMode().getWidth() == width) && (Display.getDisplayMode().getHeight() == height) && (Display.isFullscreen() == fullscreen)) {
-            return;
+        if (((Display.getDisplayMode().getWidth() != width) || (Display.getDisplayMode().getHeight() != height)) || (Display.isFullscreen() != fullscreen)) {
+            try {
+                setNewMode(width, height, frequency, fullscreen);
+            } catch (LWJGLException exception) {
+                Methods.javaError("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + " " + exception.getMessage());
+            }
         }
-        setNewMode(width, height, frequency, fullscreen);
     }
 
-    private static void setNewMode(int width, int height, int frequency, boolean fullscreen) {
-        try {
-            DisplayMode targetDisplayMode;
-            if (fullscreen) {
-                targetDisplayMode = setFullScreen(width, height, frequency);
-            } else {
-                targetDisplayMode = new DisplayMode(width, height);
-            }
-            if (targetDisplayMode == null) {
-                updateSettingsToDesktopMode();
-                Methods.Error("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
-                return;
-            }
-            Display.setDisplayMode(targetDisplayMode);
-            Display.setFullscreen(fullscreen);
-        } catch (LWJGLException exception) {
-            Methods.JavaError("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + " " + exception.getMessage());
+    private static void setNewMode(int width, int height, int frequency, boolean fullscreen) throws LWJGLException {
+        DisplayMode targetDisplayMode;
+        if (fullscreen) {
+            targetDisplayMode = setFullScreen(width, height, frequency);
+        } else {
+            targetDisplayMode = new DisplayMode(width, height);
         }
+        if (targetDisplayMode == null) {
+            updateSettingsToDesktopMode();
+            Methods.error("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
+            return;
+        }
+        Display.setDisplayMode(targetDisplayMode);
+        Display.setFullscreen(fullscreen);
     }
 
     private static DisplayMode setFullScreen(int width, int height, int frequency) {
@@ -118,11 +121,11 @@ public class Main {
     }
 
     private static void updateSettingsToDesktopMode() {
-        settings.resWidth = Display.getDesktopDisplayMode().getWidth();
-        settings.resHeight = Display.getDesktopDisplayMode().getHeight();
+        settings.resolutionWidth = Display.getDesktopDisplayMode().getWidth();
+        settings.resolutionHeight = Display.getDesktopDisplayMode().getHeight();
         for (int i = 0; i < settings.tempModes.length; i++) {
-            if (settings.tempModes[i].getWidth() == settings.resWidth && settings.tempModes[i].getHeight() == settings.resHeight
-                    && settings.tempModes[i].getFrequency() == settings.freq) {
+            if (settings.tempModes[i].getWidth() == settings.resolutionWidth && settings.tempModes[i].getHeight() == settings.resolutionHeight
+                    && settings.tempModes[i].getFrequency() == settings.frequency) {
                 settings.curentMode = i;
             }
         }
@@ -145,7 +148,7 @@ public class Main {
                     try {
                         Display.create(new PixelFormat(32, 0, 24, 0, 0));
                     } catch (LWJGLException exception) {
-                        Methods.JavaError(exception.getMessage());
+                        Methods.javaError(exception.getMessage());
                     }
                 }
             }
@@ -226,7 +229,7 @@ public class Main {
     }
 
     private static void popMessageIfNeeded() {
-        if (pop.i != -1) {
+        if (pop.getId() != -1) {
             pause = true;
             pop.renderMesagges();
         }

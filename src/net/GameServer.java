@@ -150,7 +150,7 @@ public class GameServer {
             try {
                 server.bind(KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
             } catch (IOException ex) {
-                Methods.Error(ex.getMessage() + "!");
+                Methods.error(ex.getMessage() + "!");
                 return;
             }
             MPlayers[0] = new MPlayer((short) 0, id, "Server", null);
@@ -230,7 +230,7 @@ public class GameServer {
         isRunning = false;
         Close();
         game.g.endGame();
-        Methods.Exception(e);
+        Methods.exception(e);
     }
 
     private synchronized void makeSureIdIsUnique() {

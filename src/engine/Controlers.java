@@ -6,13 +6,7 @@
 package engine;
 
 import game.gameobject.AnyInput;
-import game.gameobject.inputs.InputExitMapping;
-import game.gameobject.inputs.InputKeyBoard;
-import game.gameobject.inputs.InputMouse;
-import game.gameobject.inputs.InputNull;
-import game.gameobject.inputs.InputPadDPad;
-import game.gameobject.inputs.InputPadKey;
-import game.gameobject.inputs.InputPadStick;
+import game.gameobject.inputs.*;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
@@ -127,8 +121,4 @@ public final class Controlers {
     public static Controller[] getControllers() {
         return controllers;
     }
-
-    private Controlers() {
-    }
-
 }

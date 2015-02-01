@@ -30,7 +30,7 @@ public class PuzzleObject {
             //if (t[0].equals("b"))
             wczyt.close();
         } catch (IOException e) {
-            Methods.Error("File " + file + " not found!\n" + e.getMessage());
+            Methods.error("File " + file + " not found!\n" + e.getMessage());
         }
     }
 

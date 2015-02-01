@@ -12,36 +12,28 @@ import net.jodk.lang.FastMath;
  *
  * @author przemek
  */
-public class RandomGen extends Random { //Metody precyzyjne stosować tylko wtedy kiedy trzeba!
+public class RandomGenerator extends Random {
 
     private static long[] state;
     private static int index;
     private int seed;
 
-    public RandomGen() {
-        this((int) System.currentTimeMillis());
+    public static RandomGenerator create() {
+        return new RandomGenerator((int) System.currentTimeMillis());
     }
 
-    public RandomGen(int seed) {
+    public static RandomGenerator create(int seed) {
+        return new RandomGenerator(seed);
+    }
+
+    private RandomGenerator(int seed) {
         state = new long[16];
         index = 0;
         setSeed(seed);
     }
 
-    private void setSeed(int seed) {       // seed ma być abs czy nie?
-        this.seed = seed;
-        seed = FastMath.abs(seed);
-        for (int i = 0; i < 16; i++) {
-            state[i] = (seed + 1) * ((seed + 1) << 2) * i;
-        }
-    }
-
-    public int getSeed() {
-        return seed;
-    }
-
     @Override
-    public int next(int nbits) {
+    public int next(int bitsNumber) {
         long a, b, c, d;
         a = state[index];
         c = state[(index + 13) & 15];
@@ -54,25 +46,25 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
         a = state[index];
         state[index] = a ^ b ^ d ^ (a << 2) ^ (b << 18) ^ (c << 28);
         int x = (int) state[index];
-        x &= ((1L << nbits) - 1);
+        x &= ((1L << bitsNumber) - 1);
         return x;
     }
 
     public int random(int limit) {
         int temp = limit;
-        int i = 0;
+        int iteration = 0;
         while (temp > 0) {
             temp /= 2;
-            i++;
+            iteration++;
         }
-        return (int) (limit * (next(i) / (FastMath.pow(2, i) - 1)));
+        return (int) (limit * (next(iteration) / (FastMath.pow(2, iteration) - 1)));
     }
 
-    public double preciseRandom(double limit, double prec) {
-        return (random((int) (limit / prec)) * prec);
+    public double preciseRandom(double limit, double precison) {
+        return (random((int) (limit / precison)) * precison);
     }
 
-    public int randomRange(int a, int b) { //generuje x losowe: a < x < b lub b < x < a
+    public int randomInRange(int a, int b) {
         if (a < b) {
             return random(b - a) + a;
         } else {
@@ -80,11 +72,11 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
         }
     }
 
-    public double preciseRandomRange(double a, double b, double prec) {
+    public double preciseRandomInRange(double a, double b, double precision) {
         if (a < b) {
-            return preciseRandom(b - a, prec) + a;
+            return preciseRandom(b - a, precision) + a;
         } else {
-            return preciseRandom(a - b, prec) + b;
+            return preciseRandom(a - b, precision) + b;
         }
     }
 
@@ -92,7 +84,18 @@ public class RandomGen extends Random { //Metody precyzyjne stosować tylko wted
         return random(100) <= (chance);
     }
 
-    public boolean preciseChance(double chance, double prec) { //precyzja - (np. 0.1, 0.0001) nie może być 0 
-        return random((int) (100 / prec)) <= (chance / prec);  //stosować tylko gdy potrzeba np. 81.345% czegoś
+    public boolean preciseChance(double chance, double precision) {
+        return random((int) (100 / precision)) <= (chance / precision);
+    }
+
+    private void setSeed(int seed) {
+        this.seed = FastMath.abs(seed);
+        for (int i = 0; i < 16; i++) {
+            state[i] = (seed + 1) * ((seed + 1) << 2) * i;
+        }
+    }
+
+    public int getSeed() {
+        return seed;
     }
 }

@@ -66,7 +66,7 @@ public class Circle extends Figure {
         if (xPosition != 0 && yPosition != 0) {
             int xtmp = (xPosition + 1) / 2;
             int ytmp = (yPosition + 1) / 2;
-            return (Methods.PointDistance(getX(x), getY(y), rectangle.getPoint(xtmp + 2 * ytmp).getX(), rectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
+            return (Methods.pointDistance(getX(x), getY(y), rectangle.getPoint(xtmp + 2 * ytmp).getX(), rectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
         }
         if (yPosition == 0 && ((xPosition < 0 && rectangle.getX() - getX(x) <= radius) || (yPosition > 0 && getX(x) - rectangle.getX() - rectangle.getWidth() <= radius))) {
             return true;
@@ -79,7 +79,7 @@ public class Circle extends Figure {
 
     private boolean circleCollsion(int x, int y, Figure figure) {
         Circle circle = (Circle) figure;
-        if (Methods.PointDistance(getX(x), getY(y), circle.getX(), circle.getY()) <= (radius + circle.getRadius())) {
+        if (Methods.pointDistance(getX(x), getY(y), circle.getX(), circle.getY()) <= (radius + circle.getRadius())) {
             return true;
         }
         return false;

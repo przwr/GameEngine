@@ -76,7 +76,7 @@ public class SpriteBase {
             pieceHeight = Integer.parseInt(data[1]);
             input.close();
         } catch (IOException e) {
-            Methods.Error("File " + name + " not found!\n" + e.getMessage());
+            Methods.error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
         try {

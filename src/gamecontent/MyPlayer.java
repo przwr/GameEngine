@@ -63,15 +63,15 @@ public class MyPlayer extends Player {
     public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
         scale = place.settings.SCALE;
         this.online = place.game.online;
-        this.width = Methods.RoundHU(scale * width);
-        this.height = Methods.RoundHU(scale * height);
-        this.startX = Methods.RoundHU(scale * startX);
-        this.startY = Methods.RoundHU(scale * startY);
+        this.width = Methods.roundHalfUp(scale * width);
+        this.height = Methods.roundHalfUp(scale * height);
+        this.startX = Methods.roundHalfUp(scale * startX);
+        this.startY = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
+        init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -81,15 +81,15 @@ public class MyPlayer extends Player {
     public void initialize(int startX, int startY, int width, int height, Place place) {
         this.online = place.game.online;
         scale = place.settings.SCALE;
-        this.width = Methods.RoundHU(scale * width);
-        this.height = Methods.RoundHU(scale * height);
-        this.startX = Methods.RoundHU(scale * startX);
-        this.startY = Methods.RoundHU(scale * startY);
+        this.width = Methods.roundHalfUp(scale * width);
+        this.height = Methods.roundHalfUp(scale * height);
+        this.startX = Methods.roundHalfUp(scale * startX);
+        this.startY = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -133,7 +133,7 @@ public class MyPlayer extends Player {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
             Drawer.setColor(jumpShadowColor);
-            Drawer.drawElipse(0, 0, Methods.RoundHU((float) collision.getWidth() / 2), Methods.RoundHU((float) collision.getHeight() / 2), 15);
+            Drawer.drawElipse(0, 0, Methods.roundHalfUp((float) collision.getWidth() / 2), Methods.roundHalfUp((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jump, 0);
             getAnimation().render();

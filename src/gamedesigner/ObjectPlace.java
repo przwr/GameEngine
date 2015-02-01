@@ -5,13 +5,12 @@
  */
 package gamedesigner;
 
+import engine.FontBase;
 import gamedesigner.GUI.Help;
 import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
 import game.place.Place;
-import engine.FontsHandler;
-import engine.Point;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
@@ -22,7 +21,7 @@ import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
-import sprites.SpriteSheet;
+
 
 /**
  *

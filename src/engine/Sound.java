@@ -16,92 +16,139 @@ import org.newdawn.slick.openal.Audio;
 public class Sound {
 
     private final Settings settings;
-    private final Audio sndEff;
+    private final Audio soundEffect;
     private final String name;
-    private boolean paused;         //czy jest zastopowany
-    private boolean notPlaying;      //przy przejściu do menu zaznacza, żeby wiedzieć, które dźwięki wznowić, a które nie.
-    private float position = 0.0f;
-    private float pitch = 1.0f;
-    private float gain;                  //zmieniany pośrednio przez ogólną głośność z ustawień i gainModifier
-    private float gainModifier = 1.0f;   //tutaj można ustawić głośność konkretnego dźwięku
-    private float savedGainModifier;     //potrzebne, by wznowił do takiej głośności, jaka była poprzednio, wcześniej było ustawione sztywno na 1
-    private boolean isLooped = true;
-    private boolean fading = false;
+    private boolean paused, stoped;
+    private float gain, savedGainModifier, gainModifier = 1.0f, position = 0.0f, pitch = 1.0f;
+    private boolean looped = true, fading = false;
 
-    public Sound(String name, Audio sndEff, Settings settings) {
+    public Sound(String name, Audio soundEffect, Settings settings) {
         this.settings = settings;
-        this.sndEff = sndEff;
+        this.soundEffect = soundEffect;
         this.name = name;
-        this.gain = settings.volume * gainModifier;
+        gain = settings.volume * gainModifier;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Audio getSound() {
-        return sndEff;
-    }
-
-    public void stop() {
-        if (sndEff.isPlaying()) {
-            position = 0;
-            sndEff.stop();
-            paused = false;
+    public int playAsSoundEffect(float pitch, float gainModifier, boolean looped) {
+        if (!soundEffect.isPlaying()) {
+            this.gainModifier = gainModifier;
+            this.pitch = FastMath.max(0, pitch);
+            this.looped = looped;
+            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            soundEffect.setPosition(position);
+            return soundEffect.playAsSoundEffect(pitch, settings.volume * gainModifier, looped);
+        } else {
+            return 0;
         }
     }
 
-    public void pause() {
-        if (sndEff.isPlaying()) {
-            position = sndEff.getPosition();
-            sndEff.stop();
-            paused = true;
+    public int playAsSoundEffect(float pitch, float gainModifier, boolean looped, float f0, float f1, float f2) {
+        if (!soundEffect.isPlaying()) {
+            this.gainModifier = gainModifier;
+            this.pitch = FastMath.max(0, pitch);
+            this.looped = looped;
+            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            soundEffect.setPosition(position);
+            return soundEffect.playAsSoundEffect(pitch, settings.volume * gainModifier, looped, f0, f1, f2);
+        } else {
+            return 0;
         }
     }
 
-    public void fade(double time, boolean pause) {
-        if (!fading && sndEff.isPlaying()) {
-            fading = true;
-            new Thread(new Fader(time, this, 50, true, pause)).start();
+    public int playAsMusic(float pitch, float gainModifier, boolean looped) {
+        if (!soundEffect.isPlaying()) {
+            this.pitch = FastMath.max(0, pitch);
+            this.looped = looped;
+            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            soundEffect.setPosition(position);
+            return soundEffect.playAsMusic(pitch, settings.volume * gainModifier, looped);
+        } else {
+            return 0;
         }
     }
 
     public void smoothStart(double time) {  //Smooth start on already started sound
-        if (!fading && sndEff.isPlaying()) {
+        if (!fading && soundEffect.isPlaying()) {
             fading = true;
             new Thread(new Fader(time, this, 50, false, false)).start();
         }
     }
 
-    public void setPitch(float a) {
-        if (sndEff.isPlaying()) {
-            pause();
-            pitch = FastMath.max(0, a);
-            resume();
+    public int resume() {
+        if (!soundEffect.isPlaying()) {
+            int temp = soundEffect.playAsSoundEffect(pitch, gain, looped);
+            soundEffect.setPosition(position);
+            paused = false;
+            return temp;
         } else {
-            pitch = FastMath.max(0, a);
+            return 0;
+        }
+    }
+
+    public void stop() {
+        if (soundEffect.isPlaying()) {
+            position = 0;
+            soundEffect.stop();
+            paused = false;
+        }
+    }
+
+    public void pause() {
+        if (soundEffect.isPlaying()) {
+            position = soundEffect.getPosition();
+            soundEffect.stop();
+            paused = true;
+        }
+    }
+
+    public void fade(double time, boolean pause) {
+        if (!fading && soundEffect.isPlaying()) {
+            fading = true;
+            new Thread(new Fader(time, this, 50, true, pause)).start();
         }
     }
 
     public void updateGain() {
-        if (sndEff.isPlaying()) {
+        if (soundEffect.isPlaying()) {
             pause();
-            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, settings.volume * gainModifier, 1);
             resume();
         } else {
-            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+        }
+    }
+
+    public void addPitch(float a) {
+        setPitch(pitch + a);
+    }
+
+    public boolean setPosition(float f) {
+        return soundEffect.setPosition(f);
+    }
+
+    public void setStoped(boolean stoped) {
+        this.stoped = stoped;
+    }
+
+    public void setPitch(float a) {
+        if (soundEffect.isPlaying()) {
+            pause();
+            pitch = FastMath.max(0, a);
+            resume();
+        } else {
+            pitch = FastMath.max(0, a);
         }
     }
 
     public void setGainModifier(float a) {
-        if (sndEff.isPlaying()) {
+        if (soundEffect.isPlaying()) {
             pause();
             gainModifier = a;
-            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, settings.volume * gainModifier, 1);
             resume();
         } else {
             gainModifier = a;
-            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, settings.volume * gainModifier, 1);
         }
     }
 
@@ -109,8 +156,28 @@ public class Sound {
         setGainModifier(gainModifier + a);
     }
 
-    public void addPitch(float a) {
-        setPitch(pitch + a);
+    public boolean isPlaying() {
+        return soundEffect.isPlaying();
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public boolean isStoped() {
+        return stoped;
+    }
+
+    public float getPosition() {
+        return soundEffect.getPosition();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Audio getSound() {
+        return soundEffect;
     }
 
     public float getPitch() {
@@ -122,97 +189,20 @@ public class Sound {
     }
 
     public int getBufferID() {
-        return sndEff.getBufferID();
-    }
-
-    public boolean isPlaying() {
-        return sndEff.isPlaying();
-    }
-
-    public int resume() {
-        if (!sndEff.isPlaying()) {
-            int temp = sndEff.playAsSoundEffect(pitch, gain, isLooped);
-            sndEff.setPosition(position);
-            paused = false;
-            return temp;
-        } else {
-            return 0;
-        }
-    }
-
-    public int playAsSoundEffect(float f, float f1, boolean bln) {
-        if (!sndEff.isPlaying()) {
-            gainModifier = f1;
-            int temp = sndEff.playAsSoundEffect(f, settings.volume * gainModifier, bln);
-            pitch = FastMath.max(0, f);
-            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
-            isLooped = bln;
-            sndEff.setPosition(position);
-            return temp;
-        } else {
-            return 0;
-        }
-    }
-
-    public int playAsSoundEffect(float f, float f1, boolean bln, float f2, float f3, float f4) {
-        if (!sndEff.isPlaying()) {
-            gainModifier = f1;
-            int temp = sndEff.playAsSoundEffect(f, settings.volume * gainModifier, bln, f2, f3, f4);
-            pitch = FastMath.max(0, f);
-            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
-            isLooped = bln;
-            sndEff.setPosition(position);
-            return temp;
-        } else {
-            return 0;
-        }
-    }
-
-    public int playAsMusic(float f, float f1, boolean bln) {
-        if (!sndEff.isPlaying()) {
-            int temp = sndEff.playAsMusic(f, settings.volume * gainModifier, bln);
-            pitch = FastMath.max(0, f);
-            gain = Methods.Interval(0, settings.volume * gainModifier, 1);
-            isLooped = bln;
-            sndEff.setPosition(position);
-            return temp;
-        } else {
-            return 0;
-        }
-    }
-
-    public boolean setPosition(float f) {
-        return sndEff.setPosition(f);
-    }
-
-    public float getPosition() {
-        return sndEff.getPosition();
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public boolean werePaused() {
-        return notPlaying;
-    }
-
-    public void setNotPlaying(boolean wasPaused) {
-        this.notPlaying = wasPaused;
+        return soundEffect.getBufferID();
     }
 
     private class Fader implements Runnable {
 
         private final double time;
-        private final Sound snd;
-        private final long T;
-        private final boolean fade;
-        private final boolean pause;
+        private final Sound sound;
+        private final long period;
+        private final boolean fade, pause;
 
-        private Fader(double time, Sound snd, int T, boolean fade, boolean pause) {
+        private Fader(double time, Sound snd, int period, boolean fade, boolean pause) {
             this.time = time;
-            this.snd = snd;
-            this.T = T;
+            this.sound = snd;
+            this.period = period;
             this.fade = fade;
             this.pause = pause;
         }
@@ -220,9 +210,9 @@ public class Sound {
         private void end() {
             if (fade) {
                 if (pause) {
-                    snd.pause();
+                    sound.pause();
                 } else {
-                    snd.stop();
+                    sound.stop();
                 }
             }
             fading = false;
@@ -231,7 +221,7 @@ public class Sound {
         @Override
         public void run() {
             float vol = fade ? gainModifier : 0.0f;
-            float delta = (float) (gainModifier / (1000 * time / T));
+            float delta = (float) (gainModifier / (1000 * time / period));
             delta = fade ? -delta : delta;
             if (!fade) {
                 savedGainModifier = gainModifier;
@@ -239,9 +229,9 @@ public class Sound {
             float targetVol = savedGainModifier;
             while (vol >= 0 && vol <= targetVol) {
                 try {
-                    Thread.sleep(T);
+                    Thread.sleep(period);
                     vol += delta;
-                    snd.setGainModifier(vol);
+                    sound.setGainModifier(vol);
                 } catch (InterruptedException e) {
                     end();
                 }

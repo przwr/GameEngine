@@ -30,13 +30,13 @@ public abstract class Mob extends Entity {
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid) {
         scale = place.settings.SCALE;
-        this.width = Methods.RoundHU(scale * width);
-        this.height = Methods.RoundHU(scale * height);
+        this.width = Methods.roundHalfUp(scale * width);
+        this.height = Methods.roundHalfUp(scale * height);
         this.solid = solid;
-        this.startX = Methods.RoundHU(scale * startX);
-        this.startY = Methods.RoundHU(scale * startY);
-        this.range = Methods.RoundHU(scale * range);
-        init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
+        this.startX = Methods.roundHalfUp(scale * startX);
+        this.startY = Methods.roundHalfUp(scale * startY);
+        this.range = Methods.roundHalfUp(scale * range);
+        init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSprite("rabbit");
         setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
         this.setMaxSpeed(speed);
@@ -70,7 +70,7 @@ public abstract class Mob extends Entity {
         GameObject g;
         for (int i = 0; i < place.playersLength; i++) {
             g = players[i];
-            if (g.getMap() == map && Methods.PointDistance(g.getX(), g.getY(), getX(), getY()) < range) {
+            if (g.getMap() == map && Methods.pointDistance(g.getX(), g.getY(), getX(), getY()) < range) {
                 prey = g;
                 break;
             }
@@ -79,7 +79,7 @@ public abstract class Mob extends Entity {
 
     public synchronized void chase(GameObject prey) {
         if (prey != null) {
-            double angle = Methods.PointAngle360(getX(), getY(), prey.getX(), prey.getY());
+            double angle = Methods.pointAngle360(getX(), getY(), prey.getX(), prey.getY());
             myHspeed = Methods.xRadius(angle, maxSpeed);
             myVspeed = Methods.yRadius(angle, maxSpeed);
         }

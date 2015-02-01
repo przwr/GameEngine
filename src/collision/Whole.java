@@ -12,7 +12,7 @@ package collision;
 public class Whole implements Integration {
 
     @Override
-    public  void upProperties(Area area, Figure figure) {
+    public void upProperties(Area area, Figure figure) {
         area.upCollision();
         area.upBoundsForWhole();
         area.upCenter();

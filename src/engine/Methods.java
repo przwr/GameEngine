@@ -27,34 +27,34 @@ public class Methods {
         return FastMath.sin(FastMath.toRadians(angle)) * rad;
     }
 
-    public static int PointDistance(int x, int y, int xa, int ya) {
+    public static int pointDistance(int x, int y, int xa, int ya) {
         int dx = xa - x;
         int dy = ya - y;
         return (int) FastMath.sqrt(dx * dx + dy * dy);
     }
 
-    public static int PointDistanceSimple(int x, int y, int xa, int ya) {
+    public static int pointDistanceSimple(int x, int y, int xa, int ya) {
         return (int) (FastMath.abs(xa - x) + FastMath.abs(ya - y));
     }
 
-    public static int PointDifference(int x, int y, int xa, int ya) {
+    public static int pointDifference(int x, int y, int xa, int ya) {
         return FastMath.min(xa - x, ya - y);
     }
 
-    public static double PointAngle(int xSt, int ySt, int xEn, int yEn) {
+    public static double pointAngle(int xSt, int ySt, int xEn, int yEn) {
         int deltaX = xEn - xSt;
         int deltaY = yEn - ySt;
         return FastMath.atan2(deltaY, deltaX) * 180 / FastMath.PI;
     }
 
-    public static double PointAngle360(int xSt, int ySt, int xEn, int yEn) {
+    public static double pointAngle360(int xSt, int ySt, int xEn, int yEn) {
         int deltaX = xEn - xSt;
         int deltaY = yEn - ySt;
         double ret = FastMath.atan2(deltaY, deltaX) * 180 / FastMath.PI;
         return ret >= 0 ? ret : ret + 360;
     }
 
-    public static double ThreePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
+    public static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
         xOA = xO - xA;
         yOA = yO - yA;
         xOB = xO - xB;
@@ -67,19 +67,19 @@ public class Methods {
         return FastMath.acos(((OB * OB) + (AO * AO) - (AB * AB)) / (2 * OB * AO));
     }
 
-    public static int Interval(int leftBorder, int x, int rightBorder) {
+    public static int interval(int leftBorder, int x, int rightBorder) {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
 
-    public static double Interval(double leftBorder, double x, double rightBorder) {
+    public static double interval(double leftBorder, double x, double rightBorder) {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
 
-    public static float Interval(float leftBorder, float x, float rightBorder) {
+    public static float interval(float leftBorder, float x, float rightBorder) {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
 
-    public static void Exception(Exception exception) {
+    public static void exception(Exception exception) {
         String err = "";
         err += exception + "\n";
         for (StackTraceElement stackTrace : exception.getStackTrace()) {
@@ -89,17 +89,17 @@ public class Methods {
         Main.addMessage(err);
     }
 
-    public static void Error(String message) {
+    public static void error(String message) {
         System.out.println(message);
         Main.addMessage(message);
     }
 
-    public static void JavaError(String message) {
+    public static void javaError(String message) {
         System.out.println(message);
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
     }
 
-    public static int RoundHU(double d) {
+    public static int roundHalfUp(double d) {
         double dAbs = FastMath.abs(d);
         int i = (int) dAbs;
         double result = dAbs - (double) i;
@@ -118,8 +118,5 @@ public class Methods {
         objectOutputStream.close();
         byteObject.close();
         return byteObject.toByteArray().length;
-    }
-
-    private Methods() {
     }
 }

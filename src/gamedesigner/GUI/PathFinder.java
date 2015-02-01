@@ -7,6 +7,7 @@ package gamedesigner.GUI;
 
 import gamedesigner.ObjectPlace;
 import java.io.File;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -21,7 +22,10 @@ public class PathFinder extends javax.swing.JFrame {
     public PathFinder(ObjectPlace cel, File dir, FileNameExtensionFilter filter, int mode) {   // mode : 0 - wczytanie obrazka, 1 - "wyjście" zapisywanych plików, 2 - wczytanie zapisanej tekstury
         initComponents();
         this.cel = cel;
-        FilesFC.setCurrentDirectory(dir);
+        try {
+            FilesFC.setCurrentDirectory(dir);
+        } catch (Exception exception) {            
+        }
         FilesFC.setFileSelectionMode(mode);
         if (mode == javax.swing.JFileChooser.DIRECTORIES_ONLY) {
             ext = "dir";

@@ -80,7 +80,7 @@ public class Rectangle extends Figure {
             return true;
         }
         getPoints();
-        if (xPosition != 0 && yPosition != 0 && Methods.PointDistance(circle.getX(), circle.getY(), points.get((xPosition + 1) + 3 * (yPosition + 1)).getX(),
+        if (xPosition != 0 && yPosition != 0 && Methods.pointDistance(circle.getX(), circle.getY(), points.get((xPosition + 1) + 3 * (yPosition + 1)).getX(),
                 points.get((xPosition + 1) + 3 * (yPosition + 1)).getY()) <= circle.getRadius()) {
             return true;
         }

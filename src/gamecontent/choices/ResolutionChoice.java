@@ -26,14 +26,14 @@ public class ResolutionChoice extends MenuChoice {
         if (settings.curentMode >= settings.modes.length) {
             settings.curentMode = 0;
         }
-        settings.resWidth = settings.modes[settings.curentMode].getWidth();
-        settings.resHeight = settings.modes[settings.curentMode].getHeight();
-        settings.freq = settings.modes[settings.curentMode].getFrequency();
+        settings.resolutionWidth = settings.modes[settings.curentMode].getWidth();
+        settings.resolutionHeight = settings.modes[settings.curentMode].getHeight();
+        settings.frequency = settings.modes[settings.curentMode].getFrequency();
         AnalizerSettings.update(settings);
     }
 
     @Override
     public String getLabel() {
-        return label + settings.resWidth + " x " + settings.resHeight + " @ " + settings.freq + " Hz [" + (settings.curentMode + 1) + "/" + settings.modes.length + "]";
+        return label + settings.resolutionWidth + " x " + settings.resolutionHeight + " @ " + settings.frequency + " Hz [" + (settings.curentMode + 1) + "/" + settings.modes.length + "]";
     }
 }

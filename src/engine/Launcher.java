@@ -17,8 +17,8 @@ public class Launcher {
         try {
             Main.run();
         } catch (Exception exception) {
-            Methods.Exception(exception);
-            cleanUp();
+            Methods.exception(exception);
         }
+        cleanUp();
     }
 }

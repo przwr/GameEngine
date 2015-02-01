@@ -77,8 +77,8 @@ public class MyMenu extends Menu {
         this.green = 1f;
         this.blue = 1f;
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", Methods.RoundHU(settings.SCALE * 38));
-        fonts.add("Amble-Regular", Methods.RoundHU(settings.SCALE * 64));
+        fonts.add("Amble-Regular", Methods.roundHalfUp(settings.SCALE * 38));
+        fonts.add("Amble-Regular", Methods.roundHalfUp(settings.SCALE * 64));
     }
 
     private void generateM0() {

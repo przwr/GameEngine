@@ -77,8 +77,8 @@ public class GameClient {
                         if (((PacketJoinResponse) obj).getId() != -1) {
                             server = connection;
                             pl.id = ((PacketJoinResponse) obj).getId();
-                            pl.setX(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getX()));
-                            pl.setY(Methods.RoundHU(SCALE * (float) ((PacketJoinResponse) obj).getY()));
+                            pl.setX(Methods.roundHalfUp(SCALE * (float) ((PacketJoinResponse) obj).getX()));
+                            pl.setY(Methods.roundHalfUp(SCALE * (float) ((PacketJoinResponse) obj).getY()));
                             tempMapId = ((PacketJoinResponse) obj).getMapId();
                             mpup = new PacketMPlayerUpdate(tempMapId, pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
@@ -153,14 +153,14 @@ public class GameClient {
         isConnected = false;
         Close();
         game.g.endGame();
-        Methods.Exception(e);
+        Methods.exception(e);
     }
 
     private synchronized void cleanUp(String msg) {
         isConnected = false;
         Close();
         game.g.endGame();
-        Methods.Error(msg);
+        Methods.error(msg);
     }
 
 }

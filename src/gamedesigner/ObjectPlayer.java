@@ -49,12 +49,12 @@ public class ObjectPlayer extends Player {
     }
 
     private void initControler() {
-        ctrl = new ObjectController(this);
-        ctrl.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
-        ctrl.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        ctrl.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
-        ctrl.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        ctrl.init();
+        controler = new ObjectController(this);
+        controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+        controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+        controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+        controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+        controler.init();
     }
 
     public void addUI(ObjectUI ui) {
@@ -65,15 +65,15 @@ public class ObjectPlayer extends Player {
     public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
         scale = place.settings.SCALE;
         this.online = place.game.online;
-        this.width = Methods.RoundHU(scale * width);
-        this.height = Methods.RoundHU(scale * height);
-        this.startX = Methods.RoundHU(scale * startX);
-        this.startY = Methods.RoundHU(scale * startY);
+        this.width = Methods.roundHalfUp(scale * width);
+        this.height = Methods.roundHalfUp(scale * height);
+        this.startX = Methods.roundHalfUp(scale * startX);
+        this.startY = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, Methods.RoundHU(scale * x), Methods.RoundHU(scale * y), place);
+        init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -84,15 +84,15 @@ public class ObjectPlayer extends Player {
     public void initialize(int startX, int startY, int width, int height, Place place) {
         this.online = place.game.online;
         scale = place.settings.SCALE;
-        this.width = Methods.RoundHU(scale * width);
-        this.height = Methods.RoundHU(scale * height);
-        this.startX = Methods.RoundHU(scale * startX);
-        this.startY = Methods.RoundHU(scale * startY);
+        this.width = Methods.roundHalfUp(scale * width);
+        this.height = Methods.roundHalfUp(scale * height);
+        this.startX = Methods.roundHalfUp(scale * startX);
+        this.startY = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.RoundHU(scale * 1024), Methods.RoundHU(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -112,17 +112,17 @@ public class ObjectPlayer extends Player {
         boolean cltr = guzik(KEY_LCONTROL);
 
         if (xtimer == 0) {
-            ix = Methods.Interval(0, ix + xPos, map.getTileWidth());
+            ix = Methods.interval(0, ix + xPos, map.getTileWidth());
             setX(ix * tile);
             if (!cltr) {
-                xStop = Methods.Interval(0, xStop + xPos, map.getTileWidth());
+                xStop = Methods.interval(0, xStop + xPos, map.getTileWidth());
             }
         }
         if (ytimer == 0) {
-            iy = Methods.Interval(0, iy + yPos, map.getTileHeight());
+            iy = Methods.interval(0, iy + yPos, map.getTileHeight());
             setY(iy * tile);
             if (!cltr) {
-                yStop = Methods.Interval(0, yStop + yPos, map.getTileHeight());
+                yStop = Methods.interval(0, yStop + yPos, map.getTileHeight());
             }
         }
         if (cam != null) {

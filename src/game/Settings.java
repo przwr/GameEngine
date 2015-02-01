@@ -40,10 +40,10 @@ public class Settings {
     public int nrPlayers = 1;
     public float volume = 0.5f;
     public SoundBase sounds;
-    public int resWidth;
-    public int resHeight;
+    public int resolutionWidth;
+    public int resolutionHeight;
     public float SCALE;
-    public int freq;
+    public int frequency;
     public int depth = display.getBitsPerPixel();
     public boolean vSync;
     public int nrSamples = 0;
@@ -93,9 +93,9 @@ public class Settings {
                 modes[i++] = mode;
             }
         }
-        resWidth = modes[0].getWidth();
-        resHeight = modes[0].getHeight();
-        freq = modes[0].getFrequency();
+        resolutionWidth = modes[0].getWidth();
+        resolutionHeight = modes[0].getHeight();
+        frequency = modes[0].getFrequency();
         languages.add(new LangPL());
         languages.add(new LangENG());
         language = languages.get(0);
@@ -118,7 +118,7 @@ public class Settings {
         actionsNr = nr;
         this.players = players;
         this.controllers = controllers;
-        this.SCALE = ((int) ((resHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resHeight / 1024f / 0.25f)) * 0.25f;
+        this.SCALE = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
         try {
             GL30.glGenFramebuffers();
             GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
@@ -145,7 +145,7 @@ public class Settings {
                 isSupfboVer3 = 2;
                 isSupfboMS = false;
             } else {
-                Methods.JavaError(language.m.FBOError);
+                Methods.javaError(language.m.FBOError);
             }
         }
     }

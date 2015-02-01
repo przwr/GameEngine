@@ -18,5 +18,4 @@ public interface Integration {
     public boolean isCollide(Area area, int x, int y, Figure figure);
 
     public Figure whatCollide(Area area, int x, int y, Figure figure);
-
 }

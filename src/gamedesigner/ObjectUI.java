@@ -10,7 +10,6 @@ import engine.Drawer;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
-import game.gameobject.Player;
 import game.place.Place;
 import game.place.cameras.Camera;
 import static org.lwjgl.opengl.GL11.glColor4f;
@@ -45,8 +44,8 @@ public class ObjectUI extends GameObject {
     }
 
     public void changeCoordinates(int x, int y) {
-        int xLim = Methods.Interval(0, coord.getX() + x, tex.getXlimit() - 1);
-        int yLim = Methods.Interval(0, coord.getY() + y, tex.getYlimit() - 1);
+        int xLim = Methods.interval(0, coord.getX() + x, tex.getXlimit() - 1);
+        int yLim = Methods.interval(0, coord.getY() + y, tex.getYlimit() - 1);
         coord.set(xLim, yLim);
     }
     
@@ -62,7 +61,7 @@ public class ObjectUI extends GameObject {
             glTranslatef(cam.getSX() + tile / 2 + xEffect, cam.getSY() + tile / 2 + yEffect, 0);
             glColor4f(1f, 1f, 1f, 1f);
             Drawer.drawRectangle(0, 0, tile, tile);
-            tex.render(coord.getX(), coord.getY());
+            tex.renderPiece(coord.getX(), coord.getY());
             glColor4f(0f, 0f, 0f, 1f);
             Drawer.drawRectangle(-d, -d, tile + 2 * d, d - 1);
             Drawer.drawRectangle(0, tile + d + 1, tile + 2 * d, d - 1);
