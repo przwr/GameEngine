@@ -72,7 +72,7 @@ public class ObjectPlace extends Place {
         ups[0] = new update() {
             @Override
             public void up() {
-                if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
+                if (Keyboard.isKeyDown(Keyboard.KEY_H)) {
                     help.setVisible(true);
                 }
                 

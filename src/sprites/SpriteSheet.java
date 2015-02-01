@@ -5,6 +5,12 @@
  */
 package sprites;
 
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.glVertex2f;
 import org.newdawn.slick.opengl.Texture;
 
 /**
@@ -22,6 +28,24 @@ public class SpriteSheet extends Sprite {
         this.yTiles = texture.getImageHeight() / height;
     }
 
+    @Override
+    public void render() {  //Rysuje CAŁY spritesheet
+        bindCheck();
+        float widthWhole = (float) (texture.getImageWidth() * spriteBase.getScale());
+        float heightWhole = (float) (texture.getImageHeight()* spriteBase.getScale());        
+        glTranslatef(xStart, yStart, 0);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, 0);
+        glTexCoord2f(0, 1);
+        glVertex2f(0, heightWhole);
+        glTexCoord2f(1, 1);
+        glVertex2f(widthWhole, heightWhole);
+        glTexCoord2f(1, 0);
+        glVertex2f(widthWhole, 0);
+        glEnd();
+    }
+    
     public void renderPiece(int piece) {
         if (isValidPiece(piece)) {
             int x = (int) (piece % xTiles);
