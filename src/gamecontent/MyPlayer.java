@@ -33,7 +33,8 @@ import sprites.SpriteSheet;
  */
 public class MyPlayer extends Player {
 
-    private int xSpeed, ySpeed;
+    private int tempXSpeed, tempYSpeed;
+    private float jumpDelta = 22.6f;  //TYLKO TYMCZASOWE!
 
     public MyPlayer(boolean first, String name) {
         super(name);
@@ -65,8 +66,8 @@ public class MyPlayer extends Player {
         this.online = place.game.online;
         this.width = Methods.roundHalfUp(scale * width);
         this.height = Methods.roundHalfUp(scale * height);
-        this.startX = Methods.roundHalfUp(scale * startX);
-        this.startY = Methods.roundHalfUp(scale * startY);
+        this.xStart = Methods.roundHalfUp(scale * startX);
+        this.yStart = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
         init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
@@ -83,8 +84,8 @@ public class MyPlayer extends Player {
         scale = place.settings.SCALE;
         this.width = Methods.roundHalfUp(scale * width);
         this.height = Methods.roundHalfUp(scale * height);
-        this.startX = Methods.roundHalfUp(scale * startX);
-        this.startY = Methods.roundHalfUp(scale * startY);
+        this.xStart = Methods.roundHalfUp(scale * startX);
+        this.yStart = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
         this.place = place;
@@ -123,7 +124,7 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() + sprite.getSy() + collision.getHeight() / 2 - jump),
+        place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() + sprite.getSy() + collision.getHeight() / 2 - jumpHeight),
                 name, new Color(place.red, place.green, place.blue));
     }
 
@@ -132,54 +133,48 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.setColor(jumpShadowColor);
+            Drawer.setColor(JUMP_SHADOW_COLOR);
             Drawer.drawElipse(0, 0, Methods.roundHalfUp((float) collision.getWidth() / 2), Methods.roundHalfUp((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
-            glTranslatef(0, (int) -jump, 0);
+            glTranslatef(0, (int) -jumpHeight, 0);
             getAnimation().render();
             glPopMatrix();
         }
     }
 
-    float a = 22.6f;  //TYLKO TYMCZASOWE!
-
     @Override
     public void update() {
         if (jumping) {
             hop = false;
-            jump = FastMath.abs(Methods.xRadius(a * 4, 70));
-            a += Time.getDelta();
-            if ((int) a == 68) {
+            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+            jumpDelta += Time.getDelta();
+            if ((int) jumpDelta == 68) {
                 jumping = false;
-                a = 22.6f;
+                jumpDelta = 22.6f;
             }
         }
-        xSpeed = (int) (hspeed + myHspeed);
-        ySpeed = (int) (vspeed + myVspeed);
-        canMove(xSpeed, ySpeed);
-        for (WarpPoint w : map.getWarps()) {
-            if (w.getCollision() != null) {
-                if (w.getCollision().isCollideSingle(w.getX(), w.getY(), collision)) {
-                    w.Warp(this);
-                }
-            }
-        }
+        tempXSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
+        tempYSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
+        moveIfPossible(tempXSpeed, tempYSpeed);
+        map.getWarps().stream().filter((warp) -> (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision))).forEach((warp) -> {
+            warp.Warp(this);
+        });
         brakeOthers();
     }
 
     @Override
     public synchronized void sendUpdate(Place place) {
         if (jumping) {
-            jump = FastMath.abs(Methods.xRadius(a * 4, 70));
-            a += Time.getDelta();
-            if ((int) a == 68) {
+            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+            jumpDelta += Time.getDelta();
+            if ((int) jumpDelta == 68) {
                 jumping = false;
-                a = 22.5f;
+                jumpDelta = 22.5f;
             }
         }
-        xSpeed = (int) (hspeed + myHspeed);
-        ySpeed = (int) (vspeed + myVspeed);
-        canMove(xSpeed, ySpeed);
+        tempXSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
+        tempYSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
+        moveIfPossible(tempXSpeed, tempYSpeed);
         for (WarpPoint warp : map.getWarps()) {
             if (warp.getCollision() != null) {
                 if (warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
@@ -209,7 +204,7 @@ public class MyPlayer extends Player {
                 changeMap(map);
             }
             if (((MPlayerUpdate) up).isHop()) {
-                setIsJumping(true);
+                setJumping(true);
             }
             setEmits(((MPlayerUpdate) up).isEmits());
         } catch (Exception e) {
@@ -221,11 +216,11 @@ public class MyPlayer extends Player {
     public synchronized void updateOnline() {
         try {
             if (jumping) {
-                jump = FastMath.abs(Methods.xRadius(a * 4, 70));
-                a += Time.getDelta();
-                if ((int) a == 68) {
+                jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+                jumpDelta += Time.getDelta();
+                if ((int) jumpDelta == 68) {
                     jumping = false;
-                    a = 22.5f;
+                    jumpDelta = 22.5f;
                 }
             }
         } catch (Exception e) {
@@ -237,7 +232,7 @@ public class MyPlayer extends Player {
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
         if (sprite != null) {
             glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jumpHeight, 0);
             Drawer.drawShapeInShade(animation, color);
             glPopMatrix();
         }
@@ -247,7 +242,7 @@ public class MyPlayer extends Player {
     public void renderShadow(int xEffect, int yEffect, Figure f) {
         if (sprite != null) {
             glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jumpHeight, 0);
             Drawer.drawShapeInBlack(animation);
             glPopMatrix();
         }
@@ -257,7 +252,7 @@ public class MyPlayer extends Player {
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
         if (sprite != null) {
             glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jumpHeight, 0);
             Drawer.drawShapePartInShade(animation, color, xStart, xEnd);
             glPopMatrix();
         }
@@ -267,7 +262,7 @@ public class MyPlayer extends Player {
     public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
         if (sprite != null) {
             glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jump, 0);
+            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jumpHeight, 0);
             Drawer.drawShapePartInBlack(animation, xStart, xEnd);
             glPopMatrix();
         }

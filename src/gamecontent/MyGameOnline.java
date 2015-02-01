@@ -122,7 +122,7 @@ public class MyGameOnline extends GameOnline {
                 for (int p = 1; p < tempPlace.playersLength; p++) {
                     if (pUp.getId() == g.players[p].id) {
                         plr = g.players[p];
-                        plr.ups[plr.lastAdded] = pUp;
+                        plr.updates[plr.lastAdded] = pUp;
                         if (plr.lastAdded == 3) {
                             plr.lastAdded = 0;
                         } else {
@@ -165,7 +165,7 @@ public class MyGameOnline extends GameOnline {
             for (int i = 0; i < tempPlace.playersLength; i++) {
                 if (p.up().getId() == g.players[i].id) {
                     plr = g.players[i];
-                    plr.ups[plr.lastAdded] = p.up();
+                    plr.updates[plr.lastAdded] = p.up();
                     if (plr.lastAdded == 3) {
                         plr.lastAdded = 0;
                     } else {
@@ -256,7 +256,7 @@ public class MyGameOnline extends GameOnline {
                     for (Iterator<Mob> it = map.getSolidMobs().iterator(); it.hasNext();) {
                         mob = it.next();
                         if (mUp.getId() == mob.id) {
-                            mob.ups[mob.lastAdded] = mUp;
+                            mob.updates[mob.lastAdded] = mUp;
                             if (mob.lastAdded == 3) {
                                 mob.lastAdded = 0;
                             } else {

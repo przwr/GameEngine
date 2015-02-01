@@ -90,14 +90,14 @@ public class ObjectController extends Controler {
 //    }
     @Override
     public boolean isMenuOn() {
-        if (actions[3].in != null) {
-            if (actions[3].in.isPut()) {
-                if (!actions[3].in.isPressed()) {
-                    actions[3].in.setPressed(true);
+        if (actions[3].input != null) {
+            if (actions[3].input.isPut()) {
+                if (!actions[3].input.isPressed()) {
+                    actions[3].input.setPressed(true);
                     return true;
                 }
             } else {
-                actions[3].in.setPressed(false);
+                actions[3].input.setPressed(false);
             }
         }
         return false;

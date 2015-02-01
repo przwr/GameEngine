@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public abstract class Update {
 
     protected int x, y;
-    protected ArrayList<Short> delsX = new ArrayList<>();
-    protected ArrayList<Short> delsY = new ArrayList<>();
+    protected ArrayList<Short> xDeltas = new ArrayList<>();
+    protected ArrayList<Short> yDeltas = new ArrayList<>();
 
     public synchronized int getX() {
         return x;
@@ -25,11 +25,11 @@ public abstract class Update {
         return y;
     }
 
-    public synchronized ArrayList<Short> delsX() {
-        return delsX;
+    public synchronized ArrayList<Short> getXDeltas() {
+        return xDeltas;
     }
 
-    public synchronized ArrayList<Short> delsY() {
-        return delsY;
+    public synchronized ArrayList<Short> getYDeltas() {
+        return yDeltas;
     }
 }

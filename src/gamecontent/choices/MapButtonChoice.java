@@ -37,28 +37,28 @@ public class MapButtonChoice extends MenuChoice {
             int noiseAx[] = findNoiseAx();
             mapped = true;
             while (mapped) {
-                AnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].in);
+                AnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].input);
                 if (in != null) {
-                    if (in instanceof InputExitMapping || (ctrl.actions[3] != null && ctrl.actions[3].in != null && ctrl.actions[3].in.toString().equals(in.toString()))) {
+                    if (in instanceof InputExitMapping || (ctrl.actions[3] != null && ctrl.actions[3].input != null && ctrl.actions[3].input.toString().equals(in.toString()))) {
                         break;
                     }
                     if (in instanceof InputNull) {
-                        ctrl.actions[i].in = null;
+                        ctrl.actions[i].input = null;
                         break;
                     }
                     if (i < 4) {
                         for (Action action : ctrl.actions) {
-                            if (action != null && action.in != null && action.in.toString().equals(in.toString())) {
-                                AnyInput temp = ctrl.actions[i].in;
-                                action.in = temp;
+                            if (action != null && action.input != null && action.input.toString().equals(in.toString())) {
+                                AnyInput temp = ctrl.actions[i].input;
+                                action.input = temp;
                                 set(in);
                             }
                         }
                     } else {
                         for (int k = 4; k < ctrl.actions.length; k++) {
-                            if (ctrl.actions[k] != null && ctrl.actions[k].in != null && ctrl.actions[k].in.toString().equals(in.toString())) {
-                                AnyInput temp = ctrl.actions[i].in;
-                                ctrl.actions[k].in = temp;
+                            if (ctrl.actions[k] != null && ctrl.actions[k].input != null && ctrl.actions[k].input.toString().equals(in.toString())) {
+                                AnyInput temp = ctrl.actions[i].input;
+                                ctrl.actions[k].input = temp;
                                 set(in);
                             }
                         }
@@ -83,8 +83,8 @@ public class MapButtonChoice extends MenuChoice {
     public String getLabel() {
         if (thread != null) {
             return label + ": " + settings.language.m.PushButton;
-        } else if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].in != null) {
-            return label + ": [" + ctrl.actions[i].in.getLabel() + "]";
+        } else if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].input != null) {
+            return label + ": [" + ctrl.actions[i].input.getLabel() + "]";
         } else {
             return label + ": " + settings.language.m.Empty;
         }
@@ -116,7 +116,7 @@ public class MapButtonChoice extends MenuChoice {
     }
 
     private void set(AnyInput in) {
-        ctrl.actions[i].in = in;
+        ctrl.actions[i].input = in;
         AnalizerInput.Update(settings);
         mapped = false;
     }

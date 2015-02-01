@@ -54,8 +54,8 @@ public class GameServer {
         Server temp = null;
         try {
             temp = new Server(99999999, 99999999);
-        } catch (Exception e) {
-            cleanUp(e);
+        } catch (Exception exception) {
+            cleanUp(exception);
         }
         this.server = temp;
         try {

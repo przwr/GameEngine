@@ -59,19 +59,19 @@ public abstract class Player extends Entity {
     }
 
     @Override
-    public void changeMap(Map othermap) {
-        super.changeMap(othermap);
+    public void changeMap(Map newMap) {
+        super.changeMap(newMap);
         if (cam != null) {
-            cam.setMap(othermap);
+            cam.setMap(newMap);
         }
-    }
-
-    public void addMenu(Menu menu) {
-        this.menu = menu;
     }
 
     public Animation getAnimation() {
         return animation;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 
     public void setPlaceToNull() {

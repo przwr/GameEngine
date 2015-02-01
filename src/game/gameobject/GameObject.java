@@ -19,7 +19,7 @@ import sprites.Sprite;
 public abstract class GameObject {
 
     protected double x, y;
-    protected int width, height, depth, startX, startY;
+    protected int width, height, depth, xStart, yStart;
     protected boolean solid, emitter, emits, top, simpleLighting, alwaysVisible;
     protected Sprite sprite;
     protected Light light;
@@ -30,34 +30,34 @@ public abstract class GameObject {
 
     public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, float color, Figure f);
+    public abstract void renderShadowLit(int xEffect, int yEffect, float color, Figure figure);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xs, int xe);
+    public abstract void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd);
 
-    public abstract void renderShadow(int xEffect, int yEffect, Figure f);
+    public abstract void renderShadow(int xEffect, int yEffect, Figure figure);
 
-    public abstract void renderShadow(int xEffect, int yEffect, Figure f, int xs, int xe);
+    public abstract void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
 
     protected void init(String name, int x, int y, Place place) {
+        this.name = name;
         this.x = x;
         this.y = y;
-        depth = 0;
-        this.name = name;
         this.place = place;
+        depth = 0;
     }
 
-    public void changeMap(Map otherMap) {
+    public void changeMap(Map map) {
         if (map != null) {
             map.deleteObj(this);
         }
-        map = otherMap;
-        map.addObj(this);
+        this.map = map;
+        this.map.addObj(this);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof GameObject) {
-            GameObject go = (GameObject) o;
+    public boolean equals(Object object) {
+        if (object instanceof GameObject) {
+            GameObject go = (GameObject) object;
             if (go.getX() == getX() && go.getY() == getY() && go.getName().equals(getName())) {
                 return true;
             }
@@ -90,6 +90,10 @@ public abstract class GameObject {
 
     public boolean isEmits() {
         return emits;
+    }
+
+    public boolean isAlwaysVisible() {
+        return alwaysVisible;
     }
 
     public int getX() {
@@ -133,19 +137,19 @@ public abstract class GameObject {
     }
 
     public int getObjBegOfX() {
-        return (int) x + sprite.getSx() + startX;
+        return (int) x + sprite.getSx() + xStart;
     }
 
     public int getObjBegOfY() {
-        return (int) y + sprite.getSy() + startY;
+        return (int) y + sprite.getSy() + yStart;
     }
 
     public int getObjEndOfX() {
-        return (int) x + sprite.getSx() + startX + width;
+        return (int) x + sprite.getSx() + xStart + width;
     }
 
     public int getObjEndOfY() {
-        return (int) y + sprite.getSy() + startY + height;
+        return (int) y + sprite.getSy() + yStart + height;
     }
 
     public int getObjectBegY() {
@@ -173,11 +177,11 @@ public abstract class GameObject {
     }
 
     public int getStartX() {
-        return startX;
+        return xStart;
     }
 
     public int getStartY() {
-        return startY;
+        return yStart;
     }
 
     public String getName() {
@@ -211,13 +215,9 @@ public abstract class GameObject {
     public void setX(double x) {
         this.x = x;
     }
-    
+
     public void setAlwaysVisible(boolean vis) {
         this.alwaysVisible = vis;
-    }
-    
-    public boolean isAlwaysVisible() {
-        return alwaysVisible;
     }
 
     public void setY(double y) {

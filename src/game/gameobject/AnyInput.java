@@ -22,44 +22,44 @@ public abstract class AnyInput {
     protected String label;
     protected boolean pressed;
     protected int key;
-    protected int padNr;
+    protected int padNumber;
 
     public abstract boolean isPut();
 
     public abstract String getLabel();
 
-    public boolean isPressed() {
-        return pressed;
-    }
-
-    public void setPressed(boolean bl) {
-        pressed = bl;
-    }
-
-    public int getPadNr() {
-        return padNr;
-    }
-
-    public int getKey() {
-        return key;
-    }
-
     public static AnyInput createInput(int type, int[] table, Settings settings) {
         if (type == KEYBOARD) {
             return new InputKeyBoard(table[0]);
-        } else if (type == MOUSE) {
-            return new InputMouse(table[0]);
         } else if (type == CONTROLLER_KEY) {
             return new InputPadKey(settings.controllers, table[0], table[1]);
         } else if (type == CONTROLLER_DPAD) {
             return new InputPadDPad(settings.controllers, table[0], isTrue(table[1]), isTrue(table[2]));
         } else if (type == CONTROLLER_STICK) {
             return new InputPadStick(settings.controllers, table[0], table[1], isTrue(table[2]));
+        } else if (type == MOUSE) {
+            return new InputMouse(table[0]);
         }
         return null;
     }
 
     private static boolean isTrue(int value) {
         return value == 1;
+    }
+
+    public void setPressed(boolean pressed) {
+        this.pressed = pressed;
+    }
+
+    public boolean isPressed() {
+        return pressed;
+    }
+
+    public int getPadNumber() {
+        return padNumber;
+    }
+
+    public int getKey() {
+        return key;
     }
 }

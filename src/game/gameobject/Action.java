@@ -13,10 +13,10 @@ public abstract class Action {
 
     protected boolean on;
 
-    public AnyInput in;
+    public AnyInput input;
 
     public Action(AnyInput in) {
-        this.in = in;
+        this.input = in;
     }
 
     public boolean isOn() {

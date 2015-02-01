@@ -18,13 +18,13 @@ public abstract class MenuChoice {
     protected Menu menu;
     protected Settings settings;
 
+    public abstract void action();
+
     public MenuChoice(String label, Menu menu, Settings settings) {
         this.label = label;
         this.menu = menu;
         this.settings = settings;
     }
-
-    public abstract void action();
 
     public String getLabel() {
         return label;

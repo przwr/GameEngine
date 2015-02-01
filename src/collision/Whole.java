@@ -12,10 +12,10 @@ package collision;
 public class Whole implements Integration {
 
     @Override
-    public void upProperties(Area area, Figure figure) {
-        area.upCollision();
-        area.upBoundsForWhole();
-        area.upCenter();
+    public void updateProperties(Area area, Figure figure) {
+        area.updateCollision();
+        area.updateBoundsForWhole();
+        area.updateCenter();
     }
 
     @Override

@@ -12,9 +12,9 @@ package collision;
 public class Chunks implements Integration {
 
     @Override
-    public void upProperties(Area area, Figure figure) {
-        area.upBoundsForChunks(figure);
-        area.upCenter();
+    public void updateProperties(Area area, Figure figure) {
+        area.updateBoundsForChunks(figure);
+        area.updateCenter();
     }
 
     @Override

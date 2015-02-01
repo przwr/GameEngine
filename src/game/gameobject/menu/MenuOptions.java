@@ -9,33 +9,33 @@ package game.gameobject.menu;
  *
  * @author przemek
  */
-public class MenuOpt {
+public class MenuOptions {
 
     private final String label;
     private final MenuChoice[] choices;
-    private int nr;
-    private int choosenNr;
+    private int optionsNumber;
+    private int choosenOption;
 
-    public MenuOpt(int size, String label) {
+    public MenuOptions(int size, String label) {
         choices = new MenuChoice[size];
         this.label = label;
     }
 
     public void addChoice(MenuChoice choice) {
-        choices[nr++] = choice;
+        choices[optionsNumber++] = choice;
     }
 
     public void setChoosen(int i) {
-        choosenNr += i;
-        if (choosenNr > nr - 1) {
-            choosenNr = 0;
-        } else if (choosenNr < 0) {
-            choosenNr = nr - 1;
+        choosenOption += i;
+        if (choosenOption > optionsNumber - 1) {
+            choosenOption = 0;
+        } else if (choosenOption < 0) {
+            choosenOption = optionsNumber - 1;
         }
     }
 
     public MenuChoice getChoosen() {
-        return choices[choosenNr];
+        return choices[choosenOption];
     }
 
     public MenuChoice getChoice(int i) {
@@ -46,7 +46,7 @@ public class MenuOpt {
         return label;
     }
 
-    public int getNr() {
-        return nr;
+    public int getOptionsNumber() {
+        return optionsNumber;
     }
 }

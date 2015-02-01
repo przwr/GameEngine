@@ -48,11 +48,11 @@ public class MyGame extends Game {
         menuPl = new MyPlayer(true, "Menu");
         menu.players = new GameObject[1];
         menu.players[0] = menuPl;
-        menuPl.addMenu(menu);
-        players[0].addMenu(menu);
-        players[1].addMenu(menu);
-        players[2].addMenu(menu);
-        players[3].addMenu(menu);
+        menuPl.setMenu(menu);
+        players[0].setMenu(menu);
+        players[1].setMenu(menu);
+        players[2].setMenu(menu);
+        players[3].setMenu(menu);
         online = new MyGameOnline(this, 3, 4);
         online.initChanges();
         initMethods();
@@ -133,7 +133,7 @@ public class MyGame extends Game {
                         if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
                             designer = true;
                             players[0] = new ObjectPlayer(true, "Mapper");
-                            players[0].addMenu(menu);
+                            players[0].setMenu(menu);
                             settings.nrPlayers = 1;
                             startGame();
                             menu.setCurrent(0);

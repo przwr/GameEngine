@@ -19,18 +19,13 @@ import game.gameobject.Player;
  */
 public class MyController extends Controler {
 
-    public static final int UP = 0;
-    public static final int DOWN = 1;
-    public static final int LEFT = 2;
-    public static final int RIGHT = 3;
-    public static final int JUMP = 4;
-    public static final int RUN = 5;
-    public static final int LIGHT = 6;
+    public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6;
+    public static final int FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 10;
 
     public MyController(Entity inControl) {
         super(inControl);
         inputs = new AnyInput[36];
-        actions = new Action[36]; // 4 pierwsze to menu  
+        actions = new Action[36];
         states = new boolean[7];
         statesSample = new boolean[7];
     }
@@ -41,10 +36,10 @@ public class MyController extends Controler {
         actions[1] = new ActionOnOff(inputs[1]);
         actions[2] = new ActionOnOff(inputs[2]);
         actions[3] = new ActionOnOff(inputs[3]);
-        for (byte i = 4; i < 10; i++) {
+        for (byte i = FIRST_NO_MENU_ACTION; i < ACTIONS_COUNT; i++) {
             actions[i] = new ActionHold(inputs[i]);
         }
-        actions[10] = new ActionOnOff(inputs[10]);
+        actions[ACTIONS_COUNT] = new ActionOnOff(inputs[ACTIONS_COUNT]);
     }
 
     @Override
@@ -53,27 +48,23 @@ public class MyController extends Controler {
             actions[i].act();
             states[i - 4] = actions[i].isOn();
         }
-//        System.arraycopy(states, 0, statesSample, 0, statesSample.length);
-//        if (inControl.getPlace().game.online.client != null) {
-//            inControl.getPlace().game.online.client.sendInput(new PacketInput(((Player) inControl).id, statesSample));
-//        }
         if (states[UP]) {
-            inControl.addSpeed(0, -4, true);
+            inControl.addSpeed(0, -4);
         } else if (states[DOWN]) {
-            inControl.addSpeed(0, 4, true);
+            inControl.addSpeed(0, 4);
         } else {
             inControl.brake(1);
         }
         if (states[LEFT]) {
-            inControl.addSpeed(-4, 0, true);
+            inControl.addSpeed(-4, 0);
         } else if (states[RIGHT]) {
-            inControl.addSpeed(4, 0, true);
+            inControl.addSpeed(4, 0);
         } else {
             inControl.brake(0);
         }
         if (states[JUMP]) {
-            inControl.setIsJumping(true);
-            inControl.setIsHop(true);
+            inControl.setJumping(true);
+            inControl.setHop(true);
         }
         if (states[RUN]) {
             inControl.setMaxSpeed(2);
@@ -85,45 +76,16 @@ public class MyController extends Controler {
         }
     }
 
-//    @Override
-//    public synchronized void setInput(boolean[] states) {
-//        System.arraycopy(states, 0, this.states, 0, this.states.length);
-//        if (states[UP]) {
-//            inControl.addSpeed(0, -4, true);
-//        } else if (states[DOWN]) {
-//            inControl.addSpeed(0, 4, true);
-//        } else {
-//            inControl.brake(1);
-//        }
-//        if (states[LEFT]) {
-//            inControl.addSpeed(-4, 0, true);
-//        } else if (states[RIGHT]) {
-//            inControl.addSpeed(4, 0, true);
-//        } else {
-//            inControl.brake(0);
-//        }
-//        if (states[JUMP]) {
-//            inControl.setIsJumping(true);
-//        }
-//        if (states[RUN]) {
-//            inControl.setMaxSpeed(16);
-//        } else {
-//            inControl.setMaxSpeed(8);
-//        }
-//        if (states[LIGHT]) {
-//            inControl.setEmits(!inControl.isEmits());
-//        }
-//    }
     @Override
     public boolean isMenuOn() {
-        if (actions[3].in != null) {
-            if (actions[3].in.isPut()) {
-                if (!actions[3].in.isPressed()) {
-                    actions[3].in.setPressed(true);
+        if (actions[3].input != null) {
+            if (actions[3].input.isPut()) {
+                if (!actions[3].input.isPressed()) {
+                    actions[3].input.setPressed(true);
                     return true;
                 }
             } else {
-                actions[3].in.setPressed(false);
+                actions[3].input.setPressed(false);
             }
         }
         return false;

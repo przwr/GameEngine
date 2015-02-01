@@ -39,8 +39,8 @@ public class MPlayerUpdate extends Update implements Serializable {
         int deltaX = this.x - x;
         int deltaY = this.y - y;
         if (FastMath.abs(deltaX) <= 32767 && FastMath.abs(deltaY) <= 32767) {
-            delsX.add((short) deltaX);
-            delsY.add((short) deltaY);
+            xDeltas.add((short) deltaX);
+            yDeltas.add((short) deltaY);
         }
     }
 
@@ -71,7 +71,7 @@ public class MPlayerUpdate extends Update implements Serializable {
     }
 
     public synchronized void Trim() {
-        delsX.trimToSize();
-        delsY.trimToSize();
+        xDeltas.trimToSize();
+        yDeltas.trimToSize();
     }
 }

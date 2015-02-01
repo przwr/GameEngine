@@ -8,7 +8,7 @@ package game.place;
 import engine.Delay;
 import game.Game;
 import game.Settings;
-import game.gameobject.menu.MenuOpt;
+import game.gameobject.menu.MenuOptions;
 import org.lwjgl.opengl.Display;
 
 /**
@@ -18,7 +18,7 @@ import org.lwjgl.opengl.Display;
 public abstract class Menu extends ScreenPlace {
 
     protected int cur;
-    protected MenuOpt[] menus;
+    protected MenuOptions[] menus;
 
     protected final int dWidth = Display.getWidth();
     protected final int dHeight = Display.getHeight(); //(int) (dWidth * ((double) Display.getHeight() / (double) Display.getWidth()));

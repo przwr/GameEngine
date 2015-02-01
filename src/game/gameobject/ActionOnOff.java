@@ -11,20 +11,20 @@ package game.gameobject;
  */
 public class ActionOnOff extends Action {
 
-    public ActionOnOff(AnyInput in) {
-        super(in);
+    public ActionOnOff(AnyInput input) {
+        super(input);
     }
 
     @Override
     public void act() {
-        if (in != null) {
-            if (in.isPut()) {
-                if (!in.isPressed()) {
-                    in.setPressed(true);
+        if (input != null) {
+            if (input.isPut()) {
+                if (!input.isPressed()) {
+                    input.setPressed(true);
                     on = true;
                 }
             } else {
-                in.setPressed(false);
+                input.setPressed(false);
             }
         }
     }

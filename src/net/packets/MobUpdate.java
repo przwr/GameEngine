@@ -28,8 +28,8 @@ public class MobUpdate extends Update {
         int deltaX = this.x - x;
         int deltaY = this.y - y;
         if (FastMath.abs(deltaX) <= Short.MAX_VALUE && FastMath.abs(deltaY) <= Short.MAX_VALUE) {
-            delsX.add((short) deltaX);
-            delsY.add((short) deltaY);
+            xDeltas.add((short) deltaX);
+            yDeltas.add((short) deltaY);
         }
     }
 
@@ -43,8 +43,8 @@ public class MobUpdate extends Update {
     }
 
     public synchronized void Trim() {
-        delsX.trimToSize();
-        delsY.trimToSize();
+        xDeltas.trimToSize();
+        yDeltas.trimToSize();
     }
 
     public void setID(short id) {

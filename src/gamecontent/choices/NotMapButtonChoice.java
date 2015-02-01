@@ -37,7 +37,7 @@ public class NotMapButtonChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].in != null) {
+        if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].input != null) {
             return label + ": [" + ctrl.inputs[i].getLabel() + "] - " + settings.language.m.Unchangable;
         } else {
             return label + ": " + settings.language.m.Empty + " - " + settings.language.m.Unchangable;

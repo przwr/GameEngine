@@ -33,8 +33,8 @@ public abstract class Mob extends Entity {
         this.width = Methods.roundHalfUp(scale * width);
         this.height = Methods.roundHalfUp(scale * height);
         this.solid = solid;
-        this.startX = Methods.roundHalfUp(scale * startX);
-        this.startY = Methods.roundHalfUp(scale * startY);
+        this.xStart = Methods.roundHalfUp(scale * startX);
+        this.yStart = Methods.roundHalfUp(scale * startY);
         this.range = Methods.roundHalfUp(scale * range);
         init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSprite("rabbit");
@@ -80,8 +80,8 @@ public abstract class Mob extends Entity {
     public synchronized void chase(GameObject prey) {
         if (prey != null) {
             double angle = Methods.pointAngle360(getX(), getY(), prey.getX(), prey.getY());
-            myHspeed = Methods.xRadius(angle, maxSpeed);
-            myVspeed = Methods.yRadius(angle, maxSpeed);
+            xSpeed = Methods.xRadius(angle, maxSpeed);
+            ySpeed = Methods.yRadius(angle, maxSpeed);
         }
     }
 

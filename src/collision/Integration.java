@@ -13,7 +13,7 @@ public interface Integration {
 
     public boolean isWhole();
 
-    public void upProperties(Area area, Figure figure);
+    public void updateProperties(Area area, Figure figure);
 
     public boolean isCollide(Area area, int x, int y, Figure figure);
 

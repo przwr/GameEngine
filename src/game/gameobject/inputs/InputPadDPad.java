@@ -18,28 +18,28 @@ public class InputPadDPad extends AnyInput {
     private final boolean isX;
     private final boolean isPlus;
 
-    public InputPadDPad(Controller[] controllers, int padNr, boolean isX, boolean isPlus) {
+    public InputPadDPad(Controller[] controllers, int padNumber, boolean isX, boolean isPlus) {
         this.controllers = controllers;
-        this.padNr = padNr;
+        this.padNumber = padNumber;
         this.isX = isX;
         this.isPlus = isPlus;
-        label = "JOY " + padNr + ": D-PAD " + (isX ? "X" : "Y") + (isPlus ? "+" : "-");
+        label = "JOY " + padNumber + ": D-PAD " + (isX ? "X" : "Y") + (isPlus ? "+" : "-");
     }
 
     @Override
     public boolean isPut() {
-        if (padNr < controllers.length) {
+        if (padNumber < controllers.length) {
             if (isX) {
                 if (isPlus) {
-                    return controllers[padNr].getPovX() > 0.1f;
+                    return controllers[padNumber].getPovX() > 0.1f;
                 } else {
-                    return controllers[padNr].getPovX() < -0.1f;
+                    return controllers[padNumber].getPovX() < -0.1f;
                 }
             } else {
                 if (isPlus) {
-                    return controllers[padNr].getPovY() > 0.1f;
+                    return controllers[padNumber].getPovY() > 0.1f;
                 } else {
-                    return controllers[padNr].getPovY() < -0.1f;
+                    return controllers[padNumber].getPovY() < -0.1f;
                 }
             }
         }
@@ -53,6 +53,6 @@ public class InputPadDPad extends AnyInput {
 
     @Override
     public String toString() {
-        return AnyInput.CONTROLLER_DPAD + " " + padNr + " " + (isX ? 1 : 0) + " " + (isPlus ? 1 : 0);
+        return AnyInput.CONTROLLER_DPAD + " " + padNumber + " " + (isX ? 1 : 0) + " " + (isPlus ? 1 : 0);
     }
 }

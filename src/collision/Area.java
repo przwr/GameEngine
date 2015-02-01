@@ -53,18 +53,18 @@ public class Area extends GameObject {
 
     public void addFigure(Figure figure) {
         parts.add(figure);
-        type.upProperties(this, figure);
+        type.updateProperties(this, figure);
     }
 
     public void addPiece(GameObject go) {
         Figure figure = go.getCollision();
         parts.add(figure);
         if (go.isSolid()) {
-            type.upProperties(this, figure);
+            type.updateProperties(this, figure);
         }
     }
 
-    protected void upCollision() {
+    protected void updateCollision() {
         maxX = maxY = shadowHeight = 0;
         minX = minY = Integer.MAX_VALUE;
         parts.stream().forEach((part) -> {
@@ -107,12 +107,12 @@ public class Area extends GameObject {
         }
     }
 
-    protected void upBoundsForWhole() {
+    protected void updateBoundsForWhole() {
         width = collision.width;
         height = collision.height;
     }
 
-    protected void upBoundsForChunks(Figure figure) {
+    protected void updateBoundsForChunks(Figure figure) {
         int newWidth = figure.getXStart() + figure.getWidth();
         int newHeight = figure.getYStart() + figure.getHeight();
         if (width < newWidth) {
@@ -123,7 +123,7 @@ public class Area extends GameObject {
         }
     }
 
-    protected void upCenter() {
+    protected void updateCenter() {
         centralX = width / 2;
         centralY = height / 2;
     }

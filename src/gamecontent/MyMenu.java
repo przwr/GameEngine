@@ -11,7 +11,7 @@ import engine.Methods;
 import game.Game;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
-import game.gameobject.menu.MenuOpt;
+import game.gameobject.menu.MenuOptions;
 import game.place.Menu;
 import gamecontent.choices.BrightnessChoice;
 import gamecontent.choices.ControlsChoice;
@@ -63,7 +63,7 @@ public class MyMenu extends Menu {
     private void generate() {
         delay = new Delay(25);
         delay.start();
-        menus = new MenuOpt[9];
+        menus = new MenuOptions[9];
         generateM0();
         generateM1();
         generateM2();
@@ -82,7 +82,7 @@ public class MyMenu extends Menu {
     }
 
     private void generateM0() {
-        menus[0] = new MenuOpt(10, settings.language.m.Menu);
+        menus[0] = new MenuOptions(10, settings.language.m.Menu);
         menus[0].addChoice(new StartChoice(settings.language.m.Start, this, settings));
         menus[0].addChoice(new SettingsChoice(settings.language.m.Options, this, settings));
         menus[0].addChoice(new StopChoice(settings.language.m.End, this, settings));
@@ -90,7 +90,7 @@ public class MyMenu extends Menu {
     }
 
     private void generateM1() {
-        menus[1] = new MenuOpt(12, settings.language.m.Options);
+        menus[1] = new MenuOptions(12, settings.language.m.Options);
         menus[1].addChoice(new PlayersNumberChoice(settings.language.m.Number_Of_Players, this, settings));
         menus[1].addChoice(new SplitScreenChoice(settings.language.m.SplitScreen, this, settings));
         menus[1].addChoice(new JoinSplitScreenChoice(settings.language.m.JoinSS, this, settings));
@@ -106,7 +106,7 @@ public class MyMenu extends Menu {
     }
 
     private void generateM2() {
-        menus[2] = new MenuOpt(10, settings.language.m.Controls);
+        menus[2] = new MenuOptions(10, settings.language.m.Controls);
         menus[2].addChoice(new PlayerControllerChoice(settings.language.m.Player1, this, settings));
         menus[2].addChoice(new PlayerControllerChoice(settings.language.m.Player2, this, settings));
         menus[2].addChoice(new PlayerControllerChoice(settings.language.m.Player3, this, settings));
@@ -114,7 +114,7 @@ public class MyMenu extends Menu {
     }
 
     private void generateM3() {
-        menus[3] = new MenuOpt(16, settings.language.m.Player1);
+        menus[3] = new MenuOptions(16, settings.language.m.Player1);
         int i;
         for (i = 0; i < 4; i++) {
             menus[3].addChoice(new NotMapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[0], i));
@@ -125,34 +125,34 @@ public class MyMenu extends Menu {
     }
 
     private void generateM4() {
-        menus[4] = new MenuOpt(16, settings.language.m.Player2);
+        menus[4] = new MenuOptions(16, settings.language.m.Player2);
         for (int i = 3; i < settings.actionsNr; i++) {
             menus[4].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[1].controler, i));
         }
     }
 
     private void generateM5() {
-        menus[5] = new MenuOpt(16, settings.language.m.Player3);
+        menus[5] = new MenuOptions(16, settings.language.m.Player3);
         for (int i = 3; i < settings.actionsNr; i++) {
             menus[5].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[2].controler, i));
         }
     }
 
     private void generateM6() {
-        menus[6] = new MenuOpt(16, settings.language.m.Player4);
+        menus[6] = new MenuOptions(16, settings.language.m.Player4);
         for (int i = 3; i < settings.actionsNr; i++) {
             menus[6].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[3].controler, i));
         }
     }
 
     private void generateM7() {
-        menus[7] = new MenuOpt(4, settings.language.m.Start);
+        menus[7] = new MenuOptions(4, settings.language.m.Start);
         menus[7].addChoice(new StartLocalGameChoice(settings.language.m.LocalGame, this, settings));
         menus[7].addChoice(new OnlineGameSettingsChoice(settings.language.m.OnlineGame, this, settings));
     }
 
     private void generateM8() {
-        menus[8] = new MenuOpt(6, settings.language.m.OnlineGame);
+        menus[8] = new MenuOptions(6, settings.language.m.OnlineGame);
         menus[8].addChoice(new RunServerChoice(settings.language.m.RunServer, this, settings));
         menus[8].addChoice(new JoinServerChoice(settings.language.m.JoinServer, this, settings));
         menus[8].addChoice(new FindServerChoice(settings.language.m.FindServer, this, settings));
@@ -176,13 +176,13 @@ public class MyMenu extends Menu {
 
     @Override
     protected void renderText() {
-        int positions = menus[cur].getNr() + 1;
-        renderMessage(1, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getNr() + 1))
+        int positions = menus[cur].getOptionsNumber() + 1;
+        renderMessage(1, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getOptionsNumber() + 1))
                 * fonts.write(0).getHeight() * 0.7),
                 menus[cur].getLabel(), new Color(red, green, blue));
         positions--;
-        for (int i = 0; i < menus[cur].getNr(); i++) {
-            renderMessage(0, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getNr() + 1)) * fonts.write(0).getHeight() * 0.7), menus[cur].getChoice(i).getLabel(), getColor(menus[cur].getChoice(i)));
+        for (int i = 0; i < menus[cur].getOptionsNumber(); i++) {
+            renderMessage(0, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getOptionsNumber() + 1)) * fonts.write(0).getHeight() * 0.7), menus[cur].getChoice(i).getLabel(), getColor(menus[cur].getChoice(i)));
             positions--;
         }
     }

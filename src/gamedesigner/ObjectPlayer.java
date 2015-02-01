@@ -5,6 +5,7 @@
  */
 package gamedesigner;
 
+import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import game.gameobject.Player;
@@ -67,8 +68,8 @@ public class ObjectPlayer extends Player {
         this.online = place.game.online;
         this.width = Methods.roundHalfUp(scale * width);
         this.height = Methods.roundHalfUp(scale * height);
-        this.startX = Methods.roundHalfUp(scale * startX);
-        this.startY = Methods.roundHalfUp(scale * startY);
+        this.xStart = Methods.roundHalfUp(scale * startX);
+        this.yStart = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
         init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
@@ -86,8 +87,8 @@ public class ObjectPlayer extends Player {
         scale = place.settings.SCALE;
         this.width = Methods.roundHalfUp(scale * width);
         this.height = Methods.roundHalfUp(scale * height);
-        this.startX = Methods.roundHalfUp(scale * startX);
-        this.startY = Methods.roundHalfUp(scale * startY);
+        this.xStart = Methods.roundHalfUp(scale * startX);
+        this.yStart = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
         this.place = place;
@@ -223,5 +224,21 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void renderName(Place place, Camera cam) {
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure figure) {
+    }
+
+    @Override
+    public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
     }
 }

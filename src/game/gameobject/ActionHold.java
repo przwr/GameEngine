@@ -11,13 +11,13 @@ package game.gameobject;
  */
 public class ActionHold extends Action {
 
-    public ActionHold(AnyInput in) {
-        super(in);
+    public ActionHold(AnyInput input) {
+        super(input);
     }
 
     @Override
     public void act() {
-        if (in != null && in.isPut()) {
+        if (input != null && input.isPut()) {
             on = true;
         }
     }

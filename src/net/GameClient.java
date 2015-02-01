@@ -28,7 +28,6 @@ import net.packets.PacketUpdate;
 public class GameClient {
 
     private final Client client;
-    private final Player pl;
     private PacketMPlayerUpdate mpup;
     private final GameOnline game;
     private final float SCALE;
@@ -37,8 +36,7 @@ public class GameClient {
     public short tempMapId = -1;
     private Delay delay;
 
-    public GameClient(final Player pl, final GameOnline game, String IP) {
-        this.pl = pl;
+    public GameClient(final Player player, final GameOnline game, String IP) {
         this.game = game;
         this.SCALE = game.g.settings.SCALE;
         delay = new Delay(20);
@@ -57,7 +55,7 @@ public class GameClient {
             client.addListener(new Listener() {
                 @Override
                 public void connected(Connection connection) {
-                    PacketJoinRequest test = new PacketJoinRequest(pl.getName());
+                    PacketJoinRequest test = new PacketJoinRequest(player.getName());
                     client.sendTCP(test);
                 }
 
@@ -76,11 +74,11 @@ public class GameClient {
                     } else if (obj instanceof PacketJoinResponse) {
                         if (((PacketJoinResponse) obj).getId() != -1) {
                             server = connection;
-                            pl.id = ((PacketJoinResponse) obj).getId();
-                            pl.setX(Methods.roundHalfUp(SCALE * (float) ((PacketJoinResponse) obj).getX()));
-                            pl.setY(Methods.roundHalfUp(SCALE * (float) ((PacketJoinResponse) obj).getY()));
+                            player.id = ((PacketJoinResponse) obj).getId();
+                            player.setX(Methods.roundHalfUp(SCALE * (float) ((PacketJoinResponse) obj).getX()));
+                            player.setY(Methods.roundHalfUp(SCALE * (float) ((PacketJoinResponse) obj).getY()));
                             tempMapId = ((PacketJoinResponse) obj).getMapId();
-                            mpup = new PacketMPlayerUpdate(tempMapId, pl.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
+                            mpup = new PacketMPlayerUpdate(tempMapId, player.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
                         } else {
                             cleanUp(game.g.settings.language.m.FullServer);

@@ -15,24 +15,24 @@ import org.lwjgl.input.Controller;
 public class InputPadStick extends AnyInput {
 
     private final Controller[] controllers;
-    private final int axisNr;
-    private final boolean isPlus;
+    private final int axisNumber;
+    private final boolean plus;
 
-    public InputPadStick(Controller[] controllers, int padNr, int axisNr, boolean isPlus) {
+    public InputPadStick(Controller[] controllers, int padNumber, int axisNumber, boolean plus) {
         this.controllers = controllers;
-        this.padNr = padNr;
-        this.axisNr = axisNr;
-        this.isPlus = isPlus;
-        label = "JOY " + padNr + ": AXIS " + axisNr + (isPlus ? "+" : "-");
+        this.padNumber = padNumber;
+        this.axisNumber = axisNumber;
+        this.plus = plus;
+        label = "JOY " + padNumber + ": AXIS " + axisNumber + (plus ? "+" : "-");
     }
 
     @Override
     public boolean isPut() {
-        if (padNr < controllers.length && controllers[padNr] != null) {
-            if (isPlus) {
-                return controllers[padNr].getAxisValue(axisNr) > 0.1f;
+        if (padNumber < controllers.length && controllers[padNumber] != null) {
+            if (plus) {
+                return controllers[padNumber].getAxisValue(axisNumber) > 0.1f;
             } else {
-                return controllers[padNr].getAxisValue(axisNr) < -0.1f;
+                return controllers[padNumber].getAxisValue(axisNumber) < -0.1f;
             }
         }
         return false;
@@ -45,6 +45,6 @@ public class InputPadStick extends AnyInput {
 
     @Override
     public String toString() {
-        return AnyInput.CONTROLLER_STICK + " " + padNr + " " + axisNr + " " + (isPlus ? 1 : 0);
+        return AnyInput.CONTROLLER_STICK + " " + padNumber + " " + axisNumber + " " + (plus ? 1 : 0);
     }
 }

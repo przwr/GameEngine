@@ -40,8 +40,8 @@ public class Circle extends Figure {
 
     private void centralize() {
         width = height = 0;
-        xCentr = 2 * radius;
-        yCentr = 2 * radius;
+        xCenter = 2 * radius;
+        yCenter = 2 * radius;
     }
 
     @Override

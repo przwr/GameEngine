@@ -22,8 +22,12 @@ public abstract class Figure implements Comparable<Object> {
 
     private final GameObject owner;
     private final OpticProperties opticProperties;
-    protected int xStart, yStart, width, height, xCentr, yCentr;
+    protected int xStart, yStart, width, height, xCenter, yCenter;
     protected final ArrayList<Point> points;
+
+    public abstract boolean isCollideSingle(int x, int y, Figure f);
+
+    public abstract Collection<Point> getPoints();
 
     public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
         this.xStart = xStart;
@@ -32,10 +36,6 @@ public abstract class Figure implements Comparable<Object> {
         this.opticProperties = opticProperties;
         this.points = new ArrayList<>();
     }
-
-    public abstract boolean isCollideSingle(int x, int y, Figure f);
-
-    public abstract Collection<Point> getPoints();
 
     public boolean isCollideSolid(int x, int y, Map map) {
         if (map.getSolidMobs().stream().anyMatch((obj) -> (checkCollison(x, y, obj)))) {
@@ -177,19 +177,19 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public int getCentralX() {
-        return owner.getX() + xStart + xCentr;
+        return owner.getX() + xStart + xCenter;
     }
 
     public int getCentralY() {
-        return owner.getY() + yStart + yCentr;
+        return owner.getY() + yStart + yCenter;
     }
 
     public int getCentralX(int x) {
-        return x + yStart + xCentr;
+        return x + yStart + xCenter;
     }
 
     public int getCentralY(int y) {
-        return y + yStart + yCentr;
+        return y + yStart + yCenter;
     }
 
     public int getWidth() {
@@ -199,8 +199,8 @@ public abstract class Figure implements Comparable<Object> {
     public int getHeight() {
         return height;
     }
-    
-    public Point getPoint(int index){
+
+    public Point getPoint(int index) {
         return points.get(index);
     }
 

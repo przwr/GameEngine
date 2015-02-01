@@ -47,8 +47,8 @@ public class Rectangle extends Figure {
     }
 
     private void centralize() {
-        xCentr = width / 2;
-        yCentr = height / 2;
+        xCenter = width / 2;
+        yCenter = height / 2;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Rectangle extends Figure {
         return false;
     }
 
-    private boolean lineCollision(int x, int y, Figure figure) {        // Dlaczego getX(x) a nie zwyczajnie getX()
+    private boolean lineCollision(int x, int y, Figure figure) {
         Line line = (Line) figure;
         Point[] list = {new Point(getX(x), getY(y)),
             new Point(getX(x), getY(y) + height),

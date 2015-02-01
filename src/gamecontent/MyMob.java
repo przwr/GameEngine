@@ -31,7 +31,7 @@ public class MyMob extends Mob {
             look(place.players);
             brake(2);
         }
-        canMove((int) (hspeed + myHspeed), (int) (vspeed + myVspeed));
+        moveIfPossible((int) (xEnvironmentalSpeed + xSpeed), (int) (yEnvironmentalSpeed + ySpeed));
         brakeOthers();
     }
 }

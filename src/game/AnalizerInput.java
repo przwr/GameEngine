@@ -28,7 +28,7 @@ public class AnalizerInput {
             table[i] = Integer.parseInt(p[i + 3]);
         }
         if (pl != 1 || act >= 4) {
-            settings.players[pl - 1].controler.actions[act].in = AnyInput.createInput(type, table, settings);
+            settings.players[pl - 1].controler.actions[act].input = AnyInput.createInput(type, table, settings);
         }
     }
 
@@ -40,8 +40,8 @@ public class AnalizerInput {
             for (Player pl : settings.players) {
                 if (pl.controler != null) {
                     for (int i = 0; i < settings.actionsNr; i++) {
-                        if (pl.controler.actions[i].in != null) {
-                            fw.write(p + " " + i + " " + pl.controler.actions[i].in.toString() + "\n");
+                        if (pl.controler.actions[i].input != null) {
+                            fw.write(p + " " + i + " " + pl.controler.actions[i].input.toString() + "\n");
                         }
                     }
                 }

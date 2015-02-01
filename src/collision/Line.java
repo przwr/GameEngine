@@ -48,8 +48,8 @@ public class Line extends Figure {
     private void centralize() {
         width = xVector;
         height = yVector;
-        xCentr = xVector / 2;
-        yCentr = yVector / 2;
+        xCenter = xVector / 2;
+        yCenter = yVector / 2;
     }
 
     @Override
