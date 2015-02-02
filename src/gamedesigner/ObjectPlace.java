@@ -45,15 +45,17 @@ public class ObjectPlace extends Place {
         place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
-        generate(isHost);
+        //generate(isHost);
     }
     
-    private void generate(boolean isHost) {
+    @Override
+    public void generate(boolean isHost) {
         ObjectMap polana = new ObjectMap(mapId++, this, width, height, tileSize);
         this.ui = new ObjectUI(tileSize, sprites.getSpriteSheet("tlo"), this);
         maps.add(polana);
-        polana.addObject(ui);
-        //sounds.initialize("res", settings);
+        addGUI(ui);
+        ((ObjectPlayer)players[0]).addUI(ui);
+        //sounds.init("res", settings);
         this.red = 0.75f;
         this.green = 0.75f;
         this.blue = 0.75f;

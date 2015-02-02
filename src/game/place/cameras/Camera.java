@@ -7,8 +7,10 @@ package game.place.cameras;
 
 import engine.Delay;
 import engine.Methods;
+import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.place.Map;
+import game.place.Place;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +19,19 @@ import java.util.ArrayList;
  */
 public abstract class Camera {
 
+    protected final ArrayList<GameObject> gos = new ArrayList<>();
+    protected final ArrayList<GUIObject> gui = new ArrayList<>();
+    protected Map map;
+    protected Place place;
+    protected int Dwidth;
+    protected int Dheight;
+    protected int XMid, YMid;
+
+    protected int xEffect, yEffect, xLeft, xRight, yDown, yUp;
+    protected double xOffset, yOffset;
+    protected int delaylenght;
+    protected Delay shakeDelay;
+    protected int shakeAmp = 8;
     public GameObject[] visibleLights = new GameObject[2048];
     public int visibleLightsCount;
     protected final ArrayList<GameObject> owners = new ArrayList<>();
@@ -26,17 +41,22 @@ public abstract class Camera {
     protected Delay shakeDelay;
     private boolean shakeUp = true;
 
-    public Camera(Map map, GameObject owner) {
-        this.map = map;
-        owners.add(owner);
+    public Camera(GameObject go) {
+        gos.add(go);
+        place = go.getPlace();
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
         shakeDelay.start();
     }
 
     public synchronized void update() {
-        xOffset = Methods.interval(-map.getWidth() + width, widthHalf - getXMiddle(), 0);
-        yOffset = Methods.interval(-map.getHeight() + height, heightHalf - getYMiddle(), 0);
+        if (map != null) {
+            xOffset = Methods.interval(-map.getWidth() + 2 * Dwidth, Dwidth - getMidX(), 0);
+            yOffset = Methods.interval(-map.getHeight() + 2 * Dheight, Dheight - getMidY(), 0);
+        } else {
+            xOffset = Methods.interval(-place.getWidth() + 2 * Dwidth, Dwidth - getMidX(), 0);
+            yOffset = Methods.interval(-place.getHeight() + 2 * Dheight, Dheight - getMidY(), 0);
+        }
     }
 
     public synchronized void shake() {
@@ -51,6 +71,19 @@ public abstract class Camera {
                 shakeUp = true;
             }
             shakeDelay.start();
+        }
+    }
+
+    public void renderGUI() {
+        gui.stream().forEach((go) -> {
+            go.render(getSX() + getXOffEffect(), getSY() + getYOffEffect());
+        });
+    }
+
+    public void addGUI(GUIObject go) {
+        if (!gui.contains(go)) {
+            gui.add(go);
+            go.setCamera(this);
         }
     }
 
@@ -104,6 +137,22 @@ public abstract class Camera {
 
     public int getYEffect() {
         return yEffect;
+    }
+
+    public void setXOff(int xOffset) {
+        this.xOffset = xOffset;
+    }
+
+    public void setYOff(int yOffset) {
+        this.yOffset = yOffset;
+    }
+
+    public int getDwidth() {
+        return Dwidth;
+    }
+
+    public int getDheight() {
+        return Dheight;
     }
 
     public int getWidth() {

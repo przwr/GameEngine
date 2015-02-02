@@ -91,10 +91,10 @@ public class WarpPoint extends GameObject {
                     object.changeMap(m);
                     warp = m.findWarp(name);
                 }
-                object.setX(warp.x);
-                object.setY(warp.y);
-                if (object instanceof Player && ((Player) object).getCamera() != null) {
-                    ((Player) object).getCamera().update();
+                o.setX(w.x);
+                o.setY(w.y);
+                if (o instanceof Player && ((Player) o).getCamera() != null) {
+                    ((Player) o).getCamera().update();
                 }
             }
         }

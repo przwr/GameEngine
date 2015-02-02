@@ -67,7 +67,7 @@ public class SplitScreen {
     public static boolean isFar(Place pl) {
         if (!pl.singleCam) {
             for (int p = 0; p < pl.playersLength; p++) {
-                if (pl.players[0].getMap() != pl.players[p].getMap() || pl.players[p].getX() > pl.cams[pl.playersLength - 2].getXEnd() || pl.players[p].getX() < pl.cams[pl.playersLength - 2].getXStart() || pl.players[p].getY() > pl.cams[pl.playersLength - 2].getYEnd() || pl.players[p].getY() < pl.cams[pl.playersLength - 2].getYStart()) {
+                if (pl.players[0].getMap() != pl.players[p].getMap() || pl.players[p].getX() > pl.cams[pl.playersLength - 2].getEX() || pl.players[p].getX() < pl.cams[pl.playersLength - 2].getSX() || pl.players[p].getY() > pl.cams[pl.playersLength - 2].getEY() || pl.players[p].getY() < pl.cams[pl.playersLength - 2].getSY()) {
                     pl.settings.joinSS = false;
                     return true;
                 }

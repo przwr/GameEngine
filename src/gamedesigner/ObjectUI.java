@@ -5,13 +5,11 @@
  */
 package gamedesigner;
 
-import collision.Figure;
 import engine.Drawer;
 import engine.Methods;
 import engine.Point;
-import game.gameobject.GameObject;
+import game.gameobject.GUIObject;
 import game.place.Place;
-import game.place.cameras.Camera;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -22,9 +20,8 @@ import sprites.SpriteSheet;
  *
  * @author Wojtek
  */
-public class ObjectUI extends GameObject {
+public class ObjectUI extends GUIObject {
 
-    private Camera cam;
     private final int tile;
     private SpriteSheet tex;
     private boolean change;
@@ -32,12 +29,9 @@ public class ObjectUI extends GameObject {
     private final Point coord = new Point(0, 0);
 
     public ObjectUI(int tile, SpriteSheet tex, Place p) {
-        this.cam = null;
+        super("OUI", p);
         this.tile = tile;
         this.tex = tex;
-        place = p;
-        onTop = true;
-        alwaysVisible = true;
     }
 
     public void setSpriteSheet(SpriteSheet tex) {
@@ -55,19 +49,15 @@ public class ObjectUI extends GameObject {
     public SpriteSheet getSpriteSheet() {
         return tex;
     }
-    
+
     public Point getCoordinates() {
         return coord;
-    }
-    
-    public void setCamera(Camera cam) {
-        this.cam = cam;
     }
 
     public void setChange(boolean ch) {
         change = ch;
     }
-    
+
     public boolean isChanged() {
         return change;
     }
@@ -81,19 +71,21 @@ public class ObjectUI extends GameObject {
             int yStart = tex.getSy();
             int wTex = tex.getWidth();
             int hTex = tex.getHeight();
-            glTranslatef(cam.getXStart() + tile / 2 + xEffect, cam.getYStart() + tile / 2 + yEffect, 0);
+            glTranslatef(tile / 2 + xEffect, tile / 2 + yEffect, 0);
 
             if (change) {
-                glColor4f(1f, 1f, 1f, 0.7f);
+                glTranslatef(tile * 4, tile * 4, 0);
+                glColor4f(1f, 1f, 1f, 1f);
                 glTranslatef(-xStart - coord.getX() * wTex, -yStart - coord.getY() * hTex, 0);
                 tex.render();
                 glTranslatef(coord.getX() * wTex, coord.getY() * hTex, 0);
             }
 
             glColor4f(1f, 1f, 1f, 1f);
-            Drawer.drawRectangle(0, 0, wTex, hTex);
+            glTranslatef(-1, -1, 0);
+            Drawer.drawRectangle(0, 0, wTex + 2, hTex + 2);
 
-            glTranslatef(-xStart, -yStart, 0);
+            glTranslatef(-xStart + 1, -yStart + 1, 0);
             tex.renderPiece(coord.getX(), coord.getY());
 
             glColor4f(0f, 0f, 0f, 1f);
@@ -104,27 +96,6 @@ public class ObjectUI extends GameObject {
 
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
-        } else {
-            ObjectPlayer pl = (ObjectPlayer) place.players[0];
-            cam = pl.getCamera();
-            pl.addUI(this);
         }
     }
-
-    @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
-    }
-
-    @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xs, int xe) {
-    }
-
-    @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f) {
-    }
-
-    @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f, int xs, int xe) {
-    }
-
 }

@@ -5,11 +5,14 @@
  */
 package game.place;
 
+import engine.Drawer;
 import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
 import engine.SoundBase;
+import game.gameobject.GUIObject;
+import game.gameobject.GameObject;
 import game.gameobject.Player;
 import static org.lwjgl.opengl.GL11.*;
 import sprites.Sprite;
@@ -57,6 +60,17 @@ public abstract class Place extends ScreenPlace {
 
     protected abstract void renderText(Camera cam);
 
+    public void addGUI(GUIObject go) {
+        for (GameObject p : players) {
+            if (p != null) {
+                Camera c = ((Player) p).getCamera();
+                if (c != null) {
+                    c.addGUI(go);
+                }
+            }
+        }
+    }
+
     public SpriteBase getSprites() {
         return sprites;
     }
@@ -96,12 +110,14 @@ public abstract class Place extends ScreenPlace {
                     Renderer.preRenderShadowedLights(place, cam);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     if (map != null) {
-                        map.renderBackground(cam);
-                        map.renderObjects(cam);
+                        Drawer.drawRectangleInBlack(cam.getXOffEffect() + cam.getSX(), cam.getYOffEffect() + cam.getSY(), cam.getWidth(), cam.getHeight());
+                        map.renderBack(cam);
+                        map.renderObj(cam);
                         map.renderText(cam);
                         if (map.visibleLights.size() > 0) {
                             Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                         }
+                        cam.renderGUI();
                     }
                     glDisable(GL_SCISSOR_TEST);
                 }
@@ -120,15 +136,20 @@ public abstract class Place extends ScreenPlace {
             glEnable(GL_SCISSOR_TEST);
             Renderer.preRenderShadowedLights(place, cam);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            if (map != null) {
-                map.renderBackground(cam);
-                map.renderObjects(cam);
-                map.renderText(cam);
+            if (m != null) {
+                m.renderBack(cam);
+                m.renderObj(cam);
+                m.renderText(cam);
+                if (m.visibleLights.size() > 0) {
+                    Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                }
+                cam.renderGUI();
             }
-            Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
             glDisable(GL_SCISSOR_TEST);
         };
     }
+
+    public abstract void generate(boolean isHost);
 
     @Override
     public void render() {

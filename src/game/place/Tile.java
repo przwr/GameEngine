@@ -32,10 +32,17 @@ public class Tile extends GameObject {
         }
     }
 
+    public int tileStackSize() {
+        return tileStack.size();
+    }
+    
     public Point popTileFromStack() {
-        Point p = tileStack.remove(tileStack.size() - 1);
-        tileStack.trimToSize();
-        return p;
+        if (!tileStack.isEmpty()) {
+            Point p = tileStack.remove(tileStack.size() - 1);
+            tileStack.trimToSize();
+            return p;
+        }
+        return null;
     }
 
     public void renderSpecific(int x, int y) {    //Renderuje w konkretnym miejscu nie 

@@ -16,7 +16,7 @@ import engine.Drawer;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.Tile;
+import game.place.Map;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
@@ -36,11 +36,9 @@ public class ObjectPlayer extends Player {
     private int tile;
     private int xStop, yStop;
     private boolean prevClick;
-
+    
+    private ObjectMap objMap;
     private ObjectUI ui;
-//    private final int[] tab = {GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR,
-//        GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
-//        GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA};
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
@@ -209,44 +207,64 @@ public class ObjectPlayer extends Player {
             }
         }
 
-        if (key(KEY_SPACE) && !prevClick) {
-            prevClick = true;
+        if (key(KEY_SPACE)) {
             pressed = true;
-            int xStart = Math.min(ix, xStop);
-            int yStart = Math.min(iy, yStop);
-            int xEnd = Math.max(ix, xStop);
-            int yEnd = Math.max(iy, yStop);
-            for (int xTemp = xStart; xTemp <= xEnd; xTemp++) {
-                for (int yTemp = yStart; yTemp <= yEnd; yTemp++) {
-                    Point p = ui.getCoordinates();
-                    ((ObjectMap)map).addTile(xTemp, yTemp, p.getX(), p.getX(), ui.getSpriteSheet());
+            if (!prevClick) {
+                prevClick = true;
+                int xBegin = Math.min(ix, xStop);
+                int yBegin = Math.min(iy, yStop);
+                int xEnd = Math.max(ix, xStop);
+                int yEnd = Math.max(iy, yStop);
+                for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                    for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                        Point p = ui.getCoordinates();
+                        objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet());
+                    }
+                }
+            }
+        }
+        if (key(KEY_DELETE)) {
+            pressed = true;
+            if (!prevClick) {
+                prevClick = true;
+                int xBegin = Math.min(ix, xStop);
+                int yBegin = Math.min(iy, yStop);
+                int xEnd = Math.max(ix, xStop);
+                int yEnd = Math.max(iy, yStop);
+                for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                    for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                        objMap.removeTile(xTemp, yTemp);
+                    }
                 }
             }
         }
 
-        if (key(KEY_DELETE) && !prevClick) {
-            prevClick = true;
+        if (key(KEY_TAB)) {
             pressed = true;
-            int xStart = Math.min(ix, xStop);
-            int yStart = Math.min(iy, yStop);
-            int xEnd = Math.max(ix, xStop);
-            int yEnd = Math.max(iy, yStop);
-            for (int xTemp = xStart; xTemp <= xEnd; xTemp++) {
-                for (int yTemp = yStart; yTemp <= yEnd; yTemp++) {
-                    Tile newTile = map.getTile(xTemp, yTemp);
-                    newTile.popTileFromStack();
-                }
+            if (!prevClick) {
+                prevClick = true;
+                objMap.switchBackground();
             }
         }
         
-        if (!pressed)
+        if (!pressed) {
             prevClick = false;
+        }
     }
 
     private boolean key(int k) {
         return Keyboard.isKeyDown(k);
     }
 
+    @Override
+    public void changeMap(Map newMap) {
+        super.changeMap(newMap);
+        if (cam != null) {
+            cam.setMap(newMap);
+        }
+        objMap = (ObjectMap) newMap;
+    }
+    
     @Override
     public void sendUpdate(Place place) {
     }

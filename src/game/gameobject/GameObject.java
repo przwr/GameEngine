@@ -20,7 +20,7 @@ public abstract class GameObject {
 
     protected double x, y;
     protected int width, height, depth, xStart, yStart;
-    protected boolean solid, emitter, emits, onTop, simpleLighting, alwaysVisible;
+    protected boolean solid, emitter, emits, top, simpleLighting, visible;
     protected Sprite sprite;
     protected Light light;
     protected String name;
@@ -44,14 +44,15 @@ public abstract class GameObject {
         this.y = y;
         this.place = place;
         depth = 0;
+        visible = true;
     }
 
     public void changeMap(Map map) {
         if (map != null) {
-            map.deleteObject(this);
+            map.deleteObj(this);
         }
         this.map = map;
-        this.map.addObject(this);
+        this.map.addObj(this);
     }
 
     @Override
@@ -81,7 +82,7 @@ public abstract class GameObject {
     }
 
     public boolean isOnTop() {
-        return onTop;
+        return top;
     }
 
     public boolean isEmitter() {
@@ -92,8 +93,8 @@ public abstract class GameObject {
         return emits;
     }
 
-    public boolean isAlwaysVisible() {
-        return alwaysVisible;
+    public boolean isVisible() {
+        return visible;
     }
 
     public int getX() {
@@ -197,23 +198,19 @@ public abstract class GameObject {
     }
 
     public void setOnTop(boolean onTop) {
-        this.onTop = onTop;
+        this.top = onTop;
     }
 
     public void setEmits(boolean emits) {
         this.emits = emits;
     }
 
-    public void setAlwaysVisible(boolean alwaysVisible) {
-        this.alwaysVisible = alwaysVisible;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setX(double x) {
         this.x = x;
+    }
+
+    public void setVisible(boolean vis) {
+        this.visible = vis;
     }
 
     public void setY(double y) {
