@@ -46,7 +46,7 @@ public class Renderer {
                             if (place.players[pi].getMap() == map && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
                                     && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
                                 isVisible = true;
-                                (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).nrVLights++] = tmpLight;
+                                (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).visibleLightsCount++] = tmpLight;
                             }
                         }
                     }
@@ -72,7 +72,7 @@ public class Renderer {
                         if (place.players[pi].getMap() == map && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() / 2) && EY[pi] >= light.getY() - (light.getLight().getSY() / 2)
                                 && SX[pi] <= light.getX() + (light.getLight().getSX() / 2) && EX[pi] >= light.getX() - (light.getLight().getSX() / 2)) {
                             isVisible = true;
-                            (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).nrVLights++] = light;
+                            (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).visibleLightsCount++] = light;
                         }
                     }
                 }
@@ -89,11 +89,11 @@ public class Renderer {
         for (int p = 0; p < place.getPlayersLenght(); p++) {
             if (map == place.players[p].getMap()) {
                 cam = (((Player) place.players[p]).getCamera());
-                cam.nrVLights = 0;
-                SX[p] = cam.getSX();
-                EX[p] = cam.getEX();
-                SY[p] = cam.getSY();
-                EY[p] = cam.getEY();
+                cam.visibleLightsCount = 0;
+                SX[p] = cam.getXStart();
+                EX[p] = cam.getXEnd();
+                SY[p] = cam.getYStart();
+                EY[p] = cam.getYEnd();
             }
         }
         for (int c = 0; c < 3; c++) {

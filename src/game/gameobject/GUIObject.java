@@ -14,7 +14,7 @@ import game.place.cameras.Camera;
 
 public abstract class GUIObject {
 
-    protected Camera cam;
+    protected Camera camera;
     protected String name;
     protected Place place;
     protected boolean visible;
@@ -44,11 +44,11 @@ public abstract class GUIObject {
     }
     
     public Camera getCamera() {
-        return cam;
+        return camera;
     }
 
-    public void setCamera(Camera cam) {
-        this.cam = cam;
+    public void setCamera(Camera camera) {
+        this.camera = camera;
     }
 
     public boolean isVisible() {

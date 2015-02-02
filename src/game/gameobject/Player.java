@@ -101,15 +101,7 @@ public abstract class Player extends Entity {
     }
 
     public Camera getCamera() {
-        return cam;
-    }
-
-    @Override
-    public void changeMap(Map newMap) {
-        super.changeMap(newMap);
-        if (cam != null) {
-            cam.setMap(newMap);
-        }
+        return camera;
     }
 
     public Animation getAnimation() {

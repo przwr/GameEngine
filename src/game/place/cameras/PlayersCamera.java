@@ -40,30 +40,36 @@ public class PlayersCamera extends Camera {
         initialize(ssX, ssY);
     }
 
-    public PlayersCamera(GameObject go, GameObject go2) {
-        super(go);
-        gos.add(go2);
-        Dwidth = Display.getWidth() / 2;
-        Dheight = Display.getHeight() / 2;
+    public PlayersCamera(GameObject firstOwner, GameObject secondOwner) {
+        super(firstOwner);
+        owners.add(secondOwner);
+        width = Display.getWidth();
+        height = Display.getHeight();
+        heightHalf = height / 2;
+        widthHalf = width / 2;
         update();
     }
 
-    public PlayersCamera(GameObject go, GameObject go2, GameObject go3) {
-        super(go);
-        gos.add(go2);
-        gos.add(go3);
-        Dwidth = Display.getWidth() / 2;
-        Dheight = Display.getHeight() / 2;
+    public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner) {
+        super(firstOwner);
+        owners.add(secondOwner);
+        owners.add(thirdOwner);
+        width = Display.getWidth();
+        height = Display.getHeight();
+        heightHalf = height / 2;
+        widthHalf = width / 2;
         update();
     }
 
-    public PlayersCamera(GameObject go, GameObject go2, GameObject go3, GameObject go4) {
-        super(go);
-        gos.add(go2);
-        gos.add(go3);
-        gos.add(go4);
-        Dwidth = Display.getWidth() / 2;
-        Dheight = Display.getHeight() / 2;
+    public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner,GameObject fourthOwner) {
+        super(firstOwner);
+        owners.add(secondOwner);
+        owners.add(thirdOwner);
+        owners.add(fourthOwner);
+        width = Display.getWidth();
+        height = Display.getHeight();
+        heightHalf = height / 2;
+        widthHalf = width / 2;
         update();
     }
 

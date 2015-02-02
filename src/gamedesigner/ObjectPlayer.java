@@ -36,7 +36,7 @@ public class ObjectPlayer extends Player {
     private int tile;
     private int xStop, yStop;
     private boolean prevClick;
-    
+
     private ObjectMap objMap;
     private ObjectUI ui;
 
@@ -246,7 +246,7 @@ public class ObjectPlayer extends Player {
                 objMap.switchBackground();
             }
         }
-        
+
         if (!pressed) {
             prevClick = false;
         }
@@ -259,12 +259,12 @@ public class ObjectPlayer extends Player {
     @Override
     public void changeMap(Map newMap) {
         super.changeMap(newMap);
-        if (cam != null) {
-            cam.setMap(newMap);
+        if (camera != null) {
+            camera.setMap(newMap);
         }
         objMap = (ObjectMap) newMap;
     }
-    
+
     @Override
     public void sendUpdate(Place place) {
     }

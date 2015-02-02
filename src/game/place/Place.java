@@ -110,9 +110,9 @@ public abstract class Place extends ScreenPlace {
                     Renderer.preRenderShadowedLights(place, cam);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     if (map != null) {
-                        Drawer.drawRectangleInBlack(cam.getXOffEffect() + cam.getSX(), cam.getYOffEffect() + cam.getSY(), cam.getWidth(), cam.getHeight());
-                        map.renderBack(cam);
-                        map.renderObj(cam);
+                        Drawer.drawRectangleInBlack(cam.getXOffsetEffect() + cam.getXStart(), cam.getYOffset() + cam.getYStart(), cam.getWidth(), cam.getHeight());
+                        map.renderBackground(cam);
+                        map.renderObjects(cam);
                         map.renderText(cam);
                         if (map.visibleLights.size() > 0) {
                             Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
@@ -136,11 +136,11 @@ public abstract class Place extends ScreenPlace {
             glEnable(GL_SCISSOR_TEST);
             Renderer.preRenderShadowedLights(place, cam);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            if (m != null) {
-                m.renderBack(cam);
-                m.renderObj(cam);
-                m.renderText(cam);
-                if (m.visibleLights.size() > 0) {
+            if (map != null) {
+                map.renderBackground(cam);
+                map.renderObjects(cam);
+                map.renderText(cam);
+                if (map.visibleLights.size() > 0) {
                     Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                 }
                 cam.renderGUI();

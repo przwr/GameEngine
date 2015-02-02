@@ -64,7 +64,7 @@ public class ObjectUI extends GUIObject {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        if (cam != null) {
+        if (camera != null) {
             glPushMatrix();
             int d = 2;
             int xStart = tex.getSx();

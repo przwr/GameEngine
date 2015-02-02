@@ -49,10 +49,10 @@ public abstract class GameObject {
 
     public void changeMap(Map map) {
         if (map != null) {
-            map.deleteObj(this);
+            map.deleteObject(this);
         }
         this.map = map;
-        this.map.addObj(this);
+        this.map.addObject(this);
     }
 
     @Override
@@ -227,6 +227,10 @@ public abstract class GameObject {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setCollision(Figure figure) {

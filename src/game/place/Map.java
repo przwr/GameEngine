@@ -8,7 +8,6 @@ package game.place;
 import collision.Area;
 import engine.Drawer;
 import game.Settings;
-import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
@@ -32,10 +31,10 @@ public class Map {
     protected final ArrayList<Area> areas = new ArrayList<>();
 
     protected final String name;
-    private final short id;
+    private final short ID;
     protected final int width, height, tileSize;
     protected final int tilewidth, tileheight;
-    private final ArrayList<GameObject> objects = new ArrayList<>();
+    private final ArrayList<GameObject> allObjects = new ArrayList<>();
     private final ArrayList<Mob> solidMobs = new ArrayList<>();
     private final ArrayList<Mob> flatMobs = new ArrayList<>();
     private final ArrayList<GameObject> solidObjects = new ArrayList<>();
@@ -50,11 +49,11 @@ public class Map {
 
     public short mobID = 0; // POWINIEN BYĆ inicjalizowany w mapie
 
-    public Map(short id, String name, Place place, int width, int height, int tileSize) {
+    public Map(short ID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
         this.settings = place.settings;
         this.name = name;
-        this.ID = id;
+        this.ID = ID;
         this.width = width;
         this.height = height;
         this.tileSize = tileSize;
@@ -203,9 +202,9 @@ public class Map {
                 }
                 y++;
             }
-            if (go.isVisible() && cam.getSY() <= go.getY() + (go.getHeight()) && cam.getEY() >= go.getY() - (go.getHeight())
-                    && cam.getSX() <= go.getX() + (go.getWidth()) && cam.getEX() >= go.getX() - (go.getWidth())) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
+            if (object.isVisible() && cam.getYStart()<= object.getY() + (object.getHeight()) && cam.getYEnd()>= object.getY() - (object.getHeight())
+                    && cam.getXStart()<= object.getX() + (object.getWidth()) && cam.getXEnd()>= object.getX() - (object.getWidth())) {
+                object.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
             System.out.println(object.getName());
         }
@@ -219,9 +218,9 @@ public class Map {
         Drawer.refreshForRegularDrawing();
         sortObjectsByDepth(objectsOnTop);
         for (GameObject go : objectsOnTop) {
-            if (go.isVisible() && cam.getSY() <= go.getY() + (go.getHeight()) && cam.getEY() >= go.getY() - (go.getHeight())
-                    && cam.getSX() <= go.getX() + (go.getWidth()) && cam.getEX() >= go.getX() - (go.getWidth())) {
-                go.render(cam.getXOffEffect(), cam.getYOffEffect());
+            if (go.isVisible() && cam.getYStart()<= go.getY() + (go.getHeight()) && cam.getYEnd()>= go.getY() - (go.getHeight())
+                    && cam.getXStart()<= go.getX() + (go.getWidth()) && cam.getXEnd()>= go.getX() - (go.getWidth())) {
+                go.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
         }
     }
