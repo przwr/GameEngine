@@ -15,9 +15,9 @@ import game.place.Place;
  */
 public class MyMob extends Mob {
 
-    public MyMob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, boolean solid, short id) {
-        super(x, y, startX, startY, width, height, speed, range, name, place, solid);
-        this.id = id;
+    public MyMob(int x, int y, int xStart, int yStart, int width, int height, int speed, int range, String name, Place place, boolean solid, short ID) {
+        super(x, y, xStart, yStart, width, height, speed, range, name, place, "rabbit", solid);
+        this.ID = ID;
     }
 
     @Override

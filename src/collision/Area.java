@@ -170,8 +170,8 @@ public class Area extends GameObject {
     }
 
     private boolean isClose(int x, int y, Figure figure) {
-        int dx = FastMath.abs(getX() + centralX - figure.getCentralX(x));
-        int dy = FastMath.abs(getY() + centralY - figure.getCentralY(y));
+        int dx = FastMath.abs(getX() + centralX - figure.getXCentral(x));
+        int dy = FastMath.abs(getY() + centralY - figure.getYCentral(y));
         return (dx <= (centralX + figure.getWidth()) && dy <= (centralY + figure.getHeight()));
     }
 

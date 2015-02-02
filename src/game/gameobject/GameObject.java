@@ -48,10 +48,10 @@ public abstract class GameObject {
 
     public void changeMap(Map map) {
         if (map != null) {
-            map.deleteObj(this);
+            map.deleteObject(this);
         }
         this.map = map;
-        this.map.addObj(this);
+        this.map.addObject(this);
     }
 
     @Override
@@ -204,12 +204,16 @@ public abstract class GameObject {
         this.emits = emits;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setAlwaysVisible(boolean alwaysVisible) {
+        this.alwaysVisible = alwaysVisible;
     }
 
-    public void setAlwaysVisible(boolean vis) {
-        this.alwaysVisible = vis;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setX(double x) {
+        this.x = x;
     }
 
     public void setY(double y) {

@@ -39,14 +39,14 @@ public class Renderer {
                         if (tmpLight.isEmits() && SY[2 + playersLength] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[2 + playersLength] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
                                 && SX[2 + playersLength] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[2 + playersLength] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
                             isVisible = true;
-                            place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].nrVLights++] = tmpLight;
+                            place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].visibleLightsCount++] = tmpLight;
                         }
                     } else {
                         for (int pi = 0; pi < playersLength; pi++) {
                             if (place.players[pi].getMap() == map && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
                                     && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
                                 isVisible = true;
-                                (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = tmpLight;
+                                (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).visibleLightsCount++] = tmpLight;
                             }
                         }
                     }
@@ -65,14 +65,14 @@ public class Renderer {
                     if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getSY() / 2) && EY[2 + playersLength] >= light.getY() - (light.getLight().getSY() / 2)
                             && SX[2 + playersLength] <= light.getX() + (light.getLight().getSX() / 2) && EX[2 + playersLength] >= light.getX() - (light.getLight().getSX() / 2)) {
                         isVisible = true;
-                        place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].nrVLights++] = light;
+                        place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].visibleLightsCount++] = light;
                     }
                 } else {
                     for (int pi = 0; pi < playersLength; pi++) {
                         if (place.players[pi].getMap() == map && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() / 2) && EY[pi] >= light.getY() - (light.getLight().getSY() / 2)
                                 && SX[pi] <= light.getX() + (light.getLight().getSX() / 2) && EX[pi] >= light.getX() - (light.getLight().getSX() / 2)) {
                             isVisible = true;
-                            (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
+                            (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).visibleLightsCount++] = light;
                         }
                     }
                 }
@@ -88,22 +88,22 @@ public class Renderer {
         Place place = map.place ;
         for (int p = 0; p < place.getPlayersLenght(); p++) {
             if (map == place.players[p].getMap()) {
-                cam = (((Player) place.players[p]).getCam());
-                cam.nrVLights = 0;
-                SX[p] = cam.getSX();
-                EX[p] = cam.getEX();
-                SY[p] = cam.getSY();
-                EY[p] = cam.getEY();
+                cam = (((Player) place.players[p]).getCamera());
+                cam.visibleLightsCount = 0;
+                SX[p] = cam.getXStart();
+                EX[p] = cam.getXEnd();
+                SY[p] = cam.getYStart();
+                EY[p] = cam.getYEnd();
             }
         }
         for (int c = 0; c < 3; c++) {
             if (place.cams[c] != null) {
                 cam = place.cams[c];
-                cam.nrVLights = 0;
-                SX[4 + c] = cam.getSX();            // 4 to maksymalna liczba graczy
-                EX[4 + c] = cam.getEX();
-                SY[4 + c] = cam.getSY();
-                EY[4 + c] = cam.getEY();
+                cam.visibleLightsCount = 0;
+                SX[4 + c] = cam.getXStart();            // 4 to maksymalna liczba graczy
+                EX[4 + c] = cam.getXEnd();
+                SY[4 + c] = cam.getYStart();
+                EY[4 + c] = cam.getYEnd();
             }
         }
         map.visibleLights.clear();
@@ -122,11 +122,11 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT);
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
-        for (int i = 0; i < cam.nrVLights; i++) {
+        for (int i = 0; i < cam.visibleLightsCount; i++) {
             if (!place.settings.shadowOff) {
                 drawLight(cam.visibleLights[i].getLight().fbo.getTexture(), cam.visibleLights[i], cam);
             } else {
-                cam.visibleLights[i].getLight().render(cam.visibleLights[i], place, cam.getXOffEffect(), cam.getYOffEffect());
+                cam.visibleLights[i].getLight().render(cam.visibleLights[i], place, cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
         }
         fbFrame.deactivate();
@@ -136,7 +136,7 @@ public class Renderer {
         lightX = emitter.getLight().getSX();
         lightY = emitter.getLight().getSY();
         glPushMatrix();
-        glTranslatef(emitter.getX() - lightX / 2 + cam.getXOffEffect(), emitter.getY() - lightY / 2 + cam.getYOffEffect(), 0);
+        glTranslatef(emitter.getX() - lightX / 2 + cam.getXOffsetEffect(), emitter.getY() - lightY / 2 + cam.getYOffsetEffect(), 0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 1);

@@ -67,7 +67,7 @@ public class SplitScreen {
     public static boolean isFar(Place pl) {
         if (!pl.singleCam) {
             for (int p = 0; p < pl.playersLength; p++) {
-                if (pl.players[0].getMap() != pl.players[p].getMap() || pl.players[p].getX() > pl.cams[pl.playersLength - 2].getEX() || pl.players[p].getX() < pl.cams[pl.playersLength - 2].getSX() || pl.players[p].getY() > pl.cams[pl.playersLength - 2].getEY() || pl.players[p].getY() < pl.cams[pl.playersLength - 2].getSY()) {
+                if (pl.players[0].getMap() != pl.players[p].getMap() || pl.players[p].getX() > pl.cams[pl.playersLength - 2].getXEnd() || pl.players[p].getX() < pl.cams[pl.playersLength - 2].getXStart() || pl.players[p].getY() > pl.cams[pl.playersLength - 2].getYEnd() || pl.players[p].getY() < pl.cams[pl.playersLength - 2].getYStart()) {
                     pl.settings.joinSS = false;
                     return true;
                 }
@@ -80,12 +80,12 @@ public class SplitScreen {
         if (pl.changeSSMode) {
             if (pl.settings.hSplitScreen) {
                 pl.settings.hSplitScreen = false;
-                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInitialize(4, 2);
-                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInitialize(4, 2);
+                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInitialize(4, 2);
+                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInitialize(4, 2);
             } else {
                 pl.settings.hSplitScreen = true;
-                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInitialize(2, 4);
-                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInitialize(2, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInitialize(2, 4);
+                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInitialize(2, 4);
             }
             pl.changeSSMode = false;
         }
@@ -95,14 +95,14 @@ public class SplitScreen {
         if (pl.changeSSMode) {
             if (pl.settings.hSplitScreen) {
                 pl.settings.hSplitScreen = false;
-                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInitialize(4, 2);
-                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInitialize(4, 4);
-                ((PlayersCamera) ((Player) pl.players[2]).getCam()).reInitialize(4, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInitialize(4, 2);
+                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInitialize(4, 4);
+                ((PlayersCamera) ((Player) pl.players[2]).getCamera()).reInitialize(4, 4);
             } else {
                 pl.settings.hSplitScreen = true;
-                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInitialize(2, 4);
-                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInitialize(4, 4);
-                ((PlayersCamera) ((Player) pl.players[2]).getCam()).reInitialize(4, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInitialize(2, 4);
+                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInitialize(4, 4);
+                ((PlayersCamera) ((Player) pl.players[2]).getCamera()).reInitialize(4, 4);
             }
             pl.changeSSMode = false;
         }

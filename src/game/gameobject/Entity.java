@@ -238,7 +238,12 @@ public abstract class Entity extends GameObject {
     }
 
     public void addSpeed(double xSpeedDelta, double ySpeedDelta) {
-        setSpeed(xSpeed + xSpeedDelta / resistance * scale, ySpeed + ySpeedDelta / resistance * scale);
+        setAndLimitSpeed(xSpeed + xSpeedDelta / resistance * scale, ySpeed + ySpeedDelta / resistance * scale);
+    }
+
+    private void setAndLimitSpeed(double xSpeed, double ySpeed) {
+        this.xSpeed = Methods.interval(-maxSpeed, xSpeed, maxSpeed);
+        this.ySpeed = Methods.interval(-maxSpeed, ySpeed, maxSpeed);
     }
 
     public boolean isJumping() {
@@ -246,10 +251,10 @@ public abstract class Entity extends GameObject {
     }
 
     public boolean isHop() {
-        return jumping;
+        return hop;
     }
 
-    public double getWeight() {
+    public double getResistance() {
         return resistance;
     }
 
@@ -277,12 +282,12 @@ public abstract class Entity extends GameObject {
         this.hop = hop;
     }
 
-    public void setWeight(double weight) {
+    public void setResistance(double weight) {
         this.resistance = FastMath.max(1, weight);
     }
 
-    public void setJumpHeight(double jump) {
-        this.jumpHeight = jump;
+    public void setJumpHeight(double jumpHeight) {
+        this.jumpHeight = jumpHeight;
     }
 
     public void setXEnvironmetalSpeed(double xEnvironmentalSpeed) {
@@ -291,11 +296,6 @@ public abstract class Entity extends GameObject {
 
     public void setYEnvironmentalSpeed(double yEnvironmentalSpeed) {
         this.yEnvironmentalSpeed = yEnvironmentalSpeed;
-    }
-
-    public void setSpeed(double xSpeed, double ySpeed) {
-        this.xSpeed = Methods.interval(-maxSpeed, xSpeed, maxSpeed);
-        this.ySpeed = Methods.interval(-maxSpeed, ySpeed, maxSpeed);
     }
 
     public void setMaxSpeed(double maxSpeed) {

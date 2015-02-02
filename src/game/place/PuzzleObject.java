@@ -44,10 +44,10 @@ public class PuzzleObject {
             map.setTile(ix + iy * col, bgTiles[i]);
         }
         for (GameObject obj : objects) {
-            map.addObj(obj);
+            map.addObject(obj);
         }
         for (ForeGroundTile tile : fgTiles) {
-            map.addFGTile(tile);
+            map.addForegroundTile(tile);
         }
     }
 }

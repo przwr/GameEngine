@@ -81,7 +81,7 @@ public class ObjectUI extends GameObject {
             int yStart = tex.getSy();
             int wTex = tex.getWidth();
             int hTex = tex.getHeight();
-            glTranslatef(cam.getSX() + tile / 2 + xEffect, cam.getSY() + tile / 2 + yEffect, 0);
+            glTranslatef(cam.getXStart() + tile / 2 + xEffect, cam.getYStart() + tile / 2 + yEffect, 0);
 
             if (change) {
                 glColor4f(1f, 1f, 1f, 0.7f);
@@ -106,7 +106,7 @@ public class ObjectUI extends GameObject {
             glPopMatrix();
         } else {
             ObjectPlayer pl = (ObjectPlayer) place.players[0];
-            cam = pl.getCam();
+            cam = pl.getCamera();
             pl.addUI(this);
         }
     }

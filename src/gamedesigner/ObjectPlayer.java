@@ -72,7 +72,7 @@ public class ObjectPlayer extends Player {
         this.height = Methods.roundHalfUp(scale * height);
         this.xStart = Methods.roundHalfUp(scale * startX);
         this.yStart = Methods.roundHalfUp(scale * startY);
-        this.setWeight(2);
+        this.setResistance(2);
         this.emitter = true;
         initialize(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
@@ -91,7 +91,7 @@ public class ObjectPlayer extends Player {
         this.height = Methods.roundHalfUp(scale * height);
         this.xStart = Methods.roundHalfUp(scale * startX);
         this.yStart = Methods.roundHalfUp(scale * startY);
-        this.setWeight(2);
+        this.setResistance(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
@@ -128,8 +128,8 @@ public class ObjectPlayer extends Player {
                 yStop = Methods.interval(0, yStop + yPos, map.getTileHeight());
             }
         }
-        if (cam != null) {
-            cam.update();
+        if (camera != null) {
+            camera.update();
         }
         xtimer++;
         ytimer++;
@@ -145,8 +145,8 @@ public class ObjectPlayer extends Player {
     protected void setPosition(int xPos, int yPos) {
         setX(xPos);
         setY(yPos);
-        if (cam != null) {
-            cam.update();
+        if (camera != null) {
+            camera.update();
         }
     }
 

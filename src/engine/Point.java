@@ -14,6 +14,9 @@ public class Point {
     private int x;
     private int y;
 
+    public Point() {
+    }
+
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
@@ -39,14 +42,23 @@ public class Point {
         this.x = x;
         this.y = y;
     }
-    
+
     @Override
     public boolean equals(Object test) {
         if (test instanceof Point) {
             Point p = (Point) test;
-            if (x == p.x && y == p.y)
+            if (x == p.x && y == p.y) {
                 return true;
+            }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + this.x;
+        hash = 79 * hash + this.y;
+        return hash;
     }
 }

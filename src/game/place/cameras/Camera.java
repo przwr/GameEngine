@@ -17,75 +17,69 @@ import java.util.ArrayList;
  */
 public abstract class Camera {
 
-    protected final ArrayList<GameObject> gos = new ArrayList<>();
-    protected Map map;
-    protected int Dwidth;
-    protected int Dheight;
-    protected int XMid, YMid;
-
-    protected int xEffect, yEffect, xLeft, xRight, yDown, yUp;
-    protected double xOffset, yOffset;
-    protected int delaylenght;
-    protected Delay shakeDelay;
-    protected int shakeAmp = 8;
     public GameObject[] visibleLights = new GameObject[2048];
-    public int nrVLights;
-    boolean shakeUp = true;
+    public int visibleLightsCount;
+    protected final ArrayList<GameObject> owners = new ArrayList<>();
+    protected Map map;
+    protected int width, height, widthHalf, heightHalf, XMid, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delaylenght, shakeAmplitude = 8;
+    protected double xOffset, yOffset;
+    protected Delay shakeDelay;
+    private boolean shakeUp = true;
 
-    public Camera(Map map, GameObject go) {
+    public Camera(Map map, GameObject owner) {
         this.map = map;
-        gos.add(go);
+        owners.add(owner);
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
         shakeDelay.start();
     }
 
     public synchronized void update() {
-        xOffset = Methods.interval(-map.getWidth() + 2 * Dwidth, Dwidth - getMidX(), 0);
-        yOffset = Methods.interval(-map.getHeight() + 2 * Dheight, Dheight - getMidY(), 0);
+        xOffset = Methods.interval(-map.getWidth() + width, widthHalf - getXMiddle(), 0);
+        yOffset = Methods.interval(-map.getHeight() + height, heightHalf - getYMiddle(), 0);
     }
 
     public synchronized void shake() {
         if (shakeDelay.isOver()) {
             if (shakeUp) {
-                xEffect += shakeAmp;
-                yEffect += shakeAmp / 2;
+                xEffect += shakeAmplitude;
+                yEffect += shakeAmplitude / 2;
                 shakeUp = false;
             } else {
-                xEffect -= shakeAmp;
-                yEffect -= shakeAmp / 2;
+                xEffect -= shakeAmplitude;
+                yEffect -= shakeAmplitude / 2;
                 shakeUp = true;
             }
             shakeDelay.start();
         }
     }
 
-    public int getMidX() {
+    public int getXMiddle() {
         XMid = 0;
-        for (GameObject go : gos) {
-            XMid += go.getX();
-        }
-        return XMid / gos.size();
+        owners.stream().forEach((owner) -> {
+            XMid += owner.getX();
+        });
+        return XMid / owners.size();
     }
 
-    public int getMidY() {
-        YMid = 0;
-        for (GameObject go : gos) {
-            YMid += go.getY();
-        }
-        return YMid / gos.size();
+    public int getYMiddle() {
+        yMiddle = 0;
+        owners.stream().forEach((owner) -> {
+            yMiddle += owner.getY();
+        });
+        return yMiddle / owners.size();
     }
 
-    public int getXOffEffect() {
+    public int getXOffsetEffect() {
         return (int) (xOffset + xEffect);
     }
 
-    public int getYOffEffect() {
+    public int getYOffsetEffect() {
         return (int) (yOffset + yEffect);
     }
 
     public int getShakeAmp() {
-        return shakeAmp;
+        return shakeAmplitude;
     }
 
     public int getDelay() {
@@ -96,23 +90,11 @@ public abstract class Camera {
         return map;
     }
 
-    public void setMap(Map map) {
-        this.map = map;
-    }
-
-    public void setShakeAmp(int shakeAmp) {
-        this.shakeAmp = shakeAmp;
-    }
-
-    public void setDelay(int delaylenght) {
-        this.delaylenght = delaylenght;
-    }
-
-    public int getXOff() {
+    public int getXOffset() {
         return (int) xOffset;
     }
 
-    public int getYOff() {
+    public int getYOffset() {
         return (int) yOffset;
     }
 
@@ -124,44 +106,56 @@ public abstract class Camera {
         return yEffect;
     }
 
-    public void setXOff(int xOffset) {
-        this.xOffset = xOffset;
-    }
-
-    public void setYOff(int yOffset) {
-        this.yOffset = yOffset;
-    }
-
-    public int getDwidth() {
-        return Dwidth;
-    }
-
-    public int getDheight() {
-        return Dheight;
-    }
-    
     public int getWidth() {
-        return Dwidth * 2;
+        return width;
     }
 
     public int getHeight() {
-        return Dheight * 2;
+        return height;
     }
 
-    public int getSX() {
-        return getMidX() - (getMidX() + getXOffEffect());
+    public int getWidthHalf() {
+        return widthHalf;
     }
 
-    public int getEX() {
-        return getMidX() - (getMidX() + getXOffEffect()) + Dwidth * 2;
+    public int getHeightHalf() {
+        return heightHalf;
     }
 
-    public int getSY() {
-        return getMidY() - (getMidY() + getYOffEffect());
+    public int getXStart() {
+        return getXMiddle() - (getXMiddle() + getXOffsetEffect());
     }
 
-    public int getEY() {
-        return getMidY() - (getMidY() + getYOffEffect()) + Dheight * 2;
+    public int getYStart() {
+        return getYMiddle() - (getYMiddle() + getYOffsetEffect());
+    }
+
+    public int getXEnd() {
+        return getXMiddle() - (getXMiddle() + getXOffsetEffect()) + widthHalf * 2;
+    }
+
+    public int getYEnd() {
+        return getYMiddle() - (getYMiddle() + getYOffsetEffect()) + heightHalf * 2;
+    }
+
+    public void setXOffset(int xOffset) {
+        this.xOffset = xOffset;
+    }
+
+    public void setYOffset(int yOffset) {
+        this.yOffset = yOffset;
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
+    }
+
+    public void setShakeAmplitude(int shakeAmplitude) {
+        this.shakeAmplitude = shakeAmplitude;
+    }
+
+    public void setDelayLength(int delaylenght) {
+        this.delaylenght = delaylenght;
     }
 
 }

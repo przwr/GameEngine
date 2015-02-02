@@ -5,6 +5,7 @@
  */
 package net;
 
+import engine.Point;
 import net.packets.NewMPlayer;
 import game.Game;
 import game.gameobject.Player;
@@ -21,18 +22,18 @@ import net.packets.PacketUpdate;
  */
 public abstract class GameOnline {
 
-    public PastPosition[] past = new PastPosition[2048];
+    public Point[] pastPositions = new Point[2048];
     protected final change[] changes;
     protected final boolean[] isChanged;
-    protected final NewMPlayer newPls[];
+    protected final NewMPlayer[] newPlayers;
     protected final byte removeIDs[];
-    protected final MPlayerUpdate[] plUps;
-    protected MobUpdate[] newMob;
-    protected ArrayList<MobUpdate> mUps1;
-    protected ArrayList<MobUpdate> mUps2;
-    protected short[] mapIdsForUpdate = new short[2];
-    protected boolean isMUps1;
-    public int pastNr;
+    protected final MPlayerUpdate[] playersUpdates;
+    protected MobUpdate[] newMobs;
+    protected ArrayList<MobUpdate> firstMobsUpdates;
+    protected ArrayList<MobUpdate> secondMobsUpdates;
+    protected short[] mapIDsForUpdate = new short[2];
+    protected boolean activeFirstMobsUpdates;
+    public int pastPositionsNumber;
     public final Game g;
     public GameServer server;
     public GameClient client;
@@ -42,19 +43,19 @@ public abstract class GameOnline {
         g = game;
         changes = new change[nrChanges];
         isChanged = new boolean[nrChanges];
-        newPls = new NewMPlayer[players];
+        newPlayers = new NewMPlayer[players];
         removeIDs = new byte[players];
-        plUps = new MPlayerUpdate[players];
-        newMob = new MobUpdate[1024];
-        for (int i = 0; i < past.length; i += 8) {
-            past[i] = new PastPosition();
-            past[i + 1] = new PastPosition();
-            past[i + 2] = new PastPosition();
-            past[i + 3] = new PastPosition();
-            past[i + 4] = new PastPosition();
-            past[i + 5] = new PastPosition();
-            past[i + 6] = new PastPosition();
-            past[i + 7] = new PastPosition();
+        playersUpdates = new MPlayerUpdate[players];
+        newMobs = new MobUpdate[1024];
+        for (int i = 0; i < pastPositions.length; i += 8) {
+            pastPositions[i] = new Point();
+            pastPositions[i + 1] = new Point();
+            pastPositions[i + 2] = new Point();
+            pastPositions[i + 3] = new Point();
+            pastPositions[i + 4] = new Point();
+            pastPositions[i + 5] = new Point();
+            pastPositions[i + 6] = new Point();
+            pastPositions[i + 7] = new Point();
         }
     }
 

@@ -157,7 +157,7 @@ public class GameServer {
             MPlayers[0].setPosition(128 + id * 128, 256);
             MPlayers[0].setPlayer(pl);
             pl.setName(MPlayers[0].getName());
-            pl.id = id++;
+            pl.ID = id++;
             pl.setX(((float) MPlayers[0].getX()) / SCALE);
             pl.setY(((float) MPlayers[0].getY()) / SCALE);
             nrPlayers++;
@@ -196,7 +196,7 @@ public class GameServer {
                             mobX = mob.getX();
                             mobY = mob.getY();
                             if (Math.abs(mobX - tmp.inGame().getX()) < scopeX && Math.abs(mobY - tmp.inGame().getY()) < scopeY) {
-                                tmp.getPU().MobUpdate(mob.id, mobX, mobY, SCALE);
+                                tmp.getPU().MobUpdate(mob.ID, mobX, mobY, SCALE);
                             }
                         }
                     }

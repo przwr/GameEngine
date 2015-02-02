@@ -58,7 +58,7 @@ public class OpticProperties {
         return shadowHeight;
     }
 
-    public int getDistFromLight() {
+    public int getDistanceFromLight() {
         return distFromLight;
     }
 
@@ -70,7 +70,7 @@ public class OpticProperties {
         return Collections.unmodifiableList(shadows);
     }
 
-    public void setDistFromLight(int distFromLight) {
+    public void setDistanceFromLight(int distFromLight) {
         this.distFromLight = distFromLight;
     }
 

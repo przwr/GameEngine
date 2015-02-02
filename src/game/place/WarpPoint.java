@@ -20,8 +20,8 @@ public class WarpPoint extends GameObject {
     private final boolean isStatic;   //Czy teleportuje na wskazany punkt, czy na obiekt
     private int toX;
     private int toY;
-    private Map dest;
-    private String strDest = null;
+    private Map destination;
+    private String stringDestination = null;
 
     public WarpPoint(String name, int x, int y, int toX, int toY, Map map) {
         this.name = name;
@@ -31,7 +31,7 @@ public class WarpPoint extends GameObject {
         isStatic = true;
         this.toX = toX;
         this.toY = toY;
-        dest = map;
+        destination = map;
     }
 
     public WarpPoint(String name, int x, int y, int toX, int toY, String map) {
@@ -42,7 +42,7 @@ public class WarpPoint extends GameObject {
         isStatic = true;
         this.toX = toX;
         this.toY = toY;
-        strDest = map;
+        stringDestination = map;
     }
 
     public WarpPoint(String name, int x, int y, Map map) {
@@ -51,7 +51,7 @@ public class WarpPoint extends GameObject {
         this.y = y;
         isWarp = true;
         isStatic = false;
-        dest = map;
+        destination = map;
     }
 
     public WarpPoint(String name, int x, int y, String map) {
@@ -60,7 +60,7 @@ public class WarpPoint extends GameObject {
         this.y = y;
         isWarp = true;
         isStatic = false;
-        strDest = map;
+        stringDestination = map;
     }
 
     public WarpPoint(String name, int x, int y) {
@@ -71,30 +71,30 @@ public class WarpPoint extends GameObject {
         isStatic = false;
     }
 
-    public void Warp(GameObject o) {
+    public void Warp(GameObject object) {
         if (isWarp) {
             if (isStatic) {
-                if (dest != null) {
-                    o.changeMap(dest);
-                } else if (strDest != null) {
-                    o.changeMap(map.place.getMapByName(strDest));
+                if (destination != null) {
+                    object.changeMap(destination);
+                } else if (stringDestination != null) {
+                    object.changeMap(map.place.getMapByName(stringDestination));
                 }
-                o.setX(toX);
-                o.setY(toY);
+                object.setX(toX);
+                object.setY(toY);
             } else {
-                WarpPoint w;
-                if (dest != null) {
-                    o.changeMap(dest);
-                    w = dest.findWarp(name);
+                WarpPoint warp;
+                if (destination != null) {
+                    object.changeMap(destination);
+                    warp = destination.findWarp(name);
                 } else {
-                    Map m = map.place.getMapByName(strDest);
-                    o.changeMap(m);
-                    w = m.findWarp(name);
+                    Map m = map.place.getMapByName(stringDestination);
+                    object.changeMap(m);
+                    warp = m.findWarp(name);
                 }
-                o.setX(w.x);
-                o.setY(w.y);
-                if (o instanceof Player && ((Player) o).getCam() != null) {
-                    ((Player) o).getCam().update();
+                object.setX(warp.x);
+                object.setY(warp.y);
+                if (object instanceof Player && ((Player) object).getCamera() != null) {
+                    ((Player) object).getCamera().update();
                 }
             }
         }

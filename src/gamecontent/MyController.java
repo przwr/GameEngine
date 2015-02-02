@@ -97,14 +97,14 @@ public class MyController extends Controler {
             actions[i].act();
         }
         if (actions[0].isOn()) {
-            ((Player) inControl).menu.setChoosen(-1);
+            ((Player) inControl).getMenu().setChoosen(-1);
         } else if (actions[1].isOn()) {
-            ((Player) inControl).menu.setChoosen(1);
+            ((Player) inControl).getMenu().setChoosen(1);
         }
         if (actions[2].isOn()) {
-            ((Player) inControl).menu.choice();
+            ((Player) inControl).getMenu().choice();
         } else if (actions[3].isOn()) {
-            ((Player) inControl).menu.back();
+            ((Player) inControl).getMenu().back();
         }
     }
 

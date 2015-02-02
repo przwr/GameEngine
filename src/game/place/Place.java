@@ -88,7 +88,7 @@ public abstract class Place extends ScreenPlace {
                 }
             }
             for (int p = 0; p < playersLength; p++) {
-                cam = (((Player) players[p]).getCam());
+                cam = (((Player) players[p]).getCamera());
                 map = players[p].getMap();
                 SplitScreen.setSplitScreen(place, playersLength, p);
                 if (p == 0 || !singleCam) {
@@ -96,8 +96,8 @@ public abstract class Place extends ScreenPlace {
                     Renderer.preRenderShadowedLights(place, cam);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     if (map != null) {
-                        map.renderBack(cam);
-                        map.renderObj(cam);
+                        map.renderBackground(cam);
+                        map.renderObjects(cam);
                         map.renderText(cam);
                         if (map.visibleLights.size() > 0) {
                             Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
@@ -110,20 +110,20 @@ public abstract class Place extends ScreenPlace {
             Renderer.border(ssMode);
         };
         renders[1] = () -> {
-            Map m = players[0].getMap();
-            Renderer.findVisibleLights(m, 1);
+            Map map = players[0].getMap();
+            Renderer.findVisibleLights(map, 1);
             if (!settings.shadowOff) {
-                Renderer.preRendLights(m);
+                Renderer.preRendLights(map);
             }
-            cam = (((Player) players[0]).getCam());
+            cam = (((Player) players[0]).getCamera());
             SplitScreen.setSplitScreen(place, 1, 0);
             glEnable(GL_SCISSOR_TEST);
             Renderer.preRenderShadowedLights(place, cam);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            if (m != null) {
-                m.renderBack(cam);
-                m.renderObj(cam);
-                m.renderText(cam);
+            if (map != null) {
+                map.renderBackground(cam);
+                map.renderObjects(cam);
+                map.renderText(cam);
             }
             Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
             glDisable(GL_SCISSOR_TEST);

@@ -52,7 +52,7 @@ public class ObjectPlace extends Place {
         ObjectMap polana = new ObjectMap(mapId++, this, width, height, tileSize);
         this.ui = new ObjectUI(tileSize, sprites.getSpriteSheet("tlo"), this);
         maps.add(polana);
-        polana.addObj(ui);
+        polana.addObject(ui);
         //sounds.initialize("res", settings);
         this.red = 0.75f;
         this.green = 0.75f;

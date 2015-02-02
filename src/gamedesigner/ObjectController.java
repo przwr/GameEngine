@@ -53,41 +53,8 @@ public class ObjectController extends Controler {
             actions[i].act();
             states[i - 4] = actions[i].isOn();
         }
-//        System.arraycopy(states, 0, statesSample, 0, statesSample.length);
-//        if (inControl.getPlace().game.online.client != null) {
-//            inControl.getPlace().game.online.client.sendInput(new PacketInput(((Player) inControl).id, statesSample));
-//        }
     }
 
-//    @Override
-//    public synchronized void setInput(boolean[] states) {
-//        System.arraycopy(states, 0, this.states, 0, this.states.length);
-//        if (states[UP]) {
-//            inControl.addSpeed(0, -4, true);
-//        } else if (states[DOWN]) {
-//            inControl.addSpeed(0, 4, true);
-//        } else {
-//            inControl.brake(1);
-//        }
-//        if (states[LEFT]) {
-//            inControl.addSpeed(-4, 0, true);
-//        } else if (states[RIGHT]) {
-//            inControl.addSpeed(4, 0, true);
-//        } else {
-//            inControl.brake(0);
-//        }
-//        if (states[JUMP]) {
-//            inControl.setIsJumping(true);
-//        }
-//        if (states[RUN]) {
-//            inControl.setMaxSpeed(16);
-//        } else {
-//            inControl.setMaxSpeed(8);
-//        }
-//        if (states[LIGHT]) {
-//            inControl.setEmits(!inControl.isEmits());
-//        }
-//    }
     @Override
     public boolean isMenuOn() {
         if (actions[3].input != null) {
@@ -109,14 +76,14 @@ public class ObjectController extends Controler {
             actions[i].act();
         }
         if (actions[0].isOn()) {
-            ((Player) inControl).menu.setChoosen(-1);
+            ((Player) inControl).getMenu().setChoosen(-1);
         } else if (actions[1].isOn()) {
-            ((Player) inControl).menu.setChoosen(1);
+            ((Player) inControl).getMenu().setChoosen(1);
         }
         if (actions[2].isOn()) {
-            ((Player) inControl).menu.choice();
+            ((Player) inControl).getMenu().choice();
         } else if (actions[3].isOn()) {
-            ((Player) inControl).menu.back();
+            ((Player) inControl).getMenu().back();
         }
     }
 

@@ -18,8 +18,8 @@ public class PlayersCamera extends Camera {
 
     private initializeCam[] inits;
 
-    public PlayersCamera(final Map map, GameObject go, int ssX, int ssY, final int num) {
-        super(map, go);
+    public PlayersCamera(final Map map, GameObject owner, int ssX, int ssY, final int num) {
+        super(map, owner);
         inits = new initializeCam[3];
         inits[0] = () -> {
             if (map.place.settings.hSplitScreen) {
@@ -40,30 +40,36 @@ public class PlayersCamera extends Camera {
         initialize(ssX, ssY);
     }
 
-    public PlayersCamera(Map map, GameObject go, GameObject go2) {
-        super(map, go);
-        gos.add(go2);
-        Dwidth = Display.getWidth() / 2;
-        Dheight = Display.getHeight() / 2;
+    public PlayersCamera(Map map, GameObject firstOwner, GameObject secondOwner) {
+        super(map, firstOwner);
+        owners.add(secondOwner);
+        width = Display.getWidth();
+        height = Display.getHeight();
+        widthHalf = width / 2;
+        heightHalf = height / 2;
         update();
     }
 
-    public PlayersCamera(Map map, GameObject go, GameObject go2, GameObject go3) {
-        super(map, go);
-        gos.add(go2);
-        gos.add(go3);
-        Dwidth = Display.getWidth() / 2;
-        Dheight = Display.getHeight() / 2;
+    public PlayersCamera(Map map, GameObject firstOwenr, GameObject secondOwner, GameObject thirdOwner) {
+        super(map, firstOwenr);
+        owners.add(secondOwner);
+        owners.add(thirdOwner);
+        width = Display.getWidth();
+        height = Display.getHeight();
+        widthHalf = width / 2;
+        heightHalf = height / 2;
         update();
     }
 
-    public PlayersCamera(Map map, GameObject go, GameObject go2, GameObject go3, GameObject go4) {
-        super(map, go);
-        gos.add(go2);
-        gos.add(go3);
-        gos.add(go4);
-        Dwidth = Display.getWidth() / 2;
-        Dheight = Display.getHeight() / 2;
+    public PlayersCamera(Map map, GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner, GameObject fourthOwner) {
+        super(map, firstOwner);
+        owners.add(secondOwner);
+        owners.add(thirdOwner);
+        owners.add(fourthOwner);
+        width = Display.getWidth();
+        height = Display.getHeight();
+        widthHalf = width / 2;
+        heightHalf = height / 2;
         update();
     }
 
@@ -72,8 +78,8 @@ public class PlayersCamera extends Camera {
         if (map.place.settings.nrPlayers > 1) {
             inits[map.place.settings.nrPlayers - 2].initialize();
         }
-        Dwidth = Display.getWidth() / ssX;
-        Dheight = Display.getHeight() / ssY;
+        widthHalf = Display.getWidth() / ssX;
+        heightHalf = Display.getHeight() / ssY;
         update();
     }
 
@@ -82,8 +88,8 @@ public class PlayersCamera extends Camera {
         if (map.place.settings.nrPlayers > 1) {
             inits[map.place.settings.nrPlayers - 2].initialize();
         }
-        Dwidth = Display.getWidth() / ssX;
-        Dheight = Display.getHeight() / ssY;
+        widthHalf = Display.getWidth() / ssX;
+        heightHalf = Display.getHeight() / ssY;
         update();
     }
 

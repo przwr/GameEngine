@@ -74,11 +74,11 @@ public class GameClient {
                     } else if (obj instanceof PacketJoinResponse) {
                         if (((PacketJoinResponse) obj).getId() != -1) {
                             server = connection;
-                            player.id = ((PacketJoinResponse) obj).getId();
+                            player.ID = ((PacketJoinResponse) obj).getId();
                             player.setX(Methods.roundHalfUp(SCALE * (float) ((PacketJoinResponse) obj).getX()));
                             player.setY(Methods.roundHalfUp(SCALE * (float) ((PacketJoinResponse) obj).getY()));
                             tempMapId = ((PacketJoinResponse) obj).getMapId();
-                            mpup = new PacketMPlayerUpdate(tempMapId, player.id, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
+                            mpup = new PacketMPlayerUpdate(tempMapId, player.ID, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
                         } else {
                             cleanUp(game.g.settings.language.m.FullServer);

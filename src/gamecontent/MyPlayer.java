@@ -68,7 +68,7 @@ public class MyPlayer extends Player {
         this.height = Methods.roundHalfUp(scale * height);
         this.xStart = Methods.roundHalfUp(scale * startX);
         this.yStart = Methods.roundHalfUp(scale * startY);
-        this.setWeight(2);
+        this.setResistance(2);
         this.emitter = true;
         initialize(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
@@ -86,7 +86,7 @@ public class MyPlayer extends Player {
         this.height = Methods.roundHalfUp(scale * height);
         this.xStart = Methods.roundHalfUp(scale * startX);
         this.yStart = Methods.roundHalfUp(scale * startY);
-        this.setWeight(2);
+        this.setResistance(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
@@ -108,8 +108,8 @@ public class MyPlayer extends Player {
     protected void move(int xPos, int yPos) {
         setX(x + xPos);
         setY(y + yPos);
-        if (cam != null) {
-            cam.update();
+        if (camera != null) {
+            camera.update();
         }
     }
 
@@ -117,14 +117,14 @@ public class MyPlayer extends Player {
     protected void setPosition(int xPos, int yPos) {
         setX(xPos);
         setY(yPos);
-        if (cam != null) {
-            cam.update();
+        if (camera != null) {
+            camera.update();
         }
     }
 
     @Override
     public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, cam.getXOff() + getX(), (int) (cam.getYOff() + getY() + sprite.getSy() + collision.getHeight() / 2 - jumpHeight),
+        place.renderMessage(0, cam.getXOffset() + getX(), (int) (cam.getYOffset() + getY() + sprite.getSy() + collision.getHeight() / 2 - jumpHeight),
                 name, new Color(place.red, place.green, place.blue));
     }
 
@@ -156,9 +156,12 @@ public class MyPlayer extends Player {
         tempXSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
         tempYSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
         moveIfPossible(tempXSpeed, tempYSpeed);
-        map.getWarps().stream().filter((warp) -> (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision))).forEach((warp) -> {
-            warp.Warp(this);
-        });
+        for (WarpPoint warp : map.getWarps()) {
+            if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
+                warp.Warp(this);
+                break;
+            }
+        }
         brakeOthers();
     }
 
@@ -176,20 +179,19 @@ public class MyPlayer extends Player {
         tempYSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
         moveIfPossible(tempXSpeed, tempYSpeed);
         for (WarpPoint warp : map.getWarps()) {
-            if (warp.getCollision() != null) {
-                if (warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                    warp.Warp(this);
-                }
+            if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
+                warp.Warp(this);
+                break;
             }
         }
         brakeOthers();
         if (online.server != null) {
             online.server.sendUpdate(map.getId(), getX(), getY(), isEmits(), isHop());
         } else if (online.client != null) {
-            online.client.sendPlayerUpdate(map.getId(), id, getX(), getY(), isEmits(), isHop());
-            online.past[online.pastNr++].set(getX(), getY());
-            if (online.pastNr >= online.past.length) {
-                online.pastNr = 0;
+            online.client.sendPlayerUpdate(map.getId(), ID, getX(), getY(), isEmits(), isHop());
+            online.pastPositions[online.pastPositionsNumber++].set(getX(), getY());
+            if (online.pastPositionsNumber >= online.pastPositions.length) {
+                online.pastPositionsNumber = 0;
             }
         } else {
             online.g.endGame();

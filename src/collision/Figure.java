@@ -25,7 +25,7 @@ public abstract class Figure implements Comparable<Object> {
     protected int xStart, yStart, width, height, xCenter, yCenter;
     protected final ArrayList<Point> points;
 
-    public abstract boolean isCollideSingle(int x, int y, Figure f);
+    public abstract boolean isCollideSingle(int x, int y, Figure figure);
 
     public abstract Collection<Point> getPoints();
 
@@ -38,32 +38,32 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public boolean isCollideSolid(int x, int y, Map map) {
-        if (map.getSolidMobs().stream().anyMatch((obj) -> (checkCollison(x, y, obj)))) {
+        if (map.getSolidMobs().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
             return true;
         }
-        if (map.getSolidObjects().stream().anyMatch((obj) -> (checkCollison(x, y, obj)))) {
+        if (map.getSolidObjects().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
             return true;
         }
-        if (map.getAreas().stream().anyMatch((obj) -> (obj.isSolid() && obj.isCollide(x, y, this)))) {
+        if (map.getAreas().stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)))) {
             return true;
         }
         return false;
     }
 
     public GameObject whatCollideSolid(int x, int y, Map map) {
-        for (GameObject obj : map.getSolidMobs()) {
-            if (checkCollison(x, y, obj)) {
-                return obj;
+        for (GameObject object : map.getSolidMobs()) {
+            if (checkCollison(x, y, object)) {
+                return object;
             }
         }
-        for (GameObject obj : map.getSolidObjects()) {
-            if (checkCollison(x, y, obj)) {
-                return obj;
+        for (GameObject object : map.getSolidObjects()) {
+            if (checkCollison(x, y, object)) {
+                return object;
             }
         }
-        for (Area obj : map.getAreas()) {
-            if (obj.isSolid() && obj.isCollide(x, y, this)) {
-                return obj;
+        for (Area object : map.getAreas()) {
+            if (object.isSolid() && object.isCollide(x, y, this)) {
+                return object;
             }
         }
         return null;
@@ -77,17 +77,17 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public GameObject whatCollide(int x, int y, Collection<GameObject> objects) {
-        for (GameObject obj : objects) {
-            if (checkCollison(x, y, obj)) {
-                return obj;
+        for (GameObject object : objects) {
+            if (checkCollison(x, y, object)) {
+                return object;
             }
         }
         return null;
     }
 
     public boolean isCollidePlayer(int x, int y, Place place) {
-        for (int p = 0; p < place.playersLength; p++) {
-            if (checkCollison(x, y, place.players[p])) {
+        for (int i = 0; i < place.playersLength; i++) {
+            if (checkCollison(x, y, place.players[i])) {
                 return true;
             }
         }
@@ -101,9 +101,9 @@ public abstract class Figure implements Comparable<Object> {
         return null;
     }
 
-    private boolean checkCollison(int x, int y, GameObject obj) {
-        Figure figure = obj.getCollision();
-        if (obj == owner || figure == null) {
+    private boolean checkCollison(int x, int y, GameObject object) {
+        Figure figure = object.getCollision();
+        if (object == owner || figure == null) {
             return false;
         }
         return isCollideSingle(x, y, figure);
@@ -119,13 +119,21 @@ public abstract class Figure implements Comparable<Object> {
 
     @Override
     public int compareTo(Object o) {
-        if (getEndY() == ((Figure) o).getEndY()) {
-            if (opticProperties.getDistFromLight() == -1) {
+        if (getYEnd() == ((Figure) o).getYEnd()) {
+            if (opticProperties.getDistanceFromLight() == -1) {
                 return 1;
             }
-            return (opticProperties.getDistFromLight() - ((Figure) o).opticProperties.getDistFromLight());
+            return (opticProperties.getDistanceFromLight() - ((Figure) o).opticProperties.getDistanceFromLight());
         }
-        return getEndY() - ((Figure) o).getEndY();
+        return getYEnd() - ((Figure) o).getYEnd();
+    }
+
+    public boolean isLittable() {
+        return opticProperties.isLitable();
+    }
+
+    public boolean isGiveShadow() {
+        return opticProperties.isGiveShadow();
     }
 
     public int getX() {
@@ -136,27 +144,27 @@ public abstract class Figure implements Comparable<Object> {
         return owner.getY() + yStart;
     }
 
-    public int getEndX() {
+    public int getXEnd() {
         return owner.getX() + xStart + width;
     }
 
-    public int getEndY() {
+    public int getYEnd() {
         return owner.getY() + yStart + height;
     }
 
-    public int getOwnEndY() {
+    public int getYOwnerEnd() {
         return owner.getYObjectEnd();
     }
 
-    public int getOwnBegY() {
+    public int getYOwnerBegin() {
         return owner.getYObjectBegin();
     }
 
-    public int getOwnBegX() {
+    public int getXOwnerBegin() {
         return owner.getXObjectBegin();
     }
 
-    public int getOwnEndX() {
+    public int getXOwnerEnd() {
         return owner.getXObjectEnd();
     }
 
@@ -176,19 +184,19 @@ public abstract class Figure implements Comparable<Object> {
         return yStart;
     }
 
-    public int getCentralX() {
+    public int getXCentral() {
         return owner.getX() + xStart + xCenter;
     }
 
-    public int getCentralY() {
+    public int getYCentral() {
         return owner.getY() + yStart + yCenter;
     }
 
-    public int getCentralX(int x) {
+    public int getXCentral(int x) {
         return x + yStart + xCenter;
     }
 
-    public int getCentralY(int y) {
+    public int getYCentral(int y) {
         return y + yStart + yCenter;
     }
 
@@ -208,16 +216,8 @@ public abstract class Figure implements Comparable<Object> {
         return owner;
     }
 
-    public boolean isLittable() {
-        return opticProperties.isLitable();
-    }
-
-    public boolean isGiveShadow() {
-        return opticProperties.isGiveShadow();
-    }
-
     public int getDistFromLight() {
-        return opticProperties.getDistFromLight();
+        return opticProperties.getDistanceFromLight();
     }
 
     public int getShadowHeight() {
@@ -232,16 +232,16 @@ public abstract class Figure implements Comparable<Object> {
         return opticProperties.getShadows();
     }
 
-    public void setXs(int x) {
-        xStart = x;
+    public void setXStart(int xStart) {
+        this.xStart = xStart;
     }
 
-    public void setYs(int y) {
-        yStart = y;
+    public void setYStart(int yStart) {
+        this.yStart = yStart;
     }
 
-    public void setDistFromLight(int distFromLight) {
-        opticProperties.setDistFromLight(distFromLight);
+    public void setDistanceFromLight(int distanceFromLight) {
+        opticProperties.setDistanceFromLight(distanceFromLight);
     }
 
     public void setShadowColor(float shadowColor) {
