@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Renderer {
 
     private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), halfDisplayWidth = (displayWidth / 2), halfDisplayHeight = (displayHeight / 2);
-    private static FBORenderer fbFrame;
+    private static FrameBufferObject fbFrame;
     private static GameObject light;
     private static final int[] SX = new int[7], EX = new int[7], SY = new int[7], EY = new int[7];
     private static boolean isVisible;
@@ -36,15 +36,15 @@ public class Renderer {
             for (int p = 0; p < playersLength; p++) {
                 if (place.players[p].getMap() == map) {
                     if (place.singleCam && playersLength > 1) {
-                        if (tmpLight.isEmits() && SY[2 + playersLength] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[2 + playersLength] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
-                                && SX[2 + playersLength] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[2 + playersLength] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
+                        if (tmpLight.isEmits() && SY[2 + playersLength] <= tmpLight.getY() + (tmpLight.getLight().getHeight() / 2) && EY[2 + playersLength] >= tmpLight.getY() - (tmpLight.getLight().getHeight() / 2)
+                                && SX[2 + playersLength] <= tmpLight.getX() + (tmpLight.getLight().getWidth() / 2) && EX[2 + playersLength] >= tmpLight.getX() - (tmpLight.getLight().getWidth() / 2)) {
                             isVisible = true;
                             place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].visibleLightsCount++] = tmpLight;
                         }
                     } else {
                         for (int pi = 0; pi < playersLength; pi++) {
-                            if (place.players[pi].getMap() == map && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
-                                    && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
+                            if (place.players[pi].getMap() == map && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getHeight() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getHeight() / 2)
+                                    && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getWidth() / 2) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getWidth() / 2)) {
                                 isVisible = true;
                                 (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).visibleLightsCount++] = tmpLight;
                             }
@@ -62,15 +62,15 @@ public class Renderer {
             light = place.players[p];
             if (light.getMap() == map) {
                 if (place.singleCam && playersLength > 1) {
-                    if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getSY() / 2) && EY[2 + playersLength] >= light.getY() - (light.getLight().getSY() / 2)
-                            && SX[2 + playersLength] <= light.getX() + (light.getLight().getSX() / 2) && EX[2 + playersLength] >= light.getX() - (light.getLight().getSX() / 2)) {
+                    if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getHeight() / 2) && EY[2 + playersLength] >= light.getY() - (light.getLight().getHeight() / 2)
+                            && SX[2 + playersLength] <= light.getX() + (light.getLight().getWidth() / 2) && EX[2 + playersLength] >= light.getX() - (light.getLight().getWidth() / 2)) {
                         isVisible = true;
                         place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].visibleLightsCount++] = light;
                     }
                 } else {
                     for (int pi = 0; pi < playersLength; pi++) {
-                        if (place.players[pi].getMap() == map && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() / 2) && EY[pi] >= light.getY() - (light.getLight().getSY() / 2)
-                                && SX[pi] <= light.getX() + (light.getLight().getSX() / 2) && EX[pi] >= light.getX() - (light.getLight().getSX() / 2)) {
+                        if (place.players[pi].getMap() == map && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getHeight() / 2) && EY[pi] >= light.getY() - (light.getLight().getHeight() / 2)
+                                && SX[pi] <= light.getX() + (light.getLight().getWidth() / 2) && EX[pi] >= light.getX() - (light.getLight().getWidth() / 2)) {
                             isVisible = true;
                             (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).visibleLightsCount++] = light;
                         }
@@ -124,7 +124,7 @@ public class Renderer {
         glBlendFunc(GL_ONE, GL_ONE);
         for (int i = 0; i < cam.visibleLightsCount; i++) {
             if (!place.settings.shadowOff) {
-                drawLight(cam.visibleLights[i].getLight().fbo.getTexture(), cam.visibleLights[i], cam);
+                drawLight(cam.visibleLights[i].getLight().frameBufferObject.getTexture(), cam.visibleLights[i], cam);
             } else {
                 cam.visibleLights[i].getLight().render(cam.visibleLights[i], place, cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
@@ -133,8 +133,8 @@ public class Renderer {
     }
 
     public static void drawLight(int textureHandle, GameObject emitter, Camera cam) {
-        lightX = emitter.getLight().getSX();
-        lightY = emitter.getLight().getSY();
+        lightX = emitter.getLight().getWidth();
+        lightY = emitter.getLight().getHeight();
         glPushMatrix();
         glTranslatef(emitter.getX() - lightX / 2 + cam.getXOffsetEffect(), emitter.getY() - lightY / 2 + cam.getYOffsetEffect(), 0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -186,7 +186,7 @@ public class Renderer {
 
     public static void initializeVariables(Place place) {
         ShadowRenderer.initializeRenderer(place);
-        fbFrame = new FBORendererRegular(displayWidth, displayHeight, place.settings);
+        fbFrame = new RegularFrameBufferObject(displayWidth, displayHeight, place.settings);
         borders[0] = () -> {
             glBegin(GL_QUADS);
             glVertex2f(0, halfDisplayHeight - 1);

@@ -20,7 +20,7 @@ public abstract class GameObject {
 
     protected double x, y;
     protected int width, height, depth, xStart, yStart;
-    protected boolean solid, emitter, emits, top, simpleLighting, visible;
+    protected boolean solid, emitter, emits, onTop, simpleLighting, visible;
     protected Sprite sprite;
     protected Light light;
     protected String name;
@@ -48,8 +48,8 @@ public abstract class GameObject {
     }
 
     public void changeMap(Map map) {
-        if (map != null) {
-            map.deleteObject(this);
+        if (this.map != null && this.map != map) {
+            this.map.deleteObject(this);
         }
         this.map = map;
         this.map.addObject(this);
@@ -58,8 +58,8 @@ public abstract class GameObject {
     @Override
     public boolean equals(Object object) {
         if (object instanceof GameObject) {
-            GameObject go = (GameObject) object;
-            if (go.getX() == getX() && go.getY() == getY() && go.getName().equals(getName())) {
+            GameObject gameObject = (GameObject) object;
+            if (gameObject.getX() == getX() && gameObject.getY() == getY() && gameObject.getName().equals(getName())) {
                 return true;
             }
         }
@@ -82,7 +82,7 @@ public abstract class GameObject {
     }
 
     public boolean isOnTop() {
-        return top;
+        return onTop;
     }
 
     public boolean isEmitter() {
@@ -91,6 +91,10 @@ public abstract class GameObject {
 
     public boolean isEmits() {
         return emits;
+    }
+
+    public boolean isSimpleLighting() {
+        return simpleLighting;
     }
 
     public boolean isVisible() {
@@ -198,11 +202,15 @@ public abstract class GameObject {
     }
 
     public void setOnTop(boolean onTop) {
-        this.top = onTop;
+        this.onTop = onTop;
     }
 
     public void setEmits(boolean emits) {
         this.emits = emits;
+    }
+
+    public void setSimpleLighting(boolean simpleLighting) {
+        this.simpleLighting = simpleLighting;
     }
 
     public void setX(double x) {
@@ -244,4 +252,5 @@ public abstract class GameObject {
     public void setPlace(Place place) {
         this.place = place;
     }
+
 }

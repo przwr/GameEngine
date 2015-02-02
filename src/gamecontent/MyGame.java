@@ -318,12 +318,12 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].initialize(4, 4, 56, 56, place);
-        Map map = place.getMapById((short) 0);
         players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();
         place.generate(false);
         started = runFlag = true;
+        Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
     }
 
@@ -334,12 +334,12 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersLength = 1;
         players[0].initialize(4, 4, 56, 56, place);
-        Map map = place.getMapById((short) 0);
         players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();
         place.generate(true);
         started = runFlag = true;
+        Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
     }
 

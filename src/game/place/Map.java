@@ -193,7 +193,6 @@ public class Map {
         Drawer.refreshForRegularDrawing();
         sortObjectsByDepth(depthObjects);
         int y = 0;
-        System.out.println("Mapa: " + name);
         for (GameObject object : depthObjects) {
             while (y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth()) {
                 if (cam.getYStart() <= foregroundTiles.get(y).getY() + (foregroundTiles.get(y).getCollisionHeight()) & cam.getYEnd() >= foregroundTiles.get(y).getY() - (foregroundTiles.get(y).getCollisionHeight())
@@ -202,25 +201,23 @@ public class Map {
                 }
                 y++;
             }
-            if (object.isVisible() && cam.getYStart()<= object.getY() + (object.getHeight()) && cam.getYEnd()>= object.getY() - (object.getHeight())
-                    && cam.getXStart()<= object.getX() + (object.getWidth()) && cam.getXEnd()>= object.getX() - (object.getWidth())) {
+            if (object.isVisible() && cam.getYStart() <= object.getY() + (object.getHeight()) && cam.getYEnd() >= object.getY() - (object.getHeight())
+                    && cam.getXStart() <= object.getX() + (object.getWidth()) && cam.getXEnd() >= object.getX() - (object.getWidth())) {
                 object.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
-            System.out.println(object.getName());
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
             foregroundTiles.get(i).render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
         }
-        System.out.println("");
     }
 
     public void renderTop(Camera cam) {
         Drawer.refreshForRegularDrawing();
         sortObjectsByDepth(objectsOnTop);
-        for (GameObject go : objectsOnTop) {
-            if (go.isVisible() && cam.getYStart()<= go.getY() + (go.getHeight()) && cam.getYEnd()>= go.getY() - (go.getHeight())
-                    && cam.getXStart()<= go.getX() + (go.getWidth()) && cam.getXEnd()>= go.getX() - (go.getWidth())) {
-                go.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
+        for (GameObject object : objectsOnTop) {
+            if (object.isVisible() && cam.getYStart() <= object.getY() + (object.getHeight()) && cam.getYEnd() >= object.getY() - (object.getHeight())
+                    && cam.getXStart() <= object.getX() + (object.getWidth()) && cam.getXEnd() >= object.getX() - (object.getWidth())) {
+                object.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
         }
     }

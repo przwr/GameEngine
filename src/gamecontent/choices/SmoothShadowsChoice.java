@@ -22,7 +22,7 @@ public class SmoothShadowsChoice extends MenuChoice {
 
     @Override
     public void action() {
-        if (settings.isSupfboMS) {
+        if (settings.multiSampleSupported) {
             settings.nrSamples *= 2;
             if (settings.nrSamples == 0) {
                 settings.nrSamples = 2;
@@ -39,7 +39,7 @@ public class SmoothShadowsChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        if (!settings.isSupfboMS) {
+        if (!settings.multiSampleSupported) {
             return label + settings.language.m.Off + " (" + settings.language.m.Unsupported + ")";
         } else if (settings.nrSamples == 0) {
             return label + settings.language.m.Off;

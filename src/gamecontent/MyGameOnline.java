@@ -33,7 +33,7 @@ public class MyGameOnline extends GameOnline {
 
     @Override
     public synchronized void runServer() {
-        try {
+
             server = new GameServer(g.players[0], this);
             server.Start();
             if (!server.isRunning) {
@@ -43,9 +43,7 @@ public class MyGameOnline extends GameOnline {
                 g.runServer();
                 g.mode = 1;
             }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
+
     }
 
     @Override

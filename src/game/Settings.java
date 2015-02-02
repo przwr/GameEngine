@@ -55,8 +55,8 @@ public class Settings {
     public Controller[] controllers;
     public int worldSeed;
     public int maxSamples;
-    public int isSupfboVer3;
-    public boolean isSupfboMS;
+    public int supportedFrameBufferObjectVersion;
+    public boolean multiSampleSupported;
     public boolean shadowOff;
     public String serverIP = "127.0.0.1";
 
@@ -123,27 +123,27 @@ public class Settings {
             GL30.glGenFramebuffers();
             GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
             GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-            isSupfboVer3 = 0;
-            isSupfboMS = true;
+            supportedFrameBufferObjectVersion = 0;
+            multiSampleSupported = true;
             maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
             maxSamples = maxSamples > 8 ? 8 : maxSamples;
             nrSamples = (nrSamples > maxSamples) ? maxSamples : nrSamples;
         } catch (Exception e) {
             if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
-                isSupfboVer3 = 1;
+                supportedFrameBufferObjectVersion = 1;
                 try {
                     ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
                     ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
-                    isSupfboMS = true;
+                    multiSampleSupported = true;
                     maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
                     maxSamples = maxSamples > 8 ? 8 : maxSamples;
                     nrSamples = (nrSamples > maxSamples) ? maxSamples : nrSamples;
                 } catch (Exception ex) {
-                    isSupfboMS = false;
+                    multiSampleSupported = false;
                 }
             } else if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {
-                isSupfboVer3 = 2;
-                isSupfboMS = false;
+                supportedFrameBufferObjectVersion = 2;
+                multiSampleSupported = false;
             } else {
                 Methods.javaError(language.m.FBOError);
             }
