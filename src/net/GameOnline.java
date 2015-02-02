@@ -64,9 +64,9 @@ public abstract class GameOnline {
 
     public abstract void cleanUp();
 
-    public abstract void up();
+    public abstract void update();
 
-    public abstract void initChanges();
+    public abstract void initializeChanges();
 
     public abstract void addPlayer(NewMPlayer pl);
 

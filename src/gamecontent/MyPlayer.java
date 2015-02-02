@@ -40,24 +40,24 @@ public class MyPlayer extends Player {
         super(name);
         this.first = first;
         if (first) {
-            initControlerForFirst();
+            initializeControllerForFirst();
         } else {
-            initControler();
+            initializeController();
         }
     }
 
-    private void initControlerForFirst() {
+    private void initializeControllerForFirst() {
         controler = new MyController(this);
         controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
         controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
         controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
         controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        controler.init();
+        controler.initialize();
     }
 
-    private void initControler() {
+    private void initializeController() {
         controler = new MyController(this);
-        controler.init();
+        controler.initialize();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MyPlayer extends Player {
         this.yStart = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
+        initialize(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);

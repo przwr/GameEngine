@@ -145,19 +145,19 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public int getOwnEndY() {
-        return owner.getObjEndOfY();
+        return owner.getYObjectEnd();
     }
 
     public int getOwnBegY() {
-        return owner.getObjBegOfY();
+        return owner.getYObjectBegin();
     }
 
     public int getOwnBegX() {
-        return owner.getObjBegOfX();
+        return owner.getXObjectBegin();
     }
 
     public int getOwnEndX() {
-        return owner.getObjEndOfX();
+        return owner.getXObjectEnd();
     }
 
     public int getX(int x) {

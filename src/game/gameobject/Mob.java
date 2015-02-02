@@ -36,7 +36,7 @@ public abstract class Mob extends Entity {
         this.xStart = Methods.roundHalfUp(scale * startX);
         this.yStart = Methods.roundHalfUp(scale * startY);
         this.range = Methods.roundHalfUp(scale * range);
-        init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
+        initialize(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSprite("rabbit");
         setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
         this.setMaxSpeed(speed);

@@ -25,7 +25,7 @@ public class SoundBase {
         list = new ArrayList<>();
     }
 
-    public void init(String folder, Settings settings) {
+    public void initialize(String folder, Settings settings) {
         ArrayList<File> fileList = new ArrayList<>();
         search(new File(folder), fileList);
         for (File file : fileList) {

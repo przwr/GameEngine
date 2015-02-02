@@ -19,14 +19,14 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public class SplitScreen {
 
-    private static final setSplit[] splits = new setSplit[4];
-    private static final setOrient[] orients2 = new setOrient[2];
-    private static final setOrient[] orients3 = new setOrient[2];
-    private static final setPlayer[] players2h = new setPlayer[2];
-    private static final setPlayer[] players2v = new setPlayer[2];
-    private static final setPlayer[] players3h = new setPlayer[3];
-    private static final setPlayer[] players3v = new setPlayer[3];
-    private static final setPlayer[] players4 = new setPlayer[4];
+    private static final setSplitType[] splits = new setSplitType[4];
+    private static final setOrientType[] orients2 = new setOrientType[2];
+    private static final setOrientType[] orients3 = new setOrientType[2];
+    private static final setPlayerNumber[] players2h = new setPlayerNumber[2];
+    private static final setPlayerNumber[] players2v = new setPlayerNumber[2];
+    private static final setPlayerNumber[] players3h = new setPlayerNumber[3];
+    private static final setPlayerNumber[] players3v = new setPlayerNumber[3];
+    private static final setPlayerNumber[] players4 = new setPlayerNumber[4];
     private static final int width3o4 = (Display.getWidth() * 3) >> 2;
     private static final int heigth3o4 = (Display.getHeight() * 3) >> 2;
     private static final int width2o3 = (Display.getWidth() << 1) / 3;
@@ -80,12 +80,12 @@ public class SplitScreen {
         if (pl.changeSSMode) {
             if (pl.settings.hSplitScreen) {
                 pl.settings.hSplitScreen = false;
-                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInit(4, 2);
-                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInit(4, 2);
+                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInitialize(4, 2);
+                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInitialize(4, 2);
             } else {
                 pl.settings.hSplitScreen = true;
-                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInit(2, 4);
-                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInit(2, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInitialize(2, 4);
+                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInitialize(2, 4);
             }
             pl.changeSSMode = false;
         }
@@ -95,273 +95,207 @@ public class SplitScreen {
         if (pl.changeSSMode) {
             if (pl.settings.hSplitScreen) {
                 pl.settings.hSplitScreen = false;
-                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInit(4, 2);
-                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInit(4, 4);
-                ((PlayersCamera) ((Player) pl.players[2]).getCamera()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInitialize(4, 2);
+                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInitialize(4, 4);
+                ((PlayersCamera) ((Player) pl.players[2]).getCam()).reInitialize(4, 4);
             } else {
                 pl.settings.hSplitScreen = true;
-                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInit(2, 4);
-                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInit(4, 4);
-                ((PlayersCamera) ((Player) pl.players[2]).getCamera()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInitialize(2, 4);
+                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInitialize(4, 4);
+                ((PlayersCamera) ((Player) pl.players[2]).getCam()).reInitialize(4, 4);
             }
             pl.changeSSMode = false;
         }
     }
 
-    public static void init() {
-        players2h[0] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
-                glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
-                glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                pl.camXStart = pl.camXTStart = 0f;
-                pl.camYStart = pl.camYTStart = -0.5f;
-                pl.camXEnd = pl.camXTEnd = 1f;
-                pl.camYEnd = pl.camYTEnd = 0.5f;
-            }
+    public static void initialzie() {
+        players2h[0] = (Place pl) -> {
+            glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
+            glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
+            glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+            pl.camXStart = pl.camXTStart = 0f;
+            pl.camYStart = pl.camYTStart = -0.5f;
+            pl.camXEnd = pl.camXTEnd = 1f;
+            pl.camYEnd = pl.camYTEnd = 0.5f;
         };
-        players2h[1] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(0, 0, Display.getWidth(), heigth1o2);
-                glScissor(0, 0, Display.getWidth(), heigth1o2);
-                pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
-                pl.camXEnd = pl.camXTEnd = 1f;
-                pl.camYEnd = pl.camYTEnd = 0.5f;
-            }
+        players2h[1] = (Place pl) -> {
+            glViewport(0, 0, Display.getWidth(), heigth1o2);
+            glScissor(0, 0, Display.getWidth(), heigth1o2);
+            pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+            pl.camXEnd = pl.camXTEnd = 1f;
+            pl.camYEnd = pl.camYTEnd = 0.5f;
         };
-        players2v[0] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(0, 0, width1o2, Display.getHeight());
-                glScissor(0, 0, width1o2, Display.getHeight());
-                glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
-                pl.camXEnd = pl.camXTEnd = 0.5f;
-                pl.camYEnd = pl.camYTEnd = 1f;
-            }
+        players2v[0] = (Place pl) -> {
+            glViewport(0, 0, width1o2, Display.getHeight());
+            glScissor(0, 0, width1o2, Display.getHeight());
+            glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+            pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
+            pl.camXEnd = pl.camXTEnd = 0.5f;
+            pl.camYEnd = pl.camYTEnd = 1f;
         };
-        players2v[1] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(width1o2, 0, width1o2, Display.getHeight());
-                glScissor(width1o2, 0, width1o2, Display.getHeight());
-                pl.camXTStart = pl.camXEnd = 0.5f;
-                pl.camXTEnd = pl.camYTEnd = pl.camYEnd = 1f;
-                pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
-            }
+        players2v[1] = (Place pl) -> {
+            glViewport(width1o2, 0, width1o2, Display.getHeight());
+            glScissor(width1o2, 0, width1o2, Display.getHeight());
+            pl.camXTStart = pl.camXEnd = 0.5f;
+            pl.camXTEnd = pl.camYTEnd = pl.camYEnd = 1f;
+            pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
         };
-        orients2[0] = new setOrient() {
-            @Override
-            public void setOrient(Place pl, int p) {
-                pl.ssMode = 1;
-                players2h[p].setPlayer(pl);
-            }
+        orients2[0] = (Place pl, int p) -> {
+            pl.ssMode = 1;
+            players2h[p].setPlayer(pl);
         };
-        orients2[1] = new setOrient() {
-            @Override
-            public void setOrient(Place pl, int p) {
-                pl.ssMode = 2;
-                players2v[p].setPlayer(pl);
-            }
+        orients2[1] = (Place pl, int p) -> {
+            pl.ssMode = 2;
+            players2v[p].setPlayer(pl);
         };
-        splits[0] = new setSplit() {
-            @Override
-            public void setSplit(Place pl, int p) {
-                glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        splits[0] = (Place pl, int p) -> {
+            glViewport(0, 0, Display.getWidth(), Display.getHeight());
+            glScissor(0, 0, Display.getWidth(), Display.getHeight());
+            pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+            pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
+        };
+        splits[1] = (Place pl, int p) -> {
+            if (!pl.settings.joinSS || isFar(pl)) {
+                changeSSMode2(pl);
+                orients2[pl.settings.hSplitScreen ? 0 : 1].setOrient(pl, p);
+            } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
+                pl.cam = pl.cams[0];
+                pl.ssMode = 0;
                 pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
                 pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
+                pl.singleCam = true;
             }
         };
-        splits[1] = new setSplit() {
-            @Override
-            public void setSplit(Place pl, int p) {
-                if (!pl.settings.joinSS || isFar(pl)) {
-                    changeSSMode2(pl);
-                    orients2[pl.settings.hSplitScreen ? 0 : 1].setOrient(pl, p);
-                } else {
-                    glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                    pl.cam = pl.cams[0];
-                    pl.ssMode = 0;
-                    pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
-                    pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
-                    pl.singleCam = true;
-                }
-            }
-        };
-        init2();
-        init3();
+        initialzie2();
+        initialize3();
     }
 
-    private static void init2() {
-        players3h[0] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
-                glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
-                glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                pl.camXStart = pl.camXTStart = 0f;
-                pl.camYStart = pl.camYTStart = -0.5f;
-                pl.camXEnd = pl.camXTEnd = 1f;
-                pl.camYEnd = pl.camYTEnd = 0.5f;
-            }
+    private static void initialzie2() {
+        players3h[0] = (Place pl) -> {
+            glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
+            glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
+            glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+            pl.camXStart = pl.camXTStart = 0f;
+            pl.camYStart = pl.camYTStart = -0.5f;
+            pl.camXEnd = pl.camXTEnd = 1f;
+            pl.camYEnd = pl.camYTEnd = 0.5f;
         };
-        players3h[1] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(0, 0, width1o2, heigth1o2);
-                glScissor(0, 0, width1o2, heigth1o2);
-                glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
-                pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
-            }
+        players3h[1] = (Place pl) -> {
+            glViewport(0, 0, width1o2, heigth1o2);
+            glScissor(0, 0, width1o2, heigth1o2);
+            glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+            pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
+            pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
         };
-        players3h[2] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(width1o2, 0, width1o2, heigth1o2);
-                glScissor(width1o2, 0, width1o2, heigth1o2);
-                pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
-                pl.camXTEnd = 1f;
-                pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
-            }
+        players3h[2] = (Place pl) -> {
+            glViewport(width1o2, 0, width1o2, heigth1o2);
+            glScissor(width1o2, 0, width1o2, heigth1o2);
+            pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
+            pl.camXTEnd = 1f;
+            pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
         };
-        players3v[0] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(0, 0, width1o2, Display.getHeight());
-                glScissor(0, 0, width1o2, Display.getHeight());
-                glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
-                pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
-                pl.camXEnd = pl.camXTEnd = 0.5f;
-                pl.camYEnd = pl.camYTEnd = 1f;
-            }
+        players3v[0] = (Place pl) -> {
+            glViewport(0, 0, width1o2, Display.getHeight());
+            glScissor(0, 0, width1o2, Display.getHeight());
+            glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+            pl.camXStart = pl.camXTStart = pl.camYStart = pl.camYTStart = 0f;
+            pl.camXEnd = pl.camXTEnd = 0.5f;
+            pl.camYEnd = pl.camYTEnd = 1f;
         };
-        players3v[1] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
-                glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
-                glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
-                pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
-                pl.camXTEnd = pl.camYTEnd = 1f;
-                pl.camXStart = pl.camYStart = 0f;
-            }
+        players3v[1] = (Place pl) -> {
+            glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
+            glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
+            glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+            pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
+            pl.camXTEnd = pl.camYTEnd = 1f;
+            pl.camXStart = pl.camYStart = 0f;
         };
-        players3v[2] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(width1o2, 0, width1o2, heigth1o2);
-                glScissor(width1o2, 0, width1o2, heigth1o2);
-                pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
-                pl.camXTEnd = 1f;
-                pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
-            }
+        players3v[2] = (Place pl) -> {
+            glViewport(width1o2, 0, width1o2, heigth1o2);
+            glScissor(width1o2, 0, width1o2, heigth1o2);
+            pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
+            pl.camXTEnd = 1f;
+            pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
         };
-        orients3[0] = new setOrient() {
-            @Override
-            public void setOrient(Place pl, int p) {
-                pl.ssMode = 3;
-                players3h[p].setPlayer(pl);
-            }
+        orients3[0] = (Place pl, int p) -> {
+            pl.ssMode = 3;
+            players3h[p].setPlayer(pl);
         };
-        orients3[1] = new setOrient() {
-            @Override
-            public void setOrient(Place pl, int p) {
-                pl.ssMode = 4;
-                players3v[p].setPlayer(pl);
-            }
+        orients3[1] = (Place pl, int p) -> {
+            pl.ssMode = 4;
+            players3v[p].setPlayer(pl);
         };
-        splits[2] = new setSplit() {
-            @Override
-            public void setSplit(Place pl, int p) {
-                if (!pl.settings.joinSS || isFar(pl)) {
-                    changeSSMode3(pl);
-                    orients3[pl.settings.hSplitScreen ? 0 : 1].setOrient(pl, p);
-                } else {
-                    glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                    pl.cam = pl.cams[1];
-                    pl.ssMode = 0;
-                    pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
-                    pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
-                    pl.singleCam = true;
-                }
+        splits[2] = (Place pl, int p) -> {
+            if (!pl.settings.joinSS || isFar(pl)) {
+                changeSSMode3(pl);
+                orients3[pl.settings.hSplitScreen ? 0 : 1].setOrient(pl, p);
+            } else {
+                glScissor(0, 0, Display.getWidth(), Display.getHeight());
+                pl.cam = pl.cams[1];
+                pl.ssMode = 0;
+                pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+                pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
+                pl.singleCam = true;
             }
         };
     }
 
-    private static void init3() {
-        players4[0] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(0, heigth1o2, width1o2, heigth1o2);
-                glScissor(0, heigth1o2, width1o2, heigth1o2);
-                glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
-                pl.camXStart = pl.camXTStart = 0f;
-                pl.camYStart = pl.camYTStart = -0.5f;
-                pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
-            }
+    private static void initialize3() {
+        players4[0] = (Place pl) -> {
+            glViewport(0, heigth1o2, width1o2, heigth1o2);
+            glScissor(0, heigth1o2, width1o2, heigth1o2);
+            glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
+            pl.camXStart = pl.camXTStart = 0f;
+            pl.camYStart = pl.camYTStart = -0.5f;
+            pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
         };
-        players4[1] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
-                glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
-                pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
-                pl.camXTEnd = pl.camYTEnd = 1f;
-                pl.camXStart = pl.camYStart = 0f;
-            }
+        players4[1] = (Place pl) -> {
+            glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
+            glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
+            pl.camXTStart = pl.camXEnd = pl.camYTStart = pl.camYEnd = 0.5f;
+            pl.camXTEnd = pl.camYTEnd = 1f;
+            pl.camXStart = pl.camYStart = 0f;
         };
-        players4[2] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(0, 0, width1o2, heigth1o2);
-                glScissor(0, 0, width1o2, heigth1o2);
-                pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
-                pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
-            }
+        players4[2] = (Place pl) -> {
+            glViewport(0, 0, width1o2, heigth1o2);
+            glScissor(0, 0, width1o2, heigth1o2);
+            pl.camYStart = pl.camYTStart = pl.camXStart = pl.camXTStart = 0f;
+            pl.camXEnd = pl.camXTEnd = pl.camYEnd = pl.camYTEnd = 0.5f;
         };
-        players4[3] = new setPlayer() {
-            @Override
-            public void setPlayer(Place pl) {
-                glViewport(width1o2, 0, width1o2, heigth1o2);
-                glScissor(width1o2, 0, width1o2, heigth1o2);
-                pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
-                pl.camXTEnd = 1f;
-                pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
-            }
+        players4[3] = (Place pl) -> {
+            glViewport(width1o2, 0, width1o2, heigth1o2);
+            glScissor(width1o2, 0, width1o2, heigth1o2);
+            pl.camXStart = pl.camYStart = pl.camYTStart = 0f;
+            pl.camXTEnd = 1f;
+            pl.camYEnd = pl.camYTEnd = pl.camXTStart = pl.camXEnd = 0.5f;
         };
-        splits[3] = new setSplit() {
-            @Override
-            public void setSplit(Place pl, int p) {
-                if (!pl.settings.joinSS || isFar(pl)) {
-                    pl.ssMode = 5;
-                    players4[p].setPlayer(pl);
-                } else {
-                    glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                    pl.cam = pl.cams[2];
-                    pl.ssMode = 0;
-                    pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
-                    pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
-                    pl.singleCam = true;
-                }
+        splits[3] = (Place pl, int p) -> {
+            if (!pl.settings.joinSS || isFar(pl)) {
+                pl.ssMode = 5;
+                players4[p].setPlayer(pl);
+            } else {
+                glScissor(0, 0, Display.getWidth(), Display.getHeight());
+                pl.cam = pl.cams[2];
+                pl.ssMode = 0;
+                pl.camXStart = pl.camYStart = pl.camXTStart = pl.camYTStart = 0f;
+                pl.camXEnd = pl.camYEnd = pl.camXTEnd = pl.camYTEnd = 1f;
+                pl.singleCam = true;
             }
         };
     }
 
-    private interface setSplit {
+    private interface setSplitType {
 
         void setSplit(Place pl, int p);
     }
 
-    private interface setOrient {
+    private interface setOrientType {
 
         void setOrient(Place pl, int p);
     }
 
-    private interface setPlayer {
+    private interface setPlayerNumber {
 
         void setPlayer(Place pl);
     }

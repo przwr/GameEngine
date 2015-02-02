@@ -20,7 +20,7 @@ public final class Controlers {
 
     private static Controller[] controllers;
 
-    public static Controller[] init() {
+    public static Controller[] initialize() {
         Controller[] tempControllers = new Controller[Controllers.getControllerCount()];
         int j = 0;
         for (int i = 0; i < Controllers.getControllerCount(); i++) {

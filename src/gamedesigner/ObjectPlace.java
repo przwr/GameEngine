@@ -62,7 +62,7 @@ public class ObjectPlace extends Place {
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
         SoundStore.get().poll(0);
-        initMethods();
+        initializeMethods();
     }
     
     @Override
@@ -70,38 +70,35 @@ public class ObjectPlace extends Place {
         ups[game.mode].up();
     }
     
-    private void initMethods() {
-        ups[0] = new update() {
-            @Override
-            public void up() {
-                if (Keyboard.isKeyDown(Keyboard.KEY_H)) {
-                    help.setVisible(true);
-                }
-                
-                if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-                    loadTextures();
-                }
-                
-                if (playersLength > 1) {
-                    changeSplitScreenJoin.act();
-                    changeSplitScreenMode.act();
-                    if (changeSplitScreenJoin.isOn()) {
-                        settings.joinSS = !settings.joinSS;
-                    }
-                    if (changeSplitScreenMode.isOn()) {
-                        changeSSMode = true;
-                    }
-                    cams[playersLength - 2].update();
-                }
-                for (int i = 0; i < playersLength; i++) {
-                    ((Player) players[i]).update();
-                }
-                maps.stream().forEach((map) -> {
-                    map.getSolidMobs().stream().forEach((mob) -> {
-                        mob.update(game.place);
-                    });
-                });
+    private void initializeMethods() {
+        ups[0] = () -> {
+            if (Keyboard.isKeyDown(Keyboard.KEY_H)) {
+                help.setVisible(true);
             }
+            
+            if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
+                loadTextures();
+            }
+            
+            if (playersLength > 1) {
+                changeSplitScreenJoin.act();
+                changeSplitScreenMode.act();
+                if (changeSplitScreenJoin.isOn()) {
+                    settings.joinSS = !settings.joinSS;
+                }
+                if (changeSplitScreenMode.isOn()) {
+                    changeSSMode = true;
+                }
+                cams[playersLength - 2].update();
+            }
+            for (int i = 0; i < playersLength; i++) {
+                ((Player) players[i]).update();
+            }
+            maps.stream().forEach((map) -> {
+                map.getSolidMobs().stream().forEach((mob) -> {
+                    mob.update(game.place);
+                });
+            });
         };
         ups[1] = () -> {
             System.err.println("ONLINE?..... pfft....");

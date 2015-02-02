@@ -608,7 +608,7 @@ public class ShadowRenderer {
         glPopMatrix();
     }
 
-    public static void initRenderer(Place place) {
+    public static void initializeRenderer(Place place) {
         points[0] = new Point(0, 0);
         points[1] = new Point(0, 0);
         points[2] = new Point(0, 0);

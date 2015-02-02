@@ -182,7 +182,7 @@ public class MyGameOnline extends GameOnline {
     int maxNrMobs; // temp for testing!
 
     @Override
-    public synchronized void initChanges() {
+    public synchronized void initializeChanges() {
         changes[0] = () -> {
             try {
                 for (int i = 0; i < newPls.length; i++) {
@@ -303,7 +303,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void up() {
+    public synchronized void update() {
         tempPlace = g.place;
         if (tempPlace == null) {
             return;

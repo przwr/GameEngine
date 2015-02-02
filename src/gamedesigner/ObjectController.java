@@ -36,7 +36,7 @@ public class ObjectController extends Controler {
     }
 
     @Override
-    public void init() {
+    public void initialize() {
         actions[0] = new ActionOnOff(inputs[0]);
         actions[1] = new ActionOnOff(inputs[1]);
         actions[2] = new ActionOnOff(inputs[2]);
