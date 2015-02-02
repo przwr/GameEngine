@@ -54,7 +54,7 @@ public abstract class Player extends Entity {
         controler.getMenuInput();
     }
 
-    public Camera getCam() {
+    public Camera getCamera() {
         return cam;
     }
 

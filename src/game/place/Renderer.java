@@ -46,7 +46,7 @@ public class Renderer {
                             if (place.players[pi].getMap() == map && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getSY() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getSY() / 2)
                                     && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getSX() / 2) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getSX() / 2)) {
                                 isVisible = true;
-                                (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = tmpLight;
+                                (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).nrVLights++] = tmpLight;
                             }
                         }
                     }
@@ -72,7 +72,7 @@ public class Renderer {
                         if (place.players[pi].getMap() == map && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getSY() / 2) && EY[pi] >= light.getY() - (light.getLight().getSY() / 2)
                                 && SX[pi] <= light.getX() + (light.getLight().getSX() / 2) && EX[pi] >= light.getX() - (light.getLight().getSX() / 2)) {
                             isVisible = true;
-                            (((Player) place.players[pi]).getCam()).visibleLights[(((Player) place.players[pi]).getCam()).nrVLights++] = light;
+                            (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).nrVLights++] = light;
                         }
                     }
                 }
@@ -88,7 +88,7 @@ public class Renderer {
         Place place = map.place ;
         for (int p = 0; p < place.getPlayersLenght(); p++) {
             if (map == place.players[p].getMap()) {
-                cam = (((Player) place.players[p]).getCam());
+                cam = (((Player) place.players[p]).getCamera());
                 cam.nrVLights = 0;
                 SX[p] = cam.getSX();
                 EX[p] = cam.getEX();

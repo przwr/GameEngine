@@ -20,7 +20,7 @@ public abstract class GameObject {
 
     protected double x, y;
     protected int width, height, depth, xStart, yStart;
-    protected boolean solid, emitter, emits, top, simpleLighting, alwaysVisible;
+    protected boolean solid, emitter, emits, top, simpleLighting, visible;
     protected Sprite sprite;
     protected Light light;
     protected String name;
@@ -44,6 +44,7 @@ public abstract class GameObject {
         this.y = y;
         this.place = place;
         depth = 0;
+        visible = true;
     }
 
     public void changeMap(Map map) {
@@ -92,8 +93,8 @@ public abstract class GameObject {
         return emits;
     }
 
-    public boolean isAlwaysVisible() {
-        return alwaysVisible;
+    public boolean isVisible() {
+        return visible;
     }
 
     public int getX() {
@@ -216,8 +217,8 @@ public abstract class GameObject {
         this.x = x;
     }
 
-    public void setAlwaysVisible(boolean vis) {
-        this.alwaysVisible = vis;
+    public void setVisible(boolean vis) {
+        this.visible = vis;
     }
 
     public void setY(double y) {

@@ -36,10 +36,11 @@ public class MyPlace extends Place {
         place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
-        generate(isHost);
+        //generate(isHost);
     }
 
-    private void generate(boolean isHost) {
+    @Override
+    public void generate(boolean isHost) {
         PolanaMap polana = new PolanaMap(mapId++, this, width, height, tileSize);
         KamiennaMap kamienna = new KamiennaMap(mapId++, this, width, height, tileSize);
         if (isHost) {

@@ -7,8 +7,10 @@ package game.place.cameras;
 
 import engine.Delay;
 import engine.Methods;
+import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.place.Map;
+import game.place.Place;
 import java.util.ArrayList;
 
 /**
@@ -18,7 +20,9 @@ import java.util.ArrayList;
 public abstract class Camera {
 
     protected final ArrayList<GameObject> gos = new ArrayList<>();
+    protected final ArrayList<GUIObject> gui = new ArrayList<>();
     protected Map map;
+    protected Place place;
     protected int Dwidth;
     protected int Dheight;
     protected int XMid, YMid;
@@ -32,17 +36,22 @@ public abstract class Camera {
     public int nrVLights;
     boolean shakeUp = true;
 
-    public Camera(Map map, GameObject go) {
-        this.map = map;
+    public Camera(GameObject go) {
         gos.add(go);
+        place = go.getPlace();
         delaylenght = 50;
         shakeDelay = new Delay(delaylenght);
         shakeDelay.start();
     }
 
     public synchronized void update() {
-        xOffset = Methods.interval(-map.getWidth() + 2 * Dwidth, Dwidth - getMidX(), 0);
-        yOffset = Methods.interval(-map.getHeight() + 2 * Dheight, Dheight - getMidY(), 0);
+        if (map != null) {
+            xOffset = Methods.interval(-map.getWidth() + 2 * Dwidth, Dwidth - getMidX(), 0);
+            yOffset = Methods.interval(-map.getHeight() + 2 * Dheight, Dheight - getMidY(), 0);
+        } else {
+            xOffset = Methods.interval(-place.getWidth() + 2 * Dwidth, Dwidth - getMidX(), 0);
+            yOffset = Methods.interval(-place.getHeight() + 2 * Dheight, Dheight - getMidY(), 0);
+        }
     }
 
     public synchronized void shake() {
@@ -57,6 +66,19 @@ public abstract class Camera {
                 shakeUp = true;
             }
             shakeDelay.start();
+        }
+    }
+
+    public void renderGUI() {
+        gui.stream().forEach((go) -> {
+            go.render(getSX() + getXOffEffect(), getSY() + getYOffEffect());
+        });
+    }
+
+    public void addGUI(GUIObject go) {
+        if (!gui.contains(go)) {
+            gui.add(go);
+            go.setCamera(this);
         }
     }
 
@@ -139,7 +161,7 @@ public abstract class Camera {
     public int getDheight() {
         return Dheight;
     }
-    
+
     public int getWidth() {
         return Dwidth * 2;
     }

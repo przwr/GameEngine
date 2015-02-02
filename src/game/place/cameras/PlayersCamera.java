@@ -18,13 +18,13 @@ public class PlayersCamera extends Camera {
 
     private initCam[] inits;
 
-    public PlayersCamera(final Map map, GameObject go, int ssX, int ssY, final int num) {
-        super(map, go);
+    public PlayersCamera(GameObject go, int ssX, int ssY, final int num) {
+        super(go);
         inits = new initCam[3];
         inits[0] = new initCam() {
             @Override
             public void init() {
-                if (map.place.settings.hSplitScreen) {
+                if (place.settings.hSplitScreen) {
                     if (num == 0) {
                         yDown = 2;
                     } else {
@@ -39,20 +39,20 @@ public class PlayersCamera extends Camera {
                 }
             }
         };
-        initsRest(map.place, num);
+        initsRest(place, num);
         init(ssX, ssY);
     }
 
-    public PlayersCamera(Map map, GameObject go, GameObject go2) {
-        super(map, go);
+    public PlayersCamera(GameObject go, GameObject go2) {
+        super(go);
         gos.add(go2);
         Dwidth = Display.getWidth() / 2;
         Dheight = Display.getHeight() / 2;
         update();
     }
 
-    public PlayersCamera(Map map, GameObject go, GameObject go2, GameObject go3) {
-        super(map, go);
+    public PlayersCamera(GameObject go, GameObject go2, GameObject go3) {
+        super(go);
         gos.add(go2);
         gos.add(go3);
         Dwidth = Display.getWidth() / 2;
@@ -60,8 +60,8 @@ public class PlayersCamera extends Camera {
         update();
     }
 
-    public PlayersCamera(Map map, GameObject go, GameObject go2, GameObject go3, GameObject go4) {
-        super(map, go);
+    public PlayersCamera(GameObject go, GameObject go2, GameObject go3, GameObject go4) {
+        super(go);
         gos.add(go2);
         gos.add(go3);
         gos.add(go4);
@@ -72,7 +72,7 @@ public class PlayersCamera extends Camera {
 
     private void init(int ssX, int ssY) {
         yUp = yDown = xLeft = xRight = 0;
-        if (map.place.settings.nrPlayers > 1) {
+        if (place.settings.nrPlayers > 1) {
             inits[map.place.settings.nrPlayers - 2].init();
         }
         Dwidth = Display.getWidth() / ssX;

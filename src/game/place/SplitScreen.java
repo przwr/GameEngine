@@ -80,12 +80,12 @@ public class SplitScreen {
         if (pl.changeSSMode) {
             if (pl.settings.hSplitScreen) {
                 pl.settings.hSplitScreen = false;
-                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInit(4, 2);
-                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInit(4, 2);
+                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInit(4, 2);
+                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInit(4, 2);
             } else {
                 pl.settings.hSplitScreen = true;
-                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInit(2, 4);
-                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInit(2, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInit(2, 4);
+                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInit(2, 4);
             }
             pl.changeSSMode = false;
         }
@@ -95,14 +95,14 @@ public class SplitScreen {
         if (pl.changeSSMode) {
             if (pl.settings.hSplitScreen) {
                 pl.settings.hSplitScreen = false;
-                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInit(4, 2);
-                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInit(4, 4);
-                ((PlayersCamera) ((Player) pl.players[2]).getCam()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInit(4, 2);
+                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[2]).getCamera()).reInit(4, 4);
             } else {
                 pl.settings.hSplitScreen = true;
-                ((PlayersCamera) ((Player) pl.players[0]).getCam()).reInit(2, 4);
-                ((PlayersCamera) ((Player) pl.players[1]).getCam()).reInit(4, 4);
-                ((PlayersCamera) ((Player) pl.players[2]).getCam()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[0]).getCamera()).reInit(2, 4);
+                ((PlayersCamera) ((Player) pl.players[1]).getCamera()).reInit(4, 4);
+                ((PlayersCamera) ((Player) pl.players[2]).getCamera()).reInit(4, 4);
             }
             pl.changeSSMode = false;
         }
