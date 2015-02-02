@@ -43,7 +43,7 @@ public class Area extends GameObject {
         return new Area(x, y, false, false);
     }
 
-    private Area(int x, int y, boolean border, boolean whole) {  //Najlepiej było by gdyby punkt (x, y) był w górnym lewym rogu całego pola
+    private Area(int x, int y, boolean border, boolean whole) {  //Point (x, y) should be in left top corner of Area
         this.x = x;
         this.y = y;
         this.border = border;

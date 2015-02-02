@@ -49,7 +49,7 @@ public abstract class Place extends ScreenPlace {
         sounds = new SoundBase();
         sprites = new SpriteBase(scale());
         place = this;
-        initMethods();
+        initializeMethods();
     }
 
     @Override
@@ -73,7 +73,7 @@ public abstract class Place extends ScreenPlace {
         return sounds;
     }
 
-    private void initMethods() {
+    private void initializeMethods() {
         renders[0] = () -> {
             tempMaps.clear();
             Map map;
@@ -161,7 +161,7 @@ public abstract class Place extends ScreenPlace {
     }
 
     public void makeShadows() {
-        Renderer.initVariables(this);
+        Renderer.initializeVariables(this);
     }
 
     public int getPlayersLenght() {

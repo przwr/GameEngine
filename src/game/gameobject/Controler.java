@@ -29,5 +29,5 @@ public abstract class Controler {
 
     public abstract int getActionsCount();
 
-    public abstract void init();
+    public abstract void initialize();
 }

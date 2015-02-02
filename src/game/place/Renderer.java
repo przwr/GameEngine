@@ -184,8 +184,8 @@ public class Renderer {
         glPopMatrix();
     }
 
-    public static void initVariables(Place place) {
-        ShadowRenderer.initRenderer(place);
+    public static void initializeVariables(Place place) {
+        ShadowRenderer.initializeRenderer(place);
         fbFrame = new FBORendererRegular(displayWidth, displayHeight, place.settings);
         borders[0] = () -> {
             glBegin(GL_QUADS);
@@ -203,10 +203,10 @@ public class Renderer {
             glVertex2f(halfDisplayWidth + 1, 0);
             glEnd();
         };
-        initBorders();
+        initializeBorders();
     }
 
-    private static void initBorders() {
+    private static void initializeBorders() {
         borders[2] = () -> {
             glBegin(GL_QUADS);
             glVertex2f(0, halfDisplayHeight - 1);

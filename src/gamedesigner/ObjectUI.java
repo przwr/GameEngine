@@ -36,7 +36,7 @@ public class ObjectUI extends GameObject {
         this.tile = tile;
         this.tex = tex;
         place = p;
-        top = true;
+        onTop = true;
         alwaysVisible = true;
     }
 

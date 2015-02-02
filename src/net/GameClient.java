@@ -37,7 +37,7 @@ public class GameClient {
     private Delay delay;
 
     public GameClient(final Player player, final GameOnline game, String IP) {
-        this.game = game;
+        this.game = game;        
         this.SCALE = game.g.settings.SCALE;
         delay = new Delay(20);
         delay.terminate();
@@ -48,6 +48,7 @@ public class GameClient {
             cleanUp(e);
         }
         client = temp;
+
         try {
             Log.set(Log.LEVEL_DEBUG);
             KryoUtil.registerClientClass(client);
@@ -62,7 +63,6 @@ public class GameClient {
                 @Override
                 public void received(Connection connection, Object obj) {
                     if (obj instanceof PacketUpdate) {
-                        //System.out.println(Methods.sizeInBytes((PacketUpdate) obj));
                         game.update((PacketUpdate) obj);
                     }
                     if (obj instanceof PacketMessage) {
@@ -160,5 +160,4 @@ public class GameClient {
         game.g.endGame();
         Methods.error(msg);
     }
-
 }

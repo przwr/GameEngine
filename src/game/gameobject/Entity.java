@@ -19,13 +19,13 @@ import org.newdawn.slick.Color;
  */
 public abstract class Entity extends GameObject {
 
-    public Update firstUpdate, secondUpdate;
     public Update[] updates = new Update[4];
     public int lastAdded;
     protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
     protected double scale, xEnvironmentalSpeed, yEnvironmentalSpeed, xSpeed, ySpeed, maxSpeed, jumpHeight, resistance = 1;
     protected boolean jumping, hop;
-    private int curentUpdate, deltasCount, xPosition, yPosition, xDelta, yDelta;
+    private Update currentUpdate;
+    private int currentUpdateID, deltasCount, xPosition, yPosition, xDelta, yDelta, destinationX, destinationY;
     private Player colided;
 
     public abstract void updateOnline();
@@ -51,37 +51,37 @@ public abstract class Entity extends GameObject {
                     useNextUpdateSoft();
                 }
             }
-        } catch (Exception e) {
-            System.out.println("ERROR: UpdateSoft" + e.getMessage());
+        } catch (Exception exception) {
+            System.out.println("ERROR: UpdateSoft" + exception);
         }
     }
 
     private void useCurrentUpdateSoft() {
-        int x = Methods.roundHalfUp((firstUpdate.getX() - firstUpdate.getXDeltas().get(deltasCount)) * scale);
-        int y = Methods.roundHalfUp((firstUpdate.getY() - firstUpdate.getYDeltas().get(deltasCount)) * scale);
-        if (collision.isCollideSolid(x, y, map)) {
-            moveIfPossible(x - getX(), y - getY());
+        destinationX = Methods.roundHalfUp((currentUpdate.getX() - currentUpdate.getXDeltas().get(deltasCount)) * scale);
+        destinationY = Methods.roundHalfUp((currentUpdate.getY() - currentUpdate.getYDeltas().get(deltasCount)) * scale);
+        if (collision.isCollideSolid(destinationX, destinationY, map)) {
+            moveIfPossible(destinationX - getX(), destinationY - getY());
         } else {
-            setPosition(x, y);
+            setPosition(destinationX, destinationY);
         }
         deltasCount++;
     }
 
     private void useNextUpdateSoft() {
-        if (curentUpdate == 3) {
-            curentUpdate = 0;
+        if (currentUpdateID == 3) {
+            currentUpdateID = 0;
         } else {
-            curentUpdate++;
+            currentUpdateID++;
         }
-        firstUpdate = updates[curentUpdate];
-        if (firstUpdate != null) {
-            updateRest(firstUpdate);
-            int x = Methods.roundHalfUp(firstUpdate.getX() * scale);
-            int y = Methods.roundHalfUp(firstUpdate.getY() * scale);
-            if (collision.isCollideSolid(x, y, map)) {
-                moveIfPossible(x - getX(), y - getY());
+        currentUpdate = updates[currentUpdateID];
+        if (currentUpdate != null) {
+            updateRest(currentUpdate);
+            destinationX = Methods.roundHalfUp(currentUpdate.getX() * scale);
+            destinationY = Methods.roundHalfUp(currentUpdate.getY() * scale);
+            if (collision.isCollideSolid(destinationX, destinationY, map)) {
+                moveIfPossible(destinationX - getX(), destinationY - getY());
             } else {
-                setPosition(x, y);
+                setPosition(destinationX, destinationY);
             }
             deltasCount = 0;
         }
@@ -91,8 +91,7 @@ public abstract class Entity extends GameObject {
         try {
             if (canUpdate()) {
                 if (inSameUpdate()) {
-                    moveToPoint(Methods.roundHalfUp((firstUpdate.getX() - firstUpdate.getXDeltas().get(deltasCount)) * scale) - getX(), Methods.roundHalfUp((firstUpdate.getY() - firstUpdate.getYDeltas().get(deltasCount)) * scale) - getY());
-                    deltasCount++;
+                    useCurrentUpdateHard();
                 } else {
                     useNextUpdateHard();
                 }
@@ -102,26 +101,31 @@ public abstract class Entity extends GameObject {
         }
     }
 
+    private void useCurrentUpdateHard() {
+        moveToPoint(Methods.roundHalfUp((currentUpdate.getX() - currentUpdate.getXDeltas().get(deltasCount)) * scale) - getX(), Methods.roundHalfUp((currentUpdate.getY() - currentUpdate.getYDeltas().get(deltasCount)) * scale) - getY());
+        deltasCount++;
+    }
+
     private void useNextUpdateHard() {
-        if (curentUpdate == 3) {
-            curentUpdate = 0;
+        if (currentUpdateID == 3) {
+            currentUpdateID = 0;
         } else {
-            curentUpdate++;
+            currentUpdateID++;
         }
-        firstUpdate = updates[curentUpdate];
-        if (firstUpdate != null) {
-            updateRest(firstUpdate);
-            moveToPoint(Methods.roundHalfUp(firstUpdate.getX() * scale) - getX(), Methods.roundHalfUp(firstUpdate.getY() * scale) - getY());
+        currentUpdate = updates[currentUpdateID];
+        if (currentUpdate != null) {
+            updateRest(currentUpdate);
+            moveToPoint(Methods.roundHalfUp(currentUpdate.getX() * scale) - getX(), Methods.roundHalfUp(currentUpdate.getY() * scale) - getY());
             deltasCount = 0;
         }
     }
 
     private boolean canUpdate() {
-        return updates[3] != null && ((curentUpdate != 3 || lastAdded != 0) && (curentUpdate + 1 != lastAdded));
+        return updates[3] != null && ((currentUpdateID != 3 || lastAdded != 0) && (currentUpdateID + 1 != lastAdded));
     }
 
     private boolean inSameUpdate() {
-        return firstUpdate != null && deltasCount < firstUpdate.getXDeltas().size();
+        return currentUpdate != null && deltasCount < currentUpdate.getXDeltas().size();
     }
 
     public void moveIfPossible(int xMagnitude, int yMagnitude) {

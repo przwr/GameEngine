@@ -16,31 +16,28 @@ import org.lwjgl.opengl.Display;
  */
 public class PlayersCamera extends Camera {
 
-    private initCam[] inits;
+    private initializeCam[] inits;
 
     public PlayersCamera(final Map map, GameObject go, int ssX, int ssY, final int num) {
         super(map, go);
-        inits = new initCam[3];
-        inits[0] = new initCam() {
-            @Override
-            public void init() {
-                if (map.place.settings.hSplitScreen) {
-                    if (num == 0) {
-                        yDown = 2;
-                    } else {
-                        yUp = 2;
-                    }
+        inits = new initializeCam[3];
+        inits[0] = () -> {
+            if (map.place.settings.hSplitScreen) {
+                if (num == 0) {
+                    yDown = 2;
                 } else {
-                    if (num == 0) {
-                        xRight = 2;
-                    } else {
-                        xLeft = 2;
-                    }
+                    yUp = 2;
+                }
+            } else {
+                if (num == 0) {
+                    xRight = 2;
+                } else {
+                    xLeft = 2;
                 }
             }
         };
         initsRest(map.place, num);
-        init(ssX, ssY);
+        initialize(ssX, ssY);
     }
 
     public PlayersCamera(Map map, GameObject go, GameObject go2) {
@@ -70,20 +67,20 @@ public class PlayersCamera extends Camera {
         update();
     }
 
-    private void init(int ssX, int ssY) {
+    private void initialize(int ssX, int ssY) {
         yUp = yDown = xLeft = xRight = 0;
         if (map.place.settings.nrPlayers > 1) {
-            inits[map.place.settings.nrPlayers - 2].init();
+            inits[map.place.settings.nrPlayers - 2].initialize();
         }
         Dwidth = Display.getWidth() / ssX;
         Dheight = Display.getHeight() / ssY;
         update();
     }
 
-    public void reInit(int ssX, int ssY) {
+    public void reInitialize(int ssX, int ssY) {
         yUp = yDown = xLeft = xRight = 0;
         if (map.place.settings.nrPlayers > 1) {
-            inits[map.place.settings.nrPlayers - 2].init();
+            inits[map.place.settings.nrPlayers - 2].initialize();
         }
         Dwidth = Display.getWidth() / ssX;
         Dheight = Display.getHeight() / ssY;
@@ -91,52 +88,46 @@ public class PlayersCamera extends Camera {
     }
 
     private void initsRest(final Place place, final int num) {
-        inits[1] = new initCam() {
-            @Override
-            public void init() {
-                if (place.settings.hSplitScreen) {
-                    if (num == 0) {
-                        yDown = 2;
-                    } else if (num == 1) {
-                        xRight = yUp = 2;
-                    } else {
-                        xLeft = yUp = 2;
-                    }
+        inits[1] = () -> {
+            if (place.settings.hSplitScreen) {
+                if (num == 0) {
+                    yDown = 2;
+                } else if (num == 1) {
+                    xRight = yUp = 2;
                 } else {
-                    if (num == 0) {
-                        xRight = 2;
-                    } else if (num == 1) {
-                        xLeft = yDown = 2;
-                    } else {
-                        xLeft = yUp = 2;
-                    }
+                    xLeft = yUp = 2;
+                }
+            } else {
+                if (num == 0) {
+                    xRight = 2;
+                } else if (num == 1) {
+                    xLeft = yDown = 2;
+                } else {
+                    xLeft = yUp = 2;
                 }
             }
         };
-        inits[2] = new initCam() {
-            @Override
-            public void init() {
-                if (place.settings.hSplitScreen) {
-                    if (num == 0) {
-                        xRight = 2;
-                        yDown = 2;
-                    } else if (num == 1) {
-                        xLeft = 2;
-                        yDown = 2;
-                    } else if (num == 2) {
-                        xRight = 2;
-                        yUp = 2;
-                    } else {
-                        xLeft = 2;
-                        yUp = 2;
-                    }
+        inits[2] = () -> {
+            if (place.settings.hSplitScreen) {
+                if (num == 0) {
+                    xRight = 2;
+                    yDown = 2;
+                } else if (num == 1) {
+                    xLeft = 2;
+                    yDown = 2;
+                } else if (num == 2) {
+                    xRight = 2;
+                    yUp = 2;
+                } else {
+                    xLeft = 2;
+                    yUp = 2;
                 }
             }
         };
     }
 
-    private interface initCam {
+    private interface initializeCam {
 
-        void init();
+        void initialize();
     }
 }

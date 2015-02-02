@@ -20,7 +20,7 @@ public abstract class GameObject {
 
     protected double x, y;
     protected int width, height, depth, xStart, yStart;
-    protected boolean solid, emitter, emits, top, simpleLighting, alwaysVisible;
+    protected boolean solid, emitter, emits, onTop, simpleLighting, alwaysVisible;
     protected Sprite sprite;
     protected Light light;
     protected String name;
@@ -38,7 +38,7 @@ public abstract class GameObject {
 
     public abstract void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
 
-    protected void init(String name, int x, int y, Place place) {
+    protected void initialize(String name, int x, int y, Place place) {
         this.name = name;
         this.x = x;
         this.y = y;
@@ -81,7 +81,7 @@ public abstract class GameObject {
     }
 
     public boolean isOnTop() {
-        return top;
+        return onTop;
     }
 
     public boolean isEmitter() {
@@ -136,28 +136,20 @@ public abstract class GameObject {
         return (int) y + collision.getHeight() / 2;
     }
 
-    public int getObjBegOfX() {
+    public int getXObjectBegin() {
         return (int) x + sprite.getSx() + xStart;
     }
 
-    public int getObjBegOfY() {
+    public int getYObjectBegin() {
         return (int) y + sprite.getSy() + yStart;
     }
 
-    public int getObjEndOfX() {
+    public int getXObjectEnd() {
         return (int) x + sprite.getSx() + xStart + width;
     }
 
-    public int getObjEndOfY() {
+    public int getYObjectEnd() {
         return (int) y + sprite.getSy() + yStart + height;
-    }
-
-    public int getObjectBegY() {
-        return (int) y + collision.getHeight() / 2 - height;
-    }
-
-    public int getObjectEndY() {
-        return (int) y + collision.getHeight() / 2;
     }
 
     public Figure getCollision() {
@@ -204,8 +196,8 @@ public abstract class GameObject {
         this.solid = solid;
     }
 
-    public void setOnTop(boolean top) {
-        this.top = top;
+    public void setOnTop(boolean onTop) {
+        this.onTop = onTop;
     }
 
     public void setEmits(boolean emits) {
@@ -224,8 +216,8 @@ public abstract class GameObject {
         this.y = y;
     }
 
-    public void setDepth(int d) {
-        depth = d;
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     public void setWidth(int width) {
@@ -236,12 +228,12 @@ public abstract class GameObject {
         this.height = height;
     }
 
-    public void setCollision(Figure f) {
-        collision = f;
+    public void setCollision(Figure figure) {
+        collision = figure;
     }
 
-    public void setMapNotChange(Map otherMap) {
-        map = otherMap;
+    public void setMapNotChange(Map map) {
+        this.map = map;
     }
 
     public void setPlace(Place place) {

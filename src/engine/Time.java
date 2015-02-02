@@ -28,7 +28,7 @@ public final class Time {
         curentTime = getTime();
     }
 
-    public static void init() {
+    public static void initialize() {
         lastTime = getTime();
         curentTime = getTime();
     }

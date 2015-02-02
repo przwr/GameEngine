@@ -48,16 +48,16 @@ public class ObjectPlayer extends Player {
         maxtimer = 7;
         xtimer = 0;
         ytimer = 0;
-        initControler();
+        initializeController();
     }
 
-    private void initControler() {
+    private void initializeController() {
         controler = new ObjectController(this);
         controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
         controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
         controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
         controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        controler.init();
+        controler.initialize();
     }
 
     public void addUI(ObjectUI ui) {
@@ -74,7 +74,7 @@ public class ObjectPlayer extends Player {
         this.yStart = Methods.roundHalfUp(scale * startY);
         this.setWeight(2);
         this.emitter = true;
-        init(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
+        initialize(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);

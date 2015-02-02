@@ -186,7 +186,7 @@ public class Map {
     }
 
     public void makeShadows() {
-        Renderer.initVariables(place);
+        Renderer.initializeVariables(place);
     }
 
     public void renderBottom(Camera cam) {

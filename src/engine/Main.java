@@ -47,22 +47,22 @@ public class Main {
 
     public static void run() {
         settings = getSettingsFromFile(new File("res/settings.ini"));
-        tryInitDisplay();
-        initOpenGL();
-        initGame();
+        initializeDisplay();
+        initializeOpenGL();
+        initializeGame();
         gameLoop();
         cleanUp();
     }
 
-    private static void tryInitDisplay() {
+    private static void initializeDisplay() {
         try {
-            initDisplay();
+            tryInitializeDisplay();
         } catch (LWJGLException exception) {
             Methods.javaError(exception.toString());
         }
     }
 
-    private static void initDisplay() throws LWJGLException {
+    private static void tryInitializeDisplay() throws LWJGLException {
         setDisplayMode(settings.resolutionWidth, settings.resolutionHeight, settings.frequency, settings.fullScreen);
         createDisplay();
         Display.setResizable(false);
@@ -74,7 +74,7 @@ public class Main {
         Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
         Mouse.setNativeCursor(emptyCursor);
         Controllers.create();
-        controllers = Controlers.init();
+        controllers = Controlers.initialize();
     }
 
     private static void setDisplayMode(int width, int height, int frequency, boolean fullscreen) {
@@ -166,7 +166,7 @@ public class Main {
         }
     }
 
-    private static void initOpenGL() {
+    private static void initializeOpenGL() {
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_MULTISAMPLE);
@@ -179,14 +179,14 @@ public class Main {
         glClearColor(0, 0, 0, 0);
     }
 
-    private static void initGame() {
+    private static void initializeGame() {
         game = new MyGame("Pervert Rabbits Attack", settings, controllers);
         Display.setTitle(game.getTitle());
         pop = new Popup("Amble-Regular", settings.SCALE);
     }
 
     private static void gameLoop() {
-        Time.init();
+        Time.initialize();
         while (isRunning()) {
             Time.update();
             Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
