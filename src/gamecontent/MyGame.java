@@ -276,16 +276,16 @@ public class MyGame extends Game {
     private void updatePlayersCam() {
         for (int nr = 0; nr < place.playersLength; nr++) {
             if (place.playersLength == 1) {
-                ((PlayersCamera) ((Player) place.players[0]).getCamera()).reInit(2, 2);
+                ((PlayersCamera) ((Player) place.players[0]).getCamera()).reInitialize(2, 2);
             } else if (place.playersLength == 2) {
                 if (place.cams[0] == null) {
                     place.cams[0] = new PlayersCamera(players[0], players[1]);
                     place.cams[0].setMap(players[0].getMap());
                 }
                 if (settings.hSplitScreen) {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInit(2, 4);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4);
                 } else {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInit(4, 2);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2);
                 }
             } else if (place.playersLength == 3) {
                 if (place.cams[1] == null) {
@@ -294,19 +294,19 @@ public class MyGame extends Game {
                 }
                 if (nr == 0) {
                     if (settings.hSplitScreen) {
-                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInit(2, 4);
+                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4);
                     } else {
-                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInit(4, 2);
+                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2);
                     }
                 } else {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInit(4, 4);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4);
                 }
             } else {
                 if (place.cams[2] == null) {
                     place.cams[2] = new PlayersCamera(players[0], players[1], players[2], players[3]);
                     place.cams[2].setMap(players[0].getMap());
                 }
-                ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInit(4, 4);
+                ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4);
             }
         }
     }

@@ -18,11 +18,11 @@ public class PlayersCamera extends Camera {
 
     private initializeCam[] inits;
 
-    public PlayersCamera(final Map map, GameObject go, int ssX, int ssY, final int num) {
-        super(map, go);
+    public PlayersCamera(GameObject go, int ssX, int ssY, final int num) {
+        super(go);
         inits = new initializeCam[3];
         inits[0] = () -> {
-            if (map.place.settings.hSplitScreen) {
+            if (place.settings.hSplitScreen) {
                 if (num == 0) {
                     yDown = 2;
                 } else {
@@ -36,7 +36,7 @@ public class PlayersCamera extends Camera {
                 }
             }
         };
-        initsRest(map.place, num);
+        initsRest(place, num);
         initialize(ssX, ssY);
     }
 
@@ -69,8 +69,8 @@ public class PlayersCamera extends Camera {
 
     private void initialize(int ssX, int ssY) {
         yUp = yDown = xLeft = xRight = 0;
-        if (map.place.settings.nrPlayers > 1) {
-            inits[map.place.settings.nrPlayers - 2].initialize();
+        if (place.settings.nrPlayers > 1) {
+            inits[place.settings.nrPlayers - 2].initialize();
         }
         Dwidth = Display.getWidth() / ssX;
         Dheight = Display.getHeight() / ssY;
@@ -79,8 +79,8 @@ public class PlayersCamera extends Camera {
 
     public void reInitialize(int ssX, int ssY) {
         yUp = yDown = xLeft = xRight = 0;
-        if (map.place.settings.nrPlayers > 1) {
-            inits[map.place.settings.nrPlayers - 2].initialize();
+        if (place.settings.nrPlayers > 1) {
+            inits[place.settings.nrPlayers - 2].initialize();
         }
         Dwidth = Display.getWidth() / ssX;
         Dheight = Display.getHeight() / ssY;

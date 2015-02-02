@@ -82,7 +82,7 @@ public abstract class GameObject {
     }
 
     public boolean isOnTop() {
-        return onTop;
+        return top;
     }
 
     public boolean isEmitter() {
@@ -198,7 +198,7 @@ public abstract class GameObject {
     }
 
     public void setOnTop(boolean onTop) {
-        this.onTop = onTop;
+        this.top = onTop;
     }
 
     public void setEmits(boolean emits) {
