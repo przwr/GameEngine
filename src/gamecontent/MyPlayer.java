@@ -148,7 +148,7 @@ public class MyPlayer extends Player {
             hop = false;
             jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
             jumpDelta += Time.getDelta();
-            if ((int) jumpDelta == 68) {
+            if ((int) jumpDelta >= 68) {
                 jumping = false;
                 jumpDelta = 22.6f;
             }
@@ -170,10 +170,11 @@ public class MyPlayer extends Player {
         if (jumping) {
             jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
             jumpDelta += Time.getDelta();
-            if ((int) jumpDelta == 68) {
+            if ((int) jumpDelta >= 68) {
                 jumping = false;
                 jumpDelta = 22.5f;
             }
+
         }
         tempXSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
         tempYSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
@@ -196,6 +197,7 @@ public class MyPlayer extends Player {
         } else {
             online.g.endGame();
         }
+        hop = false;
     }
 
     @Override
@@ -218,6 +220,7 @@ public class MyPlayer extends Player {
     public synchronized void updateOnline() {
         try {
             if (jumping) {
+
                 jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
                 jumpDelta += Time.getDelta();
                 if ((int) jumpDelta == 68) {

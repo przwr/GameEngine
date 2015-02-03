@@ -201,8 +201,8 @@ public class Map {
                 }
                 y++;
             }
-            if (object.isVisible() && cam.getYStart()<= object.getY() + (object.getHeight()) && cam.getYEnd()>= object.getY() - (object.getHeight())
-                    && cam.getXStart()<= object.getX() + (object.getWidth()) && cam.getXEnd()>= object.getX() - (object.getWidth())) {
+            if (object.isVisible() && cam.getYStart() <= object.getY() + (object.getHeight()) && cam.getYEnd() >= object.getY() - (object.getHeight())
+                    && cam.getXStart() <= object.getX() + (object.getWidth()) && cam.getXEnd() >= object.getX() - (object.getWidth())) {
                 object.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
         }
@@ -214,10 +214,10 @@ public class Map {
     public void renderTop(Camera cam) {
         Drawer.refreshForRegularDrawing();
         sortObjectsByDepth(objectsOnTop);
-        for (GameObject go : objectsOnTop) {
-            if (go.isVisible() && cam.getYStart()<= go.getY() + (go.getHeight()) && cam.getYEnd()>= go.getY() - (go.getHeight())
-                    && cam.getXStart()<= go.getX() + (go.getWidth()) && cam.getXEnd()>= go.getX() - (go.getWidth())) {
-                go.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
+        for (GameObject object : objectsOnTop) {
+            if (object.isVisible() && cam.getYStart() <= object.getY() + (object.getHeight()) && cam.getYEnd() >= object.getY() - (object.getHeight())
+                    && cam.getXStart() <= object.getX() + (object.getWidth()) && cam.getXEnd() >= object.getX() - (object.getWidth())) {
+                object.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
         }
     }

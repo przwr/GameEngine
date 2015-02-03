@@ -6,7 +6,6 @@
 package game.place.cameras;
 
 import game.gameobject.GameObject;
-import game.place.Map;
 import game.place.Place;
 import org.lwjgl.opengl.Display;
 

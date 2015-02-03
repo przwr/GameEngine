@@ -18,73 +18,72 @@ import sprites.Sprite;
  */
 public class Light {
 
-    protected Sprite light;
-    protected float r;
-    protected float g;
-    protected float b;
+    protected Sprite texture;
+    protected float red, green, blue;
 
-    protected FBORenderer fbo;
+    protected FrameBufferObject frameBufferObject;
 
-    public Light(String lightName, float r, float g, float b, int sx, int sy, Place place) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
+    public Light(String name, float red, float green, float blue, int xStart, int yStart, Place place) {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
         if (!place.settings.shadowOff) {
-            fbo = (place.settings.nrSamples > 0) ? new FBORendererMS(sx, sy, place.settings) : new FBORendererRegular(sx, sy, place.settings);
+            frameBufferObject = (place.settings.nrSamples > 0) ? new MultiSampleFrameBufferObject(xStart, yStart, place.settings)
+                    : new RegularFrameBufferObject(xStart, yStart, place.settings);
         }
-        this.light = Sprite.create(lightName, sx, sy, null);
+        this.texture = Sprite.create(name, xStart, yStart, null);
     }
 
-    public void setSize(int sx, int sy) {
-        light.setWidth(sx);
-        light.setHeight(sy);
+    public void setSize(int width, int height) {
+        texture.setWidth(width);
+        texture.setHeight(height);
     }
 
-    public void setColor(float r, float g, float b) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
+    public void setColor(float red, float green, float blue) {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     }
 
     public void render(GameObject emitter, Place place, int x, int y) {
-        if (light != null) {
-            glColor3f(r, g, b);
+        if (texture != null) {
+            glColor3f(red, green, blue);
             glPushMatrix();
-            glTranslatef(emitter.getX() - light.getWidth() / 2 + x, emitter.getY() - light.getHeight() / 2 + y, 0);
-            light.render();
+            glTranslatef(emitter.getX() - texture.getWidth() / 2 + x, emitter.getY() - texture.getHeight() / 2 + y, 0);
+            texture.render();
             glPopMatrix();
         }
     }
 
-    public void render(int h) {
-        if (light != null) {
-            glColor3f(r, g, b);
+    public void render(int height) {
+        if (texture != null) {
+            glColor3f(red, green, blue);
             glPushMatrix();
-            glTranslatef(0, h, 0);
-            light.render();
+            glTranslatef(0, height, 0);
+            texture.render();
             glPopMatrix();
         }
     }
 
     public void render() {
-        if (light != null) {
-            glColor3f(r, g, b);
+        if (texture != null) {
+            glColor3f(red, green, blue);
             glPushMatrix();
-            light.render();
+            texture.render();
             glPopMatrix();
         }
     }
 
-    public int getSX() {
-        return light.getWidth();
+    public int getWidth() {
+        return texture.getWidth();
     }
 
-    public int getSY() {
-        return light.getHeight();
+    public int getHeight() {
+        return texture.getHeight();
     }
 
-    public FBORenderer getFBO() {
-        return fbo;
+    public FrameBufferObject getFBO() {
+        return frameBufferObject;
     }
 
 }

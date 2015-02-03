@@ -60,7 +60,7 @@ public class ShadowRenderer {
 
     public static void preRendLight(Map map, GameObject emitter) {
         findShades(emitter, map);
-        emitter.getLight().fbo.activate();
+        emitter.getLight().frameBufferObject.activate();
         clearFBO(1);
         glDisable(GL_TEXTURE_2D);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -75,16 +75,16 @@ public class ShadowRenderer {
                     calculateWalls(shade, emitter);
                     if (shade.isLittable() && emitter.getY() >= shade.getYEnd()) {
                         shade.setShadowColor((emitter.getY() - shade.getYEnd()) / LH1o2);
-                        shade.getOwner().renderShadowLit((emitter.getLight().getSX() / 2) - (emitter.getX()),
-                                (emitter.getLight().getSY() / 2) - (emitter.getY()) + h - emitter.getLight().getSY(), shade.getShadowColor(), shade);
+                        shade.getOwner().renderShadowLit((emitter.getLight().getWidth() / 2) - (emitter.getX()),
+                                (emitter.getLight().getHeight() / 2) - (emitter.getY()) + h - emitter.getLight().getHeight(), shade.getShadowColor(), shade);
                         shade.addShadow(shadow1);
                     } else {
                         shade.addShadow(shadow0);
                     }
                 } else if (shade.isLittable() && emitter.getY() >= shade.getYEnd()) {
                     shade.setShadowColor((emitter.getY() - shade.getYEnd()) / LH1o2);
-                    shade.getOwner().renderShadowLit((emitter.getLight().getSX() / 2) - (emitter.getX()),
-                            (emitter.getLight().getSY() / 2) - (emitter.getY()) + h - emitter.getLight().getSY(), shade.getShadowColor(), shade);
+                    shade.getOwner().renderShadowLit((emitter.getLight().getWidth() / 2) - (emitter.getX()),
+                            (emitter.getLight().getHeight() / 2) - (emitter.getY()) + h - emitter.getLight().getHeight(), shade.getShadowColor(), shade);
                     shade.addShadow(shadow1);
                 } else {
                     shade.addShadow(shadow0);
@@ -106,8 +106,8 @@ public class ShadowRenderer {
         glEnable(GL_TEXTURE_2D);
         glColor3f(1f, 1f, 1f);
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        emitter.getLight().render(h - emitter.getLight().getSY());
-        emitter.getLight().fbo.deactivate();
+        emitter.getLight().render(h - emitter.getLight().getHeight());
+        emitter.getLight().frameBufferObject.deactivate();
     }
 
     private static void solveShadows(Figure sh) {
@@ -158,22 +158,22 @@ public class ShadowRenderer {
             if (!area.isBorder()) {
                 if (area.isWhole()) {
                     tmp = area.getCollision();
-                    if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getSY() / 2) + (tmp.getHeight() / 2))
-                            && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getSX() / 2) + (tmp.getWidth() / 2))) {
+                    if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
+                            && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
                         shades[nrShades++] = tmp;
                         tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
                     }
                     for (Figure tmp : area.getParts()) {
-                        if (tmp != null && !tmp.isLittable() && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getSY() / 2) + (tmp.getHeight() / 2))
-                                && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getSX() / 2) + (tmp.getWidth() / 2))) {
+                        if (tmp != null && !tmp.isLittable() && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
+                                && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
                             shades[nrShades++] = tmp;
                             tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
                         }
                     }
                 } else {
                     for (Figure tmp : area.getParts()) {
-                        if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getSY() / 2) + (tmp.getHeight() / 2))
-                                && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getSX() / 2) + (tmp.getWidth() / 2))) {
+                        if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
+                                && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
                             shades[nrShades++] = tmp;
                             tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
                         }
@@ -183,8 +183,8 @@ public class ShadowRenderer {
         }
         for (GameObject go : map.getDepthObjects()) {   // FGTiles muszą mieć Collision
             tmp = go.getCollision();
-            if (tmp != null && tmp.isLittable() && ((FastMath.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getSY() / 2) + (tmp.getOwner().getCollisionHeight() / 2))
-                    && (FastMath.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getSX() / 2) + (tmp.getOwner().getCollisionWidth() / 2)))) {
+            if (tmp != null && tmp.isLittable() && ((FastMath.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getOwner().getCollisionHeight() / 2))
+                    && (FastMath.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getOwner().getCollisionWidth() / 2)))) {
                 shades[nrShades++] = tmp;
                 tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
             }
@@ -213,7 +213,7 @@ public class ShadowRenderer {
         }
         points[0] = thisShade.getPoint(firstShadowPoint);
         points[1] = thisShade.getPoint(secondShadowPoint);
-        shDif = (src.getLight().getSX() + src.getLight().getSY()) << 2;
+        shDif = (src.getLight().getWidth() + src.getLight().getHeight()) << 2;
     }
 
     private static void findLeftSideOfShadow() {
@@ -544,8 +544,8 @@ public class ShadowRenderer {
     }
 
     private static void drawWall(GameObject emitter, Point[] points, float color) {
-        int lX = emitter.getLight().getSX();
-        int lY = emitter.getLight().getSY();
+        int lX = emitter.getLight().getWidth();
+        int lY = emitter.getLight().getHeight();
         glDisable(GL_TEXTURE_2D);
         glColor3f(color, color, color);
         glPushMatrix();
@@ -561,11 +561,11 @@ public class ShadowRenderer {
     }
 
     private static void drawShadow(GameObject emitter) {
-        lightY = emitter.getLight().getSY();
+        lightY = emitter.getLight().getHeight();
         glDisable(GL_TEXTURE_2D);
         glColor3f(0, 0, 0);
         glPushMatrix();
-        glTranslatef((emitter.getLight().getSX() / 2) - emitter.getX(), (lightY / 2) - emitter.getY() + h - lightY, 0);
+        glTranslatef((emitter.getLight().getWidth() / 2) - emitter.getX(), (lightY / 2) - emitter.getY() + h - lightY, 0);
         glBegin(GL_QUADS);
         glVertex2f(points[0].getX(), points[0].getY());
         glVertex2f(points[2].getX(), points[2].getY());
@@ -590,8 +590,8 @@ public class ShadowRenderer {
     }
 
     public static void drawLight(int textureHandle, GameObject emitter, Camera cam) {
-        lightX = emitter.getLight().getSX();
-        lightY = emitter.getLight().getSY();
+        lightX = emitter.getLight().getWidth();
+        lightY = emitter.getLight().getHeight();
         glPushMatrix();
         glTranslatef(emitter.getX() - (lightX / 2) + cam.getXOffsetEffect(), emitter.getY() - (lightY / 2) + cam.getYOffsetEffect(), 0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -614,10 +614,10 @@ public class ShadowRenderer {
         points[2] = new Point(0, 0);
         points[3] = new Point(0, 0);
         shads[0] = (GameObject emitter1, Figure shade1, Point[] points1) -> {
-            shade1.getOwner().renderShadow((emitter1.getLight().getSX() / 2) - (emitter1.getX()), (emitter1.getLight().getSY() / 2) - (emitter1.getY()) + h - emitter1.getLight().getSY(), shade1);
+            shade1.getOwner().renderShadow((emitter1.getLight().getWidth() / 2) - (emitter1.getX()), (emitter1.getLight().getHeight() / 2) - (emitter1.getY()) + h - emitter1.getLight().getHeight(), shade1);
         };
         shads[1] = (GameObject emitter1, Figure shade1, Point[] points1) -> {
-            shade1.getOwner().renderShadowLit((emitter1.getLight().getSX() / 2) - (emitter1.getX()), (emitter1.getLight().getSY() / 2) - (emitter1.getY()) + h - emitter1.getLight().getSY(), shade1.getShadowColor(), shade1);
+            shade1.getOwner().renderShadowLit((emitter1.getLight().getWidth() / 2) - (emitter1.getX()), (emitter1.getLight().getHeight() / 2) - (emitter1.getY()) + h - emitter1.getLight().getHeight(), shade1.getShadowColor(), shade1);
         };
         shads[2] = (GameObject emitter1, Figure shade1, Point[] points1) -> {
             drawWall(emitter1, points1, shade1.getShadowColor());
@@ -626,10 +626,10 @@ public class ShadowRenderer {
             drawWall(emitter1, points1, 0);
         };
         shads[4] = (GameObject emitter1, Figure shad, Point[] points1) -> {
-            shade.getOwner().renderShadowLit((emitter1.getLight().getSX() / 2) - (emitter1.getX()), (emitter1.getLight().getSY() / 2) - (emitter1.getY()) + h - emitter1.getLight().getSY(), shade.getShadowColor(), shade, points1[0].getX(), points1[0].getY());
+            shade.getOwner().renderShadowLit((emitter1.getLight().getWidth() / 2) - (emitter1.getX()), (emitter1.getLight().getHeight() / 2) - (emitter1.getY()) + h - emitter1.getLight().getHeight(), shade.getShadowColor(), shade, points1[0].getX(), points1[0].getY());
         };
         shads[5] = (GameObject emitter1, Figure shad, Point[] points1) -> {
-            shade.getOwner().renderShadow((emitter1.getLight().getSX() / 2) - (emitter1.getX()), (emitter1.getLight().getSY() / 2) - (emitter1.getY()) + h - emitter1.getLight().getSY(), shade, points1[0].getX(), points1[0].getY());
+            shade.getOwner().renderShadow((emitter1.getLight().getWidth() / 2) - (emitter1.getX()), (emitter1.getLight().getHeight() / 2) - (emitter1.getY()) + h - emitter1.getLight().getHeight(), shade, points1[0].getX(), points1[0].getY());
         };
 
     }

@@ -39,10 +39,10 @@ public abstract class Player extends Entity {
     }
 
     @Override
-    public void changeMap(Map newMap) {
-        super.changeMap(newMap);
+    public void changeMap(Map map) {
+        super.changeMap(map);
         if (camera != null) {
-            camera.setMap(newMap);
+            camera.setMap(map);
         }
     }
 
@@ -53,16 +53,8 @@ public abstract class Player extends Entity {
 
     public void setToLastNotCollided() {
         for (int i = online.pastPositionsNumber - 1; i >= 0; i--) {
-            if (!collision.isCollideSolid(online.pastPositions[i].getX(), online.pastPositions[i].getY(), map)) {
-                if (!collision.isCollideSolid(online.pastPositions[i].getX(), getY(), map)) {
-                    setPosition(online.pastPositions[i].getX(), getY());
-                } else if (!collision.isCollideSolid(getX(), online.pastPositions[i].getY(), map)) {
-                    setPosition(getX(), online.pastPositions[i].getY());
-                } else {
-                    setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
-                }
-                camera.update();
-                return;
+            if (setToLastNotCollided(i)) {
+                
             }
         }
         for (int i = online.pastPositions.length - 1; i >= online.pastPositionsNumber; i--) {
@@ -78,6 +70,21 @@ public abstract class Player extends Entity {
                 return;
             }
         }
+    }
+
+    private boolean setToLastNotCollided(int i) {
+        if (!collision.isCollideSolid(online.pastPositions[i].getX(), online.pastPositions[i].getY(), map)) {
+            if (!collision.isCollideSolid(online.pastPositions[i].getX(), getY(), map)) {
+                setPosition(online.pastPositions[i].getX(), getY());
+            } else if (!collision.isCollideSolid(getX(), online.pastPositions[i].getY(), map)) {
+                setPosition(getX(), online.pastPositions[i].getY());
+            } else {
+                setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
+            }
+            camera.update();
+            return true;
+        }
+        return false;
     }
 
     public boolean isMenuOn() {
