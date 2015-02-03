@@ -57,6 +57,18 @@ public class Drawer {
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
+    
+    public static void drawRectangleBorder(int xStart, int yStart, int width, int height) {
+        glTranslatef(xStart, yStart, 0);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(0, 0);
+        glVertex2f(0, height);
+        glVertex2f(width, height);
+        glVertex2f(width, 0);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
 
     public static void drawCircle(int xStart, int yStart, int radius, int precision) {
         drawElipse(xStart, yStart, radius, radius, precision);

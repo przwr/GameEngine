@@ -138,9 +138,10 @@ public abstract class Place extends ScreenPlace {
             Renderer.preRenderShadowedLights(place, currentCam);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             if (map != null) {
-                map.renderBackground(currentCam);
-                map.renderObjects(currentCam);
-                map.renderText(currentCam);
+                Drawer.drawRectangleInBlack(cam.getXOffsetEffect() + cam.getXStart(), cam.getYOffset() + cam.getYStart(), cam.getWidth(), cam.getHeight());
+                map.renderBackground(cam);
+                map.renderObjects(cam);
+                map.renderText(cam);
                 if (map.visibleLights.size() > 0) {
                     Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                 }

@@ -64,8 +64,10 @@ public abstract class Camera {
     }
 
     public void renderGUI() {
-        gui.stream().forEach((object) -> {
-            object.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
+        gui.stream().forEach((go) -> {
+            if (go.isVisible()) {
+                go.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
+            }
         });
     }
 

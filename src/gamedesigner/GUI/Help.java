@@ -35,7 +35,7 @@ public class Help extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("H : \thelp\nT + strzalki : \tzmiana tile'a\nL : \tładuj spritesheeta\ncltr : \tprzeciaganie\ncltr + Z : \tzeruj przeciagniecie");
+        jTextArea1.setText("H : \t\thelp\nM:\t\tzmiana trybu\n\nTAB:\t\tzniknięcie tła\ncltr : \t\tprzeciaganie\ncltr + Z : \t\tzeruj przeciagniecie\n\n//TRYB TILE'OWY\n\nSHIFT + strzalki : \tzmiana tile'a\nL : \t\tładuj spritesheeta\nSPACE: \t\tstwórz tile\nDELETE:\t\tusuń tile\n\n//TRYB BLOKOWY\n\nSHIFT + strzalki:\tzmiana wysokosci\n");
         jTextArea1.setFocusable(false);
         jScrollPane1.setViewportView(jTextArea1);
 
@@ -45,14 +45,14 @@ public class Help extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

@@ -18,6 +18,7 @@ import engine.Point;
 import game.Settings;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
+import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
@@ -33,20 +34,27 @@ public class ObjectPlayer extends Player {
 
     private int hs, vs, maxtimer;
     private int ix, iy;
-    int xtimer, ytimer;
+    private int xtimer, ytimer;
+    private int usedDepth;
     private int tile;
     private int xStop, yStop;
-    private boolean prevClick;
+    private boolean prevClick, pressed;
 
     private ObjectMap objMap;
     private ObjectUI ui;
 
+    private int mode;
+
+    private int areaHeight;
+
     public ObjectPlayer(boolean first, String name) {
         super(name);
+        this.mode = 0;
         this.first = first;
         maxtimer = 7;
         xtimer = 0;
         ytimer = 0;
+        usedDepth = 0;
         initializeController();
     }
 
@@ -148,29 +156,23 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
-        if (sprite != null) {
-            glPushMatrix();
-            int d = 3;
-            int xd = (Math.abs(ix - xStop) + 1) * tile;
-            int yd = (Math.abs(iy - yStop) + 1) * tile;
-            glTranslatef(Math.min(ix, xStop) * tile + xEffect, Math.min(iy, yStop) * tile + yEffect, 0);
-            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-            glColor4f(1f, 1f, 1f, 1f);
-            Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
-            Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
-            Drawer.drawRectangle(0, -yd, d, yd);
-            Drawer.drawRectangle(xd + d, 0, d, yd);
-            Drawer.refreshForRegularDrawing();
-            glPopMatrix();
-        }
-    }
-
-    @Override
     public void update() {
-        boolean pressed = false;
+        pressed = false;
         int xPos = 0;
         int yPos = 0;
+
+        if (keyPressed(KEY_M)) {
+            mode++;
+            switch (mode) {
+                case 1:
+                    ui.setVisible(false);
+                    break;
+                case 3:
+                    ui.setVisible(true);
+                    mode = 0;
+                    break;
+            }
+        }
 
         if (key(KEY_LCONTROL) && key(KEY_Z)) {
             xStop = ix;
@@ -192,7 +194,9 @@ public class ObjectPlayer extends Player {
             xtimer = 0;
         }
 
-        ui.setChange(key(KEY_T));
+        if (mode == 0) {
+            ui.setChange(key(KEY_LSHIFT));
+        }
 
         if (xPos != 0 || yPos != 0) {
             if (ui.isChanged()) {
@@ -201,49 +205,43 @@ public class ObjectPlayer extends Player {
                     xtimer = 1;
                     ytimer = 1;
                 }
+            } else if (mode == 1 && key(KEY_LSHIFT)) {
+                if (xtimer == 0 && ytimer == 0) {
+                    areaHeight = FastMath.max(0, -yPos + areaHeight);
+                    xtimer = 1;
+                    ytimer = 1;
+                }
             } else {
                 move(xPos, yPos);
             }
         }
-
-        if (key(KEY_SPACE)) {
-            pressed = true;
-            if (!prevClick) {
-                prevClick = true;
-                int xBegin = Math.min(ix, xStop);
-                int yBegin = Math.min(iy, yStop);
-                int xEnd = Math.max(ix, xStop);
-                int yEnd = Math.max(iy, yStop);
-                for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                    for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                        Point p = ui.getCoordinates();
-                        objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet());
-                    }
-                }
-            }
-        }
-        if (key(KEY_DELETE)) {
-            pressed = true;
-            if (!prevClick) {
-                prevClick = true;
-                int xBegin = Math.min(ix, xStop);
-                int yBegin = Math.min(iy, yStop);
-                int xEnd = Math.max(ix, xStop);
-                int yEnd = Math.max(iy, yStop);
-                for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                    for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                        objMap.removeTile(xTemp, yTemp);
-                    }
+        if (keyPressed(KEY_SPACE)) {
+            int xBegin = Math.min(ix, xStop);
+            int yBegin = Math.min(iy, yStop);
+            int xEnd = Math.max(ix, xStop);
+            int yEnd = Math.max(iy, yStop);
+            for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                    Point p = ui.getCoordinates();
+                    objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet());
                 }
             }
         }
 
-        if (key(KEY_TAB)) {
-            pressed = true;
-            if (!prevClick) {
-                prevClick = true;
-                objMap.switchBackground();
+        if (keyPressed(KEY_DELETE)) {
+            int xBegin = Math.min(ix, xStop);
+            int yBegin = Math.min(iy, yStop);
+            int xEnd = Math.max(ix, xStop);
+            int yEnd = Math.max(iy, yStop);
+            for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                    objMap.removeTile(xTemp, yTemp);
+                }
             }
+        }
+
+        if (keyPressed(KEY_TAB)) {
+            objMap.switchBackground();
         }
 
         if (!pressed) {
@@ -251,8 +249,59 @@ public class ObjectPlayer extends Player {
         }
     }
 
+    @Override
+    public void render(int xEffect, int yEffect) {
+        glPushMatrix();
+        int d = 3;
+        int xd = (Math.abs(ix - xStop) + 1) * tile;
+        int yd = (Math.abs(iy - yStop) + 1) * tile;
+        glTranslatef(Math.min(ix, xStop) * tile + xEffect, Math.min(iy, yStop) * tile + yEffect, 0);
+        if (mode == 0) {
+            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
+            glColor4f(1f, 1f, 1f, 1f);
+            Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
+            Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
+            Drawer.drawRectangle(0, -yd, d, yd);
+            Drawer.drawRectangle(xd + d, 0, d, yd);
+        }
+        if (mode == 1) {
+            glColor4f(1f, 1f, 1f, 1f);
+            int tmpH = areaHeight * tile;
+            Drawer.drawRectangle(0, -tmpH, xd, yd);
+            if (areaHeight == 0) {
+                glColor4f(1f, 0.78f, 0f, 1f);
+                Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
+                Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
+                Drawer.drawRectangle(0, -yd, d, yd);
+                Drawer.drawRectangle(xd + d, 0, d, yd);
+            } else {
+                glColor4f(0.9f, 0.9f, 0.9f, 1f);
+                Drawer.drawRectangle(0, yd, xd, tmpH);
+                glColor4f(1f, 0.78f, 0f, 1f);
+                Drawer.drawRectangle(-d, -d - yd, xd + 2 * d, d);
+                Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
+                Drawer.drawRectangle(0, tmpH, xd + 2 * d, d);
+                Drawer.drawRectangle(0, 0, d, -tmpH - yd);
+                Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd);
+            }
+        }
+        Drawer.refreshForRegularDrawing();
+        glPopMatrix();
+    }
+
     private boolean key(int k) {
         return Keyboard.isKeyDown(k);
+    }
+
+    private boolean keyPressed(int k) {
+        if (key(k)) {
+            pressed = true;
+            if (!prevClick) {
+                prevClick = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
