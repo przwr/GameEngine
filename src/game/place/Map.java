@@ -193,7 +193,6 @@ public class Map {
         Drawer.refreshForRegularDrawing();
         sortObjectsByDepth(depthObjects);
         int y = 0;
-        System.out.println("Mapa: " + name);
         for (GameObject object : depthObjects) {
             while (y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth()) {
                 if (cam.getYStart() <= foregroundTiles.get(y).getY() + (foregroundTiles.get(y).getCollisionHeight()) & cam.getYEnd() >= foregroundTiles.get(y).getY() - (foregroundTiles.get(y).getCollisionHeight())
@@ -206,12 +205,10 @@ public class Map {
                     && cam.getXStart()<= object.getX() + (object.getWidth()) && cam.getXEnd()>= object.getX() - (object.getWidth())) {
                 object.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
-            System.out.println(object.getName());
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
             foregroundTiles.get(i).render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
         }
-        System.out.println("");
     }
 
     public void renderTop(Camera cam) {

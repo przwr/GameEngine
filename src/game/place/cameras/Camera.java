@@ -41,10 +41,10 @@ public abstract class Camera {
     public synchronized void update() {
         if (map != null) {
             xOffset = Methods.interval(-map.getWidth() + width, widthHalf - getXMiddle(), 0);
-            yOffset = Methods.interval(-map.getHeight() +  height, heightHalf - getYMiddle(), 0);
+            yOffset = Methods.interval(-map.getHeight() + height, heightHalf - getYMiddle(), 0);
         } else {
             xOffset = Methods.interval(-place.getWidth() + width, widthHalf - getXMiddle(), 0);
-            yOffset = Methods.interval(-place.getHeight() +  height, heightHalf - getYMiddle(), 0);
+            yOffset = Methods.interval(-place.getHeight() + height, heightHalf - getYMiddle(), 0);
         }
     }
 
@@ -65,7 +65,9 @@ public abstract class Camera {
 
     public void renderGUI() {
         gui.stream().forEach((go) -> {
-            go.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
+            if (go.isVisible()) {
+                go.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
+            }
         });
     }
 
@@ -145,11 +147,11 @@ public abstract class Camera {
     }
 
     public int getWidth() {
-        return width;
+        return widthHalf * 2;
     }
 
     public int getHeight() {
-        return height;
+        return heightHalf * 2;
     }
 
     public int getWidthHalf() {

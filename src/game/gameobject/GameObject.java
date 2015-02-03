@@ -48,8 +48,8 @@ public abstract class GameObject {
     }
 
     public void changeMap(Map map) {
-        if (map != null) {
-            map.deleteObject(this);
+        if (this.map != null) {
+            this.map.deleteObject(this);
         }
         this.map = map;
         this.map.addObject(this);
