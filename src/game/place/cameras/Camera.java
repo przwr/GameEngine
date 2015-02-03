@@ -25,26 +25,26 @@ public abstract class Camera {
     public int visibleLightsCount;
     protected final ArrayList<GameObject> owners = new ArrayList<>();
     protected Map map;
-    protected int width, height, widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delaylenght, shakeAmplitude = 8;
+    protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8;
     protected double xOffset, yOffset;
     protected Delay shakeDelay;
     private boolean shakeUp = true;
 
-    public Camera(GameObject go) {
-        owners.add(go);
-        place = go.getPlace();
-        delaylenght = 50;
-        shakeDelay = new Delay(delaylenght);
+    public Camera(GameObject object) {
+        owners.add(object);
+        place = object.getPlace();
+        delayLenght = 50;
+        shakeDelay = new Delay(delayLenght);
         shakeDelay.start();
     }
 
     public synchronized void update() {
         if (map != null) {
-            xOffset = Methods.interval(-map.getWidth() + width, widthHalf - getXMiddle(), 0);
-            yOffset = Methods.interval(-map.getHeight() +  height, heightHalf - getYMiddle(), 0);
+            xOffset = Methods.interval(-map.getWidth() + getWidth(), widthHalf - getXMiddle(), 0);
+            yOffset = Methods.interval(-map.getHeight() + getHeight(), heightHalf - getYMiddle(), 0);
         } else {
-            xOffset = Methods.interval(-place.getWidth() + width, widthHalf - getXMiddle(), 0);
-            yOffset = Methods.interval(-place.getHeight() +  height, heightHalf - getYMiddle(), 0);
+            xOffset = Methods.interval(-place.getWidth() + getWidth(), widthHalf - getXMiddle(), 0);
+            yOffset = Methods.interval(-place.getHeight() + getHeight(), heightHalf - getYMiddle(), 0);
         }
     }
 
@@ -64,15 +64,15 @@ public abstract class Camera {
     }
 
     public void renderGUI() {
-        gui.stream().forEach((go) -> {
-            go.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
+        gui.stream().forEach((object) -> {
+            object.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
         });
     }
 
-    public void addGUI(GUIObject go) {
-        if (!gui.contains(go)) {
-            gui.add(go);
-            go.setCamera(this);
+    public void addGUI(GUIObject object) {
+        if (!gui.contains(object)) {
+            gui.add(object);
+            object.setCamera(this);
         }
     }
 
@@ -105,7 +105,7 @@ public abstract class Camera {
     }
 
     public int getDelay() {
-        return delaylenght;
+        return delayLenght;
     }
 
     public Map getMap() {
@@ -136,20 +136,12 @@ public abstract class Camera {
         this.yOffset = yOffset;
     }
 
-    public int getDwidth() {
-        return widthHalf;
-    }
-
-    public int getDheight() {
-        return heightHalf;
-    }
-
     public int getWidth() {
-        return width;
+        return widthHalf * 2;
     }
 
     public int getHeight() {
-        return height;
+        return heightHalf * 2;
     }
 
     public int getWidthHalf() {
@@ -193,6 +185,6 @@ public abstract class Camera {
     }
 
     public void setDelayLength(int delaylenght) {
-        this.delaylenght = delaylenght;
+        this.delayLenght = delaylenght;
     }
 }

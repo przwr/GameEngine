@@ -8,6 +8,7 @@ package game;
 import engine.Methods;
 import engine.SoundBase;
 import game.gameobject.Player;
+import game.place.FrameBufferObject;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,67 +30,63 @@ import org.lwjgl.opengl.GLContext;
  */
 public class Settings {
 
-    public DisplayMode[] tempModes;
-    public DisplayMode[] modes;
-    public int modesNumber;
-    public DisplayMode display = Display.getDesktopDisplayMode();
-    public int curentMode;
-    public boolean fullScreen;
-    public boolean hSplitScreen;
-    public boolean joinSS;
-    public int nrPlayers = 1;
-    public float volume = 0.5f;
-    public SoundBase sounds;
-    public int resolutionWidth;
-    public int resolutionHeight;
-    public float SCALE;
-    public int frequency;
-    public int depth = display.getBitsPerPixel();
-    public boolean vSync;
-    public int nrSamples = 0;
-    public String lang;
-    public ArrayList<Language> languages = new ArrayList<>();
-    public Language language;
-    public int actionsNr;
-    public Player[] players;
-    public Controller[] controllers;
-    public int worldSeed;
-    public int maxSamples;
-    public int supportedFrameBufferObjectVersion;
-    public boolean multiSampleSupported;
-    public boolean shadowOff;
-    public String serverIP = "127.0.0.1";
+    public static final int MIN_WIDTH = 1024, MIN_HEIGHT = 768, MAX_WIDTH = 1920, MAX_HEIGHT = 1200;
+    public static final DisplayMode display = Display.getDesktopDisplayMode();
+    public static final int depth = display.getBitsPerPixel();
+    public static DisplayMode[] modesTemp;
+    public static DisplayMode[] modes;
+    public static int modesCount;
+    public static int currentMode;
+    public static boolean fullScreen;
+    public static boolean horizontalSplitScreen;
+    public static boolean joinSplitScreen;
+    public static int playersCount = 1;
+    public static float volume = 0.5f;
+    public static SoundBase sounds;
+    public static int resolutionWidth;
+    public static int resolutionHeight;
+    public static float scale;
+    public static int frequency;
+    public static boolean verticalSynchronization;
+    public static int samplesCount = 0;
+    public static String languageName;
+    public static Language language;
+    public static ArrayList<Language> languages = new ArrayList<>();
+    public static int actionsCount;
+    public static Player[] players;
+    public static Controller[] controllers;
+    public static int maxSamples;
+    public static int supportedFrameBufferObjectVersion;
+    public static boolean multiSampleSupported;
+    public static boolean shadowOff;
+    public static String serverIP = "127.0.0.1";
 
-    public Settings() {
-        int minW = 1024;
-        int minH = 768;
-        int maxW = 1920;
-        int maxH = 1200;
+    public static void initialize() {
         try {
-            tempModes = Display.getAvailableDisplayModes();
+            modesTemp = Display.getAvailableDisplayModes();
         } catch (LWJGLException ex) {
             Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         DisplayMode temp;
-        if (tempModes[0].getWidth() >= minW && tempModes[0].getWidth() <= maxW
-                && tempModes[0].getHeight() >= minH && tempModes[0].getHeight() <= maxH && tempModes[0].getBitsPerPixel() == depth) {
-            modesNumber++;
+        if (modesTemp[0].getWidth() >= MIN_WIDTH && modesTemp[0].getWidth() <= MAX_WIDTH
+                && modesTemp[0].getHeight() >= MIN_HEIGHT && modesTemp[0].getHeight() <= MAX_HEIGHT && modesTemp[0].getBitsPerPixel() == depth) {
+            modesCount++;
         }
         int i, j;
-        for (i = 1; i < tempModes.length; i++) {
-            if (tempModes[i].getWidth() >= minW && tempModes[i].getWidth() <= maxW && tempModes[i].getHeight() >= minH && tempModes[i].getHeight() <= maxH && tempModes[i].getBitsPerPixel() == depth) {
-                modesNumber++;
+        for (i = 1; i < modesTemp.length; i++) {
+            if (modesTemp[i].getWidth() >= MIN_WIDTH && modesTemp[i].getWidth() <= MAX_WIDTH && modesTemp[i].getHeight() >= MIN_HEIGHT && modesTemp[i].getHeight() <= MAX_HEIGHT && modesTemp[i].getBitsPerPixel() == depth) {
+                modesCount++;
             }
-            temp = tempModes[i];
-            for (j = i; j > 0 && isBigger(tempModes[j - 1], temp); j--) {
-                tempModes[j] = tempModes[j - 1];
+            temp = modesTemp[i];
+            for (j = i; j > 0 && isBigger(modesTemp[j - 1], temp); j--) {
+                modesTemp[j] = modesTemp[j - 1];
             }
-            tempModes[j] = temp;
+            modesTemp[j] = temp;
         }
-        modes = new DisplayMode[modesNumber];
+        modes = new DisplayMode[modesCount];
         i = 0;
-        for (DisplayMode mode : tempModes) {
-            if (mode.getWidth() >= minW && mode.getWidth() <= maxW && mode.getHeight() >= minH && mode.getHeight() <= maxH && mode.getBitsPerPixel() == depth) {
+        for (DisplayMode mode : modesTemp) {
+            if (mode.getWidth() >= MIN_WIDTH && mode.getWidth() <= MAX_WIDTH && mode.getHeight() >= MIN_HEIGHT && mode.getHeight() <= MAX_HEIGHT && mode.getBitsPerPixel() == depth) {
                 modes[i++] = mode;
             }
         }
@@ -99,10 +96,10 @@ public class Settings {
         languages.add(new LangPL());
         languages.add(new LangENG());
         language = languages.get(0);
-        lang = language.lang;
+        languageName = language.lang;
     }
 
-    private boolean isBigger(DisplayMode checked, DisplayMode temp) {
+    private static boolean isBigger(DisplayMode checked, DisplayMode temp) {
         if (checked.getBitsPerPixel() > temp.getBitsPerPixel()) {
             return true;
         } else if (checked.getWidth() > temp.getWidth()) {
@@ -114,38 +111,38 @@ public class Settings {
         }
     }
 
-    public void update(int nr, Player[] players, Controller[] controllers) {
-        actionsNr = nr;
-        this.players = players;
-        this.controllers = controllers;
-        this.SCALE = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
+    public static void update(int nr, Player[] players, Controller[] controllers) {
+        actionsCount = nr;
+        Settings.players = players;
+        Settings.controllers = controllers;
+        Settings.scale = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
         try {
             GL30.glGenFramebuffers();
-            GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
+            GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, samplesCount, GL_RGBA8, 10, 10, false);
             GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-            supportedFrameBufferObjectVersion = 0;
+            supportedFrameBufferObjectVersion = FrameBufferObject.NATIVE;
             multiSampleSupported = true;
             maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
             maxSamples = maxSamples > 8 ? 8 : maxSamples;
-            nrSamples = (nrSamples > maxSamples) ? maxSamples : nrSamples;
+            samplesCount = (samplesCount > maxSamples) ? maxSamples : samplesCount;
         } catch (Exception e) {
             if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
-                supportedFrameBufferObjectVersion = 1;
+                supportedFrameBufferObjectVersion = FrameBufferObject.ARB;
                 try {
-                    ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, nrSamples, GL_RGBA8, 10, 10, false);
+                    ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, samplesCount, GL_RGBA8, 10, 10, false);
                     ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
                     multiSampleSupported = true;
                     maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
                     maxSamples = maxSamples > 8 ? 8 : maxSamples;
-                    nrSamples = (nrSamples > maxSamples) ? maxSamples : nrSamples;
+                    samplesCount = (samplesCount > maxSamples) ? maxSamples : samplesCount;
                 } catch (Exception ex) {
                     multiSampleSupported = false;
                 }
             } else if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {
-                supportedFrameBufferObjectVersion = 2;
+                supportedFrameBufferObjectVersion = FrameBufferObject.EXT;
                 multiSampleSupported = false;
             } else {
-                Methods.javaError(language.m.FBOError);
+                Methods.javaError(language.menu.FBOError);
             }
         }
     }

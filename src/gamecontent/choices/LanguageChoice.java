@@ -18,37 +18,37 @@ public class LanguageChoice extends MenuChoice {
 
     private int i;
 
-    public LanguageChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public LanguageChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
-        for (i = 0; i < settings.languages.size(); i++) {
-            if (settings.languages.get(i).lang.equals(settings.lang)) {
+        for (i = 0; i < Settings.languages.size(); i++) {
+            if (Settings.languages.get(i).lang.equals(Settings.languageName)) {
                 i++;
                 break;
             }
         }
-        if (i >= settings.languages.size()) {
+        if (i >= Settings.languages.size()) {
             i = 0;
         }
-        settings.lang = settings.languages.get(i).lang;
-        AnalizerSettings.update(settings);
+        Settings.languageName = Settings.languages.get(i).lang;
+        AnalizerSettings.update();
     }
 
     @Override
     public String getLabel() {
-        for (i = 0; i < settings.languages.size(); i++) {
-            if (settings.languages.get(i).lang.equals(settings.lang)) {
+        for (i = 0; i < Settings.languages.size(); i++) {
+            if (Settings.languages.get(i).lang.equals(Settings.languageName)) {
                 i++;
                 break;
             }
         }
         i--;
-        if (i >= settings.languages.size()) {
+        if (i >= Settings.languages.size()) {
             i = 0;
         }
-        return label + settings.lang + " [" + (i + 1) + "/" + settings.languages.size() + "]";
+        return label + Settings.languageName + " [" + (i + 1) + "/" + Settings.languages.size() + "]";
     }
 }

@@ -16,22 +16,22 @@ import game.place.Menu;
  */
 public class FullScreenChoice extends MenuChoice {
 
-    public FullScreenChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public FullScreenChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
-        settings.fullScreen = !settings.fullScreen;
-        AnalizerSettings.update(settings);
+        Settings.fullScreen = !Settings.fullScreen;
+        AnalizerSettings.update();
     }
 
     @Override
     public String getLabel() {
-        if (settings.fullScreen) {
-            return label + settings.language.m.On;
+        if (Settings.fullScreen) {
+            return label + Settings.language.menu.On;
         } else {
-            return label + settings.language.m.Off;
+            return label + Settings.language.menu.Off;
         }
     }
 }

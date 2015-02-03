@@ -15,8 +15,8 @@ import game.place.Menu;
  */
 public class StartLocalGameChoice extends MenuChoice {
 
-    public StartLocalGameChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public StartLocalGameChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override

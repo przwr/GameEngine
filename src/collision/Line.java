@@ -24,24 +24,24 @@ public class Line extends Figure {
         return new Line(0, 0, dx, dy, owner);
     }
 
-    public static Line create(int xStart, int yStart, int dx, int dy, GameObject owner) {
-        return new Line(xStart, yStart, dx, dy, owner);
+    public static Line create(int xStart, int yStart, int xVector, int yVector, GameObject owner) {
+        return new Line(xStart, yStart, xVector, yVector, owner);
     }
 
-    private Line(int xStart, int yStart, int dx, int dy, GameObject owner) {
+    private Line(int xStart, int yStart, int xVector, int yVector, GameObject owner) {
         super(xStart, yStart, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
-        xVector = dx;
-        yVector = dy;
+        this.xVector = xVector;
+        this.yVector = yVector;
         points.add(new Point(-1, -1));
         points.add(new Point(-1, -1));
         points.trimToSize();
         centralize();
     }
 
-    public Line(int dx, int dy, GameObject owner) {
+    public Line(int xVector, int yVector, GameObject owner) {
         super(0, 0, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
-        xVector = dx;
-        yVector = dy;
+        this.xVector = xVector;
+        this.yVector = yVector;
         centralize();
     }
 

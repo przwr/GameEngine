@@ -22,21 +22,21 @@ public abstract class AnyInput {
     protected String label;
     protected boolean pressed;
     protected int key;
-    protected int padNumber;
+    protected int pad;
 
     public abstract boolean isPut();
 
     public abstract String getLabel();
 
-    public static AnyInput createInput(int type, int[] table, Settings settings) {
+    public static AnyInput createInput(int type, int[] table) {
         if (type == KEYBOARD) {
             return new InputKeyBoard(table[0]);
         } else if (type == CONTROLLER_KEY) {
-            return new InputPadKey(settings.controllers, table[0], table[1]);
+            return new InputPadKey(Settings.controllers, table[0], table[1]);
         } else if (type == CONTROLLER_DPAD) {
-            return new InputPadDPad(settings.controllers, table[0], isTrue(table[1]), isTrue(table[2]));
+            return new InputPadDPad(Settings.controllers, table[0], isTrue(table[1]), isTrue(table[2]));
         } else if (type == CONTROLLER_STICK) {
-            return new InputPadStick(settings.controllers, table[0], table[1], isTrue(table[2]));
+            return new InputPadStick(Settings.controllers, table[0], table[1], isTrue(table[2]));
         } else if (type == MOUSE) {
             return new InputMouse(table[0]);
         }
@@ -56,7 +56,7 @@ public abstract class AnyInput {
     }
 
     public int getPadNumber() {
-        return padNumber;
+        return pad;
     }
 
     public int getKey() {

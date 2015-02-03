@@ -16,15 +16,15 @@ import game.place.Menu;
  */
 public class StopChoice extends MenuChoice {
 
-    public StopChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public StopChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
         if (menu.game.getPlace() != null) {
-            if (settings.sounds != null) {
-                for (Sound s : settings.sounds.getSoundsList()) {
+            if (Settings.sounds != null) {
+                for (Sound s : Settings.sounds.getSoundsList()) {
                     s.stop();
                 }
             }

@@ -17,34 +17,34 @@ import game.place.SplitScreen;
  */
 public class SplitScreenChoice extends MenuChoice {
 
-    public SplitScreenChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public SplitScreenChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
         if (menu.game.getPlace() == null) {
-            settings.hSplitScreen = !settings.hSplitScreen;
+            Settings.horizontalSplitScreen = !Settings.horizontalSplitScreen;
         } else {
-            if (menu.game.getPlace().playersLength == 2) {
+            if (menu.game.getPlace().playersCount == 2) {
                 menu.game.getPlace().changeSSMode = true;
                 SplitScreen.changeSSMode2(menu.game.getPlace());
-            } else if (menu.game.getPlace().playersLength == 3) {
+            } else if (menu.game.getPlace().playersCount == 3) {
                 menu.game.getPlace().changeSSMode = true;
                 SplitScreen.changeSSMode3(menu.game.getPlace());
             } else {
-                settings.hSplitScreen = !settings.hSplitScreen;
+                Settings.horizontalSplitScreen = !Settings.horizontalSplitScreen;
             }
         }
-        AnalizerSettings.update(settings);
+        AnalizerSettings.update();
     }
 
     @Override
     public String getLabel() {
-        if (settings.hSplitScreen) {
-            return label + settings.language.m.Horizontal + " [2/2]";
+        if (Settings.horizontalSplitScreen) {
+            return label + Settings.language.menu.Horizontal + " [2/2]";
         } else {
-            return label + settings.language.m.Vertical + " [1/2]";
+            return label + Settings.language.menu.Vertical + " [1/2]";
         }
     }
 }

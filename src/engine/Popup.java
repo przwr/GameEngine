@@ -19,7 +19,7 @@ public class Popup {
     private static final String[] messages = new String[100];
     private final FontBase fonts;
     private final int middleOk;
-    private int id = -1;
+    private int messagesPointer = -1;
 
     private int width, height, space, shift, biggest, border = 3;
     private String lines[];
@@ -32,23 +32,23 @@ public class Popup {
     }
 
     public String popMessage() {
-        if (id != -1) {
-            id--;
-            if (id < 0) {
+        if (messagesPointer != -1) {
+            messagesPointer--;
+            if (messagesPointer < 0) {
                 Main.pause = false;
-                Main.ENTER = true;
+                Main.enter = true;
             }
-            return messages[id + 1];
+            return messages[messagesPointer + 1];
         }
         return null;
     }
 
     public void addMessage(String message) {
-        messages[++id] = message;
+        messages[++messagesPointer] = message;
     }
 
     public void renderMesagges() {
-        for (int i = 0; i <= id; i++) {
+        for (int i = 0; i <= messagesPointer; i++) {
             renderMessage(i);
         }
     }
@@ -169,6 +169,6 @@ public class Popup {
     }
 
     public int getId() {
-        return id;
+        return messagesPointer;
     }
 }

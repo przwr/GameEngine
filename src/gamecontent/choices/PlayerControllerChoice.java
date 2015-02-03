@@ -15,8 +15,8 @@ import game.place.Menu;
  */
 public class PlayerControllerChoice extends MenuChoice {
 
-    public PlayerControllerChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public PlayerControllerChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override

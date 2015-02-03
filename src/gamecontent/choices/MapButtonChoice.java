@@ -29,8 +29,8 @@ public class MapButtonChoice extends MenuChoice {
     private boolean mapped;
     private int maxAxNr;
 
-    public MapButtonChoice(String label, final Menu menu, final Settings settings, final Controler ctrl, final int i) {
-        super(label, menu, settings);
+    public MapButtonChoice(String label, final Menu menu, final Controler ctrl, final int i) {
+        super(label, menu);
         this.i = i;
         this.ctrl = ctrl;
         run = () -> {
@@ -82,11 +82,11 @@ public class MapButtonChoice extends MenuChoice {
     @Override
     public String getLabel() {
         if (thread != null) {
-            return label + ": " + settings.language.m.PushButton;
+            return label + ": " + Settings.language.menu.PushButton;
         } else if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].input != null) {
             return label + ": [" + ctrl.actions[i].input.getLabel() + "]";
         } else {
-            return label + ": " + settings.language.m.Empty;
+            return label + ": " + Settings.language.menu.Empty;
         }
     }
 
@@ -117,7 +117,7 @@ public class MapButtonChoice extends MenuChoice {
 
     private void set(AnyInput in) {
         ctrl.actions[i].input = in;
-        AnalizerInput.Update(settings);
+        AnalizerInput.Update();
         mapped = false;
     }
 

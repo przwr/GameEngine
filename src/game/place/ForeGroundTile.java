@@ -48,7 +48,7 @@ public class ForeGroundTile extends Tile {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() - collision.getShadowHeight() + yEffect, 0);
         if (isSimpleLighting()) {
@@ -61,7 +61,7 @@ public class ForeGroundTile extends Tile {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f) {
+    public void renderShadow(int xEffect, int yEffect, Figure figure) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() - collision.getShadowHeight() + yEffect, 0);
         if (isSimpleLighting()) {

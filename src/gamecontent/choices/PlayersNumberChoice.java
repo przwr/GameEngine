@@ -16,21 +16,21 @@ import game.place.Menu;
  */
 public class PlayersNumberChoice extends MenuChoice {
 
-    public PlayersNumberChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public PlayersNumberChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
-        settings.nrPlayers++;
-        if (settings.nrPlayers > 4) {
-            settings.nrPlayers = 1;
+        Settings.playersCount++;
+        if (Settings.playersCount > 4) {
+            Settings.playersCount = 1;
         }
-        AnalizerSettings.update(settings);
+        AnalizerSettings.update();
     }
 
     @Override
     public String getLabel() {
-        return label + "[" + settings.nrPlayers + "/4]";
+        return label + "[" + Settings.playersCount + "/4]";
     }
 }

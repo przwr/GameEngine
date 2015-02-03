@@ -12,7 +12,7 @@ package game;
 public class Language {
 
     public String lang;
-    public Menu m = new Menu();
+    public Menu menu = new Menu();
 
     //Menu && Errors
     public class Menu {

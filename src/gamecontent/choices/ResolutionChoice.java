@@ -16,24 +16,24 @@ import game.place.Menu;
  */
 public class ResolutionChoice extends MenuChoice {
 
-    public ResolutionChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public ResolutionChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
-        settings.curentMode++;
-        if (settings.curentMode >= settings.modes.length) {
-            settings.curentMode = 0;
+        Settings.currentMode++;
+        if (Settings.currentMode >= Settings.modes.length) {
+            Settings.currentMode = 0;
         }
-        settings.resolutionWidth = settings.modes[settings.curentMode].getWidth();
-        settings.resolutionHeight = settings.modes[settings.curentMode].getHeight();
-        settings.frequency = settings.modes[settings.curentMode].getFrequency();
-        AnalizerSettings.update(settings);
+        Settings.resolutionWidth = Settings.modes[Settings.currentMode].getWidth();
+        Settings.resolutionHeight = Settings.modes[Settings.currentMode].getHeight();
+        Settings.frequency = Settings.modes[Settings.currentMode].getFrequency();
+        AnalizerSettings.update();
     }
 
     @Override
     public String getLabel() {
-        return label + settings.resolutionWidth + " x " + settings.resolutionHeight + " @ " + settings.frequency + " Hz [" + (settings.curentMode + 1) + "/" + settings.modes.length + "]";
+        return label + Settings.resolutionWidth + " x " + Settings.resolutionHeight + " @ " + Settings.frequency + " Hz [" + (Settings.currentMode + 1) + "/" + Settings.modes.length + "]";
     }
 }

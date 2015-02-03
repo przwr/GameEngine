@@ -20,8 +20,8 @@ public class NotMapButtonChoice extends MenuChoice {
     private final Controler ctrl;
     private final int i;
 
-    public NotMapButtonChoice(String label, Menu menu, Settings settings, Player ctrl, int i) {
-        super(label, menu, settings);
+    public NotMapButtonChoice(String label, Menu menu, Player ctrl, int i) {
+        super(label, menu);
         this.i = i;
         if (ctrl == null) {
             this.ctrl = null;
@@ -38,9 +38,9 @@ public class NotMapButtonChoice extends MenuChoice {
     @Override
     public String getLabel() {
         if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].input != null) {
-            return label + ": [" + ctrl.inputs[i].getLabel() + "] - " + settings.language.m.Unchangable;
+            return label + ": [" + ctrl.inputs[i].getLabel() + "] - " + Settings.language.menu.Unchangable;
         } else {
-            return label + ": " + settings.language.m.Empty + " - " + settings.language.m.Unchangable;
+            return label + ": " + Settings.language.menu.Empty + " - " + Settings.language.menu.Unchangable;
         }
     }
 }

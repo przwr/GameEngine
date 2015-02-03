@@ -27,31 +27,28 @@ public class FindServerChoice extends MenuChoice {
     private final Delay delay;
     private boolean isSearching;
 
-    public FindServerChoice(String label, final Menu menu, final Settings settings) {
-        super(label, menu, settings);
+    public FindServerChoice(String label, final Menu menu) {
+        super(label, menu);
         client = new Client();
         status = "";
         delay = new Delay(2000);
-        run = new Runnable() {
-            @Override
-            public void run() {
-                menu.isMapping = true;
-                InetAddress address = client.discoverHost(KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
-                if (address == null) {
-                    status = " - " + settings.language.m.NotFound;
-                } else {
-                    status = " - " + settings.language.m.Found;
-                    settings.serverIP = address.toString().replace("/", "");
-                    AnalizerSettings.update(settings);
-                }
-                end();
+        run = () -> {
+            menu.isMapping = true;
+            InetAddress address = client.discoverHost(KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
+            if (address == null) {
+                status = " - " + Settings.language.menu.NotFound;
+            } else {
+                status = " - " + Settings.language.menu.Found;
+                Settings.serverIP = address.toString().replace("/", "");
+                AnalizerSettings.update();
             }
+            end();
         };
     }
 
     @Override
     public void action() {
-        status = " - " + settings.language.m.Searching;
+        status = " - " + Settings.language.menu.Searching;
         isSearching = true;
         thread = new Thread(run);
         thread.start();

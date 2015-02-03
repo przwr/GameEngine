@@ -7,7 +7,6 @@ package game.place;
 
 import engine.FontBase;
 import game.Game;
-import game.Settings;
 import game.gameobject.GameObject;
 import org.newdawn.slick.Color;
 
@@ -18,16 +17,14 @@ import org.newdawn.slick.Color;
 public abstract class ScreenPlace {
 
     public final Game game;
-    public final Settings settings;
     public final int width, height;
     public float red, green, blue;
     public FontBase fonts;
     public GameObject[] players;
 
-    public ScreenPlace(Game game, int width, int height, Settings settings) {
+    public ScreenPlace(Game game, int width, int height) {
         this.width = width;
         this.height = height;
-        this.settings = settings;
         this.game = game;
     }
 
@@ -45,9 +42,5 @@ public abstract class ScreenPlace {
 
     public int getHeight() {
         return height;
-    }
-
-    public float scale() {
-        return settings.SCALE;
     }
 }

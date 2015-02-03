@@ -18,7 +18,6 @@ import org.lwjgl.input.Keyboard;
  */
 public abstract class Game {
 
-    public final Settings settings;
     public GameOnline online;
     protected final String title;
     protected Player menuPl;
@@ -28,8 +27,7 @@ public abstract class Game {
     public boolean started, runFlag, pauseFlag, exitFlag, pause;
     public Player[] players;
 
-    public Game(String title, Settings settings) {
-        this.settings = settings;
+    public Game(String title) {
         this.title = title;
         SplitScreen.initialzie();
     }

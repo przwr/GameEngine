@@ -13,7 +13,7 @@ public class MenuOptions {
 
     private final String label;
     private final MenuChoice[] choices;
-    private int optionsNumber;
+    private int optionsCount;
     private int choosenOption;
 
     public MenuOptions(int size, String label) {
@@ -22,15 +22,15 @@ public class MenuOptions {
     }
 
     public void addChoice(MenuChoice choice) {
-        choices[optionsNumber++] = choice;
+        choices[optionsCount++] = choice;
     }
 
     public void setChoosen(int i) {
         choosenOption += i;
-        if (choosenOption > optionsNumber - 1) {
+        if (choosenOption > optionsCount - 1) {
             choosenOption = 0;
         } else if (choosenOption < 0) {
-            choosenOption = optionsNumber - 1;
+            choosenOption = optionsCount - 1;
         }
     }
 
@@ -47,6 +47,6 @@ public class MenuOptions {
     }
 
     public int getOptionsNumber() {
-        return optionsNumber;
+        return optionsCount;
     }
 }

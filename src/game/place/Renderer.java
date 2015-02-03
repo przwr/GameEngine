@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.cameras.Camera;
@@ -19,10 +20,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class Renderer {
 
     private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), halfDisplayWidth = (displayWidth / 2), halfDisplayHeight = (displayHeight / 2);
-    private static FrameBufferObject fbFrame;
+    private static FrameBufferObject frame;
     private static GameObject light;
-    private static final int[] SX = new int[7], EX = new int[7], SY = new int[7], EY = new int[7];
-    private static boolean isVisible;
+    private static final int[] xStart = new int[7], xEnd = new int[7], yStart = new int[7], yEnd = new int[7];
+    private static boolean visible;
     private static int lightX, lightY;
     private static float lightColor, lightBrightness, lightStrength;
     private static Camera cam;
@@ -35,50 +36,50 @@ public class Renderer {
         map.getEmitters().stream().forEach((tmpLight) -> {
             for (int p = 0; p < playersLength; p++) {
                 if (place.players[p].getMap() == map) {
-                    if (place.singleCam && playersLength > 1) {
-                        if (tmpLight.isEmits() && SY[2 + playersLength] <= tmpLight.getY() + (tmpLight.getLight().getHeight() / 2) && EY[2 + playersLength] >= tmpLight.getY() - (tmpLight.getLight().getHeight() / 2)
-                                && SX[2 + playersLength] <= tmpLight.getX() + (tmpLight.getLight().getWidth() / 2) && EX[2 + playersLength] >= tmpLight.getX() - (tmpLight.getLight().getWidth() / 2)) {
-                            isVisible = true;
-                            place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].visibleLightsCount++] = tmpLight;
+                    if (place.singleCamera && playersLength > 1) {
+                        if (tmpLight.isEmits() && yStart[2 + playersLength] <= tmpLight.getY() + (tmpLight.getLight().getHeight() / 2) && yEnd[2 + playersLength] >= tmpLight.getY() - (tmpLight.getLight().getHeight() / 2)
+                                && xStart[2 + playersLength] <= tmpLight.getX() + (tmpLight.getLight().getWidth() / 2) && xEnd[2 + playersLength] >= tmpLight.getX() - (tmpLight.getLight().getWidth() / 2)) {
+                            visible = true;
+                            place.cameras[playersLength - 2].visibleLights[place.cameras[playersLength - 2].visibleLightsCount++] = tmpLight;
                         }
                     } else {
                         for (int pi = 0; pi < playersLength; pi++) {
-                            if (place.players[pi].getMap() == map && tmpLight.isEmits() && SY[pi] <= tmpLight.getY() + (tmpLight.getLight().getHeight() / 2) && EY[pi] >= tmpLight.getY() - (tmpLight.getLight().getHeight() / 2)
-                                    && SX[pi] <= tmpLight.getX() + (tmpLight.getLight().getWidth() / 2) && EX[pi] >= tmpLight.getX() - (tmpLight.getLight().getWidth() / 2)) {
-                                isVisible = true;
+                            if (place.players[pi].getMap() == map && tmpLight.isEmits() && yStart[pi] <= tmpLight.getY() + (tmpLight.getLight().getHeight() / 2) && yEnd[pi] >= tmpLight.getY() - (tmpLight.getLight().getHeight() / 2)
+                                    && xStart[pi] <= tmpLight.getX() + (tmpLight.getLight().getWidth() / 2) && xEnd[pi] >= tmpLight.getX() - (tmpLight.getLight().getWidth() / 2)) {
+                                visible = true;
                                 (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).visibleLightsCount++] = tmpLight;
                             }
                         }
                     }
-                    if (isVisible) {
+                    if (visible) {
                         map.visibleLights.add(tmpLight);
-                        isVisible = false;
+                        visible = false;
                     }
                 }
             }
         });
         // Docelowo iteracja po graczach nie będzie potrzebna - nie będą oni źródłem światła, a raczej jakieś obiekty.
-        for (int p = 0; p < place.playersLength; p++) {
+        for (int p = 0; p < place.playersCount; p++) {
             light = place.players[p];
             if (light.getMap() == map) {
-                if (place.singleCam && playersLength > 1) {
-                    if (light.isEmits() && SY[2 + playersLength] <= light.getY() + (light.getLight().getHeight() / 2) && EY[2 + playersLength] >= light.getY() - (light.getLight().getHeight() / 2)
-                            && SX[2 + playersLength] <= light.getX() + (light.getLight().getWidth() / 2) && EX[2 + playersLength] >= light.getX() - (light.getLight().getWidth() / 2)) {
-                        isVisible = true;
-                        place.cams[playersLength - 2].visibleLights[place.cams[playersLength - 2].visibleLightsCount++] = light;
+                if (place.singleCamera && playersLength > 1) {
+                    if (light.isEmits() && yStart[2 + playersLength] <= light.getY() + (light.getLight().getHeight() / 2) && yEnd[2 + playersLength] >= light.getY() - (light.getLight().getHeight() / 2)
+                            && xStart[2 + playersLength] <= light.getX() + (light.getLight().getWidth() / 2) && xEnd[2 + playersLength] >= light.getX() - (light.getLight().getWidth() / 2)) {
+                        visible = true;
+                        place.cameras[playersLength - 2].visibleLights[place.cameras[playersLength - 2].visibleLightsCount++] = light;
                     }
                 } else {
                     for (int pi = 0; pi < playersLength; pi++) {
-                        if (place.players[pi].getMap() == map && light.isEmits() && SY[pi] <= light.getY() + (light.getLight().getHeight() / 2) && EY[pi] >= light.getY() - (light.getLight().getHeight() / 2)
-                                && SX[pi] <= light.getX() + (light.getLight().getWidth() / 2) && EX[pi] >= light.getX() - (light.getLight().getWidth() / 2)) {
-                            isVisible = true;
+                        if (place.players[pi].getMap() == map && light.isEmits() && yStart[pi] <= light.getY() + (light.getLight().getHeight() / 2) && yEnd[pi] >= light.getY() - (light.getLight().getHeight() / 2)
+                                && xStart[pi] <= light.getX() + (light.getLight().getWidth() / 2) && xEnd[pi] >= light.getX() - (light.getLight().getWidth() / 2)) {
+                            visible = true;
                             (((Player) place.players[pi]).getCamera()).visibleLights[(((Player) place.players[pi]).getCamera()).visibleLightsCount++] = light;
                         }
                     }
                 }
-                if (isVisible) {
+                if (visible) {
                     map.visibleLights.add(light);
-                    isVisible = false;
+                    visible = false;
                 }
             }
         }
@@ -90,27 +91,27 @@ public class Renderer {
             if (map == place.players[p].getMap()) {
                 cam = (((Player) place.players[p]).getCamera());
                 cam.visibleLightsCount = 0;
-                SX[p] = cam.getXStart();
-                EX[p] = cam.getXEnd();
-                SY[p] = cam.getYStart();
-                EY[p] = cam.getYEnd();
+                xStart[p] = cam.getXStart();
+                xEnd[p] = cam.getXEnd();
+                yStart[p] = cam.getYStart();
+                yEnd[p] = cam.getYEnd();
             }
         }
         for (int c = 0; c < 3; c++) {
-            if (place.cams[c] != null) {
-                cam = place.cams[c];
+            if (place.cameras[c] != null) {
+                cam = place.cameras[c];
                 cam.visibleLightsCount = 0;
-                SX[4 + c] = cam.getXStart();            // 4 to maksymalna liczba graczy
-                EX[4 + c] = cam.getXEnd();
-                SY[4 + c] = cam.getYStart();
-                EY[4 + c] = cam.getYEnd();
+                xStart[4 + c] = cam.getXStart();            // 4 to maksymalna liczba graczy
+                xEnd[4 + c] = cam.getXEnd();
+                yStart[4 + c] = cam.getYStart();
+                yEnd[4 + c] = cam.getYEnd();
             }
         }
         map.visibleLights.clear();
     }
 
     public static void preRendLights(Map map) {
-        if (!map.settings.shadowOff) {
+        if (!Settings.shadowOff) {
             map.visibleLights.stream().forEach((emitter) -> {
                 ShadowRenderer.preRendLight(map, emitter);
             });
@@ -118,18 +119,18 @@ public class Renderer {
     }
 
     public static void preRenderShadowedLights(Place place, Camera cam) {
-        fbFrame.activate();
+        frame.activate();
         glClear(GL_COLOR_BUFFER_BIT);
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
         for (int i = 0; i < cam.visibleLightsCount; i++) {
-            if (!place.settings.shadowOff) {
+            if (!Settings.shadowOff) {
                 drawLight(cam.visibleLights[i].getLight().frameBufferObject.getTexture(), cam.visibleLights[i], cam);
             } else {
                 cam.visibleLights[i].getLight().render(cam.visibleLights[i], place, cam.getXOffsetEffect(), cam.getYOffsetEffect());
             }
         }
-        fbFrame.deactivate();
+        frame.deactivate();
     }
 
     public static void drawLight(int textureHandle, GameObject emitter, Camera cam) {
@@ -164,7 +165,7 @@ public class Renderer {
         glColor3f(lightColor, lightColor, lightColor);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < lightStrength; i++) {
-            drawTex(fbFrame.getTexture(), displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
+            drawTex(frame.getTexture(), displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
         }
     }
 
@@ -186,7 +187,7 @@ public class Renderer {
 
     public static void initializeVariables(Place place) {
         ShadowRenderer.initializeRenderer(place);
-        fbFrame = new RegularFrameBufferObject(displayWidth, displayHeight, place.settings);
+        frame = new RegularFrameBufferObject(displayWidth, displayHeight);
         borders[0] = () -> {
             glBegin(GL_QUADS);
             glVertex2f(0, halfDisplayHeight - 1);

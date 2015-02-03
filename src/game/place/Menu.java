@@ -7,7 +7,6 @@ package game.place;
 
 import engine.Delay;
 import game.Game;
-import game.Settings;
 import game.gameobject.menu.MenuOptions;
 import org.lwjgl.opengl.Display;
 
@@ -25,8 +24,8 @@ public abstract class Menu extends ScreenPlace {
     public boolean isMapping;
     public Delay delay;
 
-    public Menu(Game game, int width, int height, Settings settings) {
-        super(game, width, height, settings);
+    public Menu(Game game, int width, int height) {
+        super(game, width, height);
     }
 
     @Override

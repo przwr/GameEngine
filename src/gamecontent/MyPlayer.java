@@ -16,6 +16,7 @@ import sprites.Animation;
 import engine.Drawer;
 import engine.Methods;
 import engine.Time;
+import game.Settings;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import game.place.WarpPoint;
@@ -33,7 +34,7 @@ import sprites.SpriteSheet;
  */
 public class MyPlayer extends Player {
 
-    private int tempXSpeed, tempYSpeed;
+    private int xTempSpeed, yTempSpeed;
     private float jumpDelta = 22.6f;  //TYLKO TYMCZASOWE!
 
     public MyPlayer(boolean first, String name) {
@@ -62,17 +63,17 @@ public class MyPlayer extends Player {
 
     @Override
     public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
-        scale = place.settings.SCALE;
+
         this.online = place.game.online;
-        this.width = Methods.roundHalfUp(scale * width);
-        this.height = Methods.roundHalfUp(scale * height);
-        this.xStart = Methods.roundHalfUp(scale * startX);
-        this.yStart = Methods.roundHalfUp(scale * startY);
+        this.width = Methods.roundHalfUp(Settings.scale * width);
+        this.height = Methods.roundHalfUp(Settings.scale * height);
+        this.xStart = Methods.roundHalfUp(Settings.scale * startX);
+        this.yStart = Methods.roundHalfUp(Settings.scale * startY);
         this.setResistance(2);
         this.emitter = true;
-        initialize(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
+        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -81,16 +82,15 @@ public class MyPlayer extends Player {
     @Override
     public void initialize(int startX, int startY, int width, int height, Place place) {
         this.online = place.game.online;
-        scale = place.settings.SCALE;
-        this.width = Methods.roundHalfUp(scale * width);
-        this.height = Methods.roundHalfUp(scale * height);
-        this.xStart = Methods.roundHalfUp(scale * startX);
-        this.yStart = Methods.roundHalfUp(scale * startY);
+        this.width = Methods.roundHalfUp(Settings.scale * width);
+        this.height = Methods.roundHalfUp(Settings.scale * height);
+        this.xStart = Methods.roundHalfUp(Settings.scale * startX);
+        this.yStart = Methods.roundHalfUp(Settings.scale * startY);
         this.setResistance(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -153,9 +153,9 @@ public class MyPlayer extends Player {
                 jumpDelta = 22.6f;
             }
         }
-        tempXSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
-        tempYSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
-        moveIfPossible(tempXSpeed, tempYSpeed);
+        xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
+        yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
+        moveIfPossible(xTempSpeed, yTempSpeed);
         for (WarpPoint warp : map.getWarps()) {
             if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
                 warp.Warp(this);
@@ -176,9 +176,9 @@ public class MyPlayer extends Player {
             }
 
         }
-        tempXSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
-        tempYSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
-        moveIfPossible(tempXSpeed, tempYSpeed);
+        xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
+        yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
+        moveIfPossible(xTempSpeed, yTempSpeed);
         for (WarpPoint warp : map.getWarps()) {
             if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
                 warp.Warp(this);
@@ -187,9 +187,9 @@ public class MyPlayer extends Player {
         }
         brakeOthers();
         if (online.server != null) {
-            online.server.sendUpdate(map.getId(), getX(), getY(), isEmits(), isHop());
+            online.server.sendUpdate(map.getID(), getX(), getY(), isEmits(), isHop());
         } else if (online.client != null) {
-            online.client.sendPlayerUpdate(map.getId(), ID, getX(), getY(), isEmits(), isHop());
+            online.client.sendPlayerUpdate(map.getID(), playerID, getX(), getY(), isEmits(), isHop());
             online.pastPositions[online.pastPositionsNumber++].set(getX(), getY());
             if (online.pastPositionsNumber >= online.pastPositions.length) {
                 online.pastPositionsNumber = 0;

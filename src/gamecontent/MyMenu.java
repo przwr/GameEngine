@@ -13,33 +13,7 @@ import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MenuOptions;
 import game.place.Menu;
-import gamecontent.choices.BrightnessChoice;
-import gamecontent.choices.ControlsChoice;
-import gamecontent.choices.ExitChoice;
-import gamecontent.choices.FindServerChoice;
-import gamecontent.choices.FullScreenChoice;
-import gamecontent.choices.JoinServerChoice;
-import gamecontent.choices.JoinSplitScreenChoice;
-import gamecontent.choices.LanguageChoice;
-import gamecontent.choices.MapButtonChoice;
-import gamecontent.choices.NotMapButtonChoice;
-import gamecontent.choices.OnlineGameSettingsChoice;
-import gamecontent.choices.PlayerControllerChoice;
-import gamecontent.choices.PlayersNumberChoice;
-import gamecontent.choices.ResolutionChoice;
-import gamecontent.choices.RunServerChoice;
-import gamecontent.choices.ServerIPChoice;
-import gamecontent.choices.ServerTCPPortChoice;
-import gamecontent.choices.ServerUDPPortChoice;
-import gamecontent.choices.SettingsChoice;
-import gamecontent.choices.ShadowsOffChoice;
-import gamecontent.choices.SmoothShadowsChoice;
-import gamecontent.choices.SplitScreenChoice;
-import gamecontent.choices.StartChoice;
-import gamecontent.choices.StartLocalGameChoice;
-import gamecontent.choices.StopChoice;
-import gamecontent.choices.VerticalSynchronizationChoice;
-import gamecontent.choices.VolumeChoice;
+import gamecontent.choices.*;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -55,8 +29,8 @@ import org.newdawn.slick.Color;
  */
 public class MyMenu extends Menu {
 
-    public MyMenu(Game game, int width, int height, int tileSize, Settings settings) {
-        super(game, width, height, settings);
+    public MyMenu(Game game, int width, int height, int tileSize) {
+        super(game, width, height);
         generate();
     }
 
@@ -77,88 +51,88 @@ public class MyMenu extends Menu {
         this.green = 1f;
         this.blue = 1f;
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", Methods.roundHalfUp(settings.SCALE * 38));
-        fonts.add("Amble-Regular", Methods.roundHalfUp(settings.SCALE * 64));
+        fonts.add("Amble-Regular", Methods.roundHalfUp(Settings.scale * 38));
+        fonts.add("Amble-Regular", Methods.roundHalfUp(Settings.scale * 64));
     }
 
     private void generateM0() {
-        menus[0] = new MenuOptions(10, settings.language.m.Menu);
-        menus[0].addChoice(new StartChoice(settings.language.m.Start, this, settings));
-        menus[0].addChoice(new SettingsChoice(settings.language.m.Options, this, settings));
-        menus[0].addChoice(new StopChoice(settings.language.m.End, this, settings));
-        menus[0].addChoice(new ExitChoice(settings.language.m.Quit, this, settings));
+        menus[0] = new MenuOptions(10, Settings.language.menu.Menu);
+        menus[0].addChoice(new StartChoice(Settings.language.menu.Start, this));
+        menus[0].addChoice(new SettingsChoice(Settings.language.menu.Options, this));
+        menus[0].addChoice(new StopChoice(Settings.language.menu.End, this));
+        menus[0].addChoice(new ExitChoice(Settings.language.menu.Quit, this));
     }
 
     private void generateM1() {
-        menus[1] = new MenuOptions(12, settings.language.m.Options);
-        menus[1].addChoice(new PlayersNumberChoice(settings.language.m.Number_Of_Players, this, settings));
-        menus[1].addChoice(new SplitScreenChoice(settings.language.m.SplitScreen, this, settings));
-        menus[1].addChoice(new JoinSplitScreenChoice(settings.language.m.JoinSS, this, settings));
-        menus[1].addChoice(new LanguageChoice(settings.language.m.Language, this, settings));
-        menus[1].addChoice(new ControlsChoice(settings.language.m.Controls, this, settings));
-        menus[1].addChoice(new BrightnessChoice(settings.language.m.Brigthness, this, settings));
-        menus[1].addChoice(new VolumeChoice(settings.language.m.Volume, this, settings));
-        menus[1].addChoice(new ResolutionChoice(settings.language.m.Resolution, this, settings));
-        menus[1].addChoice(new FullScreenChoice(settings.language.m.FullScreen, this, settings));
-        menus[1].addChoice(new VerticalSynchronizationChoice(settings.language.m.VSync, this, settings));
-        menus[1].addChoice(new ShadowsOffChoice(settings.language.m.ShadowOff, this, settings));
-        menus[1].addChoice(new SmoothShadowsChoice(settings.language.m.SmoothShadows, this, settings));
+        menus[1] = new MenuOptions(12, Settings.language.menu.Options);
+        menus[1].addChoice(new PlayersNumberChoice(Settings.language.menu.Number_Of_Players, this));
+        menus[1].addChoice(new SplitScreenChoice(Settings.language.menu.SplitScreen, this));
+        menus[1].addChoice(new JoinSplitScreenChoice(Settings.language.menu.JoinSS, this));
+        menus[1].addChoice(new LanguageChoice(Settings.language.menu.Language, this));
+        menus[1].addChoice(new ControlsChoice(Settings.language.menu.Controls, this));
+        menus[1].addChoice(new BrightnessChoice(Settings.language.menu.Brigthness, this));
+        menus[1].addChoice(new VolumeChoice(Settings.language.menu.Volume, this));
+        menus[1].addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this));
+        menus[1].addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this));
+        menus[1].addChoice(new VerticalSynchronizationChoice(Settings.language.menu.VSync, this));
+        menus[1].addChoice(new ShadowsOffChoice(Settings.language.menu.ShadowOff, this));
+        menus[1].addChoice(new SmoothShadowsChoice(Settings.language.menu.SmoothShadows, this));
     }
 
     private void generateM2() {
-        menus[2] = new MenuOptions(10, settings.language.m.Controls);
-        menus[2].addChoice(new PlayerControllerChoice(settings.language.m.Player1, this, settings));
-        menus[2].addChoice(new PlayerControllerChoice(settings.language.m.Player2, this, settings));
-        menus[2].addChoice(new PlayerControllerChoice(settings.language.m.Player3, this, settings));
-        menus[2].addChoice(new PlayerControllerChoice(settings.language.m.Player4, this, settings));
+        menus[2] = new MenuOptions(10, Settings.language.menu.Controls);
+        menus[2].addChoice(new PlayerControllerChoice(Settings.language.menu.Player1, this));
+        menus[2].addChoice(new PlayerControllerChoice(Settings.language.menu.Player2, this));
+        menus[2].addChoice(new PlayerControllerChoice(Settings.language.menu.Player3, this));
+        menus[2].addChoice(new PlayerControllerChoice(Settings.language.menu.Player4, this));
     }
 
     private void generateM3() {
-        menus[3] = new MenuOptions(16, settings.language.m.Player1);
+        menus[3] = new MenuOptions(16, Settings.language.menu.Player1);
         int i;
         for (i = 0; i < 4; i++) {
-            menus[3].addChoice(new NotMapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[0], i));
+            menus[3].addChoice(new NotMapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0], i));
         }
-        for (; i < settings.actionsNr; i++) {
-            menus[3].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[0].controler, i));
+        for (; i < Settings.actionsCount; i++) {
+            menus[3].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0].controler, i));
         }
     }
 
     private void generateM4() {
-        menus[4] = new MenuOptions(16, settings.language.m.Player2);
-        for (int i = 3; i < settings.actionsNr; i++) {
-            menus[4].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[1].controler, i));
+        menus[4] = new MenuOptions(16, Settings.language.menu.Player2);
+        for (int i = 3; i < Settings.actionsCount; i++) {
+            menus[4].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[1].controler, i));
         }
     }
 
     private void generateM5() {
-        menus[5] = new MenuOptions(16, settings.language.m.Player3);
-        for (int i = 3; i < settings.actionsNr; i++) {
-            menus[5].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[2].controler, i));
+        menus[5] = new MenuOptions(16, Settings.language.menu.Player3);
+        for (int i = 3; i < Settings.actionsCount; i++) {
+            menus[5].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[2].controler, i));
         }
     }
 
     private void generateM6() {
-        menus[6] = new MenuOptions(16, settings.language.m.Player4);
-        for (int i = 3; i < settings.actionsNr; i++) {
-            menus[6].addChoice(new MapButtonChoice(settings.language.m.Actions[i], this, settings, settings.players[3].controler, i));
+        menus[6] = new MenuOptions(16, Settings.language.menu.Player4);
+        for (int i = 3; i < Settings.actionsCount; i++) {
+            menus[6].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[3].controler, i));
         }
     }
 
     private void generateM7() {
-        menus[7] = new MenuOptions(4, settings.language.m.Start);
-        menus[7].addChoice(new StartLocalGameChoice(settings.language.m.LocalGame, this, settings));
-        menus[7].addChoice(new OnlineGameSettingsChoice(settings.language.m.OnlineGame, this, settings));
+        menus[7] = new MenuOptions(4, Settings.language.menu.Start);
+        menus[7].addChoice(new StartLocalGameChoice(Settings.language.menu.LocalGame, this));
+        menus[7].addChoice(new OnlineGameSettingsChoice(Settings.language.menu.OnlineGame, this));
     }
 
     private void generateM8() {
-        menus[8] = new MenuOptions(6, settings.language.m.OnlineGame);
-        menus[8].addChoice(new RunServerChoice(settings.language.m.RunServer, this, settings));
-        menus[8].addChoice(new JoinServerChoice(settings.language.m.JoinServer, this, settings));
-        menus[8].addChoice(new FindServerChoice(settings.language.m.FindServer, this, settings));
-        menus[8].addChoice(new ServerIPChoice(settings.language.m.ServerIP, this, settings));
-        menus[8].addChoice(new ServerTCPPortChoice(settings.language.m.Port, this, settings));
-        menus[8].addChoice(new ServerUDPPortChoice(settings.language.m.Port, this, settings));
+        menus[8] = new MenuOptions(6, Settings.language.menu.OnlineGame);
+        menus[8].addChoice(new RunServerChoice(Settings.language.menu.RunServer, this));
+        menus[8].addChoice(new JoinServerChoice(Settings.language.menu.JoinServer, this));
+        menus[8].addChoice(new FindServerChoice(Settings.language.menu.FindServer, this));
+        menus[8].addChoice(new ServerIPChoice(Settings.language.menu.ServerIP, this));
+        menus[8].addChoice(new ServerTCPPortChoice(Settings.language.menu.Port, this));
+        menus[8].addChoice(new ServerUDPPortChoice(Settings.language.menu.Port, this));
     }
 
     @Override

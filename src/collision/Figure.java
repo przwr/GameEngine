@@ -86,7 +86,7 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public boolean isCollidePlayer(int x, int y, Place place) {
-        for (int i = 0; i < place.playersLength; i++) {
+        for (int i = 0; i < place.playersCount; i++) {
             if (checkCollison(x, y, place.players[i])) {
                 return true;
             }

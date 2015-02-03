@@ -6,6 +6,7 @@
 package game.place.cameras;
 
 import game.gameobject.GameObject;
+import game.Settings;
 import game.place.Place;
 import org.lwjgl.opengl.Display;
 
@@ -15,37 +16,35 @@ import org.lwjgl.opengl.Display;
  */
 public class PlayersCamera extends Camera {
 
-    private initializeCam[] inits;
+    private initializeCamera[] inits;
 
-    public PlayersCamera(GameObject go, int ssX, int ssY, final int num) {
-        super(go);
-        inits = new initializeCam[3];
+    public PlayersCamera(GameObject firstOwner, int xSplit, int ySplit, int ownersCount) {
+        super(firstOwner);
+        inits = new initializeCamera[3];
         inits[0] = () -> {
-            if (place.settings.hSplitScreen) {
-                if (num == 0) {
+            if (Settings.horizontalSplitScreen) {
+                if (ownersCount == 0) {
                     yDown = 2;
                 } else {
                     yUp = 2;
                 }
             } else {
-                if (num == 0) {
+                if (ownersCount == 0) {
                     xRight = 2;
                 } else {
                     xLeft = 2;
                 }
             }
         };
-        initsRest(place, num);
-        initialize(ssX, ssY);
+        initsRest(place, ownersCount);
+        initialize(xSplit, ySplit);
     }
 
     public PlayersCamera(GameObject firstOwner, GameObject secondOwner) {
         super(firstOwner);
         owners.add(secondOwner);
-        width = Display.getWidth();
-        height = Display.getHeight();
-        heightHalf = height / 2;
-        widthHalf = width / 2;
+        heightHalf = Display.getWidth() / 2;
+        widthHalf = Display.getHeight() / 2;
         update();
     }
 
@@ -53,29 +52,25 @@ public class PlayersCamera extends Camera {
         super(firstOwner);
         owners.add(secondOwner);
         owners.add(thirdOwner);
-        width = Display.getWidth();
-        height = Display.getHeight();
-        heightHalf = height / 2;
-        widthHalf = width / 2;
+        heightHalf = Display.getWidth() / 2;
+        widthHalf = Display.getHeight() / 2;
         update();
     }
 
-    public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner,GameObject fourthOwner) {
+    public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner, GameObject fourthOwner) {
         super(firstOwner);
         owners.add(secondOwner);
         owners.add(thirdOwner);
         owners.add(fourthOwner);
-        width = Display.getWidth();
-        height = Display.getHeight();
-        heightHalf = height / 2;
-        widthHalf = width / 2;
+        heightHalf = Display.getWidth() / 2;
+        widthHalf = Display.getHeight() / 2;
         update();
     }
 
     private void initialize(int ssX, int ssY) {
         yUp = yDown = xLeft = xRight = 0;
-        if (place.settings.nrPlayers > 1) {
-            inits[place.settings.nrPlayers - 2].initialize();
+        if (Settings.playersCount > 1) {
+            inits[Settings.playersCount - 2].initialize();
         }
         widthHalf = Display.getWidth() / ssX;
         heightHalf = Display.getHeight() / ssY;
@@ -84,8 +79,8 @@ public class PlayersCamera extends Camera {
 
     public void reInitialize(int ssX, int ssY) {
         yUp = yDown = xLeft = xRight = 0;
-        if (place.settings.nrPlayers > 1) {
-            inits[place.settings.nrPlayers - 2].initialize();
+        if (Settings.playersCount > 1) {
+            inits[Settings.playersCount - 2].initialize();
         }
         widthHalf = Display.getWidth() / ssX;
         heightHalf = Display.getHeight() / ssY;
@@ -94,7 +89,7 @@ public class PlayersCamera extends Camera {
 
     private void initsRest(final Place place, final int num) {
         inits[1] = () -> {
-            if (place.settings.hSplitScreen) {
+            if (Settings.horizontalSplitScreen) {
                 if (num == 0) {
                     yDown = 2;
                 } else if (num == 1) {
@@ -113,7 +108,7 @@ public class PlayersCamera extends Camera {
             }
         };
         inits[2] = () -> {
-            if (place.settings.hSplitScreen) {
+            if (Settings.horizontalSplitScreen) {
                 if (num == 0) {
                     xRight = 2;
                     yDown = 2;
@@ -131,7 +126,7 @@ public class PlayersCamera extends Camera {
         };
     }
 
-    private interface initializeCam {
+    private interface initializeCamera {
 
         void initialize();
     }

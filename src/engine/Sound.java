@@ -15,18 +15,16 @@ import org.newdawn.slick.openal.Audio;
  */
 public class Sound {
 
-    private final Settings settings;
     private final Audio soundEffect;
     private final String name;
     private boolean paused, stoped;
     private float gain, savedGainModifier, gainModifier = 1.0f, position = 0.0f, pitch = 1.0f;
     private boolean looped = true, fading = false;
 
-    public Sound(String name, Audio soundEffect, Settings settings) {
-        this.settings = settings;
+    public Sound(String name, Audio soundEffect) {
         this.soundEffect = soundEffect;
         this.name = name;
-        gain = settings.volume * gainModifier;
+        gain = Settings.volume * gainModifier;
     }
 
     public int playAsSoundEffect(float pitch, float gainModifier, boolean looped) {
@@ -34,9 +32,9 @@ public class Sound {
             this.gainModifier = gainModifier;
             this.pitch = FastMath.max(0, pitch);
             this.looped = looped;
-            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, Settings.volume * gainModifier, 1);
             soundEffect.setPosition(position);
-            return soundEffect.playAsSoundEffect(pitch, settings.volume * gainModifier, looped);
+            return soundEffect.playAsSoundEffect(pitch, Settings.volume * gainModifier, looped);
         } else {
             return 0;
         }
@@ -47,9 +45,9 @@ public class Sound {
             this.gainModifier = gainModifier;
             this.pitch = FastMath.max(0, pitch);
             this.looped = looped;
-            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, Settings.volume * gainModifier, 1);
             soundEffect.setPosition(position);
-            return soundEffect.playAsSoundEffect(pitch, settings.volume * gainModifier, looped, f0, f1, f2);
+            return soundEffect.playAsSoundEffect(pitch, Settings.volume * gainModifier, looped, f0, f1, f2);
         } else {
             return 0;
         }
@@ -59,9 +57,9 @@ public class Sound {
         if (!soundEffect.isPlaying()) {
             this.pitch = FastMath.max(0, pitch);
             this.looped = looped;
-            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, Settings.volume * gainModifier, 1);
             soundEffect.setPosition(position);
-            return soundEffect.playAsMusic(pitch, settings.volume * gainModifier, looped);
+            return soundEffect.playAsMusic(pitch, Settings.volume * gainModifier, looped);
         } else {
             return 0;
         }
@@ -111,10 +109,10 @@ public class Sound {
     public void updateGain() {
         if (soundEffect.isPlaying()) {
             pause();
-            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, Settings.volume * gainModifier, 1);
             resume();
         } else {
-            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, Settings.volume * gainModifier, 1);
         }
     }
 
@@ -144,11 +142,11 @@ public class Sound {
         if (soundEffect.isPlaying()) {
             pause();
             gainModifier = a;
-            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, Settings.volume * gainModifier, 1);
             resume();
         } else {
             gainModifier = a;
-            gain = Methods.interval(0, settings.volume * gainModifier, 1);
+            gain = Methods.interval(0, Settings.volume * gainModifier, 1);
         }
     }
 

@@ -22,76 +22,91 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 
-
 /**
  *
  * @author przemek
  */
 public class ObjectPlace extends Place {
-    
+
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final Place place;
     private final update[] ups = new update[2];
     private final Help help;
-    
+
     private File lastFile = new File(".");
-    
+
     private ObjectUI ui;
-    
-    public ObjectPlace(Game game, int width, int height, int tileSize, Settings settnig, boolean isHost) {
-        super(game, width, height, tileSize, settnig);
+
+    public ObjectPlace(Game game, int width, int height, int tileSize) {
+        super(game, width, height, tileSize);
         this.help = new Help();
         place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
-        //generate(isHost);
     }
-    
+
     @Override
-    public void generate(boolean isHost) {
+    public void generateAsGuest() {
         ObjectMap polana = new ObjectMap(mapId++, this, width, height, tileSize);
         this.ui = new ObjectUI(tileSize, sprites.getSpriteSheet("tlo"), this);
         maps.add(polana);
         addGUI(ui);
-        ((ObjectPlayer)players[0]).addUI(ui);
-        //sounds.init("res", settings);
+        ((ObjectPlayer) players[0]).addUI(ui);
+        //sounds.init("res");
         this.red = 0.75f;
         this.green = 0.75f;
         this.blue = 0.75f;
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
+        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
         SoundStore.get().poll(0);
         initializeMethods();
     }
-    
+
+    @Override
+    public void generateAsHost() {
+        ObjectMap polana = new ObjectMap(mapId++, this, width, height, tileSize);
+        this.ui = new ObjectUI(tileSize, sprites.getSpriteSheet("tlo"), this);
+        maps.add(polana);
+        addGUI(ui);
+        ((ObjectPlayer) players[0]).addUI(ui);
+        //sounds.init("res");
+        this.red = 0.75f;
+        this.green = 0.75f;
+        this.blue = 0.75f;
+        fonts = new FontBase(20);
+        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+        SoundStore.get().poll(0);
+        initializeMethods();
+    }
+
     @Override
     public void update() {
         ups[game.mode].up();
     }
-    
+
     private void initializeMethods() {
         ups[0] = () -> {
             if (Keyboard.isKeyDown(Keyboard.KEY_H)) {
                 help.setVisible(true);
             }
-            
+
             if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
                 loadTextures();
             }
-            
-            if (playersLength > 1) {
+
+            if (playersCount > 1) {
                 changeSplitScreenJoin.act();
                 changeSplitScreenMode.act();
                 if (changeSplitScreenJoin.isOn()) {
-                    settings.joinSS = !settings.joinSS;
+                    Settings.joinSplitScreen = !Settings.joinSplitScreen;
                 }
                 if (changeSplitScreenMode.isOn()) {
                     changeSSMode = true;
                 }
-                cams[playersLength - 2].update();
+                cameras[playersCount - 2].update();
             }
-            for (int i = 0; i < playersLength; i++) {
+            for (int i = 0; i < playersCount; i++) {
                 ((Player) players[i]).update();
             }
             maps.stream().forEach((map) -> {
@@ -104,40 +119,40 @@ public class ObjectPlace extends Place {
             System.err.println("ONLINE?..... pfft....");
         };
     }
-    
+
     @Override
     public int getPlayersLenght() {
         if (game.mode == 0) {
-            return playersLength;
+            return playersCount;
         } else {
             return 1;
         }
     }
-    
+
     public void loadTextures() {
         PathFinder pf = new PathFinder(this, lastFile, new FileNameExtensionFilter(
                 "Textures (.spr)", "spr"), javax.swing.JFileChooser.FILES_ONLY);
         pf.setVisible(true);
-        
+
         while (pf.isVisible()) {
             System.out.print("");
         }
     }
-    
+
     public void getFile(FileBox f) {
         lastFile = f.getDirectory();
         String name = f.getSelectedFile().getName();
         String sp = name.split("\\.")[0];
         ui.setSpriteSheet(sprites.getSpriteSheet(sp));
     }
-    
+
     @Override
     protected void renderText(Camera cam) {
-        
+
     }
-    
+
     private interface update {
-        
+
         void up();
     }
 }

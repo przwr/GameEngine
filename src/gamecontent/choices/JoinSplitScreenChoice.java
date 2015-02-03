@@ -16,19 +16,17 @@ import game.place.SplitScreen;
  */
 public class JoinSplitScreenChoice extends MenuChoice {
 
-    public JoinSplitScreenChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public JoinSplitScreenChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
         if (menu.game.getPlace() != null) {
-            if (settings.joinSS) {
-                settings.joinSS = false;
+            if (Settings.joinSplitScreen) {
+                Settings.joinSplitScreen = false;
             } else if (SplitScreen.isClose(menu.game.getPlace())) {
-                settings.joinSS = true;
-            } else {
-
+                Settings.joinSplitScreen = true;
             }
         }
     }
@@ -36,13 +34,13 @@ public class JoinSplitScreenChoice extends MenuChoice {
     @Override
     public String getLabel() {
         if (menu.game.getPlace() != null) {
-            if (settings.joinSS) {
-                return label + settings.language.m.On;
+            if (Settings.joinSplitScreen) {
+                return label + Settings.language.menu.On;
             } else {
-                return label + settings.language.m.Off + settings.language.m.MustBeClose;
+                return label + Settings.language.menu.Off + Settings.language.menu.MustBeClose;
             }
         } else {
-            return label + settings.language.m.StartGame;
+            return label + Settings.language.menu.StartGame;
         }
     }
 }

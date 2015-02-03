@@ -15,8 +15,8 @@ import game.place.Menu;
  */
 public class StartChoice extends MenuChoice {
 
-    public StartChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public StartChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class StartChoice extends MenuChoice {
         if (!menu.game.started) {
             return label;
         } else {
-            return settings.language.m.Resume;
+            return Settings.language.menu.Resume;
         }
     }
 }

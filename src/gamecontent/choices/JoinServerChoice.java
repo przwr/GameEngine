@@ -19,8 +19,8 @@ public class JoinServerChoice extends MenuChoice {
     private String status;
     private final Delay delay;
 
-    public JoinServerChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public JoinServerChoice(String label, Menu menu) {
+        super(label, menu);
         status = "";
         delay = new Delay(2000);
     }
@@ -31,7 +31,7 @@ public class JoinServerChoice extends MenuChoice {
         if (menu.game.online.client != null) {
             menu.setCurrent(0);
         } else {
-            status = " - " + settings.language.m.UnableToConnect;
+            status = " - " + Settings.language.menu.UnableToConnect;
             delay.start();
         }
     }

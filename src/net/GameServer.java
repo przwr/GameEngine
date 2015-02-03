@@ -16,6 +16,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import engine.Delay;
 import engine.Methods;
+import game.Settings;
 import game.gameobject.Mob;
 import game.gameobject.Player;
 import java.io.IOException;
@@ -29,9 +30,7 @@ import net.packets.PacketRemoveMPlayer;
 public class GameServer {
 
     private final Server server;
-    private final Player pl;
     private final GameOnline game;
-    private final float SCALE;
     private final int scopeX, scopeY;
     public boolean isRunning;
     private MPlayer tmp;
@@ -43,12 +42,10 @@ public class GameServer {
     private Delay delay;
     private Thread thread;
 
-    public GameServer(final Player pl, final GameOnline game) {
-        this.pl = pl;
+    public GameServer(final Player player, final GameOnline game) {
         this.game = game;
-        this.SCALE = game.g.settings.SCALE;
-        this.scopeX = (int) (2400 * SCALE);
-        this.scopeY = (int) (1500 * SCALE);
+        this.scopeX = (int) (2400 * Settings.scale);
+        this.scopeY = (int) (1500 * Settings.scale);
         delay = new Delay(50);
         delay.terminate();
         Server temp = null;
@@ -134,16 +131,6 @@ public class GameServer {
                             connection.sendTCP(new PacketJoinResponse((byte) -1));
                         }
                     }
-//                        else if (obj instanceof PacketInput) {
-//                            MPlayer curPl = findPlayer(((PacketInput) obj).getId());
-//                            if (curPl != null) {
-//                                curPl.inGame().ctrl.setInput(((PacketInput) obj).inputs());
-//                                curPl.Update(curPl.inGame().getX(), curPl.inGame().getY(), SCALE);
-//                                PacketMPlayerUpdate mpup = new PacketMPlayerUpdate(curPl);
-//                                sendToAllButOwner(mpup, ((PacketInput) obj).getId());
-//                            }
-//                        }
-
                 }
 
             });
@@ -155,11 +142,11 @@ public class GameServer {
             }
             MPlayers[0] = new MPlayer((short) 0, id, "Server", null);
             MPlayers[0].setPosition(128 + id * 128, 256);
-            MPlayers[0].setPlayer(pl);
-            pl.setName(MPlayers[0].getName());
-            pl.ID = id++;
-            pl.setX(((float) MPlayers[0].getX()) / SCALE);
-            pl.setY(((float) MPlayers[0].getY()) / SCALE);
+            MPlayers[0].setPlayer(player);
+            player.setName(MPlayers[0].getName());
+            player.playerID = id++;
+            player.setX(((float) MPlayers[0].getX()) / Settings.scale);
+            player.setY(((float) MPlayers[0].getY()) / Settings.scale);
             nrPlayers++;
 
             isRunning = true;
@@ -185,7 +172,7 @@ public class GameServer {
 
     public synchronized void sendUpdate(short mapId, int x, int y, boolean isEmits, boolean isHop) {
         try {
-            MPlayers[0].update(mapId, x, y, SCALE);
+            MPlayers[0].update(mapId, x, y, Settings.scale);
             int mobX, mobY;
             for (int i = 1; i < nrPlayers; i++) {
                 tmp = MPlayers[i];
@@ -196,7 +183,7 @@ public class GameServer {
                             mobX = mob.getX();
                             mobY = mob.getY();
                             if (Math.abs(mobX - tmp.inGame().getX()) < scopeX && Math.abs(mobY - tmp.inGame().getY()) < scopeY) {
-                                tmp.getPU().MobUpdate(mob.ID, mobX, mobY, SCALE);
+                                tmp.getPU().MobUpdate(mob.mobID, mobX, mobY, Settings.scale);
                             }
                         }
                     }

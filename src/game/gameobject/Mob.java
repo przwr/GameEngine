@@ -10,6 +10,7 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
 import engine.Methods;
+import game.Settings;
 import game.place.cameras.Camera;
 import game.place.Place;
 import net.packets.Update;
@@ -26,27 +27,26 @@ public abstract class Mob extends Entity {
 
     protected final double range;
     protected GameObject prey;
-    public short ID;
+    public short mobID;
 
     public abstract void update(Place place);
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, String spriteName, boolean solid) {
-        scale = place.settings.SCALE;
-        this.width = Methods.roundHalfUp(scale * width);
-        this.height = Methods.roundHalfUp(scale * height);
+        this.width = Methods.roundHalfUp(Settings.scale * width);
+        this.height = Methods.roundHalfUp(Settings.scale * height);
         this.solid = solid;
-        this.xStart = Methods.roundHalfUp(scale * startX);
-        this.yStart = Methods.roundHalfUp(scale * startY);
-        this.range = Methods.roundHalfUp(scale * range);
+        this.xStart = Methods.roundHalfUp(Settings.scale * startX);
+        this.yStart = Methods.roundHalfUp(Settings.scale * startY);
+        this.range = Methods.roundHalfUp(Settings.scale * range);
         this.setMaxSpeed(speed);
         this.sprite = place.getSprite(spriteName);
-        initialize(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
+        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y), place);
         setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
     }
 
     public synchronized void look(GameObject[] players) {
         GameObject g;
-        for (int i = 0; i < place.playersLength; i++) {
+        for (int i = 0; i < place.playersCount; i++) {
             g = players[i];
             if (g.getMap() == map && Methods.pointDistance(g.getX(), g.getY(), getX(), getY()) < range) {
                 prey = g;

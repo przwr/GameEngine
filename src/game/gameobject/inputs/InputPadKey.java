@@ -19,14 +19,14 @@ public class InputPadKey extends AnyInput {
     public InputPadKey(Controller[] controllers, int padNumber, int key) {
         this.key = key;
         this.controllers = controllers;
-        this.padNumber = padNumber;
+        this.pad = padNumber;
         label = "JOY " + padNumber + ": BUTTON " + key;
     }
 
     @Override
     public boolean isPut() {
-        if (padNumber < controllers.length) {
-            return controllers[padNumber].isButtonPressed(key);
+        if (pad < controllers.length) {
+            return controllers[pad].isButtonPressed(key);
         }
         return false;
     }
@@ -38,6 +38,6 @@ public class InputPadKey extends AnyInput {
 
     @Override
     public String toString() {
-        return AnyInput.CONTROLLER_KEY + " " + padNumber + " " + key;
+        return AnyInput.CONTROLLER_KEY + " " + pad + " " + key;
     }
 }

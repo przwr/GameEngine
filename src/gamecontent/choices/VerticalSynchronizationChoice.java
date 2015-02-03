@@ -16,22 +16,22 @@ import game.place.Menu;
  */
 public class VerticalSynchronizationChoice extends MenuChoice {
 
-    public VerticalSynchronizationChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public VerticalSynchronizationChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
-        settings.vSync = !settings.vSync;
-        AnalizerSettings.update(settings);
+        Settings.verticalSynchronization = !Settings.verticalSynchronization;
+        AnalizerSettings.update();
     }
 
     @Override
     public String getLabel() {
-        if (settings.vSync) {
-            return label + settings.language.m.On;
+        if (Settings.verticalSynchronization) {
+            return label + Settings.language.menu.On;
         } else {
-            return label + settings.language.m.Off;
+            return label + Settings.language.menu.Off;
         }
     }
 }

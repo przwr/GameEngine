@@ -18,7 +18,7 @@ import net.GameOnline;
  */
 public abstract class Player extends Entity {
 
-    public byte ID;
+    public byte playerID;
     protected Menu menu;
     protected Animation animation;
     public Controler controler;

@@ -7,7 +7,7 @@ package engine;
 
 import game.AnalizerSettings;
 import game.Game;
-import static game.IO.getSettingsFromFile;
+import static game.IO.setSettingsFromFile;
 import game.Settings;
 import java.io.File;
 import java.io.IOException;
@@ -40,13 +40,12 @@ public class Main {
     public static boolean DEBUG = false;
     public static Game game;
     public static Popup pop;
-    public static Settings settings;
     public static Controller[] controllers;
-    public static boolean pause, ENTER = true;
+    public static boolean pause, enter = true;
     private static boolean lastFrame;
 
     public static void run() {
-        settings = getSettingsFromFile(new File("res/settings.ini"));
+        setSettingsFromFile(new File("res/settings.ini"));
         initializeDisplay();
         initializeOpenGL();
         initializeGame();
@@ -63,10 +62,10 @@ public class Main {
     }
 
     private static void tryInitializeDisplay() throws LWJGLException {
-        setDisplayMode(settings.resolutionWidth, settings.resolutionHeight, settings.frequency, settings.fullScreen);
+        setDisplayMode(Settings.resolutionWidth, Settings.resolutionHeight, Settings.frequency, Settings.fullScreen);
         createDisplay();
         Display.setResizable(false);
-        Display.setVSyncEnabled(settings.vSync);
+        Display.setVSyncEnabled(Settings.verticalSynchronization);
         Display.setDisplayConfiguration(2f, 0f, 1f);
         setIcon();
         Keyboard.create();
@@ -105,44 +104,44 @@ public class Main {
 
     private static DisplayMode setFullScreen(int width, int height, int frequency) {
         DisplayMode targetDisplayMode = null;
-        for (DisplayMode current : settings.tempModes) {
+        for (DisplayMode current : Settings.modesTemp) {
             if ((current.getWidth() == width) && (current.getHeight() == height) && (current.getFrequency() == frequency)) {
                 if (((targetDisplayMode == null) || (current.getFrequency() >= frequency))
-                        && ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel()))) {
+                        && ((targetDisplayMode == null) || (current.getBitsPerPixel() >= targetDisplayMode.getBitsPerPixel()))) {
                     targetDisplayMode = current;
                 }
                 if ((current.getBitsPerPixel() == Display.getDesktopDisplayMode().getBitsPerPixel())
                         && (current.getFrequency() == Display.getDesktopDisplayMode().getFrequency())) {
-                    return current;
+                    targetDisplayMode = current;
                 }
             }
         }
-        return null;
+        return targetDisplayMode;
     }
 
     private static void updateSettingsToDesktopMode() {
-        settings.resolutionWidth = Display.getDesktopDisplayMode().getWidth();
-        settings.resolutionHeight = Display.getDesktopDisplayMode().getHeight();
-        for (int i = 0; i < settings.tempModes.length; i++) {
-            if (settings.tempModes[i].getWidth() == settings.resolutionWidth && settings.tempModes[i].getHeight() == settings.resolutionHeight
-                    && settings.tempModes[i].getFrequency() == settings.frequency) {
-                settings.curentMode = i;
+        Settings.resolutionWidth = Display.getDesktopDisplayMode().getWidth();
+        Settings.resolutionHeight = Display.getDesktopDisplayMode().getHeight();
+        for (int i = 0; i < Settings.modesTemp.length; i++) {
+            if (Settings.modesTemp[i].getWidth() == Settings.resolutionWidth && Settings.modesTemp[i].getHeight() == Settings.resolutionHeight
+                    && Settings.modesTemp[i].getFrequency() == Settings.frequency) {
+                Settings.currentMode = i;
             }
         }
-        AnalizerSettings.update(settings);
+        AnalizerSettings.update();
     }
 
     private static void createDisplay() {
         try {
-            Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples));
+            Display.create(new PixelFormat(32, 0, 24, 0, Settings.samplesCount));
         } catch (Exception exception0) {
             Display.destroy();
             try {
-                Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples / 2));
+                Display.create(new PixelFormat(32, 0, 24, 0, Settings.samplesCount / 2));
             } catch (Exception exception1) {
                 Display.destroy();
                 try {
-                    Display.create(new PixelFormat(32, 0, 24, 0, settings.nrSamples / 4));
+                    Display.create(new PixelFormat(32, 0, 24, 0, Settings.samplesCount / 4));
                 } catch (Exception exception2) {
                     Display.destroy();
                     try {
@@ -180,9 +179,9 @@ public class Main {
     }
 
     private static void initializeGame() {
-        game = new MyGame("Pervert Rabbits Attack", settings, controllers);
+        game = new MyGame("Pervert Rabbits Attack", controllers);
         Display.setTitle(game.getTitle());
-        pop = new Popup("Amble-Regular", settings.SCALE);
+        pop = new Popup("Amble-Regular", Settings.scale);
     }
 
     private static void gameLoop() {
@@ -206,11 +205,11 @@ public class Main {
     private static void resumeIfNeeded() {
         if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
             game.getMenu().delay.start();
-            if (!ENTER) {
+            if (!enter) {
                 pop.popMessage();
             }
         } else {
-            ENTER = false;
+            enter = false;
         }
     }
 

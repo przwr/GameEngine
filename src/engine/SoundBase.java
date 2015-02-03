@@ -19,30 +19,30 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class SoundBase {
 
-    private final ArrayList<Sound> list;
+    private final ArrayList<Sound> sounds;
 
     public SoundBase() {
-        list = new ArrayList<>();
+        sounds = new ArrayList<>();
     }
 
-    public void initialize(String folder, Settings settings) {
+    public void initialize(String folder) {
         ArrayList<File> fileList = new ArrayList<>();
         search(new File(folder), fileList);
-        for (File file : fileList) {
+        fileList.stream().forEach((file) -> {
             String[] temp = file.getName().split("\\.");
             try {
                 Audio dzwiek = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
                 //System.out.println(temp[0]);
-                list.add(new Sound(temp[0], dzwiek, settings));
+                sounds.add(new Sound(temp[0], dzwiek));
             } catch (IOException e) {
                 Methods.error(e.toString());
             }
-        }
-        settings.sounds = this;
+        });
+        Settings.sounds = this;
     }
 
     public Sound getSound(String name) {
-        for (Sound snd : list) {
+        for (Sound snd : sounds) {
             //System.out.println(tex.podajNazwe());
             if (snd.getName().equals(name)) {
                 return snd;
@@ -65,6 +65,6 @@ public class SoundBase {
     }
 
     public ArrayList<Sound> getSoundsList() {
-        return list;
+        return sounds;
     }
 }

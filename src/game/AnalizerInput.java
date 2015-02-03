@@ -18,28 +18,28 @@ import java.util.logging.Logger;
  */
 public class AnalizerInput {
 
-    public static void AnalizeInput(String name, Settings settings) {
+    public static void AnalizeInput(String name) {
         String[] p = name.split("\\s+");
-        int pl = Integer.parseInt(p[0]);
+        int players = Integer.parseInt(p[0]);
         int act = Integer.parseInt(p[1]);
         int type = Integer.parseInt(p[2]);
         int[] table = new int[p.length - 3];
         for (int i = 0; i < p.length - 3; i++) {
             table[i] = Integer.parseInt(p[i + 3]);
         }
-        if (pl != 1 || act >= 4) {
-            settings.players[pl - 1].controler.actions[act].input = AnyInput.createInput(type, table, settings);
+        if (players != 1 || act >= 4) {
+            Settings.players[players - 1].controler.actions[act].input = AnyInput.createInput(type, table);
         }
     }
 
-    public static void Update(Settings settings) {
+    public static void Update() {
         FileWriter fw;
         try {
             fw = new FileWriter("res/input.ini");
             int p = 1;
-            for (Player pl : settings.players) {
+            for (Player pl : Settings.players) {
                 if (pl.controler != null) {
-                    for (int i = 0; i < settings.actionsNr; i++) {
+                    for (int i = 0; i < Settings.actionsCount; i++) {
                         if (pl.controler.actions[i].input != null) {
                             fw.write(p + " " + i + " " + pl.controler.actions[i].input.toString() + "\n");
                         }

@@ -16,8 +16,8 @@ import net.KryoUtil;
  */
 public class ServerTCPPortChoice extends MenuChoice {
 
-    public ServerTCPPortChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public ServerTCPPortChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
@@ -26,6 +26,6 @@ public class ServerTCPPortChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + " TCP: " + KryoUtil.TCP_PORT + " - " + settings.language.m.Unchangable;
+        return label + " TCP: " + KryoUtil.TCP_PORT + " - " + Settings.language.menu.Unchangable;
     }
 }

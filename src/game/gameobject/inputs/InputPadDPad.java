@@ -15,31 +15,31 @@ import org.lwjgl.input.Controller;
 public class InputPadDPad extends AnyInput {
 
     private final Controller[] controllers;
-    private final boolean isX;
-    private final boolean isPlus;
+    private final boolean xAxis;
+    private final boolean positive;
 
-    public InputPadDPad(Controller[] controllers, int padNumber, boolean isX, boolean isPlus) {
+    public InputPadDPad(Controller[] controllers, int padNumber, boolean xAxis, boolean positive) {
         this.controllers = controllers;
-        this.padNumber = padNumber;
-        this.isX = isX;
-        this.isPlus = isPlus;
-        label = "JOY " + padNumber + ": D-PAD " + (isX ? "X" : "Y") + (isPlus ? "+" : "-");
+        this.pad = padNumber;
+        this.xAxis = xAxis;
+        this.positive = positive;
+        label = "JOY " + padNumber + ": D-PAD " + (xAxis ? "X" : "Y") + (positive ? "+" : "-");
     }
 
     @Override
     public boolean isPut() {
-        if (padNumber < controllers.length) {
-            if (isX) {
-                if (isPlus) {
-                    return controllers[padNumber].getPovX() > 0.1f;
+        if (pad < controllers.length) {
+            if (xAxis) {
+                if (positive) {
+                    return controllers[pad].getPovX() > 0.1f;
                 } else {
-                    return controllers[padNumber].getPovX() < -0.1f;
+                    return controllers[pad].getPovX() < -0.1f;
                 }
             } else {
-                if (isPlus) {
-                    return controllers[padNumber].getPovY() > 0.1f;
+                if (positive) {
+                    return controllers[pad].getPovY() > 0.1f;
                 } else {
-                    return controllers[padNumber].getPovY() < -0.1f;
+                    return controllers[pad].getPovY() < -0.1f;
                 }
             }
         }
@@ -53,6 +53,6 @@ public class InputPadDPad extends AnyInput {
 
     @Override
     public String toString() {
-        return AnyInput.CONTROLLER_DPAD + " " + padNumber + " " + (isX ? 1 : 0) + " " + (isPlus ? 1 : 0);
+        return AnyInput.CONTROLLER_DPAD + " " + pad + " " + (xAxis ? 1 : 0) + " " + (positive ? 1 : 0);
     }
 }

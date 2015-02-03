@@ -17,27 +17,27 @@ import game.place.Menu;
  */
 public class VolumeChoice extends MenuChoice {
 
-    public VolumeChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public VolumeChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
-        settings.volume += 0.05f;
-        if (settings.volume > 1.01f) {
-            settings.volume = 0.00f;
+        Settings.volume += 0.05f;
+        if (Settings.volume > 1.01f) {
+            Settings.volume = 0.00f;
         }
-        if(settings.sounds != null){
-            for(Sound s: settings.sounds.getSoundsList()){
+        if(Settings.sounds != null){
+            for(Sound s: Settings.sounds.getSoundsList()){
                 s.updateGain();
             }
         }
-        AnalizerSettings.update(settings);
+        AnalizerSettings.update();
     }
 
     @Override
     public String getLabel() {
-        int v = (int)(settings.volume * 100);
+        int v = (int)(Settings.volume * 100);
             return label + v + "%";
     }
 }

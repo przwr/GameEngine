@@ -24,53 +24,50 @@ public class ServerIPChoice extends MenuChoice {
     private int position;
     private boolean[] keys = new boolean[25];
 
-    public ServerIPChoice(String label, final Menu menu, final Settings settings) {
-        super(label, menu, settings);
+    public ServerIPChoice(String label, Menu menu) {
+        super(label, menu);
         temp = new char[15];
         val = new String(temp);
-        run = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    char c;
-                    if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+        run = () -> {
+            while (true) {
+                char c;
+                if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+                    end();
+                    break;
+                }
+                if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                    if (!keys[22]) {
+                        keys[22] = true;
+                        Settings.serverIP = val.replace(" ", "");
+                        AnalizerSettings.update();
                         end();
                         break;
                     }
-                    if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                        if (!keys[22]) {
-                            keys[22] = true;
-                            settings.serverIP = val.replace(" ", "");
-                            AnalizerSettings.update(settings);
-                            end();
-                            break;
-                        }
-                    } else {
-                        keys[22] = false;
-                    }
-                    if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_NUMPADENTER)) {
-                        settings.serverIP = val.replace(" ", "");
-                        AnalizerSettings.update(settings);
-                        end();
-                        break;
-                    }
-                    if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
-                        if (!keys[23]) {
-                            keys[23] = true;
-                            if (position > 0) {
-                                temp[--position] = ' ';
-                                val = new String(temp);
-                            }
-                        }
-                    } else {
-                        keys[23] = false;
-                    }
-                    if (position != 15) {
-                        c = checkDigitsKeys();
-                        if (c != ' ') {
-                            temp[position++] = c;
+                } else {
+                    keys[22] = false;
+                }
+                if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_NUMPADENTER)) {
+                    Settings.serverIP = val.replace(" ", "");
+                    AnalizerSettings.update();
+                    end();
+                    break;
+                }
+                if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
+                    if (!keys[23]) {
+                        keys[23] = true;
+                        if (position > 0) {
+                            temp[--position] = ' ';
                             val = new String(temp);
                         }
+                    }
+                } else {
+                    keys[23] = false;
+                }
+                if (position != 15) {
+                    c = checkDigitsKeys();
+                    if (c != ' ') {
+                        temp[position++] = c;
+                        val = new String(temp);
                     }
                 }
             }
@@ -96,7 +93,7 @@ public class ServerIPChoice extends MenuChoice {
         if (thread != null) {
             return label + val;
         } else {
-            return label + settings.serverIP;
+            return label + Settings.serverIP;
         }
     }
 

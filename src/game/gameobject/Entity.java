@@ -7,6 +7,7 @@ package game.gameobject;
 
 import engine.Methods;
 import engine.Time;
+import game.Settings;
 import game.place.Place;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
@@ -22,7 +23,7 @@ public abstract class Entity extends GameObject {
     public Update[] updates = new Update[4];
     public int lastAdded;
     protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
-    protected double scale, xEnvironmentalSpeed, yEnvironmentalSpeed, xSpeed, ySpeed, maxSpeed, jumpHeight, resistance = 1;
+    protected double xEnvironmentalSpeed, yEnvironmentalSpeed, xSpeed, ySpeed, maxSpeed, jumpHeight, resistance = 1;
     protected boolean jumping, hop;
     private Update currentUpdate;
     private int currentUpdateID, deltasCount, xPosition, yPosition, xDelta, yDelta, destinationX, destinationY;
@@ -57,8 +58,8 @@ public abstract class Entity extends GameObject {
     }
 
     private void useCurrentUpdateSoft() {
-        destinationX = Methods.roundHalfUp((currentUpdate.getX() - currentUpdate.getXDeltas().get(deltasCount)) * scale);
-        destinationY = Methods.roundHalfUp((currentUpdate.getY() - currentUpdate.getYDeltas().get(deltasCount)) * scale);
+        destinationX = Methods.roundHalfUp((currentUpdate.getX() - currentUpdate.getXDeltas().get(deltasCount)) * Settings.scale);
+        destinationY = Methods.roundHalfUp((currentUpdate.getY() - currentUpdate.getYDeltas().get(deltasCount)) * Settings.scale);
         if (collision.isCollideSolid(destinationX, destinationY, map)) {
             moveIfPossible(destinationX - getX(), destinationY - getY());
         } else {
@@ -76,8 +77,8 @@ public abstract class Entity extends GameObject {
         currentUpdate = updates[currentUpdateID];
         if (currentUpdate != null) {
             updateRest(currentUpdate);
-            destinationX = Methods.roundHalfUp(currentUpdate.getX() * scale);
-            destinationY = Methods.roundHalfUp(currentUpdate.getY() * scale);
+            destinationX = Methods.roundHalfUp(currentUpdate.getX() * Settings.scale);
+            destinationY = Methods.roundHalfUp(currentUpdate.getY() * Settings.scale);
             if (collision.isCollideSolid(destinationX, destinationY, map)) {
                 moveIfPossible(destinationX - getX(), destinationY - getY());
             } else {
@@ -102,7 +103,7 @@ public abstract class Entity extends GameObject {
     }
 
     private void useCurrentUpdateHard() {
-        moveToPoint(Methods.roundHalfUp((currentUpdate.getX() - currentUpdate.getXDeltas().get(deltasCount)) * scale) - getX(), Methods.roundHalfUp((currentUpdate.getY() - currentUpdate.getYDeltas().get(deltasCount)) * scale) - getY());
+        moveToPoint(Methods.roundHalfUp((currentUpdate.getX() - currentUpdate.getXDeltas().get(deltasCount)) * Settings.scale) - getX(), Methods.roundHalfUp((currentUpdate.getY() - currentUpdate.getYDeltas().get(deltasCount)) * Settings.scale) - getY());
         deltasCount++;
     }
 
@@ -115,7 +116,7 @@ public abstract class Entity extends GameObject {
         currentUpdate = updates[currentUpdateID];
         if (currentUpdate != null) {
             updateRest(currentUpdate);
-            moveToPoint(Methods.roundHalfUp(currentUpdate.getX() * scale) - getX(), Methods.roundHalfUp(currentUpdate.getY() * scale) - getY());
+            moveToPoint(Methods.roundHalfUp(currentUpdate.getX() * Settings.scale) - getX(), Methods.roundHalfUp(currentUpdate.getY() * Settings.scale) - getY());
             deltasCount = 0;
         }
     }
@@ -174,7 +175,7 @@ public abstract class Entity extends GameObject {
             if (colided != null) {
                 colided.setToLastNotCollided();
             }
-            for (int i = 1; i < place.playersLength; i++) {
+            for (int i = 1; i < place.playersCount; i++) {
                 if (collision.isCollideSingle(getX(), getY(), place.players[i].getCollision())) {
                     place.players[i].setX(getX() + xDelta * ((width + place.players[i].getCollisionWidth()) / 2));
                 }
@@ -190,7 +191,7 @@ public abstract class Entity extends GameObject {
             if (colided != null) {
                 colided.setToLastNotCollided();
             }
-            for (int i = 1; i < place.playersLength; i++) {
+            for (int i = 1; i < place.playersCount; i++) {
                 if (collision.isCollideSingle(getX(), getY(), place.players[i].getCollision())) {
                     place.players[i].setY(getY() + yDelta * ((height + place.players[i].getCollisionHeight()) / 2));
                 }
@@ -238,7 +239,7 @@ public abstract class Entity extends GameObject {
     }
 
     public void addSpeed(double xSpeedDelta, double ySpeedDelta) {
-        setAndLimitSpeed(xSpeed + xSpeedDelta / resistance * scale, ySpeed + ySpeedDelta / resistance * scale);
+        setAndLimitSpeed(xSpeed + xSpeedDelta / resistance * Settings.scale, ySpeed + ySpeedDelta / resistance * Settings.scale);
     }
 
     private void setAndLimitSpeed(double xSpeed, double ySpeed) {
@@ -299,6 +300,6 @@ public abstract class Entity extends GameObject {
     }
 
     public void setMaxSpeed(double maxSpeed) {
-        this.maxSpeed = maxSpeed * scale;
+        this.maxSpeed = maxSpeed * Settings.scale;
     }
 }

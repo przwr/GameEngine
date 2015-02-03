@@ -30,8 +30,8 @@ public class ObjectMap extends Map {
         switchTiles(background);
     }
 
-    public void setBackground(int xSheet, int ySheet, SpriteSheet tex) {
-        background = new Tile(tex, tileSize, xSheet, ySheet, place);
+    public void setBackground(int xSheet, int ySheet, SpriteSheet texture) {
+        background = new Tile(texture, tileSize, xSheet, ySheet, place);
         background.setDepth(-1);
         switchTiles(background);
     }
@@ -49,12 +49,12 @@ public class ObjectMap extends Map {
         isBackground = !isBackground;
     }
 
-    private void switchTiles(Tile bg) {
-        for (int y = 0; y < tileheight; y++) {
-            for (int x = 0; x < tilewidth; x++) {
-                Tile t = tiles[x + y * tileheight];
+    private void switchTiles(Tile background) {
+        for (int y = 0; y < heightInTiles; y++) {
+            for (int x = 0; x < widthInTiles; x++) {
+                Tile t = tiles[x + y * heightInTiles];
                 if (t == null || t.getPureDepth() == -1)
-                    tiles[x + y * tileheight] = bg;
+                    tiles[x + y * heightInTiles] = background;
             }
         }
     }

@@ -31,31 +31,41 @@ public class MyPlace extends Place {
     private final Place place;
     private final update[] ups = new update[2];
 
-    public MyPlace(Game game, int width, int height, int tileSize, Settings settnig, boolean isHost) {
-        super(game, width, height, tileSize, settnig);
+    public MyPlace(Game game, int width, int height, int tileSize) {
+        super(game, width, height, tileSize);
         place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
-        //generate(isHost);
     }
 
     @Override
-    public void generate(boolean isHost) {
-        PolanaMap polana = new PolanaMap(mapId++, this, width, height, tileSize);
-        KamiennaMap kamienna = new KamiennaMap(mapId++, this, width, height, tileSize);
-        if (isHost) {
-            for (int i = 0; i < 1; i++) {
-                polana.addObject(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", this, true, polana.mobID++));
-            }
-        }
+    public void generateAsGuest() {
+        GladeMap polana = new GladeMap(mapId++, this, width, height, tileSize);
+        StoneMap kamienna = new StoneMap(mapId++, this, width, height, tileSize);
         maps.add(polana);
         maps.add(kamienna);
-        //sounds.init("res", settings);
+        //sounds.init("res");
         this.red = 0.75f;
         this.green = 0.75f;
         this.blue = 0.75f;
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (settings.SCALE * 24));
+        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+        SoundStore.get().poll(0);
+        initMethods();
+    }
+
+    @Override
+    public void generateAsHost() {
+        GladeMap polana = new GladeMap(mapId++, this, width, height, tileSize);
+        StoneMap kamienna = new StoneMap(mapId++, this, width, height, tileSize);
+        maps.add(polana);
+        maps.add(kamienna);        
+        //sounds.init("res");
+        this.red = 0.75f;
+        this.green = 0.75f;
+        this.blue = 0.75f;
+        fonts = new FontBase(20);
+        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
         SoundStore.get().poll(0);
         initMethods();
     }
@@ -66,68 +76,64 @@ public class MyPlace extends Place {
     }
 
     private void initMethods() {
-        ups[0] = new update() {
-            @Override
-            public void up() {
-                
-                 if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
-                 sounds.getSound("MumboMountain").resume();
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-                 sounds.getSound("MumboMountain").pause();
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
-                 sounds.getSound("MumboMountain").stop();
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
-                 sounds.getSound("MumboMountain").addPitch(0.05f);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
-                 sounds.getSound("MumboMountain").addPitch(-0.05f);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
-                 sounds.getSound("MumboMountain").addGainModifier(0.05f);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
-                 sounds.getSound("MumboMountain").addGainModifier(-0.05f);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
-                 sounds.getSound("MumboMountain").resume();
-                 sounds.getSound("MumboMountain").smoothStart(0.5);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
-                 sounds.getSound("MumboMountain").fade(0.5, true);
-                 }
-                 if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
-                 sounds.getSound("MumboMountain").fade(0.5, false);
-                 }
-                 
-                if (playersLength > 1) {
-                    changeSplitScreenJoin.act();
-                    changeSplitScreenMode.act();
-                    if (changeSplitScreenJoin.isOn()) {
-                        settings.joinSS = !settings.joinSS;
-                    }
-                    if (changeSplitScreenMode.isOn()) {
-                        changeSSMode = true;
-                    }
-                    cams[playersLength - 2].update();
-                }
-                for (int i = 0; i < playersLength; i++) {
-                    ((Player) players[i]).update();
-                }
-                maps.stream().forEach((map) -> {
-                    map.getSolidMobs().stream().forEach((mob) -> {
-                        mob.update(game.place);
-                    });
-                });
+        ups[0] = () -> {
+            if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+                sounds.getSound("MumboMountain").resume();
             }
+            if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+                sounds.getSound("MumboMountain").pause();
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+                sounds.getSound("MumboMountain").stop();
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
+                sounds.getSound("MumboMountain").addPitch(0.05f);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+                sounds.getSound("MumboMountain").addPitch(-0.05f);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+                sounds.getSound("MumboMountain").addGainModifier(0.05f);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
+                sounds.getSound("MumboMountain").addGainModifier(-0.05f);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
+                sounds.getSound("MumboMountain").resume();
+                sounds.getSound("MumboMountain").smoothStart(0.5);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
+                sounds.getSound("MumboMountain").fade(0.5, true);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
+                sounds.getSound("MumboMountain").fade(0.5, false);
+            }
+            
+            if (playersCount > 1) {
+                changeSplitScreenJoin.act();
+                changeSplitScreenMode.act();
+                if (changeSplitScreenJoin.isOn()) {
+                    Settings.joinSplitScreen = !Settings.joinSplitScreen;
+                }
+                if (changeSplitScreenMode.isOn()) {
+                    changeSSMode = true;
+                }
+                cameras[playersCount - 2].update();
+            }
+            for (int i = 0; i < playersCount; i++) {
+                ((Player) players[i]).update();
+            }
+            maps.stream().forEach((map) -> {
+                map.getSolidMobs().stream().forEach((mob) -> {
+                    mob.update(game.place);
+                });
+            });
         };
         ups[1] = () -> {
             tempMaps.clear();
             Map map;
             if (game.online.server != null) {
-                for (int i = 0; i < playersLength; i++) {
+                for (int i = 0; i < playersCount; i++) {
                     map = players[i].getMap();
                     if (!tempMaps.contains(map)) {
                         for (Mob mob : map.getSolidMobs()) {
@@ -143,7 +149,7 @@ public class MyPlace extends Place {
                 }
             }
             ((Player) players[0]).sendUpdate(place);
-            for (int i = 1; i < playersLength; i++) {
+            for (int i = 1; i < playersCount; i++) {
                 ((Entity) players[i]).updateSoft();
                 ((Entity) players[i]).updateOnline();
             }
@@ -153,7 +159,7 @@ public class MyPlace extends Place {
     @Override
     public int getPlayersLenght() {
         if (game.mode == 0) {
-            return playersLength;
+            return playersCount;
         } else {
             return 1;
         }

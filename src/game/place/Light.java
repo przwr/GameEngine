@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import game.Settings;
 import game.gameobject.GameObject;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
@@ -27,9 +28,9 @@ public class Light {
         this.red = red;
         this.green = green;
         this.blue = blue;
-        if (!place.settings.shadowOff) {
-            frameBufferObject = (place.settings.nrSamples > 0) ? new MultiSampleFrameBufferObject(xStart, yStart, place.settings)
-                    : new RegularFrameBufferObject(xStart, yStart, place.settings);
+        if (!Settings.shadowOff) {
+            frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(xStart, yStart)
+                    : new RegularFrameBufferObject(xStart, yStart);
         }
         this.texture = Sprite.create(name, xStart, yStart, null);
     }

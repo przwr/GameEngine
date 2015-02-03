@@ -19,27 +19,17 @@ import game.place.WarpPoint;
  *
  * @author Wojtek
  */
-public class KamiennaMap extends Map {
+public class GladeMap extends Map {
 
-    public KamiennaMap(short id, Place place, int width, int height, int tileSize) {
-        super(id, "Kamienna", place, width, height, tileSize);
-        Tile GROUND = new Tile(place.getSpriteSheet("tlo"), tileSize, 2, 12, place);
-        Tile ROCK = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 1, place);
+    public GladeMap(short ID, Place place, int width, int height, int tileSize) {
+        super(ID, "Polana", place, width, height, tileSize);
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8, place);
         Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12, place);
-        Area rocks = Area.createInChunks(13 * tileSize, 13 * tileSize, tileSize);
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
-                if ((x * y) < 600) {
-                    tiles[x + y * height / tileSize] = GROUND;
-                } else {
-                    if (tiles[x - 1 + y * height / tileSize] == GROUND || tiles[x + (y - 1) * height / tileSize] == GROUND) {
-                        rocks.addFigure(Rectangle.create(x * tileSize - 13 * tileSize, y * tileSize - 13 * tileSize, tileSize, tileSize, OpticProperties.IN_SHADE, rocks));
-                    }
-                    tiles[x + y * height / tileSize] = ROCK;
-                }
+                tiles[x + y * height / tileSize] = GRASS;
             }
         }
-
         Area testa = Area.createWhole(6 * tileSize, 5 * tileSize, tileSize);
         Area testb = Area.createWhole(8 * tileSize, 5 * tileSize, tileSize);
         Area testc = Area.createWhole(7 * tileSize, 7 * tileSize, tileSize);
@@ -117,17 +107,19 @@ public class KamiennaMap extends Map {
         fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize, 0, place);
         addForegroundTileAndReplace(fgt, 9 * tileSize, 10 * tileSize, 2 * tileSize);
         testg.addPiece(fgt);
+
         Area border = Area.createBorder(0, 0, tileSize);
         border.addFigure(Line.create(0, 0, width, 0, border));
         border.addFigure(Line.create(0, 0, 0, height, border));
         border.addFigure(Line.create(width, 0, 0, height, border));
         border.addFigure(Line.create(0, height, width, 0, border));
-        WarpPoint w = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
+
+        WarpPoint w = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         w.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, w));
         addObject(w);
-        addObject(new WarpPoint("toKamienna", 20 * tileSize, 17 * tileSize));
+        addObject(new WarpPoint("toPolana", 20 * tileSize, 17 * tileSize));
+
         tiles[20 + 20 * height / tileSize] = PORTAL;
-        areas.add(rocks);
         areas.add(testa);
         areas.add(testb);
         areas.add(testc);
@@ -136,5 +128,9 @@ public class KamiennaMap extends Map {
         areas.add(testf);
         areas.add(testg);
         areas.add(border);
+
+        for (int i = 0; i < 1; i++) {
+            addObject(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", place, true, mobID++));
+        }
     }
 }

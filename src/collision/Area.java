@@ -25,11 +25,11 @@ public class Area extends GameObject {
     private static final Whole WHOLE = new Whole();
     private static final Chunks CHUNKS = new Chunks();
     private final boolean border;
-    private int centralX, centralY;
+    private int xCentral, yCentral;
     private final Integration type;
     private final ArrayList<Figure> parts = new ArrayList<>();
-    private int maxX, maxY, minX, minY, shadowHeight;
-    private int tempX, tempY, tempShadowHeight;
+    private int xMax, yMax, xMin, yMin, shadowHeight;
+    private int xTemp, yTemp, tempShadowHeight;
 
     public static Area createBorder(int x, int y, int tileSize) {
         return new Area(x, y, true, false);
@@ -56,21 +56,22 @@ public class Area extends GameObject {
         type.updateProperties(this, figure);
     }
 
-    public void addPiece(GameObject go) {
-        Figure figure = go.getCollision();
+    public void addPiece(GameObject object) {
+        Figure figure = object.getCollision();
         parts.add(figure);
-        if (go.isSolid()) {
+        if (object.isSolid()) {
             type.updateProperties(this, figure);
         }
     }
 
     protected void updateCollision() {
-        maxX = maxY = shadowHeight = 0;
-        minX = minY = Integer.MAX_VALUE;
+        xMax = yMax = shadowHeight = 0;
+        xMin = yMin = Integer.MAX_VALUE;
         parts.stream().forEach((part) -> {
             recalculateCollsion(part);
         });
-        collision = Rectangle.createShadowHeight(minX - getX(), minY - getY(), maxX - minX, maxY - minY, OpticProperties.FULL_SHADOW, shadowHeight, this);
+        collision = Rectangle.createShadowHeight(xMin - getX(), yMin - getY(), xMax - xMin, yMax - yMin,
+                OpticProperties.FULL_SHADOW, shadowHeight, this);
     }
 
     private void recalculateCollsion(Figure part) {
@@ -91,19 +92,19 @@ public class Area extends GameObject {
     }
 
     private void findCorners(Point point) {
-        tempX = point.getX();
-        tempY = point.getY();
-        if (tempX > maxX) {
-            maxX = tempX;
+        xTemp = point.getX();
+        yTemp = point.getY();
+        if (xTemp > xMax) {
+            xMax = xTemp;
         }
-        if (tempY > maxY) {
-            maxY = tempY;
+        if (yTemp > yMax) {
+            yMax = yTemp;
         }
-        if (tempX < minX) {
-            minX = tempX;
+        if (xTemp < xMin) {
+            xMin = xTemp;
         }
-        if (tempY < minY) {
-            minY = tempY;
+        if (yTemp < yMin) {
+            yMin = yTemp;
         }
     }
 
@@ -124,8 +125,8 @@ public class Area extends GameObject {
     }
 
     protected void updateCenter() {
-        centralX = width / 2;
-        centralY = height / 2;
+        xCentral = width / 2;
+        yCentral = height / 2;
     }
 
     public boolean isCollide(int x, int y, Figure figure) {
@@ -170,9 +171,9 @@ public class Area extends GameObject {
     }
 
     private boolean isClose(int x, int y, Figure figure) {
-        int dx = FastMath.abs(getX() + centralX - figure.getXCentral(x));
-        int dy = FastMath.abs(getY() + centralY - figure.getYCentral(y));
-        return (dx <= (centralX + figure.getWidth()) && dy <= (centralY + figure.getHeight()));
+        int dx = FastMath.abs(getX() + xCentral - figure.getXCentral(x));
+        int dy = FastMath.abs(getY() + yCentral - figure.getYCentral(y));
+        return (dx <= (xCentral + figure.getWidth()) && dy <= (yCentral + figure.getHeight()));
     }
 
     public Figure deleteFigure(int index) {
@@ -182,8 +183,8 @@ public class Area extends GameObject {
     public Collection<Point> getPoints() {
         ArrayList<Point> temp = new ArrayList<>();
         parts.stream().map((part) -> part.getPoints()).forEach((points) -> {
-            points.stream().filter((p) -> (p != null && !temp.contains(p))).forEach((p) -> {
-                temp.add(p);
+            points.stream().filter((point) -> (point != null && !temp.contains(point))).forEach((point) -> {
+                temp.add(point);
             });
         });
         return temp;
@@ -198,10 +199,10 @@ public class Area extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f) {
+    public void renderShadow(int xEffect, int yEffect, Figure figure) {
         glPushMatrix();
-        glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
-        Drawer.drawRectangleInBlack(0, 0, f.width, f.height + f.getShadowHeight());
+        glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
+        Drawer.drawRectangleInBlack(0, 0, figure.width, figure.height + figure.getShadowHeight());
         glPopMatrix();
     }
 
@@ -214,10 +215,10 @@ public class Area extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int yStart) {
+    public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int yStart) {
         glPushMatrix();
-        glTranslatef(f.getX() + xEffect, f.getY() - f.getShadowHeight() + yEffect, 0);
-        Drawer.drawRectangleInBlack(0, 0, f.width, f.height + f.getShadowHeight());
+        glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
+        Drawer.drawRectangleInBlack(0, 0, figure.width, figure.height + figure.getShadowHeight());
         glPopMatrix();
     }
 

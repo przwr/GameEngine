@@ -16,35 +16,35 @@ import game.place.Menu;
  */
 public class SmoothShadowsChoice extends MenuChoice {
 
-    public SmoothShadowsChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public SmoothShadowsChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
-        if (settings.multiSampleSupported) {
-            settings.nrSamples *= 2;
-            if (settings.nrSamples == 0) {
-                settings.nrSamples = 2;
+        if (Settings.multiSampleSupported) {
+            Settings.samplesCount *= 2;
+            if (Settings.samplesCount == 0) {
+                Settings.samplesCount = 2;
             }
-            if (settings.nrSamples > settings.maxSamples) {
-                settings.nrSamples = 0;
+            if (Settings.samplesCount > Settings.maxSamples) {
+                Settings.samplesCount = 0;
             }
-            AnalizerSettings.update(settings);
+            AnalizerSettings.update();
         } else {
-            settings.nrSamples = 0;
-            AnalizerSettings.update(settings);
+            Settings.samplesCount = 0;
+            AnalizerSettings.update();
         }
     }
 
     @Override
     public String getLabel() {
-        if (!settings.multiSampleSupported) {
-            return label + settings.language.m.Off + " (" + settings.language.m.Unsupported + ")";
-        } else if (settings.nrSamples == 0) {
-            return label + settings.language.m.Off;
+        if (!Settings.multiSampleSupported) {
+            return label + Settings.language.menu.Off + " (" + Settings.language.menu.Unsupported + ")";
+        } else if (Settings.samplesCount == 0) {
+            return label + Settings.language.menu.Off;
         }
-        return label + settings.nrSamples + "x";
+        return label + Settings.samplesCount + "x";
 
     }
 }

@@ -15,8 +15,8 @@ import game.place.Menu;
  */
 public class RunServerChoice extends MenuChoice {
 
-    public RunServerChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public RunServerChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override

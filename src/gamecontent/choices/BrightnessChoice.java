@@ -15,8 +15,8 @@ import game.place.Menu;
  */
 public class BrightnessChoice extends MenuChoice {
 
-    public BrightnessChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public BrightnessChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
@@ -36,10 +36,7 @@ public class BrightnessChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        if (menu.game.getPlace() != null) {
-            return label + menu.game.getPlace().red;
-        } else {
-            return label + settings.language.m.StartGame;
-        }
+        return (menu.game.getPlace() != null) ? label + menu.game.getPlace().red
+                : label + Settings.language.menu.StartGame;
     }
 }

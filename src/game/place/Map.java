@@ -7,7 +7,6 @@ package game.place;
 
 import collision.Area;
 import engine.Drawer;
-import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
@@ -25,15 +24,15 @@ public class Map {
 
     public ArrayList<GameObject> visibleLights = new ArrayList<>(128);
     public final Place place;
-    public final Settings settings;
 
     protected final Tile[] tiles;
     protected final ArrayList<Area> areas = new ArrayList<>();
-
     protected final String name;
-    private final short ID;
     protected final int width, height, tileSize;
-    protected final int tilewidth, tileheight;
+    protected final int widthInTiles, heightInTiles;
+
+    private final short mapID;
+    protected short mobID = 0;
     private final ArrayList<GameObject> allObjects = new ArrayList<>();
     private final ArrayList<Mob> solidMobs = new ArrayList<>();
     private final ArrayList<Mob> flatMobs = new ArrayList<>();
@@ -45,21 +44,19 @@ public class Map {
     private final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
     private final ArrayList<GameObject> objectsOnTop = new ArrayList<>();
     private final ArrayList<GameObject> depthObjects = new ArrayList<>();
-    private final Comparator<GameObject> depthComparator = (GameObject obj1, GameObject obj2) -> obj1.getDepth() - obj2.getDepth();
+    private final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
+            -> firstObject.getDepth() - secondObject.getDepth();
 
-    public short mobID = 0; // POWINIEN BYĆ inicjalizowany w mapie
-
-    public Map(short ID, String name, Place place, int width, int height, int tileSize) {
+    public Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
-        this.settings = place.settings;
         this.name = name;
-        this.ID = ID;
+        this.mapID = mapID;
         this.width = width;
         this.height = height;
         this.tileSize = tileSize;
-        tilewidth = width / tileSize;
-        tileheight = height / tileSize;
-        tiles = new Tile[tilewidth * tileheight];
+        widthInTiles = width / tileSize;
+        heightInTiles = height / tileSize;
+        tiles = new Tile[widthInTiles * heightInTiles];
     }
 
     public void sortObjects(ArrayList<GameObject> objects) {
@@ -75,7 +72,7 @@ public class Map {
     }
 
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
-        tiles[x / tileSize + y / tileSize * tileheight] = null;
+        tiles[x / tileSize + y / tileSize * heightInTiles] = null;
         foregroundTiles.stream().filter((obj) -> (obj.getX() == x && obj.getY() == y)).forEach((obj) -> {
             foregroundTiles.remove(obj);
         });
@@ -164,15 +161,15 @@ public class Map {
         }
     }
 
-    public void renderBackground(Camera cam) {
+    public void renderBackground(Camera camera) {
         Drawer.refreshForRegularDrawing();
-        for (int y = 0; y < tileheight; y++) {
-            if (cam.getYStart() < (y + 1) * tileSize && cam.getYEnd() > y * tileSize) {
+        for (int y = 0; y < heightInTiles; y++) {
+            if (camera.getYStart() < (y + 1) * tileSize && camera.getYEnd() > y * tileSize) {
                 for (int x = 0; x < width / tileSize; x++) {
-                    if (cam.getXStart() < (x + 1) * tileSize && cam.getXEnd() > x * tileSize) {
-                        Tile tile = tiles[x + y * tileheight];
+                    if (camera.getXStart() < (x + 1) * tileSize && camera.getXEnd() > x * tileSize) {
+                        Tile tile = tiles[x + y * heightInTiles];
                         if (tile != null) {
-                            tile.renderSpecific(cam.getXOffsetEffect() + x * tileSize, cam.getYOffsetEffect() + y * tileSize);
+                            tile.renderSpecific(camera.getXOffsetEffect() + x * tileSize, camera.getYOffsetEffect() + y * tileSize);
                         }
                     }
                 }
@@ -227,7 +224,7 @@ public class Map {
     }
 
     protected void renderText(Camera cam) {
-        for (int p = 0; p < place.playersLength; p++) {
+        for (int p = 0; p < place.playersCount; p++) {
             if (place.players[p].getMap().equals(this)) {
                 if (cam.getYStart() <= place.players[p].getY() + (place.players[p].getHeight() + place.fonts.write(0).getHeight()) && cam.getYEnd() >= place.players[p].getY() - (place.players[p].getHeight() + place.fonts.write(0).getHeight())
                         && cam.getXStart() <= place.players[p].getX() + (place.fonts.write(0).getWidth(place.players[p].getName())) && cam.getXEnd() >= place.players[p].getX() - (place.fonts.write(0).getWidth(place.players[p].getName()))) {
@@ -278,11 +275,11 @@ public class Map {
     }
 
     public int getTileWidth() {
-        return tilewidth;
+        return widthInTiles;
     }
 
     public int getTileHeight() {
-        return tilewidth;
+        return widthInTiles;
     }
 
     public int getWidth() {
@@ -298,7 +295,7 @@ public class Map {
     }
 
     public Tile getTile(int x, int y) {
-        return tiles[x + y * tileheight];
+        return tiles[x + y * heightInTiles];
     }
 
     public Tile getTile(int index) {
@@ -309,16 +306,8 @@ public class Map {
         return name;
     }
 
-    public short getId() {
-        return ID;
-    }
-
-    public void setTile(int x, int y, Tile tile) {
-        tiles[x + y * tileheight] = tile;
-    }
-
-    public void setTile(int index, Tile tile) {
-        tiles[index] = tile;
+    public short getID() {
+        return mapID;
     }
 
     public Collection<Mob> getSolidMobs() {
@@ -356,4 +345,13 @@ public class Map {
     public Collection<WarpPoint> getWarps() {
         return Collections.unmodifiableList(warps);
     }
+
+    public void setTile(int x, int y, Tile tile) {
+        tiles[x + y * heightInTiles] = tile;
+    }
+
+    public void setTile(int index, Tile tile) {
+        tiles[index] = tile;
+    }
+
 }

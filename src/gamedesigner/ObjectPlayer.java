@@ -15,6 +15,7 @@ import game.place.Light;
 import engine.Drawer;
 import engine.Methods;
 import engine.Point;
+import game.Settings;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import net.packets.Update;
@@ -63,18 +64,17 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
-        scale = place.settings.SCALE;
+    public void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y) {
         this.online = place.game.online;
-        this.width = Methods.roundHalfUp(scale * width);
-        this.height = Methods.roundHalfUp(scale * height);
-        this.xStart = Methods.roundHalfUp(scale * startX);
-        this.yStart = Methods.roundHalfUp(scale * startY);
+        this.width = Methods.roundHalfUp(Settings.scale * width);
+        this.height = Methods.roundHalfUp(Settings.scale * height);
+        this.xStart = Methods.roundHalfUp(Settings.scale * xStart);
+        this.yStart = Methods.roundHalfUp(Settings.scale * yStart);
         this.setResistance(2);
         this.emitter = true;
-        initialize(name, Methods.roundHalfUp(scale * x), Methods.roundHalfUp(scale * y), place);
+        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y), place);
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -84,16 +84,15 @@ public class ObjectPlayer extends Player {
     @Override
     public void initialize(int startX, int startY, int width, int height, Place place) {
         this.online = place.game.online;
-        scale = place.settings.SCALE;
-        this.width = Methods.roundHalfUp(scale * width);
-        this.height = Methods.roundHalfUp(scale * height);
-        this.xStart = Methods.roundHalfUp(scale * startX);
-        this.yStart = Methods.roundHalfUp(scale * startY);
+        this.width = Methods.roundHalfUp(Settings.scale * width);
+        this.height = Methods.roundHalfUp(Settings.scale * height);
+        this.xStart = Methods.roundHalfUp(Settings.scale * startX);
+        this.yStart = Methods.roundHalfUp(Settings.scale * startY);
         this.setResistance(2);
         this.emitter = true;
         this.place = place;
         this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(scale * 1024), Methods.roundHalfUp(scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));

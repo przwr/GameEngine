@@ -5,7 +5,6 @@
  */
 package gamecontent.choices;
 
-import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
@@ -15,13 +14,12 @@ import game.place.Menu;
  */
 public class ControlsChoice extends MenuChoice {
 
-    public ControlsChoice(String label, Menu menu, Settings settings) {
-        super(label, menu, settings);
+    public ControlsChoice(String label, Menu menu) {
+        super(label, menu);
     }
 
     @Override
     public void action() {
         menu.setCurrent(2);
     }
-
 }
