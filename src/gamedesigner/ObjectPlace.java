@@ -90,6 +90,7 @@ public class ObjectPlace extends Place {
 
     private void initializeMethods() {
         updates[0] = () -> {
+            pressed = false;
             if (Keyboard.isKeyDown(Keyboard.KEY_H)) {
                 help.setVisible(true);
             }
@@ -97,7 +98,6 @@ public class ObjectPlace extends Place {
             if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
                 loadTextures();
             }
-
             if (keyPressed(KEY_M)) {
                 mode++;
                 switch (mode) {
@@ -142,7 +142,7 @@ public class ObjectPlace extends Place {
     public int getMode() {
         return mode;
     }
-    
+
     public boolean key(int k) {
         return Keyboard.isKeyDown(k);
     }

@@ -31,7 +31,7 @@ public class ObjectPlayer extends Player {
     private int ix, iy;
     private int xtimer, ytimer;
     private int usedDepth;
-    private int tile;
+    private int tileSize;
     private int xStop, yStop;
 
     private ObjectMap objMap;
@@ -65,7 +65,7 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y) {
-        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y), place);
+        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y));
         initialize(yStart, yStart, width, height, place);
     }
 
@@ -81,7 +81,7 @@ public class ObjectPlayer extends Player {
         this.emitter = true;
         this.place = place;
         emits = false;
-        tile = place.tileSize;
+        tileSize = place.getTileSize();
         objPlace = (ObjectPlace) place;
         onTop = true;
     }
@@ -96,18 +96,18 @@ public class ObjectPlayer extends Player {
 
     @Override
     protected void move(int xPosition, int yPosition) {
-        boolean cltr = key(KEY_LCONTROL);
+        boolean cltr = objPlace.key(KEY_LCONTROL);
 
         if (xtimer == 0) {
             ix = Methods.interval(0, ix + xPosition, map.getTileWidth());
-            setX(ix * tile);
+            setX(ix * tileSize);
             if (!cltr) {
                 xStop = Methods.interval(0, xStop + xPosition, map.getTileWidth());
             }
         }
         if (ytimer == 0) {
             iy = Methods.interval(0, iy + yPosition, map.getTileHeight());
-            setY(iy * tile);
+            setY(iy * tileSize);
             if (!cltr) {
                 yStop = Methods.interval(0, yStop + yPosition, map.getTileHeight());
             }
@@ -198,8 +198,8 @@ public class ObjectPlayer extends Player {
             } else if (mode == 1) {
                 int xd = (Math.abs(ix - xStop) + 1);
                 int yd = (Math.abs(iy - yStop) + 1);
-                if (!objMap.checkBlockCollision(xBegin * tile, yBegin * tile, xd * tile, yd * tile)) {
-                    objMap.addObject(new TemporaryBlock(xBegin * tile, yBegin * tile, areaHeight, xd, yd, map));
+                if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
+                    objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, areaHeight, xd, yd, map, place));
                 }
             }
         }
@@ -218,7 +218,7 @@ public class ObjectPlayer extends Player {
             } else if (mode == 1) {
                 int xd = (Math.abs(ix - xStop) + 1);
                 int yd = (Math.abs(iy - yStop) + 1);
-                objMap.deleteBlocks(xBegin * tile, yBegin * tile, xd * tile, yd * tile);
+                objMap.deleteBlocks(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
             }
         }
 
@@ -231,9 +231,9 @@ public class ObjectPlayer extends Player {
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
         int d = 3;
-        int xd = (Math.abs(ix - xStop) + 1) * tile;
-        int yd = (Math.abs(iy - yStop) + 1) * tile;
-        glTranslatef(Math.min(ix, xStop) * tile + xEffect, Math.min(iy, yStop) * tile + yEffect, 0);
+        int xd = (Math.abs(ix - xStop) + 1) * tileSize;
+        int yd = (Math.abs(iy - yStop) + 1) * tileSize;
+        glTranslatef(Math.min(ix, xStop) * tileSize + xEffect, Math.min(iy, yStop) * tileSize + yEffect, 0);
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         glColor4f(1f, 1f, 1f, 1f);
         if (objPlace.getMode() == 0) {
@@ -245,7 +245,7 @@ public class ObjectPlayer extends Player {
         if (objPlace.getMode() == 1) {
             glColor4f(1f, 0.78f, 0f, 1f);
             //glColor4f(1f, 1f, 1f, 1f);
-            int tmpH = areaHeight * tile;
+            int tmpH = areaHeight * tileSize;
             //Drawer.drawRectangle(0, -tmpH, xd, yd);
             if (areaHeight == 0) {
                 Drawer.drawRectangle(-d, -d, xd + 2 * d, d);

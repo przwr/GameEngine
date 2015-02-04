@@ -9,6 +9,7 @@ import collision.Figure;
 import engine.Drawer;
 import game.gameobject.GameObject;
 import game.place.Map;
+import game.place.Place;
 import game.place.Tile;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
@@ -26,15 +27,15 @@ public class TemporaryBlock extends GameObject {
     private final ObjectPlace objPlace;
     private boolean complete;
 
-    public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map m) {
-        initialize("tmpBlock", x, y, m.place);
-        this.tile = m.getTileSize();
+    public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map, Place place) {
+        initialize("tmpBlock", x, y);
+        this.tile = map.getTileSize();
         this.upHeight = upHeight;
         this.width = width * tile;
         this.height = height * tile;
         xTiles = width;
         yTiles = height;
-        this.map = m;
+        this.map = map;
         objPlace = (ObjectPlace) place;
     }
 
