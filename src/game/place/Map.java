@@ -180,14 +180,13 @@ public class Map {
         int y = 0;
         for (GameObject object : depthObjects) {
             while (y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth()) {
-                if (camera.getYStart() <= foregroundTiles.get(y).getY() + (foregroundTiles.get(y).getCollisionHeight()) & camera.getYEnd() >= foregroundTiles.get(y).getY() - (foregroundTiles.get(y).getCollisionHeight())
-                        && camera.getXStart() <= foregroundTiles.get(y).getX() + (foregroundTiles.get(y).getCollisionWidth()) && camera.getXEnd() >= foregroundTiles.get(y).getX() - (foregroundTiles.get(y).getCollisionWidth())) {
+                if (isObjectInSight(camera, foregroundTiles.get(y))) {
                     foregroundTiles.get(y).render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
                 }
                 y++;
             }
-            if (object.isVisible() && camera.getYStart() <= object.getY() + (object.getHeight()) && camera.getYEnd() >= object.getY() - (object.getHeight())
-                    && camera.getXStart() <= object.getX() + (object.getWidth()) && camera.getXEnd() >= object.getX() - (object.getWidth())) {
+            if (object.isVisible()
+                    && isObjectInSight(camera, object)) {
                 object.render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
             }
         }
@@ -200,11 +199,18 @@ public class Map {
         Drawer.refreshForRegularDrawing();
         sortObjectsByDepth(objectsOnTop);
         for (GameObject object : objectsOnTop) {
-            if (object.isVisible() && camera.getYStart() <= object.getY() + (object.getHeight()) && camera.getYEnd() >= object.getY() - (object.getHeight())
-                    && camera.getXStart() <= object.getX() + (object.getWidth()) && camera.getXEnd() >= object.getX() - (object.getWidth())) {
+            if (object.isVisible()
+                    && isObjectInSight(camera, object)) {
                 object.render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
             }
         }
+    }
+
+    public boolean isObjectInSight(Camera camera, GameObject object) {
+        return camera.getYStart() <= object.getY() + (object.getHeight())
+                && camera.getYEnd() >= object.getY() - (object.getHeight())
+                && camera.getXStart() <= object.getX() + (object.getWidth())
+                && camera.getXEnd() >= object.getX() - (object.getWidth());
     }
 
     public void sortObjectsByDepth(ArrayList<GameObject> objects) {
