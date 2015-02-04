@@ -7,7 +7,6 @@ package game.place.cameras;
 
 import game.gameobject.GameObject;
 import game.Settings;
-import game.place.Place;
 import org.lwjgl.opengl.Display;
 
 /**
@@ -36,15 +35,15 @@ public class PlayersCamera extends Camera {
                 }
             }
         };
-        initsRest(place, ownersCount);
+        initsRest(ownersCount);
         initialize(xSplit, ySplit);
     }
 
     public PlayersCamera(GameObject firstOwner, GameObject secondOwner) {
         super(firstOwner);
         owners.add(secondOwner);
-        heightHalf = Display.getWidth() / 2;
-        widthHalf = Display.getHeight() / 2;
+        widthHalf = Display.getWidth() / 2;
+        heightHalf = Display.getHeight() / 2;
         update();
     }
 
@@ -52,8 +51,8 @@ public class PlayersCamera extends Camera {
         super(firstOwner);
         owners.add(secondOwner);
         owners.add(thirdOwner);
-        heightHalf = Display.getWidth() / 2;
-        widthHalf = Display.getHeight() / 2;
+        widthHalf = Display.getWidth() / 2;
+        heightHalf = Display.getHeight() / 2;
         update();
     }
 
@@ -62,8 +61,8 @@ public class PlayersCamera extends Camera {
         owners.add(secondOwner);
         owners.add(thirdOwner);
         owners.add(fourthOwner);
-        heightHalf = Display.getWidth() / 2;
-        widthHalf = Display.getHeight() / 2;
+        widthHalf = Display.getWidth() / 2;
+        heightHalf = Display.getHeight() / 2;
         update();
     }
 
@@ -87,20 +86,20 @@ public class PlayersCamera extends Camera {
         update();
     }
 
-    private void initsRest(final Place place, final int num) {
+    private void initsRest(final int ownersCount) {
         inits[1] = () -> {
             if (Settings.horizontalSplitScreen) {
-                if (num == 0) {
+                if (ownersCount == 0) {
                     yDown = 2;
-                } else if (num == 1) {
+                } else if (ownersCount == 1) {
                     xRight = yUp = 2;
                 } else {
                     xLeft = yUp = 2;
                 }
             } else {
-                if (num == 0) {
+                if (ownersCount == 0) {
                     xRight = 2;
-                } else if (num == 1) {
+                } else if (ownersCount == 1) {
                     xLeft = yDown = 2;
                 } else {
                     xLeft = yUp = 2;
@@ -109,13 +108,13 @@ public class PlayersCamera extends Camera {
         };
         inits[2] = () -> {
             if (Settings.horizontalSplitScreen) {
-                if (num == 0) {
+                if (ownersCount == 0) {
                     xRight = 2;
                     yDown = 2;
-                } else if (num == 1) {
+                } else if (ownersCount == 1) {
                     xLeft = 2;
                     yDown = 2;
-                } else if (num == 2) {
+                } else if (ownersCount == 2) {
                     xRight = 2;
                     yUp = 2;
                 } else {

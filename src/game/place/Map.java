@@ -31,20 +31,19 @@ public class Map {
     protected final int width, height, tileSize;
     protected final int widthInTiles, heightInTiles;
 
-    private final short mapID;
+    protected final short mapID;
     protected short mobID = 0;
-    private final ArrayList<GameObject> allObjects = new ArrayList<>();
-    private final ArrayList<Mob> solidMobs = new ArrayList<>();
-    private final ArrayList<Mob> flatMobs = new ArrayList<>();
-    private final ArrayList<GameObject> solidObjects = new ArrayList<>();
-    private final ArrayList<GameObject> flatObjects = new ArrayList<>();
-    private final ArrayList<GameObject> emitters = new ArrayList<>();
-    private final ArrayList<WarpPoint> warps = new ArrayList<>();
+    protected final ArrayList<Mob> solidMobs = new ArrayList<>();
+    protected final ArrayList<Mob> flatMobs = new ArrayList<>();
+    protected final ArrayList<GameObject> solidObjects = new ArrayList<>();
+    protected final ArrayList<GameObject> flatObjects = new ArrayList<>();
+    protected final ArrayList<GameObject> emitters = new ArrayList<>();
+    protected final ArrayList<WarpPoint> warps = new ArrayList<>();
 
-    private final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
-    private final ArrayList<GameObject> objectsOnTop = new ArrayList<>();
-    private final ArrayList<GameObject> depthObjects = new ArrayList<>();
-    private final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
+    protected final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
+    protected final ArrayList<GameObject> objectsOnTop = new ArrayList<>();
+    protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
+    protected final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
             -> firstObject.getDepth() - secondObject.getDepth();
 
     public Map(short mapID, String name, Place place, int width, int height, int tileSize) {
@@ -59,81 +58,74 @@ public class Map {
         tiles = new Tile[widthInTiles * heightInTiles];
     }
 
-    public void sortObjects(ArrayList<GameObject> objects) {
-        Collections.sort(objects, depthComparator);
+    public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
+        tiles[x / tileSize + y / tileSize * heightInTiles] = null;
+        foregroundTiles.stream().filter((object) -> (object.getX() == x && object.getY() == y)).forEach((object) -> {
+            foregroundTiles.remove(object);
+        });
+        addForegroundTile(tile, x, y, depth);
     }
 
     public void addForegroundTile(GameObject tile, int x, int y, int depth) {
         tile.setX(x);
         tile.setY(y);
         tile.setDepth(depth);
+        addForegroundTile(tile);
+    }
+
+    public void addForegroundTile(GameObject tile) {
         foregroundTiles.add(tile);
         sortObjectsByDepth(foregroundTiles);
     }
 
-    public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
-        tiles[x / tileSize + y / tileSize * heightInTiles] = null;
-        foregroundTiles.stream().filter((obj) -> (obj.getX() == x && obj.getY() == y)).forEach((obj) -> {
-            foregroundTiles.remove(obj);
-        });
-        tile.setX(x);
-        tile.setY(y);
-        tile.setDepth(depth);
-        foregroundTiles.add(tile);
-        sortObjectsByDepth(foregroundTiles);
-    }
-
-    public void addForegroundTile(GameObject obj) {
-        foregroundTiles.add(obj);
-        sortObjectsByDepth(foregroundTiles);
-    }
-
-    public void deleteForegroundTile(GameObject obj) {
-        foregroundTiles.remove(obj);
+    public void deleteForegroundTile(GameObject tile) {
+        foregroundTiles.remove(tile);
         sortObjectsByDepth(foregroundTiles);
     }
 
     public void deleteForegroundTile(int x, int y) {
-        foregroundTiles.stream().filter((fGTile) -> (fGTile.getX() == x && fGTile.getY() == y)).forEach((fGTile) -> {
-            foregroundTiles.remove(fGTile);
+        foregroundTiles.stream().filter((foregroundTile) -> (foregroundTile.getX() == x && foregroundTile.getY() == y)).forEach((foregroundTile) -> {
+            foregroundTiles.remove(foregroundTile);
         });
         sortObjectsByDepth(foregroundTiles);
     }
 
     public void addObject(GameObject object) {
         object.setMapNotChange(this);
-        allObjects.add(object);
-        if (!(object instanceof Player)) {
-            if (object.isEmitter()) {
-                emitters.add(object);
-            }
-            if (object instanceof WarpPoint) {
-                warps.add((WarpPoint) object);
-                object.setPlace(place);
-            } else if (object instanceof Mob) {
-                if (object.isSolid()) {
-                    solidMobs.add((Mob) object);
-                } else {
-                    flatMobs.add((Mob) object);
-                }
-            } else {
-                if (object.isSolid()) {
-                    solidObjects.add(object);
-                } else {
-                    flatObjects.add(object);
-                }
-            }
-        }
         if (object.isOnTop()) {
             objectsOnTop.add(object);
         } else {
             depthObjects.add(object);
         }
+        if (!(object instanceof Player)) {
+            addNotPlayerObject(object);
+        }
+    }
+
+    private void addNotPlayerObject(GameObject object) {
+        if (object.isEmitter()) {
+            emitters.add(object);
+        }
+        if (object instanceof WarpPoint) {
+            warps.add((WarpPoint) object);
+            ((WarpPoint) object).setPlace(place);
+        } else if (object instanceof Mob) {
+            if (object.isSolid()) {
+                solidMobs.add((Mob) object);
+            } else {
+                flatMobs.add((Mob) object);
+            }
+        } else {
+            if (object.isSolid()) {
+                solidObjects.add(object);
+            } else {
+                flatObjects.add(object);
+            }
+        }
     }
 
     public void deleteObject(GameObject object) {
         object.setMapNotChange(null);
-        allObjects.remove(object);
         if (!(object instanceof Player)) {
             if (object.isEmitter()) {
                 emitters.remove(object);
@@ -177,44 +169,40 @@ public class Map {
         }
     }
 
-    public void renderObjects(Camera cam) {
-        renderBottom(cam);
-        renderTop(cam);
+    public void renderObjects(Camera camera) {
+        renderBottom(camera);
+        renderTop(camera);
     }
 
-    public void makeShadows() {
-        Renderer.initializeVariables(place);
-    }
-
-    public void renderBottom(Camera cam) {
+    public void renderBottom(Camera camera) {
         Drawer.refreshForRegularDrawing();
         sortObjectsByDepth(depthObjects);
         int y = 0;
         for (GameObject object : depthObjects) {
             while (y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth()) {
-                if (cam.getYStart() <= foregroundTiles.get(y).getY() + (foregroundTiles.get(y).getCollisionHeight()) & cam.getYEnd() >= foregroundTiles.get(y).getY() - (foregroundTiles.get(y).getCollisionHeight())
-                        && cam.getXStart() <= foregroundTiles.get(y).getX() + (foregroundTiles.get(y).getCollisionWidth()) && cam.getXEnd() >= foregroundTiles.get(y).getX() - (foregroundTiles.get(y).getCollisionWidth())) {
-                    foregroundTiles.get(y).render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
+                if (camera.getYStart() <= foregroundTiles.get(y).getY() + (foregroundTiles.get(y).getCollisionHeight()) & camera.getYEnd() >= foregroundTiles.get(y).getY() - (foregroundTiles.get(y).getCollisionHeight())
+                        && camera.getXStart() <= foregroundTiles.get(y).getX() + (foregroundTiles.get(y).getCollisionWidth()) && camera.getXEnd() >= foregroundTiles.get(y).getX() - (foregroundTiles.get(y).getCollisionWidth())) {
+                    foregroundTiles.get(y).render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
                 }
                 y++;
             }
-            if (object.isVisible() && cam.getYStart() <= object.getY() + (object.getHeight()) && cam.getYEnd() >= object.getY() - (object.getHeight())
-                    && cam.getXStart() <= object.getX() + (object.getWidth()) && cam.getXEnd() >= object.getX() - (object.getWidth())) {
-                object.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
+            if (object.isVisible() && camera.getYStart() <= object.getY() + (object.getHeight()) && camera.getYEnd() >= object.getY() - (object.getHeight())
+                    && camera.getXStart() <= object.getX() + (object.getWidth()) && camera.getXEnd() >= object.getX() - (object.getWidth())) {
+                object.render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
             }
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
-            foregroundTiles.get(i).render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
+            foregroundTiles.get(i).render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
         }
     }
 
-    public void renderTop(Camera cam) {
+    public void renderTop(Camera camera) {
         Drawer.refreshForRegularDrawing();
         sortObjectsByDepth(objectsOnTop);
         for (GameObject object : objectsOnTop) {
-            if (object.isVisible() && cam.getYStart() <= object.getY() + (object.getHeight()) && cam.getYEnd() >= object.getY() - (object.getHeight())
-                    && cam.getXStart() <= object.getX() + (object.getWidth()) && cam.getXEnd() >= object.getX() - (object.getWidth())) {
-                object.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
+            if (object.isVisible() && camera.getYStart() <= object.getY() + (object.getHeight()) && camera.getYEnd() >= object.getY() - (object.getHeight())
+                    && camera.getXStart() <= object.getX() + (object.getWidth()) && camera.getXEnd() >= object.getX() - (object.getWidth())) {
+                object.render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
             }
         }
     }
@@ -223,29 +211,21 @@ public class Map {
         Collections.sort(objects, depthComparator);
     }
 
-    protected void renderText(Camera cam) {
+    protected void renderText(Camera camera) {
         for (int p = 0; p < place.playersCount; p++) {
             if (place.players[p].getMap().equals(this)) {
-                if (cam.getYStart() <= place.players[p].getY() + (place.players[p].getHeight() + place.fonts.write(0).getHeight()) && cam.getYEnd() >= place.players[p].getY() - (place.players[p].getHeight() + place.fonts.write(0).getHeight())
-                        && cam.getXStart() <= place.players[p].getX() + (place.fonts.write(0).getWidth(place.players[p].getName())) && cam.getXEnd() >= place.players[p].getX() - (place.fonts.write(0).getWidth(place.players[p].getName()))) {
-                    ((Player) place.players[p]).renderName(place, cam);
+                if (camera.getYStart() <= place.players[p].getY() + (place.players[p].getHeight() + place.fonts.write(0).getHeight()) && camera.getYEnd() >= place.players[p].getY() - (place.players[p].getHeight() + place.fonts.write(0).getHeight())
+                        && camera.getXStart() <= place.players[p].getX() + (place.fonts.write(0).getWidth(place.players[p].getName())) && camera.getXEnd() >= place.players[p].getX() - (place.fonts.write(0).getWidth(place.players[p].getName()))) {
+                    ((Player) place.players[p]).renderName(camera);
                 }
             }
         }
         for (Mob mob : solidMobs) {
-            if (cam.getYStart() <= mob.getY() + (mob.getHeight() + place.fonts.write(0).getHeight()) && cam.getYEnd() >= mob.getY() - (mob.getHeight() + place.fonts.write(0).getHeight())
-                    && cam.getXStart() <= mob.getX() + (place.fonts.write(0).getWidth(mob.getName())) && cam.getXEnd() >= mob.getX() - (place.fonts.write(0).getWidth(mob.getName()))) {
-                mob.renderName(place, cam);
+            if (camera.getYStart() <= mob.getY() + (mob.getHeight() + place.fonts.write(0).getHeight()) && camera.getYEnd() >= mob.getY() - (mob.getHeight() + place.fonts.write(0).getHeight())
+                    && camera.getXStart() <= mob.getX() + (place.fonts.write(0).getWidth(mob.getName())) && camera.getXEnd() >= mob.getX() - (place.fonts.write(0).getWidth(mob.getName()))) {
+                mob.renderName(camera);
             }
         }
-    }
-
-    public void renderAdditional(Camera cam) {
-        //TODO <(^.^<) COS CIEKAWEGO  (Dodatkowe rysowanie, jak sie chce...)
-    }
-
-    public void updateAdditional(Camera cam) {
-        //TODO (>O.o)> COS FAJNEGO  (Dodatkowy update, jak sie chce...)
     }
 
     public WarpPoint findWarp(String name) {
@@ -258,10 +238,6 @@ public class Map {
     }
 
     public void clear() {
-        allObjects.stream().filter((obj) -> (obj.getMap().equals(this))).forEach((obj) -> {
-            obj.setMapNotChange(null);
-        });
-        allObjects.clear();
         solidMobs.clear();
         flatMobs.clear();
         solidObjects.clear();

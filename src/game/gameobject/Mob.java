@@ -29,9 +29,10 @@ public abstract class Mob extends Entity {
     protected GameObject prey;
     public short mobID;
 
-    public abstract void update(Place place);
+    public abstract void update();
 
     public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, String spriteName, boolean solid) {
+        this.place = place;
         this.width = Methods.roundHalfUp(Settings.scale * width);
         this.height = Methods.roundHalfUp(Settings.scale * height);
         this.solid = solid;
@@ -40,16 +41,16 @@ public abstract class Mob extends Entity {
         this.range = Methods.roundHalfUp(Settings.scale * range);
         this.setMaxSpeed(speed);
         this.sprite = place.getSprite(spriteName);
-        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y), place);
+        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y));
         setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
     }
 
     public synchronized void look(GameObject[] players) {
-        GameObject g;
-        for (int i = 0; i < place.playersCount; i++) {
-            g = players[i];
-            if (g.getMap() == map && Methods.pointDistance(g.getX(), g.getY(), getX(), getY()) < range) {
-                prey = g;
+        GameObject object;
+        for (int i = 0; i < getPlace().playersCount; i++) {
+            object = players[i];
+            if (object.getMap() == map && Methods.pointDistance(object.getX(), object.getY(), getX(), getY()) < range) {
+                prey = object;
                 break;
             }
         }
@@ -65,12 +66,12 @@ public abstract class Mob extends Entity {
 
     @Override
     protected boolean isColided(int xMagnitude, int yMagnitude) {
-        return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map) || collision.isCollidePlayer(getX() + xMagnitude, getY() + yMagnitude, place);
+        return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map) || collision.isCollidePlayer(getX() + xMagnitude, getY() + yMagnitude, getPlace());
     }
 
     @Override
     public Player getCollided(int xMagnitude, int yMagnitude) {
-        return collision.firstPlayerCollide(getX() + xMagnitude, getY() + yMagnitude, place);
+        return collision.firstPlayerCollide(getX() + xMagnitude, getY() + yMagnitude, getPlace());
     }
 
     @Override
@@ -86,7 +87,7 @@ public abstract class Mob extends Entity {
     }
 
     @Override
-    public void renderName(Place place, Camera cam) {
+    public void renderName(Camera cam) {
         place.renderMessage(0, cam.getXOffset() + getX(), cam.getYOffset() + getY() + sprite.getSy() + collision.getHeight() / 2,
                 name, new Color(place.red, place.green, place.blue));
     }

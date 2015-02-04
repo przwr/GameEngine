@@ -21,8 +21,8 @@ public class MyMob extends Mob {
     }
 
     @Override
-    public void update(Place place) {
-        if (prey != null && ((MyPlayer) prey).getPlace() != null) {
+    public void update() {
+        if (prey != null && ((MyPlayer) prey).isInGame()) {
             chase(prey);
             if (Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY()) > range * 1.5 || prey.getMap() != map) {
                 prey = null;

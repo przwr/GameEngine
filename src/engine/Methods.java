@@ -98,7 +98,7 @@ public class Methods {
         System.out.println(message);
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
     }
-
+    
     public static int roundHalfUp(double d) {
         double dAbs = FastMath.abs(d);
         int i = (int) dAbs;

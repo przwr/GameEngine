@@ -41,7 +41,7 @@ public class SplitScreen {
     }
 
     public static boolean isClose(Place place) {
-        switch (place.getPlayersLenght()) {
+        switch (place.getPlayersCount()) {
             case 2:
                 return isClose2(place);
             case 3:
@@ -161,7 +161,7 @@ public class SplitScreen {
                 orients2[Settings.horizontalSplitScreen ? 0 : 1].setOrientation(place, player);
             } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                place.currentCam = place.cameras[0];
+                place.currentCamera = place.cameras[0];
                 place.splitScreenMode = 0;
                 place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
                 place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
@@ -233,7 +233,7 @@ public class SplitScreen {
                 orients3[Settings.horizontalSplitScreen ? 0 : 1].setOrientation(place, p);
             } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                place.currentCam = place.cameras[1];
+                place.currentCamera = place.cameras[1];
                 place.splitScreenMode = 0;
                 place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
                 place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
@@ -277,7 +277,7 @@ public class SplitScreen {
                 players4[player].setPlayer(place);
             } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                place.currentCam = place.cameras[2];
+                place.currentCamera = place.cameras[2];
                 place.splitScreenMode = 0;
                 place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
                 place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;

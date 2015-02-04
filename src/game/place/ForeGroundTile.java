@@ -40,7 +40,7 @@ public class ForeGroundTile extends Tile {
     }
 
     private ForeGroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, int shadowHeight, Place place) {
-        super(spriteSheet, size, xSheet, ySheet, place);
+        super(spriteSheet, size, xSheet, ySheet);
         simpleLighting = true;
         solid = wall;
         int type = wall ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW;

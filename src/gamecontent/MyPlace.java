@@ -11,6 +11,7 @@ import game.Settings;
 import game.place.cameras.Camera;
 import game.place.Place;
 import engine.FontBase;
+import engine.Methods;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Entity;
@@ -28,23 +29,21 @@ public class MyPlace extends Place {
 
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
-    private final Place place;
-    private final update[] ups = new update[2];
+    private final update[] updates = new update[2];
 
-    public MyPlace(Game game, int width, int height, int tileSize) {
-        super(game, width, height, tileSize);
-        place = this;
+    public MyPlace(Game game, int tileSize) {
+        super(game, tileSize);
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
     }
 
     @Override
     public void generateAsGuest() {
-        GladeMap polana = new GladeMap(mapId++, this, width, height, tileSize);
-        StoneMap kamienna = new StoneMap(mapId++, this, width, height, tileSize);
+        GladeMap polana = new GladeMap(mapId++, this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), getTileSize());
+        StoneMap kamienna = new StoneMap(mapId++, this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), getTileSize());
         maps.add(polana);
         maps.add(kamienna);
-        //sounds.init("res");
+        // sounds.initialize("res");
         this.red = 0.75f;
         this.green = 0.75f;
         this.blue = 0.75f;
@@ -56,11 +55,11 @@ public class MyPlace extends Place {
 
     @Override
     public void generateAsHost() {
-        GladeMap polana = new GladeMap(mapId++, this, width, height, tileSize);
-        StoneMap kamienna = new StoneMap(mapId++, this, width, height, tileSize);
+        GladeMap polana = new GladeMap(mapId++, this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), getTileSize());
+        StoneMap kamienna = new StoneMap(mapId++, this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), getTileSize());
         maps.add(polana);
-        maps.add(kamienna);        
-        //sounds.init("res");
+        maps.add(kamienna);
+        //   sounds.initialize("res");
         this.red = 0.75f;
         this.green = 0.75f;
         this.blue = 0.75f;
@@ -72,11 +71,11 @@ public class MyPlace extends Place {
 
     @Override
     public void update() {
-        ups[game.mode].up();
+        updates[game.mode].update();
     }
 
     private void initMethods() {
-        ups[0] = () -> {
+        updates[0] = () -> {
             if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                 sounds.getSound("MumboMountain").resume();
             }
@@ -108,7 +107,7 @@ public class MyPlace extends Place {
             if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
                 sounds.getSound("MumboMountain").fade(0.5, false);
             }
-            
+
             if (playersCount > 1) {
                 changeSplitScreenJoin.act();
                 changeSplitScreenMode.act();
@@ -125,11 +124,11 @@ public class MyPlace extends Place {
             }
             maps.stream().forEach((map) -> {
                 map.getSolidMobs().stream().forEach((mob) -> {
-                    mob.update(game.place);
+                    mob.update();
                 });
             });
         };
-        ups[1] = () -> {
+        updates[1] = () -> {
             tempMaps.clear();
             Map map;
             if (game.online.server != null) {
@@ -137,7 +136,7 @@ public class MyPlace extends Place {
                     map = players[i].getMap();
                     if (!tempMaps.contains(map)) {
                         for (Mob mob : map.getSolidMobs()) {
-                            mob.update(place);
+                            mob.update();
                         }
                         tempMaps.add(map);
                     }
@@ -148,7 +147,7 @@ public class MyPlace extends Place {
                     mob.updateHard();
                 }
             }
-            ((Player) players[0]).sendUpdate(place);
+            ((Player) players[0]).sendUpdate();
             for (int i = 1; i < playersCount; i++) {
                 ((Entity) players[i]).updateSoft();
                 ((Entity) players[i]).updateOnline();
@@ -157,7 +156,7 @@ public class MyPlace extends Place {
     }
 
     @Override
-    public int getPlayersLenght() {
+    public int getPlayersCount() {
         if (game.mode == 0) {
             return playersCount;
         } else {
@@ -171,6 +170,6 @@ public class MyPlace extends Place {
 
     private interface update {
 
-        void up();
+        void update();
     }
 }

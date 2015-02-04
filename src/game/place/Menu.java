@@ -16,16 +16,16 @@ import org.lwjgl.opengl.Display;
  */
 public abstract class Menu extends ScreenPlace {
 
-    protected int cur;
+    protected int current;
     protected MenuOptions[] menus;
 
-    protected final int dWidth = Display.getWidth();
-    protected final int dHeight = Display.getHeight(); //(int) (dWidth * ((double) Display.getHeight() / (double) Display.getWidth()));
+    protected final int widthHalf = Display.getWidth();
+    protected final int heightHalf = Display.getHeight(); //(int) (dWidth * ((double) Display.getHeight() / (double) Display.getWidth()));
     public boolean isMapping;
     public Delay delay;
 
-    public Menu(Game game, int width, int height) {
-        super(game, width, height);
+    public Menu(Game game) {
+        super(game);
     }
 
     @Override
@@ -40,19 +40,19 @@ public abstract class Menu extends ScreenPlace {
 
     public void setChoosen(int i) {
         if (!isMapping && delay.isOver()) {
-            menus[cur].setChoosen(i);
+            menus[current].setChoosen(i);
         }
     }
 
     public void choice() {
         if (!isMapping && delay.isOver()) {
-            menus[cur].getChoosen().action();
+            menus[current].getChoosen().action();
         }
     }
 
     public void setCurrent(int i) {
         if (!isMapping && delay.isOver()) {
-            cur = i;
+            current = i;
         }
     }
 

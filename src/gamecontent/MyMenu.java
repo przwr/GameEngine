@@ -29,8 +29,8 @@ import org.newdawn.slick.Color;
  */
 public class MyMenu extends Menu {
 
-    public MyMenu(Game game, int width, int height, int tileSize) {
-        super(game, width, height);
+    public MyMenu(Game game) {
+        super(game);
         generate();
     }
 
@@ -150,19 +150,19 @@ public class MyMenu extends Menu {
 
     @Override
     protected void renderText() {
-        int positions = menus[cur].getOptionsNumber() + 1;
-        renderMessage(1, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getOptionsNumber() + 1))
+        int positions = menus[current].getOptionsNumber() + 1;
+        renderMessage(1, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
                 * fonts.write(0).getHeight() * 0.7),
-                menus[cur].getLabel(), new Color(red, green, blue));
+                menus[current].getLabel(), new Color(red, green, blue));
         positions--;
-        for (int i = 0; i < menus[cur].getOptionsNumber(); i++) {
-            renderMessage(0, dWidth / 2, dHeight / 2 - (int) ((1.5 * positions - (menus[cur].getOptionsNumber() + 1)) * fonts.write(0).getHeight() * 0.7), menus[cur].getChoice(i).getLabel(), getColor(menus[cur].getChoice(i)));
+        for (int i = 0; i < menus[current].getOptionsNumber(); i++) {
+            renderMessage(0, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.write(0).getHeight() * 0.7), menus[current].getChoice(i).getLabel(), getColor(menus[current].getChoice(i)));
             positions--;
         }
     }
 
     public Color getColor(MenuChoice choice) {
-        if (choice == menus[cur].getChoosen()) {
+        if (choice == menus[current].getChoosen()) {
             return new Color(1f, 1f, 0.5f);
         } else {
             return new Color(1f, 1f, 1f);
@@ -172,14 +172,14 @@ public class MyMenu extends Menu {
     @Override
     public void back() {
         if (!isMapping && delay.isOver()) {
-            if (cur > 2 && cur < 7) {
-                cur = 2;
-            } else if (cur == 2) {
-                cur = 1;
-            } else if (cur == 8) {
-                cur = 7;
-            } else if (cur != 0) {
-                cur = 0;
+            if (current > 2 && current < 7) {
+                current = 2;
+            } else if (current == 2) {
+                current = 1;
+            } else if (current == 8) {
+                current = 7;
+            } else if (current != 0) {
+                current = 0;
             } else if (game.started) {
                 game.resumeGame();
             }

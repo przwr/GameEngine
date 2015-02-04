@@ -92,6 +92,7 @@ public class Settings {
         }
         resolutionWidth = modes[0].getWidth();
         resolutionHeight = modes[0].getHeight();
+        scale = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
         frequency = modes[0].getFrequency();
         languages.add(new LangPL());
         languages.add(new LangENG());
@@ -111,11 +112,10 @@ public class Settings {
         }
     }
 
-    public static void update(int nr, Player[] players, Controller[] controllers) {
-        actionsCount = nr;
+    public static void update(int actionsCount, Player[] players, Controller[] controllers) {
+        Settings.actionsCount = actionsCount;
         Settings.players = players;
         Settings.controllers = controllers;
-        Settings.scale = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
         try {
             GL30.glGenFramebuffers();
             GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, samplesCount, GL_RGBA8, 10, 10, false);
@@ -125,7 +125,7 @@ public class Settings {
             maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
             maxSamples = maxSamples > 8 ? 8 : maxSamples;
             samplesCount = (samplesCount > maxSamples) ? maxSamples : samplesCount;
-        } catch (Exception e) {
+        } catch (Exception exception) {
             if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
                 supportedFrameBufferObjectVersion = FrameBufferObject.ARB;
                 try {
@@ -135,7 +135,7 @@ public class Settings {
                     maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
                     maxSamples = maxSamples > 8 ? 8 : maxSamples;
                     samplesCount = (samplesCount > maxSamples) ? maxSamples : samplesCount;
-                } catch (Exception ex) {
+                } catch (Exception exception2) {
                     multiSampleSupported = false;
                 }
             } else if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {

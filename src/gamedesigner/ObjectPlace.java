@@ -6,6 +6,7 @@
 package gamedesigner;
 
 import engine.FontBase;
+import engine.Methods;
 import gamedesigner.GUI.Help;
 import game.Game;
 import game.Settings;
@@ -30,26 +31,24 @@ public class ObjectPlace extends Place {
 
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
-    private final Place place;
-    private final update[] ups = new update[2];
+    private final update[] updates = new update[2];
     private final Help help;
 
     private File lastFile = new File(".");
 
     private ObjectUI ui;
 
-    public ObjectPlace(Game game, int width, int height, int tileSize) {
-        super(game, width, height, tileSize);
+    public ObjectPlace(Game game, int tileSize) {
+        super(game, tileSize);
         this.help = new Help();
-        place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
     }
 
     @Override
     public void generateAsGuest() {
-        ObjectMap polana = new ObjectMap(mapId++, this, width, height, tileSize);
-        this.ui = new ObjectUI(tileSize, sprites.getSpriteSheet("tlo"), this);
+        ObjectMap polana = new ObjectMap(mapId++, this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), getTileSize());
+        this.ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
         maps.add(polana);
         addGUI(ui);
         ((ObjectPlayer) players[0]).addUI(ui);
@@ -65,8 +64,8 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsHost() {
-        ObjectMap polana = new ObjectMap(mapId++, this, width, height, tileSize);
-        this.ui = new ObjectUI(tileSize, sprites.getSpriteSheet("tlo"), this);
+        ObjectMap polana = new ObjectMap(mapId++, this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), getTileSize());
+        this.ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
         maps.add(polana);
         addGUI(ui);
         ((ObjectPlayer) players[0]).addUI(ui);
@@ -82,11 +81,11 @@ public class ObjectPlace extends Place {
 
     @Override
     public void update() {
-        ups[game.mode].up();
+        updates[game.mode].update();
     }
 
     private void initializeMethods() {
-        ups[0] = () -> {
+        updates[0] = () -> {
             if (Keyboard.isKeyDown(Keyboard.KEY_H)) {
                 help.setVisible(true);
             }
@@ -111,17 +110,17 @@ public class ObjectPlace extends Place {
             }
             maps.stream().forEach((map) -> {
                 map.getSolidMobs().stream().forEach((mob) -> {
-                    mob.update(game.place);
+                    mob.update();
                 });
             });
         };
-        ups[1] = () -> {
+        updates[1] = () -> {
             System.err.println("ONLINE?..... pfft....");
         };
     }
 
     @Override
-    public int getPlayersLenght() {
+    public int getPlayersCount() {
         if (game.mode == 0) {
             return playersCount;
         } else {
@@ -153,6 +152,6 @@ public class ObjectPlace extends Place {
 
     private interface update {
 
-        void up();
+        void update();
     }
 }

@@ -25,6 +25,7 @@ public abstract class Entity extends GameObject {
     protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
     protected double xEnvironmentalSpeed, yEnvironmentalSpeed, xSpeed, ySpeed, maxSpeed, jumpHeight, resistance = 1;
     protected boolean jumping, hop;
+    protected Place place;
     private Update currentUpdate;
     private int currentUpdateID, deltasCount, xPosition, yPosition, xDelta, yDelta, destinationX, destinationY;
     private Player colided;
@@ -41,7 +42,7 @@ public abstract class Entity extends GameObject {
 
     protected abstract void setPosition(int xPosition, int yPosition);
 
-    public abstract void renderName(Place place, Camera cam);
+    public abstract void renderName(Camera camera);
 
     public synchronized void updateSoft() {
         try {
@@ -275,6 +276,10 @@ public abstract class Entity extends GameObject {
         return yEnvironmentalSpeed;
     }
 
+    public Place getPlace() {
+        return place;
+    }
+
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
     }
@@ -301,5 +306,9 @@ public abstract class Entity extends GameObject {
 
     public void setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed * Settings.scale;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 }

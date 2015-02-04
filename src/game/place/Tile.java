@@ -17,12 +17,11 @@ public class Tile extends GameObject {
     protected final SpriteSheet spriteSheet;
     protected final ArrayList<Point> tileStack;
 
-    public Tile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, Place place) {
+    public Tile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
         SIZE = size;
         this.spriteSheet = spriteSheet;
         tileStack = new ArrayList<>(1);
         tileStack.add(new Point(xSheet, ySheet));
-        this.place = place;
     }
 
     public void addTileToStack(int xSheet, int ySheet) {
@@ -97,5 +96,4 @@ public class Tile extends GameObject {
         });
         glPopMatrix();
     }
-
 }

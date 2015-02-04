@@ -23,8 +23,8 @@ public class GladeMap extends Map {
 
     public GladeMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Polana", place, width, height, tileSize);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8, place);
-        Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12, place);
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
+        Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12);
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
                 tiles[x + y * height / tileSize] = GRASS;

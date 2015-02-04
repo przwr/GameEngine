@@ -9,7 +9,6 @@ import net.GameOnline;
 import game.gameobject.Player;
 import game.place.Menu;
 import game.place.Place;
-import game.place.SplitScreen;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -19,17 +18,16 @@ import org.lwjgl.input.Keyboard;
 public abstract class Game {
 
     public GameOnline online;
-    protected final String title;
-    protected Player menuPl;
-    protected Menu menu;
-    public Place place;
     public int mode;
-    public boolean started, runFlag, pauseFlag, exitFlag, pause;
+    public boolean started, generated, running, pauseFlag, exitFlag, pause;
     public Player[] players;
+    protected Place place;
+    protected final String title;
+    protected Player menuPlayer;
+    protected Menu menu;
 
     public Game(String title) {
         this.title = title;
-        SplitScreen.initialzie();
     }
 
     public abstract void getInput();

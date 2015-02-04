@@ -63,7 +63,7 @@ public class MyPlayer extends Player {
 
     @Override
     public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
-
+        this.place = place;
         this.online = place.game.online;
         this.width = Methods.roundHalfUp(Settings.scale * width);
         this.height = Methods.roundHalfUp(Settings.scale * height);
@@ -71,7 +71,7 @@ public class MyPlayer extends Player {
         this.yStart = Methods.roundHalfUp(Settings.scale * startY);
         this.setResistance(2);
         this.emitter = true;
-        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y), place);
+        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y));
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
@@ -81,6 +81,7 @@ public class MyPlayer extends Player {
 
     @Override
     public void initialize(int startX, int startY, int width, int height, Place place) {
+        this.place = place;
         this.online = place.game.online;
         this.width = Methods.roundHalfUp(Settings.scale * width);
         this.height = Methods.roundHalfUp(Settings.scale * height);
@@ -88,7 +89,8 @@ public class MyPlayer extends Player {
         this.yStart = Methods.roundHalfUp(Settings.scale * startY);
         this.setResistance(2);
         this.emitter = true;
-        this.place = place;
+        visible = true;
+        depth = 0;
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
@@ -98,33 +100,33 @@ public class MyPlayer extends Player {
 
     @Override
     protected boolean isColided(int magX, int magY) {
-        if (place != null) {
+        if (isInGame()) {
             return collision.isCollideSolid(getX() + magX, getY() + magY, map);
         }
         return false;
     }
 
     @Override
-    protected void move(int xPos, int yPos) {
-        setX(x + xPos);
-        setY(y + yPos);
+    protected void move(int xPosition, int yPosition) {
+        setX(x + xPosition);
+        setY(y + yPosition);
         if (camera != null) {
             camera.update();
         }
     }
 
     @Override
-    protected void setPosition(int xPos, int yPos) {
-        setX(xPos);
-        setY(yPos);
+    protected void setPosition(int xPosition, int yPosition) {
+        setX(xPosition);
+        setY(yPosition);
         if (camera != null) {
             camera.update();
         }
     }
 
     @Override
-    public void renderName(Place place, Camera cam) {
-        place.renderMessage(0, cam.getXOffset() + getX(), (int) (cam.getYOffset() + getY() + sprite.getSy() + collision.getHeight() / 2 - jumpHeight),
+    public void renderName(Camera camera) {
+        place.renderMessage(0, camera.getXOffset() + getX(), (int) (camera.getYOffset() + getY() + sprite.getSy() + collision.getHeight() / 2 - jumpHeight),
                 name, new Color(place.red, place.green, place.blue));
     }
 
@@ -166,15 +168,14 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public synchronized void sendUpdate(Place place) {
+    public synchronized void sendUpdate() {
         if (jumping) {
             jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
             jumpDelta += Time.getDelta();
             if ((int) jumpDelta >= 68) {
                 jumping = false;
-                jumpDelta = 22.5f;
+                jumpDelta = 22.6f;
             }
-
         }
         xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
         yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
@@ -195,22 +196,22 @@ public class MyPlayer extends Player {
                 online.pastPositionsNumber = 0;
             }
         } else {
-            online.g.endGame();
+            online.game.endGame();
         }
         hop = false;
     }
 
     @Override
-    public synchronized void updateRest(Update up) {
+    public synchronized void updateRest(Update update) {
         try {
-            Map map = place.getMapById(((MPlayerUpdate) up).getMapId());
-            if (map != null) {
+            Map map = getPlace().getMapById(((MPlayerUpdate) update).getMapId());
+            if (map != null && this.map != map) {
                 changeMap(map);
             }
-            if (((MPlayerUpdate) up).isHop()) {
+            if (((MPlayerUpdate) update).isHop()) {
                 setJumping(true);
             }
-            setEmits(((MPlayerUpdate) up).isEmits());
+            setEmits(((MPlayerUpdate) update).isEmits());
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
@@ -220,12 +221,12 @@ public class MyPlayer extends Player {
     public synchronized void updateOnline() {
         try {
             if (jumping) {
-
+                hop = false;
                 jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
                 jumpDelta += Time.getDelta();
                 if ((int) jumpDelta == 68) {
                     jumping = false;
-                    jumpDelta = 22.5f;
+                    jumpDelta = 22.6f;
                 }
             }
         } catch (Exception e) {

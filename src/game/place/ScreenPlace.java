@@ -9,6 +9,7 @@ import engine.FontBase;
 import game.Game;
 import game.gameobject.GameObject;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.TrueTypeFont;
 
 /**
  *
@@ -17,14 +18,11 @@ import org.newdawn.slick.Color;
 public abstract class ScreenPlace {
 
     public final Game game;
-    public final int width, height;
     public float red, green, blue;
     public FontBase fonts;
     public GameObject[] players;
 
-    public ScreenPlace(Game game, int width, int height) {
-        this.width = width;
-        this.height = height;
+    public ScreenPlace(Game game) {
         this.game = game;
     }
 
@@ -32,15 +30,10 @@ public abstract class ScreenPlace {
 
     public abstract void render();
 
-    public void renderMessage(int i, int x, int y, String ms, Color color) {
-        fonts.write(i).drawString(x - fonts.write(i).getWidth(ms) / 2, y - (4 * fonts.write(i).getHeight()) / 3, ms, color);
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
+    public void renderMessage(int i, int x, int y, String message, Color color) {
+        if (fonts != null) {
+            fonts.write(i).drawString(x - fonts.write(i).getWidth(message) / 2,
+                    y - (4 * fonts.write(i).getHeight()) / 3, message, color);
+        }
     }
 }

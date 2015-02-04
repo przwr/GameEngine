@@ -76,7 +76,7 @@ public class Area extends GameObject {
 
     private void recalculateCollsion(Figure part) {
         if (part.getOwner().isSolid()) {
-            upShadowHeight(part);
+            updateShadowHeight(part);
             Collection<Point> points = part.getPoints();
             points.stream().forEach((point) -> {
                 findCorners(point);
@@ -84,7 +84,7 @@ public class Area extends GameObject {
         }
     }
 
-    private void upShadowHeight(Figure part) {
+    private void updateShadowHeight(Figure part) {
         tempShadowHeight = part.getShadowHeight();
         if (tempShadowHeight != 0) {
             shadowHeight = tempShadowHeight;

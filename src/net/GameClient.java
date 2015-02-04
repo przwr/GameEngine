@@ -87,7 +87,7 @@ public class GameClient {
 
                 @Override
                 public void disconnected(Connection connection) {
-                    if (game.g.started) {
+                    if (game.game.started) {
                         cleanUp(Settings.language.menu.Disconnected);
                     } else {
                         cleanUp();
@@ -143,20 +143,20 @@ public class GameClient {
     private synchronized void cleanUp() {
         isConnected = false;
         Close();
-        game.g.endGame();
+        game.game.endGame();
     }
 
     private void cleanUp(Exception e) {
         isConnected = false;
         Close();
-        game.g.endGame();
+        game.game.endGame();
         Methods.exception(e);
     }
 
     private synchronized void cleanUp(String msg) {
         isConnected = false;
         Close();
-        game.g.endGame();
+        game.game.endGame();
         Methods.error(msg);
     }
 }

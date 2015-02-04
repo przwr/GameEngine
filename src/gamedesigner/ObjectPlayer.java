@@ -73,6 +73,7 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y) {
+        this.place = place;
         this.online = place.game.online;
         this.width = Methods.roundHalfUp(Settings.scale * width);
         this.height = Methods.roundHalfUp(Settings.scale * height);
@@ -80,57 +81,57 @@ public class ObjectPlayer extends Player {
         this.yStart = Methods.roundHalfUp(Settings.scale * yStart);
         this.setResistance(2);
         this.emitter = true;
-        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y), place);
+        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y));
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
-        tile = place.tileSize;
+        tile = place.getTileSize();
     }
 
     @Override
-    public void initialize(int startX, int startY, int width, int height, Place place) {
+    public void initialize(int xStart, int yStart, int width, int height, Place place) {
+        this.place = place;
         this.online = place.game.online;
         this.width = Methods.roundHalfUp(Settings.scale * width);
         this.height = Methods.roundHalfUp(Settings.scale * height);
-        this.xStart = Methods.roundHalfUp(Settings.scale * startX);
-        this.yStart = Methods.roundHalfUp(Settings.scale * startY);
+        this.xStart = Methods.roundHalfUp(Settings.scale * xStart);
+        this.yStart = Methods.roundHalfUp(Settings.scale * yStart);
         this.setResistance(2);
         this.emitter = true;
-        this.place = place;
         this.sprite = place.getSpriteSheet("apple");
         this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
-        tile = place.tileSize;
+        tile = place.getTileSize();
     }
 
     @Override
-    protected boolean isColided(int magX, int magY) {
-        if (place != null) {
-            return collision.isCollideSolid(getX() + magX, getY() + magY, map);
+    protected boolean isColided(int xMagnitude, int yMagnitude) {
+        if (isInGame()) {
+            return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
         }
         return false;
     }
 
     @Override
-    protected void move(int xPos, int yPos) {
+    protected void move(int xPosition, int yPosition) {
         boolean cltr = key(KEY_LCONTROL);
 
         if (xtimer == 0) {
-            ix = Methods.interval(0, ix + xPos, map.getTileWidth());
+            ix = Methods.interval(0, ix + xPosition, map.getTileWidth());
             setX(ix * tile);
             if (!cltr) {
-                xStop = Methods.interval(0, xStop + xPos, map.getTileWidth());
+                xStop = Methods.interval(0, xStop + xPosition, map.getTileWidth());
             }
         }
         if (ytimer == 0) {
-            iy = Methods.interval(0, iy + yPos, map.getTileHeight());
+            iy = Methods.interval(0, iy + yPosition, map.getTileHeight());
             setY(iy * tile);
             if (!cltr) {
-                yStop = Methods.interval(0, yStop + yPos, map.getTileHeight());
+                yStop = Methods.interval(0, yStop + yPosition, map.getTileHeight());
             }
         }
         if (camera != null) {
@@ -147,9 +148,9 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    protected void setPosition(int xPos, int yPos) {
-        setX(xPos);
-        setY(yPos);
+    protected void setPosition(int xPosition, int yPosition) {
+        setX(xPosition);
+        setY(yPosition);
         if (camera != null) {
             camera.update();
         }
@@ -314,7 +315,7 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void sendUpdate(Place place) {
+    public void sendUpdate() {
     }
 
     @Override
@@ -322,11 +323,11 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void updateRest(Update up) {
+    public void updateRest(Update update) {
     }
 
     @Override
-    public void renderName(Place place, Camera cam) {
+    public void renderName(Camera camera) {
     }
 
     @Override

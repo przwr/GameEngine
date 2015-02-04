@@ -23,7 +23,7 @@ public class ObjectMap extends Map {
     public ObjectMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "ObjectMap", place, width, height, tileSize);
 
-        background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8, place);
+        background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
         background.setDepth(-1);
         isBackground = true;
 
@@ -31,7 +31,7 @@ public class ObjectMap extends Map {
     }
 
     public void setBackground(int xSheet, int ySheet, SpriteSheet texture) {
-        background = new Tile(texture, tileSize, xSheet, ySheet, place);
+        background = new Tile(texture, tileSize, xSheet, ySheet);
         background.setDepth(-1);
         switchTiles(background);
     }
@@ -64,7 +64,7 @@ public class ObjectMap extends Map {
         if (tile != null && tile.getPureDepth() != -1) {
             tile.addTileToStack(xSheet, ySheet);
         } else {
-            Tile newtile = new Tile(tex, tileSize, xSheet, ySheet, place);
+            Tile newtile = new Tile(tex, tileSize, xSheet, ySheet);
             setTile(x, y, newtile);
         }
     }

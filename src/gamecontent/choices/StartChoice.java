@@ -21,7 +21,7 @@ public class StartChoice extends MenuChoice {
 
     @Override
     public void action() {
-        if (!menu.game.started) {
+        if (menu.game.getPlace() == null) {
             menu.setCurrent(7);
         } else {
             menu.game.resumeGame();
@@ -30,7 +30,7 @@ public class StartChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        if (!menu.game.started) {
+        if (menu.game.getPlace() == null) {
             return label;
         } else {
             return Settings.language.menu.Resume;

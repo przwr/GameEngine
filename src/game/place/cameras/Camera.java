@@ -10,7 +10,6 @@ import engine.Methods;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.place.Map;
-import game.place.Place;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 public abstract class Camera {
 
     protected final ArrayList<GUIObject> gui = new ArrayList<>();
-    protected Place place;
     public GameObject[] visibleLights = new GameObject[2048];
     public int visibleLightsCount;
     protected final ArrayList<GameObject> owners = new ArrayList<>();
@@ -32,7 +30,6 @@ public abstract class Camera {
 
     public Camera(GameObject object) {
         owners.add(object);
-        place = object.getPlace();
         delayLenght = 50;
         shakeDelay = new Delay(delayLenght);
         shakeDelay.start();
@@ -42,9 +39,6 @@ public abstract class Camera {
         if (map != null) {
             xOffset = Methods.interval(-map.getWidth() + getWidth(), widthHalf - getXMiddle(), 0);
             yOffset = Methods.interval(-map.getHeight() + getHeight(), heightHalf - getYMiddle(), 0);
-        } else {
-            xOffset = Methods.interval(-place.getWidth() + getWidth(), widthHalf - getXMiddle(), 0);
-            yOffset = Methods.interval(-place.getHeight() + getHeight(), heightHalf - getYMiddle(), 0);
         }
     }
 

@@ -12,7 +12,6 @@ package game.gameobject;
 import collision.Figure;
 import game.place.Light;
 import game.place.Map;
-import game.place.Place;
 import java.util.Objects;
 import sprites.Sprite;
 
@@ -24,7 +23,6 @@ public abstract class GameObject {
     protected Sprite sprite;
     protected Light light;
     protected String name;
-    protected Place place;
     protected Map map;
     protected Figure collision;
 
@@ -38,11 +36,10 @@ public abstract class GameObject {
 
     public abstract void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
 
-    protected void initialize(String name, int x, int y, Place place) {
+    protected void initialize(String name, int x, int y) {
         this.name = name;
         this.x = x;
         this.y = y;
-        this.place = place;
         depth = 0;
         visible = true;
     }
@@ -193,10 +190,6 @@ public abstract class GameObject {
         return sprite;
     }
 
-    public Place getPlace() {
-        return place;
-    }
-
     public void setSolid(boolean solid) {
         this.solid = solid;
     }
@@ -248,9 +241,4 @@ public abstract class GameObject {
     public void setMapNotChange(Map map) {
         this.map = map;
     }
-
-    public void setPlace(Place place) {
-        this.place = place;
-    }
-
 }

@@ -18,8 +18,9 @@ public class WarpPoint extends GameObject {
 
     private final boolean isWarp;   //Czy teleportuje
     private final boolean isStatic;   //Czy teleportuje na wskazany punkt, czy na obiekt
-    private int toX;
-    private int toY;
+    private int xDestination;
+    private int yDestination;
+    private Place place;
     private Map destination;
     private String stringDestination = null;
 
@@ -29,8 +30,8 @@ public class WarpPoint extends GameObject {
         this.y = y;
         isWarp = true;
         isStatic = true;
-        this.toX = toX;
-        this.toY = toY;
+        this.xDestination = toX;
+        this.yDestination = toY;
         destination = map;
     }
 
@@ -40,8 +41,8 @@ public class WarpPoint extends GameObject {
         this.y = y;
         isWarp = true;
         isStatic = true;
-        this.toX = toX;
-        this.toY = toY;
+        this.xDestination = toX;
+        this.yDestination = toY;
         stringDestination = map;
     }
 
@@ -79,8 +80,8 @@ public class WarpPoint extends GameObject {
                 } else if (stringDestination != null) {
                     object.changeMap(map.place.getMapByName(stringDestination));
                 }
-                object.setX(toX);
-                object.setY(toY);
+                object.setX(xDestination);
+                object.setY(yDestination);
             } else {
                 WarpPoint warp;
                 if (destination != null) {
@@ -133,5 +134,13 @@ public class WarpPoint extends GameObject {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 }

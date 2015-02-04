@@ -118,14 +118,14 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (getYEnd() == ((Figure) o).getYEnd()) {
+    public int compareTo(Object object) {
+        if (getYEnd() == ((Figure) object).getYEnd()) {
             if (opticProperties.getDistanceFromLight() == -1) {
                 return 1;
             }
-            return (opticProperties.getDistanceFromLight() - ((Figure) o).opticProperties.getDistanceFromLight());
+            return (opticProperties.getDistanceFromLight() - ((Figure) object).opticProperties.getDistanceFromLight());
         }
-        return getYEnd() - ((Figure) o).getYEnd();
+        return getYEnd() - ((Figure) object).getYEnd();
     }
 
     public boolean isLittable() {

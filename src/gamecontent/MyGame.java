@@ -14,6 +14,7 @@ import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.Settings;
 import game.place.Map;
+import game.place.SplitScreen;
 import game.place.cameras.PlayersCamera;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
@@ -29,13 +30,14 @@ import static org.lwjgl.opengl.GL11.glClear;
  */
 public class MyGame extends Game {
 
-    private final getInput[] ins = new getInput[2];
+    private final getInput[] inputs = new getInput[2];
     private final updateType[] ups = new updateType[2];
 
     private boolean designer = false;
 
     public MyGame(String title, Controller[] controllers) {
         super(title);
+        SplitScreen.initialzie();
         players = new Player[4];
         players[0] = new MyPlayer(true, "Player 1");
         players[1] = new MyPlayer(false, "Player 2");
@@ -43,11 +45,11 @@ public class MyGame extends Game {
         players[3] = new MyPlayer(false, "Player 4");
         Settings.update(players[0].controler.getActionsCount(), players, controllers);
         loadInputFromFile(new File("res/input.ini"));
-        menu = new MyMenu(this, 2, 2, 1);
-        menuPl = new MyPlayer(true, "Menu");
+        menu = new MyMenu(this);
+        menuPlayer = new MyPlayer(true, "Menu");
         menu.players = new GameObject[1];
-        menu.players[0] = menuPl;
-        menuPl.setMenu(menu);
+        menu.players[0] = menuPlayer;
+        menuPlayer.setMenu(menu);
         players[0].setMenu(menu);
         players[1].setMenu(menu);
         players[2].setMenu(menu);
@@ -58,38 +60,38 @@ public class MyGame extends Game {
     }
 
     private void initializeMethods() {
-        ins[0] = () -> {
+        inputs[0] = () -> {
             if (!pauseFlag) {
                 pause();
-                if (runFlag) {
-                    Player pl;
-                    for (int p = 0; p < players.length; p++) {
-                        pl = players[p];
-                        if (pl.isMenuOn()) {
-                            if (pl.getPlace() != null) {
-                                if (!pl.isFirst()) {
-                                    removePlayerOffline(p);
+                if (running) {
+                    Player player;
+                    for (int i = 0; i < players.length; i++) {
+                        player = players[i];
+                        if (player.isMenuOn()) {
+                            if (player.isInGame()) {
+                                if (!player.isFirst()) {
+                                    removePlayerOffline(i);
                                 } else {
-                                    runFlag = false;
+                                    running = false;
                                     soundPause();
                                 }
                             } else {
-                                addPlayerOffline(p);
+                                addPlayerOffline(i);
                             }
                         }
-                        if (pl.getPlace() != null) {
-                            pl.getInput();
+                        if (player.isInGame()) {
+                            player.getInput();
                         }
                     }
                 } else {
                     if (place == null) {
-                        menuPl.getMenuInput();
+                        menuPlayer.getMenuInput();
                     } else {
-                        for (Player pl : players) {
-                            if (pl.isMenuOn()) {
+                        for (Player player : players) {
+                            if (player.isMenuOn()) {
                                 menu.back();
                             } else {
-                                pl.getMenuInput();
+                                player.getMenuInput();
                             }
                         }
                     }
@@ -98,18 +100,18 @@ public class MyGame extends Game {
                 resume();
             }
         };
-        ins[1] = () -> {
-            if (runFlag) {
+        inputs[1] = () -> {
+            if (running) {
                 if (players[0].isMenuOn()) {
-                    runFlag = false;
+                    running = false;
                     soundPause();
                 }
-                if (players[0].getPlace() != null) {
+                if (players[0].isInGame()) {
                     players[0].getInput();
                 }
             } else {
                 if (place == null) {
-                    menuPl.getMenuInput();
+                    menuPlayer.getMenuInput();
                 } else {
                     players[0].getMenuInput();
                 }
@@ -117,7 +119,7 @@ public class MyGame extends Game {
         };
         ups[0] = () -> {
             if (!pauseFlag) {
-                if (runFlag) {
+                if (running) {
                     place.update();
                 } else {
                     //---------------------- <('.'<) OBJECT DESIGNER ----------------------------//
@@ -151,7 +153,7 @@ public class MyGame extends Game {
     @Override
 
     public void getInput() {
-        ins[mode].get();
+        inputs[mode].get();
     }
 
     @Override
@@ -161,7 +163,7 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-        if (runFlag && place != null) {
+        if (running && place != null) {
             place.render();
         } else {
             glClear(GL_COLOR_BUFFER_BIT);
@@ -173,25 +175,25 @@ public class MyGame extends Game {
     public void resumeGame() {
         if (place != null) {
             soundResume();
-            runFlag = true;
+            running = true;
         }
     }
 
     @Override
     public void startGame() {
-        int nrPl = Settings.playersCount;
-        if (!designer) {
-            place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 64));
+        int playersCount = Settings.playersCount;
+        if (designer) {
+            place = new ObjectPlace(this, Methods.roundHalfUp(Settings.scale * 64));
         } else {
-            place = new ObjectPlace(this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 64));
+            place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 64));
         }
         Drawer.setPlace(place);
         place.players = new GameObject[4];
-        place.playersCount = nrPl;
-        if (nrPl == 1) {
+        place.playersCount = playersCount;
+        if (playersCount == 1) {
             players[0].initialize(4, 4, 56, 56, place, 256, 256);
             players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
-        } else if (nrPl == 2) {
+        } else if (playersCount == 2) {
             players[0].initialize(4, 4, 56, 56, place, 256, 256);
             players[1].initialize(4, 4, 56, 56, place, 512, 1024);
             if (Settings.horizontalSplitScreen) {
@@ -202,7 +204,7 @@ public class MyGame extends Game {
                 players[1].setCamera(new PlayersCamera(players[1], 4, 2, 1));
             }
             place.cameras[0] = new PlayersCamera(players[0], players[1]);
-        } else if (nrPl == 3) {
+        } else if (playersCount == 3) {
             players[0].initialize(4, 4, 56, 56, place, 256, 256);
             players[1].initialize(4, 4, 56, 56, place, 512, 1024);
             players[2].initialize(4, 4, 56, 56, place, 1024, 512);
@@ -214,7 +216,7 @@ public class MyGame extends Game {
             players[1].setCamera(new PlayersCamera(players[1], 4, 4, 1));
             players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
             place.cameras[1] = new PlayersCamera(players[0], players[1], players[2]);
-        } else if (nrPl == 4) {
+        } else if (playersCount == 4) {
             players[0].initialize(4, 4, 56, 56, place, 256, 256);
             players[1].initialize(4, 4, 56, 56, place, 512, 1024);
             players[2].initialize(4, 4, 56, 56, place, 1024, 512);
@@ -229,35 +231,35 @@ public class MyGame extends Game {
         place.makeShadows();
         mode = 0;
         place.generateAsHost();
-        started = runFlag = true;
-        for (int p = 0; p < nrPl; p++) {
+        for (int p = 0; p < playersCount; p++) {
             Map map = place.maps.get(0);
             players[p].changeMap(map);
         }
+        started = running = true;
     }
 
-    private void addPlayerOffline(int p) {
-        if (p < 4 && place.playersCount < 4) {
-            players[p].initialize(4, 4, 56, 56, place, p * 256, p * 265);
-            ((Player) place.players[p]).setCamera(new PlayersCamera(place.players[p], 2, 2, p));
-            players[p].changeMap(players[0].getMap());
-            if (p != place.playersCount) {
+    private void addPlayerOffline(int player) {
+        if (player < 4 && place.playersCount < 4) {
+            players[player].initialize(4, 4, 56, 56, place, player * 256, player * 265);
+            ((Player) place.players[player]).setCamera(new PlayersCamera(place.players[player], 2, 2, player));
+            players[player].changeMap(players[0].getMap());
+            if (player != place.playersCount) {
                 Player tempG = players[place.playersCount];
                 GameObject tempP = place.players[place.playersCount];
-                players[place.playersCount] = players[p];
-                place.players[place.playersCount] = place.players[p];
-                players[p] = tempG;
-                place.players[p] = tempP;
+                players[place.playersCount] = players[player];
+                place.players[place.playersCount] = place.players[player];
+                players[player] = tempG;
+                place.players[player] = tempP;
             }
             place.playersCount++;
             Settings.joinSplitScreen = false;
-            updatePlayersCam();
+            updatePlayersCameras();
         }
     }
 
     private void removePlayerOffline(int p) {
         if (place.playersCount > 1 && !players[p].isFirst()) {
-            ((Player) place.players[p]).setPlaceToNull();
+            ((Player) place.players[p]).setNotInGame();
             place.players[p].getMap().deleteObject(place.players[p]);
             if (p != place.playersCount - 1) {
                 Player tempG = players[place.playersCount - 1];
@@ -269,11 +271,11 @@ public class MyGame extends Game {
             }
             place.playersCount--;
             place.splitScreenMode = 0;
-            updatePlayersCam();
+            updatePlayersCameras();
         }
     }
 
-    private void updatePlayersCam() {
+    private void updatePlayersCameras() {
         for (int nr = 0; nr < place.playersCount; nr++) {
             if (place.playersCount == 1) {
                 ((PlayersCamera) ((Player) place.players[0]).getCamera()).reInitialize(2, 2);
@@ -313,23 +315,24 @@ public class MyGame extends Game {
 
     @Override
     public void runClient() {
-        place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 64));
+        place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 64));
         Drawer.setPlace(place);
         place.players = new GameObject[4];
         place.playersCount = 1;
         players[0].initialize(4, 4, 56, 56, place);
         players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
+
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();
         place.generateAsGuest();
-        started = runFlag = true;
         Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
+        started = running = true;
     }
 
     @Override
     public void runServer() {
-        place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 64));
+        place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 64));
         Drawer.setPlace(place);
         place.players = new GameObject[4];
         place.playersCount = 1;
@@ -338,18 +341,18 @@ public class MyGame extends Game {
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();
         place.generateAsHost();
-        started = runFlag = true;
         Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
+        started = running = true;
     }
 
     @Override
     public void endGame() {
-        runFlag = started = false;
+        running = started = false;
         place = null;
         Settings.sounds = null;
-        for (Player pl : players) {
-            pl.setPlaceToNull();
+        for (Player player : players) {
+            player.setNotInGame();
         }
         online.cleanUp();
         mode = 0;

@@ -34,13 +34,13 @@ public abstract class GameOnline {
     protected short[] mapIDsForUpdate = new short[2];
     protected boolean activeFirstMobsUpdates;
     public int pastPositionsNumber;
-    public final Game g;
+    public final Game game;
     public GameServer server;
     public GameClient client;
     protected Place tempPlace;
 
     public GameOnline(Game game, int nrChanges, int players) {
-        g = game;
+        this.game = game;
         changes = new change[nrChanges];
         isChanged = new boolean[nrChanges];
         newPlayers = new NewMPlayer[players];

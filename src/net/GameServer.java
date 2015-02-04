@@ -104,7 +104,6 @@ public class GameServer {
                     if (obj instanceof PacketMPlayerUpdate) {
                         PacketMPlayerUpdate pmpu = (PacketMPlayerUpdate) obj;
                         game.playerUpdate(pmpu);
-                        //System.out.println(ObjectSize.sizeInBytes(pmpu) + " BYTES");
                         MPlayer curPl = findPlayer(pmpu.up().getId());
                         if (curPl != null) {
                             curPl.update(pmpu.up().getMapId(), pmpu.up().getX(), pmpu.up().getY(), 1);
@@ -148,7 +147,6 @@ public class GameServer {
             player.setX(((float) MPlayers[0].getX()) / Settings.scale);
             player.setY(((float) MPlayers[0].getY()) / Settings.scale);
             nrPlayers++;
-
             isRunning = true;
             System.out.println("Server started!");
         } catch (Exception e) {
@@ -179,7 +177,7 @@ public class GameServer {
                 if (tmp != null) {
                     tmpInGame = tmp.inGame();
                     if (tmpInGame != null) {
-                        for (Mob mob : game.g.getPlace().getMapById(tmp.getMapId()).getSolidMobs()) {
+                        for (Mob mob : game.game.getPlace().getMapById(tmp.getMapId()).getSolidMobs()) {
                             mobX = mob.getX();
                             mobY = mob.getY();
                             if (Math.abs(mobX - tmp.inGame().getX()) < scopeX && Math.abs(mobY - tmp.inGame().getY()) < scopeY) {
@@ -204,20 +202,20 @@ public class GameServer {
         }
     }
 
-    public synchronized MPlayer findPlayer(byte id) {
+    public synchronized MPlayer findPlayer(byte playerID) {
         for (int i = 1; i < nrPlayers; i++) {
-            if (MPlayers[i] != null && MPlayers[i].getId() == id) {
+            if (MPlayers[i] != null && MPlayers[i].getId() == playerID) {
                 return MPlayers[i];
             }
         }
         return null;
     }
 
-    private synchronized void cleanUp(Exception e) {
+    private synchronized void cleanUp(Exception exception) {
         isRunning = false;
         Close();
-        game.g.endGame();
-        Methods.exception(e);
+        game.game.endGame();
+        Methods.exception(exception);
     }
 
     private synchronized void makeSureIdIsUnique() {
@@ -244,19 +242,6 @@ public class GameServer {
         }
     }
 
-//    private synchronized void sendToAll(MPlayerUpdate mpup) {
-//        for (int i = 1; i < nrPlayers; i++) {
-//            MPlayers[i].getConnection().sendTCP(mpup);
-//        }
-//    }
-//
-//    private synchronized void sendToAllButOwner(MPlayerUpdate mpup, int id) {
-//        for (int i = 1; i < nrPlayers; i++) {
-//            if (MPlayers[i].getId() != id) {
-//                MPlayers[i].getConnection().sendTCP(mpup);
-//            }
-//        }
-//    }
     private synchronized void sendToNew(Connection connection) {
         for (int i = 0; i < nrPlayers; i++) {   // send Players to NewPlayer
             connection.sendTCP(new PacketAddMPlayer(new NewMPlayer(MPlayers[i])));

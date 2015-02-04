@@ -32,7 +32,7 @@ public abstract class Player extends Entity {
 
     public abstract void update();
 
-    public abstract void sendUpdate(Place place);
+    public abstract void sendUpdate();
 
     public Player(String name) {
         this.name = name;
@@ -53,26 +53,18 @@ public abstract class Player extends Entity {
 
     public void setToLastNotCollided() {
         for (int i = online.pastPositionsNumber - 1; i >= 0; i--) {
-            if (setToLastNotCollided(i)) {
-                
+            if (setToLastNotCollidedToEnd(i)) {
+                return;
             }
         }
         for (int i = online.pastPositions.length - 1; i >= online.pastPositionsNumber; i--) {
-            if (!collision.isCollideSolid(online.pastPositions[i].getX(), online.pastPositions[i].getY(), map)) {
-                if (!collision.isCollideSolid(online.pastPositions[i].getX(), getY(), map)) {
-                    setPosition(online.pastPositions[i].getX(), getY());
-                } else if (!collision.isCollideSolid(getX(), online.pastPositions[i].getY(), map)) {
-                    setPosition(getX(), online.pastPositions[i].getY());
-                } else {
-                    setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
-                }
-                camera.update();
+            if (setToLastNotCollidedFromStart(i)) {
                 return;
             }
         }
     }
 
-    private boolean setToLastNotCollided(int i) {
+    private boolean setToLastNotCollidedToEnd(int i) {
         if (!collision.isCollideSolid(online.pastPositions[i].getX(), online.pastPositions[i].getY(), map)) {
             if (!collision.isCollideSolid(online.pastPositions[i].getX(), getY(), map)) {
                 setPosition(online.pastPositions[i].getX(), getY());
@@ -85,6 +77,25 @@ public abstract class Player extends Entity {
             return true;
         }
         return false;
+    }
+
+    private boolean setToLastNotCollidedFromStart(int i) {
+        if (!collision.isCollideSolid(online.pastPositions[i].getX(), online.pastPositions[i].getY(), map)) {
+            if (!collision.isCollideSolid(online.pastPositions[i].getX(), getY(), map)) {
+                setPosition(online.pastPositions[i].getX(), getY());
+            } else if (!collision.isCollideSolid(getX(), online.pastPositions[i].getY(), map)) {
+                setPosition(getX(), online.pastPositions[i].getY());
+            } else {
+                setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
+            }
+            camera.update();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isInGame() {
+        return place != null;
     }
 
     public boolean isMenuOn() {
@@ -115,6 +126,10 @@ public abstract class Player extends Entity {
         return animation;
     }
 
+    public void setNotInGame() {
+        this.place = null;
+    }
+
     public void setMenu(Menu menu) {
         this.menu = menu;
     }
@@ -123,7 +138,4 @@ public abstract class Player extends Entity {
         this.camera = camera;
     }
 
-    public void setPlaceToNull() {
-        place = null;
-    }
 }

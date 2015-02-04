@@ -23,9 +23,9 @@ public class StoneMap extends Map {
 
     public StoneMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "Kamienna", place, width, height, tileSize);
-        Tile GROUND = new Tile(place.getSpriteSheet("tlo"), tileSize, 2, 12, place);
-        Tile ROCK = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 1, place);
-        Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12, place);
+        Tile GROUND = new Tile(place.getSpriteSheet("tlo"), tileSize, 2, 12);
+        Tile ROCK = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 1);
+        Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12);
         Area rocks = Area.createInChunks(13 * tileSize, 13 * tileSize, tileSize);
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {

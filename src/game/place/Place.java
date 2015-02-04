@@ -25,14 +25,13 @@ import sprites.SpriteSheet;
  */
 public abstract class Place extends ScreenPlace {
 
-    protected final SoundBase sounds;
-    protected final SpriteBase sprites;
-    public final int tileSize;
+    protected SoundBase sounds;
+    protected SpriteBase sprites;
+    private final int tileSize;
 
     private final renderType[] renders = new renderType[2];
-    private final Place place;
 
-    public Camera currentCam;
+    public Camera currentCamera;
     public Camera[] cameras = new Camera[3];
     public boolean isSplit, changeSSMode, singleCamera;
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
@@ -43,22 +42,18 @@ public abstract class Place extends ScreenPlace {
     public final ArrayList<Map> maps = new ArrayList<>();
     protected final ArrayList<Map> tempMaps = new ArrayList<>();
 
-    public final Tile[] tiles;
-
-    public Place(Game game, int width, int height, int sTile) {
-        super(game, width, height);
-        this.tileSize = sTile;
-        tiles = new Tile[width / sTile * height / sTile];
+    public Place(Game game, int tileSize) {
+        super(game);
+        this.tileSize = tileSize;
         sounds = new SoundBase();
         sprites = new SpriteBase(Settings.scale);
-        place = this;
         initializeMethods();
     }
 
     protected abstract void renderText(Camera cam);
 
     public abstract void generateAsGuest();
-    
+
     public abstract void generateAsHost();
 
     public void addGUI(GUIObject go) {
@@ -102,23 +97,23 @@ public abstract class Place extends ScreenPlace {
                     tempMaps.add(map);
                 }
             }
-            for (int p = 0; p < playersCount; p++) {
-                currentCam = (((Player) players[p]).getCamera());
-                map = players[p].getMap();
-                SplitScreen.setSplitScreen(place, playersCount, p);
-                if (p == 0 || !singleCamera) {
+            for (int player = 0; player < playersCount; player++) {
+                currentCamera = (((Player) players[player]).getCamera());
+                map = players[player].getMap();
+                SplitScreen.setSplitScreen(this, playersCount, player);
+                if (player == 0 || !singleCamera) {
                     glEnable(GL_SCISSOR_TEST);
-                    Renderer.preRenderShadowedLights(place, currentCam);
+                    Renderer.preRenderShadowedLights(this, currentCamera);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     if (map != null) {
-                        Drawer.drawRectangleInBlack(currentCam.getXOffsetEffect() + currentCam.getXStart(), currentCam.getYOffset() + currentCam.getYStart(), currentCam.getWidth(), currentCam.getHeight());
-                        map.renderBackground(currentCam);
-                        map.renderObjects(currentCam);
-                        map.renderText(currentCam);
+                        Drawer.drawRectangleInBlack(currentCamera.getXOffsetEffect() + currentCamera.getXStart(), currentCamera.getYOffset() + currentCamera.getYStart(), currentCamera.getWidth(), currentCamera.getHeight());
+                        map.renderBackground(currentCamera);
+                        map.renderObjects(currentCamera);
+                        map.renderText(currentCamera);
                         if (map.visibleLights.size() > 0) {
                             Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                         }
-                        currentCam.renderGUI();
+                        currentCamera.renderGUI();
                     }
                     glDisable(GL_SCISSOR_TEST);
                 }
@@ -132,20 +127,20 @@ public abstract class Place extends ScreenPlace {
             if (!Settings.shadowOff) {
                 Renderer.preRendLights(map);
             }
-            currentCam = (((Player) players[0]).getCamera());
-            SplitScreen.setSplitScreen(place, 1, 0);
+            currentCamera = (((Player) players[0]).getCamera());
+            SplitScreen.setSplitScreen(this, 1, 0);
             glEnable(GL_SCISSOR_TEST);
-            Renderer.preRenderShadowedLights(place, currentCam);
+            Renderer.preRenderShadowedLights(this, currentCamera);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             if (map != null) {
-                Drawer.drawRectangleInBlack(currentCam.getXOffsetEffect() + currentCam.getXStart(), currentCam.getYOffset() + currentCam.getYStart(), currentCam.getWidth(), currentCam.getHeight());
-                map.renderBackground(currentCam);
-                map.renderObjects(currentCam);
-                map.renderText(currentCam);
+                Drawer.drawRectangleInBlack(currentCamera.getXOffsetEffect() + currentCamera.getXStart(), currentCamera.getYOffset() + currentCamera.getYStart(), currentCamera.getWidth(), currentCamera.getHeight());
+                map.renderBackground(currentCamera);
+                map.renderObjects(currentCamera);
+                map.renderText(currentCamera);
                 if (map.visibleLights.size() > 0) {
                     Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                 }
-                currentCam.renderGUI();
+                currentCamera.renderGUI();
             }
             glDisable(GL_SCISSOR_TEST);
         };
@@ -158,6 +153,10 @@ public abstract class Place extends ScreenPlace {
 
     public void addMap(Map map) {
         maps.add(map);
+    }
+
+    public int getTileSize() {
+        return tileSize;
     }
 
     public Map getMapByName(String name) {
@@ -182,10 +181,10 @@ public abstract class Place extends ScreenPlace {
     }
 
     public void makeShadows() {
-        Renderer.initializeVariables(this);
+        Renderer.initializeVariables();
     }
 
-    public int getPlayersLenght() {
+    public int getPlayersCount() {
         return playersCount;
     }
 

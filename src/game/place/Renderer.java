@@ -26,7 +26,7 @@ public class Renderer {
     private static boolean visible;
     private static int lightX, lightY;
     private static float lightColor, lightBrightness, lightStrength;
-    private static Camera cam;
+    private static Camera camera;
     private static final drawBorder[] borders = new drawBorder[5];
     private static final resetOrtho[] orthos = new resetOrtho[5];
 
@@ -87,24 +87,24 @@ public class Renderer {
 
     private static void readyVarsToFindLights(Map map) {
         Place place = map.place ;
-        for (int p = 0; p < place.getPlayersLenght(); p++) {
+        for (int p = 0; p < place.getPlayersCount(); p++) {
             if (map == place.players[p].getMap()) {
-                cam = (((Player) place.players[p]).getCamera());
-                cam.visibleLightsCount = 0;
-                xStart[p] = cam.getXStart();
-                xEnd[p] = cam.getXEnd();
-                yStart[p] = cam.getYStart();
-                yEnd[p] = cam.getYEnd();
+                camera = (((Player) place.players[p]).getCamera());
+                camera.visibleLightsCount = 0;
+                xStart[p] = camera.getXStart();
+                xEnd[p] = camera.getXEnd();
+                yStart[p] = camera.getYStart();
+                yEnd[p] = camera.getYEnd();
             }
         }
         for (int c = 0; c < 3; c++) {
             if (place.cameras[c] != null) {
-                cam = place.cameras[c];
-                cam.visibleLightsCount = 0;
-                xStart[4 + c] = cam.getXStart();            // 4 to maksymalna liczba graczy
-                xEnd[4 + c] = cam.getXEnd();
-                yStart[4 + c] = cam.getYStart();
-                yEnd[4 + c] = cam.getYEnd();
+                camera = place.cameras[c];
+                camera.visibleLightsCount = 0;
+                xStart[4 + c] = camera.getXStart();            // 4 to maksymalna liczba graczy
+                xEnd[4 + c] = camera.getXEnd();
+                yStart[4 + c] = camera.getYStart();
+                yEnd[4 + c] = camera.getYEnd();
             }
         }
         map.visibleLights.clear();
@@ -165,11 +165,11 @@ public class Renderer {
         glColor3f(lightColor, lightColor, lightColor);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < lightStrength; i++) {
-            drawTex(frame.getTexture(), displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
+            drawTexture(frame.getTexture(), displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
         }
     }
 
-    private static void drawTex(int textureHandle, float w, float h, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
+    private static void drawTexture(int textureHandle, float w, float h, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
         glPushMatrix();
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glBegin(GL_QUADS);
@@ -185,8 +185,8 @@ public class Renderer {
         glPopMatrix();
     }
 
-    public static void initializeVariables(Place place) {
-        ShadowRenderer.initializeRenderer(place);
+    public static void initializeVariables() {
+        ShadowRenderer.initializeRenderer();
         frame = new RegularFrameBufferObject(displayWidth, displayHeight);
         borders[0] = () -> {
             glBegin(GL_QUADS);

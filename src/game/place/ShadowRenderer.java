@@ -44,11 +44,10 @@ public class ShadowRenderer {
 
     private static final int w = Display.getWidth(), h = Display.getHeight();
     private static final Figure[] shades = new Figure[4096];
-    private static GameObject emitter;
     private static final Point center = new Point(0, 0);
     private static final Point[] points = new Point[4];
     private static Figure shade, tmp, other, left, right;
-    private static int nrShades, shDif, lightX, lightY, distOther, distThis, firstShadowPoint, secondShadowPoint, shX, shY, XL1, XL2, XR1, XR2, YL;
+    private static int shadesCount, shDif, lightX, lightY, distOther, distThis, firstShadowPoint, secondShadowPoint, shX, shY, XL1, XL2, XR1, XR2, YL;
     private static double angle, temp, al1, bl1, al2, bl2, XOL, XOR, YOL, YOL2, YOR, YOR2;
     private static Shadow tmpShadow;
     private static final Shadow shadow0 = new Shadow(0), shadow1 = new Shadow(1);
@@ -66,7 +65,7 @@ public class ShadowRenderer {
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
 
         LH1o2 = (float) (emitter.getCollisionHeight() / 2);
-        for (int f = 0; f < nrShades; f++) {    //iteracja po Shades - tych co dają cień
+        for (int f = 0; f < shadesCount; f++) {    //iteracja po Shades - tych co dają cień
             shade = shades[f];
             if (shade != emitter.getCollision()) {
                 if (shade.isGiveShadow()) {
@@ -95,7 +94,7 @@ public class ShadowRenderer {
             }
         }
 
-        for (int f = 0; f < nrShades; f++) {
+        for (int f = 0; f < shadesCount; f++) {
             shade = shades[f];
             solveShadows(shade);
             for (Shadow sh : shade.getShadows()) {
@@ -153,20 +152,20 @@ public class ShadowRenderer {
     private static void findShades(GameObject src, Map map) {
         // Powinno sortować według wysoskości - najpierw te, które są najwyżej na planszy, a później coraz niższe,
         // obiekty tej samej wysokości powinny być renderowane w kolejności od najdalszych od źródła, do najbliższych.
-        nrShades = 0;
+        shadesCount = 0;
         for (Area area : map.areas) { //iteracja po Shades - tych co dają cień
             if (!area.isBorder()) {
                 if (area.isWhole()) {
                     tmp = area.getCollision();
                     if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
                             && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
-                        shades[nrShades++] = tmp;
+                        shades[shadesCount++] = tmp;
                         tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
                     }
                     for (Figure tmp : area.getParts()) {
                         if (tmp != null && !tmp.isLittable() && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
                                 && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
-                            shades[nrShades++] = tmp;
+                            shades[shadesCount++] = tmp;
                             tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
                         }
                     }
@@ -174,7 +173,7 @@ public class ShadowRenderer {
                     for (Figure tmp : area.getParts()) {
                         if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
                                 && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
-                            shades[nrShades++] = tmp;
+                            shades[shadesCount++] = tmp;
                             tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
                         }
                     }
@@ -185,11 +184,11 @@ public class ShadowRenderer {
             tmp = go.getCollision();
             if (tmp != null && tmp.isLittable() && ((FastMath.abs(tmp.getOwner().getY() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getOwner().getCollisionHeight() / 2))
                     && (FastMath.abs(tmp.getOwner().getX() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getOwner().getCollisionWidth() / 2)))) {
-                shades[nrShades++] = tmp;
+                shades[shadesCount++] = tmp;
                 tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
             }
         }
-        Arrays.sort(shades, 0, nrShades);
+        Arrays.sort(shades, 0, shadesCount);
     }
 
     private static void calculateShadow(GameObject src, Figure thisShade) {
@@ -268,7 +267,7 @@ public class ShadowRenderer {
 
     private static void findWalls(Figure figure, GameObject src) {
         left = right = null;
-        for (int i = 0; i < nrShades; i++) {
+        for (int i = 0; i < shadesCount; i++) {
             isChecked = false;
             other = shades[i];
             if (figure.getY() < src.getY() && other.isGiveShadow() && other != figure && other != src.getCollision()) {
@@ -608,7 +607,7 @@ public class ShadowRenderer {
         glPopMatrix();
     }
 
-    public static void initializeRenderer(Place place) {
+    public static void initializeRenderer() {
         points[0] = new Point(0, 0);
         points[1] = new Point(0, 0);
         points[2] = new Point(0, 0);
