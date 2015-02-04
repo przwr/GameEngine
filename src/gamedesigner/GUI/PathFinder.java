@@ -5,6 +5,7 @@
  */
 package gamedesigner.GUI;
 
+import gamedesigner.ObjectMap;
 import gamedesigner.ObjectPlace;
 import java.io.File;
 

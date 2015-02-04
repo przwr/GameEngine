@@ -71,18 +71,12 @@ public class Circle extends Figure {
         if (yPosition == 0 && ((xPosition < 0 && rectangle.getX() - getX(x) <= radius) || (yPosition > 0 && getX(x) - rectangle.getX() - rectangle.getWidth() <= radius))) {
             return true;
         }
-        if ((yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius)) {
-            return true;
-        }
-        return false;
+        return (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
     }
 
     private boolean circleCollsion(int x, int y, Figure figure) {
         Circle circle = (Circle) figure;
-        if (Methods.pointDistance(getX(x), getY(y), circle.getX(), circle.getY()) <= (radius + circle.getRadius())) {
-            return true;
-        }
-        return false;
+        return Methods.pointDistance(getX(x), getY(y), circle.getX(), circle.getY()) <= (radius + circle.getRadius());
     }
 
     private boolean lineCollision(int x, int y, Figure figure) {

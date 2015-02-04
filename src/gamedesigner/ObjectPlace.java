@@ -21,6 +21,7 @@ import gamedesigner.GUI.PathFinder;
 import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.lwjgl.input.Keyboard;
+import static org.lwjgl.input.Keyboard.KEY_M;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
@@ -37,6 +38,9 @@ public class ObjectPlace extends Place {
     private File lastFile = new File(".");
 
     private ObjectUI ui;
+    private int mode;
+
+    private boolean pressed, prevClick;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
@@ -94,6 +98,18 @@ public class ObjectPlace extends Place {
                 loadTextures();
             }
 
+            if (keyPressed(KEY_M)) {
+                mode++;
+                switch (mode) {
+                    case 1:
+                        ui.setVisible(false);
+                        break;
+                    case 3:
+                        ui.setVisible(true);
+                        mode = 0;
+                        break;
+                }
+            }
             if (playersCount > 1) {
                 changeSplitScreenJoin.act();
                 changeSplitScreenMode.act();
@@ -113,10 +129,33 @@ public class ObjectPlace extends Place {
                     mob.update();
                 });
             });
+
+            if (!pressed) {
+                prevClick = false;
+            }
         };
         updates[1] = () -> {
             System.err.println("ONLINE?..... pfft....");
         };
+    }
+
+    public int getMode() {
+        return mode;
+    }
+    
+    public boolean key(int k) {
+        return Keyboard.isKeyDown(k);
+    }
+
+    public boolean keyPressed(int k) {
+        if (key(k)) {
+            pressed = true;
+            if (!prevClick) {
+                prevClick = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

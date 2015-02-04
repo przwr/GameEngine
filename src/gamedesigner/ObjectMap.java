@@ -6,6 +6,7 @@
 package gamedesigner;
 
 import engine.Point;
+import game.gameobject.GameObject;
 import game.place.Map;
 import game.place.Place;
 import game.place.Tile;
@@ -39,7 +40,7 @@ public class ObjectMap extends Map {
     private Tile getBackground() {
         return isBackground ? background : null;
     }
-    
+
     public void switchBackground() {
         Tile tmp = null;
         if (!isBackground) {
@@ -53,12 +54,13 @@ public class ObjectMap extends Map {
         for (int y = 0; y < heightInTiles; y++) {
             for (int x = 0; x < widthInTiles; x++) {
                 Tile t = tiles[x + y * heightInTiles];
-                if (t == null || t.getPureDepth() == -1)
+                if (t == null || t.getPureDepth() == -1) {
                     tiles[x + y * heightInTiles] = background;
+                }
             }
         }
     }
-    
+
     public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
@@ -82,5 +84,36 @@ public class ObjectMap extends Map {
         }
         setTile(x, y, getBackground());
         return null;
+    }
+
+    public boolean checkBlockCollision(int x, int y, int width, int height) {
+        for (GameObject go : flatObjects) {
+            if (go instanceof TemporaryBlock) {
+                TemporaryBlock tb = (TemporaryBlock) go;
+                if (tb.checkCollision(x, y, width, height)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void deleteBlocks(int x, int y, int width, int height) {
+        Object[] tmpTab = flatObjects.toArray();
+        for (Object go : tmpTab) {
+            if (go instanceof TemporaryBlock) {
+                TemporaryBlock tb = (TemporaryBlock) go;
+                if (tb.checkCollision(x, y, width, height)) {
+                    deleteObject((GameObject) go);
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void addObject(GameObject object) {
+        if (object instanceof TemporaryBlock)
+            ((TemporaryBlock) object).initialize(tiles);
+        super.addObject(object);
     }
 }

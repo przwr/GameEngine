@@ -6,12 +6,9 @@
 package gamedesigner;
 
 import collision.Figure;
-import collision.OpticProperties;
-import collision.Rectangle;
 import game.gameobject.Player;
 import game.place.cameras.Camera;
 import game.place.Place;
-import game.place.Light;
 import engine.Drawer;
 import engine.Methods;
 import engine.Point;
@@ -22,8 +19,6 @@ import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
-import sprites.Animation;
-import sprites.SpriteSheet;
 import static org.lwjgl.input.Keyboard.*;
 
 /**
@@ -32,24 +27,21 @@ import static org.lwjgl.input.Keyboard.*;
  */
 public class ObjectPlayer extends Player {
 
-    private int hs, vs, maxtimer;
+    private int maxtimer;
     private int ix, iy;
     private int xtimer, ytimer;
     private int usedDepth;
     private int tile;
     private int xStop, yStop;
-    private boolean prevClick, pressed;
 
     private ObjectMap objMap;
+    private ObjectPlace objPlace;
     private ObjectUI ui;
-
-    private int mode;
 
     private int areaHeight;
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
-        this.mode = 0;
         this.first = first;
         maxtimer = 7;
         xtimer = 0;
@@ -73,21 +65,8 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y) {
-        this.place = place;
-        this.online = place.game.online;
-        this.width = Methods.roundHalfUp(Settings.scale * width);
-        this.height = Methods.roundHalfUp(Settings.scale * height);
-        this.xStart = Methods.roundHalfUp(Settings.scale * xStart);
-        this.yStart = Methods.roundHalfUp(Settings.scale * yStart);
-        this.setResistance(2);
-        this.emitter = true;
-        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y));
-        this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.animation = new Animation((SpriteSheet) sprite, 200);
-        emits = false;
-        setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
-        tile = place.getTileSize();
+        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y), place);
+        initialize(yStart, yStart, width, height, place);
     }
 
     @Override
@@ -100,12 +79,11 @@ public class ObjectPlayer extends Player {
         this.yStart = Methods.roundHalfUp(Settings.scale * yStart);
         this.setResistance(2);
         this.emitter = true;
-        this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.animation = new Animation((SpriteSheet) sprite, 200);
+        this.place = place;
         emits = false;
-        setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
-        tile = place.getTileSize();
+        tile = place.tileSize;
+        objPlace = (ObjectPlace) place;
+        onTop = true;
     }
 
     @Override
@@ -158,45 +136,34 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void update() {
-        pressed = false;
         int xPos = 0;
         int yPos = 0;
+        int mode = objPlace.getMode();
 
-        if (keyPressed(KEY_M)) {
-            mode++;
-            switch (mode) {
-                case 1:
-                    ui.setVisible(false);
-                    break;
-                case 3:
-                    ui.setVisible(true);
-                    mode = 0;
-                    break;
-            }
-        }
+        maxtimer = objPlace.key(KEY_A) ? 2 : 7;
 
-        if (key(KEY_LCONTROL) && key(KEY_Z)) {
+        if (objPlace.key(KEY_LCONTROL) && objPlace.key(KEY_Z)) {
             xStop = ix;
             yStop = iy;
         }
 
-        if (key(KEY_UP)) {
+        if (objPlace.key(KEY_UP)) {
             yPos--;
-        } else if (key(KEY_DOWN)) {
+        } else if (objPlace.key(KEY_DOWN)) {
             yPos++;
         } else {
             ytimer = 0;
         }
-        if (key(KEY_LEFT)) {
+        if (objPlace.key(KEY_LEFT)) {
             xPos--;
-        } else if (key(KEY_RIGHT)) {
+        } else if (objPlace.key(KEY_RIGHT)) {
             xPos++;
         } else {
             xtimer = 0;
         }
 
         if (mode == 0) {
-            ui.setChange(key(KEY_LSHIFT));
+            ui.setChange(objPlace.key(KEY_LSHIFT));
         }
 
         if (xPos != 0 || yPos != 0) {
@@ -206,7 +173,7 @@ public class ObjectPlayer extends Player {
                     xtimer = 1;
                     ytimer = 1;
                 }
-            } else if (mode == 1 && key(KEY_LSHIFT)) {
+            } else if (mode == 1 && objPlace.key(KEY_LSHIFT)) {
                 if (xtimer == 0 && ytimer == 0) {
                     areaHeight = FastMath.max(0, -yPos + areaHeight);
                     xtimer = 1;
@@ -216,37 +183,47 @@ public class ObjectPlayer extends Player {
                 move(xPos, yPos);
             }
         }
-        if (keyPressed(KEY_SPACE)) {
+        if (objPlace.keyPressed(KEY_SPACE)) {
             int xBegin = Math.min(ix, xStop);
             int yBegin = Math.min(iy, yStop);
             int xEnd = Math.max(ix, xStop);
             int yEnd = Math.max(iy, yStop);
-            for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                    Point p = ui.getCoordinates();
-                    objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet());
+            if (mode == 0) {
+                for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                    for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                        Point p = ui.getCoordinates();
+                        objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet());
+                    }
+                }
+            } else if (mode == 1) {
+                int xd = (Math.abs(ix - xStop) + 1);
+                int yd = (Math.abs(iy - yStop) + 1);
+                if (!objMap.checkBlockCollision(xBegin * tile, yBegin * tile, xd * tile, yd * tile)) {
+                    objMap.addObject(new TemporaryBlock(xBegin * tile, yBegin * tile, areaHeight, xd, yd, map));
                 }
             }
         }
 
-        if (keyPressed(KEY_DELETE)) {
+        if (objPlace.keyPressed(KEY_DELETE)) {
             int xBegin = Math.min(ix, xStop);
             int yBegin = Math.min(iy, yStop);
             int xEnd = Math.max(ix, xStop);
             int yEnd = Math.max(iy, yStop);
-            for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                    objMap.removeTile(xTemp, yTemp);
+            if (mode == 0) {
+                for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                    for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                        objMap.removeTile(xTemp, yTemp);
+                    }
                 }
+            } else if (mode == 1) {
+                int xd = (Math.abs(ix - xStop) + 1);
+                int yd = (Math.abs(iy - yStop) + 1);
+                objMap.deleteBlocks(xBegin * tile, yBegin * tile, xd * tile, yd * tile);
             }
         }
 
-        if (keyPressed(KEY_TAB)) {
+        if (objPlace.keyPressed(KEY_TAB)) {
             objMap.switchBackground();
-        }
-
-        if (!pressed) {
-            prevClick = false;
         }
     }
 
@@ -257,52 +234,37 @@ public class ObjectPlayer extends Player {
         int xd = (Math.abs(ix - xStop) + 1) * tile;
         int yd = (Math.abs(iy - yStop) + 1) * tile;
         glTranslatef(Math.min(ix, xStop) * tile + xEffect, Math.min(iy, yStop) * tile + yEffect, 0);
-        if (mode == 0) {
-            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-            glColor4f(1f, 1f, 1f, 1f);
+        glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
+        glColor4f(1f, 1f, 1f, 1f);
+        if (objPlace.getMode() == 0) {
             Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
             Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
             Drawer.drawRectangle(0, -yd, d, yd);
             Drawer.drawRectangle(xd + d, 0, d, yd);
         }
-        if (mode == 1) {
-            glColor4f(1f, 1f, 1f, 1f);
+        if (objPlace.getMode() == 1) {
+            glColor4f(1f, 0.78f, 0f, 1f);
+            //glColor4f(1f, 1f, 1f, 1f);
             int tmpH = areaHeight * tile;
-            Drawer.drawRectangle(0, -tmpH, xd, yd);
+            //Drawer.drawRectangle(0, -tmpH, xd, yd);
             if (areaHeight == 0) {
-                glColor4f(1f, 0.78f, 0f, 1f);
                 Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
                 Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
                 Drawer.drawRectangle(0, -yd, d, yd);
                 Drawer.drawRectangle(xd + d, 0, d, yd);
             } else {
-                glColor4f(0.9f, 0.9f, 0.9f, 1f);
-                Drawer.drawRectangle(0, yd, xd, tmpH);
-                glColor4f(1f, 0.78f, 0f, 1f);
-                Drawer.drawRectangle(-d, -d - yd, xd + 2 * d, d);
-                Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
-                Drawer.drawRectangle(0, tmpH, xd + 2 * d, d);
-                Drawer.drawRectangle(0, 0, d, -tmpH - yd);
-                Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd);
+                //glColor4f(0.9f, 0.9f, 0.9f, 1f);
+                //Drawer.drawRectangle(0, yd, xd, tmpH);
+                //glColor4f(1f, 0.78f, 0f, 1f);
+                Drawer.drawRectangle(-d, -d - tmpH, xd + 2 * d, d);
+                Drawer.drawRectangle(d, yd + d, xd, d);
+                Drawer.drawRectangle(0, tmpH, xd, d);
+                Drawer.drawRectangle(-d, d, d, -tmpH - yd - d);
+                Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd - d);
             }
         }
         Drawer.refreshForRegularDrawing();
         glPopMatrix();
-    }
-
-    private boolean key(int k) {
-        return Keyboard.isKeyDown(k);
-    }
-
-    private boolean keyPressed(int k) {
-        if (key(k)) {
-            pressed = true;
-            if (!prevClick) {
-                prevClick = true;
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

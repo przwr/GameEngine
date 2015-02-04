@@ -65,12 +65,12 @@ public class Line extends Figure {
     }
 
     private boolean rectangleCollision(int x, int y, Figure figure) {
-        ArrayList<Point> points = (ArrayList< Point>) figure.getPoints();
+        ArrayList<Point> tmpPoints = (ArrayList< Point>) figure.getPoints();
         int[] w = {getX(x), getY(y), getX(x) + xVector, getY(y) + yVector};
-        return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(0).getX(), points.get(0).getY(), points.get(1).getX(), points.get(1).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(1).getX(), points.get(1).getY(), points.get(2).getX(), points.get(2).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(2).getX(), points.get(2).getY(), points.get(3).getX(), points.get(3).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], points.get(3).getX(), points.get(3).getY(), points.get(0).getX(), points.get(0).getY()));
+        return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(0).getX(), tmpPoints.get(0).getY(), tmpPoints.get(1).getX(), tmpPoints.get(1).getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(1).getX(), tmpPoints.get(1).getY(), tmpPoints.get(2).getX(), tmpPoints.get(2).getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(2).getX(), tmpPoints.get(2).getY(), tmpPoints.get(3).getX(), tmpPoints.get(3).getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(3).getX(), tmpPoints.get(3).getY(), tmpPoints.get(0).getX(), tmpPoints.get(0).getY()));
     }
 
     private boolean circleCollision(int x, int y, Figure figure) {
