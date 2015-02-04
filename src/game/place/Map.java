@@ -33,17 +33,17 @@ public class Map {
 
     private final short mapID;
     protected short mobID = 0;
-    private final ArrayList<GameObject> allObjects = new ArrayList<>();
-    private final ArrayList<Mob> solidMobs = new ArrayList<>();
-    private final ArrayList<Mob> flatMobs = new ArrayList<>();
-    private final ArrayList<GameObject> solidObjects = new ArrayList<>();
-    private final ArrayList<GameObject> flatObjects = new ArrayList<>();
-    private final ArrayList<GameObject> emitters = new ArrayList<>();
-    private final ArrayList<WarpPoint> warps = new ArrayList<>();
+    protected final ArrayList<GameObject> allObjects = new ArrayList<>();
+    protected final ArrayList<Mob> solidMobs = new ArrayList<>();
+    protected final ArrayList<Mob> flatMobs = new ArrayList<>();
+    protected final ArrayList<GameObject> solidObjects = new ArrayList<>();
+    protected final ArrayList<GameObject> flatObjects = new ArrayList<>();
+    protected final ArrayList<GameObject> emitters = new ArrayList<>();
+    protected final ArrayList<WarpPoint> warps = new ArrayList<>();
 
-    private final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
-    private final ArrayList<GameObject> objectsOnTop = new ArrayList<>();
-    private final ArrayList<GameObject> depthObjects = new ArrayList<>();
+    protected final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
+    protected final ArrayList<GameObject> objectsOnTop = new ArrayList<>();
+    protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
     private final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
             -> firstObject.getDepth() - secondObject.getDepth();
 

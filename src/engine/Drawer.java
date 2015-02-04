@@ -20,6 +20,23 @@ public class Drawer {
 
     private static final int white = glGenTextures();
     private static Place place;
+    private static float currentX, currentY;
+
+    public static void setCentralPoint() {
+        currentX = 0;
+        currentY = 0;
+    }
+
+    public static void translateFromCP(float x, float y) {
+        currentX += x;
+        currentY += y;
+        glTranslatef(x, y, 0f);
+    }
+
+    public static void returnToCentralPoint() {
+        glTranslatef(-currentX, -currentY, 0f);
+        setCentralPoint();
+    }
 
     public static void setColor(Color color) {
         glColor4f(color.r, color.g, color.b, color.a);
@@ -57,7 +74,7 @@ public class Drawer {
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
-    
+
     public static void drawRectangleBorder(int xStart, int yStart, int width, int height) {
         glTranslatef(xStart, yStart, 0);
         glDisable(GL_TEXTURE_2D);

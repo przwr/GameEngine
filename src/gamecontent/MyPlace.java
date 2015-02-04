@@ -44,7 +44,7 @@ public class MyPlace extends Place {
         StoneMap kamienna = new StoneMap(mapId++, this, width, height, tileSize);
         maps.add(polana);
         maps.add(kamienna);
-        //sounds.init("res");
+        //sounds.initialize("res");
         this.red = 0.75f;
         this.green = 0.75f;
         this.blue = 0.75f;
@@ -60,7 +60,7 @@ public class MyPlace extends Place {
         StoneMap kamienna = new StoneMap(mapId++, this, width, height, tileSize);
         maps.add(polana);
         maps.add(kamienna);        
-        //sounds.init("res");
+        //sounds.initialize("res");
         this.red = 0.75f;
         this.green = 0.75f;
         this.blue = 0.75f;
@@ -77,7 +77,7 @@ public class MyPlace extends Place {
 
     private void initMethods() {
         ups[0] = () -> {
-            if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+            /*if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                 sounds.getSound("MumboMountain").resume();
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
@@ -107,7 +107,7 @@ public class MyPlace extends Place {
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
                 sounds.getSound("MumboMountain").fade(0.5, false);
-            }
+            }*/
             
             if (playersCount > 1) {
                 changeSplitScreenJoin.act();

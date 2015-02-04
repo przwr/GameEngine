@@ -20,6 +20,7 @@ import gamedesigner.GUI.PathFinder;
 import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.lwjgl.input.Keyboard;
+import static org.lwjgl.input.Keyboard.KEY_M;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
@@ -30,18 +31,19 @@ public class ObjectPlace extends Place {
 
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
-    private final Place place;
     private final update[] ups = new update[2];
     private final Help help;
 
     private File lastFile = new File(".");
 
     private ObjectUI ui;
+    private int mode;
+
+    private boolean pressed, prevClick;
 
     public ObjectPlace(Game game, int width, int height, int tileSize) {
         super(game, width, height, tileSize);
         this.help = new Help();
-        place = this;
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
     }
@@ -87,6 +89,8 @@ public class ObjectPlace extends Place {
 
     private void initializeMethods() {
         ups[0] = () -> {
+            pressed = false;
+            
             if (Keyboard.isKeyDown(Keyboard.KEY_H)) {
                 help.setVisible(true);
             }
@@ -95,6 +99,18 @@ public class ObjectPlace extends Place {
                 loadTextures();
             }
 
+            if (keyPressed(KEY_M)) {
+                mode++;
+                switch (mode) {
+                    case 1:
+                        ui.setVisible(false);
+                        break;
+                    case 3:
+                        ui.setVisible(true);
+                        mode = 0;
+                        break;
+                }
+            }
             if (playersCount > 1) {
                 changeSplitScreenJoin.act();
                 changeSplitScreenMode.act();
@@ -114,10 +130,33 @@ public class ObjectPlace extends Place {
                     mob.update(game.place);
                 });
             });
+
+            if (!pressed) {
+                prevClick = false;
+            }
         };
         ups[1] = () -> {
             System.err.println("ONLINE?..... pfft....");
         };
+    }
+
+    public int getMode() {
+        return mode;
+    }
+    
+    public boolean key(int k) {
+        return Keyboard.isKeyDown(k);
+    }
+
+    public boolean keyPressed(int k) {
+        if (key(k)) {
+            pressed = true;
+            if (!prevClick) {
+                prevClick = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

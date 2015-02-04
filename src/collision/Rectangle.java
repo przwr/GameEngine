@@ -65,11 +65,8 @@ public class Rectangle extends Figure {
 
     private boolean rectangleCollsion(int x, int y, Figure figure) {
         Rectangle rectangle = (Rectangle) figure;
-        if (((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
-                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height))) {
-            return true;
-        }
-        return false;
+        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
+                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
     }
 
     private boolean circleCollision(int x, int y, Figure figure) {
@@ -87,10 +84,7 @@ public class Rectangle extends Figure {
         if (yPosition == 0 && ((xPosition < 0 && getX(x) - circle.getX() <= circle.getRadius()) || (yPosition > 0 && circle.getX() - getX(x) - width <= circle.getRadius()))) {
             return true;
         }
-        if ((yPosition < 0 && getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - getY(y) - height <= circle.getRadius())) {
-            return true;
-        }
-        return false;
+        return (yPosition < 0 && getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - getY(y) - height <= circle.getRadius());
     }
 
     private boolean lineCollision(int x, int y, Figure figure) {
