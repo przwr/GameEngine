@@ -20,7 +20,7 @@ public abstract class Menu extends ScreenPlace {
     protected MenuOptions[] menus;
 
     protected final int widthHalf = Display.getWidth();
-    protected final int heightHalf = Display.getHeight(); //(int) (dWidth * ((double) Display.getHeight() / (double) Display.getWidth()));
+    protected final int heightHalf = Display.getHeight();
     public boolean isMapping;
     public Delay delay;
 
@@ -55,5 +55,4 @@ public abstract class Menu extends ScreenPlace {
             current = i;
         }
     }
-
 }

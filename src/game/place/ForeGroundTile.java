@@ -23,28 +23,28 @@ import sprites.SpriteSheet;
  */
 public class ForeGroundTile extends Tile {
 
-    public static ForeGroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, int shadowHeight) {
-        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, yStart, shadowHeight);
+    public static ForeGroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
+        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, yStart);
     }
 
     public static ForeGroundTile createOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, 0, 0);
+        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, 0);
     }
 
-    public static ForeGroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, int shadowHeight) {
-        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, yStart, shadowHeight);
+    public static ForeGroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart){
+        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, yStart);
     }
 
     public static ForeGroundTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, 0, 0);
+        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, 0);
     }
 
-    private ForeGroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, int shadowHeight) {
+    private ForeGroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
         super(spriteSheet, size, xSheet, ySheet);
         simpleLighting = true;
         solid = wall;
         int type = wall ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW;
-        setCollision(Rectangle.createShadowHeight(0, yStart, size, size, type, shadowHeight, this));
+        setCollision(Rectangle.create(0, yStart, size, size, type, this));
     }
 
     @Override
