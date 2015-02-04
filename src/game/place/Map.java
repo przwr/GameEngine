@@ -90,6 +90,16 @@ public class Map {
         sortObjectsByDepth(foregroundTiles);
     }
 
+    public void addArea(Area area) {
+        areas.add(area);
+    }
+    
+    public void deleteArea(Area area) {
+        System.out.println(areas.contains(area));
+        areas.remove(area);
+        System.out.println(areas.contains(area));
+    }
+    
     public void addObject(GameObject object) {
         object.setMapNotChange(this);
         if (object.isOnTop()) {

@@ -5,12 +5,16 @@
  */
 package gamedesigner;
 
+import collision.Area;
 import collision.Figure;
 import engine.Drawer;
+import engine.Point;
 import game.gameobject.GameObject;
+import game.place.ForeGroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.Tile;
+import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -25,7 +29,11 @@ public class TemporaryBlock extends GameObject {
     private final int tile;
     private final int upHeight, xTiles, yTiles;
     private final ObjectPlace objPlace;
+    private final ObjectMap objMap;
     private boolean complete;
+
+    private Area area;
+    private ArrayList<ForeGroundTile> tiles;
 
     public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map, Place place) {
         initialize("tmpBlock", x, y);
@@ -36,6 +44,8 @@ public class TemporaryBlock extends GameObject {
         xTiles = width;
         yTiles = height;
         this.map = map;
+        onTop = true;
+        objMap = (ObjectMap) map;
         objPlace = (ObjectPlace) place;
     }
 
@@ -81,18 +91,64 @@ public class TemporaryBlock extends GameObject {
                 Drawer.drawRectangle(width - d, 0, d, -tmpH - height + d);
             }
         }
+        Drawer.refreshForRegularDrawing();
         glPopMatrix();
     }
 
-    public void initialize(Tile[] tiles) {
-        
+    public void initialize() {
+        tiles = new ArrayList<>();
+        if (upHeight > 0) {
+            int xBegin = (int) (x / tile);
+            int yBegin = (int) (y / tile) - upHeight;
+            int xEnd = xBegin + xTiles;
+            int yEnd = yBegin + yTiles + upHeight - 1;
+            int level = 0;
+            ForeGroundTile fgt;
+            Tile t;
+            Point p;
+            for (int iy = yEnd; iy >= yBegin; iy--) {
+                for (int ix = xBegin; ix < xEnd; ix++) {
+                    t = map.getTile(ix, iy);
+                    if (t.getPureDepth() != -1) {
+                        p = t.popTileFromStackBack();
+                        if (level + 1 <= upHeight) {
+                            fgt = ForeGroundTile.createWall(t.getSpriteSheet(), tile, p.getX(), p.getY());
+                        } else {
+                            fgt = ForeGroundTile.createOrdinaryShadowHeight(t.getSpriteSheet(), tile, p.getX(), p.getY(), level * tile);
+                        }
+                        while ((p = t.popTileFromStackBack()) != null) {
+                            fgt.addTileToStack(p.getX(), p.getY());
+                        }
+                        map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, level * tile);
+                        tiles.add(fgt);
+                        objMap.removeTile(ix, iy);
+                    }
+                }
+                level++;
+            }
+            area = new Area((int) x, (int) y, width, height, upHeight * tile);
+            map.addArea(area);
+        }
+        area = new Area((int) x, (int) y, width, height, upHeight * tile);
+        map.addArea(area);
     }
-    
+
+    public void clearMyself() {
+        for (ForeGroundTile fgt : tiles) {
+            Point p = fgt.popTileFromStack();
+            Tile t = new Tile(fgt.getSpriteSheet(), tile, p.getX(), p.getY());
+            map.setTile(fgt.getX() / tile, fgt.getY() / tile, t);
+        }
+        map.deleteArea(area);
+        tiles.clear();
+        area = null;
+    }
+
     public boolean checkCollision(int x, int y, int width, int height) {
         return ((this.x > x && this.x - x < width) || (this.x <= x && x - this.x < this.width))
                 && ((this.y > y && this.y - y < height) || (this.y <= y && y - this.y < this.height));
     }
-    
+
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
     }

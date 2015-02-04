@@ -110,6 +110,11 @@ public class ObjectPlace extends Place {
                         break;
                 }
             }
+
+            if (keyPressed(Keyboard.KEY_S)) {
+                System.out.println(((ObjectMap) maps.get(0)).saveMap());
+            }
+
             if (playersCount > 1) {
                 changeSplitScreenJoin.act();
                 changeSplitScreenMode.act();

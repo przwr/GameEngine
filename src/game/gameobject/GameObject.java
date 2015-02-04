@@ -51,7 +51,7 @@ public abstract class GameObject {
         this.map = map;
         this.map.addObject(this);
     }
-
+/*
     @Override
     public boolean equals(Object object) {
         if (object instanceof GameObject) {
@@ -73,7 +73,7 @@ public abstract class GameObject {
         hash = 83 * hash + Objects.hashCode(this.name);
         return hash;
     }
-
+*/
     public boolean isSolid() {
         return solid;
     }

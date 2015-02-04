@@ -10,7 +10,6 @@ import engine.Main;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.util.Collection;
-import net.jodk.lang.FastMath;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -19,18 +18,12 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Area extends GameObject {
 
-    private final boolean border;
-    private int xCentral, yCentral;
-
-    public static Area createWhole(int x, int y, int tileSize) {
-        return new Area(x, y, false);
-    }
-
-    private Area(int x, int y, boolean border) {  //Point (x, y) should be in left top corner of Area
+    public Area(int x, int y, int width, int height, int shadowHeight) {  //Point (x, y) should be in left top corner of Area
         this.x = x;
         this.y = y;
-        this.border = border;
+        name = "area";
         solid = true;
+        setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
     }
 
     public boolean isCollide(int x, int y, Figure figure) {
@@ -86,8 +79,9 @@ public class Area extends GameObject {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
     }
-
-    public boolean isBorder() {
-        return border;
+    
+    @Override
+    public String toString() {
+        return "b:" + ((int)x) + ":" + ((int)y) + ":" + collision.width + ":" + collision.height + ":" + collision.getShadowHeight();
     }
 }
