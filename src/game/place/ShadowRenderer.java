@@ -155,27 +155,18 @@ public class ShadowRenderer {
         shadesCount = 0;
         for (Area area : map.areas) { //iteracja po Shades - tych co dają cień
             if (!area.isBorder()) {
-                if (area.isWhole()) {
-                    tmp = area.getCollision();
-                    if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
+                tmp = area.getCollision();
+                if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
+                        && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
+                    shades[shadesCount++] = tmp;
+                    tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
+                }
+                for (GameObject object : map.foregroundTiles) {
+                    Figure tmp = object.getCollision();
+                    if (tmp != null && !tmp.isLittable() && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
                             && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
                         shades[shadesCount++] = tmp;
                         tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
-                    }
-                    for (Figure tmp : area.getParts()) {
-                        if (tmp != null && !tmp.isLittable() && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
-                                && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
-                            shades[shadesCount++] = tmp;
-                            tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
-                        }
-                    }
-                } else {
-                    for (Figure tmp : area.getParts()) {
-                        if (tmp != null && (FastMath.abs(tmp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tmp.getHeight() / 2))
-                                && (FastMath.abs(tmp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tmp.getWidth() / 2))) {
-                            shades[shadesCount++] = tmp;
-                            tmp.setDistanceFromLight((src.getCollision() == tmp) ? -1 : FastMath.abs(src.getX() - tmp.getXCentral()));
-                        }
                     }
                 }
             }

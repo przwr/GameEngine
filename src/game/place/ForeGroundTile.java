@@ -23,23 +23,23 @@ import sprites.SpriteSheet;
  */
 public class ForeGroundTile extends Tile {
 
-    public static ForeGroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, int shadowHeight, Place place) {
-        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, yStart, shadowHeight, place);
+    public static ForeGroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, int shadowHeight) {
+        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, yStart, shadowHeight);
     }
 
-    public static ForeGroundTile createOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, Place place) {
-        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, 0, 0, place);
+    public static ForeGroundTile createOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
+        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, 0, 0);
     }
 
-    public static ForeGroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, int shadowHeight, Place place) {
-        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, yStart, shadowHeight, place);
+    public static ForeGroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, int shadowHeight) {
+        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, yStart, shadowHeight);
     }
 
-    public static ForeGroundTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, Place place) {
-        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, 0, 0, place);
+    public static ForeGroundTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
+        return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, 0, 0);
     }
 
-    private ForeGroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, int shadowHeight, Place place) {
+    private ForeGroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, int shadowHeight) {
         super(spriteSheet, size, xSheet, ySheet);
         simpleLighting = true;
         solid = wall;
