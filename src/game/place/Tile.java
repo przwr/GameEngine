@@ -13,12 +13,12 @@ import sprites.SpriteSheet;
 
 public class Tile extends GameObject {
 
-    public static int SIZE;
     protected final SpriteSheet spriteSheet;
     protected final ArrayList<Point> tileStack;
 
     public Tile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        SIZE = size;
+        width = size;
+        height = size;
         this.spriteSheet = spriteSheet;
         tileStack = new ArrayList<>(1);
         tileStack.add(new Point(xSheet, ySheet));
