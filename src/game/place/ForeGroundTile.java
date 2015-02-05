@@ -9,6 +9,7 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
+import engine.Point;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
@@ -31,7 +32,7 @@ public class ForeGroundTile extends Tile {
         return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, false, 0);
     }
 
-    public static ForeGroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart){
+    public static ForeGroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
         return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, yStart);
     }
 
@@ -71,5 +72,14 @@ public class ForeGroundTile extends Tile {
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         }
         glPopMatrix();
+    }
+    
+    @Override
+    public String toString() {
+        String txt = "fgt:" + spriteSheet.getKey() + ":" + depth;
+        for (Point p : tileStack) {
+            txt += ":" + p.getX() + ":" + p.getY();
+        }
+        return txt;
     }
 }

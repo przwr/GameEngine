@@ -30,18 +30,18 @@ public class GladeMap extends Map {
             }
         }
         Area testa = new Area(6 * tileSize, 5 * tileSize, tileSize, tileSize, 0);
-        Area testb = new Area(8 * tileSize, 5 * tileSize, tileSize, tileSize, tileSize);
-        Area testc = new Area(7 * tileSize, 7 * tileSize, tileSize, tileSize, tileSize);
-        Area testd = new Area(9 * tileSize, 7 * tileSize, tileSize, tileSize, tileSize);
-        Area teste = new Area(11 * tileSize, 7 * tileSize, tileSize, tileSize, tileSize);
-        Area testf = new Area(5 * tileSize, 9 * tileSize, tileSize, tileSize, tileSize);
-        Area testg = new Area(9 * tileSize, 11 * tileSize, tileSize, tileSize, 0);
+        /*Area testb = Area.createWhole(8 * tileSize, 5 * tileSize, tileSize);
+        Area testc = Area.createWhole(7 * tileSize, 7 * tileSize, tileSize);
+        Area testd = Area.createWhole(9 * tileSize, 7 * tileSize, tileSize);
+        Area teste = Area.createWhole(11 * tileSize, 7 * tileSize, tileSize);
+        Area testf = Area.createWhole(5 * tileSize, 9 * tileSize, tileSize);
+        Area testg = Area.createWhole(9 * tileSize, 11 * tileSize, tileSize);*/
 
         ForeGroundTile fgt;
 
         fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
         addForegroundTileAndReplace(fgt, 6 * tileSize, 5 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, 0);
+        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
         addForegroundTileAndReplace(fgt, 6 * tileSize, 4 * tileSize, 2 * tileSize);
 
         fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
@@ -88,7 +88,7 @@ public class GladeMap extends Map {
         fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
         addForegroundTileAndReplace(fgt, 9 * tileSize, 10 * tileSize, 2 * tileSize);
 
-        Area border = new Area(0, 0, tileSize, tileSize, tileSize);
+        /*Area border = Area.createWhole(0, 0, tileSize);*/
 
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, warp));
@@ -97,13 +97,13 @@ public class GladeMap extends Map {
 
         tiles[20 + 20 * height / tileSize] = PORTAL;
         areas.add(testa);
-        areas.add(testb);
+        /*areas.add(testb);
         areas.add(testc);
         areas.add(testd);
         areas.add(teste);
         areas.add(testf);
         areas.add(testg);
-        areas.add(border);
+        areas.add(border);*/
 
         for (int i = 0; i < 1; i++) {
             addObject(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", place, true, mobID++));

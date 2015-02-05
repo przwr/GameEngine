@@ -18,9 +18,10 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Area extends GameObject {
 
- public Area(int x, int y, int width, int height, int shadowHeight) {  //Point (x, y) should be in left top corner of Area
+    public Area(int x, int y, int width, int height, int shadowHeight) {  //Point (x, y) should be in left top corner of Area
         this.x = x;
         this.y = y;
+        name = "area";
         solid = true;
         setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
     }
@@ -77,5 +78,10 @@ public class Area extends GameObject {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
+    }
+    
+    @Override
+    public String toString() {
+        return "b:" + ((int)x) + ":" + ((int)y) + ":" + collision.width + ":" + collision.height + ":" + collision.getShadowHeight();
     }
 }

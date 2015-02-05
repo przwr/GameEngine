@@ -43,6 +43,15 @@ public class Tile extends GameObject {
         }
         return null;
     }
+    
+    public Point popTileFromStackBack() {
+        if (!tileStack.isEmpty()) {
+            Point p = tileStack.remove(0);
+            tileStack.trimToSize();
+            return p;
+        }
+        return null;
+    }
 
     public void renderSpecific(int x, int y) {    //Renderuje w konkretnym miejscu nie 
         glPushMatrix();                                     //patrząc na zmienne wewnętrzne
@@ -95,5 +104,18 @@ public class Tile extends GameObject {
             spriteSheet.renderPiece(p.getX(), p.getY());
         });
         glPopMatrix();
+    }
+    
+    public SpriteSheet getSpriteSheet() {
+        return spriteSheet;
+    }
+    
+    @Override
+    public String toString() {
+        String txt = spriteSheet.getKey();
+        for (Point p : tileStack) {
+            txt += ":" + p.getX() + ":" + p.getY();
+        }
+        return txt;
     }
 }

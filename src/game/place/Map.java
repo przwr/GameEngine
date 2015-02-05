@@ -78,6 +78,28 @@ public class Map {
         sortObjectsByDepth(foregroundTiles);
     }
 
+    public void deleteForegroundTile(GameObject tile) {
+        foregroundTiles.remove(tile);
+        sortObjectsByDepth(foregroundTiles);
+    }
+
+    public void deleteForegroundTile(int x, int y) {
+        foregroundTiles.stream().filter((foregroundTile) -> (foregroundTile.getX() == x && foregroundTile.getY() == y)).forEach((foregroundTile) -> {
+            foregroundTiles.remove(foregroundTile);
+        });
+        sortObjectsByDepth(foregroundTiles);
+    }
+
+    public void addArea(Area area) {
+        areas.add(area);
+    }
+    
+    public void deleteArea(Area area) {
+        System.out.println(areas.contains(area));
+        areas.remove(area);
+        System.out.println(areas.contains(area));
+    }
+    
     public void addObject(GameObject object) {
         object.setMapNotChange(this);
         if (object.isOnTop()) {

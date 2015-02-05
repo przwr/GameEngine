@@ -5,6 +5,7 @@
  */
 package gamedesigner;
 
+import collision.Area;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.place.Map;
@@ -104,6 +105,7 @@ public class ObjectMap extends Map {
             if (go instanceof TemporaryBlock) {
                 TemporaryBlock tb = (TemporaryBlock) go;
                 if (tb.checkCollision(x, y, width, height)) {
+                    tb.clearMyself();
                     deleteObject((GameObject) go);
                 }
             }
@@ -113,7 +115,24 @@ public class ObjectMap extends Map {
     @Override
     public void addObject(GameObject object) {
         if (object instanceof TemporaryBlock)
-            ((TemporaryBlock) object).initialize(tiles);
+            ((TemporaryBlock) object).initialize();
         super.addObject(object);
+    }
+    
+    public String saveMap() {
+        String map = "";
+        for (int i = 0; i < tiles.length; i++) {
+            Tile t = tiles[i];
+            if (t != null && t.getPureDepth() != -1) {
+                map += "t:" + i + ":" + t.toString() + "\n";
+            }
+        }
+        for (GameObject fgt : foregroundTiles) {
+            map += fgt.toString() + "\n";
+        }
+        for (Area a : areas) {
+            map += a.toString() + "\n";
+        }
+        return map;
     }
 }
