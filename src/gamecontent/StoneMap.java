@@ -36,20 +36,29 @@ public class StoneMap extends Map {
         }
 
         Area testa = new Area(6 * tileSize, 5 * tileSize, tileSize, tileSize, 0);
-        Area testb = new Area(8 * tileSize, 5 * tileSize, tileSize, tileSize, tileSize);
-        Area testc = new Area(7 * tileSize, 7 * tileSize, tileSize, tileSize, tileSize);
-        Area testd = new Area(9 * tileSize, 7 * tileSize, tileSize, tileSize, tileSize);
-        Area teste = new Area(11 * tileSize, 7 * tileSize, tileSize, tileSize, tileSize);
+        Area testb = new Area(8 * tileSize, 5 * tileSize, 3 * tileSize, tileSize, 0);
+        Area testc = new Area(7 * tileSize, 7 * tileSize, tileSize, tileSize, 0);
+        Area testd = new Area(9 * tileSize, 7 * tileSize, tileSize, 2 * tileSize, -tileSize);
+        Area teste = new Area(11 * tileSize, 7 * tileSize, tileSize, tileSize, 0);
         Area testf = new Area(5 * tileSize, 9 * tileSize, tileSize, tileSize, tileSize);
-        Area testg = new Area(9 * tileSize, 11 * tileSize, tileSize, tileSize, tileSize);
-        
-          ForeGroundTile fgt;
+        Area testg = new Area(9 * tileSize, 11 * tileSize, tileSize, tileSize, 0);
+
+        areas.add(testa);
+        areas.add(testb);
+        areas.add(testc);
+        areas.add(testd);
+        areas.add(teste);
+        areas.add(testf);
+        areas.add(testg);
+
+        // Area border = Area.createWhole(0, 0, tileSize);
+        // areas.add(border);
+        ForeGroundTile fgt;
 
         fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
         addForegroundTileAndReplace(fgt, 6 * tileSize, 5 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, 0);
+        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
         addForegroundTileAndReplace(fgt, 6 * tileSize, 4 * tileSize, 2 * tileSize);
-        testa.setCollision(Rectangle.createShadowHeight(0, 0, tileSize, tileSize, OpticProperties.FULL_SHADOW, 0, testa));
 
         fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
         addForegroundTileAndReplace(fgt, 8 * tileSize, 5 * tileSize, 0);
@@ -72,7 +81,6 @@ public class StoneMap extends Map {
         fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, 0);
         addForegroundTileAndReplace(fgt, 9 * tileSize, 8 * tileSize, 0);
         fgt = ForeGroundTile.createOrdinary(place.getSpriteSheet("tlo"), tileSize, 1, 1);
-        fgt.setSolid(true);
         addForegroundTileAndReplace(fgt, 9 * tileSize, 7 * tileSize, 2 * tileSize);
         fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
         addForegroundTileAndReplace(fgt, 9 * tileSize, 6 * tileSize, 4 * tileSize);
@@ -85,7 +93,6 @@ public class StoneMap extends Map {
         fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, 0);
         addForegroundTileAndReplace(fgt, 5 * tileSize, 9 * tileSize, 0);
         fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, tileSize);
-        fgt.setSolid(false);
         addForegroundTileAndReplace(fgt, 5 * tileSize, 8 * tileSize, 2 * tileSize);
         fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, 2 * tileSize);
         addForegroundTileAndReplace(fgt, 5 * tileSize, 7 * tileSize, 4 * tileSize);
@@ -95,22 +102,10 @@ public class StoneMap extends Map {
         fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
         addForegroundTileAndReplace(fgt, 9 * tileSize, 10 * tileSize, 2 * tileSize);
 
-        Area border = new Area(6 * tileSize, 5 * tileSize, tileSize, tileSize, 0);
-
         WarpPoint w = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
         w.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, w));
         addObject(w);
         addObject(new WarpPoint("toKamienna", 20 * tileSize, 17 * tileSize));
         tiles[20 + 20 * height / tileSize] = PORTAL;
-
-        areas.add(testa);
-        areas.add(testb);
-        areas.add(testc);
-        areas.add(testd);
-        areas.add(teste);
-        areas.add(testf);
-        areas.add(testg);
-        areas.add(border);
-
     }
 }
