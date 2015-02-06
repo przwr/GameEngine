@@ -45,6 +45,10 @@ public class ObjectController extends Controler {
             actions[i] = new ActionHold(inputs[i]);
         }
         actions[10] = new ActionOnOff(inputs[10]);
+        
+        if (states[LIGHT]) {
+            inControl.setEmits(!inControl.isEmits());
+        }
     }
 
     @Override

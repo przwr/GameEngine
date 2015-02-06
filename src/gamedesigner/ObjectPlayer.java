@@ -14,6 +14,7 @@ import engine.Methods;
 import engine.Point;
 import game.Settings;
 import game.gameobject.inputs.InputKeyBoard;
+import game.place.Light;
 import game.place.Map;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
@@ -56,6 +57,7 @@ public class ObjectPlayer extends Player {
         controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
         controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
         controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+        controler.inputs[6] = new InputKeyBoard(Keyboard.KEY_END);
         controler.initialize();
     }
 
@@ -80,6 +82,7 @@ public class ObjectPlayer extends Player {
         this.setResistance(2);
         this.emitter = true;
         this.place = place;
+        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
         emits = false;
         tileSize = place.getTileSize();
         objPlace = (ObjectPlace) place;

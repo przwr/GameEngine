@@ -126,10 +126,8 @@ public class TemporaryBlock extends GameObject {
                 }
                 level++;
             }
-            area = new Area((int) x, (int) y, width, height, upHeight * tile);
-            map.addArea(area);
         }
-        area = new Area((int) x, (int) y, width, height, upHeight * tile);
+        area = new Area((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
         map.addArea(area);
     }
 

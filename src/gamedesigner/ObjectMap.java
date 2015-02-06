@@ -28,7 +28,7 @@ public class ObjectMap extends Map {
         background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
         background.setDepth(-1);
         isBackground = true;
-
+        
         switchTiles(background);
     }
 
