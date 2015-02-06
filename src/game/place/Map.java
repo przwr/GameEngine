@@ -60,9 +60,11 @@ public class Map {
 
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
         tiles[x / tileSize + y / tileSize * heightInTiles] = null;
-        foregroundTiles.stream().filter((object) -> (object.getX() == x && object.getY() == y)).forEach((object) -> {
-            foregroundTiles.remove(object);
-        });
+        ArrayList<GameObject> tmp = (ArrayList<GameObject>) foregroundTiles.clone();
+        for (GameObject object : tmp) {
+            if (object.getX() == x && object.getY() == y)
+                foregroundTiles.remove(object);
+        }
         addForegroundTile(tile, x, y, depth);
     }
 
@@ -96,9 +98,7 @@ public class Map {
     }
 
     public void deleteArea(Area area) {
-        System.out.println(areas.contains(area));
         areas.remove(area);
-        System.out.println(areas.contains(area));
     }
 
     public void addObject(GameObject object) {

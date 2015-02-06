@@ -7,6 +7,7 @@ package gamedesigner;
 
 import engine.FontBase;
 import engine.Methods;
+import engine.Point;
 import gamedesigner.GUI.Help;
 import game.Game;
 import game.Settings;
@@ -17,6 +18,7 @@ import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import gamedesigner.GUI.FileBox;
+import gamedesigner.GUI.NamingScreen;
 import gamedesigner.GUI.PathFinder;
 import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -39,11 +41,13 @@ public class ObjectPlace extends Place {
 
     private ObjectUI ui;
     private int mode;
+    private Point centralPoint;
 
     private boolean pressed, prevClick;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
+        this.centralPoint = new Point(0,0);
         this.help = new Help();
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
@@ -112,7 +116,7 @@ public class ObjectPlace extends Place {
             }
 
             if (keyPressed(Keyboard.KEY_S)) {
-                System.out.println(((ObjectMap) maps.get(0)).saveMap());
+                new NamingScreen(((ObjectMap) maps.get(0)).saveMap()).setVisible(true);
             }
 
             if (playersCount > 1) {
@@ -144,6 +148,14 @@ public class ObjectPlace extends Place {
         };
     }
 
+    public void setCentralPoint(int x, int y) {
+        centralPoint.set(x, y);
+    }
+    
+    public Point getCentralPoint() {
+        return centralPoint;
+    }
+    
     public int getMode() {
         return mode;
     }

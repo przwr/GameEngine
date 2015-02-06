@@ -8,9 +8,11 @@ package gamedesigner;
 import collision.Area;
 import engine.Point;
 import game.gameobject.GameObject;
+import game.place.ForeGroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.Tile;
+import java.util.ArrayList;
 import sprites.SpriteSheet;
 
 /**
@@ -28,7 +30,7 @@ public class ObjectMap extends Map {
         background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
         background.setDepth(-1);
         isBackground = true;
-        
+
         switchTiles(background);
     }
 
@@ -67,12 +69,28 @@ public class ObjectMap extends Map {
         if (tile != null && tile.getPureDepth() != -1) {
             tile.addTileToStack(xSheet, ySheet);
         } else {
-            Tile newtile = new Tile(tex, tileSize, xSheet, ySheet);
-            setTile(x, y, newtile);
+            TemporaryBlock lowest = null;
+            int max = 0;
+            for (GameObject tb : objectsOnTop) {
+                if (tb instanceof TemporaryBlock) {
+                    TemporaryBlock tmp = (TemporaryBlock) tb;
+                    if (tmp.checkTile(x, y) && tmp.getY() > max) {
+                        lowest = tmp;
+                        max = tmp.getY();
+                    }
+                }
+            }
+            if (lowest != null) {
+                lowest.addTile(x, y, xSheet, ySheet, tex);
+                setTile(x, y, getBackground());
+            } else {
+                Tile newtile = new Tile(tex, tileSize, xSheet, ySheet);
+                setTile(x, y, newtile);
+            }
         }
     }
 
-    public Point removeTile(int x, int y) {
+    public Tile removeTile(int x, int y) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
             Point p = tile.popTileFromStack();
@@ -80,7 +98,19 @@ public class ObjectMap extends Map {
                 if (tile.tileStackSize() == 0) {
                     setTile(x, y, getBackground());
                 }
-                return p;
+                return tile;
+            }
+        } else {
+            ForeGroundTile fgt;
+            TemporaryBlock tmp;
+            for (GameObject tb : objectsOnTop) {
+                if (tb instanceof TemporaryBlock) {
+                    tmp = (TemporaryBlock) tb;
+                    if ((fgt = tmp.removeTile(x, y)) != null) {
+                        foregroundTiles.remove(fgt);
+                        return fgt;
+                    }
+                }
             }
         }
         setTile(x, y, getBackground());
@@ -111,27 +141,36 @@ public class ObjectMap extends Map {
             }
         }
     }
-    
+
     @Override
     public void addObject(GameObject object) {
-        if (object instanceof TemporaryBlock)
-            ((TemporaryBlock) object).initialize();
+        if (object instanceof TemporaryBlock) {
+            ((TemporaryBlock) object).changeEnvironment();
+        }
         super.addObject(object);
     }
-    
-    public String saveMap() {
-        String map = "";
-        for (int i = 0; i < tiles.length; i++) {
-            Tile t = tiles[i];
-            if (t != null && t.getPureDepth() != -1) {
-                map += "t:" + i + ":" + t.toString() + "\n";
+
+    public ArrayList<String> saveMap() {
+        ArrayList<String> map = new ArrayList<>();
+        SpriteSheet repeated = null;
+        Point centralPoint = ((ObjectPlace) place).getCentralPoint();
+        map.add(centralPoint.getX() + ":" + centralPoint.getY());
+        for (int x = 0; x < widthInTiles; x++) {
+            for (int y = 0; y < heightInTiles; y++) {
+                Tile t = getTile(x, y);
+                if (t != null && t.getPureDepth() != -1) {
+                    map.add(t.saveToString(repeated, x, y, centralPoint.getX(), centralPoint.getY()));
+                    repeated = t.getSpriteSheet();
+                }
             }
         }
-        for (GameObject fgt : foregroundTiles) {
-            map += fgt.toString() + "\n";
+        for (GameObject go : foregroundTiles) {
+            ForeGroundTile fgt = (ForeGroundTile) go;
+            map.add(fgt.saveToString(repeated, centralPoint.getX() * tileSize, centralPoint.getY() * tileSize, tileSize));
+            repeated = fgt.getSpriteSheet();
         }
         for (Area a : areas) {
-            map += a.toString() + "\n";
+            map.add(a.saveToString(centralPoint.getX() * tileSize, centralPoint.getY() * tileSize, tileSize));
         }
         return map;
     }

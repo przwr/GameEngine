@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+import sprites.Sprite;
 import sprites.SpriteSheet;
 
 /**
@@ -74,12 +75,9 @@ public class ForeGroundTile extends Tile {
         glPopMatrix();
     }
     
-    @Override
-    public String toString() {
-        String txt = "fgt:" + spriteSheet.getKey() + ":" + depth;
-        for (Point p : tileStack) {
-            txt += ":" + p.getX() + ":" + p.getY();
-        }
+    public String saveToString(SpriteSheet s, int xBegin, int yBegin, int tile) {
+        String txt = "ft:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey()) + ":" + (depth / tile);
+        txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
     }
 }

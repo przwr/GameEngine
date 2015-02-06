@@ -247,4 +247,12 @@ public class Sprite extends Appearance {
         this.yStart = -yStart;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Sprite) {
+            Sprite s = (Sprite) o;
+            return s.texture.getTextureID() == texture.getTextureID();
+        }
+        return false;
+    }
 }

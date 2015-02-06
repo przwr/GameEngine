@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+import sprites.Sprite;
 import sprites.SpriteSheet;
 
 public class Tile extends GameObject {
@@ -110,12 +111,9 @@ public class Tile extends GameObject {
         return spriteSheet;
     }
     
-    @Override
-    public String toString() {
-        String txt = spriteSheet.getKey();
-        for (Point p : tileStack) {
-            txt += ":" + p.getX() + ":" + p.getY();
-        }
+    public String saveToString(SpriteSheet s, int x, int y, int xBegin, int yBegin) {
+        String txt = "t:" + (x - xBegin) + ":" + (y - yBegin) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
+        txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY() ).reduce(txt, String::concat);
         return txt;
     }
 }

@@ -25,7 +25,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="306" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="333" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -55,7 +55,7 @@
               <Font name="Arial" size="12" style="0"/>
             </Property>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="H : &#x9;&#x9;help&#xa;M:&#x9;&#x9;zmiana trybu&#xa;&#xa;TAB:&#x9;&#x9;znikni&#x119;cie t&#x142;a&#xa;cltr : &#x9;&#x9;przeciaganie&#xa;cltr + Z : &#x9;&#x9;zeruj przeciagniecie&#xa;&#xa;//TRYB TILE&apos;OWY&#xa;&#xa;SHIFT + strzalki : &#x9;zmiana tile&apos;a&#xa;L : &#x9;&#x9;&#x142;aduj spritesheeta&#xa;SPACE: &#x9;&#x9;stw&#xf3;rz tile&#xa;DELETE:&#x9;&#x9;usu&#x144; tile&#xa;&#xa;//TRYB BLOKOWY&#xa;&#xa;SHIFT + strzalki:&#x9;zmiana wysokosci&#xa;"/>
+            <Property name="text" type="java.lang.String" value="H : &#x9;&#x9;help&#xa;M:&#x9;&#x9;zmiana trybu&#xa;&#xa;TAB:&#x9;&#x9;znikni&#x119;cie t&#x142;a&#xa;cltr : &#x9;&#x9;przeciaganie&#xa;cltr + Z : &#x9;&#x9;zeruj przeciagniecie&#xa;SPACE: &#x9;&#x9;stw&#xf3;rz&#xa;DELETE:&#x9;&#x9;usu&#x144;&#xa;HOME:&#x9;&#x9;ustaw punkt poczatkowy&#xa;&#xa;//TRYB TILE&apos;OWY&#xa;&#xa;SHIFT + strzalki : &#x9;zmiana tile&apos;a&#xa;L : &#x9;&#x9;&#x142;aduj spritesheeta&#xa;&#xa;//TRYB BLOKOWY&#xa;&#xa;SHIFT + strzalki:&#x9;zmiana wysokosci&#xa;"/>
             <Property name="focusable" type="boolean" value="false"/>
           </Properties>
         </Component>
