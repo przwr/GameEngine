@@ -9,6 +9,7 @@ import game.AnalizerSettings;
 import game.Game;
 import static game.IO.setSettingsFromFile;
 import game.Settings;
+import static game.Settings.calculateScale;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -48,6 +49,7 @@ public class Main {
         setSettingsFromFile(new File("res/settings.ini"));
         initializeDisplay();
         initializeOpenGL();
+        calculateScale();
         initializeGame();
         gameLoop();
         cleanUp();

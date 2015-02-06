@@ -29,14 +29,17 @@ public class GladeMap extends Map {
                 tiles[x + y * height / tileSize] = GRASS;
             }
         }
-        
+
         Area testa = new Area(6 * tileSize, 5 * tileSize, tileSize, tileSize, 0);
         Area testb = new Area(8 * tileSize, 5 * tileSize, 3 * tileSize, tileSize, 0);
         Area testc = new Area(7 * tileSize, 7 * tileSize, tileSize, tileSize, 0);
         Area testd = new Area(9 * tileSize, 7 * tileSize, tileSize, 2 * tileSize, -tileSize);
         Area teste = new Area(11 * tileSize, 7 * tileSize, tileSize, tileSize, 0);
         Area testf = new Area(5 * tileSize, 9 * tileSize, tileSize, tileSize, tileSize);
+        Area testi = new Area(4 * tileSize, 9 * tileSize, tileSize, tileSize, tileSize);
+        Area testj = new Area(3 * tileSize, 9 * tileSize, tileSize, tileSize, 0);
         Area testg = new Area(9 * tileSize, 11 * tileSize, tileSize, tileSize, 0);
+        Area testh = new Area(8 * tileSize, 11 * tileSize, tileSize, tileSize, 0);
 
         areas.add(testa);
         areas.add(testb);
@@ -45,10 +48,12 @@ public class GladeMap extends Map {
         areas.add(teste);
         areas.add(testf);
         areas.add(testg);
-        
+        areas.add(testh);
+        areas.add(testi);
+        areas.add(testj);
+
         // Area border = Area.createWhole(0, 0, tileSize);
         // areas.add(border);
-
         ForeGroundTile fgt;
 
         fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
@@ -97,6 +102,23 @@ public class GladeMap extends Map {
         addForegroundTileAndReplace(fgt, 9 * tileSize, 11 * tileSize, 0);
         fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
         addForegroundTileAndReplace(fgt, 9 * tileSize, 10 * tileSize, 2 * tileSize);
+
+        fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
+        addForegroundTileAndReplace(fgt, 8 * tileSize, 11 * tileSize, 0);
+        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
+        addForegroundTileAndReplace(fgt, 8 * tileSize, 10 * tileSize, 2 * tileSize);
+
+        fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, 0);
+        addForegroundTileAndReplace(fgt, 4 * tileSize, 9 * tileSize, 0);
+        fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, tileSize);
+        addForegroundTileAndReplace(fgt, 4 * tileSize, 8 * tileSize, 2 * tileSize);
+        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, 2 * tileSize);
+        addForegroundTileAndReplace(fgt, 4 * tileSize, 7 * tileSize, 4 * tileSize);
+
+        fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, 0);
+        addForegroundTileAndReplace(fgt, 3 * tileSize, 9 * tileSize, 0);
+        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
+        addForegroundTileAndReplace(fgt, 3 * tileSize, 8 * tileSize, 2 * tileSize);
 
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, warp));

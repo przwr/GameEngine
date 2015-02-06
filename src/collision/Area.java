@@ -43,7 +43,7 @@ public class Area extends GameObject {
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
-        glPushMatrix();
+        glPushMatrix();        
         glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
         Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
         glPopMatrix();

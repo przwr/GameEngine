@@ -59,6 +59,7 @@ public class Settings {
     public static int supportedFrameBufferObjectVersion;
     public static boolean multiSampleSupported;
     public static boolean shadowOff;
+    public static boolean scaled = true;
     public static String serverIP = "127.0.0.1";
 
     public static void initialize() {
@@ -92,7 +93,6 @@ public class Settings {
         }
         resolutionWidth = modes[0].getWidth();
         resolutionHeight = modes[0].getHeight();
-        scale = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
         frequency = modes[0].getFrequency();
         languages.add(new LangPL());
         languages.add(new LangENG());
@@ -110,6 +110,10 @@ public class Settings {
         } else {
             return checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency();
         }
+    }
+
+    public static void calculateScale() {
+        scale = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
     }
 
     public static void update(int actionsCount, Player[] players, Controller[] controllers) {
