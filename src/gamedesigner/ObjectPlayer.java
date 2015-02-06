@@ -21,6 +21,7 @@ import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.input.Keyboard.*;
+import org.newdawn.slick.Color;
 
 /**
  *
@@ -40,9 +41,10 @@ public class ObjectPlayer extends Player {
     private ObjectUI ui;
 
     private int areaHeight;
+    private CentralPoint cp;
 
     public ObjectPlayer(boolean first, String name) {
-        super(name);
+        super(name);        
         this.first = first;
         maxtimer = 7;
         xtimer = 0;
@@ -87,6 +89,7 @@ public class ObjectPlayer extends Player {
         tileSize = place.getTileSize();
         objPlace = (ObjectPlace) place;
         onTop = true;
+        cp = new CentralPoint(0, 0, objPlace);
     }
 
     @Override
@@ -225,6 +228,11 @@ public class ObjectPlayer extends Player {
             }
         }
 
+        if (objPlace.keyPressed(KEY_HOME)) {
+            objPlace.setCentralPoint(ix, iy);
+            cp.setCentralPoint(ix, iy);
+        }
+        
         if (objPlace.keyPressed(KEY_TAB)) {
             objMap.switchBackground();
         }
@@ -237,6 +245,8 @@ public class ObjectPlayer extends Player {
         int xd = (Math.abs(ix - xStop) + 1) * tileSize;
         int yd = (Math.abs(iy - yStop) + 1) * tileSize;
         glTranslatef(Math.min(ix, xStop) * tileSize + xEffect, Math.min(iy, yStop) * tileSize + yEffect, 0);
+        place.renderMessage(0, tileSize / 2, 0, ((int)x / tileSize) + " " + ((int)y / tileSize), new Color(1f, 1f, 1f));
+        
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         glColor4f(1f, 1f, 1f, 1f);
         if (objPlace.getMode() == 0) {
@@ -277,6 +287,7 @@ public class ObjectPlayer extends Player {
             camera.setMap(newMap);
         }
         objMap = (ObjectMap) newMap;
+        map.addObject(cp);
     }
 
     @Override

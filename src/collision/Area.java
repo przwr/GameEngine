@@ -80,8 +80,8 @@ public class Area extends GameObject {
         }
     }
     
-    @Override
-    public String toString() {
-        return "b:" + ((int)x) + ":" + ((int)y) + ":" + collision.width + ":" + collision.height + ":" + collision.getShadowHeight();
+    public String saveToString(int xBegin, int yBegin, int tile) {
+        return "b:" + ((int)(x - xBegin) / tile) + ":" + ((int)(y - yBegin) / tile) + ":" 
+                + (collision.width / tile) + ":" + (collision.height / tile) + ":" + (collision.getShadowHeight() / tile);
     }
 }

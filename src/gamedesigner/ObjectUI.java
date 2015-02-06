@@ -41,8 +41,16 @@ public class ObjectUI extends GUIObject {
     }
 
     public void changeCoordinates(int x, int y) {
-        int xLim = Methods.interval(0, coord.getX() + x, tex.getXlimit() - 1);
-        int yLim = Methods.interval(0, coord.getY() + y, tex.getYlimit() - 1);
+        int xLim = coord.getX() + x;
+        int yLim = coord.getY() + y;
+        if (xLim < 0)
+            xLim = tex.getXlimit() - 1;
+        if (xLim > tex.getXlimit() - 1)
+            xLim = 0;
+        if (yLim < 0)
+            yLim = tex.getYlimit() - 1;
+        if (yLim > tex.getYlimit() - 1)
+            yLim = 0;
         coord.set(xLim, yLim);
     }
 
