@@ -8,7 +8,7 @@ package gamedesigner;
 import collision.Area;
 import engine.Point;
 import game.gameobject.GameObject;
-import game.place.FgTile;
+import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.PuzzleObject;
@@ -102,7 +102,7 @@ public class ObjectMap extends Map {
                 return tile;
             }
         } else {
-            FgTile fgt;
+            ForegroundTile fgt;
             TemporaryBlock tmp;
             for (GameObject tb : objectsOnTop) {
                 if (tb instanceof TemporaryBlock) {
@@ -166,7 +166,7 @@ public class ObjectMap extends Map {
             }
         }
         for (GameObject go : foregroundTiles) {
-            FgTile fgt = (FgTile) go;
+            ForegroundTile fgt = (ForegroundTile) go;
             map.add(fgt.saveToString(repeated, centralPoint.getX() * tileSize, centralPoint.getY() * tileSize, tileSize));
             repeated = fgt.getSpriteSheet();
         }

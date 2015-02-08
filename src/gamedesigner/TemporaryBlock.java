@@ -10,7 +10,7 @@ import collision.Figure;
 import engine.Drawer;
 import engine.Point;
 import game.gameobject.GameObject;
-import game.place.FgTile;
+import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.Tile;
@@ -34,7 +34,7 @@ public class TemporaryBlock extends GameObject {
     private boolean complete;
 
     private Area area;
-    private ArrayList<FgTile> tiles;
+    private ArrayList<ForegroundTile> tiles;
 
     public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map, Place place) {
         initialize("tmpBlock", x, y);
@@ -96,8 +96,8 @@ public class TemporaryBlock extends GameObject {
         glPopMatrix();
     }
 
-    public FgTile removeTile(int x, int y) {
-        for (FgTile fgt : tiles) {
+    public ForegroundTile removeTile(int x, int y) {
+        for (ForegroundTile fgt : tiles) {
             if ((fgt.getX() / tile) == x && (fgt.getY() / tile) == y) {
                 Point p = fgt.popTileFromStack();
                 if (p != null && fgt.tileStackSize() != 0) {
@@ -122,18 +122,18 @@ public class TemporaryBlock extends GameObject {
         int yBegin = (int) (this.y / tile) - upHeight;
         int yEnd = yBegin + yTiles + upHeight - 1;
 
-        for (FgTile fgt : tiles) {
+        for (ForegroundTile fgt : tiles) {
             if ((fgt.getX() / tile) == x && (fgt.getY() / tile) == y) {
                 fgt.addTileToStack(xSheet, ySheet);
                 return;
             }
         }
-        FgTile fgt;
+        ForegroundTile fgt;
         int level = yEnd - y;
         if (level + 1 <= upHeight) {
-            fgt = FgTile.createWall(tex, tile, xSheet, ySheet);
+            fgt = ForegroundTile.createWall(tex, tile, xSheet, ySheet);
         } else {
-            fgt = FgTile.createOrdinaryShadowHeight(tex, tile, xSheet, ySheet, level * tile);
+            fgt = ForegroundTile.createOrdinaryShadowHeight(tex, tile, xSheet, ySheet, level * tile);
         }
         map.addForegroundTileAndReplace(fgt, x * tile, y * tile, level * tile);
         tiles.add(fgt);
@@ -147,7 +147,7 @@ public class TemporaryBlock extends GameObject {
             int xEnd = xBegin + xTiles - 1;
             int yEnd = yBegin + yTiles + upHeight - 1;
             int level = 0;
-            FgTile fgt;
+            ForegroundTile fgt;
             Tile t;
             Point p;
             for (int iy = yEnd; iy >= yBegin; iy--) {
@@ -156,9 +156,9 @@ public class TemporaryBlock extends GameObject {
                     if (t != null && t.getPureDepth() != -1) {
                         p = t.popTileFromStackBack();
                         if (level + 1 <= upHeight) {
-                            fgt = FgTile.createWall(t.getSpriteSheet(), tile, p.getX(), p.getY());
+                            fgt = ForegroundTile.createWall(t.getSpriteSheet(), tile, p.getX(), p.getY());
                         } else {
-                            fgt = FgTile.createOrdinaryShadowHeight(t.getSpriteSheet(), tile, p.getX(), p.getY(), level * tile);
+                            fgt = ForegroundTile.createOrdinaryShadowHeight(t.getSpriteSheet(), tile, p.getX(), p.getY(), level * tile);
                         }
                         while ((p = t.popTileFromStackBack()) != null) {
                             fgt.addTileToStack(p.getX(), p.getY());
@@ -176,7 +176,7 @@ public class TemporaryBlock extends GameObject {
     }
 
     public void clearMyself() {
-        for (FgTile fgt : tiles) {
+        for (ForegroundTile fgt : tiles) {
             Point p = fgt.popTileFromStackBack();
             Tile t = new Tile(fgt.getSpriteSheet(), tile, p.getX(), p.getY());
             while ((p = fgt.popTileFromStackBack()) != null) {

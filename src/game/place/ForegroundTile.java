@@ -21,25 +21,25 @@ import sprites.SpriteSheet;
  *
  * @author Wojtek
  */
-public class FgTile extends Tile {
+public class ForegroundTile extends Tile {
 
-    public static FgTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
-        return new FgTile(spriteSheet, size, xSheet, ySheet, false, yStart);
+    public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
+        return new ForegroundTile(spriteSheet, size, xSheet, ySheet, false, yStart);
     }
 
-    public static FgTile createOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new FgTile(spriteSheet, size, xSheet, ySheet, false, 0);
+    public static ForegroundTile createOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
+        return new ForegroundTile(spriteSheet, size, xSheet, ySheet, false, 0);
     }
 
-    public static FgTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
-        return new FgTile(spriteSheet, size, xSheet, ySheet, true, yStart);
+    public static ForegroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
+        return new ForegroundTile(spriteSheet, size, xSheet, ySheet, true, yStart);
     }
 
-    public static FgTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new FgTile(spriteSheet, size, xSheet, ySheet, true, 0);
+    public static ForegroundTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
+        return new ForegroundTile(spriteSheet, size, xSheet, ySheet, true, 0);
     }
 
-    FgTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
+    ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
         super(spriteSheet, size, xSheet, ySheet);
         simpleLighting = true;
         solid = wall;

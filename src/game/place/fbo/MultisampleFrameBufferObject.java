@@ -6,12 +6,12 @@ import org.lwjgl.opengl.EXTFramebufferObject;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GL30;
 
-public class MFrameBufferObject extends FrameBufferObject {
+public class MultisampleFrameBufferObject extends FrameBufferObject {
 
 	private final int frameBufferObjectMultiSample;
 	private final int multiSampleTexture;
 
-	public MFrameBufferObject(int width, int height) {
+	public MultisampleFrameBufferObject(int width, int height) {
 		super(width, height, true);
 		multiSampleTexture = glGenTextures();
 		if (version == NATIVE) {

@@ -6,7 +6,7 @@
 package game.place;
 
 import game.place.fbo.RegularFrameBufferObject;
-import game.place.fbo.MFrameBufferObject;
+import game.place.fbo.MultisampleFrameBufferObject;
 import game.place.fbo.FrameBufferObject;
 import game.Settings;
 import game.gameobject.GameObject;
@@ -32,7 +32,7 @@ public class Light {
 		this.green = green;
 		this.blue = blue;
 		if (!Settings.shadowOff) {
-			frameBufferObject = (Settings.samplesCount > 0) ? new MFrameBufferObject(width, height)
+			frameBufferObject = (Settings.samplesCount > 0) ? new MultisampleFrameBufferObject(width, height)
 					: new RegularFrameBufferObject(width, height);
 		}
 		this.texture = Sprite.create(name, width, height, null);
