@@ -32,13 +32,13 @@ public class PuzzleObject {
     private int width, height;
 
     public PuzzleObject(String file, Place place) {
-        try (BufferedReader wczyt = new BufferedReader(new FileReader("res/objects/" + file + ".puz"))) {
+        try (BufferedReader input = new BufferedReader(new FileReader("res/objects/" + file + ".puz"))) {
             bgTiles = new ArrayList<>();
             objects = new ArrayList<>();
             fgTiles = new ArrayList<>();
             areas = new ArrayList<>();
 
-            String line = wczyt.readLine();
+            String line = input.readLine();
             String[] t = line.split(":");
             xDelta = Integer.parseInt(t[0]);
             yDelta = Integer.parseInt(t[1]);
@@ -52,7 +52,7 @@ public class PuzzleObject {
             int i;
             int tile = place.getTileSize();
             SpriteSheet tmpSS = null;
-            while ((line = wczyt.readLine()) != null) {
+            while ((line = input.readLine()) != null) {
                 t = line.split(":");
                 switch (t[0]) {
                     case "t":
@@ -105,7 +105,7 @@ public class PuzzleObject {
             //System.out.println("Tiles: " + bgTiles.size());
             //System.out.println("FGTiles: " + fgTiles.size());
             //System.out.println("Areas: " + areas.size());
-            wczyt.close();
+            input.close();
         } catch (IOException e) {
             Methods.error("File " + file + " not found!\n" + e.getMessage());
         } catch (Exception e) {

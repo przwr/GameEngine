@@ -8,27 +8,28 @@ import org.lwjgl.opengl.GL30;
 
 public class MultisampleFrameBufferObject extends FrameBufferObject {
 
-	private final int frameBufferObjectMultiSample;
+	private int frameBufferObjectMultiSample;
 	private final int multiSampleTexture;
 
 	public MultisampleFrameBufferObject(int width, int height) {
 		super(width, height, true);
 		multiSampleTexture = glGenTextures();
+		createFrameBufferObjects();
+		type.makeMultiSample(Settings.samplesCount, multiSampleTexture, width, height, frameBufferObjectMultiSample);
+		type.makeTexture(texture, frameBufferObject, width, height);
+		type.deactivate();
+	}
+
+	private void createFrameBufferObjects() {
 		if (version == NATIVE) {
+			frameBufferObject = GL30.glGenFramebuffers();
 			frameBufferObjectMultiSample = GL30.glGenFramebuffers();
 		} else if (version == ARB) {
+			frameBufferObject = ARBFramebufferObject.glGenFramebuffers();
 			frameBufferObjectMultiSample = ARBFramebufferObject.glGenFramebuffers();
 		} else {
+			frameBufferObject = EXTFramebufferObject.glGenFramebuffersEXT();
 			frameBufferObjectMultiSample = EXTFramebufferObject.glGenFramebuffersEXT();
-		}
-		makeMultiSample();
-		makeTexture();
-		if (version == NATIVE) {
-			GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-		} else if (version == ARB) {
-			ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
-		} else {
-			EXTFramebufferObject.glBindFramebufferEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, 0);
 		}
 	}
 
@@ -40,13 +41,5 @@ public class MultisampleFrameBufferObject extends FrameBufferObject {
 	@Override
 	public void deactivate() {
 		type.deactivate(frameBufferObjectMultiSample, frameBufferObject, width, height);
-	}
-
-	private void makeTexture() {
-		type.makeTexture(texture, frameBufferObject, width, height);
-	}
-
-	private void makeMultiSample() {
-		type.makeMultiSample(Settings.samplesCount, multiSampleTexture, width, height, frameBufferObjectMultiSample);
 	}
 }

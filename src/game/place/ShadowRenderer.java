@@ -139,24 +139,21 @@ public class ShadowRenderer {
 			tempShade = area.getCollision();
 			if (tempShade != null && (FastMath.abs(tempShade.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (tempShade.getHeight() / 2))
 					&& (FastMath.abs(tempShade.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (tempShade.getWidth() / 2))) {
-				shades.add(tempShade);
-				tempShade.setDistanceFromLight((src.getCollision() == tempShade) ? -1 : FastMath.abs(src.getX() - tempShade.getXCentral()));
+				shades.add(tempShade);				
 			}
 			for (GameObject object : map.getForegroundTiles()) {
 				Figure temp = object.getCollision();
 				if (temp != null && !temp.isLittable() && (FastMath.abs(temp.getYCentral() - src.getY()) <= (src.getLight().getHeight() / 2) + (temp.getHeight() / 2))
 						&& (FastMath.abs(temp.getXCentral() - src.getX()) <= (src.getLight().getWidth() / 2) + (temp.getWidth() / 2))) {
 					shades.add(temp);
-					temp.setDistanceFromLight((src.getCollision() == temp) ? -1 : FastMath.abs(src.getX() - temp.getXCentral()));
 				}
 			}
 		}
-		for (GameObject go : map.getDepthObjects()) {   // FGTiles muszą mieć Collision
-			tempShade = go.getCollision();
+		for (GameObject object : map.getDepthObjects()) {   // FGTiles muszą mieć Collision
+			tempShade = object.getCollision();
 			if (tempShade != null && tempShade.isLittable() && ((FastMath.abs(tempShade.getOwner().getY() - src.getY()) <= (src.getLight().getHeight() / 2) + (tempShade.getOwner().getCollisionHeight() / 2))
 					&& (FastMath.abs(tempShade.getOwner().getX() - src.getX()) <= (src.getLight().getWidth() / 2) + (tempShade.getOwner().getCollisionWidth() / 2)))) {
 				shades.add(tempShade);
-				tempShade.setDistanceFromLight((src.getCollision() == tempShade) ? -1 : FastMath.abs(src.getX() - tempShade.getXCentral()));
 			}
 		}
 		Collections.sort(shades);

@@ -43,6 +43,7 @@ public class MultisampleNative implements FrameBufferType {
 
 	@Override
 	public void deactivate() {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 
 	@Override

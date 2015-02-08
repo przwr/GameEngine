@@ -1,11 +1,16 @@
 package game.place.fbo;
 
+import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.EXTFramebufferObject;
+import org.lwjgl.opengl.GL30;
+
 public class RegularFrameBufferObject extends FrameBufferObject {
 
 	public RegularFrameBufferObject(int width, int height) {
 		super(width, height, false);
+		createFrameBuferObjects();
 		type.activate(frameBufferObject);
-		makeTexture();
+		type.makeTexture(texture, frameBufferObject, width, height);
 		type.deactivate();
 	}
 
@@ -19,7 +24,14 @@ public class RegularFrameBufferObject extends FrameBufferObject {
 		type.deactivate();
 	}
 
-	private void makeTexture() {
-		type.makeTexture(texture, frameBufferObject, width, height);
+	private void createFrameBuferObjects() {
+		if (version == NATIVE) {
+			frameBufferObject = GL30.glGenFramebuffers();
+		} else if (version == ARB) {
+			frameBufferObject = ARBFramebufferObject.glGenFramebuffers();
+		} else {
+			frameBufferObject = EXTFramebufferObject.glGenFramebuffersEXT();
+		}
+
 	}
 }

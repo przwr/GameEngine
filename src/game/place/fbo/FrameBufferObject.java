@@ -16,13 +16,8 @@ public abstract class FrameBufferObject {
 	public static final FrameBufferType MULTISAMPLE_ARB = new MultisampleARB();
 	public static final FrameBufferType MULTISAMPLE_EXT = new MultisampleEXT();
 
-	protected boolean multiSampleSupported;
 	protected final FrameBufferType type;
 	protected int height, width, texture, frameBufferObject, version;
-
-	protected final activateType[] activates = new activateType[3];
-	protected final deactivateType[] deactivates = new deactivateType[3];
-	protected final makeTextureType[] makeTextures = new makeTextureType[3];
 
 	public abstract void activate();
 
@@ -36,25 +31,19 @@ public abstract class FrameBufferObject {
 		if (multisample && Settings.multiSampleSupported && Settings.samplesCount > 0) {
 			if (version == NATIVE) {
 				type = MULTISAMPLE_NATIVE;
-				frameBufferObject = GL30.glGenFramebuffers();
 			} else if (version == ARB) {
 				type = MULTISAMPLE_ARB;
-				frameBufferObject = ARBFramebufferObject.glGenFramebuffers();
 			} else {
 				type = MULTISAMPLE_EXT;
-				frameBufferObject = EXTFramebufferObject.glGenFramebuffersEXT();
 				version = EXT;
 			}
 		} else {
 			if (version == NATIVE) {
 				type = REGULAR_NATIVE;
-				frameBufferObject = GL30.glGenFramebuffers();
 			} else if (version == ARB) {
 				type = REGULAR_ARB;
-				frameBufferObject = ARBFramebufferObject.glGenFramebuffers();
 			} else {
 				type = REGULAR_EXT;
-				frameBufferObject = EXTFramebufferObject.glGenFramebuffersEXT();
 				version = EXT;
 			}
 		}
@@ -71,20 +60,5 @@ public abstract class FrameBufferObject {
 	public int getWidth() {
 		return width;
 
-	}
-
-	protected interface activateType {
-
-		void activate();
-	}
-
-	protected interface makeTextureType {
-
-		void makeTexture();
-	}
-
-	protected interface deactivateType {
-
-		void deactivate();
 	}
 }

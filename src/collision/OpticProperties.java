@@ -16,65 +16,56 @@ import java.util.Collections;
  */
 public class OpticProperties {
 
-    public static final int FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, IN_SHADE = 3;
-    private static final boolean[] LITABLE = {true, true, false, false};
-    private static final boolean[] GIVE_SHADOW = {true, false, false, true};
-    private final int type;
-    private final int shadowHeight;
-    private int distFromLight;
-    private float shadowColor;
-    private final ArrayList<Shadow> shadows = new ArrayList<>();
+	public static final int FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, IN_SHADE = 3;
+	private static final boolean[] LITABLE = {true, true, false, false};
+	private static final boolean[] GIVE_SHADOW = {true, false, false, true};
+	private final int type;
+	private final int shadowHeight;
+	private float shadowColor;
+	private final ArrayList<Shadow> shadows = new ArrayList<>();
 
-    public static OpticProperties create(int type, int shadowHeight) {
-        return new OpticProperties(type, shadowHeight);
-    }
+	public static OpticProperties create(int type, int shadowHeight) {
+		return new OpticProperties(type, shadowHeight);
+	}
 
-    public static OpticProperties create(int type) {
-        return new OpticProperties(type, 0);
-    }
+	public static OpticProperties create(int type) {
+		return new OpticProperties(type, 0);
+	}
 
-    private OpticProperties(int type, int shadowHeight) {
-        this.type = type;
-        this.shadowHeight = shadowHeight;
-    }
+	private OpticProperties(int type, int shadowHeight) {
+		this.type = type;
+		this.shadowHeight = shadowHeight;
+	}
 
-    public void addShadow(Shadow shadow) {
-        shadows.add(shadow);
-    }
+	public void addShadow(Shadow shadow) {
+		shadows.add(shadow);
+	}
 
-    public void clearShadows() {
-        shadows.clear();
-    }
+	public void clearShadows() {
+		shadows.clear();
+	}
 
-    public boolean isLitable() {
-        return LITABLE[type];
-    }
+	public boolean isLitable() {
+		return LITABLE[type];
+	}
 
-    public boolean isGiveShadow() {
-        return GIVE_SHADOW[type];
-    }
+	public boolean isGiveShadow() {
+		return GIVE_SHADOW[type];
+	}
 
-    public int getShadowHeight() {
-        return shadowHeight;
-    }
+	public int getShadowHeight() {
+		return shadowHeight;
+	}
 
-    public int getDistanceFromLight() {
-        return distFromLight;
-    }
+	public float getShadowColor() {
+		return shadowColor;
+	}
 
-    public float getShadowColor() {
-        return shadowColor;
-    }
+	public Collection<Shadow> getShadows() {
+		return Collections.unmodifiableList(shadows);
+	}
 
-    public Collection<Shadow> getShadows() {
-        return Collections.unmodifiableList(shadows);
-    }
-
-    public void setDistanceFromLight(int distFromLight) {
-        this.distFromLight = distFromLight;
-    }
-
-    public void setShadowColor(float shadowColor) {
-        this.shadowColor = shadowColor;
-    }
+	public void setShadowColor(float shadowColor) {
+		this.shadowColor = shadowColor;
+	}
 }

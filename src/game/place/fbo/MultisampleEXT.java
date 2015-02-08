@@ -36,6 +36,7 @@ public class MultisampleEXT implements FrameBufferType {
 
 	@Override
 	public void deactivate() {
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	}
 
 	@Override

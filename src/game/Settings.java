@@ -114,6 +114,7 @@ public class Settings {
 
 	public static void calculateScale() {
 		scale = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
+//		scale = 1f;
 	}
 
 	public static void update(int actionsCount, Player[] players, Controller[] controllers) {
