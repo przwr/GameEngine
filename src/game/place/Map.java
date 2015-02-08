@@ -45,6 +45,8 @@ public class Map {
     protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
     protected final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
             -> firstObject.getDepth() - secondObject.getDepth();
+    
+    private int camXStart, camYStart, camXEnd, camYEnd, camXOffEff, camYOffEff; //Camera's variables for current rendering
 
     public Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
@@ -185,15 +187,24 @@ public class Map {
         }
     }
 
+    public void setCamerasVariables(Camera camera) {
+        camXStart = camera.getXStart();
+        camYStart = camera.getYStart();
+        camXEnd = camera.getXEnd();
+        camYEnd = camera.getYEnd();
+        camXOffEff = camera.getXOffsetEffect();
+        camYOffEff = camera.getYOffsetEffect();
+    }
+    
     public void renderBackground(Camera camera) {
         Drawer.refreshForRegularDrawing();
         for (int y = 0; y < heightInTiles; y++) {
-            if (camera.getYStart() < (y + 1) * tileSize && camera.getYEnd() > y * tileSize) {
+            if (camYStart < (y + 1) * tileSize && camYEnd > y * tileSize) {
                 for (int x = 0; x < width / tileSize; x++) {
-                    if (camera.getXStart() < (x + 1) * tileSize && camera.getXEnd() > x * tileSize) {
+                    if (camXStart < (x + 1) * tileSize && camXEnd > x * tileSize) {
                         Tile tile = tiles[x + y * heightInTiles];
                         if (tile != null) {
-                            tile.renderSpecific(camera.getXOffsetEffect() + x * tileSize, camera.getYOffsetEffect() + y * tileSize);
+                            tile.renderSpecific(camXOffEff + x * tileSize, camYOffEff + y * tileSize);
                         }
                     }
                 }
@@ -212,17 +223,17 @@ public class Map {
         int y = 0;
         for (GameObject object : depthObjects) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
-                if (isObjectInSight(camera, foregroundTiles.get(y))) {
-                    foregroundTiles.get(y).render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
+                if (isObjectInSight(foregroundTiles.get(y))) {
+                    foregroundTiles.get(y).render(camXOffEff, camYOffEff);
                 }
             }
-            if (object.isVisible() && isObjectInSight(camera, object)) {
-                object.render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
+            if (object.isVisible() && isObjectInSight(object)) {
+                object.render(camXOffEff, camYOffEff);
             }
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
-            if (isObjectInSight(camera, foregroundTiles.get(i))) {
-                foregroundTiles.get(i).render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
+            if (isObjectInSight(foregroundTiles.get(i))) {
+                foregroundTiles.get(i).render(camXOffEff, camYOffEff);
             }
         }
     }
@@ -231,8 +242,8 @@ public class Map {
         sortObjectsByDepth(objectsOnTop);
         for (GameObject object : objectsOnTop) {
             if (object.isVisible()
-                    && isObjectInSight(camera, object)) {
-                object.render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
+                    && isObjectInSight(object)) {
+                object.render(camXOffEff, camYOffEff);
             }
         }
     }
@@ -248,23 +259,23 @@ public class Map {
 
     private void renderPlayersNames(Camera camera) {
         for (int i = 0; i < place.playersCount; i++) {
-            if (place.players[i].getMap().equals(this) && isObjectInSight(camera, place.players[i])) {
+            if (place.players[i].getMap().equals(this) && isObjectInSight(place.players[i])) {
                 ((Player) place.players[i]).renderName(camera);
             }
         }
     }
 
     private void renderMobsNames(Camera camera) {
-        solidMobs.stream().filter((mob) -> (isObjectInSight(camera, mob))).forEach((mob) -> {
+        solidMobs.stream().filter((mob) -> (isObjectInSight(mob))).forEach((mob) -> {
             mob.renderName(camera);
         });
     }
 
-    private boolean isObjectInSight(Camera camera, GameObject object) {
-        return camera.getYStart() <= object.getY() + (object.getHeight())
-                && camera.getYEnd() >= object.getY() - (object.getHeight())
-                && camera.getXStart() <= object.getX() + (object.getWidth())
-                && camera.getXEnd() >= object.getX() - (object.getWidth());
+    private boolean isObjectInSight(GameObject object) {
+        return camYStart <= object.getY() + (object.getHeight())
+                && camYEnd >= object.getY() - (object.getHeight())
+                && camXStart <= object.getX() + (object.getWidth())
+                && camXEnd >= object.getX() - (object.getWidth());
     }
 
     public WarpPoint findWarp(String name) {

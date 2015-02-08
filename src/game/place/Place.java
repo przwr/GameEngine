@@ -107,6 +107,7 @@ public abstract class Place extends ScreenPlace {
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     if (map != null) {
                         Drawer.drawRectangleInBlack(currentCamera.getXOffsetEffect() + currentCamera.getXStart(), currentCamera.getYOffset() + currentCamera.getYStart(), currentCamera.getWidth(), currentCamera.getHeight());
+                        map.setCamerasVariables(currentCamera);
                         map.renderBackground(currentCamera);
                         map.renderObjects(currentCamera);
                         map.renderText(currentCamera);

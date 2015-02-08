@@ -64,12 +64,12 @@ public class Main {
     }
 
     private static void tryInitializeDisplay() throws LWJGLException {
+        setIcon();
         setDisplayMode(Settings.resolutionWidth, Settings.resolutionHeight, Settings.frequency, Settings.fullScreen);
         createDisplay();
         Display.setResizable(false);
         Display.setVSyncEnabled(Settings.verticalSynchronization);
         Display.setDisplayConfiguration(2f, 0f, 1f);
-        setIcon();
         Keyboard.create();
         Mouse.create();
         Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
