@@ -61,13 +61,14 @@ public class Map {
     public void addForegroundTileAndReplace(GameObject tile) {
         addForegroundTileAndReplace(tile, tile.getX(), tile.getY(), tile.getPureDepth());
     }
-    
+
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
         tiles[x / tileSize + y / tileSize * heightInTiles] = null;
         ArrayList<GameObject> tmp = (ArrayList<GameObject>) foregroundTiles.clone();
         for (GameObject object : tmp) {
-            if (object.getX() == x && object.getY() == y)
+            if (object.getX() == x && object.getY() == y) {
                 foregroundTiles.remove(object);
+            }
         }
         addForegroundTile(tile, x, y, depth);
     }
@@ -220,7 +221,9 @@ public class Map {
             }
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
-            foregroundTiles.get(i).render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
+            if (isObjectInSight(camera, foregroundTiles.get(i))) {
+                foregroundTiles.get(i).render(camera.getXOffsetEffect(), camera.getYOffsetEffect());
+            }
         }
     }
 
