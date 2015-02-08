@@ -9,14 +9,12 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
-import engine.Point;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
-import sprites.Sprite;
 import sprites.SpriteSheet;
 
 /**

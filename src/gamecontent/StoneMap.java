@@ -5,11 +5,8 @@
  */
 package gamecontent;
 
-import collision.Area;
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.Point;
-import game.place.ForeGroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.PuzzleObject;
@@ -47,7 +44,8 @@ public class StoneMap extends Map {
         WarpPoint w = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
         w.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, w));
         addObject(w);
-        addObject(new WarpPoint("toKamienna", 20 * tileSize, 17 * tileSize));
-        tiles[20 + 20 * height / tileSize] = PORTAL;
+        addObject(new WarpPoint("toKamienna", 20 * tileSize, 19 * tileSize));
+        PuzzleObject portal = new PuzzleObject("portal", place);
+        portal.placePuzzle(20, 20, this);
     }
 }
