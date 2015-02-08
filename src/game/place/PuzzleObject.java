@@ -209,8 +209,8 @@ public class PuzzleObject {
             this.wall = wall;
         }
 
-        public ForeGroundTile generateFGT(int x, int y) {
-            ForeGroundTile fgt = new ForeGroundTile(texture, values[0], values[1], values[2], wall, values[3]);
+        public FgTile generateFGT(int x, int y) {
+            FgTile fgt = new FgTile(texture, values[0], values[1], values[2], wall, values[3]);
             fgt.setX(xBegin + x);
             fgt.setY(yBegin + y);
             fgt.setDepth(values[3]);

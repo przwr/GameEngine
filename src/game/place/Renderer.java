@@ -5,6 +5,8 @@
  */
 package game.place;
 
+import game.place.fbo.RegularFrameBufferObject;
+import game.place.fbo.FrameBufferObject;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;

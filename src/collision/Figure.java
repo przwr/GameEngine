@@ -44,10 +44,7 @@ public abstract class Figure implements Comparable<Object> {
         if (map.getSolidObjects().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
             return true;
         }
-        if (map.getAreas().stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)))) {
-            return true;
-        }
-        return false;
+        return map.getAreas().stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)));
     }
 
     public GameObject whatCollideSolid(int x, int y, Map map) {
@@ -70,10 +67,7 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public boolean isCollide(int x, int y, Collection<GameObject> objects) {
-        if (objects.stream().anyMatch((obj) -> (checkCollison(x, y, obj)))) {
-            return true;
-        }
-        return false;
+        return objects.stream().anyMatch((obj) -> (checkCollison(x, y, obj)));
     }
 
     public GameObject whatCollide(int x, int y, Collection<GameObject> objects) {
