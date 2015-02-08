@@ -5,12 +5,7 @@
  */
 package gamedesigner.GUI;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
+import gamedesigner.ObjectPlace;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,12 +13,11 @@ import javax.swing.JOptionPane;
  * @author Wojtek
  */
 public class NamingScreen extends javax.swing.JFrame {
-
-    private ArrayList<String> content;
+    private final ObjectPlace objPlace;
     
-    public NamingScreen(ArrayList<String> content) {
+    public NamingScreen(ObjectPlace objPlace) {
         initComponents();
-        this.content = content;
+        this.objPlace = objPlace;
     }
 
     @SuppressWarnings("unchecked")
@@ -87,38 +81,22 @@ public class NamingScreen extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void errMsg(String blad) {
-        JOptionPane.showMessageDialog(null, blad, "ERROR!", JOptionPane.ERROR_MESSAGE);
+    public void errMsg(String blad) {
+        JOptionPane.showMessageDialog(this, blad, "ERROR!", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void infoMsg(String info) {
-        JOptionPane.showMessageDialog(null, info, "", JOptionPane.INFORMATION_MESSAGE);
+    public void infoMsg(String info) {
+        JOptionPane.showMessageDialog(this, info, "", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static boolean questMsg(String q) {
-        return JOptionPane.showConfirmDialog(null, q, "", JOptionPane.YES_NO_OPTION) == 0;
+    public boolean questMsg(String q) {
+        return JOptionPane.showConfirmDialog(this, q, "", JOptionPane.YES_NO_OPTION) == 0;
     }
     
     private void OKBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKBActionPerformed
         String name = NameTF.getText();
-        if (name.equals("")) {
+        if (name.equals("") || !objPlace.saveObject(name, this)) {
             return;
-        }
-        try (BufferedReader wczyt = new BufferedReader(new FileReader("res/objects/" + name + ".o"))) {
-            if (!questMsg("File \"" + name + "\" already exists!\nReplace?")) {
-                return;
-            }
-            wczyt.close();
-        } catch (IOException e) {
-        }
-
-        try (PrintWriter save = new PrintWriter("res/objects/" + name + ".o")) {
-            for (String line : content)
-                save.println(line);
-            infoMsg("Object \"" + name + ".obj\" was saved.");
-            save.close();
-        } catch (FileNotFoundException e) {
-            System.out.println(e);
         }
         dispose();
     }//GEN-LAST:event_OKBActionPerformed

@@ -58,6 +58,10 @@ public class Map {
         tiles = new Tile[widthInTiles * heightInTiles];
     }
 
+    public void addForegroundTileAndReplace(GameObject tile) {
+        addForegroundTileAndReplace(tile, tile.getX(), tile.getY(), tile.getPureDepth());
+    }
+    
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
         tiles[x / tileSize + y / tileSize * heightInTiles] = null;
         ArrayList<GameObject> tmp = (ArrayList<GameObject>) foregroundTiles.clone();

@@ -11,6 +11,7 @@ import game.gameobject.GameObject;
 import game.place.ForeGroundTile;
 import game.place.Map;
 import game.place.Place;
+import game.place.PuzzleObject;
 import game.place.Tile;
 import java.util.ArrayList;
 import sprites.SpriteSheet;

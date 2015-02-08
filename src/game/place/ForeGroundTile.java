@@ -41,7 +41,7 @@ public class ForeGroundTile extends Tile {
         return new ForeGroundTile(spriteSheet, size, xSheet, ySheet, true, 0);
     }
 
-    private ForeGroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
+    ForeGroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
         super(spriteSheet, size, xSheet, ySheet);
         simpleLighting = true;
         solid = wall;
@@ -75,8 +75,11 @@ public class ForeGroundTile extends Tile {
         glPopMatrix();
     }
     
+    //0  1 2 3       4    5      6          7
+    //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
     public String saveToString(SpriteSheet s, int xBegin, int yBegin, int tile) {
-        String txt = "ft:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey()) + ":" + (depth / tile);
+        String txt = "ft:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
+        txt += ":" + (solid ? "1" : "0") + ":" + (collision.getYStart() / tile);
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
     }

@@ -12,7 +12,6 @@ package game.gameobject;
 import collision.Figure;
 import game.place.Light;
 import game.place.Map;
-import java.util.Objects;
 import sprites.Sprite;
 
 public abstract class GameObject {

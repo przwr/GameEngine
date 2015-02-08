@@ -8,9 +8,11 @@ package gamecontent;
 import collision.Area;
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.Point;
 import game.place.ForeGroundTile;
 import game.place.Map;
 import game.place.Place;
+import game.place.PuzzleObject;
 import game.place.Tile;
 import game.place.WarpPoint;
 
@@ -35,72 +37,12 @@ public class StoneMap extends Map {
             }
         }
 
-        Area testa = new Area(6 * tileSize, 5 * tileSize, tileSize, tileSize, 0);
-        Area testb = new Area(8 * tileSize, 5 * tileSize, 3 * tileSize, tileSize, 0);
-        Area testc = new Area(7 * tileSize, 7 * tileSize, tileSize, tileSize, 0);
-        Area testd = new Area(9 * tileSize, 7 * tileSize, tileSize, 2 * tileSize, -tileSize);
-        Area teste = new Area(11 * tileSize, 7 * tileSize, tileSize, tileSize, 0);
-        Area testf = new Area(5 * tileSize, 9 * tileSize, tileSize, tileSize, tileSize);
-        Area testg = new Area(9 * tileSize, 11 * tileSize, tileSize, tileSize, 0);
-
-        areas.add(testa);
-        areas.add(testb);
-        areas.add(testc);
-        areas.add(testd);
-        areas.add(teste);
-        areas.add(testf);
-        areas.add(testg);
-
-        // Area border = Area.createWhole(0, 0, tileSize);
-        // areas.add(border);
-        ForeGroundTile fgt;
-
-        fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
-        addForegroundTileAndReplace(fgt, 6 * tileSize, 5 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
-        addForegroundTileAndReplace(fgt, 6 * tileSize, 4 * tileSize, 2 * tileSize);
-
-        fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
-        addForegroundTileAndReplace(fgt, 8 * tileSize, 5 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
-        addForegroundTileAndReplace(fgt, 8 * tileSize, 4 * tileSize, 2 * tileSize);
-        fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
-        addForegroundTileAndReplace(fgt, 9 * tileSize, 5 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
-        addForegroundTileAndReplace(fgt, 9 * tileSize, 4 * tileSize, 2 * tileSize);
-        fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
-        addForegroundTileAndReplace(fgt, 10 * tileSize, 5 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
-        addForegroundTileAndReplace(fgt, 10 * tileSize, 4 * tileSize, 2 * tileSize);
-
-        fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
-        addForegroundTileAndReplace(fgt, 7 * tileSize, 7 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
-        addForegroundTileAndReplace(fgt, 7 * tileSize, 6 * tileSize, 2 * tileSize);
-
-        fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, 0);
-        addForegroundTileAndReplace(fgt, 9 * tileSize, 8 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinary(place.getSpriteSheet("tlo"), tileSize, 1, 1);
-        addForegroundTileAndReplace(fgt, 9 * tileSize, 7 * tileSize, 2 * tileSize);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
-        addForegroundTileAndReplace(fgt, 9 * tileSize, 6 * tileSize, 4 * tileSize);
-
-        fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
-        addForegroundTileAndReplace(fgt, 11 * tileSize, 7 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
-        addForegroundTileAndReplace(fgt, 11 * tileSize, 6 * tileSize, 2 * tileSize);
-
-        fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, 0);
-        addForegroundTileAndReplace(fgt, 5 * tileSize, 9 * tileSize, 0);
-        fgt = ForeGroundTile.createWallShadowHeight(place.getSpriteSheet("tlo"), tileSize, 7, 2, tileSize);
-        addForegroundTileAndReplace(fgt, 5 * tileSize, 8 * tileSize, 2 * tileSize);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, 2 * tileSize);
-        addForegroundTileAndReplace(fgt, 5 * tileSize, 7 * tileSize, 4 * tileSize);
-
-        fgt = ForeGroundTile.createWall(place.getSpriteSheet("tlo"), tileSize, 7, 2);
-        addForegroundTileAndReplace(fgt, 9 * tileSize, 11 * tileSize, 0);
-        fgt = ForeGroundTile.createOrdinaryShadowHeight(place.getSpriteSheet("tlo"), tileSize, 1, 1, tileSize);
-        addForegroundTileAndReplace(fgt, 9 * tileSize, 10 * tileSize, 2 * tileSize);
+        PuzzleObject po = new PuzzleObject("piramida", place);
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                po.placePuzzle(x * (po.getWidth()), y * (po.getHeight()), this);
+            }
+        }
 
         WarpPoint w = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
         w.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, w));

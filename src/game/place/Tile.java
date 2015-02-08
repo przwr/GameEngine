@@ -9,7 +9,6 @@ import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
-import sprites.Sprite;
 import sprites.SpriteSheet;
 
 public class Tile extends GameObject {
@@ -35,7 +34,7 @@ public class Tile extends GameObject {
     public int tileStackSize() {
         return tileStack.size();
     }
-    
+
     public Point popTileFromStack() {
         if (!tileStack.isEmpty()) {
             Point p = tileStack.remove(tileStack.size() - 1);
@@ -44,7 +43,7 @@ public class Tile extends GameObject {
         }
         return null;
     }
-    
+
     public Point popTileFromStackBack() {
         if (!tileStack.isEmpty()) {
             Point p = tileStack.remove(0);
@@ -106,14 +105,32 @@ public class Tile extends GameObject {
         });
         glPopMatrix();
     }
-    
+
     public SpriteSheet getSpriteSheet() {
         return spriteSheet;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Tile) {
+            Tile tile = (Tile) o;
+            if (tile.spriteSheet.equals(spriteSheet)) {
+                if (tileStack.size() == tile.tileStack.size()) {
+                    for (int i = 0; i < tileStack.size(); i++) {
+                        if (!tileStack.get(i).equals(tile.tileStack.get(i)))
+                            return false;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //t:x:y:texture:TileXSheet:TileYSheet...
     public String saveToString(SpriteSheet s, int x, int y, int xBegin, int yBegin) {
         String txt = "t:" + (x - xBegin) + ":" + (y - yBegin) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
-        txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY() ).reduce(txt, String::concat);
+        txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
     }
 }

@@ -20,7 +20,13 @@ import game.gameobject.inputs.InputKeyBoard;
 import gamedesigner.GUI.FileBox;
 import gamedesigner.GUI.NamingScreen;
 import gamedesigner.GUI.PathFinder;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.input.Keyboard.KEY_M;
@@ -116,7 +122,7 @@ public class ObjectPlace extends Place {
             }
 
             if (keyPressed(Keyboard.KEY_S)) {
-                new NamingScreen(((ObjectMap) maps.get(0)).saveMap()).setVisible(true);
+                new NamingScreen(this).setVisible(true);
             }
 
             if (playersCount > 1) {
@@ -175,6 +181,28 @@ public class ObjectPlace extends Place {
         return false;
     }
 
+    public boolean saveObject(String name, NamingScreen gui) {
+        ArrayList<String> content = ((ObjectMap) maps.get(0)).saveMap();
+        try (BufferedReader wczyt = new BufferedReader(new FileReader("res/objects/" + name + ".puz"))) {
+            if (!gui.questMsg("File \"" + name + "\" already exists!\nReplace?")) {
+                return false;
+            }
+            wczyt.close();
+        } catch (IOException e) {
+        }
+
+        try (PrintWriter save = new PrintWriter("res/objects/" + name + ".puz")) {
+            for (String line : content)
+                save.println(line);
+            gui.infoMsg("Object \"" + name + ".puz\" was saved.");
+            save.close();
+        } catch (FileNotFoundException e) {
+            gui.errMsg("A file cannot be created!");
+            return false;
+        }
+        return true;
+    }
+    
     @Override
     public int getPlayersCount() {
         if (game.mode == 0) {
