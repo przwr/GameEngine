@@ -11,26 +11,22 @@ import engine.Point;
  *
  * @author przemek
  */
-public class Shadow implements Comparable<Object> {
+public class Shadow {
 
-    public int type; // 0 ciemy, 1 światło, 2 przyciemniony, 3 doświetony
-   // public Figure source; // źródło cienia, jeśli null to znaczy, że źródłem jest światło, jeśli źródłem jest obiek, który posiada ten cień, to znaczy, że obiekt jest źródłem światła
-    public Point[] points;
+	public int type;
+	public Point[] points;
+	public static final int DARK = 0, BRIGHT = 1, DARKEN = 2, BRIGHTEN = 3,
+			DARKEN_OBJECT = 4, BRIGHTEN_OBJECT = 5;
 
-    public Shadow(int type) {
-        this.type = type;
-    }
+	public Shadow(int type) {
+		this.type = type;
+	}
 
-    public void addPoints(Point p1, Point p2, Point p3, Point p4) {
-        points = new Point[4];
-        points[0] = p1;
-        points[1] = p2;
-        points[2] = p3;
-        points[3] = p4;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return type - ((Shadow) o).type;
-    }
+	public void addPoints(Point point1, Point point2, Point point3, Point point4) {
+		points = new Point[4];
+		points[0] = point1;
+		points[1] = point2;
+		points[2] = point3;
+		points[3] = point4;
+	}
 }
