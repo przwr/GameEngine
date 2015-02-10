@@ -138,19 +138,19 @@ public abstract class GameObject {
     }
 
     public int getXObjectBegin() {
-        return (int) x + sprite.getSx() + xStart;
+        return (int) x + sprite.getXStart() + xStart;
     }
 
     public int getYObjectBegin() {
-        return (int) y + sprite.getSy() + yStart;
+        return (int) y + sprite.yStart() + yStart;
     }
 
     public int getXObjectEnd() {
-        return (int) x + sprite.getSx() + xStart + width;
+        return (int) x + sprite.getXStart() + xStart + width;
     }
 
     public int getYObjectEnd() {
-        return (int) y + sprite.getSy() + yStart + height;
+        return (int) y + sprite.yStart() + yStart + height;
     }
 
     public Figure getCollision() {

@@ -6,13 +6,14 @@
 package gamedesigner;
 
 import engine.Drawer;
-import engine.Methods;
 import engine.Point;
+import game.Settings;
 import game.gameobject.GUIObject;
 import game.place.Place;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
 
@@ -75,10 +76,13 @@ public class ObjectUI extends GUIObject {
         if (camera != null) {
             glPushMatrix();
             int d = 2;
-            int xStart = tex.getSx();
-            int yStart = tex.getSy();
+            int xStart = tex.getXStart();
+            int yStart = tex.yStart();
             int wTex = tex.getWidth();
             int hTex = tex.getHeight();
+					if (Settings.scaled) {
+			glScalef(Settings.scale, Settings.scale, 1);
+		}
             glTranslatef(tile / 2 + xEffect, tile / 2 + yEffect, 0);
 
             if (change) {

@@ -28,96 +28,93 @@ import net.packets.PacketUpdate;
  */
 public class GameClient {
 
-    private final Client client;
-    private PacketMPlayerUpdate mpup;
-    private final GameOnline game;
-    private Connection server;
-    public boolean isConnected;
-    public short tempMapId = -1;
-    private Delay delay;
+	private final Client client;
+	private PacketMPlayerUpdate mpup;
+	private final GameOnline game;
+	private Connection server;
+	public boolean isConnected;
+	public short tempMapId = -1;
+	private Delay delay;
 
-    public GameClient(final Player player, final GameOnline game, String IP) {
-        this.game = game;        
-        delay = new Delay(20);
-        delay.terminate();
-        Client temp = null;
-        try {
-            temp = new Client(99999999, 99999999);
-        } catch (Exception e) {
-            cleanUp(e);
-        }
-        client = temp;
+	public GameClient(final Player player, final GameOnline game, String IP) {
+		this.game = game;
+		delay = new Delay(20);
+		delay.terminate();
+		Client temp = null;
+		try {
+			temp = new Client(99999999, 99999999);
+		} catch (Exception e) {
+			cleanUp(e);
+		}
+		client = temp;
 
-        try {
-            Log.set(Log.LEVEL_DEBUG);
-            KryoUtil.registerClientClass(client);
-            client.start();
-            client.addListener(new Listener() {
-                @Override
-                public void connected(Connection connection) {
-                    PacketJoinRequest test = new PacketJoinRequest(player.getName());
-                    client.sendTCP(test);
-                }
+		try {
+			Log.set(Log.LEVEL_DEBUG);
+			KryoUtil.registerClientClass(client);
+			client.start();
+			client.addListener(new Listener() {
+				@Override
+				public void connected(Connection connection) {
+					PacketJoinRequest test = new PacketJoinRequest(player.getName());
+					client.sendTCP(test);
+				}
 
-                @Override
-                public void received(Connection connection, Object obj) {
-                    if (obj instanceof PacketUpdate) {
-                        game.update((PacketUpdate) obj);
-                    }
-                    if (obj instanceof PacketMessage) {
-                        System.out.println("Recived from server: " + ((PacketMessage) obj).getMessage());
-                    } else if (obj instanceof PacketAddMPlayer) {
-                        game.addPlayer(((PacketAddMPlayer) obj).getPlayer());
-                    } else if (obj instanceof PacketRemoveMPlayer) {
-                        game.removePlayer(((PacketRemoveMPlayer) obj).getId());
-                    } else if (obj instanceof PacketJoinResponse) {
-                        if (((PacketJoinResponse) obj).getId() != -1) {
-                            server = connection;
-                            player.playerID = ((PacketJoinResponse) obj).getId();
-                            player.setX(Methods.roundHalfUp(Settings.scale * (float) ((PacketJoinResponse) obj).getX()));
-                            player.setY(Methods.roundHalfUp(Settings.scale * (float) ((PacketJoinResponse) obj).getY()));
-                            tempMapId = ((PacketJoinResponse) obj).getMapId();
-                            mpup = new PacketMPlayerUpdate(tempMapId, player.playerID, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
-                            System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
-                        } else {
-                            cleanUp(Settings.language.menu.FullServer);
-                        }
-                    }
-                }
+				@Override
+				public void received(Connection connection, Object obj) {
+					if (obj instanceof PacketUpdate) {
+						game.update((PacketUpdate) obj);
+					}
+					if (obj instanceof PacketMessage) {
+						System.out.println("Recived from server: " + ((PacketMessage) obj).getMessage());
+					} else if (obj instanceof PacketAddMPlayer) {
+						game.addPlayer(((PacketAddMPlayer) obj).getPlayer());
+					} else if (obj instanceof PacketRemoveMPlayer) {
+						game.removePlayer(((PacketRemoveMPlayer) obj).getId());
+					} else if (obj instanceof PacketJoinResponse) {
+						if (((PacketJoinResponse) obj).getId() != -1) {
+							server = connection;
+							player.playerID = ((PacketJoinResponse) obj).getId();
+							player.setX(((PacketJoinResponse) obj).getX());
+							player.setY(((PacketJoinResponse) obj).getY());
+							tempMapId = ((PacketJoinResponse) obj).getMapId();
+							mpup = new PacketMPlayerUpdate(tempMapId, player.playerID, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
+							System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
+						} else {
+							cleanUp(Settings.language.menu.FullServer);
+						}
+					}
+				}
 
-                @Override
-                public void disconnected(Connection connection) {
-                    if (game.game.started) {
-                        cleanUp(Settings.language.menu.Disconnected);
-                    } else {
-                        cleanUp();
-                    }
-                }
-            });
-            try {
-                /* Make sure to connect using both tcp and udp port */
-                client.connect(5000, IP, KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
-            } catch (IOException ex) {
-                System.out.println(ex);
-                client.stop();
-                client.close();
-                return;
-            }
-            client.getUpdateThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(Thread t, Throwable e) {
-                    if (e instanceof Exception) {
-                        cleanUp((Exception) e);
-                    } else {
-                        cleanUp(e.getMessage());
-                    }
-                }
-            });
-            isConnected = true;
-        } catch (Exception e) {
-            cleanUp(e);
-        }
-    }
+				@Override
+				public void disconnected(Connection connection) {
+					if (game.game.started) {
+						cleanUp(Settings.language.menu.Disconnected);
+					} else {
+						cleanUp();
+					}
+				}
+			});
+			try {
+				/* Make sure to connect using both tcp and udp port */
+				client.connect(5000, IP, KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
+			} catch (IOException ex) {
+				System.out.println(ex);
+				client.stop();
+				client.close();
+				return;
+			}
+			client.getUpdateThread().setUncaughtExceptionHandler((Thread thread, Throwable exception) -> {
+				if (exception instanceof Exception) {
+					cleanUp((Exception) exception);
+				} else {
+					cleanUp(exception.getMessage());
+				}
+			});
+			isConnected = true;
+		} catch (Exception e) {
+			cleanUp(e);
+		}
+	}
 
 //    public void sendInput(PacketInput input) {
 //        server.sendTCP(input);
@@ -126,37 +123,37 @@ public class GameClient {
 //    public void sendPlayerUpdate(MPlayerUpdate update) {
 //        server.sendTCP(update);
 //    }
-    public void sendPlayerUpdate(short mapId, byte id, int x, int y, boolean isEmits, boolean isHop) {
-        mpup.update(mapId, id, x, y, isEmits, isHop, Settings.scale);
-        if (delay.isOver()) {
-            server.sendTCP(mpup);
-            mpup.reset();
-            delay.start();
-        }
-    }
+	public void sendPlayerUpdate(short mapId, byte id, int x, int y, boolean isEmits, boolean isHop) {
+		mpup.update(mapId, id, x, y, isEmits, isHop);
+		if (delay.isOver()) {
+			server.sendTCP(mpup);
+			mpup.reset();
+			delay.start();
+		}
+	}
 
-    public synchronized void Close() {
-        client.stop();
-        client.close();
-    }
+	public synchronized void Close() {
+		client.stop();
+		client.close();
+	}
 
-    private synchronized void cleanUp() {
-        isConnected = false;
-        Close();
-        game.game.endGame();
-    }
+	private synchronized void cleanUp() {
+		isConnected = false;
+		Close();
+		game.game.endGame();
+	}
 
-    private void cleanUp(Exception e) {
-        isConnected = false;
-        Close();
-        game.game.endGame();
-        Methods.exception(e);
-    }
+	private void cleanUp(Exception e) {
+		isConnected = false;
+		Close();
+		game.game.endGame();
+		Methods.exception(e);
+	}
 
-    private synchronized void cleanUp(String msg) {
-        isConnected = false;
-        Close();
-        game.game.endGame();
-        Methods.error(msg);
-    }
+	private synchronized void cleanUp(String msg) {
+		isConnected = false;
+		Close();
+		game.game.endGame();
+		Methods.error(msg);
+	}
 }

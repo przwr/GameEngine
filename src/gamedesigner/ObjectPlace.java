@@ -61,7 +61,7 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        ObjectMap polana = new ObjectMap(mapId++, this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), getTileSize());
+        ObjectMap polana = new ObjectMap(mapID++, this, 10240, 10240, getTileSize());
         this.ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
         maps.add(polana);
         addGUI(ui);
@@ -78,7 +78,7 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsHost() {
-        ObjectMap polana = new ObjectMap(mapId++, this, Methods.roundHalfUp(Settings.scale * 10240), Methods.roundHalfUp(Settings.scale * 10240), getTileSize());
+        ObjectMap polana = new ObjectMap(mapID++, this, 10240, 10240, getTileSize());
         this.ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
         maps.add(polana);
         addGUI(ui);
@@ -88,7 +88,7 @@ public class ObjectPlace extends Place {
         this.green = 0.75f;
         this.blue = 0.75f;
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+        fonts.add("Amble-Regular", (int) (24));
         SoundStore.get().poll(0);
         initializeMethods();
     }

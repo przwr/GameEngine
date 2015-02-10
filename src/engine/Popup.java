@@ -5,6 +5,7 @@
  */
 package engine;
 
+import game.Settings;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
@@ -24,10 +25,10 @@ public class Popup {
     private int width, height, space, shift, biggest, border = 3;
     private String lines[];
 
-    public Popup(String font, float scale) {
+    public Popup(String font) {
         fonts = new FontBase(2);
-        fonts.add(font, (int) (scale * 22));
-        fonts.add(font, (int) (scale * 28));
+        fonts.add(font, (int) (Settings.scale * 22));
+        fonts.add(font, (int) (Settings.scale * 28));
         middleOk = fonts.write(0).getWidth("[ENTER]");
     }
 

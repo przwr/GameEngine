@@ -34,10 +34,10 @@ public class MPlayer {
         pu = new PacketUpdate();
     }
 
-    public void update(short mapId, int x, int y, float SCALE) {
+    public void update(short mapId, int x, int y) {
         this.mapId = mapId;
-        this.x = (int) (((float) x) / SCALE);
-        this.y = (int) (((float) y) / SCALE);
+        this.x = x;
+        this.y = y;
     }
 
     public void sendUpTCP() {

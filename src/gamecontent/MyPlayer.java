@@ -34,243 +34,249 @@ import sprites.SpriteSheet;
  */
 public class MyPlayer extends Player {
 
-    private int xTempSpeed, yTempSpeed;
-    private float jumpDelta = 22.6f;  //TYLKO TYMCZASOWE!
+	private int xTempSpeed, yTempSpeed;
+	private float jumpDelta = 22.6f;  //TYLKO TYMCZASOWE!
 
-    public MyPlayer(boolean first, String name) {
-        super(name);
-        this.first = first;
-        if (first) {
-            initializeControllerForFirst();
-        } else {
-            initializeController();
-        }
-    }
+	public MyPlayer(boolean first, String name) {
+		super(name);
+		this.first = first;
+		if (first) {
+			initializeControllerForFirst();
+		} else {
+			initializeController();
+		}
+	}
 
-    private void initializeControllerForFirst() {
-        controler = new MyController(this);
-        controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
-        controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
-        controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        controler.initialize();
-    }
+	private void initializeControllerForFirst() {
+		controler = new MyController(this);
+		controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+		controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+		controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+		controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+		controler.initialize();
+	}
 
-    private void initializeController() {
-        controler = new MyController(this);
-        controler.initialize();
-    }
+	private void initializeController() {
+		controler = new MyController(this);
+		controler.initialize();
+	}
 
-    @Override
-    public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
-        this.place = place;
-        this.online = place.game.online;
-        this.width = Methods.roundHalfUp(Settings.scale * width);
-        this.height = Methods.roundHalfUp(Settings.scale * height);
-        this.xStart = Methods.roundHalfUp(Settings.scale * startX);
-        this.yStart = Methods.roundHalfUp(Settings.scale * startY);
-        this.setResistance(2);
-        this.emitter = true;
-        initialize(name, Methods.roundHalfUp(Settings.scale * x), Methods.roundHalfUp(Settings.scale * y));
-        this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.animation = new Animation((SpriteSheet) sprite, 200);
-        emits = false;
-        setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
-    }
+	@Override
+	public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
+		this.place = place;
+		this.online = place.game.online;
+		this.width = width;
+		this.height = height;
+		this.xStart = startX;
+		this.yStart = startY;
+		this.setResistance(2);
+		this.emitter = true;
+		initialize(name, x, y);
+		this.sprite = place.getSpriteSheet("apple");
+		this.light = new Light("light", 0.85f, 0.85f, 0.85f,
+				Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place);
+		this.animation = new Animation((SpriteSheet) sprite, 200);
+		emits = false;
+		setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
+	}
 
-    @Override
-    public void initialize(int startX, int startY, int width, int height, Place place) {
-        this.place = place;
-        this.online = place.game.online;
-        this.width = Methods.roundHalfUp(Settings.scale * width);
-        this.height = Methods.roundHalfUp(Settings.scale * height);
-        this.xStart = Methods.roundHalfUp(Settings.scale * startX);
-        this.yStart = Methods.roundHalfUp(Settings.scale * startY);
-        this.setResistance(2);
-        this.emitter = true;
-        visible = true;
-        depth = 0;
-        this.sprite = place.getSpriteSheet("apple");
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place); // 0.85f - 0.75f daje fajne cienie 1.0f usuwa cały cień
-        this.animation = new Animation((SpriteSheet) sprite, 200);
-        emits = false;
-        setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
-    }
+	@Override
+	public void initialize(int startX, int startY, int width, int height, Place place) {
+		this.place = place;
+		this.online = place.game.online;
+		this.width = width;
+		this.height = height;
+		this.xStart = startX;
+		this.yStart = startY;
+		this.setResistance(2);
+		this.emitter = true;
+		visible = true;
+		depth = 0;
+		this.sprite = place.getSpriteSheet("apple");
+		this.light = new Light("light", 0.85f, 0.85f, 0.85f,
+				Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place);
+		this.animation = new Animation((SpriteSheet) sprite, 200);
+		emits = false;
+		setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
+	}
 
-    @Override
-    protected boolean isColided(int magX, int magY) {
-        if (isInGame()) {
-            return collision.isCollideSolid(getX() + magX, getY() + magY, map);
-        }
-        return false;
-    }
+	@Override
+	protected boolean isColided(int magX, int magY) {
+		if (isInGame()) {
+			return collision.isCollideSolid(getX() + magX, getY() + magY, map);
+		}
+		return false;
+	}
 
-    @Override
-    protected void move(int xPosition, int yPosition) {
-        setX(x + xPosition);
-        setY(y + yPosition);
-        if (camera != null) {
-            camera.update();
-        }
-    }
+	@Override
+	protected void move(int xPosition, int yPosition) {
+		setX(x + xPosition);
+		setY(y + yPosition);
+		if (camera != null) {
+			camera.update();
+		}
+	}
 
-    @Override
-    protected void setPosition(int xPosition, int yPosition) {
-        setX(xPosition);
-        setY(yPosition);
-        if (camera != null) {
-            camera.update();
-        }
-    }
+	@Override
+	protected void setPosition(int xPosition, int yPosition) {
+		setX(xPosition);
+		setY(yPosition);
+		if (camera != null) {
+			camera.update();
+		}
+	}
 
-    @Override
-    public void renderName(Camera camera) {
-        place.renderMessage(0, camera.getXOffset() + getX(), (int) (camera.getYOffset() + getY() + sprite.getSy() + collision.getHeight() / 2 - jumpHeight),
-                name, new Color(place.red, place.green, place.blue));
-    }
+	@Override
+	public void renderName(Camera camera) {
+		place.renderMessage(0, camera.getXOffset() + (int) (getX() * Settings.scale), camera.getYOffset() + (int) ((getY() + sprite.yStart() + collision.getHeight() / 2 - jumpHeight) * Settings.scale),
+				name, new Color(place.red, place.green, place.blue));
+	}
 
-    @Override
-    public void render(int xEffect, int yEffect) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.setColor(JUMP_SHADOW_COLOR);
-            Drawer.drawElipse(0, 0, Methods.roundHalfUp((float) collision.getWidth() / 2), Methods.roundHalfUp((float) collision.getHeight() / 2), 15);
-            Drawer.refreshColor();
-            glTranslatef(0, (int) -jumpHeight, 0);
-            getAnimation().render();
-            glPopMatrix();
-        }
-    }
+	@Override
+	public void render(int xEffect, int yEffect) {
+		if (sprite != null) {
+			glPushMatrix();
+			glTranslatef(xEffect, yEffect, 0);
+			if (Settings.scaled) {
+				glScalef(Settings.scale, Settings.scale, 1);
+			}
+			glTranslatef(getX(), getY(), 0);
+			Drawer.setColor(JUMP_SHADOW_COLOR);
+			Drawer.drawElipse(0, 0, Methods.roundHalfUp((float) collision.getWidth() / 2), Methods.roundHalfUp((float) collision.getHeight() / 2), 15);
+			Drawer.refreshColor();
+			glTranslatef(0, (int) -jumpHeight, 0);
+			getAnimation().render();
+			glPopMatrix();
+		}
+	}
 
-    @Override
-    public void update() {
-        if (jumping) {
-            hop = false;
-            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
-            jumpDelta += Time.getDelta();
-            if ((int) jumpDelta >= 68) {
-                jumping = false;
-                jumpDelta = 22.6f;
-            }
-        }
-        xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
-        yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
-        moveIfPossible(xTempSpeed, yTempSpeed);
-        for (WarpPoint warp : map.getWarps()) {
-            if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                warp.Warp(this);
-                break;
-            }
-        }
-        brakeOthers();
-    }
+	@Override
+	public void update() {
+		if (jumping) {
+			hop = false;
+			jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+			jumpDelta += Time.getDelta();
+			if ((int) jumpDelta >= 68) {
+				jumping = false;
+				jumpDelta = 22.6f;
+			}
+		}
+		xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
+		yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
+		moveIfPossible(xTempSpeed, yTempSpeed);
+		for (WarpPoint warp : map.getWarps()) {
+			if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
+				warp.Warp(this);
+				break;
+			}
+		}
+		brakeOthers();
+	}
 
-    @Override
-    public synchronized void sendUpdate() {
-        if (jumping) {
-            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
-            jumpDelta += Time.getDelta();
-            if ((int) jumpDelta >= 68) {
-                jumping = false;
-                jumpDelta = 22.6f;
-            }
-        }
-        xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
-        yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
-        moveIfPossible(xTempSpeed, yTempSpeed);
-        for (WarpPoint warp : map.getWarps()) {
-            if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                warp.Warp(this);
-                break;
-            }
-        }
-        brakeOthers();
-        if (online.server != null) {
-            online.server.sendUpdate(map.getID(), getX(), getY(), isEmits(), isHop());
-        } else if (online.client != null) {
-            online.client.sendPlayerUpdate(map.getID(), playerID, getX(), getY(), isEmits(), isHop());
-            online.pastPositions[online.pastPositionsNumber++].set(getX(), getY());
-            if (online.pastPositionsNumber >= online.pastPositions.length) {
-                online.pastPositionsNumber = 0;
-            }
-        } else {
-            online.game.endGame();
-        }
-        hop = false;
-    }
+	@Override
+	public synchronized void sendUpdate() {
+		if (jumping) {
+			jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+			jumpDelta += Time.getDelta();
+			if ((int) jumpDelta >= 68) {
+				jumping = false;
+				jumpDelta = 22.6f;
+			}
+		}
+		xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
+		yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
+		moveIfPossible(xTempSpeed, yTempSpeed);
+		for (WarpPoint warp : map.getWarps()) {
+			if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
+				warp.Warp(this);
+				break;
+			}
+		}
+		brakeOthers();
+		if (online.server != null) {
+			online.server.sendUpdate(map.getID(), getX(), getY(), isEmits(), isHop());
+		} else if (online.client != null) {
+			online.client.sendPlayerUpdate(map.getID(), playerID, getX(), getY(), isEmits(), isHop());
+			online.pastPositions[online.pastPositionsNumber++].set(getX(), getY());
+			if (online.pastPositionsNumber >= online.pastPositions.length) {
+				online.pastPositionsNumber = 0;
+			}
+		} else {
+			online.game.endGame();
+		}
+		hop = false;
+	}
 
-    @Override
-    public synchronized void updateRest(Update update) {
-        try {
-            Map map = getPlace().getMapById(((MPlayerUpdate) update).getMapId());
-            if (map != null && this.map != map) {
-                changeMap(map);
-            }
-            if (((MPlayerUpdate) update).isHop()) {
-                setJumping(true);
-            }
-            setEmits(((MPlayerUpdate) update).isEmits());
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
-    }
+	@Override
+	public synchronized void updateRest(Update update) {
+		try {
+			Map map = getPlace().getMapById(((MPlayerUpdate) update).getMapId());
+			if (map != null && this.map != map) {
+				changeMap(map);
+			}
+			if (((MPlayerUpdate) update).isHop()) {
+				setJumping(true);
+			}
+			setEmits(((MPlayerUpdate) update).isEmits());
+		} catch (Exception e) {
+			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
 
-    @Override
-    public synchronized void updateOnline() {
-        try {
-            if (jumping) {
-                hop = false;
-                jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
-                jumpDelta += Time.getDelta();
-                if ((int) jumpDelta == 68) {
-                    jumping = false;
-                    jumpDelta = 22.6f;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
-    }
+	@Override
+	public synchronized void updateOnline() {
+		try {
+			if (jumping) {
+				hop = false;
+				jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+				jumpDelta += Time.getDelta();
+				if ((int) jumpDelta == 68) {
+					jumping = false;
+					jumpDelta = 22.6f;
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
 
-    @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jumpHeight, 0);
-            Drawer.drawShapeInShade(animation, color);
-            glPopMatrix();
-        }
-    }
+	@Override
+	public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
+		if (sprite != null) {
+			glPushMatrix();
+			glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+			Drawer.drawShapeInShade(animation, color);
+			glPopMatrix();
+		}
+	}
 
-    @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jumpHeight, 0);
-            Drawer.drawShapeInBlack(animation);
-            glPopMatrix();
-        }
-    }
+	@Override
+	public void renderShadow(int xEffect, int yEffect, Figure f) {
+		if (sprite != null) {
+			glPushMatrix();
+			glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+			Drawer.drawShapeInBlack(animation);
+			glPopMatrix();
+		}
+	}
 
-    @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jumpHeight, 0);
-            Drawer.drawShapePartInShade(animation, color, xStart, xEnd);
-            glPopMatrix();
-        }
-    }
+	@Override
+	public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
+		if (sprite != null) {
+			glPushMatrix();
+			glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+			Drawer.drawShapePartInShade(animation, color, xStart, xEnd);
+			glPopMatrix();
+		}
+	}
 
-    @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef((int) x + xEffect, (int) y + yEffect + (int) -jumpHeight, 0);
-            Drawer.drawShapePartInBlack(animation, xStart, xEnd);
-            glPopMatrix();
-        }
-    }
+	@Override
+	public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
+		if (sprite != null) {
+			glPushMatrix();
+			glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+			Drawer.drawShapePartInBlack(animation, xStart, xEnd);
+			glPopMatrix();
+		}
+	}
 }

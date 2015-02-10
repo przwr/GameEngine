@@ -8,7 +8,9 @@ package game;
 import engine.Methods;
 import engine.SoundBase;
 import game.gameobject.Player;
-import game.place.fbo.FrameBufferObject;
+import static game.place.fbo.FrameBufferObject.ARB;
+import static game.place.fbo.FrameBufferObject.EXT;
+import static game.place.fbo.FrameBufferObject.NATIVE;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +47,6 @@ public class Settings {
 	public static SoundBase sounds;
 	public static int resolutionWidth;
 	public static int resolutionHeight;
-	public static float scale;
 	public static int frequency;
 	public static boolean verticalSynchronization;
 	public static int samplesCount = 0;
@@ -59,7 +60,8 @@ public class Settings {
 	public static int supportedFrameBufferObjectVersion;
 	public static boolean multiSampleSupported;
 	public static boolean shadowOff;
-	public static boolean scaled = true;
+	public static boolean scaled;
+	public static float scale;
 	public static String serverIP = "127.0.0.1";
 
 	public static void initialize() {
@@ -114,7 +116,9 @@ public class Settings {
 
 	public static void calculateScale() {
 		scale = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
-//		scale = 1f;
+		if (scale != 1f) {
+			scaled = true;
+		}
 	}
 
 	public static void update(int actionsCount, Player[] players, Controller[] controllers) {
@@ -122,17 +126,16 @@ public class Settings {
 		Settings.players = players;
 		Settings.controllers = controllers;
 		try {
-			GL30.glGenFramebuffers();
 			GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, samplesCount, GL_RGBA8, 10, 10, false);
 			GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-			supportedFrameBufferObjectVersion = FrameBufferObject.NATIVE;
+			supportedFrameBufferObjectVersion = NATIVE;
 			multiSampleSupported = true;
 			maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
 			maxSamples = maxSamples > 8 ? 8 : maxSamples;
 			samplesCount = (samplesCount > maxSamples) ? maxSamples : samplesCount;
 		} catch (Exception exception) {
 			if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
-				supportedFrameBufferObjectVersion = FrameBufferObject.ARB;
+				supportedFrameBufferObjectVersion = ARB;
 				try {
 					ARBTextureMultisample.glTexImage2DMultisample(ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE, samplesCount, GL_RGBA8, 10, 10, false);
 					ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_DRAW_FRAMEBUFFER, 0);
@@ -144,7 +147,7 @@ public class Settings {
 					multiSampleSupported = false;
 				}
 			} else if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {
-				supportedFrameBufferObjectVersion = FrameBufferObject.EXT;
+				supportedFrameBufferObjectVersion = EXT;
 				multiSampleSupported = false;
 			} else {
 				Methods.javaError(language.menu.FBOError);

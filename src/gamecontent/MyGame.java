@@ -7,7 +7,6 @@ package gamecontent;
 
 import engine.Drawer;
 import engine.Methods;
-import engine.Sound;
 import game.Game;
 import static game.IO.loadInputFromFile;
 import game.gameobject.GameObject;
@@ -183,9 +182,9 @@ public class MyGame extends Game {
 	public void startGame() {
 		int playersCount = Settings.playersCount;
 		if (designer) {
-			place = new ObjectPlace(this, Methods.roundHalfUp(Settings.scale * 64));
+			place = new ObjectPlace(this, 64);
 		} else {
-			place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 64));
+			place = new MyPlace(this, 64);
 		}
 		Drawer.setPlace(place);
 		place.players = new GameObject[4];
@@ -315,13 +314,12 @@ public class MyGame extends Game {
 
 	@Override
 	public void runClient() {
-		place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 64));
+		place = new MyPlace(this, 64);
 		Drawer.setPlace(place);
 		place.players = new GameObject[4];
 		place.playersCount = 1;
 		players[0].initialize(4, 4, 56, 56, place);
 		players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
-
 		System.arraycopy(players, 0, place.players, 0, 1);
 		place.makeShadows();
 		place.generateAsGuest();
@@ -332,7 +330,7 @@ public class MyGame extends Game {
 
 	@Override
 	public void runServer() {
-		place = new MyPlace(this, Methods.roundHalfUp(Settings.scale * 64));
+		place = new MyPlace(this, 64);
 		Drawer.setPlace(place);
 		place.players = new GameObject[4];
 		place.playersCount = 1;
@@ -360,17 +358,17 @@ public class MyGame extends Game {
 
 	private void soundPause() {
 		if (Settings.sounds != null) {
-			for (Sound s : Settings.sounds.getSoundsList()) {
-				if (s.isPlaying()) {
-					if (s.isPaused()) {
-						s.setStoped(true);
+			Settings.sounds.getSoundsList().stream().forEach((sound) -> {
+				if (sound.isPlaying()) {
+					if (sound.isPaused()) {
+						sound.setStoped(true);
 					} else {
-						s.fade(0.01, true);
+						sound.fade(0.01, true);
 					}
 				} else {
-					s.setStoped(true);
+					sound.setStoped(true);
 				}
-			}
+			});
 		}
 	}
 
