@@ -89,7 +89,7 @@ public class ObjectUI extends GUIObject {
             int wTex = tex.getWidth();
             int hTex = tex.getHeight();
             if (Settings.scaled) {
-                glScalef(Settings.scale, Settings.scale, 1);
+                glScaled(Settings.scale, Settings.scale, 1);
             }
             
             txt = Methods.editWithKeyboard(txt);
