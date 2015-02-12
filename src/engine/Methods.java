@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import javax.swing.JOptionPane;
 import net.jodk.lang.FastMath;
+import org.lwjgl.input.Keyboard;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -98,7 +99,7 @@ public class Methods {
         System.out.println(message);
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
     }
-    
+
     public static int roundHalfUp(double d) {
         double dAbs = FastMath.abs(d);
         int i = (int) dAbs;
@@ -118,5 +119,47 @@ public class Methods {
         objectOutputStream.close();
         byteObject.close();
         return byteObject.toByteArray().length;
+    }
+
+    public static String editWithKeyboard(String text) {
+        String character = "";
+        if (Keyboard.next() && Keyboard.getEventKeyState()) {
+            int charNum = Keyboard.getEventKey();
+            if ((charNum >= 16 && charNum <= 25) || //Keyboard's first row Q - P
+                    (charNum >= 30 && charNum <= 38) || //A - L
+                    (charNum >= 44 && charNum <= 50) || //Z - M
+                    (charNum >= 2 && charNum <= 11)) {  //numbers 1 - 0
+                character += Keyboard.getKeyName(charNum);
+            } else if (text.length() != 0 && (charNum == Keyboard.KEY_DELETE
+                    || charNum == Keyboard.KEY_BACK)) {
+                text = text.substring(0, text.length() - 1);
+            }
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)) {
+            switch (character) {
+                case "S":
+                    character = "Ś";
+                    break;
+                case "C":
+                    character = "Ć";
+                    break;
+                case "E":
+                    character = "Ę";
+                    break;
+                case "A":
+                    character = "Ą";
+                    break;
+                case "L":
+                    character = "Ł";
+                    break;
+                case "O":
+                    character = "Ó";
+                    break;
+            }
+        }
+        if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
+            character = character.toLowerCase();
+        }
+        return text + character;
     }
 }
