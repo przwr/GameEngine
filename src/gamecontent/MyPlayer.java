@@ -101,9 +101,9 @@ public class MyPlayer extends Player {
 	}
 
 	@Override
-	protected boolean isColided(int magX, int magY) {
+	protected boolean isColided(int xMagnitude, int yMagnitude) {
 		if (isInGame()) {
-			return collision.isCollideSolid(getX() + magX, getY() + magY, map);
+			return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
 		}
 		return false;
 	}
@@ -127,8 +127,8 @@ public class MyPlayer extends Player {
 	}
 
 	@Override
-	public void renderName(Camera camera) {
-		place.renderMessage(0, camera.getXOffset() + (int) (getX() * Settings.scale), camera.getYOffset() + (int) ((getY() + sprite.yStart() + collision.getHeight() / 2 - jumpHeight) * Settings.scale),
+	public void renderName(Camera camera) {// TODO Imiona renderowane razem z graczem!
+		place.renderMessage(0, camera.getXOffset() + (int) (x * Settings.scale), camera.getYOffset() + (int) ((y + sprite.yStart() + collision.getHeight() / 2 - jumpHeight) * Settings.scale),
 				name, new Color(place.red, place.green, place.blue));
 	}
 
@@ -136,11 +136,11 @@ public class MyPlayer extends Player {
 	public void render(int xEffect, int yEffect) {
 		if (sprite != null) {
 			glPushMatrix();
-			glTranslatef(xEffect, yEffect, 0);
+			glTranslated(xEffect, yEffect, 0);
 			if (Settings.scaled) {
-				glScalef(Settings.scale, Settings.scale, 1);
+				glScaled(Settings.scale, Settings.scale, 1);
 			}
-			glTranslatef(getX(), getY(), 0);
+			glTranslated(x, y, 0);
 			Drawer.setColor(JUMP_SHADOW_COLOR);
 			Drawer.drawElipse(0, 0, Methods.roundHalfUp((float) collision.getWidth() / 2), Methods.roundHalfUp((float) collision.getHeight() / 2), 15);
 			Drawer.refreshColor();

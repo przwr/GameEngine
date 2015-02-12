@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
@@ -46,7 +46,7 @@ public class CentralPoint extends GameObject {
 			glPushMatrix();
 			glTranslatef(xEffect, yEffect, 0);
 			if (Settings.scaled) {
-				glScalef(Settings.scale, Settings.scale, 1);
+				glScaled(Settings.scale, Settings.scale, 1);
 			}
 			glTranslatef(getX(), getY(), 0);
 			glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);

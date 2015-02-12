@@ -115,7 +115,7 @@ public class Renderer {
 	public static void preRendLights(Map map) {
 		if (!Settings.shadowOff) {
 			map.visibleLights.stream().forEach((emitter) -> {
-				ShadowRenderer.preRendLight(map, emitter);
+				ShadowRenderer.prerenderLight(map, emitter);
 			});
 		}
 	}
@@ -139,13 +139,12 @@ public class Renderer {
 		lightX = emitter.getLight().getWidth();
 		lightY = emitter.getLight().getHeight();
 		glPushMatrix();
-		glTranslatef( cam.getXOffsetEffect(),  cam.getYOffsetEffect() , 0);
-		
+		glTranslatef(cam.getXOffsetEffect(), cam.getYOffsetEffect(), 0);
+//glTranslatef(Settings.scale * emitter.getX() + cam.getXOffsetEffect() - lightX / 2, Settings.scale * emitter.getY() + cam.getYOffsetEffect() - lightY / 2, 0);
 		if (Settings.scaled) {
-			glScalef(Settings.scale, Settings.scale, 1);
+			glScaled(Settings.scale, Settings.scale, 1);
 		}
-		//glTranslatef(Settings.scaleNew * emitter.getX() + cam.getXOffsetEffect() - lightX / 2, Settings.scaleNew * emitter.getY() + cam.getYOffsetEffect() - lightY / 2, 0);
-		glTranslatef( emitter.getX()  - lightX / 2, emitter.getY()- lightY / 2, 0);
+		glTranslatef(emitter.getX() - lightX / 2, emitter.getY() - lightY / 2, 0);
 		glBindTexture(GL_TEXTURE_2D, textureHandle);
 		glBegin(GL_QUADS);
 		glTexCoord2f(0, 1);

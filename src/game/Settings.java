@@ -61,7 +61,8 @@ public class Settings {
 	public static boolean multiSampleSupported;
 	public static boolean shadowOff;
 	public static boolean scaled;
-	public static float scale;
+	public static double scale;
+	public static double nativeScale;
 	public static String serverIP = "127.0.0.1";
 
 	public static void initialize() {
@@ -115,7 +116,8 @@ public class Settings {
 	}
 
 	public static void calculateScale() {
-		scale = ((int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f) >= 1 ? 1 : (int) ((resolutionHeight / 1024f / 0.25f)) * 0.25f;
+		scale = ((int) ((resolutionHeight / 1024d / 0.25d)) * 0.25d) >= 1 ? 1 : (int) ((resolutionHeight / 1024d / 0.25d)) * 0.25d;
+		nativeScale = scale;
 		if (scale != 1f) {
 			scaled = true;
 		}

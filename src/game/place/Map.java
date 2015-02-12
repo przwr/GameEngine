@@ -262,7 +262,7 @@ public class Map {
 		renderMobsNames(camera);
 	}
 
-	private void renderPlayersNames(Camera camera) {
+	private void renderPlayersNames(Camera camera) {// TODO Imiona renderowane razem z graczem!
 		for (int i = 0; i < place.playersCount; i++) {
 			if (place.players[i].getMap().equals(this) && isObjectInSight(place.players[i])) {
 				((Player) place.players[i]).renderName(camera);

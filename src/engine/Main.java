@@ -51,6 +51,8 @@ public class Main {
 		initializeOpenGL();
 		calculateScale();
 		initializeGame();
+		Time.initialize();
+		refreshGamma();
 		gameLoop();
 		cleanUp();
 	}
@@ -135,24 +137,10 @@ public class Main {
 
 	private static void createDisplay() {
 		try {
-			Display.create(new PixelFormat(32, 0, 24, 0, Settings.samplesCount));
-		} catch (Exception exception0) {
+			Display.create(new PixelFormat(32, 0, 24, 0, 0));
+		} catch (Exception exception) {
 			Display.destroy();
-			try {
-				Display.create(new PixelFormat(32, 0, 24, 0, Settings.samplesCount / 2));
-			} catch (Exception exception1) {
-				Display.destroy();
-				try {
-					Display.create(new PixelFormat(32, 0, 24, 0, Settings.samplesCount / 4));
-				} catch (Exception exception2) {
-					Display.destroy();
-					try {
-						Display.create(new PixelFormat(32, 0, 24, 0, 0));
-					} catch (LWJGLException exception) {
-						Methods.javaError(exception.getMessage());
-					}
-				}
-			}
+			Methods.javaError(exception.getMessage());
 		}
 	}
 
@@ -187,10 +175,9 @@ public class Main {
 	}
 
 	private static void gameLoop() {
-		Time.initialize();
 		while (isRunning()) {
 			Time.update();
-			Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
+			Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale);
 			if (!pause) {
 				update();
 			} else {
@@ -238,26 +225,26 @@ public class Main {
 
 	private static void resolveGamma() {
 		if (Display.isActive()) {
-			refreshGamma();
+			if (!lastFrame) {
+				refreshGamma();
+			}
 		} else if (lastFrame) {
 			resetGamma();
 		}
 	}
 
-	private static void refreshGamma() {
-		if (!lastFrame) {
-			try {
-				Display.setDisplayConfiguration(1.5f, 0f, 1f);
-				Display.setDisplayConfiguration(2f, 0f, 1f);
-			} catch (LWJGLException ex) {
-				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-			}
+	public static void refreshGamma() {
+		try {
+			Display.setDisplayConfiguration(1f, 0f, 1f);
+			Display.setDisplayConfiguration(2f, 0f, 1f);
+		} catch (LWJGLException ex) {
+			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
-	private static void resetGamma() {
+	public static void resetGamma() {
 		try {
-			Display.setDisplayConfiguration(1.5f, 0f, 1f);
+			Display.setDisplayConfiguration(2f, 0f, 1f);
 			Display.setDisplayConfiguration(1f, 0f, 1f);
 		} catch (LWJGLException ex) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

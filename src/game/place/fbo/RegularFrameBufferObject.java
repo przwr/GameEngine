@@ -1,7 +1,10 @@
 package game.place.fbo;
 
 import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.EXTFramebufferObject;
+import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.glViewport;
 import org.lwjgl.opengl.GL30;
 
 public class RegularFrameBufferObject extends FrameBufferObject {
@@ -17,11 +20,13 @@ public class RegularFrameBufferObject extends FrameBufferObject {
 	@Override
 	public void activate() {
 		type.activate(frameBufferObject);
+	//	glViewport(0, 0, (int) (height * ((float) Display.getWidth() / (float) Display.getHeight())), height);
 	}
 
 	@Override
 	public void deactivate() {
 		type.deactivate();
+	//	glViewport(0, 0, Display.getWidth(), Display.getHeight());
 	}
 
 	private void createFrameBuferObjects() {

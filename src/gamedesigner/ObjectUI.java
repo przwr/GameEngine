@@ -13,7 +13,7 @@ import game.place.Place;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
 
@@ -81,7 +81,7 @@ public class ObjectUI extends GUIObject {
             int wTex = tex.getWidth();
             int hTex = tex.getHeight();
 					if (Settings.scaled) {
-			glScalef(Settings.scale, Settings.scale, 1);
+			glScaled(Settings.scale, Settings.scale, 1);
 		}
             glTranslatef(tile / 2 + xEffect, tile / 2 + yEffect, 0);
 

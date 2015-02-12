@@ -5,18 +5,10 @@ import engine.Point;
 import game.Settings;
 import game.gameobject.GameObject;
 import java.util.ArrayList;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import sprites.SpriteSheet;
 
 public class Tile extends GameObject {
@@ -65,7 +57,7 @@ public class Tile extends GameObject {
 		glPushMatrix();
 		glTranslatef(xEffect, yEffect, 0);
 		if (Settings.scaled) {
-			glScalef(Settings.scale, Settings.scale, 1);
+			glScaled(Settings.scale, Settings.scale, 1);
 		}
 		glTranslatef(x, y, 0);
 		tileStack.stream().forEach((piece) -> {
@@ -99,7 +91,7 @@ public class Tile extends GameObject {
 		glPushMatrix();
 		glTranslatef(xEffect, yEffect, 0);
 		if (Settings.scaled) {
-			glScalef(Settings.scale, Settings.scale, 1);
+			glScaled(Settings.scale, Settings.scale, 1);
 		}
 		glTranslatef(getX(), getY(), 0);
 		tileStack.stream().forEach((piece) -> {

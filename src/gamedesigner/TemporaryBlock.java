@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
 
@@ -65,7 +65,7 @@ public class TemporaryBlock extends GameObject {
 		glPushMatrix();
 		glTranslatef(xEffect, yEffect, 0);
 		if (Settings.scaled) {
-			glScalef(Settings.scale, Settings.scale, 1);
+			glScaled(Settings.scale, Settings.scale, 1);
 		}
 		glTranslatef(getX(), getY(), 0);
 		int mode = objPlace.getMode();

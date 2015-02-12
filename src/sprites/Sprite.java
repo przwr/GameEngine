@@ -48,7 +48,7 @@ public class Sprite extends Appearance {
 
 	private static Texture loadTexture(String textureKey) {
 		try {
-			return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/" + textureKey + ".png"), GL_NEAREST);
+			return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/" + textureKey + ".png"), GL_LINEAR);
 		} catch (IOException ex) {
 			Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
 		}

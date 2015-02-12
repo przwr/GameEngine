@@ -39,7 +39,7 @@ public class ShadowRenderer {
 	private static boolean isChecked;
 	private static final Polygon poly = new Polygon();
 
-	public static void preRendLight(Map map, GameObject emitter) {
+	public static void prerenderLight(Map map, GameObject emitter) {
 		findShades(emitter, map);
 		emitter.getLight().frameBufferObject.activate();
 		clearFBO(1);

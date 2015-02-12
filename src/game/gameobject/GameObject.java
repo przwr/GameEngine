@@ -233,7 +233,7 @@ public abstract class GameObject {
         this.name = name;
     }
 
-    public void setCollision(Figure figure) {
+   public void setCollision(Figure figure) {
         collision = figure;
     }
 

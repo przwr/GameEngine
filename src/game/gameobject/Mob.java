@@ -16,7 +16,8 @@ import game.place.Place;
 import net.packets.Update;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glTranslated;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 
@@ -99,7 +100,7 @@ public abstract class Mob extends Entity {
 			glPushMatrix();
 			glTranslatef(xEffect, yEffect, 0);
 			if (Settings.scaled) {
-				glScalef(Settings.scale, Settings.scale, 1);
+				glScaled(Settings.scale, Settings.scale, 1);
 			}
 			glTranslatef(getX(), getY(), 0);
 			sprite.render();
@@ -121,7 +122,19 @@ public abstract class Mob extends Entity {
 	public void renderShadow(int xEffect, int yEffect, Figure figure) {
 		if (sprite != null) {
 			glPushMatrix();
-			glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+
+//			glTranslatef(96, 94, 0); //0.75
+//			glTranslatef(384 - 384 * Settings.scale, 376 - 376 * Settings.scale, 0);
+//			glTranslated(288 * (1 - Settings.scale), 472 * (1 - Settings.scale), 0);
+//			glTranslatef(288, 282, 0); //0.25
+//			if (Settings.scaled) {
+//				glScaled(Settings.scale, Settings.scale, 1);
+//			}
+			glTranslatef(getX() + xEffect, getY() + yEffect, 0); //1
+//			glTranslatef(getX() + 128 + xEffect, getY() + 124 + yEffect, 0); //0.75
+//			glTranslatef(getX() + 256 + xEffect, getY() + 252 + yEffect, 0); //0.6
+//			glTranslatef(getX() + 384 + xEffect, getY() + 376+ yEffect, 0); //0.5
+//			glTranslatef(getX() + 1152 + xEffect, getY() + 1128 + yEffect, 0); //0.25
 			Drawer.drawShapeInBlack(sprite);
 			glPopMatrix();
 		}

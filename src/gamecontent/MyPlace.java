@@ -5,12 +5,14 @@
  */
 package gamecontent;
 
+import engine.Delay;
 import game.gameobject.Mob;
 import game.Game;
 import game.Settings;
 import game.place.cameras.Camera;
 import game.place.Place;
 import engine.FontBase;
+import engine.Main;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Entity;
@@ -30,6 +32,8 @@ public class MyPlace extends Place {
 	private final Action changeSplitScreenJoin;
 	private final update[] updates = new update[2];
 	private boolean MINUS, PLUS;
+	private Delay delay = new Delay(100);
+	private double step = 0.03125;
 
 	public MyPlace(Game game, int tileSize) {
 		super(game, tileSize);
@@ -75,6 +79,7 @@ public class MyPlace extends Place {
 	}
 
 	private void initMethods() {
+		delay.start();
 		updates[0] = () -> {
 //			if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
 //				sounds.getSound("MumboMountain").resume();
@@ -109,26 +114,34 @@ public class MyPlace extends Place {
 //			}
 
 			if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-				if (!MINUS) {
-					MINUS = true;
-					if (Settings.scale > 0.25f) {
-						Settings.scale -= 0.05f;
-						((Player) players[0]).getCamera().update();
+				if (delay.isOver()) {
+					delay.start();
+					Settings.scale -= step;
+					if (Settings.scale < 0.25d) {
+						Settings.scale = 0.25d;
 					}
+					((Player) players[0]).getCamera().update();
 				}
-			} else {
-				MINUS = false;
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
-				if (!PLUS) {
-					PLUS = true;
-					if (Settings.scale < 1f) {
-						Settings.scale += 0.05f;
-						((Player) players[0]).getCamera().update();
+				if (delay.isOver()) {
+					delay.start();
+					Settings.scale += step;
+					if (Settings.scale > 1d) {
+						Settings.scale = 1d;
 					}
+					((Player) players[0]).getCamera().update();
 				}
-			} else {
-				PLUS = false;
+				//1d, 0.875d, 0.75d, 0.625, 0.5, 0.375, 0.25, 0.125
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
+				Settings.scale = Settings.nativeScale;
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
+				Main.refreshGamma();
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_NEXT)) {
+				Main.resetGamma();
 			}
 			if (playersCount > 1) {
 				changeSplitScreenJoin.act();
@@ -178,6 +191,7 @@ public class MyPlace extends Place {
 	}
 
 	@Override
+
 	public int getPlayersCount() {
 		if (game.mode == 0) {
 			return playersCount;

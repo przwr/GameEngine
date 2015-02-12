@@ -5,6 +5,7 @@
  */
 package gamecontent.choices;
 
+import engine.Main;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
@@ -14,13 +15,14 @@ import game.place.Menu;
  */
 public class StartLocalGameChoice extends MenuChoice {
 
-    public StartLocalGameChoice(String label, Menu menu) {
-        super(label, menu);
-    }
+	public StartLocalGameChoice(String label, Menu menu) {
+		super(label, menu);
+	}
 
-    @Override
-    public void action() {
-        menu.game.startGame();
-        menu.setCurrent(0);
-    }
+	@Override
+	public void action() {
+		menu.game.startGame();
+		Main.refreshGamma();
+		menu.setCurrent(0);
+	}
 }

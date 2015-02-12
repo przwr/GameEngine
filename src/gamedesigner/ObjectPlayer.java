@@ -247,10 +247,9 @@ public class ObjectPlayer extends Player {
 		int yd = (Math.abs(iy - yStop) + 1) * tileSize;
 		glTranslatef(xEffect, yEffect, 0);
 		if (Settings.scaled) {
-			glScalef(Settings.scale, Settings.scale, 1);
+			glScaled(Settings.scale, Settings.scale, 1);
 		}
 		glTranslatef(Math.min(ix, xStop) * tileSize, Math.min(iy, yStop) * tileSize, 0);
-		place.renderMessage(0, tileSize / 2, 0, ((int) x / tileSize) + " " + ((int) y / tileSize), new Color(1f, 1f, 1f));
 
 		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
 		glColor4f(1f, 1f, 1f, 1f);
@@ -281,7 +280,14 @@ public class ObjectPlayer extends Player {
 				Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd - d);
 			}
 		}
+
 		Drawer.refreshForRegularDrawing();
+		
+		if (Settings.scaled) {
+			glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+		}
+		place.renderMessage(0, (int) (-tileSize * Settings.scale) / 2, 0, ((int) x / tileSize) + " " + ((int) y / tileSize), new Color(1f, 1f, 1f));
+
 		glPopMatrix();
 	}
 
