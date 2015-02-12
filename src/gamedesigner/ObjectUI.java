@@ -6,6 +6,7 @@
 package gamedesigner;
 
 import engine.Drawer;
+import engine.Methods;
 import engine.Point;
 import game.Settings;
 import game.gameobject.GUIObject;
@@ -15,6 +16,7 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
 /**
@@ -26,6 +28,7 @@ public class ObjectUI extends GUIObject {
     private final int tile;
     private SpriteSheet tex;
     private boolean change;
+    private String txt;
 
     private final Point coord = new Point(0, 0);
 
@@ -33,6 +36,7 @@ public class ObjectUI extends GUIObject {
         super("OUI", p);
         this.tile = tile;
         this.tex = tex;
+        txt = "";
     }
 
     public void setSpriteSheet(SpriteSheet tex) {
@@ -44,14 +48,18 @@ public class ObjectUI extends GUIObject {
     public void changeCoordinates(int x, int y) {
         int xLim = coord.getX() + x;
         int yLim = coord.getY() + y;
-        if (xLim < 0)
+        if (xLim < 0) {
             xLim = tex.getXlimit() - 1;
-        if (xLim > tex.getXlimit() - 1)
+        }
+        if (xLim > tex.getXlimit() - 1) {
             xLim = 0;
-        if (yLim < 0)
+        }
+        if (yLim < 0) {
             yLim = tex.getYlimit() - 1;
-        if (yLim > tex.getYlimit() - 1)
+        }
+        if (yLim > tex.getYlimit() - 1) {
             yLim = 0;
+        }
         coord.set(xLim, yLim);
     }
 
@@ -80,9 +88,13 @@ public class ObjectUI extends GUIObject {
             int yStart = tex.yStart();
             int wTex = tex.getWidth();
             int hTex = tex.getHeight();
-					if (Settings.scaled) {
-			glScaled(Settings.scale, Settings.scale, 1);
-		}
+            if (Settings.scaled) {
+                glScalef(Settings.scale, Settings.scale, 1);
+            }
+            
+            txt = Methods.editWithKeyboard(txt);
+                        
+            place.renderMessage(0, tile * 3, tile * 3, "KEY: " + txt, new Color(1f, 1f, 1f));
             glTranslatef(tile / 2 + xEffect, tile / 2 + yEffect, 0);
 
             if (change) {
