@@ -21,15 +21,15 @@ import sprites.SpriteSheet;
  */
 public class PuzzleObject {
 
-    private ArrayList<TileContainer> bgTiles;
-    private ArrayList<GameObject> objects;
-    private ArrayList<FGTileContainer> fgTiles;
-    private ArrayList<AreaContainer> areas;
+    protected ArrayList<TileContainer> bgTiles;
+    protected ArrayList<GameObject> objects;
+    protected ArrayList<FGTileContainer> fgTiles;
+    protected ArrayList<AreaContainer> areas;
 
-    private int xDelta, yDelta;
-    private int xBegin, yBegin;
-    private int xEnd, yEnd;
-    private int width, height;
+    protected int xDelta, yDelta;
+    protected int xBegin, yBegin;
+    protected int xEnd, yEnd;
+    protected int width, height;
 
     public PuzzleObject(String file, Place place) {
         try (BufferedReader input = new BufferedReader(new FileReader("res/objects/" + file + ".puz"))) {
@@ -113,7 +113,7 @@ public class PuzzleObject {
         }
     }
 
-    private void addTile(Tile tile, int x, int y) {
+    protected void addTile(Tile tile, int x, int y) {
         for (TileContainer tc : bgTiles) {
             if (tc.tile.equals(tile)) {
                 tc.places.add(new Point(x, y));
@@ -126,7 +126,7 @@ public class PuzzleObject {
         bgTiles.add(tmpContainer);
     }
 
-    private void checkBoundaries(int x, int y, int width, int height) {
+    protected void checkBoundaries(int x, int y, int width, int height) {
         if (x < xBegin) {
             xBegin = x;
         }
@@ -187,13 +187,20 @@ public class PuzzleObject {
         return height;
     }
 
-    private class TileContainer {
-
+    protected class TileContainer {
         ArrayList<Point> places = new ArrayList<>();
         Tile tile;
+        
+        public Tile getTile() {
+            return tile;
+        }
+        
+        public ArrayList<Point> getPlaces() {
+            return places;
+        }
     }
 
-    private class FGTileContainer {
+    protected class FGTileContainer {
 
         ArrayList<Point> additionalPlaces = new ArrayList<>();
         SpriteSheet texture;
@@ -201,6 +208,15 @@ public class PuzzleObject {
         boolean wall;
         int xBegin, yBegin;
 
+        public void setBeginning(int x, int y) {
+            xBegin = x;
+            yBegin = y;
+        }
+        
+        public void addPlace(Point p) {
+            additionalPlaces.add(p);
+        }
+        
         //0  1 2 3       4    5      6          7
         //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
         public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
@@ -219,10 +235,9 @@ public class PuzzleObject {
             });
             return fgt;
         }
-
     }
-    
-    private class AreaContainer {
+
+    protected class AreaContainer {
         int[] values;
 
         public AreaContainer(int x, int y, int width, int height, int shadowHeight) {
@@ -234,5 +249,12 @@ public class PuzzleObject {
             return a;
         }
 
+        public int[] getValues() {
+            return values;
+        }
+        
+        public int getY() {
+            return values[1];
+        }
     }
 }

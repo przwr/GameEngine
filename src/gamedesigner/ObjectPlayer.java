@@ -90,7 +90,6 @@ public class ObjectPlayer extends Player {
 		tileSize = place.getTileSize();
 		objPlace = (ObjectPlace) place;
 		onTop = true;
-		cp = new CentralPoint(0, 0, objPlace);
 	}
 
 	@Override
@@ -231,7 +230,6 @@ public class ObjectPlayer extends Player {
 
 		if (objPlace.keyPressed(KEY_HOME)) {
 			objPlace.setCentralPoint(ix, iy);
-			cp.setCentralPoint(ix, iy);
 		}
 
 		if (objPlace.keyPressed(KEY_TAB)) {
@@ -298,7 +296,6 @@ public class ObjectPlayer extends Player {
 			camera.setMap(newMap);
 		}
 		objMap = (ObjectMap) newMap;
-		map.addObject(cp);
 	}
 
 	@Override

@@ -30,6 +30,7 @@ public class NamingScreen extends javax.swing.JFrame {
         CancelB = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("SAVE AS");
 
         jLabel1.setText("Name:");
 
@@ -95,7 +96,7 @@ public class NamingScreen extends javax.swing.JFrame {
     
     private void OKBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKBActionPerformed
         String name = NameTF.getText();
-        if (name.equals("") || !objPlace.saveObject(name, this)) {
+        if (name.equals("") || !objPlace.saveObject(name, this, true)) {
             return;
         }
         dispose();

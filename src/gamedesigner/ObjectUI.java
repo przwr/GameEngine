@@ -92,9 +92,9 @@ public class ObjectUI extends GUIObject {
                 glScaled(Settings.scale, Settings.scale, 1);
             }
             
-            txt = Methods.editWithKeyboard(txt);
+            /*txt = Methods.editWithKeyboard(txt);
                         
-            place.renderMessage(0, tile * 3, tile * 3, "KEY: " + txt, new Color(1f, 1f, 1f));
+            place.renderMessage(0, tile * 3, tile * 3, "KEY: " + txt, new Color(1f, 1f, 1f));*/
             glTranslatef(tile / 2 + xEffect, tile / 2 + yEffect, 0);
 
             if (change) {
