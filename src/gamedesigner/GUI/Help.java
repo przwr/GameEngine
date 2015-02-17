@@ -27,7 +27,7 @@ public class Help extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("H : \t\thelp\nM:\t\tzmiana trybu\n\nTAB:\t\tzniknięcie tła\ncltr : \t\tprzeciaganie\ncltr + Z : \t\tzeruj przeciagniecie\nSPACE: \t\tstwórz\nDELETE:\t\tusuń\nHOME:\t\tustaw punkt poczatkowy\n\n//TRYB TILE'OWY\n\nSHIFT + strzalki : \tzmiana tile'a\nL : \t\tładuj spritesheeta\n\n//TRYB BLOKOWY\n\nSHIFT + strzalki:\tzmiana wysokosci\n");
+        jTextArea1.setText("H : \t\tHelp\nM:\t\tZmiana trybu\nS:\t\tZapisz jako\ncltr + S:\t\tZapisz\nL:\t\tŁaduj objekt\n\nTAB:\t\tZniknięcie tła\ncltr : \t\tPrzeciąganie\ncltr + Z : \t\tZeruj przeciągnięcie\nSPACE: \t\tStwórz\nDELETE:\t\tUsuń\nHOME:\t\tUstaw punkt poczatkowy\n\n//TRYB TILE'OWY\n\nSHIFT + strzałki : \tZmiana tile'a\nT : \t\tŁaduj spritesheeta\n\n//TRYB BLOKOWY\n\nSHIFT + strzałki:\tZmiana wysokości\n");
         jTextArea1.setFocusable(false);
         jScrollPane1.setViewportView(jTextArea1);
 

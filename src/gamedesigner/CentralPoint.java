@@ -7,6 +7,7 @@ package gamedesigner;
 
 import collision.Figure;
 import engine.Drawer;
+import engine.Point;
 import game.Settings;
 import game.gameobject.GameObject;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
@@ -33,6 +34,10 @@ public class CentralPoint extends GameObject {
         tile = objPlace.getTileSize();
         onTop = true;
         depth = -100;
+    }
+
+    public Point getCentralPoint() {
+        return new Point((int) x / tile, (int) y / tile);
     }
 
     public void setCentralPoint(int x, int y) {

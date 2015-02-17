@@ -160,11 +160,21 @@ public class TemporaryBlock extends GameObject {
                 for (int ix = xBegin; ix <= xEnd; ix++) {
                     t = map.getTile(ix, iy);
                     if (t != null && t.getPureDepth() != -1) {
+                        System.out.println(ix + " " + iy);
                         p = t.popTileFromStackBack();
                         if (level + 1 <= upHeight) {
-                            fgt = ForegroundTile.createWall(t.getSpriteSheet(), tile, p.getX(), p.getY());
+                            fgt = ForegroundTile.createWall(
+                                    t.getSpriteSheet(), 
+                                    tile, 
+                                    p.getX(), 
+                                    p.getY());
                         } else {
-                            fgt = ForegroundTile.createOrdinaryShadowHeight(t.getSpriteSheet(), tile, p.getX(), p.getY(), level * tile);
+                            fgt = ForegroundTile.createOrdinaryShadowHeight(
+                                    t.getSpriteSheet(), 
+                                    tile, 
+                                    p.getX(), 
+                                    p.getY(), 
+                                    level * tile);
                         }
                         while ((p = t.popTileFromStackBack()) != null) {
                             fgt.addTileToStack(p.getX(), p.getY());
@@ -199,6 +209,11 @@ public class TemporaryBlock extends GameObject {
     public boolean checkCollision(int x, int y, int width, int height) {
         return ((this.x > x && this.x - x < width) || (this.x <= x && x - this.x < this.width))
                 && ((this.y > y && this.y - y < height) || (this.y <= y && y - this.y < this.height));
+    }
+
+    public String saveToString(int xBegin, int yBegin, int tile) {
+        return "tb:" + ((int) (x - xBegin) / tile) + ":" + ((int) (y - yBegin) / tile) + ":"
+                + (width / tile) + ":" + (height / tile) + ":" + upHeight;
     }
 
     @Override
