@@ -14,7 +14,6 @@ import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import static org.lwjgl.opengl.GL11.*;
-import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteBase;
 import sprites.SpriteSheet;
@@ -49,8 +48,6 @@ public abstract class Place extends ScreenPlace {
 		sprites = new SpriteBase();
 		initializeMethods();
 	}
-
-	protected abstract void renderText(Camera cam);
 
 	public abstract void generateAsGuest();
 
@@ -106,14 +103,12 @@ public abstract class Place extends ScreenPlace {
 					Renderer.preRenderShadowedLights(this, currentCamera);
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 					if (map != null) {
-						map.updateCamerasVariables(currentCamera);
+						map.updateCamerasVariables(currentCamera);						
 						map.renderBackground(currentCamera);
 						map.renderObjects(currentCamera);
-						renderMessage(0, 256, 32, "Jak jest napis na ekranie, to nie ma błędów ze światłem WTF?", Color.yellow);
 						if (map.visibleLights.size() > 0) {
 							Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
 						}
-						
 						currentCamera.renderGUI();
 					}
 					glDisable(GL_SCISSOR_TEST);

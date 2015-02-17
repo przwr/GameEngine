@@ -61,7 +61,7 @@ public class Settings {
 	public static boolean multiSampleSupported;
 	public static boolean shadowOff;
 	public static boolean scaled;
-	public static double scale;
+	public static double scale; // TODO scale for each Player/Camera - individual scale for each splitScreen
 	public static double nativeScale;
 	public static String serverIP = "127.0.0.1";
 

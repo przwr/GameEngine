@@ -9,7 +9,6 @@ import engine.Delay;
 import game.gameobject.Mob;
 import game.Game;
 import game.Settings;
-import game.place.cameras.Camera;
 import game.place.Place;
 import engine.FontBase;
 import engine.Main;
@@ -130,7 +129,7 @@ public class MyPlace extends Place {
 					}
 					((Player) players[0]).getCamera().update();
 				}
-				//1d, 0.875d, 0.75d, 0.625, 0.5, 0.375, 0.25, 0.125
+				//1d, 0.875d, 0.75d, 0.625, 0.5, 0.375, 0.25
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
 				Settings.scale = Settings.nativeScale;
@@ -197,10 +196,6 @@ public class MyPlace extends Place {
 		} else {
 			return 1;
 		}
-	}
-
-	@Override
-	protected void renderText(Camera cam) {
 	}
 
 	private interface update {
