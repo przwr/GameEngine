@@ -11,12 +11,13 @@ import engine.Delay;
  *
  * @author przemek
  */
-public class Animation extends Appearance { // ANIMATION extends Sprite!
+public class Animation extends Appearance {
 
     private final SpriteSheet spriteSheet;
     private final Delay delay;
-    private int currentFrame, start, end;
+    private final int start, end;
     private boolean animate = true;
+    private int currentFrame;
 
     public Animation(SpriteSheet sprite, int delayTime) {
         this.spriteSheet = sprite;

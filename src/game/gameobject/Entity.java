@@ -42,8 +42,6 @@ public abstract class Entity extends GameObject {
 
 	protected abstract void setPosition(int xPosition, int yPosition);
 
-	public abstract void renderName(Camera camera);
-
 	public synchronized void updateSoft() {
 		try {
 			if (canUpdate()) {

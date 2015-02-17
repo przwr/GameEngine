@@ -140,7 +140,6 @@ public class Renderer {
 		lightY = emitter.getLight().getHeight();
 		glPushMatrix();
 		glTranslatef(cam.getXOffsetEffect(), cam.getYOffsetEffect(), 0);
-//glTranslatef(Settings.scale * emitter.getX() + cam.getXOffsetEffect() - lightX / 2, Settings.scale * emitter.getY() + cam.getYOffsetEffect() - lightY / 2, 0);
 		if (Settings.scaled) {
 			glScaled(Settings.scale, Settings.scale, 1);
 		}

@@ -11,13 +11,11 @@ import collision.Rectangle;
 import engine.Drawer;
 import engine.Methods;
 import game.Settings;
-import game.place.cameras.Camera;
 import game.place.Place;
 import net.packets.Update;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslated;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 
@@ -89,12 +87,6 @@ public abstract class Mob extends Entity {
 	}
 
 	@Override
-	public void renderName(Camera camera) {
-		place.renderMessage(0, camera.getXOffset() + (int) (getX() * Settings.scale), camera.getYOffset() + (int) ((getY() + sprite.yStart() + collision.getHeight() / 2 - jumpHeight) * Settings.scale),
-				name, new Color(place.red, place.green, place.blue));
-	}
-
-	@Override
 	public void render(int xEffect, int yEffect) {
 		if (sprite != null) {
 			glPushMatrix();
@@ -104,6 +96,12 @@ public abstract class Mob extends Entity {
 			}
 			glTranslatef(getX(), getY(), 0);
 			sprite.render();
+
+			if (Settings.scaled) {
+				glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+			}
+			place.renderMessage(0, (int) ((collision.getWidth() * Settings.scale) / 2), (int) ((collision.getHeight() * Settings.scale) / 2),
+					name, new Color(place.red, place.green, place.blue));
 			glPopMatrix();
 		}
 	}
@@ -122,19 +120,7 @@ public abstract class Mob extends Entity {
 	public void renderShadow(int xEffect, int yEffect, Figure figure) {
 		if (sprite != null) {
 			glPushMatrix();
-
-//			glTranslatef(96, 94, 0); //0.75
-//			glTranslatef(384 - 384 * Settings.scale, 376 - 376 * Settings.scale, 0);
-//			glTranslated(288 * (1 - Settings.scale), 472 * (1 - Settings.scale), 0);
-//			glTranslatef(288, 282, 0); //0.25
-//			if (Settings.scaled) {
-//				glScaled(Settings.scale, Settings.scale, 1);
-//			}
-			glTranslatef(getX() + xEffect, getY() + yEffect, 0); //1
-//			glTranslatef(getX() + 128 + xEffect, getY() + 124 + yEffect, 0); //0.75
-//			glTranslatef(getX() + 256 + xEffect, getY() + 252 + yEffect, 0); //0.6
-//			glTranslatef(getX() + 384 + xEffect, getY() + 376+ yEffect, 0); //0.5
-//			glTranslatef(getX() + 1152 + xEffect, getY() + 1128 + yEffect, 0); //0.25
+			glTranslatef(getX() + xEffect, getY() + yEffect, 0);
 			Drawer.drawShapeInBlack(sprite);
 			glPopMatrix();
 		}

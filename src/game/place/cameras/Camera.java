@@ -6,6 +6,7 @@
 package game.place.cameras;
 
 import engine.Delay;
+import engine.Drawer;
 import engine.Methods;
 import game.Settings;
 import game.gameobject.GUIObject;
@@ -59,6 +60,7 @@ public abstract class Camera {
 	}
 
 	public void renderGUI() {
+		Drawer.refreshForRegularDrawing();
 		gui.stream().forEach((go) -> {
 			if (go.isVisible()) {
 				go.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
@@ -175,6 +177,7 @@ public abstract class Camera {
 
 	public void setMap(Map map) {
 		this.map = map;
+		update();
 	}
 
 	public void setShakeAmplitude(int shakeAmplitude) {

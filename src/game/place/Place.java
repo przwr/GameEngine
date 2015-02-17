@@ -5,7 +5,6 @@
  */
 package game.place;
 
-import engine.Drawer;
 import game.Game;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import static org.lwjgl.opengl.GL11.*;
+import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteBase;
 import sprites.SpriteSheet;
@@ -56,12 +56,12 @@ public abstract class Place extends ScreenPlace {
 
 	public abstract void generateAsHost();
 
-	public void addGUI(GUIObject go) {
-		for (GameObject p : players) {
-			if (p != null) {
-				Camera c = ((Player) p).getCamera();
-				if (c != null) {
-					c.addGUI(go);
+	public void addGUI(GUIObject gui) {
+		for (GameObject player : players) {
+			if (player != null) {
+				Camera camera = ((Player) player).getCamera();
+				if (camera != null) {
+					camera.addGUI(gui);
 				}
 			}
 		}
@@ -106,14 +106,14 @@ public abstract class Place extends ScreenPlace {
 					Renderer.preRenderShadowedLights(this, currentCamera);
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 					if (map != null) {
-						Drawer.drawRectangleInBlack(currentCamera.getXOffsetEffect() + currentCamera.getXStart(), currentCamera.getYOffset() + currentCamera.getYStart(), currentCamera.getWidth(), currentCamera.getHeight());
 						map.updateCamerasVariables(currentCamera);
 						map.renderBackground(currentCamera);
 						map.renderObjects(currentCamera);
-						map.renderText(currentCamera);
+						renderMessage(0, 256, 32, "Jak jest napis na ekranie, to nie ma błędów ze światłem WTF?", Color.yellow);
 						if (map.visibleLights.size() > 0) {
 							Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
 						}
+						
 						currentCamera.renderGUI();
 					}
 					glDisable(GL_SCISSOR_TEST);
@@ -134,11 +134,9 @@ public abstract class Place extends ScreenPlace {
 			Renderer.preRenderShadowedLights(this, currentCamera);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			if (map != null) {
-				Drawer.drawRectangleInBlack(currentCamera.getXOffsetEffect() + currentCamera.getXStart(), currentCamera.getYOffset() + currentCamera.getYStart(), currentCamera.getWidth(), currentCamera.getHeight());
 				map.updateCamerasVariables(currentCamera);
 				map.renderBackground(currentCamera);
 				map.renderObjects(currentCamera);
-				map.renderText(currentCamera);
 				if (map.visibleLights.size() > 0) {
 					Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
 				}

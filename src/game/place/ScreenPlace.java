@@ -9,7 +9,6 @@ import engine.FontBase;
 import game.Game;
 import game.gameobject.GameObject;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.TrueTypeFont;
 
 /**
  *
@@ -18,7 +17,7 @@ import org.newdawn.slick.TrueTypeFont;
 public abstract class ScreenPlace {
 
     public final Game game;
-    public float red, green, blue;
+    public float red, green, blue; // TO DO - put it to map
     public FontBase fonts;
     public GameObject[] players;
 

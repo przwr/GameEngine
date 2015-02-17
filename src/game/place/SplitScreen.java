@@ -77,7 +77,7 @@ public class SplitScreen {
         return false;
     }
 
-    public static void changeSSMode2(Place place) {
+    public static void changeSplitScreenMode2(Place place) {
         if (place.changeSSMode) {
             if (Settings.horizontalSplitScreen) {
                 Settings.horizontalSplitScreen = false;
@@ -92,7 +92,7 @@ public class SplitScreen {
         }
     }
 
-    public static void changeSSMode3(Place place) {
+    public static void changeSplitScreenMode3(Place place) {
         if (place.changeSSMode) {
             if (Settings.horizontalSplitScreen) {
                 Settings.horizontalSplitScreen = false;
@@ -157,7 +157,7 @@ public class SplitScreen {
         };
         splits[1] = (Place place, int player) -> {
             if (!Settings.joinSplitScreen || isFar(place)) {
-                changeSSMode2(place);
+                changeSplitScreenMode2(place);
                 orients2[Settings.horizontalSplitScreen ? 0 : 1].setOrientation(place, player);
             } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
@@ -229,7 +229,7 @@ public class SplitScreen {
         };
         splits[2] = (Place place, int p) -> {
             if (!Settings.joinSplitScreen || isFar(place)) {
-                changeSSMode3(place);
+                changeSplitScreenMode3(place);
                 orients3[Settings.horizontalSplitScreen ? 0 : 1].setOrientation(place, p);
             } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());

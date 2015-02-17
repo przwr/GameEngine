@@ -9,7 +9,6 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import game.gameobject.Player;
-import game.place.cameras.Camera;
 import game.place.Place;
 import game.place.Light;
 import sprites.Animation;
@@ -62,32 +61,31 @@ public class MyPlayer extends Player {
 	}
 
 	@Override
-	public void initialize(int startX, int startY, int width, int height, Place place, int x, int y) {
+	public void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y) {
 		this.place = place;
 		this.online = place.game.online;
 		this.width = width;
 		this.height = height;
-		this.xStart = startX;
-		this.yStart = startY;
+		this.xStart = xStart;
+		this.yStart = yStart;
 		this.setResistance(2);
 		this.emitter = true;
 		initialize(name, x, y);
 		this.sprite = place.getSpriteSheet("apple");
-		this.light = new Light("light", 0.85f, 0.85f, 0.85f,
-				Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place);
+		this.light = new Light("light", 0.85f, 0.85f, 0.85f, Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place);
 		this.animation = new Animation((SpriteSheet) sprite, 200);
 		emits = false;
 		setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
 	}
 
 	@Override
-	public void initialize(int startX, int startY, int width, int height, Place place) {
+	public void initialize(int xStart, int yStart, int width, int height, Place place) {
 		this.place = place;
 		this.online = place.game.online;
 		this.width = width;
 		this.height = height;
-		this.xStart = startX;
-		this.yStart = startY;
+		this.xStart = xStart;
+		this.yStart = yStart;
 		this.setResistance(2);
 		this.emitter = true;
 		visible = true;
@@ -127,12 +125,6 @@ public class MyPlayer extends Player {
 	}
 
 	@Override
-	public void renderName(Camera camera) {// TODO Imiona renderowane razem z graczem!
-		place.renderMessage(0, camera.getXOffset() + (int) (x * Settings.scale), camera.getYOffset() + (int) ((y + sprite.yStart() + collision.getHeight() / 2 - jumpHeight) * Settings.scale),
-				name, new Color(place.red, place.green, place.blue));
-	}
-
-	@Override
 	public void render(int xEffect, int yEffect) {
 		if (sprite != null) {
 			glPushMatrix();
@@ -146,6 +138,12 @@ public class MyPlayer extends Player {
 			Drawer.refreshColor();
 			glTranslatef(0, (int) -jumpHeight, 0);
 			getAnimation().render();
+
+			if (Settings.scaled) {
+				glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+			}
+			place.renderMessage(0, (int) ((collision.getWidth() * Settings.scale) / 2), (int) ((collision.getHeight() * Settings.scale) / 2),
+					name, new Color(place.red, place.green, place.blue));
 			glPopMatrix();
 		}
 	}
@@ -210,9 +208,9 @@ public class MyPlayer extends Player {
 	@Override
 	public synchronized void updateRest(Update update) {
 		try {
-			Map map = getPlace().getMapById(((MPlayerUpdate) update).getMapId());
-			if (map != null && this.map != map) {
-				changeMap(map);
+			Map currentMap = getPlace().getMapById(((MPlayerUpdate) update).getMapId());
+			if (currentMap != null && this.map != currentMap) {
+				changeMap(currentMap);
 			}
 			if (((MPlayerUpdate) update).isHop()) {
 				setJumping(true);

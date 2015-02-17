@@ -32,7 +32,6 @@ public class ObjectPlayer extends Player {
 	private int maxtimer;
 	private int ix, iy;
 	private int xtimer, ytimer;
-	private int usedDepth;
 	private int tileSize;
 	private int xStop, yStop;
 
@@ -49,7 +48,6 @@ public class ObjectPlayer extends Player {
 		maxtimer = 7;
 		xtimer = 0;
 		ytimer = 0;
-		usedDepth = 0;
 		initializeController();
 	}
 
@@ -282,7 +280,7 @@ public class ObjectPlayer extends Player {
 		}
 
 		Drawer.refreshForRegularDrawing();
-		
+
 		if (Settings.scaled) {
 			glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
 		}
@@ -311,10 +309,6 @@ public class ObjectPlayer extends Player {
 
 	@Override
 	public void updateRest(Update update) {
-	}
-
-	@Override
-	public void renderName(Camera camera) {
 	}
 
 	@Override

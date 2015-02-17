@@ -28,10 +28,10 @@ public class SplitScreenChoice extends MenuChoice {
         } else {
             if (menu.game.getPlace().playersCount == 2) {
                 menu.game.getPlace().changeSSMode = true;
-                SplitScreen.changeSSMode2(menu.game.getPlace());
+                SplitScreen.changeSplitScreenMode2(menu.game.getPlace());
             } else if (menu.game.getPlace().playersCount == 3) {
                 menu.game.getPlace().changeSSMode = true;
-                SplitScreen.changeSSMode3(menu.game.getPlace());
+                SplitScreen.changeSplitScreenMode3(menu.game.getPlace());
             } else {
                 Settings.horizontalSplitScreen = !Settings.horizontalSplitScreen;
             }

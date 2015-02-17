@@ -31,9 +31,8 @@ public class MyPlace extends Place {
 	private final Action changeSplitScreenMode;
 	private final Action changeSplitScreenJoin;
 	private final update[] updates = new update[2];
-	private boolean MINUS, PLUS;
-	private Delay delay = new Delay(100);
-	private double step = 0.03125;
+	private final Delay delay = new Delay(100);
+	private final double step = 0.03125;
 
 	public MyPlace(Game game, int tileSize) {
 		super(game, tileSize);
@@ -112,7 +111,6 @@ public class MyPlace extends Place {
 //			if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
 //				sounds.getSound("MumboMountain").fade(0.5, false);
 //			}
-
 			if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
 				if (delay.isOver()) {
 					delay.start();
@@ -136,6 +134,7 @@ public class MyPlace extends Place {
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
 				Settings.scale = Settings.nativeScale;
+				((Player) players[0]).getCamera().update();
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
 				Main.refreshGamma();

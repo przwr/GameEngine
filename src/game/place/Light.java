@@ -22,7 +22,9 @@ import sprites.Sprite;
  */
 public class Light {
 
+	protected Lights lights;
 	protected Sprite texture;
+	protected int piece;
 	protected float red, green, blue;
 
 	protected FrameBufferObject frameBufferObject;
@@ -36,6 +38,7 @@ public class Light {
 					: new RegularFrameBufferObject(width, height);
 		}
 		this.texture = Sprite.create(name, width, height, null);
+		this.lights = new Lights(1, place.getSpriteSheet("light"));
 	}
 
 	public void setSize(int width, int height) {
@@ -57,6 +60,7 @@ public class Light {
 			texture.render();
 			glPopMatrix();
 		}
+//		lights.renderPiece(piece);		
 	}
 
 	public void render(int height) {
@@ -89,5 +93,4 @@ public class Light {
 	public FrameBufferObject getFBO() {
 		return frameBufferObject;
 	}
-
 }
