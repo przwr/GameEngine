@@ -7,9 +7,7 @@ package game.gameobject;
 
 import engine.Methods;
 import engine.Time;
-import game.Settings;
 import game.place.Place;
-import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.newdawn.slick.Color;

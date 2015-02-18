@@ -30,7 +30,7 @@ public class SpriteSheet extends Sprite {
 
     @Override
     public void render() {  //Rysuje CAŁY spritesheet
-        bindCheck();
+        bindCheckByID();
         float widthWhole = texture.getImageWidth();
         float heightWhole = texture.getImageHeight();
         glTranslatef(xStart, yStart, 0);

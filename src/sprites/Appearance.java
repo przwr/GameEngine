@@ -11,7 +11,9 @@ package sprites;
  */
 public abstract class Appearance {
     
-    public abstract void bindCheck();
+    public abstract void bindCheckByID();
+    
+    public abstract void bindCheckByTexture();
 
     public abstract void render();
 

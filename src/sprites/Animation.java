@@ -6,6 +6,8 @@
 package sprites;
 
 import engine.Delay;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_BINDING_2D;
+import static org.lwjgl.opengl.GL11.glGetInteger;
 
 /**
  *
@@ -28,8 +30,13 @@ public class Animation extends Appearance {
     }
 
     @Override
-    public void bindCheck() {
-        spriteSheet.bindCheck();
+    public void bindCheckByID() {
+        spriteSheet.bindCheckByID();
+    }
+
+    @Override
+    public void bindCheckByTexture() {
+        spriteSheet.bindCheckByTexture();
     }
 
     @Override
