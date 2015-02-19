@@ -193,8 +193,6 @@ public class Map {
         cameraYEnd = camera.getYEnd();
         cameraXOffEffect = camera.getXOffsetEffect();
         cameraYOffEffect = camera.getYOffsetEffect();
-        System.out.println((cameraXStart - cameraXEnd) + " " + 
-                (cameraYStart - cameraYEnd));
     }
 
 	public void renderBackground(Camera camera) {
@@ -212,7 +210,6 @@ public class Map {
 				}
 			}
 		}
-
 	}
 
     public void renderObjects(Camera camera) {

@@ -75,6 +75,10 @@ public abstract class Place extends ScreenPlace {
         return sprites.getSprite(textureKey);
     }
 
+	public Sprite getSpriteInSize(String textureKey, int width, int height) {
+		return sprites.getSpriteInSize(textureKey, width, height);
+	}
+
     public SpriteSheet getSpriteSheet(String textureKey) {
         return sprites.getSpriteSheet(textureKey);
     }
