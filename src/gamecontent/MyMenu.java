@@ -151,12 +151,12 @@ public class MyMenu extends Menu {
     @Override
     protected void renderText() {
         int positions = menus[current].getOptionsNumber() + 1;
-        renderMessage(1, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
+        renderMessageCentered(1, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
                 * fonts.write(0).getHeight() * 0.7),
                 menus[current].getLabel(), new Color(red, green, blue));
         positions--;
         for (int i = 0; i < menus[current].getOptionsNumber(); i++) {
-            renderMessage(0, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.write(0).getHeight() * 0.7), menus[current].getChoice(i).getLabel(), getColor(menus[current].getChoice(i)));
+            renderMessageCentered(0, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.write(0).getHeight() * 0.7), menus[current].getChoice(i).getLabel(), getColor(menus[current].getChoice(i)));
             positions--;
         }
     }

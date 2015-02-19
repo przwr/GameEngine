@@ -17,24 +17,31 @@ import org.newdawn.slick.Color;
  */
 public abstract class ScreenPlace {
 
-	public final Game game;
-	public float red, green, blue; // TO DO - put it to map
-	public FontBase fonts;
-	public GameObject[] players;
+    public final Game game;
+    public float red, green, blue; // TO DO - put it to map
+    public FontBase fonts;
+    public GameObject[] players;
 
-	public ScreenPlace(Game game) {
-		this.game = game;
-	}
+    public ScreenPlace(Game game) {
+        this.game = game;
+    }
 
-	public abstract void update();
+    public abstract void update();
 
-	public abstract void render();
+    public abstract void render();
 
-	public void renderMessage(int i, int x, int y, String message, Color color) {
-		if (fonts != null) {
-			Drawer.bindFontTexture();
-			fonts.write(i).drawString(x - fonts.write(i).getWidth(message) / 2,
-					y - (4 * fonts.write(i).getHeight()) / 3, message, color);
-		}
-	}
+    public void renderMessageCentered(int i, int x, int y, String message, Color color) {
+        if (fonts != null) {
+            Drawer.bindFontTexture();
+            fonts.write(i).drawString(x - fonts.write(i).getWidth(message) / 2,
+                    y - (4 * fonts.write(i).getHeight()) / 3, message, color);
+        }
+    }
+
+    public void renderMessage(int i, int x, int y, String message, Color color) {
+        if (fonts != null) {
+            Drawer.bindFontTexture();
+            fonts.write(i).drawString(x, y, message, color);
+        }
+    }
 }

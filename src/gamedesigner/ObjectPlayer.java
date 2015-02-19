@@ -282,7 +282,7 @@ public class ObjectPlayer extends Player {
         if (Settings.scaled) {
             glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
         }
-        place.renderMessage(0, (int) (-tileSize * Settings.scale) / 2, 0, ((int) x / tileSize) + " " + ((int) y / tileSize), new Color(1f, 1f, 1f));
+        place.renderMessageCentered(0, (int) (-tileSize * Settings.scale) / 2, 0, ((int) x / tileSize) + " " + ((int) y / tileSize), new Color(1f, 1f, 1f));
 
         glPopMatrix();
     }

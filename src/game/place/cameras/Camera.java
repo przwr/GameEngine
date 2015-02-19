@@ -63,11 +63,15 @@ public abstract class Camera {
 		Drawer.refreshForRegularDrawing();
 		gui.stream().forEach((go) -> {
 			if (go.isVisible()) {
-				go.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
+				go.render(0, 0);
 			}
 		});
 	}
 
+        public void printMessage(String message) {
+            
+        }
+        
 	public void addGUI(GUIObject object) {
 		if (!gui.contains(object)) {
 			gui.add(object);

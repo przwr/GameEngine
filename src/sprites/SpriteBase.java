@@ -7,6 +7,7 @@ package sprites;
 
 import engine.Methods;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +36,9 @@ public class SpriteBase {
             }
         }
         Sprite newSprite = loadSprite(textureKey);
-        sprites.add(newSprite);
+        if (newSprite != null) {
+            sprites.add(newSprite);
+        }
         return newSprite;
     }
 
@@ -46,8 +49,23 @@ public class SpriteBase {
             }
         }
         SpriteSheet temp = (SpriteSheet) loadSprite(textureKey);
-        sprites.add(temp);
+        if (temp != null) {
+            sprites.add(temp);
+        }
         return temp;
+    }
+
+    public ArrayList<String> getAvalibleSpritesList(File folder) {
+        ArrayList<String> list = new ArrayList<>();
+        File[] files = folder.listFiles();
+        for (File f : files) {
+            if (f.isDirectory()) {
+                list.addAll(getAvalibleSpritesList(f));
+            } else if (f.getPath().endsWith("str")) {
+                list.add(f.getName());
+            }
+        }
+        return list;
     }
 
     public Sprite loadSprite(String name) {
@@ -78,6 +96,7 @@ public class SpriteBase {
             return null;
         }
         try {
+            System.out.println(sprite);
             texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
