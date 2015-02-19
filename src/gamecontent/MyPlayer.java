@@ -144,7 +144,7 @@ public class MyPlayer extends Player {
             if (Settings.scaled) {
                 glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
             }
-            place.renderMessage(0, (int) ((collision.getWidth() * Settings.scale) / 2), (int) ((collision.getHeight() * Settings.scale) / 2),
+            place.renderMessageCentered(0, (int) ((collision.getWidth() * Settings.scale) / 2), (int) ((collision.getHeight() * Settings.scale) / 2),
                     name, new Color(place.red, place.green, place.blue));
             glPopMatrix();
         }

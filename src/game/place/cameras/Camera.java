@@ -67,6 +67,10 @@ public abstract class Camera {
 		});
 	}
 
+        public void printMessage(String message) {
+            
+        }
+        
 	public void addGUI(GUIObject object) {
 		if (!gui.contains(object)) {
 			gui.add(object);

@@ -225,7 +225,7 @@ public class ObjectPlace extends Place {
 			return 1;
 		}
 	}
-
+        
 	public void loadObject() {
 		PathFinder pf = new PathFinder(this, lastFile, new FileNameExtensionFilter(
 				"Puzzle Objects (.puz)", "puz"), javax.swing.JFileChooser.FILES_ONLY);
@@ -260,7 +260,7 @@ public class ObjectPlace extends Place {
 			lastName = file[0];
 		}
 	}
-
+        
 	private interface update {
 
 		void update();

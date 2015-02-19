@@ -7,6 +7,7 @@ package sprites;
 
 import engine.Methods;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,27 +29,44 @@ public class SpriteBase {
 	public SpriteBase() {
 	}
 
-	public Sprite getSprite(String textureKey) {
-		for (Sprite sprite : sprites) {
-			if (sprite.getKey().equals(textureKey)) {
-				return sprite;
-			}
-		}
-		Sprite newSprite = loadSprite(textureKey);
-		sprites.add(newSprite);
-		return newSprite;
-	}
+    public Sprite getSprite(String textureKey) {
+        for (Sprite sprite : sprites) {
+            if (sprite.getKey().equals(textureKey)) {
+                return sprite;
+            }
+        }
+        Sprite newSprite = loadSprite(textureKey);
+        if (newSprite != null) {
+            sprites.add(newSprite);
+        }
+        return newSprite;
+    }
 
-	public SpriteSheet getSpriteSheet(String textureKey) {
-		for (Sprite sprite : sprites) {
-			if (sprite.getKey().equals(textureKey)) {
-				return (SpriteSheet) sprite;
-			}
-		}
-		SpriteSheet temp = (SpriteSheet) loadSprite(textureKey);
-		sprites.add(temp);
-		return temp;
-	}
+    public SpriteSheet getSpriteSheet(String textureKey) {
+        for (Sprite sprite : sprites) {
+            if (sprite.getKey().equals(textureKey)) {
+                return (SpriteSheet) sprite;
+            }
+        }
+        SpriteSheet temp = (SpriteSheet) loadSprite(textureKey);
+        if (temp != null) {
+            sprites.add(temp);
+        }
+        return temp;
+    }
+
+    public ArrayList<String> getAvalibleSpritesList(File folder) {
+        ArrayList<String> list = new ArrayList<>();
+        File[] files = folder.listFiles();
+        for (File f : files) {
+            if (f.isDirectory()) {
+                list.addAll(getAvalibleSpritesList(f));
+            } else if (f.getPath().endsWith("str")) {
+                list.add(f.getName());
+            }
+        }
+        return list;
+    }
 
 	private Sprite loadSprite(String name) {
 		int width, height, startX, startY, pieceWidth, pieceHeight;
