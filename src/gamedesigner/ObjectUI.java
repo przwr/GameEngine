@@ -115,11 +115,11 @@ public class ObjectUI extends GUIObject {
 			Drawer.drawRectangle(0, -hTex - 2, d - 1, hTex + 2);
 			Drawer.drawRectangle(wTex + d + 1, 0, d - 1, hTex + 2);
 
-//			if (Settings.scaled) {
-//				glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
-//			}			
-//			text = Methods.editWithKeyboard(text);
-//			place.renderMessage(0, (int) ((tile * 1.5) * Settings.scale), (int) ((tile * 0.5) * Settings.scale), "KEY: " + text, new Color(1f, 1f, 1f));
+			if (Settings.scaled) {
+				glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+			}
+			text = Methods.editWithKeyboard(text);
+			place.renderMessage(0, (int) ((tile * 1.5) * Settings.scale), (int) ((tile * 0.5) * Settings.scale), "KEY: " + text, new Color(1f, 1f, 1f));
 			Drawer.refreshForRegularDrawing();
 			glPopMatrix();
 		}

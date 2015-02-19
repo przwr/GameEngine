@@ -196,7 +196,7 @@ public class Map {
 	}
 
 	public void renderBackground(Camera camera) {
-		Drawer.drawRectangleInBlack(camera.getXOffsetEffect() + camera.getXStart(), camera.getYOffset() + camera.getYStart(), camera.getWidth(), camera.getHeight());
+		Drawer.drawRectangleInBlack(0, 0, camera.getWidth(), camera.getHeight());
 		Drawer.refreshForRegularDrawing();
 		for (int y = 0; y < heightInTiles; y++) {
 			if (cameraYStart < (y + 1) * tileSize && cameraYEnd > y * tileSize) {
@@ -210,6 +210,7 @@ public class Map {
 				}
 			}
 		}
+
 	}
 
 	public void renderObjects(Camera camera) {

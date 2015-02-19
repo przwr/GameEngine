@@ -21,8 +21,7 @@ import java.util.ArrayList;
 public abstract class Camera {
 
 	protected final ArrayList<GUIObject> gui = new ArrayList<>();
-	public GameObject[] visibleLights = new GameObject[2048];
-	public int visibleLightsCount;
+	public ArrayList<GameObject> visibleLights = new ArrayList<>();
 	protected final ArrayList<GameObject> owners = new ArrayList<>();
 	protected Map map;
 	protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8;
@@ -63,7 +62,7 @@ public abstract class Camera {
 		Drawer.refreshForRegularDrawing();
 		gui.stream().forEach((go) -> {
 			if (go.isVisible()) {
-				go.render(getXStart() + getXOffsetEffect(), getYStart() + getYOffsetEffect());
+				go.render(0, 0);
 			}
 		});
 	}
@@ -152,11 +151,11 @@ public abstract class Camera {
 	}
 
 	public int getXStart() {
-		return -getXOffsetEffect();
+		return (int) (-getXOffsetEffect() / Settings.scale);
 	}
 
 	public int getYStart() {
-		return -getYOffsetEffect();
+		return (int) (-getYOffsetEffect() / Settings.scale);
 	}
 
 	public int getXEnd() {

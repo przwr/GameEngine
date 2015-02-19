@@ -72,6 +72,10 @@ public abstract class Place extends ScreenPlace {
 		return sprites.getSprite(textureKey);
 	}
 
+	public Sprite getSpriteInSize(String textureKey, int width, int height) {
+		return sprites.getSpriteInSize(textureKey, width, height);
+	}
+
 	public SpriteSheet getSpriteSheet(String textureKey) {
 		return sprites.getSpriteSheet(textureKey);
 	}
@@ -103,7 +107,7 @@ public abstract class Place extends ScreenPlace {
 					Renderer.preRenderShadowedLights(this, currentCamera);
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 					if (map != null) {
-						map.updateCamerasVariables(currentCamera);						
+						map.updateCamerasVariables(currentCamera);
 						map.renderBackground(currentCamera);
 						map.renderObjects(currentCamera);
 						if (map.visibleLights.size() > 0) {
