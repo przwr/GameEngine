@@ -5,11 +5,13 @@
  */
 package game.gameobject;
 
+import engine.Drawer;
 import sprites.Animation;
 import game.place.Map;
 import game.place.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
+import java.util.ArrayList;
 import net.GameOnline;
 
 /**
@@ -26,6 +28,8 @@ public abstract class Player extends Entity {
     protected GameOnline online;
     protected boolean first;
 
+    protected ArrayList<GUIObject> guiList = new ArrayList<>();
+
     public abstract void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y);
 
     public abstract void initialize(int xStart, int yStart, int width, int height, Place place);
@@ -36,6 +40,20 @@ public abstract class Player extends Entity {
 
     public Player(String name) {
         this.name = name;
+    }
+
+    public void addGui(GUIObject gui) {
+        guiList.add(gui);
+        gui.setPlayer(this);
+    }
+
+    public void renderGUI() {
+        Drawer.refreshForRegularDrawing();
+        guiList.stream().forEach((go) -> {
+            if (go.isVisible()) {
+                go.render(0, 0);
+            }
+        });
     }
 
     @Override

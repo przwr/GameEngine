@@ -59,14 +59,11 @@ public abstract class Place extends ScreenPlace {
     public void addGUI(GUIObject gui) {
         for (GameObject player : players) {
             if (player != null) {
-                Camera camera = ((Player) player).getCamera();
-                if (camera != null) {
-                    camera.addGUI(gui);
-                }
+                ((Player) player).addGui(gui);
             }
         }
     }
-    
+
     public SpriteBase getSprites() {
         return sprites;
     }
@@ -75,9 +72,9 @@ public abstract class Place extends ScreenPlace {
         return sprites.getSprite(textureKey);
     }
 
-	public Sprite getSpriteInSize(String textureKey, int width, int height) {
-		return sprites.getSpriteInSize(textureKey, width, height);
-	}
+    public Sprite getSpriteInSize(String textureKey, int width, int height) {
+        return sprites.getSpriteInSize(textureKey, width, height);
+    }
 
     public SpriteSheet getSpriteSheet(String textureKey) {
         return sprites.getSpriteSheet(textureKey);
@@ -97,11 +94,10 @@ public abstract class Place extends ScreenPlace {
 //            }
 //        }
 //    }
-    
     public void printMessage(String message) {
         console.write(message);
     }
-    
+
     private void initializeMethods() {
         renders[0] = () -> {
             tempMaps.clear();
@@ -132,6 +128,8 @@ public abstract class Place extends ScreenPlace {
                             Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                         }
                         currentCamera.renderGUI();
+                        console.setCamera(currentCamera);
+                        console.render(0, 0);
                     }
                     glDisable(GL_SCISSOR_TEST);
                 }
@@ -158,6 +156,8 @@ public abstract class Place extends ScreenPlace {
                     Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                 }
                 currentCamera.renderGUI();
+                console.setCamera(currentCamera);
+                console.render(0, 0);
             }
             glDisable(GL_SCISSOR_TEST);
         };

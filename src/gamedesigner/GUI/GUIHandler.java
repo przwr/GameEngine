@@ -70,7 +70,7 @@ public class GUIHandler extends GUIObject {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        if (camera != null) {
+        if (player != null) {
             glPushMatrix();
             if (Settings.scaled) {
                 glScaled(Settings.scale, Settings.scale, 1);

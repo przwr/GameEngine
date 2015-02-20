@@ -13,6 +13,7 @@ import engine.Drawer;
 import engine.Methods;
 import engine.Point;
 import game.Settings;
+import game.gameobject.GUIObject;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Light;
 import game.place.Map;
@@ -40,7 +41,6 @@ public class ObjectPlayer extends Player {
     private ObjectUI ui;
 
     private int areaHeight;
-    private CentralPoint cp;
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
@@ -61,8 +61,11 @@ public class ObjectPlayer extends Player {
         controler.initialize();
     }
 
-    public void addUI(ObjectUI ui) {
-        this.ui = ui;
+    @Override
+    public void addGui(GUIObject gui) {
+        super.addGui(gui);
+        if (gui instanceof ObjectUI)
+            ui = (ObjectUI) gui;
     }
 
     @Override

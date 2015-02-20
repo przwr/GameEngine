@@ -8,6 +8,7 @@ package game.place;
 import engine.Drawer;
 import game.Settings;
 import game.gameobject.GUIObject;
+import game.place.cameras.Camera;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScaled;
@@ -20,28 +21,33 @@ import org.newdawn.slick.Color;
  */
 public class Console extends GUIObject {
 
-    float alpha;
-    String[] messages;
-    int tile;
+    private float alpha;
+    private final String[] messages;
+    private final int tile;
+    private Camera camera;
 
     public Console(Place place) {
         super("Console", place);
         this.alpha = 0f;
-        this.messages = new String[10];
+        this.messages = new String[20];
         tile = place.getTileSize();
     }
 
     public void write(String message) {
-        alpha = 1f;
+        alpha = 3f;
         for (int i = messages.length - 1; i > 0; i--) {
             messages[i] = messages[i - 1];
         }
         messages[0] = message;
     }
-    
+
+    public void setCamera(Camera cam) {
+        camera = cam;
+    }
+
     @Override
     public void render(int xEffect, int yEffect) {
-        if (camera != null && alpha > 0f) {
+        if (alpha > 0f) {
             glPushMatrix();
             if (Settings.scaled) {
                 glScaled(Settings.scale, Settings.scale, 1);
@@ -50,14 +56,14 @@ public class Console extends GUIObject {
             if (Settings.scaled) {
                 glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
             }
-            int num = 1;
-            for (int i = messages.length - 1; i >= 0; i--) {
-                place.renderMessage(0, (int) ((tile * 0.5) * Settings.scale),
-                        (int) ((num * tile * 0.5) * Settings.scale),
-                        messages[i], new Color(1f, 1f, 1f, alpha));
-                num++;
+            for (int i = 0; i < messages.length; i++) {
+                if (messages[i] != null) {
+                    place.renderMessage(0, (int) ((tile * 0.1) * Settings.scale),
+                            (int) (camera.getHeight() - (i + 1.1) * tile * 0.5 * Settings.scale),
+                            messages[i], new Color(1f, 1f, 1f, alpha));
+                }
             }
-            alpha -= 0.001f;
+            alpha -= 0.01f;
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
         }

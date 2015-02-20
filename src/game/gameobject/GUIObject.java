@@ -10,11 +10,10 @@ package game.gameobject;
  * @author przemek
  */
 import game.place.Place;
-import game.place.cameras.Camera;
 
 public abstract class GUIObject {
 
-    protected Camera camera;
+    protected Player player;
     protected String name;
     protected Place place;
     protected boolean visible;
@@ -26,6 +25,14 @@ public abstract class GUIObject {
     }
 
     public abstract void render(int xEffect, int yEffect);
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+    
+    public Player getPlayer() {
+        return player;
+    }
     
     public String getName() {
         return name;
@@ -41,14 +48,6 @@ public abstract class GUIObject {
 
     public void setPlace(Place place) {
         this.place = place;
-    }
-    
-    public Camera getCamera() {
-        return camera;
-    }
-
-    public void setCamera(Camera camera) {
-        this.camera = camera;
     }
 
     public boolean isVisible() {
