@@ -7,7 +7,6 @@ package gamedesigner;
 
 import collision.Figure;
 import game.gameobject.Player;
-import game.place.cameras.Camera;
 import game.place.Place;
 import engine.Drawer;
 import engine.Methods;
@@ -39,6 +38,7 @@ public class ObjectPlayer extends Player {
     private ObjectMap objMap;
     private ObjectPlace objPlace;
     private ObjectUI ui;
+    private final SimpleKeyboard key;
 
     private int areaHeight;
 
@@ -48,6 +48,7 @@ public class ObjectPlayer extends Player {
         maxtimer = 7;
         xtimer = 0;
         ytimer = 0;
+        key = new SimpleKeyboard();
         initializeController();
     }
 
@@ -64,8 +65,9 @@ public class ObjectPlayer extends Player {
     @Override
     public void addGui(GUIObject gui) {
         super.addGui(gui);
-        if (gui instanceof ObjectUI)
+        if (gui instanceof ObjectUI) {
             ui = (ObjectUI) gui;
+        }
     }
 
     @Override
@@ -103,7 +105,7 @@ public class ObjectPlayer extends Player {
 
     @Override
     protected void move(int xPosition, int yPosition) {
-        boolean cltr = objPlace.key(KEY_LCONTROL);
+        boolean cltr = key.key(KEY_LCONTROL);
 
         if (xtimer == 0) {
             ix = Methods.interval(0, ix + xPosition, map.getTileWidth());
@@ -143,98 +145,104 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void update() {
-        int xPos = 0;
-        int yPos = 0;
-        int mode = objPlace.getMode();
+        if (objPlace.areKeysUsable()) {
+            int xPos = 0;
+            int yPos = 0;
+            int mode = objPlace.getMode();
 
-        maxtimer = objPlace.key(KEY_A) ? 2 : 7;
+            maxtimer = key.key(KEY_A) ? 2 : 7;
+            
+            key.keyboardStart();
 
-        if (objPlace.key(KEY_LCONTROL) && objPlace.key(KEY_Z)) {
-            xStop = ix;
-            yStop = iy;
-        }
+            if (key.key(KEY_LCONTROL) && key.key(KEY_Z)) {
+                xStop = ix;
+                yStop = iy;
+            }
 
-        if (objPlace.key(KEY_UP)) {
-            yPos--;
-        } else if (objPlace.key(KEY_DOWN)) {
-            yPos++;
-        } else {
-            ytimer = 0;
-        }
-        if (objPlace.key(KEY_LEFT)) {
-            xPos--;
-        } else if (objPlace.key(KEY_RIGHT)) {
-            xPos++;
-        } else {
-            xtimer = 0;
-        }
-
-        if (mode == 0) {
-            ui.setChange(objPlace.key(KEY_LSHIFT));
-        }
-
-        if (xPos != 0 || yPos != 0) {
-            if (ui.isChanged()) {
-                if (xtimer == 0 && ytimer == 0) {
-                    ui.changeCoordinates(xPos, yPos);
-                    xtimer = 1;
-                    ytimer = 1;
-                }
-            } else if (mode == 1 && objPlace.key(KEY_LSHIFT)) {
-                if (xtimer == 0 && ytimer == 0) {
-                    areaHeight = FastMath.max(0, -yPos + areaHeight);
-                    xtimer = 1;
-                    ytimer = 1;
-                }
+            if (key.key(KEY_UP)) {
+                yPos--;
+            } else if (key.key(KEY_DOWN)) {
+                yPos++;
             } else {
-                move(xPos, yPos);
+                ytimer = 0;
             }
-        }
-        if (objPlace.keyPressed(KEY_SPACE)) {
-            int xBegin = Math.min(ix, xStop);
-            int yBegin = Math.min(iy, yStop);
-            int xEnd = Math.max(ix, xStop);
-            int yEnd = Math.max(iy, yStop);
+            if (key.key(KEY_LEFT)) {
+                xPos--;
+            } else if (key.key(KEY_RIGHT)) {
+                xPos++;
+            } else {
+                xtimer = 0;
+            }
+
             if (mode == 0) {
-                for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                    for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                        Point p = ui.getCoordinates();
-                        objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet());
+                ui.setChange(key.key(KEY_LSHIFT));
+            }
+
+            if (xPos != 0 || yPos != 0) {
+                if (ui.isChanged()) {
+                    if (xtimer == 0 && ytimer == 0) {
+                        ui.changeCoordinates(xPos, yPos);
+                        xtimer = 1;
+                        ytimer = 1;
+                    }
+                } else if (mode == 1 && key.key(KEY_LSHIFT)) {
+                    if (xtimer == 0 && ytimer == 0) {
+                        areaHeight = FastMath.max(0, -yPos + areaHeight);
+                        xtimer = 1;
+                        ytimer = 1;
+                    }
+                } else {
+                    move(xPos, yPos);
+                }
+            }
+            if (key.keyPressed(KEY_SPACE)) {
+                int xBegin = Math.min(ix, xStop);
+                int yBegin = Math.min(iy, yStop);
+                int xEnd = Math.max(ix, xStop);
+                int yEnd = Math.max(iy, yStop);
+                if (mode == 0) {
+                    for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                        for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                            Point p = ui.getCoordinates();
+                            objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet());
+                        }
+                    }
+                } else if (mode == 1) {
+                    int xd = (Math.abs(ix - xStop) + 1);
+                    int yd = (Math.abs(iy - yStop) + 1);
+                    if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
+                        objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, areaHeight, xd, yd, map, place));
                     }
                 }
-            } else if (mode == 1) {
-                int xd = (Math.abs(ix - xStop) + 1);
-                int yd = (Math.abs(iy - yStop) + 1);
-                if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
-                    objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, areaHeight, xd, yd, map, place));
-                }
             }
-        }
 
-        if (objPlace.keyPressed(KEY_DELETE)) {
-            int xBegin = Math.min(ix, xStop);
-            int yBegin = Math.min(iy, yStop);
-            int xEnd = Math.max(ix, xStop);
-            int yEnd = Math.max(iy, yStop);
-            if (mode == 0) {
-                for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                    for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                        objMap.removeTile(xTemp, yTemp);
+            if (key.keyPressed(KEY_DELETE)) {
+                int xBegin = Math.min(ix, xStop);
+                int yBegin = Math.min(iy, yStop);
+                int xEnd = Math.max(ix, xStop);
+                int yEnd = Math.max(iy, yStop);
+                if (mode == 0) {
+                    for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                        for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                            objMap.removeTile(xTemp, yTemp);
+                        }
                     }
+                } else if (mode == 1) {
+                    int xd = (Math.abs(ix - xStop) + 1);
+                    int yd = (Math.abs(iy - yStop) + 1);
+                    objMap.deleteBlocks(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
                 }
-            } else if (mode == 1) {
-                int xd = (Math.abs(ix - xStop) + 1);
-                int yd = (Math.abs(iy - yStop) + 1);
-                objMap.deleteBlocks(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
             }
-        }
 
-        if (objPlace.keyPressed(KEY_HOME)) {
-            objPlace.setCentralPoint(ix, iy);
-        }
+            if (key.keyPressed(KEY_HOME)) {
+                objPlace.setCentralPoint(ix, iy);
+            }
 
-        if (objPlace.keyPressed(KEY_TAB)) {
-            objMap.switchBackground();
+            if (key.keyPressed(KEY_TAB)) {
+                objMap.switchBackground();
+            }
+            
+            key.keyboardEnd();
         }
     }
 
@@ -269,7 +277,7 @@ public class ObjectPlayer extends Player {
                 Drawer.drawRectangle(0, -yd, d, yd);
                 Drawer.drawRectangle(xd + d, 0, d, yd);
             } else {
-				//glColor4f(0.9f, 0.9f, 0.9f, 1f);
+                //glColor4f(0.9f, 0.9f, 0.9f, 1f);
                 //Drawer.drawRectangle(0, yd, xd, tmpH);
                 //glColor4f(1f, 0.78f, 0f, 1f);
                 Drawer.drawRectangle(-d, -d - tmpH, xd + 2 * d, d);

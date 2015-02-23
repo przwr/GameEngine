@@ -24,10 +24,10 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class SpriteBase {
 
-	private final ArrayList<Sprite> sprites = new ArrayList<>();
+    private final ArrayList<Sprite> sprites = new ArrayList<>();
 
-	public SpriteBase() {
-	}
+    public SpriteBase() {
+    }
 
     public Sprite getSprite(String textureKey) {
         for (Sprite sprite : sprites) {
@@ -55,97 +55,84 @@ public class SpriteBase {
         return temp;
     }
 
-    public ArrayList<String> getAvalibleSpritesList(File folder) {
-        ArrayList<String> list = new ArrayList<>();
-        File[] files = folder.listFiles();
-        for (File f : files) {
-            if (f.isDirectory()) {
-                list.addAll(getAvalibleSpritesList(f));
-            } else if (f.getPath().endsWith("str")) {
-                list.add(f.getName());
-            }
+    private Sprite loadSprite(String name) {
+        int width, height, startX, startY, pieceWidth, pieceHeight;
+        boolean spriteSheet;
+        String sprite, key;
+        Texture texture;
+        Sprite image;
+        try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
+            String line = input.readLine();
+            String[] data = line.split(";");
+            key = data[0];
+            spriteSheet = data[1].equals("1");
+            line = input.readLine();
+            sprite = line;
+            data = input.readLine().split(";");
+            width = (int) (Integer.parseInt(data[0]));
+            height = (int) (Integer.parseInt(data[1]));
+            data = input.readLine().split(";");
+            startX = (int) (Integer.parseInt(data[0]));
+            startY = (int) (Integer.parseInt(data[1]));
+            data = input.readLine().split(";");
+            pieceWidth = Integer.parseInt(data[0]);
+            pieceHeight = Integer.parseInt(data[1]);
+            input.close();
+        } catch (IOException e) {
+            Methods.error("File " + name + " not found!\n" + e.getMessage());
+            return null;
         }
-        return list;
+        try {
+            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
+        } catch (IOException ex) {
+            Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        if (spriteSheet) {
+            image = new SpriteSheet(texture, pieceWidth, pieceHeight, startX, startY, this);
+        } else {
+            image = Sprite.create(texture, width, height, startX, startY, this);
+        }
+        image.setKey(key);
+        return image;
     }
 
-	private Sprite loadSprite(String name) {
-		int width, height, startX, startY, pieceWidth, pieceHeight;
-		boolean spriteSheet;
-		String sprite, key;
-		Texture texture;
-		Sprite image;
-		try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
-			String line = input.readLine();
-			String[] data = line.split(";");
-			key = data[0];
-			spriteSheet = data[1].equals("1");
-			line = input.readLine();
-			sprite = line;
-			data = input.readLine().split(";");
-			width = (int) (Integer.parseInt(data[0]));
-			height = (int) (Integer.parseInt(data[1]));
-			data = input.readLine().split(";");
-			startX = (int) (Integer.parseInt(data[0]));
-			startY = (int) (Integer.parseInt(data[1]));
-			data = input.readLine().split(";");
-			pieceWidth = Integer.parseInt(data[0]);
-			pieceHeight = Integer.parseInt(data[1]);
-			input.close();
-		} catch (IOException e) {
-			Methods.error("File " + name + " not found!\n" + e.getMessage());
-			return null;
-		}
-		try {
-			texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
-		} catch (IOException ex) {
-			Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
-		}
-		if (spriteSheet) {
-			image = new SpriteSheet(texture, pieceWidth, pieceHeight, startX, startY, this);
-		} else {
-			image = Sprite.create(texture, width, height, startX, startY, this);
-		}
-		image.setKey(key);
-		return image;
-	}
+    public Sprite getSpriteInSize(String textureKey, int width, int height) {
+        for (Sprite sprite : sprites) {
+            if (sprite.getKey().equals(textureKey)
+                    && (sprite.getWidth() == width)
+                    && sprite.getHeight() == height) {
+                return sprite;
+            }
+        }
+        Sprite newSprite = loadSpriteInSize(textureKey, width, height);
+        sprites.add(newSprite);
+        return newSprite;
+    }
 
-	public Sprite getSpriteInSize(String textureKey, int width, int height) {
-		for (Sprite sprite : sprites) {
-			if (sprite.getKey().equals(textureKey)
-					&& (sprite.getWidth() == width)
-					&& sprite.getHeight() == height) {
-				return sprite;
-			}
-		}
-		Sprite newSprite = loadSpriteInSize(textureKey, width, height);
-		sprites.add(newSprite);
-		return newSprite;
-	}
-
-	private Sprite loadSpriteInSize(String name, int width, int height) {
-		String image, key;
-		Texture texture;
-		Sprite sprite;
-		try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
-			String line = input.readLine();
-			String[] data = line.split(";");
-			key = data[0];
-			line = input.readLine();
-			image = line;
-			input.close();
-		} catch (IOException e) {
-			Methods.error("File " + name + " not found!\n" + e.getMessage());
-			return null;
-		}
-		try {
-			texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(image), GL_LINEAR);
-		} catch (IOException ex) {
-			Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
-		}
-		sprite = Sprite.create(texture, width, height, 0, 0, this);
-		sprite.setKey(key);
-		return sprite;
-	}
+    private Sprite loadSpriteInSize(String name, int width, int height) {
+        String image, key;
+        Texture texture;
+        Sprite sprite;
+        try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
+            String line = input.readLine();
+            String[] data = line.split(";");
+            key = data[0];
+            line = input.readLine();
+            image = line;
+            input.close();
+        } catch (IOException e) {
+            Methods.error("File " + name + " not found!\n" + e.getMessage());
+            return null;
+        }
+        try {
+            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(image), GL_LINEAR);
+        } catch (IOException ex) {
+            Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        sprite = Sprite.create(texture, width, height, 0, 0, this);
+        sprite.setKey(key);
+        return sprite;
+    }
 }
