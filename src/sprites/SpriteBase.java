@@ -6,6 +6,7 @@
 package sprites;
 
 import engine.Methods;
+import game.Settings;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -89,7 +90,7 @@ public class SpriteBase {
             return null;
         }
         if (spriteSheet) {
-            image = new SpriteSheet(texture, pieceWidth, pieceHeight, startX, startY, this);
+            image = SpriteSheet.create(texture, pieceWidth, pieceHeight, startX, startY, this);
         } else {
             image = Sprite.create(texture, width, height, startX, startY, this);
         }
@@ -134,5 +135,60 @@ public class SpriteBase {
         sprite = Sprite.create(texture, width, height, 0, 0, this);
         sprite.setKey(key);
         return sprite;
+    }
+
+    public SpriteSheet getSpriteSheetSetScale(String textureKey) {
+        for (Sprite sprite : sprites) {
+            if (sprite.getKey().equals(textureKey)
+                    && (sprite.getWidth() == (int) (sprite.getTexture().getImageWidth() * Settings.nativeScale)
+                    && sprite.getHeight() == (int) (sprite.getTexture().getImageHeight() * Settings.nativeScale))) {
+                return (SpriteSheet) sprite;
+            }
+        }
+        SpriteSheet temp = (SpriteSheet) loadSpriteSetScale(textureKey);
+        sprites.add(temp);
+        return temp;
+    }
+
+    public Sprite loadSpriteSetScale(String name) {
+        int width, height, startX, startY, pieceWidth, pieceHeight;
+        boolean spriteSheet;
+        String sprite, key;
+        Texture texture;
+        Sprite image;
+        try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
+            String line = input.readLine();
+            String[] data = line.split(";");
+            key = data[0];
+            spriteSheet = data[1].equals("1");
+            line = input.readLine();
+            sprite = line;
+            data = input.readLine().split(";");
+            width = (int) (Integer.parseInt(data[0]) * Settings.nativeScale);
+            height = (int) (Integer.parseInt(data[1]) * Settings.nativeScale);
+            data = input.readLine().split(";");
+            startX = (int) (Integer.parseInt(data[0]) * Settings.nativeScale);
+            startY = (int) (Integer.parseInt(data[1]) * Settings.nativeScale);
+            data = input.readLine().split(";");
+            pieceWidth = (int) (Integer.parseInt(data[0]) * Settings.nativeScale);
+            pieceHeight = (int) (Integer.parseInt(data[1]) * Settings.nativeScale);
+            input.close();
+        } catch (IOException e) {
+            Methods.error("File " + name + " not found!\n" + e.getMessage());
+            return null;
+        }
+        try {
+            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
+        } catch (IOException ex) {
+            Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        if (spriteSheet) {
+            image = SpriteSheet.createSetScale(texture, pieceWidth, pieceHeight, startX, startY, this);
+        } else {
+            image = Sprite.create(texture, width, height, startX, startY, this);
+        }
+        image.setKey(key);
+        return image;
     }
 }

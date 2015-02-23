@@ -12,8 +12,11 @@ import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
+import game.place.Light;
 import game.place.Map;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -21,167 +24,179 @@ import java.util.ArrayList;
  */
 public abstract class Camera {
 
-    protected final ArrayList<GUIObject> gui = new ArrayList<>();
-    public ArrayList<GameObject> visibleLights = new ArrayList<>();
-    protected final ArrayList<GameObject> owners = new ArrayList<>();
-    protected Map map;
-    protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8;
-    protected double xOffset, yOffset;
-    protected Delay shakeDelay;
-    private boolean shakeUp = true;
+	protected final ArrayList<GUIObject> gui = new ArrayList<>();
+	protected final ArrayList<Light> visibleLights = new ArrayList<>();
+	protected final ArrayList<GameObject> owners = new ArrayList<>();
+	protected Map map;
+	protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8;
+	protected double xOffset, yOffset;
+	protected Delay shakeDelay;
+	private boolean shakeUp = true;
 
-    public Camera(GameObject object) {
-        owners.add(object);
-        delayLenght = 50;
-        shakeDelay = new Delay(delayLenght);
-        shakeDelay.start();
-    }
+	public Camera(GameObject object) {
+		owners.add(object);
+		delayLenght = 50;
+		shakeDelay = new Delay(delayLenght);
+		shakeDelay.start();
+	}
 
-    public synchronized void update() {
-        if (map != null) {
-            xOffset = Methods.interval(-map.getWidth() * Settings.scale + getWidth(), widthHalf - getXMiddle(), 0);
-            yOffset = Methods.interval(-map.getHeight() * Settings.scale + getHeight(), heightHalf - getYMiddle(), 0);
-        }
-    }
+	public synchronized void update() {
+		if (map != null) {
+			xOffset = Methods.interval(-map.getWidth() * Settings.scale + getWidth(), widthHalf - getXMiddle(), 0);
+			yOffset = Methods.interval(-map.getHeight() * Settings.scale + getHeight(), heightHalf - getYMiddle(), 0);
+		}
+	}
 
-    public synchronized void shake() {
-        if (shakeDelay.isOver()) {
-            if (shakeUp) {
-                xEffect += shakeAmplitude;
-                yEffect += shakeAmplitude / 2;
-                shakeUp = false;
-            } else {
-                xEffect -= shakeAmplitude;
-                yEffect -= shakeAmplitude / 2;
-                shakeUp = true;
-            }
-            shakeDelay.start();
-        }
-    }
+	public synchronized void shake() {
+		if (shakeDelay.isOver()) {
+			if (shakeUp) {
+				xEffect += shakeAmplitude;
+				yEffect += shakeAmplitude / 2;
+				shakeUp = false;
+			} else {
+				xEffect -= shakeAmplitude;
+				yEffect -= shakeAmplitude / 2;
+				shakeUp = true;
+			}
+			shakeDelay.start();
+		}
+	}
 
-    public void renderGUI() {
-        Drawer.refreshForRegularDrawing();
-        owners.stream().forEach((go) -> {
-            if (go instanceof Player) {
-                ((Player) go).renderGUI();
-            }
-        });
-    }
+	public void renderGUI() {
+		Drawer.refreshForRegularDrawing();
+		owners.stream().forEach((object) -> {
+			if (object instanceof Player) {
+				((Player) object).renderGUI();
+			}
+		});
+	}
 
-    public void printMessage(String message) {
+	public void printMessage(String message) {
 
-    }
+	}
 
-    public int getXMiddle() {
-        xMiddle = 0;
-        owners.stream().forEach((owner) -> {
-            xMiddle += owner.getX();
-        });
-        return (int) (xMiddle * Settings.scale) / owners.size();
-    }
+	public void addVisibleLight(Light light) {
+		visibleLights.add(light);
+	}
 
-    public int getYMiddle() {
-        yMiddle = 0;
-        owners.stream().forEach((owner) -> {
-            yMiddle += owner.getY();
-        });
-        return (int) (yMiddle * Settings.scale) / owners.size();
-    }
+	public void clearVisibleLights() {
+		visibleLights.clear();
+	}
 
-    public int getXOffsetEffect() {
-        return (int) (xOffset + xEffect);
-    }
+	public int getXMiddle() {
+		xMiddle = 0;
+		owners.stream().forEach((owner) -> {
+			xMiddle += owner.getX();
+		});
+		return (int) (xMiddle * Settings.scale) / owners.size();
+	}
 
-    public int getYOffsetEffect() {
-        return (int) (yOffset + yEffect);
-    }
+	public int getYMiddle() {
+		yMiddle = 0;
+		owners.stream().forEach((owner) -> {
+			yMiddle += owner.getY();
+		});
+		return (int) (yMiddle * Settings.scale) / owners.size();
+	}
 
-    public int getShakeAmp() {
-        return shakeAmplitude;
-    }
+	public int getXOffsetEffect() {
+		return (int) (xOffset + xEffect);
+	}
 
-    public int getDelay() {
-        return delayLenght;
-    }
+	public int getYOffsetEffect() {
+		return (int) (yOffset + yEffect);
+	}
 
-    public Map getMap() {
-        return map;
-    }
+	public int getShakeAmp() {
+		return shakeAmplitude;
+	}
 
-    public int getXOffset() {
-        return (int) xOffset;
-    }
+	public int getDelay() {
+		return delayLenght;
+	}
 
-    public int getYOffset() {
-        return (int) yOffset;
-    }
+	public Map getMap() {
+		return map;
+	}
 
-    public int getXEffect() {
-        return xEffect;
-    }
+	public int getXOffset() {
+		return (int) xOffset;
+	}
 
-    public int getYEffect() {
-        return yEffect;
-    }
+	public int getYOffset() {
+		return (int) yOffset;
+	}
 
-    public void setXOff(int xOffset) {
-        this.xOffset = xOffset;
-    }
+	public int getXEffect() {
+		return xEffect;
+	}
 
-    public void setYOff(int yOffset) {
-        this.yOffset = yOffset;
-    }
+	public int getYEffect() {
+		return yEffect;
+	}
 
-    public int getWidth() {
-        return widthHalf * 2;
-    }
+	public void setXOff(int xOffset) {
+		this.xOffset = xOffset;
+	}
 
-    public int getHeight() {
-        return heightHalf * 2;
-    }
+	public void setYOff(int yOffset) {
+		this.yOffset = yOffset;
+	}
 
-    public int getWidthHalf() {
-        return widthHalf;
-    }
+	public int getWidth() {
+		return widthHalf * 2;
+	}
 
-    public int getHeightHalf() {
-        return heightHalf;
-    }
+	public int getHeight() {
+		return heightHalf * 2;
+	}
 
-    public int getXStart() {
-        return (int) (-getXOffsetEffect() / Settings.scale);
-    }
+	public int getWidthHalf() {
+		return widthHalf;
+	}
 
-    public int getYStart() {
-        return (int) (-getYOffsetEffect() / Settings.scale);
-    }
+	public int getHeightHalf() {
+		return heightHalf;
+	}
 
-    public int getXEnd() {
-        return (int) ((-getXOffsetEffect() + widthHalf * 2) / Settings.scale);
-    }
+	public Collection<Light> getVisibleLights() {
+		return Collections.unmodifiableList(visibleLights);
+	}
 
-    public int getYEnd() {
-        return (int) ((-getYOffsetEffect() + heightHalf * 2) / Settings.scale);
-    }
+	public int getXStart() {
+		return (int) (-getXOffsetEffect() / Settings.scale);
+	}
 
-    public void setXOffset(int xOffset) {
-        this.xOffset = xOffset;
-    }
+	public int getYStart() {
+		return (int) (-getYOffsetEffect() / Settings.scale);
+	}
 
-    public void setYOffset(int yOffset) {
-        this.yOffset = yOffset;
-    }
+	public int getXEnd() {
+		return (int) ((-getXOffsetEffect() + widthHalf * 2) / Settings.scale);
+	}
 
-    public void setMap(Map map) {
-        this.map = map;
-        update();
-    }
+	public int getYEnd() {
+		return (int) ((-getYOffsetEffect() + heightHalf * 2) / Settings.scale);
+	}
 
-    public void setShakeAmplitude(int shakeAmplitude) {
-        this.shakeAmplitude = shakeAmplitude;
-    }
+	public void setXOffset(int xOffset) {
+		this.xOffset = xOffset;
+	}
 
-    public void setDelayLength(int delaylenght) {
-        this.delayLenght = delaylenght;
-    }
+	public void setYOffset(int yOffset) {
+		this.yOffset = yOffset;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
+		update();
+	}
+
+	public void setShakeAmplitude(int shakeAmplitude) {
+		this.shakeAmplitude = shakeAmplitude;
+	}
+
+	public void setDelayLength(int delaylenght) {
+		this.delayLenght = delaylenght;
+	}
 }

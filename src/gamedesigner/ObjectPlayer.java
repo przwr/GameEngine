@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -14,7 +15,6 @@ import engine.Point;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.Light;
 import game.place.Map;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
@@ -87,8 +87,6 @@ public class ObjectPlayer extends Player {
         this.setResistance(2);
         this.emitter = true;
         this.place = place;
-        this.light = new Light("light", 0.85f, 0.85f, 0.85f,
-                Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), place);
         emits = false;
         tileSize = place.getTileSize();
         objPlace = (ObjectPlace) place;
