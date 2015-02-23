@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,5 +41,23 @@ public final class IO {
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public static ArrayList<File> getSpecificFilesList(File folder, String extension) {
+        ArrayList<File> list = new ArrayList<>();
+        File[] files = folder.listFiles();
+        for (File f : files) {
+            if (f.isDirectory()) {
+                list.addAll(getSpecificFilesList(f, extension));
+            } else if (f.getPath().endsWith(extension)) {
+                list.add(f);
+            }
+        }
+        return list;
+    }
+    
+    public static ArrayList<File> getSpecificFilesList(String folder, String extension) {
+        File f = new File(folder);
+        return getSpecificFilesList(f, extension);
     }
 }

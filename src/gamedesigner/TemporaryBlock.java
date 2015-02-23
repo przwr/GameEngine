@@ -160,7 +160,6 @@ public class TemporaryBlock extends GameObject {
                 for (int ix = xBegin; ix <= xEnd; ix++) {
                     t = map.getTile(ix, iy);
                     if (t != null && t.getPureDepth() != -1) {
-                        System.out.println(ix + " " + iy);
                         p = t.popTileFromStackBack();
                         if (level + 1 <= upHeight) {
                             fgt = ForegroundTile.createWall(
@@ -192,7 +191,7 @@ public class TemporaryBlock extends GameObject {
     }
 
     public void clearMyself() {
-        for (ForegroundTile fgt : tiles) {
+        tiles.stream().forEach((fgt) -> {
             Point p = fgt.popTileFromStackBack();
             Tile t = new Tile(fgt.getSpriteSheet(), tile, p.getX(), p.getY());
             while ((p = fgt.popTileFromStackBack()) != null) {
@@ -200,7 +199,7 @@ public class TemporaryBlock extends GameObject {
             }
             map.deleteForegroundTile(fgt);
             map.setTile(fgt.getX() / tile, fgt.getY() / tile, t);
-        }
+        });
         map.deleteArea(area);
         tiles.clear();
         area = null;

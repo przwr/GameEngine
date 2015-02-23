@@ -46,6 +46,11 @@ public abstract class Player extends Entity {
         guiList.add(gui);
         gui.setPlayer(this);
     }
+    
+    public void removeGui(GUIObject gui) {
+        guiList.remove(gui);
+        gui.setPlayer(null);
+    }
 
     public void renderGUI() {
         Drawer.refreshForRegularDrawing();

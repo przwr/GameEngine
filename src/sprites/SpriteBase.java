@@ -56,19 +56,6 @@ public class SpriteBase {
         return temp;
     }
 
-    public ArrayList<String> getAvalibleSpritesList(File folder) {
-        ArrayList<String> list = new ArrayList<>();
-        File[] files = folder.listFiles();
-        for (File f : files) {
-            if (f.isDirectory()) {
-                list.addAll(getAvalibleSpritesList(f));
-            } else if (f.getPath().endsWith("str")) {
-                list.add(f.getName());
-            }
-        }
-        return list;
-    }
-
     private Sprite loadSprite(String name) {
         int width, height, startX, startY, pieceWidth, pieceHeight;
         boolean spriteSheet;
