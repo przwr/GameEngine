@@ -7,6 +7,7 @@ package engine;
 
 import game.place.Place;
 import game.place.ScreenPlace;
+import game.place.Tile;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -146,6 +147,13 @@ public class Drawer {
         appearance.bindCheckByTexture();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         appearance.render();
+        setBlendAttributesForShadows();
+    }
+
+    public static void drawTileShapeInBlack(Tile tile) {
+        tile.getSpriteSheet().bindCheckByTexture();
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        tile.render();
         setBlendAttributesForShadows();
     }
 

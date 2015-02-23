@@ -100,6 +100,15 @@ public class Tile extends GameObject {
         glPopMatrix();
     }
 
+    public void render() {
+        glPushMatrix();
+     //   glTranslatef(getX(), getY(), 0);
+        tileStack.stream().forEach((piece) -> {
+            spriteSheet.renderPiece(piece.getX(), piece.getY());
+        });
+        glPopMatrix();
+    }
+
     public SpriteSheet getSpriteSheet() {
         return spriteSheet;
     }
