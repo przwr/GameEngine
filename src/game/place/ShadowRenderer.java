@@ -126,13 +126,14 @@ public class ShadowRenderer {
     private static void findShades(Light source, Map map) {// TODO optimize source.getHeight *2 - poprawić - wielkość całego światła ma być!
         shades.clear();
         map.areas.stream().forEach((area) -> {
-            tempShade = area.getCollision();
+            tempShade = area.getCollision();            
             if (tempShade != null
                     && (FastMath.abs(tempShade.getYCentral() - source.getY()) <= (source.getHeight() * 2 + tempShade.getHeight()) / 2)
                     && (FastMath.abs(tempShade.getXCentral() - source.getX()) <= (source.getWidth() * 2 + tempShade.getWidth()) / 2)) {
                 shades.add(tempShade);
             }
         });
+        
         for (GameObject object : map.getForegroundTiles()) {
             tempShade = object.getCollision();
             if (tempShade != null && !tempShade.isLittable()
@@ -625,9 +626,12 @@ public class ShadowRenderer {
             shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade);
         };
         shads[2] = (Light emitter, Figure shade, Point[] points) -> {
+            //   shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade, points[0].getX(), points[0].getY());
             drawWall(emitter, points, shade.getShadowColor());
         };
         shads[3] = (Light emitter, Figure shade, Point[] points) -> {
+            //  shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, points[0].getX(), points[0].getY());
+
             drawWall(emitter, points, 0);
         };
         shads[4] = (Light emitter, Figure shade, Point[] points) -> {

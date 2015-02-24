@@ -18,7 +18,7 @@ import sprites.SpriteSheet;
  *
  * @author Wojtek
  */
-public class ForegroundTile extends Tile {
+public class ForegroundTile extends Tile{
 
     public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
         return new ForegroundTile(spriteSheet, size, xSheet, ySheet, false, yStart);
@@ -56,7 +56,7 @@ public class ForegroundTile extends Tile {
         if (isSimpleLighting()) {
             Drawer.drawRectangleInBlack(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
         } else {
-            Drawer.drawTileShapeInBlack(this);
+            Drawer.drawShapeInBlack(this);
         }
         glPopMatrix();
     }

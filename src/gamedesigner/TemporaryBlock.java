@@ -5,7 +5,7 @@
  */
 package gamedesigner;
 
-import collision.Area;
+import collision.Block;
 import collision.Figure;
 import engine.Drawer;
 import engine.Point;
@@ -35,7 +35,7 @@ public class TemporaryBlock extends GameObject {
     private final ObjectMap objMap;
     private boolean complete;
 
-    private Area area;
+    private Block area;
     private ArrayList<ForegroundTile> tiles;
 
     public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map, Place place) {
@@ -186,7 +186,7 @@ public class TemporaryBlock extends GameObject {
                 level++;
             }
         }
-        area = new Area((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
+        area = new Block((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
         map.addArea(area);
     }
 

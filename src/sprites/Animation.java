@@ -11,7 +11,7 @@ import engine.Delay;
  *
  * @author przemek
  */
-public class Animation extends Appearance {
+public class Animation implements Appearance {
 
     private final SpriteSheet spriteSheet;
     private final Delay delay;

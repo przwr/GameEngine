@@ -9,7 +9,7 @@ package sprites;
  *
  * @author przemek
  */
-public abstract class Appearance {
+public abstract interface Appearance {
     
     public abstract void bindCheckByID();
     

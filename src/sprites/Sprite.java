@@ -18,7 +18,7 @@ import org.newdawn.slick.util.ResourceLoader;
  *
  * @author przemek
  */
-public class Sprite extends Appearance {
+public class Sprite implements Appearance {
 
     protected Texture texture;
 

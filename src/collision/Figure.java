@@ -60,7 +60,7 @@ public abstract class Figure implements Comparable<Object> {
 				return object;
 			}
 		}
-		for (Area object : map.getAreas()) {
+		for (Block object : map.getAreas()) {
 			if (object.isSolid() && object.isCollide(x, y, this)) {
 				return object;
 			}

@@ -18,7 +18,7 @@ import org.newdawn.slick.Color;
 public abstract class ScreenPlace {
 
     public final Game game;
-    public float red, green, blue; // TO DO - put it to map
+    public float red, green, blue; // TO DO - put it to map, change to Color
     public FontBase fonts;
     public GameObject[] players;
 

@@ -9,9 +9,10 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+import sprites.Appearance;
 import sprites.SpriteSheet;
 
-public class Tile extends GameObject {
+public class Tile extends GameObject implements Appearance {
 
     protected final SpriteSheet spriteSheet;
     protected final ArrayList<Point> tileStack;
@@ -100,15 +101,6 @@ public class Tile extends GameObject {
         glPopMatrix();
     }
 
-    public void render() {
-        glPushMatrix();
-     //   glTranslatef(getX(), getY(), 0);
-        tileStack.stream().forEach((piece) -> {
-            spriteSheet.renderPiece(piece.getX(), piece.getY());
-        });
-        glPopMatrix();
-    }
-
     public SpriteSheet getSpriteSheet() {
         return spriteSheet;
     }
@@ -136,5 +128,43 @@ public class Tile extends GameObject {
         String txt = "t:" + (x - xBegin) + ":" + (y - yBegin) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
+    }
+
+    @Override
+    public void bindCheckByID() {
+        spriteSheet.bindCheckByID();
+    }
+
+    @Override
+    public void bindCheckByTexture() {
+        spriteSheet.bindCheckByTexture();
+    }
+
+    @Override
+    public void render() {
+        tileStack.stream().forEach((piece) -> {
+            spriteSheet.renderPiece(piece.getX(), piece.getY());
+        });
+    }
+
+    @Override
+    public void renderMirrored() {
+        tileStack.stream().forEach((piece) -> {
+            spriteSheet.renderPieceMirrored(piece.getX(), piece.getY());
+        });
+    }
+
+    @Override
+    public void renderPart(int partXStart, int partXEnd) {
+        tileStack.stream().forEach((piece) -> {
+            spriteSheet.renderPiecePart(piece.getX(), piece.getY(), partXStart, partXEnd);
+        });
+    }
+
+    @Override
+    public void renderPartMirrored(int partXStart, int partXEnd) {
+        tileStack.stream().forEach((piece) -> {
+            spriteSheet.renderPiecePartMirrored(piece.getX(), piece.getY(), partXStart, partXEnd);
+        });
     }
 }

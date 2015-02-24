@@ -9,21 +9,34 @@ import engine.Drawer;
 import engine.Main;
 import engine.Point;
 import game.gameobject.GameObject;
+import game.place.ForegroundTile;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
  * @author Wojtek
  */
-public class Area extends GameObject {
+public class Block extends GameObject {
 
-    public Area(int x, int y, int width, int height, int shadowHeight) {  //Point (x, y) should be in left top corner of Area
+    private ArrayList<ForegroundTile> foregroundTiles = new ArrayList<>();
+
+    public Block(int x, int y, int width, int height, int shadowHeight) {  //Point (x, y) should be in left top corner of Area
         this.x = x;
         this.y = y;
         name = "area";
         solid = true;
         setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+    }
+
+    public void addForegroundTile(ForegroundTile foregroundTile) {
+        foregroundTiles.add(foregroundTile);
+    }
+
+    public void removeForegroundTile(ForegroundTile foregroundTile) {
+        foregroundTiles.remove(foregroundTile);
     }
 
     public boolean isCollide(int x, int y, Figure figure) {
@@ -37,13 +50,9 @@ public class Area extends GameObject {
         return null;
     }
 
-    public Collection<Point> getPoints() {
-        return collision.getPoints();
-    }
-
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
-        glPushMatrix();        
+        glPushMatrix();
         glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
         Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
         glPopMatrix();
@@ -79,10 +88,18 @@ public class Area extends GameObject {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
     }
-    
+
     //b:x:y:width:height:shadowHeight
     public String saveToString(int xBegin, int yBegin, int tile) {
-        return "b:" + ((int)(x - xBegin) / tile) + ":" + ((int)(y - yBegin) / tile) + ":" 
+        return "b:" + ((int) (x - xBegin) / tile) + ":" + ((int) (y - yBegin) / tile) + ":"
                 + (collision.width / tile) + ":" + (collision.height / tile) + ":" + (collision.getShadowHeight() / tile);
+    }
+
+    public Collection<ForegroundTile> getForegroundTiles() {
+        return Collections.unmodifiableCollection(foregroundTiles);
+    }
+
+    public Collection<Point> getPoints() {
+        return collision.getPoints();
     }
 }

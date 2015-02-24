@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteSheet;
 
@@ -28,27 +29,26 @@ public class Light {
     private final GameObject owner;
     private final boolean giveShadows;
     private final int width, height;
-    private float red, green, blue;
+    private Color color;
 
     private SpriteSheet spriteSheet;
     private int xCenterShift, yCenterShift;
     private int piece;
+    private int widthWholeLight, heightWholeLight;
 
     private Sprite sprite;
     private FrameBufferObject frameBufferObject;
 
-    public static Light create(Sprite sprite, float red, float green, float blue, int width, int height, GameObject owner) {
-        return new Light(sprite, red, green, blue, width, height, owner);
+    public static Light create(Sprite sprite, Color color, int width, int height, GameObject owner) {
+        return new Light(sprite, color, width, height, owner);
     }
 
-    public static Light create(SpriteSheet spriteSheet, float red, float green, float blue, int width, int height, GameObject owner, int piece) {
-        return new Light(spriteSheet, red, green, blue, width, height, owner, piece);
+    public static Light create(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
+        return new Light(spriteSheet, color, width, height, owner, piece);
     }
 
-    private Light(SpriteSheet spriteSheet, float red, float green, float blue, int width, int height, GameObject owner, int piece) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+    private Light(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
+        this.color = color;
         this.owner = owner;
         this.spriteSheet = spriteSheet;
         this.width = width;
@@ -58,10 +58,8 @@ public class Light {
         setShift();
     }
 
-    private Light(Sprite sprite, float red, float green, float blue, int width, int height, GameObject owner) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+    private Light(Sprite sprite, Color color, int width, int height, GameObject owner) {
+        this.color = color;
         this.owner = owner;
         this.sprite = sprite;
         this.width = width;
@@ -113,15 +111,13 @@ public class Light {
         this.piece = piece;
     }
 
-    public void setColor(float red, float green, float blue) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public void render(int x, int y) {
         if (spriteSheet != null) {
-            glColor3f(red, green, blue);
+            glColor3f(color.getRed(), color.getGreen(), color.getBlue());
             glPushMatrix();
             glTranslatef(x, y, 0);
             if (Settings.scaled) {
@@ -131,7 +127,7 @@ public class Light {
             spriteSheet.renderPiece(piece);
             glPopMatrix();
         } else {
-            glColor3f(red, green, blue);
+            glColor3f(color.getRed(), color.getGreen(), color.getBlue());
             glPushMatrix();
             glTranslatef(x, y, 0);
             if (Settings.scaled) {
@@ -145,13 +141,13 @@ public class Light {
 
     public void render(int height) {
         if (spriteSheet != null) {
-            glColor3f(red, green, blue);
+            glColor3f(color.r, color.g, color.b);
             glPushMatrix();
             glTranslatef(0, height, 0);
             spriteSheet.renderPiece(piece);
             glPopMatrix();
         } else {
-            glColor3f(red, green, blue);
+            glColor3f(color.r, color.g, color.b);
             glPushMatrix();
             glTranslatef(0, height, 0);
             sprite.render();

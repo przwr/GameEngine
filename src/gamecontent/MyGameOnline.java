@@ -246,8 +246,8 @@ public class MyGameOnline extends GameOnline {
                 for (MobUpdate mUp : mobs) {
                     found = false;
                     Mob mob;
-                    for (Iterator<Mob> it = map.getSolidMobs().iterator(); it.hasNext();) {
-                        mob = it.next();
+                    for (Iterator<Mob> iterator = map.getSolidMobs().iterator(); iterator.hasNext();) {
+                        mob = iterator.next();
                         if (mUp.getId() == mob.mobID) {
                             mob.updates[mob.lastAdded] = mUp;
                             if (mob.lastAdded == 3) {

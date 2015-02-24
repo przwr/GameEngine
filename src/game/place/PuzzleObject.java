@@ -5,7 +5,7 @@
  */
 package game.place;
 
-import collision.Area;
+import collision.Block;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
@@ -244,8 +244,8 @@ public class PuzzleObject {
             values = new int[]{x, y, width, height, shadowHeight};
         }
 
-        public Area generateArea(int x, int y) {
-            Area a = new Area(values[0] + x, values[1] + y, values[2], values[3], values[4]);
+        public Block generateArea(int x, int y) {
+            Block a = new Block(values[0] + x, values[1] + y, values[2], values[3], values[4]);
             return a;
         }
 
