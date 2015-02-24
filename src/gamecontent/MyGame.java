@@ -186,7 +186,6 @@ public class MyGame extends Game {
         } else {
             place = new MyPlace(this, 64);
         }
-        Drawer.setPlace(place);
         place.players = new GameObject[4];
         place.playersCount = playersCount;
         if (playersCount == 1) {
@@ -251,7 +250,7 @@ public class MyGame extends Game {
                 place.players[player] = tempP;
             }
             place.playersCount++;
-            Settings.joinSplitScreen = false;
+            Settings.joinSplitScreen = true;
             updatePlayersCameras();
         }
     }
@@ -315,7 +314,6 @@ public class MyGame extends Game {
     @Override
     public void runClient() {
         place = new MyPlace(this, 64);
-        Drawer.setPlace(place);
         place.players = new GameObject[4];
         place.playersCount = 1;
         players[0].initialize(4, 4, 56, 56, place);
@@ -331,7 +329,6 @@ public class MyGame extends Game {
     @Override
     public void runServer() {
         place = new MyPlace(this, 64);
-        Drawer.setPlace(place);
         place.players = new GameObject[4];
         place.playersCount = 1;
         players[0].initialize(4, 4, 56, 56, place);

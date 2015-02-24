@@ -163,16 +163,16 @@ public class TemporaryBlock extends GameObject {
                         p = t.popTileFromStackBack();
                         if (level + 1 <= upHeight) {
                             fgt = ForegroundTile.createWall(
-                                    t.getSpriteSheet(), 
-                                    tile, 
-                                    p.getX(), 
+                                    t.getSpriteSheet(),
+                                    tile,
+                                    p.getX(),
                                     p.getY());
                         } else {
                             fgt = ForegroundTile.createOrdinaryShadowHeight(
-                                    t.getSpriteSheet(), 
-                                    tile, 
-                                    p.getX(), 
-                                    p.getY(), 
+                                    t.getSpriteSheet(),
+                                    tile,
+                                    p.getX(),
+                                    p.getY(),
                                     level * tile);
                         }
                         while ((p = t.popTileFromStackBack()) != null) {

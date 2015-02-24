@@ -160,7 +160,7 @@ public class GUIHandler extends GUIObject {
         }
         key.keyboardEnd();
     }
-    
+
     private void renderHelp() {
         key.keyboardStart();
 

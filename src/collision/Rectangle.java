@@ -103,8 +103,10 @@ public class Rectangle extends Figure {
     @Override
     public Collection<Point> getPoints() {
         points.get(0).set(getX(), getY());
-        points.get(1).set(getX(), getY() + (int) (height * 0.6f));
-        points.get(2).set(getX() + width, getY() + (int) (height * 0.6f));
+        points.get(1).set(getX(), getY() + height);
+        points.get(2).set(getX() + width, getY() + height);
+//        points.get(1).set(getX(), getY() + (int) (height * 0.6f));
+//        points.get(2).set(getX() + width, getY() + (int) (height * 0.6f));
         points.get(3).set(getX() + width, getY());
         return Collections.unmodifiableCollection(points);
     }

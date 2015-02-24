@@ -8,6 +8,7 @@ package game.gameobject;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.Drawer;
 import engine.Methods;
 import game.Settings;
 import game.place.Light;
@@ -33,14 +34,14 @@ public class LightSource extends GameObject {
         this.sprite = place.getSprite(spriteName);
         emitter = true;
         emits = true;
-        Color color = new Color(0.85f, 0.85f, 0.85f);
-        addLight(Light.create(place.getSpriteSheetSetScale("light"), color,
+        Color lightColor = new Color(0.85f, 0.85f, 0.85f);
+        addLight(Light.create(place.getSpriteSheetSetScale("light"), lightColor,
                 Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this, 0));
-        addLight(Light.create(place.getSpriteSheetSetScale("light"), color,
+        addLight(Light.create(place.getSpriteSheetSetScale("light"), lightColor,
                 Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this, 1));
-        addLight(Light.create(place.getSpriteSheetSetScale("light"), color,
+        addLight(Light.create(place.getSpriteSheetSetScale("light"), lightColor,
                 Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this, 2));
-        addLight(Light.create(place.getSpriteSheetSetScale("light"), color,
+        addLight(Light.create(place.getSpriteSheetSetScale("light"), lightColor,
                 Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this, 3));
         initialize(name, x, y);
         setCollision(Rectangle.create(this.width / 2, this.height / 3, OpticProperties.NO_SHADOW, this));
@@ -62,18 +63,41 @@ public class LightSource extends GameObject {
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
-    }
-
-    @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            Drawer.drawShapeInShade(sprite, color);
+            glPopMatrix();
+        }
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            Drawer.drawShapeInBlack(sprite);
+            glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            Drawer.drawShapePartInShade(sprite, color, xStart, xEnd);
+            glPopMatrix();
+        }
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+        if (sprite != null) {
+            glPushMatrix();
+            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            Drawer.drawShapePartInBlack(sprite, xStart, xEnd);
+            glPopMatrix();
+        }
     }
-
 }

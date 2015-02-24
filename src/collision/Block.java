@@ -21,6 +21,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Block extends GameObject {
 
+    private ArrayList<Figure> top = new ArrayList<>(1);
     private ArrayList<ForegroundTile> foregroundTiles = new ArrayList<>();
 
     public Block(int x, int y, int width, int height, int shadowHeight) {  //Point (x, y) should be in left top corner of Area
@@ -31,12 +32,20 @@ public class Block extends GameObject {
         setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
     }
 
-    public void addForegroundTile(ForegroundTile foregroundTile) {
-        foregroundTiles.add(foregroundTile);
+    public void setTop(Figure top) {
+        this.top.clear();
+        this.top.add(top);
+        this.top.trimToSize();
     }
 
-    public void removeForegroundTile(ForegroundTile foregroundTile) {
+    public void addTopForegroundTile(ForegroundTile foregroundTile) {
+        foregroundTiles.add(foregroundTile);
+        top.add(foregroundTile.getCollision());
+    }
+
+    public void removeTopForegroundTile(ForegroundTile foregroundTile) {
         foregroundTiles.remove(foregroundTile);
+        top.remove(foregroundTile.getCollision());
     }
 
     public boolean isCollide(int x, int y, Figure figure) {
@@ -97,6 +106,10 @@ public class Block extends GameObject {
 
     public Collection<ForegroundTile> getForegroundTiles() {
         return Collections.unmodifiableCollection(foregroundTiles);
+    }
+
+    public Collection<Figure> getTop() {
+        return Collections.unmodifiableCollection(top);
     }
 
     public Collection<Point> getPoints() {

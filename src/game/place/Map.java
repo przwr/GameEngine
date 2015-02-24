@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Collection;
 import java.util.Iterator;
+import org.newdawn.slick.Color;
 
 /**
  *
@@ -26,6 +27,7 @@ public class Map {
     private final ArrayList<Light> visibleLights = new ArrayList<>();
     public final Place place;
 
+    protected Color color;
     protected final Tile[] tiles;
     protected final ArrayList<Block> areas = new ArrayList<>();
     protected final String name;
@@ -375,11 +377,23 @@ public class Map {
         return Collections.unmodifiableList(foregroundTiles);
     }
 
+    public Color getColor() {
+        if (color != null) {
+            return color;
+        } else {
+            return place.color;
+        }
+    }
+
     public void setTile(int x, int y, Tile tile) {
         tiles[x + y * heightInTiles] = tile;
     }
 
     public void setTile(int index, Tile tile) {
         tiles[index] = tile;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

@@ -8,6 +8,7 @@ package collision;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
+import game.place.Light;
 import game.place.Map;
 import game.place.Place;
 import game.place.Shadow;
@@ -20,213 +21,221 @@ import java.util.Collection;
  */
 public abstract class Figure implements Comparable<Object> {
 
-	private static Figure figure;
+    private static Figure figure;
 
-	private final GameObject owner;
-	private final OpticProperties opticProperties;
-	protected int xStart, yStart, width, height, xCenter, yCenter;
-	protected final ArrayList<Point> points;
+    private final GameObject owner;
+    private final OpticProperties opticProperties;
+    protected int xStart, yStart, width, height, xCenter, yCenter;
+    protected final ArrayList<Point> points;
 
-	public abstract boolean isCollideSingle(int x, int y, Figure figure);
+    public abstract boolean isCollideSingle(int x, int y, Figure figure);
 
-	public abstract Collection<Point> getPoints();
+    public abstract Collection<Point> getPoints();
 
-	public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
-		this.xStart = xStart;
-		this.yStart = yStart;
-		this.owner = owner;
-		this.opticProperties = opticProperties;
-		this.points = new ArrayList<>();
-	}
+    public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
+        this.xStart = xStart;
+        this.yStart = yStart;
+        this.owner = owner;
+        this.opticProperties = opticProperties;
+        this.points = new ArrayList<>();
+    }
 
-	public boolean isCollideSolid(int x, int y, Map map) {
-		if (map.getSolidMobs().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
-			return true;
-		}
-		if (map.getSolidObjects().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
-			return true;
-		}
-		return map.getAreas().stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)));
-	}
+    public boolean isCollideSolid(int x, int y, Map map) {
+        if (map.getSolidMobs().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
+            return true;
+        }
+        if (map.getSolidObjects().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
+            return true;
+        }
+        return map.getAreas().stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)));
+    }
 
-	public GameObject whatCollideSolid(int x, int y, Map map) {
-		for (GameObject object : map.getSolidMobs()) {
-			if (checkCollison(x, y, object)) {
-				return object;
-			}
-		}
-		for (GameObject object : map.getSolidObjects()) {
-			if (checkCollison(x, y, object)) {
-				return object;
-			}
-		}
-		for (Block object : map.getAreas()) {
-			if (object.isSolid() && object.isCollide(x, y, this)) {
-				return object;
-			}
-		}
-		return null;
-	}
+    public GameObject whatCollideSolid(int x, int y, Map map) {
+        for (GameObject object : map.getSolidMobs()) {
+            if (checkCollison(x, y, object)) {
+                return object;
+            }
+        }
+        for (GameObject object : map.getSolidObjects()) {
+            if (checkCollison(x, y, object)) {
+                return object;
+            }
+        }
+        for (Block object : map.getAreas()) {
+            if (object.isSolid() && object.isCollide(x, y, this)) {
+                return object;
+            }
+        }
+        return null;
+    }
 
-	public boolean isCollide(int x, int y, Collection<GameObject> objects) {
-		return objects.stream().anyMatch((obj) -> (checkCollison(x, y, obj)));
-	}
+    public boolean isCollide(int x, int y, Collection<GameObject> objects) {
+        return objects.stream().anyMatch((object) -> (checkCollison(x, y, object)));
+    }
 
-	public GameObject whatCollide(int x, int y, Collection<GameObject> objects) {
-		for (GameObject object : objects) {
-			if (checkCollison(x, y, object)) {
-				return object;
-			}
-		}
-		return null;
-	}
+    public GameObject whatCollide(int x, int y, Collection<GameObject> objects) {
+        for (GameObject object : objects) {
+            if (checkCollison(x, y, object)) {
+                return object;
+            }
+        }
+        return null;
+    }
 
-	public boolean isCollidePlayer(int x, int y, Place place) {
-		for (int i = 0; i < place.playersCount; i++) {
-			if (checkCollison(x, y, place.players[i])) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public boolean isCollidePlayer(int x, int y, Place place) {
+        for (int i = 0; i < place.playersCount; i++) {
+            if (checkCollison(x, y, place.players[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public Player firstPlayerCollide(int x, int y, Place place) {
-		if (place.players[0].getMap() == owner.getMap() && checkCollison(x, y, place.players[0])) {
-			return (Player) place.players[0];
-		}
-		return null;
-	}
+    public Player firstPlayerCollide(int x, int y, Place place) {
+        if (place.players[0].getMap() == owner.getMap() && checkCollison(x, y, place.players[0])) {
+            return (Player) place.players[0];
+        }
+        return null;
+    }
 
-	private boolean checkCollison(int x, int y, GameObject object) {
-		figure = object.getCollision();
-		if (object == owner || figure == null) {
-			return false;
-		}
-		return isCollideSingle(x, y, figure);
-	}
+    private boolean checkCollison(int x, int y, GameObject object) {
+        figure = object.getCollision();
+        if (object == owner || figure == null) {
+            return false;
+        }
+        return isCollideSingle(x, y, figure);
+    }
 
-	public void addShadow(Shadow shadow) {
-		opticProperties.addShadow(shadow);
-	}
+    public void addShadow(Shadow shadow) {
+        opticProperties.addShadow(shadow);
+    }
 
-	public void clearShadows() {
-		opticProperties.clearShadows();
-	}
+    public void clearShadows() {
+        opticProperties.clearShadows();
+    }
 
-	@Override
-	public int compareTo(Object object) {
-		return (getYEnd() - ((Figure) object).getYEnd());
-	}
+    public void renderShadowLit(Light emitter, Point[] points) {
+        opticProperties.renderShadowLit(emitter, points);
+    }
 
-	public boolean isLittable() {
-		return opticProperties.isLitable();
-	}
+    public void renderShadowBlack(Light emitter, Point[] points) {
+        opticProperties.renderShadowBlack(emitter, points);
+    }
 
-	public boolean isGiveShadow() {
-		return opticProperties.isGiveShadow();
-	}
+    @Override
+    public int compareTo(Object object) {
+        return (getYEnd() - ((Figure) object).getYEnd());
+    }
 
-	public int getX() {
-		return owner.getX() + xStart;
-	}
+    public boolean isLittable() {
+        return opticProperties.isLitable();
+    }
 
-	public int getY() {
-		return owner.getY() + yStart;
-	}
+    public boolean isGiveShadow() {
+        return opticProperties.isGiveShadow();
+    }
 
-	public int getXEnd() {
-		return owner.getX() + xStart + width;
-	}
+    public int getX() {
+        return owner.getX() + xStart;
+    }
 
-	public int getYEnd() {
-		return owner.getY() + yStart + height;
-	}
+    public int getY() {
+        return owner.getY() + yStart;
+    }
 
-	public int getYOwnerEnd() {
-		return owner.getYObjectEnd();
-	}
+    public int getXEnd() {
+        return owner.getX() + xStart + width;
+    }
 
-	public int getYOwnerBegin() {
-		return owner.getYObjectBegin();
-	}
+    public int getYEnd() {
+        return owner.getY() + yStart + height;
+    }
 
-	public int getXOwnerBegin() {
-		return owner.getXObjectBegin();
-	}
+    public int getYOwnerEnd() {
+        return owner.getYObjectEnd();
+    }
 
-	public int getXOwnerEnd() {
-		return owner.getXObjectEnd();
-	}
+    public int getYOwnerBegin() {
+        return owner.getYObjectBegin();
+    }
 
-	public int getX(int x) {
-		return x + xStart;
-	}
+    public int getXOwnerBegin() {
+        return owner.getXObjectBegin();
+    }
 
-	public int getY(int y) {
-		return y + yStart;
-	}
+    public int getXOwnerEnd() {
+        return owner.getXObjectEnd();
+    }
 
-	public int getXStart() {
-		return xStart;
-	}
+    public int getX(int x) {
+        return x + xStart;
+    }
 
-	public int getYStart() {
-		return yStart;
-	}
+    public int getY(int y) {
+        return y + yStart;
+    }
 
-	public int getXCentral() {
-		return owner.getX() + xStart + xCenter;
-	}
+    public int getXStart() {
+        return xStart;
+    }
 
-	public int getYCentral() {
-		return owner.getY() + yStart + yCenter;
-	}
+    public int getYStart() {
+        return yStart;
+    }
 
-	public int getXCentral(int x) {
-		return x + yStart + xCenter;
-	}
+    public int getXCentral() {
+        return owner.getX() + xStart + xCenter;
+    }
 
-	public int getYCentral(int y) {
-		return y + yStart + yCenter;
-	}
+    public int getYCentral() {
+        return owner.getY() + yStart + yCenter;
+    }
 
-	public int getWidth() {
-		return width;
-	}
+    public int getXCentral(int x) {
+        return x + yStart + xCenter;
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public int getYCentral(int y) {
+        return y + yStart + yCenter;
+    }
 
-	public Point getPoint(int index) {
-		return points.get(index);
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	public GameObject getOwner() {
-		return owner;
-	}
+    public int getHeight() {
+        return height;
+    }
 
-	public int getShadowHeight() {
-		return opticProperties.getShadowHeight();
-	}
+    public Point getPoint(int index) {
+        return points.get(index);
+    }
 
-	public float getShadowColor() {
-		return opticProperties.getShadowColor();
-	}
+    public GameObject getOwner() {
+        return owner;
+    }
 
-	public Collection<Shadow> getShadows() {
-		return opticProperties.getShadows();
-	}
+    public int getShadowHeight() {
+        return opticProperties.getShadowHeight();
+    }
 
-	public void setXStart(int xStart) {
-		this.xStart = xStart;
-	}
+    public float getShadowColor() {
+        return opticProperties.getShadowColor();
+    }
 
-	public void setYStart(int yStart) {
-		this.yStart = yStart;
-	}
+    public Collection<Shadow> getShadows() {
+        return opticProperties.getShadows();
+    }
 
-	public void setShadowColor(float shadowColor) {
-		opticProperties.setShadowColor(shadowColor);
-	}
+    public void setXStart(int xStart) {
+        this.xStart = xStart;
+    }
+
+    public void setYStart(int yStart) {
+        this.yStart = yStart;
+    }
+
+    public void setShadowColor(float shadowColor) {
+        opticProperties.setShadowColor(shadowColor);
+    }
 }

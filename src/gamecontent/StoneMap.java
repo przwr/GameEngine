@@ -12,6 +12,7 @@ import game.place.Place;
 import game.place.PuzzleObject;
 import game.place.Tile;
 import game.place.WarpPoint;
+import org.newdawn.slick.Color;
 
 /**
  *
@@ -21,6 +22,7 @@ public class StoneMap extends Map {
 
     public StoneMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "Kamienna", place, width, height, tileSize);
+     //   setColor(new Color(0.15f, 0.15f, 0.15f));
         Tile GROUND = new Tile(place.getSpriteSheet("tlo"), tileSize, 2, 12);
         Tile GRASS = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 1);
         Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12);

@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.Drawer;
 import game.Game;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
@@ -24,37 +25,37 @@ import sprites.SpriteSheet;
  */
 public abstract class Place extends ScreenPlace {
 
-	protected SoundBase sounds;
-	protected SpriteBase sprites;
-	private final int tileSize;
+    protected SoundBase sounds;
+    protected SpriteBase sprites;
+    private final int tileSize;
 
-	private final renderType[] renders = new renderType[2];
+    private final renderType[] renders = new renderType[2];
 
-	public Camera currentCamera;
-	public Camera[] cameras = new Camera[3];
-	public boolean isSplit, changeSSMode, singleCamera;
-	public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
-	public int splitScreenMode, playersCount;
+    public Camera currentCamera;
+    public Camera[] cameras = new Camera[3];
+    public boolean isSplit, changeSSMode, singleCamera;
+    public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
+    public int splitScreenMode, playersCount;
 
-	protected short mapID = 0;
+    protected short mapID = 0;
 
-	public final ArrayList<Map> maps = new ArrayList<>();
-	protected final ArrayList<Map> tempMaps = new ArrayList<>();
+    public final ArrayList<Map> maps = new ArrayList<>();
+    protected final ArrayList<Map> tempMaps = new ArrayList<>();
 
-	private Console console;
+    private Console console;
 
-	public Place(Game game, int tileSize) {
-		super(game);
-		this.tileSize = tileSize;
-		sounds = new SoundBase();
-		sprites = new SpriteBase();
-		initializeMethods();
-		console = new Console(this);
-	}
+    public Place(Game game, int tileSize) {
+        super(game);
+        this.tileSize = tileSize;
+        sounds = new SoundBase();
+        sprites = new SpriteBase();
+        initializeMethods();
+        console = new Console(this);
+    }
 
-	public abstract void generateAsGuest();
+    public abstract void generateAsGuest();
 
-	public abstract void generateAsHost();
+    public abstract void generateAsHost();
 
     public void addGUI(GUIObject gui) {
         for (GameObject player : players) {
@@ -68,25 +69,25 @@ public abstract class Place extends ScreenPlace {
         return sprites;
     }
 
-	public Sprite getSprite(String textureKey) {
-		return sprites.getSprite(textureKey);
-	}
+    public Sprite getSprite(String textureKey) {
+        return sprites.getSprite(textureKey);
+    }
 
     public Sprite getSpriteInSize(String textureKey, int width, int height) {
         return sprites.getSpriteInSize(textureKey, width, height);
     }
 
-	public SpriteSheet getSpriteSheet(String textureKey) {
-		return sprites.getSpriteSheet(textureKey);
-	}
+    public SpriteSheet getSpriteSheet(String textureKey) {
+        return sprites.getSpriteSheet(textureKey);
+    }
 
-	public SpriteSheet getSpriteSheetSetScale(String textureKey) {
-		return sprites.getSpriteSheetSetScale(textureKey);
-	}
+    public SpriteSheet getSpriteSheetSetScale(String textureKey) {
+        return sprites.getSpriteSheetSetScale(textureKey);
+    }
 
-	public SoundBase getSounds() {
-		return sounds;
-	}
+    public SoundBase getSounds() {
+        return sounds;
+    }
 
 //    public void addDebugConsoles() {
 //        for (GameObject player : players) {
@@ -119,17 +120,18 @@ public abstract class Place extends ScreenPlace {
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
                 map = players[player].getMap();
-                SplitScreen.setSplitScreen(this, playersCount, player);
-                if (player == 0 || !singleCamera) {
-                    glEnable(GL_SCISSOR_TEST);
-                    Renderer.preRenderShadowedLights(this, currentCamera);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    if (map != null) {
+                if (map != null) {
+                    Drawer.setCurrentColor(map.getColor());
+                    SplitScreen.setSplitScreen(this, playersCount, player);
+                    if (player == 0 || !singleCamera) {
+                        glEnable(GL_SCISSOR_TEST);
+                        Renderer.preRenderShadowedLights(this, currentCamera);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         map.updateCamerasVariables(currentCamera);
                         map.renderBackground(currentCamera);
                         map.renderObjects(currentCamera);
                         if (map.getVisibleLights().size() > 0) {
-                            Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                            Renderer.renderLights(map.getColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                         }
                         currentCamera.renderGUI();
                         console.setCamera(currentCamera);
@@ -143,21 +145,22 @@ public abstract class Place extends ScreenPlace {
         };
         renders[1] = () -> {
             Map map = players[0].getMap();
-            Renderer.findVisibleLights(map, 1);
-            if (!Settings.shadowOff) {
-                Renderer.preRendLights(map);
-            }
-            currentCamera = (((Player) players[0]).getCamera());
-            SplitScreen.setSplitScreen(this, 1, 0);
-            glEnable(GL_SCISSOR_TEST);
-            Renderer.preRenderShadowedLights(this, currentCamera);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             if (map != null) {
+                Drawer.setCurrentColor(map.getColor());
+                Renderer.findVisibleLights(map, 1);
+                if (!Settings.shadowOff) {
+                    Renderer.preRendLights(map);
+                }
+                currentCamera = (((Player) players[0]).getCamera());
+                SplitScreen.setSplitScreen(this, 1, 0);
+                glEnable(GL_SCISSOR_TEST);
+                Renderer.preRenderShadowedLights(this, currentCamera);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 map.updateCamerasVariables(currentCamera);
                 map.renderBackground(currentCamera);
                 map.renderObjects(currentCamera);
                 if (map.getVisibleLights().size() > 0) {
-                    Renderer.renderLights(red, green, blue, camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                    Renderer.renderLights(map.getColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                 }
                 currentCamera.renderGUI();
                 console.setCamera(currentCamera);
@@ -167,50 +170,50 @@ public abstract class Place extends ScreenPlace {
         };
     }
 
-	@Override
-	public void render() {
-		renders[game.mode].render();
-	}
+    @Override
+    public void render() {
+        renders[game.mode].render();
+    }
 
-	public void addMap(Map map) {
-		maps.add(map);
-	}
+    public void addMap(Map map) {
+        maps.add(map);
+    }
 
-	public int getTileSize() {
-		return tileSize;
-	}
+    public int getTileSize() {
+        return tileSize;
+    }
 
-	public Map getMapByName(String name) {
-		for (Map map : maps) {
-			if (map.getName().equals(name)) {
-				return map;
-			}
-		}
-		return null;
-	}
+    public Map getMapByName(String name) {
+        for (Map map : maps) {
+            if (map.getName().equals(name)) {
+                return map;
+            }
+        }
+        return null;
+    }
 
-	public Map getMapById(short mapID) {
-		if (maps.get(mapID).getID() == mapID) {
-			return maps.get(mapID);
-		}
-		for (Map m : maps) {
-			if (m.getID() == mapID) {
-				return m;
-			}
-		}
-		return null;
-	}
+    public Map getMapById(short mapID) {
+        if (maps.get(mapID).getID() == mapID) {
+            return maps.get(mapID);
+        }
+        for (Map m : maps) {
+            if (m.getID() == mapID) {
+                return m;
+            }
+        }
+        return null;
+    }
 
-	public void makeShadows() {
-		Renderer.initializeVariables();
-	}
+    public void makeShadows() {
+        Renderer.initializeVariables();
+    }
 
-	public int getPlayersCount() {
-		return playersCount;
-	}
+    public int getPlayersCount() {
+        return playersCount;
+    }
 
-	private interface renderType {
+    private interface renderType {
 
-		void render();
-	}
+        void render();
+    }
 }

@@ -5,7 +5,6 @@
  */
 package engine;
 
-import game.place.Place;
 import game.place.ScreenPlace;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -28,8 +27,8 @@ public class Drawer {
 
     public static final int white = glGenTextures();
     public static final Texture font = loadFontTexture();
-    private static Place place;
     private static float xCurrent, yCurrent;
+    private static Color currentColor;
 
     private static Texture loadFontTexture() {
         try {
@@ -58,7 +57,7 @@ public class Drawer {
     }
 
     public static void refreshColor() {
-        glColor4f(place.red, place.green, place.blue, 1.0f);
+        glColor4f(currentColor.r, currentColor.g, currentColor.b, 1.0f);
     }
 
     public static void translateFromCentralPoint(float x, float y) {
@@ -190,7 +189,7 @@ public class Drawer {
         glColor4f(color.r, color.g, color.b, color.a);
     }
 
-    public static void setPlace(Place place) {
-        Drawer.place = place;
+    public static void setCurrentColor(Color color) {
+        Drawer.currentColor = color;
     }
 }

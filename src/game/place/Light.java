@@ -43,21 +43,6 @@ public class Light {
         return new Light(sprite, color, width, height, owner);
     }
 
-    public static Light create(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
-        return new Light(spriteSheet, color, width, height, owner, piece);
-    }
-
-    private Light(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
-        this.color = color;
-        this.owner = owner;
-        this.spriteSheet = spriteSheet;
-        this.width = width;
-        this.height = height;
-        this.piece = piece;
-        this.giveShadows = false;
-        setShift();
-    }
-
     private Light(Sprite sprite, Color color, int width, int height, GameObject owner) {
         this.color = color;
         this.owner = owner;
@@ -74,6 +59,23 @@ public class Light {
             frameBufferObject = (Settings.samplesCount > 0) ? new MultisampleFrameBufferObject(width, height)
                     : new RegularFrameBufferObject(width, height);
         }
+    }
+
+    public static Light create(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
+        return new Light(spriteSheet, color, width, height, owner, piece);
+    }
+
+    private Light(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
+        this.color = color;
+        this.owner = owner;
+        this.spriteSheet = spriteSheet;
+        this.width = width;
+        this.height = height;
+        this.piece = piece;
+        this.giveShadows = false;
+        this.widthWholeLight = width * 2;
+        this.heightWholeLight = height * 2;
+        setShift();
     }
 
     private void setShift() {
@@ -225,5 +227,22 @@ public class Light {
 
     public GameObject getOwner() {
         return owner;
+    }
+
+    public int getWidthWholeLight() {
+        if (giveShadows) {
+            return width;
+        } else {
+            return widthWholeLight;
+        }
+    }
+
+    public int getHeightWholeLight() {
+        if (giveShadows) {
+            return height;
+        } else {
+            return heightWholeLight;
+        }
+
     }
 }

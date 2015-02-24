@@ -149,7 +149,7 @@ public class ObjectPlayer extends Player {
             int mode = objPlace.getMode();
 
             maxtimer = key.key(KEY_A) ? 2 : 7;
-            
+
             key.keyboardStart();
 
             if (key.key(KEY_LCONTROL) && key.key(KEY_Z)) {
@@ -239,7 +239,7 @@ public class ObjectPlayer extends Player {
             if (key.keyPressed(KEY_TAB)) {
                 objMap.switchBackground();
             }
-            
+
             key.keyboardEnd();
         }
     }

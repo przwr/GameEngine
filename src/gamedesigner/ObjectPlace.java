@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
@@ -58,9 +59,7 @@ public class ObjectPlace extends Place {
         editor.addGui(ui);
         editor.addGui(guiHandler);
         //sounds.init("res");
-        this.red = 0.75f;
-        this.green = 0.75f;
-        this.blue = 0.75f;
+        color = new Color(0.75f, 0.75f, 0.75f);
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (Settings.scale * 24));
         SoundStore.get().poll(0);
@@ -77,9 +76,7 @@ public class ObjectPlace extends Place {
         editor.addGui(ui);
         editor.addGui(guiHandler);
         //sounds.init("res");
-        this.red = 0.75f;
-        this.green = 0.75f;
-        this.blue = 0.75f;
+        color = new Color(0.75f, 0.75f, 0.75f);
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (Settings.scale * 24));
         SoundStore.get().poll(0);

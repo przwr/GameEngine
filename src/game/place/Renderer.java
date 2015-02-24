@@ -13,6 +13,7 @@ import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
+import org.newdawn.slick.Color;
 
 /**
  *
@@ -162,8 +163,8 @@ public class Renderer {
         glEnd();
     }
 
-    public static void renderLights(float r, float g, float b, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
-        lightBrightness = FastMath.max(b, FastMath.max(r, g));
+    public static void renderLights(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
+        lightBrightness = FastMath.max(color.r, FastMath.max(color.g, color.b));
         lightStrength = 6 - (int) (10 * lightBrightness);
         if (lightStrength <= 2) {
             lightStrength = 2;

@@ -13,6 +13,7 @@ import game.place.Place;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
 import net.GameOnline;
+import org.newdawn.slick.Color;
 
 /**
  *
@@ -46,7 +47,7 @@ public abstract class Player extends Entity {
         guiList.add(gui);
         gui.setPlayer(this);
     }
-    
+
     public void removeGui(GUIObject gui) {
         guiList.remove(gui);
         gui.setPlayer(null);

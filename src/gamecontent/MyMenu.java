@@ -47,9 +47,7 @@ public class MyMenu extends Menu {
         generateM6();
         generateM7();
         generateM8();
-        this.red = 1f;
-        this.green = 1f;
-        this.blue = 1f;
+        this.color = new Color(Color.white);
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", Methods.roundHalfUp(Settings.scale * 38));
         fonts.add("Amble-Regular", Methods.roundHalfUp(Settings.scale * 64));
@@ -144,7 +142,7 @@ public class MyMenu extends Menu {
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
         glScissor(0, 0, Display.getWidth(), Display.getHeight());
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(red, green, blue);
+        glColor3f(color.r, color.g, color.b);
         renderText();
     }
 
@@ -153,7 +151,7 @@ public class MyMenu extends Menu {
         int positions = menus[current].getOptionsNumber() + 1;
         renderMessageCentered(1, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
                 * fonts.write(0).getHeight() * 0.7),
-                menus[current].getLabel(), new Color(red, green, blue));
+                menus[current].getLabel(), new Color(color.r, color.g, color.b));
         positions--;
         for (int i = 0; i < menus[current].getOptionsNumber(); i++) {
             renderMessageCentered(0, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.write(0).getHeight() * 0.7), menus[current].getChoice(i).getLabel(), getColor(menus[current].getChoice(i)));

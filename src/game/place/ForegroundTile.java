@@ -18,7 +18,7 @@ import sprites.SpriteSheet;
  *
  * @author Wojtek
  */
-public class ForegroundTile extends Tile{
+public class ForegroundTile extends Tile {
 
     public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
         return new ForegroundTile(spriteSheet, size, xSheet, ySheet, false, yStart);
@@ -36,7 +36,7 @@ public class ForegroundTile extends Tile{
         return new ForegroundTile(spriteSheet, size, xSheet, ySheet, true, 0);
     }
 
-    ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
+    protected ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
         super(spriteSheet, size, xSheet, ySheet);
         simpleLighting = false;
         solid = wall;

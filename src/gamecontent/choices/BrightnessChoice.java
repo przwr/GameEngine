@@ -22,21 +22,21 @@ public class BrightnessChoice extends MenuChoice {
     @Override
     public void action() {
         if (menu.game.getPlace() != null) {
-            float fl = (100 * menu.game.getPlace().red + 5f) / 100;
-            menu.game.getPlace().red = fl;
-            menu.game.getPlace().green = fl;
-            menu.game.getPlace().blue = fl;
-            if (menu.game.getPlace().red > 1.00f) {
-                menu.game.getPlace().red = 0.0f;
-                menu.game.getPlace().green = 0.0f;
-                menu.game.getPlace().blue = 0.0f;
+            float newValue = (100 * menu.game.getPlace().color.r + 5f) / 100;
+            menu.game.getPlace().color.r = newValue;
+            menu.game.getPlace().color.g = newValue;
+            menu.game.getPlace().color.b = newValue;
+            if (menu.game.getPlace().color.r > 1.00f) {
+                menu.game.getPlace().color.r = 0.0f;
+                menu.game.getPlace().color.g = 0.0f;
+                menu.game.getPlace().color.b = 0.0f;
             }
         }
     }
 
     @Override
     public String getLabel() {
-        return (menu.game.getPlace() != null) ? label + menu.game.getPlace().red
+        return (menu.game.getPlace() != null) ? label + menu.game.getPlace().color.r
                 : label + Settings.language.menu.StartGame;
     }
 }
