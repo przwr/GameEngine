@@ -72,8 +72,8 @@ public class MyPlayer extends Player {
         this.emitter = true;
         initialize(name, x, y);
         this.sprite = place.getSpriteSheet("apple");
-        addLight(Light.create(place.getSpriteInSize("light", Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024)), new Color(0.85f, 0.85f, 0.85f),
-                Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this));
+        addLight(Light.create(place.getSpriteInSize("light", Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024)), new Color(0.85f, 0.85f, 0.85f),
+                Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024), this));
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -92,8 +92,8 @@ public class MyPlayer extends Player {
         visible = true;
         depth = 0;
         this.sprite = place.getSpriteSheet("apple");
-        addLight(Light.create(place.getSpriteInSize("light", Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024)), new Color(0.85f, 0.85f, 0.85f),
-                Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this));
+        addLight(Light.create(place.getSpriteInSize("light", Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024)), new Color(0.85f, 0.85f, 0.85f),
+                Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024), this));
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -135,7 +135,7 @@ public class MyPlayer extends Player {
                 glScaled(Settings.scale, Settings.scale, 1);
             }
             Drawer.setColor(JUMP_SHADOW_COLOR);
-            Drawer.drawElipse(0, 0, Methods.roundHalfUp((float) collision.getWidth() / 2), Methods.roundHalfUp((float) collision.getHeight() / 2), 15);
+            Drawer.drawElipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
             getAnimation().render();

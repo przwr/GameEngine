@@ -54,7 +54,9 @@ public class Rectangle extends Figure {
     @Override
     public boolean isCollideSingle(int x, int y, Figure figure) {
         if (figure instanceof Rectangle) {
-            return rectangleCollsion(x, y, figure);
+            return rectangleCollision(x, y, figure);
+        } else if (figure instanceof Quadrangle) {
+            return quadrangleCollision(x, y, figure);
         } else if (figure instanceof Circle) {
             return circleCollision(x, y, figure);
         } else if (figure instanceof Line) {
@@ -63,7 +65,13 @@ public class Rectangle extends Figure {
         return false;
     }
 
-    private boolean rectangleCollsion(int x, int y, Figure figure) {
+    private boolean rectangleCollision(int x, int y, Figure figure) {
+        Rectangle rectangle = (Rectangle) figure;
+        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
+                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
+    }
+
+    private boolean quadrangleCollision(int x, int y, Figure figure) {
         Rectangle rectangle = (Rectangle) figure;
         return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
                 && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
@@ -102,12 +110,12 @@ public class Rectangle extends Figure {
 
     @Override
     public Collection<Point> getPoints() {
-        points.get(0).set(getX(), getY());
-        points.get(1).set(getX(), getY() + height);
-        points.get(2).set(getX() + width, getY() + height);
-//        points.get(1).set(getX(), getY() + (int) (height * 0.6f));
-//        points.get(2).set(getX() + width, getY() + (int) (height * 0.6f));
-        points.get(3).set(getX() + width, getY());
+        if (!isMobile()) {
+            points.get(0).set(getX(), getY());
+            points.get(1).set(getX(), getY() + height);
+            points.get(2).set(getX() + width, getY() + height);
+            points.get(3).set(getX() + width, getY());
+        }
         return Collections.unmodifiableCollection(points);
     }
 }

@@ -13,7 +13,6 @@ import game.place.Place;
 import game.place.PuzzleObject;
 import game.place.Tile;
 import game.place.WarpPoint;
-import org.newdawn.slick.Color;
 
 /**
  *

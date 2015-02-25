@@ -5,24 +5,11 @@
  */
 package collision;
 
-import engine.Point;
-import game.place.Light;
+import game.place.ForegroundTile;
 import game.place.Shadow;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex2f;
 
 /**
  *
@@ -37,6 +24,7 @@ public class OpticProperties {
     private final int shadowHeight;
     private float shadowColor;
     private final ArrayList<Shadow> shadows = new ArrayList<>();
+    private static ForegroundTile foregroundTile;
 
     public static OpticProperties create(int type, int shadowHeight) {
         return new OpticProperties(type, shadowHeight);
@@ -57,36 +45,6 @@ public class OpticProperties {
 
     public void clearShadows() {
         shadows.clear();
-    }
-
-    public void renderShadowBlack(Light emitter, Point[] points) {
-        glDisable(GL_TEXTURE_2D);
-        glColor3f(0, 0, 0);
-        glPushMatrix();
-        glTranslatef((emitter.getXCenterShift()) - emitter.getX(), (emitter.getYCenterShift()) - emitter.getY() + Display.getHeight() - emitter.getHeight(), 0);
-        glBegin(GL_QUADS);
-        glVertex2f(points[0].getX(), points[0].getY());
-        glVertex2f(points[1].getX(), points[1].getY());
-        glVertex2f(points[2].getX(), points[2].getY());
-        glVertex2f(points[3].getX(), points[3].getY());
-        glEnd();
-        glPopMatrix();
-        glEnable(GL_TEXTURE_2D);
-    }
-
-    public void renderShadowLit(Light emitter, Point[] points) {
-        glDisable(GL_TEXTURE_2D);
-        glColor3f(shadowColor, shadowColor, shadowColor);
-        glPushMatrix();
-        glTranslatef((emitter.getXCenterShift()) - emitter.getX(), (emitter.getYCenterShift()) - emitter.getY() + Display.getHeight() - emitter.getHeight(), 0);
-        glBegin(GL_QUADS);
-        glVertex2f(points[0].getX(), points[0].getY());
-        glVertex2f(points[1].getX(), points[1].getY());
-        glVertex2f(points[2].getX(), points[2].getY());
-        glVertex2f(points[3].getX(), points[3].getY());
-        glEnd();
-        glPopMatrix();
-        glEnable(GL_TEXTURE_2D);
     }
 
     public boolean isLitable() {

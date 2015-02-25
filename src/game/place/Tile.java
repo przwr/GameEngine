@@ -1,6 +1,7 @@
 package game.place;
 
 import collision.Figure;
+import engine.Drawer;
 import engine.Point;
 import game.Settings;
 import game.gameobject.GameObject;
@@ -69,22 +70,50 @@ public class Tile extends GameObject implements Appearance {
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
-        System.out.println("Empty method in Tile");
+        glPushMatrix();
+        glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
+        if (isSimpleLighting()) {
+            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), color);
+        } else {
+            Drawer.drawShapeInShade(this, color);
+        }
+        glPopMatrix();
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
-        System.out.println("Empty method in Tile");
+        glPushMatrix();
+        glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
+        if (isSimpleLighting()) {
+            Drawer.drawRectangleInBlack(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
+        } else {
+            Drawer.drawShapeInBlack(this);
+        }
+        glPopMatrix();
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
-        System.out.println("Empty method in Tile");
+    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+        glPushMatrix();
+        glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
+        if (isSimpleLighting()) {
+            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), color);
+        } else {
+            Drawer.drawShapePartInShade(this, color, xStart, xEnd);
+        }
+        glPopMatrix();
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
-        System.out.println("Empty method in Tile");
+        glPushMatrix();
+        glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
+        if (isSimpleLighting()) {
+            Drawer.drawRectangleInBlack(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
+        } else {
+            Drawer.drawShapePartInBlack(this, xStart, xEnd);
+        }
+        glPopMatrix();
     }
 
     @Override

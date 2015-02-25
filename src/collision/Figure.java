@@ -27,6 +27,7 @@ public abstract class Figure implements Comparable<Object> {
     private final OpticProperties opticProperties;
     protected int xStart, yStart, width, height, xCenter, yCenter;
     protected final ArrayList<Point> points;
+    private boolean mobile = true;
 
     public abstract boolean isCollideSingle(int x, int y, Figure figure);
 
@@ -114,14 +115,6 @@ public abstract class Figure implements Comparable<Object> {
         opticProperties.clearShadows();
     }
 
-    public void renderShadowLit(Light emitter, Point[] points) {
-        opticProperties.renderShadowLit(emitter, points);
-    }
-
-    public void renderShadowBlack(Light emitter, Point[] points) {
-        opticProperties.renderShadowBlack(emitter, points);
-    }
-
     @Override
     public int compareTo(Object object) {
         return (getYEnd() - ((Figure) object).getYEnd());
@@ -133,6 +126,10 @@ public abstract class Figure implements Comparable<Object> {
 
     public boolean isGiveShadow() {
         return opticProperties.isGiveShadow();
+    }
+
+    public boolean isMobile() {
+        return mobile;
     }
 
     public int getX() {

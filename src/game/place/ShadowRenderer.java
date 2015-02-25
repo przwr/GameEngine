@@ -6,6 +6,7 @@
 package game.place;
 
 import collision.Figure;
+import collision.Quadrangle;
 import collision.Rectangle;
 import engine.Methods;
 import engine.Point;
@@ -233,7 +234,8 @@ public class ShadowRenderer {
             isChecked = false;
             if (current.getY() < source.getY() && other != current && other != source.getOwnerCollision()) {
                 if (other.isGiveShadow() && current.getYEnd() != other.getYEnd()) {
-                    if (current instanceof Rectangle) {
+                    if (current instanceof Quadrangle) {
+                        // TO DO obsługa rogów bloczków
                         if (shadowPoints[0].getX() == shadowPoints[2].getX()) {
                             XOL = shadowPoints[0].getX();
                         } else {
@@ -256,7 +258,27 @@ public class ShadowRenderer {
                         }
                         findDarkness(other, current, source);
                     } else {
-                        // TO DO obsługa rogów bloczków
+                        if (shadowPoints[0].getX() == shadowPoints[2].getX()) {
+                            XOL = shadowPoints[0].getX();
+                        } else {
+                            XOL = ((other.getYEnd() - bl1) / al1);
+                            YOL = (al1 * other.getX() + bl1);
+                            YOL2 = (al1 * other.getXEnd() + bl1);
+                        }
+                        if (shadowPoints[1].getX() == shadowPoints[3].getX()) {
+                            XOR = shadowPoints[1].getX();
+                        } else {
+                            XOR = ((other.getYEnd() - bl2) / al2);
+                            YOR = (al2 * other.getX() + bl2);
+                            YOR2 = (al2 * other.getXEnd() + bl2);
+                        }
+                        if ((shadowPoints[0].getY() > shadowPoints[2].getY() && shadowPoints[0].getY() > other.getY() - other.getShadowHeight()) && ((shadowPoints[0].getX() != shadowPoints[2].getX() && ((XOL >= other.getX() && XOL <= other.getXEnd()) || (YOL >= other.getY() - other.getShadowHeight() && YOL <= other.getYEnd()) || (YOL2 >= other.getY() - other.getShadowHeight() && YOL2 <= other.getYEnd()))) || (shadowPoints[0].getX() == shadowPoints[2].getX() && XOL >= other.getX() && XOL <= other.getXEnd()))) {
+                            calculateLeftWall(other, current, source);
+                        }
+                        if ((shadowPoints[1].getY() > shadowPoints[3].getY() && shadowPoints[1].getY() > other.getY() - other.getShadowHeight()) && ((shadowPoints[1].getX() != shadowPoints[3].getX() && ((XOR >= other.getX() && XOR <= other.getXEnd()) || (YOR >= other.getY() - other.getShadowHeight() && YOR <= other.getYEnd()) || (YOR2 >= other.getY() - other.getShadowHeight() && YOR2 <= other.getYEnd()))) || (shadowPoints[1].getX() == shadowPoints[3].getX() && XOR >= other.getX() && XOR <= other.getXEnd()))) {
+                            calculateRightWall(other, current, source);
+                        }
+                        findDarkness(other, current, source);
                     }
                 } else if (other.isLittable() && !other.isGiveShadow()) {
                     if (shadowPoints[0].getX() == shadowPoints[2].getX()) {
@@ -295,13 +317,13 @@ public class ShadowRenderer {
                 XL1 = shadowPoints[0].getX();
                 XL2 = other.getXEnd();
             } else {
-                XL1 = Methods.roundHalfUp((other.getYEnd() - bl1) / al1);
+                XL1 = Methods.roundDouble((other.getYEnd() - bl1) / al1);
                 XL2 = al1 > 0 ? other.getX() : other.getXEnd();
             }
             if (shadowPoints[1].getX() == shadowPoints[3].getX()) {
                 XR1 = shadowPoints[1].getX();
             } else {
-                XR1 = Methods.roundHalfUp((other.getYEnd() - bl2) / al2);
+                XR1 = Methods.roundDouble((other.getYEnd() - bl2) / al2);
             }
             if (XL1 >= other.getX() && XL1 <= other.getXEnd()) {
                 if (FastMath.abs(al1) > 0 && (XL1 < current.getX() || XL1 == other.getXEnd())) { //dodaj światło
@@ -325,8 +347,8 @@ public class ShadowRenderer {
                     }
                 }
             } else if (shadowPoints[0].getX() != shadowPoints[2].getX()) { // rysuj zaciemniony
-                YOL = Methods.roundHalfUp(al1 * other.getX() + bl1);
-                YOL2 = Methods.roundHalfUp(al1 * other.getXEnd() + bl1);
+                YOL = Methods.roundDouble(al1 * other.getX() + bl1);
+                YOL2 = Methods.roundDouble(al1 * other.getXEnd() + bl1);
                 if ((XL1 != current.getX() && XL1 != other.getX() && XL1 != other.getXEnd() && source.getX() != current.getXEnd() && source.getX() != current.getX()) || (YOL > other.getY() - other.getShadowHeight() && YOL < other.getYEnd()) || (YOL2 > other.getY() - other.getShadowHeight() && YOL2 < other.getYEnd())) {
                     if (FastMath.abs(al1) >= 0 && XL1 < current.getX()) {
                         other.addShadow(shadow1);
@@ -350,7 +372,7 @@ public class ShadowRenderer {
                 XL1 = shadowPoints[0].getX();
                 XL2 = other.getOwner().getStartX() + other.getWidth();
             } else {
-                XL1 = Methods.roundHalfUp((other.getYOwnerEnd() - bl1) / al1);
+                XL1 = Methods.roundDouble((other.getYOwnerEnd() - bl1) / al1);
                 XL2 = al1 > 0 ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
             }
             if (XL1 >= other.getXOwnerBegin() && XL1 <= other.getXOwnerEnd()) {
@@ -366,8 +388,8 @@ public class ShadowRenderer {
 //                    System.out.println("Left Shade");
                 }
             } else if (shadowPoints[0].getX() != shadowPoints[2].getX()) { // rysuj zaciemniony
-                YOL = Methods.roundHalfUp(al1 * other.getXOwnerBegin() + bl1);
-                YOL2 = Methods.roundHalfUp(al1 * other.getXOwnerEnd() + bl1);
+                YOL = Methods.roundDouble(al1 * other.getXOwnerBegin() + bl1);
+                YOL2 = Methods.roundDouble(al1 * other.getXOwnerEnd() + bl1);
                 if ((XL1 != current.getX() && XL1 != other.getXOwnerBegin() && XL1 != other.getXOwnerEnd() && source.getX() != current.getXEnd() && source.getX() != current.getX()) || (YOL > other.getYOwnerBegin() && YOL < other.getYOwnerEnd()) || (YOL2 > other.getYOwnerBegin() && YOL2 < other.getYOwnerEnd())) {
                     if (FastMath.abs(al1) >= 0 && XL1 < current.getX()) {
                         other.addShadow(shadow1);
@@ -386,17 +408,16 @@ public class ShadowRenderer {
                 XR1 = shadowPoints[1].getX();
                 XR2 = other.getX();
             } else {
-                XR1 = Methods.roundHalfUp((other.getYEnd() - bl2) / al2);
+                XR1 = Methods.roundDouble((other.getYEnd() - bl2) / al2);
                 XR2 = al2 > 0 ? other.getX() : other.getXEnd();
             }
             if (shadowPoints[0].getX() == shadowPoints[2].getX()) {
                 XL1 = shadowPoints[0].getX();
             } else {
-                XL1 = Methods.roundHalfUp((other.getYEnd() - bl1) / al1);
+                XL1 = Methods.roundDouble((other.getYEnd() - bl1) / al1);
             }
             if (XR1 >= other.getX() && XR1 <= other.getXEnd()) {
                 if (FastMath.abs(al2) > 0 && (XR1 > current.getXEnd() || XR1 == other.getX())) { // dodaj światło
-
                     tempShadow = new Shadow(2);
                     tempShadow.addPoints(new Point(XR1, other.getY() - other.getShadowHeight()), new Point(XR1, other.getYEnd()),
                             new Point(XR2, other.getYEnd()), new Point(XR2, other.getY() - other.getShadowHeight()));
@@ -417,8 +438,8 @@ public class ShadowRenderer {
                     }
                 }
             } else if (shadowPoints[1].getX() != shadowPoints[3].getX()) { // rysuj zaciemniony
-                YOR = Methods.roundHalfUp(al2 * other.getX() + bl2);
-                YOR2 = Methods.roundHalfUp(al2 * other.getXEnd() + bl2);
+                YOR = Methods.roundDouble(al2 * other.getX() + bl2);
+                YOR2 = Methods.roundDouble(al2 * other.getXEnd() + bl2);
                 if ((XR1 != current.getXEnd() && XR1 != other.getX() && XR1 != other.getXEnd() && source.getX() != current.getXEnd() && source.getX() != current.getX()) || (YOR > other.getY() - other.getShadowHeight() && YOR < other.getYEnd()) || (YOR2 > other.getY() - other.getShadowHeight() && YOR2 < other.getYEnd())) {
                     if (FastMath.abs(al2) >= 0 && XR1 > current.getXEnd()) {
                         other.addShadow(shadow1);
@@ -440,7 +461,7 @@ public class ShadowRenderer {
     private static void calculateRightObject(Figure other, Figure current, Light source) {
         if (other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
             if (shadowPoints[1].getX() != shadowPoints[3].getX()) {
-                XR1 = Methods.roundHalfUp((other.getYOwnerEnd() - bl2) / al2);
+                XR1 = Methods.roundDouble((other.getYOwnerEnd() - bl2) / al2);
                 XR2 = al2 > 0 ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
             } else {
                 XR1 = shadowPoints[1].getX();
@@ -459,8 +480,8 @@ public class ShadowRenderer {
 //                    System.out.println("Right Shade");
                 }
             } else if (shadowPoints[1].getX() != shadowPoints[3].getX()) { // rysuj zaciemniony
-                YOR = Methods.roundHalfUp(al2 * other.getXOwnerBegin() + bl2);
-                YOR2 = Methods.roundHalfUp(al2 * other.getXOwnerEnd() + bl2);
+                YOR = Methods.roundDouble(al2 * other.getXOwnerBegin() + bl2);
+                YOR2 = Methods.roundDouble(al2 * other.getXOwnerEnd() + bl2);
                 if ((XR1 != current.getXEnd() && XR1 != other.getXOwnerBegin() && XR1 != other.getXOwnerEnd() && source.getX() != current.getXEnd() && source.getX() != current.getX()) || (YOR > other.getYOwnerBegin() && YOR < other.getYOwnerEnd()) || (YOR2 > other.getYOwnerBegin() && YOR2 < other.getYOwnerEnd())) {
                     if (FastMath.abs(al2) > 0 && XR1 > current.getXEnd()) {
                         other.addShadow(shadow1);
@@ -492,10 +513,10 @@ public class ShadowRenderer {
     private static void findObjectDarkness(Figure other, Figure current, Light source) {
         if (!isChecked && other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
             poly.reset();
-            poly.addPoint(shadowPoints[0].getX(), shadowPoints[0].getY());
             poly.addPoint(shadowPoints[1].getX(), shadowPoints[1].getY());
             poly.addPoint(shadowPoints[3].getX(), shadowPoints[3].getY());
             poly.addPoint(shadowPoints[2].getX(), shadowPoints[2].getY());
+            poly.addPoint(shadowPoints[0].getX(), shadowPoints[0].getY());
             if (poly.contains(other.getXOwnerBegin(), other.getYOwnerBegin() - other.getShadowHeight(), other.getWidth(), other.getHeight() + other.getShadowHeight())) {
                 other.addShadow(shadow0);
 //                System.out.println("Darkness...");
@@ -513,6 +534,36 @@ public class ShadowRenderer {
         glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
         glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
         glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+        glEnd();
+        glPopMatrix();
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    private static void renderShadow(Light emitter, Point[] points) {
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(0, 0, 0);
+        glPushMatrix();
+        glTranslatef((emitter.getXCenterShift()) - emitter.getX(), (emitter.getYCenterShift()) - emitter.getY() + Display.getHeight() - emitter.getHeight(), 0);
+        glBegin(GL_QUADS);
+        glVertex2f(points[0].getX(), points[0].getY());
+        glVertex2f(points[1].getX(), points[1].getY());
+        glVertex2f(points[2].getX(), points[2].getY());
+        glVertex2f(points[3].getX(), points[3].getY());
+        glEnd();
+        glPopMatrix();
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    private static void renderShadowLit(Light emitter, float shadowColor, Point[] points) {
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(shadowColor, shadowColor, shadowColor);
+        glPushMatrix();
+        glTranslatef((emitter.getXCenterShift()) - emitter.getX(), (emitter.getYCenterShift()) - emitter.getY() + Display.getHeight() - emitter.getHeight(), 0);
+        glBegin(GL_QUADS);
+        glVertex2f(points[0].getX(), points[0].getY());
+        glVertex2f(points[1].getX(), points[1].getY());
+        glVertex2f(points[2].getX(), points[2].getY());
+        glVertex2f(points[3].getX(), points[3].getY());
         glEnd();
         glPopMatrix();
         glEnable(GL_TEXTURE_2D);
@@ -543,10 +594,18 @@ public class ShadowRenderer {
             shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade);
         };
         shads[2] = (Light emitter, Figure shade, Point[] points) -> {
-            shade.renderShadowLit(emitter, points);
+            if (shade.getOwner().isSimpleLighting()) {
+                renderShadowLit(emitter, shade.getShadowColor(), points);
+            } else {
+                shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade, points[0].getX(), points[2].getX());
+            }
         };
         shads[3] = (Light emitter, Figure shade, Point[] points) -> {
-            shade.renderShadowBlack(emitter, points);
+            if (shade.getOwner().isSimpleLighting()) {
+                renderShadow(emitter, points);
+            } else {
+                shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, points[0].getX(), points[2].getX());
+            }
         };
         shads[4] = (Light emitter, Figure shade, Point[] points) -> {
             shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade, points[0].getX(), points[0].getY());

@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.geom.Line2D;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import javax.swing.JOptionPane;
@@ -100,14 +101,57 @@ public class Methods {
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
     }
 
-    public static int roundHalfUp(double d) {
-        double dAbs = FastMath.abs(d);
-        int i = (int) dAbs;
-        double result = dAbs - (double) i;
-        if (result < 0.5) {
-            return d < 0 ? -i : i;
+    public static int roundDouble(double number) {
+        return FastMath.round((float) number);
+    }
+
+//    public Point2D.Float getIntersectionPoint(Line2D.Float line1, Line2D.Float line2) {
+//        if (!line1.intersectsLine(line2)) {
+//            return null;
+//        }
+//        double px = line1.getX1(),
+//                py = line1.getY1(),
+//                rx = line1.getX2() - px,
+//                ry = line1.getY2() - py;
+//        double qx = line2.getX1(),
+//                qy = line2.getY1(),
+//                sx = line2.getX2() - qx,
+//                sy = line2.getY2() - qy;
+//
+//        double det = sx * ry - sy * rx;
+//        if (det == 0) {
+//            return null;
+//        } else {
+//            double z = (sx * (qy - py) + sy * (px - qx)) / det;
+//            if (z == 0 || z == 1) {
+//                return null;  // intersection at end point!
+//            }
+//            return new Point2D.Float(
+//                    (float) (px + z * rx), (float) (py + z * ry));
+//        }
+//    }
+    public Point getIntersectionPoint(Line2D firstLine, Line2D secondLine) {
+        if (!firstLine.intersectsLine(secondLine)) {
+            return null;
+        }
+        double px = firstLine.getX1(),
+                py = firstLine.getY1(),
+                rx = firstLine.getX2() - px,
+                ry = firstLine.getY2() - py;
+        double qx = secondLine.getX1(),
+                qy = secondLine.getY1(),
+                sx = secondLine.getX2() - qx,
+                sy = secondLine.getY2() - qy;
+
+        double det = sx * ry - sy * rx;
+        if (det == 0) {
+            return null;
         } else {
-            return d < 0 ? -(i + 1) : i + 1;
+            double z = (sx * (qy - py) + sy * (px - qx)) / det;
+            if (z == 0 || z == 1) {
+                return null;  // intersection at end point!
+            }
+            return new Point(roundDouble((px + z * rx)), roundDouble((py + z * ry)));
         }
     }
 
