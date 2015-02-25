@@ -7,7 +7,6 @@ package game.place;
 
 import collision.Figure;
 import collision.Quadrangle;
-import collision.Rectangle;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;

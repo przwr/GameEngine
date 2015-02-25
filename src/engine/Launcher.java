@@ -6,6 +6,7 @@
 package engine;
 
 import static engine.Main.cleanUp;
+import org.lwjgl.input.Keyboard;
 
 /**
  *
@@ -18,6 +19,12 @@ public class Launcher {
             Main.run();
         } catch (Exception exception) {
             Methods.exception(exception);
+        }
+        while (Main.pop.getId() != -1) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                break;
+            }
+            
         }
         cleanUp();
     }
