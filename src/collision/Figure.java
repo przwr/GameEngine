@@ -224,6 +224,10 @@ public abstract class Figure implements Comparable<Object> {
         return opticProperties.getShadows();
     }
 
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
+    }
+
     public void setXStart(int xStart) {
         this.xStart = xStart;
     }

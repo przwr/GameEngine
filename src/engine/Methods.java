@@ -82,13 +82,13 @@ public class Methods {
     }
 
     public static void exception(Exception exception) {
-        String err = "";
-        err += exception + "\n";
+        String error = "";
+        error += exception + "\n";
         for (StackTraceElement stackTrace : exception.getStackTrace()) {
-            err += stackTrace + "\n";
+            error += stackTrace + "\n";
         }
-        System.out.println(err);
-        Main.addMessage(err);
+        System.out.println(error);
+        Main.addMessage(error);
     }
 
     public static void error(String message) {
@@ -99,6 +99,16 @@ public class Methods {
     public static void javaError(String message) {
         System.out.println(message);
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
+    }
+
+    public static void javaException(Exception exception) {
+        String error = "";
+        error += exception + "\n";
+        for (StackTraceElement stackTrace : exception.getStackTrace()) {
+            error += stackTrace + "\n";
+        }
+        System.out.println(error);
+        JOptionPane.showMessageDialog(null, error, "Problem!", 0);
     }
 
     public static int roundDouble(double number) {

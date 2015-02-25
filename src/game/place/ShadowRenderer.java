@@ -6,7 +6,7 @@
 package game.place;
 
 import collision.Figure;
-import collision.Quadrangle;
+import collision.RoundRectangle;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
@@ -37,7 +37,7 @@ public class ShadowRenderer {
     private static final renderShadow[] shads = new renderShadow[6];
     private static float lightOwnerHeightHalf;
     private static boolean isChecked;
-    private static final Polygon poly = new Polygon();
+    private static final Polygon polygon = new Polygon();
 
     public static void prerenderLight(Map map, Light emitter) {
         findShades(emitter, map);
@@ -233,7 +233,7 @@ public class ShadowRenderer {
             isChecked = false;
             if (current.getY() < source.getY() && other != current && other != source.getOwnerCollision()) {
                 if (other.isGiveShadow() && current.getYEnd() != other.getYEnd()) {
-                    if (current instanceof Quadrangle) {
+                    if (current instanceof RoundRectangle) {
                         // TO DO obsługa rogów bloczków
                         if (shadowPoints[0].getX() == shadowPoints[2].getX()) {
                             XOL = shadowPoints[0].getX();
@@ -495,12 +495,12 @@ public class ShadowRenderer {
 
     private static void findDarkness(Figure other, Figure current, Light source) {
         if (other != left && other != right && other.getYEnd() < source.getY() && (other.getY() - other.getShadowHeight() < current.getY() || other.getYEnd() < current.getYEnd())) {
-            poly.reset();
-            poly.addPoint(shadowPoints[0].getX(), shadowPoints[0].getY());
-            poly.addPoint(shadowPoints[1].getX(), shadowPoints[1].getY());
-            poly.addPoint(shadowPoints[3].getX(), shadowPoints[3].getY());
-            poly.addPoint(shadowPoints[2].getX(), shadowPoints[2].getY());
-            if (poly.contains(other.getX(), other.getY() - other.getShadowHeight(), other.getWidth(), other.getHeight() + other.getShadowHeight())) {
+            polygon.reset();
+            polygon.addPoint(shadowPoints[0].getX(), shadowPoints[0].getY());
+            polygon.addPoint(shadowPoints[1].getX(), shadowPoints[1].getY());
+            polygon.addPoint(shadowPoints[3].getX(), shadowPoints[3].getY());
+            polygon.addPoint(shadowPoints[2].getX(), shadowPoints[2].getY());
+            if (polygon.contains(other.getX(), other.getY() - other.getShadowHeight(), other.getWidth(), other.getHeight() + other.getShadowHeight())) {
                 other.addShadow(shadow0);
                 if (DEBUG) {
                     System.out.println("Darkness...");
@@ -511,12 +511,12 @@ public class ShadowRenderer {
 
     private static void findObjectDarkness(Figure other, Figure current, Light source) {
         if (!isChecked && other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
-            poly.reset();
-            poly.addPoint(shadowPoints[1].getX(), shadowPoints[1].getY());
-            poly.addPoint(shadowPoints[3].getX(), shadowPoints[3].getY());
-            poly.addPoint(shadowPoints[2].getX(), shadowPoints[2].getY());
-            poly.addPoint(shadowPoints[0].getX(), shadowPoints[0].getY());
-            if (poly.contains(other.getXOwnerBegin(), other.getYOwnerBegin() - other.getShadowHeight(), other.getWidth(), other.getHeight() + other.getShadowHeight())) {
+            polygon.reset();
+            polygon.addPoint(shadowPoints[1].getX(), shadowPoints[1].getY());
+            polygon.addPoint(shadowPoints[3].getX(), shadowPoints[3].getY());
+            polygon.addPoint(shadowPoints[2].getX(), shadowPoints[2].getY());
+            polygon.addPoint(shadowPoints[0].getX(), shadowPoints[0].getY());
+            if (polygon.contains(other.getXOwnerBegin(), other.getYOwnerBegin() - other.getShadowHeight(), other.getWidth(), other.getHeight() + other.getShadowHeight())) {
                 other.addShadow(shadow0);
 //                System.out.println("Darkness...");
             }
