@@ -18,6 +18,7 @@ import java.util.Collection;
 public class Circle extends Figure {
 
     private final static int PRECISION = 16;
+    private final static int step = 360 / PRECISION;
     private final int radius;
 
     public static Circle create(int xStart, int yStart, int radius, int OpticPropertiesType, GameObject owner) {
@@ -32,7 +33,7 @@ public class Circle extends Figure {
         super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType));
         this.radius = radius;
         for (int i = 0; i < PRECISION; i++) {
-            points.add(new Point(0, 0));
+            points.add(new Point((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius)));
         }
         points.trimToSize();
         centralize();
@@ -47,16 +48,18 @@ public class Circle extends Figure {
     @Override
     public boolean isCollideSingle(int x, int y, Figure figure) {
         if (figure instanceof Rectangle) {
-            return rectangleCollsion(x, y, figure);
+            return rectangleCollision(x, y, figure);
+        } else if (figure instanceof Quadrangle) {
+            return quadrangleCollision(x, y, figure);
         } else if (figure instanceof Circle) {
-            return circleCollsion(x, y, figure);
+            return circleCollision(x, y, figure);
         } else if (figure instanceof Line) {
             return lineCollision(x, y, figure);
         }
         return false;
     }
 
-    private boolean rectangleCollsion(int x, int y, Figure figure) {
+    private boolean rectangleCollision(int x, int y, Figure figure) {
         Rectangle rectangle = (Rectangle) figure;
         int xPosition = ((getX(x) < rectangle.getX() ? -1 : 1) + (getX(x) <= (rectangle.getX() + rectangle.getWidth()) ? -1 : 1)) / 2;
         int yPosition = ((getY(y) < rectangle.getY() ? -1 : 1) + (getY(y) <= (rectangle.getY() + rectangle.getHeight()) ? -1 : 1)) / 2;
@@ -74,7 +77,25 @@ public class Circle extends Figure {
         return (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
     }
 
-    private boolean circleCollsion(int x, int y, Figure figure) {
+    private boolean quadrangleCollision(int x, int y, Figure figure) {
+        Rectangle rectangle = (Rectangle) figure;
+        int xPosition = ((getX(x) < rectangle.getX() ? -1 : 1) + (getX(x) <= (rectangle.getX() + rectangle.getWidth()) ? -1 : 1)) / 2;
+        int yPosition = ((getY(y) < rectangle.getY() ? -1 : 1) + (getY(y) <= (rectangle.getY() + rectangle.getHeight()) ? -1 : 1)) / 2;
+        if (xPosition == 0 && yPosition == 0) {
+            return true;
+        }
+        if (xPosition != 0 && yPosition != 0) {
+            int xtmp = (xPosition + 1) / 2;
+            int ytmp = (yPosition + 1) / 2;
+            return (Methods.pointDistance(getX(x), getY(y), rectangle.getPoint(xtmp + 2 * ytmp).getX(), rectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
+        }
+        if (yPosition == 0 && ((xPosition < 0 && rectangle.getX() - getX(x) <= radius) || (yPosition > 0 && getX(x) - rectangle.getX() - rectangle.getWidth() <= radius))) {
+            return true;
+        }
+        return (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
+    }
+
+    private boolean circleCollision(int x, int y, Figure figure) {
         Circle circle = (Circle) figure;
         return Methods.pointDistance(getX(x), getY(y), circle.getX(), circle.getY()) <= (radius + circle.getRadius());
     }
@@ -86,9 +107,10 @@ public class Circle extends Figure {
 
     @Override
     public Collection<Point> getPoints() {
-        int step = 360 / PRECISION;
-        for (int i = 0; i < PRECISION; i++) {
-            points.get(i).set((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius));
+        if (isMobile()) {
+            for (int i = 0; i < PRECISION; i++) {
+                points.get(i).set((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius));
+            }
         }
         return points;
     }

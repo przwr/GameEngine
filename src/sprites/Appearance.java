@@ -10,9 +10,9 @@ package sprites;
  * @author przemek
  */
 public abstract interface Appearance {
-    
+
     public abstract void bindCheckByID();
-    
+
     public abstract void bindCheckByTexture();
 
     public abstract void render();

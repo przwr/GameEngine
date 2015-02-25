@@ -5,13 +5,8 @@
  */
 package game.place;
 
-import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.Drawer;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
 
 /**
@@ -38,27 +33,10 @@ public class ForegroundTile extends Tile {
 
     protected ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
         super(spriteSheet, size, xSheet, ySheet);
-        simpleLighting = false;
+        simpleLighting = true;
         solid = wall;
         int type = wall ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW;
         setCollision(Rectangle.create(0, yStart, size, size, type, this));
-    }
-
-    @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
-        System.out.println("Empty method in ForeroundTile");
-    }
-
-    @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure) {
-        glPushMatrix();
-        glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
-        if (isSimpleLighting()) {
-            Drawer.drawRectangleInBlack(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
-        } else {
-            Drawer.drawShapeInBlack(this);
-        }
-        glPopMatrix();
     }
 
     //0  1 2 3       4    5      6          7
@@ -74,5 +52,9 @@ public class ForegroundTile extends Tile {
         String txt = "t:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
+    }
+
+    public boolean isWall() {
+        return collision.isGiveShadow();
     }
 }

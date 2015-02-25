@@ -49,8 +49,8 @@ public class MyMenu extends Menu {
         generateM8();
         this.color = new Color(Color.white);
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", Methods.roundHalfUp(Settings.scale * 38));
-        fonts.add("Amble-Regular", Methods.roundHalfUp(Settings.scale * 64));
+        fonts.add("Amble-Regular", Methods.roundDouble(Settings.scale * 38));
+        fonts.add("Amble-Regular", Methods.roundDouble(Settings.scale * 64));
     }
 
     private void generateM0() {

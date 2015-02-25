@@ -36,13 +36,13 @@ public class LightSource extends GameObject {
         emits = true;
         Color lightColor = new Color(0.85f, 0.85f, 0.85f);
         addLight(Light.create(place.getSpriteSheetSetScale("light"), lightColor,
-                Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this, 0));
+                Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024), this, 0));
         addLight(Light.create(place.getSpriteSheetSetScale("light"), lightColor,
-                Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this, 1));
+                Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024), this, 1));
         addLight(Light.create(place.getSpriteSheetSetScale("light"), lightColor,
-                Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this, 2));
+                Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024), this, 2));
         addLight(Light.create(place.getSpriteSheetSetScale("light"), lightColor,
-                Methods.roundHalfUp(Settings.scale * 1024), Methods.roundHalfUp(Settings.scale * 1024), this, 3));
+                Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024), this, 3));
         initialize(name, x, y);
         setCollision(Rectangle.create(this.width / 2, this.height / 3, OpticProperties.NO_SHADOW, this));
     }
