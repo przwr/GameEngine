@@ -24,7 +24,7 @@ public class PuzzleObject {
     protected ArrayList<TileContainer> bgTiles;
     protected ArrayList<GameObject> objects;
     protected ArrayList<FGTileContainer> fgTiles;
-    protected ArrayList<AreaContainer> areas;
+    protected ArrayList<BlockContainer> areas;
 
     protected int xDelta, yDelta;
     protected int xBegin, yBegin;
@@ -48,7 +48,7 @@ public class PuzzleObject {
 
             Tile tmpTile;
             FGTileContainer tmpFgt;
-            AreaContainer tmpArea;
+            BlockContainer tmpArea = null;
             int i;
             int tile = place.getTileSize();
             SpriteSheet tmpSS = null;
@@ -82,12 +82,16 @@ public class PuzzleObject {
                             tmpFgt.additionalPlaces.add(new Point(Integer.parseInt(t[i]), Integer.parseInt(t[i + 1])));
                             i += 2;
                         }
-                        fgTiles.add(tmpFgt);
+                        if (tmpArea == null) {
+                            fgTiles.add(tmpFgt);
+                        } else {
+                            tmpArea.containedFGTs.add(tmpFgt);
+                        }
                         checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), 1, 1);
                         break;
 
                     case "b":
-                        tmpArea = new AreaContainer(Integer.parseInt(t[1]) * tile,
+                        tmpArea = new BlockContainer(Integer.parseInt(t[1]) * tile,
                                 Integer.parseInt(t[2]) * tile,
                                 Integer.parseInt(t[3]) * tile,
                                 Integer.parseInt(t[4]) * tile,
@@ -108,9 +112,9 @@ public class PuzzleObject {
             input.close();
         } catch (IOException e) {
             Methods.error("File " + file + " not found!\n" + e.getMessage());
-        } catch (Exception e) {
+        }/* catch (Exception e) {
             Methods.error("File " + file + " cannot be read!\n" + e.getMessage());
-        }
+        }*/
     }
 
     protected void addTile(Tile tile, int x, int y) {
@@ -153,7 +157,13 @@ public class PuzzleObject {
             });
         });
         areas.stream().forEach((area) -> {
-            map.addArea(area.generateArea(x * tileSize, y * tileSize));
+            Block tmpBlock = area.generateArea(x * tileSize, y * tileSize);
+            map.addArea(tmpBlock);
+            for (FGTileContainer tile : area.containedFGTs) {
+                ForegroundTile fgt = tile.generateFGT(x * tileSize, y * tileSize);
+                map.addForegroundTileAndReplace(fgt);
+                tmpBlock.addForegroundTile(fgt);
+            }
         });
         objects.stream().forEach((obj) -> {
             map.addObject(obj);
@@ -188,13 +198,14 @@ public class PuzzleObject {
     }
 
     protected class TileContainer {
+
         ArrayList<Point> places = new ArrayList<>();
         Tile tile;
-        
+
         public Tile getTile() {
             return tile;
         }
-        
+
         public ArrayList<Point> getPlaces() {
             return places;
         }
@@ -212,11 +223,11 @@ public class PuzzleObject {
             xBegin = x;
             yBegin = y;
         }
-        
+
         public void addPlace(Point p) {
             additionalPlaces.add(p);
         }
-        
+
         //0  1 2 3       4    5      6          7
         //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
         public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
@@ -237,10 +248,12 @@ public class PuzzleObject {
         }
     }
 
-    protected class AreaContainer {
-        int[] values;
+    protected class BlockContainer {
 
-        public AreaContainer(int x, int y, int width, int height, int shadowHeight) {
+        int[] values;
+        ArrayList<FGTileContainer> containedFGTs = new ArrayList<>();
+
+        public BlockContainer(int x, int y, int width, int height, int shadowHeight) {
             values = new int[]{x, y, width, height, shadowHeight};
         }
 
@@ -249,10 +262,14 @@ public class PuzzleObject {
             return a;
         }
 
+        public ArrayList<FGTileContainer> getForegroundTiles() {
+            return containedFGTs;
+        }
+
         public int[] getValues() {
             return values;
         }
-        
+
         public int getY() {
             return values[1];
         }

@@ -31,6 +31,9 @@ public class GladeMap extends Map {
 
         PuzzleObject test = new PuzzleObject("test", place);
         test.placePuzzle(3, 4, this);
+        
+        test = new PuzzleObject("HighWalls", place);
+        test.placePuzzle(17, 5, this);
 
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, warp));

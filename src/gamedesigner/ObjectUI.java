@@ -60,7 +60,6 @@ public class ObjectUI extends GUIObject {
     }
 
     public SpriteSheet getSpriteSheet() {
-        System.out.println(texture.getKey());
         return texture;
     }
 

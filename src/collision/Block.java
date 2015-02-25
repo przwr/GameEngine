@@ -47,6 +47,7 @@ public class Block extends GameObject {
             topForegroundTiles.add(foregroundTile);
             top.add(foregroundTile.getCollision());
         }
+        foregroundTile.setBlockPart(true);
     }
 
     public void removeForegroundTile(ForegroundTile foregroundTile) {

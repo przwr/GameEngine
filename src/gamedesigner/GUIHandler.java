@@ -119,13 +119,15 @@ public class GUIHandler extends GUIObject {
                 "Write filename: " + text, new Color(1f, 1f, 1f));
 
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
-            try (BufferedReader wczyt = new BufferedReader(new FileReader("res/objects/" + text + ".puz"))) {
-                mode = QUESTIONING;
-                wczyt.close();
-                return;
-            } catch (IOException e) {
+            if (text.length() > 0) {
+                try (BufferedReader wczyt = new BufferedReader(new FileReader("res/objects/" + text + ".puz"))) {
+                    mode = QUESTIONING;
+                    wczyt.close();
+                    return;
+                } catch (IOException e) {
+                }
+                objPlace.saveObject(text);
             }
-            objPlace.saveObject(text);
             stop();
         }
 

@@ -194,11 +194,21 @@ public class ObjectMap extends Map {
         }
         for (GameObject go : foregroundTiles) {
             ForegroundTile fgt = (ForegroundTile) go;
-            map.add(fgt.saveToString(repeated, center.getX() * tileSize, center.getY() * tileSize, tileSize));
-            repeated = fgt.getSpriteSheet();
+            if (!fgt.isInBlock()) {
+                map.add(fgt.saveToString(repeated, center.getX() * tileSize, center.getY() * tileSize, tileSize));
+                repeated = fgt.getSpriteSheet();
+            }
         }
         for (Block a : areas) {
             map.add(a.saveToString(center.getX() * tileSize, center.getY() * tileSize, tileSize));
+            for (ForegroundTile fgt : a.getTopForegroundTiles()) {
+                map.add(fgt.saveToString(repeated, center.getX() * tileSize, center.getY() * tileSize, tileSize));
+                repeated = fgt.getSpriteSheet();
+            }
+            for (ForegroundTile fgt : a.getWallForegroundTiles()) {
+                map.add(fgt.saveToString(repeated, center.getX() * tileSize, center.getY() * tileSize, tileSize));
+                repeated = fgt.getSpriteSheet();
+            }
         }
         return map;
     }

@@ -19,7 +19,7 @@ import sprites.SpriteSheet;
  */
 public class ObjectPO extends PuzzleObject {
 
-    protected final Comparator<AreaContainer> depthComparator = (AreaContainer firstObject, AreaContainer secondObject)
+    protected final Comparator<BlockContainer> depthComparator = (BlockContainer firstObject, BlockContainer secondObject)
             -> firstObject.getY() - secondObject.getY();
 
     public ObjectPO(String file, Place place) {
@@ -45,6 +45,7 @@ public class ObjectPO extends PuzzleObject {
                     values[3] / tileSize,
                     map,
                     map.place));
+            fgTiles.addAll(area.getForegroundTiles());
         });
         objects.stream().forEach((obj) -> {
             map.addObject(obj);

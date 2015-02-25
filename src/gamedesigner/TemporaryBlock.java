@@ -143,10 +143,12 @@ public class TemporaryBlock extends GameObject {
         }
         map.addForegroundTileAndReplace(fgt, x * tile, y * tile, level * tile);
         tiles.add(fgt);
+        area.addForegroundTile(fgt);
     }
 
     public void changeEnvironment() {
         tiles = new ArrayList<>();
+        area = new Block((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
         if (upHeight > 0) {
             int xBegin = (int) (x / tile);
             int yBegin = (int) (y / tile) - upHeight;
@@ -180,13 +182,13 @@ public class TemporaryBlock extends GameObject {
                         }
                         map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, level * tile);
                         tiles.add(fgt);
+                        area.addForegroundTile(fgt);
                         objMap.removeTile(ix, iy);
                     }
                 }
                 level++;
             }
         }
-        area = new Block((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
         map.addArea(area);
     }
 

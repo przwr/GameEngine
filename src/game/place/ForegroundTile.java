@@ -15,6 +15,8 @@ import sprites.SpriteSheet;
  */
 public class ForegroundTile extends Tile {
 
+    private boolean blockPart; 
+    
     public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
         return new ForegroundTile(spriteSheet, size, xSheet, ySheet, false, yStart);
     }
@@ -54,6 +56,14 @@ public class ForegroundTile extends Tile {
         return txt;
     }
 
+    public void setBlockPart(boolean blockPart) {
+        this.blockPart = blockPart;
+    }
+    
+    public boolean isInBlock() {
+        return blockPart;
+    }
+    
     public boolean isWall() {
         return collision.isGiveShadow();
     }
