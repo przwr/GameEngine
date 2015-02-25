@@ -29,7 +29,7 @@ public class Popup {
         fonts = new FontBase(2);
         fonts.add(font, (int) (Settings.scale * 22));
         fonts.add(font, (int) (Settings.scale * 28));
-        middleOk = fonts.write(0).getWidth("[ENTER]");
+        middleOk = fonts.getFont(0).getWidth("[ENTER]");
     }
 
     public String popMessage() {
@@ -56,11 +56,11 @@ public class Popup {
 
     public void renderMessage(int id) {
         lines = messages[id].split("\\r?\\n");
-        shift = fonts.write(0).getHeight();
-        space = fonts.write(1).getHeight();
-        biggest = fonts.write(1).getWidth(Main.getTitle());
+        shift = fonts.getFont(0).getHeight();
+        space = fonts.getFont(1).getHeight();
+        biggest = fonts.getFont(1).getWidth(Main.getTitle());
         for (String line : lines) {
-            biggest = fonts.write(0).getWidth(line) > biggest ? fonts.write(0).getWidth(line) : biggest;
+            biggest = fonts.getFont(0).getWidth(line) > biggest ? fonts.getFont(0).getWidth(line) : biggest;
         }
         width = Methods.interval(WIDTH_HALF >> 2, biggest + shift, (WIDTH_HALF << 1) - (border << 1));
         height = Methods.interval(0, space + shift + (int) (shift * (lines.length + 1)) + 2 * border, (HEIGHT_HALF << 1) - (border << 1));
@@ -166,7 +166,7 @@ public class Popup {
     }
 
     private void renderLine(int font, int x, int y, String message, Color color) {
-        fonts.write(font).drawString(x - fonts.write(font).getWidth(message) / 2, y - fonts.write(font).getHeight(), message, color);
+        fonts.getFont(font).drawLine(message, x - fonts.getFont(font).getWidth(message) / 2, y - fonts.getFont(font).getHeight(), color);
     }
 
     public int getId() {

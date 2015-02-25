@@ -33,15 +33,15 @@ public abstract class ScreenPlace {
     public void renderMessageCentered(int i, int x, int y, String message, Color color) {
         if (fonts != null) {
             Drawer.bindFontTexture();
-            fonts.write(i).drawString(x - fonts.write(i).getWidth(message) / 2,
-                    y - (4 * fonts.write(i).getHeight()) / 3, message, color);
+            fonts.getFont(i).drawLine(message, x - fonts.getFont(i).getWidth(message) / 2,
+                    y - (4 * fonts.getFont(i).getHeight()) / 3, color);
         }
     }
 
     public void renderMessage(int i, int x, int y, String message, Color color) {
         if (fonts != null) {
             Drawer.bindFontTexture();
-            fonts.write(i).drawString(x, y, message, color);
+            fonts.getFont(i).drawLine(message, x, y, color);
         }
     }
 }

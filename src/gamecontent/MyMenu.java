@@ -150,11 +150,11 @@ public class MyMenu extends Menu {
     protected void renderText() {
         int positions = menus[current].getOptionsNumber() + 1;
         renderMessageCentered(1, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
-                * fonts.write(0).getHeight() * 0.7),
+                * fonts.getFont(0).getHeight() * 0.7),
                 menus[current].getLabel(), new Color(color.r, color.g, color.b));
         positions--;
         for (int i = 0; i < menus[current].getOptionsNumber(); i++) {
-            renderMessageCentered(0, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.write(0).getHeight() * 0.7), menus[current].getChoice(i).getLabel(), getColor(menus[current].getChoice(i)));
+            renderMessageCentered(0, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.getFont(0).getHeight() * 0.7), menus[current].getChoice(i).getLabel(), getColor(menus[current].getChoice(i)));
             positions--;
         }
     }
