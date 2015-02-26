@@ -148,7 +148,7 @@ public class TemporaryBlock extends GameObject {
 
     public void changeEnvironment() {
         tiles = new ArrayList<>();
-        area = new Block((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
+        area = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
         if (upHeight > 0) {
             int xBegin = (int) (x / tile);
             int yBegin = (int) (y / tile) - upHeight;

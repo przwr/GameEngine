@@ -25,13 +25,25 @@ public class Block extends GameObject {
     private ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
     private ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
 
-    public Block(int x, int y, int width, int height, int shadowHeight) {  //Point (x, y) should be in left top corner of Area
+    public static Block create(int x, int y, int width, int height, int shadowHeight) {
+        return new Block(x, y, width, height, shadowHeight, false);
+    }
+
+    public static Block createRound(int x, int y, int width, int height, int shadowHeight) {
+        return new Block(x, y, width, height, shadowHeight, true);
+    }
+
+    private Block(int x, int y, int width, int height, int shadowHeight, boolean round) {  //Point (x, y) should be in left top corner of Area
         this.x = x;
         this.y = y;
         name = "area";
         solid = true;
-        simpleLighting = true;
-        setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+        simpleLighting = !round;
+        if (round) {
+            setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+        } else {
+            setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+        }
     }
 
     public void setTop(Figure top) {
@@ -56,6 +68,12 @@ public class Block extends GameObject {
         top.remove(foregroundTile.getCollision());
     }
 
+    public void pushCorner(int corner, int tileSize, int xChange, int yChange) {
+        if (collision instanceof RoundRectangle) {
+            ((RoundRectangle) collision).pushCorner(corner, tileSize, xChange, yChange);
+        }
+    }
+
     public boolean isCollide(int x, int y, Figure figure) {
         return figure.isCollideSingle(x, y, collision);
     }
@@ -70,16 +88,19 @@ public class Block extends GameObject {
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
         glPushMatrix();
-        glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
-        if (figure.getOwner().isSimpleLighting()) {
+        if (isSimpleLighting()) {
+            glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
             Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
-        } else if (figure.isGiveShadow()) {
-            wallForegroundTiles.stream().forEach((wall) -> {
-                Drawer.drawShapeInShade(wall, color);
-            });
         } else {
-            topForegroundTiles.stream().forEach((top) -> {
-                Drawer.drawShapeInShade(top, color);
+            glTranslatef(xEffect + getX(), yEffect + getY(), 0);
+            wallForegroundTiles.stream().forEach((wall) -> {
+                Figure col = wall.getCollision();
+                glTranslatef(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight(), 0);
+                if (wall.isSimpleLighting()) {
+                    Drawer.drawRectangleInShade(0, 0, col.width, col.height + col.getShadowHeight(), color);
+                } else {
+                    Drawer.drawShapeInShade(wall, color);
+                }
             });
         }
         glPopMatrix();
@@ -87,56 +108,67 @@ public class Block extends GameObject {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
-        if (figure.getOwner().isSimpleLighting()) {
-            glPushMatrix();
+        glPushMatrix();
+        if (isSimpleLighting()) {
             glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
             Drawer.drawRectangleInBlack(0, 0, figure.width, figure.height + figure.getShadowHeight());
-            glPopMatrix();
-        } else if (figure.isGiveShadow()) {
-            wallForegroundTiles.stream().forEach((wall) -> {
-                Drawer.drawShapeInBlack(wall);
-            });
         } else {
-            topForegroundTiles.stream().forEach((top) -> {
-                Drawer.drawShapeInBlack(top);
+            glTranslatef(xEffect + getX(), yEffect + getY(), 0);
+            wallForegroundTiles.stream().forEach((wall) -> {
+                Figure col = wall.getCollision();
+                glTranslatef(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight(), 0);
+                if (wall.isSimpleLighting()) {
+                    Drawer.drawRectangleInBlack(0, 0, col.width, col.height + col.getShadowHeight());
+                } else {
+                    Drawer.drawShapeInBlack(wall);
+                }
             });
         }
+        glPopMatrix();
     }
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
-        if (figure.getOwner().isSimpleLighting()) {
-            glPushMatrix();
+        glPushMatrix();
+        if (isSimpleLighting()) {
+            System.out.println("Powinno być nie używane w Block");
             glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
             Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
-            glPopMatrix();
-        } else if (figure.isGiveShadow()) {
-            wallForegroundTiles.stream().forEach((wall) -> {
-                Drawer.drawShapePartInShade(wall, color, xStart, xEnd);
-            });
         } else {
-            topForegroundTiles.stream().forEach((top) -> {
-                Drawer.drawShapePartInShade(top, color, xStart, xEnd);
+            glTranslatef(xEffect + getX(), yEffect + getY(), 0);
+            wallForegroundTiles.stream().forEach((wall) -> {
+                Figure col = wall.getCollision();
+                glTranslatef(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight(), 0);
+                if (wall.isSimpleLighting()) {
+                    Drawer.drawRectangleInShade(xStart, 0, xEnd, col.height + col.getShadowHeight(), color); // TO DO - xStart x End odpowiednio liczone w ShadowRendererze
+                } else {
+                    Drawer.drawShapePartInShade(wall, color, xStart, xEnd); // TO DO - xStart x End odpowiednio liczone w ShadowRendererze
+                }
             });
         }
+        glPopMatrix();
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
-        if (figure.getOwner().isSimpleLighting()) {
-            glPushMatrix();
+        glPushMatrix();
+        if (isSimpleLighting()) {
+            System.out.println("Powinno być nie używane w Block");
             glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
             Drawer.drawRectangleInBlack(0, 0, figure.width, figure.height + figure.getShadowHeight());
-            glPopMatrix();
-        } else if (figure.isGiveShadow()) {
-            wallForegroundTiles.stream().forEach((wall) -> {
-                Drawer.drawShapePartInBlack(wall, xStart, xEnd);
-            });
         } else {
-            topForegroundTiles.stream().forEach((top) -> {
-                Drawer.drawShapePartInBlack(top, xStart, xEnd);
+            glTranslatef(xEffect + getX(), yEffect + getY(), 0);
+            wallForegroundTiles.stream().forEach((wall) -> {
+                Figure col = wall.getCollision();
+                glTranslatef(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight(), 0);
+                if (wall.isSimpleLighting()) {
+                    Drawer.drawRectangleInBlack(xStart, 0, xEnd, col.height + col.getShadowHeight());// TO DO - xStart x End odpowiednio liczone w ShadowRendererze
+                } else {
+                    Drawer.drawShapePartInBlack(wall, xStart, xEnd);// TO DO - xStart x End odpowiednio liczone w ShadowRendererze
+                }
             });
         }
+        glPopMatrix();
     }
 
     @Override

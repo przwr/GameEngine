@@ -50,7 +50,7 @@ public class Circle extends Figure {
         if (figure instanceof Rectangle) {
             return rectangleCollision(x, y, figure);
         } else if (figure instanceof RoundRectangle) {
-            return quadrangleCollision(x, y, figure);
+            return toundRectangleCollision(x, y, figure);
         } else if (figure instanceof Circle) {
             return circleCollision(x, y, figure);
         } else if (figure instanceof Line) {
@@ -77,22 +77,22 @@ public class Circle extends Figure {
         return (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
     }
 
-    private boolean quadrangleCollision(int x, int y, Figure figure) {
-        Rectangle rectangle = (Rectangle) figure;
-        int xPosition = ((getX(x) < rectangle.getX() ? -1 : 1) + (getX(x) <= (rectangle.getX() + rectangle.getWidth()) ? -1 : 1)) / 2;
-        int yPosition = ((getY(y) < rectangle.getY() ? -1 : 1) + (getY(y) <= (rectangle.getY() + rectangle.getHeight()) ? -1 : 1)) / 2;
+    private boolean toundRectangleCollision(int x, int y, Figure figure) {
+        RoundRectangle roundRectangle = (RoundRectangle) figure;
+        int xPosition = ((getX(x) < roundRectangle.getX() ? -1 : 1) + (getX(x) <= (roundRectangle.getX() + roundRectangle.getWidth()) ? -1 : 1)) / 2;
+        int yPosition = ((getY(y) < roundRectangle.getY() ? -1 : 1) + (getY(y) <= (roundRectangle.getY() + roundRectangle.getHeight()) ? -1 : 1)) / 2;
         if (xPosition == 0 && yPosition == 0) {
             return true;
         }
         if (xPosition != 0 && yPosition != 0) {
             int xtmp = (xPosition + 1) / 2;
             int ytmp = (yPosition + 1) / 2;
-            return (Methods.pointDistance(getX(x), getY(y), rectangle.getPoint(xtmp + 2 * ytmp).getX(), rectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
+            return (Methods.pointDistance(getX(x), getY(y), roundRectangle.getPoint(xtmp + 2 * ytmp).getX(), roundRectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
         }
-        if (yPosition == 0 && ((xPosition < 0 && rectangle.getX() - getX(x) <= radius) || (yPosition > 0 && getX(x) - rectangle.getX() - rectangle.getWidth() <= radius))) {
+        if (yPosition == 0 && ((xPosition < 0 && roundRectangle.getX() - getX(x) <= radius) || (yPosition > 0 && getX(x) - roundRectangle.getX() - roundRectangle.getWidth() <= radius))) {
             return true;
         }
-        return (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
+        return (yPosition < 0 && roundRectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - roundRectangle.getY() - roundRectangle.getHeight() <= radius);
     }
 
     private boolean circleCollision(int x, int y, Figure figure) {
