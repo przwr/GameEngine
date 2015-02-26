@@ -56,7 +56,7 @@ public class Rectangle extends Figure {
         if (figure instanceof Rectangle) {
             return rectangleCollision(x, y, figure);
         } else if (figure instanceof RoundRectangle) {
-            return quadrangleCollision(x, y, figure);
+            return roundRectangle(x, y, figure);
         } else if (figure instanceof Circle) {
             return circleCollision(x, y, figure);
         } else if (figure instanceof Line) {
@@ -71,10 +71,10 @@ public class Rectangle extends Figure {
                 && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
     }
 
-    private boolean quadrangleCollision(int x, int y, Figure figure) {
-        Rectangle rectangle = (Rectangle) figure;
-        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
-                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
+    private boolean roundRectangle(int x, int y, Figure figure) {
+        RoundRectangle roundRectangle = (RoundRectangle) figure;
+        return ((getX(x) > roundRectangle.getX() && getX(x) - roundRectangle.getX() < roundRectangle.getWidth()) || (getX(x) <= roundRectangle.getX() && roundRectangle.getX() - getX(x) < width))
+                && ((getY(y) > roundRectangle.getY() && getY(y) - roundRectangle.getY() < roundRectangle.getHeight()) || (getY(y) <= roundRectangle.getY() && roundRectangle.getY() - getY(y) < height));
     }
 
     private boolean circleCollision(int x, int y, Figure figure) {

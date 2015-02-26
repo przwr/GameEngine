@@ -113,8 +113,9 @@ public class PuzzleObject {
         } catch (IOException e) {
             Methods.error("File " + file + " not found!\n" + e.getMessage());
         }/* catch (Exception e) {
-            Methods.error("File " + file + " cannot be read!\n" + e.getMessage());
-        }*/
+         Methods.error("File " + file + " cannot be read!\n" + e.getMessage());
+         }*/
+
     }
 
     protected void addTile(Tile tile, int x, int y) {
@@ -157,7 +158,7 @@ public class PuzzleObject {
             });
         });
         areas.stream().forEach((area) -> {
-            Block tmpBlock = area.generateArea(x * tileSize, y * tileSize);
+            Block tmpBlock = area.generateBlock(x * tileSize, y * tileSize);
             map.addArea(tmpBlock);
             for (FGTileContainer tile : area.containedFGTs) {
                 ForegroundTile fgt = tile.generateFGT(x * tileSize, y * tileSize);
@@ -237,7 +238,7 @@ public class PuzzleObject {
         }
 
         public ForegroundTile generateFGT(int x, int y) {
-            ForegroundTile fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3]);
+            ForegroundTile fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], false);
             fgt.setX(xBegin + x);
             fgt.setY(yBegin + y);
             fgt.setDepth(values[3]);
@@ -257,8 +258,8 @@ public class PuzzleObject {
             values = new int[]{x, y, width, height, shadowHeight};
         }
 
-        public Block generateArea(int x, int y) {
-            Block a = new Block(values[0] + x, values[1] + y, values[2], values[3], values[4]);
+        public Block generateBlock(int x, int y) {
+            Block a = Block.create(values[0] + x, values[1] + y, values[2], values[3], values[4]);
             return a;
         }
 

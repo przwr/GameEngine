@@ -8,7 +8,6 @@ package collision;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
-import game.place.Light;
 import game.place.Map;
 import game.place.Place;
 import game.place.Shadow;
