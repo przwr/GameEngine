@@ -60,6 +60,11 @@ public class Drawer {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, 1.0f);
     }
 
+    public static void setCentralPoint() {  //Miejsce do ktorego mozna wrocic
+        xCurrent = 0;
+        yCurrent = 0;
+    }
+    
     public static void translateFromCentralPoint(float x, float y) {
         xCurrent += x;
         yCurrent += y;
@@ -84,7 +89,7 @@ public class Drawer {
     }
 
     public static void drawRectangle(int xStart, int yStart, int width, int height) {
-        glTranslatef(xStart, yStart, 0);
+        translateFromCentralPoint(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
         glVertex2f(0, 0);
@@ -96,7 +101,7 @@ public class Drawer {
     }
 
     public static void drawRectangleBorder(int xStart, int yStart, int width, int height) {
-        glTranslatef(xStart, yStart, 0);
+        translateFromCentralPoint(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_LINE_LOOP);
         glVertex2f(0, 0);
@@ -112,7 +117,7 @@ public class Drawer {
     }
 
     public static void drawElipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {  //Zbyt mała precyzja tworzy figury foremne
-        glTranslatef(xStart, yStart, 0);
+        translateFromCentralPoint(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLE_FAN);
         glVertex2f(0, 0);
@@ -123,6 +128,60 @@ public class Drawer {
         glVertex2f(xRadius, 0);
         glEnd();
         glEnable(GL_TEXTURE_2D);
+    }
+
+    public static void drawBow(int xStart, int yStart, int radius, int width, int startAngle, int endAngle, int precision) {
+        if (startAngle > endAngle) {
+            int tmp = startAngle;
+            startAngle = endAngle;
+            endAngle = tmp;
+        }
+        translateFromCentralPoint(xStart, yStart);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_QUAD_STRIP);
+        int step = (endAngle - startAngle) / precision;
+        for (int i = startAngle; i < endAngle; i += step) {
+            glVertex2f((float) Methods.xRadius(i, radius), (float) Methods.yRadius(i, radius));
+            glVertex2f((float) Methods.xRadius(i, radius - width), (float) Methods.yRadius(i, radius - width));
+        }
+        glVertex2f((float) Methods.xRadius(endAngle, radius), (float) Methods.yRadius(endAngle, radius));
+        glVertex2f((float) Methods.xRadius(endAngle, radius - width), (float) Methods.yRadius(endAngle, radius - width));
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    public static void drawRing(int xStart, int yStart, int radius, int width, int precision) {
+        translateFromCentralPoint(xStart, yStart);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_QUAD_STRIP);
+        int step = 360 / precision;
+        for (int i = 0; i < 360; i += step) {
+            glVertex2f((float) Methods.xRadius(i, radius), (float) Methods.yRadius(i, radius));
+            glVertex2f((float) Methods.xRadius(i, radius - width), (float) Methods.yRadius(i, radius - width));
+        }
+        glVertex2f((float) Methods.xRadius(360, radius), (float) Methods.yRadius(360, radius));
+        glVertex2f((float) Methods.xRadius(360, radius - width), (float) Methods.yRadius(360, radius - width));
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    public static void drawLineWidth(int xStart, int yStart, int xDelta, int yDelta, int width) {
+        translateFromCentralPoint(xStart, yStart);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_QUADS);
+        int angle = (int) Methods.pointAngle360(xStart, yStart, xStart + xDelta, yStart + yDelta) + 90;
+        int xWidth = (int) Methods.xRadius(angle, width / 2);
+        int yWidth = (int) Methods.yRadius(angle, width / 2);
+        glVertex2f(xWidth, yWidth);
+        glVertex2f(-xWidth, -yWidth);
+        glVertex2f(xDelta - xWidth, yDelta - yWidth);
+        glVertex2f(xDelta + xWidth, yDelta + yWidth);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
+    
+    public static void drawLine(int xStart, int yStart, int xDelta, int yDelta) {
+        drawLineWidth(xStart, yStart, xDelta, yDelta, 1);
     }
 
     public static void drawShapeInShade(Appearance appearance, float color) {
@@ -178,11 +237,6 @@ public class Drawer {
 
     private static void setBlendAttributesForShadows() {
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    public static void setCentralPoint() {
-        xCurrent = 0;
-        yCurrent = 0;
     }
 
     public static void setColor(Color color) {

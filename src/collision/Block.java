@@ -21,9 +21,9 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Block extends GameObject {
 
-    private ArrayList<Figure> top = new ArrayList<>(1);
-    private ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
-    private ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
+    private final ArrayList<Figure> top = new ArrayList<>(1);
+    private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
+    private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
 
     public Block(int x, int y, int width, int height, int shadowHeight) {  //Point (x, y) should be in left top corner of Area
         this.x = x;

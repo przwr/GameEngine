@@ -32,7 +32,7 @@ public class MyGame extends Game {
     private final getInput[] inputs = new getInput[2];
     private final updateType[] ups = new updateType[2];
 
-    private boolean designer = false;
+    public boolean designer = false;
 
     public MyGame(String title, Controller[] controllers) {
         super(title);
@@ -123,10 +123,7 @@ public class MyGame extends Game {
                 } else {
                     //---------------------- <('.'<) OBJECT DESIGNER ----------------------------//
                     if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
-                        designer = true;
-                        players[0] = new ObjectPlayer(true, "Mapper");
-                        players[0].setMenu(menu);
-                        Settings.playersCount = 1;
+                        setDesignerMode(true);
                         startGame();
                         menu.setCurrent(0);
                     }
@@ -149,8 +146,20 @@ public class MyGame extends Game {
         };
     }
 
-    @Override
+    public void setDesignerMode(boolean designer) {
+        this.designer = designer;
+        if (designer) {
+            players[0] = new ObjectPlayer(true, "Mapper");
+            players[0].setMenu(menu);
+            Settings.playersCount = 1;
+        } else if (!(place instanceof MyPlace)) {
+            players[0] = new MyPlayer(true, "Player 1");
+            players[0].setMenu(menu);
+            loadInputFromFile(new File("res/input.ini"));
+        }
+    }
 
+    @Override
     public void getInput() {
         inputs[mode].get();
     }

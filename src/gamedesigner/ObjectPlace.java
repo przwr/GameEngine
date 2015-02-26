@@ -134,17 +134,18 @@ public class ObjectPlace extends Place {
         if (key.keyPressed(Keyboard.KEY_Q)) {
             printMessage(editor.getX() + "" + editor.getY());
         }
-        if (key.keyPressed(Keyboard.KEY_M)) {
-            mode++;
-            switch (mode) {
-                case 1:
-                    ui.setVisible(false);
-                    break;
-                case 3:
-                    ui.setVisible(true);
-                    mode = 0;
-                    break;
-            }
+        
+        if (key.keyPressed(Keyboard.KEY_1)) {
+            mode = 0;
+            ui.setVisible(true);
+        }
+        if (key.keyPressed(Keyboard.KEY_2)) {
+            mode = 1;
+            ui.setVisible(false);
+        }
+        if (key.keyPressed(Keyboard.KEY_3)) {
+            mode = 2;
+            ui.setVisible(false);
         }
         
         if (key.keyPressed(Keyboard.KEY_S)) {
