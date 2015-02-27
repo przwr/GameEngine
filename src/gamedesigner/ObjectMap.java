@@ -14,6 +14,7 @@ import game.place.Place;
 import game.place.Tile;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.lwjgl.input.Keyboard;
 import sprites.SpriteSheet;
 
 /**
@@ -25,11 +26,13 @@ public class ObjectMap extends Map {
     public Tile background;
     private boolean isBackground;
     private final CentralPoint centralPoint;
+    private final ObjectPlace objPlace;
 
     public ObjectMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "ObjectMap", place, width, height, tileSize);
-
-        centralPoint = new CentralPoint(0, 0, (ObjectPlace) place);
+        objPlace = (ObjectPlace) place;
+        
+        centralPoint = new CentralPoint(0, 0, objPlace);
         addObject(centralPoint);
 
         background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
@@ -105,7 +108,7 @@ public class ObjectMap extends Map {
                 }
             }
             if (lowest != null) {
-                lowest.addTile(x, y, xSheet, ySheet, tex);
+                lowest.addTile(x, y, xSheet, ySheet, tex, objPlace.isAltMode());
                 setTile(x, y, getBackground());
             } else {
                 Tile newtile = new Tile(tex, tileSize, xSheet, ySheet);
@@ -132,6 +135,7 @@ public class ObjectMap extends Map {
                     tmp = (TemporaryBlock) tb;
                     if ((fgt = tmp.removeTile(x, y)) != null) {
                         foregroundTiles.remove(fgt);
+                        tmp.area.removeForegroundTile(fgt);
                         return fgt;
                     }
                 }
@@ -173,7 +177,9 @@ public class ObjectMap extends Map {
     @Override
     public void addObject(GameObject object) {
         if (object instanceof TemporaryBlock) {
-            ((TemporaryBlock) object).changeEnvironment();
+            if (!objPlace.isAltMode()) {
+                ((TemporaryBlock) object).changeEnvironment();
+            }
         }
         super.addObject(object);
     }

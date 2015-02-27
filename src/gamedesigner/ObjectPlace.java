@@ -40,6 +40,7 @@ public class ObjectPlace extends Place {
     private ObjectPlayer editor;
     
     private final SimpleKeyboard key;
+    private boolean altMode;
     
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
@@ -62,25 +63,14 @@ public class ObjectPlace extends Place {
         color = new Color(0.75f, 0.75f, 0.75f);
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+        standardFont = fonts.getFont(0);
         SoundStore.get().poll(0);
         initializeMethods();
     }
     
     @Override
     public void generateAsHost() {
-        ObjectMap polana = new ObjectMap(mapID++, this, 10240, 10240, getTileSize());
-        this.ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
-        guiHandler = new GUIHandler(this);
-        maps.add(polana);
-        editor = ((ObjectPlayer) players[0]);
-        editor.addGui(ui);
-        editor.addGui(guiHandler);
-        //sounds.init("res");
-        color = new Color(0.75f, 0.75f, 0.75f);
-        fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
-        SoundStore.get().poll(0);
-        initializeMethods();
+        generateAsGuest();
     }
     
     @Override
@@ -131,9 +121,7 @@ public class ObjectPlace extends Place {
         if (key.key(Keyboard.KEY_L)) {
             guiHandler.changeToChooser(IO.getSpecificFilesList("res/objects", "puz"));
         }
-        if (key.keyPressed(Keyboard.KEY_Q)) {
-            printMessage(editor.getX() + "" + editor.getY());
-        }
+        altMode = key.key(Keyboard.KEY_LMENU);
         
         if (key.keyPressed(Keyboard.KEY_1)) {
             mode = 0;
@@ -156,6 +144,10 @@ public class ObjectPlace extends Place {
             }
         }
         key.keyboardEnd();
+    }
+    
+    public boolean isAltMode() {
+        return altMode;
     }
     
     public void setCentralPoint(int x, int y) {

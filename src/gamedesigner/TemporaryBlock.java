@@ -38,7 +38,7 @@ public class TemporaryBlock extends GameObject {
     protected ArrayList<ForegroundTile> tiles;
 
     public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map) {
-        initialize("tmpBlock", x, y);
+        this.initialize("tmpBlock", x, y);
         this.tile = map.getTileSize();
         this.upHeight = upHeight;
         this.width = width * tile;
@@ -49,6 +49,7 @@ public class TemporaryBlock extends GameObject {
         onTop = true;
         objMap = (ObjectMap) map;
         objPlace = (ObjectPlace) map.place;
+        tiles = new ArrayList<>();
     }
 
     @Override
@@ -115,31 +116,46 @@ public class TemporaryBlock extends GameObject {
         return !(x > xEnd || x < xBegin || y > yEnd || y < yBegin);
     }
 
-    public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex) {
+    public ForegroundTile addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean addNew) {
         int yBegin = (int) (this.y / tile) - upHeight;
         int yEnd = yBegin + yTiles + upHeight - 1;
 
-        for (ForegroundTile fgt : tiles) {
-            if ((fgt.getX() / tile) == x && (fgt.getY() / tile) == y) {
-                fgt.addTileToStack(xSheet, ySheet);
-                return;
+        if (!addNew) {
+            for (ForegroundTile fgt : tiles) {
+                if ((fgt.getX() / tile) == x && (fgt.getY() / tile) == y) {
+                    fgt.addTileToStack(xSheet, ySheet);
+                    return fgt;
+                }
             }
         }
         ForegroundTile fgt;
         int level = yEnd - y;
-        if (level + 1 <= upHeight) {
-            fgt = ForegroundTile.createWall(tex, tile, xSheet, ySheet);
+        fgt = createTile(tex, y, tile, xSheet, ySheet, level);
+        if (addNew) {
+            map.addForegroundTile(fgt, x * tile, y * tile, (level + 1) * tile);
+            fgt.setDepth(fgt.getPureDepth() + 1);
         } else {
-            fgt = ForegroundTile.createOrdinaryShadowHeight(tex, tile, xSheet, ySheet, level * tile);
+            map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (level + 1) * tile);
         }
-        map.addForegroundTileAndReplace(fgt, x * tile, y * tile, level * tile);
         tiles.add(fgt);
         area.addForegroundTile(fgt);
+        return fgt;
+    }
+
+    protected void createBlock() {
+        area = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
+    }
+
+    protected ForegroundTile createTile(SpriteSheet texture, int x, int tile, int xSheet, int ySheet, int level) {
+        if (level + 1 <= upHeight) {
+            return ForegroundTile.createWall(texture, tile, xSheet, ySheet);
+        } else {
+            return ForegroundTile.createOrdinaryShadowHeight(texture, tile, xSheet, ySheet, level * tile);
+        }
     }
 
     public void changeEnvironment() {
-        tiles = new ArrayList<>();
-        area = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
+        createBlock();
         if (upHeight > 0) {
             int xBegin = (int) (x / tile);
             int yBegin = (int) (y / tile) - upHeight;
@@ -154,20 +170,7 @@ public class TemporaryBlock extends GameObject {
                     t = map.getTile(ix, iy);
                     if (t != null && t.getPureDepth() != -1) {
                         p = t.popTileFromStackBack();
-                        if (level + 1 <= upHeight) {
-                            fgt = ForegroundTile.createWall(
-                                    t.getSpriteSheet(),
-                                    tile,
-                                    p.getX(),
-                                    p.getY());
-                        } else {
-                            fgt = ForegroundTile.createOrdinaryShadowHeight(
-                                    t.getSpriteSheet(),
-                                    tile,
-                                    p.getX(),
-                                    p.getY(),
-                                    level * tile);
-                        }
+                        fgt = createTile(t.getSpriteSheet(), iy, tile, p.getX(), p.getY(), level);
                         while ((p = t.popTileFromStackBack()) != null) {
                             fgt.addTileToStack(p.getX(), p.getY());
                         }

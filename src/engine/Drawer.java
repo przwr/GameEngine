@@ -5,6 +5,7 @@
  */
 package engine;
 
+import game.place.Place;
 import game.place.ScreenPlace;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ public class Drawer {
     public static final Texture font = loadFontTexture();
     private static float xCurrent, yCurrent;
     private static Color currentColor;
+    public static Place place;
 
     private static Texture loadFontTexture() {
         try {
@@ -65,7 +67,7 @@ public class Drawer {
         yCurrent = 0;
     }
 
-    public static void translateFromCentralPoint(float x, float y) {
+    public static void translate(float x, float y) {
         xCurrent += x;
         yCurrent += y;
         glTranslatef(x, y, 0f);
@@ -89,7 +91,7 @@ public class Drawer {
     }
 
     public static void drawRectangle(int xStart, int yStart, int width, int height) {
-        translateFromCentralPoint(xStart, yStart);
+        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
         glVertex2f(0, 0);
@@ -101,7 +103,7 @@ public class Drawer {
     }
 
     public static void drawRectangleBorder(int xStart, int yStart, int width, int height) {
-        translateFromCentralPoint(xStart, yStart);
+        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_LINE_LOOP);
         glVertex2f(0, 0);
@@ -117,7 +119,7 @@ public class Drawer {
     }
 
     public static void drawElipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {  //Zbyt mała precyzja tworzy figury foremne
-        translateFromCentralPoint(xStart, yStart);
+        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLE_FAN);
         glVertex2f(0, 0);
@@ -136,7 +138,7 @@ public class Drawer {
             startAngle = endAngle;
             endAngle = tmp;
         }
-        translateFromCentralPoint(xStart, yStart);
+        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUAD_STRIP);
         int step = (endAngle - startAngle) / precision;
@@ -151,7 +153,7 @@ public class Drawer {
     }
 
     public static void drawRing(int xStart, int yStart, int radius, int width, int precision) {
-        translateFromCentralPoint(xStart, yStart);
+        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUAD_STRIP);
         int step = 360 / precision;
@@ -166,7 +168,7 @@ public class Drawer {
     }
 
     public static void drawLineWidth(int xStart, int yStart, int xDelta, int yDelta, int width) {
-        translateFromCentralPoint(xStart, yStart);
+        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
         int angle = (int) Methods.pointAngle360(xStart, yStart, xStart + xDelta, yStart + yDelta) + 90;
@@ -245,5 +247,20 @@ public class Drawer {
 
     public static void setCurrentColor(Color color) {
         Drawer.currentColor = color;
+    }
+
+    public static FontHandler getFont(String name, int size) {
+        return place.fonts.getFont(name, size);
+    }
+
+    public static void renderStringCentered(String message, int x, int y, FontHandler font, Color color) {
+        Drawer.bindFontTexture();
+        font.drawLine(message, x - font.getWidth(message) / 2,
+                y - (4 * font.getHeight()) / 3, color);
+    }
+
+    public static void renderString(String message, int x, int y, FontHandler font, Color color) {
+        Drawer.bindFontTexture();
+        font.drawLine(message, x, y, color);
     }
 }

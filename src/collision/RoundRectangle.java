@@ -234,6 +234,7 @@ public class RoundRectangle extends Figure {
 
     private interface changer {
 
+        
         void set(int tileSize, int xChange, int yChange);
     }
 

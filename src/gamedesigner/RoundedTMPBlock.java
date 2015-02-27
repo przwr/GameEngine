@@ -5,14 +5,18 @@
  */
 package gamedesigner;
 
+import collision.Block;
+import collision.RoundRectangle;
 import engine.Drawer;
 import game.Settings;
+import game.place.ForegroundTile;
 import game.place.Map;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+import sprites.SpriteSheet;
 
 /**
  *
@@ -23,15 +27,33 @@ public class RoundedTMPBlock extends TemporaryBlock {
     private int upperState;
     private int lowerState;
 
-//    Block block = Block.createRound(8 * tileSize, 8 * tileSize, 2 * tileSize, 2 * tileSize, 0);
-//    ForegroundTile fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 0, 3);
-//    block.addForegroundTile(fg);
-//    block.pushCorner(RoundRectangle.LEFT_TOP, tileSize, 18, 18);
     public RoundedTMPBlock(int x, int y, int upHeight, int height, Map map) {
         super(x, y, upHeight, 1, height, map);
-        this.upperState = 3;
-        this.lowerState = 3;
-        complete = true;
+        this.upperState = 0;
+        this.lowerState = 0;
+    }
+
+    @Override
+    protected ForegroundTile createTile(SpriteSheet texture, int y, int tile, int xSheet, int ySheet, int level) {
+        ForegroundTile fgt;
+        int alt = objPlace.isAltMode() ? 0 : 1;
+        if (level + 1 - alt <= upHeight) {
+            if (y * tile == this.y + height - tile) {
+                fgt = ForegroundTile.createRoundWall(texture, tile, xSheet, ySheet);
+            } else {
+                if (level + 1 <= upHeight) {
+                    fgt = ForegroundTile.createWall(texture, tile, xSheet, ySheet);
+                } else {
+                    fgt = ForegroundTile.createWall(texture, tile, xSheet, ySheet);
+                }
+            }
+        } else {
+            fgt = ForegroundTile.createOrdinaryShadowHeight(texture, tile, xSheet, ySheet, level * tile);
+            if (y * tile == this.y - upHeight * tile || y * tile == this.y + height - (upHeight + 1) * tile) {
+                fgt.setSimpleLighting(false);
+            }
+        }
+        return fgt;
     }
 
     public void changeUpperState() {
@@ -46,6 +68,54 @@ public class RoundedTMPBlock extends TemporaryBlock {
         if (lowerState == 7) {
             lowerState = 0;
         }
+    }
+
+    public void applyStates() {
+        switch (upperState) {
+            case 1:
+                area.pushCorner(RoundRectangle.RIGHT_TOP, tile, (int) (tile * 0.292), (int) (tile * 0.292));
+                break;
+            case 2:
+                area.pushCorner(RoundRectangle.RIGHT_TOP, tile, (int) (tile * 0.5), (int) (tile * 0.5));
+                break;
+            case 3:
+                area.pushCorner(RoundRectangle.RIGHT_TOP, tile, (int) (tile * 0.707), (int) (tile * 0.707));
+                break;
+            case 4:
+                area.pushCorner(RoundRectangle.LEFT_TOP, tile, (int) (tile * 0.292), (int) (tile * 0.292));
+                break;
+            case 5:
+                area.pushCorner(RoundRectangle.LEFT_TOP, tile, (int) (tile * 0.5), (int) (tile * 0.5));
+                break;
+            case 6:
+                area.pushCorner(RoundRectangle.LEFT_TOP, tile, (int) (tile * 0.707), (int) (tile * 0.707));
+                break;
+        }
+        switch (lowerState) {
+            case 1:
+                area.pushCorner(RoundRectangle.RIGHT_BOTTOM, tile, (int) (tile * 0.292), (int) (tile * 0.292));
+                break;
+            case 2:
+                area.pushCorner(RoundRectangle.RIGHT_BOTTOM, tile, (int) (tile * 0.5), (int) (tile * 0.5));
+                break;
+            case 3:
+                area.pushCorner(RoundRectangle.RIGHT_BOTTOM, tile, (int) (tile * 0.707), (int) (tile * 0.707));
+                break;
+            case 4:
+                area.pushCorner(RoundRectangle.LEFT_BOTTOM, tile, (int) (tile * 0.292), (int) (tile * 0.292));
+                break;
+            case 5:
+                area.pushCorner(RoundRectangle.LEFT_BOTTOM, tile, (int) (tile * 0.5), (int) (tile * 0.5));
+                break;
+            case 6:
+                area.pushCorner(RoundRectangle.LEFT_BOTTOM, tile, (int) (tile * 0.707), (int) (tile * 0.707));
+                break;
+        }
+    }
+
+    @Override
+    protected void createBlock() {
+        area = Block.createRound((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
     }
 
     @Override

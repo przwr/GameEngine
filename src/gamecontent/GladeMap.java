@@ -43,7 +43,7 @@ public class GladeMap extends Map {
             fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 0, 3);
             block1.addForegroundTile(fg);
             addForegroundTile(fg, 8 * tileSize, 8 * tileSize, 0);
-            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 5, 2);
+            fg = ForegroundTile.createWall(place.getSpriteSheet("testy"), tileSize, 5, 2);
             block1.addForegroundTile(fg);
             fg.setSolid(false);
             addForegroundTile(fg, 8 * tileSize, 7 * tileSize, tileSize);

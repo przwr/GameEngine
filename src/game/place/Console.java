@@ -58,9 +58,9 @@ public class Console extends GUIObject {
             }
             for (int i = 0; i < messages.length; i++) {
                 if (messages[i] != null) {
-                    place.renderMessage(0, (int) ((tile * 0.1) * Settings.scale),
+                    Drawer.renderString(messages[i], (int) ((tile * 0.1) * Settings.scale),
                             (int) (camera.getHeight() - (i + 1.1) * tile * 0.5 * Settings.scale),
-                            messages[i], new Color(1f, 1f, 1f, alpha));
+                            place.standardFont, new Color(1f, 1f, 1f, alpha));
                 }
             }
             alpha -= 0.01f;

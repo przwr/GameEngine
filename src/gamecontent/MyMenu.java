@@ -6,7 +6,9 @@
 package gamecontent;
 
 import engine.Delay;
+import engine.Drawer;
 import engine.FontBase;
+import engine.FontHandler;
 import engine.Methods;
 import game.Game;
 import game.Settings;
@@ -29,6 +31,8 @@ import org.newdawn.slick.Color;
  */
 public class MyMenu extends Menu {
 
+    private FontHandler smallFont, bigFont;
+    
     public MyMenu(Game game) {
         super(game);
         generate();
@@ -49,8 +53,8 @@ public class MyMenu extends Menu {
         generateM8();
         this.color = new Color(Color.white);
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", Methods.roundDouble(Settings.scale * 38));
-        fonts.add("Amble-Regular", Methods.roundDouble(Settings.scale * 64));
+        smallFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.scale * 38));
+        bigFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.scale * 64));
     }
 
     private void generateM0() {
@@ -149,12 +153,15 @@ public class MyMenu extends Menu {
     @Override
     protected void renderText() {
         int positions = menus[current].getOptionsNumber() + 1;
-        renderMessageCentered(1, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
+        Drawer.renderStringCentered(menus[current].getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
                 * fonts.getFont(0).getHeight() * 0.7),
-                menus[current].getLabel(), new Color(color.r, color.g, color.b));
+                bigFont, new Color(color.r, color.g, color.b));
         positions--;
         for (int i = 0; i < menus[current].getOptionsNumber(); i++) {
-            renderMessageCentered(0, widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.getFont(0).getHeight() * 0.7), menus[current].getChoice(i).getLabel(), getColor(menus[current].getChoice(i)));
+            Drawer.renderStringCentered(menus[current].getChoice(i).getLabel(), widthHalf / 2, 
+                    heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.getFont(0).getHeight() * 0.7), 
+                    smallFont, 
+                    getColor(menus[current].getChoice(i)));
             positions--;
         }
     }
