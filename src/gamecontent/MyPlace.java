@@ -50,22 +50,14 @@ public class MyPlace extends Place {
         color = new Color(0.75f, 0.75f, 0.75f);
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+        standardFont = fonts.getFont(0);
         SoundStore.get().poll(0);
         initMethods();
     }
 
     @Override
     public void generateAsHost() {
-        GladeMap polana = new GladeMap(mapID++, this, 10240, 10240, getTileSize());
-        StoneMap kamienna = new StoneMap(mapID++, this, 10240, 10240, getTileSize());
-        maps.add(polana);
-        maps.add(kamienna);
-        //   sounds.initialize("res");
-        color = new Color(0.75f, 0.75f, 0.75f);
-        fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
-        SoundStore.get().poll(0);
-        initMethods();
+        generateAsGuest();
     }
 
     @Override

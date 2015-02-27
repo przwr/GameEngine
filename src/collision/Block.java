@@ -89,13 +89,15 @@ public class Block extends GameObject {
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
         glPushMatrix();
         if (isSimpleLighting()) {
-            glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
-            Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
+            Drawer.drawRectangleInShade(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect,
+                    figure.width, figure.height + figure.getShadowHeight(), color);
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
+            Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
-                glTranslatef(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight(), 0);
+                Drawer.returnToCentralPoint();
+                Drawer.translate(col.getX() - getX(), col.getY() - getY());
                 if (wall.isSimpleLighting()) {
                     Drawer.drawRectangleInShade(0, 0, col.width, col.height + col.getShadowHeight(), color);
                 } else {
@@ -114,9 +116,11 @@ public class Block extends GameObject {
             Drawer.drawRectangleInBlack(0, 0, figure.width, figure.height + figure.getShadowHeight());
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
+            Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
-                glTranslatef(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight(), 0);
+                Drawer.returnToCentralPoint();
+                Drawer.translate(col.getX() - getX(), col.getY() - getY());
                 if (wall.isSimpleLighting()) {
                     Drawer.drawRectangleInBlack(0, 0, col.width, col.height + col.getShadowHeight());
                 } else {

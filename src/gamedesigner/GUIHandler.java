@@ -116,8 +116,8 @@ public class GUIHandler extends GUIObject {
             firstLoop = false;
         }
         text = Methods.editWithKeyboard(text);
-        place.renderMessage(0, (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
-                "Write filename: " + text, new Color(1f, 1f, 1f));
+        Drawer.renderString("Write filename: " + text, (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+                place.standardFont, new Color(1f, 1f, 1f));
 
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
             if (text.length() > 0) {
@@ -138,21 +138,25 @@ public class GUIHandler extends GUIObject {
     private void renderChoosingFile() {
         key.keyboardStart();
 
-        place.renderMessage(0, (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
-                ">", new Color(1f, 1f, 1f));
+        Drawer.renderString(">", (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+                place.standardFont, new Color(1f, 1f, 1f));
 
         int delta;
         for (int i = 0; i < list.size(); i++) {
             delta = (int) ((i - selected) * tile * 0.5);
-            place.renderMessage(0, (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
-                    list.get(i).getName(), new Color(1f, 1f, 1f));
+            Drawer.renderString(list.get(i).getName(), (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
+                    place.standardFont, new Color(1f, 1f, 1f));
         }
 
-        if (key.keyPressed(Keyboard.KEY_UP) && selected > 0) {
+        if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;
+            if (selected < 0)
+                selected = list.size() - 1;
         }
-        if (key.keyPressed(Keyboard.KEY_DOWN) && selected < list.size() - 1) {
+        if (key.keyPressed(Keyboard.KEY_DOWN)) {
             selected++;
+            if (selected > list.size() - 1)
+                selected = 0;
         }
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
             objPlace.getFile(list.get(selected));
@@ -167,21 +171,25 @@ public class GUIHandler extends GUIObject {
     private void renderHelp() {
         key.keyboardStart();
 
-        place.renderMessage(0, (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
-                ">", new Color(1f, 1f, 1f));
+        Drawer.renderString(">", (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+                place.standardFont, new Color(1f, 1f, 1f));
 
         int delta;
-        for (int i = 0; i < help.length; i++) {
+        for (int i = 0; i < list.size(); i++) {
             delta = (int) ((i - selected) * tile * 0.5);
-            place.renderMessage(0, (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
-                    help[i], new Color(1f, 1f, 1f));
+            Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
+                    place.standardFont, new Color(1f, 1f, 1f));
         }
 
-        if (key.keyPressed(Keyboard.KEY_UP) && selected > 0) {
+        if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;
+            if (selected < 0)
+                selected = help.length - 1;
         }
-        if (key.keyPressed(Keyboard.KEY_DOWN) && selected < help.length - 1) {
+        if (key.keyPressed(Keyboard.KEY_DOWN)) {
             selected++;
+            if (selected > help.length - 1)
+                selected = 0;
         }
         if (key.keyPressed(Keyboard.KEY_RETURN) || key.keyPressed(Keyboard.KEY_BACK)) {
             stop();
@@ -191,12 +199,12 @@ public class GUIHandler extends GUIObject {
 
     private void renderQuestion() {
         key.keyboardStart();
-        place.renderMessage(0, (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
-                "File with that name already exist.", new Color(1f, 1f, 1f));
-        place.renderMessage(0, (int) (xStart * Settings.scale), (int) ((yStart + tile * 0.5) * Settings.scale),
-                "Replace?", new Color(1f, 1f, 1f));
-        place.renderMessage(0, (int) (xStart * Settings.scale), (int) ((yStart + tile) * Settings.scale),
-                "YES[Enter] / NO[Backspace]", new Color(1f, 1f, 1f));
+        Drawer.renderString("File with that name already exist.", (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+                place.standardFont, new Color(1f, 1f, 1f));
+        Drawer.renderString("Replace?", (int) (xStart * Settings.scale), (int) ((yStart + tile * 0.5) * Settings.scale),
+                place.standardFont, new Color(1f, 1f, 1f));
+        Drawer.renderString("YES[Enter] / NO[Backspace]", (int) (xStart * Settings.scale), (int) ((yStart + tile) * Settings.scale),
+                place.standardFont, new Color(1f, 1f, 1f));
 
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
             objPlace.saveObject(text);

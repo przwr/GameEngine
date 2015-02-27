@@ -43,7 +43,7 @@ public class ObjectPlayer extends Player {
     private int areaHeight;
     private boolean roundBlocksMode;
     private boolean paused;
-    
+
     private RoundedTMPBlock rTmpBlock;
 
     public ObjectPlayer(boolean first, String name) {
@@ -122,6 +122,7 @@ public class ObjectPlayer extends Player {
                 yStop = Methods.interval(0, yStop + yPosition, map.getTileHeight());
             }
         }
+        ui.setCursorStatus(ix, iy, Math.abs(ix - xStop) + 1, Math.abs(iy - yStop) + 1);
         if (camera != null) {
             camera.update();
         }
@@ -253,12 +254,16 @@ public class ObjectPlayer extends Player {
             }
         } else if (paused) {
             if (roundBlocksMode) {
-                if (key.keyPressed(KEY_UP))
+                if (key.keyPressed(KEY_UP)) {
                     rTmpBlock.changeUpperState();
-                if (key.keyPressed(KEY_DOWN))
+                }
+                if (key.keyPressed(KEY_DOWN)) {
                     rTmpBlock.changeLowerState();
-                if (key.keyPressed(KEY_RETURN))
+                }
+                if (key.keyPressed(KEY_RETURN) || key.keyPressed(KEY_SPACE)) {
                     paused = false;
+                    rTmpBlock.applyStates();
+                }
             }
         }
         key.keyboardEnd();
@@ -278,6 +283,7 @@ public class ObjectPlayer extends Player {
 
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         glColor4f(1f, 1f, 1f, 1f);
+        Drawer.setCentralPoint();
         if (objPlace.getMode() == 0) {
             Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
             Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
@@ -304,14 +310,12 @@ public class ObjectPlayer extends Player {
                 Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd - d);
             }
         }
+        if (objPlace.isAltMode()) {
+            Drawer.returnToCentralPoint();
+            Drawer.drawRing(-tileSize / 3, -tileSize / 3, tileSize / 5, d, 10);
+        }
 
         Drawer.refreshForRegularDrawing();
-
-        if (Settings.scaled) {
-            glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
-        }
-        place.renderMessageCentered(0, (int) (-tileSize * Settings.scale) / 2, 0, ((int) x / tileSize) + " " + ((int) y / tileSize), new Color(1f, 1f, 1f));
-
         glPopMatrix();
     }
 
