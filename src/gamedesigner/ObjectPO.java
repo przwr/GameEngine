@@ -43,8 +43,7 @@ public class ObjectPO extends PuzzleObject {
                     (values[4] + values[3]) / tileSize,
                     values[2] / tileSize,
                     values[3] / tileSize,
-                    map,
-                    map.place));
+                    map));
             fgTiles.addAll(area.getForegroundTiles());
         });
         objects.stream().forEach((obj) -> {

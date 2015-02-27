@@ -46,7 +46,7 @@ public class GUIHandler extends GUIObject {
 
     private final String[] help = new String[]{
         "H : Help",
-        "M:                     Change mode",
+        "1 ... 3:               Change mode",
         "S:                     Save as",
         "cltr + S:              Quicksave",
         "L:                     Load object",
@@ -65,7 +65,8 @@ public class GUIHandler extends GUIObject {
         "",
         "//BLOCK MODE",
         "",
-        "SHIFT + arrows:        Change block height"};
+        "SHIFT + arrows:        Change block height", 
+        "R                      Rounded blocks mode"};
 
     public GUIHandler(Place place) {
         super("guih", place);

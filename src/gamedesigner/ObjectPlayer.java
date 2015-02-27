@@ -41,6 +41,10 @@ public class ObjectPlayer extends Player {
     private final SimpleKeyboard key;
 
     private int areaHeight;
+    private boolean roundBlocksMode;
+    private boolean paused;
+    
+    private RoundedTMPBlock rTmpBlock;
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
@@ -86,7 +90,6 @@ public class ObjectPlayer extends Player {
         this.yStart = yStart;
         this.setResistance(2);
         this.emitter = true;
-        this.place = place;
         emits = false;
         tileSize = place.getTileSize();
         objPlace = (ObjectPlace) place;
@@ -108,7 +111,7 @@ public class ObjectPlayer extends Player {
         if (xtimer == 0) {
             ix = Methods.interval(0, ix + xPosition, map.getTileWidth());
             setX(ix * tileSize);
-            if (!cltr) {
+            if (!cltr || roundBlocksMode) {
                 xStop = Methods.interval(0, xStop + xPosition, map.getTileWidth());
             }
         }
@@ -143,14 +146,13 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void update() {
-        if (objPlace.areKeysUsable()) {
+        key.keyboardStart();
+        if (objPlace.areKeysUsable() && !paused) {
             int xPos = 0;
             int yPos = 0;
             int mode = objPlace.getMode();
 
             maxtimer = key.key(KEY_A) ? 2 : 7;
-
-            key.keyboardStart();
 
             if (key.key(KEY_LCONTROL) && key.key(KEY_Z)) {
                 xStop = ix;
@@ -193,6 +195,10 @@ public class ObjectPlayer extends Player {
                     move(xPos, yPos);
                 }
             }
+            if (mode == 1 && key.keyPressed(KEY_R)) {
+                roundBlocksMode = !roundBlocksMode;
+            }
+
             if (key.keyPressed(KEY_SPACE)) {
                 int xBegin = Math.min(ix, xStop);
                 int yBegin = Math.min(iy, yStop);
@@ -209,7 +215,13 @@ public class ObjectPlayer extends Player {
                     int xd = (Math.abs(ix - xStop) + 1);
                     int yd = (Math.abs(iy - yStop) + 1);
                     if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
-                        objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, areaHeight, xd, yd, map, place));
+                        if (roundBlocksMode) {
+                            rTmpBlock = new RoundedTMPBlock(xBegin * tileSize, yBegin * tileSize, areaHeight, yd, map);
+                            objMap.addObject(rTmpBlock);
+                            paused = true;
+                        } else {
+                            objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, areaHeight, xd, yd, map));
+                        }
                     }
                 }
             }
@@ -239,9 +251,17 @@ public class ObjectPlayer extends Player {
             if (key.keyPressed(KEY_TAB)) {
                 objMap.switchBackground();
             }
-
-            key.keyboardEnd();
+        } else if (paused) {
+            if (roundBlocksMode) {
+                if (key.keyPressed(KEY_UP))
+                    rTmpBlock.changeUpperState();
+                if (key.keyPressed(KEY_DOWN))
+                    rTmpBlock.changeLowerState();
+                if (key.keyPressed(KEY_RETURN))
+                    paused = false;
+            }
         }
+        key.keyboardEnd();
     }
 
     @Override
@@ -265,19 +285,18 @@ public class ObjectPlayer extends Player {
             Drawer.drawRectangle(xd + d, 0, d, yd);
         }
         if (objPlace.getMode() == 1) {
-            glColor4f(1f, 0.78f, 0f, 1f);
-            //glColor4f(1f, 1f, 1f, 1f);
+            if (roundBlocksMode) {
+                glColor3f(0f, 0f, 1f);
+            } else {
+                glColor4f(1f, 0.78f, 0f, 1f);
+            }
             int tmpH = areaHeight * tileSize;
-            //Drawer.drawRectangle(0, -tmpH, xd, yd);
             if (areaHeight == 0) {
                 Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
                 Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
                 Drawer.drawRectangle(0, -yd, d, yd);
                 Drawer.drawRectangle(xd + d, 0, d, yd);
             } else {
-                //glColor4f(0.9f, 0.9f, 0.9f, 1f);
-                //Drawer.drawRectangle(0, yd, xd, tmpH);
-                //glColor4f(1f, 0.78f, 0f, 1f);
                 Drawer.drawRectangle(-d, -d - tmpH, xd + 2 * d, d);
                 Drawer.drawRectangle(d, yd + d, xd, d);
                 Drawer.drawRectangle(0, tmpH, xd, d);

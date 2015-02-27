@@ -21,9 +21,9 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Block extends GameObject {
 
-    private ArrayList<Figure> top = new ArrayList<>(1);
-    private ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
-    private ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
+    private final ArrayList<Figure> top = new ArrayList<>(1);
+    private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
+    private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
 
     public static Block create(int x, int y, int width, int height, int shadowHeight) {
         return new Block(x, y, width, height, shadowHeight, false);

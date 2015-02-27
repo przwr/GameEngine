@@ -13,7 +13,6 @@ import game.Settings;
 import game.gameobject.GameObject;
 import game.place.ForegroundTile;
 import game.place.Map;
-import game.place.Place;
 import game.place.Tile;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glColor3f;
@@ -29,16 +28,16 @@ import sprites.SpriteSheet;
  */
 public class TemporaryBlock extends GameObject {
 
-    private final int tile;
-    private final int upHeight, xTiles, yTiles;
-    private final ObjectPlace objPlace;
-    private final ObjectMap objMap;
-    private boolean complete;
+    protected final int tile;
+    protected final int upHeight, xTiles, yTiles;
+    protected final ObjectPlace objPlace;
+    protected final ObjectMap objMap;
+    protected boolean complete;
 
-    private Block area;
-    private ArrayList<ForegroundTile> tiles;
+    protected Block area;
+    protected ArrayList<ForegroundTile> tiles;
 
-    public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map, Place place) {
+    public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map) {
         initialize("tmpBlock", x, y);
         this.tile = map.getTileSize();
         this.upHeight = upHeight;
@@ -49,15 +48,7 @@ public class TemporaryBlock extends GameObject {
         this.map = map;
         onTop = true;
         objMap = (ObjectMap) map;
-        objPlace = (ObjectPlace) place;
-    }
-
-    private void setColor() {
-        if (complete) {
-            glColor3f(1f, 0.78f, 0f);
-        } else {
-            glColor3f(1f, 0f, 0f);
-        }
+        objPlace = (ObjectPlace) map.place;
     }
 
     @Override
@@ -79,7 +70,7 @@ public class TemporaryBlock extends GameObject {
                 glTranslatef(0, -tmpH, 0);
             }
             if (upHeight == 0) {
-                setColor();
+                glColor3f(1f, 0f, 0f);
                 Drawer.drawRectangle(0, 0, width, d);
                 Drawer.drawRectangle(0, height - d, width, d);
                 Drawer.drawRectangle(0, -height + d, d, height);
@@ -90,7 +81,7 @@ public class TemporaryBlock extends GameObject {
                     Drawer.drawRectangle(0, height, width, tmpH);
                     glTranslatef(0, -height, 0);
                 }
-                setColor();
+                glColor3f(1f, 0f, 0f);
                 Drawer.drawRectangle(0, 0, width, d);
                 Drawer.drawRectangle(0, height - d, width, d);
                 Drawer.drawRectangle(0, tmpH, width, d);
