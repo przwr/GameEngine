@@ -9,7 +9,6 @@ import collision.Block;
 import collision.OpticProperties;
 import collision.Rectangle;
 import collision.RoundRectangle;
-import engine.Point;
 import game.gameobject.LightSource;
 import game.place.ForegroundTile;
 import game.place.Map;
@@ -17,8 +16,6 @@ import game.place.Place;
 import game.place.PuzzleObject;
 import game.place.Tile;
 import game.place.WarpPoint;
-import org.lwjgl.opengl.GL11;
-import static org.lwjgl.opengl.GL11.GL_POLYGON;
 
 /**
  *
@@ -56,8 +53,8 @@ public class GladeMap extends Map {
             addForegroundTile(fg, 8 * tileSize, 7 * tileSize, tileSize);
             block1.pushCorner(RoundRectangle.LEFT_BOTTOM, tileSize, 18, 18);
             areas.add(block1);
-        }    
-        
+        }
+
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, warp));
         addObject(warp);

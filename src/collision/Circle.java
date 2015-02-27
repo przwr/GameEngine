@@ -50,7 +50,7 @@ public class Circle extends Figure {
         if (figure instanceof Rectangle) {
             return rectangleCollision(x, y, figure);
         } else if (figure instanceof RoundRectangle) {
-            return toundRectangleCollision(x, y, figure);
+            return roundRectangleCollision(x, y, figure);
         } else if (figure instanceof Circle) {
             return circleCollision(x, y, figure);
         } else if (figure instanceof Line) {
@@ -77,7 +77,7 @@ public class Circle extends Figure {
         return (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
     }
 
-    private boolean toundRectangleCollision(int x, int y, Figure figure) {
+    private boolean roundRectangleCollision(int x, int y, Figure figure) { //TO DO
         RoundRectangle roundRectangle = (RoundRectangle) figure;
         int xPosition = ((getX(x) < roundRectangle.getX() ? -1 : 1) + (getX(x) <= (roundRectangle.getX() + roundRectangle.getWidth()) ? -1 : 1)) / 2;
         int yPosition = ((getY(y) < roundRectangle.getY() ? -1 : 1) + (getY(y) <= (roundRectangle.getY() + roundRectangle.getHeight()) ? -1 : 1)) / 2;

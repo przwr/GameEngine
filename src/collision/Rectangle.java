@@ -71,7 +71,7 @@ public class Rectangle extends Figure {
                 && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
     }
 
-    private boolean roundRectangle(int x, int y, Figure figure) {
+    private boolean roundRectangle(int x, int y, Figure figure) { //TO DO
         RoundRectangle roundRectangle = (RoundRectangle) figure;
         return ((getX(x) > roundRectangle.getX() && getX(x) - roundRectangle.getX() < roundRectangle.getWidth()) || (getX(x) <= roundRectangle.getX() && roundRectangle.getX() - getX(x) < width))
                 && ((getY(y) > roundRectangle.getY() && getY(y) - roundRectangle.getY() < roundRectangle.getHeight()) || (getY(y) <= roundRectangle.getY() && roundRectangle.getY() - getY(y) < height));
