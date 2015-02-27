@@ -36,7 +36,6 @@ public class GladeMap extends Map {
         test.placePuzzle(3, 14, this);
         test = new PuzzleObject("HighWalls", place);
         test.placePuzzle(17, 5, this);
-
         ForegroundTile fg;
 
         {
@@ -51,6 +50,38 @@ public class GladeMap extends Map {
             fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 0, 2, tileSize);
             block1.addForegroundTile(fg);
             addForegroundTile(fg, 8 * tileSize, 7 * tileSize, tileSize);
+            block1.pushCorner(RoundRectangle.LEFT_BOTTOM, tileSize, 18, 18);
+            areas.add(block1);
+        }
+
+        {
+            Block block1 = Block.createRound(6 * tileSize, 9 * tileSize, 1 * tileSize, 1 * tileSize, 0);
+            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 0, 3);
+            block1.addForegroundTile(fg);
+            addForegroundTile(fg, 6 * tileSize, 9 * tileSize, 0);
+            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 5, 2);
+            block1.addForegroundTile(fg);
+            fg.setSolid(false);
+            addForegroundTile(fg, 6 * tileSize, 8 * tileSize, tileSize);
+            fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 0, 2, tileSize);
+            block1.addForegroundTile(fg);
+            addForegroundTile(fg, 6 * tileSize, 8 * tileSize, tileSize);
+            block1.pushCorner(RoundRectangle.LEFT_BOTTOM, tileSize, 18, 18);
+            areas.add(block1);
+        }
+
+        {
+            Block block1 = Block.createRound(10 * tileSize, 9 * tileSize, 1 * tileSize, 1 * tileSize, 0);
+            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 0, 3);
+            block1.addForegroundTile(fg);
+            addForegroundTile(fg, 10 * tileSize, 9 * tileSize, 0);
+            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 5, 2);
+            block1.addForegroundTile(fg);
+            fg.setSolid(false);
+            addForegroundTile(fg, 10 * tileSize, 8 * tileSize, tileSize);
+            fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 0, 2, tileSize);
+            block1.addForegroundTile(fg);
+            addForegroundTile(fg, 10 * tileSize, 8 * tileSize, tileSize);
             block1.pushCorner(RoundRectangle.LEFT_BOTTOM, tileSize, 18, 18);
             areas.add(block1);
         }

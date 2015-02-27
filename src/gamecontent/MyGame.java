@@ -5,7 +5,6 @@
  */
 package gamecontent;
 
-import engine.Drawer;
 import engine.Methods;
 import game.Game;
 import static game.IO.loadInputFromFile;

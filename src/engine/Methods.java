@@ -115,31 +115,27 @@ public class Methods {
         return FastMath.round((float) number);
     }
 
-//    public Point2D.Float getIntersectionPoint(Line2D.Float line1, Line2D.Float line2) {
-//        if (!line1.intersectsLine(line2)) {
-//            return null;
-//        }
-//        double px = line1.getX1(),
-//                py = line1.getY1(),
-//                rx = line1.getX2() - px,
-//                ry = line1.getY2() - py;
-//        double qx = line2.getX1(),
-//                qy = line2.getY1(),
-//                sx = line2.getX2() - qx,
-//                sy = line2.getY2() - qy;
-//
-//        double det = sx * ry - sy * rx;
-//        if (det == 0) {
-//            return null;
-//        } else {
-//            double z = (sx * (qy - py) + sy * (px - qx)) / det;
-//            if (z == 0 || z == 1) {
-//                return null;  // intersection at end point!
-//            }
-//            return new Point2D.Float(
-//                    (float) (px + z * rx), (float) (py + z * ry));
-//        }
-//    }
+    public static Point getIntersectionPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+        if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
+            return null;
+        }
+        double rx = x2 - x1,
+                ry = y2 - y1,
+                sx = x4 - x3,
+                sy = y4 - y3;
+
+        double det = sx * ry - sy * rx;
+        if (det == 0) {
+            return null;
+        } else {
+            double z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
+            if (z == 0 || z == 1) {
+                return null;  // intersection at end point!
+            }
+            return new Point(roundDouble(x1 + z * rx), roundDouble(y1 + z * ry));
+        }
+    }
+
     public Point getIntersectionPoint(Line2D firstLine, Line2D secondLine) {
         if (!firstLine.intersectsLine(secondLine)) {
             return null;

@@ -10,6 +10,7 @@ import engine.Point;
 import game.gameobject.GameObject;
 import java.awt.Polygon;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,44 +21,46 @@ import java.util.Collections;
  */
 public class RoundRectangle extends Figure {
 
-    public static final int LEFT_TOP = 0, RIGHT_TOP = 1, RIGHT_BOTTOM = 2, LEFT_BOTTOM = 3;
-    public static final int PREVIOUS = 0, CORNER = 1, NEXT = 2;
+    public static final int LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3;
+    public static final int PREVOIUS = 0, CORNER = 1, NEXT = 2;
     private static final changer[] changers = new changer[4];
     private static final pusher[] pushers = new pusher[4];
     private Corner[] corners = new Corner[4];
     private Polygon polygon = new Polygon();
+    private ArrayList<Point> bottomPoints = new ArrayList<>(3);
 
     {
         // corners muszą brać pod uwagę wielkość całej kolizji
         changers[LEFT_TOP] = (int tileSize, int xChange, int yChange) -> {
-            corners[LEFT_TOP].changes[PREVIOUS] = new Point(0, tileSize);
+            corners[LEFT_TOP].changes[NEXT] = new Point(0, tileSize);
             corners[LEFT_TOP].changes[CORNER] = new Point(xChange, yChange);
-            corners[LEFT_TOP].changes[NEXT] = new Point(tileSize, 0);
-        };
-        changers[RIGHT_TOP] = (int tileSize, int xChange, int yChange) -> {
-            corners[RIGHT_TOP].changes[PREVIOUS] = new Point(width - tileSize, 0);
-            corners[RIGHT_TOP].changes[CORNER] = new Point((width - tileSize) + xChange, yChange);
-            corners[RIGHT_TOP].changes[NEXT] = new Point(width, tileSize);
-        };
-        changers[RIGHT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
-            corners[RIGHT_BOTTOM].changes[PREVIOUS] = new Point(width, height - tileSize);
-            corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - tileSize) + xChange, (height - tileSize) + yChange);
-            corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width - tileSize, height);
+            corners[LEFT_TOP].changes[PREVOIUS] = new Point(tileSize, 0);
         };
         changers[LEFT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
-            corners[LEFT_BOTTOM].changes[PREVIOUS] = new Point(tileSize, height);
+            corners[LEFT_BOTTOM].changes[NEXT] = new Point(tileSize, height);
             corners[LEFT_BOTTOM].changes[CORNER] = new Point(xChange, (height - tileSize) + yChange);
-            corners[LEFT_BOTTOM].changes[NEXT] = new Point(0, height - tileSize);
+            corners[LEFT_BOTTOM].changes[PREVOIUS] = new Point(0, height - tileSize);
         };
+        changers[RIGHT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
+            corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width, height - tileSize);
+            corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - tileSize) + xChange, (height - tileSize) + yChange);
+            corners[RIGHT_BOTTOM].changes[PREVOIUS] = new Point(width - tileSize, height);
+        };
+        changers[RIGHT_TOP] = (int tileSize, int xChange, int yChange) -> {
+            corners[RIGHT_TOP].changes[NEXT] = new Point(width - tileSize, 0);
+            corners[RIGHT_TOP].changes[CORNER] = new Point((width - tileSize) + xChange, yChange);
+            corners[RIGHT_TOP].changes[PREVOIUS] = new Point(width, tileSize);
+        };
+
         pushers[LEFT_TOP] = (int tileSize, int xChange, int yChange) -> {
             if (xChange <= tileSize && xChange >= 0 && yChange <= tileSize && yChange >= 0) {
                 corners[LEFT_TOP].push(LEFT_TOP, tileSize, xChange, yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
-        pushers[RIGHT_TOP] = (int tileSize, int xChange, int yChange) -> {
+        pushers[LEFT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
             if (xChange <= tileSize && xChange >= 0 && yChange <= tileSize && yChange >= 0) {
-                corners[RIGHT_TOP].push(RIGHT_TOP, tileSize, (tileSize - xChange), yChange);
+                corners[LEFT_BOTTOM].push(LEFT_BOTTOM, tileSize, xChange, tileSize - yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
@@ -67,9 +70,9 @@ public class RoundRectangle extends Figure {
                 getOwner().setSimpleLighting(false);
             }
         };
-        pushers[LEFT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
+        pushers[RIGHT_TOP] = (int tileSize, int xChange, int yChange) -> {
             if (xChange <= tileSize && xChange >= 0 && yChange <= tileSize && yChange >= 0) {
-                corners[LEFT_BOTTOM].push(LEFT_BOTTOM, tileSize, xChange, tileSize - yChange);
+                corners[RIGHT_TOP].push(RIGHT_TOP, tileSize, (tileSize - xChange), yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
@@ -102,9 +105,9 @@ public class RoundRectangle extends Figure {
 
     private void initializeCorners() {
         corners[LEFT_TOP] = new Corner(new Point(getX(), getY()));
-        corners[RIGHT_TOP] = new Corner(new Point(getX() + width, getY()));
-        corners[RIGHT_BOTTOM] = new Corner(new Point(getX() + width, getY() + height));
         corners[LEFT_BOTTOM] = new Corner(new Point(getX(), getY() + height));
+        corners[RIGHT_BOTTOM] = new Corner(new Point(getX() + width, getY() + height));
+        corners[RIGHT_TOP] = new Corner(new Point(getX() + width, getY()));
     }
 
     private void updatePoints() {
@@ -115,10 +118,26 @@ public class RoundRectangle extends Figure {
             });
         }
         points.trimToSize();
+
         polygon.reset();
         points.stream().forEach((point) -> {
             polygon.addPoint(point.getX(), point.getY());
         });
+
+        // dodaje też inne punkty        
+        bottomPoints.clear();
+        bottomPoints.add(new Point(getX(), getY() + height - 64)); // 64 - TileSize
+        corners[LEFT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
+            bottomPoints.add(point);
+        });
+        corners[RIGHT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
+            bottomPoints.add(point);
+        });
+        Point point = new Point(getX() + width, getY() + height - 64);// 64 - TileSize
+        if (!bottomPoints.contains(point)) {
+            bottomPoints.add(point);
+        }
+        bottomPoints.trimToSize();
     }
 
     private void centralize() {
@@ -195,6 +214,24 @@ public class RoundRectangle extends Figure {
         return Collections.unmodifiableCollection(points);
     }
 
+    public Collection<Point> getBottomPoints() {
+        if (isMobile()) {
+            updatePoints();
+        }
+        for (Point point : bottomPoints) {
+            System.out.println(point.getX() + " " + point.getY());
+        }
+        return Collections.unmodifiableCollection(bottomPoints);
+    }
+
+    public int getBottomPointSize() {
+        return bottomPoints.size();
+    }
+
+    public Point getBottomPoint(int i) {
+        return bottomPoints.get(i);
+    }
+
     private interface changer {
 
         void set(int tileSize, int xChange, int yChange);
@@ -203,6 +240,11 @@ public class RoundRectangle extends Figure {
     private interface pusher {
 
         void push(int tileSize, int xChange, int yChange);
+    }
+
+    private interface geter {
+
+        void get(int tileSize);
     }
 
     private class Corner {
@@ -221,13 +263,13 @@ public class RoundRectangle extends Figure {
         }
 
         private void setPoints() {
-            points[PREVIOUS] = new Point(getX() + changes[PREVIOUS].getX(), getY() + changes[PREVIOUS].getY());
-            points[CORNER].set(getX() + changes[CORNER].getX(), getY() + +changes[CORNER].getY());
             points[NEXT] = new Point(getX() + changes[NEXT].getX(), getY() + changes[NEXT].getY());
+            points[CORNER].set(getX() + changes[CORNER].getX(), getY() + +changes[CORNER].getY());
+            points[PREVOIUS] = new Point(getX() + changes[PREVOIUS].getX(), getY() + changes[PREVOIUS].getY());
         }
 
         public Collection<Point> getPoints() {
-            if (points[PREVIOUS] == null) {
+            if (points[NEXT] == null) {
                 return Arrays.asList(points[CORNER]);
             } else {
                 return Arrays.asList(points);

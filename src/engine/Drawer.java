@@ -64,7 +64,7 @@ public class Drawer {
         xCurrent = 0;
         yCurrent = 0;
     }
-    
+
     public static void translateFromCentralPoint(float x, float y) {
         xCurrent += x;
         yCurrent += y;
@@ -179,7 +179,7 @@ public class Drawer {
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
-    
+
     public static void drawLine(int xStart, int yStart, int xDelta, int yDelta) {
         drawLineWidth(xStart, yStart, xDelta, yDelta, 1);
     }

@@ -47,6 +47,7 @@ public abstract class Place extends ScreenPlace {
     public Place(Game game, int tileSize) {
         super(game);
         this.tileSize = tileSize;
+        Settings.tileSize = tileSize;
         sounds = new SoundBase();
         sprites = new SpriteBase();
         initializeMethods();
