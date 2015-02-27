@@ -57,7 +57,7 @@ public class Line extends Figure {
         if (figure instanceof Rectangle) {
             return rectangleCollision(x, y, figure);
         } else if (figure instanceof RoundRectangle) {
-            return RoundrectangleCollision(x, y, figure);
+            return roundRectangleCollision(x, y, figure);
         } else if (figure instanceof Circle) {
             return circleCollision(x, y, figure);
         } else if (figure instanceof Line) {
@@ -75,7 +75,7 @@ public class Line extends Figure {
                 || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(3).getX(), tmpPoints.get(3).getY(), tmpPoints.get(0).getX(), tmpPoints.get(0).getY()));
     }
 
-    private boolean RoundrectangleCollision(int x, int y, Figure figure) {
+    private boolean roundRectangleCollision(int x, int y, Figure figure) { //TO DO
         ArrayList<Point> tmpPoints = (ArrayList< Point>) figure.getPoints();
         int[] w = {getX(x), getY(y), getX(x) + xVector, getY(y) + yVector};
         return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(0).getX(), tmpPoints.get(0).getY(), tmpPoints.get(1).getX(), tmpPoints.get(1).getY())

@@ -53,8 +53,8 @@ public class GladeMap extends Map {
             addForegroundTile(fg, 8 * tileSize, 7 * tileSize, tileSize);
             block1.pushCorner(RoundRectangle.LEFT_BOTTOM, tileSize, 18, 18);
             areas.add(block1);
-        }    
-        
+        }
+
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
