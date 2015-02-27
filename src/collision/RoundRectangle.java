@@ -207,7 +207,7 @@ public class RoundRectangle extends Figure {
 
     private class Corner {
 
-        private Point[] points = new Point[1];
+        private Point[] points = new Point[3];
         private Point[] changes;
 
         public Corner(Point point) {
