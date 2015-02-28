@@ -41,7 +41,10 @@ public class FontHandler {
     }
 
     public void drawManyLines(String text, int x, int y, Color color) {
-        trueFont.drawString(x, y, text, color);
+        String[] lines = text.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            trueFont.drawString(x, (float) (y + i * getHeight() * 1.2), lines[i], color);
+        }
     }
 
     public FontHandler(String name, int type, int size) {

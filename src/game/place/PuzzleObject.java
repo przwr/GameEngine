@@ -243,7 +243,6 @@ public class PuzzleObject {
             ForegroundTile fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], round);
             fgt.setX(xBegin + x);
             fgt.setY(yBegin + y);
-            System.out.println(values[4]);
             fgt.setDepth(values[4]);
             additionalPlaces.stream().forEach((p) -> {
                 fgt.addTileToStack(p.getX(), p.getY());
