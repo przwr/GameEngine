@@ -70,14 +70,14 @@ public class PuzzleObject {
                         break;
 
                     case "ft":
-                        if (!t[3].equals("")) {
-                            tmpSS = place.getSpriteSheet(t[3]);
+                        if (!t[4].equals("")) {
+                            tmpSS = place.getSpriteSheet(t[4]);
                         }
-                        tmpFgt = new FGTileContainer(tmpSS, tile, Integer.parseInt(t[6]), Integer.parseInt(t[7]),
-                                t[4].equals("1"), Integer.parseInt(t[5]) * tile);
+                        tmpFgt = new FGTileContainer(tmpSS, tile, Integer.parseInt(t[8]), Integer.parseInt(t[9]),
+                                t[5].equals("1"), Integer.parseInt(t[6]) * tile, t[7].equals("1"), Integer.parseInt(t[3]) * tile);
                         tmpFgt.xBegin = Integer.parseInt(t[1]) * tile;
                         tmpFgt.yBegin = Integer.parseInt(t[2]) * tile;
-                        i = 8;
+                        i = 10;
                         while (i + 1 < t.length) {
                             tmpFgt.additionalPlaces.add(new Point(Integer.parseInt(t[i]), Integer.parseInt(t[i + 1])));
                             i += 2;
@@ -112,10 +112,7 @@ public class PuzzleObject {
             input.close();
         } catch (IOException e) {
             Methods.error("File " + file + " not found!\n" + e.getMessage());
-        }/* catch (Exception e) {
-         Methods.error("File " + file + " cannot be read!\n" + e.getMessage());
-         }*/
-
+        }
     }
 
     protected void addTile(Tile tile, int x, int y) {
@@ -162,7 +159,11 @@ public class PuzzleObject {
             map.addArea(tmpBlock);
             for (FGTileContainer tile : area.containedFGTs) {
                 ForegroundTile fgt = tile.generateFGT(x * tileSize, y * tileSize);
-                map.addForegroundTileAndReplace(fgt);
+                if (!fgt.isSimpleLighting()) {
+                    map.addForegroundTileAndReplace(fgt);
+                } else {
+                    map.addForegroundTile(fgt);
+                }
                 tmpBlock.addForegroundTile(fgt);
             }
         });
@@ -217,7 +218,7 @@ public class PuzzleObject {
         ArrayList<Point> additionalPlaces = new ArrayList<>();
         SpriteSheet texture;
         int[] values;
-        boolean wall;
+        boolean wall, round;
         int xBegin, yBegin;
 
         public void setBeginning(int x, int y) {
@@ -231,17 +232,19 @@ public class PuzzleObject {
 
         //0  1 2 3       4    5      6          7
         //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
-        public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart) {
+        public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round, int depth) {
             texture = spriteSheet;
-            values = new int[]{size, xSheet, ySheet, yStart};
+            values = new int[]{size, xSheet, ySheet, yStart, depth};
             this.wall = wall;
+            this.round = round;
         }
 
         public ForegroundTile generateFGT(int x, int y) {
-            ForegroundTile fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], false);
+            ForegroundTile fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], round);
             fgt.setX(xBegin + x);
             fgt.setY(yBegin + y);
-            fgt.setDepth(values[3]);
+            System.out.println(values[4]);
+            fgt.setDepth(values[4]);
             additionalPlaces.stream().forEach((p) -> {
                 fgt.addTileToStack(p.getX(), p.getY());
             });

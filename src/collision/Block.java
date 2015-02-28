@@ -188,10 +188,11 @@ public class Block extends GameObject {
         }
     }
 
-    //b:x:y:width:height:shadowHeight
+    //b:x:y:width:height:shadowHeight:round
     public String saveToString(int xBegin, int yBegin, int tile) {
         return "b:" + ((int) (x - xBegin) / tile) + ":" + ((int) (y - yBegin) / tile) + ":"
-                + (collision.width / tile) + ":" + (collision.height / tile) + ":" + (collision.getShadowHeight() / tile);
+                + (collision.width / tile) + ":" + (collision.height / tile) + ":" + (collision.getShadowHeight() / tile) + ":"
+                + (simpleLighting ? "0" : "1");
     }
 
     public Collection<ForegroundTile> getTopForegroundTiles() {

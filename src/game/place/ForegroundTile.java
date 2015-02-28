@@ -58,11 +58,12 @@ public class ForegroundTile extends Tile {
         simpleLighting = !round;
     }
 
-    //0  1 2 3       4    5      6          7
-    //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
+    //0  1 2 4     5       6    7      8     9          10
+    //ft:x:y:depth:texture:wall:yStart:round:TileXSheet:TileYSheet...
     public String saveToString(SpriteSheet s, int xBegin, int yBegin, int tile) {
-        String txt = "ft:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
-        txt += ":" + (solid ? "1" : "0") + ":" + (collision.getYStart() / tile);
+        String txt = "ft:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (depth / tile) + ":" 
+                + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
+        txt += ":" + (solid ? "1" : "0") + ":" + (collision.getYStart() / tile) + ":" + (simpleLighting ? 0 : 1);
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
     }
