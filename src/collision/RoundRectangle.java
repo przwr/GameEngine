@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -25,12 +26,12 @@ public class RoundRectangle extends Figure {
     public static final int PREVOIUS = 0, CORNER = 1, NEXT = 2;
     private static final changer[] changers = new changer[4];
     private static final pusher[] pushers = new pusher[4];
+    private static final geter[] geters = new geter[4];
     private Corner[] corners = new Corner[4];
     private Polygon polygon = new Polygon();
     private ArrayList<Point> bottomPoints = new ArrayList<>(3);
 
     {
-        // corners muszą brać pod uwagę wielkość całej kolizji
         changers[LEFT_TOP] = (int tileSize, int xChange, int yChange) -> {
             corners[LEFT_TOP].changes[NEXT] = new Point(0, tileSize);
             corners[LEFT_TOP].changes[CORNER] = new Point(xChange, yChange);
@@ -51,7 +52,6 @@ public class RoundRectangle extends Figure {
             corners[RIGHT_TOP].changes[CORNER] = new Point((width - tileSize) + xChange, yChange);
             corners[RIGHT_TOP].changes[PREVOIUS] = new Point(width, tileSize);
         };
-
         pushers[LEFT_TOP] = (int tileSize, int xChange, int yChange) -> {
             if (xChange <= tileSize && xChange >= 0 && yChange <= tileSize && yChange >= 0) {
                 corners[LEFT_TOP].push(LEFT_TOP, tileSize, xChange, yChange);
@@ -75,6 +75,30 @@ public class RoundRectangle extends Figure {
                 corners[RIGHT_TOP].push(RIGHT_TOP, tileSize, (tileSize - xChange), yChange);
                 getOwner().setSimpleLighting(false);
             }
+        };
+        geters[LEFT_TOP] = () -> {
+            if (corners[LEFT_TOP].changes != null) {
+                return corners[LEFT_TOP].changes[CORNER];
+            }
+            return new Point(0, 0);
+        };
+        geters[LEFT_BOTTOM] = () -> {
+            if (corners[LEFT_BOTTOM].changes != null) {
+                return new Point(corners[LEFT_BOTTOM].changes[CORNER].getX(), -corners[LEFT_BOTTOM].changes[CORNER].getY() + height);
+            }
+            return new Point(0, 0);
+        };
+        geters[RIGHT_BOTTOM] = () -> {
+            if (corners[RIGHT_BOTTOM].changes != null) {
+                return new Point(-corners[RIGHT_BOTTOM].changes[CORNER].getX() + width, -corners[RIGHT_BOTTOM].changes[CORNER].getY() + height);
+            }
+            return new Point(0, 0);
+        };
+        geters[RIGHT_TOP] = () -> {
+            if (corners[RIGHT_TOP].changes != null) {
+                return new Point(-corners[RIGHT_TOP].changes[CORNER].getX() + width, corners[RIGHT_TOP].changes[CORNER].getY());
+            }
+            return new Point(0, 0);
         };
     }
 
@@ -126,17 +150,17 @@ public class RoundRectangle extends Figure {
 
         // dodaje też inne punkty        
         bottomPoints.clear();
-        bottomPoints.add(new Point(getX(), getY() + height - 64)); // 64 - TileSize
+        ///    bottomPoints.add(new Point(getX(), getY() + height - 64)); // 64 - TileSize
         corners[LEFT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
             bottomPoints.add(point);
         });
         corners[RIGHT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
             bottomPoints.add(point);
         });
-        Point point = new Point(getX() + width, getY() + height - 64);// 64 - TileSize
-        if (!bottomPoints.contains(point)) {
-            bottomPoints.add(point);
-        }
+        // Point point = new Point(getX() + width, getY() + height - 64);// 64 - TileSize
+        // if (!bottomPoints.contains(point)) {
+        //   bottomPoints.add(point);
+        // }
         bottomPoints.trimToSize();
     }
 
@@ -147,6 +171,11 @@ public class RoundRectangle extends Figure {
 
     public void pushCorner(int corner, int tileSize, int xChange, int yChange) {
         pushers[corner].push(tileSize, xChange, yChange);
+        updatePoints();
+    }
+
+    public Point getPushValueOfCorner(int corner) {
+        return geters[corner].get();
     }
 
     @Override
@@ -232,9 +261,32 @@ public class RoundRectangle extends Figure {
         return bottomPoints.get(i);
     }
 
+    public boolean isLeftBottomRound() {
+        return corners[LEFT_BOTTOM].changes != null;
+    }
+
+    public boolean isRightBottomRound() {
+        return corners[RIGHT_BOTTOM].changes != null;
+    }
+
+    public int getXRound() {
+        return FastMath.max(corners[LEFT_BOTTOM].getCorner().getX(), corners[LEFT_TOP].getCorner().getX());
+    }
+
+    public int getYRound() {
+        return FastMath.max(corners[RIGHT_TOP].getCorner().getY(), corners[LEFT_TOP].getCorner().getY());
+    }
+
+    public int getWidthRound() {
+        return width - FastMath.max(geters[LEFT_BOTTOM].get().getX(), geters[LEFT_TOP].get().getX()) - FastMath.max(geters[RIGHT_BOTTOM].get().getX(), geters[RIGHT_TOP].get().getX());
+    }
+
+    public int getHeightRound() {
+        return height - FastMath.max(geters[RIGHT_TOP].get().getY(), geters[LEFT_TOP].get().getY()) - FastMath.max(geters[RIGHT_BOTTOM].get().getY(), geters[LEFT_BOTTOM].get().getY());
+    }
+
     private interface changer {
 
-        
         void set(int tileSize, int xChange, int yChange);
     }
 
@@ -245,7 +297,7 @@ public class RoundRectangle extends Figure {
 
     private interface geter {
 
-        void get(int tileSize);
+        Point get();
     }
 
     private class Corner {
@@ -265,8 +317,12 @@ public class RoundRectangle extends Figure {
 
         private void setPoints() {
             points[NEXT] = new Point(getX() + changes[NEXT].getX(), getY() + changes[NEXT].getY());
-            points[CORNER].set(getX() + changes[CORNER].getX(), getY() + +changes[CORNER].getY());
+            points[CORNER].set(getX() + changes[CORNER].getX(), getY() + changes[CORNER].getY());
             points[PREVOIUS] = new Point(getX() + changes[PREVOIUS].getX(), getY() + changes[PREVOIUS].getY());
+        }
+
+        public Point getCorner() {
+            return points[CORNER];
         }
 
         public Collection<Point> getPoints() {

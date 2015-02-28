@@ -22,6 +22,7 @@ public class OpticProperties {
     private static final boolean[] GIVE_SHADOW = {true, false, false, true};
     private final int type;
     private final int shadowHeight;
+    private int lightDistance;
     private float shadowColor;
     private final ArrayList<Shadow> shadows = new ArrayList<>();
     private static ForegroundTile foregroundTile;
@@ -63,11 +64,19 @@ public class OpticProperties {
         return shadowColor;
     }
 
+    public int getLightDistance() {
+        return lightDistance;
+    }
+
     public Collection<Shadow> getShadows() {
         return Collections.unmodifiableList(shadows);
     }
 
     public void setShadowColor(float shadowColor) {
         this.shadowColor = shadowColor;
+    }
+
+    public void setLightDistance(int lightDistance) {
+        this.lightDistance = lightDistance;
     }
 }
