@@ -97,13 +97,15 @@ public class Block extends GameObject {
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
                 Drawer.returnToCentralPoint();
-                Drawer.translate(col.getX() - getX(), col.getY() - getY());
+                Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
                 if (wall.isSimpleLighting()) {
                     Drawer.drawRectangleInShade(0, 0, col.width, col.height + col.getShadowHeight(), color);
                 } else {
                     Drawer.drawShapeInShade(wall, color);
                 }
+
             });
+
         }
         glPopMatrix();
     }
@@ -112,15 +114,15 @@ public class Block extends GameObject {
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
         glPushMatrix();
         if (isSimpleLighting()) {
-            glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
-            Drawer.drawRectangleInBlack(0, 0, figure.width, figure.height + figure.getShadowHeight());
+            Drawer.drawRectangleInBlack(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect,
+                    figure.width, figure.height + figure.getShadowHeight());
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
                 Drawer.returnToCentralPoint();
-                Drawer.translate(col.getX() - getX(), col.getY() - getY());
+                Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
                 if (wall.isSimpleLighting()) {
                     Drawer.drawRectangleInBlack(0, 0, col.width, col.height + col.getShadowHeight());
                 } else {
@@ -140,13 +142,15 @@ public class Block extends GameObject {
             Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
+            Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
-                glTranslatef(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight(), 0);
+                Drawer.returnToCentralPoint();
+                Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInShade(xStart, 0, xEnd, col.height + col.getShadowHeight(), color); // TO DO - xStart x End odpowiednio liczone w ShadowRendererze
+                    Drawer.drawRectangleInShade(xStart, 0, xEnd - xStart, col.height + col.getShadowHeight(), color);
                 } else {
-                    Drawer.drawShapePartInShade(wall, color, xStart, xEnd); // TO DO - xStart x End odpowiednio liczone w ShadowRendererze
+                    Drawer.drawShapePartInShade(wall, color, xStart, xEnd);
                 }
             });
         }
@@ -162,13 +166,15 @@ public class Block extends GameObject {
             Drawer.drawRectangleInBlack(0, 0, figure.width, figure.height + figure.getShadowHeight());
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
+            Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
-                glTranslatef(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight(), 0);
+                Drawer.returnToCentralPoint();
+                Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInBlack(xStart, 0, xEnd, col.height + col.getShadowHeight());// TO DO - xStart x End odpowiednio liczone w ShadowRendererze
+                    Drawer.drawRectangleInBlack(xStart, 0, xEnd - xStart, col.height + col.getShadowHeight());
                 } else {
-                    Drawer.drawShapePartInBlack(wall, xStart, xEnd);// TO DO - xStart x End odpowiednio liczone w ShadowRendererze
+                    Drawer.drawShapePartInBlack(wall, xStart, xEnd);
                 }
             });
         }

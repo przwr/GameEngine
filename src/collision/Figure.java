@@ -115,8 +115,8 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     @Override
-    public int compareTo(Object object) {
-        return (getYEnd() - ((Figure) object).getYEnd());
+    public int compareTo(Object object) {/// Chech this out
+        return (getYEnd() - ((Figure) object).getYEnd()) * 10000 - ((getLightDistance() - ((Figure) object).getLightDistance()));
     }
 
     public boolean isLittable() {
@@ -219,6 +219,10 @@ public abstract class Figure implements Comparable<Object> {
         return opticProperties.getShadowColor();
     }
 
+    public int getLightDistance() {
+        return opticProperties.getLightDistance();
+    }
+
     public Collection<Shadow> getShadows() {
         return opticProperties.getShadows();
     }
@@ -237,5 +241,9 @@ public abstract class Figure implements Comparable<Object> {
 
     public void setShadowColor(float shadowColor) {
         opticProperties.setShadowColor(shadowColor);
+    }
+
+    public void setLightDistance(int lightDistance) {
+        opticProperties.setLightDistance(lightDistance);
     }
 }

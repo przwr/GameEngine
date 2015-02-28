@@ -26,7 +26,6 @@ import sprites.Appearance;
  */
 public class Drawer {
 
-    public static final int white = glGenTextures();
     public static final Texture font = loadFontTexture();
     private static float xCurrent, yCurrent;
     private static Color currentColor;
@@ -218,8 +217,8 @@ public class Drawer {
 
     private static void prepareDrawingShape(float color) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(color, color, color);
-        glActiveTexture(white);
+        glColor3f(color * color, color * color, color * color);
+        glBindTexture(GL_TEXTURE_2D, font.getTextureID());
     }
 
     private static void cleanAfterDrawingShape() {
