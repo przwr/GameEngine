@@ -208,6 +208,7 @@ public class Main {
             game.update();
         } catch (Exception exception) {
             game.endGame();
+            game.update();
             Methods.exception(exception);
         }
     }
@@ -217,6 +218,7 @@ public class Main {
             game.render();
         } catch (Exception exception) {
             game.endGame();
+            game.update();
             Methods.exception(exception);
         }
         renderMessageIfNeeded();

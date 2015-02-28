@@ -6,12 +6,14 @@
 package game.place;
 
 import collision.Figure;
+import collision.Line;
 import collision.RoundRectangle;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
 import static game.place.Shadow.*;
 import java.awt.Polygon;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import net.jodk.lang.FastMath;
@@ -55,7 +57,6 @@ public class ShadowRenderer {
                     calculateWalls(shade, emitter);
                     if (shade.isLittable() && emitter.getY() >= shade.getYEnd()) {
                         shade.setShadowColor((emitter.getY() - shade.getYEnd()) / lightOwnerHeightHalf);
-
                         shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()),
                                 (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade);
                         shade.addShadow(shadow1);
@@ -236,7 +237,7 @@ public class ShadowRenderer {
             isChecked = false;
             if (current.getY() < source.getY() && other != current && other != source.getOwnerCollision()) {
                 if (other.isGiveShadow() && current.getYEnd() != other.getYEnd()) {
-                    if (current instanceof RoundRectangle) {
+                    if (other instanceof RoundRectangle) {
                         // TO DO obsługa rogów bloczków
                         if (shadowPoints[0].getX() == shadowPoints[2].getX()) {
                             XOL = shadowPoints[0].getX();
@@ -374,7 +375,26 @@ public class ShadowRenderer {
                 XL1 = shadowPoints[0].getX();
                 XL2 = other.getXEnd();
             } else {
-                XL1 = Methods.roundDouble((other.getYEnd() - bl1) / al1);
+                XL1 = Methods.roundDouble((other.getYEnd() - bl1) / al1); // liczenie przecięcia linii
+                {
+                    RoundRectangle roundrect = ((RoundRectangle) other);
+                    Point first, last, cross = null, tempCross;
+
+                    for (int i = 0; i < roundrect.getBottomPointSize() - 1; i++) {
+                        first = roundrect.getBottomPoint(i);
+                        last = roundrect.getBottomPoint(i + 1);
+                        tempCross = Methods.getIntersectionPoint(shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2].getY(), first.getX(), first.getY(), last.getX(), last.getY());
+
+                        if (tempCross != null && (cross == null || cross.getY() < tempCross.getY())) {
+                            cross = tempCross;
+                        }
+                    }
+                    // System.out.println(cross);
+
+                    if (cross != null) {
+                        XL1 = cross.getX() - 5;
+                    }
+                }
                 XL2 = al1 > 0 ? other.getX() : other.getXEnd();
             }
             if (shadowPoints[1].getX() == shadowPoints[3].getX()) {
@@ -385,9 +405,9 @@ public class ShadowRenderer {
             if (XL1 >= other.getX() && XL1 <= other.getXEnd()) {
                 if (FastMath.abs(al1) > 0 && (XL1 < current.getX() || XL1 == other.getXEnd())) { //dodaj światło
                     tempShadow = new Shadow(2);
-                    tempShadow.addPoints(new Point(XL1, other.getY() - other.getShadowHeight()), new Point(XL1, other.getYEnd()),
-                            new Point(XL2, other.getYEnd()), new Point(XL2, other.getY() - other.getShadowHeight()));
+                    tempShadow.addPoints(new Point(XL1 - other.getX(), XL2 - other.getX()), null, null, null);
                     other.addShadow(tempShadow);
+
                     if (DEBUG) {
                         System.out.println("Left Round Light");
                     }
@@ -396,11 +416,10 @@ public class ShadowRenderer {
                         XL2 = XR1;
                     }
                     tempShadow = new Shadow(3);
-                    tempShadow.addPoints(new Point(XL1, other.getYEnd()), new Point(XL1, other.getY() - other.getShadowHeight()),
-                            new Point(XL2, other.getY() - other.getShadowHeight()), new Point(XL2, other.getYEnd()));
+                    tempShadow.addPoints(new Point(XL1 - other.getX(), XL2 - other.getX()), null, null, null);
                     other.addShadow(tempShadow);
                     if (DEBUG) {
-                        System.out.println("Left Round Shade " + al1 + " XL1 " + XL1 + " figure.X " + current.getX());
+                        System.out.println("Left Round Shade XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
                     }
                 }
             } else if (shadowPoints[0].getX() != shadowPoints[2].getX()) { // rysuj zaciemniony
@@ -521,7 +540,26 @@ public class ShadowRenderer {
                 XR1 = shadowPoints[1].getX();
                 XR2 = other.getX();
             } else {
-                XR1 = Methods.roundDouble((other.getYEnd() - bl2) / al2);
+                XR1 = Methods.roundDouble((other.getYEnd() - bl2) / al2); // liczenie przecięcia linii
+                {
+                    RoundRectangle roundrect = ((RoundRectangle) other);
+                    Point first, last, cross = null, tempCross;
+
+                    for (int i = 0; i < roundrect.getBottomPointSize() - 1; i++) {
+                        first = roundrect.getBottomPoint(i);
+                        last = roundrect.getBottomPoint(i + 1);
+                        tempCross = Methods.getIntersectionPoint(shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3].getY(), first.getX(), first.getY(), last.getX(), last.getY());
+
+                        if (tempCross != null && (cross == null || cross.getY() < tempCross.getY())) {
+                            cross = tempCross;
+                        }
+                    }
+                    //System.out.println(cross);
+
+                    if (cross != null) {
+                        XR1 = cross.getX() - 2;
+                    }
+                }
                 XR2 = al2 > 0 ? other.getX() : other.getXEnd();
             }
             if (shadowPoints[0].getX() == shadowPoints[2].getX()) {
@@ -532,22 +570,20 @@ public class ShadowRenderer {
             if (XR1 >= other.getX() && XR1 <= other.getXEnd()) {
                 if (FastMath.abs(al2) > 0 && (XR1 > current.getXEnd() || XR1 == other.getX())) { // dodaj światło
                     tempShadow = new Shadow(2);
-                    tempShadow.addPoints(new Point(XR1, other.getY() - other.getShadowHeight()), new Point(XR1, other.getYEnd()),
-                            new Point(XR2, other.getYEnd()), new Point(XR2, other.getY() - other.getShadowHeight()));
+                    tempShadow.addPoints(new Point(XR1 - other.getX(), XR2 - other.getX()), null, null, null);
                     other.addShadow(tempShadow);
                     if (DEBUG) {
-                        System.out.println("Right Round Light " + " XR1 " + XR1);
+                        System.out.println("Right Round Light XR1 " + (XR1) + " XR2 " + (XR2));
                     }
                 } else { //dodaj cień
                     if (XL1 > XR2 && XL1 < other.getXEnd() && shadowPoints[2].getY() < current.getYEnd()) {
                         XR2 = XL1;
                     }
                     tempShadow = new Shadow(3);
-                    tempShadow.addPoints(new Point(XR1, other.getYEnd()), new Point(XR1, other.getY() - other.getShadowHeight()),
-                            new Point(XR2, other.getY() - other.getShadowHeight()), new Point(XR2, other.getYEnd()));
+                    tempShadow.addPoints(new Point(XR1 - other.getX(), XR2 - other.getX()), null, null, null);
                     other.addShadow(tempShadow);
                     if (DEBUG) {
-                        System.out.println("Right Round Shade " + al2 + " XR1 " + XR1 + " figure.X " + current.getX());
+                        System.out.println("Right Round Shade XR1 " + (XR1) + " XR2 " + (XR2));
                     }
                 }
             } else if (shadowPoints[1].getX() != shadowPoints[3].getX()) { // rysuj zaciemniony
@@ -726,14 +762,14 @@ public class ShadowRenderer {
             if (shade.getOwner().isSimpleLighting()) {
                 renderShadowLit(emitter, shade.getShadowColor(), points);
             } else {
-                shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade, points[0].getX(), points[2].getX());
+                shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade, points[0].getX(), points[0].getY());
             }
         };
         shads[3] = (Light emitter, Figure shade, Point[] points) -> {
             if (shade.getOwner().isSimpleLighting()) {
                 renderShadow(emitter, points);
             } else {
-                shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, points[0].getX(), points[2].getX());
+                shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, points[0].getX(), points[0].getY());
             }
         };
         shads[4] = (Light emitter, Figure shade, Point[] points) -> {
