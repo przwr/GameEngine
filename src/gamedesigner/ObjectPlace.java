@@ -15,6 +15,7 @@ import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
+import game.place.PuzzleObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -198,6 +199,7 @@ public class ObjectPlace extends Place {
             }
         } else {
             ObjectPO loaded = new ObjectPO(file[0], this);
+            //PuzzleObject loaded = new PuzzleObject(file[0], this);
             Point p = loaded.getStartingPoint();
             maps.get(0).clear();
             loaded.placePuzzle(p.getX(), p.getY(), maps.get(0));
