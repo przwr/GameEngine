@@ -330,7 +330,7 @@ public class ShadowRenderer {
         }
     }
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static void calculateLeftWall(Figure other, Figure current, Light source) {
         if (other != null && other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
@@ -407,10 +407,8 @@ public class ShadowRenderer {
                             }
                         }
                         if (cross != null) {
-                            System.out.println(cross);
                             XL1 = cross.getX();
                         } else {
-                            System.out.println("Tu Left");
                             polygon.reset();
                             polygon.addPoint(shadowPoints[0].getX(), shadowPoints[0].getY());
                             polygon.addPoint(shadowPoints[1].getX(), shadowPoints[1].getY());
@@ -596,10 +594,8 @@ public class ShadowRenderer {
                         }
 
                         if (cross != null) {
-                            System.out.println(cross);
                             XR1 = cross.getX();
-                        } else {
-                            System.out.println("Tu Right");
+                        } else {                            
                             polygon.reset();
                             polygon.addPoint(shadowPoints[0].getX(), shadowPoints[0].getY());
                             polygon.addPoint(shadowPoints[1].getX(), shadowPoints[1].getY());
