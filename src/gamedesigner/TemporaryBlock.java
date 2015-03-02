@@ -144,7 +144,6 @@ public class TemporaryBlock extends GameObject {
         } else {
             map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (level + 1) * tile);
         }
-        System.out.println(fgt.getPureDepth());
         tiles.add(fgt);
         block.addForegroundTile(fgt);
         return fgt;

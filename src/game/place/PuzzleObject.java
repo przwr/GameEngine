@@ -109,7 +109,6 @@ public class PuzzleObject {
                                 Integer.parseInt(t[3]) * tile,
                                 Integer.parseInt(t[4]) * tile,
                                 Integer.parseInt(t[5]) * tile);
-                        System.out.println(line + " " + t.length);
                         ((RoundBlockContainer) tmpBlock).setCorners(new int[]{
                             (t[7].equals("") ? 0 : Integer.parseInt(t[7])),
                             (t[8].equals("") ? 0 : Integer.parseInt(t[8])),
