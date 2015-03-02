@@ -142,15 +142,15 @@ public class ShadowRenderer {
 
     private static void findShades(Light source, Map map) {
         shades.clear();
-        map.areas.stream().forEach((area) -> {
-            tempShade = area.getCollision();
+        map.blocks.stream().forEach((block) -> {
+            tempShade = block.getCollision();
             if (tempShade != null
                     && (FastMath.abs(tempShade.getYCentral() - source.getY()) <= (source.getHeightWholeLight() + tempShade.getHeight()) / 2)
                     && (FastMath.abs(tempShade.getXCentral() - source.getX()) <= (source.getWidthWholeLight() + tempShade.getWidth()) / 2)) {
                 tempShade.setLightDistance(FastMath.abs(tempShade.getXCentral() - source.getX()));
                 shades.add(tempShade);
             }
-            for (Figure top : area.getTop()) {
+            for (Figure top : block.getTop()) {
                 if (top != null && !top.isLittable()
                         && (FastMath.abs(top.getYCentral() - source.getY()) <= (source.getHeightWholeLight() + top.getHeight()) / 2)
                         && (FastMath.abs(top.getXCentral() - source.getX()) <= (source.getWidthWholeLight() + top.getWidth()) / 2)) {

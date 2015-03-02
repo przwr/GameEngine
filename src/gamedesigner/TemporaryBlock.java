@@ -34,7 +34,7 @@ public class TemporaryBlock extends GameObject {
     protected final ObjectMap objMap;
     protected boolean complete;
 
-    protected Block area;
+    protected Block block;
     protected ArrayList<ForegroundTile> tiles;
 
     public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map) {
@@ -116,6 +116,13 @@ public class TemporaryBlock extends GameObject {
         return !(x > xEnd || x < xBegin || y > yEnd || y < yBegin);
     }
 
+    public ForegroundTile addTile(ForegroundTile fgt) {        
+        map.addForegroundTile(fgt);
+        tiles.add(fgt);
+        block.addForegroundTile(fgt);
+        return fgt;
+    }
+    
     public ForegroundTile addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean addNew) {
         int yBegin = (int) (this.y / tile) - upHeight;
         int yEnd = yBegin + yTiles + upHeight - 1;
@@ -133,17 +140,18 @@ public class TemporaryBlock extends GameObject {
         fgt = createTile(tex, y, tile, xSheet, ySheet, level);
         if (addNew) {
             map.addForegroundTile(fgt, x * tile, y * tile, (level + 1) * tile);
-            fgt.setDepth(fgt.getPureDepth() + 1);
+            fgt.setDepth(fgt.getPureDepth() + tile);
         } else {
             map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (level + 1) * tile);
         }
+        System.out.println(fgt.getPureDepth());
         tiles.add(fgt);
-        area.addForegroundTile(fgt);
+        block.addForegroundTile(fgt);
         return fgt;
     }
 
-    protected void createBlock() {
-        area = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
+    public void createBlock() {
+        block = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
     }
 
     protected ForegroundTile createTile(SpriteSheet texture, int x, int tile, int xSheet, int ySheet, int level) {
@@ -176,14 +184,14 @@ public class TemporaryBlock extends GameObject {
                         }
                         map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, level * tile);
                         tiles.add(fgt);
-                        area.addForegroundTile(fgt);
+                        block.addForegroundTile(fgt);
                         objMap.removeTile(ix, iy);
                     }
                 }
                 level++;
             }
         }
-        map.addArea(area);
+        map.addBlock(block);
     }
 
     public void clearMyself() {
@@ -196,9 +204,9 @@ public class TemporaryBlock extends GameObject {
             map.deleteForegroundTile(fgt);
             map.setTile(fgt.getX() / tile, fgt.getY() / tile, t);
         });
-        map.deleteArea(area);
+        map.deleteBlock(block);
         tiles.clear();
-        area = null;
+        block = null;
     }
 
     public boolean checkCollision(int x, int y, int width, int height) {

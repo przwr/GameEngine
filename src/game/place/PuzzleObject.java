@@ -24,19 +24,22 @@ public class PuzzleObject {
     protected ArrayList<TileContainer> bgTiles;
     protected ArrayList<GameObject> objects;
     protected ArrayList<FGTileContainer> fgTiles;
-    protected ArrayList<BlockContainer> areas;
+    protected ArrayList<BlockContainer> blocks;
 
     protected int xDelta, yDelta;
     protected int xBegin, yBegin;
     protected int xEnd, yEnd;
     protected int width, height;
 
+    protected Place place;
+
     public PuzzleObject(String file, Place place) {
+        this.place = place;
         try (BufferedReader input = new BufferedReader(new FileReader("res/objects/" + file + ".puz"))) {
             bgTiles = new ArrayList<>();
             objects = new ArrayList<>();
             fgTiles = new ArrayList<>();
-            areas = new ArrayList<>();
+            blocks = new ArrayList<>();
 
             String line = input.readLine();
             String[] t = line.split(":");
@@ -48,7 +51,7 @@ public class PuzzleObject {
 
             Tile tmpTile;
             FGTileContainer tmpFgt;
-            BlockContainer tmpArea = null;
+            BlockContainer tmpBlock = null;
             int i;
             int tile = place.getTileSize();
             SpriteSheet tmpSS = null;
@@ -82,21 +85,41 @@ public class PuzzleObject {
                             tmpFgt.additionalPlaces.add(new Point(Integer.parseInt(t[i]), Integer.parseInt(t[i + 1])));
                             i += 2;
                         }
-                        if (tmpArea == null) {
+                        if (tmpBlock == null) {
                             fgTiles.add(tmpFgt);
                         } else {
-                            tmpArea.containedFGTs.add(tmpFgt);
+                            tmpBlock.containedFGTs.add(tmpFgt);
                         }
                         checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), 1, 1);
                         break;
 
                     case "b":
-                        tmpArea = new BlockContainer(Integer.parseInt(t[1]) * tile,
+                        tmpBlock = new BlockContainer(Integer.parseInt(t[1]) * tile,
                                 Integer.parseInt(t[2]) * tile,
                                 Integer.parseInt(t[3]) * tile,
                                 Integer.parseInt(t[4]) * tile,
                                 Integer.parseInt(t[5]) * tile);
-                        areas.add(tmpArea);
+                        blocks.add(tmpBlock);
+                        checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
+                        break;
+
+                    case "rb":
+                        tmpBlock = new RoundBlockContainer(Integer.parseInt(t[1]) * tile,
+                                Integer.parseInt(t[2]) * tile,
+                                Integer.parseInt(t[3]) * tile,
+                                Integer.parseInt(t[4]) * tile,
+                                Integer.parseInt(t[5]) * tile);
+                        System.out.println(line + " " + t.length);
+                        ((RoundBlockContainer) tmpBlock).setCorners(new int[]{
+                            (t[7].equals("") ? 0 : Integer.parseInt(t[7])),
+                            (t[8].equals("") ? 0 : Integer.parseInt(t[8])),
+                            (t[9].equals("") ? 0 : Integer.parseInt(t[9])),
+                            (t[10].equals("") ? 0 : Integer.parseInt(t[10])),
+                            (t[11].equals("") ? 0 : Integer.parseInt(t[11])),
+                            (t[12].equals("") ? 0 : Integer.parseInt(t[12])),
+                            (t[13].equals("") ? 0 : Integer.parseInt(t[13])),
+                            (t[14].equals("") ? 0 : Integer.parseInt(t[14]))});
+                        blocks.add(tmpBlock);
                         checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
                         break;
 
@@ -154,10 +177,10 @@ public class PuzzleObject {
                 map.setTile(p.getX() + x, p.getY() + y, tc.tile);
             });
         });
-        areas.stream().forEach((area) -> {
-            Block tmpBlock = area.generateBlock(x * tileSize, y * tileSize);
-            map.addArea(tmpBlock);
-            for (FGTileContainer tile : area.containedFGTs) {
+        blocks.stream().forEach((block) -> {
+            Block tmpBlock = block.generateBlock(x * tileSize, y * tileSize);
+            map.addBlock(tmpBlock);
+            for (FGTileContainer tile : block.containedFGTs) {
                 ForegroundTile fgt = tile.generateFGT(x * tileSize, y * tileSize);
                 if (!fgt.isSimpleLighting()) {
                     map.addForegroundTileAndReplace(fgt);
@@ -225,11 +248,31 @@ public class PuzzleObject {
             xBegin = x;
             yBegin = y;
         }
-
+        
+        public int getXBegin() {
+            return xBegin;
+        }
+        
+        public int getYBegin() {
+            return yBegin;
+        }
+        
         public void addPlace(Point p) {
             additionalPlaces.add(p);
         }
 
+        public int[] getValues() {
+            return values;
+        }
+        
+        public SpriteSheet getTexture() {
+            return texture;
+        }
+        
+        public boolean getRound() {
+            return round;
+        }
+        
         //0  1 2 3       4    5      6          7
         //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
         public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round, int depth) {
@@ -275,6 +318,34 @@ public class PuzzleObject {
 
         public int getY() {
             return values[1];
+        }
+    }
+
+    protected class RoundBlockContainer extends BlockContainer {
+
+        int[] corners;
+
+        public RoundBlockContainer(int x, int y, int width, int height, int shadowHeight) {
+            super(x, y, width, height, shadowHeight);
+        }
+
+        public void setCorners(int[] corners) {
+            this.corners = corners;
+        }
+
+        public int[] getCorners() {
+            return corners;
+        }
+
+        @Override
+        public Block generateBlock(int x, int y) {
+            Block b = Block.createRound(values[0] + x, values[1] + y, values[2], values[3], values[4]);
+            for (int i = 0; i < 4; i++) {
+                if (corners[2 * i] + corners[2 * i + 1] != 0) {
+                    b.pushCorner(i, place.getTileSize(), corners[2 * i], corners[2 * i + 1]);
+                }
+            }
+            return b;
         }
     }
 }

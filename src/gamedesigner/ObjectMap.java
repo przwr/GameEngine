@@ -81,7 +81,7 @@ public class ObjectMap extends Map {
             }
         }
         foregroundTiles.clear();
-        areas.clear();
+        blocks.clear();
         GameObject object;
         for (Iterator<GameObject> iterator = objectsOnTop.iterator(); iterator.hasNext();) {
             object = iterator.next();
@@ -110,6 +110,7 @@ public class ObjectMap extends Map {
             if (lowest != null) {
                 lowest.addTile(x, y, xSheet, ySheet, tex, objPlace.isAltMode());
                 setTile(x, y, getBackground());
+                sortObjectsByDepth(foregroundTiles);
             } else {
                 Tile newtile = new Tile(tex, tileSize, xSheet, ySheet);
                 setTile(x, y, newtile);
@@ -135,7 +136,7 @@ public class ObjectMap extends Map {
                     tmp = (TemporaryBlock) tb;
                     if ((fgt = tmp.removeTile(x, y)) != null) {
                         foregroundTiles.remove(fgt);
-                        tmp.area.removeForegroundTile(fgt);
+                        tmp.block.removeForegroundTile(fgt);
                         return fgt;
                     }
                 }
@@ -205,7 +206,7 @@ public class ObjectMap extends Map {
                 repeated = fgt.getSpriteSheet();
             }
         }
-        for (Block a : areas) {
+        for (Block a : blocks) {
             map.add(a.saveToString(center.getX() * tileSize, center.getY() * tileSize, tileSize));
             for (ForegroundTile fgt : a.getTopForegroundTiles()) {
                 map.add(fgt.saveToString(repeated, center.getX() * tileSize, center.getY() * tileSize, tileSize));
