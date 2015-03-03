@@ -48,6 +48,10 @@ public class OpticProperties {
         shadows.clear();
     }
 
+    public void removeShadow(Shadow shadow) {
+        shadows.remove(shadow);
+    }
+
     public boolean isLitable() {
         return LITABLE[type];
     }

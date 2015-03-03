@@ -15,7 +15,7 @@ public class Shadow {
 
     public int type;
     public Point[] points;
-    public static final int DARK = 0, BRIGHT = 1, DARKEN = 2, BRIGHTEN = 3,
+    public static final int DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3,
             DARKEN_OBJECT = 4, BRIGHTEN_OBJECT = 5;
 
     public Shadow(int type) {

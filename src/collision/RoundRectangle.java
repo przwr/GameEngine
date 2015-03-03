@@ -7,6 +7,7 @@ package collision;
 
 import engine.Methods;
 import engine.Point;
+import game.Settings;
 import game.gameobject.GameObject;
 import java.awt.Polygon;
 import java.awt.geom.Line2D;
@@ -148,19 +149,13 @@ public class RoundRectangle extends Figure {
             polygon.addPoint(point.getX(), point.getY());
         });
 
-        // dodaje też inne punkty        
         bottomPoints.clear();
-        ///    bottomPoints.add(new Point(getX(), getY() + height - 64)); // 64 - TileSize
         corners[LEFT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
             bottomPoints.add(point);
         });
         corners[RIGHT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
             bottomPoints.add(point);
         });
-        // Point point = new Point(getX() + width, getY() + height - 64);// 64 - TileSize
-        // if (!bottomPoints.contains(point)) {
-        //   bottomPoints.add(point);
-        // }
         bottomPoints.trimToSize();
     }
 
@@ -274,7 +269,7 @@ public class RoundRectangle extends Figure {
     }
 
     public int getYRound() {
-        return FastMath.max(corners[RIGHT_TOP].getCorner().getY(), corners[LEFT_TOP].getCorner().getY());
+        return FastMath.max(corners[RIGHT_TOP].getCorner().getY(), corners[LEFT_TOP].getCorner().getY()) + height - Settings.tileSize;
     }
 
     public int getWidthRound() {
@@ -282,7 +277,7 @@ public class RoundRectangle extends Figure {
     }
 
     public int getHeightRound() {
-        return height - FastMath.max(geters[RIGHT_TOP].get().getY(), geters[LEFT_TOP].get().getY()) - FastMath.max(geters[RIGHT_BOTTOM].get().getY(), geters[LEFT_BOTTOM].get().getY());
+        return Settings.tileSize - FastMath.max(geters[RIGHT_BOTTOM].get().getY(), geters[LEFT_BOTTOM].get().getY());
     }
 
     private interface changer {

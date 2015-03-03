@@ -113,10 +113,14 @@ public abstract class Figure implements Comparable<Object> {
     public void clearShadows() {
         opticProperties.clearShadows();
     }
+    
+    public void removeShadow(Shadow shadow){
+        opticProperties.removeShadow(shadow);
+    }
 
     @Override
     public int compareTo(Object object) {/// Chech this out
-        return (getYEnd() - ((Figure) object).getYEnd()) * 10000 - ((getLightDistance() - ((Figure) object).getLightDistance()));
+        return (getYEnd() - ((Figure) object).getYEnd()) * 8192 - (getLightDistance() - ((Figure) object).getLightDistance());
     }
 
     public boolean isLittable() {

@@ -118,7 +118,6 @@ public class Settings {
 
     public static void calculateScale() {
         scale = ((int) ((resolutionHeight / 1024d / 0.25d)) * 0.25d) >= 1 ? 1 : (int) ((resolutionHeight / 1024d / 0.25d)) * 0.25d;
-//		scale = 1d;
         nativeScale = scale;
         scaled = scale != 1d;
     }
