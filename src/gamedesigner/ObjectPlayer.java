@@ -40,7 +40,7 @@ public class ObjectPlayer extends Player {
     private ObjectUI ui;
     private final SimpleKeyboard key;
 
-    private int areaHeight;
+    private int blockHeight;
     private boolean roundBlocksMode;
     private boolean paused;
 
@@ -188,7 +188,7 @@ public class ObjectPlayer extends Player {
                     }
                 } else if (mode == 1 && key.key(KEY_LSHIFT)) {
                     if (xtimer == 0 && ytimer == 0) {
-                        areaHeight = FastMath.max(0, -yPos + areaHeight);
+                        blockHeight = FastMath.max(0, -yPos + blockHeight);
                         xtimer = 1;
                         ytimer = 1;
                     }
@@ -217,11 +217,11 @@ public class ObjectPlayer extends Player {
                     int yd = (Math.abs(iy - yStop) + 1);
                     if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
                         if (roundBlocksMode) {
-                            rTmpBlock = new RoundedTMPBlock(xBegin * tileSize, yBegin * tileSize, areaHeight, yd, map);
+                            rTmpBlock = new RoundedTMPBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, yd, map);
                             objMap.addObject(rTmpBlock);
                             paused = true;
                         } else {
-                            objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, areaHeight, xd, yd, map));
+                            objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map));
                         }
                     }
                 }
@@ -296,8 +296,8 @@ public class ObjectPlayer extends Player {
             } else {
                 glColor4f(1f, 0.78f, 0f, 1f);
             }
-            int tmpH = areaHeight * tileSize;
-            if (areaHeight == 0) {
+            int tmpH = blockHeight * tileSize;
+            if (blockHeight == 0) {
                 Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
                 Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
                 Drawer.drawRectangle(0, -yd, d, yd);

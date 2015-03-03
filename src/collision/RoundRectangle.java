@@ -77,25 +77,25 @@ public class RoundRectangle extends Figure {
                 getOwner().setSimpleLighting(false);
             }
         };
-        geters[LEFT_TOP] = () -> {
+        geters[LEFT_TOP] = (Corner[] corners) -> {
             if (corners[LEFT_TOP].changes != null) {
                 return corners[LEFT_TOP].changes[CORNER];
             }
             return new Point(0, 0);
         };
-        geters[LEFT_BOTTOM] = () -> {
+        geters[LEFT_BOTTOM] = (Corner[] corners) -> {
             if (corners[LEFT_BOTTOM].changes != null) {
                 return new Point(corners[LEFT_BOTTOM].changes[CORNER].getX(), -corners[LEFT_BOTTOM].changes[CORNER].getY() + height);
             }
             return new Point(0, 0);
         };
-        geters[RIGHT_BOTTOM] = () -> {
+        geters[RIGHT_BOTTOM] = (Corner[] corners) -> {
             if (corners[RIGHT_BOTTOM].changes != null) {
                 return new Point(-corners[RIGHT_BOTTOM].changes[CORNER].getX() + width, -corners[RIGHT_BOTTOM].changes[CORNER].getY() + height);
             }
             return new Point(0, 0);
         };
-        geters[RIGHT_TOP] = () -> {
+        geters[RIGHT_TOP] = (Corner[] corners) -> {
             if (corners[RIGHT_TOP].changes != null) {
                 return new Point(-corners[RIGHT_TOP].changes[CORNER].getX() + width, corners[RIGHT_TOP].changes[CORNER].getY());
             }
@@ -170,7 +170,7 @@ public class RoundRectangle extends Figure {
     }
 
     public Point getPushValueOfCorner(int corner) {
-        return geters[corner].get();
+        return geters[corner].get(corners);
     }
 
     @Override
@@ -273,7 +273,7 @@ public class RoundRectangle extends Figure {
     }
 
     public int getWidthRound() {
-        return width - FastMath.max(geters[LEFT_BOTTOM].get().getX(), geters[LEFT_TOP].get().getX()) - FastMath.max(geters[RIGHT_BOTTOM].get().getX(), geters[RIGHT_TOP].get().getX());
+        return width - FastMath.max(geters[LEFT_BOTTOM].get(corners).getX(), geters[LEFT_TOP].get(corners).getX()) - FastMath.max(geters[RIGHT_BOTTOM].get(corners).getX(), geters[RIGHT_TOP].get(corners).getX());
     }
 
     public int getHeightRound() {
@@ -292,7 +292,7 @@ public class RoundRectangle extends Figure {
 
     private interface geter {
 
-        Point get();
+        Point get(Corner[] corners);
     }
 
     private class Corner {

@@ -67,7 +67,7 @@ public class ForegroundTile extends Tile {
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
     }
-
+    
     public String saveToStringAsTile(SpriteSheet s, int xBegin, int yBegin, int tile) {
         String txt = "t:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);

@@ -29,7 +29,7 @@ public class Map {
 
     protected Color color;
     protected final Tile[] tiles;
-    protected final ArrayList<Block> areas = new ArrayList<>();
+    protected final ArrayList<Block> blocks = new ArrayList<>();
     protected final String name;
     protected final int width, height, tileSize;
     protected final int widthInTiles, heightInTiles;
@@ -112,12 +112,12 @@ public class Map {
         visibleLights.clear();
     }
 
-    public void addArea(Block area) {
-        areas.add(area);
+    public void addBlock(Block block) {
+        blocks.add(block);
     }
 
-    public void deleteArea(Block area) {
-        areas.remove(area);
+    public void deleteBlock(Block block) {
+        blocks.remove(block);
     }
 
     public void addObject(GameObject object) {
@@ -291,7 +291,7 @@ public class Map {
         flatObjects.clear();
         emitters.clear();
         visibleLights.clear();
-        areas.clear();
+        blocks.clear();
         depthObjects.clear();
         foregroundTiles.clear();
         objectsOnTop.clear();
@@ -341,8 +341,8 @@ public class Map {
         return Collections.unmodifiableList(flatMobs);
     }
 
-    public Collection<Block> getAreas() {
-        return Collections.unmodifiableList(areas);
+    public Collection<Block> getBlocks() {
+        return Collections.unmodifiableList(blocks);
     }
 
     public Collection<GameObject> getSolidObjects() {
