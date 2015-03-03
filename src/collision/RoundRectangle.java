@@ -277,7 +277,7 @@ public class RoundRectangle extends Figure {
     }
 
     public int getHeightRound() {
-        return Settings.tileSize - FastMath.max(geters[RIGHT_BOTTOM].get().getY(), geters[LEFT_BOTTOM].get().getY());
+        return Settings.tileSize   - FastMath.max(geters[RIGHT_BOTTOM].get(corners).getY(), geters[LEFT_BOTTOM].get(corners).getY());
     }
 
     private interface changer {
