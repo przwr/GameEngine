@@ -36,7 +36,7 @@ public class ShadowRenderer {
     private static final Shadow shadow0 = new Shadow(0), shadow1 = new Shadow(1);
     private static final ArrayList<Shadow> shadowsDarken = new ArrayList<>(), shadowsBrighten = new ArrayList<>();
     private static final renderShadow[] shads = new renderShadow[6];
-    private static float lightOwnerHeightHalf;
+    private static float lightOwnerHeightHalf, lightOwnerWidthHalf;
     private static boolean isChecked;
     private static final Polygon polygon = new Polygon();
 
@@ -47,56 +47,99 @@ public class ShadowRenderer {
         glDisable(GL_TEXTURE_2D);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
 
-        lightOwnerHeightHalf = (float) (emitter.getOwnerCollisionHeight() / 2);
-        shades.stream().forEach((shade) -> {	//iteracja po Shades - tych co dają cień
-            if (shade != emitter.getOwnerCollision()) {
-                if (shade.isGiveShadow()) {
-                    calculateShadow(emitter, shade);
+        lightOwnerHeightHalf = emitter.getOwnerCollisionHeight() / 2;
+        lightOwnerWidthHalf = emitter.getOwnerCollisionWidth() / 2;
+        shades.stream().forEach((shaded) -> {
+            if (shaded != emitter.getOwnerCollision()) {
+                if (shaded.isGiveShadow()) {
+                    calculateShadow(emitter, shaded);
                     drawShadow(emitter);
-                    calculateWalls(shade, emitter);
+                    calculateWalls(shaded, emitter);
                 }
-                // modyfikacja odcienia
-                int modifirer = 0;
-                float sec = 1.0f;
-                if (shade instanceof RoundRectangle) {
-                    RoundRectangle rr = (RoundRectangle) shade;
-                    if (rr.getX() > emitter.getX()) {
-                        if (rr.isLeftBottomRound()) {
-                            modifirer = Settings.tileSize;
-                        }
-                    } else if (rr.getXEnd() < emitter.getX()) {
-                        if (rr.isRightBottomRound()) {
-                            modifirer = Settings.tileSize;
-                        }
-                    }
-                }
-
-                if (shade.isLittable() && emitter.getY() >= shade.getYEnd() - modifirer) {
-                    shade.setShadowColor(sec * (emitter.getY() - shade.getYEnd() + modifirer) / lightOwnerHeightHalf);
-                    shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()),
-                            (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade.getShadowColor(), shade);
-                    shade.addShadow(shadow1);
-                } else {
-                    shade.addShadow(shadow0);
-                }
+                calculateShadowShade(shaded, emitter);
             } else {
-                shade.setShadowColor(1);
-                shade.addShadow(shadow1);
+                shaded.setShadowColor(1);
+                shaded.addShadow(shadow1);
             }
-        });
-
-        for (Figure shade : shades) {
-            solveShadows(shade);
-            shade.getShadows().stream().forEach((shadowShade) -> {
-                shads[shadowShade.type].render(emitter, shade, shadowShade.points);
-            });
-            shade.clearShadows();
         }
+        );
+
+        for (Figure shaded : shades) {
+            solveShadows(shaded);
+            shaded.getShadows().stream().forEach((shadowShade) -> {
+                shads[shadowShade.type].render(emitter, shaded, shadowShade.points);
+            });
+            shaded.clearShadows();
+        }
+
         glEnable(GL_TEXTURE_2D);
         glColor3f(1f, 1f, 1f);
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         emitter.render(displayHeight - emitter.getHeight());
         emitter.getFrameBufferObject().deactivate();
+    }
+
+    private static void calculateShadowShade(Figure shaded, Light emitter) {
+        if (shaded.isLittable()) {
+            if (shaded instanceof RoundRectangle) {
+                calculateRoundShade((RoundRectangle) shaded, emitter);
+            } else {
+                calculateRegularShade(shaded, emitter);
+            }
+        } else {
+            shaded.setShadowColor(0);
+            shaded.addShadow(shadow0);
+        }
+    }
+
+    private static void calculateRoundShade(RoundRectangle shaded, Light emitter) {
+        if (isRoundInLightSetColor(shaded, emitter)) {
+            shaded.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()),
+                    (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shaded.getShadowColor(), shaded);
+            shaded.addShadow(shadow1);
+        } else {
+            shaded.setShadowColor(0);
+            shaded.addShadow(shadow0);
+        }
+    }
+
+    private static boolean isRoundInLightSetColor(RoundRectangle shaded, Light emitter) {
+        if (shaded.isLeftBottomRound()) {
+            if (emitter.getY() > shaded.getYRound() - shaded.getXRound() + emitter.getX()) {
+                float colr = (float) ((((float) (FastMath.abs(emitter.getX() - emitter.getY() + shaded.getYRound() - shaded.getXRound()))) / 1.414213562f) / FastMath.sqrt(lightOwnerHeightHalf * lightOwnerHeightHalf + lightOwnerWidthHalf * lightOwnerWidthHalf));
+                shaded.setShadowColor(colr);
+                return true;
+            } else {
+                return false;
+            }
+        } else if (shaded.isRightBottomRound()) {
+            if (emitter.getY() > shaded.getYRound() + shaded.getXRound() + Settings.tileSize - emitter.getX()) {
+                float colr = (float) ((((float) (FastMath.abs(-emitter.getX() - emitter.getY() + shaded.getXRound() + Settings.tileSize + shaded.getYRound()))) / 1.414213562f) / FastMath.sqrt(lightOwnerHeightHalf * lightOwnerHeightHalf + lightOwnerWidthHalf * lightOwnerWidthHalf));
+                //     System.out.println(colr);
+                shaded.setShadowColor(colr);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (emitter.getY() >= shaded.getYEnd()) {
+                shaded.setShadowColor((emitter.getY() - shaded.getYEnd()) / lightOwnerHeightHalf);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private static void calculateRegularShade(Figure shaded, Light emitter) {
+        if (emitter.getY() >= shaded.getYEnd()) {
+            shaded.setShadowColor((emitter.getY() - shaded.getYEnd()) / lightOwnerHeightHalf);
+            shaded.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()),
+                    (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shaded.getShadowColor(), shaded);
+            shaded.addShadow(shadow1);
+        } else {
+            shaded.addShadow(shadow0);
+        }
     }
 
     private static void solveShadows(Figure shaded) {
