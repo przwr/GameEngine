@@ -177,6 +177,10 @@ public class ObjectPlayer extends Player {
 
             if (mode == 0) {
                 ui.setChange(key.key(KEY_LSHIFT));
+                roundBlocksMode = false;
+            }
+            if (mode == 1 && key.keyPressed(KEY_R)) {
+                roundBlocksMode = !roundBlocksMode;
             }
 
             if (xPos != 0 || yPos != 0) {
@@ -196,11 +200,8 @@ public class ObjectPlayer extends Player {
                     move(xPos, yPos);
                 }
             }
-            if (mode == 1 && key.keyPressed(KEY_R)) {
-                roundBlocksMode = !roundBlocksMode;
-            }
 
-            if (key.keyPressed(KEY_SPACE)) {
+            if (key.keyPressed(KEY_SPACE) || key.keyPressed(KEY_LMENU)) {
                 int xBegin = Math.min(ix, xStop);
                 int yBegin = Math.min(iy, yStop);
                 int xEnd = Math.max(ix, xStop);
@@ -209,7 +210,7 @@ public class ObjectPlayer extends Player {
                     for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
                         for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
                             Point p = ui.getCoordinates();
-                            objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet());
+                            objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
                         }
                     }
                 } else if (mode == 1) {
@@ -255,10 +256,16 @@ public class ObjectPlayer extends Player {
         } else if (paused) {
             if (roundBlocksMode) {
                 if (key.keyPressed(KEY_UP)) {
-                    rTmpBlock.changeUpperState();
+                    rTmpBlock.changeLowerState(-1);
                 }
                 if (key.keyPressed(KEY_DOWN)) {
-                    rTmpBlock.changeLowerState();
+                    rTmpBlock.changeLowerState(1);
+                }
+                if (key.keyPressed(KEY_LEFT)) {
+                    rTmpBlock.changeUpperState(-1);
+                }
+                if (key.keyPressed(KEY_RIGHT)) {
+                    rTmpBlock.changeUpperState(1);
                 }
                 if (key.keyPressed(KEY_RETURN) || key.keyPressed(KEY_SPACE)) {
                     paused = false;

@@ -86,12 +86,13 @@ public class ObjectMap extends Map {
         for (Iterator<GameObject> iterator = objectsOnTop.iterator(); iterator.hasNext();) {
             object = iterator.next();
             if (object instanceof TemporaryBlock) {
+                ((TemporaryBlock) object).clear();
                 iterator.remove();
             }
         }
     }
 
-    public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex) {
+    public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altmode) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
             tile.addTileToStack(xSheet, ySheet);
@@ -108,7 +109,7 @@ public class ObjectMap extends Map {
                 }
             }
             if (lowest != null) {
-                lowest.addTile(x, y, xSheet, ySheet, tex, objPlace.isAltMode());
+                lowest.addTile(x, y, xSheet, ySheet, tex, altmode);
                 setTile(x, y, getBackground());
                 sortObjectsByDepth(foregroundTiles);
             } else {
@@ -164,7 +165,7 @@ public class ObjectMap extends Map {
             if (go instanceof TemporaryBlock) {
                 TemporaryBlock tb = (TemporaryBlock) go;
                 if (tb.checkCollision(x, y, width, height)) {
-                    tb.clearMyself();
+                    tb.decompose();
                     deleteObject((GameObject) go);
                 }
             }

@@ -197,14 +197,13 @@ public class Block extends GameObject {
 
     //b:x:y:width:height:shadowHeight:round
     public String saveToString(int xBegin, int yBegin, int tile) {
-        System.out.println(collision);
         String ret = ((collision instanceof RoundRectangle) ? "rb:" : "b:") + ((int) (x - xBegin) / tile) + ":" + ((int) (y - yBegin) / tile) + ":"
                 + (collision.width / tile) + ":" + (collision.height / tile) + ":" + (collision.getShadowHeight() / tile) + ":"
                 + (simpleLighting ? "0" : "1");
         if (collision instanceof RoundRectangle) {
             for (int i = 0; i < 4; i++) {
                 Point tmp = getPushValueOfCorner(i);
-                ret += ":" + (tmp.getX() > 0 ? tmp.getX() : "") + ":" + (tmp.getY() > 0 ? tmp.getY() : "");
+                ret += ":" + (tmp.getX() != 0 ? tmp.getX() : "") + ":" + (tmp.getY() != 0 ? tmp.getY() : "");
             }
             ret += ":0";
         }

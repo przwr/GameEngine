@@ -54,18 +54,17 @@ public class ObjectPO extends PuzzleObject {
                         map);
             }
             map.addObject(tmp);
-            for (FGTileContainer tile : block.getForegroundTiles()) {
+            block.getForegroundTiles().stream().forEach((tile) -> {
                 tmp.addTile(tile.generateFGT(x * tileSize, y * tileSize));
-//                ForegroundTile fgt = tmp.addTile(tile.getXBegin() / tileSize + x, tile.getYBegin() / tileSize + y, 
-//                        tile.getValues()[1], tile.getValues()[2], tile.getTexture(), true);
-//                fgt.setSimpleLighting(!tile.getRound());
-            }
+            });
 
             if (block instanceof RoundBlockContainer) {
                 int[] corners = ((RoundBlockContainer) block).getCorners();
+                RoundedTMPBlock roundedTmp = (RoundedTMPBlock) tmp;
                 for (int i = 0; i < 4; i++) {
                     if (corners[2 * i] + corners[2 * i + 1] != 0) {
-                        ((RoundedTMPBlock) tmp).pushCorner(i, corners[2 * i], corners[2 * i + 1]);
+                        roundedTmp.pushCorner(i, corners[2 * i], corners[2 * i + 1]);
+                        roundedTmp.setStates(i, corners[2 * i], corners[2 * i + 1]);
                     }
                 }
             }
@@ -80,7 +79,7 @@ public class ObjectPO extends PuzzleObject {
             int xStart = tmp.getX() / tileSize;
             int yStart = tmp.getY() / tileSize;
             while ((p = tmp.popTileFromStackBack()) != null) {
-                objMap.addTile(xStart, yStart, p.getX(), p.getY(), tex);
+                objMap.addTile(xStart, yStart, p.getX(), p.getY(), tex, false);
             }
         });
     }

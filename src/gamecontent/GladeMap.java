@@ -51,7 +51,7 @@ public class GladeMap extends Map {
             block1.addForegroundTile(fg);
             addForegroundTile(fg, 9 * tileSize, 7 * tileSize, tileSize);
             block1.pushCorner(RoundRectangle.RIGHT_BOTTOM, tileSize, 18, 18);
-            areas.add(block1);
+            blocks.add(block1);
         }
 
         {

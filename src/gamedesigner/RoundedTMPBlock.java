@@ -26,11 +26,13 @@ public class RoundedTMPBlock extends TemporaryBlock {
 
     private int upperState;
     private int lowerState;
+    protected boolean complete;
 
     public RoundedTMPBlock(int x, int y, int upHeight, int height, Map map) {
         super(x, y, upHeight, 1, height, map);
         this.upperState = 0;
         this.lowerState = 0;
+        complete = false;
     }
 
     @Override
@@ -58,19 +60,74 @@ public class RoundedTMPBlock extends TemporaryBlock {
 
     public void pushCorner(int corner, int xDelta, int yDelta) {
         block.pushCorner(corner, tile, xDelta, yDelta);
+        complete = true;
     }
-    
-    public void changeUpperState() {
-        upperState++;
-        if (upperState == 7) {
+
+    public void changeUpperState(int change) {
+        upperState += change;
+        if (upperState > 6) {
             upperState = 0;
+        } else if (upperState < 0) {
+            upperState = 6;
         }
     }
 
-    public void changeLowerState() {
-        lowerState++;
-        if (lowerState == 7) {
+    public void changeLowerState(int change) {
+        lowerState += change;
+        if (lowerState > 6) {
             lowerState = 0;
+        } else if (lowerState < 0) {
+            lowerState = 6;
+        }
+    }
+
+    public void setStates(int corner, int xChange, int yChange) {
+        int sum = xChange + yChange;
+        switch (corner) {
+            case 0:
+                if (upperState == 0) {
+                    if (sum == tile) {
+                        upperState = 5;
+                    } else if (sum > tile) {
+                        upperState = 6;
+                    } else {
+                        upperState = 4;
+                    }
+                }
+                break;
+            case 1:
+                if (lowerState == 0) {
+                    if (sum == tile) {
+                        lowerState = 5;
+                    } else if (sum > tile) {
+                        lowerState = 6;
+                    } else {
+                        lowerState = 4;
+                    }
+                }
+                break;
+            case 2:
+                if (lowerState == 0) {
+                    if (sum == tile) {
+                        lowerState = 2;
+                    } else if (sum > tile) {
+                        lowerState = 3;
+                    } else {
+                        lowerState = 1;
+                    }
+                }
+                break;
+            case 3:
+                if (upperState == 0) {
+                    if (sum == tile) {
+                        upperState = 2;
+                    } else if (sum > tile) {
+                        upperState = 3;
+                    } else {
+                        upperState = 1;
+                    }
+                }
+                break;
         }
     }
 
@@ -115,6 +172,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
                 block.pushCorner(RoundRectangle.LEFT_BOTTOM, tile, (int) (tile * 0.707), (int) (tile * 0.707));
                 break;
         }
+        complete = true;
     }
 
     @Override
@@ -208,6 +266,21 @@ public class RoundedTMPBlock extends TemporaryBlock {
                             Drawer.drawBow(-tile + d, -height - tmpH + d, tile - 1, d + 1, 0, 90, 10);
                             break;
                     }
+                }
+                if (!complete) {
+                    glColor3f(1f, 1f, 1f);
+                    Drawer.returnToCentralPoint();
+                    Drawer.drawLineWidth(-tile / 2 + d, -height - tmpH - tile / 2 - d, tile / 3, tile / 3, 2 * d);
+                    Drawer.drawLineWidth(0, 0, -tile / 3, tile / 3, 2 * d);
+                    Drawer.returnToCentralPoint();
+                    Drawer.drawLineWidth(-tile / 2 + d, tile / 2 + d, tile / 3, -tile / 3, 2 * d);
+                    Drawer.drawLineWidth(0, 0, -tile / 3, -tile / 3, 2 * d);
+                    Drawer.returnToCentralPoint();
+                    Drawer.drawLineWidth(-tile * 3 / 2 + d, -height - tmpH + tile / 2 - d, tile / 3, tile / 3, 2 * d);
+                    Drawer.drawLineWidth(0, 0, tile / 3, -tile / 3, 2 * d);
+                    Drawer.returnToCentralPoint();
+                    Drawer.drawLineWidth(tile / 2, -height - tmpH + tile / 2 - d, -tile / 3, tile / 3, 2 * d);
+                    Drawer.drawLineWidth(0, 0, -tile / 3, -tile / 3, 2 * d);
                 }
             }
         }

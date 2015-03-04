@@ -114,6 +114,7 @@ public class GUIHandler extends GUIObject {
                 Keyboard.getEventKey();
             }
             firstLoop = false;
+            return;
         }
         text = Methods.editWithKeyboard(text);
         Drawer.renderString("Write filename: " + text, (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),

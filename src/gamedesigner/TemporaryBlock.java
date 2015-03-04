@@ -32,7 +32,6 @@ public class TemporaryBlock extends GameObject {
     protected final int upHeight, xTiles, yTiles;
     protected final ObjectPlace objPlace;
     protected final ObjectMap objMap;
-    protected boolean complete;
 
     protected Block block;
     protected ArrayList<ForegroundTile> tiles;
@@ -116,13 +115,13 @@ public class TemporaryBlock extends GameObject {
         return !(x > xEnd || x < xBegin || y > yEnd || y < yBegin);
     }
 
-    public ForegroundTile addTile(ForegroundTile fgt) {        
+    public ForegroundTile addTile(ForegroundTile fgt) {
         map.addForegroundTile(fgt);
         tiles.add(fgt);
         block.addForegroundTile(fgt);
         return fgt;
     }
-    
+
     public ForegroundTile addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean addNew) {
         int yBegin = (int) (this.y / tile) - upHeight;
         int yEnd = yBegin + yTiles + upHeight - 1;
@@ -177,14 +176,16 @@ public class TemporaryBlock extends GameObject {
                     t = map.getTile(ix, iy);
                     if (t != null && t.getPureDepth() != -1) {
                         p = t.popTileFromStackBack();
-                        fgt = createTile(t.getSpriteSheet(), iy, tile, p.getX(), p.getY(), level);
-                        while ((p = t.popTileFromStackBack()) != null) {
-                            fgt.addTileToStack(p.getX(), p.getY());
+                        if (p != null) {
+                            fgt = createTile(t.getSpriteSheet(), iy, tile, p.getX(), p.getY(), level);
+                            while ((p = t.popTileFromStackBack()) != null) {
+                                fgt.addTileToStack(p.getX(), p.getY());
+                            }
+                            map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, level * tile);
+                            tiles.add(fgt);
+                            block.addForegroundTile(fgt);
+                            objMap.removeTile(ix, iy);
                         }
-                        map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, level * tile);
-                        tiles.add(fgt);
-                        block.addForegroundTile(fgt);
-                        objMap.removeTile(ix, iy);
                     }
                 }
                 level++;
@@ -193,7 +194,7 @@ public class TemporaryBlock extends GameObject {
         map.addBlock(block);
     }
 
-    public void clearMyself() {
+    public void decompose() {
         tiles.stream().forEach((fgt) -> {
             Point p = fgt.popTileFromStackBack();
             Tile t = new Tile(fgt.getSpriteSheet(), tile, p.getX(), p.getY());
@@ -204,6 +205,11 @@ public class TemporaryBlock extends GameObject {
             map.setTile(fgt.getX() / tile, fgt.getY() / tile, t);
         });
         map.deleteBlock(block);
+        tiles.clear();
+        block = null;
+    }
+    
+    public void clear() {
         tiles.clear();
         block = null;
     }
