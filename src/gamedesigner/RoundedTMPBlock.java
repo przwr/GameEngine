@@ -36,7 +36,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
     }
 
     @Override
-    protected ForegroundTile createTile(SpriteSheet texture, int y, int tile, int xSheet, int ySheet, int level) {
+    protected ForegroundTile createTile(SpriteSheet texture, int y, int tile, int xSheet, int ySheet, int level, boolean altMode) {
         ForegroundTile fgt;
         int alt = objPlace.isAltMode() ? 0 : 1;
         if (level + 1 - alt <= upHeight) {
@@ -178,6 +178,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
     @Override
     public void createBlock() {
         block = Block.createRound((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
+        map.addBlock(block);
     }
 
     @Override

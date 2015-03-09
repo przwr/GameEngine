@@ -21,7 +21,6 @@ import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.input.Keyboard.*;
-import org.newdawn.slick.Color;
 
 /**
  *
@@ -219,10 +218,10 @@ public class ObjectPlayer extends Player {
                     if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
                         if (roundBlocksMode) {
                             rTmpBlock = new RoundedTMPBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, yd, map);
-                            objMap.addObject(rTmpBlock);
+                            objMap.addObject(rTmpBlock, key.key(KEY_LMENU));
                             paused = true;
                         } else {
-                            objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map));
+                            objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map), key.key(KEY_LMENU));
                         }
                     }
                 }
@@ -262,10 +261,10 @@ public class ObjectPlayer extends Player {
                     rTmpBlock.changeLowerState(1);
                 }
                 if (key.keyPressed(KEY_LEFT)) {
-                    rTmpBlock.changeUpperState(-1);
+                    rTmpBlock.changeUpperState(1);
                 }
                 if (key.keyPressed(KEY_RIGHT)) {
-                    rTmpBlock.changeUpperState(1);
+                    rTmpBlock.changeUpperState(-1);
                 }
                 if (key.keyPressed(KEY_RETURN) || key.keyPressed(KEY_SPACE)) {
                     paused = false;
@@ -317,7 +316,7 @@ public class ObjectPlayer extends Player {
                 Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd - d);
             }
         }
-        if (objPlace.isAltMode()) {
+        if (key.key(KEY_LMENU)) {
             Drawer.returnToCentralPoint();
             Drawer.drawRing(-tileSize / 3, -tileSize / 3, tileSize / 5, d, 10);
         }

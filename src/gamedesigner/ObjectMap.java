@@ -14,7 +14,6 @@ import game.place.Place;
 import game.place.Tile;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.lwjgl.input.Keyboard;
 import sprites.SpriteSheet;
 
 /**
@@ -176,10 +175,9 @@ public class ObjectMap extends Map {
         centralPoint.setCentralPoint(x, y);
     }
 
-    @Override
-    public void addObject(GameObject object) {
+    public void addObject(GameObject object, boolean altMode) {
         if (object instanceof TemporaryBlock) {
-            if (!objPlace.isAltMode()) {
+            if (!altMode) {
                 ((TemporaryBlock) object).changeEnvironment();
             }
         }
