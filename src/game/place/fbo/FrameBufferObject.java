@@ -8,7 +8,7 @@ public abstract class FrameBufferObject {
 	public static final int NATIVE = 0, ARB = 1, EXT = 2;
 	public static final FrameBufferType REGULAR_NATIVE = new RegularNative();
 	public static final FrameBufferType REGULAR_ARB = new RegularARB();
-	public static final FrameBufferType REGULAR_EXT = new RegularNative();
+	public static final FrameBufferType REGULAR_EXT = new RegularEXT();
 	public static final FrameBufferType MULTISAMPLE_NATIVE = new MultisampleNative();
 	public static final FrameBufferType MULTISAMPLE_ARB = new MultisampleARB();
 	public static final FrameBufferType MULTISAMPLE_EXT = new MultisampleEXT();

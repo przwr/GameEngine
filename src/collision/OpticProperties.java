@@ -5,7 +5,6 @@
  */
 package collision;
 
-import game.place.ForegroundTile;
 import game.place.Shadow;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +24,6 @@ public class OpticProperties {
     private int lightDistance;
     private float shadowColor;
     private final ArrayList<Shadow> shadows = new ArrayList<>();
-    private static ForegroundTile foregroundTile;
 
     public static OpticProperties create(int type, int shadowHeight) {
         return new OpticProperties(type, shadowHeight);

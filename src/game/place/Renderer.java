@@ -20,7 +20,7 @@ import org.newdawn.slick.Color;
  * @author przemek
  */
 public class Renderer {
-
+    
     private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), halfDisplayWidth = (displayWidth / 2), halfDisplayHeight = (displayHeight / 2);
     private static FrameBufferObject frame;
     private static final int[] xStart = new int[7], xEnd = new int[7], yStart = new int[7], yEnd = new int[7];
@@ -30,7 +30,7 @@ public class Renderer {
     private static Camera camera;
     private static final drawBorder[] borders = new drawBorder[5];
     private static final resetOrtho[] orthos = new resetOrtho[5];
-
+    
     public static void findVisibleLights(Map map, int playersLength) {
         Place place = map.place;
         readyVarsToFindLights(map);
@@ -41,19 +41,25 @@ public class Renderer {
                         if (tempLight.isEmits() && yStart[2 + playersLength] <= tempLight.getY() + (tempLight.getYEdge()) && yEnd[2 + playersLength] >= tempLight.getY() - (tempLight.getYEdge())
                                 && xStart[2 + playersLength] <= tempLight.getX() + (tempLight.getXEdge()) && xEnd[2 + playersLength] >= tempLight.getX() - (tempLight.getXEdge())) {
                             visible = true;
-                            place.cameras[playersLength - 2].addVisibleLight(tempLight);
+                            if (!place.cameras[playersLength - 2].getVisibleLights().contains(tempLight)) {
+                                place.cameras[playersLength - 2].addVisibleLight(tempLight);
+                            }
                         }
                     } else {
                         for (int pi = 0; pi < playersLength; pi++) {
                             if (place.players[pi].getMap() == map && tempLight.isEmits() && yStart[pi] <= tempLight.getY() + (tempLight.getYEdge()) && yEnd[pi] >= tempLight.getY() - (tempLight.getYEdge())
                                     && xStart[pi] <= tempLight.getX() + (tempLight.getXEdge()) && xEnd[pi] >= tempLight.getX() - (tempLight.getXEdge())) {
                                 visible = true;
-                                (((Player) place.players[pi]).getCamera()).addVisibleLight(tempLight);
+                                if (!(((Player) place.players[pi]).getCamera()).getVisibleLights().contains(tempLight)) {
+                                    (((Player) place.players[pi]).getCamera()).addVisibleLight(tempLight);
+                                }
                             }
                         }
                     }
                     if (visible) {
-                        map.addVisibleLight(tempLight);
+                        if (!map.getVisibleLights().contains(tempLight)) {
+                            map.addVisibleLight(tempLight);
+                        }
                         visible = false;
                     }
                 }
@@ -67,26 +73,32 @@ public class Renderer {
                         if (light.isEmits() && yStart[2 + playersLength] <= light.getY() + (light.getYEdge()) && yEnd[2 + playersLength] >= light.getY() - (light.getYEdge())
                                 && xStart[2 + playersLength] <= light.getX() + (light.getXEdge()) && xEnd[2 + playersLength] >= light.getX() - (light.getXEdge())) {
                             visible = true;
-                            place.cameras[playersLength - 2].addVisibleLight(light);
+                            if (!place.cameras[playersLength - 2].getVisibleLights().contains(light)) {
+                                place.cameras[playersLength - 2].addVisibleLight(light);
+                            }
                         }
                     } else {
                         for (int pi = 0; pi < playersLength; pi++) {
                             if (place.players[pi].getMap() == map && light.isEmits() && yStart[pi] <= light.getY() + (light.getYEdge()) && yEnd[pi] >= light.getY() - (light.getYEdge())
                                     && xStart[pi] <= light.getX() + (light.getXEdge()) && xEnd[pi] >= light.getX() - (light.getXEdge())) {
                                 visible = true;
-                                (((Player) place.players[pi]).getCamera()).addVisibleLight(light);
+                                if (!(((Player) place.players[pi]).getCamera()).getVisibleLights().contains(light)) {
+                                    (((Player) place.players[pi]).getCamera()).addVisibleLight(light);
+                                }
                             }
                         }
                     }
                     if (visible) {
-                        map.addVisibleLight(light);
+                        if (!map.getVisibleLights().contains(light)) {
+                            map.addVisibleLight(light);
+                        }
                         visible = false;
                     }
                 }
             }
         }
     }
-
+    
     private static void readyVarsToFindLights(Map map) {
         Place place = map.place;
         for (int p = 0; p < place.getPlayersCount(); p++) {
@@ -111,7 +123,7 @@ public class Renderer {
         }
         map.clearVisibleLights();
     }
-
+    
     public static void preRendLights(Map map) {
         if (!Settings.shadowOff) {
             map.getVisibleLights().stream().filter((light) -> (light.isGiveShadows())).forEach((light) -> {
@@ -119,13 +131,12 @@ public class Renderer {
             });
         }
     }
-
+    
     public static void preRenderShadowedLights(Place place, Camera cam) {
         frame.activate();
         glClear(GL_COLOR_BUFFER_BIT);
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
-        int i = 0;
         cam.getVisibleLights().stream().forEach((light) -> {
             if (Settings.shadowOff || !light.isGiveShadows()) {
                 light.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
@@ -135,7 +146,7 @@ public class Renderer {
         });
         frame.deactivate();
     }
-
+    
     public static void drawLight(Light light, Camera cam) {
         glPushMatrix();
         glTranslated(cam.getXOffsetEffect(), cam.getYOffsetEffect(), 0);
@@ -146,7 +157,7 @@ public class Renderer {
         renderLightPiece(light);
         glPopMatrix();
     }
-
+    
     private static void renderLightPiece(Light light) {
         lightX = light.getWidth();
         lightY = light.getHeight();
@@ -162,7 +173,7 @@ public class Renderer {
         glVertex2f(0, lightY);
         glEnd();
     }
-
+    
     public static void renderLights(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
         lightBrightness = FastMath.max(color.r, FastMath.max(color.g, color.b));
         lightStrength = 6 - (int) (10 * lightBrightness);
@@ -179,7 +190,7 @@ public class Renderer {
             drawTexture(frame.getTexture(), displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
         }
     }
-
+    
     private static void drawTexture(int textureHandle, float w, float h, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
         glPushMatrix();
         glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -195,7 +206,7 @@ public class Renderer {
         glEnd();
         glPopMatrix();
     }
-
+    
     public static void initializeVariables() {
         ShadowRenderer.initializeRenderer();
         frame = new RegularFrameBufferObject(displayWidth, displayHeight);
@@ -217,7 +228,7 @@ public class Renderer {
         };
         initializeBorders();
     }
-
+    
     private static void initializeBorders() {
         borders[2] = () -> {
             glBegin(GL_QUADS);
@@ -261,7 +272,7 @@ public class Renderer {
             glVertex2f(halfDisplayWidth + 1, 0);
             glEnd();
         };
-
+        
         orthos[0] = () -> {
             glOrtho(-1.0, 1.0, -2.0, 2.0, 1.0, -1.0);
         };
@@ -272,7 +283,7 @@ public class Renderer {
             glOrtho(-2.0, 2.0, -2.0, 2.0, 1.0, -1.0);
         };
     }
-
+    
     public static void border(int splitScreenMode) {
         glViewport(0, 0, displayWidth, displayHeight);
         if (splitScreenMode != 0) {
@@ -281,23 +292,23 @@ public class Renderer {
             borders[splitScreenMode - 1].draw();
         }
     }
-
+    
     public static void resetOrtho(int ssMode) {
         if (ssMode != 0) {
             orthos[ssMode - 1].reset();
         }
     }
-
+    
     private interface drawBorder {
-
+        
         void draw();
     }
-
+    
     private Renderer() {
     }
-
+    
     private interface resetOrtho {
-
+        
         void reset();
     }
 }

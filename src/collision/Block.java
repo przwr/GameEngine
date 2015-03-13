@@ -68,9 +68,9 @@ public class Block extends GameObject {
         top.remove(foregroundTile.getCollision());
     }
 
-    public void pushCorner(int corner, int tileSize, int xChange, int yChange) {
+    public void pushCorner(int corner, int xChange, int yChange) {
         if (collision instanceof RoundRectangle) {
-            ((RoundRectangle) collision).pushCorner(corner, tileSize, xChange, yChange);
+            ((RoundRectangle) collision).pushCorner(corner, xChange, yChange);
         }
     }
 
@@ -110,7 +110,6 @@ public class Block extends GameObject {
                 } else {
                     Drawer.drawShapeInShade(wall, color);
                 }
-
             });
 
         }

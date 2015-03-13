@@ -247,15 +247,15 @@ public class PuzzleObject {
             xBegin = x;
             yBegin = y;
         }
-        
+
         public int getXBegin() {
             return xBegin;
         }
-        
+
         public int getYBegin() {
             return yBegin;
         }
-        
+
         public void addPlace(Point p) {
             additionalPlaces.add(p);
         }
@@ -263,15 +263,15 @@ public class PuzzleObject {
         public int[] getValues() {
             return values;
         }
-        
+
         public SpriteSheet getTexture() {
             return texture;
         }
-        
+
         public boolean getRound() {
             return round;
         }
-        
+
         //0  1 2 3       4    5      6          7
         //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
         public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round, int depth) {
@@ -341,7 +341,7 @@ public class PuzzleObject {
             Block b = Block.createRound(values[0] + x, values[1] + y, values[2], values[3], values[4]);
             for (int i = 0; i < 4; i++) {
                 if (corners[2 * i] + corners[2 * i + 1] != 0) {
-                    b.pushCorner(i, place.getTileSize(), corners[2 * i], corners[2 * i + 1]);
+                    b.pushCorner(i, corners[2 * i], corners[2 * i + 1]);
                 }
             }
             return b;

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import net.jodk.lang.FastMath;
 
 /**
  *
@@ -31,49 +30,50 @@ public class RoundRectangle extends Figure {
     private Corner[] corners = new Corner[4];
     private Polygon polygon = new Polygon();
     private ArrayList<Point> bottomPoints = new ArrayList<>(3);
+    private boolean concave, triangular;
 
     {
-        changers[LEFT_TOP] = (int tileSize, int xChange, int yChange) -> {
-            corners[LEFT_TOP].changes[NEXT] = new Point(0, tileSize);
+        changers[LEFT_TOP] = (int xChange, int yChange) -> {
+            corners[LEFT_TOP].changes[NEXT] = new Point(0, Settings.tileSize);
             corners[LEFT_TOP].changes[CORNER] = new Point(xChange, yChange);
-            corners[LEFT_TOP].changes[PREVOIUS] = new Point(tileSize, 0);
+            corners[LEFT_TOP].changes[PREVOIUS] = new Point(Settings.tileSize, 0);
         };
-        changers[LEFT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
-            corners[LEFT_BOTTOM].changes[NEXT] = new Point(tileSize, height);
-            corners[LEFT_BOTTOM].changes[CORNER] = new Point(xChange, (height - tileSize) + yChange);
-            corners[LEFT_BOTTOM].changes[PREVOIUS] = new Point(0, height - tileSize);
+        changers[LEFT_BOTTOM] = (int xChange, int yChange) -> {
+            corners[LEFT_BOTTOM].changes[NEXT] = new Point(Settings.tileSize, height);
+            corners[LEFT_BOTTOM].changes[CORNER] = new Point(xChange, (height - Settings.tileSize) + yChange);
+            corners[LEFT_BOTTOM].changes[PREVOIUS] = new Point(0, height - Settings.tileSize);
         };
-        changers[RIGHT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
-            corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width, height - tileSize);
-            corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - tileSize) + xChange, (height - tileSize) + yChange);
-            corners[RIGHT_BOTTOM].changes[PREVOIUS] = new Point(width - tileSize, height);
+        changers[RIGHT_BOTTOM] = (int xChange, int yChange) -> {
+            corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width, height - Settings.tileSize);
+            corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - Settings.tileSize) + xChange, (height - Settings.tileSize) + yChange);
+            corners[RIGHT_BOTTOM].changes[PREVOIUS] = new Point(width - Settings.tileSize, height);
         };
-        changers[RIGHT_TOP] = (int tileSize, int xChange, int yChange) -> {
-            corners[RIGHT_TOP].changes[NEXT] = new Point(width - tileSize, 0);
-            corners[RIGHT_TOP].changes[CORNER] = new Point((width - tileSize) + xChange, yChange);
-            corners[RIGHT_TOP].changes[PREVOIUS] = new Point(width, tileSize);
+        changers[RIGHT_TOP] = (int xChange, int yChange) -> {
+            corners[RIGHT_TOP].changes[NEXT] = new Point(width - Settings.tileSize, 0);
+            corners[RIGHT_TOP].changes[CORNER] = new Point((width - Settings.tileSize) + xChange, yChange);
+            corners[RIGHT_TOP].changes[PREVOIUS] = new Point(width, Settings.tileSize);
         };
-        pushers[LEFT_TOP] = (int tileSize, int xChange, int yChange) -> {
-            if (xChange <= tileSize && xChange >= 0 && yChange <= tileSize && yChange >= 0) {
-                corners[LEFT_TOP].push(LEFT_TOP, tileSize, xChange, yChange);
+        pushers[LEFT_TOP] = (int xChange, int yChange) -> {
+            if (xChange <= Settings.tileSize && xChange >= 0 && yChange <= Settings.tileSize && yChange >= 0) {
+                corners[LEFT_TOP].push(LEFT_TOP, xChange, yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
-        pushers[LEFT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
-            if (xChange <= tileSize && xChange >= 0 && yChange <= tileSize && yChange >= 0) {
-                corners[LEFT_BOTTOM].push(LEFT_BOTTOM, tileSize, xChange, tileSize - yChange);
+        pushers[LEFT_BOTTOM] = (int xChange, int yChange) -> {
+            if (xChange <= Settings.tileSize && xChange >= 0 && yChange <= Settings.tileSize && yChange >= 0) {
+                corners[LEFT_BOTTOM].push(LEFT_BOTTOM, xChange, Settings.tileSize - yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
-        pushers[RIGHT_BOTTOM] = (int tileSize, int xChange, int yChange) -> {
-            if (xChange <= tileSize && xChange >= 0 && yChange <= tileSize && yChange >= 0) {
-                corners[RIGHT_BOTTOM].push(RIGHT_BOTTOM, tileSize, tileSize - xChange, tileSize - yChange);
+        pushers[RIGHT_BOTTOM] = (int xChange, int yChange) -> {
+            if (xChange <= Settings.tileSize && xChange >= 0 && yChange <= Settings.tileSize && yChange >= 0) {
+                corners[RIGHT_BOTTOM].push(RIGHT_BOTTOM, Settings.tileSize - xChange, Settings.tileSize - yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
-        pushers[RIGHT_TOP] = (int tileSize, int xChange, int yChange) -> {
-            if (xChange <= tileSize && xChange >= 0 && yChange <= tileSize && yChange >= 0) {
-                corners[RIGHT_TOP].push(RIGHT_TOP, tileSize, (tileSize - xChange), yChange);
+        pushers[RIGHT_TOP] = (int xChange, int yChange) -> {
+            if (xChange <= Settings.tileSize && xChange >= 0 && yChange <= Settings.tileSize && yChange >= 0) {
+                corners[RIGHT_TOP].push(RIGHT_TOP, (Settings.tileSize - xChange), yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
@@ -164,8 +164,15 @@ public class RoundRectangle extends Figure {
         yCenter = height / 2;
     }
 
-    public void pushCorner(int corner, int tileSize, int xChange, int yChange) {
-        pushers[corner].push(tileSize, xChange, yChange);
+    public void pushCorner(int corner, int xChange, int yChange) {
+        if ((corner == LEFT_BOTTOM || corner == RIGHT_BOTTOM)) {
+            if (xChange > Settings.tileSize / 2 && yChange > Settings.tileSize / 2) {
+                concave = true;
+            } else if (xChange == Settings.tileSize / 2 && yChange == Settings.tileSize / 2) {
+                triangular = true;
+            }
+        }
+        pushers[corner].push(xChange, yChange);
         updatePoints();
     }
 
@@ -238,16 +245,6 @@ public class RoundRectangle extends Figure {
         return Collections.unmodifiableCollection(points);
     }
 
-    public Collection<Point> getBottomPoints() {
-        if (isMobile()) {
-            updatePoints();
-        }
-        for (Point point : bottomPoints) {
-            System.out.println(point.getX() + " " + point.getY());
-        }
-        return Collections.unmodifiableCollection(bottomPoints);
-    }
-
     public int getBottomPointSize() {
         return bottomPoints.size();
     }
@@ -264,32 +261,24 @@ public class RoundRectangle extends Figure {
         return corners[RIGHT_BOTTOM].changes != null;
     }
 
-    public int getXRound() {
-        return FastMath.max(corners[LEFT_BOTTOM].getCorner().getX(), corners[LEFT_TOP].getCorner().getX());
+    @Override
+    public boolean isConcave() {
+        return concave;
     }
 
-    public int getYRound() {
-        return FastMath.max(corners[RIGHT_TOP].getCorner().getY(), corners[LEFT_TOP].getCorner().getY()) + height - Settings.tileSize;
-    }
-
-    public int getWidthRound() {
-        return width - FastMath.max(geters[LEFT_BOTTOM].get(corners, this).getX(), 
-                    geters[LEFT_TOP].get(corners, this).getX()) - FastMath.max(geters[RIGHT_BOTTOM].get(corners, this).getX(), 
-                    geters[RIGHT_TOP].get(corners, this).getX());
-    }
-
-    public int getHeightRound() {
-        return Settings.tileSize   - FastMath.max(geters[RIGHT_BOTTOM].get(corners, this).getY(), geters[LEFT_BOTTOM].get(corners, this).getY());
+    @Override
+    public boolean isTriangular() {
+        return triangular;
     }
 
     private interface changer {
 
-        void set(int tileSize, int xChange, int yChange);
+        void set(int xChange, int yChange);
     }
 
     private interface pusher {
 
-        void push(int tileSize, int xChange, int yChange);
+        void push(int xChange, int yChange);
     }
 
     private interface geter {
@@ -306,9 +295,9 @@ public class RoundRectangle extends Figure {
             points[CORNER] = point;
         }
 
-        public void push(int corner, int tileSize, int xChange, int yChange) {
+        public void push(int corner, int xChange, int yChange) {
             changes = new Point[3];
-            changers[corner].set(tileSize, xChange, yChange);
+            changers[corner].set(xChange, yChange);
             setPoints();
         }
 

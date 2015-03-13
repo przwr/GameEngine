@@ -59,7 +59,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
     }
 
     public void pushCorner(int corner, int xDelta, int yDelta) {
-        block.pushCorner(corner, tile, xDelta, yDelta);
+        block.pushCorner(corner, xDelta, yDelta);
         complete = true;
     }
 
@@ -134,42 +134,42 @@ public class RoundedTMPBlock extends TemporaryBlock {
     public void applyStates() {
         switch (upperState) {
             case 1:
-                block.pushCorner(RoundRectangle.RIGHT_TOP, tile, (int) (tile * 0.292), (int) (tile * 0.292));
+                block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.292), (int) (tile * 0.292));
                 break;
             case 2:
-                block.pushCorner(RoundRectangle.RIGHT_TOP, tile, (int) (tile * 0.5), (int) (tile * 0.5));
+                block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.5), (int) (tile * 0.5));
                 break;
             case 3:
-                block.pushCorner(RoundRectangle.RIGHT_TOP, tile, (int) (tile * 0.707), (int) (tile * 0.707));
+                block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.707), (int) (tile * 0.707));
                 break;
             case 4:
-                block.pushCorner(RoundRectangle.LEFT_TOP, tile, (int) (tile * 0.292), (int) (tile * 0.292));
+                block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.292), (int) (tile * 0.292));
                 break;
             case 5:
-                block.pushCorner(RoundRectangle.LEFT_TOP, tile, (int) (tile * 0.5), (int) (tile * 0.5));
+                block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.5), (int) (tile * 0.5));
                 break;
             case 6:
-                block.pushCorner(RoundRectangle.LEFT_TOP, tile, (int) (tile * 0.707), (int) (tile * 0.707));
+                block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.707), (int) (tile * 0.707));
                 break;
         }
         switch (lowerState) {
             case 1:
-                block.pushCorner(RoundRectangle.RIGHT_BOTTOM, tile, (int) (tile * 0.292), (int) (tile * 0.292));
+                block.pushCorner(RoundRectangle.RIGHT_BOTTOM, (int) (tile * 0.292), (int) (tile * 0.292));
                 break;
             case 2:
-                block.pushCorner(RoundRectangle.RIGHT_BOTTOM, tile, (int) (tile * 0.5), (int) (tile * 0.5));
+                block.pushCorner(RoundRectangle.RIGHT_BOTTOM, (int) (tile * 0.5), (int) (tile * 0.5));
                 break;
             case 3:
-                block.pushCorner(RoundRectangle.RIGHT_BOTTOM, tile, (int) (tile * 0.707), (int) (tile * 0.707));
+                block.pushCorner(RoundRectangle.RIGHT_BOTTOM, (int) (tile * 0.707), (int) (tile * 0.707));
                 break;
             case 4:
-                block.pushCorner(RoundRectangle.LEFT_BOTTOM, tile, (int) (tile * 0.292), (int) (tile * 0.292));
+                block.pushCorner(RoundRectangle.LEFT_BOTTOM, (int) (tile * 0.292), (int) (tile * 0.292));
                 break;
             case 5:
-                block.pushCorner(RoundRectangle.LEFT_BOTTOM, tile, (int) (tile * 0.5), (int) (tile * 0.5));
+                block.pushCorner(RoundRectangle.LEFT_BOTTOM, (int) (tile * 0.5), (int) (tile * 0.5));
                 break;
             case 6:
-                block.pushCorner(RoundRectangle.LEFT_BOTTOM, tile, (int) (tile * 0.707), (int) (tile * 0.707));
+                block.pushCorner(RoundRectangle.LEFT_BOTTOM, (int) (tile * 0.707), (int) (tile * 0.707));
                 break;
         }
         complete = true;

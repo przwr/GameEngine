@@ -113,8 +113,8 @@ public abstract class Figure implements Comparable<Object> {
     public void clearShadows() {
         opticProperties.clearShadows();
     }
-    
-    public void removeShadow(Shadow shadow){
+
+    public void removeShadow(Shadow shadow) {
         opticProperties.removeShadow(shadow);
     }
 
@@ -133,6 +133,14 @@ public abstract class Figure implements Comparable<Object> {
 
     public boolean isMobile() {
         return mobile;
+    }
+
+    public boolean isConcave() {
+        return false;
+    }
+
+    public boolean isTriangular() {
+        return false;
     }
 
     public int getX() {

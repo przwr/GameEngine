@@ -72,8 +72,7 @@ public class MyPlayer extends Player {
         this.emitter = true;
         initialize(name, x, y);
         this.sprite = place.getSpriteSheet("apple");
-        addLight(Light.create(place.getSpriteInSize("light", Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024)), new Color(0.85f, 0.85f, 0.85f),
-                Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024), this));
+        addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
@@ -92,8 +91,7 @@ public class MyPlayer extends Player {
         visible = true;
         depth = 0;
         this.sprite = place.getSpriteSheet("apple");
-        addLight(Light.create(place.getSpriteInSize("light", Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024)), new Color(0.85f, 0.85f, 0.85f),
-                Methods.roundDouble(Settings.scale * 1024), Methods.roundDouble(Settings.scale * 1024), this));
+        addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));

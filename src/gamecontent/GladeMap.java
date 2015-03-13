@@ -50,7 +50,7 @@ public class GladeMap extends Map {
             fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 2, 2, tileSize);
             block1.addForegroundTile(fg);
             addForegroundTile(fg, 9 * tileSize, 7 * tileSize, tileSize);
-            block1.pushCorner(RoundRectangle.RIGHT_BOTTOM, tileSize, 18, 18);
+            block1.pushCorner(RoundRectangle.RIGHT_BOTTOM, 18, 18);
             blocks.add(block1);
         }
 
@@ -66,7 +66,7 @@ public class GladeMap extends Map {
             fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 0, 2, tileSize);
             block1.addForegroundTile(fg);
             addForegroundTile(fg, 5 * tileSize, 7 * tileSize, tileSize);
-            block1.pushCorner(RoundRectangle.LEFT_BOTTOM, tileSize, 18, 18);
+            block1.pushCorner(RoundRectangle.LEFT_BOTTOM, 18, 18);
             blocks.add(block1);
         }
 
@@ -82,7 +82,7 @@ public class GladeMap extends Map {
             fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 2, 2, tileSize);
             block1.addForegroundTile(fg);
             addForegroundTile(fg, 6 * tileSize, 7 * tileSize, tileSize);
-            block1.pushCorner(RoundRectangle.RIGHT_BOTTOM, tileSize, 18, 18);
+            block1.pushCorner(RoundRectangle.RIGHT_BOTTOM, 18, 18);
             blocks.add(block1);
             //System.out.println(((RoundRectangle) block1.getCollision()).getPushValueOfCorner(RoundRectangle.RIGHT_BOTTOM));
 //            System.out.println(((RoundRectangle) block1.getCollision()).isLeftBottomRound() + " " + ((RoundRectangle) block1.getCollision()).isRightBottomRound());
@@ -100,7 +100,7 @@ public class GladeMap extends Map {
             fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 0, 2, tileSize);
             block1.addForegroundTile(fg);
             addForegroundTile(fg, 8 * tileSize, 7 * tileSize, tileSize);
-            block1.pushCorner(RoundRectangle.LEFT_BOTTOM, tileSize, 18, 18);
+            block1.pushCorner(RoundRectangle.LEFT_BOTTOM, 18, 18);
             blocks.add(block1);
         }
 

@@ -21,7 +21,6 @@ import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.input.Keyboard.*;
-import org.newdawn.slick.Color;
 
 /**
  *
