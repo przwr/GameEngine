@@ -46,7 +46,7 @@ public class GUIHandler extends GUIObject {
 
     private final String[] help = new String[]{
         "H : Help",
-        "1 ... 3:               Change mode",
+        "1 ... 4:               Change mode",
         "S:                     Save as",
         "cltr + S:              Quicksave",
         "L:                     Load object",
@@ -55,18 +55,22 @@ public class GUIHandler extends GUIObject {
         "cltr + arrows :        Change selection",
         "cltr + Z :             Reset selection",
         "SPACE:                 Create",
+        "ALT:                   Create altered",
         "DELETE:                Delete",
         "HOME:                  Set starting point",
         "",
-        "//TILE MODE",
+        "//TILE MODE (1)",
         "",
         "SHIFT + arrows :       Change tile",
         "T :                    Load spritesheet",
         "",
-        "//BLOCK MODE",
+        "//BLOCK MODE (2)",
         "",
         "SHIFT + arrows:        Change block height", 
-        "R                      Rounded blocks mode"};
+        "R                      Rounded blocks mode",
+        "//OBJECT MODE (4)",
+        "",
+        "SHIFT + arrows:        Change link radius"};
 
     public GUIHandler(Place place) {
         super("guih", place);

@@ -5,6 +5,8 @@
  */
 package gamedesigner;
 
+import gamedesigner.designerElements.CentralPoint;
+import gamedesigner.designerElements.TemporaryBlock;
 import collision.Block;
 import engine.Point;
 import game.gameobject.GameObject;
@@ -12,6 +14,7 @@ import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.Tile;
+import gamedesigner.designerElements.PuzzleLink;
 import java.util.ArrayList;
 import java.util.Iterator;
 import sprites.SpriteSheet;
@@ -26,11 +29,13 @@ public class ObjectMap extends Map {
     private boolean isBackground;
     private final CentralPoint centralPoint;
     private final ObjectPlace objPlace;
+    private final ArrayList<PuzzleLink> links;
 
     public ObjectMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "ObjectMap", place, width, height, tileSize);
         objPlace = (ObjectPlace) place;
-        
+        links = new ArrayList<>();
+
         centralPoint = new CentralPoint(0, 0, objPlace);
         addObject(centralPoint);
 
@@ -118,7 +123,7 @@ public class ObjectMap extends Map {
         }
     }
 
-    public Tile removeTile(int x, int y) {
+    public Tile deleteTile(int x, int y) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
             Point p = tile.popTileFromStack();
@@ -136,7 +141,7 @@ public class ObjectMap extends Map {
                     tmp = (TemporaryBlock) tb;
                     if ((fgt = tmp.removeTile(x, y)) != null) {
                         foregroundTiles.remove(fgt);
-                        tmp.block.removeForegroundTile(fgt);
+                        tmp.getBlock().removeForegroundTile(fgt);
                         return fgt;
                     }
                 }
@@ -181,7 +186,26 @@ public class ObjectMap extends Map {
                 ((TemporaryBlock) object).changeEnvironment();
             }
         }
+        if (object instanceof PuzzleLink) {
+            PuzzleLink tmppl = (PuzzleLink) object;
+            for (PuzzleLink pl : links) {
+                if (tmppl.getX() == pl.getX() && tmppl.getY() == pl.getY()) {
+                    return;
+                }
+            }
+            links.add(tmppl);
+        }
         super.addObject(object);
+    }
+
+    public void deleteLink(int x, int y) {
+        for (PuzzleLink pl : links) {
+            if (pl.getX() == x && pl.getY() == y) {
+                links.remove(pl);
+                deleteObject(pl);
+                return;
+            }
+        }
     }
 
     public ArrayList<String> saveMap() {
@@ -198,24 +222,31 @@ public class ObjectMap extends Map {
                 }
             }
         }
+        int xActBegin = center.getX() * tileSize;
+        int yActBegin = center.getY() * tileSize;
         for (GameObject go : foregroundTiles) {
             ForegroundTile fgt = (ForegroundTile) go;
             if (!fgt.isInBlock()) {
-                map.add(fgt.saveToString(repeated, center.getX() * tileSize, center.getY() * tileSize, tileSize));
+                map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
                 repeated = fgt.getSpriteSheet();
             }
         }
         for (Block a : blocks) {
-            map.add(a.saveToString(center.getX() * tileSize, center.getY() * tileSize, tileSize));
+            map.add(a.saveToString(xActBegin, yActBegin, tileSize));
             for (ForegroundTile fgt : a.getTopForegroundTiles()) {
-                map.add(fgt.saveToString(repeated, center.getX() * tileSize, center.getY() * tileSize, tileSize));
+                map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
                 repeated = fgt.getSpriteSheet();
             }
             for (ForegroundTile fgt : a.getWallForegroundTiles()) {
-                map.add(fgt.saveToString(repeated, center.getX() * tileSize, center.getY() * tileSize, tileSize));
+                map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
                 repeated = fgt.getSpriteSheet();
             }
         }
+        String linking = "pl";
+        for (PuzzleLink pl : links) {
+            linking += ":" + pl.saveToString(xActBegin, yActBegin);
+        }
+        map.add(linking);
         return map;
     }
 }

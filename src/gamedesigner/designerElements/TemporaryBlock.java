@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamedesigner;
+package gamedesigner.designerElements;
 
 import collision.Block;
 import collision.Figure;
@@ -14,6 +14,8 @@ import game.gameobject.GameObject;
 import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Tile;
+import gamedesigner.ObjectMap;
+import gamedesigner.ObjectPlace;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
@@ -190,7 +192,7 @@ public class TemporaryBlock extends GameObject {
                             map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, level * tile);
                             tiles.add(fgt);
                             block.addForegroundTile(fgt);
-                            objMap.removeTile(ix, iy);
+                            objMap.deleteTile(ix, iy);
                         }
                     }
                 }
@@ -229,6 +231,10 @@ public class TemporaryBlock extends GameObject {
                 + (width / tile) + ":" + (height / tile) + ":" + upHeight;
     }
 
+    public Block getBlock() {
+        return block;
+    }
+    
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
     }

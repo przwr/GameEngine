@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamedesigner;
+package gamedesigner.designerElements;
 
+import gamedesigner.designerElements.TemporaryBlock;
 import collision.Block;
 import collision.RoundRectangle;
 import engine.Drawer;

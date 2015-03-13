@@ -8,6 +8,7 @@ package game.place;
 import collision.Block;
 import engine.Methods;
 import engine.Point;
+import engine.PointedValue;
 import game.gameobject.GameObject;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,6 +26,7 @@ public class PuzzleObject {
     protected ArrayList<GameObject> objects;
     protected ArrayList<FGTileContainer> fgTiles;
     protected ArrayList<BlockContainer> blocks;
+    protected ArrayList<PointedValue> links;
 
     protected int xDelta, yDelta;
     protected int xBegin, yBegin;
@@ -40,6 +42,7 @@ public class PuzzleObject {
             objects = new ArrayList<>();
             fgTiles = new ArrayList<>();
             blocks = new ArrayList<>();
+            links = new ArrayList<>();
 
             String line = input.readLine();
             String[] t = line.split(":");
@@ -122,6 +125,16 @@ public class PuzzleObject {
                         checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
                         break;
 
+                    case "pl":
+                        PointedValue pv;
+                        i = 1;
+                        while (i + 2 < t.length) {
+                            pv = new PointedValue(Integer.parseInt(t[i]), Integer.parseInt(t[i + 1]), Integer.parseInt(t[i + 2]));
+                            links.add(pv);
+                            i += 3;
+                        }
+                        break;
+
                     default:
                         Methods.error("The object \"" + t[0] + "\" is undefined");
                 }
@@ -137,6 +150,14 @@ public class PuzzleObject {
         }
     }
 
+    public boolean hasLinks() {
+        return links.size() > 0;
+    }
+    
+    public ArrayList<PointedValue> getLinks() {
+        return links;
+    }
+    
     protected void addTile(Tile tile, int x, int y) {
         for (TileContainer tc : bgTiles) {
             if (tc.tile.equals(tile)) {

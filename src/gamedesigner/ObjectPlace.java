@@ -41,8 +41,7 @@ public class ObjectPlace extends Place {
     private ObjectPlayer editor;
 
     private final SimpleKeyboard key;
-    private boolean altMode;
-    private boolean noBlocks;
+    private boolean altMode, noBlocks, grid;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
@@ -122,6 +121,9 @@ public class ObjectPlace extends Place {
         }
         if (key.key(Keyboard.KEY_L)) {
             guiHandler.changeToChooser(IO.getSpecificFilesList("res/objects", "puz"));
+        }        
+        if (key.key(Keyboard.KEY_G)) {
+            grid = !grid;
         }
         altMode = key.key(Keyboard.KEY_LMENU);
 
@@ -132,22 +134,18 @@ public class ObjectPlace extends Place {
             } else {
                 printMessage("TILE MODE");
             }
-            mode = 0;
-            ui.setVisible(true);
+            setMode(0);
         }
         if (key.keyPressed(Keyboard.KEY_2)) {
-            mode = 1;
-            ui.setVisible(false);
+            setMode(1);
             printMessage("BLOCK MODE");
         }
         if (key.keyPressed(Keyboard.KEY_3)) {
-            mode = 2;
-            ui.setVisible(false);
+            setMode(2);
             printMessage("VIEWING MODE");
         }
         if (key.keyPressed(Keyboard.KEY_4)) {
-            mode = 3;
-            ui.setVisible(false);
+            setMode(3);
             printMessage("OBJECT MODE");
         }
 
@@ -161,12 +159,22 @@ public class ObjectPlace extends Place {
         key.keyboardEnd();
     }
 
+    private void setMode(int mode) {
+        this.mode = mode;
+        editor.setMode(mode);
+        ui.setMode(mode);
+    }
+    
     public boolean isAltMode() {
         return altMode;
     }
 
     public boolean isNoBlocksMode() {
         return noBlocks;
+    }
+    
+    public boolean isGridEnabled() {
+        return grid;
     }
 
     public void setCentralPoint(int x, int y) {

@@ -6,6 +6,8 @@
  */
 package gamedesigner;
 
+import gamedesigner.designerElements.RoundedTMPBlock;
+import gamedesigner.designerElements.TemporaryBlock;
 import collision.Figure;
 import game.gameobject.Player;
 import game.place.Place;
@@ -16,6 +18,7 @@ import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
+import gamedesigner.designerElements.PuzzleLink;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
@@ -39,7 +42,7 @@ public class ObjectPlayer extends Player {
     private ObjectUI ui;
     private final SimpleKeyboard key;
 
-    private int blockHeight, radius;
+    private int blockHeight, radius, mode;
     private boolean roundBlocksMode;
     private boolean paused;
 
@@ -51,6 +54,7 @@ public class ObjectPlayer extends Player {
         maxtimer = 7;
         xtimer = 0;
         ytimer = 0;
+        radius = 1;
         key = new SimpleKeyboard();
         initializeController();
     }
@@ -110,17 +114,24 @@ public class ObjectPlayer extends Player {
         if (xtimer == 0) {
             ix = Methods.interval(0, ix + xPosition, map.getTileWidth());
             setX(ix * tileSize);
-            if (!cltr || roundBlocksMode) {
-                xStop = Methods.interval(0, xStop + xPosition, map.getTileWidth());
-            }
         }
         if (ytimer == 0) {
             iy = Methods.interval(0, iy + yPosition, map.getTileHeight());
             setY(iy * tileSize);
-            if (!cltr) {
+        }
+
+        if (mode < 2) {
+            if (xtimer == 0 && (!cltr || roundBlocksMode)) {
+                xStop = Methods.interval(0, xStop + xPosition, map.getTileWidth());
+            }
+            if (ytimer == 0 && !cltr) {
                 yStop = Methods.interval(0, yStop + yPosition, map.getTileHeight());
             }
+        } else {
+            xStop = ix;
+            yStop = iy;
         }
+        
         ui.setCursorStatus(ix, iy, Math.abs(ix - xStop) + 1, Math.abs(iy - yStop) + 1);
         if (camera != null) {
             camera.update();
@@ -144,13 +155,16 @@ public class ObjectPlayer extends Player {
         }
     }
 
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+    
     @Override
     public void update() {
         key.keyboardStart();
         if (objPlace.areKeysUsable() && !paused) {
             int xPos = 0;
             int yPos = 0;
-            int mode = objPlace.getMode();
 
             maxtimer = key.key(KEY_A) ? 2 : 7;
 
@@ -198,6 +212,12 @@ public class ObjectPlayer extends Player {
                         xtimer = 1;
                         ytimer = 1;
                     }
+                } else if (mode == 3 && key.key(KEY_LSHIFT)) {
+                    if (xtimer == 0 && ytimer == 0) {
+                        radius = Methods.interval(1, radius - yPos, 20);
+                        xtimer = 1;
+                        ytimer = 1;
+                    }
                 } else {
                     move(xPos, yPos);
                 }
@@ -227,6 +247,9 @@ public class ObjectPlayer extends Player {
                             objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map), key.key(KEY_LMENU));
                         }
                     }
+                } else if (mode == 3) {
+                    PuzzleLink pl = new PuzzleLink(ix * tileSize, iy * tileSize, radius, objPlace);
+                    objMap.addObject(pl, false);
                 }
             }
 
@@ -238,13 +261,15 @@ public class ObjectPlayer extends Player {
                 if (mode == 0) {
                     for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
                         for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                            objMap.removeTile(xTemp, yTemp);
+                            objMap.deleteTile(xTemp, yTemp);
                         }
                     }
                 } else if (mode == 1) {
                     int xd = (Math.abs(ix - xStop) + 1);
                     int yd = (Math.abs(iy - yStop) + 1);
                     objMap.deleteBlocks(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
+                } else if (mode == 3) {
+                    objMap.deleteLink(ix * tileSize, iy * tileSize);
                 }
             }
 
@@ -293,13 +318,13 @@ public class ObjectPlayer extends Player {
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         glColor4f(1f, 1f, 1f, 1f);
         Drawer.setCentralPoint();
-        if (objPlace.getMode() == 0) {
+        if (mode == 0) {
             Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
             Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
             Drawer.drawRectangle(0, -yd, d, yd);
             Drawer.drawRectangle(xd + d, 0, d, yd);
         }
-        if (objPlace.getMode() == 1) {
+        if (mode == 1) {
             if (roundBlocksMode) {
                 glColor3f(0f, 0f, 1f);
             } else {
@@ -319,12 +344,18 @@ public class ObjectPlayer extends Player {
                 Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd - d);
             }
         }
-        if (key.key(KEY_LMENU) && objPlace.getMode() <= 1) {
+        if (key.key(KEY_LMENU) && mode <= 1) {
             Drawer.returnToCentralPoint();
             Drawer.drawRing(-tileSize / 3, -tileSize / 3, tileSize / 5, d, 10);
         }
-        if (objPlace.getMode() == 3) {
+        if (mode == 3) {
             Drawer.drawRing(tileSize / 2, tileSize / 2, tileSize / 4, d, 10);
+            int complex = radius * 2 + 10;
+            if (radius % 2 == 1) {
+                Drawer.drawRing(0, 0, radius * tileSize / 2, d, complex);
+            } else {
+                Drawer.drawRing(-tileSize / 2, -tileSize / 2, radius * tileSize / 2, d, complex);
+            }
         }
 
         Drawer.refreshForRegularDrawing();
