@@ -26,6 +26,7 @@ public class ObjectUI extends GUIObject {
     private final int tile;
     private SpriteSheet texture;
     private boolean change;
+    private int mode;
 
     private final Point coord = new Point(0, 0);
     private final Point playerPosition = new Point(0, 0);
@@ -35,6 +36,7 @@ public class ObjectUI extends GUIObject {
         super("OUI", p);
         this.tile = tile;
         this.texture = tex;
+        mode = 0;
     }
 
     public void setSpriteSheet(SpriteSheet tex) {
@@ -82,6 +84,10 @@ public class ObjectUI extends GUIObject {
         return change;
     }
 
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
     @Override
     public void render(int xEffect, int yEffect) {
         if (player != null) {
@@ -98,34 +104,35 @@ public class ObjectUI extends GUIObject {
             Drawer.translate(tile / 2 + xEffect, tile / 2 + yEffect);
 
             Drawer.setCentralPoint();
+            if (mode == 0) {
+                if (change) {
+                    Drawer.translate(tile * 4, tile * 4);
+                    glColor4f(1f, 1f, 1f, 1f);
+                    Drawer.translate(-xStart - coord.getX() * wTex, -yStart - coord.getY() * hTex);
+                    texture.render();
+                    Drawer.translate(coord.getX() * wTex, coord.getY() * hTex);
+                }
 
-            if (change) {
-                Drawer.translate(tile * 4, tile * 4);
                 glColor4f(1f, 1f, 1f, 1f);
-                Drawer.translate(-xStart - coord.getX() * wTex, -yStart - coord.getY() * hTex);
-                texture.render();
-                Drawer.translate(coord.getX() * wTex, coord.getY() * hTex);
+                Drawer.drawRectangle(-1, -1, wTex + 2, hTex + 2);
+
+                Drawer.translate(-xStart + 1, -yStart + 1);
+                texture.renderPiece(coord.getX(), coord.getY());
+
+                glColor4f(0f, 0f, 0f, 1f);
+                Drawer.drawRectangle(-d, -d, wTex + 2 * d, d - 1);
+                Drawer.drawRectangle(0, hTex + d + 1, wTex + 2 * d, d - 1);
+                Drawer.drawRectangle(0, -hTex - 2, d - 1, hTex + 2);
+                Drawer.drawRectangle(wTex + d + 1, 0, d - 1, hTex + 2);
             }
-
-            glColor4f(1f, 1f, 1f, 1f);
-            Drawer.drawRectangle(-1, -1, wTex + 2, hTex + 2);
-
-            Drawer.translate(-xStart + 1, -yStart + 1);
-            texture.renderPiece(coord.getX(), coord.getY());
-
-            glColor4f(0f, 0f, 0f, 1f);
-            Drawer.drawRectangle(-d, -d, wTex + 2 * d, d - 1);
-            Drawer.drawRectangle(0, hTex + d + 1, wTex + 2 * d, d - 1);
-            Drawer.drawRectangle(0, -hTex - 2, d - 1, hTex + 2);
-            Drawer.drawRectangle(wTex + d + 1, 0, d - 1, hTex + 2);
-
-            if (Settings.scaled) {
-                glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+            if (mode != 2) {
+                Drawer.returnToCentralPoint();
+                if (Settings.scaled) {
+                    glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+                }
+                Drawer.renderString(playerPosition.getX() + ":" + playerPosition.getY() + " - "
+                        + selection.getX() + ":" + selection.getY(), (int) (tile), 0, place.standardFont, new Color(1f, 1f, 1f));
             }
-            Drawer.returnToCentralPoint();
-            Drawer.renderString(playerPosition.getX() + ":" + playerPosition.getY() + " - "
-                    + selection.getX() + ":" + selection.getY(), (int) (tile * 1.2), 0, place.standardFont, new Color(1f, 1f, 1f));
-
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
         }

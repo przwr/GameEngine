@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamedesigner;
+package gamedesigner.designerElements;
 
 import collision.Block;
 import collision.Figure;
@@ -14,6 +14,8 @@ import game.gameobject.GameObject;
 import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Tile;
+import gamedesigner.ObjectMap;
+import gamedesigner.ObjectPlace;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
@@ -60,7 +62,7 @@ public class TemporaryBlock extends GameObject {
         }
         glTranslatef(getX(), getY(), 0);
         int mode = objPlace.getMode();
-        if (mode != 2) {
+        if (mode != 2 && (!objPlace.isNoBlocksMode() || mode == 1)) {
             int d = 2;
             Drawer.refreshColor();
             int tmpH = upHeight * tile;
@@ -118,16 +120,21 @@ public class TemporaryBlock extends GameObject {
     public ForegroundTile addTile(ForegroundTile fgt) {
         map.addForegroundTile(fgt);
         tiles.add(fgt);
+        if (block == null) {
+            createBlock();
+        }
         block.addForegroundTile(fgt);
         return fgt;
     }
 
-    public ForegroundTile addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean addNew) {
+    public ForegroundTile addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altMode) {
         int yBegin = (int) (this.y / tile) - upHeight;
         int yEnd = yBegin + yTiles + upHeight - 1;
 
-        if (!addNew) {
-            for (ForegroundTile fgt : tiles) {
+        if (!altMode) {
+            ForegroundTile fgt;
+            for (int i = tiles.size() - 1; i >= 0; i--) {
+                fgt = tiles.get(i);
                 if ((fgt.getX() / tile) == x && (fgt.getY() / tile) == y) {
                     fgt.addTileToStack(xSheet, ySheet);
                     return fgt;
@@ -136,8 +143,8 @@ public class TemporaryBlock extends GameObject {
         }
         ForegroundTile fgt;
         int level = yEnd - y;
-        fgt = createTile(tex, y, tile, xSheet, ySheet, level);
-        if (addNew) {
+        fgt = createTile(tex, y, tile, xSheet, ySheet, level, altMode);
+        if (altMode) {
             map.addForegroundTile(fgt, x * tile, y * tile, (level + 1) * tile);
             fgt.setDepth(fgt.getPureDepth() + tile);
         } else {
@@ -150,9 +157,10 @@ public class TemporaryBlock extends GameObject {
 
     public void createBlock() {
         block = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
+        map.addBlock(block);
     }
 
-    protected ForegroundTile createTile(SpriteSheet texture, int x, int tile, int xSheet, int ySheet, int level) {
+    protected ForegroundTile createTile(SpriteSheet texture, int x, int tile, int xSheet, int ySheet, int level, boolean altMode) {
         if (level + 1 <= upHeight) {
             return ForegroundTile.createWall(texture, tile, xSheet, ySheet);
         } else {
@@ -177,21 +185,20 @@ public class TemporaryBlock extends GameObject {
                     if (t != null && t.getPureDepth() != -1) {
                         p = t.popTileFromStackBack();
                         if (p != null) {
-                            fgt = createTile(t.getSpriteSheet(), iy, tile, p.getX(), p.getY(), level);
+                            fgt = createTile(t.getSpriteSheet(), iy, tile, p.getX(), p.getY(), level, false);
                             while ((p = t.popTileFromStackBack()) != null) {
                                 fgt.addTileToStack(p.getX(), p.getY());
                             }
                             map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, level * tile);
                             tiles.add(fgt);
                             block.addForegroundTile(fgt);
-                            objMap.removeTile(ix, iy);
+                            objMap.deleteTile(ix, iy);
                         }
                     }
                 }
                 level++;
             }
         }
-        map.addBlock(block);
     }
 
     public void decompose() {
@@ -208,7 +215,7 @@ public class TemporaryBlock extends GameObject {
         tiles.clear();
         block = null;
     }
-    
+
     public void clear() {
         tiles.clear();
         block = null;
@@ -224,6 +231,10 @@ public class TemporaryBlock extends GameObject {
                 + (width / tile) + ":" + (height / tile) + ":" + upHeight;
     }
 
+    public Block getBlock() {
+        return block;
+    }
+    
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
     }

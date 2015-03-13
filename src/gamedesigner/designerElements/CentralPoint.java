@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamedesigner;
+package gamedesigner.designerElements;
 
 import collision.Figure;
 import engine.Drawer;
 import engine.Point;
 import game.Settings;
 import game.gameobject.GameObject;
+import gamedesigner.ObjectPlace;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.glBlendFunc;

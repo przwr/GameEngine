@@ -5,11 +5,15 @@
  */
 package gamedesigner;
 
+import gamedesigner.designerElements.RoundedTMPBlock;
+import gamedesigner.designerElements.TemporaryBlock;
 import engine.Point;
+import engine.PointedValue;
 import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.PuzzleObject;
+import gamedesigner.designerElements.PuzzleLink;
 import java.util.Comparator;
 import sprites.SpriteSheet;
 
@@ -81,6 +85,10 @@ public class ObjectPO extends PuzzleObject {
             while ((p = tmp.popTileFromStackBack()) != null) {
                 objMap.addTile(xStart, yStart, p.getX(), p.getY(), tex, false);
             }
+        });
+        links.stream().forEach((PointedValue pv) -> {
+            PuzzleLink pl = new PuzzleLink(pv.getX() * tileSize, pv.getY() * tileSize, pv.getValue(), (ObjectPlace) map.place);
+            objMap.addObject(pl, false);
         });
     }
 }
