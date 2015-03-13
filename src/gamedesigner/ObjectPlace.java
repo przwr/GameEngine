@@ -29,20 +29,21 @@ import org.newdawn.slick.openal.SoundStore;
  * @author przemek
  */
 public class ObjectPlace extends Place {
-    
+
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final update[] updates = new update[2];
-    
+
     private ObjectUI ui;
     private int mode;
     private String lastName;
     private GUIHandler guiHandler;
     private ObjectPlayer editor;
-    
+
     private final SimpleKeyboard key;
     private boolean altMode;
-    
+    private boolean noBlocks;
+
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
         lastName = "";
@@ -50,7 +51,7 @@ public class ObjectPlace extends Place {
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
         key = new SimpleKeyboard();
     }
-    
+
     @Override
     public void generateAsGuest() {
         ObjectMap polana = new ObjectMap(mapID++, this, 10240, 10240, getTileSize());
@@ -68,23 +69,23 @@ public class ObjectPlace extends Place {
         SoundStore.get().poll(0);
         initializeMethods();
     }
-    
+
     @Override
     public void generateAsHost() {
         generateAsGuest();
     }
-    
+
     @Override
     public void update() {
         updates[game.mode].update();
     }
-    
+
     private void initializeMethods() {
         updates[0] = () -> {
             if (areKeysUsable()) {
                 keyboardHandling();
             }
-            
+
             if (playersCount > 1) {
                 changeSplitScreenJoin.act();
                 changeSplitScreenMode.act();
@@ -109,10 +110,10 @@ public class ObjectPlace extends Place {
             System.err.println("ONLINE?..... pfft....");
         };
     }
-    
+
     private void keyboardHandling() {
         key.keyboardStart();
-        
+
         if (key.key(Keyboard.KEY_H)) {
             guiHandler.changeToHelpingScreen();
         }
@@ -123,20 +124,33 @@ public class ObjectPlace extends Place {
             guiHandler.changeToChooser(IO.getSpecificFilesList("res/objects", "puz"));
         }
         altMode = key.key(Keyboard.KEY_LMENU);
-        
+
         if (key.keyPressed(Keyboard.KEY_1)) {
+            if (mode == 0) {
+                noBlocks = !noBlocks;
+                printMessage("BLOCKS ARE " + (noBlocks ? "INVISIBLE": "VISIBLE") + " NOW");
+            } else {
+                printMessage("TILE MODE");
+            }
             mode = 0;
             ui.setVisible(true);
         }
         if (key.keyPressed(Keyboard.KEY_2)) {
             mode = 1;
             ui.setVisible(false);
+            printMessage("BLOCK MODE");
         }
         if (key.keyPressed(Keyboard.KEY_3)) {
             mode = 2;
             ui.setVisible(false);
+            printMessage("VIEWING MODE");
         }
-        
+        if (key.keyPressed(Keyboard.KEY_4)) {
+            mode = 3;
+            ui.setVisible(false);
+            printMessage("OBJECT MODE");
+        }
+
         if (key.keyPressed(Keyboard.KEY_S)) {
             if (key.key(Keyboard.KEY_LCONTROL) && !"".equals(lastName)) {
                 saveObject(lastName);
@@ -146,27 +160,31 @@ public class ObjectPlace extends Place {
         }
         key.keyboardEnd();
     }
-    
+
     public boolean isAltMode() {
         return altMode;
     }
-    
+
+    public boolean isNoBlocksMode() {
+        return noBlocks;
+    }
+
     public void setCentralPoint(int x, int y) {
         ((ObjectMap) maps.get(0)).setCentralPoint(x, y);
     }
-    
+
     public int getMode() {
         return mode;
     }
-    
+
     public boolean areKeysUsable() {
         return !guiHandler.isWorking();
     }
-    
+
     public void saveObject(String name) {
         lastName = name;
         ArrayList<String> content = ((ObjectMap) maps.get(0)).saveMap();
-        
+
         try (PrintWriter save = new PrintWriter("res/objects/" + name + ".puz")) {
             content.stream().forEach((line) -> {
                 save.println(line);
@@ -177,7 +195,7 @@ public class ObjectPlace extends Place {
             printMessage("A file cannot be created!");
         }
     }
-    
+
     @Override
     public int getPlayersCount() {
         if (game.mode == 0) {
@@ -186,7 +204,7 @@ public class ObjectPlace extends Place {
             return 1;
         }
     }
-    
+
     public void getFile(File f) {
         String name = f.getName();
         String[] file = name.split("\\.");
@@ -207,9 +225,9 @@ public class ObjectPlace extends Place {
             lastName = file[0];
         }
     }
-    
+
     private interface update {
-        
+
         void update();
     }
 }

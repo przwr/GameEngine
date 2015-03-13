@@ -60,7 +60,7 @@ public class TemporaryBlock extends GameObject {
         }
         glTranslatef(getX(), getY(), 0);
         int mode = objPlace.getMode();
-        if (mode != 2) {
+        if (mode != 2 && (!objPlace.isNoBlocksMode() || mode == 1)) {
             int d = 2;
             Drawer.refreshColor();
             int tmpH = upHeight * tile;

@@ -39,7 +39,7 @@ public class ObjectPlayer extends Player {
     private ObjectUI ui;
     private final SimpleKeyboard key;
 
-    private int blockHeight;
+    private int blockHeight, radius;
     private boolean roundBlocksMode;
     private boolean paused;
 
@@ -181,6 +181,9 @@ public class ObjectPlayer extends Player {
             if (mode == 1 && key.keyPressed(KEY_R)) {
                 roundBlocksMode = !roundBlocksMode;
             }
+            if (mode == 3) {
+                roundBlocksMode = false;
+            }
 
             if (xPos != 0 || yPos != 0) {
                 if (ui.isChanged()) {
@@ -316,9 +319,12 @@ public class ObjectPlayer extends Player {
                 Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd - d);
             }
         }
-        if (key.key(KEY_LMENU)) {
+        if (key.key(KEY_LMENU) && objPlace.getMode() <= 1) {
             Drawer.returnToCentralPoint();
             Drawer.drawRing(-tileSize / 3, -tileSize / 3, tileSize / 5, d, 10);
+        }
+        if (objPlace.getMode() == 3) {
+            Drawer.drawRing(tileSize / 2, tileSize / 2, tileSize / 4, d, 10);
         }
 
         Drawer.refreshForRegularDrawing();

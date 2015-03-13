@@ -68,7 +68,9 @@ public class Map {
     }
 
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
-        tiles[x / tileSize + y / tileSize * heightInTiles] = null;
+        if (tile.isSimpleLighting()) {
+            tiles[x / tileSize + y / tileSize * heightInTiles] = null;
+        }
         GameObject object;
         for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
             object = iterator.next();

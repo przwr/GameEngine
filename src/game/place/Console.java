@@ -60,7 +60,7 @@ public class Console extends GUIObject {
                 if (messages[i] != null) {
                     Drawer.renderString(messages[i], (int) ((tile * 0.1) * Settings.scale),
                             (int) (camera.getHeight() - (i + 1.1) * tile * 0.5 * Settings.scale),
-                            place.standardFont, new Color(1f, 1f, 1f, alpha));
+                            place.standardFont, new Color(1f, 1f, 1f, Math.min(alpha, 1) * (i == 0 ? 1f : 0.7f)));
                 }
             }
             alpha -= 0.01f;
