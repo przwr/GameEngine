@@ -5,7 +5,6 @@
  */
 package gamedesigner.designerElements;
 
-import gamedesigner.designerElements.TemporaryBlock;
 import collision.Block;
 import collision.RoundRectangle;
 import engine.Drawer;
