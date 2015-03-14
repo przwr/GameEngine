@@ -5,12 +5,9 @@
  */
 package gamecontent;
 
-import collision.Block;
 import collision.OpticProperties;
 import collision.Rectangle;
-import collision.RoundRectangle;
 import game.gameobject.LightSource;
-import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.PuzzleObject;
@@ -33,77 +30,11 @@ public class GladeMap extends Map {
         }
 
         PuzzleObject test = new PuzzleObject("test", place);
-        test.placePuzzle(3, 14, this);
-        test = new PuzzleObject("HighWalls", place);
-        test.placePuzzle(17, 5, this);
-        ForegroundTile fg;
-
-        {
-            Block block1 = Block.createRound(9 * tileSize, 8 * tileSize, 1 * tileSize, 1 * tileSize, 0);
-            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 2, 3);
-            block1.addForegroundTile(fg);
-            addForegroundTile(fg, 9 * tileSize, 8 * tileSize, 0);
-            fg = ForegroundTile.createWall(place.getSpriteSheet("testy"), tileSize, 5, 2);
-            block1.addForegroundTile(fg);
-            fg.setSolid(false);
-            addForegroundTile(fg, 9 * tileSize, 7 * tileSize, tileSize);
-            fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 2, 2, tileSize);
-            block1.addForegroundTile(fg);
-            addForegroundTile(fg, 9 * tileSize, 7 * tileSize, tileSize);
-            block1.pushCorner(RoundRectangle.RIGHT_BOTTOM, 18, 18);
-            blocks.add(block1);
-        }
-
-        {
-            Block block1 = Block.createRound(5 * tileSize, 8 * tileSize, 1 * tileSize, 1 * tileSize, 0);
-            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 0, 3);
-            block1.addForegroundTile(fg);
-            addForegroundTile(fg, 5 * tileSize, 8 * tileSize, 0);
-            fg = ForegroundTile.createWall(place.getSpriteSheet("testy"), tileSize, 5, 2);
-            block1.addForegroundTile(fg);
-            fg.setSolid(false);
-            addForegroundTile(fg, 5 * tileSize, 7 * tileSize, tileSize);
-            fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 0, 2, tileSize);
-            block1.addForegroundTile(fg);
-            addForegroundTile(fg, 5 * tileSize, 7 * tileSize, tileSize);
-            block1.pushCorner(RoundRectangle.LEFT_BOTTOM, 18, 18);
-            blocks.add(block1);
-        }
-
-        {
-            Block block1 = Block.createRound(6 * tileSize, 8 * tileSize, 1 * tileSize, 1 * tileSize, 0);
-            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 2, 3);
-            block1.addForegroundTile(fg);
-            addForegroundTile(fg, 6 * tileSize, 8 * tileSize, 0);
-            fg = ForegroundTile.createWall(place.getSpriteSheet("testy"), tileSize, 5, 2);
-            block1.addForegroundTile(fg);
-            fg.setSolid(false);
-            addForegroundTile(fg, 6 * tileSize, 7 * tileSize, tileSize);
-            fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 2, 2, tileSize);
-            block1.addForegroundTile(fg);
-            addForegroundTile(fg, 6 * tileSize, 7 * tileSize, tileSize);
-            block1.pushCorner(RoundRectangle.RIGHT_BOTTOM, 18, 18);
-            blocks.add(block1);
-            //System.out.println(((RoundRectangle) block1.getCollision()).getPushValueOfCorner(RoundRectangle.RIGHT_BOTTOM));
-//            System.out.println(((RoundRectangle) block1.getCollision()).isLeftBottomRound() + " " + ((RoundRectangle) block1.getCollision()).isRightBottomRound());
-        }
-
-        {
-            Block block1 = Block.createRound(8 * tileSize, 8 * tileSize, 1 * tileSize, 1 * tileSize, 0);
-            fg = ForegroundTile.createRoundWall(place.getSpriteSheet("testy"), tileSize, 0, 3);
-            block1.addForegroundTile(fg);
-            addForegroundTile(fg, 8 * tileSize, 8 * tileSize, 0);
-            fg = ForegroundTile.createWall(place.getSpriteSheet("testy"), tileSize, 5, 2);
-            block1.addForegroundTile(fg);
-            fg.setSolid(false);
-            addForegroundTile(fg, 8 * tileSize, 7 * tileSize, tileSize);
-            fg = ForegroundTile.createRoundOrdinaryShadowHeight(place.getSpriteSheet("testy"), tileSize, 0, 2, tileSize);
-            block1.addForegroundTile(fg);
-            addForegroundTile(fg, 8 * tileSize, 7 * tileSize, tileSize);
-            block1.pushCorner(RoundRectangle.LEFT_BOTTOM, 18, 18);
-            blocks.add(block1);
-        }
-
+        test.placePuzzle(3, 14, this);      
+        test = new PuzzleObject("smukly2", place);
+        test.placePuzzle(0, 3, this);
+        
+        
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
