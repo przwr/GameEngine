@@ -134,7 +134,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
     public void applyStates() {
         switch (upperState) {
             case 1:
-                block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.292), (int) (tile * 0.292));
+                block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.292), (int) (tile * 0.3));
                 break;
             case 2:
                 block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.5), (int) (tile * 0.5));
@@ -143,7 +143,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
                 block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.707), (int) (tile * 0.707));
                 break;
             case 4:
-                block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.292), (int) (tile * 0.292));
+                block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.292), (int) (tile * 0.3));
                 break;
             case 5:
                 block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.5), (int) (tile * 0.5));
@@ -154,7 +154,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
         }
         switch (lowerState) {
             case 1:
-                block.pushCorner(RoundRectangle.RIGHT_BOTTOM, (int) (tile * 0.292), (int) (tile * 0.292));
+                block.pushCorner(RoundRectangle.RIGHT_BOTTOM, (int) (tile * 0.292), (int) (tile * 0.3));
                 break;
             case 2:
                 block.pushCorner(RoundRectangle.RIGHT_BOTTOM, (int) (tile * 0.5), (int) (tile * 0.5));
@@ -163,7 +163,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
                 block.pushCorner(RoundRectangle.RIGHT_BOTTOM, (int) (tile * 0.707), (int) (tile * 0.707));
                 break;
             case 4:
-                block.pushCorner(RoundRectangle.LEFT_BOTTOM, (int) (tile * 0.292), (int) (tile * 0.292));
+                block.pushCorner(RoundRectangle.LEFT_BOTTOM, (int) (tile * 0.292), (int) (tile * 0.3));
                 break;
             case 5:
                 block.pushCorner(RoundRectangle.LEFT_BOTTOM, (int) (tile * 0.5), (int) (tile * 0.5));

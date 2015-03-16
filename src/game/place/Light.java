@@ -6,6 +6,7 @@
 package game.place;
 
 import collision.Figure;
+import engine.Methods;
 import game.place.fbo.RegularFrameBufferObject;
 import game.place.fbo.MultisampleFrameBufferObject;
 import game.place.fbo.FrameBufferObject;
@@ -85,15 +86,15 @@ public class Light {
         } else {
             switch (piece) {
                 case 0:
-                    xCenterShift = width;
-                    yCenterShift = height;
+                    xCenterShift = Methods.roundDouble(width / (1.75f - Settings.nativeScale));
+                    yCenterShift = Methods.roundDouble(height / (1.75f - Settings.nativeScale));
                     break;
                 case 1:
                     xCenterShift = 0;
-                    yCenterShift = height;
+                    yCenterShift = Methods.roundDouble(height / (1.75f - Settings.nativeScale));
                     break;
                 case 2:
-                    xCenterShift = width;
+                    xCenterShift = Methods.roundDouble(width / (1.75f - Settings.nativeScale));
                     yCenterShift = 0;
                     break;
                 case 3:
@@ -135,7 +136,7 @@ public class Light {
             if (Settings.scaled) {
                 glScaled(Settings.scale, Settings.scale, 1);
             }
-            glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
+            glTranslatef(owner.getX(), owner.getY(), 0);
             sprite.render();
             glPopMatrix();
         }
