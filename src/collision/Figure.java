@@ -18,7 +18,7 @@ import java.util.Collection;
  *
  * @author Wojtek
  */
-public abstract class Figure implements Comparable<Object> {
+public abstract class Figure implements Comparable<Figure> {
 
     private static Figure figure;
 
@@ -119,8 +119,8 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     @Override
-    public int compareTo(Object object) {/// Chech this out
-        return (getYEnd() - ((Figure) object).getYEnd()) * 8192 - (getLightDistance() - ((Figure) object).getLightDistance());
+    public int compareTo(Figure Figure) {/// Chech this out
+        return (getYEnd() - ((Figure) Figure).getYEnd()) * 8192 - (getLightDistance() - ((Figure) Figure).getLightDistance());
     }
 
     public boolean isLittable() {
@@ -140,6 +140,10 @@ public abstract class Figure implements Comparable<Object> {
     }
 
     public boolean isTriangular() {
+        return false;
+    }
+
+    public boolean isBottomRounded() {
         return false;
     }
 

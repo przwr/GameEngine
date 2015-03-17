@@ -30,7 +30,7 @@ public class RoundRectangle extends Figure {
     private Corner[] corners = new Corner[4];
     private Polygon polygon = new Polygon();
     private ArrayList<Point> bottomPoints = new ArrayList<>(3);
-    private boolean concave, triangular;
+    private boolean concave, triangular, bottomRounded;
 
     {
         changers[LEFT_TOP] = (int xChange, int yChange) -> {
@@ -77,27 +77,27 @@ public class RoundRectangle extends Figure {
                 getOwner().setSimpleLighting(false);
             }
         };
-        geters[LEFT_TOP] = (Corner[] crnr, RoundRectangle owner) -> {
-            if (crnr[LEFT_TOP].changes != null) {
-                return crnr[LEFT_TOP].changes[CORNER];
+        geters[LEFT_TOP] = (Corner[] corners, RoundRectangle owner) -> {
+            if (corners[LEFT_TOP].changes != null) {
+                return corners[LEFT_TOP].changes[CORNER];
             }
             return new Point(0, 0);
         };
-        geters[LEFT_BOTTOM] = (Corner[] crnr, RoundRectangle owner) -> {
-            if (crnr[LEFT_BOTTOM].changes != null) {
-                return new Point(crnr[LEFT_BOTTOM].changes[CORNER].getX(), -crnr[LEFT_BOTTOM].changes[CORNER].getY() + owner.height);
+        geters[LEFT_BOTTOM] = (Corner[] corners, RoundRectangle owner) -> {
+            if (corners[LEFT_BOTTOM].changes != null) {
+                return new Point(corners[LEFT_BOTTOM].changes[CORNER].getX(), -corners[LEFT_BOTTOM].changes[CORNER].getY() + owner.height);
             }
             return new Point(0, 0);
         };
-        geters[RIGHT_BOTTOM] = (Corner[] crnr, RoundRectangle owner) -> {
-            if (crnr[RIGHT_BOTTOM].changes != null) {
-                return new Point(-crnr[RIGHT_BOTTOM].changes[CORNER].getX() + owner.width, -crnr[RIGHT_BOTTOM].changes[CORNER].getY() + owner.height);
+        geters[RIGHT_BOTTOM] = (Corner[] corners, RoundRectangle owner) -> {
+            if (corners[RIGHT_BOTTOM].changes != null) {
+                return new Point(-corners[RIGHT_BOTTOM].changes[CORNER].getX() + owner.width, -corners[RIGHT_BOTTOM].changes[CORNER].getY() + owner.height);
             }
             return new Point(0, 0);
         };
-        geters[RIGHT_TOP] = (Corner[] crnr, RoundRectangle owner) -> {
-            if (crnr[RIGHT_TOP].changes != null) {
-                return new Point(-crnr[RIGHT_TOP].changes[CORNER].getX() + owner.width, crnr[RIGHT_TOP].changes[CORNER].getY());
+        geters[RIGHT_TOP] = (Corner[] corners, RoundRectangle owner) -> {
+            if (corners[RIGHT_TOP].changes != null) {
+                return new Point(-corners[RIGHT_TOP].changes[CORNER].getX() + owner.width, corners[RIGHT_TOP].changes[CORNER].getY());
             }
             return new Point(0, 0);
         };
@@ -171,6 +171,7 @@ public class RoundRectangle extends Figure {
             } else if (xChange == Settings.tileSize / 2 && yChange == Settings.tileSize / 2) {
                 triangular = true;
             }
+            bottomRounded = true;
         }
         pushers[corner].push(xChange, yChange);
         updatePoints();
@@ -269,6 +270,11 @@ public class RoundRectangle extends Figure {
     @Override
     public boolean isTriangular() {
         return triangular;
+    }
+
+    @Override
+    public boolean isBottomRounded() {
+        return bottomRounded;
     }
 
     private interface changer {
