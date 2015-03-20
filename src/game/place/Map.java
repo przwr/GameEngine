@@ -224,7 +224,7 @@ public class Map {
                 for (int x = 0; x < width / tileSize; x++) {
                     if (cameraXStart < (x + 1) * tileSize && cameraXEnd > x * tileSize) {
                         Tile tile = tiles[x + y * heightInTiles];
-                        if (tile != null) {
+                        if (tile != null && tile.isVisible()) {
                             tile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
                         }
                     }
@@ -244,7 +244,7 @@ public class Map {
         int y = 0;
         for (GameObject object : depthObjects) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
-                if (isObjectInSight(foregroundTiles.get(y))) {
+                if (foregroundTiles.get(y).isVisible() && isObjectInSight(foregroundTiles.get(y))) {
                     foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
                 }
             }
@@ -253,7 +253,7 @@ public class Map {
             }
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
-            if (isObjectInSight(foregroundTiles.get(i))) {
+            if (foregroundTiles.get(i).isVisible() && isObjectInSight(foregroundTiles.get(i))) {
                 foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
             }
         }

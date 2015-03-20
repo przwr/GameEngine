@@ -15,7 +15,6 @@ import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.PuzzleObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -42,21 +41,27 @@ public class ObjectPlace extends Place {
 
     private final SimpleKeyboard key;
     private boolean altMode, noBlocks, grid;
+    private final boolean[] viewingOptions = new boolean[4];
+    private final String[] prettyOptions = new String[]{"Tiles: ", "Background: ", "Blocks: ", "FGTiles: "};
+    private ObjectMap objmap;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
         lastName = "";
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
+        for (int i = 0; i < viewingOptions.length; i++) {
+            viewingOptions[i] = true;
+        }
         key = new SimpleKeyboard();
     }
 
     @Override
     public void generateAsGuest() {
-        ObjectMap polana = new ObjectMap(currentMapID++, this, 10240, 10240, getTileSize());
-        this.ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
+        objmap = new ObjectMap(mapID++, this, 10240, 10240, getTileSize());
+        ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
         guiHandler = new GUIHandler(this);
-        maps.add(polana);
+        maps.add(objmap);
         editor = ((ObjectPlayer) players[0]);
         editor.addGui(ui);
         editor.addGui(guiHandler);
@@ -121,7 +126,10 @@ public class ObjectPlace extends Place {
         }
         if (key.key(Keyboard.KEY_L)) {
             guiHandler.changeToChooser(IO.getSpecificFilesList("res/objects", "puz"));
-        }        
+        }
+        if (key.key(Keyboard.KEY_V)) {
+            guiHandler.changeToViewingOptions(viewingOptions, prettyOptions);
+        }
         if (key.key(Keyboard.KEY_G)) {
             grid = !grid;
         }
@@ -130,7 +138,7 @@ public class ObjectPlace extends Place {
         if (key.keyPressed(Keyboard.KEY_1)) {
             if (mode == 0) {
                 noBlocks = !noBlocks;
-                printMessage("BLOCKS ARE " + (noBlocks ? "INVISIBLE": "VISIBLE") + " NOW");
+                printMessage("BLOCKS ARE " + (noBlocks ? "INVISIBLE" : "VISIBLE") + " NOW");
             } else {
                 printMessage("TILE MODE");
             }
@@ -159,12 +167,30 @@ public class ObjectPlace extends Place {
         key.keyboardEnd();
     }
 
+    public void setViewingOption(int index) {
+        switch (index) {
+            case 0:
+                objmap.setTilesVisibility(viewingOptions[index]);
+                break;
+            case 1:
+                objmap.switchBackground();
+                break;
+            case 2:
+                noBlocks = !viewingOptions[index];
+                objmap.setBlocksVisibility(viewingOptions[index]);
+                break;
+            case 3:
+                objmap.setFGTVisibility(viewingOptions[index]);
+                break;
+        }
+    }
+
     private void setMode(int mode) {
         this.mode = mode;
         editor.setMode(mode);
         ui.setMode(mode);
     }
-    
+
     public boolean isAltMode() {
         return altMode;
     }
@@ -172,7 +198,7 @@ public class ObjectPlace extends Place {
     public boolean isNoBlocksMode() {
         return noBlocks;
     }
-    
+
     public boolean isGridEnabled() {
         return grid;
     }

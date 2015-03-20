@@ -39,6 +39,7 @@ public class Block extends GameObject {
         name = "area";
         solid = true;
         simpleLighting = !round;
+        visible = true;
         if (round) {
             setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
         } else {
@@ -46,6 +47,17 @@ public class Block extends GameObject {
         }
     }
 
+    @Override
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+        topForegroundTiles.stream().forEach((fgt) -> {
+            fgt.setVisible(visible);
+        });
+        wallForegroundTiles.stream().forEach((fgt) -> {
+            fgt.setVisible(visible);
+        });
+    }
+    
     public void setTop(Figure top) {
         this.top.clear();
         this.top.add(top);
