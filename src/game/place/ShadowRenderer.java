@@ -40,7 +40,7 @@ public class ShadowRenderer {
     private static boolean checked;
     private static final Polygon polygon = new Polygon();
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     static {
         shadowPoints[0] = new Point(0, 0);

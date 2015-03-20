@@ -58,7 +58,7 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        objmap = new ObjectMap(mapID++, this, 10240, 10240, getTileSize());
+        objmap = new ObjectMap(currentMapID++, this, 10240, 10240, getTileSize());
         ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
         guiHandler = new GUIHandler(this);
         maps.add(objmap);
