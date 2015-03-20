@@ -217,6 +217,7 @@ public class Map {
 
     public void renderBackground(Camera camera) {
         Drawer.drawRectangleInBlack(0, 0, camera.getWidth(), camera.getHeight());
+        ShadowRenderer.clearScreen(0);
         Drawer.refreshForRegularDrawing();
         for (int y = 0; y < heightInTiles; y++) {
             if (cameraYStart < (y + 1) * tileSize && cameraYEnd > y * tileSize) {

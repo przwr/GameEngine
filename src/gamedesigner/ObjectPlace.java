@@ -53,7 +53,7 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        ObjectMap polana = new ObjectMap(mapID++, this, 10240, 10240, getTileSize());
+        ObjectMap polana = new ObjectMap(currentMapID++, this, 10240, 10240, getTileSize());
         this.ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
         guiHandler = new GUIHandler(this);
         maps.add(polana);

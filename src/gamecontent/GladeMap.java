@@ -5,7 +5,7 @@
  */
 package gamecontent;
 
-import collision.OpticProperties;
+import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import collision.Rectangle;
 import game.gameobject.LightSource;
 import game.place.Map;
@@ -29,21 +29,21 @@ public class GladeMap extends Map {
             }
         }
 
-        PuzzleObject test = new PuzzleObject("test", place);
-        test.placePuzzle(3, 14, this);      
-        test = new PuzzleObject("smukly2", place);
-        test.placePuzzle(0, 3, this);
+        PuzzleObject test = new PuzzleObject("veryHighRound", place);
+        test.placePuzzle(0, 0, this);      
+        //test = new PuzzleObject("smukly2", place);
+        //test.placePuzzle(0, 3, this);
         
         
-        WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
-        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, warp));
-        addObject(warp);
-        addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
-        PuzzleObject portal = new PuzzleObject("portal", place);
-        portal.placePuzzle(20, 20, this);
+//        WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
+//        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
+//        addObject(warp);
+//        addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
+//        PuzzleObject portal = new PuzzleObject("portal", place);
+//        portal.placePuzzle(20, 20, this);
         for (int i = 0; i < 1; i++) {
             addObject(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", place, true, mobID++));
         }
-        addObject(new LightSource(2048, 1536, 0, 0, 206, 300, "lamp", place, "lamp", true));
+        //addObject(new LightSource(2048, 1536, 0, 0, 206, 300, "lamp", place, "lamp", true));
     }
 }

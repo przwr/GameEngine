@@ -7,8 +7,8 @@ package collision;
 
 import engine.Methods;
 import engine.Point;
-import game.Settings;
 import game.gameobject.GameObject;
+import game.place.Place;
 import java.awt.Polygon;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -34,46 +34,46 @@ public class RoundRectangle extends Figure {
 
     {
         changers[LEFT_TOP] = (int xChange, int yChange) -> {
-            corners[LEFT_TOP].changes[NEXT] = new Point(0, Settings.tileSize);
+            corners[LEFT_TOP].changes[NEXT] = new Point(0, Place.tileSize);
             corners[LEFT_TOP].changes[CORNER] = new Point(xChange, yChange);
-            corners[LEFT_TOP].changes[PREVOIUS] = new Point(Settings.tileSize, 0);
+            corners[LEFT_TOP].changes[PREVOIUS] = new Point(Place.tileSize, 0);
         };
         changers[LEFT_BOTTOM] = (int xChange, int yChange) -> {
-            corners[LEFT_BOTTOM].changes[NEXT] = new Point(Settings.tileSize, height);
-            corners[LEFT_BOTTOM].changes[CORNER] = new Point(xChange, (height - Settings.tileSize) + yChange);
-            corners[LEFT_BOTTOM].changes[PREVOIUS] = new Point(0, height - Settings.tileSize);
+            corners[LEFT_BOTTOM].changes[NEXT] = new Point(Place.tileSize, height);
+            corners[LEFT_BOTTOM].changes[CORNER] = new Point(xChange, (height - Place.tileSize) + yChange);
+            corners[LEFT_BOTTOM].changes[PREVOIUS] = new Point(0, height - Place.tileSize);
         };
         changers[RIGHT_BOTTOM] = (int xChange, int yChange) -> {
-            corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width, height - Settings.tileSize);
-            corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - Settings.tileSize) + xChange, (height - Settings.tileSize) + yChange);
-            corners[RIGHT_BOTTOM].changes[PREVOIUS] = new Point(width - Settings.tileSize, height);
+            corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width, height - Place.tileSize);
+            corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - Place.tileSize) + xChange, (height - Place.tileSize) + yChange);
+            corners[RIGHT_BOTTOM].changes[PREVOIUS] = new Point(width - Place.tileSize, height);
         };
         changers[RIGHT_TOP] = (int xChange, int yChange) -> {
-            corners[RIGHT_TOP].changes[NEXT] = new Point(width - Settings.tileSize, 0);
-            corners[RIGHT_TOP].changes[CORNER] = new Point((width - Settings.tileSize) + xChange, yChange);
-            corners[RIGHT_TOP].changes[PREVOIUS] = new Point(width, Settings.tileSize);
+            corners[RIGHT_TOP].changes[NEXT] = new Point(width - Place.tileSize, 0);
+            corners[RIGHT_TOP].changes[CORNER] = new Point((width - Place.tileSize) + xChange, yChange);
+            corners[RIGHT_TOP].changes[PREVOIUS] = new Point(width, Place.tileSize);
         };
         pushers[LEFT_TOP] = (int xChange, int yChange) -> {
-            if (xChange <= Settings.tileSize && xChange >= 0 && yChange <= Settings.tileSize && yChange >= 0) {
+            if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
                 corners[LEFT_TOP].push(LEFT_TOP, xChange, yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
         pushers[LEFT_BOTTOM] = (int xChange, int yChange) -> {
-            if (xChange <= Settings.tileSize && xChange >= 0 && yChange <= Settings.tileSize && yChange >= 0) {
-                corners[LEFT_BOTTOM].push(LEFT_BOTTOM, xChange, Settings.tileSize - yChange);
+            if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
+                corners[LEFT_BOTTOM].push(LEFT_BOTTOM, xChange, Place.tileSize - yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
         pushers[RIGHT_BOTTOM] = (int xChange, int yChange) -> {
-            if (xChange <= Settings.tileSize && xChange >= 0 && yChange <= Settings.tileSize && yChange >= 0) {
-                corners[RIGHT_BOTTOM].push(RIGHT_BOTTOM, Settings.tileSize - xChange, Settings.tileSize - yChange);
+            if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
+                corners[RIGHT_BOTTOM].push(RIGHT_BOTTOM, Place.tileSize - xChange, Place.tileSize - yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
         pushers[RIGHT_TOP] = (int xChange, int yChange) -> {
-            if (xChange <= Settings.tileSize && xChange >= 0 && yChange <= Settings.tileSize && yChange >= 0) {
-                corners[RIGHT_TOP].push(RIGHT_TOP, (Settings.tileSize - xChange), yChange);
+            if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
+                corners[RIGHT_TOP].push(RIGHT_TOP, (Place.tileSize - xChange), yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
@@ -166,9 +166,9 @@ public class RoundRectangle extends Figure {
 
     public void pushCorner(int corner, int xChange, int yChange) {
         if ((corner == LEFT_BOTTOM || corner == RIGHT_BOTTOM)) {
-            if (xChange > Settings.tileSize / 2 && yChange > Settings.tileSize / 2) {
+            if (xChange > Place.tileSize / 2 && yChange > Place.tileSize / 2) {
                 concave = true;
-            } else if (xChange == Settings.tileSize / 2 && yChange == Settings.tileSize / 2) {
+            } else if (xChange == Place.tileSize / 2 && yChange == Place.tileSize / 2) {
                 triangular = true;
             }
             bottomRounded = true;

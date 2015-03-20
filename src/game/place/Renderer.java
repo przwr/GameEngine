@@ -208,7 +208,6 @@ public class Renderer {
     }
     
     public static void initializeVariables() {
-        ShadowRenderer.initializeRenderer();
         frame = new RegularFrameBufferObject(displayWidth, displayHeight);
         borders[0] = () -> {
             glBegin(GL_QUADS);

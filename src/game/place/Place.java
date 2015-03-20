@@ -10,6 +10,8 @@ import game.Game;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
 import engine.SoundBase;
+import static game.Game.OFFLINE;
+import static game.Game.ONLINE;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
@@ -25,11 +27,11 @@ import sprites.SpriteSheet;
  */
 public abstract class Place extends ScreenPlace {
 
-    protected SoundBase sounds;
-    protected SpriteBase sprites;
-    private final int tileSize;
+    public static int tileSize;
 
-    private final renderType[] renders = new renderType[2];
+    public static final ArrayList<Map> maps = new ArrayList<>();
+    protected static final ArrayList<Map> tempMaps = new ArrayList<>();
+    private static final renderType[] renders = new renderType[2];
 
     public Camera currentCamera;
     public Camera[] cameras = new Camera[3];
@@ -37,20 +39,84 @@ public abstract class Place extends ScreenPlace {
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int splitScreenMode, playersCount;
 
-    protected short mapID = 0;
-
-    public final ArrayList<Map> maps = new ArrayList<>();
-    protected final ArrayList<Map> tempMaps = new ArrayList<>();
+    protected SoundBase sounds;
+    protected SpriteBase sprites;
+    protected short currentMapID = 0;
 
     private Console console;
 
+    {
+        renders[OFFLINE] = () -> {
+            tempMaps.clear();
+            Map map;
+            for (int p = 0; p < playersCount; p++) {
+                map = players[p].getMap();
+                if (!tempMaps.contains(map)) {
+                    Renderer.findVisibleLights(map, playersCount);
+                    if (!Settings.shadowOff) {
+                        Renderer.preRendLights(map);
+                    }
+                    tempMaps.add(map);
+                }
+            }
+            for (int player = 0; player < playersCount; player++) {
+                currentCamera = (((Player) players[player]).getCamera());
+                map = players[player].getMap();
+                if (map != null) {
+                    Drawer.setCurrentColor(map.getColor());
+                    SplitScreen.setSplitScreen(this, playersCount, player);
+                    if (player == 0 || !singleCamera) {
+                        glEnable(GL_SCISSOR_TEST);
+                        Renderer.preRenderShadowedLights(this, currentCamera);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        map.updateCamerasVariables(currentCamera);
+                        map.renderBackground(currentCamera);
+                        map.renderObjects(currentCamera);
+                        if (map.getVisibleLights().size() > 0) {
+                            Renderer.renderLights(map.getColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                        }
+                        currentCamera.renderGUI();
+                        console.setCamera(currentCamera);
+                        console.render(0, 0);
+                    }
+                    glDisable(GL_SCISSOR_TEST);
+                }
+            }
+            Renderer.resetOrtho(splitScreenMode);
+            Renderer.border(splitScreenMode);
+        };
+        renders[ONLINE] = () -> {
+            Map map = players[0].getMap();
+            if (map != null) {
+                Drawer.setCurrentColor(map.getColor());
+                Renderer.findVisibleLights(map, 1);
+                if (!Settings.shadowOff) {
+                    Renderer.preRendLights(map);
+                }
+                currentCamera = (((Player) players[0]).getCamera());
+                SplitScreen.setSplitScreen(this, 1, 0);
+                glEnable(GL_SCISSOR_TEST);
+                Renderer.preRenderShadowedLights(this, currentCamera);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                map.updateCamerasVariables(currentCamera);
+                map.renderBackground(currentCamera);
+                map.renderObjects(currentCamera);
+                if (map.getVisibleLights().size() > 0) {
+                    Renderer.renderLights(map.getColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                }
+                currentCamera.renderGUI();
+                console.setCamera(currentCamera);
+                console.render(0, 0);
+            }
+            glDisable(GL_SCISSOR_TEST);
+        };
+    }
+
     public Place(Game game, int tileSize) {
         super(game);
-        this.tileSize = tileSize;
-        Settings.tileSize = tileSize;
+        Place.tileSize = tileSize;
         sounds = new SoundBase();
         sprites = new SpriteBase();
-        initializeMethods();
         console = new Console(this);
     }
 
@@ -102,73 +168,6 @@ public abstract class Place extends ScreenPlace {
 //    }
     public void printMessage(String message) {
         console.write(message);
-    }
-
-    private void initializeMethods() {
-        renders[0] = () -> {
-            tempMaps.clear();
-            Map map;
-            for (int p = 0; p < playersCount; p++) {
-                map = players[p].getMap();
-                if (!tempMaps.contains(map)) {
-                    Renderer.findVisibleLights(map, playersCount);
-                    if (!Settings.shadowOff) {
-                        Renderer.preRendLights(map);
-                    }
-                    tempMaps.add(map);
-                }
-            }
-            for (int player = 0; player < playersCount; player++) {
-                currentCamera = (((Player) players[player]).getCamera());
-                map = players[player].getMap();
-                if (map != null) {
-                    Drawer.setCurrentColor(map.getColor());
-                    SplitScreen.setSplitScreen(this, playersCount, player);
-                    if (player == 0 || !singleCamera) {
-                        glEnable(GL_SCISSOR_TEST);
-                        Renderer.preRenderShadowedLights(this, currentCamera);
-                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        map.updateCamerasVariables(currentCamera);
-                        map.renderBackground(currentCamera);
-                        map.renderObjects(currentCamera);
-                        if (map.getVisibleLights().size() > 0) {
-                            Renderer.renderLights(map.getColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                        }
-                        currentCamera.renderGUI();
-                        console.setCamera(currentCamera);
-                        console.render(0, 0);
-                    }
-                    glDisable(GL_SCISSOR_TEST);
-                }
-            }
-            Renderer.resetOrtho(splitScreenMode);
-            Renderer.border(splitScreenMode);
-        };
-        renders[1] = () -> {
-            Map map = players[0].getMap();
-            if (map != null) {
-                Drawer.setCurrentColor(map.getColor());
-                Renderer.findVisibleLights(map, 1);
-                if (!Settings.shadowOff) {
-                    Renderer.preRendLights(map);
-                }
-                currentCamera = (((Player) players[0]).getCamera());
-                SplitScreen.setSplitScreen(this, 1, 0);
-                glEnable(GL_SCISSOR_TEST);
-                Renderer.preRenderShadowedLights(this, currentCamera);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                map.updateCamerasVariables(currentCamera);
-                map.renderBackground(currentCamera);
-                map.renderObjects(currentCamera);
-                if (map.getVisibleLights().size() > 0) {
-                    Renderer.renderLights(map.getColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                }
-                currentCamera.renderGUI();
-                console.setCamera(currentCamera);
-                console.render(0, 0);
-            }
-            glDisable(GL_SCISSOR_TEST);
-        };
     }
 
     @Override

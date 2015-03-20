@@ -64,7 +64,6 @@ public class Settings {
     public static double scale; // TODO scale for each Player/Camera - individual scale for each splitScreen
     public static double nativeScale;
     public static String serverIP = "127.0.0.1";
-    public static int tileSize;
 
     public static void initialize() {
         try {

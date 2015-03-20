@@ -17,8 +17,9 @@ import org.lwjgl.input.Keyboard;
  */
 public abstract class Game {
 
-    public GameOnline online;
+    public static final int OFFLINE = 0, ONLINE = 1;
     public int mode;
+    public GameOnline online;
     public boolean started, generated, running, pauseFlag, exitFlag, pause;
     public Player[] players;
     protected Place place;
