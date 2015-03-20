@@ -15,14 +15,14 @@ import java.util.ArrayList;
  *
  * @author Wojtek
  */
-public class MapGenerator {
+public class DungeonGenerator {
 
     private final Map map;
     private final ArrayList<Exit> exits;
     private final ArrayList<Puzzle> puzzles;
     private final int tile, width, height, border;
 
-    public MapGenerator(Map map, int border) {
+    public DungeonGenerator(Map map, int border) {
         this.map = map;
         exits = new ArrayList<>();
         puzzles = new ArrayList<>();

@@ -38,11 +38,15 @@ public class GUIHandler extends GUIObject {
 
     private final int xStart, yStart;
 
+    private boolean[] options;
+    private String[] prettyOptions;
+
     private final int DONOTHING = -1;
     private final int NAMING = 0;
     private final int CHOOSING = 1;
     private final int HELPING = 2;
     private final int QUESTIONING = 3;
+    private final int VIEWING = 4;
 
     private final String[] help = new String[]{
         "H : Help",
@@ -51,7 +55,8 @@ public class GUIHandler extends GUIObject {
         "cltr + S:              Quicksave",
         "L:                     Load object",
         "",
-        "TAB:                   Change background",
+        "BACKSPACE:             Cancel",
+        "V:                     Visibility options",
         "cltr + arrows :        Change selection",
         "cltr + Z :             Reset selection",
         "SPACE:                 Create",
@@ -66,8 +71,9 @@ public class GUIHandler extends GUIObject {
         "",
         "//BLOCK MODE (2)",
         "",
-        "SHIFT + arrows:        Change block height", 
+        "SHIFT + arrows:        Change block height",
         "R                      Rounded blocks mode",
+        "",
         "//OBJECT MODE (4)",
         "",
         "SHIFT + arrows:        Change link radius"};
@@ -98,6 +104,18 @@ public class GUIHandler extends GUIObject {
 
     public void changeToHelpingScreen() {
         mode = HELPING;
+        visible = true;
+    }
+
+    public void changeToViewingOptions(boolean[] options, String[] prettyOptions) {
+        mode = VIEWING;
+        this.options = options;
+        selected = 0;
+        this.prettyOptions = new String[options.length * 2];
+        for (int i = 0; i < options.length; i++) {
+            this.prettyOptions[2 * i] = prettyOptions[i];
+            this.prettyOptions[2 * i + 1] = options[i] ? "ON" : "OFF";
+        }
         visible = true;
     }
 
@@ -155,13 +173,15 @@ public class GUIHandler extends GUIObject {
 
         if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;
-            if (selected < 0)
+            if (selected < 0) {
                 selected = list.size() - 1;
+            }
         }
         if (key.keyPressed(Keyboard.KEY_DOWN)) {
             selected++;
-            if (selected > list.size() - 1)
+            if (selected > list.size() - 1) {
                 selected = 0;
+            }
         }
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
             objPlace.getFile(list.get(selected));
@@ -180,7 +200,7 @@ public class GUIHandler extends GUIObject {
                 place.standardFont, new Color(1f, 1f, 1f));
 
         int delta;
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < help.length; i++) {
             delta = (int) ((i - selected) * tile * 0.5);
             Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
                     place.standardFont, new Color(1f, 1f, 1f));
@@ -188,15 +208,53 @@ public class GUIHandler extends GUIObject {
 
         if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;
-            if (selected < 0)
+            if (selected < 0) {
                 selected = help.length - 1;
+            }
         }
         if (key.keyPressed(Keyboard.KEY_DOWN)) {
             selected++;
-            if (selected > help.length - 1)
+            if (selected > help.length - 1) {
                 selected = 0;
+            }
         }
         if (key.keyPressed(Keyboard.KEY_RETURN) || key.keyPressed(Keyboard.KEY_BACK)) {
+            stop();
+        }
+        key.keyboardEnd();
+    }
+
+    private void renderViewingOptions() {
+        key.keyboardStart();
+
+        Drawer.renderString(">", (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+                place.standardFont, new Color(1f, 1f, 1f));
+
+        int delta;
+        for (int i = 0; i < options.length; i++) {
+            delta = (int) ((i - selected) * tile * 0.5);
+            Drawer.renderString(prettyOptions[2 * i] + prettyOptions[2 * i + 1], (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
+                    place.standardFont, new Color(1f, 1f, 1f));
+        }
+
+        if (key.keyPressed(Keyboard.KEY_UP)) {
+            selected--;
+            if (selected < 0) {
+                selected = options.length - 1;
+            }
+        }
+        if (key.keyPressed(Keyboard.KEY_DOWN)) {
+            selected++;
+            if (selected > options.length - 1) {
+                selected = 0;
+            }
+        }
+        if (key.keyPressed(Keyboard.KEY_RETURN)) {
+            options[selected] = !options[selected];
+            prettyOptions[2 * selected + 1] = options[selected] ? "ON" : "OFF";
+            objPlace.setViewingOption(selected);
+        }
+        if (key.keyPressed(Keyboard.KEY_BACK)) {
             stop();
         }
         key.keyboardEnd();
@@ -244,6 +302,9 @@ public class GUIHandler extends GUIObject {
                     break;
                 case HELPING:
                     renderHelp();
+                    break;
+                case VIEWING:
+                    renderViewingOptions();
                     break;
             }
             Drawer.refreshForRegularDrawing();

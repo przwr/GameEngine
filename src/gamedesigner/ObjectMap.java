@@ -26,7 +26,7 @@ import sprites.SpriteSheet;
 public class ObjectMap extends Map {
 
     public Tile background;
-    private boolean isBackground;
+    private boolean isBackground, areTilesVisible, areBlocksVisible;
     private final CentralPoint centralPoint;
     private final ObjectPlace objPlace;
     private final ArrayList<PuzzleLink> links;
@@ -42,6 +42,8 @@ public class ObjectMap extends Map {
         background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
         background.setDepth(-1);
         isBackground = true;
+        areTilesVisible = true; 
+        areBlocksVisible = true;
 
         switchTiles(background);
     }
@@ -63,6 +65,31 @@ public class ObjectMap extends Map {
         }
         switchTiles(tmp);
         isBackground = !isBackground;
+    }
+
+    public void setBlocksVisibility(boolean visible) {
+        areBlocksVisible = visible;
+        blocks.stream().forEach((b) -> {
+            b.setVisible(visible);
+        });
+    }
+    
+    public void setFGTVisibility(boolean visible) {
+        foregroundTiles.stream().forEach((fgt) -> {
+            fgt.setVisible(visible);
+        });
+    }
+
+    public void setTilesVisibility(boolean visible) {
+        areTilesVisible = visible;
+        for (int y = 0; y < heightInTiles; y++) {
+            for (int x = 0; x < widthInTiles; x++) {
+                Tile t = tiles[x + y * heightInTiles];
+                if (t != null && t.getPureDepth() != -1) {
+                    tiles[x + y * heightInTiles].setVisible(visible);
+                }
+            }
+        }
     }
 
     private void switchTiles(Tile background) {
@@ -99,16 +126,20 @@ public class ObjectMap extends Map {
     public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altmode) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
-            tile.addTileToStack(xSheet, ySheet);
+            if (areTilesVisible) {
+                tile.addTileToStack(xSheet, ySheet);
+            }
         } else {
             TemporaryBlock lowest = null;
             int max = 0;
-            for (GameObject tb : objectsOnTop) {
-                if (tb instanceof TemporaryBlock) {
-                    TemporaryBlock tmp = (TemporaryBlock) tb;
-                    if (tmp.checkTile(x, y) && tmp.getY() > max) {
-                        lowest = tmp;
-                        max = tmp.getY();
+            if (areBlocksVisible) {
+                for (GameObject tb : objectsOnTop) {
+                    if (tb instanceof TemporaryBlock) {
+                        TemporaryBlock tmp = (TemporaryBlock) tb;
+                        if (tmp.checkTile(x, y) && tmp.getY() > max) {
+                            lowest = tmp;
+                            max = tmp.getY();
+                        }
                     }
                 }
             }
@@ -116,7 +147,7 @@ public class ObjectMap extends Map {
                 lowest.addTile(x, y, xSheet, ySheet, tex, altmode);
                 setTile(x, y, getBackground());
                 sortObjectsByDepth(foregroundTiles);
-            } else {
+            } else if (areTilesVisible) {
                 Tile newtile = new Tile(tex, tileSize, xSheet, ySheet);
                 setTile(x, y, newtile);
             }

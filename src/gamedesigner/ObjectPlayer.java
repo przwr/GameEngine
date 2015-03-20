@@ -276,10 +276,6 @@ public class ObjectPlayer extends Player {
             if (key.keyPressed(KEY_HOME)) {
                 objPlace.setCentralPoint(ix, iy);
             }
-
-            if (key.keyPressed(KEY_TAB)) {
-                objMap.switchBackground();
-            }
         } else if (paused) {
             if (roundBlocksMode) {
                 if (key.keyPressed(KEY_UP)) {

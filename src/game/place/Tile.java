@@ -24,6 +24,7 @@ public class Tile extends GameObject implements Appearance {
         this.spriteSheet = spriteSheet;
         tileStack = new ArrayList<>(1);
         tileStack.add(new Point(xSheet, ySheet));
+        visible = true;
     }
 
     public void addTileToStack(int xSheet, int ySheet) {
