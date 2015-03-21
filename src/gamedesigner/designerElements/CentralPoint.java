@@ -10,6 +10,7 @@ import engine.Drawer;
 import engine.Point;
 import game.Settings;
 import game.gameobject.GameObject;
+import game.place.Place;
 import gamedesigner.ObjectPlace;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_COLOR;
@@ -32,7 +33,7 @@ public class CentralPoint extends GameObject {
     public CentralPoint(int x, int y, ObjectPlace objPlace) {
         initialize("central", x, y);
         this.objPlace = objPlace;
-        tile = objPlace.getTileSize();
+        tile = Place.tileSize;
         onTop = true;
         depth = -100;
     }

@@ -29,7 +29,7 @@ public abstract class Place extends ScreenPlace {
 
     public static int tileSize;
 
-    public static final ArrayList<Map> maps = new ArrayList<>();
+    public final ArrayList<Map> maps = new ArrayList<>();
     protected static final ArrayList<Map> tempMaps = new ArrayList<>();
     private static final renderType[] renders = new renderType[2];
 
@@ -177,10 +177,6 @@ public abstract class Place extends ScreenPlace {
 
     public void addMap(Map map) {
         maps.add(map);
-    }
-
-    public int getTileSize() {
-        return tileSize;
     }
 
     public Map getMapByName(String name) {

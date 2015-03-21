@@ -56,7 +56,7 @@ public class PuzzleObject {
             FGTileContainer tmpFgt;
             BlockContainer tmpBlock = null;
             int i;
-            int tile = place.getTileSize();
+            int tile = Place.tileSize;
             SpriteSheet tmpSS = null;
             while ((line = input.readLine()) != null) {
                 t = line.split(":");

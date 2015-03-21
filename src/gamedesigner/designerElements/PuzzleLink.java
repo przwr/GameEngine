@@ -9,6 +9,7 @@ import collision.Figure;
 import engine.Drawer;
 import game.Settings;
 import game.gameobject.GameObject;
+import game.place.Place;
 import gamedesigner.ObjectPlace;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_COLOR;
@@ -31,7 +32,7 @@ public class PuzzleLink extends GameObject {
     public PuzzleLink(int x, int y, int radius, ObjectPlace objPlace) {
         initialize("link", x, y);
         this.objPlace = objPlace;
-        tile = objPlace.getTileSize();
+        tile = Place.tileSize;
         onTop = true;
         depth = -100;
         this.radius = radius;
