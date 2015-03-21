@@ -7,7 +7,6 @@ package gamedesigner.designerElements;
 
 import collision.Figure;
 import engine.Drawer;
-import engine.Point;
 import game.Settings;
 import game.gameobject.GameObject;
 import gamedesigner.ObjectPlace;
@@ -19,7 +18,6 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
-import sprites.SpriteSheet;
 
 /**
  *

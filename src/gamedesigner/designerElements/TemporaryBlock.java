@@ -37,6 +37,7 @@ public class TemporaryBlock extends GameObject {
 
     protected Block block;
     protected ArrayList<ForegroundTile> tiles;
+    protected boolean blocked;
 
     public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map) {
         this.initialize("tmpBlock", x, y);
@@ -66,33 +67,50 @@ public class TemporaryBlock extends GameObject {
             int d = 2;
             Drawer.refreshColor();
             int tmpH = upHeight * tile;
-            if (mode == 1) {
-                Drawer.drawRectangle(0, -tmpH, width, height);
+            if (!blocked) {
+                if (mode == 1) {
+                    Drawer.drawRectangle(0, -tmpH, width, height);
+                } else {
+                    glTranslatef(0, -tmpH, 0);
+                }
+                if (upHeight == 0) {
+                    glColor3f(1f, 0f, 0f);
+                    Drawer.drawRectangle(0, 0, width, d);
+                    Drawer.drawRectangle(0, height - d, width, d);
+                    Drawer.drawRectangle(0, -height + d, d, height);
+                    Drawer.drawRectangle(width - d, 0, d, height);
+                } else {
+                    if (mode == 1) {
+                        glColor3f(0.9f, 0.9f, 0.9f);
+                        Drawer.drawRectangle(0, height, width, tmpH);
+                        glTranslatef(0, -height, 0);
+                    }
+                    glColor3f(1f, 0f, 0f);
+                    Drawer.drawRectangle(0, 0, width, d);
+                    Drawer.drawRectangle(0, height - d, width, d);
+                    Drawer.drawRectangle(0, tmpH, width, d);
+                    Drawer.drawRectangle(0, 0, d, -tmpH - height + d);
+                    Drawer.drawRectangle(width - d, 0, d, -tmpH - height + d);
+                }
             } else {
-                glTranslatef(0, -tmpH, 0);
-            }
-            if (upHeight == 0) {
-                glColor3f(1f, 0f, 0f);
+                glColor3f(1f, 0.5f, 0.5f);
                 Drawer.drawRectangle(0, 0, width, d);
                 Drawer.drawRectangle(0, height - d, width, d);
                 Drawer.drawRectangle(0, -height + d, d, height);
                 Drawer.drawRectangle(width - d, 0, d, height);
-            } else {
-                if (mode == 1) {
-                    glColor3f(0.9f, 0.9f, 0.9f);
-                    Drawer.drawRectangle(0, height, width, tmpH);
-                    glTranslatef(0, -height, 0);
-                }
-                glColor3f(1f, 0f, 0f);
-                Drawer.drawRectangle(0, 0, width, d);
-                Drawer.drawRectangle(0, height - d, width, d);
-                Drawer.drawRectangle(0, tmpH, width, d);
-                Drawer.drawRectangle(0, 0, d, -tmpH - height + d);
-                Drawer.drawRectangle(width - d, 0, d, -tmpH - height + d);
             }
         }
         Drawer.refreshForRegularDrawing();
         glPopMatrix();
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+        block.setVisible(!blocked);
     }
 
     public ForegroundTile removeTile(int x, int y) {
@@ -109,11 +127,19 @@ public class TemporaryBlock extends GameObject {
         return null;
     }
 
-    public boolean checkTile(int x, int y) {
+    public boolean checkIfContains(int x, int y) {
         int xBegin = (int) (this.x / tile);
         int yBegin = (int) (this.y / tile) - upHeight;
         int xEnd = xBegin + xTiles - 1;
         int yEnd = yBegin + yTiles + upHeight - 1;
+        return !(x > xEnd || x < xBegin || y > yEnd || y < yBegin);
+    }
+    
+    public boolean checkIfBaseContains(int x, int y) {
+        int xBegin = (int) (this.x / tile);
+        int yBegin = (int) (this.y / tile);
+        int xEnd = xBegin + xTiles - 1;
+        int yEnd = yBegin + yTiles - 1;
         return !(x > xEnd || x < xBegin || y > yEnd || y < yBegin);
     }
 
@@ -143,12 +169,13 @@ public class TemporaryBlock extends GameObject {
         }
         ForegroundTile fgt;
         int level = yEnd - y;
+        int maxLevel = Math.min(level, upHeight);
         fgt = createTile(tex, y, tile, xSheet, ySheet, level, altMode);
         if (altMode) {
-            map.addForegroundTile(fgt, x * tile, y * tile, (level + 1) * tile);
+            map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel + 1) * tile);
             fgt.setDepth(fgt.getPureDepth() + tile);
         } else {
-            map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (level + 1) * tile);
+            map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (maxLevel + 1) * tile);
         }
         tiles.add(fgt);
         block.addForegroundTile(fgt);
@@ -234,7 +261,7 @@ public class TemporaryBlock extends GameObject {
     public Block getBlock() {
         return block;
     }
-    
+
     @Override
     public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
     }

@@ -74,7 +74,7 @@ public class Map {
         GameObject object;
         for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
             object = iterator.next();
-            if ((object.getX() == x && object.getY() == y)) {
+            if (object.isVisible() && object.getX() == x && object.getY() == y) {
                 iterator.remove();
             }
         }

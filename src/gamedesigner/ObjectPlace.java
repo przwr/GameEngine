@@ -41,15 +41,19 @@ public class ObjectPlace extends Place {
 
     private final SimpleKeyboard key;
     private boolean altMode, noBlocks, grid;
-    private final boolean[] viewingOptions = new boolean[4];
-    private final String[] prettyOptions = new String[]{"Tiles: ", "Background: ", "Blocks: ", "FGTiles: "};
+    private final String[] prettyOptions;
+    private final boolean[] viewingOptions;
     private ObjectMap objmap;
+    private final double step = 0.03125;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
         lastName = "";
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
+
+        prettyOptions = new String[]{"Tiles: ", "Background: ", "Blocks: ", "Block Outlines: ", "FGTiles: "};
+        viewingOptions = new boolean[prettyOptions.length];
         for (int i = 0; i < viewingOptions.length; i++) {
             viewingOptions[i] = true;
         }
@@ -164,6 +168,22 @@ public class ObjectPlace extends Place {
                 guiHandler.changeToNamingConsole();
             }
         }
+        if (key.keyPressed(Keyboard.KEY_MINUS)) {
+            Settings.scale -= step;
+            if (Settings.scale < 0.125d) {
+                Settings.scale = 0.125d;
+            }
+            Settings.scaled = Settings.scale != 1d;
+            ((Player) players[0]).getCamera().update();
+        }
+        if (key.keyPressed(Keyboard.KEY_EQUALS)) {
+            Settings.scale += step;
+            if (Settings.scale > 1d) {
+                Settings.scale = 1d;
+            }
+            Settings.scaled = Settings.scale != 1d;
+            ((Player) players[0]).getCamera().update();
+        }
         key.keyboardEnd();
     }
 
@@ -176,10 +196,12 @@ public class ObjectPlace extends Place {
                 objmap.switchBackground();
                 break;
             case 2:
-                noBlocks = !viewingOptions[index];
                 objmap.setBlocksVisibility(viewingOptions[index]);
                 break;
             case 3:
+                noBlocks = !viewingOptions[index];
+                break;
+            case 4:
                 objmap.setFGTVisibility(viewingOptions[index]);
                 break;
         }

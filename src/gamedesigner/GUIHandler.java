@@ -55,8 +55,10 @@ public class GUIHandler extends GUIObject {
         "cltr + S:              Quicksave",
         "L:                     Load object",
         "",
+        "A:                     Run mode",
         "BACKSPACE:             Cancel",
         "V:                     Visibility options",
+        "B:                     Lock Block",
         "cltr + arrows :        Change selection",
         "cltr + Z :             Reset selection",
         "SPACE:                 Create",
@@ -205,7 +207,6 @@ public class GUIHandler extends GUIObject {
             Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
                     place.standardFont, new Color(1f, 1f, 1f));
         }
-
         if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;
             if (selected < 0) {
