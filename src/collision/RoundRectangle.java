@@ -28,7 +28,6 @@ public class RoundRectangle extends Figure {
     private static final pusher[] pushers = new pusher[4];
     private static final geter[] geters = new geter[4];
     private Corner[] corners = new Corner[4];
-    private Polygon polygon = new Polygon();
     private ArrayList<Point> bottomPoints = new ArrayList<>(3);
     private boolean concave, triangular, bottomRounded;
 
@@ -143,12 +142,7 @@ public class RoundRectangle extends Figure {
             });
         }
         points.trimToSize();
-
-        polygon.reset();
-        points.stream().forEach((point) -> {
-            polygon.addPoint(point.getX(), point.getY());
-        });
-
+        
         bottomPoints.clear();
         corners[LEFT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
             bottomPoints.add(point);

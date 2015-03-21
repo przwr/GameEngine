@@ -30,7 +30,7 @@ public class Console extends GUIObject {
         super("Console", place);
         this.alpha = 0f;
         this.messages = new String[20];
-        tile = place.getTileSize();
+        tile = Place.tileSize;
     }
 
     public void write(String message) {

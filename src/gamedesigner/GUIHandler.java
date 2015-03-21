@@ -80,7 +80,7 @@ public class GUIHandler extends GUIObject {
 
     public GUIHandler(Place place) {
         super("guih", place);
-        tile = place.getTileSize();
+        tile = Place.tileSize;
         objPlace = (ObjectPlace) place;
         mode = DONOTHING;
         key = new SimpleKeyboard();

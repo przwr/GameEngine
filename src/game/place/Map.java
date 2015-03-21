@@ -16,6 +16,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Collection;
 import java.util.Iterator;
+import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_ZERO;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glVertex2f;
 import org.newdawn.slick.Color;
 
 /**
@@ -135,7 +146,6 @@ public class Map {
     }
 
     private void addNotPlayerObject(GameObject object) {
-
         if (object.isEmitter()) {
             object.getLights().stream().forEach((light) -> {
                 emitters.add(light);
@@ -216,7 +226,6 @@ public class Map {
     }
 
     public void renderBackground(Camera camera) {
-        Drawer.drawRectangleInBlack(0, 0, camera.getWidth(), camera.getHeight());
         ShadowRenderer.clearScreen(0);
         Drawer.refreshForRegularDrawing();
         for (int y = 0; y < heightInTiles; y++) {

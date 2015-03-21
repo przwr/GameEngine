@@ -124,6 +124,7 @@ public class MyGame extends Game {
                     //---------------------- <('.'<) OBJECT DESIGNER ----------------------------//
                     if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
                         setDesignerMode(true);
+                        endGame();
                         startGame();
                         menu.setCurrent(0);
                     }

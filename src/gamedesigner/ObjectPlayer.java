@@ -94,7 +94,7 @@ public class ObjectPlayer extends Player {
         this.setResistance(2);
         this.emitter = true;
         emits = false;
-        tileSize = place.getTileSize();
+        tileSize = Place.tileSize;
         objPlace = (ObjectPlace) place;
         onTop = true;
     }

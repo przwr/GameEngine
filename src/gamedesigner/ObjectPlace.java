@@ -58,8 +58,8 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        objmap = new ObjectMap(currentMapID++, this, 10240, 10240, getTileSize());
-        ui = new ObjectUI(getTileSize(), sprites.getSpriteSheet("tlo"), this);
+        objmap = new ObjectMap(currentMapID++, this, 10240, 10240, Place.tileSize);
+        ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo"), this);
         guiHandler = new GUIHandler(this);
         maps.add(objmap);
         editor = ((ObjectPlayer) players[0]);
