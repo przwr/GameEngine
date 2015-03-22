@@ -128,10 +128,10 @@ public class MyPlayer extends Player {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
-            glTranslatef((int) (getX() * Settings.scale), (int) (getY() * Settings.scale), 0);
             if (Settings.scaled) {
                 glScaled(Settings.scale, Settings.scale, 1);
             }
+            glTranslatef(getX(), getY(), 0);
             Drawer.setColor(JUMP_SHADOW_COLOR);
             Drawer.drawElipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
@@ -238,17 +238,17 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
-            Drawer.drawShapeInShade(animation, color);
+            Drawer.drawShapeInShade(animation, 1);
             glPopMatrix();
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f) {
+    public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
@@ -258,11 +258,11 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
-            Drawer.drawShapePartInShade(animation, color, xStart, xEnd);
+            Drawer.drawShapePartInShade(animation, 1, xStart, xEnd);
             glPopMatrix();
         }
     }

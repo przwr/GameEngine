@@ -30,9 +30,9 @@ public abstract class GameObject {
 
     public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, float color, Figure figure);
+    public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd);
+    public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
 
     public abstract void renderShadow(int xEffect, int yEffect, Figure figure);
 

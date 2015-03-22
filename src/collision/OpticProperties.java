@@ -6,7 +6,6 @@
 package collision;
 
 import game.place.Shadow;
-import static game.place.Shadow.*;
 
 /**
  *
@@ -14,14 +13,13 @@ import static game.place.Shadow.*;
  */
 public class OpticProperties {
 
-    public static final int FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, IN_SHADE = 3;
+    public static final int FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, IN_SHADE = 3, DEFAULT_SHADOWS_COUNT = 20;
     private static final boolean[] LITABLE = {true, true, false, false};
     private static final boolean[] GIVE_SHADOW = {true, false, false, true};
     private final int type;
     private final int shadowHeight;
     private int lightDistance;
-    private float shadowColor;
-    private Shadow[] shadowsy = new Shadow[50];
+    private Shadow[] shadows = new Shadow[DEFAULT_SHADOWS_COUNT];
     private int shadowsCount = 0;
 
     public static OpticProperties create(int type, int shadowHeight) {
@@ -35,41 +33,27 @@ public class OpticProperties {
     private OpticProperties(int type, int shadowHeight) {
         this.type = type;
         this.shadowHeight = shadowHeight;
+        for (int i = 0; i < shadows.length; i++) {
+            shadows[i] = new Shadow(0);
+        }
     }
 
-    public void addShadow(Shadow shadow) {
-        if (shadowsCount == shadowsy.length) {
+    public void addShadow(int type, int x, int y, Figure source) {
+        if (shadowsCount == shadows.length) {
             resizeShadows();
         }
-        if (shadowsy[shadowsCount] == null) {
-            shadowsy[shadowsCount] = new Shadow(0);
-        }
-        switch (shadow.type) {
-            case DARK:
-                shadowsy[shadowsCount++].setDark();
-                break;
-            case BRIGHT:
-                shadowsy[shadowsCount++].setBright();
-                break;
-            case BRIGHTEN:
-                shadowsy[shadowsCount++].setBrighten(shadow.point.getX(), shadow.point.getY(), shadow.source);
-                break;
-            case DARKEN:
-                shadowsy[shadowsCount++].setDarken(shadow.point.getX(), shadow.point.getY());
-                break;
-            case BRIGHTEN_OBJECT:
-                shadowsy[shadowsCount++].setBrightenObject(shadow.point.getX(), shadow.point.getY());
-                break;
-            case DARKEN_OBJECT:
-                shadowsy[shadowsCount++].setDarkenObject(shadow.point.getX(), shadow.point.getY());
-                break;
-            default:
-                break;
-        }
+        shadows[shadowsCount].type = type;
+        shadows[shadowsCount].point.set(x, y);
+        shadows[shadowsCount++].source = source;
     }
 
     private void resizeShadows() {
-        // TODO
+        Shadow[] tempShadows = new Shadow[2 * shadows.length];
+        System.arraycopy(shadows, 0, tempShadows, 0, shadows.length);
+        shadows = tempShadows;
+        for (int i = shadowsCount; i < shadows.length; i++) {
+            shadows[i] = new Shadow(0);
+        }
     }
 
     public void clearShadows() {
@@ -78,8 +62,8 @@ public class OpticProperties {
 
     public void removeShadow(Shadow shadow) {
         for (int i = 0; i < shadowsCount; i++) {
-            if (shadowsy[i] == shadow) {
-                shadowsy[i] = shadowsy[--shadowsCount];
+            if (shadows[i] == shadow) {
+                shadows[i] = shadows[--shadowsCount];
             }
         }
     }
@@ -96,10 +80,6 @@ public class OpticProperties {
         return shadowHeight;
     }
 
-    public float getShadowColor() {
-        return shadowColor;
-    }
-
     public int getLightDistance() {
         return lightDistance;
     }
@@ -109,11 +89,8 @@ public class OpticProperties {
     }
 
     public Shadow getShadow(int i) {
-        return shadowsy[i];
-    }
+        return shadows[i];
 
-    public void setShadowColor(float shadowColor) {
-        this.shadowColor = shadowColor;
     }
 
     public void setLightDistance(int lightDistance) {

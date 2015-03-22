@@ -57,11 +57,11 @@ public class LightSource extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect,  Figure figure) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.drawShapeInShade(sprite, color);
+            Drawer.drawShapeInShade(sprite, 1);
             glPopMatrix();
         }
     }
@@ -77,11 +77,11 @@ public class LightSource extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect,  Figure figure, int xStart, int xEnd) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.drawShapePartInShade(sprite, color, xStart, xEnd);
+            Drawer.drawShapePartInShade(sprite, 1, xStart, xEnd);
             glPopMatrix();
         }
     }

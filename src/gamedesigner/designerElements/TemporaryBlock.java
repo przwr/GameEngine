@@ -134,7 +134,7 @@ public class TemporaryBlock extends GameObject {
         int yEnd = yBegin + yTiles + upHeight - 1;
         return !(x > xEnd || x < xBegin || y > yEnd || y < yBegin);
     }
-    
+
     public boolean checkIfBaseContains(int x, int y) {
         int xBegin = (int) (this.x / tile);
         int yBegin = (int) (this.y / tile);
@@ -263,11 +263,11 @@ public class TemporaryBlock extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
     }
 
     @Override

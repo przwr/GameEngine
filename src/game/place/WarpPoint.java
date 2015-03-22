@@ -109,28 +109,28 @@ public class WarpPoint extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f) {
+    public void renderShadowLit(int xEffect, int yEffect,  Figure figure) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure f, int xs, int xe) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xs, int xe) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f) {
+    public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f, int xs, int xe) {
+    public void renderShadow(int xEffect, int yEffect, Figure figure, int xs, int xe) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

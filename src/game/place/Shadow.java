@@ -24,45 +24,37 @@ public class Shadow {
         point = new Point();
     }
 
-    public Shadow setDark() {
+    public void setDark() {
         type = DARK;
-        return this;
     }
 
-    public Shadow setBright() {
+    public void setBright() {
         type = BRIGHT;
-        return this;
     }
 
-    public Shadow setBrighten(int x, int y) {
+    public void setBrighten(int x, int y) {
         type = BRIGHTEN;
         point.set(x, y);
-        return this;
     }
 
-    public Shadow setBrighten(int x, int y, Figure source) {
+    public void setBrighten(int x, int y, Figure source) {
         type = BRIGHTEN;
         point.set(x, y);
         this.source = source;
-        return this;
     }
 
-    public Shadow setDarken(int x, int y) {
+    public void setDarken(int x, int y) {
         this.type = DARKEN;
         point.set(x, y);
-        return this;
     }
 
-    public Shadow setBrightenObject(int x, int y) {
+    public void setBrightenObject(int x, int y) {
         type = BRIGHTEN_OBJECT;
         point.set(x, y);
-        return this;
     }
 
-    public Shadow setDarkenObject(int x, int y) {
+    public void setDarkenObject(int x, int y) {
         this.type = DARKEN_OBJECT;
         point.set(x, y);
-        return this;
     }
-
 }

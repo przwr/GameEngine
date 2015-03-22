@@ -66,11 +66,11 @@ public class CentralPoint extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect,  Figure figure, int xStart, int xEnd) {
     }
 
     @Override

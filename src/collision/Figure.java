@@ -106,8 +106,8 @@ public abstract class Figure implements Comparable<Figure> {
         return isCollideSingle(x, y, figure);
     }
 
-    public void addShadow(Shadow shadow) {
-        opticProperties.addShadow(shadow);
+    public void addShadow(int type, int x, int y, Figure source) {
+        opticProperties.addShadow(type, x, y, source);
     }
 
     public void clearShadows() {
@@ -231,10 +231,6 @@ public abstract class Figure implements Comparable<Figure> {
         return opticProperties.getShadowHeight();
     }
 
-    public float getShadowColor() {
-        return opticProperties.getShadowColor();
-    }
-
     public int getLightDistance() {
         return opticProperties.getLightDistance();
     }
@@ -257,10 +253,6 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setYStart(int yStart) {
         this.yStart = yStart;
-    }
-
-    public void setShadowColor(float shadowColor) {
-        opticProperties.setShadowColor(shadowColor);
     }
 
     public void setLightDistance(int lightDistance) {

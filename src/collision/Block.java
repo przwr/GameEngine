@@ -108,11 +108,11 @@ public class Block extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         glPushMatrix();
         if (isSimpleLighting()) {
             Drawer.drawRectangleInShade(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect,
-                    figure.width, figure.height + figure.getShadowHeight(), color);
+                    figure.width, figure.height + figure.getShadowHeight(), 1);
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
@@ -121,9 +121,9 @@ public class Block extends GameObject {
                 Drawer.returnToCentralPoint();
                 Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInShade(0, 0, col.width, col.height + col.getShadowHeight(), color);
+                    Drawer.drawRectangleInShade(0, 0, col.width, col.height + col.getShadowHeight(), 1);
                 } else {
-                    Drawer.drawShapeInShade(wall, color);
+                    Drawer.drawShapeInShade(wall, 1);
                 }
             });
 
@@ -155,12 +155,12 @@ public class Block extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
         glPushMatrix();
         if (isSimpleLighting()) {
-            System.out.println("Powinno być nie używane w Block");
+            System.out.println("Powinno być nie używane w Block Lit! " + figure.getOwner().getX() + "  " + figure.getOwner().getY());
             glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
-            Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
+           //  Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
@@ -169,9 +169,9 @@ public class Block extends GameObject {
                 Drawer.returnToCentralPoint();
                 Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInShade(xStart, 0, xEnd - xStart, col.height + col.getShadowHeight(), color);
+                    Drawer.drawRectangleInShade(xStart, 0, xEnd - xStart, col.height + col.getShadowHeight(), 1);
                 } else {
-                    Drawer.drawShapePartInShade(wall, color, xStart, xEnd);
+                    Drawer.drawShapePartInShade(wall, 1, xStart, xEnd);
                 }
             });
         }

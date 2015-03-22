@@ -70,13 +70,13 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), color);
+            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(),1);
         } else {
-            Drawer.drawShapeInShade(this, color);
+            Drawer.drawShapeInShade(this, 1);
         }
         glPopMatrix();
     }
@@ -94,13 +94,13 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect,  Figure figure, int xStart, int xEnd) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), color);
+            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), 1);
         } else {
-            Drawer.drawShapePartInShade(this, color, xStart, xEnd);
+            Drawer.drawShapePartInShade(this, 1, xStart, xEnd);
         }
         glPopMatrix();
     }

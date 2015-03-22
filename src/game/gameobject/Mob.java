@@ -100,7 +100,7 @@ public abstract class Mob extends Entity {
             if (Settings.scaled) {
                 glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
             }
-            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Settings.scale) / 2), 
+            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Settings.scale) / 2),
                     (int) ((collision.getHeight() * Settings.scale) / 2),
                     place.standardFont,
                     map.getColor());
@@ -109,11 +109,11 @@ public abstract class Mob extends Entity {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.drawShapeInShade(sprite, color);
+            Drawer.drawShapeInShade(sprite, 1);
             glPopMatrix();
         }
     }
@@ -129,11 +129,11 @@ public abstract class Mob extends Entity {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, float color, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.drawShapePartInShade(sprite, color, xStart, xEnd);
+            Drawer.drawShapePartInShade(sprite, 1, xStart, xEnd);
             glPopMatrix();
         }
     }
