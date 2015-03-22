@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import collision.Figure;
 import engine.Point;
 
 /**
@@ -13,20 +14,55 @@ import engine.Point;
  */
 public class Shadow {
 
+    public static final int DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3, BRIGHTEN_OBJECT = 4, DARKEN_OBJECT = 5;
     public int type;
-    public Point[] points;
-    public static final int DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3,
-            BRIGHTEN_OBJECT = 4, DARKEN_OBJECT = 5;
+    public Point point;
+    public Figure source;
 
     public Shadow(int type) {
         this.type = type;
+        point = new Point();
     }
 
-    public void addPoints(Point point1, Point point2, Point point3, Point point4) {
-        points = new Point[4];
-        points[0] = point1;
-        points[1] = point2;
-        points[2] = point3;
-        points[3] = point4;
+    public Shadow setDark() {
+        type = DARK;
+        return this;
     }
+
+    public Shadow setBright() {
+        type = BRIGHT;
+        return this;
+    }
+
+    public Shadow setBrighten(int x, int y) {
+        type = BRIGHTEN;
+        point.set(x, y);
+        return this;
+    }
+
+    public Shadow setBrighten(int x, int y, Figure source) {
+        type = BRIGHTEN;
+        point.set(x, y);
+        this.source = source;
+        return this;
+    }
+
+    public Shadow setDarken(int x, int y) {
+        this.type = DARKEN;
+        point.set(x, y);
+        return this;
+    }
+
+    public Shadow setBrightenObject(int x, int y) {
+        type = BRIGHTEN_OBJECT;
+        point.set(x, y);
+        return this;
+    }
+
+    public Shadow setDarkenObject(int x, int y) {
+        this.type = DARKEN_OBJECT;
+        point.set(x, y);
+        return this;
+    }
+
 }

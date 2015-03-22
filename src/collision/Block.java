@@ -10,7 +10,6 @@ import engine.Main;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.place.ForegroundTile;
-import game.place.Place;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +44,7 @@ public class Block extends GameObject {
             setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
         } else {
             setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
-            top.add(Rectangle.createShadowHeight(0, height, width, height, OpticProperties.IN_SHADE_NO_SHADOW, shadowHeight + 2 * height, this));
+            top.add(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.IN_SHADE_NO_SHADOW, shadowHeight + height, this));
         }
     }
 

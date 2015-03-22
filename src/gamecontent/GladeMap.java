@@ -30,11 +30,12 @@ public class GladeMap extends Map {
         }
 
         PuzzleObject test = new PuzzleObject("zatoczka", place);
-        test.placePuzzle(5, 3, this);      
+        test.placePuzzle(5, 3, this);
         test = new PuzzleObject("test", place);
         test.placePuzzle(1, 18, this);
-        
-        
+        test = new PuzzleObject("smukly", place);
+        test.placePuzzle(0, 0, this);
+
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
@@ -42,7 +43,7 @@ public class GladeMap extends Map {
         PuzzleObject portal = new PuzzleObject("portal", place);
         portal.placePuzzle(20, 20, this);
         for (int i = 0; i < 1; i++) {
-           // addObject(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", place, true, mobID++));
+            // addObject(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", place, true, mobID++));
         }
         addObject(new LightSource(1024, 2048, 0, 0, 206, 300, "lamp", place, "lamp", true));
     }

@@ -239,8 +239,12 @@ public abstract class Figure implements Comparable<Figure> {
         return opticProperties.getLightDistance();
     }
 
-    public Collection<Shadow> getShadows() {
-        return opticProperties.getShadows();
+    public int getShadowCount() {
+        return opticProperties.getShadowCount();
+    }
+
+    public Shadow getShadow(int i) {
+        return opticProperties.getShadow(i);
     }
 
     public void setMobile(boolean mobile) {

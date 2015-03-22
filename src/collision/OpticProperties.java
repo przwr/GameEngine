@@ -6,9 +6,7 @@
 package collision;
 
 import game.place.Shadow;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import static game.place.Shadow.*;
 
 /**
  *
@@ -23,7 +21,8 @@ public class OpticProperties {
     private final int shadowHeight;
     private int lightDistance;
     private float shadowColor;
-    private final ArrayList<Shadow> shadows = new ArrayList<>();
+    private Shadow[] shadowsy = new Shadow[50];
+    private int shadowsCount = 0;
 
     public static OpticProperties create(int type, int shadowHeight) {
         return new OpticProperties(type, shadowHeight);
@@ -39,15 +38,50 @@ public class OpticProperties {
     }
 
     public void addShadow(Shadow shadow) {
-        shadows.add(shadow);
+        if (shadowsCount == shadowsy.length) {
+            resizeShadows();
+        }
+        if (shadowsy[shadowsCount] == null) {
+            shadowsy[shadowsCount] = new Shadow(0);
+        }
+        switch (shadow.type) {
+            case DARK:
+                shadowsy[shadowsCount++].setDark();
+                break;
+            case BRIGHT:
+                shadowsy[shadowsCount++].setBright();
+                break;
+            case BRIGHTEN:
+                shadowsy[shadowsCount++].setBrighten(shadow.point.getX(), shadow.point.getY(), shadow.source);
+                break;
+            case DARKEN:
+                shadowsy[shadowsCount++].setDarken(shadow.point.getX(), shadow.point.getY());
+                break;
+            case BRIGHTEN_OBJECT:
+                shadowsy[shadowsCount++].setBrightenObject(shadow.point.getX(), shadow.point.getY());
+                break;
+            case DARKEN_OBJECT:
+                shadowsy[shadowsCount++].setDarkenObject(shadow.point.getX(), shadow.point.getY());
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void resizeShadows() {
+        // TODO
     }
 
     public void clearShadows() {
-        shadows.clear();
+        shadowsCount = 0;
     }
 
     public void removeShadow(Shadow shadow) {
-        shadows.remove(shadow);
+        for (int i = 0; i < shadowsCount; i++) {
+            if (shadowsy[i] == shadow) {
+                shadowsy[i] = shadowsy[--shadowsCount];
+            }
+        }
     }
 
     public boolean isLitable() {
@@ -70,8 +104,12 @@ public class OpticProperties {
         return lightDistance;
     }
 
-    public Collection<Shadow> getShadows() {
-        return Collections.unmodifiableList(shadows);
+    public int getShadowCount() {
+        return shadowsCount;
+    }
+
+    public Shadow getShadow(int i) {
+        return shadowsy[i];
     }
 
     public void setShadowColor(float shadowColor) {
