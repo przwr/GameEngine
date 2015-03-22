@@ -98,15 +98,14 @@ public class ObjectUI extends GUIObject {
             int wTex = texture.getWidth();
             int hTex = texture.getHeight();
             if (Settings.scaled) {
-                glScaled(Settings.scale, Settings.scale, 1);
+                glScaled(Settings.nativeScale, Settings.nativeScale, 1);
             }
-
             Drawer.translate(tile / 2 + xEffect, tile / 2 + yEffect);
 
             Drawer.setCentralPoint();
             if (mode == 0) {
                 if (change) {
-                    Drawer.translate(tile * 4, tile * 4);
+                    Drawer.translate(player.getCamera().getWidthHalf() / 2, player.getCamera().getHeightHalf() / 2);
                     glColor4f(1f, 1f, 1f, 1f);
                     Drawer.translate(-xStart - coord.getX() * wTex, -yStart - coord.getY() * hTex);
                     texture.render();
@@ -128,7 +127,7 @@ public class ObjectUI extends GUIObject {
             if (mode != 2) {
                 Drawer.returnToCentralPoint();
                 if (Settings.scaled) {
-                    glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+                    glScaled(1 / Settings.nativeScale, 1 / Settings.nativeScale, 1);
                 }
                 Drawer.renderString(playerPosition.getX() + ":" + playerPosition.getY() + " - "
                         + selection.getX() + ":" + selection.getY(), (int) (tile), 0, place.standardFont, new Color(1f, 1f, 1f));

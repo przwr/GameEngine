@@ -42,7 +42,7 @@ public class ObjectMap extends Map {
         background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
         background.setDepth(-1);
         isBackground = true;
-        areTilesVisible = true; 
+        areTilesVisible = true;
         areBlocksVisible = true;
 
         switchTiles(background);
@@ -69,11 +69,32 @@ public class ObjectMap extends Map {
 
     public void setBlocksVisibility(boolean visible) {
         areBlocksVisible = visible;
-        blocks.stream().forEach((b) -> {
-            b.setVisible(visible);
+        objectsOnTop.stream().forEach((b) -> {
+            if (b instanceof TemporaryBlock) {
+                ((TemporaryBlock) b).setBlocked(!visible);
+            }
         });
     }
-    
+
+    public void changeBlockUsability(int x, int y) {
+        TemporaryBlock lowest = null;
+        int max = 0;
+        if (areBlocksVisible) {
+            for (GameObject tb : objectsOnTop) {
+                if (tb instanceof TemporaryBlock) {
+                    TemporaryBlock tmp = (TemporaryBlock) tb;
+                    if (tmp.checkIfBaseContains(x, y) && tmp.getY() > max) {
+                        lowest = tmp;
+                        max = tmp.getY();
+                    }
+                }
+            }
+        }
+        if (lowest != null) {
+            lowest.setBlocked(!lowest.isBlocked());
+        }
+    }
+
     public void setFGTVisibility(boolean visible) {
         foregroundTiles.stream().forEach((fgt) -> {
             fgt.setVisible(visible);
@@ -136,7 +157,7 @@ public class ObjectMap extends Map {
                 for (GameObject tb : objectsOnTop) {
                     if (tb instanceof TemporaryBlock) {
                         TemporaryBlock tmp = (TemporaryBlock) tb;
-                        if (tmp.checkTile(x, y) && tmp.getY() > max) {
+                        if (!tmp.isBlocked() && tmp.checkIfContains(x, y) && tmp.getY() > max) {
                             lowest = tmp;
                             max = tmp.getY();
                         }
@@ -144,7 +165,7 @@ public class ObjectMap extends Map {
                 }
             }
             if (lowest != null) {
-                lowest.addTile(x, y, xSheet, ySheet, tex, altmode);
+                lowest.addTile(x, y, xSheet, ySheet, tex, altmode).getDepth();
                 setTile(x, y, getBackground());
                 sortObjectsByDepth(foregroundTiles);
             } else if (areTilesVisible) {
@@ -170,7 +191,7 @@ public class ObjectMap extends Map {
             for (GameObject tb : objectsOnTop) {
                 if (tb instanceof TemporaryBlock) {
                     tmp = (TemporaryBlock) tb;
-                    if ((fgt = tmp.removeTile(x, y)) != null) {
+                    if (!tmp.isBlocked() && (fgt = tmp.removeTile(x, y)) != null) {
                         foregroundTiles.remove(fgt);
                         tmp.getBlock().removeForegroundTile(fgt);
                         return fgt;
