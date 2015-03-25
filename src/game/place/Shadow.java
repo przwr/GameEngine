@@ -17,7 +17,7 @@ public class Shadow {
     public static final int DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3, BRIGHTEN_OBJECT = 4, DARKEN_OBJECT = 5;
     public int type;
     public Point point;
-    public Figure source;
+    public Figure caster;
 
     public Shadow(int type) {
         this.type = type;
@@ -37,10 +37,10 @@ public class Shadow {
         point.set(x, y);
     }
 
-    public void setBrighten(int x, int y, Figure source) {
+    public void setBrighten(int x, int y, Figure caster) {
         type = BRIGHTEN;
         point.set(x, y);
-        this.source = source;
+        this.caster = caster;
     }
 
     public void setDarken(int x, int y) {

@@ -45,6 +45,6 @@ public class GladeMap extends Map {
         for (int i = 0; i < 1; i++) {
             // addObject(new MyMob(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", place, true, mobID++));
         }
-        addObject(new LightSource(1024, 2048, 0, 0, 206, 300, "lamp", place, "lamp", true));
+        addObject(new LightSource(2048, 2048, 0, 0, 206, 300, "lamp", place, "lamp", true));
     }
 }

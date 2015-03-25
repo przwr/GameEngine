@@ -13,13 +13,13 @@ import game.place.Shadow;
  */
 public class OpticProperties {
 
-    public static final int FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, IN_SHADE = 3, DEFAULT_SHADOWS_COUNT = 20;
+    public static final int FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, IN_SHADE = 3, INITIAL_SHADOWS_COUNT = 20;
     private static final boolean[] LITABLE = {true, true, false, false};
     private static final boolean[] GIVE_SHADOW = {true, false, false, true};
     private final int type;
     private final int shadowHeight;
     private int lightDistance;
-    private Shadow[] shadows = new Shadow[DEFAULT_SHADOWS_COUNT];
+    private Shadow[] shadows = new Shadow[INITIAL_SHADOWS_COUNT];
     private int shadowsCount = 0;
 
     public static OpticProperties create(int type, int shadowHeight) {
@@ -38,13 +38,14 @@ public class OpticProperties {
         }
     }
 
-    public void addShadow(int type, int x, int y, Figure source) {
+    public void addShadow(int type, int x, int y, Figure caster) {
         if (shadowsCount == shadows.length) {
             resizeShadows();
         }
         shadows[shadowsCount].type = type;
         shadows[shadowsCount].point.set(x, y);
-        shadows[shadowsCount++].source = source;
+        shadows[shadowsCount].caster = caster;
+        shadowsCount++;
     }
 
     private void resizeShadows() {
@@ -63,7 +64,11 @@ public class OpticProperties {
     public void removeShadow(Shadow shadow) {
         for (int i = 0; i < shadowsCount; i++) {
             if (shadows[i] == shadow) {
-                shadows[i] = shadows[--shadowsCount];
+                shadowsCount--;
+                shadows[i].type = shadows[shadowsCount].type;
+                shadows[i].point.set(shadows[shadowsCount].point.getX(), shadows[shadowsCount].point.getY());
+                shadows[i].caster = shadows[shadowsCount].caster;
+                break;
             }
         }
     }

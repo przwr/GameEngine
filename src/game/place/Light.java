@@ -27,6 +27,7 @@ import sprites.SpriteSheet;
  */
 public class Light {
 
+    public static final int LEFT_TOP_PART = 0, RIGHT_TOP_PART = 1, LEFT_BOTTOM_PART = 2, RIGHT_BOTTOM_PART = 3;
     private final GameObject owner;
     private final boolean giveShadows;
     private final int width, height;
@@ -44,6 +45,10 @@ public class Light {
         return new Light(sprite, color, width, height, owner);
     }
 
+    public static Light createNoShadows(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
+        return new Light(spriteSheet, color, width, height, owner, piece);
+    }
+
     private Light(Sprite sprite, Color color, int width, int height, GameObject owner) {
         this.color = color;
         this.owner = owner;
@@ -56,66 +61,23 @@ public class Light {
     }
 
     private void setFrameBuffer() {
-        if (!Settings.shadowOff) {
+        if (!Settings.shadowOff && giveShadows) {
             frameBufferObject = (Settings.samplesCount > 0) ? new MultisampleFrameBufferObject(width, height)
                     : new RegularFrameBufferObject(width, height);
         }
-    }
-
-    public static Light create(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
-        return new Light(spriteSheet, color, width, height, owner, piece);
     }
 
     private Light(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
         this.color = color;
         this.owner = owner;
         this.spriteSheet = spriteSheet;
-        this.width = width;
-        this.height = height;
+        this.width = Methods.roundDouble(width / (1.75f - Settings.nativeScale));
+        this.height = Methods.roundDouble(height / (1.75f - Settings.nativeScale));
         this.piece = piece;
         this.giveShadows = false;
-        this.widthWholeLight = width * 2;
-        this.heightWholeLight = height * 2;
+        this.widthWholeLight = this.width * 2;
+        this.heightWholeLight = this.height * 2;
         setShift();
-    }
-
-    private void setShift() {
-        if (giveShadows) {
-            xCenterShift = width / 2;
-            yCenterShift = height / 2;
-        } else {
-            switch (piece) {
-                case 0:
-                    xCenterShift = Methods.roundDouble(width / (1.75f - Settings.nativeScale));
-                    yCenterShift = Methods.roundDouble(height / (1.75f - Settings.nativeScale));
-                    break;
-                case 1:
-                    xCenterShift = 0;
-                    yCenterShift = Methods.roundDouble(height / (1.75f - Settings.nativeScale));
-                    break;
-                case 2:
-                    xCenterShift = Methods.roundDouble(width / (1.75f - Settings.nativeScale));
-                    yCenterShift = 0;
-                    break;
-                case 3:
-                    xCenterShift = 0;
-                    yCenterShift = 0;
-                    break;
-            }
-        }
-    }
-
-    public void setSize(int width, int height) {
-        spriteSheet.setWidth(width);
-        spriteSheet.setHeight(height);
-    }
-
-    public void setPiece(int piece) {
-        this.piece = piece;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
     }
 
     public void render(int x, int y) {
@@ -158,6 +120,45 @@ public class Light {
         }
     }
 
+    private void setShift() {
+        if (giveShadows) {
+            xCenterShift = width / 2;
+            yCenterShift = height / 2;
+        } else {
+            switch (piece) {
+                case LEFT_TOP_PART:
+                    xCenterShift = width;
+                    yCenterShift = height;
+                    break;
+                case RIGHT_TOP_PART:
+                    xCenterShift = 0;
+                    yCenterShift = height;
+                    break;
+                case LEFT_BOTTOM_PART:
+                    xCenterShift = width;
+                    yCenterShift = 0;
+                    break;
+                case RIGHT_BOTTOM_PART:
+                    xCenterShift = 0;
+                    yCenterShift = 0;
+                    break;
+            }
+        }
+    }
+
+    public void setSize(int width, int height) {
+        spriteSheet.setWidth(width);
+        spriteSheet.setHeight(height);
+    }
+
+    public void setPiece(int piece) {
+        this.piece = piece;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
     public boolean isEmits() {
         return owner.isEmits();
     }
@@ -182,19 +183,41 @@ public class Light {
         return yCenterShift;
     }
 
-    public int getXEdge() {
+    public int getXRightEdge() {
         if (giveShadows) {
             return xCenterShift;
+        } else if (xCenterShift > 0) {
+            return 0;
         } else {
-            return 2 * width - xCenterShift;
+            return width;
         }
     }
 
-    public int getYEdge() {
+    public int getYTopEdge() {
         if (giveShadows) {
             return yCenterShift;
+        } else if (yCenterShift > 0) {
+            return height;
         } else {
-            return 2 * height - yCenterShift;
+            return 0;
+        }
+    }
+
+    public int getXLeftEdge() {
+        if (giveShadows) {
+            return xCenterShift;
+        } else {
+            return width;
+        }
+    }
+
+    public int getYBottomEdge() {
+        if (giveShadows) {
+            return yCenterShift;
+        } else if (yCenterShift > 0) {
+            return 0;
+        } else {
+            return height;
         }
     }
 
@@ -244,6 +267,5 @@ public class Light {
         } else {
             return heightWholeLight;
         }
-
     }
 }

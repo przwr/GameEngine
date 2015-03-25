@@ -5,9 +5,8 @@
  */
 package game.place;
 
-import collision.Block;
 import collision.Figure;
-import static collision.OpticProperties.DEFAULT_SHADOWS_COUNT;
+import static collision.OpticProperties.INITIAL_SHADOWS_COUNT;
 import collision.RoundRectangle;
 import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.RIGHT_BOTTOM;
@@ -36,7 +35,7 @@ public class ShadowRenderer {
     private static int firstShadowPoint, secondShadowPoint, shX, shY, XL1, XL2, XR1, XR2, lightHeightHalf, lightWidthHalf, shadowLength = 32768, shadowsDarkenCount = 0, shadowsBrightenCount = 0;
     private static double angle, temp, al, bl, ar, br, as, bs, XOL, XOR, YOL, YOL2, YOR, YOR2;
     private static Shadow tempShadow;
-    private static Shadow[] shadowsDarken = new Shadow[DEFAULT_SHADOWS_COUNT], shadowsBrighten = new Shadow[DEFAULT_SHADOWS_COUNT];
+    private static Shadow[] shadowsDarken = new Shadow[INITIAL_SHADOWS_COUNT], shadowsBrighten = new Shadow[INITIAL_SHADOWS_COUNT];
     private static final shadeRenderer[] singleShadeRenderers = new shadeRenderer[6];
     private static boolean checked;
     private static Point tempPoint;
@@ -49,7 +48,7 @@ public class ShadowRenderer {
         shadowPoints[1] = new Point();
         shadowPoints[2] = new Point();
         shadowPoints[3] = new Point();
-        for (int i = 0; i < DEFAULT_SHADOWS_COUNT; i++) {
+        for (int i = 0; i < INITIAL_SHADOWS_COUNT; i++) {
             shadowsDarken[i] = new Shadow(0);
             shadowsBrighten[i] = new Shadow(0);
         }
@@ -74,9 +73,7 @@ public class ShadowRenderer {
             }
         };
         singleShadeRenderers[BRIGHTEN_OBJECT] = (Light emitter, Figure shade, Point point) -> {
-            if (!(shade.getOwner() instanceof Block)) {
-                shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
-            }
+            shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
         };
         singleShadeRenderers[DARKEN_OBJECT] = (Light emitter, Figure shade, Point point) -> {
             shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
@@ -286,7 +283,8 @@ public class ShadowRenderer {
                     if (shadowsBrightenCount == shadowsBrighten.length) {
                         resizeShadowsBrighten();
                     }
-                    shadowsBrighten[shadowsBrightenCount++].setBrighten(shaded.getShadow(i).point.getX(), shaded.getShadow(i).point.getY(), shaded.getShadow(i).source);
+                    shadowsBrighten[shadowsBrightenCount++].setBrighten(shaded.getShadow(i).point.getX(), shaded.getShadow(i).point.getY(), shaded.getShadow(i).caster);
+                    break;
                 case BRIGHTEN_OBJECT:
                     if (shadowsBrightenCount == shadowsBrighten.length) {
                         resizeShadowsBrighten();
@@ -299,7 +297,7 @@ public class ShadowRenderer {
         if (tempShadow != null && shadowsBrightenCount == 0) {
             shaded.addShadow(BRIGHT, 0, 0, null);
         }
-        if (shaded instanceof RoundRectangle || !shaded.isGiveShadow()) {
+        if (shaded instanceof RoundRectangle || (!shaded.isGiveShadow() && shaded.isLittable())) {
             if (shadowsBrightenCount != 0) {
                 int minValue = Integer.MAX_VALUE, maxValue = -1;
                 Shadow minShadow = null, maxShadow = null;
@@ -929,8 +927,8 @@ public class ShadowRenderer {
                     if (other.getYEnd() == current.getYEnd()) {
                         tempShadow = null;
                         for (int i = 0; i < other.getShadowCount(); i++) {
-                            if (other.getShadow(i).type == BRIGHTEN && other.getShadow(i).source.getYEnd() == other.getYEnd()) {
-                                if (FastMath.abs(current.getX() - other.getX()) > FastMath.abs(other.getShadow(i).source.getX() - other.getX())) {
+                            if (other.getShadow(i).type == BRIGHTEN && other.getShadow(i).caster.getYEnd() == other.getYEnd()) {
+                                if (FastMath.abs(current.getX() - other.getX()) > FastMath.abs(other.getShadow(i).caster.getX() - other.getX())) {
                                     return;
                                 } else {
                                     tempShadow = other.getShadow(i);
@@ -1002,8 +1000,8 @@ public class ShadowRenderer {
                     if (other.getYEnd() == current.getYEnd()) {
                         tempShadow = null;
                         for (int i = 0; i < other.getShadowCount(); i++) {
-                            if (other.getShadow(i).type == BRIGHTEN && other.getShadow(i).source.getYEnd() == other.getYEnd()) {
-                                if (FastMath.abs(current.getX() - other.getX()) > FastMath.abs(other.getShadow(i).source.getX() - other.getX())) {
+                            if (other.getShadow(i).type == BRIGHTEN && other.getShadow(i).caster.getYEnd() == other.getYEnd()) {
+                                if (FastMath.abs(current.getX() - other.getX()) > FastMath.abs(other.getShadow(i).caster.getX() - other.getX())) {
                                     return;
                                 } else {
                                     tempShadow = other.getShadow(i);
