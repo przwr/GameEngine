@@ -110,6 +110,14 @@ public abstract class Figure implements Comparable<Figure> {
         opticProperties.addShadow(type, x, y, source);
     }
 
+    public void addShadow(int type, int x, int y) {
+        opticProperties.addShadow(type, x, y, null);
+    }
+
+    public void addShadow(int type) {
+        opticProperties.addShadow(type, 0, 0, null);
+    }
+
     public void clearShadows() {
         opticProperties.clearShadows();
     }
@@ -257,5 +265,13 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setLightDistance(int lightDistance) {
         opticProperties.setLightDistance(lightDistance);
+    }
+
+    public void setOpticProperties(int type) {
+        opticProperties.setType(type);
+    }
+
+    public void setShadowHeight(int shadowHeight) {
+        opticProperties.setType(shadowHeight);
     }
 }

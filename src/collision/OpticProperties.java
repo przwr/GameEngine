@@ -16,8 +16,8 @@ public class OpticProperties {
     public static final int FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, IN_SHADE = 3, INITIAL_SHADOWS_COUNT = 20;
     private static final boolean[] LITABLE = {true, true, false, false};
     private static final boolean[] GIVE_SHADOW = {true, false, false, true};
-    private final int type;
-    private final int shadowHeight;
+    private int type;
+    private int shadowHeight;
     private int lightDistance;
     private Shadow[] shadows = new Shadow[INITIAL_SHADOWS_COUNT];
     private int shadowsCount = 0;
@@ -95,10 +95,17 @@ public class OpticProperties {
 
     public Shadow getShadow(int i) {
         return shadows[i];
-
     }
 
     public void setLightDistance(int lightDistance) {
         this.lightDistance = lightDistance;
+    }
+    
+    public void setType(int type){
+        this.type = type;
+    }
+    
+    public void setShadowHeight(int shadowHeight){
+        this.shadowHeight = shadowHeight;
     }
 }
