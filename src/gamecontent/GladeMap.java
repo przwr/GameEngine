@@ -5,6 +5,8 @@
  */
 package gamecontent;
 
+import collision.Block;
+import collision.OpticProperties;
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import collision.Rectangle;
 import game.gameobject.LightSource;
