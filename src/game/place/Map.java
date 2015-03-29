@@ -90,6 +90,7 @@ public class Map {
 
     public void addForegroundTile(GameObject tile) {
         foregroundTiles.add(tile);
+        tile.setMapNotChange(this);
         sortObjectsByDepth(foregroundTiles);
     }
 
@@ -116,10 +117,12 @@ public class Map {
 
     public void addBlock(Block block) {
         blocks.add(block);
+        block.setMapNotChange(this);
     }
 
     public void deleteBlock(Block block) {
         blocks.remove(block);
+        block.setMapNotChange(null);
     }
 
     public void addObject(GameObject object) {
@@ -265,6 +268,10 @@ public class Map {
                 });
     }
 
+    public void sortFGTiles() {
+        Collections.sort(foregroundTiles, depthComparator);
+    }
+    
     public void sortObjectsByDepth(ArrayList<GameObject> objects) {
         Collections.sort(objects, depthComparator);
     }

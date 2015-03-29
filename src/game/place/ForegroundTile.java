@@ -53,6 +53,7 @@ public class ForegroundTile extends Tile {
     protected ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round) {
         super(spriteSheet, size, xSheet, ySheet);
         solid = wall;
+        name = "FGTile";
         type = wall ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW;
         setCollision(Rectangle.create(0, yStart, size, size, type, this));
         simpleLighting = !round;

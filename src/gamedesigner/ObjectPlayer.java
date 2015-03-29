@@ -19,6 +19,7 @@ import game.gameobject.GUIObject;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import gamedesigner.designerElements.PuzzleLink;
+import java.util.ArrayList;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
@@ -47,6 +48,7 @@ public class ObjectPlayer extends Player {
     private boolean paused;
 
     private RoundedTMPBlock rTmpBlock;
+    private ArrayList<TemporaryBlock> movingBlock;
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
@@ -120,6 +122,12 @@ public class ObjectPlayer extends Player {
             setY(iy * tileSize);
         }
 
+        if (key.key(KEY_M) && movingBlock != null) {
+            movingBlock.stream().forEach((tmpb) -> {
+                tmpb.move(xtimer == 0 ? xPosition * tileSize : 0, ytimer == 0 ? yPosition * tileSize : 0);
+            });
+        }
+
         if (mode < 2) {
             if (xtimer == 0 && (!cltr || roundBlocksMode)) {
                 xStop = Methods.interval(0, xStop + xPosition, map.getTileWidth());
@@ -131,7 +139,7 @@ public class ObjectPlayer extends Player {
             xStop = ix;
             yStop = iy;
         }
-        
+
         ui.setCursorStatus(ix, iy, Math.abs(ix - xStop) + 1, Math.abs(iy - yStop) + 1);
         if (camera != null) {
             camera.update();
@@ -158,7 +166,7 @@ public class ObjectPlayer extends Player {
     public void setMode(int mode) {
         this.mode = mode;
     }
-    
+
     @Override
     public void update() {
         key.keyboardStart();
@@ -197,6 +205,18 @@ public class ObjectPlayer extends Player {
             }
             if (mode == 3) {
                 roundBlocksMode = false;
+            }
+
+            if (key.key(KEY_M)) {
+                if (movingBlock == null) {
+                    int xBegin = Math.min(ix, xStop);
+                    int yBegin = Math.min(iy, yStop);
+                    int xd = (Math.abs(ix - xStop) + 1);
+                    int yd = (Math.abs(iy - yStop) + 1);
+                    movingBlock = objMap.getBlock(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
+                }
+            } else {
+                movingBlock = null;
             }
 
             if (xPos != 0 || yPos != 0) {
@@ -276,7 +296,7 @@ public class ObjectPlayer extends Player {
             if (key.keyPressed(KEY_B)) {
                 objMap.changeBlockUsability(ix, iy);
             }
-            
+
             if (key.keyPressed(KEY_HOME)) {
                 objPlace.setCentralPoint(ix, iy);
             }
@@ -384,11 +404,11 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect,  Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect,  Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
     }
 
     @Override

@@ -48,6 +48,20 @@ public class Block extends GameObject {
         }
     }
 
+    public void move(int dx, int dy) {
+        x += dx;
+        y += dy;
+        topForegroundTiles.stream().forEach((fgt) -> {
+            fgt.setX(fgt.getX() + dx);
+            fgt.setY(fgt.getY() + dy);
+        });
+        wallForegroundTiles.stream().forEach((fgt) -> {
+            fgt.setX(fgt.getX() + dx);
+            fgt.setY(fgt.getY() + dy);
+        });
+        map.sortFGTiles();
+    }
+    
     @Override
     public void setVisible(boolean visible) {
         this.visible = visible;
