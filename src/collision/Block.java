@@ -39,7 +39,7 @@ public class Block extends GameObject {
         name = "area";
         solid = true;
         simpleLighting = !round;
-        visible = true;
+        visible = true;        
         if (round) {
             setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
         } else {
@@ -59,9 +59,14 @@ public class Block extends GameObject {
             fgt.setX(fgt.getX() + dx);
             fgt.setY(fgt.getY() + dy);
         });
+        if (!collision.isMobile()) {
+            collision.setMobile(true);
+            collision.getPoints();
+            collision.setMobile(false);
+        }
         map.sortFGTiles();
     }
-    
+
     @Override
     public void setVisible(boolean visible) {
         this.visible = visible;
@@ -174,7 +179,7 @@ public class Block extends GameObject {
         if (isSimpleLighting()) {
             System.out.println("Powinno być nie używane w Block Lit! " + figure.getOwner().getX() + "  " + figure.getOwner().getY());
             glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
-           //  Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
+            //  Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();

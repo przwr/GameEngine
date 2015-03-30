@@ -9,7 +9,6 @@ import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
-import java.awt.Polygon;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -134,6 +133,16 @@ public class RoundRectangle extends Figure {
         corners[RIGHT_TOP] = new Corner(new Point(getX() + width, getY()));
     }
 
+    private void updateCorners() {
+        corners[LEFT_TOP].setCornerPoint(getX(), getY());
+        corners[LEFT_BOTTOM].setCornerPoint(getX(), getY() + height);
+        corners[RIGHT_BOTTOM].setCornerPoint(getX() + width, getY() + height);
+        corners[RIGHT_TOP].setCornerPoint(getX() + width, getY());
+        for (Corner corner : corners) {
+            corner.updateCornerPoints();
+        }
+    }
+
     private void updatePoints() {
         points.clear();
         for (Corner corner : corners) {
@@ -142,7 +151,7 @@ public class RoundRectangle extends Figure {
             });
         }
         points.trimToSize();
-        
+
         bottomPoints.clear();
         corners[LEFT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
             bottomPoints.add(point);
@@ -235,6 +244,7 @@ public class RoundRectangle extends Figure {
     @Override
     public Collection<Point> getPoints() {
         if (isMobile()) {
+            updateCorners();
             updatePoints();
         }
         return Collections.unmodifiableCollection(points);
@@ -307,15 +317,29 @@ public class RoundRectangle extends Figure {
             points[PREVOIUS] = new Point(getX() + changes[PREVOIUS].getX(), getY() + changes[PREVOIUS].getY());
         }
 
+        private void setCornerPoint(int x, int y) {
+            points[CORNER].set(x, y);
+        }
+
+        private void updateCornerPoints() {
+            if (this.changes != null) {
+                for (int i = 0; i < points.length; i++) {
+                    if (points[i] != null) {
+                        points[i].set(getX() + changes[i].getX(), getY() + changes[i].getY());
+                    }
+                }
+            }
+        }
+
         public Point getCorner() {
-            return points[CORNER];
+            return this.points[CORNER];
         }
 
         public Collection<Point> getPoints() {
-            if (points[NEXT] == null) {
-                return Arrays.asList(points[CORNER]);
+            if (this.points[NEXT] == null) {
+                return Arrays.asList(this.points[CORNER]);
             } else {
-                return Arrays.asList(points);
+                return Arrays.asList(this.points);
             }
         }
     }
