@@ -104,6 +104,12 @@ public class TemporaryBlock extends GameObject {
         glPopMatrix();
     }
 
+    public void move(int dx, int dy) {
+        x += dx;
+        y += dy;
+        block.move(dx, dy);
+    }
+    
     public boolean isBlocked() {
         return blocked;
     }

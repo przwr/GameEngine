@@ -144,6 +144,19 @@ public class ObjectMap extends Map {
         }
     }
 
+    public ArrayList<TemporaryBlock> getBlock(int x, int y, int width, int height) {
+        ArrayList<TemporaryBlock> tmplist = new ArrayList<>();
+        for (GameObject go : flatObjects) {
+            if (go instanceof TemporaryBlock) {
+                TemporaryBlock tb = (TemporaryBlock) go;
+                if (tb.checkCollision(x, y, width, height)) {
+                    tmplist.add(tb);
+                }
+            }
+        }
+        return tmplist;
+    } 
+    
     public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altmode) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
