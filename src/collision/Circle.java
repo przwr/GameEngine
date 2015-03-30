@@ -10,6 +10,7 @@ import engine.Methods;
 import game.gameobject.GameObject;
 import java.awt.geom.Line2D;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -17,22 +18,24 @@ import java.util.Collection;
  */
 public class Circle extends Figure {
 
-    private final static int PRECISION = 16;
-    private final static int step = 360 / PRECISION;
+    private final int precision;
+    private final int step;
     private final int radius;
 
-    public static Circle create(int xStart, int yStart, int radius, int OpticPropertiesType, GameObject owner) {
-        return new Circle(xStart, yStart, radius, OpticPropertiesType, owner);
+    public static Circle create(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, GameObject owner) {
+        return new Circle(xStart, yStart, radius, precision, OpticPropertiesType, owner);
     }
 
-    public static Circle create(int radius, int OpticPropertiesType, GameObject owner) {
-        return new Circle(0, 0, radius, OpticPropertiesType, owner);
+    public static Circle create(int radius, int precision, int OpticPropertiesType, GameObject owner) {
+        return new Circle(0, 0, radius, precision, OpticPropertiesType, owner);
     }
 
-    private Circle(int xStart, int yStart, int radius, int OpticPropertiesType, GameObject owner) {
+    private Circle(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, GameObject owner) {
         super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType));
         this.radius = radius;
-        for (int i = 0; i < PRECISION; i++) {
+        this.precision = precision;
+        this.step =  360 / precision;
+        for (int i = 0; i < precision; i++) {
             points.add(new Point((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius)));
         }
         points.trimToSize();
@@ -108,11 +111,11 @@ public class Circle extends Figure {
     @Override
     public Collection<Point> getPoints() {
         if (isMobile()) {
-            for (int i = 0; i < PRECISION; i++) {
+            for (int i = 0; i < precision; i++) {
                 points.get(i).set((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius));
             }
         }
-        return points;
+        return Collections.unmodifiableCollection(points);
     }
 
     public int getRadius() {
