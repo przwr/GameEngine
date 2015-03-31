@@ -5,8 +5,10 @@
  */
 package game.place;
 
+import collision.Block;
 import collision.Figure;
 import static collision.OpticProperties.INITIAL_SHADOWS_COUNT;
+import static collision.OpticProperties.TRANSPARENT;
 import collision.RoundRectangle;
 import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.RIGHT_BOTTOM;
@@ -137,25 +139,24 @@ public class ShadowRenderer {
 
     private static void findShades(Light light, Map map) {
         shades.clear();
-        // każda odległość zależna od strony i końca kolizji NIE Central
-        map.blocks.stream().forEach((block) -> {
+        for (Block block : map.getBlocks()) {
             tempShade = block.getCollision();
-            if (tempShade != null
-                    && tempShade.getY() - FastMath.abs(tempShade.getShadowHeight()) - Place.tileSize <= light.getY() + lightHeightHalf && tempShade.getYEnd() >= light.getY() - lightHeightHalf
-                    && tempShade.getX() <= light.getX() + lightWidthHalf && tempShade.getXEnd() >= light.getX() - lightWidthHalf) {
-                tempShade.setLightDistance(FastMath.abs(tempShade.getXCentral() - light.getX()));
-                shades.add(tempShade);
-            }
-            for (Figure top : block.getTop()) {
-                if (top != null && !top.isLittable()
-                        && top.getY() - 2 * FastMath.abs(tempShade.getShadowHeight()) - tempShade.getHeight() <= light.getY() + lightHeightHalf
-                        && top.getX() <= light.getX() + lightWidthHalf && top.getXEnd() >= light.getX() - lightWidthHalf) {
-                    top.setLightDistance(FastMath.abs(top.getXCentral() - light.getX()));
-                    shades.add(top);
+            if (tempShade != null && tempShade.getType() != TRANSPARENT) {
+                if (tempShade.getY() - FastMath.abs(tempShade.getShadowHeight()) - Place.tileSize <= light.getY() + lightHeightHalf && tempShade.getYEnd() >= light.getY() - lightHeightHalf
+                        && tempShade.getX() <= light.getX() + lightWidthHalf && tempShade.getXEnd() >= light.getX() - lightWidthHalf) {
+                    tempShade.setLightDistance(FastMath.abs(tempShade.getXCentral() - light.getX()));
+                    shades.add(tempShade);
+                }
+                for (Figure top : block.getTop()) {
+                    if (top != null && !top.isLittable()
+                            && top.getY() - 2 * FastMath.abs(tempShade.getShadowHeight()) - tempShade.getHeight() <= light.getY() + lightHeightHalf
+                            && top.getX() <= light.getX() + lightWidthHalf && top.getXEnd() >= light.getX() - lightWidthHalf) {
+                        top.setLightDistance(FastMath.abs(top.getXCentral() - light.getX()));
+                        shades.add(top);
+                    }
                 }
             }
-//             Optymalizacja TOP - używanie jednej kolizji jak się da!
-        });
+        }
         for (GameObject object : map.getForegroundTiles()) {
             if (!((ForegroundTile) object).isInBlock()) {
                 tempShade = object.getCollision();
@@ -938,7 +939,7 @@ public class ShadowRenderer {
                     if (DEBUG) {
                         System.out.println("Left Round Light XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
                     }
-                } else if ((source.getX() > current.getX() && current.getX() >= other.getXEnd()) || (source.getX() < current.getXEnd() && current.getXEnd() <= other.getX())) { //dodaj cień
+                } else if ((source.getX() >= current.getX() && current.getXEnd() >= other.getX()) || (source.getX() <= current.getXEnd() && current.getX() <= other.getXEnd())) { //dodaj cień
                     other.addShadow(DARKEN, XL1 - other.getX(), XL2 - other.getX());
                     checked = true;
                     if (DEBUG) {
@@ -954,7 +955,7 @@ public class ShadowRenderer {
                         if (DEBUG) {
                             System.out.println("Left Round Lightness - second");
                         }
-                    } else if ((source.getX() > current.getX() && current.getX() >= other.getXEnd()) || (source.getX() < current.getXEnd() && current.getXEnd() <= other.getX())) {
+                    } else if ((source.getX() >= current.getX() && current.getX() >= other.getXEnd()) || (source.getX() <= current.getXEnd() && current.getXEnd() <= other.getX())) {
                         other.addShadow(DARK);
                         checked = true;
                         if (DEBUG) {
@@ -1011,7 +1012,7 @@ public class ShadowRenderer {
                     if (DEBUG) {
                         System.out.println("Right Round Light XR1 " + (XR1) + " XR2 " + (XR2));
                     }
-                } else if ((source.getX() > current.getX() && current.getX() >= other.getXEnd()) || (source.getX() < current.getXEnd() && current.getXEnd() <= other.getX())) { //dodaj cień
+                } else if ((source.getX() >= current.getX() && current.getXEnd() >= other.getX()) || (source.getX() <= current.getXEnd() && current.getX() <= other.getXEnd())) { //dodaj cień
                     other.addShadow(DARKEN, XR1 - other.getX(), XR2 - other.getX());
                     checked = true;
                     if (DEBUG) {
@@ -1027,7 +1028,7 @@ public class ShadowRenderer {
                         if (DEBUG) {
                             System.out.println("Right Round Lightness - first");
                         }
-                    } else if ((source.getX() > current.getX() && current.getX() >= other.getXEnd()) || (source.getX() < current.getXEnd() && current.getXEnd() <= other.getX())) {
+                    } else if ((source.getX() >= current.getX() && current.getX() >= other.getXEnd()) || (source.getX() <= current.getXEnd() && current.getXEnd() <= other.getX())) {
                         other.addShadow(DARK);
                         checked = true;
                         if (DEBUG) {

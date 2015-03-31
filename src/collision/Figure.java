@@ -250,6 +250,10 @@ public abstract class Figure implements Comparable<Figure> {
     public Shadow getShadow(int i) {
         return opticProperties.getShadow(i);
     }
+    
+    public int getType(){
+        return opticProperties.getType();
+    }
 
     public void setMobile(boolean mobile) {
         this.mobile = mobile;
