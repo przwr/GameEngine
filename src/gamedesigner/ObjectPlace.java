@@ -142,6 +142,11 @@ public class ObjectPlace extends Place {
         if (key.keyPressed(Keyboard.KEY_U)) {
             undo.undo();
         }
+        if (key.key(Keyboard.KEY_BACK) && key.keyPressed(Keyboard.KEY_LCONTROL)) {
+            maps.get(0).clear();
+            lastName = "";
+            printMessage("MAP CLEARED");
+        }
         altMode = key.key(Keyboard.KEY_LMENU);
 
         if (key.keyPressed(Keyboard.KEY_1)) {
@@ -215,7 +220,7 @@ public class ObjectPlace extends Place {
     public UndoControl getUndoControl() {
         return undo;
     }
-    
+
     private void setMode(int mode) {
         this.mode = mode;
         editor.setMode(mode);
@@ -292,6 +297,7 @@ public class ObjectPlace extends Place {
             maps.get(0).clear();
             loaded.placePuzzle(p.getX(), p.getY(), maps.get(0));
             printMessage("Object \"" + name + "\" was loaded");
+            undo.removeMoves();
             lastName = file[0];
         }
     }

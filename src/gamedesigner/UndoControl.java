@@ -5,6 +5,7 @@
  */
 package gamedesigner;
 
+import engine.Point;
 import game.place.ForegroundTile;
 import game.place.Tile;
 import java.util.ArrayList;
@@ -23,32 +24,30 @@ public class UndoControl {
 
     private Move previous = null;
     private final ObjectMap map;
-    private final int tile, memory;
+    private final int memory;
 
     public UndoControl(ObjectMap m, int memory) {
         map = m;
-        tile = m.getTileSize();
         this.memory = memory;
     }
 
-    public void setUpTilesUndo(int x, int y, int xEnd, int yEnd) {
-        TileMove tm = new TileMove(x, y, xEnd, yEnd);
-        tm.tiles = map.getTilesCopies(x, y, xEnd, yEnd);
-        tm.fgtiles = map.getFGTilesCopies(x, y, xEnd, yEnd);
+    public void setUpUndo() {
+        Move tm = new Move(map.saveMap());
         addMove(tm);
-    }
-
-    public void setUpBlockUndo(int x, int y, int xEnd, int yEnd) {
-
     }
 
     public void undo() {
         if (previous != null) {
             previous.undoMove();
             previous = previous.prev;
+            map.place.printMessage("Move was undone");
         } else {
             map.place.printMessage("There is no move to undo!");
         }
+    }
+    
+    public void removeMoves() {
+        previous = null;
     }
 
     private void addMove(Move m) {
@@ -57,39 +56,22 @@ public class UndoControl {
         previous.cutMemory(memory);
     }
 
-    private class TileMove extends Move {
-
-        private Tile[][] tiles;
-        private ArrayList<ForegroundTile> fgtiles;
-        int x, y, xE, yE;
-
-        public TileMove(int xSt, int ySt, int xEn, int yEn) {
-            x = xSt;
-            y = ySt;
-            xE = xEn;
-            yE = yEn;
-        }
-
-        @Override
-        protected void undoMove() {
-            for (int ix = 0; ix < tiles.length; ix++) {
-                for (int iy = 0; iy < tiles[0].length; iy++) {
-                    map.setTile(x + ix, y + iy, tiles[ix][iy]);
-                }
-            }
-            map.removeFGTiles(x * tile, y * tile, xE * tile, yE * tile);
-            for (ForegroundTile fgt : fgtiles) {
-                
-            }
-            map.place.printMessage("Tile move was Undone");
-        }
-    }
-
-    private abstract class Move {
+    private class Move {
 
         Move prev;
+        ArrayList<String> mapCopy;
 
-        protected abstract void undoMove();
+        Move(ArrayList<String> mapCopy) {
+            this.mapCopy = mapCopy;
+        }
+        
+        protected void undoMove() {
+            ObjectPO po = new ObjectPO(mapCopy, map.place);
+            map.clear();
+            Point p = po.getStartingPoint();
+            po.placePuzzle(p.getX(), p.getY(), map);
+            mapCopy = null;
+        }
 
         protected void cutMemory(int mem) {
             if (mem > 0) {

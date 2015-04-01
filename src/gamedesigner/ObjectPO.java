@@ -5,6 +5,7 @@
  */
 package gamedesigner;
 
+import engine.Methods;
 import gamedesigner.designerElements.RoundedTMPBlock;
 import gamedesigner.designerElements.TemporaryBlock;
 import engine.Point;
@@ -14,6 +15,10 @@ import game.place.Map;
 import game.place.Place;
 import game.place.PuzzleObject;
 import gamedesigner.designerElements.PuzzleLink;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import sprites.SpriteSheet;
 
@@ -28,6 +33,10 @@ public class ObjectPO extends PuzzleObject {
 
     public ObjectPO(String file, Place place) {
         super(file, place);
+    }
+
+    public ObjectPO(ArrayList<String> map, Place place) {
+        super(map, place);
     }
 
     @Override
