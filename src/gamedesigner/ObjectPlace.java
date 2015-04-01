@@ -261,6 +261,11 @@ public class ObjectPlace extends Place {
         }
     }
 
+    public void clearMap() {
+        maps.get(0).clear();
+        printMessage("Map cleaned");
+    }
+
     public void getFile(File f) {
         String name = f.getName();
         String[] file = name.split("\\.");

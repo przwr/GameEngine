@@ -273,6 +273,31 @@ public class ObjectMap extends Map {
         }
     }
 
+    public ArrayList<Tile> getTilesCopies(int xSt, int ySt, int xEnd, int yEnd) {
+        ArrayList<Tile> tmp = new ArrayList<>();
+        for (int x = xSt; x <= xEnd; x++) {
+            for (int y = ySt; y <= yEnd; y++) {
+                tmp.add(getTile(x, y).copy());
+            }
+        }
+        return tmp;
+    }
+    
+    public ArrayList<ForegroundTile> getFGTilesCopies(int xStart, int yStart, int xStop, int yStop) {
+        ArrayList<ForegroundTile> tmp = new ArrayList<>();
+        int xBegin = xStart * tileSize;
+        int yBegin = xStart * tileSize;
+        int xEnd = xStop * tileSize;
+        int yEnd = xStop * tileSize;
+        for (GameObject go : foregroundTiles) {
+            ForegroundTile fgt = (ForegroundTile) go;
+            if (fgt.getX() >= xStart && fgt.getX() <= xEnd && fgt.getY() >= yStart && fgt.getY() <= yEnd) {
+                tmp.add(fgt);
+            }
+        }
+        return tmp;
+    }
+    
     public ArrayList<String> saveMap() {
         ArrayList<String> map = new ArrayList<>();
         SpriteSheet repeated = null;
