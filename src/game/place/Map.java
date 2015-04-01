@@ -393,6 +393,10 @@ public class Map {
         }
     }
 
+    public int getTileIndex(int x, int y) {
+        return x + y * heightInTiles;
+    }
+    
     public void setTile(int x, int y, Tile tile) {
         tiles[x + y * heightInTiles] = tile;
     }

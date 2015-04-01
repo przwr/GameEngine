@@ -141,9 +141,6 @@ public class PuzzleObject {
             }
             width = Math.abs(xEnd - xBegin) + 1;
             height = Math.abs(yEnd - yBegin) + 1;
-            //System.out.println("Tiles: " + bgTiles.size());
-            //System.out.println("FGTiles: " + fgTiles.size());
-            //System.out.println("Areas: " + areas.size());
             input.close();
         } catch (IOException e) {
             Methods.error("File " + file + " not found!\n" + e.getMessage());

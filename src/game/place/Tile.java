@@ -142,6 +142,7 @@ public class Tile extends GameObject implements Appearance {
         for (int i = 1; i < tileStack.size(); i++) {
             copy.tileStack.add(tileStack.get(i));
         }
+        copy.setDepth(depth);
         return copy;
     }
     

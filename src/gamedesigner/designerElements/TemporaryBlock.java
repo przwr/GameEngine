@@ -110,7 +110,7 @@ public class TemporaryBlock extends GameObject {
         y += dy;
         block.move(dx, dy);
     }
-    
+
     public boolean isBlocked() {
         return blocked;
     }
@@ -120,18 +120,27 @@ public class TemporaryBlock extends GameObject {
         block.setVisible(!blocked);
     }
 
+    public boolean checkIfContainsTile(int x, int y) {
+        return tiles.stream().anyMatch((fgt) -> ((fgt.getX() / tile) == x && (fgt.getY() / tile) == y));
+    }
+    
     public ForegroundTile removeTile(int x, int y) {
+        ForegroundTile tmp = null;
+        int maxDepth = 0;
         for (ForegroundTile fgt : tiles) {
-            if ((fgt.getX() / tile) == x && (fgt.getY() / tile) == y) {
-                Point p = fgt.popTileFromStack();
-                if (p != null && fgt.tileStackSize() != 0) {
-                    return null;
-                }
-                tiles.remove(fgt);
-                return fgt;
+            if ((fgt.getX() / tile) == x && (fgt.getY() / tile) == y && fgt.getDepth() > maxDepth) {
+                tmp = fgt;
+                maxDepth = fgt.getDepth();
             }
         }
-        return null;
+        if (tmp != null) {
+            Point p = tmp.popTileFromStack();
+            if (p != null && tmp.tileStackSize() != 0) {
+                return null;
+            }
+            tiles.remove(tmp);
+        }
+        return tmp;
     }
 
     public boolean checkIfContains(int x, int y) {
@@ -179,10 +188,10 @@ public class TemporaryBlock extends GameObject {
         int maxLevel = Math.min(level, upHeight);
         fgt = createTile(tex, y, tile, xSheet, ySheet, level, altMode);
         if (altMode) {
-            map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel + 1) * tile);
-            fgt.setDepth(fgt.getPureDepth() + tile);
+            map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel) * tile);
+            fgt.setDepth(fgt.getPureDepth() + 1);
         } else {
-            map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (maxLevel + 1) * tile);
+            map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (maxLevel) * tile);
         }
         tiles.add(fgt);
         block.addForegroundTile(fgt);
@@ -191,7 +200,7 @@ public class TemporaryBlock extends GameObject {
 
     public void createBlock() {
         block = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
-        if(upHeight == 0){
+        if (upHeight == 0) {
             block.getCollision().setOpticProperties(TRANSPARENT);
         }
         map.addBlock(block);

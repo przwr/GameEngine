@@ -249,6 +249,7 @@ public class ObjectPlayer extends Player {
                 int xEnd = Math.max(ix, xStop);
                 int yEnd = Math.max(iy, yStop);
                 if (mode == 0) {
+                    objPlace.getUndoControl().setUpTilesUndo(xBegin, yBegin, xEnd, yEnd);
                     for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
                         for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
                             Point p = ui.getCoordinates();
