@@ -1,5 +1,6 @@
 package engine;
 
+import game.place.Place;
 import java.awt.geom.Line2D;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -18,8 +19,9 @@ import org.lwjgl.input.Keyboard;
  */
 public class Methods {
 
-    private static double AO, OB, AB;
+    private static double A, B, AB, delta, X1, Y1, X2, Y2;
     private static int xOA, yOA, xOB, yOB, xBA, yBA;
+    private static Point point = new Point(0, 0);
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -63,10 +65,10 @@ public class Methods {
         yOB = yO - yB;
         xBA = xB - xA;
         yBA = yB - yA;
-        AO = FastMath.sqrt((xOA * xOA) + (yOA * yOA));
-        OB = FastMath.sqrt((xOB * xOB) + (yOB * yOB));
+        A = FastMath.sqrt((xOA * xOA) + (yOA * yOA));
+        B = FastMath.sqrt((xOB * xOB) + (yOB * yOB));
         AB = FastMath.sqrt((xBA * xBA) + (yBA * yBA));
-        return FastMath.acos(((OB * OB) + (AO * AO) - (AB * AB)) / (2 * OB * AO));
+        return FastMath.acos(((B * B) + (A * A) - (AB * AB)) / (2 * B * A));
     }
 
     public static int interval(int leftBorder, int x, int rightBorder) {
@@ -115,7 +117,7 @@ public class Methods {
         return FastMath.round((float) number);
     }
 
-    public static Point getIntersectionPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+    public static Point getTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
@@ -123,7 +125,6 @@ public class Methods {
                 ry = y2 - y1,
                 sx = x4 - x3,
                 sy = y4 - y3;
-
         double det = sx * ry - sy * rx;
         if (det == 0) {
             return null;
@@ -132,33 +133,75 @@ public class Methods {
             if (z == 0 || z == 1) {
                 return null;  // intersection at end point!
             }
-            return new Point(roundDouble(x1 + z * rx), roundDouble(y1 + z * ry));
+            point.set(roundDouble(x1 + z * rx), roundDouble(y1 + z * ry));
+            return point;
         }
     }
 
-    public Point getIntersectionPoint(Line2D firstLine, Line2D secondLine) {
-        if (!firstLine.intersectsLine(secondLine)) {
+    public static Point getXTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+        if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
-        double px = firstLine.getX1(),
-                py = firstLine.getY1(),
-                rx = firstLine.getX2() - px,
-                ry = firstLine.getY2() - py;
-        double qx = secondLine.getX1(),
-                qy = secondLine.getY1(),
-                sx = secondLine.getX2() - qx,
-                sy = secondLine.getY2() - qy;
-
+        double rx = x2 - x1,
+                ry = y2 - y1,
+                sx = x4 - x3,
+                sy = y4 - y3;
         double det = sx * ry - sy * rx;
         if (det == 0) {
             return null;
         } else {
-            double z = (sx * (qy - py) + sy * (px - qx)) / det;
+            double z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
             if (z == 0 || z == 1) {
                 return null;  // intersection at end point!
             }
-            return new Point(roundDouble((px + z * rx)), roundDouble((py + z * ry)));
+            point.set(roundDouble(x1 + z * rx), roundDouble(y1 + z * ry));
+            return point;
         }
+    }
+
+    public static Point getTopCircleLineIntersection(double a, double b, double xc, double yc) { // tylko dla okręgu o promienu 64
+        calculateDelta(a, b, xc, yc);
+        if (delta < 0) {
+            return null;
+        }
+        delta = FastMath.sqrt(delta);
+        A *= 2;
+        X1 = ((-B - delta) / A);
+        Y1 = (a * X1 + b);
+        X2 = ((-B + delta) / A);
+        Y2 = (a * X2 + b);
+        if (Y2 < Y1) {
+            point.set(roundDouble(X1), -roundDouble(Y1));
+        } else {
+            point.set(roundDouble(X2), -roundDouble(Y2));
+        }
+        return point;
+    }
+
+    public static Point getBottomCircleLineIntersection(double a, double b, double xc, double yc) { // tylko dla okręgu o średnicy 64
+        calculateDelta(a, b, xc, yc);
+        if (delta < 0) {
+            return null;
+        }
+        delta = FastMath.sqrt(delta);
+        A *= 2;
+        X1 = ((-B - delta) / A);
+        Y1 = (a * X1 + b);
+        X2 = ((-B + delta) / A);
+        Y2 = (a * X2 + b);
+        if (Y2 > Y1) {
+            point.set(roundDouble(X1), -roundDouble(Y1));
+        } else {
+            point.set(roundDouble(X2), -roundDouble(Y2));
+        }
+        return point;
+    }
+
+    private static void calculateDelta(double a, double b, double xc, double yc) {
+        A = 1 + a * a;
+        AB = yc + b;
+        B = 2 * ((a * AB) - xc);
+        delta = (B * B) - 4 * A * ((xc * xc) - Place.tileArea + (AB * AB)); // Place.tileArea is radius squared
     }
 
     public static int sizeInBytes(Object obj) throws java.io.IOException {

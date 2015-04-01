@@ -7,7 +7,7 @@ package gamedesigner.designerElements;
 
 import collision.Block;
 import collision.Figure;
-import collision.OpticProperties;
+import static collision.OpticProperties.TRANSPARENT;
 import engine.Drawer;
 import engine.Point;
 import game.Settings;
@@ -191,8 +191,8 @@ public class TemporaryBlock extends GameObject {
 
     public void createBlock() {
         block = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
-        if (upHeight == 0) {
-            block.getCollision().setOpticProperties(OpticProperties.NO_SHADOW);
+        if(upHeight == 0){
+            block.getCollision().setOpticProperties(TRANSPARENT);
         }
         map.addBlock(block);
     }

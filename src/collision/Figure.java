@@ -26,7 +26,7 @@ public abstract class Figure implements Comparable<Figure> {
     private final OpticProperties opticProperties;
     protected int xStart, yStart, width, height, xCenter, yCenter;
     protected final ArrayList<Point> points;
-    private boolean mobile = true;
+    private boolean mobile = false;
 
     public abstract boolean isCollideSingle(int x, int y, Figure figure);
 
@@ -249,6 +249,10 @@ public abstract class Figure implements Comparable<Figure> {
 
     public Shadow getShadow(int i) {
         return opticProperties.getShadow(i);
+    }
+    
+    public int getType(){
+        return opticProperties.getType();
     }
 
     public void setMobile(boolean mobile) {
