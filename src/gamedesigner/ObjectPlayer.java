@@ -209,6 +209,7 @@ public class ObjectPlayer extends Player {
 
             if (key.key(KEY_M)) {
                 if (movingBlock == null) {
+                    objPlace.getUndoControl().setUpUndo();
                     int xBegin = Math.min(ix, xStop);
                     int yBegin = Math.min(iy, yStop);
                     int xd = (Math.abs(ix - xStop) + 1);
@@ -244,6 +245,7 @@ public class ObjectPlayer extends Player {
             }
 
             if (key.keyPressed(KEY_SPACE) || key.keyPressed(KEY_LMENU)) {
+                objPlace.getUndoControl().setUpUndo();
                 int xBegin = Math.min(ix, xStop);
                 int yBegin = Math.min(iy, yStop);
                 int xEnd = Math.max(ix, xStop);
@@ -274,6 +276,7 @@ public class ObjectPlayer extends Player {
             }
 
             if (key.keyPressed(KEY_DELETE)) {
+                objPlace.getUndoControl().setUpUndo();
                 int xBegin = Math.min(ix, xStop);
                 int yBegin = Math.min(iy, yStop);
                 int xEnd = Math.max(ix, xStop);

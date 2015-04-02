@@ -155,11 +155,13 @@ public class ObjectMap extends Map {
             }
         }
         return tmplist;
-    } 
-    
+    }
+
     public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altmode) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
+            tile = tile.copy();
+            setTile(x, y, tile);
             if (areTilesVisible) {
                 tile.addTileToStack(xSheet, ySheet);
             }
@@ -200,15 +202,24 @@ public class ObjectMap extends Map {
             }
         } else {
             ForegroundTile fgt;
-            TemporaryBlock tmp;
+            TemporaryBlock tmp = null;
+            TemporaryBlock max = null;
+            int maxDepth = 0;
             for (GameObject tb : objectsOnTop) {
                 if (tb instanceof TemporaryBlock) {
                     tmp = (TemporaryBlock) tb;
-                    if (!tmp.isBlocked() && (fgt = tmp.removeTile(x, y)) != null) {
-                        foregroundTiles.remove(fgt);
-                        tmp.getBlock().removeForegroundTile(fgt);
-                        return fgt;
+                    if (!tmp.isBlocked() && tmp.getDepth() > maxDepth 
+                            && tmp.checkIfContainsTile(x, y)) {
+                        max = tmp;
+                        maxDepth = tmp.getDepth();
                     }
+                }
+            }
+            if (max != null) {
+                if ((fgt = max.removeTile(x, y)) != null) {
+                    foregroundTiles.remove(fgt);
+                    max.getBlock().removeForegroundTile(fgt);
+                    return fgt;
                 }
             }
         }
@@ -216,6 +227,17 @@ public class ObjectMap extends Map {
         return null;
     }
 
+    public void removeFGTiles(int xSt, int ySt, int xEn, int yEn) {
+        ForegroundTile fgt;
+        for (int i = 0; i < foregroundTiles.size(); i++) {
+            fgt = (ForegroundTile) foregroundTiles.get(i);
+            if ((fgt.getX() >= xSt && fgt.getX() <= ySt && fgt.getY() >= xEn && fgt.getY() <= yEn)) {
+                foregroundTiles.set(i, null);
+            }
+        }
+        foregroundTiles.trimToSize();
+    }
+    
     public boolean checkBlockCollision(int x, int y, int width, int height) {
         for (GameObject go : flatObjects) {
             if (go instanceof TemporaryBlock) {
@@ -271,6 +293,29 @@ public class ObjectMap extends Map {
                 return;
             }
         }
+    }
+
+    public Tile[][] getTilesCopies(int xSt, int ySt, int xEnd, int yEnd) {
+        Tile[][] tmp = new Tile[xEnd - xSt + 1][yEnd - ySt + 1];
+        for (int x = xSt; x <= xEnd; x++) {
+            for (int y = ySt; y <= yEnd; y++) {
+                tmp[x - xSt][y - ySt] = getTile(x, y).copy();
+            }
+        }
+        return tmp;
+    }
+
+    public ArrayList<ForegroundTile> getFGTilesCopies(int xISt, int yISt, int xIStop, int yIStop) {
+        ArrayList<ForegroundTile> tmp = new ArrayList<>();
+        int xBegin = xISt * tileSize;
+        int yBegin = xISt * tileSize;
+        int xEnd = xIStop * tileSize;
+        int yEnd = xIStop * tileSize;
+        foregroundTiles.stream().map((go) -> (ForegroundTile) go).filter((fgt) 
+                -> (fgt.getX() >= xBegin && fgt.getX() <= xEnd && fgt.getY() >= yBegin && fgt.getY() <= yEnd)).forEach((fgt) -> {
+            tmp.add(fgt);
+        });
+        return tmp;
     }
 
     public ArrayList<String> saveMap() {

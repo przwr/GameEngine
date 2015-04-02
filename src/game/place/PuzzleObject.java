@@ -35,6 +35,16 @@ public class PuzzleObject {
 
     protected Place place;
 
+    /*----*/
+    Tile tmpTile;
+    FGTileContainer tmpFgt;
+    BlockContainer tempBlock = null;
+    int index;
+    int tileSize = Place.tileSize;
+    SpriteSheet tmpSS = null;
+    String[] lineTab;
+    /*----*/
+
     public PuzzleObject(String file, Place place) {
         this.place = place;
         try (BufferedReader input = new BufferedReader(new FileReader("res/objects/" + file + ".puz"))) {
@@ -45,119 +55,156 @@ public class PuzzleObject {
             links = new ArrayList<>();
 
             String line = input.readLine();
-            String[] t = line.split(":");
-            xDelta = Integer.parseInt(t[0]);
-            yDelta = Integer.parseInt(t[1]);
+            lineTab = line.split(":");
+            xDelta = Integer.parseInt(lineTab[0]);
+            yDelta = Integer.parseInt(lineTab[1]);
 
             xBegin = yBegin = Integer.MAX_VALUE;
             xEnd = yEnd = Integer.MIN_VALUE;
 
-            Tile tmpTile;
-            FGTileContainer tmpFgt;
-            BlockContainer tmpBlock = null;
-            int i;
-            int tile = Place.tileSize;
-            SpriteSheet tmpSS = null;
             while ((line = input.readLine()) != null) {
-                t = line.split(":");
-                switch (t[0]) {
-                    case "t":
-                        if (!t[3].equals("")) {
-                            tmpSS = place.getSpriteSheet(t[3]);
-                        }
-                        tmpTile = new Tile(tmpSS, tile, Integer.parseInt(t[4]), Integer.parseInt(t[5]));
-                        i = 6;
-                        while (i + 1 < t.length) {
-                            tmpTile.addTileToStack(Integer.parseInt(t[i]), Integer.parseInt(t[i + 1]));
-                            i += 2;
-                        }
-                        addTile(tmpTile, Integer.parseInt(t[1]), Integer.parseInt(t[2]));
-                        checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), 1, 1);
-                        break;
-
-                    case "ft":
-                        if (!t[4].equals("")) {
-                            tmpSS = place.getSpriteSheet(t[4]);
-                        }
-                        tmpFgt = new FGTileContainer(tmpSS, tile, Integer.parseInt(t[8]), Integer.parseInt(t[9]),
-                                t[5].equals("1"), Integer.parseInt(t[6]) * tile, t[7].equals("1"), Integer.parseInt(t[3]) * tile);
-                        tmpFgt.xBegin = Integer.parseInt(t[1]) * tile;
-                        tmpFgt.yBegin = Integer.parseInt(t[2]) * tile;
-                        i = 10;
-                        while (i + 1 < t.length) {
-                            tmpFgt.additionalPlaces.add(new Point(Integer.parseInt(t[i]), Integer.parseInt(t[i + 1])));
-                            i += 2;
-                        }
-                        if (tmpBlock == null) {
-                            fgTiles.add(tmpFgt);
-                        } else {
-                            tmpBlock.containedFGTs.add(tmpFgt);
-                        }
-                        checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), 1, 1);
-                        break;
-
-                    case "b":
-                        tmpBlock = new BlockContainer(Integer.parseInt(t[1]) * tile,
-                                Integer.parseInt(t[2]) * tile,
-                                Integer.parseInt(t[3]) * tile,
-                                Integer.parseInt(t[4]) * tile,
-                                Integer.parseInt(t[5]) * tile);
-                        blocks.add(tmpBlock);
-                        checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
-                        break;
-
-                    case "rb":
-                        tmpBlock = new RoundBlockContainer(Integer.parseInt(t[1]) * tile,
-                                Integer.parseInt(t[2]) * tile,
-                                Integer.parseInt(t[3]) * tile,
-                                Integer.parseInt(t[4]) * tile,
-                                Integer.parseInt(t[5]) * tile);
-                        ((RoundBlockContainer) tmpBlock).setCorners(new int[]{
-                            (t[7].equals("") ? 0 : Integer.parseInt(t[7])),
-                            (t[8].equals("") ? 0 : Integer.parseInt(t[8])),
-                            (t[9].equals("") ? 0 : Integer.parseInt(t[9])),
-                            (t[10].equals("") ? 0 : Integer.parseInt(t[10])),
-                            (t[11].equals("") ? 0 : Integer.parseInt(t[11])),
-                            (t[12].equals("") ? 0 : Integer.parseInt(t[12])),
-                            (t[13].equals("") ? 0 : Integer.parseInt(t[13])),
-                            (t[14].equals("") ? 0 : Integer.parseInt(t[14]))});
-                        blocks.add(tmpBlock);
-                        checkBoundaries(Integer.parseInt(t[1]), Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
-                        break;
-
-                    case "pl":
-                        PointedValue pv;
-                        i = 1;
-                        while (i + 2 < t.length) {
-                            pv = new PointedValue(Integer.parseInt(t[i]), Integer.parseInt(t[i + 1]), Integer.parseInt(t[i + 2]));
-                            links.add(pv);
-                            i += 3;
-                        }
-                        break;
-
-                    default:
-                        Methods.error("The object \"" + t[0] + "\" is undefined");
-                }
+                readLine(line);
             }
             width = Math.abs(xEnd - xBegin) + 1;
             height = Math.abs(yEnd - yBegin) + 1;
-            //System.out.println("Tiles: " + bgTiles.size());
-            //System.out.println("FGTiles: " + fgTiles.size());
-            //System.out.println("Areas: " + areas.size());
             input.close();
         } catch (IOException e) {
             Methods.error("File " + file + " not found!\n" + e.getMessage());
+        }
+    }
+    
+    public PuzzleObject(ArrayList<String> map, Place place) {
+        this.place = place;
+        bgTiles = new ArrayList<>();
+        objects = new ArrayList<>();
+        fgTiles = new ArrayList<>();
+        blocks = new ArrayList<>();
+        links = new ArrayList<>();
+
+        lineTab = map.get(0).split(":");
+        xDelta = Integer.parseInt(lineTab[0]);
+        yDelta = Integer.parseInt(lineTab[1]);
+
+        xBegin = yBegin = Integer.MAX_VALUE;
+        xEnd = yEnd = Integer.MIN_VALUE;
+
+        for (int i = 1; i < map.size(); i++) {
+            readLine(map.get(i));
+        }
+        width = Math.abs(xEnd - xBegin) + 1;
+        height = Math.abs(yEnd - yBegin) + 1;
+    }
+
+    protected void readLine(String line) {
+        lineTab = line.split(":");
+        switch (lineTab[0]) {
+            case "t":
+                decodeTile();
+                break;
+
+            case "ft":
+                decodeFGTile();
+                break;
+
+            case "b":
+                decodeBlock();
+                break;
+
+            case "rb":
+                decodeRoundedBlock();
+                break;
+
+            case "pl":
+                decodePortLinks();
+                break;
+
+            default:
+                Methods.error("The object \"" + lineTab[0] + "\" is undefined");
+        }
+    }
+
+    private void decodeTile() {
+        if (!lineTab[3].equals("")) {
+            tmpSS = place.getSpriteSheet(lineTab[3]);
+        }
+        tmpTile = new Tile(tmpSS, tileSize, Integer.parseInt(lineTab[4]), Integer.parseInt(lineTab[5]));
+        index = 6;
+        while (index + 1 < lineTab.length) {
+            tmpTile.addTileToStack(Integer.parseInt(lineTab[index]), Integer.parseInt(lineTab[index + 1]));
+            index += 2;
+        }
+        addTile(tmpTile, Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]));
+        checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), 1, 1);
+    }
+
+    private void decodeFGTile() {
+        if (!lineTab[4].equals("")) {
+            tmpSS = place.getSpriteSheet(lineTab[4]);
+        }
+        tmpFgt = new FGTileContainer(tmpSS, tileSize, Integer.parseInt(lineTab[8]), Integer.parseInt(lineTab[9]),
+                lineTab[5].equals("1"), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), Integer.parseInt(lineTab[3]) * tileSize);
+        tmpFgt.xBegin = Integer.parseInt(lineTab[1]) * tileSize;
+        tmpFgt.yBegin = Integer.parseInt(lineTab[2]) * tileSize;
+        index = 10;
+        while (index + 1 < lineTab.length) {
+            tmpFgt.additionalPlaces.add(new Point(Integer.parseInt(lineTab[index]), Integer.parseInt(lineTab[index + 1])));
+            index += 2;
+        }
+        if (tempBlock == null) {
+            fgTiles.add(tmpFgt);
+        } else {
+            tempBlock.containedFGTs.add(tmpFgt);
+        }
+        checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), 1, 1);
+    }
+
+    private void decodeBlock() {
+        tempBlock = new BlockContainer(Integer.parseInt(lineTab[1]) * tileSize,
+                Integer.parseInt(lineTab[2]) * tileSize,
+                Integer.parseInt(lineTab[3]) * tileSize,
+                Integer.parseInt(lineTab[4]) * tileSize,
+                Integer.parseInt(lineTab[5]) * tileSize);
+        blocks.add(tempBlock);
+        checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), Integer.parseInt(lineTab[3]), Integer.parseInt(lineTab[4]));
+    }
+
+    private void decodeRoundedBlock() {
+        tempBlock = new RoundBlockContainer(Integer.parseInt(lineTab[1]) * tileSize,
+                Integer.parseInt(lineTab[2]) * tileSize,
+                Integer.parseInt(lineTab[3]) * tileSize,
+                Integer.parseInt(lineTab[4]) * tileSize,
+                Integer.parseInt(lineTab[5]) * tileSize);
+        ((RoundBlockContainer) tempBlock).setCorners(new int[]{
+            (lineTab[7].equals("") ? 0 : Integer.parseInt(lineTab[7])),
+            (lineTab[8].equals("") ? 0 : Integer.parseInt(lineTab[8])),
+            (lineTab[9].equals("") ? 0 : Integer.parseInt(lineTab[9])),
+            (lineTab[10].equals("") ? 0 : Integer.parseInt(lineTab[10])),
+            (lineTab[11].equals("") ? 0 : Integer.parseInt(lineTab[11])),
+            (lineTab[12].equals("") ? 0 : Integer.parseInt(lineTab[12])),
+            (lineTab[13].equals("") ? 0 : Integer.parseInt(lineTab[13])),
+            (lineTab[14].equals("") ? 0 : Integer.parseInt(lineTab[14]))});
+        blocks.add(tempBlock);
+        checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), Integer.parseInt(lineTab[3]), Integer.parseInt(lineTab[4]));
+    }
+
+    private void decodePortLinks() {
+        PointedValue pv;
+        index = 1;
+        while (index + 2 < lineTab.length) {
+            pv = new PointedValue(Integer.parseInt(lineTab[index]), Integer.parseInt(lineTab[index + 1]), Integer.parseInt(lineTab[index + 2]));
+            links.add(pv);
+            index += 3;
         }
     }
 
     public boolean hasLinks() {
         return links.size() > 0;
     }
-    
+
     public ArrayList<PointedValue> getLinks() {
         return links;
     }
-    
+
     protected void addTile(Tile tile, int x, int y) {
         for (TileContainer tc : bgTiles) {
             if (tc.tile.equals(tile)) {
@@ -191,7 +238,6 @@ public class PuzzleObject {
     }
 
     public void placePuzzle(int x, int y, Map map) {
-        int tileSize = map.getTileSize();
         bgTiles.stream().forEach((TileContainer tc) -> {
             tc.places.stream().forEach((p) -> {
                 map.setTile(p.getX() + x, p.getY() + y, tc.tile);
@@ -200,15 +246,16 @@ public class PuzzleObject {
         blocks.stream().forEach((block) -> {
             Block tmpBlock = block.generateBlock(x * tileSize, y * tileSize);
             map.addBlock(tmpBlock);
-            for (FGTileContainer tile : block.containedFGTs) {
-                ForegroundTile fgt = tile.generateFGT(x * tileSize, y * tileSize);
+            block.containedFGTs.stream().map((tile) -> tile.generateFGT(x * tileSize, y * tileSize)).map((fgt) -> {
                 if (!fgt.isSimpleLighting()) {
                     map.addForegroundTileAndReplace(fgt);
                 } else {
                     map.addForegroundTile(fgt);
                 }
+                return fgt;
+            }).forEach((fgt) -> {
                 tmpBlock.addForegroundTile(fgt);
-            }
+            });
         });
         objects.stream().forEach((obj) -> {
             map.addObject(obj);

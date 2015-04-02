@@ -136,6 +136,16 @@ public class Tile extends GameObject implements Appearance {
         return spriteSheet;
     }
 
+    public Tile copy() {
+        Point first = tileStack.get(0);
+        Tile copy = new Tile(spriteSheet, width, first.getX(), first.getY());
+        for (int i = 1; i < tileStack.size(); i++) {
+            copy.tileStack.add(tileStack.get(i));
+        }
+        copy.setDepth(depth);
+        return copy;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (o instanceof Tile) {

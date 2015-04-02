@@ -7,6 +7,7 @@ package game.place;
 
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.Point;
 import sprites.SpriteSheet;
 
 /**
@@ -17,6 +18,8 @@ public class ForegroundTile extends Tile {
 
     private static int type;
     private boolean blockPart;
+    
+    private final int tmpYStart;
 
     public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
         return new ForegroundTile(spriteSheet, size, xSheet, ySheet, false, yStart, false);
@@ -54,11 +57,23 @@ public class ForegroundTile extends Tile {
         super(spriteSheet, size, xSheet, ySheet);
         solid = wall;
         name = "FGTile";
+        tmpYStart = yStart;
         type = wall ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW;
         setCollision(Rectangle.create(0, yStart, size, size, type, this));
         simpleLighting = !round;
     }
 
+    @Override
+    public ForegroundTile copy() {
+        Point first = tileStack.get(0);
+        ForegroundTile copy = new ForegroundTile(spriteSheet, width, first.getX(), first.getY(), solid, tmpYStart, !simpleLighting);
+        copy.depth = depth;
+        for (int i = 1; i < tileStack.size(); i++) {
+            copy.tileStack.add(tileStack.get(i));
+        }
+        return copy;
+    }
+    
     //0  1 2 4     5       6    7      8     9          10
     //ft:x:y:depth:texture:wall:yStart:round:TileXSheet:TileYSheet...
     public String saveToString(SpriteSheet s, int xBegin, int yBegin, int tile) {

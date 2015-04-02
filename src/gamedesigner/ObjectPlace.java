@@ -45,6 +45,7 @@ public class ObjectPlace extends Place {
     private final boolean[] viewingOptions;
     private ObjectMap objmap;
     private final double step = 0.03125;
+    private UndoControl undo;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
@@ -69,6 +70,7 @@ public class ObjectPlace extends Place {
         editor = ((ObjectPlayer) players[0]);
         editor.addGui(ui);
         editor.addGui(guiHandler);
+        undo = new UndoControl(objmap, 20);
         //sounds.init("res");
         color = new Color(0.75f, 0.75f, 0.75f);
         fonts = new FontBase(20);
@@ -136,6 +138,14 @@ public class ObjectPlace extends Place {
         }
         if (key.key(Keyboard.KEY_G)) {
             grid = !grid;
+        }
+        if (key.keyPressed(Keyboard.KEY_U)) {
+            undo.undo();
+        }
+        if (key.key(Keyboard.KEY_BACK) && key.keyPressed(Keyboard.KEY_LCONTROL)) {
+            maps.get(0).clear();
+            lastName = "";
+            printMessage("MAP CLEARED");
         }
         altMode = key.key(Keyboard.KEY_LMENU);
 
@@ -207,6 +217,10 @@ public class ObjectPlace extends Place {
         }
     }
 
+    public UndoControl getUndoControl() {
+        return undo;
+    }
+
     private void setMode(int mode) {
         this.mode = mode;
         editor.setMode(mode);
@@ -261,6 +275,11 @@ public class ObjectPlace extends Place {
         }
     }
 
+    public void clearMap() {
+        maps.get(0).clear();
+        printMessage("Map cleaned");
+    }
+
     public void getFile(File f) {
         String name = f.getName();
         String[] file = name.split("\\.");
@@ -278,6 +297,7 @@ public class ObjectPlace extends Place {
             maps.get(0).clear();
             loaded.placePuzzle(p.getX(), p.getY(), maps.get(0));
             printMessage("Object \"" + name + "\" was loaded");
+            undo.removeMoves();
             lastName = file[0];
         }
     }
