@@ -28,7 +28,8 @@ import sprites.SpriteSheet;
 public abstract class Place extends ScreenPlace {
 
     public static int tileSize;
-    public static int tileArea;
+    public static int tileSquared;
+    public static int tileHalf;
 
     public final ArrayList<Map> maps = new ArrayList<>();
     protected static final ArrayList<Map> tempMaps = new ArrayList<>();
@@ -116,7 +117,8 @@ public abstract class Place extends ScreenPlace {
     public Place(Game game, int tileSize) {
         super(game);
         Place.tileSize = tileSize;
-        Place.tileArea = tileSize * tileSize;
+        Place.tileSquared = tileSize * tileSize;
+        Place.tileHalf = tileSize / 2;
         sounds = new SoundBase();
         sprites = new SpriteBase();
         console = new Console(this);

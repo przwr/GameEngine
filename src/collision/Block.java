@@ -176,7 +176,7 @@ public class Block extends GameObject {
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
         glPushMatrix();
-        if (isSimpleLighting()) {
+        if (isSimpleLighting() || !collision.isBottomRounded()) {
             System.out.println("Powinno być nie używane w Block Lit! " + figure.getOwner().getX() + "  " + figure.getOwner().getY());
             glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
             //  Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
