@@ -28,46 +28,46 @@ import org.newdawn.slick.openal.SoundStore;
  */
 public class MyPlace extends Place {
 
-    private final Action changeSplitScreenMode;
-    private final Action changeSplitScreenJoin;
-    private final update[] updates = new update[2];
-    private final Delay delay = new Delay(100);
-    private final double step = 0.03125;
+	private final Action changeSplitScreenMode;
+	private final Action changeSplitScreenJoin;
+	private final update[] updates = new update[2];
+	private final Delay delay = new Delay(100);
+	private final double step = 0.03125;
 
-    public MyPlace(Game game, int tileSize) {
-        super(game, tileSize);
-        changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
-        changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
-    }
+	public MyPlace(Game game, int tileSize) {
+		super(game, tileSize);
+		changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
+		changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
+	}
 
-    @Override
-    public void generateAsGuest() {
-        GladeMap polana = new GladeMap(currentMapID++, this, 10240, 10240, tileSize);
-        StoneMap kamienna = new StoneMap(currentMapID++, this, 10240, 10240, tileSize);
-        maps.add(polana);
-        maps.add(kamienna);
+	@Override
+	public void generateAsGuest() {
+		GladeMap polana = new GladeMap(currentMapID++, this, 10240, 10240, tileSize);
+		StoneMap kamienna = new StoneMap(currentMapID++, this, 10240, 10240, tileSize);
+		maps.add(polana);
+		maps.add(kamienna);
 //        sounds.initialize("res");
-        color = new Color(0.6f, 0.6f, 0.6f);
-        fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
-        standardFont = fonts.getFont(0);
-        SoundStore.get().poll(0);
-        initMethods();
-    }
+		color = new Color(0.6f, 0.6f, 0.6f);
+		fonts = new FontBase(20);
+		fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+		standardFont = fonts.getFont(0);
+		SoundStore.get().poll(0);
+		initMethods();
+	}
 
-    @Override
-    public void generateAsHost() {
-        generateAsGuest();
-    }
+	@Override
+	public void generateAsHost() {
+		generateAsGuest();
+	}
 
-    @Override
-    public void update() {
-        updates[game.mode].update();
-    }
+	@Override
+	public void update() {
+		updates[game.mode].update();
+	}
 
-    private void initMethods() {
-        delay.start();
-        updates[0] = () -> {
+	private void initMethods() {
+		delay.start();
+		updates[0] = () -> {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
 //                sounds.getSound("MumboMountain").resume();
 //            }
@@ -99,99 +99,168 @@ public class MyPlace extends Place {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
 //                sounds.getSound("MumboMountain").fade(0.5, false);
 //            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Settings.scale -= step;
-                    if (Settings.scale < 0.125d) {
-                        Settings.scale = 0.125d;
-                    }
-                    Settings.scaled = Settings.scale != 1d;
-                    ((Player) players[0]).getCamera().update();
-                }
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Settings.scale += step;
-                    if (Settings.scale > 1d) {
-                        Settings.scale = 1d;
-                    }
-                    Settings.scaled = Settings.scale != 1d;
-                    ((Player) players[0]).getCamera().update();
-                }
-                //1d, 0.875d, 0.75d, 0.625, 0.5, 0.375, 0.25
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
-                Settings.scale = Settings.nativeScale;
-                Settings.scaled = Settings.scale != 1d;
-                ((Player) players[0]).getCamera().update();
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
-                Main.refreshGamma();
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_NEXT)) {
-                Main.resetGamma();
-            }
-            if (playersCount > 1) {
-                changeSplitScreenJoin.act();
-                changeSplitScreenMode.act();
-                if (changeSplitScreenJoin.isOn()) {
-                    Settings.joinSplitScreen = !Settings.joinSplitScreen;
-                }
-                if (changeSplitScreenMode.isOn()) {
-                    changeSSMode = true;
-                }
-                cameras[playersCount - 2].update();
-            }
-            for (int i = 0; i < playersCount; i++) {
-                ((Player) players[i]).update();
-            }
-            maps.stream().forEach((map) -> {
-                map.getSolidMobs().stream().forEach((mob) -> {
-                    mob.update();
-                });
-            });
-        };
-        updates[1] = () -> {
-            tempMaps.clear();
-            Map map;
-            if (game.online.server != null) {
-                for (int i = 0; i < playersCount; i++) {
-                    map = players[i].getMap();
-                    if (!tempMaps.contains(map)) {
-                        for (Mob mob : map.getSolidMobs()) {
-                            mob.update();
-                        }
-                        tempMaps.add(map);
-                    }
-                }
-            } else if (game.online.client != null) {
-                map = players[0].getMap();
-                for (Mob mob : map.getSolidMobs()) {
-                    mob.updateHard();
-                }
-            }
-            ((Player) players[0]).sendUpdate();
-            for (int i = 1; i < playersCount; i++) {
-                ((Entity) players[i]).updateSoft();
-                ((Entity) players[i]).updateOnline();
-            }
-        };
-    }
+			if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
+				if (delay.isOver()) {
+					delay.start();
+					Settings.scale -= step;
+					if (Settings.scale < 0.125d) {
+						Settings.scale = 0.125d;
+					}
+					Settings.scaled = Settings.scale != 1d;
+					((Player) players[0]).getCamera().update();
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
+				if (delay.isOver()) {
+					delay.start();
+					Settings.scale += step;
+					if (Settings.scale > 1d) {
+						Settings.scale = 1d;
+					}
+					Settings.scaled = Settings.scale != 1d;
+					((Player) players[0]).getCamera().update();
+				}
+				//1d, 0.875d, 0.75d, 0.625, 0.5, 0.375, 0.25
+			}
+			float colorStep = 0.03125f;
+			if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.g -= colorStep;
+					if (temp.g < 0) {
+						temp.g = 0;
+					}
+					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.g += colorStep;
+					if (temp.g > 1) {
+						temp.g = 1;
+					}
+					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
 
-    @Override
+			if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.r += colorStep;
+					if (temp.r > 1) {
+						temp.r = 1;
+					}
+					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
 
-    public int getPlayersCount() {
-        if (game.mode == 0) {
-            return playersCount;
-        } else {
-            return 1;
-        }
-    }
+			if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.r -= colorStep;
+					if (temp.r < 0) {
+						temp.r = 0;
+					}
+					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.b -= colorStep;
+					if (temp.b < 0) {
+						temp.b = 0;
+					}
+					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.b += colorStep;
+					if (temp.b > 1) {
+						temp.b = 1;
+					}
+					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
+				Settings.scale = Settings.nativeScale;
+				Settings.scaled = Settings.scale != 1d;
+				((Player) players[0]).getCamera().update();
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
+				Main.refreshGamma();
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_NEXT)) {
+				Main.resetGamma();
+			}
+			if (playersCount > 1) {
+				changeSplitScreenJoin.act();
+				changeSplitScreenMode.act();
+				if (changeSplitScreenJoin.isOn()) {
+					Settings.joinSplitScreen = !Settings.joinSplitScreen;
+				}
+				if (changeSplitScreenMode.isOn()) {
+					changeSSMode = true;
+				}
+				cameras[playersCount - 2].update();
+			}
+			for (int i = 0; i < playersCount; i++) {
+				((Player) players[i]).update();
+			}
+			maps.stream().forEach((map) -> {
+				map.getSolidMobs().stream().forEach((mob) -> {
+					mob.update();
+				});
+			});
+		};
+		updates[1] = () -> {
+			tempMaps.clear();
+			Map map;
+			if (game.online.server != null) {
+				for (int i = 0; i < playersCount; i++) {
+					map = players[i].getMap();
+					if (!tempMaps.contains(map)) {
+						for (Mob mob : map.getSolidMobs()) {
+							mob.update();
+						}
+						tempMaps.add(map);
+					}
+				}
+			} else if (game.online.client != null) {
+				map = players[0].getMap();
+				for (Mob mob : map.getSolidMobs()) {
+					mob.updateHard();
+				}
+			}
+			((Player) players[0]).sendUpdate();
+			for (int i = 1; i < playersCount; i++) {
+				((Entity) players[i]).updateSoft();
+				((Entity) players[i]).updateOnline();
+			}
+		};
+	}
 
-    private interface update {
+	@Override
 
-        void update();
-    }
+	public int getPlayersCount() {
+		if (game.mode == 0) {
+			return playersCount;
+		} else {
+			return 1;
+		}
+	}
+
+	private interface update {
+
+		void update();
+	}
 }
