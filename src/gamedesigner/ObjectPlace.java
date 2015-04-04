@@ -128,7 +128,7 @@ public class ObjectPlace extends Place {
             guiHandler.changeToHelpingScreen();
         }
         if (key.key(Keyboard.KEY_T)) {
-            guiHandler.changeToChooser(IO.getSpecificFilesList("res", "spr"));
+            guiHandler.changeToChooser(IO.getSpecificFilesList("res/textures", "spr"));
         }
         if (key.key(Keyboard.KEY_L)) {
             guiHandler.changeToChooser(IO.getSpecificFilesList("res/objects", "puz"));
