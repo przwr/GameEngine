@@ -22,7 +22,7 @@ import java.util.Collections;
 public class RoundRectangle extends Figure {
 
     public static final int LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3;
-    public static final int PREVOIUS = 0, CORNER = 1, NEXT = 2;
+    public static final int PREVIOUS = 0, CORNER = 1, NEXT = 2;
     private static final changer[] changers = new changer[4];
     private static final pusher[] pushers = new pusher[4];
     private static final geter[] geters = new geter[4];
@@ -34,22 +34,22 @@ public class RoundRectangle extends Figure {
         changers[LEFT_TOP] = (int xChange, int yChange) -> {
             corners[LEFT_TOP].changes[NEXT] = new Point(0, Place.tileSize);
             corners[LEFT_TOP].changes[CORNER] = new Point(xChange, yChange);
-            corners[LEFT_TOP].changes[PREVOIUS] = new Point(Place.tileSize, 0);
+            corners[LEFT_TOP].changes[PREVIOUS] = new Point(Place.tileSize, 0);
         };
         changers[LEFT_BOTTOM] = (int xChange, int yChange) -> {
             corners[LEFT_BOTTOM].changes[NEXT] = new Point(Place.tileSize, height);
             corners[LEFT_BOTTOM].changes[CORNER] = new Point(xChange, (height - Place.tileSize) + yChange);
-            corners[LEFT_BOTTOM].changes[PREVOIUS] = new Point(0, height - Place.tileSize);
+            corners[LEFT_BOTTOM].changes[PREVIOUS] = new Point(0, height - Place.tileSize);
         };
         changers[RIGHT_BOTTOM] = (int xChange, int yChange) -> {
             corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width, height - Place.tileSize);
             corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - Place.tileSize) + xChange, (height - Place.tileSize) + yChange);
-            corners[RIGHT_BOTTOM].changes[PREVOIUS] = new Point(width - Place.tileSize, height);
+            corners[RIGHT_BOTTOM].changes[PREVIOUS] = new Point(width - Place.tileSize, height);
         };
         changers[RIGHT_TOP] = (int xChange, int yChange) -> {
             corners[RIGHT_TOP].changes[NEXT] = new Point(width - Place.tileSize, 0);
             corners[RIGHT_TOP].changes[CORNER] = new Point((width - Place.tileSize) + xChange, yChange);
-            corners[RIGHT_TOP].changes[PREVOIUS] = new Point(width, Place.tileSize);
+            corners[RIGHT_TOP].changes[PREVIOUS] = new Point(width, Place.tileSize);
         };
         pushers[LEFT_TOP] = (int xChange, int yChange) -> {
             if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
@@ -169,9 +169,9 @@ public class RoundRectangle extends Figure {
 
     public void pushCorner(int corner, int xChange, int yChange) {
         if ((corner == LEFT_BOTTOM || corner == RIGHT_BOTTOM)) {
-            if (xChange > Place.tileSize / 2 && yChange > Place.tileSize / 2) {
+            if (xChange > Place.tileHalf && yChange > Place.tileHalf) {
                 concave = true;
-            } else if (xChange == Place.tileSize / 2 && yChange == Place.tileSize / 2) {
+            } else if (xChange == Place.tileHalf && yChange == Place.tileHalf) {
                 triangular = true;
             }
             bottomRounded = true;
@@ -180,13 +180,9 @@ public class RoundRectangle extends Figure {
         updatePoints();
     }
 
-    public Point getPushValueOfCorner(int corner) {
-        return geters[corner].get(corners, this);
-    }
-
     @Override
     public boolean isCollideSingle(int x, int y, Figure figure) {
-        if (figure instanceof RoundRectangle) {
+        if (figure instanceof Rectangle) {
             return rectangleCollsion(x, y, figure);
         } else if (figure instanceof RoundRectangle) {
             return roundRectangleCollsion(x, y, figure);
@@ -199,7 +195,7 @@ public class RoundRectangle extends Figure {
     }
 
     private boolean rectangleCollsion(int x, int y, Figure figure) {
-        RoundRectangle rectangle = (RoundRectangle) figure;
+        Rectangle rectangle = (Rectangle) figure;
         return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
                 && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
     }
@@ -250,6 +246,10 @@ public class RoundRectangle extends Figure {
         return Collections.unmodifiableCollection(points);
     }
 
+    public Point getPushValueOfCorner(int corner) {
+        return geters[corner].get(corners, this);
+    }
+
     public int getBottomPointSize() {
         return bottomPoints.size();
     }
@@ -258,12 +258,36 @@ public class RoundRectangle extends Figure {
         return bottomPoints.get(i);
     }
 
+    public Point getCorner(int i) {
+        return corners[i].getCorner();
+    }
+
+    public Point getNext(int i) {
+        return corners[i].getNext();
+    }
+
+    public Point getPrevious(int i) {
+        return corners[i].getPrevious();
+    }
+
+    public boolean isCornerPushed(int i) {
+        return corners[i].changes != null;
+    }
+
     public boolean isLeftBottomRound() {
         return corners[LEFT_BOTTOM].changes != null;
     }
 
     public boolean isRightBottomRound() {
         return corners[RIGHT_BOTTOM].changes != null;
+    }
+
+    public boolean isLeftTopRound() {
+        return corners[LEFT_TOP].changes != null;
+    }
+
+    public boolean isRightTopRound() {
+        return corners[RIGHT_TOP].changes != null;
     }
 
     @Override
@@ -279,6 +303,14 @@ public class RoundRectangle extends Figure {
     @Override
     public boolean isBottomRounded() {
         return bottomRounded;
+    }
+
+    public boolean isCornerTriangular(int i) {
+        return corners[i].isTriangular();
+    }
+
+    public boolean isCornerConcave(int i) {
+        return corners[i].isConcave();
     }
 
     private interface changer {
@@ -298,6 +330,7 @@ public class RoundRectangle extends Figure {
 
     private class Corner {
 
+        private boolean triangular, concave;
         private Point[] points = new Point[3];
         private Point[] changes;
 
@@ -309,12 +342,17 @@ public class RoundRectangle extends Figure {
             changes = new Point[3];
             changers[corner].set(xChange, yChange);
             setPoints();
+            if (xChange > Place.tileHalf && yChange > Place.tileHalf) {
+                concave = true;
+            } else if (xChange == Place.tileHalf && yChange == Place.tileHalf) {
+                triangular = true;
+            }
         }
 
         private void setPoints() {
             points[NEXT] = new Point(getX() + changes[NEXT].getX(), getY() + changes[NEXT].getY());
             points[CORNER].set(getX() + changes[CORNER].getX(), getY() + changes[CORNER].getY());
-            points[PREVOIUS] = new Point(getX() + changes[PREVOIUS].getX(), getY() + changes[PREVOIUS].getY());
+            points[PREVIOUS] = new Point(getX() + changes[PREVIOUS].getX(), getY() + changes[PREVIOUS].getY());
         }
 
         private void setCornerPoint(int x, int y) {
@@ -331,16 +369,36 @@ public class RoundRectangle extends Figure {
             }
         }
 
-        public Point getCorner() {
-            return this.points[CORNER];
+        public Collection<Point> getPoints() {
+            if (points[NEXT] == null) {
+                return Arrays.asList(points[CORNER]);
+            } else {
+                if (triangular) {
+                    return Arrays.asList(points[PREVIOUS], points[NEXT]);
+                } else {
+                    return Arrays.asList(points);
+                }
+            }
         }
 
-        public Collection<Point> getPoints() {
-            if (this.points[NEXT] == null) {
-                return Arrays.asList(this.points[CORNER]);
-            } else {
-                return Arrays.asList(this.points);
-            }
+        public Point getCorner() {
+            return points[CORNER];
+        }
+
+        public Point getPrevious() {
+            return points[PREVIOUS];
+        }
+
+        public Point getNext() {
+            return points[NEXT];
+        }
+
+        public boolean isTriangular() {
+            return triangular;
+        }
+
+        public boolean isConcave() {
+            return concave;
         }
     }
 }

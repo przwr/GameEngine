@@ -201,7 +201,15 @@ public class Methods {
         A = 1 + a * a;
         AB = yc + b;
         B = 2 * ((a * AB) - xc);
-        delta = (B * B) - 4 * A * ((xc * xc) - Place.tileArea + (AB * AB)); // Place.tileArea is radius squared
+        delta = (B * B) - 4 * A * ((xc * xc) - Place.tileSquared + (AB * AB)); // Place.tileArea is radius squared
+    }
+
+    public static boolean isPointOnTheLeftToLine(int xb, int yb, int xe, int ye, int xp, int yp) {
+        return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) >= 0;
+    }
+
+    public static boolean isPointOnTheRightToLine(int xb, int yb, int xe, int ye, int xp, int yp) {
+        return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) <= 0;
     }
 
     public static int sizeInBytes(Object obj) throws java.io.IOException {

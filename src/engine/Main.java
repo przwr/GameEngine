@@ -30,6 +30,7 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import org.lwjgl.opengl.PixelFormat;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
 /**
@@ -177,7 +178,12 @@ public class Main {
     private static void gameLoop() {
         while (isRunning()) {
             Time.update();
-            Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale);
+            if (game != null && game.getPlace() != null) {
+                Color color = game.getPlace().getMapById((short) 0).getColor();
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale + " r: " + color.r + " g: " + color.g + " b: " + color.b);
+            } else {
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale);
+            }
             if (!pause) {
                 update();
             } else {
