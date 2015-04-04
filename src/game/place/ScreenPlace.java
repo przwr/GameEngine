@@ -6,7 +6,7 @@
 package game.place;
 
 import engine.FontBase;
-import engine.FontHandler;
+import engine.inout.FontHandler;
 import game.Game;
 import game.gameobject.GameObject;
 import org.newdawn.slick.Color;

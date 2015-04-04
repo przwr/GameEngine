@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package engine.inout;
 
+import game.Settings;
 import game.gameobject.AnyInput;
 import game.gameobject.Player;
 import java.io.FileWriter;

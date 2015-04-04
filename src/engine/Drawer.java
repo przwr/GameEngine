@@ -5,6 +5,7 @@
  */
 package engine;
 
+import engine.inout.FontHandler;
 import game.place.Place;
 import game.place.ScreenPlace;
 import java.io.IOException;

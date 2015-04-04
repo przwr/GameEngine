@@ -42,8 +42,8 @@ public class MyPlace extends Place {
 
 	@Override
 	public void generateAsGuest() {
-		GladeMap polana = new GladeMap(currentMapID++, this, 10240, 10240, tileSize);
-		StoneMap kamienna = new StoneMap(currentMapID++, this, 10240, 10240, tileSize);
+		GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 10240, tileSize);
+		StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
 		maps.add(polana);
 		maps.add(kamienna);
 //        sounds.initialize("res");
@@ -120,45 +120,9 @@ public class MyPlace extends Place {
 					Settings.scaled = Settings.scale != 1d;
 					((Player) players[0]).getCamera().update();
 				}
-				//1d, 0.875d, 0.75d, 0.625, 0.5, 0.375, 0.25
 			}
 			float colorStep = 0.03125f;
-			if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getColor();
-					temp.g -= colorStep;
-					if (temp.g < 0) {
-						temp.g = 0;
-					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getColor();
-					temp.g += colorStep;
-					if (temp.g > 1) {
-						temp.g = 1;
-					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-
-			if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getColor();
-					temp.r += colorStep;
-					if (temp.r > 1) {
-						temp.r = 1;
-					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-
-			if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_COMMA)) {
 				if (delay.isOver()) {
 					delay.start();
 					Color temp = maps.get(0).getColor();
@@ -166,10 +130,43 @@ public class MyPlace extends Place {
 					if (temp.r < 0) {
 						temp.r = 0;
 					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
 				}
 			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_PERIOD)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.r += colorStep;
+					if (temp.r > 1) {
+						temp.r = 1;
+					}
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_SEMICOLON)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.g -= colorStep;
+					if (temp.g < 0) {
+						temp.g = 0;
+					}
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getColor();
+					temp.g += colorStep;
+					if (temp.g > 1) {
+						temp.g = 1;
+					}
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET)) {
 				if (delay.isOver()) {
 					delay.start();
 					Color temp = maps.get(0).getColor();
@@ -177,10 +174,10 @@ public class MyPlace extends Place {
 					if (temp.b < 0) {
 						temp.b = 0;
 					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
 				}
 			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_RBRACKET)) {
 				if (delay.isOver()) {
 					delay.start();
 					Color temp = maps.get(0).getColor();
@@ -188,7 +185,22 @@ public class MyPlace extends Place {
 					if (temp.b > 1) {
 						temp.b = 1;
 					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+
+			if (Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH)) {
+				if (delay.isOver()) {
+					delay.start();
+					dayCycle.updateTime();
+					System.out.println(dayCycle.getTime());
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_SLASH)) {
+				if (delay.isOver()) {
+					delay.start();
+					dayCycle.addOneHour();
+					System.out.println(dayCycle.getTime());
 				}
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {

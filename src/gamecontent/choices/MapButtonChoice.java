@@ -5,8 +5,8 @@
  */
 package gamecontent.choices;
 
-import engine.Controlers;
-import game.AnalizerInput;
+import engine.inout.Controlers;
+import engine.inout.AnalizerInput;
 import game.Settings;
 import game.gameobject.Action;
 import game.gameobject.AnyInput;

@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place;
+package engine;
 
 import game.Settings;
 import game.gameobject.Player;
+import game.place.Place;
 import game.place.cameras.PlayersCamera;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;

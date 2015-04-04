@@ -5,9 +5,10 @@
  */
 package engine;
 
-import game.AnalizerSettings;
+import engine.inout.AnalizerSettings;
+import engine.inout.Controlers;
 import game.Game;
-import static game.IO.setSettingsFromFile;
+import static engine.inout.IO.setSettingsFromFile;
 import game.Settings;
 import static game.Settings.calculateScale;
 import java.io.File;

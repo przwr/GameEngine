@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.ShadowRenderer;
 import collision.Block;
 import engine.Drawer;
 import game.gameobject.GameObject;

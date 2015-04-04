@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place;
+package engine;
 
 import game.place.fbo.RegularFrameBufferObject;
 import game.place.fbo.FrameBufferObject;
 import game.Settings;
 import game.gameobject.Player;
+import game.place.Light;
+import game.place.Map;
+import game.place.Place;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;

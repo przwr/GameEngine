@@ -5,6 +5,8 @@
  */
 package game.place;
 
+import engine.SplitScreen;
+import engine.Renderer;
 import engine.Drawer;
 import game.Game;
 import game.place.cameras.Camera;
@@ -30,6 +32,8 @@ public abstract class Place extends ScreenPlace {
     public static int tileSize;
     public static int tileSquared;
     public static int tileHalf;
+	
+	protected static DayCycle dayCycle;
 
     public final ArrayList<Map> maps = new ArrayList<>();
     protected static final ArrayList<Map> tempMaps = new ArrayList<>();
@@ -43,7 +47,7 @@ public abstract class Place extends ScreenPlace {
 
     protected SoundBase sounds;
     protected SpriteBase sprites;
-    protected short currentMapID = 0;
+    protected short mapIDcounter = 0;
 
     private Console console;
 
@@ -122,6 +126,7 @@ public abstract class Place extends ScreenPlace {
         sounds = new SoundBase();
         sprites = new SpriteBase();
         console = new Console(this);
+		dayCycle = new DayCycle();
     }
 
     public abstract void generateAsGuest();

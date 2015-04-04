@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place;
+package engine;
 
 import collision.Block;
 import collision.Figure;
@@ -12,9 +12,12 @@ import static collision.OpticProperties.TRANSPARENT;
 import collision.RoundRectangle;
 import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.RIGHT_BOTTOM;
-import engine.Methods;
-import engine.Point;
 import game.gameobject.GameObject;
+import game.place.ForegroundTile;
+import game.place.Light;
+import game.place.Map;
+import game.place.Place;
+import game.place.Shadow;
 import static game.place.Shadow.*;
 import java.awt.Polygon;
 import java.util.ArrayList;
@@ -44,7 +47,7 @@ public class ShadowRenderer {
 
 	private static Point tempPoint;
 
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 
 	static {
 		shadowPoints[0] = new Point();

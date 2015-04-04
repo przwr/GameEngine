@@ -42,10 +42,10 @@ public class SoundBase {
     }
 
     public Sound getSound(String name) {
-        for (Sound snd : sounds) {
+        for (Sound sound : sounds) {
             //System.out.println(tex.podajNazwe());
-            if (snd.getName().equals(name)) {
-                return snd;
+            if (sound.getName().equals(name)) {
+                return sound;
             }
         }
         return null;
