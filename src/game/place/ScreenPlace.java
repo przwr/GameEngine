@@ -9,7 +9,6 @@ import engine.FontBase;
 import engine.inout.FontHandler;
 import game.Game;
 import game.gameobject.GameObject;
-import org.newdawn.slick.Color;
 
 /**
  *
@@ -17,8 +16,7 @@ import org.newdawn.slick.Color;
  */
 public abstract class ScreenPlace {
 
-    public final Game game;    
-    public Color color;
+    public final Game game;
     public FontBase fonts;
     public GameObject[] players;
     public FontHandler standardFont;

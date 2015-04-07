@@ -19,6 +19,7 @@ import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import static org.lwjgl.opengl.GL11.*;
+import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteBase;
 import sprites.SpriteSheet;
@@ -69,7 +70,7 @@ public abstract class Place extends ScreenPlace {
                 currentCamera = (((Player) players[player]).getCamera());
                 map = players[player].getMap();
                 if (map != null) {
-                    Drawer.setCurrentColor(map.getColor());
+                    Drawer.setCurrentColor(map.getLightColor());
                     SplitScreen.setSplitScreen(this, playersCount, player);
                     if (player == 0 || !singleCamera) {
                         glEnable(GL_SCISSOR_TEST);
@@ -79,7 +80,7 @@ public abstract class Place extends ScreenPlace {
                         map.renderBackground(currentCamera);
                         map.renderObjects(currentCamera);
                         if (map.getVisibleLights().size() > 0) {
-                            Renderer.renderLights(map.getColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                            Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                         }
                         currentCamera.renderGUI();
                         console.setCamera(currentCamera);
@@ -94,7 +95,7 @@ public abstract class Place extends ScreenPlace {
         renders[ONLINE] = () -> {
             Map map = players[0].getMap();
             if (map != null) {
-                Drawer.setCurrentColor(map.getColor());
+                Drawer.setCurrentColor(map.getLightColor());
                 Renderer.findVisibleLights(map, 1);
                 if (!Settings.shadowOff) {
                     Renderer.preRendLights(map);
@@ -108,7 +109,7 @@ public abstract class Place extends ScreenPlace {
                 map.renderBackground(currentCamera);
                 map.renderObjects(currentCamera);
                 if (map.getVisibleLights().size() > 0) {
-                    Renderer.renderLights(map.getColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                    Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                 }
                 currentCamera.renderGUI();
                 console.setCamera(currentCamera);
@@ -216,6 +217,10 @@ public abstract class Place extends ScreenPlace {
     public int getPlayersCount() {
         return playersCount;
     }
+	
+	public Color getLightColor(){
+		return dayCycle.getColor();
+	}
 
     private interface renderType {
 

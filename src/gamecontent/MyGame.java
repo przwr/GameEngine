@@ -33,7 +33,7 @@ public class MyGame extends Game {
     private final updateType[] ups = new updateType[2];
 
     public boolean designer = false;
-
+	
     public MyGame(String title, Controller[] controllers) {
         super(title);
         SplitScreen.initialzie();

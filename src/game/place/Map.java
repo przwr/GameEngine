@@ -28,7 +28,7 @@ public class Map {
     private final ArrayList<Light> visibleLights = new ArrayList<>();
     public final Place place;
 
-    protected Color color;
+    protected Color lightColor;
     protected final Tile[] tiles;
     protected final ArrayList<Block> blocks = new ArrayList<>();
     protected final String name;
@@ -386,11 +386,11 @@ public class Map {
         return Collections.unmodifiableList(foregroundTiles);
     }
 
-    public Color getColor() {
-        if (color != null) {
-            return color;
+    public Color getLightColor() {
+        if (lightColor != null) {
+            return lightColor;
         } else {
-            return place.color;
+            return place.getLightColor();
         }
     }
 
@@ -407,6 +407,6 @@ public class Map {
     }
 
     public void setColor(Color color) {
-        this.color = color;
+        this.lightColor = color;
     }
 }
