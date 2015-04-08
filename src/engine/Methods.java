@@ -197,6 +197,40 @@ public class Methods {
         return point;
     }
 
+    public static Point getLeftCircleLineIntersection(double a, double b, double xc, double yc) { // tylko dla okręgu o promienu 64
+        calculateDelta(a, b, xc, yc);
+        if (delta < 0) {
+            return null;
+        }
+        delta = FastMath.sqrt(delta);
+        A *= 2;
+        X1 = ((-B - delta) / A);
+        X2 = ((-B + delta) / A);
+        if (X1 < X2) {
+            point.set(roundDouble(X1), -roundDouble(a * X1 + b));
+        } else {
+            point.set(roundDouble(X2), -roundDouble(a * X2 + b));
+        }
+        return point;
+    }
+
+    public static Point getRightCircleLineIntersection(double a, double b, double xc, double yc) { // tylko dla okręgu o promienu 64
+        calculateDelta(a, b, xc, yc);
+        if (delta < 0) {
+            return null;
+        }
+        delta = FastMath.sqrt(delta);
+        A *= 2;
+        X1 = ((-B - delta) / A);
+        X2 = ((-B + delta) / A);
+        if (X1 > X2) {
+            point.set(roundDouble(X1), -roundDouble(a * X1 + b));
+        } else {
+            point.set(roundDouble(X2), -roundDouble(a * X2 + b));
+        }
+        return point;
+    }
+
     private static void calculateDelta(double a, double b, double xc, double yc) {
         A = 1 + a * a;
         AB = yc + b;

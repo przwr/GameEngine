@@ -33,8 +33,8 @@ public abstract class Place extends ScreenPlace {
     public static int tileSize;
     public static int tileSquared;
     public static int tileHalf;
-	
-	protected static DayCycle dayCycle;
+
+    protected static DayCycle dayCycle;
 
     public final ArrayList<Map> maps = new ArrayList<>();
     protected static final ArrayList<Map> tempMaps = new ArrayList<>();
@@ -127,7 +127,7 @@ public abstract class Place extends ScreenPlace {
         sounds = new SoundBase();
         sprites = new SpriteBase();
         console = new Console(this);
-		dayCycle = new DayCycle();
+        dayCycle = new DayCycle();
     }
 
     public abstract void generateAsGuest();
@@ -217,10 +217,10 @@ public abstract class Place extends ScreenPlace {
     public int getPlayersCount() {
         return playersCount;
     }
-	
-	public Color getLightColor(){
-		return dayCycle.getColor();
-	}
+
+    public Color getLightColor() {
+        return dayCycle.getColor();
+    }
 
     private interface renderType {
 

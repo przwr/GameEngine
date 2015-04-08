@@ -34,7 +34,7 @@ public class Circle extends Figure {
         super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType));
         this.radius = radius;
         this.precision = precision;
-        this.step =  360 / precision;
+        this.step = 360 / precision;
         for (int i = 0; i < precision; i++) {
             points.add(new Point((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius)));
         }
@@ -80,7 +80,8 @@ public class Circle extends Figure {
         return (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
     }
 
-    private boolean roundRectangleCollision(int x, int y, Figure figure) { //TO DO
+    private boolean roundRectangleCollision(int x, int y, Figure figure) {      //TO DO
+        System.out.println("Siplified Version of Collision with RoundRectangle. In Circle");
         RoundRectangle roundRectangle = (RoundRectangle) figure;
         int xPosition = ((getX(x) < roundRectangle.getX() ? -1 : 1) + (getX(x) <= (roundRectangle.getX() + roundRectangle.getWidth()) ? -1 : 1)) / 2;
         int yPosition = ((getY(y) < roundRectangle.getY() ? -1 : 1) + (getY(y) <= (roundRectangle.getY() + roundRectangle.getHeight()) ? -1 : 1)) / 2;

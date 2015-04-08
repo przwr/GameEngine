@@ -5,10 +5,7 @@
  */
 package collision;
 
-import static collision.RoundRectangle.LEFT_BOTTOM;
-import static collision.RoundRectangle.LEFT_TOP;
-import static collision.RoundRectangle.RIGHT_BOTTOM;
-import static collision.RoundRectangle.RIGHT_TOP;
+import static collision.RoundRectangle.*;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
@@ -25,7 +22,7 @@ public class Rectangle extends Figure {
 
     private static Point[] list = {new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0)};
     private static Point start, end;
-    private static int caseNumber;
+    private static int firstPushed, secondPushed, caseNumber;
 
     public static Rectangle createShadowHeight(int width, int height, int opticPropertiesType, int shadowHeight, GameObject owner) {
         return new Rectangle(-(width / 2), -(height / 2), width, height, opticPropertiesType, shadowHeight, owner);
@@ -88,35 +85,19 @@ public class Rectangle extends Figure {
             list[LEFT_BOTTOM].set(getX(x), getY(y) + height);
             list[RIGHT_TOP].set(getX(x) + width, getY(y));
             list[RIGHT_BOTTOM].set(getX(x) + width, getY(y) + height);
-            int firstPushed = -1;
-            int secondPushed = -1;
+            firstPushed = secondPushed = -1;
             for (int i = 0; i < 4; i++) {
                 if (roundRectangle.isCornerPushed(i)) {
                     if (roundRectangle.isCornerTriangular(i)) {
-                        start = roundRectangle.getPrevious(i);
-                        end = roundRectangle.getNext(i);
-                        if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY(), list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[LEFT_TOP].getX(), list[LEFT_TOP].getY())) {
+                        if (isCollideTriangularCorner(roundRectangle, i)) {
                             return true;
                         }
                     } else if (roundRectangle.isCornerConcave(i)) {
-                        start = roundRectangle.getPrevious(i);
-                        end = roundRectangle.getNext(i);
-                        if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY(), list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[LEFT_TOP].getX(), list[LEFT_TOP].getY())) {
+                        if (isCollideConcaveCorner(roundRectangle, i)) {
                             return true;
                         }
                     } else {
-                        start = roundRectangle.getPrevious(i);
-                        end = roundRectangle.getNext(i);
-                        if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY(), list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY())
-                                || Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[LEFT_TOP].getX(), list[LEFT_TOP].getY())) {
+                        if (isCollideTriangularCorner(roundRectangle, i)) {
                             return true;
                         }
                     }
@@ -127,57 +108,25 @@ public class Rectangle extends Figure {
                     }
                 }
             }
-            caseNumber = firstPushed + secondPushed + 1;
-            if (secondPushed != -1) {
-                caseNumber += 3;
-                if (caseNumber > 5) {
-                    caseNumber -= 2;
-                }
-            }
-            return (checkStraightEdgesForCase(caseNumber, roundRectangle));
+            recognizeCase();
+            return isCollideStraightEdgesByCase(roundRectangle);
         }
         return false;
     }
 
-    private boolean checkStraightEdgesForCase(int caseNumber, RoundRectangle roundRectangle) {
-        switch (caseNumber) {
+    private boolean isCollideTriangularCorner(RoundRectangle roundRectangle, int corner) {
+        start = roundRectangle.getPrevious(corner);
+        end = roundRectangle.getNext(corner);
+        switch (corner) {
             case LEFT_TOP:
-                if (checkCutFromTop(roundRectangle) || checkRightTop(roundRectangle)) {
+            case RIGHT_TOP:
+                if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())) {
                     return true;
                 }
                 break;
             case LEFT_BOTTOM:
-                if (checkCutFromBottom(roundRectangle) || checkRightBottom(roundRectangle)) {
-                    return true;
-                }
-                break;
             case RIGHT_BOTTOM:
-                if (checkCutFromBottom(roundRectangle) || checkLeftBottom(roundRectangle)) {
-                    return true;
-                }
-                break;
-            case RIGHT_TOP:
-                if (checkCutFromTop(roundRectangle) || checkLeftTop(roundRectangle)) {
-                    return true;
-                }
-                break;
-            case 4: // LEFT BOTTOM TO RIGHT TOP
-                if (checkCutBothWays(roundRectangle) || checkRightTop(roundRectangle) || checkLeftBottom(roundRectangle)) {
-                    return true;
-                }
-                break;
-            case 5: // LEFT
-                if (checkCutBothWays(roundRectangle) || checkRightSide(roundRectangle)) {
-                    return true;
-                }
-                break;
-            case 6: // LEFT TOP TO RIGHT BOTTOM
-                if (checkCutBothWays(roundRectangle) || checkLeftTop(roundRectangle) || checkRightBottom(roundRectangle)) {
-                    return true;
-                }
-                break;
-            case 7: // RIGHT
-                if (checkCutBothWays(roundRectangle) || checkLeftSide(roundRectangle)) {
+                if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())) {
                     return true;
                 }
                 break;
@@ -185,17 +134,111 @@ public class Rectangle extends Figure {
         return false;
     }
 
-    private boolean checkCutFromBottom(RoundRectangle roundRectangle) {
+    private boolean isCollideConcaveCorner(RoundRectangle roundRectangle, int corner) {
+        start = roundRectangle.getPrevious(corner);
+        end = roundRectangle.getNext(corner);
+        Point point;
+        switch (corner) {
+            case LEFT_TOP:
+                point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getX(), roundRectangle.getY());
+                if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() >= roundRectangle.getY()) {
+                    return true;
+                }
+                break;
+            case LEFT_BOTTOM:
+                point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getX(), roundRectangle.getYEnd());
+                if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() <= roundRectangle.getYEnd()) {
+                    return true;
+                }
+                break;
+            case RIGHT_BOTTOM:
+                point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getXEnd(), roundRectangle.getYEnd());
+                if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() <= roundRectangle.getYEnd()) {
+                    return true;
+                }
+                break;
+            case RIGHT_TOP:
+                point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getXEnd(), roundRectangle.getY());
+                if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() >= roundRectangle.getY()) {
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
+    private int recognizeCase() {
+        caseNumber = firstPushed + secondPushed + 1;
+        if (secondPushed != -1) {
+            caseNumber += 3;
+            if (caseNumber > 5) {
+                caseNumber -= 2;
+            }
+        }
+        return caseNumber;
+    }
+
+    private boolean isCollideStraightEdgesByCase(RoundRectangle roundRectangle) {
+        switch (caseNumber) {
+            case LEFT_TOP:
+                if (checkCornersTop(roundRectangle) || checkRightTop(roundRectangle)) {
+                    return true;
+                }
+                break;
+            case LEFT_BOTTOM:
+                if (checkCornersBottom(roundRectangle) || checkRightBottom(roundRectangle)) {
+                    return true;
+                }
+                break;
+            case RIGHT_BOTTOM:
+                if (checkCornersBottom(roundRectangle) || checkLeftBottom(roundRectangle)) {
+                    return true;
+                }
+                break;
+            case RIGHT_TOP:
+                if (checkCornersTop(roundRectangle) || checkLeftTop(roundRectangle)) {
+                    return true;
+                }
+                break;
+            case LEFT_BOTTOM_TO_RIGHT_TOP:
+                if (checkCornersBothWays(roundRectangle) || checkRightTop(roundRectangle) || checkLeftBottom(roundRectangle)) {
+                    return true;
+                }
+                break;
+            case LEFT:
+                if (checkCornersBothWays(roundRectangle) || checkRightSide(roundRectangle)) {
+                    return true;
+                }
+                break;
+            case LEFT_TOP_TO_RIGHT_BOTTOM:
+                if (checkCornersBothWays(roundRectangle) || checkLeftTop(roundRectangle) || checkRightBottom(roundRectangle)) {
+                    return true;
+                }
+                break;
+            case RIGHT:
+                if (checkCornersBothWays(roundRectangle) || checkLeftSide(roundRectangle)) {
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
+    private boolean checkCornersBottom(RoundRectangle roundRectangle) {
         return list[RIGHT_BOTTOM].getX() >= roundRectangle.getX() && list[LEFT_BOTTOM].getX() <= roundRectangle.getXEnd()
                 && list[LEFT_TOP].getY() <= roundRectangle.getYEnd() - Place.tileSize && list[LEFT_BOTTOM].getY() >= roundRectangle.getY();
     }
 
-    private boolean checkCutFromTop(RoundRectangle roundRectangle) {
+    private boolean checkCornersTop(RoundRectangle roundRectangle) {
         return list[RIGHT_BOTTOM].getX() >= roundRectangle.getX() && list[LEFT_BOTTOM].getX() <= roundRectangle.getXEnd()
                 && list[LEFT_TOP].getY() <= roundRectangle.getYEnd() && list[LEFT_BOTTOM].getY() >= roundRectangle.getY() + Place.tileSize;
     }
 
-    private boolean checkCutBothWays(RoundRectangle roundRectangle) {
+    private boolean checkCornersBothWays(RoundRectangle roundRectangle) {
         return list[RIGHT_BOTTOM].getX() >= roundRectangle.getX() && list[LEFT_BOTTOM].getX() <= roundRectangle.getXEnd()
                 && list[LEFT_TOP].getY() <= roundRectangle.getYEnd() - Place.tileSize && list[LEFT_BOTTOM].getY() >= roundRectangle.getY() + Place.tileSize;
     }
@@ -226,7 +269,8 @@ public class Rectangle extends Figure {
     }
 
     private boolean checkRightSide(RoundRectangle roundRectangle) {
-        return list[RIGHT_BOTTOM].getX() >= roundRectangle.getXEnd() && list[LEFT_TOP].getY() <= roundRectangle.getYEnd() && list[LEFT_BOTTOM].getY() >= roundRectangle.getY();
+        return list[RIGHT_BOTTOM].getX() >= roundRectangle.getXEnd()
+                && list[LEFT_TOP].getY() <= roundRectangle.getYEnd() && list[LEFT_BOTTOM].getY() >= roundRectangle.getY();
     }
 
     private boolean circleCollision(int x, int y, Figure figure) {
@@ -255,9 +299,9 @@ public class Rectangle extends Figure {
         list[RIGHT_BOTTOM].set(getX(x) + width, getY(y) + height);
         int[] linePoints = {line.getX(), line.getY(), line.getX() + line.getXVector(), line.getY() + line.getYVector()};
         return (Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY(), list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[LEFT_TOP].getX(), list[LEFT_TOP].getY()));
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY()));
     }
 
     @Override
