@@ -97,7 +97,7 @@ public class Rectangle extends Figure {
                             return true;
                         }
                     } else {
-                        if (isCollideTriangularCorner(roundRectangle, i)) {
+                        if (isCollideConvexCorner(roundRectangle, i)) {
                             return true;
                         }
                     }
@@ -164,6 +164,43 @@ public class Rectangle extends Figure {
                 point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getXEnd(), roundRectangle.getY());
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() >= roundRectangle.getY()) {
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
+    private boolean isCollideConvexCorner(RoundRectangle roundRectangle, int corner) {
+        start = roundRectangle.getPrevious(corner);
+        end = roundRectangle.getNext(corner);
+        Point point;
+        switch (corner) {
+            case LEFT_TOP:
+                point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getXEnd(), roundRectangle.getY() + Place.tileSize);
+                if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX()) {
+                    return true;
+                }
+                break;
+            case LEFT_BOTTOM:
+                point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getXEnd(), roundRectangle.getYEnd() - Place.tileSize);
+                if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() ) {
+                    return true;
+                }
+                break;
+            case RIGHT_BOTTOM:
+                point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getX(), roundRectangle.getYEnd() - Place.tileSize);
+                if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX()) {
+                    return true;
+                }
+                break;
+            case RIGHT_TOP:
+                point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getX(), roundRectangle.getY() + Place.tileSize);
+                if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX()) {
                     return true;
                 }
                 break;
