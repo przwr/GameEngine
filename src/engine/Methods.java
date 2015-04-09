@@ -19,9 +19,9 @@ import org.lwjgl.input.Keyboard;
  */
 public class Methods {
 
-    private static double A, B, AB, delta, X1, Y1, X2, Y2;
-    private static int xOA, yOA, xOB, yOB, xBA, yBA;
-    private static Point point = new Point(0, 0);
+    private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z;
+    private static int xOA, yOA, xOB, yOB, xBA, yBA, xDelta, yDelta;
+    private static final Point point = new Point(0, 0);
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -32,9 +32,9 @@ public class Methods {
     }
 
     public static int pointDistance(int x, int y, int xa, int ya) {
-        int dx = xa - x;
-        int dy = ya - y;
-        return (int) FastMath.sqrt(dx * dx + dy * dy);
+        xDelta = xa - x;
+        yDelta = ya - y;
+        return (int) FastMath.sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 
     public static int pointDistanceSimple(int x, int y, int xa, int ya) {
@@ -46,16 +46,16 @@ public class Methods {
     }
 
     public static double pointAngle(int xSt, int ySt, int xEn, int yEn) {
-        int deltaX = xEn - xSt;
-        int deltaY = yEn - ySt;
-        return FastMath.atan2(deltaY, deltaX) * 180 / FastMath.PI;
+        xDelta = xEn - xSt;
+        yDelta = yEn - ySt;
+        return FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
     }
 
     public static double pointAngle360(int xSt, int ySt, int xEn, int yEn) {
-        int deltaX = xEn - xSt;
-        int deltaY = yEn - ySt;
-        double ret = FastMath.atan2(deltaY, deltaX) * 180 / FastMath.PI;
-        return ret >= 0 ? ret : ret + 360;
+        xDelta = xEn - xSt;
+        yDelta = yEn - ySt;
+        det = FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
+        return det >= 0 ? det : det + 360;
     }
 
     public static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
@@ -121,15 +121,15 @@ public class Methods {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
-        double rx = x2 - x1,
-                ry = y2 - y1,
-                sx = x4 - x3,
-                sy = y4 - y3;
-        double det = sx * ry - sy * rx;
+        rx = x2 - x1;
+        ry = y2 - y1;
+        sx = x4 - x3;
+        sy = y4 - y3;
+        det = sx * ry - sy * rx;
         if (det == 0) {
             return null;
         } else {
-            double z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
+            z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
             if (z == 0 || z == 1) {
                 return null;  // intersection at end point!
             }
@@ -142,15 +142,15 @@ public class Methods {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
-        double rx = x2 - x1,
-                ry = y2 - y1,
-                sx = x4 - x3,
-                sy = y4 - y3;
-        double det = sx * ry - sy * rx;
+        rx = x2 - x1;
+        ry = y2 - y1;
+        sx = x4 - x3;
+        sy = y4 - y3;
+        det = sx * ry - sy * rx;
         if (det == 0) {
             return null;
         } else {
-            double z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
+            z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
             if (z == 0 || z == 1) {
                 return null;  // intersection at end point!
             }

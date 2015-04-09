@@ -12,9 +12,8 @@ package engine;
 public class Delay {
 
     private final int length;
-    private long endTime;
+    private long endTime, tillEnd;
     private boolean started;
-    private long tillEnd;
 
     public Delay(int length) {
         this.length = length;

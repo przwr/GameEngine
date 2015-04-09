@@ -23,15 +23,23 @@ public class Circle extends Figure {
     private final int radius;
 
     public static Circle create(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, GameObject owner) {
-        return new Circle(xStart, yStart, radius, precision, OpticPropertiesType, owner);
+        return new Circle(xStart, yStart, radius, precision, OpticPropertiesType, 0, owner);
     }
 
     public static Circle create(int radius, int precision, int OpticPropertiesType, GameObject owner) {
-        return new Circle(0, 0, radius, precision, OpticPropertiesType, owner);
+        return new Circle(0, 0, radius, precision, OpticPropertiesType, 0, owner);
     }
 
-    private Circle(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, GameObject owner) {
-        super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType));
+    public static Circle createShadowHeight(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, int shadowHeight, GameObject owner) {
+        return new Circle(xStart, yStart, radius, precision, OpticPropertiesType, shadowHeight, owner);
+    }
+
+    public static Circle createShadowHeight(int radius, int precision, int OpticPropertiesType, int shadowHeight, GameObject owner) {
+        return new Circle(0, 0, radius, precision, OpticPropertiesType, shadowHeight, owner);
+    }
+
+    private Circle(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, int shadowHeight, GameObject owner) {
+        super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
         this.radius = radius;
         this.precision = precision;
         this.step = 360 / precision;

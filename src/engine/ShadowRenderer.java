@@ -1254,7 +1254,7 @@ public class ShadowRenderer {
     private static void findRoundDarkness(RoundRectangle other, Figure current) {
         // liczenie raz polygona
         if (!checked) {
-            if ((current.isBottomRounded() && current.getYEnd() != other.getYEnd()) || (!current.isBottomRounded() && current.getYEnd() - Place.tileSize != other.getYEnd()) || (other.getX() != current.getXEnd() && other.getX() + Place.tileSize != current.getX())
+            if ((current.isBottomRounded() && current.getYEnd() != other.getYEnd()) || (!current.isBottomRounded() && current.getYEnd() - Place.tileSize != other.getYEnd() && ((other.isLeftBottomRound() && other.getX() == current.getXEnd()) || (other.isRightBottomRound() && other.getXEnd()== current.getX()))) || (other.getX() != current.getXEnd() && other.getX() + Place.tileSize != current.getX())
                     || (current instanceof RoundRectangle && current.getYEnd() == other.getYEnd() && ((current.getX() < other.getX() && other.isLeftBottomRound()) || (current.getX() > other.getX() && other.isRightBottomRound())))) {
                 if (other.isLeftBottomRound()) {
                     if (polygon.contains(other.getX() + 2, other.getYEnd() - Place.tileSize + 1, Place.tileSize - 2, 1) && polygon.contains(other.getX() + Place.tileSize - 1, other.getYEnd() - Place.tileSize + 1, 1, Place.tileSize - 2)) {

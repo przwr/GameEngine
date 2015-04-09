@@ -21,9 +21,8 @@ import java.util.Collections;
  */
 public class RoundRectangle extends Figure {
 
-    public static final int LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3, LEFT_BOTTOM_TO_RIGHT_TOP = 4, LEFT = 5, LEFT_TOP_TO_RIGHT_BOTTOM = 6, RIGHT = 7;
-
-    public static final int PREVIOUS = 0, CORNER = 1, NEXT = 2;
+    public static final byte LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3, LEFT_BOTTOM_TO_RIGHT_TOP = 4, LEFT = 5, LEFT_TOP_TO_RIGHT_BOTTOM = 6, RIGHT = 7;
+    public static final byte PREVIOUS = 0, CORNER = 1, NEXT = 2;
     private static final changer[] changers = new changer[4];
     private static final pusher[] pushers = new pusher[4];
     private static final geter[] geters = new geter[4];
