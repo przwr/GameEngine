@@ -28,47 +28,47 @@ import org.newdawn.slick.openal.SoundStore;
  */
 public class MyPlace extends Place {
 
-	private final Action changeSplitScreenMode;
-	private final Action changeSplitScreenJoin;
-	private final update[] updates = new update[2];
-	private final Delay delay = new Delay(100);
-	private final double step = 0.03125;
+    private final Action changeSplitScreenMode;
+    private final Action changeSplitScreenJoin;
+    private final updater[] updates = new updater[2];
+    private final Delay delay = new Delay(100);
+    private final double step = 0.03125;
 
-	public MyPlace(Game game, int tileSize) {
-		super(game, tileSize);
-		dayCycle.setTime(10, 0);
-		changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
-		changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
-	}
+    public MyPlace(Game game, int tileSize) {
+        super(game, tileSize);
+        dayCycle.setTime(2, 30);
+        changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
+        changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
+    }
 
-	@Override
-	public void generateAsGuest() {
-		GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 10240, tileSize);
-		StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
-		maps.add(polana);
-		maps.add(kamienna);
+    @Override
+    public void generateAsGuest() {
+        GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 10240, tileSize);
+        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
+        maps.add(polana);
+        maps.add(kamienna);
 //        sounds.initialize("res");
-		fonts = new FontBase(20);
-		fonts.add("Amble-Regular", (int) (Settings.scale * 24));
-		standardFont = fonts.getFont(0);
-		SoundStore.get().poll(0);
-		initMethods();
-	}
+        fonts = new FontBase(20);
+        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+        standardFont = fonts.getFont(0);
+        SoundStore.get().poll(0);
+        initMethods();
+    }
 
-	// WHY?
-	@Override
-	public void generateAsHost() {
-		generateAsGuest();
-	}
+    // WHY?
+    @Override
+    public void generateAsHost() {
+        generateAsGuest();
+    }
 
-	@Override
-	public void update() {
-		updates[game.mode].update();
-	}
+    @Override
+    public void update() {
+        updates[game.mode].update();
+    }
 
-	private void initMethods() {
-		delay.start();
-		updates[0] = () -> {
+    private void initMethods() {
+        delay.start();
+        updates[0] = () -> {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
 //                sounds.getSound("MumboMountain").resume();
 //            }
@@ -100,184 +100,180 @@ public class MyPlace extends Place {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
 //                sounds.getSound("MumboMountain").fade(0.5, false);
 //            }
-			if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-				if (delay.isOver()) {
-					delay.start();
-					Settings.scale -= step;
-					if (Settings.scale < 0.125d) {
-						Settings.scale = 0.125d;
-					}
-					Settings.scaled = Settings.scale != 1d;
-					((Player) players[0]).getCamera().update();
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
-				if (delay.isOver()) {
-					delay.start();
-					Settings.scale += step;
-					if (Settings.scale > 1d) {
-						Settings.scale = 1d;
-					}
-					Settings.scaled = Settings.scale != 1d;
-					((Player) players[0]).getCamera().update();
-				}
-			}
-			float colorStep = 0.03125f;
-			if (Keyboard.isKeyDown(Keyboard.KEY_COMMA)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getLightColor();
-					temp.r -= colorStep;
-					if (temp.r < 0) {
-						temp.r = 0;
-					}
+            if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    Settings.scale -= step;
+                    if (Settings.scale < 0.125d) {
+                        Settings.scale = 0.125d;
+                    }
+                    Settings.scaled = Settings.scale != 1d;
+                    ((Player) players[0]).getCamera().update();
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    Settings.scale += step;
+                    if (Settings.scale > 1d) {
+                        Settings.scale = 1d;
+                    }
+                    Settings.scaled = Settings.scale != 1d;
+                    ((Player) players[0]).getCamera().update();
+                }
+            }
+            float colorStep = 0.03125f;
+            if (Keyboard.isKeyDown(Keyboard.KEY_COMMA)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    Color temp = maps.get(0).getLightColor();
+                    temp.r -= colorStep;
+                    if (temp.r < 0) {
+                        temp.r = 0;
+                    }
 //					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_PERIOD)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getLightColor();
-					temp.r += colorStep;
-					if (temp.r > 1) {
-						temp.r = 1;
-					}
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_PERIOD)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    Color temp = maps.get(0).getLightColor();
+                    temp.r += colorStep;
+                    if (temp.r > 1) {
+                        temp.r = 1;
+                    }
 //					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_SEMICOLON)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getLightColor();
-					temp.g -= colorStep;
-					if (temp.g < 0) {
-						temp.g = 0;
-					}
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_SEMICOLON)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    Color temp = maps.get(0).getLightColor();
+                    temp.g -= colorStep;
+                    if (temp.g < 0) {
+                        temp.g = 0;
+                    }
 //					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getLightColor();
-					temp.g += colorStep;
-					if (temp.g > 1) {
-						temp.g = 1;
-					}
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    Color temp = maps.get(0).getLightColor();
+                    temp.g += colorStep;
+                    if (temp.g > 1) {
+                        temp.g = 1;
+                    }
 //					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getLightColor();
-					temp.b -= colorStep;
-					if (temp.b < 0) {
-						temp.b = 0;
-					}
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    Color temp = maps.get(0).getLightColor();
+                    temp.b -= colorStep;
+                    if (temp.b < 0) {
+                        temp.b = 0;
+                    }
 //					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_RBRACKET)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getLightColor();
-					temp.b += colorStep;
-					if (temp.b > 1) {
-						temp.b = 1;
-					}
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_RBRACKET)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    Color temp = maps.get(0).getLightColor();
+                    temp.b += colorStep;
+                    if (temp.b > 1) {
+                        temp.b = 1;
+                    }
 //					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_T)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    dayCycle.updateTime();
+                    System.out.println(dayCycle.toString());
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_SLASH)) {
+                if (delay.isOver()) {
+                    delay.start();
+                    dayCycle.addMinutes(5);
+                    System.out.println(dayCycle.toString());
+                }
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
+                Settings.scale = Settings.nativeScale;
+                Settings.scaled = Settings.scale != 1d;
+                ((Player) players[0]).getCamera().update();
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
+                Main.refreshGamma();
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_NEXT)) {
+                Main.resetGamma();
+            }
+            if (playersCount > 1) {
+                changeSplitScreenJoin.act();
+                changeSplitScreenMode.act();
+                if (changeSplitScreenJoin.isOn()) {
+                    Settings.joinSplitScreen = !Settings.joinSplitScreen;
+                }
+                if (changeSplitScreenMode.isOn()) {
+                    changeSSMode = true;
+                }
+                cameras[playersCount - 2].update();
+            }
+            for (int i = 0; i < playersCount; i++) {
+                ((Player) players[i]).update();
+            }
+            maps.stream().forEach((map) -> {
+                map.getSolidMobs().stream().forEach((mob) -> {
+                    mob.update();
+                });
+            });
+            dayCycle.updateTime();
+        };
+        updates[1] = () -> {
+            tempMaps.clear();
+            Map map;
+            if (game.online.server != null) {
+                for (int i = 0; i < playersCount; i++) {
+                    map = players[i].getMap();
+                    if (!tempMaps.contains(map)) {
+                        for (Mob mob : map.getSolidMobs()) {
+                            mob.update();
+                        }
+                        tempMaps.add(map);
+                    }
+                }
+            } else if (game.online.client != null) {
+                map = players[0].getMap();
+                for (Mob mob : map.getSolidMobs()) {
+                    mob.updateHard();
+                }
+            }
+            ((Player) players[0]).sendUpdate();
+            for (int i = 1; i < playersCount; i++) {
+                ((Entity) players[i]).updateSoft();
+                ((Entity) players[i]).updateOnline();
+            }
+            dayCycle.updateTime();
+        };
+    }
 
-			if (Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH)) {
-				if (delay.isOver()) {
-					delay.start();
-					dayCycle.updateTime();
-					dayCycle.setToDayLight(maps.get(0));
-					System.out.println(dayCycle.toString());
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_SLASH)) {
-				if (delay.isOver()) {
-					delay.start();
-					dayCycle.addOneHour();
-					dayCycle.setToDayLight(maps.get(0));
-					System.out.println(dayCycle.toString());
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
-				Settings.scale = Settings.nativeScale;
-				Settings.scaled = Settings.scale != 1d;
-				((Player) players[0]).getCamera().update();
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
-				Main.refreshGamma();
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_NEXT)) {
-				Main.resetGamma();
-			}
-			if (playersCount > 1) {
-				changeSplitScreenJoin.act();
-				changeSplitScreenMode.act();
-				if (changeSplitScreenJoin.isOn()) {
-					Settings.joinSplitScreen = !Settings.joinSplitScreen;
-				}
-				if (changeSplitScreenMode.isOn()) {
-					changeSSMode = true;
-				}
-				cameras[playersCount - 2].update();
-			}
-			for (int i = 0; i < playersCount; i++) {
-				((Player) players[i]).update();
-			}
-			maps.stream().forEach((map) -> {
-				map.getSolidMobs().stream().forEach((mob) -> {
-					mob.update();
-				});
-			});
-			dayCycle.updateTime();
-		};
-		updates[1] = () -> {
-			tempMaps.clear();
-			Map map;
-			if (game.online.server != null) {
-				for (int i = 0; i < playersCount; i++) {
-					map = players[i].getMap();
-					if (!tempMaps.contains(map)) {
-						for (Mob mob : map.getSolidMobs()) {
-							mob.update();
-						}
-						tempMaps.add(map);
-					}
-				}
-			} else if (game.online.client != null) {
-				map = players[0].getMap();
-				for (Mob mob : map.getSolidMobs()) {
-					mob.updateHard();
-				}
-			}
-			((Player) players[0]).sendUpdate();
-			for (int i = 1; i < playersCount; i++) {
-				((Entity) players[i]).updateSoft();
-				((Entity) players[i]).updateOnline();
-			}
-			dayCycle.updateTime();
-		};
-	}
+    @Override
+    public int getPlayersCount() {
+        if (game.mode == 0) {
+            return playersCount;
+        } else {
+            return 1;
+        }
+    }
 
-	@Override
+    private interface updater {
 
-	public int getPlayersCount() {
-		if (game.mode == 0) {
-			return playersCount;
-		} else {
-			return 1;
-		}
-	}
-
-	private interface update {
-
-		void update();
-	}
+        void update();
+    }
 }
