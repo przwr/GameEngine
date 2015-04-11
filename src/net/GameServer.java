@@ -16,7 +16,6 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import engine.Delay;
 import engine.Methods;
-import game.Settings;
 import game.gameobject.Mob;
 import game.gameobject.Player;
 import java.io.IOException;

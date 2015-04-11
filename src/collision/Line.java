@@ -17,6 +17,7 @@ import java.util.Collection;
  */
 public class Line extends Figure {
 
+    // Class never used
     private final int xVector;
     private final int yVector;
 
@@ -75,7 +76,8 @@ public class Line extends Figure {
                 || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(3).getX(), tmpPoints.get(3).getY(), tmpPoints.get(0).getX(), tmpPoints.get(0).getY()));
     }
 
-    private boolean roundRectangleCollision(int x, int y, Figure figure) { //TO DO
+    private boolean roundRectangleCollision(int x, int y, Figure figure) {      //TO DO
+        System.out.println("Simplified Version of Collision with RoundRectangle. In Line");
         ArrayList<Point> tmpPoints = (ArrayList< Point>) figure.getPoints();
         int[] w = {getX(x), getY(y), getX(x) + xVector, getY(y) + yVector};
         return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(0).getX(), tmpPoints.get(0).getY(), tmpPoints.get(1).getX(), tmpPoints.get(1).getY())

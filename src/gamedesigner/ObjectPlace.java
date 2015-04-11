@@ -8,7 +8,7 @@ package gamedesigner;
 import engine.FontBase;
 import engine.Point;
 import game.Game;
-import game.IO;
+import engine.inout.IO;
 import game.Settings;
 import game.place.Place;
 import game.gameobject.Action;
@@ -49,6 +49,8 @@ public class ObjectPlace extends Place {
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
+		dayCycle.setTime(10, 0);
+		
         lastName = "";
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
@@ -63,7 +65,7 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        objmap = new ObjectMap(currentMapID++, this, 10240, 10240, Place.tileSize);
+        objmap = new ObjectMap(mapIDcounter++, this, 10240, 10240, Place.tileSize);
         ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo"), this);
         guiHandler = new GUIHandler(this);
         maps.add(objmap);
@@ -72,7 +74,6 @@ public class ObjectPlace extends Place {
         editor.addGui(guiHandler);
         undo = new UndoControl(objmap, 20);
         //sounds.init("res");
-        color = new Color(0.75f, 0.75f, 0.75f);
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (Settings.scale * 24));
         standardFont = fonts.getFont(0);

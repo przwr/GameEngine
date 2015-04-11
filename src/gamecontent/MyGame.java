@@ -8,12 +8,12 @@ package gamecontent;
 import engine.Drawer;
 import engine.Methods;
 import game.Game;
-import static game.IO.loadInputFromFile;
+import static engine.inout.IO.loadInputFromFile;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.Settings;
 import game.place.Map;
-import game.place.SplitScreen;
+import engine.SplitScreen;
 import game.place.cameras.PlayersCamera;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
@@ -33,7 +33,7 @@ public class MyGame extends Game {
     private final updateType[] ups = new updateType[2];
 
     public boolean designer = false;
-
+	
     public MyGame(String title, Controller[] controllers) {
         super(title);
         SplitScreen.initialzie();

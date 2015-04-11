@@ -6,7 +6,7 @@
 package gamecontent.choices;
 
 import engine.Sound;
-import game.AnalizerSettings;
+import engine.inout.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;

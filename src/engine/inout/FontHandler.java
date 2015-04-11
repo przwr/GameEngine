@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine;
+package engine.inout;
 
+import engine.FontBase;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;

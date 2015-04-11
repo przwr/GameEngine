@@ -9,12 +9,15 @@ import engine.Drawer;
 import engine.Methods;
 import game.Settings;
 import game.gameobject.GUIObject;
+import game.gameobject.GameObject;
 import game.place.Place;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -31,22 +34,18 @@ public class GUIHandler extends GUIObject {
     private int mode, selected;
     private ArrayList<File> list;
     private String text = "";
-    private final int tile;
+    private final int tile, xStart, yStart;
     private final ObjectPlace objPlace;
     private final SimpleKeyboard key;
     private boolean firstLoop;
 
-    private final int xStart, yStart;
-
     private boolean[] options;
     private String[] prettyOptions;
 
-    private final int DONOTHING = -1;
-    private final int NAMING = 0;
-    private final int CHOOSING = 1;
-    private final int HELPING = 2;
-    private final int QUESTIONING = 3;
-    private final int VIEWING = 4;
+    private final int DONOTHING = -1, NAMING = 0, CHOOSING = 1, HELPING = 2, QUESTIONING = 3, VIEWING = 4;
+
+    private final Comparator<File> nameComparator = (File firstObject, File secondObject)
+            -> firstObject.getName().compareTo(secondObject.getName());
 
     private final String[] help = new String[]{
         "H : Help",
@@ -105,6 +104,7 @@ public class GUIHandler extends GUIObject {
     public void changeToChooser(ArrayList<File> list) {
         mode = CHOOSING;
         this.list = list;
+        Collections.sort(list, nameComparator);
         selected = 0;
         visible = true;
     }

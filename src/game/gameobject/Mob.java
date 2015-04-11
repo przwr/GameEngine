@@ -103,7 +103,7 @@ public abstract class Mob extends Entity {
             Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Settings.scale) / 2),
                     (int) ((collision.getHeight() * Settings.scale) / 2),
                     place.standardFont,
-                    map.getColor());
+                    map.getLightColor());
             glPopMatrix();
         }
     }

@@ -8,7 +8,7 @@ package gamecontent;
 import engine.Delay;
 import engine.Drawer;
 import engine.FontBase;
-import engine.FontHandler;
+import engine.inout.FontHandler;
 import engine.Methods;
 import game.Game;
 import game.Settings;
@@ -32,6 +32,7 @@ import org.newdawn.slick.Color;
 public class MyMenu extends Menu {
 
     private FontHandler smallFont, bigFont;
+	private Color color;
     
     public MyMenu(Game game) {
         super(game);
@@ -72,7 +73,6 @@ public class MyMenu extends Menu {
         menus[1].addChoice(new JoinSplitScreenChoice(Settings.language.menu.JoinSS, this));
         menus[1].addChoice(new LanguageChoice(Settings.language.menu.Language, this));
         menus[1].addChoice(new ControlsChoice(Settings.language.menu.Controls, this));
-        menus[1].addChoice(new BrightnessChoice(Settings.language.menu.Brigthness, this));
         menus[1].addChoice(new VolumeChoice(Settings.language.menu.Volume, this));
         menus[1].addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this));
         menus[1].addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this));

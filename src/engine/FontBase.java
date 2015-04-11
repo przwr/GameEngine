@@ -5,6 +5,7 @@
  */
 package engine;
 
+import engine.inout.FontHandler;
 import java.util.ArrayList;
 
 /**
@@ -20,15 +21,15 @@ public class FontBase {
     }
 
     public FontHandler add(String name, int type, int size) {
-        FontHandler tmp = new FontHandler(name, type, size);
-        fonts.add(tmp);
-        return tmp;
+        FontHandler temp = new FontHandler(name, type, size);
+        fonts.add(temp);
+        return temp;
     }
 
     public FontHandler add(String name, int size) {
-        FontHandler tmp = new FontHandler(name, size);
-        fonts.add(tmp);
-        return tmp;
+        FontHandler temp = new FontHandler(name, size);
+        fonts.add(temp);
+        return temp;
     }
 
     public FontHandler getFont(int i) {
@@ -37,13 +38,13 @@ public class FontBase {
     
     public FontHandler getFont(String name, int size) {
         FontHandler firstOcc = null;
-        for (FontHandler fh : fonts) {
-            if (fh.getName().equals(name)) {
-                if (fh.getSize() == size) {
-                    return fh;
+        for (FontHandler fontHandler : fonts) {
+            if (fontHandler.getName().equals(name)) {
+                if (fontHandler.getSize() == size) {
+                    return fontHandler;
                 }
                 if (firstOcc == null) {
-                    firstOcc = fh;
+                    firstOcc = fontHandler;
                 }
             }
         }

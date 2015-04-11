@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package engine.inout;
 
 import engine.Main;
+import engine.Main;
+import game.Settings;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

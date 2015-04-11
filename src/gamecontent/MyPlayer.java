@@ -142,7 +142,7 @@ public class MyPlayer extends Player {
                 glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
             }
             Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Settings.scale) / 2), (int) ((collision.getHeight() * Settings.scale) / 2),
-                    place.standardFont, map.getColor());
+                    place.standardFont, map.getLightColor());
             glPopMatrix();
         }
     }

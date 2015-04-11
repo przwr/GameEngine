@@ -5,7 +5,7 @@
  */
 package gamecontent.choices;
 
-import game.AnalizerSettings;
+import engine.inout.AnalizerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;

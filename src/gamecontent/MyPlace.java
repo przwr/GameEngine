@@ -36,18 +36,18 @@ public class MyPlace extends Place {
 
 	public MyPlace(Game game, int tileSize) {
 		super(game, tileSize);
+		dayCycle.setTime(10, 0);
 		changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
 		changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
 	}
 
 	@Override
 	public void generateAsGuest() {
-		GladeMap polana = new GladeMap(currentMapID++, this, 10240, 10240, tileSize);
-		StoneMap kamienna = new StoneMap(currentMapID++, this, 10240, 10240, tileSize);
+		GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 10240, tileSize);
+		StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
 		maps.add(polana);
 		maps.add(kamienna);
 //        sounds.initialize("res");
-		color = new Color(0.6f, 0.6f, 0.6f);
 		fonts = new FontBase(20);
 		fonts.add("Amble-Regular", (int) (Settings.scale * 24));
 		standardFont = fonts.getFont(0);
@@ -55,6 +55,7 @@ public class MyPlace extends Place {
 		initMethods();
 	}
 
+	// WHY?
 	@Override
 	public void generateAsHost() {
 		generateAsGuest();
@@ -120,75 +121,89 @@ public class MyPlace extends Place {
 					Settings.scaled = Settings.scale != 1d;
 					((Player) players[0]).getCamera().update();
 				}
-				//1d, 0.875d, 0.75d, 0.625, 0.5, 0.375, 0.25
 			}
 			float colorStep = 0.03125f;
-			if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_COMMA)) {
 				if (delay.isOver()) {
 					delay.start();
-					Color temp = maps.get(0).getColor();
-					temp.g -= colorStep;
-					if (temp.g < 0) {
-						temp.g = 0;
-					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getColor();
-					temp.g += colorStep;
-					if (temp.g > 1) {
-						temp.g = 1;
-					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-
-			if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getColor();
-					temp.r += colorStep;
-					if (temp.r > 1) {
-						temp.r = 1;
-					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-				}
-			}
-
-			if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
-				if (delay.isOver()) {
-					delay.start();
-					Color temp = maps.get(0).getColor();
+					Color temp = maps.get(0).getLightColor();
 					temp.r -= colorStep;
 					if (temp.r < 0) {
 						temp.r = 0;
 					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
 				}
 			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_PERIOD)) {
 				if (delay.isOver()) {
 					delay.start();
-					Color temp = maps.get(0).getColor();
+					Color temp = maps.get(0).getLightColor();
+					temp.r += colorStep;
+					if (temp.r > 1) {
+						temp.r = 1;
+					}
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_SEMICOLON)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getLightColor();
+					temp.g -= colorStep;
+					if (temp.g < 0) {
+						temp.g = 0;
+					}
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getLightColor();
+					temp.g += colorStep;
+					if (temp.g > 1) {
+						temp.g = 1;
+					}
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET)) {
+				if (delay.isOver()) {
+					delay.start();
+					Color temp = maps.get(0).getLightColor();
 					temp.b -= colorStep;
 					if (temp.b < 0) {
 						temp.b = 0;
 					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
 				}
 			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_RBRACKET)) {
 				if (delay.isOver()) {
 					delay.start();
-					Color temp = maps.get(0).getColor();
+					Color temp = maps.get(0).getLightColor();
 					temp.b += colorStep;
 					if (temp.b > 1) {
 						temp.b = 1;
 					}
-					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
+				}
+			}
+
+			if (Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH)) {
+				if (delay.isOver()) {
+					delay.start();
+					dayCycle.updateTime();
+					dayCycle.setToDayLight(maps.get(0));
+					System.out.println(dayCycle.toString());
+				}
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_SLASH)) {
+				if (delay.isOver()) {
+					delay.start();
+					dayCycle.addOneHour();
+					dayCycle.setToDayLight(maps.get(0));
+					System.out.println(dayCycle.toString());
 				}
 			}
 			if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
@@ -221,6 +236,7 @@ public class MyPlace extends Place {
 					mob.update();
 				});
 			});
+			dayCycle.updateTime();
 		};
 		updates[1] = () -> {
 			tempMaps.clear();
@@ -246,6 +262,7 @@ public class MyPlace extends Place {
 				((Entity) players[i]).updateSoft();
 				((Entity) players[i]).updateOnline();
 			}
+			dayCycle.updateTime();
 		};
 	}
 

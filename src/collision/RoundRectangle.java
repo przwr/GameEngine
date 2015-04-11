@@ -21,8 +21,8 @@ import java.util.Collections;
  */
 public class RoundRectangle extends Figure {
 
-    public static final int LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3;
-    public static final int PREVIOUS = 0, CORNER = 1, NEXT = 2;
+    public static final byte LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3, LEFT_BOTTOM_TO_RIGHT_TOP = 4, LEFT = 5, LEFT_TOP_TO_RIGHT_BOTTOM = 6, RIGHT = 7;
+    public static final byte PREVIOUS = 0, CORNER = 1, NEXT = 2;
     private static final changer[] changers = new changer[4];
     private static final pusher[] pushers = new pusher[4];
     private static final geter[] geters = new geter[4];
@@ -54,24 +54,28 @@ public class RoundRectangle extends Figure {
         pushers[LEFT_TOP] = (int xChange, int yChange) -> {
             if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
                 corners[LEFT_TOP].push(LEFT_TOP, xChange, yChange);
+                setTypeOfCorner(LEFT_TOP, xChange, yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
         pushers[LEFT_BOTTOM] = (int xChange, int yChange) -> {
             if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
                 corners[LEFT_BOTTOM].push(LEFT_BOTTOM, xChange, Place.tileSize - yChange);
+                setTypeOfCorner(LEFT_BOTTOM, xChange, yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
         pushers[RIGHT_BOTTOM] = (int xChange, int yChange) -> {
             if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
                 corners[RIGHT_BOTTOM].push(RIGHT_BOTTOM, Place.tileSize - xChange, Place.tileSize - yChange);
+                setTypeOfCorner(RIGHT_BOTTOM, xChange, yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
         pushers[RIGHT_TOP] = (int xChange, int yChange) -> {
             if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
                 corners[RIGHT_TOP].push(RIGHT_TOP, (Place.tileSize - xChange), yChange);
+                setTypeOfCorner(RIGHT_TOP, xChange, yChange);
                 getOwner().setSimpleLighting(false);
             }
         };
@@ -200,7 +204,8 @@ public class RoundRectangle extends Figure {
                 && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
     }
 
-    private boolean roundRectangleCollsion(int x, int y, Figure figure) { //TO DO
+    private boolean roundRectangleCollsion(int x, int y, Figure figure) {       //TO DO
+        System.out.println("Simplified Version of Collision with RoundRectangle. In RoundRectangle");
         RoundRectangle roundRectangle = (RoundRectangle) figure;
         return ((getX(x) > roundRectangle.getX() && getX(x) - roundRectangle.getX() < roundRectangle.getWidth()) || (getX(x) <= roundRectangle.getX() && roundRectangle.getX() - getX(x) < width))
                 && ((getY(y) > roundRectangle.getY() && getY(y) - roundRectangle.getY() < roundRectangle.getHeight()) || (getY(y) <= roundRectangle.getY() && roundRectangle.getY() - getY(y) < height));
@@ -235,6 +240,14 @@ public class RoundRectangle extends Figure {
                 || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[1].getX(), list[1].getY(), list[2].getX(), list[2].getY())
                 || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[2].getX(), list[2].getY(), list[3].getX(), list[3].getY())
                 || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[3].getX(), list[3].getY(), list[0].getX(), list[0].getY()));
+    }
+
+    private void setTypeOfCorner(int corner, int xChange, int yChange) {
+        if (xChange > Place.tileHalf && yChange > Place.tileHalf) {
+            corners[corner].concave = true;
+        } else if (xChange == Place.tileHalf && yChange == Place.tileHalf) {
+            corners[corner].triangular = true;
+        }
     }
 
     @Override
@@ -342,11 +355,6 @@ public class RoundRectangle extends Figure {
             changes = new Point[3];
             changers[corner].set(xChange, yChange);
             setPoints();
-            if (xChange > Place.tileHalf && yChange > Place.tileHalf) {
-                concave = true;
-            } else if (xChange == Place.tileHalf && yChange == Place.tileHalf) {
-                triangular = true;
-            }
         }
 
         private void setPoints() {

@@ -5,9 +5,10 @@
  */
 package engine;
 
-import game.AnalizerSettings;
+import engine.inout.AnalizerSettings;
+import engine.inout.Controlers;
 import game.Game;
-import static game.IO.setSettingsFromFile;
+import static engine.inout.IO.setSettingsFromFile;
 import game.Settings;
 import static game.Settings.calculateScale;
 import java.io.File;
@@ -17,11 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import gamecontent.MyGame;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
-import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL;
@@ -31,6 +30,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import org.lwjgl.opengl.PixelFormat;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
 /**
@@ -61,12 +61,12 @@ public class Main {
     private static void initializeDisplay() {
         try {
             tryInitializeDisplay();
-        } catch (LWJGLException exception) {
+        } catch (LWJGLException | IOException exception) {
             Methods.javaError(exception.toString());
         }
     }
 
-    private static void tryInitializeDisplay() throws LWJGLException {
+    private static void tryInitializeDisplay() throws LWJGLException, IOException {
         setIcon();
         setDisplayMode(Settings.resolutionWidth, Settings.resolutionHeight, Settings.frequency, Settings.fullScreen);
         createDisplay();
@@ -75,8 +75,7 @@ public class Main {
         Display.setDisplayConfiguration(2f, 0f, 1f);
         Keyboard.create();
         Mouse.create();
-        Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
-        Mouse.setNativeCursor(emptyCursor);
+        Mouse.setNativeCursor(CursorLoader.get().getCursor("res/cursor.png", 1, 1));
         Controllers.create();
         controllers = Controlers.initialize();
     }
@@ -179,7 +178,7 @@ public class Main {
         while (isRunning()) {
             Time.update();
             if (game != null && game.getPlace() != null) {
-                Color color = game.getPlace().getMapById((short) 0).getColor();
+                Color color = game.getPlace().getMapById((short) 0).getLightColor();
                 Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale + " r: " + color.r + " g: " + color.g + " b: " + color.b);
             } else {
                 Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale);

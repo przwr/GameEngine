@@ -21,30 +21,41 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Block extends GameObject {
 
+    private final static byte REGULAR = 0, ROUND = 1, CIRCLE = 2;
     private final ArrayList<Figure> top = new ArrayList<>(1);
     private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
+    private static Figure colision;
 
     public static Block create(int x, int y, int width, int height, int shadowHeight) {
-        return new Block(x, y, width, height, shadowHeight, false);
+        return new Block(x, y, width, height, shadowHeight, REGULAR);
     }
 
     public static Block createRound(int x, int y, int width, int height, int shadowHeight) {
-        return new Block(x, y, width, height, shadowHeight, true);
+        return new Block(x, y, width, height, shadowHeight, ROUND);
     }
 
-    private Block(int x, int y, int width, int height, int shadowHeight, boolean round) {  //Point (x, y) should be in left top corner of Block
+    public static Block createCircle(int x, int y, int width, int height, int shadowHeight) {
+        return new Block(x, y, width, height, shadowHeight, CIRCLE);
+    }
+
+    private Block(int x, int y, int width, int height, int shadowHeight, byte type) {  //Point (x, y) should be in left top corner of Block
         this.x = x;
         this.y = y;
         name = "area";
-        solid = true;
-        simpleLighting = !round;
-        visible = true;        
-        if (round) {
-            setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
-        } else {
-            setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
-            top.add(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.IN_SHADE_NO_SHADOW, shadowHeight + height, this));
+        solid = visible = true;
+        simpleLighting = type == REGULAR;
+        switch (type) {
+            case REGULAR:
+                setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+                top.add(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.IN_SHADE_NO_SHADOW, shadowHeight + height, this));
+                break;
+            case ROUND:
+                setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+                break;
+            case CIRCLE:
+                setCollision(Circle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+                break;
         }
     }
 
@@ -160,11 +171,11 @@ public class Block extends GameObject {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
-                Figure col = wall.getCollision();
+                colision = wall.getCollision();
                 Drawer.returnToCentralPoint();
-                Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
+                Drawer.translate(colision.getX() - getX(), colision.getY() - getY() - colision.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInBlack(0, 0, col.width, col.height + col.getShadowHeight());
+                    Drawer.drawRectangleInBlack(0, 0, colision.width, colision.height + colision.getShadowHeight());
                 } else {
                     Drawer.drawShapeInBlack(wall);
                 }
@@ -177,18 +188,18 @@ public class Block extends GameObject {
     public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
         glPushMatrix();
         if (isSimpleLighting() || !collision.isBottomRounded()) {
-            System.out.println("Powinno być nie używane w Block Lit! " + figure.getOwner().getX() + "  " + figure.getOwner().getY());
-            glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
-            //  Drawer.drawRectangleInShade(0, 0, figure.width, figure.height + figure.getShadowHeight(), color);
+            if (Main.DEBUG) {
+                System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+            }
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
-                Figure col = wall.getCollision();
+                colision = wall.getCollision();
                 Drawer.returnToCentralPoint();
-                Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
+                Drawer.translate(colision.getX() - getX(), colision.getY() - getY() - colision.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInShade(xStart, 0, xEnd - xStart, col.height + col.getShadowHeight(), 1);
+                    Drawer.drawRectangleInShade(xStart, 0, xEnd - xStart, colision.height + colision.getShadowHeight(), 1);
                 } else {
                     Drawer.drawShapePartInShade(wall, 1, xStart, xEnd);
                 }
@@ -201,18 +212,18 @@ public class Block extends GameObject {
     public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
         glPushMatrix();
         if (isSimpleLighting()) {
-            System.out.println("Powinno być nie używane w Block");
-            glTranslatef(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect, 0);
-            Drawer.drawRectangleInBlack(0, 0, figure.width, figure.height + figure.getShadowHeight());
+            if (Main.DEBUG) {
+                System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+            }
         } else {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
-                Figure col = wall.getCollision();
+                colision = wall.getCollision();
                 Drawer.returnToCentralPoint();
-                Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
+                Drawer.translate(colision.getX() - getX(), colision.getY() - getY() - colision.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInBlack(xStart, 0, xEnd - xStart, col.height + col.getShadowHeight());
+                    Drawer.drawRectangleInBlack(xStart, 0, xEnd - xStart, colision.height + colision.getShadowHeight());
                 } else {
                     Drawer.drawShapePartInBlack(wall, xStart, xEnd);
                 }
@@ -230,17 +241,17 @@ public class Block extends GameObject {
 
     //b:x:y:width:height:shadowHeight:round
     public String saveToString(int xBegin, int yBegin, int tile) {
-        String ret = ((collision instanceof RoundRectangle) ? "rb:" : "b:") + ((int) (x - xBegin) / tile) + ":" + ((int) (y - yBegin) / tile) + ":"
+        String string = ((collision instanceof RoundRectangle) ? "rb:" : "b:") + ((int) (x - xBegin) / tile) + ":" + ((int) (y - yBegin) / tile) + ":"
                 + (collision.width / tile) + ":" + (collision.height / tile) + ":" + (collision.getShadowHeight() / tile) + ":"
                 + (simpleLighting ? "0" : "1");
         if (collision instanceof RoundRectangle) {
             for (int i = 0; i < 4; i++) {
-                Point tmp = getPushValueOfCorner(i);
-                ret += ":" + (tmp.getX() != 0 ? tmp.getX() : "") + ":" + (tmp.getY() != 0 ? tmp.getY() : "");
+                Point temp = getPushValueOfCorner(i);
+                string += ":" + (temp.getX() != 0 ? temp.getX() : "") + ":" + (temp.getY() != 0 ? temp.getY() : "");
             }
-            ret += ":0";
+            string += ":0";
         }
-        return ret;
+        return string;
     }
 
     public Collection<ForegroundTile> getTopForegroundTiles() {
