@@ -71,7 +71,7 @@ public class MyPlayer extends Player {
         this.setResistance(2);
         this.emitter = true;
         initialize(name, x, y);
-        this.sprite = place.getSpriteSheet("apple");
+        this.sprite = place.getSpriteSheet("test");
         addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
@@ -90,7 +90,7 @@ public class MyPlayer extends Player {
         this.emitter = true;
         visible = true;
         depth = 0;
-        this.sprite = place.getSpriteSheet("apple");
+        this.sprite = place.getSpriteSheet("test");
         addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         this.animation = new Animation((SpriteSheet) sprite, 200);
         emits = false;
