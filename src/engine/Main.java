@@ -178,10 +178,9 @@ public class Main {
         while (isRunning()) {
             Time.update();
             if (game != null && game.getPlace() != null) {
-                Color color = game.getPlace().getMapById((short) 0).getLightColor();
-                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale + " r: " + color.r + " g: " + color.g + " b: " + color.b);
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] " + game.getPlace().getTime());
             } else {
-                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale);
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
             }
             if (!pause) {
                 update();
