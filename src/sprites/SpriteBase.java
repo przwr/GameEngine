@@ -61,7 +61,7 @@ public class SpriteBase {
         String sprite, key;
         Texture texture;
         Sprite image;
-        try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
+        try (BufferedReader input = new BufferedReader(new FileReader("res/textures/" + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];
@@ -114,7 +114,7 @@ public class SpriteBase {
         String image, key;
         Texture texture;
         Sprite sprite;
-        try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
+        try (BufferedReader input = new BufferedReader(new FileReader("res/textures/" + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];
@@ -155,7 +155,7 @@ public class SpriteBase {
         String sprite, key;
         Texture texture;
         Sprite image;
-        try (BufferedReader input = new BufferedReader(new FileReader("res/" + name + ".spr"))) {
+        try (BufferedReader input = new BufferedReader(new FileReader("res/textures/" + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];

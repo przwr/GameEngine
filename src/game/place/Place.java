@@ -223,6 +223,10 @@ public abstract class Place extends ScreenPlace {
         return dayCycle.getColor();
     }
 
+    public String getTime() {
+        return dayCycle.toString();
+    }
+
     public static double getCurrentScale() {
         if (currentCamera != null) {
             return currentCamera.getScale();

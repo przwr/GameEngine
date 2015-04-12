@@ -49,7 +49,7 @@ public class Sprite implements Appearance {
 
     public static Texture loadTexture(String textureKey) {
         try {
-            return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/" + textureKey + ".png"), GL_LINEAR);
+            return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/textures/" + textureKey + ".png"), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
         }
