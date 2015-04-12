@@ -148,8 +148,8 @@ public class Main {
     private static void setIcon() {
         try {
             Display.setIcon(new ByteBuffer[]{
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon32.png")), false, false, null),
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon16.png")), false, false, null)
+                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
+                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
             });
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
@@ -178,7 +178,12 @@ public class Main {
     private static void gameLoop() {
         while (isRunning()) {
             Time.update();
-            Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
+            if (game != null && game.getPlace() != null) {
+                Color color = game.getPlace().getMapById((short) 0).getLightColor();
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] " + game.getPlace().getTime());
+            } else {
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
+            }
             if (!pause) {
                 update();
             } else {
