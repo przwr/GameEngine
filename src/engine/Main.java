@@ -11,7 +11,6 @@ import game.Game;
 import static engine.inout.IO.setSettingsFromFile;
 import game.Settings;
 import static game.Settings.calculateScale;
-import game.place.Place;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -179,9 +178,10 @@ public class Main {
         while (isRunning()) {
             Time.update();
             if (game != null && game.getPlace() != null) {
-                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] " + game.getPlace().getTime());
+                Color color = game.getPlace().getMapById((short) 0).getLightColor();
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale + " r: " + color.r + " g: " + color.g + " b: " + color.b);
             } else {
-                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
+                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] x" + Settings.scale);
             }
             if (!pause) {
                 update();
