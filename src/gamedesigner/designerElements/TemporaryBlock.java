@@ -14,6 +14,7 @@ import game.Settings;
 import game.gameobject.GameObject;
 import game.place.ForegroundTile;
 import game.place.Map;
+import game.place.Place;
 import game.place.Tile;
 import gamedesigner.ObjectMap;
 import gamedesigner.ObjectPlace;
@@ -60,7 +61,7 @@ public class TemporaryBlock extends GameObject {
 		glPushMatrix();
 		glTranslatef(xEffect, yEffect, 0);
 		if (Settings.scaled) {
-			glScaled(Settings.scale, Settings.scale, 1);
+			glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
 		}
 		glTranslatef(getX(), getY(), 0);
 		int mode = objPlace.getMode();

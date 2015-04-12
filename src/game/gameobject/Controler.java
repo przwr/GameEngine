@@ -15,7 +15,6 @@ public abstract class Controler {
     public AnyInput[] inputs;
     protected final Entity inControl;
     protected boolean[] states;
-    protected boolean[] statesSample;
 
     public Controler(Entity inControl) {
         this.inControl = inControl;

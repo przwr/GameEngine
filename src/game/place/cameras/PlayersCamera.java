@@ -15,12 +15,9 @@ import org.lwjgl.opengl.Display;
  */
 public class PlayersCamera extends Camera {
 
-    private initializeCamera[] inits;
-
-    public PlayersCamera(GameObject firstOwner, int xSplit, int ySplit, int ownersCount) {
-        super(firstOwner);
-        inits = new initializeCamera[3];
-        inits[0] = () -> {
+    static final initializer[] inits = new initializer[3];
+    {
+        inits[0] = (int ownersCount) -> {
             if (Settings.horizontalSplitScreen) {
                 if (ownersCount == 0) {
                     yDown = 2;
@@ -35,59 +32,7 @@ public class PlayersCamera extends Camera {
                 }
             }
         };
-        initsRest(ownersCount);
-        initialize(xSplit, ySplit);
-    }
-
-    public PlayersCamera(GameObject firstOwner, GameObject secondOwner) {
-        super(firstOwner);
-        owners.add(secondOwner);
-        widthHalf = Display.getWidth() / 2;
-        heightHalf = Display.getHeight() / 2;
-        update();
-    }
-
-    public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner) {
-        super(firstOwner);
-        owners.add(secondOwner);
-        owners.add(thirdOwner);
-        widthHalf = Display.getWidth() / 2;
-        heightHalf = Display.getHeight() / 2;
-        update();
-    }
-
-    public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner, GameObject fourthOwner) {
-        super(firstOwner);
-        owners.add(secondOwner);
-        owners.add(thirdOwner);
-        owners.add(fourthOwner);
-        widthHalf = Display.getWidth() / 2;
-        heightHalf = Display.getHeight() / 2;
-        update();
-    }
-
-    private void initialize(int ssX, int ssY) {
-        yUp = yDown = xLeft = xRight = 0;
-        if (Settings.playersCount > 1) {
-            inits[Settings.playersCount - 2].initialize();
-        }
-        widthHalf = Display.getWidth() / ssX;
-        heightHalf = Display.getHeight() / ssY;
-        update();
-    }
-
-    public void reInitialize(int ssX, int ssY) {
-        yUp = yDown = xLeft = xRight = 0;
-        if (Settings.playersCount > 1) {
-            inits[Settings.playersCount - 2].initialize();
-        }
-        widthHalf = Display.getWidth() / ssX;
-        heightHalf = Display.getHeight() / ssY;
-        update();
-    }
-
-    private void initsRest(final int ownersCount) {
-        inits[1] = () -> {
+        inits[1] = (int ownersCount) -> {
             if (Settings.horizontalSplitScreen) {
                 if (ownersCount == 0) {
                     yDown = 2;
@@ -106,7 +51,7 @@ public class PlayersCamera extends Camera {
                 }
             }
         };
-        inits[2] = () -> {
+        inits[2] = (int ownersCount) -> {
             if (Settings.horizontalSplitScreen) {
                 if (ownersCount == 0) {
                     xRight = 2;
@@ -125,8 +70,67 @@ public class PlayersCamera extends Camera {
         };
     }
 
-    private interface initializeCamera {
+    public PlayersCamera(GameObject firstOwner, int xSplit, int ySplit, int ownersCount) {
+        super(firstOwner);
+        initialize(xSplit, ySplit, ownersCount);
+    }
 
-        void initialize();
+    public PlayersCamera(GameObject firstOwner, GameObject secondOwner) {
+        super(firstOwner);
+        owners.add(secondOwner);
+        widthHalf = Display.getWidth() / 2;
+        heightHalf = Display.getHeight() / 2;
+        setScale(0, 0, 0);
+        update();
+    }
+
+    public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner) {
+        super(firstOwner);
+        owners.add(secondOwner);
+        owners.add(thirdOwner);
+        widthHalf = Display.getWidth() / 2;
+        heightHalf = Display.getHeight() / 2;
+        setScale(0, 0, 0);
+        update();
+    }
+
+    public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner, GameObject fourthOwner) {
+        super(firstOwner);
+        owners.add(secondOwner);
+        owners.add(thirdOwner);
+        owners.add(fourthOwner);
+        widthHalf = Display.getWidth() / 2;
+        heightHalf = Display.getHeight() / 2;
+        setScale(0, 0, 0);
+        update();
+    }
+
+    private void initialize(int ssX, int ssY, int ownersCount) {
+        this.ownersCount = ownersCount;
+        yUp = yDown = xLeft = xRight = 0;
+        if (Settings.playersCount > 1) {
+            inits[Settings.playersCount - 2].initialize(ownersCount);
+        }
+        widthHalf = Display.getWidth() / ssX;
+        heightHalf = Display.getHeight() / ssY;
+        setScale(ssX, ssY, ownersCount);
+        update();
+    }
+
+    public void reInitialize(int ssX, int ssY, int ownersCount) {
+        this.ownersCount = ownersCount;
+        yUp = yDown = xLeft = xRight = 0;
+        if (Settings.playersCount > 1) {
+            inits[Settings.playersCount - 2].initialize(ownersCount);
+        }
+        widthHalf = Display.getWidth() / ssX;
+        heightHalf = Display.getHeight() / ssY;
+        setScale(ssX, ssY, ownersCount);
+        update();
+    }
+
+    private interface initializer {
+
+        void initialize(int ownersCount);
     }
 }

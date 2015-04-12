@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place;
+package engine;
 
 import org.newdawn.slick.Color;
 
@@ -98,10 +98,6 @@ public class DayCycle {
         } else if (timeInMinutes >= SUNSET || timeInMinutes < SUNRISE) {
             lightColor.r = lightColor.g = lightColor.b = NIGHT;
         }
-    }
-
-    public void setToDayLight(Map map) {
-        map.setColor(lightColor);
     }
 
     public short getTime() {

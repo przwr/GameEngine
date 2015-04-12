@@ -135,26 +135,26 @@ public class Renderer {
         }
     }
 
-    public static void preRenderShadowedLights(Place place, Camera cam) {
+    public static void preRenderShadowedLights(Place place, Camera camera) {
         frame.activate();
         glClear(GL_COLOR_BUFFER_BIT);
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
-        cam.getVisibleLights().stream().forEach((light) -> {
+        camera.getVisibleLights().stream().forEach((light) -> {
             if (Settings.shadowOff || !light.isGiveShadows()) {
-                light.render(cam.getXOffsetEffect(), cam.getYOffsetEffect());
+                light.render(camera.getXOffsetEffect(), camera.getYOffsetEffect(), camera);
             } else {
-                drawLight(light, cam);
+                drawLight(light, camera);
             }
         });
         frame.deactivate();
     }
 
-    public static void drawLight(Light light, Camera cam) {
+    public static void drawLight(Light light, Camera camera) {
         glPushMatrix();
-        glTranslated(cam.getXOffsetEffect(), cam.getYOffsetEffect(), 0);
+        glTranslated(camera.getXOffsetEffect(), camera.getYOffsetEffect(), 0);
         if (Settings.scaled) {
-            glScaled(Settings.scale, Settings.scale, 1);
+            glScaled(camera.getScale(), camera.getScale(), 1);
         }
         glTranslated(light.getX() - light.getXCenterShift(), light.getY() - light.getYCenterShift(), 0);
         renderLightPiece(light);

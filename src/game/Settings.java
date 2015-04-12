@@ -116,9 +116,9 @@ public class Settings {
     }
 
     public static void calculateScale() {
-        scale = ((int) ((resolutionHeight / 1024d / 0.25d)) * 0.25d) >= 1 ? 1 : (int) ((resolutionHeight / 1024d / 0.25d)) * 0.25d;
+        scale = ((int) ((resolutionHeight / 1024d / 0.25)) * 0.25) >= 1 ? 1 : (int) ((resolutionHeight / 1024d / 0.25)) * 0.25;
         nativeScale = scale;
-        scaled = scale != 1d;
+        scaled = true;
     }
 
     public static void update(int actionsCount, Player[] players, Controller[] controllers) {

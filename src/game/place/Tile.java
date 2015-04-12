@@ -5,6 +5,7 @@ import engine.Drawer;
 import engine.Point;
 import game.Settings;
 import game.gameobject.GameObject;
+import game.place.cameras.Camera;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -61,7 +62,7 @@ public class Tile extends GameObject implements Appearance {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         if (Settings.scaled) {
-            glScaled(Settings.scale, Settings.scale, 1);
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         }
         glTranslatef(x, y, 0);
         tileStack.stream().forEach((piece) -> {
@@ -123,7 +124,7 @@ public class Tile extends GameObject implements Appearance {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         if (Settings.scaled) {
-            glScaled(Settings.scale, Settings.scale, 1);
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         }
         glTranslatef(getX(), getY(), 0);
         tileStack.stream().forEach((piece) -> {

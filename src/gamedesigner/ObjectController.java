@@ -12,6 +12,7 @@ import game.gameobject.AnyInput;
 import game.gameobject.Controler;
 import game.gameobject.Entity;
 import game.gameobject.Player;
+import static gamecontent.MyController.LIGHT;
 
 /**
  *
@@ -19,20 +20,11 @@ import game.gameobject.Player;
  */
 public class ObjectController extends Controler {
 
-    public static final int UP = 0;
-    public static final int DOWN = 1;
-    public static final int LEFT = 2;
-    public static final int RIGHT = 3;
-    public static final int JUMP = 4;
-    public static final int RUN = 5;
-    public static final int LIGHT = 6;
-
     public ObjectController(Entity inControl) {
         super(inControl);
         inputs = new AnyInput[36];
         actions = new Action[36]; // 4 pierwsze to menu  
-        states = new boolean[7];
-        statesSample = new boolean[7];
+        states = new boolean[8];
     }
 
     @Override

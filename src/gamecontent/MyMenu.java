@@ -54,8 +54,8 @@ public class MyMenu extends Menu {
         generateM8();
         this.color = new Color(Color.white);
         fonts = new FontBase(20);
-        smallFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.scale * 38));
-        bigFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.scale * 64));
+        smallFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.nativeScale * 38));
+        bigFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.nativeScale * 64));
     }
 
     private void generateM0() {

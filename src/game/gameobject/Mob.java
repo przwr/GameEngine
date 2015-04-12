@@ -17,7 +17,6 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslatef;
-import org.newdawn.slick.Color;
 
 /**
  *
@@ -92,16 +91,16 @@ public abstract class Mob extends Entity {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             if (Settings.scaled) {
-                glScaled(Settings.scale, Settings.scale, 1);
+                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             }
             glTranslatef(getX(), getY(), 0);
             sprite.render();
 
             if (Settings.scaled) {
-                glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
-            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Settings.scale) / 2),
-                    (int) ((collision.getHeight() * Settings.scale) / 2),
+            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
+                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
                     place.standardFont,
                     map.getLightColor());
             glPopMatrix();

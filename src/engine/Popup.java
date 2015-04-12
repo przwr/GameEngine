@@ -27,8 +27,8 @@ public class Popup {
 
     public Popup(String font) {
         fonts = new FontBase(2);
-        fonts.add(font, (int) (Settings.scale * 22));
-        fonts.add(font, (int) (Settings.scale * 28));
+        fonts.add(font, (int) (Settings.nativeScale * 22));
+        fonts.add(font, (int) (Settings.nativeScale * 28));
         middleOk = fonts.getFont(0).getWidth("[ENTER]");
     }
 

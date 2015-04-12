@@ -11,6 +11,7 @@ import engine.Drawer;
 import game.Settings;
 import game.place.ForegroundTile;
 import game.place.Map;
+import game.place.Place;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -186,7 +187,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         if (Settings.scaled) {
-            glScaled(Settings.scale, Settings.scale, 1);
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         }
         glTranslatef(getX(), getY(), 0);
         int mode = objPlace.getMode();

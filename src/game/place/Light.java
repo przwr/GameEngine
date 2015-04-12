@@ -12,6 +12,7 @@ import game.place.fbo.MultisampleFrameBufferObject;
 import game.place.fbo.FrameBufferObject;
 import game.Settings;
 import game.gameobject.GameObject;
+import game.place.cameras.Camera;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -80,13 +81,13 @@ public class Light {
         setShift();
     }
 
-    public void render(int x, int y) {
+    public void render(int x, int y, Camera camera) {
         if (spriteSheet != null) {
             glColor3f(color.getRed(), color.getGreen(), color.getBlue());
             glPushMatrix();
             glTranslatef(x, y, 0);
             if (Settings.scaled) {
-                glScaled(Settings.scale, Settings.scale, 1);
+                glScaled(camera.getScale(), camera.getScale(), 1);
             }
             glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
             spriteSheet.renderPiece(piece);
@@ -96,9 +97,9 @@ public class Light {
             glPushMatrix();
             glTranslatef(x, y, 0);
             if (Settings.scaled) {
-                glScaled(Settings.scale, Settings.scale, 1);
+                glScaled(camera.getScale(), camera.getScale(), 1);
             }
-            glTranslatef(owner.getX(), owner.getY(), 0);
+            glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
             sprite.render();
             glPopMatrix();
         }

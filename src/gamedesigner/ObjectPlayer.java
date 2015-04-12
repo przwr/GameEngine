@@ -334,7 +334,7 @@ public class ObjectPlayer extends Player {
         int yd = (Math.abs(iy - yStop) + 1) * tileSize;
         glTranslatef(xEffect, yEffect, 0);
         if (Settings.scaled) {
-            glScaled(Settings.scale, Settings.scale, 1);
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         }
         glTranslatef(Math.min(ix, xStop) * tileSize, Math.min(iy, yStop) * tileSize, 0);
 

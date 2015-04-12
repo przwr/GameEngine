@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.DayCycle;
 import engine.SplitScreen;
 import engine.Renderer;
 import engine.Drawer;
@@ -40,7 +41,7 @@ public abstract class Place extends ScreenPlace {
     protected static final ArrayList<Map> tempMaps = new ArrayList<>();
     private static final renderType[] renders = new renderType[2];
 
-    public Camera currentCamera;
+    public static Camera currentCamera;
     public Camera[] cameras = new Camera[3];
     public boolean isSplit, changeSSMode, singleCamera;
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
@@ -220,6 +221,13 @@ public abstract class Place extends ScreenPlace {
 
     public Color getLightColor() {
         return dayCycle.getColor();
+    }
+
+    public static double getCurrentScale() {
+        if (currentCamera != null) {
+            return currentCamera.getScale();
+        }
+        return Settings.nativeScale;
     }
 
     private interface renderType {

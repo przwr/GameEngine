@@ -11,6 +11,7 @@ import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.place.Place;
+import game.place.cameras.Camera;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -146,7 +147,7 @@ public class GUIHandler extends GUIObject {
             return;
         }
         text = Methods.editWithKeyboard(text);
-        Drawer.renderString("Write filename: " + text, (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+        Drawer.renderString("Write filename: " + text, (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
                 place.standardFont, new Color(1f, 1f, 1f));
 
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
@@ -168,13 +169,13 @@ public class GUIHandler extends GUIObject {
     private void renderChoosingFile() {
         key.keyboardStart();
 
-        Drawer.renderString(">", (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+        Drawer.renderString(">", (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
                 place.standardFont, new Color(1f, 1f, 1f));
 
         int delta;
         for (int i = 0; i < list.size(); i++) {
             delta = (int) ((i - selected) * tile * 0.5);
-            Drawer.renderString(list.get(i).getName(), (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
+            Drawer.renderString(list.get(i).getName(), (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
                     place.standardFont, new Color(1f, 1f, 1f));
         }
 
@@ -203,13 +204,13 @@ public class GUIHandler extends GUIObject {
     private void renderHelp() {
         key.keyboardStart();
 
-        Drawer.renderString(">", (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+        Drawer.renderString(">", (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
                 place.standardFont, new Color(1f, 1f, 1f));
 
         int delta;
         for (int i = 0; i < help.length; i++) {
             delta = (int) ((i - selected) * tile * 0.5);
-            Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
+            Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
                     place.standardFont, new Color(1f, 1f, 1f));
         }
         if (key.keyPressed(Keyboard.KEY_UP)) {
@@ -233,13 +234,13 @@ public class GUIHandler extends GUIObject {
     private void renderViewingOptions() {
         key.keyboardStart();
 
-        Drawer.renderString(">", (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+        Drawer.renderString(">", (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
                 place.standardFont, new Color(1f, 1f, 1f));
 
         int delta;
         for (int i = 0; i < options.length; i++) {
             delta = (int) ((i - selected) * tile * 0.5);
-            Drawer.renderString(prettyOptions[2 * i] + prettyOptions[2 * i + 1], (int) ((xStart + tile * 0.2) * Settings.scale), (int) ((yStart + delta) * Settings.scale),
+            Drawer.renderString(prettyOptions[2 * i] + prettyOptions[2 * i + 1], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
                     place.standardFont, new Color(1f, 1f, 1f));
         }
 
@@ -268,11 +269,11 @@ public class GUIHandler extends GUIObject {
 
     private void renderQuestion() {
         key.keyboardStart();
-        Drawer.renderString("File with that name already exist.", (int) (xStart * Settings.scale), (int) (yStart * Settings.scale),
+        Drawer.renderString("File with that name already exist.", (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
                 place.standardFont, new Color(1f, 1f, 1f));
-        Drawer.renderString("Replace?", (int) (xStart * Settings.scale), (int) ((yStart + tile * 0.5) * Settings.scale),
+        Drawer.renderString("Replace?", (int) (xStart * Place.getCurrentScale()), (int) ((yStart + tile * 0.5) * Place.getCurrentScale()),
                 place.standardFont, new Color(1f, 1f, 1f));
-        Drawer.renderString("YES[Enter] / NO[Backspace]", (int) (xStart * Settings.scale), (int) ((yStart + tile) * Settings.scale),
+        Drawer.renderString("YES[Enter] / NO[Backspace]", (int) (xStart * Place.getCurrentScale()), (int) ((yStart + tile) * Place.getCurrentScale()),
                 place.standardFont, new Color(1f, 1f, 1f));
 
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
@@ -290,11 +291,11 @@ public class GUIHandler extends GUIObject {
         if (player != null) {
             glPushMatrix();
             if (Settings.scaled) {
-                glScaled(Settings.scale, Settings.scale, 1);
+                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             }
             glTranslatef(xEffect, yEffect, 0);
             if (Settings.scaled) {
-                glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
             switch (mode) {
                 case QUESTIONING:

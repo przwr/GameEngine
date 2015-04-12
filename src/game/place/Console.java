@@ -50,16 +50,16 @@ public class Console extends GUIObject {
         if (alpha > 0f) {
             glPushMatrix();
             if (Settings.scaled) {
-                glScaled(Settings.scale, Settings.scale, 1);
+                glScaled(camera.getScale(), camera.getScale(), 1);
             }
             glTranslatef(xEffect, yEffect, 0);
             if (Settings.scaled) {
-                glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+                glScaled(1 / camera.getScale(), 1 / camera.getScale(), 1);
             }
             for (int i = 0; i < messages.length; i++) {
                 if (messages[i] != null) {
-                    Drawer.renderString(messages[i], (int) ((tile * 0.1) * Settings.scale),
-                            (int) (camera.getHeight() - (i + 1.1) * tile * 0.5 * Settings.scale),
+                    Drawer.renderString(messages[i], (int) ((tile * 0.1) * camera.getScale()),
+                            (int) (camera.getHeight() - (i + 1.1) * tile * 0.5 * camera.getScale()),
                             place.standardFont, new Color(1f, 1f, 1f, Math.min(alpha, 1) * (i == 0 ? 1f : 0.7f)));
                 }
             }

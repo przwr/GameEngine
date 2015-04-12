@@ -19,7 +19,6 @@ import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
@@ -32,11 +31,10 @@ public class MyPlace extends Place {
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
     private final Delay delay = new Delay(100);
-    private final double step = 0.03125;
 
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
-        dayCycle.setTime(2, 30);
+        dayCycle.setTime(5, 30);
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
     }
@@ -49,7 +47,7 @@ public class MyPlace extends Place {
         maps.add(kamienna);
 //        sounds.initialize("res");
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+        fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
         standardFont = fonts.getFont(0);
         SoundStore.get().poll(0);
         initMethods();
@@ -100,95 +98,6 @@ public class MyPlace extends Place {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
 //                sounds.getSound("MumboMountain").fade(0.5, false);
 //            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Settings.scale -= step;
-                    if (Settings.scale < 0.125d) {
-                        Settings.scale = 0.125d;
-                    }
-                    Settings.scaled = Settings.scale != 1d;
-                    ((Player) players[0]).getCamera().update();
-                }
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Settings.scale += step;
-                    if (Settings.scale > 1d) {
-                        Settings.scale = 1d;
-                    }
-                    Settings.scaled = Settings.scale != 1d;
-                    ((Player) players[0]).getCamera().update();
-                }
-            }
-            float colorStep = 0.03125f;
-            if (Keyboard.isKeyDown(Keyboard.KEY_COMMA)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Color temp = maps.get(0).getLightColor();
-                    temp.r -= colorStep;
-                    if (temp.r < 0) {
-                        temp.r = 0;
-                    }
-//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-                }
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_PERIOD)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Color temp = maps.get(0).getLightColor();
-                    temp.r += colorStep;
-                    if (temp.r > 1) {
-                        temp.r = 1;
-                    }
-//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-                }
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_SEMICOLON)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Color temp = maps.get(0).getLightColor();
-                    temp.g -= colorStep;
-                    if (temp.g < 0) {
-                        temp.g = 0;
-                    }
-//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-                }
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Color temp = maps.get(0).getLightColor();
-                    temp.g += colorStep;
-                    if (temp.g > 1) {
-                        temp.g = 1;
-                    }
-//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-                }
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Color temp = maps.get(0).getLightColor();
-                    temp.b -= colorStep;
-                    if (temp.b < 0) {
-                        temp.b = 0;
-                    }
-//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-                }
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_RBRACKET)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    Color temp = maps.get(0).getLightColor();
-                    temp.b += colorStep;
-                    if (temp.b > 1) {
-                        temp.b = 1;
-                    }
-//					System.out.println("r " + temp.r + " g " + temp.g + " b " + temp.b);
-                }
-            }
             if (Keyboard.isKeyDown(Keyboard.KEY_T)) {
                 if (delay.isOver()) {
                     delay.start();
@@ -196,17 +105,12 @@ public class MyPlace extends Place {
                     System.out.println(dayCycle.toString());
                 }
             }
-            if (Keyboard.isKeyDown(Keyboard.KEY_SLASH)) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
                 if (delay.isOver()) {
                     delay.start();
                     dayCycle.addMinutes(5);
                     System.out.println(dayCycle.toString());
                 }
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_BACK)) {
-                Settings.scale = Settings.nativeScale;
-                Settings.scaled = Settings.scale != 1d;
-                ((Player) players[0]).getCamera().update();
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
                 Main.refreshGamma();

@@ -48,7 +48,7 @@ public class PuzzleLink extends GameObject {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             if (Settings.scaled) {
-                glScaled(Settings.scale, Settings.scale, 1);
+                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             }
             glTranslatef(getX(), getY(), 0);
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);

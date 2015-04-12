@@ -21,7 +21,7 @@ import java.util.Collections;
 public class Rectangle extends Figure {
 
     private static Point[] list = {new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0)};
-    private static Point start, end;
+    private static Point start, end, point;
     private static int firstPushed, secondPushed, caseNumber;
 
     public static Rectangle createShadowHeight(int width, int height, int opticPropertiesType, int shadowHeight, GameObject owner) {
@@ -137,7 +137,6 @@ public class Rectangle extends Figure {
     private boolean isCollideConcaveCorner(RoundRectangle roundRectangle, int corner) {
         start = roundRectangle.getPrevious(corner);
         end = roundRectangle.getNext(corner);
-        Point point;
         switch (corner) {
             case LEFT_TOP:
                 point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getX(), roundRectangle.getY());
@@ -174,7 +173,6 @@ public class Rectangle extends Figure {
     private boolean isCollideConvexCorner(RoundRectangle roundRectangle, int corner) {
         start = roundRectangle.getPrevious(corner);
         end = roundRectangle.getNext(corner);
-        Point point;
         switch (corner) {
             case LEFT_TOP:
                 point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getXEnd(), roundRectangle.getY() + Place.tileSize);
@@ -186,7 +184,7 @@ public class Rectangle extends Figure {
             case LEFT_BOTTOM:
                 point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getXEnd(), roundRectangle.getYEnd() - Place.tileSize);
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
-                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() ) {
+                        && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX()) {
                     return true;
                 }
                 break;

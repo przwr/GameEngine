@@ -33,7 +33,7 @@ public class MyGame extends Game {
     private final updateType[] ups = new updateType[2];
 
     public boolean designer = false;
-	
+
     public MyGame(String title, Controller[] controllers) {
         super(title);
         SplitScreen.initialzie();
@@ -287,16 +287,16 @@ public class MyGame extends Game {
     private void updatePlayersCameras() {
         for (int nr = 0; nr < place.playersCount; nr++) {
             if (place.playersCount == 1) {
-                ((PlayersCamera) ((Player) place.players[0]).getCamera()).reInitialize(2, 2);
+                ((PlayersCamera) ((Player) place.players[0]).getCamera()).reInitialize(2, 2, 0);
             } else if (place.playersCount == 2) {
                 if (place.cameras[0] == null) {
                     place.cameras[0] = new PlayersCamera(players[0], players[1]);
                     place.cameras[0].setMap(players[0].getMap());
                 }
                 if (Settings.horizontalSplitScreen) {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4, 1);
                 } else {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2, 1);
                 }
             } else if (place.playersCount == 3) {
                 if (place.cameras[1] == null) {
@@ -305,19 +305,19 @@ public class MyGame extends Game {
                 }
                 if (nr == 0) {
                     if (Settings.horizontalSplitScreen) {
-                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4);
+                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4, 2);
                     } else {
-                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2);
+                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2, 2);
                     }
                 } else {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4);
+                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4, 2);
                 }
             } else {
                 if (place.cameras[2] == null) {
                     place.cameras[2] = new PlayersCamera(players[0], players[1], players[2], players[3]);
                     place.cameras[2].setMap(players[0].getMap());
                 }
-                ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4);
+                ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4, 3);
             }
         }
     }

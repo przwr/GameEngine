@@ -17,6 +17,7 @@ import game.place.Map;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import org.lwjgl.opengl.Display;
 
 /**
  *
@@ -24,14 +25,17 @@ import java.util.Collections;
  */
 public abstract class Camera {
 
+    private static final double[] scales = {0.75, 0.5, 0.5, 0.375, 0.375, 0.25, 1, 0.75, 0.75, 0.5, 0.5, 0.375};
+    private static final short O7FULL = 0, O7FULL_ZOOMED = 1, O7HALF = 2, O7HALF_ZOOMED = 3, O7QUARTER = 4, O7QUARTER_ZOOMED = 5,
+            FULL = 6, FULL_ZOOMED = 7, HALF = 8, HALF_ZOOMED = 9, QUARTER = 10, QUARTER_ZOOMED = 11;
     protected final ArrayList<GUIObject> gui = new ArrayList<>();
     protected final ArrayList<Light> visibleLights = new ArrayList<>();
     protected final ArrayList<GameObject> owners = new ArrayList<>();
     protected Map map;
-    protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8;
-    protected double xOffset, yOffset;
     protected Delay shakeDelay;
-    private boolean shakeUp = true;
+    protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8, ownersCount;
+    protected double xOffset, yOffset, scale;
+    protected boolean shakeUp = true, zoomed = false;
 
     public Camera(GameObject object) {
         owners.add(object);
@@ -42,8 +46,8 @@ public abstract class Camera {
 
     public synchronized void update() {
         if (map != null) {
-            xOffset = Methods.interval(-map.getWidth() * Settings.scale + getWidth(), widthHalf - getXMiddle(), 0);
-            yOffset = Methods.interval(-map.getHeight() * Settings.scale + getHeight(), heightHalf - getYMiddle(), 0);
+            xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - getXMiddle(), 0);
+            yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - getYMiddle(), 0);
         }
     }
 
@@ -71,8 +75,25 @@ public abstract class Camera {
         });
     }
 
-    public void printMessage(String message) {
+    public void switchZoom() {
+        zoomed = !zoomed;
+        setScale(Display.getWidth() / widthHalf, Display.getHeight() / heightHalf, ownersCount);
+        update();
+    }
 
+    protected void setScale(int ssX, int ssY, int ownersCount) {
+        switch (ownersCount) {
+            case 0:
+                scale = scales[((int) (Settings.nativeScale) * 6) + (zoomed ? 1 : 0)];
+                break;
+            case 1:
+            case 3:
+                scale = scales[(int) (Settings.nativeScale) * 6 + (ownersCount + 1) + (zoomed ? 1 : 0)];
+                break;
+            case 2:
+                scale = scales[(int) (Settings.nativeScale) * 6 + (ssX == ssY ? 4 : 2) + (zoomed ? 1 : 0)];
+                break;
+        }
     }
 
     public void addVisibleLight(Light light) {
@@ -88,7 +109,7 @@ public abstract class Camera {
         owners.stream().forEach((owner) -> {
             xMiddle += owner.getX();
         });
-        return (int) (xMiddle * Settings.scale) / owners.size();
+        return (int) (xMiddle * scale) / owners.size();
     }
 
     public int getYMiddle() {
@@ -96,7 +117,7 @@ public abstract class Camera {
         owners.stream().forEach((owner) -> {
             yMiddle += owner.getY();
         });
-        return (int) (yMiddle * Settings.scale) / owners.size();
+        return (int) (yMiddle * scale) / owners.size();
     }
 
     public int getXOffsetEffect() {
@@ -164,19 +185,19 @@ public abstract class Camera {
     }
 
     public int getXStart() {
-        return (int) (-getXOffsetEffect() / Settings.scale);
+        return (int) (-getXOffsetEffect() / scale);
     }
 
     public int getYStart() {
-        return (int) (-getYOffsetEffect() / Settings.scale);
+        return (int) (-getYOffsetEffect() / scale);
     }
 
     public int getXEnd() {
-        return (int) ((-getXOffsetEffect() + widthHalf * 2) / Settings.scale);
+        return (int) ((-getXOffsetEffect() + widthHalf * 2) / scale);
     }
 
     public int getYEnd() {
-        return (int) ((-getYOffsetEffect() + heightHalf * 2) / Settings.scale);
+        return (int) ((-getYOffsetEffect() + heightHalf * 2) / scale);
     }
 
     public void setXOffset(int xOffset) {
@@ -198,5 +219,9 @@ public abstract class Camera {
 
     public void setDelayLength(int delaylenght) {
         this.delayLenght = delaylenght;
+    }
+
+    public double getScale() {
+        return scale;
     }
 }

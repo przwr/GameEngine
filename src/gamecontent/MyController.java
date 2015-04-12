@@ -19,15 +19,14 @@ import game.gameobject.Player;
  */
 public class MyController extends Controler {
 
-    public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6;
-    public static final int FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 10;
+    public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7;
+    public static final int FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 11;
 
     public MyController(Entity inControl) {
         super(inControl);
         inputs = new AnyInput[36];
         actions = new Action[36];
-        states = new boolean[7];
-        statesSample = new boolean[7];
+        states = new boolean[8];
     }
 
     @Override
@@ -36,15 +35,16 @@ public class MyController extends Controler {
         actions[1] = new ActionOnOff(inputs[1]);
         actions[2] = new ActionOnOff(inputs[2]);
         actions[3] = new ActionOnOff(inputs[3]);
-        for (byte i = FIRST_NO_MENU_ACTION; i < ACTIONS_COUNT; i++) {
+        for (byte i = FIRST_NO_MENU_ACTION; i < ACTIONS_COUNT - 1; i++) {
             actions[i] = new ActionHold(inputs[i]);
         }
+        actions[ACTIONS_COUNT - 1] = new ActionOnOff(inputs[ACTIONS_COUNT - 1]);
         actions[ACTIONS_COUNT] = new ActionOnOff(inputs[ACTIONS_COUNT]);
     }
 
     @Override
     public void getInput() {
-        for (int i = 4; i < 11; i++) {
+        for (int i = 4; i <= ACTIONS_COUNT; i++) {
             actions[i].act();
             states[i - 4] = actions[i].isOn();
         }
@@ -73,6 +73,11 @@ public class MyController extends Controler {
         }
         if (states[LIGHT]) {
             inControl.setEmits(!inControl.isEmits());
+        }
+        if (states[ZOOM]) {
+            if (inControl instanceof Player) {
+                ((Player) inControl).getCamera().switchZoom();
+            }
         }
     }
 

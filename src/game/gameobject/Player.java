@@ -13,7 +13,6 @@ import game.place.Place;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
 import net.GameOnline;
-import org.newdawn.slick.Color;
 
 /**
  *

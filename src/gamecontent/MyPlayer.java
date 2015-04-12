@@ -129,7 +129,7 @@ public class MyPlayer extends Player {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             if (Settings.scaled) {
-                glScaled(Settings.scale, Settings.scale, 1);
+                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             }
             glTranslatef(getX(), getY(), 0);
             Drawer.setColor(JUMP_SHADOW_COLOR);
@@ -139,9 +139,9 @@ public class MyPlayer extends Player {
             getAnimation().render();
 
             if (Settings.scaled) {
-                glScaled(1 / Settings.scale, 1 / Settings.scale, 1);
+                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
-            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Settings.scale) / 2), (int) ((collision.getHeight() * Settings.scale) / 2),
+            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2), (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
                     place.standardFont, map.getLightColor());
             glPopMatrix();
         }

@@ -75,7 +75,7 @@ public class ObjectPlace extends Place {
         undo = new UndoControl(objmap, 20);
         //sounds.init("res");
         fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (Settings.scale * 24));
+        fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
         standardFont = fonts.getFont(0);
         SoundStore.get().poll(0);
         initializeMethods();
@@ -178,22 +178,6 @@ public class ObjectPlace extends Place {
             } else {
                 guiHandler.changeToNamingConsole();
             }
-        }
-        if (key.keyPressed(Keyboard.KEY_MINUS)) {
-            Settings.scale -= step;
-            if (Settings.scale < 0.125d) {
-                Settings.scale = 0.125d;
-            }
-            Settings.scaled = Settings.scale != 1d;
-            ((Player) players[0]).getCamera().update();
-        }
-        if (key.keyPressed(Keyboard.KEY_EQUALS)) {
-            Settings.scale += step;
-            if (Settings.scale > 1d) {
-                Settings.scale = 1d;
-            }
-            Settings.scaled = Settings.scale != 1d;
-            ((Player) players[0]).getCamera().update();
         }
         key.keyboardEnd();
     }

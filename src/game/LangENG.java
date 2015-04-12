@@ -61,6 +61,7 @@ public class LangENG extends Language {
         menu.Actions[8] = "Jump";
         menu.Actions[9] = "Walk";
         menu.Actions[10] = "Light";
+        menu.Actions[11] = "Zoom In/Out";
         menu.PushButton = "Push the button!";
         menu.Unchangable = "unchangable!";
         menu.VSync = "Vertical synchronization: ";
