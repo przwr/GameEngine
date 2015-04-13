@@ -22,7 +22,6 @@ public abstract class Player extends Entity {
 
     public byte playerID;
     protected Menu menu;
-    protected Animation animation;
     public Controler controler;
     protected Camera camera;
     protected GameOnline online;

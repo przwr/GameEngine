@@ -11,7 +11,7 @@ package engine;
  */
 public class Delay {
 
-    private final int length;
+    private int length;
     private long endTime, tillEnd;
     private boolean started;
 
@@ -20,6 +20,10 @@ public class Delay {
         started = false;
     }
 
+    public void setLength(int d) {
+        this.length = d;
+    }
+    
     public boolean isOver() {
         if (!started) {
             tillEnd = 0;

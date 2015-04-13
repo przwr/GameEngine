@@ -6,6 +6,7 @@
 package sprites;
 
 import engine.Delay;
+import engine.Methods;
 
 /**
  *
@@ -15,7 +16,7 @@ public class Animation implements Appearance {
 
     private final SpriteSheet spriteSheet;
     private final Delay delay;
-    private final int start, end;
+    private int start, end;
     private boolean animate = true;
     private int currentFrame;
 
@@ -71,6 +72,29 @@ public class Animation implements Appearance {
         }
     }
 
+    public void animateSingle(int index) {
+        animate = false;
+        currentFrame = Methods.interval(0, index, spriteSheet.getSize() - 1);
+    }
+    
+    public void animateWhole() {
+        animate = true;
+        start = 0;
+        end = spriteSheet.getSize() - 1;
+        currentFrame = 0;
+    }
+    
+    public void animateInterval(int iSt, int iEn) {
+        animate = true;
+        start = iSt;
+        end = iEn;
+        currentFrame = Methods.interval(0, iSt, spriteSheet.getSize() - 1);
+    }
+    
+    public void setDelay(int d) {
+        delay.setLength(d);
+    }
+    
     public void setAnimate(boolean animate) {
         this.animate = animate;
     }
