@@ -310,15 +310,16 @@ public class Rectangle extends Figure {
 
     private boolean circleCollision(int x, int y, Figure figure) {
         Circle circle = (Circle) figure;
-        int xPosition = ((getX(x) < circle.getX() ? -1 : 1) + (circle.getX() <= (getX(x) + width) ? -1 : 1)) / 2;
-        int yPosition = ((getY(y) < circle.getY() ? -1 : 1) + (circle.getY() <= (getY(y) + height) ? -1 : 1)) / 2;
+        int xPosition = ((circle.getX() < getX(x) ? -1 : 1) + (circle.getX() <= (getX(x) + width) ? -1 : 1)) / 2;
+        int yPosition = ((circle.getY() < getY(y) ? -1 : 1) + (circle.getY() <= (getY(y) + height) ? -1 : 1)) / 2;
         if (xPosition == 0 && yPosition == 0) {
             return true;
         }
         getPoints();
-        if (xPosition != 0 && yPosition != 0 && Methods.pointDistance(circle.getX(), circle.getY(), points.get((xPosition + 1) + 3 * (yPosition + 1)).getX(),
-                points.get((xPosition + 1) + 3 * (yPosition + 1)).getY()) <= circle.getRadius()) {
-            return true;
+        if (xPosition != 0 && yPosition != 0) {
+            int xtmp = (xPosition + 1) / 2;
+            int ytmp = (yPosition + 1) / 2;
+            return (Methods.pointDistance(circle.getX(), circle.getY(), getPoint(xtmp + 2 * ytmp).getX(), getPoint(xtmp + 2 * ytmp).getY()) <= circle.getRadius());
         }
         if (yPosition == 0 && ((xPosition < 0 && getX(x) - circle.getX() <= circle.getRadius()) || (yPosition > 0 && circle.getX() - getX(x) - width <= circle.getRadius()))) {
             return true;

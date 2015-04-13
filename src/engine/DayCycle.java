@@ -18,7 +18,7 @@ public class DayCycle {
     short timeInMinutes = 0;
     long midnightTime;
     long currentTime, diffrence, tempMinutes;
-    short REAL_MINUTES_IN_HOUR = 1;
+    short REAL_MINUTES_IN_HOUR = 6;
 
     // stop start Time!
     public DayCycle() {
@@ -49,12 +49,12 @@ public class DayCycle {
         midnightTime = currentTime;
     }
 
-    short SUNRISE = 300, SUNSET = 1260, TRANSITION_TIME = 120;
-    float NIGHT = 0.3f, delta, temp;
+    short SUNRISE = 300, SUNSET = 1260, TRANSITION_TIME = 120, NOONTIME = 240;
+    float NIGHT = 0.2f, delta, temp;
     int DAWN = (SUNRISE + TRANSITION_TIME), DUSK = (SUNSET - TRANSITION_TIME), NOON = ((SUNSET + SUNRISE) / 2), HALF_TRANSITION_TIME = TRANSITION_TIME / 2, QUARTER_TRANSITION_TIME = TRANSITION_TIME / 4, THREE_QUARTERS_TRANSITION_TIME = 3 * QUARTER_TRANSITION_TIME;
 
     private void updateLightColor() {
-        delta = (1 - NIGHT) / (NOON - SUNRISE);
+        delta = (1 - NIGHT) / (NOON - SUNRISE - NOONTIME);
         if (timeInMinutes >= SUNRISE && timeInMinutes < DAWN) {
             temp = (timeInMinutes - SUNRISE) * delta;
             lightColor.r = lightColor.g = NIGHT + temp;
@@ -71,16 +71,16 @@ public class DayCycle {
                 temp = 0.75f + ((timeInMinutes - SUNRISE - THREE_QUARTERS_TRANSITION_TIME) * delta);
                 lightColor.b = lightColor.r * temp;
             }
-        } else if (timeInMinutes >= DAWN && timeInMinutes < NOON) {
+        } else if (timeInMinutes >= DAWN && timeInMinutes < NOON - NOONTIME) {
             temp = (timeInMinutes - SUNRISE) * delta;
             lightColor.r = lightColor.g = lightColor.b = NIGHT + temp;
-        } else if (timeInMinutes == NOON) {
+        } else if (timeInMinutes >= NOON - NOONTIME && timeInMinutes < NOON + NOONTIME) {
             lightColor.r = lightColor.g = lightColor.b = 1f;
-        } else if (timeInMinutes >= NOON && timeInMinutes < DUSK) {
-            temp = (timeInMinutes - NOON) * delta;
+        } else if (timeInMinutes >= NOON + NOONTIME && timeInMinutes < DUSK) {
+            temp = (timeInMinutes - NOON - NOONTIME) * delta;
             lightColor.r = lightColor.g = lightColor.b = 1f - temp;
         } else if (timeInMinutes >= DUSK && timeInMinutes < SUNSET) {
-            temp = (timeInMinutes - NOON) * delta;
+            temp = (timeInMinutes - NOON - NOONTIME) * delta;
             lightColor.r = lightColor.g = 1f - temp;
             if (timeInMinutes - DUSK < QUARTER_TRANSITION_TIME) {
                 delta = 0.25f / QUARTER_TRANSITION_TIME;

@@ -282,7 +282,7 @@ public class MyGameOnline extends GameOnline {
                     for (int i = 0; i < newMobs.length; i++) {
                         if (newMobs[i] != null) {
                             System.out.println("Adding Mob with ID: " + newMobs[i].getId());
-                            Mob mob = new MyMob(newMobs[i].getX(), newMobs[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", tempPlace, true, newMobs[i].getId());
+                            Mob mob = new Rabbit(newMobs[i].getX(), newMobs[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", tempPlace, true, newMobs[i].getId());
                             map.addObject(mob);
                             newMobs[i] = null;
                         }

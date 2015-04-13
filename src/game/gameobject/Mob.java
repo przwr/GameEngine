@@ -40,8 +40,7 @@ public abstract class Mob extends Entity {
         this.range = range;
         this.setMaxSpeed(speed);
         this.sprite = place.getSprite(spriteName);
-        initialize(name, x, y);
-        setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
+        initialize(name, x, y);        
     }
 
     public synchronized void look(GameObject[] players) {

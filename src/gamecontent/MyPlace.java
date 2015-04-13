@@ -34,7 +34,7 @@ public class MyPlace extends Place {
 
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
-        dayCycle.setTime(5, 30);
+        dayCycle.setTime(7, 30);
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
     }

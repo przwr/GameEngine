@@ -5,6 +5,9 @@
  */
 package gamecontent;
 
+import collision.Circle;
+import collision.OpticProperties;
+import collision.Rectangle;
 import engine.Methods;
 import game.gameobject.Mob;
 import game.place.Place;
@@ -13,10 +16,12 @@ import game.place.Place;
  *
  * @author przemek
  */
-public class MyMob extends Mob {
+public class Tree extends Mob {
 
-    public MyMob(int x, int y, int xStart, int yStart, int width, int height, int speed, int range, String name, Place place, boolean solid, short ID) {
-        super(x, y, xStart, yStart, width, height, speed, range, name, place, "rabbit", solid);
+    public Tree(int x, int y, int xStart, int yStart, int width, int height, int speed, int range, String name, Place place, boolean solid, short ID) {
+        super(x, y, xStart, yStart, width, height, speed, range, name, place, "bigtree", solid);
+        setCollision(Rectangle.create(54, 27, OpticProperties.FULL_SHADOW, this));
+        collision.setMobile(true);
         this.mobID = ID;
     }
 

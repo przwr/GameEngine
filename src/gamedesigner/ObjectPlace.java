@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
@@ -44,13 +43,11 @@ public class ObjectPlace extends Place {
     private final String[] prettyOptions;
     private final boolean[] viewingOptions;
     private ObjectMap objmap;
-    private final double step = 0.03125;
     private UndoControl undo;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
-		dayCycle.setTime(10, 0);
-		
+        dayCycle.setTime(7, 0);
         lastName = "";
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));

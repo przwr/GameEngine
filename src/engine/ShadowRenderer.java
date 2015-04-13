@@ -948,14 +948,18 @@ public class ShadowRenderer {
                     }
                     other.addShadow(BRIGHTEN, XL1 - other.getX(), XL2 - other.getX(), current);
                     if (XL1 != other.getXEnd()) {
-                        XL2 = al <= 0 ? other.getX() : other.getXEnd();
+                        if (XL1 == other.getX()) {
+                            XL2 = other.getXEnd();
+                        } else {
+                            XL2 = al <= 0 ? other.getX() : other.getXEnd();
+                        }
                         other.addShadow(DARKEN, XL1 - other.getX(), XL2 - other.getX(), current);
                     }
                     checked = true;
                     if (DEBUG) {
                         System.out.println("Left Round Light XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
                     }
-                } else if (shadowPoints[0].getY() > other.getYEnd() && ((source.getX() >= current.getX() && current.getXEnd() >= other.getX()) || (source.getX() <= current.getXEnd() && current.getX() <= other.getXEnd()))) { //dodaj cień
+                } else if (shadowPoints[0].getY() >= other.getYEnd() && ((source.getX() >= current.getX() && current.getXEnd() >= other.getX()) || (source.getX() <= current.getXEnd() && current.getX() <= other.getXEnd()))) { //dodaj cień
                     other.addShadow(DARKEN, XL1 - other.getX(), XL2 - other.getX());
                     checked = true;
                     if (DEBUG) {
@@ -1025,14 +1029,18 @@ public class ShadowRenderer {
                     }
                     other.addShadow(BRIGHTEN, XR1 - other.getX(), XR2 - other.getX(), current);
                     if (XR1 != other.getX()) {
-                        XR2 = ar <= 0 ? other.getX() : other.getXEnd();
+                        if (XR1 == other.getXEnd()) {
+                            XR2 = other.getX();
+                        } else {
+                            XR2 = ar <= 0 ? other.getX() : other.getXEnd();
+                        }
                         other.addShadow(DARKEN, XR1 - other.getX(), XR2 - other.getX(), current);
                     }
                     checked = true;
                     if (DEBUG) {
                         System.out.println("Right Round Light XR1 " + (XR1) + " XR2 " + (XR2));
                     }
-                } else if (shadowPoints[1].getY() > other.getYEnd() && ((source.getX() >= current.getX() && current.getXEnd() >= other.getX()) || (source.getX() <= current.getXEnd() && current.getX() <= other.getXEnd()))) { //dodaj cień
+                } else if (shadowPoints[1].getY() >= other.getYEnd() && ((source.getX() >= current.getX() && current.getXEnd() >= other.getX()) || (source.getX() <= current.getXEnd() && current.getX() <= other.getXEnd()))) { //dodaj cień
                     other.addShadow(DARKEN, XR1 - other.getX(), XR2 - other.getX());
                     checked = true;
                     if (DEBUG) {
