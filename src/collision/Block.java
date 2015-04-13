@@ -21,41 +21,30 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Block extends GameObject {
 
-    private final static byte REGULAR = 0, ROUND = 1, CIRCLE = 2;
     private final ArrayList<Figure> top = new ArrayList<>(1);
     private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
     private static Figure colision;
 
     public static Block create(int x, int y, int width, int height, int shadowHeight) {
-        return new Block(x, y, width, height, shadowHeight, REGULAR);
+        return new Block(x, y, width, height, shadowHeight, false);
     }
 
     public static Block createRound(int x, int y, int width, int height, int shadowHeight) {
-        return new Block(x, y, width, height, shadowHeight, ROUND);
+        return new Block(x, y, width, height, shadowHeight, true);
     }
 
-    public static Block createCircle(int x, int y, int width, int height, int shadowHeight) {
-        return new Block(x, y, width, height, shadowHeight, CIRCLE);
-    }
-
-    private Block(int x, int y, int width, int height, int shadowHeight, byte type) {  //Point (x, y) should be in left top corner of Block
+    private Block(int x, int y, int width, int height, int shadowHeight, boolean round) {  //Point (x, y) should be in left top corner of Block
         this.x = x;
         this.y = y;
         name = "area";
         solid = visible = true;
-        simpleLighting = type == REGULAR;
-        switch (type) {
-            case REGULAR:
-                setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
-                top.add(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.IN_SHADE_NO_SHADOW, shadowHeight + height, this));
-                break;
-            case ROUND:
-                setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
-                break;
-            case CIRCLE:
-                setCollision(Circle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
-                break;
+        if (round) {
+            setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+        } else {
+            setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+            top.add(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.IN_SHADE_NO_SHADOW, shadowHeight + height, this));
+            simpleLighting = true;
         }
     }
 
@@ -71,9 +60,7 @@ public class Block extends GameObject {
             fgt.setY(fgt.getY() + dy);
         });
         if (!collision.isMobile()) {
-            collision.setMobile(true);
-            collision.getPoints();
-            collision.setMobile(false);
+            collision.updatePoints();
         }
         map.sortFGTiles();
     }

@@ -27,7 +27,6 @@ public class RoundRectangle extends Figure {
     private static final pusher[] pushers = new pusher[4];
     private static final geter[] geters = new geter[4];
     private Corner[] corners = new Corner[4];
-    private ArrayList<Point> bottomPoints = new ArrayList<>(3);
     private boolean concave, triangular, bottomRounded;
 
     {
@@ -137,35 +136,6 @@ public class RoundRectangle extends Figure {
         corners[RIGHT_TOP] = new Corner(new Point(getX() + width, getY()));
     }
 
-    private void updateCorners() {
-        corners[LEFT_TOP].setCornerPoint(getX(), getY());
-        corners[LEFT_BOTTOM].setCornerPoint(getX(), getY() + height);
-        corners[RIGHT_BOTTOM].setCornerPoint(getX() + width, getY() + height);
-        corners[RIGHT_TOP].setCornerPoint(getX() + width, getY());
-        for (Corner corner : corners) {
-            corner.updateCornerPoints();
-        }
-    }
-
-    private void updatePoints() {
-        points.clear();
-        for (Corner corner : corners) {
-            corner.getPoints().stream().filter((point) -> (!points.contains(point))).forEach((point) -> {
-                points.add(point);
-            });
-        }
-        points.trimToSize();
-
-        bottomPoints.clear();
-        corners[LEFT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
-            bottomPoints.add(point);
-        });
-        corners[RIGHT_BOTTOM].getPoints().stream().filter((point) -> (!bottomPoints.contains(point))).forEach((point) -> {
-            bottomPoints.add(point);
-        });
-        bottomPoints.trimToSize();
-    }
-
     private void centralize() {
         xCenter = width / 2;
         yCenter = height / 2;
@@ -253,22 +223,39 @@ public class RoundRectangle extends Figure {
     @Override
     public Collection<Point> getPoints() {
         if (isMobile()) {
-            updateCorners();
             updatePoints();
         }
         return Collections.unmodifiableCollection(points);
     }
 
+    @Override
+    public void updatePoints() {
+        updateCorners();
+        updatePointsFromCorners();
+    }
+
+    private void updateCorners() {
+        corners[LEFT_TOP].setCornerPoint(getX(), getY());
+        corners[LEFT_BOTTOM].setCornerPoint(getX(), getY() + height);
+        corners[RIGHT_BOTTOM].setCornerPoint(getX() + width, getY() + height);
+        corners[RIGHT_TOP].setCornerPoint(getX() + width, getY());
+        for (Corner corner : corners) {
+            corner.updateCornerPoints();
+        }
+    }
+
+    private void updatePointsFromCorners() {
+        points.clear();
+        for (Corner corner : corners) {
+            corner.getPoints().stream().filter((point) -> (!points.contains(point))).forEach((point) -> {
+                points.add(point);
+            });
+        }
+        points.trimToSize();
+    }
+
     public Point getPushValueOfCorner(int corner) {
         return geters[corner].get(corners, this);
-    }
-
-    public int getBottomPointSize() {
-        return bottomPoints.size();
-    }
-
-    public Point getBottomPoint(int i) {
-        return bottomPoints.get(i);
     }
 
     public Point getCorner(int i) {

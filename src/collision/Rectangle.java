@@ -343,11 +343,16 @@ public class Rectangle extends Figure {
     @Override
     public Collection<Point> getPoints() {
         if (isMobile()) {
-            points.get(0).set(getX(), getY());
-            points.get(1).set(getX(), getY() + height);
-            points.get(2).set(getX() + width, getY() + height);
-            points.get(3).set(getX() + width, getY());
+            updatePoints();
         }
         return Collections.unmodifiableCollection(points);
+    }
+
+    @Override
+    public void updatePoints() {
+        points.get(0).set(getX(), getY());
+        points.get(1).set(getX(), getY() + height);
+        points.get(2).set(getX() + width, getY() + height);
+        points.get(3).set(getX() + width, getY());
     }
 }

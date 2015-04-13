@@ -32,6 +32,8 @@ public abstract class Figure implements Comparable<Figure> {
 
     public abstract Collection<Point> getPoints();
 
+    public abstract void updatePoints();
+
     public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
         this.xStart = xStart;
         this.yStart = yStart;
@@ -250,8 +252,8 @@ public abstract class Figure implements Comparable<Figure> {
     public Shadow getShadow(int i) {
         return opticProperties.getShadow(i);
     }
-    
-    public int getType(){
+
+    public int getType() {
         return opticProperties.getType();
     }
 
