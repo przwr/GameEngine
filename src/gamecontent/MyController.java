@@ -62,14 +62,68 @@ public class MyController extends Controler {
         } else {
             inControl.brake(0);
         }
+
+        //ANIMACJA//
+        int direction = inControl.getDirection();
+
+        if (states[UP]) {
+            if (states[LEFT]) {
+                if (direction != 135) {
+                    inControl.getAnimation().animateInterval(22, 27);
+                    inControl.setDirection(135);
+                }
+            } else if (states[RIGHT]) {
+                if (direction != 45) {
+                    inControl.getAnimation().animateInterval(36, 41);
+                    inControl.setDirection(45);
+                }
+            } else {
+                if (direction != 90) {
+                    inControl.getAnimation().animateInterval(29, 34);
+                    inControl.setDirection(90);
+                }
+            }
+        } else if (states[DOWN]) {
+            if (states[LEFT]) {
+                if (direction != 225) {
+                    inControl.getAnimation().animateInterval(8, 13);
+                    inControl.setDirection(225);
+                }
+            } else if (states[RIGHT]) {
+                if (direction != 315) {
+                    inControl.getAnimation().animateInterval(50, 55);
+                    inControl.setDirection(315);
+                }
+            } else {
+                if (direction != 270) {
+                    inControl.getAnimation().animateInterval(1, 6);
+                    inControl.setDirection(270);
+                }
+            }
+        } else if (states[RIGHT]) {
+            if (direction != 0) {
+                inControl.getAnimation().animateInterval(43, 48);
+                inControl.setDirection(0);
+            }
+        } else if (states[LEFT]) {
+            if (direction != 180) {
+                inControl.getAnimation().animateInterval(15, 20);
+                inControl.setDirection(180);
+            }
+        } else {
+            inControl.getAnimation().animateSingle((270 - direction) / 45 * 7);
+        }
+
         if (states[JUMP]) {
             inControl.setJumping(true);
             inControl.setHop(true);
         }
         if (states[RUN]) {
             inControl.setMaxSpeed(2);
+            inControl.getAnimation().setDelay(180);
         } else {
             inControl.setMaxSpeed(8);
+            inControl.getAnimation().setDelay(80);
         }
         if (states[LIGHT]) {
             inControl.setEmits(!inControl.isEmits());

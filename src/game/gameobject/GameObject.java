@@ -15,6 +15,7 @@ import game.place.Map;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import sprites.Animation;
 import sprites.Sprite;
 
 public abstract class GameObject {
@@ -27,6 +28,7 @@ public abstract class GameObject {
     protected String name;
     protected Map map;
     protected Figure collision;
+    protected Animation animation;
 
     public abstract void render(int xEffect, int yEffect);
 
@@ -195,6 +197,10 @@ public abstract class GameObject {
 
     public Sprite getSprite() {
         return sprite;
+    }
+    
+    public Animation getAnimation() {
+        return animation;
     }
 
     public void setSolid(boolean solid) {
