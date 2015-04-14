@@ -129,7 +129,7 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     @Override
-    public int compareTo(Figure Figure) {/// Chech this out
+    public int compareTo(Figure Figure) {// Check this out
         return (getYEnd() - ((Figure) Figure).getYEnd()) * 8192 - (getLightDistance() - ((Figure) Figure).getLightDistance());
     }
 
