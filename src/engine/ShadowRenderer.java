@@ -47,7 +47,7 @@ public class ShadowRenderer {
 
     private static Point tempPoint;
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     static {
         shadowPoints[0] = new Point();
@@ -1010,7 +1010,6 @@ public class ShadowRenderer {
                 if (((source.getX() != current.getXEnd() && source.getX() != current.getX() && other.getYEnd() != current.getYEnd()) || (YOL > other.getY() - other.getShadowHeight() && YOL < other.getYEnd()) || (YOL2 > other.getY() - other.getShadowHeight() && YOL2 < other.getYEnd()))) {
                     if (XL1 < current.getX()) {
                         other.addShadow(BRIGHT);
-                        checked = true;
                         if (DEBUG) {
                             System.out.println("Left Round Lightness - second");
                         }
@@ -1094,7 +1093,6 @@ public class ShadowRenderer {
                 if (((source.getX() != current.getXEnd() && source.getX() != current.getX() && other.getYEnd() != current.getYEnd()) || (YOR > other.getY() - other.getShadowHeight() && YOR < other.getYEnd()) || (YOR2 > other.getY() - other.getShadowHeight() && YOR2 < other.getYEnd()))) {
                     if (XR1 > current.getXEnd()) {
                         other.addShadow(BRIGHT);
-                        checked = true;
                         if (DEBUG) {
                             System.out.println("Right Round Lightness - first");
                         }
@@ -1240,7 +1238,7 @@ public class ShadowRenderer {
                 XR2 = XR1 < current.getXEnd() ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
             }
             if (XR1 >= other.getXOwnerBegin() && XR1 <= other.getXOwnerEnd()) {
-                if (XR1 >= current.getXEnd()) { // dodaj światło
+                if (XR1 > current.getXEnd()) { // dodaj światło
                     other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
                     if (DEBUG) {
                         System.out.println("Object Right Light XR1 " + (XR1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XR2 " + XR2);
