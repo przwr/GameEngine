@@ -76,25 +76,33 @@ public class Animation implements Appearance {
         animate = false;
         currentFrame = Methods.interval(0, index, spriteSheet.getSize() - 1);
     }
-    
+
     public void animateWhole() {
-        animate = true;
         start = 0;
         end = spriteSheet.getSize() - 1;
-        currentFrame = 0;
+        if (currentFrame < start || currentFrame > end) {
+            currentFrame = 0;
+            animate = true;
+        }
     }
-    
+
     public void animateInterval(int iSt, int iEn) {
-        animate = true;
         start = iSt;
         end = iEn;
-        currentFrame = Methods.interval(0, iSt, spriteSheet.getSize() - 1);
+        if (currentFrame < start || currentFrame > end) {
+            currentFrame = iSt;
+            animate = true;
+        }
     }
-    
+
     public void setDelay(int d) {
-        delay.setLength(d);
+        delay.setFrameLength(d);
     }
-    
+
+    public void setFPS(int d) {
+        delay.setFPS(d);
+    }
+
     public void setAnimate(boolean animate) {
         this.animate = animate;
     }

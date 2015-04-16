@@ -155,7 +155,7 @@ public class ShadowRenderer {
                     if (top != null && !top.isLittable()
                             && top.getY() - 2 * FastMath.abs(tempShade.getShadowHeight()) - tempShade.getHeight() <= light.getY() + lightHeightHalf
                             && top.getX() <= light.getX() + lightWidthHalf && top.getXEnd() >= light.getX() - lightWidthHalf) {
-                        top.setLightDistance(FastMath.abs(top.getXCentral() - light.getX()));
+                       // top.setLightDistance(FastMath.abs(top.getXCentral() - light.getX()));
                         shades.add(top);
                     }
                 }

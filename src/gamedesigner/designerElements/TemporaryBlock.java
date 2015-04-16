@@ -188,7 +188,7 @@ public class TemporaryBlock extends GameObject {
 		}
 		ForegroundTile fgt;
 		int level = yEnd - y;
-		int maxLevel = Math.min(level, upHeight);
+		int maxLevel = Math.min(level, upHeight + 1);
 		fgt = createTile(tex, y, tile, xSheet, ySheet, level, altMode);
 		if (altMode) {
 			map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel) * tile);
