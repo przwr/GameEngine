@@ -33,7 +33,7 @@ public abstract class Camera {
     protected final ArrayList<GUIObject> gui = new ArrayList<>();
     protected final ArrayList<Light> visibleLights = new ArrayList<>();
     protected final ArrayList<GameObject> owners = new ArrayList<>();
-    protected Map map;
+    protected Map map, prevMap;
     protected Delay shakeDelay;
     protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8, ownersCount, centerArea, prevCenterArea = -1;
     protected double xOffset, yOffset, scale;
@@ -54,12 +54,14 @@ public abstract class Camera {
             xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - xMiddle * scale, 0);
             yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - yMiddle * scale, 0);
             centerArea = map.getAreaIndex(xMiddle / Place.tileSize, yMiddle / Place.tileSize);
-
-//            System.out.println(xMiddle + " " + yMiddle);
             if (centerArea != prevCenterArea) {
                 updateNearAreas();
                 prevCenterArea = centerArea;
+            } else if (map != prevMap) {
+                updateNearAreas();
+                prevMap = map;
             }
+
 //            for (int i : nearAreas) {
 //                if (i == centerArea) {
 //                    System.out.print("[" + i + "] ");
@@ -68,6 +70,7 @@ public abstract class Camera {
 //                }
 //            }
 //            System.out.println();
+
         }
     }
 
@@ -255,6 +258,7 @@ public abstract class Camera {
     }
 
     public void setMap(Map map) {
+        this.prevMap = this.map;
         this.map = map;
         update();
     }

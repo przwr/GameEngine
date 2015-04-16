@@ -42,7 +42,7 @@ public class MyPlace extends Place {
     @Override
     public void generateAsGuest() {
         GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 5120, tileSize);
-        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 2048, 2048, tileSize);
+        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 5120, tileSize);
         maps.add(polana);
         maps.add(kamienna);
 //        sounds.initialize("res");
@@ -98,18 +98,10 @@ public class MyPlace extends Place {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
 //                sounds.getSound("MumboMountain").fade(0.5, false);
 //            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_T)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    dayCycle.updateTime();
-                    System.out.println(dayCycle.toString());
-                }
-            }
             if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
                 if (delay.isOver()) {
                     delay.start();
                     dayCycle.addMinutes(5);
-                    System.out.println(dayCycle.toString());
                 }
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {

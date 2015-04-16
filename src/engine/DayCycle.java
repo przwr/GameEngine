@@ -13,14 +13,15 @@ import org.newdawn.slick.Color;
  */
 public class DayCycle {
 
-    Color lightColor = new Color(0.2f, 0.2f, 0.2f);
+    public static final float NIGHT = 0.2f;
+    private static final short REAL_MINUTES_IN_HOUR = 6, SUNRISE = 300, SUNSET = 1260, TRANSITION_TIME = 120, NOONTIME = 240;
+    private static final int DAWN = (SUNRISE + TRANSITION_TIME), DUSK = (SUNSET - TRANSITION_TIME), NOON = ((SUNSET + SUNRISE) / 2), HALF_TRANSITION_TIME = TRANSITION_TIME / 2, QUARTER_TRANSITION_TIME = TRANSITION_TIME / 4, THREE_QUARTERS_TRANSITION_TIME = 3 * QUARTER_TRANSITION_TIME;
+    private Color lightColor = new Color(0.2f, 0.2f, 0.2f);
+    private short timeInMinutes = 0;
+    private long midnightTime, currentTime, diffrence, tempMinutes;
+    private float delta, temp;
 
-    short timeInMinutes = 0;
-    long midnightTime;
-    long currentTime, diffrence, tempMinutes;
-    short REAL_MINUTES_IN_HOUR = 6;
-
-    // stop start Time!
+    // TO DO stop / start Time!
     public DayCycle() {
         midnightTime = System.currentTimeMillis();
     }
@@ -48,10 +49,6 @@ public class DayCycle {
     private void resetMidnightTime() {
         midnightTime = currentTime;
     }
-
-    short SUNRISE = 300, SUNSET = 1260, TRANSITION_TIME = 120, NOONTIME = 240;
-    float NIGHT = 0.2f, delta, temp;
-    int DAWN = (SUNRISE + TRANSITION_TIME), DUSK = (SUNSET - TRANSITION_TIME), NOON = ((SUNSET + SUNRISE) / 2), HALF_TRANSITION_TIME = TRANSITION_TIME / 2, QUARTER_TRANSITION_TIME = TRANSITION_TIME / 4, THREE_QUARTERS_TRANSITION_TIME = 3 * QUARTER_TRANSITION_TIME;
 
     private void updateLightColor() {
         delta = (1 - NIGHT) / (NOON - SUNRISE - NOONTIME);

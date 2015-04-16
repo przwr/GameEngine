@@ -144,6 +144,7 @@ public abstract class Player extends Entity {
         return camera;
     }
 
+    @Override
     public Animation getAnimation() {
         return animation;
     }
