@@ -43,8 +43,8 @@ public class GladeMap extends Map {
         PuzzleObject portal = new PuzzleObject("portal", place);
         portal.placePuzzle(20, 20, this);
         for (int i = 0; i < 1; i += 2) {
-           // addObject(new Rabbit(192 + 192 * (i % 50), 2048 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", place, true, mobID++));
-            addObject(new Tree(192 + 192 * ((i + 1) % 50), 2048 + 192 * ((i + 1) / 50), 0, 346, 128, 150, 4, 512, " ", place, true, mobID++));
+            //addObject(new Rabbit(192 + 192 * (i % 50), 3072 + 192 * (i / 50), 0, 8, 128, 112, 4, 512, "rabbit", place, true, mobID++));
+            addObject(new Tree(192 + 192 * ((i + 1) % 50), 2048 + 192 * ((i + 1) / 50), 0, 346, 128, 150, 4, 512, "TREE", place, true, mobID++));
         }
         addObject(new LightSource(2048, 2048, 0, 0, 206, 300, "lamp", place, "lamp", true));
     }

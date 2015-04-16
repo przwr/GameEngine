@@ -100,10 +100,15 @@ public class Line extends Figure {
     @Override
     public Collection<Point> getPoints() {
         if (isMobile()) {
-            points.get(0).set(getX(), getY());
-            points.get(1).set(getX() + xVector, getY() + yVector);
+            updatePoints();
         }
         return points;
+    }
+
+    @Override
+    public void updatePoints() {
+        points.get(0).set(getX(), getY());
+        points.get(1).set(getX() + xVector, getY() + yVector);
     }
 
     public int getXVector() {

@@ -120,11 +120,16 @@ public class Circle extends Figure {
     @Override
     public Collection<Point> getPoints() {
         if (isMobile()) {
-            for (int i = 0; i < precision; i++) {
-                points.get(i).set((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius));
-            }
+            updatePoints();
         }
         return Collections.unmodifiableCollection(points);
+    }
+
+    @Override
+    public void updatePoints() {
+        for (int i = 0; i < precision; i++) {
+            points.get(i).set((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius));
+        }
     }
 
     public int getRadius() {

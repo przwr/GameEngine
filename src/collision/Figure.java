@@ -8,6 +8,7 @@ package collision;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
+import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.Shadow;
@@ -31,6 +32,8 @@ public abstract class Figure implements Comparable<Figure> {
     public abstract boolean isCollideSingle(int x, int y, Figure figure);
 
     public abstract Collection<Point> getPoints();
+
+    public abstract void updatePoints();
 
     public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
         this.xStart = xStart;
@@ -127,8 +130,18 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     @Override
-    public int compareTo(Figure Figure) {/// Chech this out
-        return (getYEnd() - ((Figure) Figure).getYEnd()) * 8192 - (getLightDistance() - ((Figure) Figure).getLightDistance());
+    public int compareTo(Figure Figure) { // Check this out
+        return (getDepth() - ((Figure) Figure).getDepth()) * 8192 - (getLightDistance() - ((Figure) Figure).getLightDistance());
+    }
+
+    private int getDepth() {
+        if (getOwner() instanceof Block || getOwner() instanceof ForegroundTile) {
+            return getYEnd() - Place.tileSize;
+        } else {
+            return getY();
+        }
+
+        //return getOwner().getDepth();
     }
 
     public boolean isLittable() {
@@ -250,8 +263,8 @@ public abstract class Figure implements Comparable<Figure> {
     public Shadow getShadow(int i) {
         return opticProperties.getShadow(i);
     }
-    
-    public int getType(){
+
+    public int getType() {
         return opticProperties.getType();
     }
 
