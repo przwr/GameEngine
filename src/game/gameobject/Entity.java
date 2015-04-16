@@ -253,6 +253,10 @@ public abstract class Entity extends GameObject {
         direction = d;
     }
     
+    public double getSpeed() {
+        return Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
+    }
+    
     public boolean isJumping() {
         return jumping;
     }

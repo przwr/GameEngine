@@ -8,6 +8,7 @@ package sprites;
 import engine.Methods;
 import game.Settings;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,6 +69,8 @@ public class SpriteBase {
             spriteSheet = data[1].equals("1");
             line = input.readLine();
             sprite = line;
+            sprite = sprite.replace("\\", File.separator);
+            sprite = sprite.replace("/", File.separator);
             data = input.readLine().split(";");
             width = (int) (Integer.parseInt(data[0]));
             height = (int) (Integer.parseInt(data[1]));

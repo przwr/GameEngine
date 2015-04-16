@@ -20,10 +20,19 @@ public class Delay {
         started = false;
     }
 
-    public void setLength(int d) {
+    public void setFrameLength(int d) {
         this.length = d;
     }
-    
+
+    public void setFPS(int fps) {
+        if (fps != 0) {
+            this.length = 1000 / fps;
+            started = true;
+        } else {
+            started = false;
+        }
+    }
+
     public boolean isOver() {
         if (!started) {
             tillEnd = 0;

@@ -22,6 +22,9 @@ public class MyController extends Controler {
     public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7;
     public static final int FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 11;
 
+    private int direction;
+    private boolean running, diagonal;
+
     public MyController(Entity inControl) {
         super(inControl);
         inputs = new AnyInput[36];
@@ -48,11 +51,14 @@ public class MyController extends Controler {
             actions[i].act();
             states[i - 4] = actions[i].isOn();
         }
+        diagonal = true;
+
         if (states[UP]) {
             inControl.addSpeed(0, -4);
         } else if (states[DOWN]) {
             inControl.addSpeed(0, 4);
         } else {
+            diagonal = false;
             inControl.brake(1);
         }
         if (states[LEFT]) {
@@ -60,58 +66,78 @@ public class MyController extends Controler {
         } else if (states[RIGHT]) {
             inControl.addSpeed(4, 0);
         } else {
+            diagonal = false;
             inControl.brake(0);
         }
 
         //ANIMACJA//
-        int direction = inControl.getDirection();
+        direction = inControl.getDirection();
+        running = !states[RUN];
+
+        inControl.getAnimation().setAnimate(true);
 
         if (states[UP]) {
             if (states[LEFT]) {
-                if (direction != 135) {
-                    inControl.getAnimation().animateInterval(22, 27);
-                    inControl.setDirection(135);
+                if (running) {
+                    inControl.getAnimation().animateInterval(64, 75);
+                } else {
+                    inControl.getAnimation().animateInterval(58, 63);
                 }
+                inControl.setDirection(135);
             } else if (states[RIGHT]) {
-                if (direction != 45) {
-                    inControl.getAnimation().animateInterval(36, 41);
-                    inControl.setDirection(45);
+                if (running) {
+                    inControl.getAnimation().animateInterval(102, 113);
+                } else {
+                    inControl.getAnimation().animateInterval(96, 101);
                 }
+                inControl.setDirection(45);
             } else {
-                if (direction != 90) {
-                    inControl.getAnimation().animateInterval(29, 34);
-                    inControl.setDirection(90);
+                if (running) {
+                    inControl.getAnimation().animateInterval(83, 94);
+                } else {
+                    inControl.getAnimation().animateInterval(77, 82);
                 }
+                inControl.setDirection(90);
             }
         } else if (states[DOWN]) {
             if (states[LEFT]) {
-                if (direction != 225) {
-                    inControl.getAnimation().animateInterval(8, 13);
-                    inControl.setDirection(225);
+                if (running) {
+                    inControl.getAnimation().animateInterval(26, 37);
+                } else {
+                    inControl.getAnimation().animateInterval(20, 25);
                 }
+                inControl.setDirection(225);
             } else if (states[RIGHT]) {
-                if (direction != 315) {
-                    inControl.getAnimation().animateInterval(50, 55);
-                    inControl.setDirection(315);
+                if (running) {
+                    inControl.getAnimation().animateInterval(140, 151);
+                } else {
+                    inControl.getAnimation().animateInterval(134, 139);
                 }
+                inControl.setDirection(315);
             } else {
-                if (direction != 270) {
+                if (running) {
+                    inControl.getAnimation().animateInterval(7, 18);
+                } else {
                     inControl.getAnimation().animateInterval(1, 6);
-                    inControl.setDirection(270);
                 }
+                inControl.setDirection(270);
             }
         } else if (states[RIGHT]) {
-            if (direction != 0) {
-                inControl.getAnimation().animateInterval(43, 48);
-                inControl.setDirection(0);
+            if (running) {
+                inControl.getAnimation().animateInterval(121, 132);
+            } else {
+                inControl.getAnimation().animateInterval(115, 120);
             }
+            inControl.setDirection(0);
         } else if (states[LEFT]) {
-            if (direction != 180) {
-                inControl.getAnimation().animateInterval(15, 20);
-                inControl.setDirection(180);
+            if (running) {
+                inControl.getAnimation().animateInterval(45, 56);
+            } else {
+                inControl.getAnimation().animateInterval(39, 44);
             }
+            inControl.setDirection(180);
         } else {
-            inControl.getAnimation().animateSingle((270 - direction) / 45 * 7);
+            inControl.getAnimation().animateSingle((270 - direction) / 45 * 19);
         }
 
         if (states[JUMP]) {
@@ -119,12 +145,12 @@ public class MyController extends Controler {
             inControl.setHop(true);
         }
         if (states[RUN]) {
-            inControl.setMaxSpeed(2);
-            inControl.getAnimation().setDelay(180);
+            inControl.setMaxSpeed(diagonal ? 1.5 : 2);
         } else {
-            inControl.setMaxSpeed(8);
-            inControl.getAnimation().setDelay(80);
+            inControl.setMaxSpeed(diagonal ? 6 : 8);
         }
+        inControl.getAnimation().setFPS((int) (inControl.getSpeed() * 4));
+
         if (states[LIGHT]) {
             inControl.setEmits(!inControl.isEmits());
         }
