@@ -8,9 +8,12 @@ package game.place;
 import engine.ShadowRenderer;
 import collision.Block;
 import engine.Drawer;
+import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
+import static game.place.Area.X_IN_TILES;
+import static game.place.Area.Y_IN_TILES;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +32,6 @@ public class Map {
     public final Place place;
 
     protected Color lightColor;
-    protected final Tile[] tiles;
     protected final ArrayList<Block> blocks = new ArrayList<>();
     protected final String name;
     protected final int width, height, tileSize;
@@ -47,8 +49,12 @@ public class Map {
     protected final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
     protected final ArrayList<GameObject> objectsOnTop = new ArrayList<>();
     protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
-    protected final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
+    protected final static Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
             -> firstObject.getDepth() - secondObject.getDepth();
+
+    private int xAreas, yAreas;
+    private final Area[] areas;
+    private static Tile tempTile;
 
     private int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect; //Camera's variables for current rendering
 
@@ -61,7 +67,14 @@ public class Map {
         this.tileSize = tileSize;
         widthInTiles = width / tileSize;
         heightInTiles = height / tileSize;
-        tiles = new Tile[widthInTiles * heightInTiles];
+
+        xAreas = (widthInTiles / Area.X_IN_TILES) + (widthInTiles % Area.X_IN_TILES != 0 ? 1 : 0);
+        yAreas = (heightInTiles / Area.Y_IN_TILES) + (heightInTiles % Area.Y_IN_TILES != 0 ? 1 : 0);
+        areas = new Area[xAreas * yAreas];
+//        System.out.println(xAreas + " " + yAreas + " " + areas.length);
+        for (int i = 0; i < areas.length; i++) {
+            areas[i] = new Area();
+        }
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {
@@ -70,7 +83,7 @@ public class Map {
 
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
         if (tile.isSimpleLighting()) {
-            tiles[x / tileSize + y / tileSize * heightInTiles] = null;
+            areas[getAreaIndex(x / tileSize, y / tileSize)].setTile(x % X_IN_TILES, y % Y_IN_TILES, null);
         }
         GameObject object;
         for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
@@ -221,13 +234,21 @@ public class Map {
     public void renderBackground(Camera camera) {
         ShadowRenderer.clearScreen(0);
         Drawer.refreshForRegularDrawing();
-        for (int y = 0; y < heightInTiles; y++) {
-            if (cameraYStart < (y + 1) * tileSize && cameraYEnd > y * tileSize) {
-                for (int x = 0; x < width / tileSize; x++) {
-                    if (cameraXStart < (x + 1) * tileSize && cameraXEnd > x * tileSize) {
-                        Tile tile = tiles[x + y * heightInTiles];
-                        if (tile != null && tile.isVisible()) {
-                            tile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
+        for (int i : camera.getNearAreas()) {
+            if (i >= 0 && i < areas.length) {
+                int yTemp = (i / xAreas) * Y_IN_TILES;
+                int xTemp = (i % xAreas) * X_IN_TILES;
+                for (int yTiles = 0; yTiles < Y_IN_TILES; yTiles++) {
+                    int y = yTemp + yTiles;
+                    if (cameraYStart < (y + 1) * tileSize && cameraYEnd > y * tileSize) {
+                        for (int xTiles = 0; xTiles < X_IN_TILES; xTiles++) {
+                            int x = xTemp + xTiles;
+                            if (cameraXStart < (x + 1) * tileSize && cameraXEnd > x * tileSize) {
+                                tempTile = areas[i].getTile(xTiles, yTiles);
+                                if (tempTile != null && tempTile.isVisible()) {
+                                    tempTile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
+                                }
+                            }
                         }
                     }
                 }
@@ -269,10 +290,10 @@ public class Map {
                 });
     }
 
-    public void sortFGTiles() {
+    public void sortForegroundTiles() {
         Collections.sort(foregroundTiles, depthComparator);
     }
-    
+
     public void sortObjectsByDepth(ArrayList<GameObject> objects) {
         Collections.sort(objects, depthComparator);
     }
@@ -306,11 +327,11 @@ public class Map {
         objectsOnTop.clear();
     }
 
-    public int getTileWidth() {
+    public int getWidthInTIles() {
         return widthInTiles;
     }
 
-    public int getTileHeight() {
+    public int getHeightInTiles() {
         return widthInTiles;
     }
 
@@ -326,20 +347,43 @@ public class Map {
         return tileSize;
     }
 
-    public Tile getTile(int x, int y) {
-        return tiles[x + y * heightInTiles];
-    }
-
-    public Tile getTile(int index) {
-        return tiles[index];
-    }
-
     public String getName() {
         return name;
     }
 
     public short getID() {
         return mapID;
+    }
+
+    public int getXAreas() {
+        return xAreas;
+    }
+
+    public int getYAreas() {
+        return yAreas;
+    }
+
+    public Tile getTile(int x, int y) {
+        if (x < widthInTiles && y < heightInTiles) {
+            return areas[getAreaIndex(x, y)].getTile(x % (X_IN_TILES), y % (Y_IN_TILES));
+        }
+        return null;
+    }
+
+    public int getAreasSize() {
+        return areas.length;
+    }
+
+    public int getAreaIndex(double x, double y) {
+        return (int) (x / X_IN_TILES) + (int) (y / Y_IN_TILES) * xAreas;
+    }
+
+    public Color getLightColor() {
+        if (lightColor != null) {
+            return lightColor;
+        } else {
+            return place.getLightColor();
+        }
     }
 
     public Collection<Mob> getSolidMobs() {
@@ -386,24 +430,10 @@ public class Map {
         return Collections.unmodifiableList(foregroundTiles);
     }
 
-    public Color getLightColor() {
-        if (lightColor != null) {
-            return lightColor;
-        } else {
-            return place.getLightColor();
-        }
-    }
-
-    public int getTileIndex(int x, int y) {
-        return x + y * heightInTiles;
-    }
-    
     public void setTile(int x, int y, Tile tile) {
-        tiles[x + y * heightInTiles] = tile;
-    }
-
-    public void setTile(int index, Tile tile) {
-        tiles[index] = tile;
+        if (x < widthInTiles && y < heightInTiles) {
+            areas[getAreaIndex(x, y)].setTile(x % (X_IN_TILES), y % (Y_IN_TILES), tile);
+        }
     }
 
     public void setColor(Color color) {

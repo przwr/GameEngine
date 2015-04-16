@@ -114,11 +114,11 @@ public class ObjectPlayer extends Player {
         boolean cltr = key.key(KEY_LCONTROL);
 
         if (xtimer == 0) {
-            ix = Methods.interval(0, ix + xPosition, map.getTileWidth());
+            ix = Methods.interval(0, ix + xPosition, map.getWidthInTIles());
             setX(ix * tileSize);
         }
         if (ytimer == 0) {
-            iy = Methods.interval(0, iy + yPosition, map.getTileHeight());
+            iy = Methods.interval(0, iy + yPosition, map.getHeightInTiles());
             setY(iy * tileSize);
         }
 
@@ -130,10 +130,10 @@ public class ObjectPlayer extends Player {
 
         if (mode < 2) {
             if (xtimer == 0 && (!cltr || roundBlocksMode)) {
-                xStop = Methods.interval(0, xStop + xPosition, map.getTileWidth());
+                xStop = Methods.interval(0, xStop + xPosition, map.getWidthInTIles());
             }
             if (ytimer == 0 && !cltr) {
-                yStop = Methods.interval(0, yStop + yPosition, map.getTileHeight());
+                yStop = Methods.interval(0, yStop + yPosition, map.getHeightInTiles());
             }
         } else {
             xStop = ix;

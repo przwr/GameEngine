@@ -14,6 +14,7 @@ import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.Light;
 import game.place.Map;
+import game.place.Place;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,16 +27,18 @@ import org.lwjgl.opengl.Display;
 public abstract class Camera {
 
     private static final double[] scales = {0.75, 0.5, 0.5, 0.375, 0.375, 0.25, 1, 0.75, 0.75, 0.5, 0.5, 0.375};
-    private static final short O7FULL = 0, O7FULL_ZOOMED = 1, O7HALF = 2, O7HALF_ZOOMED = 3, O7QUARTER = 4, O7QUARTER_ZOOMED = 5,
-            FULL = 6, FULL_ZOOMED = 7, HALF = 8, HALF_ZOOMED = 9, QUARTER = 10, QUARTER_ZOOMED = 11;
+//    private static final short O7FULL = 0, O7FULL_ZOOMED = 1, O7HALF = 2, O7HALF_ZOOMED = 3, O7QUARTER = 4, O7QUARTER_ZOOMED = 5,
+//            FULL = 6, FULL_ZOOMED = 7, HALF = 8, HALF_ZOOMED = 9, QUARTER = 10, QUARTER_ZOOMED = 11;
+    private static final short TOP_LEFT = 0, TOP_CENTER = 1, TOP_RIGHT = 2, LEFT = 3, CENTER = 4, RIGHT = 5, LEFT_BOTTOM = 6, BOTTOM_CENTER = 7, BOTTOM_RIGHT = 8;
     protected final ArrayList<GUIObject> gui = new ArrayList<>();
     protected final ArrayList<Light> visibleLights = new ArrayList<>();
     protected final ArrayList<GameObject> owners = new ArrayList<>();
     protected Map map;
     protected Delay shakeDelay;
-    protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8, ownersCount;
+    protected int widthHalf, heightHalf, xMiddle, yMiddle, xEffect, yEffect, xLeft, xRight, yDown, yUp, delayLenght, shakeAmplitude = 8, ownersCount, centerArea, prevCenterArea = -1;
     protected double xOffset, yOffset, scale;
     protected boolean shakeUp = true, zoomed = false;
+    protected int[] nearAreas = new int[9];
 
     public Camera(GameObject object) {
         owners.add(object);
@@ -46,8 +49,51 @@ public abstract class Camera {
 
     public synchronized void update() {
         if (map != null) {
-            xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - getXMiddle(), 0);
-            yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - getYMiddle(), 0);
+            xMiddle = getXMiddle();
+            yMiddle = getYMiddle();
+            xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - xMiddle * scale, 0);
+            yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - yMiddle * scale, 0);
+            centerArea = map.getAreaIndex(xMiddle / Place.tileSize, yMiddle / Place.tileSize);
+
+//            System.out.println(xMiddle + " " + yMiddle);
+            if (centerArea != prevCenterArea) {
+                updateNearAreas();
+                prevCenterArea = centerArea;
+            }
+//            for (int i : nearAreas) {
+//                if (i == centerArea) {
+//                    System.out.print("[" + i + "] ");
+//                } else {
+//                    System.out.print(i + " ");
+//                }
+//            }
+//            System.out.println();
+        }
+    }
+
+    private void updateNearAreas() {
+        nearAreas[TOP_LEFT] = centerArea - map.getXAreas() - 1;
+        nearAreas[TOP_CENTER] = centerArea - map.getXAreas();
+        nearAreas[TOP_RIGHT] = centerArea - map.getXAreas() + 1;
+        nearAreas[LEFT] = centerArea - 1;
+        nearAreas[CENTER] = centerArea;
+        nearAreas[RIGHT] = centerArea + 1;
+        nearAreas[LEFT_BOTTOM] = centerArea + map.getXAreas() - 1;
+        nearAreas[BOTTOM_CENTER] = centerArea + map.getXAreas();
+        nearAreas[BOTTOM_RIGHT] = centerArea + map.getXAreas() + 1;
+        if (centerArea % map.getXAreas() == 0) {
+            for (int i = 0; i < nearAreas.length; i++) {
+                if (nearAreas[i] % map.getXAreas() == map.getXAreas() - 1) {
+                    nearAreas[i] = -1;
+                }
+            }
+        }
+        if (centerArea % map.getXAreas() == map.getXAreas() - 1) {
+            for (int i = 0; i < nearAreas.length; i++) {
+                if (nearAreas[i] % map.getXAreas() == 0) {
+                    nearAreas[i] = -1;
+                }
+            }
         }
     }
 
@@ -109,7 +155,7 @@ public abstract class Camera {
         owners.stream().forEach((owner) -> {
             xMiddle += owner.getX();
         });
-        return (int) (xMiddle * scale) / owners.size();
+        return xMiddle / owners.size();
     }
 
     public int getYMiddle() {
@@ -117,7 +163,7 @@ public abstract class Camera {
         owners.stream().forEach((owner) -> {
             yMiddle += owner.getY();
         });
-        return (int) (yMiddle * scale) / owners.size();
+        return yMiddle / owners.size();
     }
 
     public int getXOffsetEffect() {
@@ -223,5 +269,9 @@ public abstract class Camera {
 
     public double getScale() {
         return scale;
+    }
+
+    public int[] getNearAreas() {
+        return nearAreas;
     }
 }

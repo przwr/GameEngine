@@ -41,8 +41,8 @@ public class MyPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 10240, tileSize);
-        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
+        GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 5120, tileSize);
+        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 2048, 2048, tileSize);
         maps.add(polana);
         maps.add(kamienna);
 //        sounds.initialize("res");

@@ -198,7 +198,7 @@ public abstract class GameObject {
     public Sprite getSprite() {
         return sprite;
     }
-    
+
     public Animation getAnimation() {
         return animation;
     }

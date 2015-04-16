@@ -26,28 +26,28 @@ public class StoneMap extends Map {
         Tile GROUND = new Tile(place.getSpriteSheet("tlo"), tileSize, 2, 12);
         Tile GRASS = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 1);
         Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12);
-        for (int y = 0; y < height / tileSize; y++) {
-            for (int x = 0; x < width / tileSize; x++) {
-                if ((x * y) < 600) {
-                    tiles[x + y * height / tileSize] = GROUND;
-                } else {
-                    tiles[x + y * height / tileSize] = GRASS;
-                }
-            }
-        }
-
-        PuzzleObject po = new PuzzleObject("piramida", place);
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 10; y++) {
-                po.placePuzzle(x * (po.getWidth()), y * (po.getHeight()), this);
-            }
-        }
-
-        WarpPoint w = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
-        w.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, w));
-        addObject(w);
-        addObject(new WarpPoint("toKamienna", 20 * tileSize, 19 * tileSize));
-        PuzzleObject portal = new PuzzleObject("portal", place);
-        portal.placePuzzle(20, 20, this);
+//        for (int y = 0; y < height / tileSize; y++) {
+//            for (int x = 0; x < width / tileSize; x++) {
+//                if ((x * y) < 600) {
+//                    tiles[x + y * height / tileSize] = GROUND;
+//                } else {
+//                    tiles[x + y * height / tileSize] = GRASS;
+//                }
+//            }
+//        }
+//
+//        PuzzleObject po = new PuzzleObject("piramida", place);
+//        for (int x = 0; x < 10; x++) {
+//            for (int y = 0; y < 10; y++) {
+//                po.placePuzzle(x * (po.getWidth()), y * (po.getHeight()), this);
+//            }
+//        }
+//
+//        WarpPoint w = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
+//        w.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, w));
+//        addObject(w);
+//        addObject(new WarpPoint("toKamienna", 20 * tileSize, 19 * tileSize));
+//        PuzzleObject portal = new PuzzleObject("portal", place);
+//        portal.placePuzzle(20, 20, this);
     }
 }
