@@ -30,7 +30,7 @@ public class GameServer {
 
     private final Server server;
     private final GameOnline game;
-    private final int scopeX, scopeY;
+//    private final int scopeX, scopeY;
     public boolean isRunning;
     private MPlayer temp;
     private Player tmpInGame;
@@ -43,8 +43,8 @@ public class GameServer {
 
     public GameServer(final Player player, final GameOnline game) {
         this.game = game;
-        this.scopeX = 2400;
-        this.scopeY = 1500;
+//        this.scopeX = 2400;
+//        this.scopeY = 1500;
         delay = new Delay(50);
         delay.terminate();
         Server tempServer = null;
@@ -143,8 +143,7 @@ public class GameServer {
             MPlayers[0].setPlayer(player);
             player.setName(MPlayers[0].getName());
             player.playerID = id++;
-            player.setX(MPlayers[0].getX());
-            player.setY(MPlayers[0].getY());
+            player.setPosition(MPlayers[0].getX(), MPlayers[0].getY());
             nrPlayers++;
             isRunning = true;
             System.out.println("Server started!");
@@ -176,12 +175,13 @@ public class GameServer {
                 if (temp != null) {
                     tmpInGame = temp.inGame();
                     if (tmpInGame != null) {
-                        for (Mob mob : game.game.getPlace().getMapById(temp.getMapId()).getSolidMobs()) {
+                        for (Mob mob : game.game.getPlace().getMapById(temp.getMapId()).getSolidMobs(x, y)) {
                             mobX = mob.getX();
                             mobY = mob.getY();
-                            if (Math.abs(mobX - temp.inGame().getX()) < scopeX && Math.abs(mobY - temp.inGame().getY()) < scopeY) {
-                                temp.getPU().MobUpdate(mob.mobID, mobX, mobY);
-                            }
+                            temp.getPU().MobUpdate(mob.mobID, mobX, mobY);
+//                            if (Math.abs(mobX - temp.inGame().getX()) < scopeX && Math.abs(mobY - temp.inGame().getY()) < scopeY) {
+//
+//                            }
                         }
                     }
                     temp.getPU().playerUpdate(MPlayers[0], isEmits, isHop);

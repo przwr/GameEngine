@@ -6,8 +6,8 @@
 package game.place;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import sprites.SpriteSheet;
 
 /**
@@ -33,8 +33,8 @@ public class Lights {
         spriteSheet.renderPiece(part);
     }
 
-    public Collection<Light> getLights() {
-        return Collections.unmodifiableCollection(lights);
+    public List<Light> getLights() {
+        return Collections.unmodifiableList(lights);
     }
 
     public SpriteSheet getSpriteSheet() {

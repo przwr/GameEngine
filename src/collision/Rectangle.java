@@ -13,6 +13,7 @@ import game.place.Place;
 import java.awt.geom.Line2D;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -341,11 +342,11 @@ public class Rectangle extends Figure {
     }
 
     @Override
-    public Collection<Point> getPoints() {
+    public List<Point> getPoints() {
         if (isMobile()) {
             updatePoints();
         }
-        return Collections.unmodifiableCollection(points);
+        return Collections.unmodifiableList(points);
     }
 
     @Override

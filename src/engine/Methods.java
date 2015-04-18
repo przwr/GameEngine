@@ -1,9 +1,23 @@
 package engine;
 
+import collision.Block;
+import game.gameobject.GameObject;
+import game.gameobject.Mob;
 import game.place.Place;
 import java.awt.geom.Line2D;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import net.jodk.lang.FastMath;
 import org.lwjgl.input.Keyboard;
@@ -91,16 +105,19 @@ public class Methods {
         }
         System.out.println(error);
         Main.addMessage(error);
+        log("\n" + error + "\n");
     }
 
     public static void error(String message) {
         System.out.println(message);
         Main.addMessage(message);
+        log("\n" + message + "\n");
     }
 
     public static void javaError(String message) {
         System.out.println(message);
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
+        log("\n" + message + "\n");
     }
 
     public static void javaException(Exception exception) {
@@ -111,6 +128,7 @@ public class Methods {
         }
         System.out.println(error);
         JOptionPane.showMessageDialog(null, error, "Problem!", 0);
+        log("\n" + error + "\n");
     }
 
     public static int roundDouble(double number) {
@@ -246,6 +264,39 @@ public class Methods {
         return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) <= 0;
     }
 
+    public static void insort(List<GameObject> list) {
+        int i, j, newValue;
+        GameObject object;
+        for (i = 1; i < list.size(); i++) {
+            object = list.get(i);
+            newValue = object.getDepth();
+            j = i;
+            while (j > 0 && list.get(j - 1).getDepth() > newValue) {
+                list.set(j, list.get(j - 1));
+                j--;
+            }
+            list.set(j, object);
+        }
+    }
+
+    public static void merge(List<GameObject> l1, List<GameObject> l2) {
+        for (int index1 = 0, index2 = 0; index2 < l2.size(); index1++) {
+            if (index1 == l1.size() || l1.get(index1).getDepth() > l2.get(index2).getDepth()) {
+                l1.add(index1, l2.get(index2++));
+            }
+        }
+    }
+
+    public static void merge(List<GameObject> l1, GameObject l2) {
+        boolean added = false;
+        for (int i = 0; !added; i++) {
+            if (i == l1.size() || l1.get(i).getDepth() > l2.getDepth()) {
+                l1.add(i, l2);
+                added = true;
+            }
+        }
+    }
+
     public static int sizeInBytes(Object obj) throws java.io.IOException {
         ByteArrayOutputStream byteObject = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteObject);
@@ -305,5 +356,17 @@ public class Methods {
             character = character.toLowerCase();
         }
         return text + character;
+    }
+
+    public static void log(String string) {
+        try {
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("res/log.txt"), true), "UTF-8"))) {
+                writer.append(string);
+            }
+        } catch (UnsupportedEncodingException | FileNotFoundException ex) {
+            Logger.getLogger(Methods.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Methods.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

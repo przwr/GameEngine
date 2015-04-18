@@ -59,6 +59,12 @@ public class RoundedTMPBlock extends TemporaryBlock {
         return fgt;
     }
 
+    @Override
+    public void createBlock() {
+        block = Block.createRound(getX(), getY(), width, height, (upHeight - yTiles) * tile);
+        map.addBlock(block);
+    }
+
     public void pushCorner(int corner, int xDelta, int yDelta) {
         block.pushCorner(corner, xDelta, yDelta);
         complete = true;
@@ -174,12 +180,6 @@ public class RoundedTMPBlock extends TemporaryBlock {
                 break;
         }
         complete = true;
-    }
-
-    @Override
-    public void createBlock() {
-        block = Block.createRound((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
-        map.addBlock(block);
     }
 
     @Override

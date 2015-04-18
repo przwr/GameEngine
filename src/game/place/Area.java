@@ -6,13 +6,14 @@
 package game.place;
 
 import collision.Block;
+import engine.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -22,6 +23,8 @@ public class Area {
 
     public static final short X_IN_TILES = 32, Y_IN_TILES = 20;
 
+    private final Place place;
+    private final Map map;
     private final Tile[] tiles;
     private final ArrayList<Block> blocks = new ArrayList<>();
 
@@ -33,10 +36,12 @@ public class Area {
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
 
     protected final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
-    protected final ArrayList<GameObject> objectsOnTop = new ArrayList<>();
+    protected final ArrayList<GameObject> topObjects = new ArrayList<>();
     protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
 
-    public Area() {
+    public Area(Place place, Map map) {
+        this.place = place;
+        this.map = map;
         tiles = new Tile[X_IN_TILES * Y_IN_TILES];
     }
 
@@ -59,21 +64,20 @@ public class Area {
     }
 
     public void addForegroundTile(GameObject tile, int x, int y, int depth) {
-        tile.setX(x);
-        tile.setY(y);
+        tile.setPosition(x, y);
         tile.setDepth(depth);
         addForegroundTile(tile);
     }
 
     public void addForegroundTile(GameObject tile) {
-        foregroundTiles.add(tile);
-        // tile.setMapNotChange(this);
-        sortObjectsByDepth(foregroundTiles);
+        tile.setMapNotChange(map);
+        Methods.merge(foregroundTiles, tile);
+
     }
 
     public void deleteForegroundTile(GameObject tile) {
+        tile.setMapNotChange(null);
         foregroundTiles.remove(tile);
-        sortObjectsByDepth(foregroundTiles);
     }
 
     public void deleteForegroundTile(int x, int y) {
@@ -81,25 +85,24 @@ public class Area {
                 -> (foregroundTile.getX() == x && foregroundTile.getY() == y)).forEach((foregroundTile) -> {
                     foregroundTiles.remove(foregroundTile);
                 });
-        sortObjectsByDepth(foregroundTiles);
     }
 
     public void addBlock(Block block) {
+        block.setMapNotChange(map);
         blocks.add(block);
-        // block.setMapNotChange(this);
     }
 
     public void deleteBlock(Block block) {
-        blocks.remove(block);
         block.setMapNotChange(null);
+        blocks.remove(block);
     }
 
     public void addObject(GameObject object) {
-        // object.setMapNotChange(this);
+        object.setMapNotChange(map);
         if (object.isOnTop()) {
-            objectsOnTop.add(object);
+            Methods.merge(topObjects, object);
         } else {
-            depthObjects.add(object);
+            Methods.merge(depthObjects, object);
         }
         if (!(object instanceof Player)) {
             addNotPlayerObject(object);
@@ -127,7 +130,7 @@ public class Area {
 
     private void addWarpPoint(WarpPoint warp) {
         warps.add(warp);
-        //   warp.setPlace(place);
+        warp.setPlace(place);
     }
 
     private void addMob(Mob mob) {
@@ -144,7 +147,7 @@ public class Area {
             deleteNotPlayerObject(object);
         }
         if (object.isOnTop()) {
-            objectsOnTop.remove(object);
+            topObjects.remove(object);
         } else {
             depthObjects.remove(object);
         }
@@ -175,6 +178,10 @@ public class Area {
         } else {
             flatMobs.remove(mob);
         }
+    }
+
+    public void removeForegroundTile(GameObject foregroundTile) {
+        foregroundTiles.remove(foregroundTile);
     }
 
 //    public void renderBackground(Camera camera) {
@@ -227,13 +234,6 @@ public class Area {
 //                    object.render(cameraXOffEffect, cameraYOffEffect);
 //                });
 //    }
-    public void sortForegroundTiles() {
-        Collections.sort(foregroundTiles, Map.depthComparator);
-    }
-
-    public void sortObjectsByDepth(ArrayList<GameObject> objects) {
-        Collections.sort(objects, Map.depthComparator);
-    }
 
     public WarpPoint findWarp(String name) {
         for (WarpPoint warp : warps) {
@@ -253,7 +253,15 @@ public class Area {
         blocks.clear();
         depthObjects.clear();
         foregroundTiles.clear();
-        objectsOnTop.clear();
+        topObjects.clear();
+    }
+
+    public void clearBlocks() {
+        blocks.clear();
+    }
+
+    public void clearForegroundTiles() {
+        foregroundTiles.clear();
     }
 
     public Tile getTile(int x, int y) {
@@ -264,43 +272,43 @@ public class Area {
         return tiles[index];
     }
 
-    public Collection<Mob> getSolidMobs() {
+    public List<Mob> getSolidMobs() {
         return Collections.unmodifiableList(solidMobs);
     }
 
-    public Collection<Mob> getFlatMobs() {
+    public List<Mob> getFlatMobs() {
         return Collections.unmodifiableList(flatMobs);
     }
 
-    public Collection<Block> getBlocks() {
+    public List<Block> getBlocks() {
         return Collections.unmodifiableList(blocks);
     }
 
-    public Collection<GameObject> getSolidObjects() {
+    public List<GameObject> getSolidObjects() {
         return Collections.unmodifiableList(solidObjects);
     }
 
-    public Collection<GameObject> getFlatObjects() {
+    public List<GameObject> getFlatObjects() {
         return Collections.unmodifiableList(flatObjects);
     }
 
-    public Collection<Light> getEmitters() {
+    public List<Light> getEmitters() {
         return Collections.unmodifiableList(emitters);
     }
 
-    public Collection<GameObject> getDepthObjects() {
+    public List<GameObject> getDepthObjects() {
         return Collections.unmodifiableList(depthObjects);
     }
 
-    public Collection<GameObject> getObjectsOnTop() {
-        return Collections.unmodifiableList(objectsOnTop);
+    public List<GameObject> getTopObjects() {
+        return Collections.unmodifiableList(topObjects);
     }
 
-    public Collection<WarpPoint> getWarps() {
+    public List<WarpPoint> getWarps() {
         return Collections.unmodifiableList(warps);
     }
 
-    public Collection<GameObject> getForegroundTiles() {
+    public List<GameObject> getForegroundTiles() {
         return Collections.unmodifiableList(foregroundTiles);
     }
 
@@ -308,8 +316,16 @@ public class Area {
         return x + y * X_IN_TILES;
     }
 
+    public GameObject getForegroundTile(int i) {
+        return foregroundTiles.get(i);
+    }
+
     public void setTile(int x, int y, Tile tile) {
         tiles[x + y * X_IN_TILES] = tile;
+    }
+
+    public void setForegroundTiles(int i, ForegroundTile foregroundTile) {
+        foregroundTiles.set(i, foregroundTile);
     }
 
 }

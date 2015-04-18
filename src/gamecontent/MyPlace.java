@@ -6,12 +6,13 @@
 package gamecontent;
 
 import engine.Delay;
-import game.gameobject.Mob;
 import game.Game;
 import game.Settings;
 import game.place.Place;
 import engine.FontBase;
 import engine.Main;
+import static game.Game.OFFLINE;
+import static game.Game.ONLINE;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Entity;
@@ -41,8 +42,8 @@ public class MyPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 5120, tileSize);
-        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 5120, tileSize);
+        GladeMap polana = new GladeMap(mapIDcounter++, this, 10240, 10240, tileSize);
+        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
         maps.add(polana);
         maps.add(kamienna);
 //        sounds.initialize("res");
@@ -66,7 +67,7 @@ public class MyPlace extends Place {
 
     private void initMethods() {
         delay.start();
-        updates[0] = () -> {
+        updates[OFFLINE] = () -> {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
 //                sounds.getSound("MumboMountain").resume();
 //            }
@@ -124,31 +125,17 @@ public class MyPlace extends Place {
             for (int i = 0; i < playersCount; i++) {
                 ((Player) players[i]).update();
             }
-            maps.stream().forEach((map) -> {
-                map.getSolidMobs().stream().forEach((mob) -> {
-                    mob.update();
-                });
-            });
+            updateMobs();
             dayCycle.updateTime();
         };
-        updates[1] = () -> {
-            tempMaps.clear();
-            Map map;
+        updates[ONLINE] = () -> {
             if (game.online.server != null) {
-                for (int i = 0; i < playersCount; i++) {
-                    map = players[i].getMap();
-                    if (!tempMaps.contains(map)) {
-                        for (Mob mob : map.getSolidMobs()) {
-                            mob.update();
-                        }
-                        tempMaps.add(map);
-                    }
-                }
+                updateMobs();
             } else if (game.online.client != null) {
-                map = players[0].getMap();
-                for (Mob mob : map.getSolidMobs()) {
-                    mob.updateHard();
-                }
+                Map map = players[0].getMap();
+                map.clearAreasToUpdate();
+                map.addAreasToUpdate(map.getNearAreas(players[0].getArea()));
+                map.hardUpdateMobsFromAreasToUpdate();
             }
             ((Player) players[0]).sendUpdate();
             for (int i = 1; i < playersCount; i++) {
@@ -157,6 +144,21 @@ public class MyPlace extends Place {
             }
             dayCycle.updateTime();
         };
+    }
+
+    private void updateMobs() {
+        tempMaps.clear();
+        for (int i = 0; i < playersCount; i++) {
+            Map map = players[i].getMap();
+            if (!tempMaps.contains(map)) {
+                map.clearAreasToUpdate();
+                tempMaps.add(map);
+            }
+            map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
+        }
+        tempMaps.stream().forEach((map) -> {
+            map.updateMobsFromAreasToUpdate();
+        });
     }
 
     @Override

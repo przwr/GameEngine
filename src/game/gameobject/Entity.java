@@ -39,8 +39,6 @@ public abstract class Entity extends GameObject {
 
     protected abstract void move(int xPosition, int yPosition);
 
-    protected abstract void setPosition(int xPosition, int yPosition);
-
     public synchronized void updateSoft() {
         try {
             if (canUpdate()) {
@@ -163,6 +161,7 @@ public abstract class Entity extends GameObject {
             moveXToPoint();
             moveYToPoint();
         }
+        updateAreaPlacement();
     }
 
     private void moveXToPoint() {

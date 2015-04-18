@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -221,11 +222,11 @@ public class RoundRectangle extends Figure {
     }
 
     @Override
-    public Collection<Point> getPoints() {
+    public List<Point> getPoints() {
         if (isMobile()) {
             updatePoints();
         }
-        return Collections.unmodifiableCollection(points);
+        return Collections.unmodifiableList(points);
     }
 
     @Override
@@ -364,7 +365,7 @@ public class RoundRectangle extends Figure {
             }
         }
 
-        public Collection<Point> getPoints() {
+        public List<Point> getPoints() {
             if (points[NEXT] == null) {
                 return Arrays.asList(points[CORNER]);
             } else {

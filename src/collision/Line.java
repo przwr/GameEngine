@@ -9,7 +9,7 @@ import engine.Point;
 import game.gameobject.GameObject;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -98,7 +98,7 @@ public class Line extends Figure {
     }
 
     @Override
-    public Collection<Point> getPoints() {
+    public List<Point> getPoints() {
         if (isMobile()) {
             updatePoints();
         }

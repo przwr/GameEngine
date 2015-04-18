@@ -13,8 +13,8 @@ import collision.Figure;
 import game.place.Light;
 import game.place.Map;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import sprites.Animation;
 import sprites.Sprite;
 
@@ -27,6 +27,7 @@ public abstract class GameObject {
     protected ArrayList<Light> lights = new ArrayList<>(1);
     protected String name;
     protected Map map;
+    protected int area, prevArea = -1;
     protected Figure collision;
     protected Animation animation;
 
@@ -55,29 +56,6 @@ public abstract class GameObject {
         this.map = map;
         this.map.addObject(this);
     }
-    /*
-     @Override
-     public boolean equals(Object object) {
-     if (object instanceof GameObject) {
-     GameObject gameObject = (GameObject) object;
-     if (gameObject.getX() == getX() && gameObject.getY() == getY() && gameObject.getName().equals(getName())) {
-     return true;
-     }
-     }
-     return false;
-     }
-
-     @Override
-     public int hashCode() {
-     int hash = 5;
-     hash = 83 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
-     hash = 83 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
-     hash = 83 * hash + (this.solid ? 1 : 0);
-     hash = 83 * hash + Objects.hashCode(this.sprite);
-     hash = 83 * hash + Objects.hashCode(this.name);
-     return hash;
-     }
-     */
 
     public boolean isSolid() {
         return solid;
@@ -167,6 +145,14 @@ public abstract class GameObject {
         return map;
     }
 
+    public int getArea() {
+        return area;
+    }
+
+    public int getPrevArea() {
+        return prevArea;
+    }
+
     public int getCollisionWidth() {
         return collision != null ? collision.getWidth() : width;
     }
@@ -187,8 +173,8 @@ public abstract class GameObject {
         return name;
     }
 
-    public Collection<Light> getLights() {
-        return Collections.unmodifiableCollection(lights);
+    public List<Light> getLights() {
+        return Collections.unmodifiableList(lights);
     }
 
     public void addLight(Light light) {
@@ -219,16 +205,30 @@ public abstract class GameObject {
         this.simpleLighting = simpleLighting;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public void setVisible(boolean vis) {
         this.visible = vis;
     }
 
+    public void setPosition(double x, double y) {
+        setX(x);
+        setY(y);
+        updateAreaPlacement();
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
     public void setY(double y) {
         this.y = y;
+    }
+
+    public void updateAreaPlacement() {
+        if (map != null) {
+            prevArea = area;
+            area = map.getAreaIndex(getX(), getY());
+            map.changeAreaIfNeeded(area, prevArea, this);
+        }
     }
 
     public void setDepth(int depth) {

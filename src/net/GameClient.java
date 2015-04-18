@@ -74,8 +74,7 @@ public class GameClient {
                         if (((PacketJoinResponse) obj).getId() != -1) {
                             server = connection;
                             player.playerID = ((PacketJoinResponse) obj).getId();
-                            player.setX(((PacketJoinResponse) obj).getX());
-                            player.setY(((PacketJoinResponse) obj).getY());
+                            player.setPosition(((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY());
                             tempMapId = ((PacketJoinResponse) obj).getMapId();
                             mpup = new PacketMPlayerUpdate(tempMapId, player.playerID, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());

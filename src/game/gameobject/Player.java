@@ -29,7 +29,7 @@ public abstract class Player extends Entity {
 
     protected ArrayList<GUIObject> guiList = new ArrayList<>();
 
-    public abstract void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y);
+    public abstract void initializeSetPosition(int xStart, int yStart, int width, int height, Place place, int x, int y);
 
     public abstract void initialize(int xStart, int yStart, int width, int height, Place place);
 
@@ -71,6 +71,19 @@ public abstract class Player extends Entity {
     @Override
     public Player getCollided(int xMagnitude, int yMagnitude) {
         return null;
+    }
+
+    @Override
+    protected void move(int xPosition, int yPosition) {
+        setPosition(x + xPosition, y + yPosition);
+    }
+
+    @Override
+    public void setPosition(double xPosition, double yPosition) {
+        super.setPosition(xPosition, yPosition);
+        if (camera != null) {
+            camera.update();
+        }
     }
 
     public void setToLastNotCollided() {

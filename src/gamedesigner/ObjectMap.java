@@ -10,6 +10,7 @@ import gamedesigner.designerElements.TemporaryBlock;
 import collision.Block;
 import engine.Point;
 import game.gameobject.GameObject;
+import game.place.Area;
 import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
@@ -24,40 +25,40 @@ import sprites.SpriteSheet;
  * @author Wojtek
  */
 public class ObjectMap extends Map {
-    
+
     public Tile background;
     private boolean isBackground, areTilesVisible, areBlocksVisible;
     private final CentralPoint centralPoint;
     private final ObjectPlace objPlace;
     private final ArrayList<PuzzleLink> links;
-    
+
     public ObjectMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "ObjectMap", place, width, height, tileSize);
         objPlace = (ObjectPlace) place;
         links = new ArrayList<>();
-        
+
         centralPoint = new CentralPoint(0, 0, objPlace);
         addObject(centralPoint);
-        
+
         background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
         background.setDepth(-1);
         isBackground = true;
         areTilesVisible = true;
         areBlocksVisible = true;
-        
+
         switchTiles(background);
     }
-    
+
     public void setBackground(int xSheet, int ySheet, SpriteSheet texture) {
         background = new Tile(texture, tileSize, xSheet, ySheet);
         background.setDepth(-1);
         switchTiles(background);
     }
-    
+
     private Tile getBackground() {
         return isBackground ? background : null;
     }
-    
+
     public void switchBackground() {
         Tile tmp = null;
         if (!isBackground) {
@@ -66,26 +67,30 @@ public class ObjectMap extends Map {
         switchTiles(tmp);
         isBackground = !isBackground;
     }
-    
+
     public void setBlocksVisibility(boolean visible) {
         areBlocksVisible = visible;
-        objectsOnTop.stream().forEach((b) -> {
-            if (b instanceof TemporaryBlock) {
-                ((TemporaryBlock) b).setBlocked(!visible);
-            }
-        });
+        for (Area area : areas) {
+            area.getTopObjects().stream().forEach((b) -> {
+                if (b instanceof TemporaryBlock) {
+                    ((TemporaryBlock) b).setBlocked(!visible);
+                }
+            });
+        }
     }
-    
+
     public void changeBlockUsability(int x, int y) {
         TemporaryBlock lowest = null;
         int max = 0;
         if (areBlocksVisible) {
-            for (GameObject tb : objectsOnTop) {
-                if (tb instanceof TemporaryBlock) {
-                    TemporaryBlock tmp = (TemporaryBlock) tb;
-                    if (tmp.checkIfBaseContains(x, y) && tmp.getY() > max) {
-                        lowest = tmp;
-                        max = tmp.getY();
+            for (Area area : areas) {
+                for (GameObject tb : area.getTopObjects()) {
+                    if (tb instanceof TemporaryBlock) {
+                        TemporaryBlock tmp = (TemporaryBlock) tb;
+                        if (tmp.checkIfBaseContains(x, y) && tmp.getY() > max) {
+                            lowest = tmp;
+                            max = tmp.getY();
+                        }
                     }
                 }
             }
@@ -94,13 +99,15 @@ public class ObjectMap extends Map {
             lowest.setBlocked(!lowest.isBlocked());
         }
     }
-    
+
     public void setFGTVisibility(boolean visible) {
-        foregroundTiles.stream().forEach((fgt) -> {
-            fgt.setVisible(visible);
-        });
+        for (Area area : areas) {
+            area.getForegroundTiles().stream().forEach((foregroundTile) -> {
+                foregroundTile.setVisible(visible);
+            });
+        }
     }
-    
+
     public void setTilesVisibility(boolean visible) {
         areTilesVisible = visible;
         for (int y = 0; y < heightInTiles; y++) {
@@ -112,7 +119,7 @@ public class ObjectMap extends Map {
             }
         }
     }
-    
+
     private void switchTiles(Tile background) {
         for (int y = 0; y < heightInTiles; y++) {
             for (int x = 0; x < widthInTiles; x++) {
@@ -123,7 +130,7 @@ public class ObjectMap extends Map {
             }
         }
     }
-    
+
     @Override
     public void clear() {
         Tile background = getBackground();
@@ -132,31 +139,38 @@ public class ObjectMap extends Map {
                 setTile(x, y, background);
             }
         }
-        foregroundTiles.clear();
-        blocks.clear();
+        for (Area area : areas) {
+
+            area.clear();
+
+        }
         GameObject object;
-        for (Iterator<GameObject> iterator = objectsOnTop.iterator(); iterator.hasNext();) {
-            object = iterator.next();
-            if (object instanceof TemporaryBlock) {
-                ((TemporaryBlock) object).clear();
-                iterator.remove();
+        for (Area area : areas) {
+            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext();) {
+                object = iterator.next();
+                if (object instanceof TemporaryBlock) {
+                    ((TemporaryBlock) object).clear();
+                    iterator.remove();
+                }
             }
         }
     }
-    
+
     public ArrayList<TemporaryBlock> getBlock(int x, int y, int width, int height) {
         ArrayList<TemporaryBlock> tmplist = new ArrayList<>();
-        for (GameObject go : flatObjects) {
-            if (go instanceof TemporaryBlock) {
-                TemporaryBlock tb = (TemporaryBlock) go;
-                if (tb.checkCollision(x, y, width, height)) {
-                    tmplist.add(tb);
+        for (Area area : areas) {
+            for (GameObject go : area.getFlatObjects()) {
+                if (go instanceof TemporaryBlock) {
+                    TemporaryBlock tb = (TemporaryBlock) go;
+                    if (tb.checkCollision(x, y, width, height)) {
+                        tmplist.add(tb);
+                    }
                 }
             }
         }
         return tmplist;
     }
-    
+
     public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altmode) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
@@ -169,12 +183,14 @@ public class ObjectMap extends Map {
             TemporaryBlock lowest = null;
             int max = 0;
             if (areBlocksVisible) {
-                for (GameObject tb : objectsOnTop) {
-                    if (tb instanceof TemporaryBlock) {
-                        TemporaryBlock tmp = (TemporaryBlock) tb;
-                        if (!tmp.isBlocked() && tmp.checkIfContains(x, y) && tmp.getY() > max) {
-                            lowest = tmp;
-                            max = tmp.getY();
+                for (Area area : areas) {
+                    for (GameObject tb : area.getTopObjects()) {
+                        if (tb instanceof TemporaryBlock) {
+                            TemporaryBlock tmp = (TemporaryBlock) tb;
+                            if (!tmp.isBlocked() && tmp.checkIfContains(x, y) && tmp.getY() > max) {
+                                lowest = tmp;
+                                max = tmp.getY();
+                            }
                         }
                     }
                 }
@@ -182,14 +198,15 @@ public class ObjectMap extends Map {
             if (lowest != null) {
                 lowest.addTile(x, y, xSheet, ySheet, tex, altmode).getDepth();
                 setTile(x, y, getBackground());
-                sortObjectsByDepth(foregroundTiles);
+//                !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//                sortObjectsByDepth(foregroundTiles);
             } else if (areTilesVisible) {
                 Tile newtile = new Tile(tex, tileSize, xSheet, ySheet);
                 setTile(x, y, newtile);
             }
         }
     }
-    
+
     public Tile deleteTile(int x, int y) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
@@ -205,19 +222,21 @@ public class ObjectMap extends Map {
             TemporaryBlock tmp = null;
             TemporaryBlock max = null;
             int maxDepth = 0;
-            for (GameObject tb : objectsOnTop) {
-                if (tb instanceof TemporaryBlock) {
-                    tmp = (TemporaryBlock) tb;
-                    if (!tmp.isBlocked() && tmp.getDepth() > maxDepth
-                            && tmp.checkIfContainsTile(x, y)) {
-                        max = tmp;
-                        maxDepth = tmp.getDepth();
+            for (Area area : areas) {
+                for (GameObject tb : area.getTopObjects()) {
+                    if (tb instanceof TemporaryBlock) {
+                        tmp = (TemporaryBlock) tb;
+                        if (!tmp.isBlocked() && tmp.getDepth() > maxDepth
+                                && tmp.checkIfContainsTile(x, y)) {
+                            max = tmp;
+                            maxDepth = tmp.getDepth();
+                        }
                     }
                 }
             }
             if (max != null) {
                 if ((fgt = max.removeTile(x, y)) != null) {
-                    foregroundTiles.remove(fgt);
+                    removeForegroundTile(fgt);
                     max.getBlock().removeForegroundTile(fgt);
                     return fgt;
                 }
@@ -226,32 +245,39 @@ public class ObjectMap extends Map {
         setTile(x, y, getBackground());
         return null;
     }
-    
+
     public void removeFGTiles(int xSt, int ySt, int xEn, int yEn) {
         ForegroundTile fgt;
-        for (int i = 0; i < foregroundTiles.size(); i++) {
-            fgt = (ForegroundTile) foregroundTiles.get(i);
-            if ((fgt.getX() >= xSt && fgt.getX() <= ySt && fgt.getY() >= xEn && fgt.getY() <= yEn)) {
-                foregroundTiles.set(i, null);
+        for (Area area : areas) {
+            for (int i = 0; i < area.getForegroundTiles().size(); i++) {
+                fgt = (ForegroundTile) area.getForegroundTile(i);
+                if ((fgt.getX() >= xSt && fgt.getX() <= ySt && fgt.getY() >= xEn && fgt.getY() <= yEn)) {
+                    area.setForegroundTiles(i, null);
+                }
             }
         }
-        foregroundTiles.trimToSize();
     }
-    
+
     public boolean checkBlockCollision(int x, int y, int width, int height) {
-        for (GameObject go : flatObjects) {
-            if (go instanceof TemporaryBlock) {
-                TemporaryBlock tb = (TemporaryBlock) go;
-                if (tb.checkCollision(x, y, width, height)) {
-                    return true;
+        for (Area area : areas) {
+            for (GameObject go : area.getFlatObjects()) {
+                if (go instanceof TemporaryBlock) {
+                    TemporaryBlock tb = (TemporaryBlock) go;
+                    if (tb.checkCollision(x, y, width, height)) {
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
-    
+
     public void deleteBlocks(int x, int y, int width, int height) {
-        Object[] tmpTab = flatObjects.toArray();
+        gameObjects.clear();
+        for (Area area : areas) {
+            gameObjects.addAll(area.getFlatObjects());
+        }
+        Object[] tmpTab = gameObjects.toArray();
         for (Object go : tmpTab) {
             if (go instanceof TemporaryBlock) {
                 TemporaryBlock tb = (TemporaryBlock) go;
@@ -262,11 +288,11 @@ public class ObjectMap extends Map {
             }
         }
     }
-    
+
     public void setCentralPoint(int x, int y) {
         centralPoint.setCentralPoint(x, y);
     }
-    
+
     public void addObject(GameObject object, boolean altMode) {
         if (object instanceof TemporaryBlock) {
             if (!altMode) {
@@ -284,7 +310,7 @@ public class ObjectMap extends Map {
         }
         super.addObject(object);
     }
-    
+
     public void deleteLink(int x, int y) {
         for (PuzzleLink pl : links) {
             if (pl.getX() == x && pl.getY() == y) {
@@ -294,7 +320,7 @@ public class ObjectMap extends Map {
             }
         }
     }
-    
+
     public Tile[][] getTilesCopies(int xSt, int ySt, int xEnd, int yEnd) {
         Tile[][] tmp = new Tile[xEnd - xSt + 1][yEnd - ySt + 1];
         for (int x = xSt; x <= xEnd; x++) {
@@ -304,20 +330,23 @@ public class ObjectMap extends Map {
         }
         return tmp;
     }
-    
+
     public ArrayList<ForegroundTile> getFGTilesCopies(int xISt, int yISt, int xIStop, int yIStop) {
         ArrayList<ForegroundTile> tmp = new ArrayList<>();
         int xBegin = xISt * tileSize;
         int yBegin = xISt * tileSize;
         int xEnd = xIStop * tileSize;
         int yEnd = xIStop * tileSize;
-        foregroundTiles.stream().map((go) -> (ForegroundTile) go).filter((fgt)
-                -> (fgt.getX() >= xBegin && fgt.getX() <= xEnd && fgt.getY() >= yBegin && fgt.getY() <= yEnd)).forEach((fgt) -> {
-                    tmp.add(fgt);
-                });
+
+        for (Area area : areas) {
+            area.getForegroundTiles().stream().map((go) -> (ForegroundTile) go).filter((fgt)
+                    -> (fgt.getX() >= xBegin && fgt.getX() <= xEnd && fgt.getY() >= yBegin && fgt.getY() <= yEnd)).forEach((fgt) -> {
+                        tmp.add(fgt);
+                    });
+        }
         return tmp;
     }
-    
+
     public ArrayList<String> saveMap() {
         ArrayList<String> map = new ArrayList<>();
         SpriteSheet repeated = null;
@@ -334,24 +363,29 @@ public class ObjectMap extends Map {
         }
         int xActBegin = center.getX() * tileSize;
         int yActBegin = center.getY() * tileSize;
-        for (GameObject go : foregroundTiles) {
-            ForegroundTile fgt = (ForegroundTile) go;
-            if (!fgt.isInBlock()) {
-                map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
-                repeated = fgt.getSpriteSheet();
+
+        for (Area area : areas) {
+            for (GameObject foregroundTile : area.getForegroundTiles()) {
+                ForegroundTile fgt = (ForegroundTile) foregroundTile;
+                if (!fgt.isInBlock()) {
+                    map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
+                    repeated = fgt.getSpriteSheet();
+                }
+            }
+
+            for (Block a : area.getBlocks()) {
+                map.add(a.saveToString(xActBegin, yActBegin, tileSize));
+                for (ForegroundTile fgt : a.getTopForegroundTiles()) {
+                    map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
+                    repeated = fgt.getSpriteSheet();
+                }
+                for (ForegroundTile fgt : a.getWallForegroundTiles()) {
+                    map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
+                    repeated = fgt.getSpriteSheet();
+                }
             }
         }
-        for (Block a : blocks) {
-            map.add(a.saveToString(xActBegin, yActBegin, tileSize));
-            for (ForegroundTile fgt : a.getTopForegroundTiles()) {
-                map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
-                repeated = fgt.getSpriteSheet();
-            }
-            for (ForegroundTile fgt : a.getWallForegroundTiles()) {
-                map.add(fgt.saveToString(repeated, xActBegin, yActBegin, tileSize));
-                repeated = fgt.getSpriteSheet();
-            }
-        }
+
         String linking = "pl";
         for (PuzzleLink pl : links) {
             linking += ":" + pl.saveToString(xActBegin, yActBegin);

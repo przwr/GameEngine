@@ -184,7 +184,7 @@ public class MyGameOnline extends GameOnline {
                         if (newPlayers[i] != null) {
                             NewMPlayer temp = newPlayers[i];
                             System.out.println("Adding player with ID: " + temp.getId() + " - " + temp.getName());
-                            game.players[tempPlace.playersCount].initialize(4, 4, 56, 56, tempPlace, temp.getX(), temp.getY());
+                            game.players[tempPlace.playersCount].initializeSetPosition(4, 4, 56, 56, tempPlace, temp.getX(), temp.getY());
                             game.players[tempPlace.playersCount].playerID = temp.getId();
                             game.players[tempPlace.playersCount].setName(temp.getName());
                             tempPlace.players[tempPlace.playersCount] = game.players[tempPlace.playersCount];
@@ -246,7 +246,7 @@ public class MyGameOnline extends GameOnline {
                 for (MobUpdate mUp : mobs) {
                     found = false;
                     Mob mob;
-                    for (Iterator<Mob> iterator = map.getSolidMobs().iterator(); iterator.hasNext();) {
+                    for (Iterator<Mob> iterator = map.getSolidMobs(game.players[0].getArea()).iterator(); iterator.hasNext();) {
                         mob = iterator.next();
                         if (mUp.getId() == mob.mobID) {
                             mob.updates[mob.lastAdded] = mUp;
@@ -282,7 +282,7 @@ public class MyGameOnline extends GameOnline {
                     for (int i = 0; i < newMobs.length; i++) {
                         if (newMobs[i] != null) {
                             System.out.println("Adding Mob with ID: " + newMobs[i].getId());
-                            Mob mob = new Rabbit(newMobs[i].getX(), newMobs[i].getY(), 0, 8, 128, 112, 4, 512, "rabbit", tempPlace, true, newMobs[i].getId());
+                            Mob mob = new Rabbit(newMobs[i].getX(), newMobs[i].getY(), 0, 8, 128, 112, 2, 512, "rabbit", tempPlace, true, newMobs[i].getId());
                             map.addObject(mob);
                             newMobs[i] = null;
                         }

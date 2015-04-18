@@ -19,6 +19,10 @@ import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
+import static game.place.Area.X_IN_TILES;
+import static game.place.Area.Y_IN_TILES;
+import java.util.HashSet;
+import java.util.Set;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
@@ -31,14 +35,12 @@ import sprites.SpriteSheet;
  */
 public abstract class Place extends ScreenPlace {
 
-    public static int tileSize;
-    public static int tileSquared;
-    public static int tileHalf;
+    public static int tileSize, tileSquared, tileHalf, xAreaInPixels, yAreaInPixels;
 
     protected static DayCycle dayCycle;
 
     public final ArrayList<Map> maps = new ArrayList<>();
-    protected static final ArrayList<Map> tempMaps = new ArrayList<>();
+    protected static final Set<Map> tempMaps = new HashSet<>();
     private static final renderType[] renders = new renderType[2];
 
     public static Camera currentCamera;
@@ -55,21 +57,17 @@ public abstract class Place extends ScreenPlace {
 
     {
         renders[OFFLINE] = () -> {
-            tempMaps.clear();
-            Map map;
             for (int p = 0; p < playersCount; p++) {
-                map = players[p].getMap();
-                if (!tempMaps.contains(map)) {
+                for (Map map : tempMaps) {
                     Renderer.findVisibleLights(map, playersCount);
                     if (!Settings.shadowOff) {
                         Renderer.preRendLights(map);
                     }
-                    tempMaps.add(map);
                 }
             }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
-                map = players[player].getMap();
+                Map map = players[player].getMap();
                 if (map != null) {
                     Drawer.setCurrentColor(map.getLightColor());
                     SplitScreen.setSplitScreen(this, playersCount, player);
@@ -125,6 +123,8 @@ public abstract class Place extends ScreenPlace {
         Place.tileSize = tileSize;
         Place.tileSquared = tileSize * tileSize;
         Place.tileHalf = tileSize / 2;
+        Place.xAreaInPixels = X_IN_TILES * tileSize;
+        Place.yAreaInPixels = Y_IN_TILES * tileSize;
         sounds = new SoundBase();
         sprites = new SpriteBase();
         console = new Console(this);
