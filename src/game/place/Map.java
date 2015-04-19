@@ -68,7 +68,6 @@ public class Map {
         this.tileSize = tileSize;
         widthInTiles = width / tileSize;
         heightInTiles = height / tileSize;
-
         xAreas = (widthInTiles / Area.X_IN_TILES) + (widthInTiles % Area.X_IN_TILES != 0 ? 1 : 0);
         yAreas = (heightInTiles / Area.Y_IN_TILES) + (heightInTiles % Area.Y_IN_TILES != 0 ? 1 : 0);
         areas = new Area[xAreas * yAreas];
@@ -76,6 +75,12 @@ public class Map {
             areas[i] = new Area(place, this);
         }
         placement = new Placement(this);
+    }
+
+    public void generateNavigationMeshes() {     // call after adding All blocks and tiles
+        for (Area area : areas) {
+            area.generateNavigationMesh();
+        }
     }
 
     public void addAreasToUpdate(int[] newAreas) {
@@ -162,7 +167,7 @@ public class Map {
         object.setMapNotChange(null);
         if (object instanceof WarpPoint) {
             warps.remove((WarpPoint) object);
-        }      
+        }
         areas[getAreaIndex(object.getX(), object.getY())].deleteObject(object);
     }
 
@@ -310,6 +315,14 @@ public class Map {
         return mapID;
     }
 
+    public Color getLightColor() {
+        if (lightColor != null) {
+            return lightColor;
+        } else {
+            return place.getLightColor();
+        }
+    }
+
     public int getXAreas() {
         return xAreas;
     }
@@ -337,12 +350,8 @@ public class Map {
         return (int) (x / xAreaInPixels) + (int) (y / yAreaInPixels) * xAreas;
     }
 
-    public Color getLightColor() {
-        if (lightColor != null) {
-            return lightColor;
-        } else {
-            return place.getLightColor();
-        }
+    public int[] getNearAreas(int area) {
+        return placement.getNearAreas(area);
     }
 
     public List<Mob> getSolidMobs(int x, int y) {
@@ -481,10 +490,6 @@ public class Map {
             }
         }
         return Collections.unmodifiableList(blocks);
-    }
-
-    public int[] getNearAreas(int area) {
-        return placement.getNearAreas(area);
     }
 
     public void setTile(int x, int y, Tile tile) {

@@ -14,9 +14,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -98,36 +95,6 @@ public class Methods {
 
     public static float interval(float leftBorder, float x, float rightBorder) {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
-    }
-
-    public static void exception(Exception exception) {
-        String error = "";
-        error += exception + "\n";
-        for (StackTraceElement stackTrace : exception.getStackTrace()) {
-            error += stackTrace + "\n";
-        }
-        Main.addMessage(error);
-        logAndPrint("\n" + error + "\n");
-    }
-
-    public static void error(String message) {
-        Main.addMessage(message);
-        logAndPrint("\n" + message + "\n");
-    }
-
-    public static void javaError(String message) {
-        JOptionPane.showMessageDialog(null, message, "Problem!", 0);
-        logAndPrint("\n" + message + "\n");
-    }
-
-    public static void javaException(Exception exception) {
-        String error = "";
-        error += exception + "\n";
-        for (StackTraceElement stackTrace : exception.getStackTrace()) {
-            error += stackTrace + "\n";
-        }
-        JOptionPane.showMessageDialog(null, error, "Problem!", 0);
-        logAndPrint("\n" + error + "\n");
     }
 
     public static int roundDouble(double number) {
@@ -357,12 +324,42 @@ public class Methods {
         return text + character;
     }
 
+    public static void exception(Exception exception) {
+        String error = "";
+        error += exception + "\n";
+        for (StackTraceElement stackTrace : exception.getStackTrace()) {
+            error += stackTrace + "\n";
+        }
+        Main.addMessage(error);
+        logAndPrint("\n" + error + "\n");
+    }
+
+    public static void error(String message) {
+        Main.addMessage(message);
+        logAndPrint("\n" + message + "\n");
+    }
+
+    public static void javaError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Problem!", 0);
+        logAndPrint("\n" + message + "\n");
+    }
+
+    public static void javaException(Exception exception) {
+        String error = "";
+        error += exception + "\n";
+        for (StackTraceElement stackTrace : exception.getStackTrace()) {
+            error += stackTrace + "\n";
+        }
+        JOptionPane.showMessageDialog(null, error, "Problem!", 0);
+        logAndPrint("\n" + error + "\n");
+    }
+
     public static void logAndPrint(String string) {
         System.err.print(string);
         log(string);
     }
 
-    public static void logToNewFile(String string) {       
+    public static void logToNewFile(String string) {
         file = new File("logs/log_" + Main.STARTED_DATE + ".txt");
         if (file.exists() && !file.isDirectory()) {
             log(string);

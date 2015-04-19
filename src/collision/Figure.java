@@ -43,7 +43,7 @@ public abstract class Figure implements Comparable<Figure> {
         this.points = new BlueArray<>();
     }
 
-    public boolean isCollideSolid(int x, int y, Map map) {        
+    public boolean isCollideSolid(int x, int y, Map map) {
         if (map.getSolidMobs(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
             return true;
         }
@@ -131,7 +131,7 @@ public abstract class Figure implements Comparable<Figure> {
 
     @Override
     public int compareTo(Figure Figure) { // Check this out
-        return (getDepth() - ((Figure) Figure).getDepth()) * 8192 - (getLightDistance() - ((Figure) Figure).getLightDistance());
+        return ((getDepth() - ((Figure) Figure).getDepth()) << 13) - (getLightDistance() - ((Figure) Figure).getLightDistance());
     }
 
     private int getDepth() {

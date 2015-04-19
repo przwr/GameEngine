@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import navmeshpathfinding.NavigationMesh;
 
 /**
  *
@@ -39,10 +40,16 @@ public class Area {
     protected final ArrayList<GameObject> topObjects = new ArrayList<>();
     protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
 
+    protected NavigationMesh navigationMesh;
+
     public Area(Place place, Map map) {
         this.place = place;
         this.map = map;
         tiles = new Tile[X_IN_TILES * Y_IN_TILES];
+    }
+
+    public void generateNavigationMesh() {
+        // TO DO
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {
@@ -188,56 +195,6 @@ public class Area {
         foregroundTiles.remove(foregroundTile);
     }
 
-//    public void renderBackground(Camera camera) {
-//        ShadowRenderer.clearScreen(0);
-//        Drawer.refreshForRegularDrawing();
-//        for (int y = 0; y < heightInTiles; y++) {
-//            if (cameraYStart < (y + 1) * tileSize && cameraYEnd > y * tileSize) {
-//                for (int x = 0; x < width / tileSize; x++) {
-//                    if (cameraXStart < (x + 1) * tileSize && cameraXEnd > x * tileSize) {
-//                        Tile tile = tiles[x + y * heightInTiles];
-//                        if (tile != null && tile.isVisible()) {
-//                            tile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-////    }
-//
-//    public void renderObjects(Camera camera) {
-//        Drawer.refreshForRegularDrawing();
-//        renderBottom(camera);
-//        renderTop(camera);
-//    }
-//
-//    public void renderBottom(Camera camera) {
-//        sortObjectsByDepth(depthObjects);
-//        int y = 0;
-//        for (GameObject object : depthObjects) {
-//            for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
-//                if (foregroundTiles.get(y).isVisible() && isObjectInSight(foregroundTiles.get(y))) {
-//                    foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
-//                }
-//            }
-//            if (object.isVisible() && isObjectInSight(object)) {
-//                object.render(cameraXOffEffect, cameraYOffEffect);
-//            }
-//        }
-//        for (int i = y; i < foregroundTiles.size(); i++) {
-//            if (foregroundTiles.get(i).isVisible() && isObjectInSight(foregroundTiles.get(i))) {
-//                foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
-//            }
-//        }
-//    }
-//
-//    public void renderTop(Camera camera) {
-//        sortObjectsByDepth(objectsOnTop);
-//        objectsOnTop.stream().filter((object) -> (object.isVisible()
-//                && isObjectInSight(object))).forEach((object) -> {
-//                    object.render(cameraXOffEffect, cameraYOffEffect);
-//                });
-//    }
     public WarpPoint findWarp(String name) {
         for (WarpPoint warp : warps) {
             if (warp.getName().equals(name)) {
@@ -305,10 +262,6 @@ public class Area {
 
     public List<GameObject> getForegroundTiles() {
         return Collections.unmodifiableList(foregroundTiles);
-    }
-
-    public int getTileIndex(int x, int y) {
-        return x + y * X_IN_TILES;
     }
 
     public GameObject getForegroundTile(int i) {

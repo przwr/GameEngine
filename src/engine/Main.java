@@ -47,8 +47,8 @@ public class Main {
     private static boolean lastFrame;
     private static final Delay delay = new Delay(200);
     private static final Date date = new Date();
-    public static final String STARTED_DATE = date.toString().replaceAll(" ", "_");  
-   
+    public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
+
     public static void run() {
         setSettingsFromFile(new File("res/settings.ini"));
         initializeDisplay();

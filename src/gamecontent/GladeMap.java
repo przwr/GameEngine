@@ -51,5 +51,7 @@ public class GladeMap extends Map {
         GameObject light = new LightSource(1784, 1296, 0, 0, 206, 300, "lamp", place, "lamp", false);
         light.setDepth(1024);
         addObject(light);
+        
+        generateNavigationMeshes();
     }
 }

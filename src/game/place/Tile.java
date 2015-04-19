@@ -5,7 +5,6 @@ import engine.Drawer;
 import engine.Point;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.place.cameras.Camera;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
