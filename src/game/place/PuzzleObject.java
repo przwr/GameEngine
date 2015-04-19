@@ -344,7 +344,7 @@ public class PuzzleObject {
         //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
         public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round, int depth) {
             texture = spriteSheet;
-            values = new int[]{size, xSheet, ySheet, yStart, depth};
+            values = new int[]{size, xSheet, ySheet, yStart, depth + (round ? 1 : 0)};
             this.wall = wall;
             this.round = round;
         }
