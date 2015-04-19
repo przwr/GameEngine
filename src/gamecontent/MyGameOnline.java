@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import engine.Methods;
 import game.Game;
 import game.Settings;
 import net.GameOnline;
@@ -59,8 +60,9 @@ public class MyGameOnline extends GameOnline {
                 client.Close();
                 client = null;
             }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -76,7 +78,8 @@ public class MyGameOnline extends GameOnline {
             }
             isChanged[0] = true;
         } catch (Exception exception) {
-            System.out.println("ERROR: " + exception.getMessage());
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -91,8 +94,9 @@ public class MyGameOnline extends GameOnline {
                 removeIDs[2] = playerID;
             }
             isChanged[1] = true;
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -103,8 +107,9 @@ public class MyGameOnline extends GameOnline {
                 UpdateMobs(update.mobs(), update.getMapId());
                 UpdatePlayers(update.players());
             }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -128,8 +133,9 @@ public class MyGameOnline extends GameOnline {
                     }
                 }
             }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -145,8 +151,9 @@ public class MyGameOnline extends GameOnline {
                 activeFirstMobsUpdates = false;
             }
             isChanged[2] = true;
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -169,8 +176,9 @@ public class MyGameOnline extends GameOnline {
                     }
                 }
             }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -198,8 +206,9 @@ public class MyGameOnline extends GameOnline {
                         }
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("ERROR: " + e.getMessage());
+            } catch (Exception exception) {
+                String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+                Methods.logAndPrint(error);
             }
         };
         changes[1] = () -> {
@@ -225,8 +234,9 @@ public class MyGameOnline extends GameOnline {
                         }
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("ERROR: " + e.getMessage());
+            } catch (Exception exception) {
+                String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+                Methods.logAndPrint(error);
             }
         };
         changes[2] = () -> {
@@ -288,8 +298,9 @@ public class MyGameOnline extends GameOnline {
                         }
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("ERROR: " + e.getMessage());
+            } catch (Exception exception) {
+                String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+                Methods.logAndPrint(error);
             }
         };
     }

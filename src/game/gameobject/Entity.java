@@ -49,7 +49,8 @@ public abstract class Entity extends GameObject {
                 }
             }
         } catch (Exception exception) {
-            System.out.println("ERROR: UpdateSoft" + exception);
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -94,7 +95,8 @@ public abstract class Entity extends GameObject {
                 }
             }
         } catch (Exception exception) {
-            System.out.println("ERROR: UpdateHard" + exception.getMessage());
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -247,15 +249,15 @@ public abstract class Entity extends GameObject {
     public int getDirection() {
         return direction;
     }
-    
+
     public void setDirection(int d) {
         direction = d;
     }
-    
+
     public double getSpeed() {
         return Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
     }
-    
+
     public boolean isJumping() {
         return jumping;
     }

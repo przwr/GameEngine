@@ -20,7 +20,6 @@ import game.place.Place;
 import game.place.Shadow;
 import static game.place.Shadow.*;
 import java.awt.Polygon;
-import java.util.ArrayList;
 import java.util.Collections;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
@@ -34,7 +33,7 @@ public class ShadowRenderer {
 
     private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), shadowLength = 32768;
     private static final shadeRenderer[] singleShadeRenderers = new shadeRenderer[6];
-    private static final ArrayList<Figure> shades = new ArrayList<>(512);
+    private static final BlueArray<Figure> shades = new BlueArray<>(512);
     private static final Point center = new Point(), corner = new Point();
     private static final Point[] shadowPoints = new Point[4];
     private static final Polygon polygon = new Polygon();

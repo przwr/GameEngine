@@ -82,7 +82,9 @@ public class MyPlayer extends Player {
         visible = true;
         depth = 0;
         setResistance(2);
-        addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
+        if (lights.isEmpty()) {
+            addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
+        }
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
     }
 
@@ -132,7 +134,7 @@ public class MyPlayer extends Player {
         xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
         yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
         moveIfPossible(xTempSpeed, yTempSpeed);
-        for (WarpPoint warp : map.getWarps()) {
+        for (WarpPoint warp : map.getWarps(getX(), getY())) {
             if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
                 warp.Warp(this);
                 break;
@@ -154,7 +156,7 @@ public class MyPlayer extends Player {
         xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
         yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
         moveIfPossible(xTempSpeed, yTempSpeed);
-        for (WarpPoint warp : map.getWarps()) {
+        for (WarpPoint warp : map.getWarps(getX(), getY())) {
             if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
                 warp.Warp(this);
                 break;
@@ -186,8 +188,9 @@ public class MyPlayer extends Player {
                 setJumping(true);
             }
             setEmits(((MPlayerUpdate) update).isEmits());
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -203,8 +206,9 @@ public class MyPlayer extends Player {
                     jumpDelta = 22.6f;
                 }
             }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 

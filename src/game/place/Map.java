@@ -7,6 +7,7 @@ package game.place;
 
 import engine.ShadowRenderer;
 import collision.Block;
+import engine.BlueArray;
 import engine.Drawer;
 import engine.Methods;
 import game.gameobject.GameObject;
@@ -30,7 +31,7 @@ import org.newdawn.slick.Color;
 public class Map {
 
 //    protected final static Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) -> firstObject.getDepth() - secondObject.getDepth();
-    private final ArrayList<Light> visibleLights = new ArrayList<>();
+    private final BlueArray<Light> visibleLights = new BlueArray<>();
 
     public final Place place;
     protected Color lightColor;
@@ -45,14 +46,15 @@ public class Map {
     private static Tile tempTile;
     private final Set<Integer> areasToUpdate = new HashSet<>(36);
 
-    protected final ArrayList<GameObject> topObjects = new ArrayList<>();
-    protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
-    protected final ArrayList<GameObject> gameObjects = new ArrayList<>();
+    protected final BlueArray<GameObject> topObjects = new BlueArray<>();
+    protected final BlueArray<GameObject> depthObjects = new BlueArray<>();
+    protected final BlueArray<GameObject> gameObjects = new BlueArray<>();
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
-    protected final ArrayList<Light> lights = new ArrayList<>();
-    protected final ArrayList<Block> blocks = new ArrayList<>();
-    protected final ArrayList<Mob> mobs = new ArrayList<>();
-    protected final List<Mob> tempMobs = new ArrayList<>();
+    protected final BlueArray<WarpPoint> tempWarps = new BlueArray<>();
+    protected final BlueArray<Light> lights = new BlueArray<>();
+    protected final BlueArray<Block> blocks = new BlueArray<>();
+    protected final BlueArray<Mob> mobs = new BlueArray<>();
+    protected final List<Mob> tempMobs = new BlueArray<>();
 
     private final Placement placement;
     private int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect; //Camera's variables for current rendering
@@ -160,7 +162,7 @@ public class Map {
         object.setMapNotChange(null);
         if (object instanceof WarpPoint) {
             warps.remove((WarpPoint) object);
-        }
+        }      
         areas[getAreaIndex(object.getX(), object.getY())].deleteObject(object);
     }
 
@@ -277,6 +279,7 @@ public class Map {
         blocks.clear();
         mobs.clear();
         tempMobs.clear();
+        tempWarps.clear();
     }
 
     public int getWidthInTIles() {
@@ -438,8 +441,18 @@ public class Map {
         return Collections.unmodifiableList(topObjects);
     }
 
-    public List<WarpPoint> getWarps() {
-        return Collections.unmodifiableList(warps);
+    public List<WarpPoint> getWarps(int x, int y) {
+        return getWarps(getAreaIndex(x, y));
+    }
+
+    public List<WarpPoint> getWarps(int area) {
+        tempWarps.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                tempWarps.addAll(areas[i].getWarps());
+            }
+        }
+        return Collections.unmodifiableList(tempWarps);
     }
 
     public List<GameObject> getForegroundTiles(int x, int y) {

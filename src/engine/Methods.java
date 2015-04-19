@@ -1,8 +1,6 @@
 package engine;
 
-import collision.Block;
 import game.gameobject.GameObject;
-import game.gameobject.Mob;
 import game.place.Place;
 import java.awt.geom.Line2D;
 import java.io.BufferedWriter;
@@ -10,11 +8,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +38,7 @@ public class Methods {
     private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z;
     private static int xOA, yOA, xOB, yOB, xBA, yBA, xDelta, yDelta;
     private static final Point point = new Point(0, 0);
+    private static File file;
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -103,21 +106,18 @@ public class Methods {
         for (StackTraceElement stackTrace : exception.getStackTrace()) {
             error += stackTrace + "\n";
         }
-        System.out.println(error);
         Main.addMessage(error);
-        log("\n" + error + "\n");
+        logAndPrint("\n" + error + "\n");
     }
 
     public static void error(String message) {
-        System.out.println(message);
         Main.addMessage(message);
-        log("\n" + message + "\n");
+        logAndPrint("\n" + message + "\n");
     }
 
     public static void javaError(String message) {
-        System.out.println(message);
         JOptionPane.showMessageDialog(null, message, "Problem!", 0);
-        log("\n" + message + "\n");
+        logAndPrint("\n" + message + "\n");
     }
 
     public static void javaException(Exception exception) {
@@ -126,9 +126,8 @@ public class Methods {
         for (StackTraceElement stackTrace : exception.getStackTrace()) {
             error += stackTrace + "\n";
         }
-        System.out.println(error);
         JOptionPane.showMessageDialog(null, error, "Problem!", 0);
-        log("\n" + error + "\n");
+        logAndPrint("\n" + error + "\n");
     }
 
     public static int roundDouble(double number) {
@@ -358,9 +357,29 @@ public class Methods {
         return text + character;
     }
 
+    public static void logAndPrint(String string) {
+        System.err.print(string);
+        log(string);
+    }
+
+    public static void logToNewFile(String string) {       
+        file = new File("logs/log_" + Main.STARTED_DATE + ".txt");
+        if (file.exists() && !file.isDirectory()) {
+            log(string);
+        } else {
+            try {
+                try (FileWriter writer = new FileWriter("logs/log_" + Main.STARTED_DATE + ".txt")) {
+                    writer.write(string);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Methods.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public static void log(String string) {
         try {
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("res/log.txt"), true), "UTF-8"))) {
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "UTF-8"))) {
                 writer.append(string);
             }
         } catch (UnsupportedEncodingException | FileNotFoundException ex) {

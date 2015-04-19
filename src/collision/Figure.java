@@ -5,6 +5,7 @@
  */
 package collision;
 
+import engine.BlueArray;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
@@ -12,8 +13,6 @@ import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import game.place.Shadow;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public abstract class Figure implements Comparable<Figure> {
     private final GameObject owner;
     private final OpticProperties opticProperties;
     protected int xStart, yStart, width, height, xCenter, yCenter;
-    protected final ArrayList<Point> points;
+    protected final BlueArray<Point> points;
     private boolean mobile = false;
 
     public abstract boolean isCollideSingle(int x, int y, Figure figure);
@@ -41,7 +40,7 @@ public abstract class Figure implements Comparable<Figure> {
         this.yStart = yStart;
         this.owner = owner;
         this.opticProperties = opticProperties;
-        this.points = new ArrayList<>();
+        this.points = new BlueArray<>();
     }
 
     public boolean isCollideSolid(int x, int y, Map map) {        

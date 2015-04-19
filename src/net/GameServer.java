@@ -33,7 +33,7 @@ public class GameServer {
 //    private final int scopeX, scopeY;
     public boolean isRunning;
     private MPlayer temp;
-    private Player tmpInGame;
+    private Player tempInGame;
     private MPlayer[] MPlayers = new MPlayer[4];
     private boolean[] isConnected = new boolean[4];
     private int nrPlayers = 0;
@@ -173,9 +173,9 @@ public class GameServer {
             for (int i = 1; i < nrPlayers; i++) {
                 temp = MPlayers[i];
                 if (temp != null) {
-                    tmpInGame = temp.inGame();
-                    if (tmpInGame != null) {
-                        for (Mob mob : game.game.getPlace().getMapById(temp.getMapId()).getSolidMobs(x, y)) {
+                    tempInGame = temp.inGame();
+                    if (tempInGame != null) {
+                        for (Mob mob : game.game.getPlace().getMapById(temp.getMapId()).getSolidMobs(tempInGame.getX(), tempInGame.getY())) {
                             mobX = mob.getX();
                             mobY = mob.getY();
                             temp.getPU().MobUpdate(mob.mobID, mobX, mobY);

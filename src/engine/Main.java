@@ -47,7 +47,8 @@ public class Main {
     private static boolean lastFrame;
     private static final Delay delay = new Delay(200);
     private static final Date date = new Date();
-
+    public static final String STARTED_DATE = date.toString().replaceAll(" ", "_");  
+   
     public static void run() {
         setSettingsFromFile(new File("res/settings.ini"));
         initializeDisplay();
@@ -56,7 +57,7 @@ public class Main {
         initializeGame();
         Time.initialize();
         refreshGamma();
-        Methods.log("\n-------------------- Game Started at " + date.toString() + " -------------------- \n\n");
+        Methods.logToNewFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
         delay.start();
         gameLoop();
         cleanUp();

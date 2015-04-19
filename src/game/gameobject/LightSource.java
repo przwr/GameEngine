@@ -34,10 +34,12 @@ public class LightSource extends GameObject {
         emitter = true;
         emits = true;
         Color lightColor = new Color(0.85f, 0.85f, 0.85f);
-        addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 0));
-        addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 1));
-        addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 2));
-        addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 3));
+        if (lights.isEmpty()) {
+            addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 0));
+            addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 1));
+            addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 2));
+            addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 3));
+        }
         initialize(name, x, y);
         setCollision(Rectangle.create(this.width / 2, this.height / 3, OpticProperties.NO_SHADOW, this));
     }
@@ -57,7 +59,7 @@ public class LightSource extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect,  Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
@@ -77,7 +79,7 @@ public class LightSource extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect,  Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);

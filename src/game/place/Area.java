@@ -145,6 +145,10 @@ public class Area {
         object.setMapNotChange(null);
         if (!(object instanceof Player)) {
             deleteNotPlayerObject(object);
+        } else if (object.isEmitter()) {
+            object.getLights().stream().forEach((light) -> {
+                emitters.remove(light);
+            });
         }
         if (object.isOnTop()) {
             topObjects.remove(object);
@@ -234,7 +238,6 @@ public class Area {
 //                    object.render(cameraXOffEffect, cameraYOffEffect);
 //                });
 //    }
-
     public WarpPoint findWarp(String name) {
         for (WarpPoint warp : warps) {
             if (warp.getName().equals(name)) {
@@ -254,14 +257,6 @@ public class Area {
         depthObjects.clear();
         foregroundTiles.clear();
         topObjects.clear();
-    }
-
-    public void clearBlocks() {
-        blocks.clear();
-    }
-
-    public void clearForegroundTiles() {
-        foregroundTiles.clear();
     }
 
     public Tile getTile(int x, int y) {
