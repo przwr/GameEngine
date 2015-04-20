@@ -32,7 +32,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class ShadowRenderer {
 
     private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), shadowLength = 32768;
-    private static final shadeRenderer[] singleShadeRenderers = new shadeRenderer[6];
+    private static final shadeRenderer[] shadeRenderers = new shadeRenderer[6];
     private static final BlueArray<Figure> shades = new BlueArray<>(512);
     private static final Point center = new Point(), corner = new Point();
     private static final Point[] shadowPoints = new Point[4];
@@ -46,7 +46,7 @@ public class ShadowRenderer {
 
     private static Point tempPoint;
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = false, OBJECT_DEBUG = false;
 
     static {
         shadowPoints[0] = new Point();
@@ -57,30 +57,30 @@ public class ShadowRenderer {
             shadowsDarken[i] = new Shadow(0);
             shadowsBrighten[i] = new Shadow(0);
         }
-        singleShadeRenderers[DARK] = (Light emitter, Figure shade, Point point) -> {
+        shadeRenderers[DARK] = (Light emitter, Figure shade, Point point) -> {
             shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade);
         };
-        singleShadeRenderers[BRIGHT] = (Light emitter, Figure shade, Point point) -> {
+        shadeRenderers[BRIGHT] = (Light emitter, Figure shade, Point point) -> {
             shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade);
         };
-        singleShadeRenderers[BRIGHTEN] = (Light emitter, Figure shade, Point point) -> {
+        shadeRenderers[BRIGHTEN] = (Light emitter, Figure shade, Point point) -> {
             if (!shade.isBottomRounded()) {
                 drawShadeLit(emitter, shade, point);
             } else {
                 shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
             }
         };
-        singleShadeRenderers[DARKEN] = (Light emitter, Figure shade, Point point) -> {
+        shadeRenderers[DARKEN] = (Light emitter, Figure shade, Point point) -> {
             if (!shade.isBottomRounded()) {
                 drawShade(emitter, shade, point);
             } else {
                 shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
             }
         };
-        singleShadeRenderers[BRIGHTEN_OBJECT] = (Light emitter, Figure shade, Point point) -> {
+        shadeRenderers[BRIGHTEN_OBJECT] = (Light emitter, Figure shade, Point point) -> {
             shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
         };
-        singleShadeRenderers[DARKEN_OBJECT] = (Light emitter, Figure shade, Point point) -> {
+        shadeRenderers[DARKEN_OBJECT] = (Light emitter, Figure shade, Point point) -> {
             shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
         };
     }
@@ -146,7 +146,7 @@ public class ShadowRenderer {
         for (Figure shaded : shades) {
             solveShadows(shaded);
             for (int i = 0; i < shaded.getShadowCount(); i++) {
-                singleShadeRenderers[shaded.getShadow(i).type].render(light, shaded, shaded.getShadow(i).point);
+                shadeRenderers[shaded.getShadow(i).type].render(light, shaded, shaded.getShadow(i).point);
             }
             shaded.clearShadows();
         }
@@ -1209,8 +1209,10 @@ public class ShadowRenderer {
             if (XL1 >= other.getXOwnerBegin() && XL1 < other.getXOwnerEnd()) {
                 if (XL1 < current.getX()) { //dodaj światło
                     other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
-                    if (DEBUG) {
-                        System.out.println("Left Light " + (XL1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XL2 " + XL2);
+                    XL2 = current.getX() <= XL1 ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
+                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
+                    if (OBJECT_DEBUG) {
+                        System.out.println("Object Left Light " + (XL1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XL2 " + XL2);
                     }
                     checked = true;
                 } else { //dodaj cień
@@ -1218,8 +1220,8 @@ public class ShadowRenderer {
                         XL2 = other.getOwner().getStartX() + other.getWidth();
                     }
                     other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
-                    if (DEBUG) {
-                        System.out.println("Left Shade " + (XL1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XL2 " + XL2);
+                    if (OBJECT_DEBUG) {
+                        System.out.println("Object Left Shade " + (XL1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XL2 " + XL2);
                     }
                     checked = true;
                 }
@@ -1234,12 +1236,14 @@ public class ShadowRenderer {
                 XR2 = other.getOwner().getStartX();
             } else {
                 XR1 = Methods.roundDouble((other.getYOwnerEnd() - br) / ar);
-                XR2 = XR1 < current.getXEnd() ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
+                XR2 = XR1 <= current.getXEnd() ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
             }
             if (XR1 >= other.getXOwnerBegin() && XR1 <= other.getXOwnerEnd()) {
-                if (XR1 > current.getXEnd()) { // dodaj światło
+                if (XR1 > current.getXEnd()) { // dodaj światło                    
                     other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
-                    if (DEBUG) {
+                    XR2 = XR1 > current.getXEnd() ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
+                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
+                    if (OBJECT_DEBUG) {
                         System.out.println("Object Right Light XR1 " + (XR1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XR2 " + XR2);
                     }
                     checked = true;
@@ -1248,8 +1252,8 @@ public class ShadowRenderer {
                         XR2 = other.getOwner().getStartX() + other.getWidth();
                     }
                     other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
-                    if (DEBUG) {
-                        System.out.println("Object Right Shade " + (XR1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XR2 " + XR2);
+                    if (OBJECT_DEBUG) {
+                        System.out.println("Object Right Shade XR1 " + (XR1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XR2 " + XR2);
                     }
                     checked = true;
                 }
@@ -1326,9 +1330,9 @@ public class ShadowRenderer {
     private static void findObjectDarkness(Figure other, Figure current, Light source) {
         if (!checked) {
             if (other.getY() <= source.getY() && (other.getY() <= current.getY() || other.getYEnd() <= current.getYEnd())) {
-                if (polygon.contains(other.getX(), other.getYOwnerEnd() - 1)) {
+                if (polygon.contains(other.getOwner().getX(), other.getYOwnerEnd() - 1)) {
                     other.addShadow(DARK);
-                    if (DEBUG) {
+                    if (OBJECT_DEBUG) {
                         System.out.println("Object Darkness...");
                     }
                 }

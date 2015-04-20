@@ -94,7 +94,7 @@ public class ObjectUI extends GUIObject {
             glPushMatrix();
             int d = 2;
             int xStart = texture.getXStart();
-            int yStart = texture.yStart();
+            int yStart = texture.getYStart();
             int wTex = texture.getWidth();
             int hTex = texture.getHeight();
             if (Settings.scaled) {

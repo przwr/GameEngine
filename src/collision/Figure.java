@@ -44,6 +44,9 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public boolean isCollideSolid(int x, int y, Map map) {
+        for (Point point : map.getNearTiles(this)) {
+            
+        }
         if (map.getSolidMobs(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
             return true;
         }
@@ -140,7 +143,6 @@ public abstract class Figure implements Comparable<Figure> {
         } else {
             return getY();
         }
-
         //return getOwner().getDepth();
     }
 

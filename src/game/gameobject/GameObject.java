@@ -126,7 +126,7 @@ public abstract class GameObject {
     }
 
     public int getYObjectBegin() {
-        return (int) y + sprite.yStart() + yStart;
+        return (int) y + sprite.getYStart()+ yStart;
     }
 
     public int getXObjectEnd() {
@@ -134,7 +134,7 @@ public abstract class GameObject {
     }
 
     public int getYObjectEnd() {
-        return (int) y + sprite.yStart() + yStart + height;
+        return (int) y + sprite.getYStart()+ yStart + height;
     }
 
     public Figure getCollision() {

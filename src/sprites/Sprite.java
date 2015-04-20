@@ -223,7 +223,7 @@ public class Sprite implements Appearance {
         return xStart;
     }
 
-    public int yStart() {
+    public int getYStart() {
         return yStart;
     }
 
@@ -245,14 +245,6 @@ public class Sprite implements Appearance {
 
     public void setHeight(int h) {
         this.height = h;
-    }
-
-    public void setXstart(int xStart) {
-        this.xStart = -xStart;
-    }
-
-    public void setYstart(int yStart) {
-        this.yStart = -yStart;
     }
 
     @Override

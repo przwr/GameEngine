@@ -356,10 +356,10 @@ public class Methods {
 
     public static void logAndPrint(String string) {
         System.err.print(string);
-        log(string);
+        errorToFile(string);
     }
 
-    public static void logToNewFile(String string) {
+    public static void logToFile(String string) {
         file = new File("logs/log_" + Main.STARTED_DATE + ".txt");
         if (file.exists() && !file.isDirectory()) {
             log(string);
@@ -374,7 +374,22 @@ public class Methods {
         }
     }
 
-    public static void log(String string) {
+    public static void errorToFile(String string) {
+        file = new File("logs/error_" + Main.STARTED_DATE + ".txt");
+        if (file.exists() && !file.isDirectory()) {
+            log(string);
+        } else {
+            try {
+                try (FileWriter writer = new FileWriter("logs/error_" + Main.STARTED_DATE + ".txt")) {
+                    writer.write(string);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Methods.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private static void log(String string) {
         try {
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "UTF-8"))) {
                 writer.append(string);

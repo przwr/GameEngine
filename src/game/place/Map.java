@@ -7,9 +7,13 @@ package game.place;
 
 import engine.ShadowRenderer;
 import collision.Block;
+import collision.Figure;
+import static collision.OpticProperties.TRANSPARENT;
+import collision.Rectangle;
 import engine.BlueArray;
 import engine.Drawer;
 import engine.Methods;
+import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import static game.place.Area.X_IN_TILES;
@@ -46,6 +50,7 @@ public class Map {
     private static Tile tempTile;
     private final Set<Integer> areasToUpdate = new HashSet<>(36);
 
+    protected final static BlueArray<Point> tempTilePositions = new BlueArray<>();
     protected final BlueArray<GameObject> topObjects = new BlueArray<>();
     protected final BlueArray<GameObject> depthObjects = new BlueArray<>();
     protected final BlueArray<GameObject> gameObjects = new BlueArray<>();
@@ -500,5 +505,10 @@ public class Map {
 
     public void setColor(Color color) {
         this.lightColor = color;
+    }
+
+    public List<Point> getNearTiles(Figure collision) {
+        tempTilePositions.clear();
+        return tempTilePositions;
     }
 }

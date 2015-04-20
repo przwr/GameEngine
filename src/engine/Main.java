@@ -39,7 +39,7 @@ import org.newdawn.slick.opengl.ImageIOImageData;
  */
 public class Main {
 
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = false, LOG = false;
     public static Game game;
     public static Popup pop;
     public static Controller[] controllers;
@@ -57,7 +57,9 @@ public class Main {
         initializeGame();
         Time.initialize();
         refreshGamma();
-        Methods.logToNewFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
+        if (LOG) {
+            Methods.logToFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
+        }
         delay.start();
         gameLoop();
         cleanUp();
@@ -192,7 +194,9 @@ public class Main {
                     info = " [" + frames + " fps]";
                 }
                 Display.setTitle(game.getTitle() + info);
-                Methods.log(info + "\n");
+                if (LOG) {
+                    Methods.logToFile(info + "\n");
+                }
             }
             if (!pause) {
                 update();
