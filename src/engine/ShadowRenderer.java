@@ -20,7 +20,6 @@ import game.place.Place;
 import game.place.Shadow;
 import static game.place.Shadow.*;
 import java.awt.Polygon;
-import java.util.ArrayList;
 import java.util.Collections;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
@@ -34,7 +33,7 @@ public class ShadowRenderer {
 
     private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), shadowLength = 32768;
     private static final shadeRenderer[] singleShadeRenderers = new shadeRenderer[6];
-    private static final ArrayList<Figure> shades = new ArrayList<>(512);
+    private static final BlueArray<Figure> shades = new BlueArray<>(512);
     private static final Point center = new Point(), corner = new Point();
     private static final Point[] shadowPoints = new Point[4];
     private static final Polygon polygon = new Polygon();
@@ -170,7 +169,7 @@ public class ShadowRenderer {
     }
 
     private static void searchBlocks(Light light, Map map) {
-        for (Block block : map.getBlocks()) {
+        for (Block block : map.getBlocks(light.getX(), light.getY())) {
             tempShade = block.getCollision();
             if (tempShade != null && tempShade.getType() != TRANSPARENT) {
                 if (tempShade.getY() - FastMath.abs(tempShade.getShadowHeight()) - Place.tileSize <= light.getY() + lightHeightHalf && tempShade.getYEnd() >= light.getY() - lightHeightHalf
@@ -189,7 +188,7 @@ public class ShadowRenderer {
     }
 
     private static void searchForegroundTiles(Light light, Map map) {
-        for (GameObject object : map.getForegroundTiles()) {
+        for (GameObject object : map.getForegroundTiles(light.getX(), light.getY())) {
             if (!((ForegroundTile) object).isInBlock()) {
                 tempShade = object.getCollision();
                 if (tempShade != null && !tempShade.isLittable()
@@ -203,7 +202,7 @@ public class ShadowRenderer {
     }
 
     private static void searchObjects(Light light, Map map) {
-        for (GameObject object : map.getDepthObjects()) {
+        for (GameObject object : map.getDepthObjects(light.getX(), light.getY())) {
             tempShade = object.getCollision();
             if (tempShade != null && tempShade.isLittable()
                     && tempShade.getY() - tempShade.getHeight() / 2 <= light.getY() + lightHeightHalf && tempShade.getY() + tempShade.getHeight() / 2 >= light.getY() - lightHeightHalf
@@ -1301,30 +1300,22 @@ public class ShadowRenderer {
                 int points = 0;
                 if (polygon.contains(other.getX() + 2, other.getYEnd() - Place.tileSize + 1)) {
                     points++;
-                }
-                if (polygon.contains(other.getXEnd() - 2, other.getYEnd() - Place.tileSize + 1)) {
+                } else if (polygon.contains(other.getXEnd() - 2, other.getYEnd() - Place.tileSize + 1)) {
                     points++;
+                }
+                if (other.isLeftBottomRound()) {
+                    if (polygon.contains(other.getXEnd() - 1, other.getYEnd() - 2)) {
+                        points++;
+                    }
+                } else {
+                    if (polygon.contains(other.getX() + 1, other.getYEnd() - 2)) {
+                        points++;
+                    }
                 }
                 if (points == 2) {
                     other.addShadow(DARK);
                     if (DEBUG) {
                         System.out.println("Round Darkness...");
-                    }
-                } else {
-                    if (other.isLeftBottomRound()) {
-                        if (polygon.contains(other.getXEnd() - 1, other.getYEnd() - 2)) {
-                            points++;
-                        }
-                    } else {
-                        if (polygon.contains(other.getX() + 1, other.getYEnd() - 2)) {
-                            points++;
-                        }
-                    }
-                    if (points == 2) {
-                        other.addShadow(DARK);
-                        if (DEBUG) {
-                            System.out.println("Round Darkness...");
-                        }
                     }
                 }
             }

@@ -93,7 +93,6 @@ public class ObjectPlace extends Place {
             if (areKeysUsable()) {
                 keyboardHandling();
             }
-
             if (playersCount > 1) {
                 changeSplitScreenJoin.act();
                 changeSplitScreenMode.act();
@@ -108,11 +107,6 @@ public class ObjectPlace extends Place {
             for (int i = 0; i < playersCount; i++) {
                 ((Player) players[i]).update();
             }
-            maps.stream().forEach((map) -> {
-                map.getSolidMobs().stream().forEach((mob) -> {
-                    mob.update();
-                });
-            });
         };
         updates[1] = () -> {
             System.err.println("ONLINE?..... pfft....");

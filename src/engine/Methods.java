@@ -1,9 +1,22 @@
 package engine;
 
+import game.gameobject.GameObject;
 import game.place.Place;
 import java.awt.geom.Line2D;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import net.jodk.lang.FastMath;
 import org.lwjgl.input.Keyboard;
@@ -22,6 +35,7 @@ public class Methods {
     private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z;
     private static int xOA, yOA, xOB, yOB, xBA, yBA, xDelta, yDelta;
     private static final Point point = new Point(0, 0);
+    private static File file;
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -81,36 +95,6 @@ public class Methods {
 
     public static float interval(float leftBorder, float x, float rightBorder) {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
-    }
-
-    public static void exception(Exception exception) {
-        String error = "";
-        error += exception + "\n";
-        for (StackTraceElement stackTrace : exception.getStackTrace()) {
-            error += stackTrace + "\n";
-        }
-        System.out.println(error);
-        Main.addMessage(error);
-    }
-
-    public static void error(String message) {
-        System.out.println(message);
-        Main.addMessage(message);
-    }
-
-    public static void javaError(String message) {
-        System.out.println(message);
-        JOptionPane.showMessageDialog(null, message, "Problem!", 0);
-    }
-
-    public static void javaException(Exception exception) {
-        String error = "";
-        error += exception + "\n";
-        for (StackTraceElement stackTrace : exception.getStackTrace()) {
-            error += stackTrace + "\n";
-        }
-        System.out.println(error);
-        JOptionPane.showMessageDialog(null, error, "Problem!", 0);
     }
 
     public static int roundDouble(double number) {
@@ -246,6 +230,39 @@ public class Methods {
         return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) <= 0;
     }
 
+    public static void insort(List<GameObject> list) {
+        int i, j, newValue;
+        GameObject object;
+        for (i = 1; i < list.size(); i++) {
+            object = list.get(i);
+            newValue = object.getDepth();
+            j = i;
+            while (j > 0 && list.get(j - 1).getDepth() > newValue) {
+                list.set(j, list.get(j - 1));
+                j--;
+            }
+            list.set(j, object);
+        }
+    }
+
+    public static void merge(List<GameObject> l1, List<GameObject> l2) {
+        for (int index1 = 0, index2 = 0; index2 < l2.size(); index1++) {
+            if (index1 == l1.size() || l1.get(index1).getDepth() > l2.get(index2).getDepth()) {
+                l1.add(index1, l2.get(index2++));
+            }
+        }
+    }
+
+    public static void merge(List<GameObject> l1, GameObject l2) {
+        boolean added = false;
+        for (int i = 0; !added; i++) {
+            if (i == l1.size() || l1.get(i).getDepth() > l2.getDepth()) {
+                l1.add(i, l2);
+                added = true;
+            }
+        }
+    }
+
     public static int sizeInBytes(Object obj) throws java.io.IOException {
         ByteArrayOutputStream byteObject = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteObject);
@@ -305,5 +322,67 @@ public class Methods {
             character = character.toLowerCase();
         }
         return text + character;
+    }
+
+    public static void exception(Exception exception) {
+        String error = "";
+        error += exception + "\n";
+        for (StackTraceElement stackTrace : exception.getStackTrace()) {
+            error += stackTrace + "\n";
+        }
+        Main.addMessage(error);
+        logAndPrint("\n" + error + "\n");
+    }
+
+    public static void error(String message) {
+        Main.addMessage(message);
+        logAndPrint("\n" + message + "\n");
+    }
+
+    public static void javaError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Problem!", 0);
+        logAndPrint("\n" + message + "\n");
+    }
+
+    public static void javaException(Exception exception) {
+        String error = "";
+        error += exception + "\n";
+        for (StackTraceElement stackTrace : exception.getStackTrace()) {
+            error += stackTrace + "\n";
+        }
+        JOptionPane.showMessageDialog(null, error, "Problem!", 0);
+        logAndPrint("\n" + error + "\n");
+    }
+
+    public static void logAndPrint(String string) {
+        System.err.print(string);
+        log(string);
+    }
+
+    public static void logToNewFile(String string) {
+        file = new File("logs/log_" + Main.STARTED_DATE + ".txt");
+        if (file.exists() && !file.isDirectory()) {
+            log(string);
+        } else {
+            try {
+                try (FileWriter writer = new FileWriter("logs/log_" + Main.STARTED_DATE + ".txt")) {
+                    writer.write(string);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Methods.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public static void log(String string) {
+        try {
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "UTF-8"))) {
+                writer.append(string);
+            }
+        } catch (UnsupportedEncodingException | FileNotFoundException ex) {
+            Logger.getLogger(Methods.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Methods.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

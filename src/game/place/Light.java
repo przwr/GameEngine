@@ -12,6 +12,7 @@ import game.place.fbo.MultisampleFrameBufferObject;
 import game.place.fbo.FrameBufferObject;
 import game.Settings;
 import game.gameobject.GameObject;
+import static game.place.Placement.CENTER;
 import game.place.cameras.Camera;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
@@ -41,22 +42,27 @@ public class Light {
 
     private Sprite sprite;
     private FrameBufferObject frameBufferObject;
+    private final int nearAreas[] = new int[9];
 
     public static Light create(Sprite sprite, Color color, int width, int height, GameObject owner) {
-        return new Light(sprite, color, width, height, owner);
+        return new Light(sprite, color, width, height, owner, true);
+    }
+
+    public static Light createNoShadows(Sprite sprite, Color color, int width, int height, GameObject owner) {
+        return new Light(sprite, color, width, height, owner, false);
     }
 
     public static Light createNoShadows(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
         return new Light(spriteSheet, color, width, height, owner, piece);
     }
 
-    private Light(Sprite sprite, Color color, int width, int height, GameObject owner) {
+    private Light(Sprite sprite, Color color, int width, int height, GameObject owner, boolean giveShadows) {
         this.color = color;
         this.owner = owner;
         this.sprite = sprite;
         this.width = width;
         this.height = height;
-        this.giveShadows = true;
+        this.giveShadows = giveShadows;
         setFrameBuffer();
         setShift();
     }
@@ -79,6 +85,10 @@ public class Light {
         this.widthWholeLight = this.width * 2;
         this.heightWholeLight = this.height * 2;
         setShift();
+    }
+
+    public void updateNearAreas(int[] nearAreas) {
+        System.arraycopy(nearAreas, 0, this.nearAreas, 0, nearAreas.length);
     }
 
     public void render(int x, int y, Camera camera) {
@@ -268,5 +278,13 @@ public class Light {
         } else {
             return heightWholeLight;
         }
+    }
+
+    public int[] getNearAreas() {
+        return nearAreas;
+    }
+
+    public int getCurrentArea() {
+        return nearAreas[CENTER];
     }
 }

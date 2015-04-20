@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import gamecontent.MyGame;
+import java.util.Date;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
@@ -44,6 +45,9 @@ public class Main {
     public static Controller[] controllers;
     public static boolean pause, enter = true;
     private static boolean lastFrame;
+    private static final Delay delay = new Delay(200);
+    private static final Date date = new Date();
+    public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
 
     public static void run() {
         setSettingsFromFile(new File("res/settings.ini"));
@@ -53,6 +57,8 @@ public class Main {
         initializeGame();
         Time.initialize();
         refreshGamma();
+        Methods.logToNewFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
+        delay.start();
         gameLoop();
         cleanUp();
     }
@@ -176,10 +182,17 @@ public class Main {
     private static void gameLoop() {
         while (isRunning()) {
             Time.update();
-            if (game != null && game.getPlace() != null) {
-                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps] " + game.getPlace().getTime());
-            } else {
-                Display.setTitle(game.getTitle() + " [" + (int) (60 / Time.getDelta()) + " fps]");
+            if (delay.isOver()) {
+                delay.start();
+                String info;
+                int frames = (int) (60 / Time.getDelta());
+                if (game != null && game.getPlace() != null) {
+                    info = " [" + frames + " fps] " + game.getPlace().getTime();
+                } else {
+                    info = " [" + frames + " fps]";
+                }
+                Display.setTitle(game.getTitle() + info);
+                Methods.log(info + "\n");
             }
             if (!pause) {
                 update();

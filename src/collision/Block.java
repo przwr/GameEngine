@@ -11,8 +11,8 @@ import engine.Point;
 import game.gameobject.GameObject;
 import game.place.ForegroundTile;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -49,20 +49,21 @@ public class Block extends GameObject {
     }
 
     public void move(int dx, int dy) {
+        System.out.println("Ruszam");
         x += dx;
         y += dy;
         topForegroundTiles.stream().forEach((fgt) -> {
-            fgt.setX(fgt.getX() + dx);
-            fgt.setY(fgt.getY() + dy);
+            fgt.setPosition(fgt.getX() + dx, fgt.getY() + dy);
         });
         wallForegroundTiles.stream().forEach((fgt) -> {
-            fgt.setX(fgt.getX() + dx);
-            fgt.setY(fgt.getY() + dy);
+            fgt.setPosition(fgt.getX() + dx, fgt.getY() + dy);
         });
         if (!collision.isMobile()) {
             collision.updatePoints();
         }
-        map.sortForegroundTiles();
+
+        // !!!!!!!!!!!!!!!!!!
+        // map.sortForegroundTiles();
     }
 
     @Override
@@ -241,19 +242,19 @@ public class Block extends GameObject {
         return string;
     }
 
-    public Collection<ForegroundTile> getTopForegroundTiles() {
-        return Collections.unmodifiableCollection(topForegroundTiles);
+    public List<ForegroundTile> getTopForegroundTiles() {
+        return Collections.unmodifiableList(topForegroundTiles);
     }
 
-    public Collection<ForegroundTile> getWallForegroundTiles() {
-        return Collections.unmodifiableCollection(wallForegroundTiles);
+    public List<ForegroundTile> getWallForegroundTiles() {
+        return Collections.unmodifiableList(wallForegroundTiles);
     }
 
-    public Collection<Figure> getTop() {
-        return Collections.unmodifiableCollection(top);
+    public List<Figure> getTop() {
+        return Collections.unmodifiableList(top);
     }
 
-    public Collection<Point> getPoints() {
+    public List<Point> getPoints() {
         return collision.getPoints();
     }
 }

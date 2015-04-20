@@ -31,15 +31,16 @@ public class Renderer {
     private static int lightX, lightY;
     private static float lightColor, lightBrightness, lightStrength;
     private static Camera camera;
+    private static Place place;
     private static final drawBorder[] borders = new drawBorder[5];
     private static final resetOrtho[] orthos = new resetOrtho[5];
 
     public static void findVisibleLights(Map map, int playersLength) {
-        Place place = map.place;
+        place = map.place;
         readyVarsToFindLights(map);
-        map.getEmitters().stream().forEach((tempLight) -> {
-            for (int p = 0; p < playersLength; p++) {
-                if (place.players[p].getMap() == map) {
+        map.getLightsFromAreasToUpdate().stream().forEach((tempLight) -> {
+            for (int i = 0; i < playersLength; i++) {
+                if (place.players[i].getMap() == map) {
                     if (place.singleCamera && playersLength > 1) {
                         if (tempLight.isEmits() && yStart[2 + playersLength] <= tempLight.getY() + tempLight.getYBottomEdge() && yEnd[2 + playersLength] >= tempLight.getY() - tempLight.getYTopEdge()
                                 && xStart[2 + playersLength] <= tempLight.getX() + tempLight.getXRightEdge() && xEnd[2 + playersLength] >= tempLight.getX() - tempLight.getXLeftEdge()) {
@@ -49,12 +50,12 @@ public class Renderer {
                             }
                         }
                     } else {
-                        for (int pi = 0; pi < playersLength; pi++) {
-                            if (place.players[pi].getMap() == map && tempLight.isEmits() && yStart[pi] <= tempLight.getY() + tempLight.getYBottomEdge() && yEnd[pi] >= tempLight.getY() - (tempLight.getYTopEdge())
-                                    && xStart[pi] <= tempLight.getX() + (tempLight.getXRightEdge()) && xEnd[pi] >= tempLight.getX() - (tempLight.getXLeftEdge())) {
+                        for (int j = 0; j < playersLength; j++) {
+                            if (place.players[j].getMap() == map && tempLight.isEmits() && yStart[j] <= tempLight.getY() + tempLight.getYBottomEdge() && yEnd[j] >= tempLight.getY() - (tempLight.getYTopEdge())
+                                    && xStart[j] <= tempLight.getX() + (tempLight.getXRightEdge()) && xEnd[j] >= tempLight.getX() - (tempLight.getXLeftEdge())) {
                                 visible = true;
-                                if (!(((Player) place.players[pi]).getCamera()).getVisibleLights().contains(tempLight)) {
-                                    (((Player) place.players[pi]).getCamera()).addVisibleLight(tempLight);
+                                if (!(((Player) place.players[j]).getCamera()).getVisibleLights().contains(tempLight)) {
+                                    (((Player) place.players[j]).getCamera()).addVisibleLight(tempLight);
                                 }
                             }
                         }
@@ -69,9 +70,9 @@ public class Renderer {
             }
         });
         // Docelowo iteracja po graczach nie będzie potrzebna - nie będą oni źródłem światła, a raczej jakieś obiekty.
-        for (int p = 0; p < place.playersCount; p++) {
-            if (place.players[p].getMap() == map) {
-                for (Light light : place.players[p].getLights()) {
+        for (int i = 0; i < place.playersCount; i++) {
+            if (place.players[i].getMap() == map) {
+                for (Light light : place.players[i].getLights()) {
                     if (place.singleCamera && playersLength > 1) {
                         if (light.isEmits() && yStart[2 + playersLength] <= light.getY() + (light.getYBottomEdge()) && yEnd[2 + playersLength] >= light.getY() - (light.getYBottomEdge())
                                 && xStart[2 + playersLength] <= light.getX() + (light.getXLeftEdge()) && xEnd[2 + playersLength] >= light.getX() - (light.getXLeftEdge())) {
@@ -81,12 +82,12 @@ public class Renderer {
                             }
                         }
                     } else {
-                        for (int pi = 0; pi < playersLength; pi++) {
-                            if (place.players[pi].getMap() == map && light.isEmits() && yStart[pi] <= light.getY() + (light.getYBottomEdge()) && yEnd[pi] >= light.getY() - (light.getYBottomEdge())
-                                    && xStart[pi] <= light.getX() + (light.getXLeftEdge()) && xEnd[pi] >= light.getX() - (light.getXLeftEdge())) {
+                        for (int j = 0; j < playersLength; j++) {
+                            if (place.players[j].getMap() == map && light.isEmits() && yStart[j] <= light.getY() + (light.getYBottomEdge()) && yEnd[j] >= light.getY() - (light.getYBottomEdge())
+                                    && xStart[j] <= light.getX() + (light.getXLeftEdge()) && xEnd[j] >= light.getX() - (light.getXLeftEdge())) {
                                 visible = true;
-                                if (!(((Player) place.players[pi]).getCamera()).getVisibleLights().contains(light)) {
-                                    (((Player) place.players[pi]).getCamera()).addVisibleLight(light);
+                                if (!(((Player) place.players[j]).getCamera()).getVisibleLights().contains(light)) {
+                                    (((Player) place.players[j]).getCamera()).addVisibleLight(light);
                                 }
                             }
                         }
@@ -103,7 +104,6 @@ public class Renderer {
     }
 
     private static void readyVarsToFindLights(Map map) {
-        Place place = map.place;
         for (int p = 0; p < place.getPlayersCount(); p++) {
             if (map == place.players[p].getMap()) {
                 camera = (((Player) place.players[p]).getCamera());
@@ -114,14 +114,14 @@ public class Renderer {
                 yEnd[p] = camera.getYEnd();
             }
         }
-        for (int c = 0; c < 3; c++) {
-            if (place.cameras[c] != null) {
-                camera = place.cameras[c];
+        for (int i = 0; i < 3; i++) {
+            if (place.cameras[i] != null) {
+                camera = place.cameras[i];
                 camera.clearVisibleLights();
-                xStart[4 + c] = camera.getXStart();            // 4 to maksymalna liczba graczy
-                xEnd[4 + c] = camera.getXEnd();
-                yStart[4 + c] = camera.getYStart();
-                yEnd[4 + c] = camera.getYEnd();
+                xStart[4 + i] = camera.getXStart();            // 4 to maksymalna liczba graczy
+                xEnd[4 + i] = camera.getXEnd();
+                yStart[4 + i] = camera.getYStart();
+                yEnd[4 + i] = camera.getYEnd();
             }
         }
         map.clearVisibleLights();

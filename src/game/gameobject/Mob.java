@@ -6,8 +6,6 @@
 package game.gameobject;
 
 import collision.Figure;
-import collision.OpticProperties;
-import collision.Rectangle;
 import engine.Drawer;
 import engine.Methods;
 import game.Settings;
@@ -30,7 +28,7 @@ public abstract class Mob extends Entity {
 
     public abstract void update();
 
-    public Mob(int x, int y, int startX, int startY, int width, int height, int speed, int range, String name, Place place, String spriteName, boolean solid) {
+    public Mob(int x, int y, int startX, int startY, int width, int height, double speed, int range, String name, Place place, String spriteName, boolean solid) {
         this.place = place;
         this.width = width;
         this.height = height;
@@ -40,7 +38,7 @@ public abstract class Mob extends Entity {
         this.range = range;
         this.setMaxSpeed(speed);
         this.sprite = place.getSprite(spriteName);
-        initialize(name, x, y);        
+        initialize(name, x, y);
     }
 
     public synchronized void look(GameObject[] players) {
@@ -74,14 +72,7 @@ public abstract class Mob extends Entity {
 
     @Override
     protected void move(int xPosition, int yPosition) {
-        setX(x + xPosition);
-        setY(y + yPosition);
-    }
-
-    @Override
-    protected void setPosition(int xPosition, int yPosition) {
-        setX(xPosition);
-        setY(yPosition);
+        setPosition(x + xPosition, y + yPosition);
     }
 
     @Override

@@ -32,16 +32,15 @@ import org.newdawn.slick.Color;
 public class MyMenu extends Menu {
 
     private FontHandler smallFont, bigFont;
-	private Color color;
-    
+    private Color color;
+    private static int positions;
+
     public MyMenu(Game game) {
         super(game);
         generate();
     }
 
     private void generate() {
-        delay = new Delay(25);
-        delay.start();
         menus = new MenuOptions[9];
         generateM0();
         generateM1();
@@ -56,6 +55,8 @@ public class MyMenu extends Menu {
         fonts = new FontBase(20);
         smallFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.nativeScale * 38));
         bigFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.nativeScale * 64));
+        delay = new Delay(25);
+        delay.start();
     }
 
     private void generateM0() {
@@ -152,15 +153,15 @@ public class MyMenu extends Menu {
 
     @Override
     protected void renderText() {
-        int positions = menus[current].getOptionsNumber() + 1;
+        positions = menus[current].getOptionsNumber() + 1;
         Drawer.renderStringCentered(menus[current].getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
                 * fonts.getFont(0).getHeight() * 0.7),
                 bigFont, new Color(color.r, color.g, color.b));
         positions--;
         for (int i = 0; i < menus[current].getOptionsNumber(); i++) {
-            Drawer.renderStringCentered(menus[current].getChoice(i).getLabel(), widthHalf / 2, 
-                    heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.getFont(0).getHeight() * 0.7), 
-                    smallFont, 
+            Drawer.renderStringCentered(menus[current].getChoice(i).getLabel(), widthHalf / 2,
+                    heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1)) * fonts.getFont(0).getHeight() * 0.7),
+                    smallFont,
                     getColor(menus[current].getChoice(i)));
             positions--;
         }
@@ -174,6 +175,7 @@ public class MyMenu extends Menu {
         }
     }
 
+    // TO DO - Chodzenie po menu jak po grafie, a nie jakieś ify
     @Override
     public void back() {
         if (!isMapping && delay.isOver()) {

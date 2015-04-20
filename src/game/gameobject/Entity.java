@@ -39,8 +39,6 @@ public abstract class Entity extends GameObject {
 
     protected abstract void move(int xPosition, int yPosition);
 
-    protected abstract void setPosition(int xPosition, int yPosition);
-
     public synchronized void updateSoft() {
         try {
             if (canUpdate()) {
@@ -51,7 +49,8 @@ public abstract class Entity extends GameObject {
                 }
             }
         } catch (Exception exception) {
-            System.out.println("ERROR: UpdateSoft" + exception);
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -96,7 +95,8 @@ public abstract class Entity extends GameObject {
                 }
             }
         } catch (Exception exception) {
-            System.out.println("ERROR: UpdateHard" + exception.getMessage());
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -163,6 +163,7 @@ public abstract class Entity extends GameObject {
             moveXToPoint();
             moveYToPoint();
         }
+        updateAreaPlacement();
     }
 
     private void moveXToPoint() {
@@ -248,15 +249,15 @@ public abstract class Entity extends GameObject {
     public int getDirection() {
         return direction;
     }
-    
+
     public void setDirection(int d) {
         direction = d;
     }
-    
+
     public double getSpeed() {
         return Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
     }
-    
+
     public boolean isJumping() {
         return jumping;
     }

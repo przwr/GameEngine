@@ -9,7 +9,7 @@ package engine;
  *
  * @author przemek
  */
-public class Point {
+public class Point implements Comparable<Object> {
 
     private int x;
     private int y;
@@ -44,14 +44,16 @@ public class Point {
     }
 
     @Override
-    public boolean equals(Object test) {
-        if (test instanceof Point) {
-            Point point = (Point) test;
-            if (x == point.x && y == point.y) {
-                return true;
-            }
+    public int compareTo(Object o) {
+        return ((y - ((Point) o).y) << 13) + (x - ((Point) o).x);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Point)) {
+            return false;
         }
-        return false;
+        return y == ((Point) o).y && x == ((Point) o).x;
     }
 
     @Override

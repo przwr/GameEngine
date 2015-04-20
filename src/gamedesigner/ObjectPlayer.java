@@ -80,7 +80,7 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y) {
+    public void initializeSetPosition(int xStart, int yStart, int width, int height, Place place, int x, int y) {
         initialize(name, x, y);
         initialize(yStart, yStart, width, height, place);
     }
@@ -112,7 +112,6 @@ public class ObjectPlayer extends Player {
     @Override
     protected void move(int xPosition, int yPosition) {
         boolean cltr = key.key(KEY_LCONTROL);
-
         if (xtimer == 0) {
             ix = Methods.interval(0, ix + xPosition, map.getWidthInTIles());
             setX(ix * tileSize);
@@ -121,10 +120,14 @@ public class ObjectPlayer extends Player {
             iy = Methods.interval(0, iy + yPosition, map.getHeightInTiles());
             setY(iy * tileSize);
         }
-
+        updateAreaPlacement();
         if (key.key(KEY_M) && movingBlock != null) {
+            System.out.println("moving " + System.currentTimeMillis());
+            
             movingBlock.stream().forEach((tmpb) -> {
+                System.out.println(tmpb);
                 tmpb.move(xtimer == 0 ? xPosition * tileSize : 0, ytimer == 0 ? yPosition * tileSize : 0);
+                
             });
         }
 
@@ -151,15 +154,6 @@ public class ObjectPlayer extends Player {
         }
         if (ytimer >= maxtimer) {
             ytimer = 0;
-        }
-    }
-
-    @Override
-    protected void setPosition(int xPosition, int yPosition) {
-        setX(xPosition);
-        setY(yPosition);
-        if (camera != null) {
-            camera.update();
         }
     }
 

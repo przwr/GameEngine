@@ -200,11 +200,11 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersCount = playersCount;
         if (playersCount == 1) {
-            players[0].initialize(4, 4, 56, 56, place, 256, 256);
+            players[0].initializeSetPosition(4, 4, 56, 56, place, 256, 256);
             players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         } else if (playersCount == 2) {
-            players[0].initialize(4, 4, 56, 56, place, 256, 256);
-            players[1].initialize(4, 4, 56, 56, place, 512, 1024);
+            players[0].initializeSetPosition(4, 4, 56, 56, place, 256, 256);
+            players[1].initializeSetPosition(4, 4, 56, 56, place, 512, 1024);
             if (Settings.horizontalSplitScreen) {
                 players[0].setCamera(new PlayersCamera(players[0], 2, 4, 0));
                 players[1].setCamera(new PlayersCamera(players[1], 2, 4, 1));
@@ -214,9 +214,9 @@ public class MyGame extends Game {
             }
             place.cameras[0] = new PlayersCamera(players[0], players[1]);
         } else if (playersCount == 3) {
-            players[0].initialize(4, 4, 56, 56, place, 256, 256);
-            players[1].initialize(4, 4, 56, 56, place, 512, 1024);
-            players[2].initialize(4, 4, 56, 56, place, 1024, 512);
+            players[0].initializeSetPosition(4, 4, 56, 56, place, 256, 256);
+            players[1].initializeSetPosition(4, 4, 56, 56, place, 512, 1024);
+            players[2].initializeSetPosition(4, 4, 56, 56, place, 1024, 512);
             if (Settings.horizontalSplitScreen) {
                 players[0].setCamera(new PlayersCamera(players[0], 2, 4, 0));
             } else {
@@ -226,10 +226,10 @@ public class MyGame extends Game {
             players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
             place.cameras[1] = new PlayersCamera(players[0], players[1], players[2]);
         } else if (playersCount == 4) {
-            players[0].initialize(4, 4, 56, 56, place, 256, 256);
-            players[1].initialize(4, 4, 56, 56, place, 512, 1024);
-            players[2].initialize(4, 4, 56, 56, place, 1024, 512);
-            players[3].initialize(4, 4, 56, 56, place, 1024, 1024);
+            players[0].initializeSetPosition(4, 4, 56, 56, place, 256, 256);
+            players[1].initializeSetPosition(4, 4, 56, 56, place, 512, 1024);
+            players[2].initializeSetPosition(4, 4, 56, 56, place, 1024, 512);
+            players[3].initializeSetPosition(4, 4, 56, 56, place, 1024, 1024);
             players[0].setCamera(new PlayersCamera(players[0], 4, 4, 0));
             players[1].setCamera(new PlayersCamera(players[1], 4, 4, 1));
             players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
@@ -249,7 +249,7 @@ public class MyGame extends Game {
 
     private void addPlayerOffline(int player) {
         if (player < 4 && place.playersCount < 4) {
-            players[player].initialize(4, 4, 56, 56, place, player * 256, player * 265);
+            players[player].initializeSetPosition(4, 4, 56, 56, place, player * 256, player * 265);
             ((Player) place.players[player]).setCamera(new PlayersCamera(place.players[player], 2, 2, player));
             players[player].changeMap(players[0].getMap());
             if (player != place.playersCount) {

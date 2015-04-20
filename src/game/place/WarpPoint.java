@@ -80,8 +80,7 @@ public class WarpPoint extends GameObject {
                 } else if (stringDestination != null) {
                     object.changeMap(map.place.getMapByName(stringDestination));
                 }
-                object.setX(xDestination);
-                object.setY(yDestination);
+                object.setPosition(xDestination, yDestination);
             } else {
                 WarpPoint warp;
                 if (destination != null) {
@@ -92,8 +91,7 @@ public class WarpPoint extends GameObject {
                     object.changeMap(m);
                     warp = m.findWarp(name);
                 }
-                object.setX(warp.x);
-                object.setY(warp.y);
+                object.setPosition(warp.x, warp.y);
                 if (object instanceof Player && ((Player) object).getCamera() != null) {
                     ((Player) object).getCamera().update();
                 }

@@ -17,7 +17,7 @@ import game.place.Place;
  */
 public class Rabbit extends Mob {
 
-    public Rabbit(int x, int y, int xStart, int yStart, int width, int height, int speed, int range, String name, Place place, boolean solid, short ID) {
+    public Rabbit(int x, int y, int xStart, int yStart, int width, int height, double speed, int range, String name, Place place, boolean solid, short ID) {
         super(x, y, xStart, yStart, width, height, speed, range, name, place, "rabbit", solid);
         setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
         this.mobID = ID;

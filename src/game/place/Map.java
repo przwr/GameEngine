@@ -7,19 +7,21 @@ package game.place;
 
 import engine.ShadowRenderer;
 import collision.Block;
+import engine.BlueArray;
 import engine.Drawer;
-import engine.Point;
+import engine.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
-import game.gameobject.Player;
 import static game.place.Area.X_IN_TILES;
 import static game.place.Area.Y_IN_TILES;
+import static game.place.Place.xAreaInPixels;
+import static game.place.Place.yAreaInPixels;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.newdawn.slick.Color;
 
 /**
@@ -28,34 +30,33 @@ import org.newdawn.slick.Color;
  */
 public class Map {
 
-    private final ArrayList<Light> visibleLights = new ArrayList<>();
-    public final Place place;
+//    protected final static Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) -> firstObject.getDepth() - secondObject.getDepth();
+    private final BlueArray<Light> visibleLights = new BlueArray<>();
 
+    public final Place place;
     protected Color lightColor;
-    protected final ArrayList<Block> blocks = new ArrayList<>();
     protected final String name;
     protected final int width, height, tileSize;
     protected final int widthInTiles, heightInTiles;
-
     protected final short mapID;
     protected short mobID = 0;
-    protected final ArrayList<Mob> solidMobs = new ArrayList<>();
-    protected final ArrayList<Mob> flatMobs = new ArrayList<>();
-    protected final ArrayList<GameObject> solidObjects = new ArrayList<>();
-    protected final ArrayList<GameObject> flatObjects = new ArrayList<>();
-    protected final ArrayList<Light> emitters = new ArrayList<>();
-    protected final ArrayList<WarpPoint> warps = new ArrayList<>();
 
-    protected final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
-    protected final ArrayList<GameObject> objectsOnTop = new ArrayList<>();
-    protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
-    protected final static Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
-            -> firstObject.getDepth() - secondObject.getDepth();
-
-    private int xAreas, yAreas;
-    private final Area[] areas;
+    protected int xAreas, yAreas;
+    protected final Area[] areas;
     private static Tile tempTile;
+    private final Set<Integer> areasToUpdate = new HashSet<>(36);
 
+    protected final BlueArray<GameObject> topObjects = new BlueArray<>();
+    protected final BlueArray<GameObject> depthObjects = new BlueArray<>();
+    protected final BlueArray<GameObject> gameObjects = new BlueArray<>();
+    protected final ArrayList<WarpPoint> warps = new ArrayList<>();
+    protected final BlueArray<WarpPoint> tempWarps = new BlueArray<>();
+    protected final BlueArray<Light> lights = new BlueArray<>();
+    protected final BlueArray<Block> blocks = new BlueArray<>();
+    protected final BlueArray<Mob> mobs = new BlueArray<>();
+    protected final List<Mob> tempMobs = new BlueArray<>();
+
+    private final Placement placement;
     private int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect; //Camera's variables for current rendering
 
     public Map(short mapID, String name, Place place, int width, int height, int tileSize) {
@@ -67,14 +68,51 @@ public class Map {
         this.tileSize = tileSize;
         widthInTiles = width / tileSize;
         heightInTiles = height / tileSize;
-
         xAreas = (widthInTiles / Area.X_IN_TILES) + (widthInTiles % Area.X_IN_TILES != 0 ? 1 : 0);
         yAreas = (heightInTiles / Area.Y_IN_TILES) + (heightInTiles % Area.Y_IN_TILES != 0 ? 1 : 0);
         areas = new Area[xAreas * yAreas];
-//        System.out.println(xAreas + " " + yAreas + " " + areas.length);
         for (int i = 0; i < areas.length; i++) {
-            areas[i] = new Area();
+            areas[i] = new Area(place, this);
         }
+        placement = new Placement(this);
+    }
+
+    public void generateNavigationMeshes() {     // call after adding All blocks and tiles
+        for (Area area : areas) {
+            area.generateNavigationMesh();
+        }
+    }
+
+    public void addAreasToUpdate(int[] newAreas) {
+        for (int area : newAreas) {
+            areasToUpdate.add(area);
+        }
+    }
+
+    public void clearAreasToUpdate() {
+        areasToUpdate.clear();
+    }
+
+    public void updateMobsFromAreasToUpdate() {
+        prepareMobsToUpdate();
+        tempMobs.stream().forEach((mob) -> {
+            mob.update();
+        });
+    }
+
+    public void hardUpdateMobsFromAreasToUpdate() {
+        prepareMobsToUpdate();
+        tempMobs.stream().forEach((mob) -> {
+            mob.updateHard();
+        });
+    }
+
+    private void prepareMobsToUpdate() {
+        tempMobs.clear();
+        areasToUpdate.stream().filter((i) -> (i >= 0 && i < areas.length)).forEach((i) -> {
+            tempMobs.addAll(areas[i].getSolidMobs());
+            tempMobs.addAll(areas[i].getFlatMobs());
+        });
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {
@@ -82,43 +120,23 @@ public class Map {
     }
 
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
-        if (tile.isSimpleLighting()) {
-            areas[getAreaIndex(x / tileSize, y / tileSize)].setTile(x % X_IN_TILES, y % Y_IN_TILES, null);
-        }
-        GameObject object;
-        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
-            object = iterator.next();
-            if (object.isVisible() && object.getX() == x && object.getY() == y) {
-                iterator.remove();
-            }
-        }
-        addForegroundTile(tile, x, y, depth);
-    }
-
-    public void addForegroundTile(GameObject tile, int x, int y, int depth) {
-        tile.setX(x);
-        tile.setY(y);
-        tile.setDepth(depth);
-        addForegroundTile(tile);
+        areas[getAreaIndex(x, y)].addForegroundTileAndReplace(tile, x, y, depth);
     }
 
     public void addForegroundTile(GameObject tile) {
-        foregroundTiles.add(tile);
-        tile.setMapNotChange(this);
-        sortObjectsByDepth(foregroundTiles);
+        addForegroundTile(tile, tile.getX(), tile.getY(), tile.getPureDepth());
+    }
+
+    public void addForegroundTile(GameObject tile, int x, int y, int depth) {
+        areas[getAreaIndex(x, y)].addForegroundTile(tile, x, y, depth);
     }
 
     public void deleteForegroundTile(GameObject tile) {
-        foregroundTiles.remove(tile);
-        sortObjectsByDepth(foregroundTiles);
+        deleteForegroundTile(tile, tile.getX(), tile.getY());
     }
 
-    public void deleteForegroundTile(int x, int y) {
-        foregroundTiles.stream().filter((foregroundTile)
-                -> (foregroundTile.getX() == x && foregroundTile.getY() == y)).forEach((foregroundTile) -> {
-                    foregroundTiles.remove(foregroundTile);
-                });
-        sortObjectsByDepth(foregroundTiles);
+    private void deleteForegroundTile(GameObject tile, int x, int y) {
+        areas[getAreaIndex(x, y)].deleteForegroundTile(tile);
     }
 
     public void addVisibleLight(Light light) {
@@ -130,96 +148,42 @@ public class Map {
     }
 
     public void addBlock(Block block) {
-        blocks.add(block);
-        block.setMapNotChange(this);
+        areas[getAreaIndex(block.getX(), block.getY())].addBlock(block);
     }
 
     public void deleteBlock(Block block) {
-        blocks.remove(block);
-        block.setMapNotChange(null);
+        areas[getAreaIndex(block.getX(), block.getY())].deleteBlock(block);
     }
 
     public void addObject(GameObject object) {
         object.setMapNotChange(this);
-        if (object.isOnTop()) {
-            objectsOnTop.add(object);
-        } else {
-            depthObjects.add(object);
-        }
-        if (!(object instanceof Player)) {
-            addNotPlayerObject(object);
-        }
-    }
-
-    private void addNotPlayerObject(GameObject object) {
-        if (object.isEmitter()) {
-            object.getLights().stream().forEach((light) -> {
-                emitters.add(light);
-            });
-        }
         if (object instanceof WarpPoint) {
-            addWarpPoint((WarpPoint) object);
-        } else if (object instanceof Mob) {
-            addMob((Mob) object);
-        } else {
-            if (object.isSolid()) {
-                solidObjects.add(object);
-            } else {
-                flatObjects.add(object);
-            }
+            warps.add((WarpPoint) object);
         }
-    }
-
-    private void addWarpPoint(WarpPoint warp) {
-        warps.add(warp);
-        warp.setPlace(place);
-    }
-
-    private void addMob(Mob mob) {
-        if (mob.isSolid()) {
-            solidMobs.add(mob);
-        } else {
-            flatMobs.add(mob);
-        }
+        areas[getAreaIndex(object.getX(), object.getY())].addObject(object);
     }
 
     public void deleteObject(GameObject object) {  // Nie usuwa świateł przypisanych do gracza, ale gracze ostatecznie nie powinni mieć świateł, więc nie zmieniam tego
         object.setMapNotChange(null);
-        if (!(object instanceof Player)) {
-            deleteNotPlayerObject(object);
-        }
-        if (object.isOnTop()) {
-            objectsOnTop.remove(object);
-        } else {
-            depthObjects.remove(object);
-        }
-    }
-
-    private void deleteNotPlayerObject(GameObject object) {
-        if (object.isEmitter()) {
-            object.getLights().stream().forEach((light) -> {
-                emitters.remove(light);
-            });
-        }
         if (object instanceof WarpPoint) {
             warps.remove((WarpPoint) object);
-        } else if (object instanceof Mob) {
-            deleteMob((Mob) object);
-        } else {
-            if (object.isSolid()) {
-                solidObjects.remove(object);
-            } else {
-                flatObjects.remove(object);
-            }
+        }
+        areas[getAreaIndex(object.getX(), object.getY())].deleteObject(object);
+    }
+
+    protected void removeForegroundTile(GameObject foregroundTile) {
+        areas[getAreaIndex(foregroundTile.getX(), foregroundTile.getY())].removeForegroundTile(foregroundTile);
+    }
+
+    public void changeAreaIfNeeded(int area, int prevArea, GameObject object) {
+        if (area != prevArea) {
+            changeArea(area, prevArea, object);
         }
     }
 
-    private void deleteMob(Mob mob) {
-        if (mob.isSolid()) {
-            solidMobs.remove(mob);
-        } else {
-            flatMobs.remove(mob);
-        }
+    public void changeArea(int area, int prevArea, GameObject object) {
+        areas[prevArea].deleteObject(object);
+        areas[area].addObject(object);
     }
 
     public void updateCamerasVariables(Camera camera) {
@@ -234,7 +198,7 @@ public class Map {
     public void renderBackground(Camera camera) {
         ShadowRenderer.clearScreen(0);
         Drawer.refreshForRegularDrawing();
-        for (int i : camera.getNearAreas()) {
+        for (int i : placement.getNearAreas(camera.getArea())) {
             if (i >= 0 && i < areas.length) {
                 int yTemp = (i / xAreas) * Y_IN_TILES;
                 int xTemp = (i % xAreas) * X_IN_TILES;
@@ -263,39 +227,32 @@ public class Map {
     }
 
     public void renderBottom(Camera camera) {
-        sortObjectsByDepth(depthObjects);
+        getForegroundTiles(camera.getArea());
+        getDepthObjects(camera.getArea());
+        Methods.insort(depthObjects);
         int y = 0;
         for (GameObject object : depthObjects) {
-            for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
-                if (foregroundTiles.get(y).isVisible() && isObjectInSight(foregroundTiles.get(y))) {
-                    foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
+            for (; y < gameObjects.size() && gameObjects.get(y).getDepth() < object.getDepth(); y++) {
+                if (gameObjects.get(y).isVisible() && isObjectInSight(gameObjects.get(y))) {
+                    gameObjects.get(y).render(cameraXOffEffect, cameraYOffEffect);
                 }
             }
             if (object.isVisible() && isObjectInSight(object)) {
                 object.render(cameraXOffEffect, cameraYOffEffect);
             }
         }
-        for (int i = y; i < foregroundTiles.size(); i++) {
-            if (foregroundTiles.get(i).isVisible() && isObjectInSight(foregroundTiles.get(i))) {
-                foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
+        for (int i = y; i < gameObjects.size(); i++) {
+            if (gameObjects.get(i).isVisible() && isObjectInSight(gameObjects.get(i))) {
+                gameObjects.get(i).render(cameraXOffEffect, cameraYOffEffect);
             }
         }
     }
 
     public void renderTop(Camera camera) {
-        sortObjectsByDepth(objectsOnTop);
-        objectsOnTop.stream().filter((object) -> (object.isVisible()
-                && isObjectInSight(object))).forEach((object) -> {
-                    object.render(cameraXOffEffect, cameraYOffEffect);
-                });
-    }
-
-    public void sortForegroundTiles() {
-        Collections.sort(foregroundTiles, depthComparator);
-    }
-
-    public void sortObjectsByDepth(ArrayList<GameObject> objects) {
-        Collections.sort(objects, depthComparator);
+        getTopObjects(camera.getArea());
+        topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> {
+            object.render(cameraXOffEffect, cameraYOffEffect);
+        });
     }
 
     private boolean isObjectInSight(GameObject object) {
@@ -315,16 +272,19 @@ public class Map {
     }
 
     public void clear() {
-        solidMobs.clear();
-        flatMobs.clear();
-        solidObjects.clear();
-        flatObjects.clear();
-        emitters.clear();
+        for (Area area : areas) {
+            area.clear();
+        }
         visibleLights.clear();
-        blocks.clear();
+        topObjects.clear();
         depthObjects.clear();
-        foregroundTiles.clear();
-        objectsOnTop.clear();
+        gameObjects.clear();
+        warps.clear();
+        lights.clear();
+        blocks.clear();
+        mobs.clear();
+        tempMobs.clear();
+        tempWarps.clear();
     }
 
     public int getWidthInTIles() {
@@ -355,6 +315,14 @@ public class Map {
         return mapID;
     }
 
+    public Color getLightColor() {
+        if (lightColor != null) {
+            return lightColor;
+        } else {
+            return place.getLightColor();
+        }
+    }
+
     public int getXAreas() {
         return xAreas;
     }
@@ -365,7 +333,7 @@ public class Map {
 
     public Tile getTile(int x, int y) {
         if (x < widthInTiles && y < heightInTiles) {
-            return areas[getAreaIndex(x, y)].getTile(x % (X_IN_TILES), y % (Y_IN_TILES));
+            return areas[getAreaIndexCoordinatesInTiles(x, y)].getTile(x % (X_IN_TILES), y % (Y_IN_TILES));
         }
         return null;
     }
@@ -374,65 +342,159 @@ public class Map {
         return areas.length;
     }
 
-    public int getAreaIndex(double x, double y) {
+    public int getAreaIndexCoordinatesInTiles(int x, int y) {
         return (int) (x / X_IN_TILES) + (int) (y / Y_IN_TILES) * xAreas;
     }
 
-    public Color getLightColor() {
-        if (lightColor != null) {
-            return lightColor;
-        } else {
-            return place.getLightColor();
+    public int getAreaIndex(int x, int y) {
+        return (int) (x / xAreaInPixels) + (int) (y / yAreaInPixels) * xAreas;
+    }
+
+    public int[] getNearAreas(int area) {
+        return placement.getNearAreas(area);
+    }
+
+    public List<Mob> getSolidMobs(int x, int y) {
+        return getSolidMobs(getAreaIndex(x, y));
+    }
+
+    public List<Mob> getSolidMobs(int area) {
+        mobs.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                mobs.addAll(areas[i].getSolidMobs());
+            }
         }
+        return Collections.unmodifiableList(mobs);
     }
 
-    public Collection<Mob> getSolidMobs() {
-        return Collections.unmodifiableList(solidMobs);
+    public List<Mob> getFlatMobs(int x, int y) {
+        return getFlatMobs(getAreaIndex(x, y));
     }
 
-    public Collection<Mob> getFlatMobs() {
-        return Collections.unmodifiableList(flatMobs);
+    public List<Mob> getFlatMobs(int area) {
+        mobs.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                mobs.addAll(areas[i].getFlatMobs());
+            }
+        }
+        return Collections.unmodifiableList(mobs);
     }
 
-    public Collection<Block> getBlocks() {
-        return Collections.unmodifiableList(blocks);
+    public List<GameObject> getSolidObjects(int x, int y) {
+        return getSolidObjects(getAreaIndex(x, y));
     }
 
-    public Collection<GameObject> getSolidObjects() {
-        return Collections.unmodifiableList(solidObjects);
+    public List<GameObject> getSolidObjects(int area) {
+        gameObjects.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                gameObjects.addAll(areas[i].getSolidObjects());
+            }
+        }
+        return Collections.unmodifiableList(gameObjects);
     }
 
-    public Collection<GameObject> getFlatObjects() {
-        return Collections.unmodifiableList(flatObjects);
+    public List<GameObject> getFlatObjects(int x, int y) {
+        return getFlatObjects(getAreaIndex(x, y));
     }
 
-    public Collection<Light> getEmitters() {
-        return Collections.unmodifiableList(emitters);
+    public List<GameObject> getFlatObjects(int area) {
+        gameObjects.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                gameObjects.addAll(areas[i].getFlatObjects());
+            }
+        }
+        return Collections.unmodifiableList(gameObjects);
     }
 
-    public Collection<Light> getVisibleLights() {
+    public List<Light> getLightsFromAreasToUpdate() {
+        lights.clear();
+        areasToUpdate.stream().filter((i) -> (i >= 0 && i < areas.length)).forEach((i) -> {
+            lights.addAll(areas[i].getEmitters());
+        });
+        return Collections.unmodifiableList(lights);
+    }
+
+    public List<Light> getVisibleLights() {
         return Collections.unmodifiableList(visibleLights);
     }
 
-    public Collection<GameObject> getDepthObjects() {
+    public List<GameObject> getDepthObjects(int x, int y) {
+        return getDepthObjects(getAreaIndex(x, y));
+    }
+
+    public List<GameObject> getDepthObjects(int area) {
+        depthObjects.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                Methods.merge(depthObjects, areas[i].getDepthObjects());
+            }
+        }
         return Collections.unmodifiableList(depthObjects);
     }
 
-    public Collection<GameObject> getObjectsOnTop() {
-        return Collections.unmodifiableList(objectsOnTop);
+    public List<GameObject> getTopObjects(int x, int y) {
+        return getTopObjects(getAreaIndex(x, y));
     }
 
-    public Collection<WarpPoint> getWarps() {
-        return Collections.unmodifiableList(warps);
+    public List<GameObject> getTopObjects(int area) {
+        topObjects.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                Methods.merge(topObjects, areas[i].getTopObjects());
+            }
+        }
+        return Collections.unmodifiableList(topObjects);
     }
 
-    public Collection<GameObject> getForegroundTiles() {
-        return Collections.unmodifiableList(foregroundTiles);
+    public List<WarpPoint> getWarps(int x, int y) {
+        return getWarps(getAreaIndex(x, y));
+    }
+
+    public List<WarpPoint> getWarps(int area) {
+        tempWarps.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                tempWarps.addAll(areas[i].getWarps());
+            }
+        }
+        return Collections.unmodifiableList(tempWarps);
+    }
+
+    public List<GameObject> getForegroundTiles(int x, int y) {
+        return getForegroundTiles(getAreaIndex(x, y));
+    }
+
+    public List<GameObject> getForegroundTiles(int area) {
+        gameObjects.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                Methods.merge(gameObjects, areas[i].getForegroundTiles());
+            }
+        }
+        return Collections.unmodifiableList(gameObjects);
+    }
+
+    public List<Block> getBlocks(int x, int y) {
+        return getBlocks(getAreaIndex(x, y));
+    }
+
+    public List<Block> getBlocks(int area) {
+        blocks.clear();
+        for (int i : placement.getNearAreas(area)) {
+            if (i >= 0 && i < areas.length) {
+                blocks.addAll(areas[i].getBlocks());
+            }
+        }
+        return Collections.unmodifiableList(blocks);
     }
 
     public void setTile(int x, int y, Tile tile) {
         if (x < widthInTiles && y < heightInTiles) {
-            areas[getAreaIndex(x, y)].setTile(x % (X_IN_TILES), y % (Y_IN_TILES), tile);
+            areas[getAreaIndexCoordinatesInTiles(x, y)].setTile(x % (X_IN_TILES), y % (Y_IN_TILES), tile);
         }
     }
 

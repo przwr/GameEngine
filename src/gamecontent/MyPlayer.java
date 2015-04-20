@@ -61,21 +61,10 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void initialize(int xStart, int yStart, int width, int height, Place place, int x, int y) {
-        this.place = place;
-        this.online = place.game.online;
-        this.width = width;
-        this.height = height;
-        this.xStart = xStart;
-        this.yStart = yStart;
-        this.setResistance(2);
-        this.emitter = true;
+    public void initializeSetPosition(int xStart, int yStart, int width, int height, Place place, int x, int y) {
+        initialize(xStart, yStart, width, height, place);
         initialize(name, x, y);
-        this.sprite = place.getSpriteSheet("test");
-        addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
-        this.animation = new Animation((SpriteSheet) sprite, 200);
-        emits = false;
-        setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
+
     }
 
     @Override
@@ -86,14 +75,16 @@ public class MyPlayer extends Player {
         this.height = height;
         this.xStart = xStart;
         this.yStart = yStart;
-        this.setResistance(2);
-        this.emitter = true;
+        emitter = true;
+        emits = false;
+        sprite = place.getSpriteSheet("test");
+        animation = new Animation((SpriteSheet) sprite, 200);
         visible = true;
         depth = 0;
-        this.sprite = place.getSpriteSheet("test");
-        addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
-        this.animation = new Animation((SpriteSheet) sprite, 200);
-        emits = false;
+        setResistance(2);
+        if (lights.isEmpty()) {
+            addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
+        }
         setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
     }
 
@@ -103,24 +94,6 @@ public class MyPlayer extends Player {
             return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
         }
         return false;
-    }
-
-    @Override
-    protected void move(int xPosition, int yPosition) {
-        setX(x + xPosition);
-        setY(y + yPosition);
-        if (camera != null) {
-            camera.update();
-        }
-    }
-
-    @Override
-    protected void setPosition(int xPosition, int yPosition) {
-        setX(xPosition);
-        setY(yPosition);
-        if (camera != null) {
-            camera.update();
-        }
     }
 
     @Override
@@ -161,7 +134,7 @@ public class MyPlayer extends Player {
         xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
         yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
         moveIfPossible(xTempSpeed, yTempSpeed);
-        for (WarpPoint warp : map.getWarps()) {
+        for (WarpPoint warp : map.getWarps(getX(), getY())) {
             if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
                 warp.Warp(this);
                 break;
@@ -183,7 +156,7 @@ public class MyPlayer extends Player {
         xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
         yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
         moveIfPossible(xTempSpeed, yTempSpeed);
-        for (WarpPoint warp : map.getWarps()) {
+        for (WarpPoint warp : map.getWarps(getX(), getY())) {
             if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
                 warp.Warp(this);
                 break;
@@ -215,8 +188,9 @@ public class MyPlayer extends Player {
                 setJumping(true);
             }
             setEmits(((MPlayerUpdate) update).isEmits());
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
@@ -232,8 +206,9 @@ public class MyPlayer extends Player {
                     jumpDelta = 22.6f;
                 }
             }
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+        } catch (Exception exception) {
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            Methods.logAndPrint(error);
         }
     }
 
