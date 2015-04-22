@@ -43,8 +43,8 @@ public class GladeMap extends Map {
         }
 //        }
 
-        PuzzleObject test = new PuzzleObject("bloczek4", place);
-        test.placePuzzle(5, 3, this);
+        PuzzleObject test = new PuzzleObject("test", place);
+        test.placePuzzle(2, 5, this);
 //        PuzzleObject test = new PuzzleObject("zatoczka", place);
 //        test.placePuzzle(5, 3, this);
 //        test = new PuzzleObject("test", place);

@@ -55,6 +55,12 @@ public class Methods {
         return (int) (FastMath.abs(xa - x) + FastMath.abs(ya - y));
     }
 
+    public static int pointDistanceSimple2(int x, int y, int xa, int ya) {
+        xDelta = xa - x;
+        yDelta = ya - y;
+        return xDelta * xDelta + yDelta * yDelta;
+    }
+
     public static int pointDifference(int x, int y, int xa, int ya) {
         return FastMath.min(xa - x, ya - y);
     }

@@ -85,7 +85,7 @@ public class MyPlayer extends Player {
         if (lights.isEmpty()) {
             addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
-        setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
+        setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
     }
 
     @Override

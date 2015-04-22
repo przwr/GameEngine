@@ -143,6 +143,7 @@ public class ShadowRenderer {
     }
 
     private static void renderShadows(Light light) {
+        glEnable(GL_TEXTURE_2D);
         for (Figure shaded : shades) {
             solveShadows(shaded);
             for (int i = 0; i < shaded.getShadowCount(); i++) {
