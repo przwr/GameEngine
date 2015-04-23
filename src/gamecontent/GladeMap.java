@@ -42,7 +42,6 @@ public class GladeMap extends Map {
             setTile(i, j, null);
         }
 //        }
-
         PuzzleObject test = new PuzzleObject("test", place);
         test.placePuzzle(2, 5, this);
 //        PuzzleObject test = new PuzzleObject("zatoczka", place);
@@ -51,13 +50,17 @@ public class GladeMap extends Map {
 //        test.placePuzzle(1, 18, this);
 //        test = new PuzzleObject("smukly", place);
 //        test.placePuzzle(-1, 0, this);
-//
 //        WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
 //        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
 //        addObject(warp);
 //        addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
 //        PuzzleObject portal = new PuzzleObject("portal", place);
 //        portal.placePuzzle(20, 20, this);
+        generateNavigationMeshes();
+    }
+
+    @Override
+    public void populate() {
         addObject(new Rabbit(256, 1024, 0, 8, 128, 112, 3, 512, "rabbit", place, true, mobID++));
 //        for (int i = 0; i < 100; i += 2) {
 //            addObject(new Rabbit(192 + 192 * (i % 50), 3072 + 192 * (i / 50), 0, 8, 128, 112, 3, 512, "rabbit", place, true, mobID++));
@@ -66,6 +69,5 @@ public class GladeMap extends Map {
 //        GameObject light = new LightSource(1784, 1296, 0, 0, 206, 300, "lamp", place, "lamp", false);
 //        light.setDepth(1024);
 //        addObject(light);
-        generateNavigationMeshes();
     }
 }

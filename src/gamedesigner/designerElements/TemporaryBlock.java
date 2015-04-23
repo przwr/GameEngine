@@ -107,7 +107,6 @@ public class TemporaryBlock extends GameObject {
     }
 
     public void move(int dx, int dy) {
-        System.out.println("move");
         if (block != null) {
             x += dx;
             y += dy;

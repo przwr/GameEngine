@@ -15,6 +15,7 @@ import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
+import game.place.Map;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -104,6 +105,7 @@ public class ObjectPlace extends Place {
                 }
                 cameras[playersCount - 2].update();
             }
+            updateAreas();
             for (int i = 0; i < playersCount; i++) {
                 ((Player) players[i]).update();
             }
@@ -111,6 +113,18 @@ public class ObjectPlace extends Place {
         updates[1] = () -> {
             System.err.println("ONLINE?..... pfft....");
         };
+    }
+
+    private void updateAreas() {
+        tempMaps.clear();
+        for (int i = 0; i < playersCount; i++) {
+            Map map = players[i].getMap();
+            if (!tempMaps.contains(map)) {
+                map.clearAreasToUpdate();
+                tempMaps.add(map);
+            }
+            map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
+        }
     }
 
     private void keyboardHandling() {

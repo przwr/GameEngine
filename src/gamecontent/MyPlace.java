@@ -32,6 +32,22 @@ public class MyPlace extends Place {
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
     private final Delay delay = new Delay(100);
+    private Map map;
+
+    {
+        updates[OFFLINE] = () -> {
+            updateInputs();
+            updateAreas();
+            updatePlayersOffline();
+            updateMobsOffline();
+            dayCycle.updateTime();
+        };
+        updates[ONLINE] = () -> {
+            updateMobsOnline();
+            updatePlayersOnline();
+            dayCycle.updateTime();
+        };
+    }
 
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
@@ -43,21 +59,22 @@ public class MyPlace extends Place {
     @Override
     public void generateAsGuest() {
         GladeMap polana = new GladeMap(mapIDcounter++, this, 1024, 1024, tileSize);
-        //StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
+//        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
         maps.add(polana);
-       // maps.add(kamienna);
+//        maps.add(kamienna);
 //        sounds.initialize("res");
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
         standardFont = fonts.getFont(0);
         SoundStore.get().poll(0);
-        initMethods();
     }
 
-    // WHY?
     @Override
     public void generateAsHost() {
         generateAsGuest();
+        maps.stream().forEach((map) -> {
+            map.populate();
+        });
     }
 
     @Override
@@ -65,9 +82,64 @@ public class MyPlace extends Place {
         updates[game.mode].update();
     }
 
-    private void initMethods() {
-        delay.start();
-        updates[OFFLINE] = () -> {
+    private void updateAreas() {
+        tempMaps.clear();
+        for (int i = 0; i < playersCount; i++) {
+            map = players[i].getMap();
+            if (!tempMaps.contains(map)) {
+                map.clearAreasToUpdate();
+                tempMaps.add(map);
+            }
+            map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
+        }
+    }
+
+    private void updatePlayersOffline() {
+        if (playersCount > 1) {
+            changeSplitScreenJoin.act();
+            changeSplitScreenMode.act();
+            if (changeSplitScreenJoin.isOn()) {
+                Settings.joinSplitScreen = !Settings.joinSplitScreen;
+            }
+            if (changeSplitScreenMode.isOn()) {
+                changeSSMode = true;
+            }
+            cameras[playersCount - 2].update();
+        }
+        for (int i = 0; i < playersCount; i++) {
+            ((Player) players[i]).update();
+        }
+    }
+
+    private void updatePlayersOnline() {
+        ((Player) players[0]).sendUpdate();
+        for (int i = 1; i < playersCount; i++) {
+            ((Entity) players[i]).updateSoft();
+            ((Entity) players[i]).updateOnline();
+        }
+    }
+
+    private void updateMobsOffline() {
+        tempMaps.stream().forEach((map) -> {
+            map.updateMobsFromAreasToUpdate();
+        });
+    }
+
+    private void updateMobsOnline() {
+        if (game.online.server != null) {
+            updateAreas();
+            tempMaps.stream().forEach((map) -> {
+                map.updateMobsFromAreasToUpdate();
+            });
+        } else if (game.online.client != null) {
+            Map map = players[0].getMap();
+            map.clearAreasToUpdate();
+            map.addAreasToUpdate(map.getNearAreas(players[0].getArea()));
+            map.hardUpdateMobsFromAreasToUpdate();
+        }
+    }
+
+    private void updateInputs() {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
 //                sounds.getSound("MumboMountain").resume();
 //            }
@@ -99,66 +171,19 @@ public class MyPlace extends Place {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
 //                sounds.getSound("MumboMountain").fade(0.5, false);
 //            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
-                if (delay.isOver()) {
-                    delay.start();
-                    dayCycle.addMinutes(5);
-                }
+        delay.start();
+        if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
+            if (delay.isOver()) {
+                delay.start();
+                dayCycle.addMinutes(5);
             }
-            if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
-                Main.refreshGamma();
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_NEXT)) {
-                Main.resetGamma();
-            }
-            if (playersCount > 1) {
-                changeSplitScreenJoin.act();
-                changeSplitScreenMode.act();
-                if (changeSplitScreenJoin.isOn()) {
-                    Settings.joinSplitScreen = !Settings.joinSplitScreen;
-                }
-                if (changeSplitScreenMode.isOn()) {
-                    changeSSMode = true;
-                }
-                cameras[playersCount - 2].update();
-            }
-            for (int i = 0; i < playersCount; i++) {
-                ((Player) players[i]).update();
-            }
-            updateMobs();
-            dayCycle.updateTime();
-        };
-        updates[ONLINE] = () -> {
-            if (game.online.server != null) {
-                updateMobs();
-            } else if (game.online.client != null) {
-                Map map = players[0].getMap();
-                map.clearAreasToUpdate();
-                map.addAreasToUpdate(map.getNearAreas(players[0].getArea()));
-                map.hardUpdateMobsFromAreasToUpdate();
-            }
-            ((Player) players[0]).sendUpdate();
-            for (int i = 1; i < playersCount; i++) {
-                ((Entity) players[i]).updateSoft();
-                ((Entity) players[i]).updateOnline();
-            }
-            dayCycle.updateTime();
-        };
-    }
-
-    private void updateMobs() {
-        tempMaps.clear();
-        for (int i = 0; i < playersCount; i++) {
-            Map map = players[i].getMap();
-            if (!tempMaps.contains(map)) {
-                map.clearAreasToUpdate();
-                tempMaps.add(map);
-            }
-            map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
         }
-        tempMaps.stream().forEach((map) -> {
-            map.updateMobsFromAreasToUpdate();
-        });
+        if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
+            Main.refreshGamma();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_NEXT)) {
+            Main.resetGamma();
+        }
     }
 
     @Override

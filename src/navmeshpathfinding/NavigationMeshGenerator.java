@@ -38,13 +38,14 @@ public class NavigationMeshGenerator {
     private static boolean intersects;
     private static int sharedPoints;
 
+    // Uwaga! Generowanie źle uwzględnia NULL Tile w środku Area - powinny być zakryte bloczkiem, lub nie powinno ich być wcale
     public static void generateNavigationMesh(Tile[] tiles, List<Block> blocks) {
         long startTime = System.currentTimeMillis();
         if (findBounds(tiles)) {
             findPoints(tiles, blocks);
             connectPoints();
-            solveLines();           
-            
+            solveLines();
+
 //            long endTime = System.currentTimeMillis();
 //            System.out.println("Time: " + ((endTime - startTime)) + " ms");
 //            System.out.println("Points To Connect: " + pointsToConnect.size());
@@ -106,23 +107,34 @@ public class NavigationMeshGenerator {
     }
 
     private static void findPoints(Tile[] tiles, List<Block> blocks) {
-        addPointsFromBlocks(blocks);
+        addPointsAndSureLinesFromBlocks(blocks);
+        // addNotRedundantLines();
         addPointsFromTiles(tiles);
         removeRedundantPoints();
     }
 
-    private static void addPointsFromBlocks(List<Block> blocks) {
+    private static void addPointsAndSureLinesFromBlocks(List<Block> blocks) {
+        tempLines.clear();
         for (Block block : blocks) {
             Figure figure = block.getCollision();
             xSTemp = figure.getX();
             ySTemp = figure.getY();
             xETemp = figure.getXEnd();
             yETemp = figure.getYEnd();
-            pointsToConnect.add(new Point(xSTemp, ySTemp));
-            pointsToConnect.add(new Point(xSTemp, yETemp));
-            pointsToConnect.add(new Point(xETemp, ySTemp));
-            pointsToConnect.add(new Point(xETemp, yETemp));
+            Point point1 = new Point(xSTemp, ySTemp);
+            Point point2 = new Point(xSTemp, yETemp);
+            Point point3 = new Point(xETemp, yETemp);
+            Point point4 = new Point(xETemp, ySTemp);
+            pointsToConnect.add(point1);
+            pointsToConnect.add(point2);
+            pointsToConnect.add(point3);
+            pointsToConnect.add(point4);
 
+            //Lines from Blocks
+//            tempLines.add(new Line(point1, point2));
+//            tempLines.add(new Line(point2, point3));
+//            tempLines.add(new Line(point3, point4));
+//            tempLines.add(new Line(point4, point1));
             xSTemp /= Place.tileSize;
             ySTemp /= Place.tileSize;
             xETemp /= Place.tileSize;
@@ -133,6 +145,103 @@ public class NavigationMeshGenerator {
                 }
             }
         }
+    }
+
+    private static void addNotRedundantLines() {
+        linesToConnect.clear();
+        for (Line line1 : tempLines) {
+            start = line1.getStart();
+            end = line1.getEnd();
+            intersects = false;
+            if (start.getX() == end.getX()) {
+                for (Line line2 : tempLines) {
+                    if (line2.getStart().getX() == start.getX()) {
+                        if (solveXOverlappingLines(line1, line2)) {
+                            intersects = true;
+                        }
+                    }
+                }
+            } else if (start.getY() == end.getY()) {
+                for (Line line2 : tempLines) {
+                    if (line2.getStart().getY() == start.getY()) {
+                        solveYOverlappingLines(start, end, line2);
+                    }
+                }
+            }
+            if (!intersects) {
+                linesToConnect.add(line1);
+            }
+        }
+    }
+
+    private static boolean solveXOverlappingLines(Line line1, Line line2) {
+        Point two, three, four;
+        int startY = start.getY();
+        if (line2.getStart().getY() == start.getY()) {
+            two = start;
+            three = line2.getEnd();
+            four = end;
+            if (solveXOverlappingLines(line1, line2, two, three, four)) {
+                return true;
+            }
+        } else if (line2.getStart().getY() == end.getY()) {
+            two = end;
+            three = line2.getEnd();
+            four = start;
+            if (solveXOverlappingLines(line1, line2, two, three, four)) {
+                return true;
+            }
+        } else if (line2.getEnd().getY() == end.getY()) {
+            two = end;
+            three = line2.getStart();
+            four = start;
+            if (solveXOverlappingLines(line1, line2, two, three, four)) {
+                return true;
+            }
+        } else if (line2.getEnd().getY() == start.getY()) {
+            two = end;
+            three = line2.getStart();
+            four = start;
+            if (solveXOverlappingLines(line1, line2, two, three, four)) {
+                return true;
+            }
+        } else {
+            if (line2.getStart().getY() < line2.getEnd().getY()) {
+                if (start.getY() > line2.getStart().getY() && start.getY() < line2.getEnd().getY()) {
+
+//                    linesToConnect.add(new Line(end, line2.getStart()));
+//                    linesToConnect.add(new Line(start, line2.getEnd()));
+                } else if (end.getY() > line2.getStart().getY() && end.getY() < line2.getEnd().getY()) {
+
+//                    linesToConnect.add(new Line(end, line2.getStart()));
+//                    linesToConnect.add(new Line(start, line2.getEnd()));
+                }
+            } else {
+                if (start.getY() > line2.getEnd().getY() && start.getY() < line2.getStart().getY()) {
+
+                } else if (end.getY() > line2.getEnd().getY() && end.getY() < line2.getStart().getY()) {
+
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean solveXOverlappingLines(Line line1, Line line2, Point start1, Point end2, Point end1) {
+        if (end2.getY() > start1.getY() && end1.getY() > start1.getY()) {
+            linesToConnect.add(end2.getY() < end1.getY() ? line2 : line1);
+            linesToConnect.add(new Line(end2, end1));
+            return true;
+        } else if (end2.getY() < start1.getY() && end1.getY() < start1.getY()) {
+            linesToConnect.add(end2.getY() > end1.getY() ? line2 : line1);
+            linesToConnect.add(new Line(end2, end1));
+            return true;
+        }
+        return false;
+    }
+
+    private static void solveYOverlappingLines(Point start, Point end, Line line2) {
+
     }
 
     private static void addPointsFromTiles(Tile[] tiles) {
@@ -165,6 +274,8 @@ public class NavigationMeshGenerator {
     }
 
     private static void removeRedundantPoints() {
+        // Za dużo usuwa - jeśli bloczki są od siebie oddalone o 1 tile
+        
         pointsToRemove.clear();
         for (Point point : pointsToConnect) {
             tempPoint1.set(point.getX() + Place.tileSize, point.getY());
@@ -232,7 +343,6 @@ public class NavigationMeshGenerator {
     }
 
     private static void solveLines() {
-        linesToConnect.clear();
         sortedLines.clear();
         tempLines.stream().forEach((line) -> {
             sortedLines.add(line);
@@ -282,4 +392,5 @@ public class NavigationMeshGenerator {
     private static int getYFromIndex(int index) {
         return index / X_IN_TILES;
     }
+
 }

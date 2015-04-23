@@ -121,11 +121,8 @@ public class ObjectPlayer extends Player {
             setY(iy * tileSize);
         }
         updateAreaPlacement();
-        if (key.key(KEY_M) && movingBlock != null) {
-            System.out.println("moving " + System.currentTimeMillis());
-            
+        if (key.key(KEY_M) && movingBlock != null) {            
             movingBlock.stream().forEach((tmpb) -> {
-                System.out.println(tmpb);
                 tmpb.move(xtimer == 0 ? xPosition * tileSize : 0, ytimer == 0 ? yPosition * tileSize : 0);
                 
             });
