@@ -85,7 +85,7 @@ public class MyPlayer extends Player {
         if (lights.isEmpty()) {
             addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
-        setCollision(Rectangle.create(this.width, this.height / 2, OpticProperties.NO_SHADOW, this));
+        setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
     }
 
     @Override
@@ -114,13 +114,8 @@ public class MyPlayer extends Player {
             if (Settings.scaled) {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
-            Drawer.renderStringCentered(name, 
-                    (int) ((collision.getWidth() 
-                            * Place.getCurrentScale()) / 2), 
-                    (int) ((collision.getHeight() 
-                            * Place.getCurrentScale()) / 2),
-                    place.standardFont,
-                    map.getLightColor());
+            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
+                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
             glPopMatrix();
         }
     }

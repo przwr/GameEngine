@@ -7,6 +7,7 @@ package game.place;
 
 import collision.Block;
 import engine.Methods;
+import navmeshpathfinding.NavigationMeshGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
@@ -42,8 +43,6 @@ public class Area {
 
     protected NavigationMesh navigationMesh;
 
-    private static int yStartBound = -1, yEndBound = -1, xStartBound = -1, xEndBound = -1, startIndex, endIndex;
-
     public Area(Place place, Map map) {
         this.place = place;
         this.map = map;
@@ -51,57 +50,7 @@ public class Area {
     }
 
     public void generateNavigationMesh() {
-        if (findBounds()) {
-//            System.out.println("(" + xStartBound + ", " + yStartBound + ") (" + xEndBound + ", " + yEndBound + ") " + startIndex + " " + endIndex);
-            for (int x = xStartBound; x <= xEndBound; x++) {
-                for (int y = yStartBound; y <= yEndBound; y++) {
-
-                }
-            }
-//            yStartBound *= Place.tileSize;
-//            xStartBound *= Place.tileSize;
-//            yEndBound = (yEndBound + 1) * Place.tileSize;
-//            xEndBound = (xEndBound + 1) * Place.tileSize;
-        }
-    }
-
-    private boolean findBounds() {
-        for (int i = 0; i < tiles.length; i++) {
-            if (tiles[i] != null) {
-                yStartBound = (i / X_IN_TILES);
-                break;
-            }
-        }
-        if (yStartBound == -1) {
-            return false;
-        }
-        for (int i = tiles.length - 1; i >= 0; i--) {
-            if (tiles[i] != null) {
-                yEndBound = (i / X_IN_TILES);
-                break;
-            }
-        }
-        XStart:
-        for (int x = 0; x < X_IN_TILES; x++) {
-            for (int y = 0; y < Y_IN_TILES; y++) {
-                if (getTile(x, y) != null) {
-                    xStartBound = x;
-                    break XStart;
-                }
-            }
-        }
-        XEnd:
-        for (int x = X_IN_TILES - 1; x >= 0; x--) {
-            for (int y = 0; y < Y_IN_TILES; y++) {
-                if (getTile(x, y) != null) {
-                    xEndBound = x;
-                    break XEnd;
-                }
-            }
-        }
-        startIndex = getTileIndex(xStartBound, yStartBound);
-        endIndex = getTileIndex(xEndBound, yEndBound);
-        return true;
+        NavigationMeshGenerator.generateNavigationMesh(tiles, blocks);
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {
@@ -200,7 +149,7 @@ public class Area {
         }
     }
 
-    public void deleteObject(GameObject object) {  // Nie usuwa świateł przypisanych do gracza, ale gracze ostatecznie nie powinni mieć świateł, więc nie zmieniam tego
+    public void deleteObject(GameObject object) {
         object.setMapNotChange(null);
         if (!(object instanceof Player)) {
             deleteNotPlayerObject(object);
@@ -270,14 +219,6 @@ public class Area {
 
     public Tile getTile(int x, int y) {
         return tiles[x + y * X_IN_TILES];
-    }
-
-    public Tile getTile(int index) {
-        return tiles[index];
-    }
-
-    public int getTileIndex(int x, int y) {
-        return x + y * X_IN_TILES;
     }
 
     public List<Mob> getSolidMobs() {

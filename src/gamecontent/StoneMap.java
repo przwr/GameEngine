@@ -27,7 +27,7 @@ public class StoneMap extends Map {
         Tile GROUND = new Tile(place.getSpriteSheet("tlo"), tileSize, 2, 12);
         Tile GRASS = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 1);
         Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12);
-        
+
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
                 if ((x * y) < 600) {
@@ -51,5 +51,9 @@ public class StoneMap extends Map {
         addObject(new WarpPoint("toKamienna", 20 * tileSize, 19 * tileSize));
         PuzzleObject portal = new PuzzleObject("portal", place);
         portal.placePuzzle(20, 20, this);
+    }
+
+    @Override
+    public void populate() {
     }
 }

@@ -393,4 +393,8 @@ public class ObjectMap extends Map {
         map.add(linking);
         return map;
     }
+
+    @Override
+    public void populate() {
+    }
 }

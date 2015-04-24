@@ -32,7 +32,7 @@ import org.newdawn.slick.Color;
  *
  * @author Wojtek
  */
-public class Map {
+public abstract class Map {
 
 //    protected final static Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) -> firstObject.getDepth() - secondObject.getDepth();
     private final BlueArray<Light> visibleLights = new BlueArray<>();
@@ -61,6 +61,9 @@ public class Map {
     protected final BlueArray<Mob> mobs = new BlueArray<>();
     protected final List<Mob> tempMobs = new BlueArray<>();
 
+    public abstract void populate();
+
+    // TO DO - kolizja z NULL Tile'ami - tylko te nieszczęsne getX() i getY()
     private final Placement placement;
     private int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect; //Camera's variables for current rendering
 
