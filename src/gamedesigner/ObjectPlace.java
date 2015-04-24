@@ -135,7 +135,7 @@ public class ObjectPlace extends Place {
             undo.undo();
         }
         if (key.key(Keyboard.KEY_BACK) && key.keyPressed(Keyboard.KEY_LCONTROL)) {
-            maps.get(0).clear();
+            objmap.clear();
             lastName = "";
             printMessage("MAP CLEARED");
         }
@@ -216,7 +216,7 @@ public class ObjectPlace extends Place {
     }
 
     public void setCentralPoint(int x, int y) {
-        ((ObjectMap) maps.get(0)).setCentralPoint(x, y);
+        objmap.setCentralPoint(x, y);
     }
 
     public int getMode() {
@@ -229,7 +229,7 @@ public class ObjectPlace extends Place {
 
     public void saveObject(String name) {
         lastName = name;
-        ArrayList<String> content = ((ObjectMap) maps.get(0)).saveMap();
+        ArrayList<String> content = objmap.saveMap();
 
         try (PrintWriter save = new PrintWriter("res/objects/" + name + ".puz")) {
             content.stream().forEach((line) -> {
@@ -252,7 +252,7 @@ public class ObjectPlace extends Place {
     }
 
     public void clearMap() {
-        maps.get(0).clear();
+        objmap.clear();
         printMessage("Map cleaned");
     }
 
@@ -270,11 +270,12 @@ public class ObjectPlace extends Place {
             ObjectPO loaded = new ObjectPO(file[0], this);
             //PuzzleObject loaded = new PuzzleObject(file[0], this);
             Point p = loaded.getStartingPoint();
-            maps.get(0).clear();
-            loaded.placePuzzle(p.getX(), p.getY(), maps.get(0));
+            objmap.clear();
+            loaded.placePuzzle(p.getX(), p.getY(), objmap);
             printMessage("Object \"" + name + "\" was loaded");
             undo.removeMoves();
             lastName = file[0];
+            editor.changeMap(objmap);
         }
     }
 

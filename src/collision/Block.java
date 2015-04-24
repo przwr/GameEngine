@@ -49,7 +49,6 @@ public class Block extends GameObject {
     }
 
     public void move(int dx, int dy) {
-        System.out.println("Ruszam");
         x += dx;
         y += dy;
         topForegroundTiles.stream().forEach((fgt) -> {

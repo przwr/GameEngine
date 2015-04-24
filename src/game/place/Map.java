@@ -252,6 +252,10 @@ public class Map {
             }
         }
     }
+    
+    public void sortDepthObjects(){
+        Methods.insort(depthObjects);
+    }
 
     public void renderTop(Camera camera) {
         getTopObjects(camera.getArea());

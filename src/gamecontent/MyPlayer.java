@@ -129,7 +129,7 @@ public class MyPlayer extends Player {
     public void update() {
         if (jumping) {
             hop = false;
-            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
             jumpDelta += Time.getDelta();
             if ((int) jumpDelta >= 68) {
                 jumping = false;

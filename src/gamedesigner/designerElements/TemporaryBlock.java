@@ -107,7 +107,6 @@ public class TemporaryBlock extends GameObject {
     }
 
     public void move(int dx, int dy) {
-        System.out.println("move");
         if (block != null) {
             x += dx;
             y += dy;
@@ -193,7 +192,7 @@ public class TemporaryBlock extends GameObject {
         fgt = createTile(tex, y, tile, xSheet, ySheet, level, altMode);
         if (altMode) {
             map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel) * tile);
-            fgt.setDepth(fgt.getPureDepth() + 1);
+            fgt.setDepth(1);
         } else {
             map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (maxLevel) * tile);
         }
