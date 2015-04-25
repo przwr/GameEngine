@@ -7,8 +7,6 @@ package navmeshpathfinding;
 
 import engine.Methods;
 import engine.Point;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  *
@@ -16,12 +14,12 @@ import java.util.List;
  */
 public class Line implements Comparable<Object> {
 
-    Point[] points = new Point[2];
-    int length;
+    private Point start, end;
+    private int length;
 
     public Line(Point point1, Point point2) {
-        points[0] = point1;
-        points[1] = point2;
+        start = point1;
+        end = point2;
         calculateLength();
     }
 
@@ -29,31 +27,58 @@ public class Line implements Comparable<Object> {
         return length;
     }
 
-    public List<Point> getPoints() {
-        return Arrays.asList(points);
-    }
-
     public void setPoints(Point point1, Point point2) {
-        points[0] = point1;
-        points[1] = point2;
+        start = point1;
+        end = point2;
         calculateLength();
     }
 
+    public void setStart(Point point1) {
+        start = point1;
+    }
+
+    public void setEnd(Point point2) {
+        end = point2;
+    }
+
+//    public void setStart(Point point) {
+//        start.set(point.getX(), point.getY());
+//    }
+//
+//    public void setEnd(Point point) {
+//        end.set(point.getX(), point.getY());
+//    }
+    public void setXStart(int x) {
+        start.setX(x);
+    }
+
+    public void setXEnd(int x) {
+        end.setX(x);
+    }
+
+    public void setYStart(int y) {
+        start.setY(y);
+    }
+
+    public void setYEnd(int y) {
+        end.setY(y);
+    }
+
     private void calculateLength() {
-        length = Methods.pointDistanceSimple2(points[0].getX(), points[0].getY(), points[1].getX(), points[1].getY());
+        length = Methods.pointDistanceSimple2(start.getX(), start.getY(), end.getX(), end.getY());
     }
 
     public Point getStart() {
-        return points[0];
+        return start;
     }
 
     public Point getEnd() {
-        return points[1];
+        return end;
     }
 
     @Override
     public String toString() {
-        return points[0].toString() + points[1].toString() + " - " + length;
+        return start.toString() + end.toString() + " - " + length;
     }
 
     @Override
@@ -62,13 +87,13 @@ public class Line implements Comparable<Object> {
             return false;
         }
         Line line = (Line) o;
-        return (points[0].equals(line.points[0]) && points[1].equals(line.points[1])) || (points[1].equals(line.points[0]) && points[0].equals(line.points[1]));
+        return (start.equals(line.start) && end.equals(line.end)) || (end.equals(line.start) && start.equals(line.end));
     }
 
     @Override
     public int hashCode() {
-        int point1Hashcode = points[0].hashCode();
-        int point2Hashcode = points[1].hashCode();
+        int point1Hashcode = start.hashCode();
+        int point2Hashcode = end.hashCode();
         return 83 * (point1Hashcode * point1Hashcode + point2Hashcode * point2Hashcode);
     }
 
@@ -77,4 +102,15 @@ public class Line implements Comparable<Object> {
         return length - ((Line) o).length;
     }
 
+    public boolean isHorisontal() {
+        return start.getY() == end.getY();
+    }
+
+    public boolean isVertical() {
+        return start.getX() == end.getX();
+    }
+
+    public double getDirectional() {
+        return ((double) (end.getY() - start.getY())) / (double) (end.getX() - start.getX());
+    }
 }

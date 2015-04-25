@@ -113,6 +113,14 @@ public abstract class GameObject {
         return depth;
     }
 
+    public int getXEnd() {
+        return (int) x + width;
+    }
+
+    public int getYEnd() {
+        return (int) y + height;
+    }
+
     public int getEndOfX() {
         return (int) x + collision.getWidth() / 2;
     }
@@ -126,7 +134,7 @@ public abstract class GameObject {
     }
 
     public int getYObjectBegin() {
-        return (int) y + sprite.getYStart()+ yStart;
+        return (int) y + sprite.getYStart() + yStart;
     }
 
     public int getXObjectEnd() {
@@ -134,7 +142,7 @@ public abstract class GameObject {
     }
 
     public int getYObjectEnd() {
-        return (int) y + sprite.getYStart()+ yStart + height;
+        return (int) y + sprite.getYStart() + yStart + height;
     }
 
     public Figure getCollision() {
