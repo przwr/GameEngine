@@ -192,7 +192,7 @@ public class TemporaryBlock extends GameObject {
         fgt = createTile(tex, y, tile, xSheet, ySheet, level, altMode);
         if (altMode) {
             map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel) * tile);
-            fgt.setDepth(1);
+            fgt.setDepth(-1);
         } else {
             map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (maxLevel) * tile);
         }
