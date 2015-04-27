@@ -7,6 +7,8 @@ package navmeshpathfinding;
 
 import engine.Methods;
 import engine.Point;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -16,11 +18,14 @@ public class Line implements Comparable<Object> {
 
     private Point start, end;
     private int length;
+    private Set<Line> joined = new HashSet<>();
 
+    public Line(){        
+    }
+    
     public Line(Point point1, Point point2) {
         start = point1;
         end = point2;
-        calculateLength();
     }
 
     public int getLength() {
@@ -30,42 +35,22 @@ public class Line implements Comparable<Object> {
     public void setPoints(Point point1, Point point2) {
         start = point1;
         end = point2;
-        calculateLength();
     }
 
-    public void setStart(Point point1) {
-        start = point1;
-    }
-
-    public void setEnd(Point point2) {
-        end = point2;
-    }
-
-//    public void setStart(Point point) {
-//        start.set(point.getX(), point.getY());
-//    }
-//
-//    public void setEnd(Point point) {
-//        end.set(point.getX(), point.getY());
-//    }
-    public void setXStart(int x) {
-        start.setX(x);
-    }
-
-    public void setXEnd(int x) {
-        end.setX(x);
-    }
-
-    public void setYStart(int y) {
-        start.setY(y);
-    }
-
-    public void setYEnd(int y) {
-        end.setY(y);
-    }
-
-    private void calculateLength() {
+    public void calculateLength() {
         length = Methods.pointDistanceSimple2(start.getX(), start.getY(), end.getX(), end.getY());
+    }
+
+    public void addLine(Line line) {
+        joined.add(line);
+    }
+
+    public void removeLine(Line line) {
+        joined.remove(line);
+    }
+
+    public Set<Line> getJoined() {
+        return joined;
     }
 
     public Point getStart() {
@@ -74,6 +59,18 @@ public class Line implements Comparable<Object> {
 
     public Point getEnd() {
         return end;
+    }
+
+    public boolean isHorisontal() {
+        return start.getY() == end.getY();
+    }
+
+    public boolean isVertical() {
+        return start.getX() == end.getX();
+    }
+
+    public double getDirectional() {
+        return ((double) (end.getY() - start.getY())) / (double) (end.getX() - start.getX());
     }
 
     @Override
@@ -102,15 +99,28 @@ public class Line implements Comparable<Object> {
         return length - ((Line) o).length;
     }
 
-    public boolean isHorisontal() {
-        return start.getY() == end.getY();
+    public void setStart(Point point1) {
+        start = point1;
     }
 
-    public boolean isVertical() {
-        return start.getX() == end.getX();
+    public void setEnd(Point point2) {
+        end = point2;
     }
 
-    public double getDirectional() {
-        return ((double) (end.getY() - start.getY())) / (double) (end.getX() - start.getX());
+    public void setXStart(int x) {
+        start.setX(x);
     }
+
+    public void setXEnd(int x) {
+        end.setX(x);
+    }
+
+    public void setYStart(int y) {
+        start.setY(y);
+    }
+
+    public void setYEnd(int y) {
+        end.setY(y);
+    }
+
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import navmeshpathfinding.NavigationMesh;
 
 /**
@@ -49,8 +50,8 @@ public class Area {
         tiles = new Tile[X_IN_TILES * Y_IN_TILES];
     }
 
-    public void generateNavigationMesh() {
-        NavigationMeshGenerator.generateNavigationMesh(tiles, blocks);
+    public void generateNavigationMesh(Set<Block> blocksForMesh, int xArea, int yArea) {
+        NavigationMeshGenerator.generateNavigationMesh(tiles, blocksForMesh, xArea, yArea);
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {

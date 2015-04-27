@@ -57,6 +57,7 @@ public abstract class Map {
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
     protected final BlueArray<WarpPoint> tempWarps = new BlueArray<>();
     protected final BlueArray<Light> lights = new BlueArray<>();
+    protected final Set<Block> tempBlocks = new HashSet<>();
     protected final BlueArray<Block> blocks = new BlueArray<>();
     protected final BlueArray<Mob> mobs = new BlueArray<>();
     protected final List<Mob> tempMobs = new BlueArray<>();
@@ -86,9 +87,34 @@ public abstract class Map {
     }
 
     public void generateNavigationMeshes() {     // call after adding All blocks and tiles
+        int areaIndex = 0;
         for (Area area : areas) {
-            area.generateNavigationMesh();
+            tempBlocks.clear();
+            for (Block block : getBlocks(areaIndex)) {
+                if (isOnArea(block, areaIndex)) {
+                    tempBlocks.add(block);
+                }
+            }
+            area.generateNavigationMesh(tempBlocks, areaIndex % xAreas, areaIndex / xAreas);
+            areaIndex++;
         }
+    }
+
+    private boolean isOnArea(Block block, int area) {
+        Figure collision = block.getCollision();
+        if (getAreaIndex(collision.getX(), collision.getY()) == area) {
+            return true;
+        }
+        if (getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area) {
+            return true;
+        }
+        if (getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area) {
+            return true;
+        }
+        if (getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getY()) == area) {
+            return true;
+        }
+        return false;
     }
 
     public void addAreasToUpdate(int[] newAreas) {
@@ -255,8 +281,8 @@ public abstract class Map {
             }
         }
     }
-    
-    public void sortDepthObjects(){
+
+    public void sortDepthObjects() {
         Methods.insort(depthObjects);
     }
 

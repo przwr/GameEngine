@@ -43,9 +43,10 @@ public class LineWindow extends javax.swing.JFrame {
         canvas = new MyCanvas();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
+        setPreferredSize(new java.awt.Dimension(1056, 724));
 
         canvas.setBackground(new java.awt.Color(153, 153, 255));
+        canvas.setPreferredSize(new java.awt.Dimension(1024, 724));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

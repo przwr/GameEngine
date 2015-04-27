@@ -1013,13 +1013,14 @@ public class ShadowRenderer {
                         if (DEBUG) {
                             System.out.println("Left Round Lightness - second");
                         }
-                    } else if ((source.getX() >= current.getX() && current.getX() >= other.getXEnd()) || (source.getX() <= current.getXEnd() && current.getXEnd() <= other.getX())) {
-                        other.addShadow(DARK);
-                        checked = true;
-                        if (DEBUG) {
-                            System.out.println("Left Round Darkness - second");
-                        }
                     }
+//                    else if ((source.getX() >= current.getX() && current.getX() >= other.getXEnd()) || (source.getX() <= current.getXEnd() && current.getXEnd() <= other.getX())) {
+//                        other.addShadow(DARK);
+//                        checked = true;
+//                        if (DEBUG) {
+//                            System.out.println("Left Round Darkness - second");
+//                        }
+//                    }
                 }
             }
         }
@@ -1090,19 +1091,20 @@ public class ShadowRenderer {
             } else if (XR1 != current.getXEnd() && XR1 != other.getX() && XR1 != other.getXEnd() && shadowPoints[1].getX() != shadowPoints[3].getX()) { // rysuj zaciemniony
                 YOR = ar * other.getX() + br;
                 YOR2 = ar * other.getXEnd() + br;
-                if (((source.getX() != current.getXEnd() && source.getX() != current.getX() && other.getYEnd() != current.getYEnd()) || (YOR > other.getY() - other.getShadowHeight() && YOR < other.getYEnd()) || (YOR2 > other.getY() - other.getShadowHeight() && YOR2 < other.getYEnd()))) {
+                if (((source.getX() != current.getXEnd() && source.getX() != current.getX() && other.getYEnd() != current.getYEnd()) || (YOR > other.getY() - other.getShadowHeight() && YOR < other.getYEnd()) || (YOR2 > other.getY() - other.getShadowHeight() && YOR2 < other.getYEnd() - Place.tileSize))) {
                     if (XR1 > current.getXEnd()) {
                         other.addShadow(BRIGHT);
                         if (DEBUG) {
                             System.out.println("Right Round Lightness - first");
                         }
-                    } else if ((source.getX() >= current.getX() && current.getX() >= other.getXEnd()) || (source.getX() <= current.getXEnd() && current.getXEnd() <= other.getX())) {
-                        other.addShadow(DARK);
-                        checked = true;
-                        if (DEBUG) {
-                            System.out.println("Right Round Darkness - first");
-                        }
                     }
+//                    else if ((source.getX() >= current.getX() && current.getX() >= other.getXEnd()) || (source.getX() <= current.getXEnd() && current.getXEnd() <= other.getX())) {
+//                        other.addShadow(DARK);
+//                        checked = true;
+//                        if (DEBUG) {
+//                            System.out.println("Right Round Darkness - first");
+//                        }
+//                    }
                 }
             }
         }
@@ -1263,7 +1265,7 @@ public class ShadowRenderer {
     }
 
     private static void findDarkness(Figure other, Figure current, Light source) {
-        if (other.getYEnd() <= source.getY()) {
+        if (other.getYEnd() < source.getY()) {
             if (other.getY() - other.getShadowHeight() < current.getY() || other.getYEnd() < current.getYEnd()) {
                 if (current.getY() == other.getYEnd() && ((current.getX() == other.getXEnd() && source.getX() > current.getXEnd()) || (current.getXEnd() == other.getX() && source.getX() < current.getX())) && source.getY() < current.getYEnd()) {
                     other.addShadow(DARK);
@@ -1288,10 +1290,12 @@ public class ShadowRenderer {
                 }
             }
             //System.out.println("Sprawdzam! " + other.getYEnd() + " " + source.getY() + " " + shadowPoints[0].getY() + " " + shadowPoints[1].getY());
-            if ((shadowPoints[0].getY() == other.getYEnd() && shadowPoints[0].getY() >= source.getY() - 2 && shadowPoints[0].getY() <= source.getY() + 2) || (shadowPoints[1].getY() == other.getYEnd() && shadowPoints[1].getY() >= source.getY() - 2 && shadowPoints[1].getY() <= source.getY() + 2)) {
-                other.addShadow(DARK);
-                if (DEBUG) {
-                    System.out.println("Darkness...");
+            if (other.getYEnd() != current.getY()) {
+                if ((shadowPoints[0].getY() == other.getYEnd() && shadowPoints[0].getY() >= source.getY() - 2 && shadowPoints[0].getY() <= source.getY() + 2) || (shadowPoints[1].getY() == other.getYEnd() && shadowPoints[1].getY() >= source.getY() - 2 && shadowPoints[1].getY() <= source.getY() + 2)) {
+                    other.addShadow(DARK);
+                    if (DEBUG) {
+                        System.out.println("Darkness other...");
+                    }
                 }
             }
         }

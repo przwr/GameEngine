@@ -67,8 +67,8 @@ public class Triangle {
     }
 
     public void addConnection(Connection connection) {
-        connections[connectionsNumber++] = connection;
-    }
+            connections[connectionsNumber++] = connection;
+        }
 
     public boolean isPointInTriangle(Point point) {
         if (isOutOfBoundsToEpsilon(point)) {
@@ -142,5 +142,37 @@ public class Triangle {
 
     public int getConnectionsNumber() {
         return connectionsNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Triangle)) {
+            return false;
+        }
+        int sharedPoints = 0, checkedPoints = 0;
+        Point point1, point2;
+        for (Node node : nodes) {
+            point1 = node.getPoint();
+            for (Node node2 : ((Triangle) o).nodes) {
+                point2 = node2.getPoint();
+                if (point1.equals(point2)) {
+                    sharedPoints++;
+                    break;
+                }
+            }
+            checkedPoints++;
+            if (sharedPoints != checkedPoints) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int point1Hashcode = nodes[0].getPoint().hashCode();
+        int point2Hashcode = nodes[1].getPoint().hashCode();
+        int point3Hashcode = nodes[2].getPoint().hashCode();
+        return 83 * (point1Hashcode * point1Hashcode + point2Hashcode * point2Hashcode + point3Hashcode * point3Hashcode);
     }
 }

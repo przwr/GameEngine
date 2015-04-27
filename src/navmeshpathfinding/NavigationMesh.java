@@ -9,6 +9,8 @@ import engine.BlueArray;
 import engine.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -16,7 +18,7 @@ import java.util.ArrayList;
  */
 public class NavigationMesh {
 
-    private final ArrayList<Triangle> mesh = new ArrayList<>();
+    private final Set<Triangle> mesh = new HashSet<>();
     private final Node[] sharedNodes = new Node[2];
     private final int notShared = 2;
     private final int tempNodeIndexes[] = new int[5], sharedNodesIndexes[] = new int[12];
@@ -32,13 +34,13 @@ public class NavigationMesh {
     public void addTriangle(Triangle triangleToAdd) {
         nrConnections = 0;
         connectedTriangles[0] = connectedTriangles[1] = connectedTriangles[2] = null;
-        for (Triangle triangle : mesh) {
-            findAndMergeSharedPoints(triangle, triangleToAdd);
-            boolean areIdentical = connectIfPossible(triangle, triangleToAdd);
-            if (areIdentical) {
-                return;
-            }
+        if (mesh.contains(triangleToAdd)) {
+            return;
         }
+        mesh.stream().forEach((triangle) -> {
+            findAndMergeSharedPoints(triangle, triangleToAdd);
+            connectIfPossible(triangle, triangleToAdd);
+        });
         addAndSolveDependancesIfConnected(triangleToAdd);
     }
 
@@ -63,17 +65,11 @@ public class NavigationMesh {
         nrSharedNodes++;
     }
 
-    private boolean connectIfPossible(Triangle triangle, Triangle triangleToAdd) {
-        boolean areIdentical = false;
+    private void connectIfPossible(Triangle triangle, Triangle triangleToAdd) {
         if (nrSharedNodes == 2) {
             connectTriangles(triangle, triangleToAdd);
             nrConnections++;
-        } else if (nrSharedNodes == 3) {
-            deleteCopiedNeightbours(triangleToAdd);
-            System.out.println("Taki trójkąt już istnieje!");
-            areIdentical = true;
         }
-        return areIdentical;
     }
 
     private void connectTriangles(Triangle triangle, Triangle triangleToAdd) {
@@ -129,19 +125,19 @@ public class NavigationMesh {
         sharedNodesIndexes[indexModifier + 2] = tempNodeIndexes[3];
         sharedNodesIndexes[indexModifier + 3] = tempNodeIndexes[4];
     }
-
-    private void deleteCopiedNeightbours(Triangle triangleToAdd) {
-        for (int i = 0; i < 3; i++) {
-            Node node = triangleToAdd.getNode(i);
-            for (Triangle triangle : connectedTriangles) {
-                if (triangle != null) {
-                    for (int j = 0; j < 3; j++) {
-                        triangle.getNode(j).removeNeightbour(node);
-                    }
-                }
-            }
-        }
-    }
+//
+//    private void deleteCopiedNeightbours(Triangle triangleToAdd) {
+//        for (int i = 0; i < 3; i++) {
+//            Node node = triangleToAdd.getNode(i);
+//            for (Triangle triangle : connectedTriangles) {
+//                if (triangle != null) {
+//                    for (int j = 0; j < 3; j++) {
+//                        triangle.getNode(j).removeNeightbour(node);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private void addAndSolveDependancesIfConnected(Triangle triangleToAdd) {
         if (nrConnections > 0) {
@@ -273,8 +269,13 @@ public class NavigationMesh {
         return mesh.size();
     }
 
-    public Triangle getTriangle(int index) {
-        return mesh.get(index);
+    public Triangle[] getTriangles() {
+        Triangle[] triangles = new Triangle[mesh.size()];
+        int i = 0;
+        for (Triangle triangle : mesh) {
+            triangles[i++] = triangle;
+        }
+        return triangles;
     }
 
     public void reset() {

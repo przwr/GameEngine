@@ -13,6 +13,7 @@ import game.place.ForegroundTile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -25,6 +26,8 @@ public class Block extends GameObject {
     private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
     private static Figure colision;
+
+    private String name;
 
     public static Block create(int x, int y, int width, int height, int shadowHeight) {
         return new Block(x, y, width, height, shadowHeight, false);
