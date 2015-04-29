@@ -122,19 +122,19 @@ public abstract class GameObject {
     }
 
     public int getXSpriteBegin() {
-        return (int) x + sprite.getxOffset() - sprite.getXStart();
+        return (int) x + sprite.getxOffset() + sprite.getXStart();
     }
 
     public int getYSpriteBegin() {
-        return (int) y + sprite.getyOffset() - sprite.getYStart();
+        return (int) y + sprite.getyOffset() + sprite.getYStart();
     }
 
     public int getXSpriteEnd() {
-        return (int) x + sprite.getxOffset() - sprite.getXStart() + sprite.getActualWidth();
+        return (int) x + sprite.getxOffset() + sprite.getXStart() + sprite.getActualWidth();
     }
 
     public int getYSpriteEnd() {
-        return (int) y + sprite.getyOffset() - sprite.getYStart() + sprite.getActualHeight();
+        return (int) y + sprite.getyOffset() + sprite.getYStart() + sprite.getActualHeight();
     }
 
     public Figure getCollision() {
