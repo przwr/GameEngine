@@ -44,9 +44,8 @@ public class Window extends javax.swing.JFrame {
 
         canvas = new MyCanvas();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setFocusTraversalPolicyProvider(true);
-        setPreferredSize(new java.awt.Dimension(1065, 724));
 
         canvas.setBackground(new java.awt.Color(153, 153, 255));
         canvas.setPreferredSize(new java.awt.Dimension(1024, 640));

@@ -89,10 +89,6 @@ public class ObjectPlayer extends Player {
     public void initialize(int xStart, int yStart, int width, int height, Place place) {
         this.place = place;
         this.online = place.game.online;
-        this.width = width;
-        this.height = height;
-        this.xStart = xStart;
-        this.yStart = yStart;
         this.setResistance(2);
         this.emitter = true;
         emits = false;

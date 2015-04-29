@@ -24,12 +24,8 @@ import org.newdawn.slick.Color;
  */
 public class LightSource extends GameObject {
 
-    public LightSource(int x, int y, int xStart, int yStart, int width, int height, String name, Place place, String spriteName, boolean solid) {
-        this.width = width;
-        this.height = height;
+    public LightSource(int x, int y, int width, int height, String name, Place place, String spriteName, boolean solid) {
         this.solid = solid;
-        this.xStart = xStart;
-        this.yStart = yStart;
         this.sprite = place.getSprite(spriteName);
         emitter = true;
         emits = true;
@@ -41,7 +37,7 @@ public class LightSource extends GameObject {
             addLight(Light.createNoShadows(place.getSpriteSheetSetScale("light"), lightColor, 768, 768, this, 3));
         }
         initialize(name, x, y);
-        setCollision(Rectangle.create(this.width / 2, this.height / 3, OpticProperties.NO_SHADOW, this));
+        setCollision(Rectangle.create(width, height, OpticProperties.NO_SHADOW, this));
     }
 
     @Override

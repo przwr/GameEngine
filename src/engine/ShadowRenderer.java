@@ -804,7 +804,7 @@ public class ShadowRenderer {
                     if (other.getOwner() instanceof Block) {
                         other.addShadow(BRIGHTEN, XL1, XL2);
                     } else {
-                        other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
+                        other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXOwnerBegin() + (0+0), XL2);
                     }
                     XL2 = source.getX() < XL1 ? other.getX() : other.getXEnd();
                     if (shadowPoints[0].getX() != shadowPoints[2].getX()) {
@@ -819,7 +819,7 @@ public class ShadowRenderer {
                         if (other.getOwner() instanceof Block) {
                             other.addShadow(DARKEN, XL1, XL2);
                         } else {
-                            other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
+                            other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + (0+0), XL2);
                         }
                     }
                     if (DEBUG) {
@@ -840,7 +840,7 @@ public class ShadowRenderer {
                     if (other.getOwner() instanceof Block) {
                         other.addShadow(DARKEN, XL1, XL2);
                     } else {
-                        other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
+                        other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + (0+0), XL2);
                     }
                     if (DEBUG) {
                         System.out.println("Left Shade " + al + " XL1 " + XL1 + " figure.X " + current.getX());
@@ -880,7 +880,7 @@ public class ShadowRenderer {
                     if (other.getOwner() instanceof Block) {
                         other.addShadow(BRIGHTEN, XR1, XR2);
                     } else {
-                        other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
+                        other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXOwnerBegin() + (0+0), XR2);
                     }
                     XR2 = XR1 >= source.getX() ? other.getX() : other.getXEnd();
                     if (shadowPoints[1].getX() != shadowPoints[3].getX()) {
@@ -895,7 +895,7 @@ public class ShadowRenderer {
                         if (other.getOwner() instanceof Block) {
                             other.addShadow(DARKEN, XR1, XR2);
                         } else {
-                            other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
+                            other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + (0+0), XR2);
                         }
                     }
                     if (DEBUG) {
@@ -916,7 +916,7 @@ public class ShadowRenderer {
                     if (other.getOwner() instanceof Block) {
                         other.addShadow(DARKEN, XR1, XR2);
                     } else {
-                        other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
+                        other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + (0+0), XR2);
                     }
                     if (DEBUG) {
                         System.out.println("Right Shade " + ar + " XR1 " + XR1 + " figure.X " + current.getX());
@@ -1204,27 +1204,27 @@ public class ShadowRenderer {
         if (other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
             if (shadowPoints[0].getX() == shadowPoints[2].getX()) {
                 XL1 = shadowPoints[0].getX();
-                XL2 = other.getOwner().getStartX() + other.getWidth();
+                XL2 = (0+0) + other.getWidth();
             } else {
                 XL1 = Methods.roundDouble((other.getYOwnerEnd() - bl) / al);
-                XL2 = current.getX() > XL1 ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
+                XL2 = current.getX() > XL1 ? (0+0) : (0+0) + other.getWidth();
             }
             if (XL1 >= other.getXOwnerBegin() && XL1 < other.getXOwnerEnd()) {
                 if (XL1 < current.getX()) { //dodaj światło
-                    other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
-                    XL2 = current.getX() <= XL1 ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
-                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
+                    other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXOwnerBegin() + (0+0), XL2);
+                    XL2 = current.getX() <= XL1 ? (0+0) : (0+0) + other.getWidth();
+                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + (0+0), XL2);
                     if (OBJECT_DEBUG) {
-                        System.out.println("Object Left Light " + (XL1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XL2 " + XL2);
+                        System.out.println("Object Left Light " + (XL1 - other.getXOwnerBegin() + (0+0)) + " XL2 " + XL2);
                     }
                     checked = true;
                 } else { //dodaj cień
                     if (shadowPoints[3].getX() > shadowPoints[2].getX() || shadowPoints[3].getY() < shadowPoints[2].getY()) {
-                        XL2 = other.getOwner().getStartX() + other.getWidth();
+                        XL2 = (0+0) + other.getWidth();
                     }
-                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XL2);
+                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXOwnerBegin() + (0+0), XL2);
                     if (OBJECT_DEBUG) {
-                        System.out.println("Object Left Shade " + (XL1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XL2 " + XL2);
+                        System.out.println("Object Left Shade " + (XL1 - other.getXOwnerBegin() + (0+0)) + " XL2 " + XL2);
                     }
                     checked = true;
                 }
@@ -1236,27 +1236,27 @@ public class ShadowRenderer {
         if (other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
             if (shadowPoints[1].getX() == shadowPoints[3].getX()) {
                 XR1 = shadowPoints[1].getX();
-                XR2 = other.getOwner().getStartX();
+                XR2 = (0+0);
             } else {
                 XR1 = Methods.roundDouble((other.getYOwnerEnd() - br) / ar);
-                XR2 = XR1 <= current.getXEnd() ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
+                XR2 = XR1 <= current.getXEnd() ? (0+0) : (0+0) + other.getWidth();
             }
             if (XR1 >= other.getXOwnerBegin() && XR1 <= other.getXOwnerEnd()) {
                 if (XR1 > current.getXEnd()) { // dodaj światło                    
-                    other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
-                    XR2 = XR1 > current.getXEnd() ? other.getOwner().getStartX() : other.getOwner().getStartX() + other.getWidth();
-                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
+                    other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXOwnerBegin() + (0+0), XR2);
+                    XR2 = XR1 > current.getXEnd() ? (0+0) : (0+0) + other.getWidth();
+                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + (0+0), XR2);
                     if (OBJECT_DEBUG) {
-                        System.out.println("Object Right Light XR1 " + (XR1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XR2 " + XR2);
+                        System.out.println("Object Right Light XR1 " + (XR1 - other.getXOwnerBegin() + (0+0)) + " XR2 " + XR2);
                     }
                     checked = true;
                 } else { //dodaj cień
                     if (shadowPoints[3].getX() < shadowPoints[2].getX() || shadowPoints[3].getY() > shadowPoints[2].getY()) {
-                        XR2 = other.getOwner().getStartX() + other.getWidth();
+                        XR2 = (0+0) + other.getWidth();
                     }
-                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + other.getOwner().getStartX(), XR2);
+                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXOwnerBegin() + (0+0), XR2);
                     if (OBJECT_DEBUG) {
-                        System.out.println("Object Right Shade XR1 " + (XR1 - other.getXOwnerBegin() + other.getOwner().getStartX()) + " XR2 " + XR2);
+                        System.out.println("Object Right Shade XR1 " + (XR1 - other.getXOwnerBegin() + (0+0)) + " XR2 " + XR2);
                     }
                     checked = true;
                 }

@@ -31,7 +31,7 @@ public class SpriteSheet extends Sprite {
         return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, true);
     }
 
-    private SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
+    protected SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
         super(texture, width, height, xStart, yStart, spriteBase);
         if (scale) {
             this.xTiles = (int) (texture.getImageWidth() * Settings.nativeScale) / width;

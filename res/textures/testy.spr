@@ -1,5 +1,6 @@
 testy;1
-res/textures/testy.png
+res\textures\testy.png
 512;512
 0;0
 64;64
+0;0;64;64

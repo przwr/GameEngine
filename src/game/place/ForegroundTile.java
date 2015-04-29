@@ -66,7 +66,7 @@ public class ForegroundTile extends Tile {
     @Override
     public ForegroundTile copy() {
         Point first = tileStack.get(0);
-        ForegroundTile copy = new ForegroundTile(spriteSheet, width, first.getX(), first.getY(), solid, tmpYStart, !simpleLighting);
+        ForegroundTile copy = new ForegroundTile(spriteSheet, Place.tileSize, first.getX(), first.getY(), solid, tmpYStart, !simpleLighting);
         copy.depth = depth;
         for (int i = 1; i < tileStack.size(); i++) {
             copy.tileStack.add(tileStack.get(i));

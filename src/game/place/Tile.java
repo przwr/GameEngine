@@ -19,9 +19,8 @@ public class Tile extends GameObject implements Appearance {
     protected final ArrayList<Point> tileStack;
 
     public Tile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        width = size;
-        height = size;
         this.spriteSheet = spriteSheet;
+        this.sprite = spriteSheet;
         tileStack = new ArrayList<>(1);
         tileStack.add(new Point(xSheet, ySheet));
         name = "Tile";
@@ -138,7 +137,7 @@ public class Tile extends GameObject implements Appearance {
 
     public Tile copy() {
         Point first = tileStack.get(0);
-        Tile copy = new Tile(spriteSheet, width, first.getX(), first.getY());
+        Tile copy = new Tile(spriteSheet, Place.tileSize, first.getX(), first.getY());
         for (int i = 1; i < tileStack.size(); i++) {
             copy.tileStack.add(tileStack.get(i));
         }

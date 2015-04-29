@@ -176,7 +176,7 @@ public abstract class Entity extends GameObject {
             }
             for (int i = 1; i < place.playersCount; i++) {
                 if (collision.isCollideSingle(getX(), getY(), place.players[i].getCollision())) {
-                    place.players[i].setX(getX() + xDelta * ((width + place.players[i].getCollisionWidth()) / 2));
+                    place.players[i].setX(getX() + xDelta * ((collision.getWidth() + place.players[i].getCollisionWidth()) / 2));
                 }
             }
         }
@@ -192,7 +192,7 @@ public abstract class Entity extends GameObject {
             }
             for (int i = 1; i < place.playersCount; i++) {
                 if (collision.isCollideSingle(getX(), getY(), place.players[i].getCollision())) {
-                    place.players[i].setY(getY() + yDelta * ((height + place.players[i].getCollisionHeight()) / 2));
+                    place.players[i].setY(getY() + yDelta * ((collision.getHeight()+ place.players[i].getCollisionHeight()) / 2));
                 }
             }
         }

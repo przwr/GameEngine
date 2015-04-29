@@ -71,10 +71,6 @@ public class MyPlayer extends Player {
     public void initialize(int xStart, int yStart, int width, int height, Place place) {
         this.place = place;
         this.online = place.game.online;
-        this.width = width;
-        this.height = height;
-        this.xStart = xStart;
-        this.yStart = yStart;
         emitter = true;
         emits = false;
         sprite = place.getSpriteSheet("test");
@@ -85,7 +81,7 @@ public class MyPlayer extends Player {
         if (lights.isEmpty()) {
             addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
-        setCollision(Rectangle.create(this.width, this.height / 4, OpticProperties.NO_SHADOW, this));
+        setCollision(Rectangle.create(width, height / 4, OpticProperties.NO_SHADOW, this));
     }
 
     @Override

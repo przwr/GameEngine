@@ -33,7 +33,7 @@ import sprites.SpriteSheet;
 public class TemporaryBlock extends GameObject {
 
     protected final int tile;
-    protected final int upHeight, xTiles, yTiles;
+    protected final int width, height, upHeight, xTiles, yTiles;
     protected final ObjectPlace objPlace;
     protected final ObjectMap objMap;
 

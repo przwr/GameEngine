@@ -294,10 +294,10 @@ public abstract class Map {
     }
 
     private boolean isObjectInSight(GameObject object) {
-        return cameraYStart <= object.getY() + (object.getHeight())
-                && cameraYEnd >= object.getY() - (object.getHeight())
-                && cameraXStart <= object.getX() + (object.getWidth())
-                && cameraXEnd >= object.getX() - (object.getWidth());
+        return cameraYStart <= object.getXSpriteBegin()
+                && cameraYEnd >= object.getYSpriteBegin()
+                && cameraXStart <= object.getXSpriteEnd()
+                && cameraXEnd >= object.getYSpriteEnd();
     }
 
     public WarpPoint findWarp(String name) {

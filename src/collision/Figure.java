@@ -187,19 +187,19 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public int getYOwnerEnd() {
-        return owner.getYObjectEnd();
+        return owner.getYSpriteEnd();
     }
 
     public int getYOwnerBegin() {
-        return owner.getYObjectBegin();
+        return owner.getYSpriteBegin();
     }
 
     public int getXOwnerBegin() {
-        return owner.getXObjectBegin();
+        return owner.getXSpriteBegin();
     }
 
     public int getXOwnerEnd() {
-        return owner.getXObjectEnd();
+        return owner.getXSpriteEnd();
     }
 
     public int getX(int x) {

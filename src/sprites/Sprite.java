@@ -27,6 +27,11 @@ public class Sprite implements Appearance {
     protected int height;
     protected int xStart;
     protected int yStart;
+    
+    protected int actualWidth;
+    protected int actualHeight;
+    protected int xOffset;
+    protected int yOffset;
     protected String key;
 
     private double begin, ending;
@@ -35,7 +40,7 @@ public class Sprite implements Appearance {
         return new Sprite(textureKey, width, height, 0, 0, base);
     }
 
-    private Sprite(String textureKey, int width, int height, int xStart, int yStart, SpriteBase base) {
+    protected Sprite(String textureKey, int width, int height, int xStart, int yStart, SpriteBase base) {
         if (textureKey != null) {
             this.texture = loadTexture(textureKey);
             this.key = textureKey;
@@ -261,5 +266,21 @@ public class Sprite implements Appearance {
         int hash = 7;
         hash = 97 * hash + Objects.hashCode(this.texture.getTextureID());
         return hash;
+    }
+
+    public int getActualWidth() {
+        return actualWidth;
+    }
+
+    public int getActualHeight() {
+        return actualHeight;
+    }
+
+    public int getxOffset() {
+        return xOffset;
+    }
+
+    public int getyOffset() {
+        return yOffset;
     }
 }

@@ -57,7 +57,7 @@ public class SpriteBase {
     }
 
     private Sprite loadSprite(String name) {
-        int width, height, startX, startY, pieceWidth, pieceHeight;
+        int width, height, startX, startY, pieceWidth, pieceHeight, xoffset, yoffset, actualWidth, actualHeight;
         boolean spriteSheet;
         String sprite, key;
         Texture texture;
@@ -71,15 +71,24 @@ public class SpriteBase {
             sprite = line;
             sprite = sprite.replace("\\", File.separator);
             sprite = sprite.replace("/", File.separator);
+            
             data = input.readLine().split(";");
             width = (int) (Integer.parseInt(data[0]));
             height = (int) (Integer.parseInt(data[1]));
+            
             data = input.readLine().split(";");
             startX = (int) (Integer.parseInt(data[0]));
             startY = (int) (Integer.parseInt(data[1]));
+                        
             data = input.readLine().split(";");
             pieceWidth = Integer.parseInt(data[0]);
             pieceHeight = Integer.parseInt(data[1]);
+            
+            data = input.readLine().split(";");
+            xoffset = Integer.parseInt(data[0]);
+            yoffset = Integer.parseInt(data[1]);
+            actualWidth = Integer.parseInt(data[2]);
+            actualHeight = Integer.parseInt(data[3]);
             input.close();
         } catch (IOException e) {
             Methods.error("File " + name + " not found!\n" + e.getMessage());
@@ -97,6 +106,10 @@ public class SpriteBase {
             image = Sprite.create(texture, width, height, startX, startY, this);
         }
         image.setKey(key);
+        image.xOffset = xoffset;
+        image.yOffset = yoffset;
+        image.actualWidth = actualWidth;
+        image.actualHeight = actualHeight;
         return image;
     }
 

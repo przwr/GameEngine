@@ -1,5 +1,6 @@
 rabbit;0
-res/textures/rabbit.png
+res\textures\rabbit.png
 128;128
 64;112
 16;16
+0;0;16;16

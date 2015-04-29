@@ -28,13 +28,9 @@ public abstract class Mob extends Entity {
 
     public abstract void update();
 
-    public Mob(int x, int y, int startX, int startY, int width, int height, double speed, int range, String name, Place place, String spriteName, boolean solid) {
+    public Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid) {
         this.place = place;
-        this.width = width;
-        this.height = height;
         this.solid = solid;
-        this.xStart = startX;
-        this.yStart = startY;
         this.range = range;
         this.setMaxSpeed(speed);
         this.sprite = place.getSprite(spriteName);

@@ -21,7 +21,7 @@ import sprites.Sprite;
 public abstract class GameObject {
 
     protected double x, y;
-    protected int width, height, depth, xStart, yStart;
+    protected int depth;
     protected boolean solid, emitter, emits, onTop, simpleLighting, visible;
     protected Sprite sprite;
     protected ArrayList<Light> lights = new ArrayList<>(1);
@@ -97,14 +97,6 @@ public abstract class GameObject {
         return y;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
     public int getDepth() {
         return (int) (depth + y);
     }
@@ -114,11 +106,11 @@ public abstract class GameObject {
     }
 
     public int getXEnd() {
-        return (int) x + width;
+        return (int) x + collision.getWidth();
     }
 
     public int getYEnd() {
-        return (int) y + height;
+        return (int) y + collision.getHeight();
     }
 
     public int getEndOfX() {
@@ -129,20 +121,20 @@ public abstract class GameObject {
         return (int) y + collision.getHeight() / 2;
     }
 
-    public int getXObjectBegin() {
-        return (int) x + sprite.getXStart() + xStart;
+    public int getXSpriteBegin() {
+        return (int) x + sprite.getxOffset() - sprite.getXStart();
     }
 
-    public int getYObjectBegin() {
-        return (int) y + sprite.getYStart() + yStart;
+    public int getYSpriteBegin() {
+        return (int) y + sprite.getyOffset() - sprite.getYStart();
     }
 
-    public int getXObjectEnd() {
-        return (int) x + sprite.getXStart() + xStart + width;
+    public int getXSpriteEnd() {
+        return (int) x + sprite.getxOffset() - sprite.getXStart() + sprite.getActualWidth();
     }
 
-    public int getYObjectEnd() {
-        return (int) y + sprite.getYStart() + yStart + height;
+    public int getYSpriteEnd() {
+        return (int) y + sprite.getyOffset() - sprite.getYStart() + sprite.getActualHeight();
     }
 
     public Figure getCollision() {
@@ -162,19 +154,11 @@ public abstract class GameObject {
     }
 
     public int getCollisionWidth() {
-        return collision != null ? collision.getWidth() : width;
+        return collision != null ? collision.getWidth() : sprite.getActualWidth();
     }
 
     public int getCollisionHeight() {
-        return collision != null ? collision.getHeight() : height;
-    }
-
-    public int getStartX() {
-        return xStart;
-    }
-
-    public int getStartY() {
-        return yStart;
+        return collision != null ? collision.getHeight() : sprite.getActualHeight();
     }
 
     public String getName() {
@@ -241,14 +225,6 @@ public abstract class GameObject {
 
     public void setDepth(int depth) {
         this.depth = depth;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     public void setName(String name) {
