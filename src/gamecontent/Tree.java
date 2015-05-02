@@ -19,7 +19,7 @@ public class Tree extends Mob {
     
     public Tree(int x, int y, int width, int height, double speed, int range, String name, Place place, boolean solid, short ID) {
         super(x, y, speed, range, name, place, "bigtree", solid);
-        setCollision(Rectangle.create(54, 27, OpticProperties.FULL_SHADOW, this));
+        setCollision(Rectangle.create(width, height, OpticProperties.FULL_SHADOW, this));
         collision.setMobile(true);
         setSimpleLighting(false);
         this.mobID = ID;

@@ -192,7 +192,7 @@ public class MyGameOnline extends GameOnline {
                         if (newPlayers[i] != null) {
                             NewMPlayer temp = newPlayers[i];
                             System.out.println("Adding player with ID: " + temp.getId() + " - " + temp.getName());
-                            game.players[tempPlace.playersCount].initializeSetPosition(4, 10, 56, 104, tempPlace, temp.getX(), temp.getY());
+                            game.players[tempPlace.playersCount].initializeSetPosition(56, 104, tempPlace, temp.getX(), temp.getY());
                             game.players[tempPlace.playersCount].playerID = temp.getId();
                             game.players[tempPlace.playersCount].setName(temp.getName());
                             tempPlace.players[tempPlace.playersCount] = game.players[tempPlace.playersCount];

@@ -206,7 +206,7 @@ public class Rectangle extends Figure {
         return false;
     }
 
-    private int recognizeCase() {
+    private void recognizeCase() {
         caseNumber = firstPushed + secondPushed + 1;
         if (secondPushed != -1) {
             caseNumber += 3;
@@ -214,7 +214,6 @@ public class Rectangle extends Figure {
                 caseNumber -= 2;
             }
         }
-        return caseNumber;
     }
 
     private boolean isCollideStraightEdgesByCase(RoundRectangle roundRectangle) {

@@ -29,9 +29,9 @@ public abstract class Player extends Entity {
 
     protected ArrayList<GUIObject> guiList = new ArrayList<>();
 
-    public abstract void initializeSetPosition(int xStart, int yStart, int width, int height, Place place, int x, int y);
+    public abstract void initializeSetPosition(int width, int height, Place place, int x, int y);
 
-    public abstract void initialize(int xStart, int yStart, int width, int height, Place place);
+    public abstract void initialize(int width, int height, Place place);
 
     public abstract void update();
 

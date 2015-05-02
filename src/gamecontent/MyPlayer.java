@@ -61,14 +61,14 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void initializeSetPosition(int xStart, int yStart, int width, int height, Place place, int x, int y) {
-        initialize(xStart, yStart, width, height, place);
+    public void initializeSetPosition(int width, int height, Place place, int x, int y) {
+        initialize(width, height, place);
         initialize(name, x, y);
 
     }
 
     @Override
-    public void initialize(int xStart, int yStart, int width, int height, Place place) {
+    public void initialize(int width, int height, Place place) {
         this.place = place;
         this.online = place.game.online;
         emitter = true;

@@ -20,222 +20,242 @@ import sprites.Sprite;
 
 public abstract class GameObject {
 
-    protected double x, y;
-    protected int depth;
-    protected boolean solid, emitter, emits, onTop, simpleLighting, visible;
-    protected Sprite sprite;
-    protected ArrayList<Light> lights = new ArrayList<>(1);
-    protected String name;
-    protected Map map;
-    protected int area, prevArea = -1;
-    protected Figure collision;
-    protected Animation animation;
+	protected double x, y;
+	protected int depth;
+	protected boolean solid, emitter, emits, onTop, simpleLighting, visible;
+	protected Sprite sprite;
+	protected ArrayList<Light> lights = new ArrayList<>(1);
+	protected String name;
+	protected Map map;
+	protected int area, prevArea = -1;
+	protected Figure collision;
+	protected Animation animation;
 
-    public abstract void render(int xEffect, int yEffect);
+	public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure);
+	public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
+	public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
 
-    public abstract void renderShadow(int xEffect, int yEffect, Figure figure);
+	public abstract void renderShadow(int xEffect, int yEffect, Figure figure);
 
-    public abstract void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
+	public abstract void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
 
-    protected void initialize(String name, int x, int y) {
-        this.name = name;
-        this.x = x;
-        this.y = y;
-        depth = 0;
-        visible = true;
-    }
+	protected void initialize(String name, int x, int y) {
+		this.name = name;
+		this.x = x;
+		this.y = y;
+		depth = 0;
+		visible = true;
+	}
 
-    public void changeMap(Map map) {
-        if (this.map != null && this.map != map) {
-            this.map.deleteObject(this);
-        }
-        this.map = map;
-        this.map.addObject(this);
-    }
+	public void changeMap(Map map) {
+		if (this.map != null && this.map != map) {
+			this.map.deleteObject(this);
+		}
+		this.map = map;
+		this.map.addObject(this);
+	}
 
-    public boolean isSolid() {
-        return solid;
-    }
+	public boolean isSolid() {
+		return solid;
+	}
 
-    public boolean isOnTop() {
-        return onTop;
-    }
+	public boolean isOnTop() {
+		return onTop;
+	}
 
-    public boolean isEmitter() {
-        return emitter;
-    }
+	public boolean isEmitter() {
+		return emitter;
+	}
 
-    public boolean isEmits() {
-        return emits;
-    }
+	public boolean isEmits() {
+		return emits;
+	}
 
-    public boolean isSimpleLighting() {
-        return simpleLighting;
-    }
+	public boolean isSimpleLighting() {
+		return simpleLighting;
+	}
 
-    public boolean isVisible() {
-        return visible;
-    }
+	public boolean isVisible() {
+		return visible;
+	}
 
-    public int getX() {
-        return (int) x;
-    }
+	public int getX() {
+		return (int) x;
+	}
 
-    public int getY() {
-        return (int) y;
-    }
+	public int getY() {
+		return (int) y;
+	}
 
-    public double getXInDouble() {
-        return x;
-    }
+	public double getXInDouble() {
+		return x;
+	}
 
-    public double getYInDouble() {
-        return y;
-    }
+	public double getYInDouble() {
+		return y;
+	}
 
-    public int getDepth() {
-        return (int) (depth + y);
-    }
+	public int getDepth() {
+		return (int) (depth + y);
+	}
 
-    public int getPureDepth() {
-        return depth;
-    }
+	public int getPureDepth() {
+		return depth;
+	}
 
-    public int getXEnd() {
-        return (int) x + collision.getWidth();
-    }
+	public int getXEnd() {
+		return (int) x + collision.getWidth();
+	}
 
-    public int getYEnd() {
-        return (int) y + collision.getHeight();
-    }
+	public int getYEnd() {
+		return (int) y + collision.getHeight();
+	}
 
-    public int getEndOfX() {
-        return (int) x + collision.getWidth() / 2;
-    }
+	public int getEndOfX() {
+		return (int) x + collision.getWidth() / 2;
+	}
 
-    public int getEndOfY() {
-        return (int) y + collision.getHeight() / 2;
-    }
+	public int getEndOfY() {
+		return (int) y + collision.getHeight() / 2;
+	}
 
-    public int getXSpriteBegin() {
-        return (int) x + sprite.getxOffset() + sprite.getXStart();
-    }
+	public int getXReferencePointForShadow() {
+		return (((int) x - (sprite.getActualWidth() >> 1)) << 1) - collision.getX();
+	}
 
-    public int getYSpriteBegin() {
-        return (int) y + sprite.getyOffset() + sprite.getYStart();
-    }
+	public int getXSpriteBegin() {
+		if (sprite != null) {
+			return (int) x + sprite.getXOffset() + sprite.getXStart();
+		} else {
+			return (int) x;
+		}
+	}
 
-    public int getXSpriteEnd() {
-        return (int) x + sprite.getxOffset() + sprite.getXStart() + sprite.getActualWidth();
-    }
+	public int getYSpriteBegin() {
+		if (sprite != null) {
+			return (int) y + sprite.getYOffset() + sprite.getYStart();
+		} else {
+			return (int) y;
+		}
+	}
 
-    public int getYSpriteEnd() {
-        return (int) y + sprite.getyOffset() + sprite.getYStart() + sprite.getActualHeight();
-    }
+	public int getXSpriteEnd() {
+		if (sprite != null) {
+			return (int) x + sprite.getXOffset() + sprite.getXStart() + sprite.getActualWidth();
+		} else {
+			return (int) x;
+		}
+	}
 
-    public Figure getCollision() {
-        return collision;
-    }
+	public int getYSpriteEnd() {
+		if (sprite != null) {
+			return (int) y + sprite.getYOffset() + sprite.getYStart() + sprite.getActualHeight();
+		} else {
+			return (int) y;
+		}
+	}
 
-    public Map getMap() {
-        return map;
-    }
+	public Figure getCollision() {
+		return collision;
+	}
 
-    public int getArea() {
-        return area;
-    }
+	public Map getMap() {
+		return map;
+	}
 
-    public int getPrevArea() {
-        return prevArea;
-    }
+	public int getArea() {
+		return area;
+	}
 
-    public int getCollisionWidth() {
-        return collision != null ? collision.getWidth() : sprite.getActualWidth();
-    }
+	public int getPrevArea() {
+		return prevArea;
+	}
 
-    public int getCollisionHeight() {
-        return collision != null ? collision.getHeight() : sprite.getActualHeight();
-    }
+	public int getCollisionWidth() {
+		return collision != null ? collision.getWidth() : sprite.getActualWidth();
+	}
 
-    public String getName() {
-        return name;
-    }
+	public int getCollisionHeight() {
+		return collision != null ? collision.getHeight() : sprite.getActualHeight();
+	}
 
-    public List<Light> getLights() {
-        return Collections.unmodifiableList(lights);
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void addLight(Light light) {
-        lights.add(light);
-    }
+	public List<Light> getLights() {
+		return Collections.unmodifiableList(lights);
+	}
 
-    public Sprite getSprite() {
-        return sprite;
-    }
+	public void addLight(Light light) {
+		lights.add(light);
+	}
 
-    public Animation getAnimation() {
-        return animation;
-    }
+	public Sprite getSprite() {
+		return sprite;
+	}
 
-    public void setSolid(boolean solid) {
-        this.solid = solid;
-    }
+	public Animation getAnimation() {
+		return animation;
+	}
 
-    public void setOnTop(boolean onTop) {
-        this.onTop = onTop;
-    }
+	public void setSolid(boolean solid) {
+		this.solid = solid;
+	}
 
-    public void setEmits(boolean emits) {
-        this.emits = emits;
-    }
+	public void setOnTop(boolean onTop) {
+		this.onTop = onTop;
+	}
 
-    public void setSimpleLighting(boolean simpleLighting) {
-        this.simpleLighting = simpleLighting;
-    }
+	public void setEmits(boolean emits) {
+		this.emits = emits;
+	}
 
-    public void setVisible(boolean vis) {
-        this.visible = vis;
-    }
+	public void setSimpleLighting(boolean simpleLighting) {
+		this.simpleLighting = simpleLighting;
+	}
 
-    public void setPosition(double x, double y) {
-        setX(x);
-        setY(y);
-        updateAreaPlacement();
-    }
+	public void setVisible(boolean vis) {
+		this.visible = vis;
+	}
 
-    public void setX(double x) {
-        this.x = x;
-    }
+	public void setPosition(double x, double y) {
+		setX(x);
+		setY(y);
+		updateAreaPlacement();
+	}
 
-    public void setY(double y) {
-        this.y = y;
-    }
+	public void setX(double x) {
+		this.x = x;
+	}
 
-    public void updateAreaPlacement() {
-        if (map != null) {
-            prevArea = area;
-            area = map.getAreaIndex(getX(), getY());
-            map.changeAreaIfNeeded(area, prevArea, this);
-        }
-    }
+	public void setY(double y) {
+		this.y = y;
+	}
 
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
+	public void updateAreaPlacement() {
+		if (map != null) {
+			prevArea = area;
+			area = map.getAreaIndex(getX(), getY());
+			map.changeAreaIfNeeded(area, prevArea, this);
+		}
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
 
-    public void setCollision(Figure figure) {
-        collision = figure;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setMapNotChange(Map map) {
-        this.map = map;
-    }
+	public void setCollision(Figure figure) {
+		collision = figure;
+	}
+
+	public void setMapNotChange(Map map) {
+		this.map = map;
+	}
 }

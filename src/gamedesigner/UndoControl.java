@@ -6,8 +6,6 @@
 package gamedesigner;
 
 import engine.Point;
-import game.place.ForegroundTile;
-import game.place.Tile;
 import java.util.ArrayList;
 
 /**

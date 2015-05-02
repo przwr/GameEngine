@@ -276,11 +276,11 @@ public class Sprite implements Appearance {
         return actualHeight;
     }
 
-    public int getxOffset() {
+    public int getXOffset() {
         return xOffset;
     }
 
-    public int getyOffset() {
+    public int getYOffset() {
         return yOffset;
     }
 }
