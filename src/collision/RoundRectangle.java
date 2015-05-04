@@ -10,9 +10,7 @@ import engine.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
