@@ -69,6 +69,7 @@ public class SpriteBase {
             spriteSheet = data[1].equals("1");
             line = input.readLine();
             sprite = line;
+            
             sprite = sprite.replace("\\", File.separator);
             sprite = sprite.replace("/", File.separator);
             

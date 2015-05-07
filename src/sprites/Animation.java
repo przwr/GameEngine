@@ -95,6 +95,11 @@ public class Animation implements Appearance {
         }
     }
 
+    public int getCurrentFrameIndex() {
+        changeFrameIfNeeded();
+        return currentFrame;
+    }
+    
     public void setDelay(int d) {
         delay.setFrameLength(d);
     }

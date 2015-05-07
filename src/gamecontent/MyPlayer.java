@@ -14,11 +14,16 @@ import game.place.Light;
 import sprites.Animation;
 import engine.Drawer;
 import engine.Methods;
+import engine.RandomGenerator;
 import engine.Time;
 import game.Settings;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import game.place.WarpPoint;
+import gamecontent.equipment.Cloth;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.jodk.lang.FastMath;
 import net.packets.MPlayerUpdate;
 import net.packets.Update;
@@ -32,6 +37,12 @@ import sprites.SpriteSheet;
  * @author przemek
  */
 public class MyPlayer extends Player {
+
+    private Cloth torso;
+    private Cloth legs;
+    private Cloth dress;
+
+    private final int framesPerDir = 19;
 
     private int xTempSpeed, yTempSpeed;
     private float jumpDelta = 22.6f;  //TYLKO TYMCZASOWE!
@@ -74,6 +85,14 @@ public class MyPlayer extends Player {
         emitter = true;
         emits = false;
         sprite = place.getSpriteSheet("test");
+        try {
+            RandomGenerator r = RandomGenerator.create();
+            torso = new Cloth(r.chance(50) ? "sweater" : "torso", place);
+            legs = new Cloth(r.chance(50) ? "boots" : "legs", place);
+            dress = r.chance(50) ? new Cloth("dress", place) : null;
+        } catch (FileNotFoundException ex) {
+            System.err.println(ex.getMessage());
+        }
         animation = new Animation((SpriteSheet) sprite, 200);
         visible = true;
         depth = 0;
@@ -92,6 +111,42 @@ public class MyPlayer extends Player {
         return false;
     }
 
+    public void renderClothed(int frame) {
+        boolean rightUp = frame < 4 * framesPerDir;
+        boolean frontUp = (frame < 3 * framesPerDir) || (frame >= 6 * framesPerDir);
+
+        glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);
+        if (legs != null) {
+            if (rightUp) {
+                legs.getLeftPart().renderPieceHere(frame);
+                legs.getRightPart().renderPieceHere(frame);
+            } else {
+                legs.getRightPart().renderPieceHere(frame); 
+                legs.getLeftPart().renderPieceHere(frame);               
+            }
+        }
+        if (dress != null) {
+            if (frontUp) {
+                dress.getRightPart().renderPieceHere(frame);
+                dress.getLeftPart().renderPieceHere(frame);
+            } else {
+                dress.getLeftPart().renderPieceHere(frame);
+                dress.getRightPart().renderPieceHere(frame);                
+            }
+        }
+        if (torso != null) {
+            if (rightUp) {
+                torso.getLeftPart().renderPieceHere(frame);
+                torso.getCentralPart().renderPieceHere(frame);
+                torso.getRightPart().renderPieceHere(frame);
+            } else {
+                torso.getRightPart().renderPieceHere(frame); 
+                torso.getCentralPart().renderPieceHere(frame);
+                torso.getLeftPart().renderPieceHere(frame);               
+            }
+        }
+    }
+
     @Override
     public void render(int xEffect, int yEffect) {
         if (sprite != null) {
@@ -105,7 +160,8 @@ public class MyPlayer extends Player {
             Drawer.drawElipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
-            getAnimation().render();
+            renderClothed(animation.getCurrentFrameIndex());
+            //getAnimation().render();
 
             if (Settings.scaled) {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);

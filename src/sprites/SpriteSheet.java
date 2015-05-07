@@ -73,6 +73,20 @@ public class SpriteSheet extends Sprite {
             renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
         }
     }
+    
+    public void renderPieceHere(int piece) {
+        if (isValidPiece(piece)) {
+            int x = (int) (piece % xTiles);
+            int y = (int) (piece / xTiles);
+            renderPieceHere(x, y);
+        }
+    }
+
+    public void renderPieceHere(int x, int y) {
+        if (areValidCoordinates(x, y)) {
+            renderSpritePieceHere((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+        }
+    }
 
     public void renderPiecePart(int id, int xStart, int xEnd) {
         int x = (int) (id % xTiles);

@@ -1,6 +1,6 @@
 bigtree;0
-/media/kreacja/Gra - Projekt/GameEngine/res/textures\bigtree.png
+res\textures\bigtree.png
 256;512
-128;452
-16;16
-0;0;16;16
+127;446
+256;512
+0;201;256;309

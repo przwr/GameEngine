@@ -166,6 +166,20 @@ public class Sprite implements Appearance {
         glVertex2f(width, 0);
         glEnd();
     }
+    
+    public void renderSpritePieceHere(float xBegin, float xEnd, float yBegin, float yEnd) {
+        bindCheckByID();
+        glBegin(GL_QUADS);
+        glTexCoord2f(xBegin, yBegin);
+        glVertex2f(0, 0);
+        glTexCoord2f(xBegin, yEnd);
+        glVertex2f(0, height);
+        glTexCoord2f(xEnd, yEnd);
+        glVertex2f(width, height);
+        glTexCoord2f(xEnd, yBegin);
+        glVertex2f(width, 0);
+        glEnd();
+    }
 
     public void renderSpritePieceMirrored(float xBegin, float xEnd, float yBegin, float yEnd) {
         bindCheckByID();
