@@ -13,7 +13,6 @@ import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.Light;
 import game.place.Map;
-import game.place.Place;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.Display;
