@@ -114,7 +114,7 @@ public class MyPlayer extends Player {
     public void renderClothed(int frame) {
         boolean rightUp = frame < 4 * framesPerDir;
         boolean frontUp = (frame < 3 * framesPerDir) || (frame >= 6 * framesPerDir);
-        System.out.println(frame);
+
         glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);
         if (legs != null) {
             if (rightUp) {
