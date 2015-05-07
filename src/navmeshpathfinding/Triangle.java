@@ -67,8 +67,8 @@ public class Triangle {
     }
 
     public void addConnection(Connection connection) {
-            connections[connectionsNumber++] = connection;
-        }
+        connections[connectionsNumber++] = connection;
+    }
 
     public boolean isPointInTriangle(Point point) {
         if (isOutOfBoundsToEpsilon(point)) {
@@ -105,8 +105,8 @@ public class Triangle {
 
     public boolean containsConnection(Node firstNode, Node secondNode) {
         for (int i = 0; i < getConnectionsNumber(); i++) {
-            if ((connections[i].getNode(0) == firstNode && connections[i].getNode(1) == secondNode)
-                    || (connections[i].getNode(0) == secondNode && connections[i].getNode(1) == firstNode)) {
+            if ((connections[i].getNode(0).getPoint() == firstNode.getPoint() && connections[i].getNode(1).getPoint() == secondNode.getPoint())
+                    || (connections[i].getNode(0).getPoint() == secondNode.getPoint() && connections[i].getNode(1).getPoint() == firstNode.getPoint())) {
                 return true;
             }
         }

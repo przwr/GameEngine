@@ -125,19 +125,6 @@ public class NavigationMesh {
         sharedNodesIndexes[indexModifier + 2] = tempNodeIndexes[3];
         sharedNodesIndexes[indexModifier + 3] = tempNodeIndexes[4];
     }
-//
-//    private void deleteCopiedNeightbours(Triangle triangleToAdd) {
-//        for (int i = 0; i < 3; i++) {
-//            Node node = triangleToAdd.getNode(i);
-//            for (Triangle triangle : connectedTriangles) {
-//                if (triangle != null) {
-//                    for (int j = 0; j < 3; j++) {
-//                        triangle.getNode(j).removeNeightbour(node);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     private void addAndSolveDependancesIfConnected(Triangle triangleToAdd) {
         if (nrConnections > 0) {
@@ -199,7 +186,7 @@ public class NavigationMesh {
     private void addIfABound(Triangle triangle, Node firstNode) {
         for (int j = 0; j < 3; j++) {
             Node secondNode = triangle.getNode(j);
-            if (firstNode != secondNode) {
+            if (firstNode.getPoint() != secondNode.getPoint()) {
                 boolean notContains = true;
                 if (triangle.containsConnection(firstNode, secondNode)) {
                     notContains = false;
@@ -234,10 +221,8 @@ public class NavigationMesh {
     }
 
     public boolean lineIntersectsMeshBounds(Point start, Point end) {
-        for (Bound bound : bounds) {
-            if (lineIntersectsPointsNotLies(bound, start, end)) {
-                return true;
-            }
+        if (bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, start, end)))) {
+            return true;
         }
         return false;
     }
@@ -279,8 +264,8 @@ public class NavigationMesh {
     }
 
     public void reset() {
-        mesh.stream().forEach((tr) -> {
-            tr.reset();
+        mesh.stream().forEach((triangle) -> {
+            triangle.reset();
         });
     }
 }

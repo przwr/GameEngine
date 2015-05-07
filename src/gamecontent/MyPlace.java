@@ -19,6 +19,7 @@ import game.gameobject.Entity;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
+import navmeshpathfinding.NavigationMeshGenerator;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 
@@ -47,6 +48,7 @@ public class MyPlace extends Place {
             updatePlayersOnline();
             dayCycle.updateTime();
         };
+        delay.start();
     }
 
     public MyPlace(Game game, int tileSize) {
@@ -59,14 +61,15 @@ public class MyPlace extends Place {
     @Override
     public void generateAsGuest() {
         GladeMap polana = new GladeMap(mapIDcounter++, this, 4096, 8192, tileSize);
-//        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
+        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
         maps.add(polana);
-//        maps.add(kamienna);
+        maps.add(kamienna);
 //        sounds.initialize("res");
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
         standardFont = fonts.getFont(0);
         SoundStore.get().poll(0);
+        NavigationMeshGenerator.clear();
     }
 
     @Override
@@ -171,13 +174,13 @@ public class MyPlace extends Place {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
 //                sounds.getSound("MumboMountain").fade(0.5, false);
 //            }
-        delay.start();
         if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
             if (delay.isOver()) {
                 delay.start();
                 dayCycle.addMinutes(5);
             }
         }
+
         if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
             Main.refreshGamma();
         }

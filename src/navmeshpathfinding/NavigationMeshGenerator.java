@@ -38,7 +38,7 @@ public class NavigationMeshGenerator {
     private static int x, y, xMod, yMod, yStartBound = -1, yEndBound = -1, xStartBound = -1, xEndBound = -1, xSTemp, ySTemp, xETemp, yETemp, lineXStart = 0, lineYStart = 0;
     private static double xd, yd;
     private static final BitSet spots = new BitSet();
-    private static final byte[] diagonal = new byte[X_IN_TILES * Y_IN_TILES];
+    private static final byte[] diagonals = new byte[X_IN_TILES * Y_IN_TILES];
     private static final Set<Line> newLines = new HashSet<>();
     private static final PriorityQueue<Line> sortedLines = new PriorityQueue<>();
     private static final BlueArray<Line> linesToRemove = new BlueArray<>();
@@ -61,7 +61,7 @@ public class NavigationMeshGenerator {
     private static NavigationMesh navigationMesh;
 
     private static boolean showMesh = false, showLines = false, copy;
-    private static int areaNumberToShow = 0;
+    private static int areaNumberToShow = 2;
     public static long fullTime = 0;
     public static int areas = 0;
 
@@ -86,16 +86,19 @@ public class NavigationMeshGenerator {
         long endTime = System.nanoTime();
         long diffrence = endTime - startTime;
         fullTime += diffrence;
+        if ((showMesh || showLines) && areas == areaNumberToShow) {
 //            System.out.println("Time: " + diffrence + " ns " + (diffrence / 1000000d) + " ms");
 //            System.out.println("Points: " + pointsToConnect.size());
-//            System.out.println("Lines: " + sureLines.size());
+//            System.out.println("Lines: " + newLines.size());
 //            System.out.println("Triangles " + triangles.size());
-        if ((showMesh || showLines) && areas == areaNumberToShow) {
+//            for (Triangle triangle : triangles) {
+//                System.out.println(triangle);
+//            }
             if (showLines) {
                 copy = true;
-                Line[] lines = new Line[sureLines.size()];
+                Line[] lines = new Line[newLines.size()];
                 int i = 0;
-                for (Line line : sureLines) {
+                for (Line line : newLines) {
                     lines[i++] = line;
                 }
                 copy = false;
@@ -105,10 +108,10 @@ public class NavigationMeshGenerator {
                 showLines = false;
             }
             if (showMesh) {
+                Window mesh = new Window();
                 start = new Point(64, 64);
                 end = new Point(1600, 1216);
-                Window mesh = new Window();
-                mesh.addVariables(navigationMesh, start, end, PathFinder.findPath(navigationMesh, start, end));
+                mesh.addVariables(navigationMesh, start, end, PathFinder.findPath(navigationMesh, start.getX(), start.getY(), end.getX(), end.getY(), null));
                 mesh.setVisible(true);
                 showMesh = false;
             }
@@ -119,6 +122,19 @@ public class NavigationMeshGenerator {
         //
         //
         return navigationMesh;
+    }
+
+    public static void clear() {
+        spots.clear();
+        newLines.clear();
+        sortedLines.clear();
+        linesToRemove.clearReally();
+        linesToAdd.clearReally();
+        sureLines.clearReally();
+        linesToCheck.clear();
+        pointsToConnect.clear();
+        triangles.clear();
+        linesTriangles.clear();
     }
 
     private static void findBoundsAndSetCollisionSpots(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
@@ -292,6 +308,8 @@ public class NavigationMeshGenerator {
         newLines.clear();
         createHorisontalLines();
         createVerticalLines();
+        sureLines.clear();
+        sureLines.addAll(newLines);
     }
 
     private static void createHorisontalLines() {
@@ -338,8 +356,6 @@ public class NavigationMeshGenerator {
     }
 
     private static void createAndAddDiagonalLines(Set<Block> blocks) {
-        sureLines.clear();
-        sureLines.addAll(newLines);
         newLines.clear();
         createDiagonalLines(blocks);
         connectDiagonalLines();
@@ -363,8 +379,8 @@ public class NavigationMeshGenerator {
     }
 
     private static void clearDiagonal() {
-        for (int i = 0; i < diagonal.length; i++) {
-            diagonal[i] = -1;
+        for (int i = 0; i < diagonals.length; i++) {
+            diagonals[i] = -1;
         }
     }
 
@@ -382,25 +398,25 @@ public class NavigationMeshGenerator {
                 if (isCollisionFromCoordinates(xSTemp, ySTemp - 1) || isCollisionFromCoordinates(xSTemp - 1, ySTemp)) {
                     return false;
                 }
-                diagonal[getIndex(xSTemp, ySTemp)] = LEFT_TOP;
+                diagonals[getIndex(xSTemp, ySTemp)] = LEFT_TOP;
                 return true;
             case LEFT_BOTTOM:
                 if (isCollisionFromCoordinates(xSTemp, yETemp) || isCollisionFromCoordinates(xSTemp - 1, yETemp - 1)) {
                     return false;
                 }
-                diagonal[getIndex(xSTemp, yETemp - 1)] = LEFT_BOTTOM;
+                diagonals[getIndex(xSTemp, yETemp - 1)] = LEFT_BOTTOM;
                 return true;
             case RIGHT_BOTTOM:
                 if (isCollisionFromCoordinates(xSTemp, yETemp) || isCollisionFromCoordinates(xETemp, yETemp - 1)) {
                     return false;
                 }
-                diagonal[getIndex(xSTemp, yETemp - 1)] = RIGHT_BOTTOM;
+                diagonals[getIndex(xSTemp, yETemp - 1)] = RIGHT_BOTTOM;
                 return true;
             case RIGHT_TOP:
                 if (isCollisionFromCoordinates(xSTemp, ySTemp - 1) || isCollisionFromCoordinates(xETemp, ySTemp)) {
                     return false;
                 }
-                diagonal[getIndex(xSTemp, ySTemp)] = RIGHT_TOP;
+                diagonals[getIndex(xSTemp, ySTemp)] = RIGHT_TOP;
                 return true;
         }
         return true;
@@ -664,9 +680,6 @@ public class NavigationMeshGenerator {
             pointsToConnect.add(line.getStart());
             pointsToConnect.add(line.getEnd());
         });
-//		if (areas == areaNumberToShow) {
-//			System.out.println(pointsToConnect.size());
-//		}
     }
 
     private static void connectPoints() {
@@ -684,12 +697,12 @@ public class NavigationMeshGenerator {
         if (!point1.equals(point2)) {
             xd = ((point1.getX() + point2.getX()) / 2d) / Place.tileSize;
             yd = ((point1.getY() + point2.getY()) / 2d) / Place.tileSize;
-            return isLineInWalkable(xd, yd);
+            return isInWalkable(xd, yd);
         }
         return false;
     }
 
-    private static boolean isLineInWalkable(double xd, double yd) {
+    private static boolean isInWalkable(double xd, double yd) {
         int i = getIndex((int) xd, (int) yd);
         x = getXFromIndex(i);
         y = getYFromIndex(i);
@@ -701,7 +714,7 @@ public class NavigationMeshGenerator {
     }
 
     private static boolean isWalkableOnDiagonal(int i) {
-        switch (diagonal[i]) {
+        switch (diagonals[i]) {
             case -1:
                 return false;
             case LEFT_TOP:
@@ -715,12 +728,12 @@ public class NavigationMeshGenerator {
                 }
                 return false;
             case RIGHT_BOTTOM:
-                if ((xd - x) + (yd - y) > Place.tileSize) {
+                if (Math.abs(xd - x) + Math.abs(yd - y) > Place.tileSize) {
                     return true;
                 }
                 return false;
             case RIGHT_TOP:
-                if ((xd - x) > (yd - y)) {
+                if (Math.abs(xd - x) > (yd - y)) {
                     return true;
                 }
                 return false;
@@ -739,8 +752,12 @@ public class NavigationMeshGenerator {
         newLines.addAll(sureLines);
         while (!sortedLines.isEmpty()) {
             Line line1 = sortedLines.poll();
+
             start = line1.getStart();
             end = line1.getEnd();
+            if (start.equals(end)) {
+                System.out.println("LIPA");
+            }
             intersects = false;
             for (Line line2 : newLines) {
                 sharedPoints = 0;
@@ -790,7 +807,7 @@ public class NavigationMeshGenerator {
 
     private static void addTriangleIfPossible(Point first, Point second, Line line1, Line line2) {
         tempLine1.setPoints(first, second);
-        if (newLines.contains(tempLine1) && isTriangleWalkable(start, end, second)) {
+        if (newLines.contains(tempLine1) && isTriangleWalkable(start, end, second) && !isTrianglesContainsOtherPoints(start, end, second)) {
             Triangle triangle = Triangle.create(start, end, second);
             Line line3 = new Line(first, second);
             if (!triangles.contains(triangle)) {
@@ -817,7 +834,58 @@ public class NavigationMeshGenerator {
     private static boolean isTriangleWalkable(Point point1, Point point2, Point point3) {
         xd = ((point1.getX() + point2.getX() + point2.getX()) / 3d) / Place.tileSize;
         yd = ((point1.getY() + point2.getY() + point3.getY()) / 3d) / Place.tileSize;
-        return isLineInWalkable(xd, yd);
+        return isInWalkable(xd, yd);
+    }
+
+    private static boolean isTrianglesContainsOtherPoints(Point point1, Point point2, Point point3) {
+        calculateBounds(point1, point2, point3);
+        if (pointsToConnect.stream().anyMatch((point) -> (!point.equals(point1) && !point.equals(point2) && !point.equals(point3)
+                && isPointInTriangle(point, point1, point2, point3)))) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isPointInTriangle(Point point, Point point1, Point point2, Point point3) {
+        if (isOutOfBoundsToEpsilon(point)) {
+            return false;
+        }
+        return baricentricPointInTriangle(point, point1, point2, point3);
+    }
+
+    private final static float EPSILON = 0.001f;
+
+    private static void calculateBounds(Point point1, Point point2, Point point3) {
+        xSTemp = Math.min(Math.min(point1.getX(), point2.getX()), point3.getX());
+        xETemp = Math.max(Math.max(point1.getX(), point2.getX()), point3.getX());
+        ySTemp = Math.min(Math.min(point1.getY(), point2.getY()), point3.getY());
+        yETemp = Math.max(Math.max(point1.getY(), point2.getY()), point3.getY());
+    }
+
+    private static boolean isOutOfBoundsToEpsilon(Point point) {
+        return (point.getX() < xSTemp - EPSILON)
+                || (point.getX() - EPSILON > xETemp)
+                || (point.getY() < ySTemp - EPSILON)
+                || (point.getY() - EPSILON > yETemp);
+    }
+
+    private static boolean baricentricPointInTriangle(Point point, Point point1, Point point2, Point point3) {
+        double denominator = getDenominator(point1, point2, point3);
+        double a = ((point2.getY() - point3.getY()) * (point.getX() - point3.getX())
+                + ((point3.getX() - point2.getX()) * (point.getY() - point3.getY()))) / denominator;
+        double b = ((point3.getY() - point1.getY()) * (point.getX() - point3.getX())
+                + ((point1.getX() - point3.getX()) * (point.getY() - point3.getY()))) / denominator;
+        double c = 1 - a - b;
+        return isInZeroOneRangeToEpsilon(a) && isInZeroOneRangeToEpsilon(b) && isInZeroOneRangeToEpsilon(c);
+    }
+
+    private static double getDenominator(Point point1, Point point2, Point point3) {
+        return ((point2.getY() - point3.getY()) * (point1.getX() - point3.getX()))
+                + ((point3.getX() - point2.getX()) * (point1.getY() - point3.getY()));
+    }
+
+    private static boolean isInZeroOneRangeToEpsilon(double number) {
+        return -EPSILON <= number && number <= 1 + EPSILON;
     }
 
     private static void generateNavigationMesh() {

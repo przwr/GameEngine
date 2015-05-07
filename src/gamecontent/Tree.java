@@ -27,16 +27,16 @@ public class Tree extends Mob {
     
     @Override
     public void update() {
-        if (prey != null && ((MyPlayer) prey).isInGame()) {
-            chase(prey);
-            if (Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY()) > range * 1.5 || prey.getMap() != map) {
-                prey = null;
-            }
-        } else {
-            look(place.players);
-            brake(2);
-        }
-        moveIfPossible((int) (xEnvironmentalSpeed + xSpeed), (int) (yEnvironmentalSpeed + ySpeed));
-        brakeOthers();
+//        if (prey != null && ((MyPlayer) prey).isInGame()) {
+//            chase(prey);
+//            if (Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY()) > range * 1.5 || prey.getMap() != map) {
+//                prey = null;
+//            }
+//        } else {
+//            look(place.players);
+//            brake(2);
+//        }
+//        moveIfPossible((int) (xEnvironmentalSpeed + xSpeed), (int) (yEnvironmentalSpeed + ySpeed));
+//        brakeOthers();
     }
 }

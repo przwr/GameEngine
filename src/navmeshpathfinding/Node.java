@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class Node {
 
+    private static final int halfMaxValue = Integer.MAX_VALUE >> 1;
     private final ArrayList<Node> neightbours = new ArrayList<>();
     private Point point;
     private Node parent, child;
@@ -55,8 +56,8 @@ public class Node {
 
     public void reset() {
         parent = null;
-        hCost = Integer.MAX_VALUE >> 1;
-        gCost = Integer.MAX_VALUE >> 1;
+        hCost = halfMaxValue;
+        gCost = halfMaxValue;
         fCost = Integer.MAX_VALUE;
     }
 

@@ -12,7 +12,7 @@ package navmeshpathfinding;
 public class NeightbourTriangles {
 
     Triangle[] triangles = new Triangle[2];
-    int size;
+    int size=0;
 
     public NeightbourTriangles(Triangle triangle) {
         triangles[size++] = triangle;

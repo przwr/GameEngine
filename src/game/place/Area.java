@@ -6,7 +6,9 @@
 package game.place;
 
 import collision.Block;
+import collision.Figure;
 import engine.Methods;
+import engine.Point;
 import navmeshpathfinding.NavigationMeshGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
@@ -17,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import navmeshpathfinding.NavigationMesh;
+import navmeshpathfinding.PathFinder;
 
 /**
  *
@@ -50,8 +53,16 @@ public class Area {
         tiles = new Tile[X_IN_TILES * Y_IN_TILES];
     }
 
+//    private int x, y;
+
     public void generateNavigationMesh(Set<Block> blocksForMesh, int xArea, int yArea) {
-        NavigationMeshGenerator.generateNavigationMesh(tiles, blocksForMesh, xArea, yArea);
+//        x = xArea;
+//        y = yArea;
+        navigationMesh = NavigationMeshGenerator.generateNavigationMesh(tiles, blocksForMesh, xArea, yArea);
+    }
+
+    public Point[] findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+        return PathFinder.findPath(navigationMesh, xStart, yStart, xDestination, yDestination, collision);
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {

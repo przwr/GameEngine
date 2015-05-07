@@ -8,8 +8,6 @@ package game.place;
 import engine.ShadowRenderer;
 import collision.Block;
 import collision.Figure;
-import static collision.OpticProperties.TRANSPARENT;
-import collision.Rectangle;
 import engine.BlueArray;
 import engine.Drawer;
 import engine.Methods;
@@ -60,7 +58,7 @@ public abstract class Map {
     protected final Set<Block> tempBlocks = new HashSet<>();
     protected final BlueArray<Block> blocks = new BlueArray<>();
     protected final BlueArray<Mob> mobs = new BlueArray<>();
-    protected final List<Mob> tempMobs = new BlueArray<>();
+    protected final BlueArray<Mob> tempMobs = new BlueArray<>();
 
     public abstract void populate();
 
@@ -117,6 +115,15 @@ public abstract class Map {
         return false;
     }
 
+    public Point[] findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+        int area = getAreaIndex(xStart, yStart);
+        if (area != getAreaIndex(xDestination, yDestination)) {
+            System.out.println("Inne obszary!");
+            return null;
+        }
+        return areas[area].findPath(xStart % xAreaInPixels, yStart % yAreaInPixels, xDestination % xAreaInPixels, yDestination % yAreaInPixels, collision);
+    }
+
     public void addAreasToUpdate(int[] newAreas) {
         for (int area : newAreas) {
             areasToUpdate.add(area);
@@ -146,6 +153,7 @@ public abstract class Map {
         areasToUpdate.stream().filter((i) -> (i >= 0 && i < areas.length)).forEach((i) -> {
             tempMobs.addAll(areas[i].getSolidMobs());
             tempMobs.addAll(areas[i].getFlatMobs());
+
         });
     }
 
@@ -282,10 +290,6 @@ public abstract class Map {
         }
     }
 
-    public void sortDepthObjects() {
-        Methods.insort(depthObjects);
-    }
-
     public void renderTop(Camera camera) {
         getTopObjects(camera.getArea());
         topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> {
@@ -370,7 +374,7 @@ public abstract class Map {
     }
 
     public Tile getTile(int x, int y) {
-        if (x < widthInTiles && y < heightInTiles) {
+        if (x >= 0 && x < widthInTiles && y >= 0 && y < heightInTiles) {
             return areas[getAreaIndexCoordinatesInTiles(x, y)].getTile(x % (X_IN_TILES), y % (Y_IN_TILES));
         }
         return null;
@@ -540,8 +544,32 @@ public abstract class Map {
         this.lightColor = color;
     }
 
-    public List<Point> getNearTiles(Figure collision) {
+    public List<Point> getNearNullTiles(Figure collision) {
         tempTilePositions.clear();
+        int xs = (collision.getX() / Place.tileSize) - 1;
+        int ys = (collision.getY() / Place.tileSize) - 1;
+        int xe = (collision.getXEnd() / Place.tileSize) + 1;
+        int ye = (collision.getYEnd() / Place.tileSize) + 1;
+        for (int x = xs; x <= xe; x++) {
+            if (getTile(x, ys) == null) {
+                tempTilePositions.add(new Point(x, ys));
+            }
+            if (getTile(x, ye) == null) {
+                tempTilePositions.add(new Point(x, ye));
+            }
+        }
+        for (int y = ys + 1; y < ye; y++) {
+            if (getTile(xs, y) == null) {
+                tempTilePositions.add(new Point(xs, y));
+            }
+            if (getTile(xe, y) == null) {
+                tempTilePositions.add(new Point(xe, y));
+            }
+        }
+//        System.out.println("\nPoints: ");
+//        for (Point pt : tempTilePositions) {
+//            System.out.println(pt);
+//        }
         return tempTilePositions;
     }
 }

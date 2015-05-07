@@ -5,8 +5,11 @@
  */
 package navmeshpathfinding;
 
+import collision.Figure;
+import engine.BlueArray;
 import engine.Point;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -17,21 +20,23 @@ public class PathFinder {
 
     private static final ArrayList<Node> closedList = new ArrayList<>();
     private static final PriorityQueue<Node> openList = new PriorityQueue<>(24, (Node n1, Node n2) -> n1.getFCost() - n2.getFCost());
-    private static Point startPoint, endPoint;
+    private static Point startPoint = new Point(), destinationPoint = new Point();
     private static Triangle startTriangle, endTriangle;
     private static Node destination;
+    private static List<Point> result = new BlueArray<>();
 
-    public static Node findPath(NavigationMesh mesh, Point start, Point end) {
+    public static Point[] findPath(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         if (mesh != null) {
-            startPoint = start;
-            endPoint = end;
+            startPoint.set(xStart, yStart);
+            destinationPoint.set(xDestination, yDestination);
             startTriangle = mesh.isPointInMesh(startPoint);
-            endTriangle = mesh.isPointInMesh(endPoint);
+            endTriangle = mesh.isPointInMesh(destinationPoint);
+            return findSolution(mesh);
         }
-        return findSolution(mesh);
+        return null;
     }
 
-    private static Node findSolution(NavigationMesh mesh) {
+    private static Point[] findSolution(NavigationMesh mesh) {
         destination = null;
         if (startTriangle != null && endTriangle != null) {
             if (startTriangle == endTriangle) {
@@ -40,13 +45,12 @@ public class PathFinder {
                 destination = aStar(mesh);
             }
         }
-        printResult(destination);
-        return destination;
+        return produceResult(destination);
     }
 
     private static Node inOneTriangle() {
         Node beginning = new Node(startPoint);
-        destination = new Node(endPoint);
+        destination = new Node(destinationPoint);
         destination.setParentMakeChild(beginning);
         return destination;
     }
@@ -75,7 +79,7 @@ public class PathFinder {
 
     private static void createBeginningAndAdjacent() {
         Node beginning = new Node(startPoint);
-        beginning.setGHCosts(0, countH(startPoint, endPoint));
+        beginning.setGHCosts(0, countH(startPoint, destinationPoint));
         closedList.add(beginning);
         for (int i = 0; i < 3; i++) {
             Node node = startTriangle.getNode(i);
@@ -85,7 +89,7 @@ public class PathFinder {
 
     private static void calculateAndAddToOpenList(Node node, Node parent) {
         node.setParentMakeChild(parent);
-        node.setGHCosts(countG(node.getPoint(), parent.getPoint()), countH(node.getPoint(), endPoint));
+        node.setGHCosts(countG(node.getPoint(), parent.getPoint()), countH(node.getPoint(), destinationPoint));
         openList.add(node);
     }
 
@@ -94,7 +98,7 @@ public class PathFinder {
         for (int i = 0; i < 3; i++) {
             Node node = endTriangle.getNode(i);
             if (currentNode == node) {
-                destination = new Node(endPoint);
+                destination = new Node(destinationPoint);
                 calculateAndAddToOpenList(destination, currentNode);
                 isFound = true;
             }
@@ -150,23 +154,29 @@ public class PathFinder {
         return (int) ((x * x + y * y));
     }
 
-    private static void printResult(Node destiation) {
+    private static Point[] produceResult(Node destiation) {
         if (destiation != null) {
-            printSolution(destiation);
+            return printSolution(destiation);
         } else {
             System.out.println("Nie znaleziono rozwiązania!");
         }
+        return null;
     }
 
-    private static void printSolution(Node destination) {
-        System.out.println("Rozwiązanie(" + destination.getFCost() + "): ");
+    private static Point[] printSolution(Node destination) {
+        result.clear();
         Node currentNode = destination;
-        while (currentNode.getParent() != null) {
-            currentNode = currentNode.getParent();
-        }
+//        System.out.println("Rozwiązanie(" + destination.getFCost() + "): ");
         while (currentNode != null) {
-            System.out.println(currentNode);
-            currentNode = currentNode.getChild();
+            result.add(currentNode.getPoint());
+            currentNode = currentNode.getParent();
+//            System.out.println(currentNode);
         }
+//        while (currentNode != null) {
+//            result.add(currentNode.getPoint());
+//            System.out.println(currentNode);
+//            currentNode = currentNode.getChild();
+//        }
+        return result.toArray(new Point[result.size()]);
     }
 }

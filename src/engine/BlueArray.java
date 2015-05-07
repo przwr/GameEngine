@@ -282,6 +282,14 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
         size = 0;
     }
 
+    public void clearReally() {
+        modCount++;
+        for (int i = 0; i < size; i++) {
+            elementData[i] = null;
+        }
+        size = 0;
+    }
+
     @Override
     public boolean addAll(Collection<? extends E> c) {
         Object[] a = c.toArray();

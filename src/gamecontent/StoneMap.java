@@ -55,7 +55,7 @@ public class StoneMap extends Map {
         
         generateNavigationMeshes();
         
-        System.out.println("FullTime: " + (NavigationMeshGenerator.fullTime / 1000000d) + " ms");
+//        System.out.println("FullTime: " + (NavigationMeshGenerator.fullTime / 1000000d) + " ms");
     }
 
     @Override

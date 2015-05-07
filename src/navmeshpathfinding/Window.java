@@ -26,7 +26,7 @@ public class Window extends javax.swing.JFrame {
         initComponents();
     }
 
-    public void addVariables(NavigationMesh mesh, Point start, Point end, Node path) {
+    public void addVariables(NavigationMesh mesh, Point start, Point end, Point[] path) {
         this.mesh = mesh;
         this.start = start;
         this.end = end;
@@ -108,7 +108,7 @@ public class Window extends javax.swing.JFrame {
 
     NavigationMesh mesh;
     Point start, end;
-    Node destination;
+    Point[] destination;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Canvas canvas;
@@ -125,7 +125,7 @@ public class Window extends javax.swing.JFrame {
             g2 = (Graphics2D) g;
             double SCALE = 0.5;
             Polygon poly = new Polygon();
-            for (Triangle triangle: mesh.getTriangles()) {
+            for (Triangle triangle : mesh.getTriangles()) {
                 for (int j = 0; j < 3; j++) {
                     Node nd = triangle.getNode(j);
                     poly.addPoint(roundDouble(nd.getX() * SCALE), roundDouble(nd.getY() * SCALE));
@@ -142,10 +142,9 @@ public class Window extends javax.swing.JFrame {
             }
             g2.setColor(Color.yellow);
             if (destination != null) {
-                Node currentNode = destination;
-                while (currentNode.getParent() != null) {
-                    g2.drawLine(roundDouble(currentNode.getX() * SCALE), roundDouble(currentNode.getY() * SCALE), roundDouble(currentNode.getParent().getX() * SCALE), roundDouble(currentNode.getParent().getY() * SCALE));
-                    currentNode = currentNode.getParent();
+                for (int i = 0; i < destination.length - 1; i++) {
+                    g2.drawLine(roundDouble(destination[i].getX() * SCALE), roundDouble(destination[i].getY() * SCALE), roundDouble(destination[i + 1].getX() * SCALE), roundDouble(destination[i + 1].getY() * SCALE));
+
                 }
             }
             if (start != null) {
