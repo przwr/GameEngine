@@ -13,7 +13,6 @@ import game.place.Place;
 import game.place.PuzzleObject;
 import game.place.Tile;
 import game.place.WarpPoint;
-import navmeshpathfinding.NavigationMeshGenerator;
 import org.newdawn.slick.Color;
 
 /**
@@ -46,13 +45,13 @@ public class StoneMap extends Map {
             }
         }
 
-        WarpPoint w = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
-        w.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, w));
-        addObject(w);
+        WarpPoint warp = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
+        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, OpticProperties.IN_SHADE_NO_SHADOW, warp));
+        addObject(warp);
         addObject(new WarpPoint("toKamienna", 20 * tileSize, 19 * tileSize));
         PuzzleObject portal = new PuzzleObject("portal", place);
         portal.placePuzzle(20, 20, this);
-        
+
         generateNavigationMeshes();
         
 //        System.out.println("FullTime: " + (NavigationMeshGenerator.fullTime / 1000000d) + " ms");

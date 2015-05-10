@@ -28,6 +28,7 @@ import sprites.Appearance;
 public class Drawer {
 
     public static final Texture font = loadFontTexture();
+    public static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight();
     private static float xCurrent, yCurrent;
     private static Color currentColor;
     public static Place place;
@@ -44,6 +45,19 @@ public class Drawer {
 
     public static void bindFontTexture() {
         font.bind();
+    }
+
+    public static void clearScreen(float color) {
+        glDisable(GL_TEXTURE_2D);
+        glBlendFunc(GL_ONE, GL_ZERO);
+        glColor3f(color, color, color);
+        glBegin(GL_QUADS);
+        glVertex2f(0, 0);
+        glVertex2f(0, displayHeight);
+        glVertex2f(displayWidth, displayHeight);
+        glVertex2f(displayWidth, 0);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
     }
 
     public static void refreshForRegularDrawing() {

@@ -63,7 +63,7 @@ public class Animation implements Appearance {
     }
 
     private void changeFrameIfNeeded() {
-        if (animate && delay.isOver()) {
+        if (animate &&  delay.isOver()) {
             currentFrame++;
             delay.start();
             if (currentFrame > end) {
@@ -99,7 +99,7 @@ public class Animation implements Appearance {
         changeFrameIfNeeded();
         return currentFrame;
     }
-    
+
     public void setDelay(int d) {
         delay.setFrameLength(d);
     }

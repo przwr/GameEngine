@@ -274,11 +274,6 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
     @Override
     public void clear() {
         modCount++;
-//        clear to let GC do its work
-//        NO NO NO, It' gonna be used anyway, so memory NOT gonna be freed. Waste of time :)
-//        for (int i = 0; i < size; i++) {
-//            elementData[i] = null;
-//        }
         size = 0;
     }
 
@@ -322,7 +317,6 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
         int numMoved = size - toIndex;
         System.arraycopy(elementData, toIndex, elementData, fromIndex,
                 numMoved);
-
         // clear to let GC do its work
         int newSize = size - (toIndex - fromIndex);
         for (int i = newSize; i < size; i++) {

@@ -5,11 +5,12 @@
  */
 package game.place;
 
-import engine.ShadowRenderer;
 import collision.Block;
 import collision.Figure;
+import collision.PointContener;
 import engine.BlueArray;
 import engine.Drawer;
+import static engine.Drawer.clearScreen;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
@@ -48,17 +49,18 @@ public abstract class Map {
     private static Tile tempTile;
     private final Set<Integer> areasToUpdate = new HashSet<>(36);
 
-    protected final static BlueArray<Point> tempTilePositions = new BlueArray<>();
+    protected final PointContener tempTilePositions = new PointContener();
+    protected final BlueArray<WarpPoint> tempWarps = new BlueArray<>();
+    protected final Set<Block> tempBlocks = new HashSet<>();
+    protected final BlueArray<Mob> tempMobs = new BlueArray<>();
+
     protected final BlueArray<GameObject> topObjects = new BlueArray<>();
     protected final BlueArray<GameObject> depthObjects = new BlueArray<>();
     protected final BlueArray<GameObject> gameObjects = new BlueArray<>();
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
-    protected final BlueArray<WarpPoint> tempWarps = new BlueArray<>();
     protected final BlueArray<Light> lights = new BlueArray<>();
-    protected final Set<Block> tempBlocks = new HashSet<>();
     protected final BlueArray<Block> blocks = new BlueArray<>();
     protected final BlueArray<Mob> mobs = new BlueArray<>();
-    protected final BlueArray<Mob> tempMobs = new BlueArray<>();
 
     public abstract void populate();
 
@@ -238,7 +240,7 @@ public abstract class Map {
     }
 
     public void renderBackground(Camera camera) {
-        ShadowRenderer.clearScreen(0);
+        clearScreen(0);
         Drawer.refreshForRegularDrawing();
         for (int i : placement.getNearAreas(camera.getArea())) {
             if (i >= 0 && i < areas.length) {
@@ -407,7 +409,7 @@ public abstract class Map {
                 mobs.addAll(areas[i].getSolidMobs());
             }
         }
-        return Collections.unmodifiableList(mobs);
+        return mobs;
     }
 
     public List<Mob> getFlatMobs(int x, int y) {
@@ -421,7 +423,7 @@ public abstract class Map {
                 mobs.addAll(areas[i].getFlatMobs());
             }
         }
-        return Collections.unmodifiableList(mobs);
+        return mobs;
     }
 
     public List<GameObject> getSolidObjects(int x, int y) {
@@ -435,7 +437,7 @@ public abstract class Map {
                 gameObjects.addAll(areas[i].getSolidObjects());
             }
         }
-        return Collections.unmodifiableList(gameObjects);
+        return gameObjects;
     }
 
     public List<GameObject> getFlatObjects(int x, int y) {
@@ -449,7 +451,7 @@ public abstract class Map {
                 gameObjects.addAll(areas[i].getFlatObjects());
             }
         }
-        return Collections.unmodifiableList(gameObjects);
+        return gameObjects;
     }
 
     public List<Light> getLightsFromAreasToUpdate() {
@@ -457,11 +459,11 @@ public abstract class Map {
         areasToUpdate.stream().filter((i) -> (i >= 0 && i < areas.length)).forEach((i) -> {
             lights.addAll(areas[i].getEmitters());
         });
-        return Collections.unmodifiableList(lights);
+        return lights;
     }
 
     public List<Light> getVisibleLights() {
-        return Collections.unmodifiableList(visibleLights);
+        return visibleLights;
     }
 
     public List<GameObject> getDepthObjects(int x, int y) {
@@ -475,7 +477,7 @@ public abstract class Map {
                 Methods.merge(depthObjects, areas[i].getDepthObjects());
             }
         }
-        return Collections.unmodifiableList(depthObjects);
+        return depthObjects;
     }
 
     public List<GameObject> getTopObjects(int x, int y) {
@@ -489,7 +491,7 @@ public abstract class Map {
                 Methods.merge(topObjects, areas[i].getTopObjects());
             }
         }
-        return Collections.unmodifiableList(topObjects);
+        return topObjects;
     }
 
     public List<WarpPoint> getWarps(int x, int y) {
@@ -503,7 +505,7 @@ public abstract class Map {
                 tempWarps.addAll(areas[i].getWarps());
             }
         }
-        return Collections.unmodifiableList(tempWarps);
+        return tempWarps;
     }
 
     public List<GameObject> getForegroundTiles(int x, int y) {
@@ -517,7 +519,7 @@ public abstract class Map {
                 Methods.merge(gameObjects, areas[i].getForegroundTiles());
             }
         }
-        return Collections.unmodifiableList(gameObjects);
+        return gameObjects;
     }
 
     public List<Block> getBlocks(int x, int y) {
@@ -531,7 +533,7 @@ public abstract class Map {
                 blocks.addAll(areas[i].getBlocks());
             }
         }
-        return Collections.unmodifiableList(blocks);
+        return blocks;
     }
 
     public void setTile(int x, int y, Tile tile) {
@@ -544,31 +546,22 @@ public abstract class Map {
         this.lightColor = color;
     }
 
-    public List<Point> getNearNullTiles(Figure collision) {
+    public PointContener getNearNullTiles(Figure collision) {
         tempTilePositions.clear();
         int xs = (collision.getX() / Place.tileSize) - 1;
         int ys = (collision.getY() / Place.tileSize) - 1;
         int xe = (collision.getXEnd() / Place.tileSize) + 1;
         int ye = (collision.getYEnd() / Place.tileSize) + 1;
         for (int x = xs; x <= xe; x++) {
-            if (getTile(x, ys) == null) {
-                tempTilePositions.add(new Point(x, ys));
-            }
-            if (getTile(x, ye) == null) {
-                tempTilePositions.add(new Point(x, ye));
-            }
-        }
-        for (int y = ys + 1; y < ye; y++) {
-            if (getTile(xs, y) == null) {
-                tempTilePositions.add(new Point(xs, y));
-            }
-            if (getTile(xe, y) == null) {
-                tempTilePositions.add(new Point(xe, y));
+            for (int y = ys; y <= ye; y++) {
+                if (getTile(x, y) == null) {
+                    tempTilePositions.add(x, y);
+                }
             }
         }
 //        System.out.println("\nPoints: ");
-//        for (Point pt : tempTilePositions) {
-//            System.out.println(pt);
+//        for (int i = 0; i < tempTilePositions.size(); i++) {
+//            System.out.println(tempTilePositions.get(i));
 //        }
         return tempTilePositions;
     }

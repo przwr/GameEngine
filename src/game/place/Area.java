@@ -162,7 +162,6 @@ public class Area {
     }
 
     public void deleteObject(GameObject object) {
-        object.setMapNotChange(null);
         if (!(object instanceof Player)) {
             deleteNotPlayerObject(object);
         } else if (object.isEmitter()) {
@@ -234,43 +233,43 @@ public class Area {
     }
 
     public List<Mob> getSolidMobs() {
-        return Collections.unmodifiableList(solidMobs);
+        return solidMobs;
     }
 
     public List<Mob> getFlatMobs() {
-        return Collections.unmodifiableList(flatMobs);
+        return flatMobs;
     }
 
     public List<Block> getBlocks() {
-        return Collections.unmodifiableList(blocks);
+        return blocks;
     }
 
     public List<GameObject> getSolidObjects() {
-        return Collections.unmodifiableList(solidObjects);
+        return solidObjects;
     }
 
     public List<GameObject> getFlatObjects() {
-        return Collections.unmodifiableList(flatObjects);
+        return flatObjects;
     }
 
     public List<Light> getEmitters() {
-        return Collections.unmodifiableList(emitters);
+        return emitters;
     }
 
     public List<GameObject> getDepthObjects() {
-        return Collections.unmodifiableList(depthObjects);
+        return depthObjects;
     }
 
     public List<GameObject> getTopObjects() {
-        return Collections.unmodifiableList(topObjects);
+        return topObjects;
     }
 
     public List<WarpPoint> getWarps() {
-        return Collections.unmodifiableList(warps);
+        return warps;
     }
 
     public List<GameObject> getForegroundTiles() {
-        return Collections.unmodifiableList(foregroundTiles);
+        return foregroundTiles;
     }
 
     public GameObject getForegroundTile(int i) {

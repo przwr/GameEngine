@@ -122,7 +122,7 @@ public class Circle extends Figure {
         if (isMobile()) {
             updatePoints();
         }
-        return Collections.unmodifiableList(points);
+        return points;
     }
 
     @Override
