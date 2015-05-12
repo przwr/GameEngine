@@ -7,6 +7,7 @@ package collision;
 
 import engine.BlueArray;
 import engine.Point;
+import engine.ShadowContener;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.ForegroundTile;
@@ -22,11 +23,13 @@ import java.util.List;
 public abstract class Figure implements Comparable<Figure> {
 
     private static Figure figure;
+    private static Rectangle tempTile = Rectangle.createTileRectangle();
 
     private final GameObject owner;
     private final OpticProperties opticProperties;
     protected int xStart, yStart, width, height, xCenter, yCenter;
     protected final BlueArray<Point> points;
+    private static PointContener tiles;
     private boolean mobile = false;
 
     public abstract boolean isCollideSingle(int x, int y, Figure figure);
@@ -40,13 +43,18 @@ public abstract class Figure implements Comparable<Figure> {
         this.yStart = yStart;
         this.owner = owner;
         this.opticProperties = opticProperties;
-        this.points = new BlueArray<>();
+        this.points = new BlueArray<>(4);
     }
 
     public boolean isCollideSolid(int x, int y, Map map) {
-        for (Point point : map.getNearNullTiles(this)) {
-            // check collision
+        tiles = map.getNearNullTiles(this);
+        for (int i = 0; i < tiles.size(); i++) {
+            setTile(tiles.get(i));
+            if (isCollideSingle(x, y, tempTile)) {
+                return true;
+            }
         }
+
         if (map.getSolidMobs(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
             return true;
         }
@@ -54,6 +62,12 @@ public abstract class Figure implements Comparable<Figure> {
             return true;
         }
         return map.getBlocks(getOwner().getArea()).stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)));
+    }
+
+    private void setTile(Point point) {
+        tempTile.setXStart(point.getX() * Place.tileSize);
+        tempTile.setYStart(point.getY() * Place.tileSize);
+        tempTile.updateTilePoints();
     }
 
     public GameObject whatCollideSolid(int x, int y, Map map) {
@@ -112,16 +126,24 @@ public abstract class Figure implements Comparable<Figure> {
         return isCollideSingle(x, y, figure);
     }
 
-    public void addShadow(int type, int x, int y, Figure source) {
-        opticProperties.addShadow(type, x, y, source);
+    public void addAllShadows(ShadowContener shadows) {
+        opticProperties.addAllShadows(shadows);
+    }
+
+    public void addShadow(Shadow shadow) {
+        opticProperties.addShadow(shadow);
     }
 
     public void addShadow(int type, int x, int y) {
-        opticProperties.addShadow(type, x, y, null);
+        opticProperties.addShadow(type, x, y);
     }
 
-    public void addShadow(int type) {
-        opticProperties.addShadow(type, 0, 0, null);
+    public void addShadowType(int type) {
+        opticProperties.addShadowType(type);
+    }
+
+    public void addShadowWithCaster(int type, int x, int y, Figure caster) {
+        opticProperties.addShadowWithCaster(type, x, y, caster);
     }
 
     public void clearShadows() {

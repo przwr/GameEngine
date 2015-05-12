@@ -6,7 +6,6 @@
 package game.place;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import sprites.SpriteSheet;
 
@@ -16,7 +15,6 @@ import sprites.SpriteSheet;
  */
 public class Lights {
 
-    //TO DO light created from smaller lights - up to 1024 x 1024 / 768 x 768
     private final ArrayList<Light> lights;
     private final SpriteSheet spriteSheet;
 
@@ -34,7 +32,7 @@ public class Lights {
     }
 
     public List<Light> getLights() {
-        return Collections.unmodifiableList(lights);
+        return lights;
     }
 
     public SpriteSheet getSpriteSheet() {

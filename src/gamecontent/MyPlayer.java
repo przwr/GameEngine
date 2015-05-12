@@ -22,8 +22,6 @@ import game.place.Map;
 import game.place.WarpPoint;
 import gamecontent.equipment.Cloth;
 import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.jodk.lang.FastMath;
 import net.packets.MPlayerUpdate;
 import net.packets.Update;

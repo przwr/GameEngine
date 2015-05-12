@@ -31,7 +31,7 @@ public class ObjectPlace extends Place {
 
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
-    private final update[] updates = new update[2];
+    private final updater[] updates = new updater[2];
 
     private ObjectUI ui;
     private int mode;
@@ -293,7 +293,7 @@ public class ObjectPlace extends Place {
         }
     }
 
-    private interface update {
+    private interface updater {
 
         void update();
     }

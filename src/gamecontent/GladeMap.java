@@ -53,7 +53,7 @@ public class GladeMap extends Map {
     @Override
     public void populate() {
         addObject(new Rabbit(256, 2048, 128, 28, 3, 512, "rabbit", place, true, mobID++));
-        addObject(new Tree(512, 2048, 54, 27, 1.5, 1024, " ", place, true, mobID++));
+        addObject(new Tree(384, 960, 54, 27, 1.5, 1024, " ", place, true, mobID++));
         for (int i = 0; i < 1000; i += 2) {
             //  addObject(new Rabbit(192 + 192 * (i % 50), 3072 + 192 * (i / 50), 128, 28, 3, 512, "rabbit", place, true, mobID++));
             addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2048 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() * 150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));

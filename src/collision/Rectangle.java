@@ -11,7 +11,6 @@ import engine.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
 import java.awt.geom.Line2D;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,6 +22,7 @@ public class Rectangle extends Figure {
     private static Point[] list = {new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0)};
     private static Point start, end, point;
     private static int firstPushed, secondPushed, caseNumber;
+    private boolean tile = false;
 
     public static Rectangle createShadowHeight(int width, int height, int opticPropertiesType, int shadowHeight, GameObject owner) {
         return new Rectangle(-(width / 2), -(height / 2), width, height, opticPropertiesType, shadowHeight, owner);
@@ -44,11 +44,26 @@ public class Rectangle extends Figure {
         super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
         this.width = width;
         this.height = height;
-        points.add(new Point(getX(), getY()));
-        points.add(new Point(getX(), getY() + height));
-        points.add(new Point(getX() + width, getY() + height));
-        points.add(new Point(getX() + width, getY()));
-        points.trimToSize();
+        points.add(new Point(super.getX(), super.getY()));
+        points.add(new Point(super.getX(), super.getY() + height));
+        points.add(new Point(super.getX() + width, super.getY() + height));
+        points.add(new Point(super.getX() + width, super.getY()));
+        centralize();
+    }
+
+    public static Rectangle createTileRectangle() {
+        return new Rectangle(0, 0);
+    }
+
+    private Rectangle(int xStart, int yStart) {
+        super(xStart, yStart, null, null);
+        tile = true;
+        this.width = Place.tileSize;
+        this.height = Place.tileSize;
+        points.add(new Point(xStart, yStart));
+        points.add(new Point(xStart, yStart + height));
+        points.add(new Point(xStart + width, yStart + height));
+        points.add(new Point(xStart + width, yStart));
         centralize();
     }
 
@@ -77,7 +92,7 @@ public class Rectangle extends Figure {
                 && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
     }
 
-    private boolean roundRectangle(int x, int y, Figure figure) { 
+    private boolean roundRectangle(int x, int y, Figure figure) {
         RoundRectangle roundRectangle = (RoundRectangle) figure;
         if (((getX(x) > roundRectangle.getX() && getX(x) - roundRectangle.getX() < roundRectangle.getWidth()) || (getX(x) <= roundRectangle.getX() && roundRectangle.getX() - getX(x) < width))
                 && ((getY(y) > roundRectangle.getY() && getY(y) - roundRectangle.getY() < roundRectangle.getHeight()) || (getY(y) <= roundRectangle.getY() && roundRectangle.getY() - getY(y) < height))) {
@@ -344,7 +359,7 @@ public class Rectangle extends Figure {
         if (isMobile()) {
             updatePoints();
         }
-        return Collections.unmodifiableList(points);
+        return points;
     }
 
     @Override
@@ -353,5 +368,30 @@ public class Rectangle extends Figure {
         points.get(1).set(getX(), getY() + height);
         points.get(2).set(getX() + width, getY() + height);
         points.get(3).set(getX() + width, getY());
+    }
+
+    public void updateTilePoints() {
+        points.get(0).set(xStart, yStart);
+        points.get(1).set(xStart, yStart + height);
+        points.get(2).set(xStart + width, yStart + height);
+        points.get(3).set(xStart + width, yStart);
+    }
+
+    @Override
+    public int getX() {
+        if (tile) {
+            return xStart;
+        } else {
+            return super.getX();
+        }
+    }
+
+    @Override
+    public int getY() {
+        if (tile) {
+            return yStart;
+        } else {
+            return super.getY();
+        }
     }
 }

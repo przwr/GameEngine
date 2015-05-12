@@ -5,6 +5,7 @@
  */
 package collision;
 
+import engine.ShadowContener;
 import game.place.Shadow;
 
 /**
@@ -13,14 +14,13 @@ import game.place.Shadow;
  */
 public class OpticProperties {
 
-    public static final byte FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, TRANSPARENT = 3, INITIAL_SHADOWS_COUNT = 20;
+    public static final byte FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, TRANSPARENT = 3;
     private static final boolean[] LITABLE = {true, true, false, false};
     private static final boolean[] GIVE_SHADOW = {true, false, false, true};
     private int type;
     private int shadowHeight;
     private int lightDistance;
-    private Shadow[] shadows = new Shadow[INITIAL_SHADOWS_COUNT];
-    private int shadowsCount = 0;
+    private ShadowContener shadows;
 
     public static OpticProperties create(int type, int shadowHeight) {
         return new OpticProperties(type, shadowHeight);
@@ -33,44 +33,35 @@ public class OpticProperties {
     private OpticProperties(int type, int shadowHeight) {
         this.type = type;
         this.shadowHeight = shadowHeight;
-        for (int i = 0; i < shadows.length; i++) {
-            shadows[i] = new Shadow(0);
-        }
+        this.shadows = new ShadowContener();
     }
 
-    public void addShadow(int type, int x, int y, Figure caster) {
-        if (shadowsCount == shadows.length) {
-            resizeShadows();
-        }
-        shadows[shadowsCount].type = type;
-        shadows[shadowsCount].point.set(x, y);
-        shadows[shadowsCount].caster = caster;
-        shadowsCount++;
+    public void addShadow(Shadow shadow) {
+        shadows.add(shadow);
     }
 
-    private void resizeShadows() {
-        Shadow[] tempShadows = new Shadow[2 * shadows.length];
-        System.arraycopy(shadows, 0, tempShadows, 0, shadows.length);
-        shadows = tempShadows;
-        for (int i = shadowsCount; i < shadows.length; i++) {
-            shadows[i] = new Shadow(0);
-        }
+    public void addAllShadows(ShadowContener shadow) {
+        shadows.addAll(shadow);
+    }
+
+    public void addShadow(int type, int x, int y) {
+        shadows.add(type, x, y);
+    }
+
+    public void addShadowType(int type) {
+        shadows.addType(type);
+    }
+
+    public void addShadowWithCaster(int type, int x, int y, Figure caster) {
+        shadows.addWithCaster(type, x, y, caster);
     }
 
     public void clearShadows() {
-        shadowsCount = 0;
+        shadows.clear();
     }
 
     public void removeShadow(Shadow shadow) {
-        for (int i = 0; i < shadowsCount; i++) {
-            if (shadows[i] == shadow) {
-                shadowsCount--;
-                shadows[i].type = shadows[shadowsCount].type;
-                shadows[i].point.set(shadows[shadowsCount].point.getX(), shadows[shadowsCount].point.getY());
-                shadows[i].caster = shadows[shadowsCount].caster;
-                break;
-            }
-        }
+        shadows.remove(shadow);
     }
 
     public boolean isLitable() {
@@ -80,8 +71,8 @@ public class OpticProperties {
     public boolean isGiveShadow() {
         return GIVE_SHADOW[type];
     }
-    
-    public int getType(){
+
+    public int getType() {
         return type;
     }
 
@@ -94,22 +85,22 @@ public class OpticProperties {
     }
 
     public int getShadowCount() {
-        return shadowsCount;
+        return shadows.size();
     }
 
     public Shadow getShadow(int i) {
-        return shadows[i];
+        return shadows.get(i);
     }
 
     public void setLightDistance(int lightDistance) {
         this.lightDistance = lightDistance;
     }
-    
-    public void setType(int type){
+
+    public void setType(int type) {
         this.type = type;
     }
-    
-    public void setShadowHeight(int shadowHeight){
+
+    public void setShadowHeight(int shadowHeight) {
         this.shadowHeight = shadowHeight;
     }
 }

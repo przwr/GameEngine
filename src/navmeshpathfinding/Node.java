@@ -8,7 +8,6 @@ package navmeshpathfinding;
 import engine.Point;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -96,7 +95,7 @@ public class Node {
 
     public void setHCost(int hCost) {
         this.hCost = hCost;
-        calcF();
+        calculateF();
     }
 
     public int getGCost() {
@@ -105,7 +104,7 @@ public class Node {
 
     public void setGCost(int gCost) {
         this.gCost = parent != null ? parent.gCost + gCost : gCost;
-        calcF();
+        calculateF();
     }
 
     public int getFCost() {
@@ -115,10 +114,10 @@ public class Node {
     public void setGHCosts(int gCost, int hCost) {
         this.hCost = hCost;
         this.gCost = parent != null ? parent.gCost + gCost : gCost;
-        calcF();
+        calculateF();
     }
 
-    private void calcF() {
+    private void calculateF() {
         fCost = gCost + hCost;
     }
 
@@ -127,6 +126,6 @@ public class Node {
     }
 
     public List<Node> getNeightbours() {
-        return Collections.unmodifiableList(neightbours);
+        return neightbours;
     }
 }

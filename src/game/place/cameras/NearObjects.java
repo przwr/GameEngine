@@ -9,7 +9,6 @@ import engine.BlueArray;
 import game.gameobject.GUIObject;
 import game.place.Light;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ public class NearObjects {
     }
 
     public List<Light> getVisibleLights() {
-        return Collections.unmodifiableList(visibleLights);
+        return visibleLights;
     }
 
     public void clearVisibleLights() {

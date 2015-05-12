@@ -15,6 +15,7 @@ import engine.Point;
 public class Shadow {
 
     public static final int DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3, BRIGHTEN_OBJECT = 4, DARKEN_OBJECT = 5;
+    public static final int shadowLength = 32768;
     public int type;
     public Point point;
     public Figure caster;

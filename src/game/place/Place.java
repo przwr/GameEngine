@@ -36,7 +36,7 @@ import sprites.SpriteSheet;
 public abstract class Place extends ScreenPlace {
 
     public static int tileSize, tileSquared, tileHalf, xAreaInPixels, yAreaInPixels;
-
+    
     protected static DayCycle dayCycle;
 
     public final ArrayList<Map> maps = new ArrayList<>();
@@ -58,12 +58,12 @@ public abstract class Place extends ScreenPlace {
     {
         renders[OFFLINE] = () -> {
             for (int p = 0; p < playersCount; p++) {
-                for (Map map : tempMaps) {
+                tempMaps.stream().forEach((map) -> {
                     Renderer.findVisibleLights(map, playersCount);
                     if (!Settings.shadowOff) {
-                        Renderer.preRendLights(map);
+                        Renderer.preRenderLights(map);
                     }
-                }
+                });
             }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
@@ -97,7 +97,7 @@ public abstract class Place extends ScreenPlace {
                 Drawer.setCurrentColor(map.getLightColor());
                 Renderer.findVisibleLights(map, 1);
                 if (!Settings.shadowOff) {
-                    Renderer.preRendLights(map);
+                    Renderer.preRenderLights(map);
                 }
                 currentCamera = (((Player) players[0]).getCamera());
                 SplitScreen.setSplitScreen(this, 1, 0);

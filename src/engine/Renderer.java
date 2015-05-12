@@ -127,7 +127,7 @@ public class Renderer {
         map.clearVisibleLights();
     }
 
-    public static void preRendLights(Map map) {
+    public static void preRenderLights(Map map) {
         if (!Settings.shadowOff) {
             map.getVisibleLights().stream().filter((light) -> (light.isGiveShadows())).forEach((light) -> {
                 ShadowRenderer.prerenderLight(map, light);

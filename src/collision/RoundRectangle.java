@@ -11,7 +11,6 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import java.awt.geom.Line2D;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,83 +22,109 @@ public class RoundRectangle extends Figure {
     public static final byte LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3, LEFT_BOTTOM_TO_RIGHT_TOP = 4, LEFT = 5, LEFT_TOP_TO_RIGHT_BOTTOM = 6, RIGHT = 7;
     public static final byte PREVIOUS = 0, CORNER = 1, NEXT = 2;
     private static final changer[] changers = new changer[4];
-    private static final pusher[] pushers = new pusher[4];
-    private static final geter[] geters = new geter[4];
     private Corner[] corners = new Corner[4];
     private boolean concave, triangular, bottomRounded;
 
     {
-        changers[LEFT_TOP] = (int xChange, int yChange) -> {
-            corners[LEFT_TOP].changes[NEXT] = new Point(0, Place.tileSize);
-            corners[LEFT_TOP].changes[CORNER] = new Point(xChange, yChange);
-            corners[LEFT_TOP].changes[PREVIOUS] = new Point(Place.tileSize, 0);
-        };
-        changers[LEFT_BOTTOM] = (int xChange, int yChange) -> {
-            corners[LEFT_BOTTOM].changes[NEXT] = new Point(Place.tileSize, height);
-            corners[LEFT_BOTTOM].changes[CORNER] = new Point(xChange, (height - Place.tileSize) + yChange);
-            corners[LEFT_BOTTOM].changes[PREVIOUS] = new Point(0, height - Place.tileSize);
-        };
-        changers[RIGHT_BOTTOM] = (int xChange, int yChange) -> {
-            corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width, height - Place.tileSize);
-            corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - Place.tileSize) + xChange, (height - Place.tileSize) + yChange);
-            corners[RIGHT_BOTTOM].changes[PREVIOUS] = new Point(width - Place.tileSize, height);
-        };
-        changers[RIGHT_TOP] = (int xChange, int yChange) -> {
-            corners[RIGHT_TOP].changes[NEXT] = new Point(width - Place.tileSize, 0);
-            corners[RIGHT_TOP].changes[CORNER] = new Point((width - Place.tileSize) + xChange, yChange);
-            corners[RIGHT_TOP].changes[PREVIOUS] = new Point(width, Place.tileSize);
-        };
-        pushers[LEFT_TOP] = (int xChange, int yChange) -> {
-            if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
-                corners[LEFT_TOP].push(LEFT_TOP, xChange, yChange);
-                setTypeOfCorner(LEFT_TOP, xChange, yChange);
-                getOwner().setSimpleLighting(false);
+        changers[LEFT_TOP] = new changer() {
+            @Override
+            public Point get(Corner[] corners, RoundRectangle owner) {
+                if (corners[LEFT_TOP].changes != null) {
+                    return corners[LEFT_TOP].changes[CORNER];
+                }
+                return new Point(0, 0);
+            }
+
+            @Override
+            public void push(int xChange, int yChange) {
+                if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
+                    corners[LEFT_TOP].push(LEFT_TOP, xChange, yChange);
+                    setTypeOfCorner(LEFT_TOP, xChange, yChange);
+                    getOwner().setSimpleLighting(false);
+                }
+            }
+
+            @Override
+            public void set(int xChange, int yChange) {
+                corners[LEFT_TOP].changes[NEXT] = new Point(0, Place.tileSize);
+                corners[LEFT_TOP].changes[CORNER] = new Point(xChange, yChange);
+                corners[LEFT_TOP].changes[PREVIOUS] = new Point(Place.tileSize, 0);
             }
         };
-        pushers[LEFT_BOTTOM] = (int xChange, int yChange) -> {
-            if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
-                corners[LEFT_BOTTOM].push(LEFT_BOTTOM, xChange, Place.tileSize - yChange);
-                setTypeOfCorner(LEFT_BOTTOM, xChange, yChange);
-                getOwner().setSimpleLighting(false);
+        changers[LEFT_BOTTOM] = new changer() {
+            @Override
+            public Point get(Corner[] corners, RoundRectangle owner) {
+                if (corners[LEFT_BOTTOM].changes != null) {
+                    return new Point(corners[LEFT_BOTTOM].changes[CORNER].getX(), -corners[LEFT_BOTTOM].changes[CORNER].getY() + owner.height);
+                }
+                return new Point(0, 0);
+            }
+
+            @Override
+            public void push(int xChange, int yChange) {
+                if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
+                    corners[LEFT_BOTTOM].push(LEFT_BOTTOM, xChange, Place.tileSize - yChange);
+                    setTypeOfCorner(LEFT_BOTTOM, xChange, yChange);
+                    getOwner().setSimpleLighting(false);
+                }
+            }
+
+            @Override
+            public void set(int xChange, int yChange) {
+                corners[LEFT_BOTTOM].changes[NEXT] = new Point(Place.tileSize, height);
+                corners[LEFT_BOTTOM].changes[CORNER] = new Point(xChange, (height - Place.tileSize) + yChange);
+                corners[LEFT_BOTTOM].changes[PREVIOUS] = new Point(0, height - Place.tileSize);
             }
         };
-        pushers[RIGHT_BOTTOM] = (int xChange, int yChange) -> {
-            if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
-                corners[RIGHT_BOTTOM].push(RIGHT_BOTTOM, Place.tileSize - xChange, Place.tileSize - yChange);
-                setTypeOfCorner(RIGHT_BOTTOM, xChange, yChange);
-                getOwner().setSimpleLighting(false);
+        changers[RIGHT_BOTTOM] = new changer() {
+            @Override
+            public Point get(Corner[] corners, RoundRectangle owner) {
+                if (corners[RIGHT_BOTTOM].changes != null) {
+                    return new Point(-corners[RIGHT_BOTTOM].changes[CORNER].getX() + owner.width, -corners[RIGHT_BOTTOM].changes[CORNER].getY() + owner.height);
+                }
+                return new Point(0, 0);
+            }
+
+            @Override
+            public void push(int xChange, int yChange) {
+                if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
+                    corners[RIGHT_BOTTOM].push(RIGHT_BOTTOM, Place.tileSize - xChange, Place.tileSize - yChange);
+                    setTypeOfCorner(RIGHT_BOTTOM, xChange, yChange);
+                    getOwner().setSimpleLighting(false);
+                }
+            }
+
+            @Override
+            public void set(int xChange, int yChange) {
+                corners[RIGHT_BOTTOM].changes[NEXT] = new Point(width, height - Place.tileSize);
+                corners[RIGHT_BOTTOM].changes[CORNER] = new Point((width - Place.tileSize) + xChange, (height - Place.tileSize) + yChange);
+                corners[RIGHT_BOTTOM].changes[PREVIOUS] = new Point(width - Place.tileSize, height);
             }
         };
-        pushers[RIGHT_TOP] = (int xChange, int yChange) -> {
-            if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
-                corners[RIGHT_TOP].push(RIGHT_TOP, (Place.tileSize - xChange), yChange);
-                setTypeOfCorner(RIGHT_TOP, xChange, yChange);
-                getOwner().setSimpleLighting(false);
+        changers[RIGHT_TOP] = new changer() {
+            @Override
+            public Point get(Corner[] corners, RoundRectangle owner) {
+                if (corners[RIGHT_TOP].changes != null) {
+                    return new Point(-corners[RIGHT_TOP].changes[CORNER].getX() + owner.width, corners[RIGHT_TOP].changes[CORNER].getY());
+                }
+                return new Point(0, 0);
             }
-        };
-        geters[LEFT_TOP] = (Corner[] corners, RoundRectangle owner) -> {
-            if (corners[LEFT_TOP].changes != null) {
-                return corners[LEFT_TOP].changes[CORNER];
+
+            @Override
+            public void push(int xChange, int yChange) {
+                if (xChange <= Place.tileSize && xChange >= 0 && yChange <= Place.tileSize && yChange >= 0) {
+                    corners[RIGHT_TOP].push(RIGHT_TOP, (Place.tileSize - xChange), yChange);
+                    setTypeOfCorner(RIGHT_TOP, xChange, yChange);
+                    getOwner().setSimpleLighting(false);
+                }
             }
-            return new Point(0, 0);
-        };
-        geters[LEFT_BOTTOM] = (Corner[] corners, RoundRectangle owner) -> {
-            if (corners[LEFT_BOTTOM].changes != null) {
-                return new Point(corners[LEFT_BOTTOM].changes[CORNER].getX(), -corners[LEFT_BOTTOM].changes[CORNER].getY() + owner.height);
+
+            @Override
+            public void set(int xChange, int yChange) {
+                corners[RIGHT_TOP].changes[NEXT] = new Point(width - Place.tileSize, 0);
+                corners[RIGHT_TOP].changes[CORNER] = new Point((width - Place.tileSize) + xChange, yChange);
+                corners[RIGHT_TOP].changes[PREVIOUS] = new Point(width, Place.tileSize);
             }
-            return new Point(0, 0);
-        };
-        geters[RIGHT_BOTTOM] = (Corner[] corners, RoundRectangle owner) -> {
-            if (corners[RIGHT_BOTTOM].changes != null) {
-                return new Point(-corners[RIGHT_BOTTOM].changes[CORNER].getX() + owner.width, -corners[RIGHT_BOTTOM].changes[CORNER].getY() + owner.height);
-            }
-            return new Point(0, 0);
-        };
-        geters[RIGHT_TOP] = (Corner[] corners, RoundRectangle owner) -> {
-            if (corners[RIGHT_TOP].changes != null) {
-                return new Point(-corners[RIGHT_TOP].changes[CORNER].getX() + owner.width, corners[RIGHT_TOP].changes[CORNER].getY());
-            }
-            return new Point(0, 0);
         };
     }
 
@@ -149,7 +174,7 @@ public class RoundRectangle extends Figure {
             }
             bottomRounded = true;
         }
-        pushers[corner].push(xChange, yChange);
+        changers[corner].push(xChange, yChange);
         updatePoints();
     }
 
@@ -224,7 +249,7 @@ public class RoundRectangle extends Figure {
         if (isMobile()) {
             updatePoints();
         }
-        return Collections.unmodifiableList(points);
+        return points;
     }
 
     @Override
@@ -254,7 +279,7 @@ public class RoundRectangle extends Figure {
     }
 
     public Point getPushValueOfCorner(int corner) {
-        return geters[corner].get(corners, this);
+        return changers[corner].get(corners, this);
     }
 
     public Point getCorner(int i) {
@@ -314,17 +339,11 @@ public class RoundRectangle extends Figure {
 
     private interface changer {
 
-        void set(int xChange, int yChange);
-    }
-
-    private interface pusher {
+        Point get(Corner[] corners, RoundRectangle owner);
 
         void push(int xChange, int yChange);
-    }
 
-    private interface geter {
-
-        Point get(Corner[] corners, RoundRectangle owner);
+        void set(int xChange, int yChange);
     }
 
     private class Corner {

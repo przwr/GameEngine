@@ -11,9 +11,7 @@ import engine.Point;
 import game.gameobject.GameObject;
 import game.place.ForegroundTile;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -245,15 +243,15 @@ public class Block extends GameObject {
     }
 
     public List<ForegroundTile> getTopForegroundTiles() {
-        return Collections.unmodifiableList(topForegroundTiles);
+        return topForegroundTiles;
     }
 
     public List<ForegroundTile> getWallForegroundTiles() {
-        return Collections.unmodifiableList(wallForegroundTiles);
+        return wallForegroundTiles;
     }
 
     public List<Figure> getTop() {
-        return Collections.unmodifiableList(top);
+        return top;
     }
 
     public List<Point> getPoints() {

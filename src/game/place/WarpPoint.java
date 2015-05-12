@@ -87,9 +87,9 @@ public class WarpPoint extends GameObject {
                     object.changeMap(destination);
                     warp = destination.findWarp(name);
                 } else {
-                    Map m = map.place.getMapByName(stringDestination);
-                    object.changeMap(m);
-                    warp = m.findWarp(name);
+                    Map thisMap = map.place.getMapByName(stringDestination);
+                    object.changeMap(thisMap);
+                    warp = thisMap.findWarp(name);
                 }
                 object.setPosition(warp.x, warp.y);
                 if (object instanceof Player && ((Player) object).getCamera() != null) {
@@ -107,7 +107,7 @@ public class WarpPoint extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect,  Figure figure) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
