@@ -60,6 +60,10 @@ public class RandomGenerator extends Random {
         return (int) (limit * (next(iteration) / (FastMath.pow(2, iteration) - 1)));
     }
 
+    public Object choose(Object... opts) {
+        return opts[random(opts.length - 1)];
+    }
+    
     public double preciseRandom(double limit, double precison) {
         return (random((int) (limit / precison)) * precison);
     }

@@ -85,9 +85,9 @@ public class MyPlayer extends Player {
         sprite = place.getSpriteSheet("test");
         try {
             RandomGenerator r = RandomGenerator.create();
-            torso = new Cloth(r.chance(50) ? "sweater" : "torso", place);
-            legs = new Cloth(r.chance(50) ? "boots" : "legs", place);
-            dress = r.chance(50) ? new Cloth("dress", place) : null;
+            torso = new Cloth((String) r.choose("sweater", "torso", "blueSweater"), place);
+            legs = new Cloth((String) r.choose("boots", "legs"), place);
+            dress = r.chance(30) ? new Cloth((String) r.choose("dress", "blueDress"), place) : null;
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
@@ -158,8 +158,8 @@ public class MyPlayer extends Player {
             Drawer.drawElipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
-            renderClothed(animation.getCurrentFrameIndex());
-            //getAnimation().render();
+            //renderClothed(animation.getCurrentFrameIndex());
+            getAnimation().render();
 
             if (Settings.scaled) {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
