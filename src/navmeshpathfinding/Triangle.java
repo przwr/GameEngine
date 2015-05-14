@@ -6,6 +6,7 @@
 package navmeshpathfinding;
 
 import engine.Point;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -13,7 +14,7 @@ import engine.Point;
  */
 public class Triangle {
 
-    private final static int MIN = 0, MAX = 1;
+    public final static int MIN = 0, MAX = 1;
     private final static float EPSILON = 0.001f;
     private final Node[] nodes = new Node[3];
     private final Point[] bounds;
@@ -39,8 +40,8 @@ public class Triangle {
 
     private Point[] calculateBounds() {
         Point[] tempBounds = new Point[2];
-        tempBounds[MIN] = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        tempBounds[MAX] = new Point(0, 0);
+        tempBounds[MIN] = new Point(nodes[0].getX(), nodes[0].getY());
+        tempBounds[MAX] = new Point(-1, -1);
         for (Node node : nodes) {
             tempBounds = findMinAndMaxValues(node.getPoint(), tempBounds);
         }
@@ -48,10 +49,10 @@ public class Triangle {
     }
 
     private static Point[] findMinAndMaxValues(Point point, Point[] bounds) {
-        int minX = Math.min(point.getX(), bounds[MIN].getX());
-        int minY = Math.min(point.getY(), bounds[MIN].getY());
-        int maxX = Math.max(point.getX(), bounds[MAX].getX());
-        int maxY = Math.max(point.getY(), bounds[MAX].getY());
+        int minX = FastMath.min(point.getX(), bounds[MIN].getX());
+        int minY = FastMath.min(point.getY(), bounds[MIN].getY());
+        int maxX = FastMath.max(point.getX(), bounds[MAX].getX());
+        int maxY = FastMath.max(point.getY(), bounds[MAX].getY());
         bounds[MIN].set(minX, minY);
         bounds[MAX].set(maxX, maxY);
         return bounds;
@@ -143,6 +144,11 @@ public class Triangle {
     public int getConnectionsNumber() {
         return connectionsNumber;
     }
+
+    public Point[] getBounds() {
+        return bounds;
+    }
+    
 
     @Override
     public boolean equals(Object o) {

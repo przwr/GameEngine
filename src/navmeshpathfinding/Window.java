@@ -5,13 +5,15 @@
  */
 package navmeshpathfinding;
 
-import engine.Methods;
 import static engine.Methods.roundDouble;
 import engine.Point;
+import static game.place.Place.xAreaInPixels;
+import static game.place.Place.yAreaInPixels;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import javax.swing.JPanel;
 
 /**
  *
@@ -26,11 +28,17 @@ public class Window extends javax.swing.JFrame {
         initComponents();
     }
 
-    public void addVariables(NavigationMesh mesh, Point start, Point end, Point[] path) {
+    public void addVariables(NavigationMesh mesh, Point start, Point end, Point[] path, int x, int y) {
         this.mesh = mesh;
-        this.start = start;
-        this.end = end;
-        this.destination = path;
+        this.start = new Point(start.getX() - x, start.getY() - y);
+        this.end = new Point(end.getX() - x, end.getY() - y);
+        if (path != null) {
+            Point[] npath = new Point[path.length];
+            for (int i = 0; i < path.length; i++) {
+                npath[i] = new Point(path[i].getX() - x, path[i].getY() - y);
+            }
+            this.destination = npath;
+        }
     }
 
     /**
@@ -42,33 +50,31 @@ public class Window extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        canvas = new MyCanvas();
+        jPanel1 = new GPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setFocusTraversalPolicyProvider(true);
 
-        canvas.setBackground(new java.awt.Color(153, 153, 255));
-        canvas.setPreferredSize(new java.awt.Dimension(1024, 640));
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1044, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 660, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 791, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 579, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -111,16 +117,16 @@ public class Window extends javax.swing.JFrame {
     Point[] destination;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Canvas canvas;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
-    class MyCanvas extends java.awt.Canvas {
+       class GPanel extends JPanel {
 
-        MyCanvas() {
-            super();
+        public GPanel() {
         }
 
         @Override
-        public void paint(Graphics g) {
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
             Graphics2D g2;
             g2 = (Graphics2D) g;
             double SCALE = 0.5;
@@ -155,6 +161,7 @@ public class Window extends javax.swing.JFrame {
                 g2.setColor(Color.red);
                 g2.fillOval(roundDouble(end.getX() * SCALE - 3), roundDouble(end.getY() * SCALE - 3), 6, 6);
             }
+            repaint();
         }
     }
 }

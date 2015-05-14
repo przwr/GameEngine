@@ -20,6 +20,7 @@ public class Rabbit extends Mob {
     public Rabbit(int x, int y, int width, int height, double speed, int range, String name, Place place, boolean solid, short ID) {
         super(x, y, speed, range, name, place, "rabbit", solid);
         setCollision(Rectangle.create(width, height, OpticProperties.NO_SHADOW, this));
+//        setCollision(Rectangle.create(48, 48, OpticProperties.NO_SHADOW, this));
         this.mobID = ID;
     }
 
@@ -29,6 +30,7 @@ public class Rabbit extends Mob {
             chase(prey);
             if (Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY()) > range * 1.5 || prey.getMap() != map) {
                 prey = null;
+                path = null;
             }
         } else {
             look(place.players);

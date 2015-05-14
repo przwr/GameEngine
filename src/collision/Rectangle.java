@@ -44,10 +44,12 @@ public class Rectangle extends Figure {
         super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
         this.width = width;
         this.height = height;
-        points.add(new Point(super.getX(), super.getY()));
-        points.add(new Point(super.getX(), super.getY() + height));
-        points.add(new Point(super.getX() + width, super.getY() + height));
-        points.add(new Point(super.getX() + width, super.getY()));
+        if (owner != null) {
+            points.add(new Point(super.getX(), super.getY()));
+            points.add(new Point(super.getX(), super.getY() + height));
+            points.add(new Point(super.getX() + width, super.getY() + height));
+            points.add(new Point(super.getX() + width, super.getY()));
+        }
         centralize();
     }
 

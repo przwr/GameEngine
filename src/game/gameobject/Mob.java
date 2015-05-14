@@ -6,8 +6,10 @@
 package game.gameobject;
 
 import collision.Figure;
+import engine.Delay;
 import engine.Drawer;
 import engine.Methods;
+import engine.Point;
 import game.Settings;
 import game.place.Place;
 import net.packets.Update;
@@ -24,7 +26,14 @@ public abstract class Mob extends Entity {
 
     protected final double range;
     protected GameObject prey;
+    protected Point[] path, oldPath;
+    protected int currentPoint, oldPoint;
     public short mobID;
+    public Delay delay = new Delay(250);
+
+    {
+        delay.start();
+    }
 
     public abstract void update();
 
@@ -49,10 +58,50 @@ public abstract class Mob extends Entity {
     }
 
     public synchronized void chase(GameObject prey) {
+        int scope = collision.getWidth() + collision.getHeight();
         if (prey != null) {
-            double angle = Methods.pointAngle360(getX(), getY(), prey.getX(), prey.getY());
+            double angle;
+            if (path != null && !delay.isOver()) {
+                angle = Methods.pointAngle360(getX(), getY(), path[currentPoint].getX(), path[currentPoint].getY());
+                //System.out.println("Follow path! " + currentPoint + "/" + (path.length - 1));
+                if (Methods.pointDistance(getX(), getY(), path[currentPoint].getX(), path[currentPoint].getY()) < maxSpeed*2) {
+                    //System.out.println("Get to point! " + currentPoint + "/" + (path.length - 1));
+                    if (currentPoint < path.length - 1) {
+                        currentPoint++;
+                    } else {
+                        path = null;
+                    }
+                }
+            } else {
+                delay.start();
+                if (Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY()) > scope) {
+                    if (path == null || (Methods.pointDistance(path[path.length - 1].getX(), path[path.length - 1].getY(), prey.getX(), prey.getY()) > scope)) {
+                        //System.out.println("Looking for a path! ");
+                        setPath(map.findPath(getX(), getY(), prey.getX(), prey.getY(), collision));
+                    }
+                    if (path != null) {
+                        oldPath = this.path;
+                        oldPoint = this.currentPoint;
+                        //System.out.println("Follow old path! ");
+                        angle = Methods.pointAngle360(getX(), getY(), oldPath[oldPoint].getX(), oldPath[oldPoint].getY());
+                    } else {
+                        //System.out.println("Follow pray! ");
+                        angle = Methods.pointAngle360(getX(), getY(), prey.getX(), prey.getY());
+                    }
+                } else {
+                    //System.out.println("Follow pray! ");
+                    angle = Methods.pointAngle360(getX(), getY(), prey.getX(), prey.getY());
+                }
+            }
             xSpeed = Methods.xRadius(angle, maxSpeed);
             ySpeed = Methods.yRadius(angle, maxSpeed);
+        }
+    }
+
+    public synchronized void setPath(Point[] path) {
+        if (path != null) {
+            currentPoint = 0;
+            this.path = path;
         }
     }
 
