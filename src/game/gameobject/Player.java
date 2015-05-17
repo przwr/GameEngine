@@ -12,6 +12,7 @@ import game.place.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
+import java.util.List;
 import net.GameOnline;
 
 /**
@@ -43,11 +44,14 @@ public abstract class Player extends Entity {
 
     public void addGui(GUIObject gui) {
         guiList.add(gui);
+        sortGUI();
         gui.setPlayer(this);
     }
 
     public void removeGui(GUIObject gui) {
         guiList.remove(gui);
+        guiList.trimToSize();
+        sortGUI();
         gui.setPlayer(null);
     }
 
@@ -58,6 +62,21 @@ public abstract class Player extends Entity {
                 go.render(0, 0);
             }
         });
+    }
+
+    public void sortGUI() {
+        int i, j, newValue;
+        GUIObject object;
+        for (i = 1; i < guiList.size(); i++) {
+            object = guiList.get(i);
+            newValue = object.getPriority();
+            j = i;
+            while (j > 0 && guiList.get(j - 1).getPriority() > newValue) {
+                guiList.set(j, guiList.get(j - 1));
+                j--;
+            }
+            guiList.set(j, object);
+        }
     }
 
     @Override

@@ -13,7 +13,6 @@ import collision.Figure;
 import game.place.Light;
 import game.place.Map;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import sprites.Animation;
 import sprites.Sprite;

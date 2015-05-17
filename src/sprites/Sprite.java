@@ -34,7 +34,7 @@ public class Sprite implements Appearance {
     protected int yOffset;
     protected String key;
 
-    private double begin, ending;
+    protected double begin, ending;
 
     public static Sprite create(String textureKey, int width, int height, SpriteBase base) {
         return new Sprite(textureKey, width, height, 0, 0, base);
@@ -87,11 +87,15 @@ public class Sprite implements Appearance {
             texture.bind();
         }
     }
-
+    
+    protected void moveToStart() {
+        glTranslatef(xStart, yStart, 0);
+    }
+    
     @Override
     public void render() {
         bindCheckByID();
-        glTranslatef(xStart, yStart, 0);
+        moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
         glVertex2f(0, 0);
@@ -107,7 +111,7 @@ public class Sprite implements Appearance {
     @Override
     public void renderMirrored() {
         bindCheckByID();
-        glTranslatef(xStart, yStart, 0);
+        moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(1, 0);
         glVertex2f(0, 0);
@@ -123,7 +127,7 @@ public class Sprite implements Appearance {
     @Override
     public void renderPart(int partXStart, int partXEnd) {
         bindCheckByID();
-        glTranslatef(xStart, yStart, 0);
+        moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2d(((double) partXStart / (double) width), 0);
         glVertex2f(partXStart, 0);
@@ -139,7 +143,7 @@ public class Sprite implements Appearance {
     @Override
     public void renderPartMirrored(int partXstart, int partXend) {
         bindCheckByID();
-        glTranslatef(xStart, yStart, 0);
+        moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2d(((double) partXend / (double) width), 0);
         glVertex2f(partXstart, 0);
@@ -154,7 +158,7 @@ public class Sprite implements Appearance {
 
     public void renderSpritePiece(float xBegin, float xEnd, float yBegin, float yEnd) {
         bindCheckByID();
-        glTranslatef(xStart, yStart, 0);
+        moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(xBegin, yBegin);
         glVertex2f(0, 0);
@@ -183,7 +187,7 @@ public class Sprite implements Appearance {
 
     public void renderSpritePieceMirrored(float xBegin, float xEnd, float yBegin, float yEnd) {
         bindCheckByID();
-        glTranslatef(xStart, yStart, 0);
+        moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(xEnd, yBegin);
         glVertex2f(0, 0);
@@ -200,7 +204,7 @@ public class Sprite implements Appearance {
         bindCheckByID();
         begin = xBegin + ((double) partXStart) / (double) width / xTiles;
         ending = xBegin + ((double) partXEnd) / (double) width / xTiles;
-        glTranslatef(xStart, yStart, 0);
+        moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2d(begin, yBegin);
         glVertex2f(partXStart, 0);
@@ -217,7 +221,7 @@ public class Sprite implements Appearance {
         bindCheckByID();
         begin = xBegin + ((double) partXStart) / (double) width / xTiles;
         ending = xBegin + ((double) partXEnd) / (double) width / xTiles;
-        glTranslatef(xStart, yStart, 0);
+        moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2d(ending, yBegin);
         glVertex2f(partXStart, 0);

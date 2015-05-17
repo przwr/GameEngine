@@ -20,6 +20,7 @@ import game.Settings;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import game.place.WarpPoint;
+import game.text.TextController;
 import gamecontent.equipment.Cloth;
 import java.io.FileNotFoundException;
 import net.jodk.lang.FastMath;
@@ -43,7 +44,14 @@ public class MyPlayer extends Player {
     private final int framesPerDir = 19;
 
     private int xTempSpeed, yTempSpeed;
-    private float jumpDelta = 22.6f;  //TYLKO TYMCZASOWE!
+
+    private TextController textControl;
+
+    //---------<('.'<) TYMCZASOWE!-------------//
+    private float jumpDelta = 22.6f;
+    //private SpriteSheet test, testBody;    //NIE KASOWAĆ! <('o'<)
+    float testIndex = 0;
+    //---------------------------------------//
 
     public MyPlayer(boolean first, String name) {
         super(name);
@@ -83,6 +91,15 @@ public class MyPlayer extends Player {
         emitter = true;
         emits = false;
         sprite = place.getSpriteSheet("test");
+        
+        if (true) { //Tekst cwiczeniowy
+            textControl = new TextController(place);
+            addGui(textControl);
+            textControl.startText("Tutaj tekst ćwiczeniowy!\nCzy mnie słychać?\nProszę o odpowiedź!...");
+        }
+
+        //test = place.getSpriteSheet("wynik");         //NIE KASOWAĆ! <('o'<)
+        //testBody = place.getSpriteSheet("wynik1");
         try {
             RandomGenerator r = RandomGenerator.create();
             torso = new Cloth((String) r.choose("sweater", "torso", "blueSweater"), place);
@@ -98,7 +115,7 @@ public class MyPlayer extends Player {
         if (lights.isEmpty()) {
             addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
-        setCollision(Rectangle.create(width, height/4, OpticProperties.NO_SHADOW, this));
+        setCollision(Rectangle.create(width, height / 4, OpticProperties.NO_SHADOW, this));
     }
 
     @Override
@@ -119,8 +136,8 @@ public class MyPlayer extends Player {
                 legs.getLeftPart().renderPieceHere(frame);
                 legs.getRightPart().renderPieceHere(frame);
             } else {
-                legs.getRightPart().renderPieceHere(frame); 
-                legs.getLeftPart().renderPieceHere(frame);               
+                legs.getRightPart().renderPieceHere(frame);
+                legs.getLeftPart().renderPieceHere(frame);
             }
         }
         if (dress != null) {
@@ -129,7 +146,7 @@ public class MyPlayer extends Player {
                 dress.getLeftPart().renderPieceHere(frame);
             } else {
                 dress.getLeftPart().renderPieceHere(frame);
-                dress.getRightPart().renderPieceHere(frame);                
+                dress.getRightPart().renderPieceHere(frame);
             }
         }
         if (torso != null) {
@@ -138,9 +155,9 @@ public class MyPlayer extends Player {
                 torso.getCentralPart().renderPieceHere(frame);
                 torso.getRightPart().renderPieceHere(frame);
             } else {
-                torso.getRightPart().renderPieceHere(frame); 
+                torso.getRightPart().renderPieceHere(frame);
                 torso.getCentralPart().renderPieceHere(frame);
-                torso.getLeftPart().renderPieceHere(frame);               
+                torso.getLeftPart().renderPieceHere(frame);
             }
         }
     }
@@ -158,8 +175,16 @@ public class MyPlayer extends Player {
             Drawer.drawElipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
-            //renderClothed(animation.getCurrentFrameIndex());
             getAnimation().render();
+
+            //renderClothed(animation.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
+            //glTranslatef(50, 0, 0);
+            //testBody.renderPiece((int) testIndex);
+            //test.renderPiece((int) testIndex);
+            testIndex += 0.1;
+            if (testIndex >= 80) {
+                testIndex = 0;
+            }
 
             if (Settings.scaled) {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);

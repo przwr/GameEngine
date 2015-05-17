@@ -65,9 +65,6 @@ public class MyPlace extends Place {
         StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
         maps.add(kamienna);
 //        sounds.initialize("res");
-        fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
-        standardFont = fonts.getFont(0);
         SoundStore.get().poll(0);
         NavigationMeshGenerator.clear();
     }

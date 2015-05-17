@@ -6,6 +6,7 @@
 package sprites;
 
 import engine.Methods;
+import engine.Point;
 import game.Settings;
 import java.io.BufferedReader;
 import java.io.File;
@@ -58,7 +59,8 @@ public class SpriteBase {
 
     private Sprite loadSprite(String name) {
         int width, height, startX, startY, pieceWidth, pieceHeight, xoffset, yoffset, actualWidth, actualHeight;
-        boolean spriteSheet;
+        boolean spriteSheet, movingStart = false;
+        Point[] startPoints = null;
         String sprite, key;
         Texture texture;
         Sprite image;
@@ -69,27 +71,55 @@ public class SpriteBase {
             spriteSheet = data[1].equals("1");
             line = input.readLine();
             sprite = line;
-            
+
             sprite = sprite.replace("\\", File.separator);
             sprite = sprite.replace("/", File.separator);
-            
+
             data = input.readLine().split(";");
             width = (int) (Integer.parseInt(data[0]));
             height = (int) (Integer.parseInt(data[1]));
-            
+
             data = input.readLine().split(";");
             startX = (int) (Integer.parseInt(data[0]));
             startY = (int) (Integer.parseInt(data[1]));
-                        
+
             data = input.readLine().split(";");
             pieceWidth = Integer.parseInt(data[0]);
             pieceHeight = Integer.parseInt(data[1]);
-            
+
             data = input.readLine().split(";");
             xoffset = Integer.parseInt(data[0]);
             yoffset = Integer.parseInt(data[1]);
             actualWidth = Integer.parseInt(data[2]);
             actualHeight = Integer.parseInt(data[3]);
+
+            if ((line = input.readLine()) != null) {
+                movingStart = true;
+                startPoints = new Point[Integer.parseInt(line)];
+                int i = 0;
+                Point lastOne = null;
+                while ((line = input.readLine()) != null) {
+                    data = line.split(";");
+                    switch (data[0]) {
+                        case "r":
+                            int j;
+                            for (j = i; j < i + Integer.parseInt(data[1]); j++) {
+                                startPoints[j] = lastOne;
+                            }
+                            i = j - 1;
+                            break;
+                        case "s":
+                            startPoints[i] = startPoints[Integer.parseInt(data[1])];
+                            break;
+                        default:
+                            lastOne = new Point(Integer.parseInt(data[0]), Integer.parseInt(data[1]));
+                            startPoints[i] = lastOne;
+                            break;
+                    }
+                    System.out.println(i + ". " + startPoints[i] + " " + line);
+                    i++;
+                }
+            }
             input.close();
         } catch (IOException e) {
             Methods.error("File " + name + " not found!\n" + e.getMessage());
@@ -102,7 +132,12 @@ public class SpriteBase {
             return null;
         }
         if (spriteSheet) {
-            image = SpriteSheet.create(texture, pieceWidth, pieceHeight, startX, startY, this);
+            if (!movingStart) {
+                image = SpriteSheet.create(texture, pieceWidth, pieceHeight, startX, startY, this);
+            } else {
+                image = SpriteSheet.createWithMovingStart(texture, pieceWidth, pieceHeight, startX, startY, this, startPoints);
+                System.out.println("BUM");
+            }
         } else {
             image = Sprite.create(texture, width, height, startX, startY, this);
         }

@@ -17,6 +17,7 @@ public abstract class GUIObject {
     protected String name;
     protected Place place;
     protected boolean visible;
+    protected int priority;
 
     protected GUIObject(String name, Place place) {
         this.name = name;
@@ -50,6 +51,14 @@ public abstract class GUIObject {
         this.place = place;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+    
     public boolean isVisible() {
         return visible;
     }

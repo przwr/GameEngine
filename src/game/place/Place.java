@@ -9,6 +9,7 @@ import engine.DayCycle;
 import engine.SplitScreen;
 import engine.Renderer;
 import engine.Drawer;
+import engine.FontBase;
 import game.Game;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
@@ -129,6 +130,8 @@ public abstract class Place extends ScreenPlace {
         sprites = new SpriteBase();
         console = new Console(this);
         dayCycle = new DayCycle();
+        fonts = new FontBase(20);
+        standardFont = fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
     }
 
     public abstract void generateAsGuest();

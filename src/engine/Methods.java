@@ -236,7 +236,7 @@ public class Methods {
         return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) <= 0;
     }
 
-    public static void insort(List<GameObject> list) {
+    public static void insort(List<GameObject> list) {  //sortuje od najmniejszych do najwiekszych
         int i, j, newValue;
         GameObject object;
         for (i = 1; i < list.size(); i++) {
