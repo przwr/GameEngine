@@ -13,8 +13,9 @@ import navmeshpathfinding.NavigationMeshGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
+import static game.place.Place.xAreaInPixels;
+import static game.place.Place.yAreaInPixels;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,7 @@ public class Area {
 
     private final Place place;
     private final Map map;
+    private final int xArea, yArea, xInPixels, yInPixels;
     private final Tile[] tiles;
     private final ArrayList<Block> blocks = new ArrayList<>();
 
@@ -47,17 +49,19 @@ public class Area {
 
     protected NavigationMesh navigationMesh;
 
-    public Area(Place place, Map map) {
+    public Area(Place place, Map map, int xArea, int yArea) {
         this.place = place;
         this.map = map;
         tiles = new Tile[X_IN_TILES * Y_IN_TILES];
+        
+        this.xArea = xArea;
+        this.yArea = yArea;
+        this.xInPixels = xArea * xAreaInPixels;
+        this.yInPixels = yArea * yAreaInPixels;
     }
 
-//    private int x, y;
 
-    public void generateNavigationMesh(Set<Block> blocksForMesh, int xArea, int yArea) {
-//        x = xArea;
-//        y = yArea;
+    public void generateNavigationMesh(Set<Block> blocksForMesh) {
         navigationMesh = NavigationMeshGenerator.generateNavigationMesh(tiles, blocksForMesh, xArea, yArea);
     }
 
@@ -274,6 +278,26 @@ public class Area {
 
     public GameObject getForegroundTile(int i) {
         return foregroundTiles.get(i);
+    }
+
+    public int getXArea() {
+        return xArea;
+    }
+
+    public int getYArea() {
+        return yArea;
+    }
+
+    public int getXInPixels() {
+        return xInPixels;
+    }
+
+    public int getYInPixels() {
+        return yInPixels;
+    }
+
+    public NavigationMesh getNavigationMesh() {
+        return navigationMesh;
     }
 
     public void setTile(int x, int y, Tile tile) {

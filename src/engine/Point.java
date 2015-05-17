@@ -43,6 +43,11 @@ public class Point implements Comparable<Object> {
         this.y = y;
     }
 
+    public void add(int x, int y) {
+        this.x += x;
+        this.y += y;
+    }
+
     @Override
     public int compareTo(Object o) {
         return ((y - ((Point) o).y) << 13) + (x - ((Point) o).x);

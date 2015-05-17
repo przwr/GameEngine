@@ -9,8 +9,11 @@ import engine.BlueArray;
 import engine.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Set;
+import static navmeshpathfinding.Triangle.MAX;
+import static navmeshpathfinding.Triangle.MIN;
 
 /**
  *
@@ -24,11 +27,16 @@ public class NavigationMesh {
     private final int tempNodeIndexes[] = new int[5], sharedNodesIndexes[] = new int[12];
     private int sharedNodeNumber, nrSharedNodes, nrConnections;
     private final Triangle[] connectedTriangles = new Triangle[3];
+    private final BitSet collisionSpots;
+    private final byte[] shiftDirections;
+
     BlueArray<Node> toRemove = new BlueArray<>();
     ArrayList<Bound> bounds = new ArrayList<>();
 
-    public NavigationMesh(Point firstPoint, Point secondPoint, Point thirdPoint) {
+    public NavigationMesh(Point firstPoint, Point secondPoint, Point thirdPoint, BitSet collisionSpots, byte[] shiftDirections) {
         mesh.add(Triangle.createAndConnectNeightbours(firstPoint, secondPoint, thirdPoint));
+        this.collisionSpots = collisionSpots;
+        this.shiftDirections = shiftDirections;
     }
 
     public void addTriangle(Triangle triangleToAdd) {
@@ -211,6 +219,22 @@ public class NavigationMesh {
         }
     }
 
+    public PathBase getPathBase(Point startPoint, Point destinationPoint, int width, int height) {
+        PathBase pathBase = new PathBase();
+        boolean start = true, end = true;
+        for (Triangle triangle : mesh) {
+            if (start && triangle.isPointInTriangle(startPoint)) {
+                pathBase.startTriangle = triangle;
+                start = false;
+            }
+            if (end && triangle.isPointInTriangle(destinationPoint)) {
+                pathBase.endTriangle = triangle;
+                end = false;
+            }
+        }
+        return pathBase;
+    }
+
     public Triangle isPointInMesh(Point point) {
         for (Triangle triangle : mesh) {
             if (triangle.isPointInTriangle(point)) {
@@ -252,6 +276,14 @@ public class NavigationMesh {
 
     public int size() {
         return mesh.size();
+    }
+
+    public BitSet getCollisonSpots() {
+        return collisionSpots;
+    }
+
+    public byte[] getShiftDirections() {
+        return shiftDirections;
     }
 
     public Triangle[] getTriangles() {

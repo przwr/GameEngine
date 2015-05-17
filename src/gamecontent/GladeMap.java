@@ -35,7 +35,7 @@ public class GladeMap extends Map {
         PuzzleObject test = new PuzzleObject("zatoczka", place);
         test.placePuzzle(5, 3, this);
         test = new PuzzleObject("test", place);
-        test.placePuzzle(1, 17, this);
+        test.placePuzzle(11, 26, this);
         test = new PuzzleObject("smukly", place);
         test.placePuzzle(-1, 0, this);
 
@@ -52,11 +52,11 @@ public class GladeMap extends Map {
 
     @Override
     public void populate() {
-        addObject(new Rabbit(256, 2048, 128, 28, 3, 512, "rabbit", place, true, mobID++));
+        addObject(new Rabbit(256, 2048, 128, 28, 6, 1024, "very perverted rabbit", place, true, mobID++));
         addObject(new Tree(384, 960, 54, 27, 1.5, 1024, " ", place, true, mobID++));
         for (int i = 0; i < 1000; i += 2) {
             //  addObject(new Rabbit(192 + 192 * (i % 50), 3072 + 192 * (i / 50), 128, 28, 3, 512, "rabbit", place, true, mobID++));
-            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2048 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() * 150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));
+            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() * 150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));
         }
         GameObject light = new LightSource(1784, 1296, 206, 64, "lamp", place, "lamp", false);
         light.setDepth(1024);

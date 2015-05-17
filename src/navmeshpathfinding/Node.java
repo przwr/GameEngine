@@ -55,6 +55,7 @@ public class Node {
 
     public void reset() {
         parent = null;
+        child = null;
         hCost = halfMaxValue;
         gCost = halfMaxValue;
         fCost = Integer.MAX_VALUE;

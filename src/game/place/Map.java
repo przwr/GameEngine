@@ -21,10 +21,10 @@ import static game.place.Place.xAreaInPixels;
 import static game.place.Place.yAreaInPixels;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import navmeshpathfinding.NavigationMeshGenerator;
 import org.newdawn.slick.Color;
 
 /**
@@ -33,7 +33,6 @@ import org.newdawn.slick.Color;
  */
 public abstract class Map {
 
-//    protected final static Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) -> firstObject.getDepth() - secondObject.getDepth();
     private final BlueArray<Light> visibleLights = new BlueArray<>();
 
     public final Place place;
@@ -64,9 +63,8 @@ public abstract class Map {
 
     public abstract void populate();
 
-    // TO DO - kolizja z NULL Tile'ami - tylko te nieszczęsne getX() i getY()
     private final Placement placement;
-    private int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect; //Camera's variables for current rendering
+    private int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
 
     public Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
@@ -80,8 +78,8 @@ public abstract class Map {
         xAreas = (widthInTiles / Area.X_IN_TILES) + (widthInTiles % Area.X_IN_TILES != 0 ? 1 : 0);
         yAreas = (heightInTiles / Area.Y_IN_TILES) + (heightInTiles % Area.Y_IN_TILES != 0 ? 1 : 0);
         areas = new Area[xAreas * yAreas];
-        for (int i = 0; i < areas.length; i++) {
-            areas[i] = new Area(place, this);
+        for (int areaIndex = 0; areaIndex < areas.length; areaIndex++) {
+            areas[areaIndex] = new Area(place, this, areaIndex % xAreas, areaIndex / xAreas);
         }
         placement = new Placement(this);
     }
@@ -95,7 +93,7 @@ public abstract class Map {
                     tempBlocks.add(block);
                 }
             }
-            area.generateNavigationMesh(tempBlocks, areaIndex % xAreas, areaIndex / xAreas);
+            area.generateNavigationMesh(tempBlocks);
             areaIndex++;
         }
     }
@@ -120,10 +118,23 @@ public abstract class Map {
     public Point[] findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         int area = getAreaIndex(xStart, yStart);
         if (area != getAreaIndex(xDestination, yDestination)) {
-            System.out.println("Inne obszary!");
+            //System.out.println("Inne obszary!");
             return null;
         }
-        return areas[area].findPath(xStart % xAreaInPixels, yStart % yAreaInPixels, xDestination % xAreaInPixels, yDestination % yAreaInPixels, collision);
+        int x = areas[area].getXInPixels();
+        int y = areas[area].getYInPixels();
+        Point[] path = areas[area].findPath(xStart - x, yStart - y, xDestination - x, yDestination - y, collision);
+        if (path != null) {
+            for (Point point : path) {
+                point.add(x, y);
+            }
+            if (NavigationMeshGenerator.mesh != null) {
+                NavigationMeshGenerator.mesh.addVariables(areas[area].getNavigationMesh(), path[path.length - 1], path[0], path, x, y);
+                NavigationMeshGenerator.mesh.repaint();
+            }
+            return path;
+        }
+        return null;
     }
 
     public void addAreasToUpdate(int[] newAreas) {
@@ -534,6 +545,10 @@ public abstract class Map {
             }
         }
         return blocks;
+    }
+
+    public Area getArea(int i) {
+        return areas[i];
     }
 
     public void setTile(int x, int y, Tile tile) {
