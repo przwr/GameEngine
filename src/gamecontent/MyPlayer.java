@@ -95,7 +95,7 @@ public class MyPlayer extends Player {
         if (true) { //Tekst cwiczeniowy
             textControl = new TextController(place);
             addGui(textControl);
-            textControl.startText("Tutaj tekst ćwiczeniowy!\nCzy mnie słychać?\nProszę o odpowiedź!...");
+            textControl.startFromFile("test");
         }
 
         //test = place.getSpriteSheet("wynik");         //NIE KASOWAĆ! <('o'<)
