@@ -7,7 +7,7 @@ package game.place.cameras;
 
 import engine.BlueArray;
 import game.gameobject.GUIObject;
-import game.place.Light;
+import engine.Light;
 import java.util.ArrayList;
 import java.util.List;
 

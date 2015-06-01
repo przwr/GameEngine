@@ -6,7 +6,7 @@
 package collision;
 
 import engine.ShadowContener;
-import game.place.Shadow;
+import engine.Shadow;
 
 /**
  *

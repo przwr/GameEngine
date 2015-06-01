@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place;
+package engine;
 
 import collision.Figure;
-import engine.Methods;
 import game.place.fbo.RegularFrameBufferObject;
 import game.place.fbo.MultisampleFrameBufferObject;
 import game.place.fbo.FrameBufferObject;

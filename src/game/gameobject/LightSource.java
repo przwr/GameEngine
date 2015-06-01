@@ -10,7 +10,7 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
 import game.Settings;
-import game.place.Light;
+import engine.Light;
 import game.place.Place;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;

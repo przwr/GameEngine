@@ -11,7 +11,7 @@ import engine.Methods;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
-import game.place.Light;
+import engine.Light;
 import game.place.Map;
 import java.util.ArrayList;
 import java.util.List;

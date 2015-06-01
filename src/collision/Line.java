@@ -8,7 +8,6 @@ package collision;
 import engine.Point;
 import game.gameobject.GameObject;
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

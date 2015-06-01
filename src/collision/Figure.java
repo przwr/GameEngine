@@ -6,6 +6,7 @@
 package collision;
 
 import engine.BlueArray;
+import engine.Methods;
 import engine.Point;
 import engine.ShadowContener;
 import game.gameobject.GameObject;
@@ -13,7 +14,7 @@ import game.gameobject.Player;
 import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
-import game.place.Shadow;
+import engine.Shadow;
 import java.util.List;
 
 /**
@@ -24,8 +25,9 @@ public abstract class Figure implements Comparable<Figure> {
 
     private static Figure figure;
     private static Rectangle tempTile = Rectangle.createTileRectangle();
+    private static Rectangle scope = Rectangle.createTileRectangle();
 
-    private final GameObject owner;
+    protected GameObject owner;
     private final OpticProperties opticProperties;
     protected int xStart, yStart, width, height, xCenter, yCenter;
     protected final BlueArray<Point> points;
@@ -47,6 +49,15 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public boolean isCollideSolid(int x, int y, Map map) {
+        if (map.getBlocks(getOwner().getArea()).stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)))) {
+            return true;
+        }
+        if (map.getSolidMobs(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
+            return true;
+        }
+        if (map.getSolidObjects(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
+            return true;
+        }
         tiles = map.getNearNullTiles(this);
         for (int i = 0; i < tiles.size(); i++) {
             setTile(tiles.get(i));
@@ -54,14 +65,7 @@ public abstract class Figure implements Comparable<Figure> {
                 return true;
             }
         }
-
-        if (map.getSolidMobs(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
-            return true;
-        }
-        if (map.getSolidObjects(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
-            return true;
-        }
-        return map.getBlocks(getOwner().getArea()).stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)));
+        return false;
     }
 
     private void setTile(Point point) {
@@ -70,25 +74,118 @@ public abstract class Figure implements Comparable<Figure> {
         tempTile.updateTilePoints();
     }
 
-    public GameObject whatCollideSolid(int x, int y, Map map) {
+    public Figure whatCollideSolid(int x, int y, Map map) {
+        for (Block object : map.getBlocks(x, y)) {
+            if (object.isSolid() && object.isCollide(x, y, this)) {
+                return object.getCollision();
+            }
+        }
         for (GameObject object : map.getSolidMobs(x, y)) {
             if (checkCollison(x, y, object)) {
-                return object;
+                return object.getCollision();
             }
         }
         for (GameObject object : map.getSolidObjects(x, y)) {
             if (checkCollison(x, y, object)) {
-                return object;
+                return object.getCollision();
             }
         }
-        for (Block object : map.getBlocks(x, y)) {
-            if (object.isSolid() && object.isCollide(x, y, this)) {
-                return object;
+        tiles = map.getNearNullTiles(this);
+        for (int i = 0; i < tiles.size(); i++) {
+            setTile(tiles.get(i));
+            if (isCollideSingle(x, y, tempTile)) {
+                return tempTile;
             }
         }
         return null;
     }
 
+    public List<Figure> whatClose(GameObject owner, Map map, Point destination, double range) {
+        int x = owner.getX(), y = owner.getY();
+        List<Figure> colided = new BlueArray<>();
+
+        setScope(owner, destination, range / 4);
+        for (Block object : map.getBlocks(x, y)) {
+            if (object.isSolid() && scope.isCollideSingle(x, y, object.getCollision())) {
+                Figure figure = object.getCollision();
+                figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), destination.getX(), destination.getY()));
+                colided.add(figure);
+            }
+        }
+        for (GameObject object : map.getSolidMobs(getX(), getY())) {
+            if (object != owner && scope.isCollideSingle(x, y, object.getCollision())) {
+                Figure figure = object.getCollision();
+                figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), destination.getX(), destination.getY()));
+                colided.add(figure);
+            }
+        }
+        for (GameObject object : map.getSolidObjects(getX(), getY())) {
+            if (object != owner && scope.isCollideSingle(x, y, object.getCollision())) {
+                Figure figure = object.getCollision();
+                figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), destination.getX(), destination.getY()));
+                colided.add(figure);
+            }
+        }
+        return colided;
+    }
+
+    public void setScope(GameObject owner, Point destination, double range) {
+//        int distance = Methods.pointDistance(owner.getX(), owner.getY(), destination.getX(), destination.getY());
+//        if (distance > range) {
+//            distance = (int) range;
+//        }
+        int distance = (int) range;
+
+        //To DO make right points - 4 cases
+        int xSign = destination.getX() >= owner.getX() ? -1 : 1;
+        int ySign = destination.getY() >= owner.getY() ? -1 : 1;
+
+        scope.setXStart(owner.getX() - distance);
+        scope.setYStart(owner.getY() - distance);
+        scope.width = 2 * distance;
+        scope.height = 2 * distance;
+
+        scope.updateTilePoints();
+    }
+
+//    public ColidedResponse whatCloseToSolid(int x, int y, Map map) {
+//        circle.radius = (width + height);
+//        circle.owner = this.getOwner();
+//        ColidedResponse response = new ColidedResponse();
+//        for (Block object : map.getBlocks(x, y)) {
+//            if (object.isSolid() && checkCollison(x, y, object, circle)) {
+//                response.colided.add(object.getCollision());
+//                if (checkCollison(x, y, object)) {
+//                    response.collison = true;
+//                }
+//            }
+//        }
+//        for (GameObject object : map.getSolidMobs(x, y)) {
+//            if (checkCollison(x, y, object, circle)) {
+//                response.colided.add(object.getCollision());
+//                if (checkCollison(x, y, object)) {
+//                    response.collison = true;
+//                }
+//            }
+//        }
+//        for (GameObject object : map.getSolidObjects(x, y)) {
+//            if (checkCollison(x, y, object, circle)) {
+//                response.colided.add(object.getCollision());
+//                if (checkCollison(x, y, object)) {
+//                    response.collison = true;
+//                }
+//            }
+//        }
+//        tiles = map.getNearNullTiles(this);
+//        for (int i = 0; i < tiles.size(); i++) {
+//            setTile(tiles.get(i));
+//            if (isCollideSingle(x, y, tempTile)) {
+//                response.collison = true;
+//                break;
+//            }
+//        }
+//        return response;
+//    }
     public boolean isCollide(int x, int y, List<GameObject> objects) {
         return objects.stream().anyMatch((object) -> (checkCollison(x, y, object)));
     }
@@ -120,6 +217,10 @@ public abstract class Figure implements Comparable<Figure> {
 
     private boolean checkCollison(int x, int y, GameObject object) {
         figure = object.getCollision();
+        return checkCollison(x, y, object, figure);
+    }
+
+    private boolean checkCollison(int x, int y, GameObject object, Figure figure) {
         if (object == owner || figure == null) {
             return false;
         }

@@ -8,14 +8,13 @@ package engine;
 import collision.Figure;
 import collision.RoundRectangle;
 import static engine.Drawer.displayHeight;
-import game.place.Light;
 import game.place.Place;
-import static game.place.Shadow.BRIGHT;
-import static game.place.Shadow.BRIGHTEN;
-import static game.place.Shadow.BRIGHTEN_OBJECT;
-import static game.place.Shadow.DARK;
-import static game.place.Shadow.DARKEN;
-import static game.place.Shadow.DARKEN_OBJECT;
+import static engine.Shadow.BRIGHT;
+import static engine.Shadow.BRIGHTEN;
+import static engine.Shadow.BRIGHTEN_OBJECT;
+import static engine.Shadow.DARK;
+import static engine.Shadow.DARKEN;
+import static engine.Shadow.DARKEN_OBJECT;
 import static org.lwjgl.opengl.GL11.*;
 
 /**

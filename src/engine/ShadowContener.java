@@ -6,7 +6,6 @@
 package engine;
 
 import collision.Figure;
-import game.place.Shadow;
 
 /**
  *
