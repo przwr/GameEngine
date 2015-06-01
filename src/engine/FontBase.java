@@ -5,7 +5,7 @@
  */
 package engine;
 
-import engine.inout.FontHandler;
+import game.text.FontHandler;
 import java.util.ArrayList;
 
 /**

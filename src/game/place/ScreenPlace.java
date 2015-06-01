@@ -6,7 +6,7 @@
 package game.place;
 
 import engine.FontBase;
-import engine.inout.FontHandler;
+import game.text.FontHandler;
 import game.Game;
 import game.gameobject.GameObject;
 
