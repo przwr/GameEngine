@@ -1,5 +1,7 @@
 package engine;
 
+import collision.Figure;
+import collision.Rectangle;
 import game.gameobject.GameObject;
 import game.place.Place;
 import java.awt.geom.Line2D;
@@ -32,8 +34,8 @@ import org.lwjgl.input.Keyboard;
  */
 public class Methods {
 
-    private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z;
-    private static int xOA, yOA, xOB, yOB, xBA, yBA, xDelta, yDelta;
+    private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, angle, temp;
+    private static int xOA, yOA, xOB, yOB, xBA, yBA, xDelta, yDelta, xS, xE, yS, yE;
     private static final Point point = new Point(0, 0);
     private static File file;
 
@@ -226,6 +228,100 @@ public class Methods {
         AB = yc + b;
         B = 2 * ((a * AB) - xc);
         delta = (B * B) - 4 * A * ((xc * xc) - Place.tileSquared + (AB * AB)); // Place.tileArea is radius squared
+    }
+
+    public static void getCastingPointsIndexes(int x, int y, Figure figure, Point result) {
+        if (figure instanceof Rectangle) {
+            getCastingPointsFromRectangle(x, y, figure, result);
+        } else {
+            getCastingPointsFromRest(x, y, figure.getPoints(), result);
+        }
+    }
+
+    public static void getCastingPointsFromRest(int x, int y, List<Point> points, Point result) {
+        angle = 0;
+        temp = 0;
+        int first = 0, second = 0;
+        for (int i = 0; i < points.size(); i++) {
+            for (int j = i + 1; j < points.size(); j++) {
+                temp = Methods.threePointAngle(points.get(i).getX(), points.get(i).getY(), points.get(j).getX(), points.get(j).getY(), x, y);
+                if (temp > angle) {
+                    angle = temp;
+                    first = i;
+                    second = j;
+                }
+            }
+        }
+        result.set(first, second);
+    }
+
+    public static void getCastingPoints(int x, int y, int xS, int xE, int yS, int yE, Point[] result) {
+        if (x > xE) {
+            if (y > yE) {
+                result[0].set(xS, yE);
+                result[1].set(xE, yS);
+            } else if (y > yS) {
+                result[0].set(xE, yS);
+                result[1].set(xE, yE);
+            } else {
+                result[0].set(xS, yS);
+                result[1].set(xE, yE);
+            }
+        } else if (x > xS) {
+            if (y > yE) {
+                result[0].set(xS, yE);
+                result[1].set(xE, yE);
+            } else if (y > yS) {
+                result[0].set(xS, yS);
+                result[1].set(xS, yS);
+            } else {
+                result[0].set(xS, yS);
+                result[1].set(xE, yS);
+            }
+        } else {
+            if (y > yE) {
+                result[0].set(xS, yS);
+                result[1].set(xE, yE);
+            } else if (y > yS) {
+                result[0].set(xS, yS);
+                result[1].set(xS, yE);
+            } else {
+                result[0].set(xS, yE);
+                result[1].set(xE, yS);
+            }
+        }
+    }
+
+    public static void getCastingPointsFromRectangle(int x, int y, Figure rectangle, Point result) {
+        xS = rectangle.getX();
+        xE = rectangle.getXEnd();
+        yS = rectangle.getY();
+        yE = rectangle.getYEnd();
+        if (x > xE) {
+            if (y > yE) {
+                result.set(1, 3);
+            } else if (y > yS) {
+                result.set(3, 2);
+            } else {
+                result.set(0, 2);
+            }
+        } else if (x > xS) {
+            if (y > yE) {
+                result.set(1, 2);
+            } else if (y > yS) {
+                result.set(0, 0);
+            } else {
+                result.set(0, 3);
+            }
+        } else {
+            if (y > yE) {
+                result.set(0, 2);
+            } else if (y > yS) {
+                result.set(0, 1);
+            } else {
+                result.set(1, 3);
+            }
+        }
     }
 
     public static boolean isPointOnTheLeftToLine(int xb, int yb, int xe, int ye, int xp, int yp) {

@@ -10,7 +10,7 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import game.gameobject.Player;
 import game.place.Place;
-import game.place.Light;
+import engine.Light;
 import sprites.Animation;
 import engine.Drawer;
 import engine.Methods;

@@ -30,6 +30,14 @@ public class Point implements Comparable<Object> {
         return y;
     }
 
+    public int getFirst() {
+        return x;
+    }
+
+    public int getSecond() {
+        return y;
+    }
+
     public void setX(int x) {
         this.x = x;
     }
@@ -41,6 +49,11 @@ public class Point implements Comparable<Object> {
     public void set(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public void copy(Point point) {
+        this.x = point.x;
+        this.y = point.y;
     }
 
     public void add(int x, int y) {

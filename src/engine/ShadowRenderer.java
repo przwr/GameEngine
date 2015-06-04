@@ -15,13 +15,12 @@ import static engine.Drawer.clearScreen;
 import static engine.Drawer.displayHeight;
 import static engine.ShadowDrawer.*;
 import game.gameobject.GameObject;
-import game.place.Light;
 import game.place.Map;
 import game.place.Place;
-import game.place.Shadow;
-import static game.place.Shadow.*;
+import static engine.Shadow.*;
 import java.awt.Polygon;
 import java.util.Collections;
+import java.util.List;
 import net.jodk.lang.FastMath;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -36,11 +35,11 @@ public class ShadowRenderer {
     private static final Point[] shadowPoints = {new Point(), new Point(), new Point(), new Point()};
     private static final Polygon polygon = new Polygon();
     private static boolean checked;
-    private static int firstShadowPoint, secondShadowPoint, shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightHeightHalf, lightWidthHalf, minValue, maxValue;
+    private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightHeightHalf, lightWidthHalf, minValue, maxValue;
     private static double angle, temp, al, bl, ar, br, as, bs, XOL, XOR, YOL, YOL2, YOR, YOR2;
     private static Shadow tempShadow, minShadow, maxShadow;
     private static Figure tempShade;
-    private static Point tempPoint;
+    private static Point tempPoint, casting = new Point();
     private static ShadowContener darkenSpots = new ShadowContener(), brightenSpots = new ShadowContener();
 
     private static final boolean DEBUG = false, OBJECT_DEBUG = false;
@@ -68,7 +67,7 @@ public class ShadowRenderer {
     private static void findShades(Light light, Map map) {
         shades.clear();
         searchBlocks(light, map);
-       // searchForegroundTiles(light, map); - pointless!!!
+        // searchForegroundTiles(light, map); - pointless!!!
         searchObjects(light, map);
         Collections.sort(shades);
     }
@@ -105,7 +104,6 @@ public class ShadowRenderer {
 //            }
 //        }
 //    }
-
     private static void searchObjects(Light light, Map map) {
         for (GameObject object : map.getDepthObjects(light.getX(), light.getY())) {
             tempShade = object.getCollision();
@@ -162,19 +160,9 @@ public class ShadowRenderer {
 
     private static void findPoints(Light source, Figure thisShade) {
         center.set(source.getX(), source.getY());
-        angle = 0;
-        for (int i = 0; i < thisShade.getPoints().size(); i++) {
-            for (int j = i + 1; j < thisShade.getPoints().size(); j++) {
-                temp = Methods.threePointAngle(thisShade.getPoint(i).getX(), thisShade.getPoint(i).getY(), thisShade.getPoint(j).getX(), thisShade.getPoint(j).getY(), center.getX(), center.getY());
-                if (temp > angle) {
-                    angle = temp;
-                    firstShadowPoint = i;
-                    secondShadowPoint = j;
-                }
-            }
-        }
-        shadowPoints[0] = thisShade.getPoint(firstShadowPoint);
-        shadowPoints[1] = thisShade.getPoint(secondShadowPoint);
+        Methods.getCastingPointsIndexes(center.getX(), center.getY(), thisShade, casting);
+        shadowPoints[0] = thisShade.getPoint(casting.getFirst());
+        shadowPoints[1] = thisShade.getPoint(casting.getSecond());
         switchSidesIfNeeded(thisShade);
     }
 

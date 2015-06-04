@@ -25,9 +25,7 @@ public class Block extends GameObject {
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
     private static Figure colision;
 
-    private String name;
-
-    public static Block create(int x, int y, int width, int height, int shadowHeight) {
+     public static Block create(int x, int y, int width, int height, int shadowHeight) {
         return new Block(x, y, width, height, shadowHeight, false);
     }
 

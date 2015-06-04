@@ -12,7 +12,7 @@ package engine;
 public class Delay {
 
     private int length;
-    private long endTime, tillEnd;
+    private long endTime;
     private boolean started;
 
     public Delay(int length) {
@@ -35,7 +35,6 @@ public class Delay {
 
     public boolean isOver() {
         if (!started) {
-            tillEnd = 0;
             return false;
         }
         return endTime <= Time.getTime();
@@ -62,9 +61,5 @@ public class Delay {
     public void terminate() {
         started = true;
         endTime = 0;
-    }
-
-    public long getTillEnd() {
-        return tillEnd;
     }
 }

@@ -380,6 +380,24 @@ public class Rectangle extends Figure {
     }
 
     @Override
+    public int getX(int x) {
+        if (tile) {
+            return xStart;
+        } else {
+            return super.getX(x);
+        }
+    }
+
+    @Override
+    public int getY(int y) {
+        if (tile) {
+            return yStart;
+        } else {
+            return super.getY(y);
+        }
+    }
+
+    @Override
     public int getX() {
         if (tile) {
             return xStart;

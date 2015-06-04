@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.Light;
 import collision.Block;
 import collision.Figure;
 import collision.PointContener;
@@ -118,7 +119,7 @@ public abstract class Map {
     public Point[] findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         int area = getAreaIndex(xStart, yStart);
         if (area != getAreaIndex(xDestination, yDestination)) {
-            //System.out.println("Inne obszary!");
+//            System.out.println("Inne obszary!");
             return null;
         }
         int x = areas[area].getXInPixels();
@@ -218,7 +219,7 @@ public abstract class Map {
         areas[getAreaIndex(object.getX(), object.getY())].addObject(object);
     }
 
-    public void deleteObject(GameObject object) {  // Nie usuwa świateł przypisanych do gracza, ale gracze ostatecznie nie powinni mieć świateł, więc nie zmieniam tego
+    public void deleteObject(GameObject object) {
         object.setMapNotChange(null);
         if (object instanceof WarpPoint) {
             warps.remove((WarpPoint) object);
@@ -574,10 +575,6 @@ public abstract class Map {
                 }
             }
         }
-//        System.out.println("\nPoints: ");
-//        for (int i = 0; i < tempTilePositions.size(); i++) {
-//            System.out.println(tempTilePositions.get(i));
-//        }
         return tempTilePositions;
     }
 }

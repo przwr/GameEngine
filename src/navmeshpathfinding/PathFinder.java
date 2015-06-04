@@ -8,11 +8,15 @@ package navmeshpathfinding;
 import collision.Figure;
 import engine.BlueArray;
 import engine.Point;
+import static game.place.Area.X_IN_TILES;
+import static game.place.Area.Y_IN_TILES;
 import game.place.Place;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import static navmeshpathfinding.NavigationMeshGenerator.getIndex;
 import static navmeshpathfinding.NavigationMeshGenerator.getIndexForShifts;
 
 /**
@@ -24,7 +28,7 @@ public class PathFinder {
     public static final int TO_LEFT_TOP = 1, TO_LEFT_BOTTOM = 4, TO_RIGHT_BOTTOM = 8, TO_RIGHT_TOP = 2, TO_TOP = 3, TO_LEFT = 5, TO_BOTTOM = 12, TO_RIGHT = 10;
     private static final Set<Node> closedList = new HashSet<>();
     private static final PriorityQueue<Node> openList = new PriorityQueue<>(24, (Node n1, Node n2) -> n1.getFCost() - n2.getFCost());
-    private static Point startPoint = new Point(), destinationPoint = new Point();
+    private static Point destinationPoint = new Point(), startPoint = new Point(), temp = new Point();
     private static int width, height;
     private static Triangle startTriangle, endTriangle;
     private static Node destination, beginning;
@@ -33,11 +37,13 @@ public class PathFinder {
 
     public static Point[] findPath(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         if (mesh != null) {
-            destinationPoint.set(xStart, yStart);
-            startPoint.set(xDestination, yDestination);
-            width = collision.getWidth() + 2;
-            height = collision.getHeight() + 2;
-            pathBase = mesh.getPathBase(startPoint, destinationPoint, collision.getWidth() + 2, collision.getHeight() + 2);
+            // TO DO Dostosowanie punktu celu do obiektu - przesunięcie, jeśli trzeba.
+            startPoint = new Point(xStart, yStart);
+            destinationPoint = new Point(xDestination, yDestination);
+            
+            width = collision.getWidth() / 2 + 1;
+            height = collision.getHeight() / 2 + 1;
+            pathBase = mesh.getPathBase(destinationPoint, startPoint, collision.getWidth() + 2, collision.getHeight() + 2);
             startTriangle = pathBase.startTriangle;
             endTriangle = pathBase.endTriangle;
             return findSolution(mesh);
@@ -58,8 +64,8 @@ public class PathFinder {
     }
 
     private static Node inOneTriangle() {
-        Node beginning = new Node(startPoint);
-        destination = new Node(destinationPoint);
+        Node beginning = new Node(destinationPoint);
+        destination = new Node(startPoint);
         destination.setParentMakeChild(beginning);
         return destination;
     }
@@ -67,18 +73,15 @@ public class PathFinder {
     private static Node aStar(NavigationMesh mesh) {
         Node currentNode;
         readyVariables(mesh);
-        createBeginningAndAdjacent();
+        createBeginningAndAdjacent(mesh);
         while (!openList.isEmpty()) {
             currentNode = openList.poll();
-            if (isFittingPoint(currentNode)) {
-                closedList.add(currentNode);
-                if (isInEndTriangle(currentNode)) {
-                    //optimize(mesh);
-                    break;
-                }
-                keepLooking(currentNode);
+            closedList.add(currentNode);
+            if (isInEndTriangle(currentNode, mesh)) {
+                //optimize(mesh);
+                break;
             }
-
+            keepLooking(currentNode, mesh);
         }
         return destination;
     }
@@ -90,46 +93,91 @@ public class PathFinder {
         destination = null;
     }
 
-    private static void createBeginningAndAdjacent() {
-        beginning = new Node(startPoint);
-        beginning.setGHCosts(0, countH(startPoint, destinationPoint));
+    private static void createBeginningAndAdjacent(NavigationMesh mesh) {
+        beginning = new Node(destinationPoint);
+        beginning.setGHCosts(0, countH(destinationPoint, startPoint));
         closedList.add(beginning);
         for (int i = 0; i < 3; i++) {
             Node node = startTriangle.getNode(i);
-            calculateAndAddToOpenList(node, beginning);
+            calculateAndAddToOpenList(node, beginning, mesh);
         }
     }
 
-    private static void calculateAndAddToOpenList(Node node, Node parent) {
+    private static void calculateAndAddToOpenListIfFits(Node node, Node parent, NavigationMesh mesh) {
+        if (isFittingPoint(node.getPoint(), mesh)) {
+            calculateAndAddToOpenList(node, parent, mesh);
+        }
+    }
+
+    private static void calculateAndAddToOpenList(Node node, Node parent, NavigationMesh mesh) {
         node.setParentMakeChild(parent);
-        node.setGHCosts(countG(node.getPoint(), parent.getPoint()), countH(node.getPoint(), destinationPoint));
+        node.setGHCosts(countG(node.getPoint(), parent.getPoint()), countH(node.getPoint(), startPoint));
         openList.add(node);
     }
 
-    private static boolean isFittingPoint(Node currentNode) {
-
-        return true;
+    private static boolean isFittingPoint(Point point, NavigationMesh mesh) {
+        return !(mesh.linesIntersectsMeshBounds(point, getShiftValues(point, mesh, width * 2, height * 2)));
     }
 
-    private static boolean isInEndTriangle(Node currentNode) {
+    private static Point getShiftValues(Point point, NavigationMesh mesh, int width, int height) {
+        switch (mesh.getShiftDirections()[getIndexForShifts(point.getX() / Place.tileSize, point.getY() / Place.tileSize)]) {
+            case TO_LEFT_TOP:
+                temp.set(-width, -height);
+                break;
+            case TO_LEFT_BOTTOM:
+                temp.set(-width, height);
+                break;
+            case TO_RIGHT_BOTTOM:
+                temp.add(width, height);
+                break;
+            case TO_RIGHT_TOP:
+                temp.set(width, -height);
+                break;
+            case TO_TOP:
+                temp.set(0, -height);
+                break;
+            case TO_LEFT:
+                temp.set(-width, 0);
+                break;
+            case TO_BOTTOM:
+                temp.set(0, height);
+                break;
+            case TO_RIGHT:
+                temp.set(width, 0);
+                break;
+            default:
+                temp.set(0, 0);
+                break;
+        }
+        return temp;
+    }
+
+    private static boolean isCollide(int x, int y, BitSet spots) {
+        if (x < 0 || x > X_IN_TILES || y < 0 || y > Y_IN_TILES) {
+            return true;
+        }
+        return spots.get(getIndex(x, y));
+    }
+
+    private static boolean isInEndTriangle(Node currentNode, NavigationMesh mesh) {
         boolean isFound = false;
         for (int i = 0; i < 3; i++) {
             Node node = endTriangle.getNode(i);
             if (currentNode.getPoint().equals(node.getPoint())) {
-                destination = new Node(destinationPoint);
-                calculateAndAddToOpenList(destination, currentNode);
+                destination = new Node(startPoint);
+                calculateAndAddToOpenListIfFits(destination, currentNode, mesh);
                 isFound = true;
             }
         }
         return isFound;
     }
 
-    private static void keepLooking(Node currentNode) {
+    private static void keepLooking(Node currentNode, NavigationMesh mesh) {
         currentNode.getNeightbours().stream().filter((node) -> (!closedList.contains(node))).forEach((node) -> {
             if (openList.contains(node)) {
                 changeIfBetterPath(node, currentNode);
             } else {
-                calculateAndAddToOpenList(node, currentNode);
+                calculateAndAddToOpenListIfFits(node, currentNode, mesh);
             }
         });
     }
@@ -161,10 +209,7 @@ public class PathFinder {
     }
 
     private static int countG(Point point, Point parentPoint) {
-//        forbitten.setPoints(point, parentPoint);
-//        if (pathBase.forbittenConnections.contains(forbitten)) {
-//            return Integer.MAX_VALUE;
-//        }
+
         int x = parentPoint.getX() - point.getX();
         int y = parentPoint.getY() - point.getY();
         return (int) ((x * x + y * y));
@@ -180,7 +225,7 @@ public class PathFinder {
         if (destiation != null) {
             return printSolution(destiation, mesh);
         } else {
-            System.out.println("Nie znaleziono rozwiązania!");
+            // System.out.println("Nie znaleziono rozwiązania!");
         }
         return null;
     }
@@ -195,7 +240,8 @@ public class PathFinder {
             currentNode = currentNode.getParent();
             result.add(point);
             if (currentNode != null) {
-                shifted.add(getNewShiftedPoint(point, mesh, width, height));
+                shifted.add(getNewShiftedPoint(point, mesh));
+                //shifted.add(new Point(point.getX(), point.getY()));
             } else {
                 shifted.add(point);
             }
@@ -204,8 +250,7 @@ public class PathFinder {
         return shifted.toArray(new Point[shifted.size()]);
     }
 
-    private static Point getNewShiftedPoint(Point point, NavigationMesh mesh, int width, int height) {     // można zoptymalizować, żeby ustawiał PointContener dla tego, co pyta o ścieżkę.
-        //width = height = Math.max(width, height);
+    private static Point getNewShiftedPoint(Point point, NavigationMesh mesh) {     // TODO można zoptymalizować, żeby ustawiał PointContener dla tego, co pyta o ścieżkę.
         switch (mesh.getShiftDirections()[getIndexForShifts(point.getX() / Place.tileSize, point.getY() / Place.tileSize)]) {
             case TO_LEFT_TOP:
                 return new Point(point.getX() - width, point.getY() - height);

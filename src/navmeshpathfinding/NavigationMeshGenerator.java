@@ -40,7 +40,7 @@ import static navmeshpathfinding.PathFinder.TO_RIGHT_TOP;
  */
 public class NavigationMeshGenerator {
 
-    private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xSTemp, ySTemp, xETemp, yETemp, lineXStart, lineYStart, leftTop, rightTop, leftBottom, rightBottom;
+    private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart, leftTop, rightTop, leftBottom, rightBottom;
     private static double xd, yd;
     private static BitSet spots;
     private static byte[] shiftDirections;
@@ -66,7 +66,7 @@ public class NavigationMeshGenerator {
     private static int sharedPoints;
     private static NavigationMesh navigationMesh;
 
-    private static boolean showMesh = false, showLines = false, copy;
+    private static boolean showMesh = true, showLines = false;
     private static int areaNumberToShow = 0;
     public static long fullTime = 0;
     public static int areas = 0;
@@ -74,12 +74,8 @@ public class NavigationMeshGenerator {
     public static Window mesh;
 
     public static NavigationMesh generateNavigationMesh(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
-        while (copy) {
-            System.out.println("Loading ...");
-        }
         long startTime = System.nanoTime();
 
-        // DON'T change order. It's crucial and uses static fields!
         findBoundsAndSetCollisionSpots(tiles, blocks, xArea, yArea);
         createLinesFromSpots();
         createAndAddDiagonalLines(blocks);
@@ -104,13 +100,11 @@ public class NavigationMeshGenerator {
 //                System.out.println(triangle);
 //            }
             if (showLines) {
-                copy = true;
                 Line[] lines = new Line[newLines.size()];
                 int i = 0;
                 for (Line line : newLines) {
                     lines[i++] = line;
                 }
-                copy = false;
                 LineWindow win = new LineWindow();
                 win.addVariables(Arrays.asList(lines));
                 win.setVisible(true);
@@ -119,7 +113,7 @@ public class NavigationMeshGenerator {
             if (showMesh) {
                 mesh = new Window();
                 start = new Point(64, 64);
-                end = new Point(1152, 1088);
+                end = new Point(1024, 1088);
                 mesh.addVariables(navigationMesh, start, end, PathFinder.findPath(navigationMesh, start.getX(), start.getY(), end.getX(), end.getY(), Rectangle.create(32, 10, 0, null)), xArea * xAreaInPixels, yArea * yAreaInPixels);
                 mesh.setVisible(true);
                 showMesh = false;
@@ -231,24 +225,24 @@ public class NavigationMeshGenerator {
     }
 
     private static void setXSTemp(int xA) {
-        xSTemp = (figure.getX() / Place.tileSize);
-        if (xSTemp < xA) {
-            xSTemp = 0;
-        } else if (xSTemp >= xA + X_IN_TILES) {
-            xSTemp = X_IN_TILES;
+        xStartTemp = (figure.getX() / Place.tileSize);
+        if (xStartTemp < xA) {
+            xStartTemp = 0;
+        } else if (xStartTemp >= xA + X_IN_TILES) {
+            xStartTemp = X_IN_TILES;
         } else {
-            xSTemp %= X_IN_TILES;
+            xStartTemp %= X_IN_TILES;
         }
     }
 
     private static void setYSTemp(int yA) {
-        ySTemp = (figure.getY() / Place.tileSize);
-        if (ySTemp < yA) {
-            ySTemp = 0;
-        } else if (ySTemp >= yA + Y_IN_TILES) {
-            ySTemp = Y_IN_TILES;
+        yStartTemp = (figure.getY() / Place.tileSize);
+        if (yStartTemp < yA) {
+            yStartTemp = 0;
+        } else if (yStartTemp >= yA + Y_IN_TILES) {
+            yStartTemp = Y_IN_TILES;
         } else {
-            ySTemp %= Y_IN_TILES;
+            yStartTemp %= Y_IN_TILES;
         }
     }
 
@@ -275,19 +269,19 @@ public class NavigationMeshGenerator {
     }
 
     private static void setCollisionSpotsFromBlocks() {
-        for (x = xSTemp; x < xETemp; x++) {
-            for (y = ySTemp; y < yETemp; y++) {
+        for (x = xStartTemp; x < xETemp; x++) {
+            for (y = yStartTemp; y < yETemp; y++) {
                 spots.set(getIndex(x, y));
             }
         }
     }
 
     private static void checkBoundsRange() {
-        if (xSTemp < 0) {
-            xSTemp = 0;
+        if (xStartTemp < 0) {
+            xStartTemp = 0;
         }
-        if (ySTemp < 0) {
-            ySTemp = 0;
+        if (yStartTemp < 0) {
+            yStartTemp = 0;
         }
         if (xETemp > X_IN_TILES - 1) {
             xETemp = X_IN_TILES - 1;
@@ -298,14 +292,14 @@ public class NavigationMeshGenerator {
     }
 
     private static void findBoundsFromBlocks() {
-        if (xSTemp < xStartBound) {
-            xStartBound = xSTemp;
+        if (xStartTemp < xStartBound) {
+            xStartBound = xStartTemp;
         }
         if (xETemp > xEndBound) {
             xEndBound = xETemp;
         }
-        if (ySTemp < yStartBound) {
-            yStartBound = ySTemp;
+        if (yStartTemp < yStartBound) {
+            yStartBound = yStartTemp;
         }
         if (yETemp > yEndBound) {
             yEndBound = yETemp;
@@ -410,8 +404,8 @@ public class NavigationMeshGenerator {
     }
 
     private static boolean shouldCorrect(int corner, RoundRectangle figure) {
-        xSTemp = (figure.getX() % xAreaInPixels) / Place.tileSize;
-        ySTemp = ((figure.getY()) % yAreaInPixels) / Place.tileSize;
+        xStartTemp = (figure.getX() % xAreaInPixels) / Place.tileSize;
+        yStartTemp = ((figure.getY()) % yAreaInPixels) / Place.tileSize;
         xETemp = ((figure.getXEnd()) % xAreaInPixels) / Place.tileSize;
         yETemp = ((figure.getYEnd()) % yAreaInPixels) / Place.tileSize;
         return checkByCorner(corner);
@@ -420,28 +414,28 @@ public class NavigationMeshGenerator {
     private static boolean checkByCorner(int corner) {
         switch (corner) {
             case LEFT_TOP:
-                if (isCollisionFromCoordinates(xSTemp, ySTemp - 1) || isCollisionFromCoordinates(xSTemp - 1, ySTemp)) {
+                if (isCollisionFromCoordinates(xStartTemp, yStartTemp - 1) || isCollisionFromCoordinates(xStartTemp - 1, yStartTemp)) {
                     return false;
                 }
-                diagonals[getIndex(xSTemp, ySTemp)] = LEFT_TOP;
+                diagonals[getIndex(xStartTemp, yStartTemp)] = LEFT_TOP;
                 return true;
             case LEFT_BOTTOM:
-                if (isCollisionFromCoordinates(xSTemp, yETemp) || isCollisionFromCoordinates(xSTemp - 1, yETemp - 1)) {
+                if (isCollisionFromCoordinates(xStartTemp, yETemp) || isCollisionFromCoordinates(xStartTemp - 1, yETemp - 1)) {
                     return false;
                 }
-                diagonals[getIndex(xSTemp, yETemp - 1)] = LEFT_BOTTOM;
+                diagonals[getIndex(xStartTemp, yETemp - 1)] = LEFT_BOTTOM;
                 return true;
             case RIGHT_BOTTOM:
-                if (isCollisionFromCoordinates(xSTemp, yETemp) || isCollisionFromCoordinates(xETemp, yETemp - 1)) {
+                if (isCollisionFromCoordinates(xStartTemp, yETemp) || isCollisionFromCoordinates(xETemp, yETemp - 1)) {
                     return false;
                 }
-                diagonals[getIndex(xSTemp, yETemp - 1)] = RIGHT_BOTTOM;
+                diagonals[getIndex(xStartTemp, yETemp - 1)] = RIGHT_BOTTOM;
                 return true;
             case RIGHT_TOP:
-                if (isCollisionFromCoordinates(xSTemp, ySTemp - 1) || isCollisionFromCoordinates(xETemp, ySTemp)) {
+                if (isCollisionFromCoordinates(xStartTemp, yStartTemp - 1) || isCollisionFromCoordinates(xETemp, yStartTemp)) {
                     return false;
                 }
-                diagonals[getIndex(xSTemp, ySTemp)] = RIGHT_TOP;
+                diagonals[getIndex(xStartTemp, yStartTemp)] = RIGHT_TOP;
                 return true;
         }
         return true;
@@ -907,16 +901,16 @@ public class NavigationMeshGenerator {
     private final static float EPSILON = 0.001f;
 
     private static void calculateBounds(Point point1, Point point2, Point point3) {
-        xSTemp = Math.min(Math.min(point1.getX(), point2.getX()), point3.getX());
+        xStartTemp = Math.min(Math.min(point1.getX(), point2.getX()), point3.getX());
         xETemp = Math.max(Math.max(point1.getX(), point2.getX()), point3.getX());
-        ySTemp = Math.min(Math.min(point1.getY(), point2.getY()), point3.getY());
+        yStartTemp = Math.min(Math.min(point1.getY(), point2.getY()), point3.getY());
         yETemp = Math.max(Math.max(point1.getY(), point2.getY()), point3.getY());
     }
 
     private static boolean isOutOfBoundsToEpsilon(Point point) {
-        return (point.getX() < xSTemp - EPSILON)
+        return (point.getX() < xStartTemp - EPSILON)
                 || (point.getX() - EPSILON > xETemp)
-                || (point.getY() < ySTemp - EPSILON)
+                || (point.getY() < yStartTemp - EPSILON)
                 || (point.getY() - EPSILON > yETemp);
     }
 
@@ -1002,12 +996,12 @@ public class NavigationMeshGenerator {
         return line;
     }
 
-    private static Tile getTile(int x, int y, Tile[] tiles) {
-        return tiles[x + y * X_IN_TILES];
+    public static int getIndex(int x, int y) {
+        return x + y * X_IN_TILES;
     }
 
-    private static int getIndex(int x, int y) {
-        return x + y * X_IN_TILES;
+    private static Tile getTile(int x, int y, Tile[] tiles) {
+        return tiles[x + y * X_IN_TILES];
     }
 
     private static int getYFromIndex(int index) {

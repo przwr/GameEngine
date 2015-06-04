@@ -121,7 +121,7 @@ public class DayCycle {
         updateTime();
     }
 
-    public Color getColor() {
+    public Color getShade() {
         return lightColor;
     }
 

@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.Light;
 import collision.Block;
 import collision.Figure;
 import engine.Methods;

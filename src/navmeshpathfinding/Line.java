@@ -38,7 +38,7 @@ public class Line implements Comparable<Object> {
     }
 
     public void calculateLength() {
-        length = Methods.pointDistanceSimple2(start.getX(), start.getY(), end.getX(), end.getY());
+        length = Methods.pointDistanceSimple(start.getX(), start.getY(), end.getX(), end.getY());
     }
 
     public void addLine(Line line) {

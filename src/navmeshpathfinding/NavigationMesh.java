@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Set;
-import static navmeshpathfinding.Triangle.MAX;
-import static navmeshpathfinding.Triangle.MIN;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -235,7 +234,7 @@ public class NavigationMesh {
         return pathBase;
     }
 
-    public Triangle isPointInMesh(Point point) {
+    public Triangle getTriangleForPoint(Point point) {
         for (Triangle triangle : mesh) {
             if (triangle.isPointInTriangle(point)) {
                 return triangle;
@@ -244,17 +243,41 @@ public class NavigationMesh {
         return null;
     }
 
-    public boolean lineIntersectsMeshBounds(Point start, Point end) {
-        if (bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, start, end)))) {
+    public boolean lineIntersectsMeshBounds(int xStart, int yStart, int xEnd, int yEnd) {
+        if (bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, xStart, yStart, xEnd, yEnd)))) {
             return true;
         }
         return false;
     }
 
-    private boolean lineIntersectsPointsNotLies(Bound bound, Point start, Point end) {
-        if (lineIntersects(bound, start, end)) {
-            if (pointOnLine(bound, start) || pointOnLine(bound, end)) {
-                if (isPointInMesh(new Point((start.getX() + end.getX()) >> 1, (start.getY() + end.getY()) >> 1)) == null) {
+    public boolean lineIntersectsMeshBounds(Point start, Point end) {
+        if (bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, start.getX(), start.getY(), end.getX(), end.getY())))) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean linesIntersectsMeshBounds(Point start, Point end) {
+        if (bounds.stream().anyMatch((bound) -> (anyLineIntersects(bound, start, end)))) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean anyLineIntersects(Bound bound, Point start, Point end) {
+        if (end.getX() != 0 && lineIntersectsPointsNotLies(bound, start.getX() + (int) FastMath.signum(end.getX()), start.getY(), start.getX() + end.getX(), start.getY())) {
+            return true;
+        }
+        if (end.getX() != 0 && lineIntersects(bound, start.getX(), start.getY() + (int) FastMath.signum(end.getY()), start.getX(), start.getY() + end.getY())) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean lineIntersectsPointsNotLies(Bound bound, int xStart, int yStart, int xEnd, int yEnd) {
+        if (lineIntersects(bound, xStart, yStart, xEnd, yEnd)) {
+            if (pointOnLine(bound, xStart, yStart) || pointOnLine(bound, xEnd, yEnd)) {
+                if (getTriangleForPoint(new Point((xStart + xEnd) >> 1, (yStart + yEnd) >> 1)) == null) {
                     return true;
                 }
             } else {
@@ -264,14 +287,13 @@ public class NavigationMesh {
         return false;
     }
 
-    private boolean lineIntersects(Bound line, Point start, Point end) {
+    private boolean lineIntersects(Bound line, int xStart, int yStart, int xEnd, int yEnd) {
         return Line2D.linesIntersect(line.getStart().getX(), line.getStart().getY(), line.getEnd().getX(), line.getEnd().getY(),
-                start.getX(), start.getY(), end.getX(), end.getY());
+                xStart, yStart, xEnd, yEnd);
     }
 
-    private boolean pointOnLine(Bound line, Point point) {
-        return Line2D.ptSegDistSq(line.getStart().getX(), line.getStart().getY(), line.getEnd().getX(), line.getEnd().getY(),
-                point.getX(), point.getY()) == 0.0;
+    private boolean pointOnLine(Bound line, int x, int y) {
+        return Line2D.ptSegDistSq(line.getStart().getX(), line.getStart().getY(), line.getEnd().getX(), line.getEnd().getY(), x, y) == 0.0;
     }
 
     public int size() {

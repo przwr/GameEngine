@@ -9,7 +9,6 @@ import game.place.fbo.RegularFrameBufferObject;
 import game.place.fbo.FrameBufferObject;
 import game.Settings;
 import game.gameobject.Player;
-import game.place.Light;
 import game.place.Map;
 import game.place.Place;
 import game.place.cameras.Camera;

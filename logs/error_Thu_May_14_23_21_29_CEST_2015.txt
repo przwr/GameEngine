@@ -1,0 +1,14 @@
+
+java.lang.NullPointerException
+gamecontent.MyPlayer.render(MyPlayer.java:168)
+game.place.Map.renderBottom(Map.java:296)
+game.place.Map.renderObjects(Map.java:280)
+game.place.Place.lambda$new$2(Place.java:109)
+game.place.Place$$Lambda$40/1846501247.render(Unknown Source)
+game.place.Place.render(Place.java:186)
+gamecontent.MyGame.render(MyGame.java:176)
+engine.Main.render(Main.java:238)
+engine.Main.gameLoop(Main.java:206)
+engine.Main.run(Main.java:64)
+engine.Launcher.main(Launcher.java:18)
+

@@ -10,7 +10,7 @@ package game.gameobject;
  * @author przemek
  */
 import collision.Figure;
-import game.place.Light;
+import engine.Light;
 import game.place.Map;
 import java.util.ArrayList;
 import java.util.List;

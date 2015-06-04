@@ -225,7 +225,7 @@ public abstract class Place extends ScreenPlace {
     }
 
     public Color getLightColor() {
-        return dayCycle.getColor();
+        return dayCycle.getShade();
     }
 
     public String getTime() {
