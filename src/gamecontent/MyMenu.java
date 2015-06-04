@@ -7,7 +7,7 @@ package gamecontent;
 
 import engine.Delay;
 import engine.Drawer;
-import engine.FontBase;
+import game.text.FontBase;
 import game.text.FontHandler;
 import engine.Methods;
 import game.Game;

@@ -5,7 +5,7 @@
  */
 package gamedesigner;
 
-import engine.FontBase;
+import game.text.FontBase;
 import engine.Point;
 import game.Game;
 import engine.inout.IO;

@@ -5,7 +5,6 @@
  */
 package game.text;
 
-import engine.FontBase;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
@@ -60,6 +59,11 @@ public class FontHandler {
 
     public FontHandler getFontWithSize(int size) {
         Font tmp = font.deriveFont(size);
+        return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp);
+    }
+    
+    public FontHandler getFontWithStyle(int style) {
+        Font tmp = font.deriveFont(style);
         return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp);
     }
 

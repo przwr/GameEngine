@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine;
+package game.text;
 
 import game.text.FontHandler;
 import java.util.ArrayList;
@@ -50,6 +50,25 @@ public class FontBase {
         }
         if (firstOcc != null) {
             firstOcc = firstOcc.getFontWithSize(size);
+            fonts.add(firstOcc);
+        }
+        return firstOcc;
+    }
+    
+    public FontHandler changeStyle(FontHandler font, int style) {
+        FontHandler firstOcc = null;
+        for (FontHandler fontHandler : fonts) {
+            if (fontHandler.getName().equals(font.getName())) {
+                if (fontHandler.getStyle() == style) {
+                    return fontHandler;
+                }
+                if (firstOcc == null) {
+                    firstOcc = fontHandler;
+                }
+            }
+        }
+        if (firstOcc != null) {
+            firstOcc = firstOcc.getFontWithStyle(style);
             fonts.add(firstOcc);
         }
         return firstOcc;

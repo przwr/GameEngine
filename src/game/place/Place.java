@@ -9,7 +9,7 @@ import engine.DayCycle;
 import engine.SplitScreen;
 import engine.Renderer;
 import engine.Drawer;
-import engine.FontBase;
+import game.text.FontBase;
 import game.Game;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
@@ -82,6 +82,7 @@ public abstract class Place extends ScreenPlace {
                         if (map.getVisibleLights().size() > 0) {
                             Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                         }
+                        Drawer.setCurrentColor(Color.white);
                         currentCamera.renderGUI();
                         console.setCamera(currentCamera);
                         console.render(0, 0);
@@ -111,6 +112,7 @@ public abstract class Place extends ScreenPlace {
                 if (map.getVisibleLights().size() > 0) {
                     Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                 }
+                Drawer.setCurrentColor(Color.white);
                 currentCamera.renderGUI();
                 console.setCamera(currentCamera);
                 console.render(0, 0);

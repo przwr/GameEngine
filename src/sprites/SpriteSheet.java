@@ -35,7 +35,7 @@ public class SpriteSheet extends Sprite {
     public static SpriteSheet createWithMovingStart(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, Point[] stPoints) {
         return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, false, stPoints);
     }
-    
+
     public static SpriteSheet createSetScale(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
         return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, true);
     }
@@ -68,7 +68,9 @@ public class SpriteSheet extends Sprite {
     @Override
     protected void moveToStart() {
         if (!isStartMoving) {
-            glTranslatef(xStart, yStart, 0);
+            if (xStart != 0 && yStart != 0) {
+                glTranslatef(xStart, yStart, 0);
+            }
         } else {
             //System.out.println(startingPoints[frame]);
             frame = Math.min(frame, startingPoints.length - 1);
@@ -107,6 +109,13 @@ public class SpriteSheet extends Sprite {
         if (areValidCoordinates(x, y)) {
             frame = (int) (x + y * xTiles);
             renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+        }
+    }
+    
+    public void renderPieceResized(int x, int y, int width, int height) {
+        if (areValidCoordinates(x, y)) {
+            frame = (int) (x + y * xTiles);
+            renderSpritePieceResized((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, width, height);
         }
     }
 

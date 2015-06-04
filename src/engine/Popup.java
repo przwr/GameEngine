@@ -5,6 +5,7 @@
  */
 package engine;
 
+import game.text.FontBase;
 import game.Settings;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;

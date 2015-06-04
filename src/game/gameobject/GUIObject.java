@@ -10,6 +10,7 @@ package game.gameobject;
  * @author przemek
  */
 import game.place.Place;
+import game.place.cameras.Camera;
 
 public abstract class GUIObject {
 
@@ -33,6 +34,10 @@ public abstract class GUIObject {
     
     public Player getPlayer() {
         return player;
+    }
+    
+    public Camera getCamera() {
+        return player.camera;
     }
     
     public String getName() {

@@ -9,7 +9,7 @@ import engine.Delay;
 import game.Game;
 import game.Settings;
 import game.place.Place;
-import engine.FontBase;
+import game.text.FontBase;
 import engine.Main;
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
