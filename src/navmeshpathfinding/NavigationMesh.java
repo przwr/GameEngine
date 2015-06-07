@@ -218,7 +218,7 @@ public class NavigationMesh {
         }
     }
 
-    public PathBase getPathBase(Point startPoint, Point destinationPoint, int width, int height) {
+    public PathBase getPathBase(Point startPoint, Point destinationPoint) {
         PathBase pathBase = new PathBase();
         boolean start = true, end = true;
         for (Triangle triangle : mesh) {

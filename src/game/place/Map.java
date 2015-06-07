@@ -45,7 +45,7 @@ public abstract class Map {
     protected short mobID = 0;
 
     protected int xAreas, yAreas;
-    protected final Area[] areas;
+ public final Area[] areas;
     private static Tile tempTile;
     private final Set<Integer> areasToUpdate = new HashSet<>(36);
 
