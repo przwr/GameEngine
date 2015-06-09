@@ -54,14 +54,18 @@ public class Rectangle extends Figure {
     }
 
     public static Rectangle createTileRectangle() {
-        return new Rectangle(0, 0);
+        return new Rectangle(0, 0,Place.tileSize,Place.tileSize);
     }
 
-    private Rectangle(int xStart, int yStart) {
+    public static Rectangle createTileRectangle(int width, int height) {
+        return new Rectangle(0, 0, width, height);
+    }
+
+    private Rectangle(int xStart, int yStart, int width, int height) {
         super(xStart, yStart, null, null);
         tile = true;
-        this.width = Place.tileSize;
-        this.height = Place.tileSize;
+        this.width = width;
+        this.height = height;
         points.add(new Point(xStart, yStart));
         points.add(new Point(xStart, yStart + height));
         points.add(new Point(xStart + width, yStart + height));
@@ -384,7 +388,7 @@ public class Rectangle extends Figure {
         if (tile) {
             return xStart;
         } else {
-            return super.getX(x);
+            return super.getX(x);       // Jeśli jest to kolizja tilowa, to x nie ma znaczania
         }
     }
 
@@ -393,7 +397,7 @@ public class Rectangle extends Figure {
         if (tile) {
             return yStart;
         } else {
-            return super.getY(y);
+            return super.getY(y);       // Jeśli jest to kolizja tilowa, to y nie ma znaczania - zastępuje go yStart - dzięki temu obiekt nie musi mieć właściciela.
         }
     }
 
