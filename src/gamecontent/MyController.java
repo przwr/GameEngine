@@ -29,7 +29,7 @@ public class MyController extends Controler {
         super(inControl);
         inputs = new AnyInput[36];
         actions = new Action[36];
-        states = new boolean[8];
+        states = new byte[8];
     }
 
     @Override
@@ -49,21 +49,31 @@ public class MyController extends Controler {
     public void getInput() {
         for (int i = 4; i <= ACTIONS_COUNT; i++) {
             actions[i].act();
-            states[i - 4] = actions[i].isOn();
+            if (actions[i].isOn()) {
+                if (states[i - 4] == 0)
+                    states[i - 4] = 2;
+                else
+                    states[i - 4] = 1;
+            } else {
+                if (states[i - 4] == 1)
+                    states[i - 4] = 3;
+                else
+                    states[i - 4] = 0;
+            }
         }
         diagonal = true;
 
-        if (states[UP]) {
+        if (isKeyPressed(UP)) {
             inControl.addSpeed(0, -4);
-        } else if (states[DOWN]) {
+        } else if (isKeyPressed(DOWN)) {
             inControl.addSpeed(0, 4);
         } else {
             diagonal = false;
             inControl.brake(1);
         }
-        if (states[LEFT]) {
+        if (isKeyPressed(LEFT)) {
             inControl.addSpeed(-4, 0);
-        } else if (states[RIGHT]) {
+        } else if (isKeyPressed(RIGHT)) {
             inControl.addSpeed(4, 0);
         } else {
             diagonal = false;
@@ -72,19 +82,19 @@ public class MyController extends Controler {
 
         //ANIMACJA//
         direction = inControl.getDirection();
-        running = !states[RUN];
+        running = !isKeyPressed(RUN);
 
         inControl.getAnimation().setAnimate(true);
 
-        if (states[UP]) {
-            if (states[LEFT]) {
+        if (isKeyPressed(UP)) {
+            if (isKeyPressed(LEFT)) {
                 if (running) {
                     inControl.getAnimation().animateInterval(64, 75);
                 } else {
                     inControl.getAnimation().animateInterval(58, 63);
                 }
                 inControl.setDirection(135);
-            } else if (states[RIGHT]) {
+            } else if (isKeyPressed(RIGHT)) {
                 if (running) {
                     inControl.getAnimation().animateInterval(102, 113);
                 } else {
@@ -99,15 +109,15 @@ public class MyController extends Controler {
                 }
                 inControl.setDirection(90);
             }
-        } else if (states[DOWN]) {
-            if (states[LEFT]) {
+        } else if (isKeyPressed(DOWN)) {
+            if (isKeyPressed(LEFT)) {
                 if (running) {
                     inControl.getAnimation().animateInterval(26, 37);
                 } else {
                     inControl.getAnimation().animateInterval(20, 25);
                 }
                 inControl.setDirection(225);
-            } else if (states[RIGHT]) {
+            } else if (isKeyPressed(RIGHT)) {
                 if (running) {
                     inControl.getAnimation().animateInterval(140, 151);
                 } else {
@@ -122,14 +132,14 @@ public class MyController extends Controler {
                 }
                 inControl.setDirection(270);
             }
-        } else if (states[RIGHT]) {
+        } else if (isKeyPressed(RIGHT)) {
             if (running) {
                 inControl.getAnimation().animateInterval(121, 132);
             } else {
                 inControl.getAnimation().animateInterval(115, 120);
             }
             inControl.setDirection(0);
-        } else if (states[LEFT]) {
+        } else if (isKeyPressed(LEFT)) {
             if (running) {
                 inControl.getAnimation().animateInterval(45, 56);
             } else {
@@ -140,21 +150,25 @@ public class MyController extends Controler {
             inControl.getAnimation().animateSingle((270 - direction) / 45 * 19);
         }
 
-        if (states[JUMP]) {
+        if (isKeyPressed(JUMP)) {
             inControl.setJumping(true);
             inControl.setHop(true);
         }
-        if (states[RUN]) {
+        if (isKeyPressed(RUN)) {
             inControl.setMaxSpeed(diagonal ? 1.5 : 2);
         } else {
             inControl.setMaxSpeed(diagonal ? 6 : 8);
         }
-        inControl.getAnimation().setFPS((int) (inControl.getSpeed() * 4));
+        if (running) {
+            inControl.getAnimation().setFPS((int) (inControl.getSpeed() * 4));
+        } else {
+            inControl.getAnimation().setFPS((int) (inControl.getSpeed() * 5));
+        }
 
-        if (states[LIGHT]) {
+        if (isKeyPressed(LIGHT)) {
             inControl.setEmits(!inControl.isEmits());
         }
-        if (states[ZOOM]) {
+        if (isKeyPressed(ZOOM)) {
             if (inControl instanceof Player) {
                 ((Player) inControl).getCamera().switchZoom();
             }

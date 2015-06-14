@@ -15,6 +15,7 @@ import game.place.cameras.Camera;
 public abstract class GUIObject {
 
     protected Player player;
+    protected Controler controler;
     protected String name;
     protected Place place;
     protected boolean visible;
@@ -30,6 +31,7 @@ public abstract class GUIObject {
 
     public void setPlayer(Player player) {
         this.player = player;
+        controler = player.controler;
     }
     
     public Player getPlayer() {

@@ -66,7 +66,7 @@ public class NavigationMeshGenerator {
     private static int sharedPoints;
     private static NavigationMesh navigationMesh;
 
-    private static boolean showMesh = true, showLines = false;
+    private static boolean showMesh = false, showLines = false;
     private static int areaNumberToShow = 0;
     public static long fullTime = 0;
     public static int areas = 0;

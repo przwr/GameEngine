@@ -11,6 +11,7 @@ import engine.RandomGenerator;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.place.Place;
+import gamecontent.MyController;
 import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -33,6 +34,7 @@ public class TextController extends GUIObject {
 
     private static final int PROP_SPEED = 0;
     private static final int PROP_FONT_TYPE = 1;
+    private static final int PROP_FLUSH = 2;
 
     private static final int TYPE_NORMAL = 0;
     private static final int TYPE_SHAKY = 1;
@@ -45,9 +47,9 @@ public class TextController extends GUIObject {
     private final SpriteSheet frame;
 
     private float index, speed, change;
-    private int time, rows, currentLine, endIndex, flushIndex;
+    private int time, rows, deltaLines, endIndex, rowsInPlace;
 
-    private boolean started, stoppable;
+    private boolean started, stoppable, flushing, flushReady;
 
     public TextController(Place place) {
         super("TextController", place);
@@ -59,20 +61,24 @@ public class TextController extends GUIObject {
         frame = place.getSpriteSheet("messageFrame");
         r = RandomGenerator.create();
         rows = 3;
+        stoppable = true;
     }
 
     public void startFromFile(String file) {
         events.clear();
         try (BufferedReader read = new BufferedReader(new FileReader("res/text/" + file + ".txt"));) {
             String line = read.readLine();
-            speed = Integer.parseInt(line.substring(1, 2));
+            speed = Float.parseFloat(line.substring(1, line.length()));
             int i = 0, lineNum = 0, si, last;
             int type = TYPE_NORMAL;
             float defSpeed = speed;
-            TextRow tmp;
+            TextRow tmp = null;
             while ((line = read.readLine()) != null) {
                 last = 0;
-                tmp = new TextRow(lineNum, i);
+                if (tmp != null) {
+                    tmp.setEnd(i - 1);
+                }
+                tmp = new TextRow(lineNum);
                 if (line.length() != 0) {
                     for (si = 0; si < line.length();) {
                         if (line.charAt(si) == '$') {
@@ -91,6 +97,14 @@ public class TextController extends GUIObject {
                                         tmp.addEvent(new PropertyChanger(i + si, PROP_SPEED, defSpeed));
                                         line = line.substring(0, si) + line.substring(si + 3);
                                     }
+                                    break;
+                                case 'f':   //PLAIN TEXT
+                                    if (last != si) {
+                                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                                    }
+                                    tmp.addEvent(new PropertyChanger(i + si - 1, PROP_FLUSH, 0));
+                                    line = line.substring(0, si) + line.substring(si + 2);
+                                    last = si;
                                     break;
                                 case 'p':   //PLAIN TEXT
                                     if (last != si) {
@@ -162,6 +176,7 @@ public class TextController extends GUIObject {
             endIndex = i;
             index = 0;
             change = 100;
+            rowsInPlace = 0;
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -186,9 +201,12 @@ public class TextController extends GUIObject {
     public void startText(String text) {
         String[] lines = text.split("\n");
         int i = 0, lineNum = 0;
-        TextRow tmp;
+        TextRow tmp = null;
         for (String line : lines) {
-            tmp = new TextRow(lineNum, i);
+            if (tmp != null) {
+                tmp.setEnd(i - 1);
+            }
+            tmp = new TextRow(lineNum);
             tmp.addEvent(new MusicTextRenderer(line, i, 0, lineNum));
             events.add(tmp);
             i += line.length();
@@ -230,32 +248,64 @@ public class TextController extends GUIObject {
             frame.renderPiece(2, 1);
             Drawer.translate(0, tile);
             frame.renderPiece(2, 2);
+            if (flushReady) {
+                Drawer.translate(-tile / 2, (float) (3 * Math.sin((float) time / 30 * Math.PI)));
+                frame.renderPiece(3, 0);
+            }
+            if (index >= endIndex) {
+                Drawer.translate(-tile / 2, 0);
+                frame.renderPiece(3, 1);
+            }
             Drawer.returnToCentralPoint();
 
-            Drawer.translate(tile / 2, tile / 3);
+            Drawer.translate(tile / 2, tile / 3
+                    - (int) (Math.max((deltaLines + (flushing ? change : 0)) * font.getHeight() * 1.2, 0)));
 
-            if (index < endIndex) {
-                if (change < 1) {
-                    change += speed / 20;
-                } else {
-                    index += speed;
-                    change = 1;
-                }
-            }
             time++;
             if (time == 60) {
                 time = 0;
             }
-            //place.printMessage(((int) index) + " " + change + " " + currentLine + " " + events.size());
+
+            if (flushing) {
+                change += speed / 15;
+                if (change >= 1) {
+                    deltaLines++;
+                    rowsInPlace--;
+                    if (rowsInPlace == 0) {
+                        flushing = false;
+                        change = 1;
+                    } else {
+                        change = 0;
+                    }
+                }
+            } else {
+                if (!flushReady) {
+                    if (index < endIndex) {
+                        index += speed;
+                        change = 1;
+                    } else if (controler.isKeyClicked(MyController.JUMP)) {
+                        stopTextViewing();
+                    }
+                } else {
+                    if (controler.isKeyClicked(MyController.JUMP)) {
+                        flushing = true;
+                        flushReady = false;
+                        change = 0;
+                    }
+                }
+            }
+            //place.printMessage(speed + " : " + flushing + " " + flushReady + " " + change + " " + rowsInPlace);
             Drawer.bindFontTexture();
 
-            Drawer.translate(0, -(int) (Math.max((currentLine - rows + change) * font.getHeight() * 1.2, 0)));
             for (TextRow te : events) {
-                if (te.isStarting((int) index) && currentLine != te.rowNum) {
-                    change = 0;
-                    currentLine = te.rowNum;
+                te.changers((int) index);
+                if (te.isEnding((int) index) && !flushReady && !flushing) {
+                    rowsInPlace++;
+                    if (rowsInPlace == rows) {
+                        flushReady = true;
+                    }
                 }
-                if (te.rowNum >= currentLine - rows && te.rowNum <= currentLine) {
+                if (te.rowNum >= deltaLines && te.rowNum <= deltaLines + rows) {
                     te.event((int) index);
                 }
             }
@@ -263,28 +313,68 @@ public class TextController extends GUIObject {
             glPopMatrix();
         }
     }
-
+    
+    private void stopTextViewing() {
+        started = false;
+        index = 0;
+        speed = 1;
+        change = 1;
+        time = 0;
+        deltaLines = 0;
+        rowsInPlace = 0;
+        flushing = false;
+        flushReady = false;
+        events.clear();
+    }
+    
     private class TextRow {
 
-        private final int rowNum, start;
-        ArrayList<TextEvent> list;
+        private final int rowNum;
+        private int end;
+        private boolean ending;
+        private final ArrayList<TextEvent> list;
+        private final ArrayList<TextEvent> changers;
 
-        public TextRow(int rowNum, int start) {
+        public TextRow(int rowNum) {
             this.rowNum = rowNum;
-            this.start = start;
             list = new ArrayList<>();
+            changers = new ArrayList<>();
+            end = -1;
+        }
+
+        public void setEnd(int end) {
+            this.end = end;
         }
 
         public void addEvent(TextEvent te) {
-            list.add(te);
+            if (te instanceof PropertyChanger) {
+                changers.add(te);
+            } else {
+                list.add(te);
+            }
         }
 
-        public boolean isStarting(int index) {
-            return index == Math.max(start - 1, 0);
+        public boolean isEnding(int i) {
+            if (ending) {
+                return false;
+            } else {
+                if (i >= end && end > 0) {
+                    ending = true;
+                    index = end;
+                    return true;
+                }
+                return false;
+            }
         }
 
         public void event(int start) {
             list.stream().forEach((te) -> {
+                te.event(start, rowNum);
+            });
+        }
+
+        public void changers(int start) {
+            changers.stream().forEach((te) -> {
                 te.event(start, rowNum);
             });
         }
@@ -306,6 +396,7 @@ public class TextController extends GUIObject {
 
         private final int type;
         private final float quatity;
+        private boolean done;
 
         public PropertyChanger(int start, int type, float quatity) {
             super(start, 0);
@@ -314,18 +405,25 @@ public class TextController extends GUIObject {
         }
 
         @Override
-        void event(int index, int lineNum) {
-            if (index == start) {
+        void event(int i, int lineNum) {
+            if (i >= start && !done) {
                 switch (type) {
                     case PROP_SPEED:
                         speed = (float) quatity / 10;
                         break;
-                    case PROP_FONT_TYPE:
-                        if (fonts[(int) quatity] == null) {
-                            fonts[(int) quatity] = place.fonts.changeStyle(font, (int) quatity);
-                        }
-                        font = fonts[(int) quatity];
+                    /*case PROP_FONT_TYPE:
+                     if (fonts[(int) quatity] == null) {
+                     fonts[(int) quatity] = place.fonts.changeStyle(font, (int) quatity);
+                     }
+                     font = fonts[(int) quatity];
+                     break;*/
+                    case PROP_FLUSH:
+                        flushReady = true;
+                        rowsInPlace++;
+                        break;
                 }
+                done = true;
+                index = start;
             }
         }
 
@@ -357,7 +455,7 @@ public class TextController extends GUIObject {
         }
 
         Color changeColor(Color base, int lineNum) {
-            base.a = lineNum + rows == currentLine ? Math.max(0f, 1f - 3 * change) : 1f;
+            base.a = (lineNum == deltaLines && flushing ? Math.max(0f, 1f - 3 * change) : 1f);
             return base;
         }
 
@@ -388,7 +486,7 @@ public class TextController extends GUIObject {
                 int xd = 0;
                 for (int i = 1; i <= e; i++) {
                     tmp = text.substring(i - 1, i);
-                    font.drawLine(tmp, x + xd + r.random(2) - 1, y + r.random(2) - 1, 
+                    font.drawLine(tmp, x + xd + r.random(2) - 1, y + r.random(2) - 1,
                             changeColor(Color.black, lineNum));
                     xd += font.getWidth(tmp);
                 }
@@ -410,7 +508,7 @@ public class TextController extends GUIObject {
                 int xd = 0, dt = time;
                 for (int i = 1; i <= e; i++) {
                     tmp = text.substring(i - 1, i);
-                    font.drawLine(tmp, x + xd, (int) (y + 3 * Math.sin((float) dt / 30 * Math.PI)), 
+                    font.drawLine(tmp, x + xd, (int) (y + 3 * Math.sin((float) dt / 30 * Math.PI)),
                             changeColor(Color.black, lineNum));
                     xd += font.getWidth(tmp);
                     dt += 2;

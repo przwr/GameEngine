@@ -12,7 +12,6 @@ import game.gameobject.AnyInput;
 import game.gameobject.Controler;
 import game.gameobject.Entity;
 import game.gameobject.Player;
-import static gamecontent.MyController.LIGHT;
 
 /**
  *
@@ -24,7 +23,7 @@ public class ObjectController extends Controler {
         super(inControl);
         inputs = new AnyInput[36];
         actions = new Action[36]; // 4 pierwsze to menu  
-        states = new boolean[8];
+        states = new byte[8];
     }
 
     @Override
@@ -37,18 +36,10 @@ public class ObjectController extends Controler {
             actions[i] = new ActionHold(inputs[i]);
         }
         actions[10] = new ActionOnOff(inputs[10]);
-        
-        if (states[LIGHT]) {
-            inControl.setEmits(!inControl.isEmits());
-        }
     }
 
     @Override
     public void getInput() {
-        for (int i = 4; i < 11; i++) {
-            actions[i].act();
-            states[i - 4] = actions[i].isOn();
-        }
     }
 
     @Override
