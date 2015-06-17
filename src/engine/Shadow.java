@@ -14,48 +14,49 @@ import engine.Point;
  */
 public class Shadow {
 
-    public static final int DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3, BRIGHTEN_OBJECT = 4, DARKEN_OBJECT = 5;
-    public static final int shadowLength = 32768;
-    public int type;
-    public Point point;
-    public Figure caster;
+	public static final int DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3,
+			BRIGHTEN_OBJECT = 4, DARKEN_OBJECT = 5;
+	public static final int shadowLength = 32768;
+	public int type;
+	public Point point;
+	public Figure caster;
 
-    public Shadow(int type) {
-        this.type = type;
-        point = new Point();
-    }
+	public Shadow(int type) {
+		this.type = type;
+		point = new Point();
+	}
 
-    public void setDark() {
-        type = DARK;
-    }
+	public void setDark() {
+		type = DARK;
+	}
 
-    public void setBright() {
-        type = BRIGHT;
-    }
+	public void setBright() {
+		type = BRIGHT;
+	}
 
-    public void setBrighten(int x, int y) {
-        type = BRIGHTEN;
-        point.set(x, y);
-    }
+	public void setBrighten(int x, int y) {
+		type = BRIGHTEN;
+		point.set(x, y);
+	}
 
-    public void setBrighten(int x, int y, Figure caster) {
-        type = BRIGHTEN;
-        point.set(x, y);
-        this.caster = caster;
-    }
+	public void setBrighten(int x, int y, Figure caster) {
+		type = BRIGHTEN;
+		point.set(x, y);
+		this.caster = caster;
+	}
 
-    public void setDarken(int x, int y) {
-        this.type = DARKEN;
-        point.set(x, y);
-    }
+	public void setDarken(int x, int y) {
+		this.type = DARKEN;
+		point.set(x, y);
+	}
 
-    public void setBrightenObject(int x, int y) {
-        type = BRIGHTEN_OBJECT;
-        point.set(x, y);
-    }
+	public void setBrightenObject(int x, int y) {
+		type = BRIGHTEN_OBJECT;
+		point.set(x, y);
+	}
 
-    public void setDarkenObject(int x, int y) {
-        this.type = DARKEN_OBJECT;
-        point.set(x, y);
-    }
+	public void setDarkenObject(int x, int y) {
+		this.type = DARKEN_OBJECT;
+		point.set(x, y);
+	}
 }

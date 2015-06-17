@@ -37,7 +37,6 @@ public class PathFinder {
 
     public static Point[] findPath(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         if (mesh != null) {
-            // TO DO Dostosowanie punktu celu do obiektu - przesunięcie, jeśli trzeba.
             startPoint = new Point(xStart, yStart);
             destinationPoint = new Point(xDestination, yDestination);
             width = collision.getWidth() / 2;
@@ -78,7 +77,6 @@ public class PathFinder {
             currentNode = openList.poll();
             closedList.add(currentNode);
             if (isInEndTriangle(currentNode, mesh)) {
-                //optimize(mesh);
                 break;
             }
             keepLooking(currentNode, mesh);
@@ -104,7 +102,7 @@ public class PathFinder {
     }
 
     private static void calculateAndAddToOpenListIfFits(Node node, Node parent, NavigationMesh mesh) {
-        if (isFittingPoint(node.getPoint(), mesh)) {
+        if (isFittingPoint(node.getPoint(),parent.getPoint(), mesh)) {
             calculateAndAddToOpenList(node, parent, mesh);
         }
     }
@@ -115,9 +113,10 @@ public class PathFinder {
         openList.add(node);
     }
 
-    private static boolean isFittingPoint(Point point, NavigationMesh mesh) {
-        // nieidealne rozwiązanie - jeśli obiek jest szerszy, niż przeszkoda uzna, że moze przejsc
-        return !(mesh.linesIntersectsMeshBounds(point, getShiftValues(point, mesh, width * 2, height * 2)));
+    private static boolean isFittingPoint(Point point, Point parent, NavigationMesh mesh) {
+    	// TO DO - fix this Method! - do using Polygon!
+    	    	
+        return !(mesh.linesIntersectsMeshBounds(getShiftValues(parent, mesh, width * 2, height * 2), getShiftValues(point, mesh, width * 2, height * 2)));
     }
 
     private static Point getShiftValues(Point point, NavigationMesh mesh, int width, int height) {
@@ -153,13 +152,6 @@ public class PathFinder {
         return temp;
     }
 
-    private static boolean isCollide(int x, int y, BitSet spots) {
-        if (x < 0 || x > X_IN_TILES || y < 0 || y > Y_IN_TILES) {
-            return true;
-        }
-        return spots.get(getIndex(x, y));
-    }
-
     private static boolean isInEndTriangle(Node currentNode, NavigationMesh mesh) {
         boolean isFound = false;
         for (int i = 0; i < 3; i++) {
@@ -191,24 +183,6 @@ public class PathFinder {
         }
     }
 
-    private static void optimize(NavigationMesh mesh) {
-        Node previous, current = destination;
-        while (current.getParent() != null && current.getParent().getParent() != null) {
-            previous = current.getParent().getParent();
-            while (previous != null) {
-                if (canBeSkipped(current, previous, mesh)) {
-                    current.setParentMakeChild(previous);
-                }
-                previous = previous.getParent();
-            }
-            current = current.getParent();
-        }
-    }
-
-    private static boolean canBeSkipped(Node startNode, Node endNode, NavigationMesh mesh) {
-        return !mesh.lineIntersectsMeshBounds(startNode.getPoint(), endNode.getPoint());
-    }
-
     private static int countG(Point point, Point parentPoint) {
         int x = parentPoint.getX() - point.getX();
         int y = parentPoint.getY() - point.getY();
@@ -224,8 +198,6 @@ public class PathFinder {
     private static Point[] produceResult(Node destiation, NavigationMesh mesh) {
         if (destiation != null) {
             return printSolution(destiation, mesh);
-        } else {
-            // System.out.println("Nie znaleziono rozwiązania!");
         }
         return null;
     }
@@ -241,7 +213,6 @@ public class PathFinder {
             result.add(point);
             if (currentNode != null) {
                 shifted.add(getNewShiftedPoint(point, mesh));
-                //shifted.add(new Point(point.getX(), point.getY()));
             } else {
                 shifted.add(point);
             }
