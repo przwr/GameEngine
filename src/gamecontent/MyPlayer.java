@@ -116,7 +116,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    protected boolean isColided(int xMagnitude, int yMagnitude) {
+    protected boolean isCollided(int xMagnitude, int yMagnitude) {
         if (isInGame()) {
             return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
         }

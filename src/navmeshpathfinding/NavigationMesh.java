@@ -243,7 +243,7 @@ public class NavigationMesh {
         return null;
     }
 
-    public boolean lineIntersectsMeshBounds(int xStart, int yStart, int xEnd, int yEnd) {
+	public boolean lineIntersectsMeshBounds(int xStart, int yStart, int xEnd, int yEnd) {
         if (bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, xStart, yStart, xEnd, yEnd)))) {
             return true;
         }

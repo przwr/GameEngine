@@ -11,27 +11,27 @@ package navmeshpathfinding;
  */
 public class NeightbourTriangles {
 
-    Triangle[] triangles = new Triangle[2];
-    int size=0;
+	Triangle[] triangles = new Triangle[2];
+	int size = 0;
 
-    public NeightbourTriangles(Triangle triangle) {
-        triangles[size++] = triangle;
-    }
+	public NeightbourTriangles(Triangle triangle) {
+		triangles[size++] = triangle;
+	}
 
-    public void addTriangle(Triangle triangle) {
-        if (size == 1) {
-            if (!triangles[0].equals(triangle)) {
-                triangles[size++] = triangle;
-            }
-        }
-    }
+	public void addTriangle(Triangle triangle) {
+		if (size == 1) {
+			if (!triangles[0].equals(triangle)) {
+				triangles[size++] = triangle;
+			}
+		}
+	}
 
-    public Triangle getTriangle(int i) {
-        return triangles[i];
-    }
+	public Triangle getTriangle(int i) {
+		return triangles[i];
+	}
 
-    public int size() {
-        return size;
-    }
+	public int size() {
+		return size;
+	}
 
 }

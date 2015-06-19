@@ -151,7 +151,7 @@ public abstract class Map {
     public void updateMobsFromAreasToUpdate() {
         prepareMobsToUpdate();
         tempMobs.stream().forEach((mob) -> {
-            mob.update();
+			mob.update();
         });
     }
 

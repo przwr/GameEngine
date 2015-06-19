@@ -102,7 +102,7 @@ public abstract class Figure implements Comparable<Figure> {
 
     public static List<Figure> whatClose(GameObject owner, int x, int y, int range, int xDest, int yDest, Map map) {
         List<Figure> colided = new BlueArray<>();
-        
+
         setScope(x, y, range);
         for (Block object : map.getBlocks(x, y)) {
             if (object.isSolid() && scope.isCollideSingle(x, y, object.getCollision())) {
