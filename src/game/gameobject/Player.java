@@ -12,7 +12,6 @@ import game.place.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
-import java.util.List;
 import net.GameOnline;
 
 /**
@@ -26,7 +25,7 @@ public abstract class Player extends Entity {
     public Controler controler;
     protected Camera camera;
     protected GameOnline online;
-    protected boolean first;
+    protected boolean first, stopped;
 
     protected ArrayList<GUIObject> guiList = new ArrayList<>();
 
@@ -159,11 +158,15 @@ public abstract class Player extends Entity {
     public boolean isFirst() {
         return first;
     }
-
+    
     public Menu getMenu() {
         return menu;
     }
 
+    public Controler getController() {
+        return controler;
+    }
+    
     public void getInput() {
         controler.getInput();
     }

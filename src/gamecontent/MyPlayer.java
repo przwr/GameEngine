@@ -91,12 +91,9 @@ public class MyPlayer extends Player {
         emitter = true;
         emits = false;
         sprite = place.getSpriteSheet("test");
-        
-        if (true) { //Tekst cwiczeniowy
-            textControl = new TextController(place);
-            addGui(textControl);
-            textControl.startFromFile("inwokacja");
-        }
+
+        textControl = new TextController(place);
+        addGui(textControl);
 
         //test = place.getSpriteSheet("wynik");         //NIE KASOWAĆ! <('o'<)
         //testBody = place.getSpriteSheet("wynik1");
@@ -325,5 +322,9 @@ public class MyPlayer extends Player {
             Drawer.drawShapePartInBlack(animation, xStart, xEnd);
             glPopMatrix();
         }
+    }
+
+    public TextController getTextController() {
+        return textControl;
     }
 }

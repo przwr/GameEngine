@@ -22,12 +22,12 @@ public abstract class Entity extends GameObject {
     public int lastAdded;
     protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
     protected double xEnvironmentalSpeed, yEnvironmentalSpeed, xSpeed, ySpeed, maxSpeed, jumpHeight, resistance = 1;
-    protected boolean jumping, hop;
+    protected boolean jumping, hop, unableToMove;
     protected Place place;
     private Update currentUpdate;
     private int currentUpdateID, deltasCount, xPosition, yPosition, xDelta, yDelta, xDestination, yDestination;
     private Player colided;
-    private int direction;  //Obecny, badz ostatni kierunek ruchu (stopnie)
+    protected int direction;  //Obecny, badz ostatni kierunek ruchu (stopnie)
 
     public abstract void updateOnline();
 
@@ -246,6 +246,18 @@ public abstract class Entity extends GameObject {
         this.ySpeed = Methods.interval(-maxSpeed, ySpeed, maxSpeed);
     }
 
+    public boolean isUnableToMove() {
+        return unableToMove;
+    }
+    
+    public boolean isAbleToMove() {
+        return !unableToMove;
+    }
+    
+    public void setUnableToMove(boolean unableToMove) {
+        this.unableToMove = unableToMove;
+    }
+    
     public int getDirection() {
         return direction;
     }
