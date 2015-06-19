@@ -9,6 +9,7 @@ import engine.Drawer;
 import engine.Main;
 import engine.RandomGenerator;
 import game.Settings;
+import game.gameobject.Entity;
 import game.gameobject.GUIObject;
 import game.place.Place;
 import gamecontent.MyController;
@@ -46,10 +47,12 @@ public class TextController extends GUIObject {
     private final RandomGenerator r;
     private final SpriteSheet frame;
 
-    private float index, speed, change;
+    private float index, speed, change, realSpeed;
     private int time, rows, deltaLines, endIndex, rowsInPlace;
 
     private boolean started, stoppable, flushing, flushReady;
+
+    private Entity[] locked;
 
     public TextController(Place place) {
         super("TextController", place);
@@ -65,120 +68,130 @@ public class TextController extends GUIObject {
     }
 
     public void startFromFile(String file) {
-        events.clear();
-        try (BufferedReader read = new BufferedReader(new FileReader("res/text/" + file + ".txt"));) {
-            String line = read.readLine();
-            speed = Float.parseFloat(line.substring(1, line.length()));
-            int i = 0, lineNum = 0, si, last;
-            int type = TYPE_NORMAL;
-            float defSpeed = speed;
-            TextRow tmp = null;
-            while ((line = read.readLine()) != null) {
-                last = 0;
-                if (tmp != null) {
-                    tmp.setEnd(i - 1);
+        if (!started) {
+            events.clear();
+            try (BufferedReader read = new BufferedReader(new FileReader("res/text/" + file + ".txt"));) {
+                String line;
+                String[] tab;
+                speed = 1;
+                while ((line = read.readLine()).length() > 0) {
+                    tab = line.split(":");
+                    switch (tab[0]) {
+                        case "sp":
+                            speed = Float.parseFloat(tab[1]);
+                    }
                 }
-                tmp = new TextRow(lineNum);
-                if (line.length() != 0) {
-                    for (si = 0; si < line.length();) {
-                        if (line.charAt(si) == '$') {
-                            switch (line.charAt(si + 1)) {
-                                case 'v':   //CHANGE SPEED
-                                    if (line.charAt(si + 2) != 'n') {
-                                        for (int j = si + 2; j < line.length(); j++) {
-                                            if (line.charAt(j) == '$') {
-                                                tmp.addEvent(new PropertyChanger(i + si, PROP_SPEED,
-                                                        Float.parseFloat(line.substring(si + 2, j))));
-                                                line = line.substring(0, si) + line.substring(j + 1);
-                                                break;
+                int i = 0, lineNum = 0, si, last;
+                int type = TYPE_NORMAL;
+                float defSpeed = speed;
+                TextRow tmp = null;
+                while ((line = read.readLine()) != null) {
+                    last = 0;
+                    if (tmp != null) {
+                        tmp.setEnd(i - 1);
+                    }
+                    tmp = new TextRow(lineNum);
+                    if (line.length() != 0) {
+                        for (si = 0; si < line.length();) {
+                            if (line.charAt(si) == '$') {
+                                switch (line.charAt(si + 1)) {
+                                    case 'v':   //CHANGE SPEED
+                                        if (line.charAt(si + 2) != 'n') {
+                                            for (int j = si + 2; j < line.length(); j++) {
+                                                if (line.charAt(j) == '$') {
+                                                    tmp.addEvent(new PropertyChanger(i + si, PROP_SPEED,
+                                                            Float.parseFloat(line.substring(si + 2, j))));
+                                                    line = line.substring(0, si) + line.substring(j + 1);
+                                                    break;
+                                                }
                                             }
+                                        } else {
+                                            tmp.addEvent(new PropertyChanger(i + si, PROP_SPEED, defSpeed));
+                                            line = line.substring(0, si) + line.substring(si + 3);
                                         }
-                                    } else {
-                                        tmp.addEvent(new PropertyChanger(i + si, PROP_SPEED, defSpeed));
-                                        line = line.substring(0, si) + line.substring(si + 3);
-                                    }
-                                    break;
-                                case 'f':   //PLAIN TEXT
-                                    if (last != si) {
-                                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
-                                    }
-                                    tmp.addEvent(new PropertyChanger(i + si - 1, PROP_FLUSH, 0));
-                                    line = line.substring(0, si) + line.substring(si + 2);
-                                    last = si;
-                                    break;
-                                case 'p':   //PLAIN TEXT
-                                    if (last != si) {
-                                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
-                                    }
-                                    tmp.addEvent(new PropertyChanger(i + si, PROP_FONT_TYPE, Font.PLAIN));
-                                    line = line.substring(0, si) + line.substring(si + 2);
-                                    last = si;
-                                    break;
-                                case 'b':   //BOLD TEXT
-                                    if (last != si) {
-                                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
-                                    }
-                                    tmp.addEvent(new PropertyChanger(i + si, PROP_FONT_TYPE, Font.BOLD));
-                                    line = line.substring(0, si) + line.substring(si + 2);
-                                    last = si;
-                                    break;
-                                case 'i':   //ITALIC TEXT
-                                    if (last != si) {
-                                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
-                                    }
-                                    tmp.addEvent(new PropertyChanger(i + si, PROP_FONT_TYPE, Font.ITALIC));
-                                    line = line.substring(0, si) + line.substring(si + 2);
-                                    last = si;
-                                    break;
-                                case 'n':   //NORMAL TEXT
-                                    if (last != si) {
-                                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
-                                    }
-                                    type = TYPE_NORMAL;
-                                    line = line.substring(0, si) + line.substring(si + 2);
-                                    last = si;
-                                    break;
-                                case 's':   //SHAKY TEXT
-                                    if (last != si) {
-                                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
-                                    }
-                                    type = TYPE_SHAKY;
-                                    line = line.substring(0, si) + line.substring(si + 2);
-                                    last = si;
-                                    break;
-                                case 'm':   //MELODIC TEXT
-                                    if (last != si) {
-                                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
-                                    }
-                                    type = TYPE_MUSIC;
-                                    line = line.substring(0, si) + line.substring(si + 2);
-                                    last = si;
-                                    break;
-                                default:
-                                    throw new IOException("UNKNOWN SYMBOL \"" + line.charAt(si + 1) + "\"!");
+                                        break;
+                                    case 'f':   //PLAIN TEXT
+                                        if (last != si) {
+                                            tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                                        }
+                                        tmp.addEvent(new PropertyChanger(i + si - 1, PROP_FLUSH, 0));
+                                        line = line.substring(0, si) + line.substring(si + 2);
+                                        last = si;
+                                        break;
+                                    case 'p':   //PLAIN TEXT
+                                        if (last != si) {
+                                            tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                                        }
+                                        tmp.addEvent(new PropertyChanger(i + si, PROP_FONT_TYPE, Font.PLAIN));
+                                        line = line.substring(0, si) + line.substring(si + 2);
+                                        last = si;
+                                        break;
+                                    case 'b':   //BOLD TEXT
+                                        if (last != si) {
+                                            tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                                        }
+                                        tmp.addEvent(new PropertyChanger(i + si, PROP_FONT_TYPE, Font.BOLD));
+                                        line = line.substring(0, si) + line.substring(si + 2);
+                                        last = si;
+                                        break;
+                                    case 'i':   //ITALIC TEXT
+                                        if (last != si) {
+                                            tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                                        }
+                                        tmp.addEvent(new PropertyChanger(i + si, PROP_FONT_TYPE, Font.ITALIC));
+                                        line = line.substring(0, si) + line.substring(si + 2);
+                                        last = si;
+                                        break;
+                                    case 'n':   //NORMAL TEXT
+                                        if (last != si) {
+                                            tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                                        }
+                                        type = TYPE_NORMAL;
+                                        line = line.substring(0, si) + line.substring(si + 2);
+                                        last = si;
+                                        break;
+                                    case 's':   //SHAKY TEXT
+                                        if (last != si) {
+                                            tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                                        }
+                                        type = TYPE_SHAKY;
+                                        line = line.substring(0, si) + line.substring(si + 2);
+                                        last = si;
+                                        break;
+                                    case 'm':   //MELODIC TEXT
+                                        if (last != si) {
+                                            tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                                        }
+                                        type = TYPE_MUSIC;
+                                        line = line.substring(0, si) + line.substring(si + 2);
+                                        last = si;
+                                        break;
+                                    default:
+                                        throw new IOException("UNKNOWN SYMBOL \"" + line.charAt(si + 1) + "\"!");
+                                }
+                            } else {
+                                si++;
                             }
-                        } else {
-                            si++;
                         }
+                        if (last != si) {
+                            tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
+                        }
+                    } else {
+                        tmp.addEvent(new TextRenderer(" ", i, 0, lineNum));
+                        i++;
                     }
-                    if (last != si) {
-                        tmp.addEvent(generateEvent(type, line.substring(last, si), i + last, font.getWidth(line.substring(0, last)), lineNum));
-                    }
-                } else {
-                    tmp.addEvent(new TextRenderer(" ", i, 0, lineNum));
-                    i++;
+                    i += line.length();
+                    lineNum++;
+                    events.add(tmp);
                 }
-                i += line.length();
-                lineNum++;
-                events.add(tmp);
+                started = true;
+                endIndex = i;
+                index = 0;
+                change = 100;
+                rowsInPlace = 0;
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-            started = true;
-            endIndex = i;
-            index = 0;
-            change = 100;
-            rowsInPlace = 0;
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -265,9 +278,10 @@ public class TextController extends GUIObject {
             if (time == 60) {
                 time = 0;
             }
+            realSpeed = speed * (controler.isKeyPressed(MyController.RUN) ? 2f : 1f);
 
             if (flushing) {
-                change += speed / 15;
+                change += realSpeed / 15;
                 if (change >= 1) {
                     deltaLines++;
                     rowsInPlace--;
@@ -281,7 +295,7 @@ public class TextController extends GUIObject {
             } else {
                 if (!flushReady) {
                     if (index < endIndex) {
-                        index += speed;
+                        index += realSpeed;
                         change = 1;
                     } else if (controler.isKeyClicked(MyController.JUMP)) {
                         stopTextViewing();
@@ -313,6 +327,21 @@ public class TextController extends GUIObject {
             glPopMatrix();
         }
     }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void lockEntities(Entity[] locked) {
+        this.locked = locked;
+        for (Entity e : locked) {
+            e.setUnableToMove(true);
+        }
+    }
+    
+    public void lockEntity(Entity locked) {
+        lockEntities(new Entity[]{locked});
+    }
     
     private void stopTextViewing() {
         started = false;
@@ -325,8 +354,13 @@ public class TextController extends GUIObject {
         flushing = false;
         flushReady = false;
         events.clear();
+        if (locked != null) {
+            for (Entity e : locked) {
+                e.setUnableToMove(false);
+            }
+        }
     }
-    
+
     private class TextRow {
 
         private final int rowNum;
@@ -409,7 +443,7 @@ public class TextController extends GUIObject {
             if (i >= start && !done) {
                 switch (type) {
                     case PROP_SPEED:
-                        speed = (float) quatity / 10;
+                        speed = (float) quatity;
                         break;
                     /*case PROP_FONT_TYPE:
                      if (fonts[(int) quatity] == null) {

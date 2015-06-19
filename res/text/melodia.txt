@@ -1,0 +1,15 @@
+﻿
+sp:1
+
+$mWitaj!
+Jak się miewasz?$f
+$nhmm?$f
+Co ja tu robię?
+$v0.05$......$vn
+To trudne pytanie...
+Wygląda na to, że Wojtek musiał jakoś przetestować 
+ten dialog.... 
+a ja byłam jedynym modelem 3D pod ręką...
+
+
+$v0.05$...$vnhmph...

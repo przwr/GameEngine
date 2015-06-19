@@ -71,18 +71,26 @@ public class Methods {
 		return FastMath.min(xa - x, ya - y);
 	}
 
-	public static double pointAngle(int xSt, int ySt, int xEn, int yEn) {
-		xDelta = xEn - xSt;
-		yDelta = yEn - ySt;
-		return FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
-	}
+    public static double pointAngle(int xSt, int ySt, int xEn, int yEn) {
+        xDelta = xEn - xSt;
+        yDelta = yEn - ySt;
+        return FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
+    }
+    
+    public static int pointAngle8Directions(int xSt, int ySt, int xEn, int yEn) {
+        xDelta = xEn - xSt;
+        yDelta = yEn - ySt;
+        temp = - FastMath.atan2(yDelta, xDelta) * 4 / FastMath.PI + 0.5;
+        temp = temp >= 0 ? temp : (temp + 8) % 8;
+        return (int) temp;
+    }
 
-	public static double pointAngle360(int xSt, int ySt, int xEn, int yEn) {
-		xDelta = xEn - xSt;
-		yDelta = yEn - ySt;
-		det = FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
-		return det >= 0 ? det : det + 360;
-	}
+    public static double pointAngleMax360(int xSt, int ySt, int xEn, int yEn) {
+        xDelta = xEn - xSt;
+        yDelta = yEn - ySt;
+        det = FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
+        return det >= 0 ? det : det + 360;
+    }
 
 	public static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
 		xOA = xO - xA;

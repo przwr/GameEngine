@@ -391,7 +391,7 @@ public class ShadowRenderer {
     }
 
     private static void calculateConvexRightSelfShadow(Light emitter, RoundRectangle shaded) {
-        angle = -135 + Methods.pointAngle360(emitter.getX(), emitter.getY(), shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(), shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
+        angle = -135 + Methods.pointAngleMax360(emitter.getX(), emitter.getY(), shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(), shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
         if (angle > 0) {
             if (angle < range) {
                 int shift = Methods.roundDouble(((range - angle) / range) * Place.tileSize);
@@ -468,7 +468,7 @@ public class ShadowRenderer {
             }
             return false;
         } else {
-            angle = -135 + Methods.pointAngle360(light.getX(), light.getY(), shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(), shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
+            angle = -135 + Methods.pointAngleMax360(light.getX(), light.getY(), shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(), shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
             if (angle > 0.5 && angle < 179.5) {
                 return true;
             }
@@ -484,7 +484,7 @@ public class ShadowRenderer {
             }
             return false;
         } else {
-            angle = -135 + Methods.pointAngle360(light.getX(), light.getY(), shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(), shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
+            angle = -135 + Methods.pointAngleMax360(light.getX(), light.getY(), shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(), shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
             if (angle > 0 && angle <= 222) {
                 return true;
             }

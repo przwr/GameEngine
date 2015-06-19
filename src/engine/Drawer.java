@@ -185,7 +185,7 @@ public class Drawer {
         translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
-        int angle = (int) Methods.pointAngle360(xStart, yStart, xStart + xDelta, yStart + yDelta) + 90;
+        int angle = (int) Methods.pointAngleMax360(xStart, yStart, xStart + xDelta, yStart + yDelta) + 90;
         int xWidth = (int) Methods.xRadius(angle, width / 2);
         int yWidth = (int) Methods.yRadius(angle, width / 2);
         glVertex2f(xWidth, yWidth);

@@ -75,13 +75,14 @@ public abstract class Mob extends Entity {
 
     public abstract void update();
 
-    public Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid) {
+    public Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
         this.solid = solid;
         this.range = range;
         this.setMaxSpeed(speed);
         this.sprite = place.getSprite(spriteName);
         initialize(name, x, y);
+        this.mobID = mobID;
     }
 
     public synchronized void look(GameObject[] players) {
@@ -176,7 +177,7 @@ public abstract class Mob extends Entity {
                     DEBUG("NORMAL");
                 }
             }
-            double angle = Methods.pointAngle360(getX(), getY(), destination.getX(), destination.getY());
+            double angle = Methods.pointAngleMax360(getX(), getY(), destination.getX(), destination.getY());
             int destX = Math.abs(getX() - destination.getX());
             int destY = Math.abs(getY() - destination.getY());
             xSpeed = Methods.xRadius(angle, Math.min(maxSpeed, destX));
