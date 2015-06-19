@@ -8,15 +8,11 @@ package navmeshpathfinding;
 import collision.Figure;
 import engine.BlueArray;
 import engine.Point;
-import static game.place.Area.X_IN_TILES;
-import static game.place.Area.Y_IN_TILES;
 import game.place.Place;
-import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
-import static navmeshpathfinding.NavigationMeshGenerator.getIndex;
 import static navmeshpathfinding.NavigationMeshGenerator.getIndexForShifts;
 
 /**
