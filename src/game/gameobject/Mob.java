@@ -505,9 +505,11 @@ public abstract class Mob extends Entity {
                             }
                         }
                     }
-                    int xRef = map.areas[area].getXInPixels();
-                    int yRef = map.areas[area].getYInPixels();
-                    NavigationMeshGenerator.mesh.setEnd(path[path.length - 1], xRef, yRef);
+                    if (VDEBUG && area != -1) {
+                        int xRef = map.areas[area].getXInPixels();
+                        int yRef = map.areas[area].getYInPixels();
+                        NavigationMeshGenerator.mesh.setEnd(path[path.length - 1], xRef, yRef);
+                    }
                 }
             }
         } catch (NullPointerException exception) {
