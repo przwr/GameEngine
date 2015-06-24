@@ -1,15 +1,28 @@
 ﻿
 sp:1
+au:Aria
+au:Melodia
+au:???
+po:ariaPortret:0
+po:melodiaPortret:1
 
-$mWitaj!
-Jak się miewasz?$f
-$nhmm?$f
-Co ja tu robię?
-$v0.05$......$vn
+$AU0$$PO0$$EX0$$MEWitaj!
+Jak się nazywasz?
+$NOJa jestem Aria ($ITname not final$NO)$FL
+$AU2$$PO1$$VE0.05$hmm... $VENja?$FL
+Jestem... 
+$VE0.1$yyy....$VEN
+Melodia$AU1$ ($ITname probably final$NO)...
+$AU0$$PO0$$EX3$$VE0.05$Melodia?
+$EX2$$VENŁadnie!
+Co tutaj robisz, Melodio?
+$AU1$$PO1$$EX0$Co $BOja$PL tu robię?
+$VE0.05$......$VEN
 To trudne pytanie...
 Wygląda na to, że Wojtek musiał jakoś przetestować 
-ten dialog.... 
+ten $ITdialog$PL.... 
 a ja byłam jedynym modelem 3D pod ręką...
 
 
-$v0.05$...$vnhmph...
+$VE0.05$...$VENehh...
+$AU0$$PO0$$EX1$....!

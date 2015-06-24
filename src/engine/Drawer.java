@@ -264,7 +264,7 @@ public class Drawer {
     }
 
     public static FontHandler getFont(String name, int size) {
-        return place.fonts.getFont(name, size);
+        return place.fonts.getFont(name, 0, size);
     }
 
     public static void renderStringCentered(String message, int x, int y, FontHandler font, Color color) {

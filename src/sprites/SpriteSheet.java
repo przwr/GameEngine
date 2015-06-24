@@ -5,6 +5,7 @@
  */
 package sprites;
 
+import engine.Drawer;
 import engine.Point;
 import game.Settings;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
@@ -69,12 +70,12 @@ public class SpriteSheet extends Sprite {
     protected void moveToStart() {
         if (!isStartMoving) {
             if (xStart != 0 && yStart != 0) {
-                glTranslatef(xStart, yStart, 0);
+                Drawer.translate(xStart, yStart);
             }
         } else {
             //System.out.println(startingPoints[frame]);
             frame = Math.min(frame, startingPoints.length - 1);
-            glTranslatef(xStart + startingPoints[frame].getX(), yStart + startingPoints[frame].getY(), 0);
+            Drawer.translate(xStart + startingPoints[frame].getX(), yStart + startingPoints[frame].getY());
         }
     }
 
@@ -112,7 +113,7 @@ public class SpriteSheet extends Sprite {
         }
     }
     
-    public void renderPieceResized(int x, int y, int width, int height) {
+    public void renderPieceResized(int x, int y, float width, float height) {
         if (areValidCoordinates(x, y)) {
             frame = (int) (x + y * xTiles);
             renderSpritePieceResized((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, width, height);

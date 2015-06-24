@@ -58,7 +58,7 @@ public class FontHandler {
     }
 
     public FontHandler getFontWithSize(int size) {
-        Font tmp = font.deriveFont(size);
+        Font tmp = font.deriveFont(font.getStyle(), size);
         return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp);
     }
     

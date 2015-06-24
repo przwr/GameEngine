@@ -43,7 +43,7 @@ public class MyNPC extends Mob {
             int d = Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY());
             if (mpPrey.getController().isKeyClicked(MyController.JUMP) && d <= Place.tileSize * 1.5 && !mpPrey.getTextController().isStarted()) {
                 mpPrey.getTextController().lockEntity(mpPrey);
-                mpPrey.getTextController().startFromFile("melodia");
+                mpPrey.getTextController().startFromFile("melodia", mpPrey.getX() > x);
             }
             if (d > range * 1.5 || prey.getMap() != map) {
                 prey = null;

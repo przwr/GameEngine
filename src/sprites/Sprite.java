@@ -5,6 +5,7 @@
  */
 package sprites;
 
+import engine.Drawer;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -90,7 +91,7 @@ public class Sprite implements Appearance {
 
     protected void moveToStart() {
         if (xStart != 0 && yStart != 0) {
-            glTranslatef(xStart, yStart, 0);
+            Drawer.translate(xStart, yStart);
         }
     }
 
@@ -173,7 +174,7 @@ public class Sprite implements Appearance {
         glEnd();
     }
     
-    public void renderSpritePieceResized(float xBegin, float xEnd, float yBegin, float yEnd, int width, int height) {
+    public void renderSpritePieceResized(float xBegin, float xEnd, float yBegin, float yEnd, float width, float height) {
         bindCheckByID();
         moveToStart();
         glBegin(GL_QUADS);
