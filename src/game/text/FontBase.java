@@ -35,11 +35,11 @@ public class FontBase {
     public FontHandler getFont(int i) {
         return fonts.get(i);
     }
-    
-    public FontHandler getFont(String name, int size) {
+
+    public FontHandler getFont(String name, int style, int size) {
         FontHandler firstOcc = null;
         for (FontHandler fontHandler : fonts) {
-            if (fontHandler.getName().equals(name)) {
+            if (fontHandler.getName().equals(name) && fontHandler.getStyle() == style) {
                 if (fontHandler.getSize() == size) {
                     return fontHandler;
                 }
@@ -51,14 +51,16 @@ public class FontBase {
         if (firstOcc != null) {
             firstOcc = firstOcc.getFontWithSize(size);
             fonts.add(firstOcc);
+        } else {
+            firstOcc = add(name, style, size);
         }
         return firstOcc;
     }
-    
+
     public FontHandler changeStyle(FontHandler font, int style) {
         FontHandler firstOcc = null;
         for (FontHandler fontHandler : fonts) {
-            if (fontHandler.getName().equals(font.getName())) {
+            if (fontHandler.getName().equals(font.getName()) && fontHandler.getSize() == font.getSize()) {
                 if (fontHandler.getStyle() == style) {
                     return fontHandler;
                 }
@@ -69,6 +71,9 @@ public class FontBase {
         }
         if (firstOcc != null) {
             firstOcc = firstOcc.getFontWithStyle(style);
+            fonts.add(firstOcc);
+        } else {
+            firstOcc = font.getFontWithStyle(style);
             fonts.add(firstOcc);
         }
         return firstOcc;

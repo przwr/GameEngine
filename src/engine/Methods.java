@@ -85,7 +85,14 @@ public class Methods {
         return (int) temp;
     }
 
-    public static double pointAngleMax360(int xSt, int ySt, int xEn, int yEn) {
+    public static double pointAngleCorrect(int xSt, int ySt, int xEn, int yEn) {    //0 <=> PRAWO; 90 <=> GÓRA; 180 <=> LEWO; 270 <=> DÓŁ;
+        xDelta = xEn - xSt;
+        yDelta = yEn - ySt;
+        det = -FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
+        return det >= 0 ? det : det + 360;
+    }
+    
+    public static double pointAngleMax360(int xSt, int ySt, int xEn, int yEn) {     //0 <=> PRAWO; 90 <=> DÓŁ; 180 <=> LEWO; 270 <=> GÓRA; czy to dobrze??
         xDelta = xEn - xSt;
         yDelta = yEn - ySt;
         det = FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
