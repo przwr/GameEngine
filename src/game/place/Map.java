@@ -121,7 +121,7 @@ public abstract class Map {
     public Point[] findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         int area = getAreaIndex(xStart, yStart);
         if (area != getAreaIndex(xDestination, yDestination)) {
-            System.out.println("Inne obszary! _____________________________________");
+//            System.out.println("Inne obszary! _____________________________________");
             return DIFFRENT_AREAS;
         }
         int x = areas[area].getXInPixels();

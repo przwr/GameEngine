@@ -97,13 +97,13 @@ public abstract class Mob extends Entity {
     }
 
     public synchronized void chase(GameObject prey) {
-        if ("very perverted rabbit".equals(this.name)) {
-            DEBUG = true;
-            VDEBUG = true;
-        } else {
-            DEBUG = false;
-            VDEBUG = false;
-        }
+//        if ("very perverted rabbit".equals(this.name)) {
+//            DEBUG = true;
+//            VDEBUG = true;
+//        } else {
+//            DEBUG = false;
+//            VDEBUG = false;
+//        }
         if (prey != null) {
             int scope = (collision.getWidth() + collision.getHeight()) * 1;
             boolean obstacleBeetween = isObstacleBeetween();
