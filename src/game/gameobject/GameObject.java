@@ -21,7 +21,7 @@ public abstract class GameObject {
 
     protected double x, y;
     protected int depth;
-    protected boolean solid, emitter, emits, onTop, simpleLighting, visible;
+    protected boolean solid, emitter, emits, onTop, simpleLighting, visible, wall, mobile;
     protected Sprite sprite;
     protected ArrayList<Light> lights = new ArrayList<>(1);
     protected String name;
@@ -103,6 +103,10 @@ public abstract class GameObject {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public boolean isMobile() {
+        return mobile;
     }
 
     public int getX() {
@@ -251,6 +255,10 @@ public abstract class GameObject {
 
     public void setVisible(boolean vis) {
         this.visible = vis;
+    }
+
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
     }
 
     public void setPosition(double x, double y) {

@@ -34,7 +34,9 @@ import org.newdawn.slick.Color;
  */
 public abstract class Map {
 
+    private static final Point[] DIFFRENT_AREAS = new Point[0];
     private final BlueArray<Light> visibleLights = new BlueArray<>();
+    
 
     public final Place place;
     protected Color lightColor;
@@ -45,7 +47,7 @@ public abstract class Map {
     protected short mobID = 0;
 
     protected int xAreas, yAreas;
- public final Area[] areas;
+    public final Area[] areas;
     private static Tile tempTile;
     private final Set<Integer> areasToUpdate = new HashSet<>(36);
 
@@ -119,8 +121,8 @@ public abstract class Map {
     public Point[] findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         int area = getAreaIndex(xStart, yStart);
         if (area != getAreaIndex(xDestination, yDestination)) {
-//            System.out.println("Inne obszary!");
-            return null;
+            System.out.println("Inne obszary! _____________________________________");
+            return DIFFRENT_AREAS;
         }
         int x = areas[area].getXInPixels();
         int y = areas[area].getYInPixels();
@@ -151,7 +153,7 @@ public abstract class Map {
     public void updateMobsFromAreasToUpdate() {
         prepareMobsToUpdate();
         tempMobs.stream().forEach((mob) -> {
-			mob.update();
+            mob.update();
         });
     }
 

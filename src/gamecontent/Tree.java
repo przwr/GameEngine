@@ -20,6 +20,7 @@ public class Tree extends Mob {
         super(x, y, speed, range, name, place, "bigtree", solid, ID);
         setCollision(Rectangle.create(width, height, OpticProperties.FULL_SHADOW, this));
         setSimpleLighting(false);
+        collision.setSmall(true);
     }
     
     @Override

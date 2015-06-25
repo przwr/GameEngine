@@ -32,8 +32,8 @@ public class GladeMap extends Map {
             }
         }
 
-//		PuzzleObject test = new PuzzleObject("bloczek", place);
-//		test.placePuzzle(0, 0, this);
+//        PuzzleObject test = new PuzzleObject("bloczek", place);
+//        test.placePuzzle(0, 0, this);
         PuzzleObject test = new PuzzleObject("zatoczka", place);
         test.placePuzzle(5, 3, this);
         test = new PuzzleObject("test", place);
@@ -50,17 +50,15 @@ public class GladeMap extends Map {
         PuzzleObject portal = new PuzzleObject("portal", place);
         portal.placePuzzle(20, 20, this);
         generateNavigationMeshes();
-		// System.out.println("Total time: " + NavigationMeshGenerator.fullTime
-        // / 100000000d + " s");
+//        System.out.println("Total time: " + NavigationMeshGenerator.fullTime / 100000000d + " s");
     }
 
     @Override
     public void populate() {
         addObject(new Rabbit(256, 2048, 128, 28, 6, 1024, "very perverted rabbit", place, true, mobID++));
-        addObject(new Rabbit(1024, 2048, 128, 28, 6, 1024, "very perverted rabbit", place, true, mobID++));
         addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
         addObject(new MyNPC(384, 990, place, mobID++));
-        for (int i = 0; i < 10; i += 2) {
+        for (int i = 0; i < 0; i += 2) {
             addObject(new Rabbit(192 + 192 * (i % 50), 3072 + 192 * (i / 50),
                     128, 28, 6, 1024, "rabbit", place, true, mobID++));
             addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160

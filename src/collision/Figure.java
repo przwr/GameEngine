@@ -32,7 +32,7 @@ public abstract class Figure implements Comparable<Figure> {
     protected int xStart, yStart, width, height, xCenter, yCenter;
     protected final BlueArray<Point> points;
     private static PointContener tiles;
-    private boolean mobile = false;
+    private boolean mobile = false, small = false;
 
     public abstract boolean isCollideSingle(int x, int y, Figure figure);
 
@@ -229,6 +229,10 @@ public abstract class Figure implements Comparable<Figure> {
         return mobile;
     }
 
+    public boolean isSmall() {
+        return small;
+    }
+
     public boolean isConcave() {
         return false;
     }
@@ -363,6 +367,10 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setMobile(boolean mobile) {
         this.mobile = mobile;
+    }
+
+    public void setSmall(boolean small) {
+        this.small = small;
     }
 
     public void setXStart(int xStart) {

@@ -20,6 +20,7 @@ public class Rabbit extends Mob {
     public Rabbit(int x, int y, int width, int height, double speed, int range, String name, Place place, boolean solid, short ID) {
         super(x, y, speed, range, name, place, "rabbit", solid, ID);
         setCollision(Rectangle.create(width, height, OpticProperties.NO_SHADOW, this));
+        collision.setMobile(true);
 //        setCollision(Rectangle.create(48, 48, OpticProperties.NO_SHADOW, this));
     }
 

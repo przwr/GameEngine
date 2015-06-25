@@ -7,8 +7,10 @@ package navmeshpathfinding;
 
 import collision.Figure;
 import engine.BlueArray;
+import engine.Methods;
 import engine.Point;
 import game.place.Place;
+import java.awt.Polygon;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -24,10 +26,13 @@ public class PathFinder {
     public static final int TO_LEFT_TOP = 1, TO_LEFT_BOTTOM = 4, TO_RIGHT_BOTTOM = 8, TO_RIGHT_TOP = 2, TO_TOP = 3, TO_LEFT = 5, TO_BOTTOM = 12, TO_RIGHT = 10;
     private static final Set<Node> closedList = new HashSet<>();
     private static final PriorityQueue<Node> openList = new PriorityQueue<>(24, (Node n1, Node n2) -> n1.getFCost() - n2.getFCost());
-    private static Point destinationPoint = new Point(), startPoint = new Point(), temp = new Point();
-    private static int width, height;
+    private static Point destinationPoint = new Point(), startPoint = new Point(), temp1 = new Point(), temp2 = new Point();
+    private static int width, height, xDS, yDS, xDE, yDE;
     private static Triangle startTriangle, endTriangle;
     private static Node destination, beginning;
+    private static Point[] castingPoints = {new Point(), new Point()};
+    private static Point[] castingDestination = {new Point(), new Point()};
+    private static Polygon poly = new Polygon();
     private static List<Point> shifted = new BlueArray<>(), result = new BlueArray<>();
     private static PathBase pathBase;
 
@@ -37,7 +42,6 @@ public class PathFinder {
             destinationPoint = new Point(xDestination, yDestination);
             width = collision.getWidth() / 2;
             height = collision.getHeight() / 2;
-
             pathBase = mesh.getPathBase(destinationPoint, startPoint);
             startTriangle = pathBase.startTriangle;
             endTriangle = pathBase.endTriangle;
@@ -68,7 +72,7 @@ public class PathFinder {
     private static Node aStar(NavigationMesh mesh) {
         Node currentNode;
         readyVariables(mesh);
-        createBeginningAndAdjacent(mesh);
+        createBeginningAndAdjacent();
         while (!openList.isEmpty()) {
             currentNode = openList.poll();
             closedList.add(currentNode);
@@ -87,63 +91,95 @@ public class PathFinder {
         destination = null;
     }
 
-    private static void createBeginningAndAdjacent(NavigationMesh mesh) {
+    private static void createBeginningAndAdjacent() {
         beginning = new Node(destinationPoint);
         beginning.setGHCosts(0, countH(destinationPoint, startPoint));
         closedList.add(beginning);
         for (int i = 0; i < 3; i++) {
             Node node = startTriangle.getNode(i);
-            calculateAndAddToOpenList(node, beginning, mesh);
+            calculateAndAddToOpenList(node, beginning);
         }
     }
 
     private static void calculateAndAddToOpenListIfFits(Node node, Node parent, NavigationMesh mesh) {
-        if (isFittingPoint(node.getPoint(),parent.getPoint(), mesh)) {
-            calculateAndAddToOpenList(node, parent, mesh);
+        if (isFittingPoint(node.getPoint(), parent.getPoint(), mesh)) {
+            calculateAndAddToOpenList(node, parent);
         }
     }
 
-    private static void calculateAndAddToOpenList(Node node, Node parent, NavigationMesh mesh) {
+    private static void calculateAndAddToOpenList(Node node, Node parent) {
         node.setParentMakeChild(parent);
         node.setGHCosts(countG(node.getPoint(), parent.getPoint()), countH(node.getPoint(), startPoint));
         openList.add(node);
     }
 
     private static boolean isFittingPoint(Point point, Point parent, NavigationMesh mesh) {
-    	// TO DO - fix this Method! - do using Polygon!
-    	    	
-        return !(mesh.linesIntersectsMeshBounds(getShiftValues(parent, mesh, width * 2, height * 2), getShiftValues(point, mesh, width * 2, height * 2)));
+        setPolygonForTesting(getShiftPoint(parent, temp1, mesh, width, height), getShiftPoint(point, temp2, mesh, width, height));
+        return isClearWay(poly, mesh.getCollisonPoints());
     }
 
-    private static Point getShiftValues(Point point, NavigationMesh mesh, int width, int height) {
+    private static void setPolygonForTesting(Point current, Point destination) {
+        setDestinationCorners(current);
+        Methods.getCastingPoints(destination.getX(), destination.getY(), xDS, xDE, yDS, yDE, castingPoints);
+        setDestinationCorners(destination);
+        Methods.getCastingPoints(current.getX(), current.getY(), xDS, xDE, yDS, yDE, castingDestination);
+        poly.reset();
+        poly.addPoint(castingPoints[0].getX(), castingPoints[0].getY());
+        poly.addPoint(castingPoints[1].getX(), castingPoints[1].getY());
+        if (castingDestination[0].getY() != castingDestination[1].getY()) {
+            poly.addPoint(castingDestination[1].getX(), castingDestination[1].getY());
+            poly.addPoint(castingDestination[0].getX(), castingDestination[0].getY());
+        } else if (castingDestination[0].getX() > castingDestination[1].getX()) {
+            poly.addPoint(castingDestination[0].getX(), castingDestination[0].getY());
+            poly.addPoint(castingDestination[1].getX(), castingDestination[1].getY());
+        } else {
+            poly.addPoint(castingDestination[1].getX(), castingDestination[1].getY());
+            poly.addPoint(castingDestination[0].getX(), castingDestination[0].getY());
+        }
+    }
+
+    private static void setDestinationCorners(Point destination) {
+        xDS = destination.getX() - width + 10;
+        xDE = destination.getX() + width - 10;
+        yDS = destination.getY() - height + 10;
+        yDE = destination.getY() + height - 10;
+    }
+
+    private static boolean isClearWay(Polygon poly, List<Point> close) {
+        if (close.stream().anyMatch((point) -> (poly.contains(point.getX(), point.getY())))) {
+            return false;
+        }
+        return true;
+    }
+
+    private static Point getShiftPoint(Point point, Point temp, NavigationMesh mesh, int width, int height) {
         switch (mesh.getShiftDirections()[getIndexForShifts(point.getX() / Place.tileSize, point.getY() / Place.tileSize)]) {
             case TO_LEFT_TOP:
-                temp.set(-width, -height);
+                temp.set(point.getX() - width, point.getY() - height);
                 break;
             case TO_LEFT_BOTTOM:
-                temp.set(-width, height);
+                temp.set(point.getX() - width, point.getY() + height);
                 break;
             case TO_RIGHT_BOTTOM:
-                temp.add(width, height);
+                temp.set(point.getX() + width, point.getY() + height);
                 break;
             case TO_RIGHT_TOP:
-                temp.set(width, -height);
+                temp.set(point.getX() + width, point.getY() - height);
                 break;
             case TO_TOP:
-                temp.set(0, -height);
+                temp.set(point.getX(), point.getY() - height);
                 break;
             case TO_LEFT:
-                temp.set(-width, 0);
+                temp.set(point.getX() - width, point.getY());
                 break;
             case TO_BOTTOM:
-                temp.set(0, height);
+                temp.set(point.getX(), point.getY() + height);
                 break;
             case TO_RIGHT:
-                temp.set(width, 0);
+                temp.set(point.getX() + width, point.getY());
                 break;
             default:
-                temp.set(0, 0);
-                break;
+                return point;
         }
         return temp;
     }
@@ -245,7 +281,7 @@ public class PathFinder {
             previous = shifted.get(i - 1);
             for (int j = shifted.size() - 1; j > i; j--) {
                 next = shifted.get(j);
-                if (canBeSkipped(previous, next, mesh) && canBeSkipped(result.get(i - 1), result.get(j), mesh)) {
+                if (canBeSkippedShifted(previous, next, mesh) ){
                     shifted.remove(i);
                     result.remove(i);
                     i--;
@@ -255,7 +291,12 @@ public class PathFinder {
         }
     }
 
-    private static boolean canBeSkipped(Point previous, Point next, NavigationMesh mesh) {
-        return !mesh.lineIntersectsMeshBounds(previous, next);
-    }
+    
+    private static boolean canBeSkippedShifted(Point previous, Point next, NavigationMesh mesh) {
+        if (!mesh.lineIntersectsMeshBounds(previous, next)) {
+            setPolygonForTesting(previous, next);
+            return isClearWay(poly, mesh.getCollisonPoints());
+        }
+        return false;
+    }    
 }

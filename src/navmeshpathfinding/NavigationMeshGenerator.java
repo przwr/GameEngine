@@ -7,7 +7,6 @@ package navmeshpathfinding;
 
 import collision.Block;
 import collision.Figure;
-import collision.Rectangle;
 import collision.RoundRectangle;
 import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.LEFT_TOP;
@@ -22,7 +21,7 @@ import static game.place.Place.xAreaInPixels;
 import static game.place.Place.yAreaInPixels;
 import game.place.Tile;
 import java.awt.geom.Line2D;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,8 +41,9 @@ public class NavigationMeshGenerator {
 
     private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart, leftTop, rightTop, leftBottom, rightBottom;
     private static double xd, yd;
-    private static BitSet spots;
     private static byte[] shiftDirections;
+
+    private static final BitSet spots = new BitSet();
     private static final byte[] diagonals = new byte[X_IN_TILES * Y_IN_TILES];
     private static final Set<Line> newLines = new HashSet<>();
     private static final PriorityQueue<Line> sortedLines = new PriorityQueue<>();
@@ -56,6 +56,7 @@ public class NavigationMeshGenerator {
     private static final Map<Line, NeightbourTriangles> linesTriangles = new HashMap<>();
 
     private static final Point tempPoint = new Point();
+
     private static Point start, end, xModed, yModed;
     private static Line tempLine1, tempLine2, tempLine3, currentLine;
     private static Triangle currentTriangle;
@@ -66,16 +67,12 @@ public class NavigationMeshGenerator {
     private static int sharedPoints;
     private static NavigationMesh navigationMesh;
 
-    private static boolean showMesh = false, showLines = false;
-    private static int areaNumberToShow = 0;
-    public static long fullTime = 0;
+    private static boolean showMesh = false;
     public static int areas = 0;
 
     public static Window mesh;
 
     public static NavigationMesh generateNavigationMesh(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
-        long startTime = System.nanoTime();
-
         findBoundsAndSetCollisionSpots(tiles, blocks, xArea, yArea);
         createLinesFromSpots();
         createAndAddDiagonalLines(blocks);
@@ -84,46 +81,13 @@ public class NavigationMeshGenerator {
         solveLines();
         createTriangles();
         generateNavigationMesh();
-//
-//
-//       _  _ __ _  __ _ _ _ _ __ _  FOR TESTING __ _ _ _ _ _ _ __ _ __ 
-        long endTime = System.nanoTime();
-        long diffrence = endTime - startTime;
-        fullTime += diffrence;
-        if ((showMesh || showLines) && areas == areaNumberToShow) {
-//            System.out.println("Time: " + diffrence + " ns " + (diffrence / 1000000d) + " ms");
-//            System.out.println("Points: " + pointsToConnect.size());
-//            System.out.println("Lines: " + newLines.size());
-//            System.out.println("Triangles " + triangles.size());
-//            System.out.println("Triangles in mesh " + navigationMesh.size());
-//            for (Triangle triangle : triangles) {
-//                System.out.println(triangle);
-//            }
-            if (showLines) {
-                Line[] lines = new Line[newLines.size()];
-                int i = 0;
-                for (Line line : newLines) {
-                    lines[i++] = line;
-                }
-                LineWindow win = new LineWindow();
-                win.addVariables(Arrays.asList(lines));
-                win.setVisible(true);
-                showLines = false;
-            }
-            if (showMesh) {
-                mesh = new Window();
-                start = new Point(64, 64);
-                end = new Point(1024, 1088);
-                mesh.addVariables(navigationMesh, start, end, PathFinder.findPath(navigationMesh, start.getX(), start.getY(), end.getX(), end.getY(), Rectangle.create(32, 10, 0, null)), xArea * xAreaInPixels, yArea * yAreaInPixels);
-                mesh.setVisible(true);
-                showMesh = false;
-            }
+
+        if (showMesh) {
+            mesh = new Window();
+            mesh.setVisible(true);
+            showMesh = false;
         }
-        areas++;
-        ///__ __ _ _ _ _ _ __ _ _ _ __ _ _ _ __ _ _ __ _ _ _ __ _  __ _ 
-        //
-        //
-        //
+
         return navigationMesh;
     }
 
@@ -142,7 +106,7 @@ public class NavigationMeshGenerator {
     private static void findBoundsAndSetCollisionSpots(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
         yStartBound = yEndBound = xStartBound = xEndBound = -1;
         lineXStart = lineYStart = 0;
-        spots = new BitSet();
+        spots.clear();
         findBoundsFromTiles(tiles);
         setCollisionSpotsFromTiles(tiles);
         findBoundsAndSetCollisionSpotsFromBlocks(blocks, xArea, yArea);
@@ -949,7 +913,7 @@ public class NavigationMeshGenerator {
 
     private static void createNavigationMeshWithFirstTriangle(Triangle firstTriangle) {
         if (firstTriangle != null) {
-            navigationMesh = new NavigationMesh(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2), spots, shiftDirections);
+            navigationMesh = new NavigationMesh(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2), new ArrayList<>(pointsToConnect), shiftDirections);
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(2), firstTriangle.getPointFromNode(0)));

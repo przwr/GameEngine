@@ -11,6 +11,7 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import net.jodk.lang.FastMath;
 
@@ -21,25 +22,25 @@ import net.jodk.lang.FastMath;
 public class NavigationMesh {
 
     private final Set<Triangle> mesh = new HashSet<>();
+    private final int NOT_SHARED = 2;
     private final Node[] sharedNodes = new Node[2];
-    private final int notShared = 2;
     private final int tempNodeIndexes[] = new int[5], sharedNodesIndexes[] = new int[12];
-    private int sharedNodeNumber, nrSharedNodes, nrConnections;
+    private int sharedNodeNumber, sharedNodesNumber, connectionsNumber;
     private final Triangle[] connectedTriangles = new Triangle[3];
-    private final BitSet collisionSpots;
+    private final List<Point> collisionPoints;
     private final byte[] shiftDirections;
 
     BlueArray<Node> toRemove = new BlueArray<>();
     ArrayList<Bound> bounds = new ArrayList<>();
 
-    public NavigationMesh(Point firstPoint, Point secondPoint, Point thirdPoint, BitSet collisionSpots, byte[] shiftDirections) {
+    public NavigationMesh(Point firstPoint, Point secondPoint, Point thirdPoint, List<Point> collisionPoints, byte[] shiftDirections) {
         mesh.add(Triangle.createAndConnectNeightbours(firstPoint, secondPoint, thirdPoint));
-        this.collisionSpots = collisionSpots;
+        this.collisionPoints = collisionPoints;
         this.shiftDirections = shiftDirections;
     }
 
     public void addTriangle(Triangle triangleToAdd) {
-        nrConnections = 0;
+        connectionsNumber = 0;
         connectedTriangles[0] = connectedTriangles[1] = connectedTriangles[2] = null;
         if (mesh.contains(triangleToAdd)) {
             return;
@@ -52,7 +53,7 @@ public class NavigationMesh {
     }
 
     private void findAndMergeSharedPoints(Triangle triangle, Triangle triangleToAdd) {
-        nrSharedNodes = sharedNodeNumber = 0;
+        sharedNodesNumber = sharedNodeNumber = 0;
         sharedNodes[0] = sharedNodes[1] = null;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -69,13 +70,13 @@ public class NavigationMesh {
         tempNodeIndexes[sharedNodeNumber + 3] = i;
         tempNodeIndexes[sharedNodeNumber] = j;
         sharedNodeNumber = 1;
-        nrSharedNodes++;
+        sharedNodesNumber++;
     }
 
     private void connectIfPossible(Triangle triangle, Triangle triangleToAdd) {
-        if (nrSharedNodes == 2) {
+        if (sharedNodesNumber == 2) {
             connectTriangles(triangle, triangleToAdd);
-            nrConnections++;
+            connectionsNumber++;
         }
     }
 
@@ -89,14 +90,14 @@ public class NavigationMesh {
     private void findNotSharedNode() {
         for (int i = 0; i < 3; i++) {
             if (tempNodeIndexes[0] != i && tempNodeIndexes[1] != i) {
-                tempNodeIndexes[notShared] = i;
+                tempNodeIndexes[NOT_SHARED] = i;
             }
         }
     }
 
     private void ifNextConnectionSolveNodeDuplicates() {
-        if (nrConnections > 0) {
-            int index = nrConnections - 1;
+        if (connectionsNumber > 0) {
+            int index = connectionsNumber - 1;
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 2; j++) {
                     if (connectedTriangles[index].getPointFromNode(i).equals(sharedNodes[j].getPoint())) {
@@ -117,7 +118,7 @@ public class NavigationMesh {
                 sharedNodes[i].addIfNotYetNeightbour(node);
             }
             triangleToAdd.setNode(tempNodeIndexes[i], sharedNodes[i]);
-            Node node = triangleToAdd.getNode(tempNodeIndexes[notShared]);
+            Node node = triangleToAdd.getNode(tempNodeIndexes[NOT_SHARED]);
             node.addIfNotYetNeightbour(sharedNodes[i]);
 
             sharedNodes[i].addIfNotYetNeightbour(node);
@@ -125,8 +126,8 @@ public class NavigationMesh {
     }
 
     private void saveConnectionNodes(Triangle triangle) {
-        int indexModifier = 4 * nrConnections;
-        connectedTriangles[nrConnections] = triangle;
+        int indexModifier = 4 * connectionsNumber;
+        connectedTriangles[connectionsNumber] = triangle;
         sharedNodesIndexes[indexModifier] = tempNodeIndexes[0];
         sharedNodesIndexes[indexModifier + 1] = tempNodeIndexes[1];
         sharedNodesIndexes[indexModifier + 2] = tempNodeIndexes[3];
@@ -134,7 +135,7 @@ public class NavigationMesh {
     }
 
     private void addAndSolveDependancesIfConnected(Triangle triangleToAdd) {
-        if (nrConnections > 0) {
+        if (connectionsNumber > 0) {
             solveDuplicatedNodesAndAddConnections(triangleToAdd);
             mesh.add(triangleToAdd);
             recalculateBounds();
@@ -144,7 +145,7 @@ public class NavigationMesh {
     }
 
     private void solveDuplicatedNodesAndAddConnections(Triangle triangleToAdd) {
-        for (int i = 0; i < nrConnections; i++) {
+        for (int i = 0; i < connectionsNumber; i++) {
             solveDuplicatedNodes(connectedTriangles[i]);
             int indexModifier = 4 * i;
             connectedTriangles[i].addConnection(new Connection(triangleToAdd, sharedNodesIndexes[indexModifier], sharedNodesIndexes[indexModifier + 1]));
@@ -243,7 +244,7 @@ public class NavigationMesh {
         return null;
     }
 
-	public boolean lineIntersectsMeshBounds(int xStart, int yStart, int xEnd, int yEnd) {
+    public boolean lineIntersectsMeshBounds(int xStart, int yStart, int xEnd, int yEnd) {
         if (bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, xStart, yStart, xEnd, yEnd)))) {
             return true;
         }
@@ -300,8 +301,8 @@ public class NavigationMesh {
         return mesh.size();
     }
 
-    public BitSet getCollisonSpots() {
-        return collisionSpots;
+    public List<Point> getCollisonPoints() {
+        return collisionPoints;
     }
 
     public byte[] getShiftDirections() {

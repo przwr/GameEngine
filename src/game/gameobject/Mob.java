@@ -24,6 +24,7 @@ import java.awt.Polygon;
 import java.util.List;
 
 import navmeshpathfinding.NavigationMeshGenerator;
+import net.jodk.lang.FastMath;
 import net.packets.Update;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -46,26 +47,25 @@ public abstract class Mob extends Entity {
     protected int currentPoint, oldPoint;
     public short mobID;
     public Delay delay = new Delay(250);
-    private Point correction = new Point(-1000, -1000);
     private static int xDS, xDE, yDS, yDE;
     private List<PointedValue> correctionPoints = new BlueArray<>();
-    private Point pastPosition = new Point();
+    private final Point pastPosition = new Point(), preyPoint = new Point(), correction = new Point(),
+            last1CorrectionPoint = new Point(), last2CorrectionPoint = new Point(), tempCorrection = new Point();
     private double pastXSpeed, pastYSpeed;
     private int stuckCount, passedCount, alternateCount;
     private Point destination;
-    private Point preyPoint = new Point();
     private Point[] castingPoints = {new Point(), new Point()};
     private Point[] castingDestination = {new Point(), new Point()};
     private Polygon poly = new Polygon();
     private int xPass, yPass, xInAWay, yInAWay;
     private Figure inAWay, lastInAWay;
-    protected boolean passing, passed, choice, alternate;
+    protected boolean passing, passed, choice, alternate, diffrentArea;
 
     {
         delay.start();
     }
 
-    private static final boolean DEBUG = false, VDEBUG = false;
+    private static boolean DEBUG = false, VDEBUG = false;
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -97,13 +97,25 @@ public abstract class Mob extends Entity {
     }
 
     public synchronized void chase(GameObject prey) {
-        int scope = collision.getWidth() + collision.getHeight();
+        if ("very perverted rabbit".equals(this.name)) {
+            DEBUG = true;
+            VDEBUG = true;
+        } else {
+            DEBUG = false;
+            VDEBUG = false;
+        }
         if (prey != null) {
+            int scope = (collision.getWidth() + collision.getHeight()) * 1;
+            boolean obstacleBeetween = isObstacleBeetween();
+            if (!obstacleBeetween && Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY()) < scope) {
+                xSpeed = 0;
+                ySpeed = 0;
+                return;
+            }
             if (VDEBUG && area != -1) {
                 int xRef = map.areas[area].getXInPixels();
                 int yRef = map.areas[area].getYInPixels();
-                NavigationMeshGenerator.mesh.setPositions(new Point(prey.getX(), prey.getY()),
-                        new Point(getX(), getY()), xRef, yRef);
+                NavigationMeshGenerator.mesh.setPositions(new Point(prey.getX(), prey.getY()), new Point(getX(), getY()), xRef, yRef);
             }
             if (path != null && !delay.isOver()) {
                 destination = path[currentPoint];
@@ -118,21 +130,8 @@ public abstract class Mob extends Entity {
                 }
             } else {
                 delay.start();
-                boolean obstacleBeetween = false;
-                if (area != -1) {
-                    int xRef = map.areas[area].getXInPixels();
-                    int yRef = map.areas[area].getYInPixels();
-                    obstacleBeetween = map
-                            .getArea(area)
-                            .getNavigationMesh()
-                            .lineIntersectsMeshBounds(getX() - xRef, getY() - yRef, prey.getX() - xRef,
-                                    prey.getY() - yRef);
-                }
-                if (Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY()) > scope || obstacleBeetween
-                        || isStuck()) {
-                    if (path == null
-                            || (Methods.pointDistance(path[path.length - 1].getX(), path[path.length - 1].getY(),
-                                    prey.getX(), prey.getY()) > maxSpeed) || obstacleBeetween || isStuck()) {
+                if (Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY()) > scope || obstacleBeetween || isStuck()) {
+                    if (path == null || (Methods.pointDistance(path[path.length - 1].getX(), path[path.length - 1].getY(), prey.getX(), prey.getY()) > maxSpeed) || obstacleBeetween || isStuck()) {
                         DEBUG("Looking for a path! ");
                         setPath(map.findPath(getX(), getY(), prey.getX(), prey.getY(), collision));
                     }
@@ -148,6 +147,7 @@ public abstract class Mob extends Entity {
                     DEBUG("Follow pray! ");
                     preyPoint.set(prey.getX(), prey.getY());
                     destination = preyPoint;
+                    return;
                 }
             }
 
@@ -161,8 +161,13 @@ public abstract class Mob extends Entity {
                     }
                     DEBUG("PASSED " + correction);
                 } else {
-                    lastInAWay = inAWay;
-                    isSomethingOnTheWay(correction);
+                    if (inAWay != null && inAWay.isMobile()) {
+                        lastInAWay = null;
+
+                        isSomethingOnTheWay(correction);
+                    } else {
+                        lastInAWay = inAWay;
+                    }
                     destination = correction;
                     DEBUG("PASSING " + correction);
                 }
@@ -172,6 +177,8 @@ public abstract class Mob extends Entity {
                 } else {
                     if (path != null || destination.equals(preyPoint)) {
                         lastInAWay = null;
+                        last2CorrectionPoint.set(-1, -1);
+                        last1CorrectionPoint.set(-1, -1);
                     }
                     isSomethingOnTheWay(destination);
                     DEBUG("NORMAL");
@@ -192,8 +199,7 @@ public abstract class Mob extends Entity {
                 ySpeed = 0;
             }
             if (passed) {
-                DEBUG("xPass " + xPass + " xSpeed " + Math.signum(xSpeed) + " yPass " + yPass + " ySpeed "
-                        + Math.signum(ySpeed));
+                DEBUG("xPass " + xPass + " xSpeed " + Math.signum(xSpeed) + " yPass " + yPass + " ySpeed " + Math.signum(ySpeed));
                 if (Math.signum(xSpeed) != xPass) {
                     xSpeed = 0;
                 }
@@ -217,7 +223,7 @@ public abstract class Mob extends Entity {
                 if (passedCount >= 4) {
                     passedCount = 0;
                     passed = false;
-                    choice = !choice;
+                    choice = FastMath.random() > 0.5;
                 }
             } else if (!alternate) {
                 if (xSpeed * pastXSpeed > 0 && getX() == pastPosition.getX() && Math.abs(ySpeed) > 0) {
@@ -230,13 +236,10 @@ public abstract class Mob extends Entity {
 
                 }
             } else {
-                alternate = true;
                 xSpeed = pastXSpeed;
                 ySpeed = pastYSpeed;
                 alternateCount++;
-                int value = Methods
-                        .roundDouble((pastYSpeed > pastXSpeed ? collision.getHeight() : collision.getWidth())
-                                / maxSpeed);
+                int value = Methods.roundDouble((pastYSpeed > pastXSpeed ? collision.getHeight() : collision.getWidth()) / maxSpeed);
                 if (VDEBUG) {
                     NavigationMeshGenerator.mesh.setNote("Value " + value);
                 }
@@ -261,7 +264,49 @@ public abstract class Mob extends Entity {
         }
     }
 
-    private boolean isStuck() {
+    private boolean isObstacleBeetween() {
+        // TO DO - zmienic na ANY FIGURE IN A WAY
+        if (area != -1) {
+            int xRef = map.areas[area].getXInPixels();
+            int yRef = map.areas[area].getYInPixels();
+            int xCur = getX() - xRef;
+            int yCur = getY() - yRef;
+            int xPrey = prey.getX() - xRef;
+            int yPrey = prey.getY() - yRef;
+            int widthHalf = collision.getWidth() / 2;
+            int heightHalf = collision.getHeight() / 2;
+            if (map.getArea(area).getNavigationMesh().lineIntersectsMeshBounds(xCur, yCur, xPrey, yPrey)) {
+                return true;
+            }
+            if (map.getArea(area)
+                    .getNavigationMesh()
+                    .lineIntersectsMeshBounds(xCur + widthHalf, yCur + heightHalf, xPrey + widthHalf,
+                            yPrey + heightHalf)) {
+                return true;
+            }
+            if (map.getArea(area)
+                    .getNavigationMesh()
+                    .lineIntersectsMeshBounds(xCur + widthHalf, yCur - heightHalf, xPrey + widthHalf,
+                            yPrey - heightHalf)) {
+                return true;
+            }
+            if (map.getArea(area)
+                    .getNavigationMesh()
+                    .lineIntersectsMeshBounds(xCur - widthHalf, yCur - heightHalf, xPrey - widthHalf,
+                            yPrey - heightHalf)) {
+                return true;
+            }
+            if (map.getArea(area)
+                    .getNavigationMesh()
+                    .lineIntersectsMeshBounds(xCur - widthHalf, yCur + heightHalf, xPrey - widthHalf,
+                            yPrey + heightHalf)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isStuck() {
         if (getX() == pastPosition.getX() && getY() == pastPosition.getY()) {
             stuckCount++;
             if (stuckCount >= 12) {
@@ -301,43 +346,52 @@ public abstract class Mob extends Entity {
         if (isNeedToPass(inAWay)) {
             xInAWay = inAWay.getX();
             yInAWay = inAWay.getY();
-            DEBUG(" IN A WAY: " + inAWay + " " + inAWay.getX() + " " + inAWay.getY() + " " + inAWay.getXEnd() + " "
-                    + inAWay.getYEnd());
+            DEBUG(" IN A WAY: " + inAWay + " " + inAWay.getX() + " " + inAWay.getY() + " " + inAWay.getXEnd() + " " + inAWay.getYEnd());
 
-            correction.set(inAWay.getX() - correctionX, inAWay.getY() - correctionY);
+            tempCorrection.set(inAWay.getX() - correctionX, inAWay.getY() - correctionY);
+            addPointIfClearPath(xS, xE, yS, yE, tempCorrection, close, LEFT_TOP);
+
+            tempCorrection.set(inAWay.getX() - correctionX, inAWay.getYEnd() + correctionY);
+            addPointIfClearPath(xS, xE, yS, yE, tempCorrection, close, LEFT_BOTTOM);
+
+            tempCorrection.set(inAWay.getXEnd() + correctionX, inAWay.getYEnd() + correctionY);
+            addPointIfClearPath(xS, xE, yS, yE, tempCorrection, close, RIGHT_BOTTOM);
+
+            tempCorrection.set(inAWay.getXEnd() + correctionX, inAWay.getY() - correctionY);
+            addPointIfClearPath(xS, xE, yS, yE, tempCorrection, close, RIGHT_TOP);
+
+            setClosestIfFits();
+        }
+    }
+
+    private void addPointIfClearPath(int xS, int xE, int yS, int yE, Point correction, List<Figure> close, int corner) {
+        boolean samePoint = last1CorrectionPoint.equals(last2CorrectionPoint);
+        if (!correction.equals(last1CorrectionPoint) || !samePoint) {
             setPolygonForTesting(xS, xE, yS, yE, correction);
             if (anyFigureInAWay(poly, close) == null) {
-                correctionPoints.add(new PointedValue(correction.getX(), correction.getY(), LEFT_TOP));
+                DEBUG("ADDING POINT " + correction);
+                correctionPoints.add(new PointedValue(correction.getX(), correction.getY(), corner));
             }
+        }
+    }
 
-            correction.set(inAWay.getX() - correctionX, inAWay.getYEnd() + correctionY);
-            setPolygonForTesting(xS, xE, yS, yE, correction);
-            if (anyFigureInAWay(poly, close) == null) {
-                correctionPoints.add(new PointedValue(correction.getX(), correction.getY(), LEFT_BOTTOM));
+    private void setClosestIfFits() {
+        int min = Integer.MAX_VALUE, temp;
+        PointedValue closest = null;
+        for (PointedValue point : correctionPoints) {
+            temp = Methods.pointDistance(point.getX(), point.getY(), destination.getX(), destination.getY());
+            if (temp < min) {
+                min = temp;
+                closest = point;
             }
-
-            correction.set(inAWay.getXEnd() + correctionX, inAWay.getYEnd() + correctionY);
-            setPolygonForTesting(xS, xE, yS, yE, correction);
-            if (anyFigureInAWay(poly, close) == null) {
-                correctionPoints.add(new PointedValue(correction.getX(), correction.getY(), RIGHT_BOTTOM));
-            }
-
-            correction.set(inAWay.getXEnd() + correctionX, inAWay.getY() - correctionY);
-            setPolygonForTesting(xS, xE, yS, yE, correction);
-            if (anyFigureInAWay(poly, close) == null) {
-                correctionPoints.add(new PointedValue(correction.getX(), correction.getY(), RIGHT_TOP));
-            }
-
-            int min = Integer.MAX_VALUE, temp;
-            PointedValue closest = null;
-            for (PointedValue point : correctionPoints) {
-                temp = Methods.pointDistance(point.getX(), point.getY(), destination.getX(), destination.getY());
-                if (temp < min) {
-                    min = temp;
-                    closest = point;
-                }
-            }
-            if (closest != null) {
+        }
+        if (closest != null) {
+            if ((closest.getY() >= getY() && closest.getY() <= destination.getY())
+                    || (closest.getY() <= getY() && closest.getY() >= destination.getY()) || inAWay.isMobile() || inAWay.isSmall() || diffrentArea) {
+                passing = true;
+                passed = false;
+                last2CorrectionPoint.set(last1CorrectionPoint.getX(), last1CorrectionPoint.getY());
+                last1CorrectionPoint.set(closest.getX(), closest.getY());
                 switch (closest.getValue()) {
                     case LEFT_TOP:
                         xPass = 1;
@@ -360,19 +414,13 @@ public abstract class Mob extends Entity {
                         closest.set(closest.getX() - 1, closest.getY() + 1);
                         break;
                 }
-                DEBUG("Czy dobry punkt korygujący? --------- " + closest.getValue());
-                if ((closest.getY() >= getY() && closest.getY() <= destination.getY())
-                        || (closest.getY() <= getY() && closest.getY() >= destination.getY())) {
-                    correction.set(closest.getX(), closest.getY());
-                    if (VDEBUG && area != -1) {
-                        int xRef = map.areas[area].getXInPixels();
-                        int yRef = map.areas[area].getYInPixels();
-                        NavigationMeshGenerator.mesh.setCorrection(correction, xRef, yRef, inAWay);
-                    }
-                    DEBUG("TAK! -------------------------");
-                    passing = true;
-                    passed = false;
+                correction.set(closest.getX(), closest.getY());
+                if (VDEBUG && area != -1) {
+                    int xRef = map.areas[area].getXInPixels();
+                    int yRef = map.areas[area].getYInPixels();
+                    NavigationMeshGenerator.mesh.setCorrection(correction, xRef, yRef, inAWay);
                 }
+                DEBUG("Dobry punkt korygujący --------- " + closest.getValue() + " " + closest.getX() + " " + closest.getY());
             }
         }
     }
@@ -443,33 +491,36 @@ public abstract class Mob extends Entity {
             if (poly.contains(figure.getXCentral(), figure.getYCentral())) {
                 return figure;
             }
-            for (Point point : figure.getPoints()) {
-                if (poly.contains(point.getX(), point.getY())) {
-                    return figure;
-                }
+            if (poly.intersects(figure.getX(), figure.getY(), figure.getWidth(), figure.getHeight())) {
+                return figure;
             }
         }
         return null;
     }
 
     public synchronized void setPath(Point[] path) {
-        if (path != null && path.length > 1) {
-            currentPoint = 1;
-            correctDestinationPointIfNeeded(path);
-            this.path = path;
-            DEBUG("Znaleziono drogę!");
+        if (path != null) {
+            if (path.length > 1) {
+                currentPoint = 1;
+                correctDestinationPointIfNeeded(path);
+                this.path = path;
+                DEBUG("Znaleziono drogę!");
+            } else if (path.length == 0) {
+                diffrentArea = true;
+                return;
+            }
         } else if (isStuck()) {
             this.path = null;
             DEBUG("Nie znaleziono drogi!");
         }
+        diffrentArea = false;
     }
 
     private void correctDestinationPointIfNeeded(Point[] path) {
         try {
             if (destination != null) {
-                List<Figure> close = Figure
-                        .whatClose(this, getX(), getY(), (collision.getWidth() + collision.getHeight()) * 2,
-                                destination.getX(), destination.getY(), map);
+                List<Figure> close = Figure.whatClose(this, getX(), getY(), (collision.getWidth() + collision.getHeight()) * 2,
+                        destination.getX(), destination.getY(), map);
                 if (!close.isEmpty()) {
                     close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
                     Rectangle testing = Rectangle.createTileRectangle(collision.getWidth(), collision.getHeight());
