@@ -8,6 +8,8 @@ package game.gameobject;
 import engine.Methods;
 import engine.Time;
 import game.place.Place;
+import navmeshpathfinding.PathData;
+import navmeshpathfinding.PathStrategy;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.newdawn.slick.Color;
@@ -18,8 +20,12 @@ import org.newdawn.slick.Color;
  */
 public abstract class Entity extends GameObject {
 
+    protected double range;
     public Update[] updates = new Update[4];
     public int lastAdded;
+    protected GameObject target;
+    protected PathData pathData;
+    protected PathStrategy pathStrategy;
     protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
     protected double xEnvironmentalSpeed, yEnvironmentalSpeed, xSpeed, ySpeed, maxSpeed, jumpHeight, resistance = 1;
     protected boolean jumping, hop, unableToMove;
@@ -38,6 +44,11 @@ public abstract class Entity extends GameObject {
     public abstract Player getCollided(int xMagnitude, int yMagnitude);
 
     protected abstract void move(int xPosition, int yPosition);
+
+    public void setPathStrategy(PathStrategy pathStrategy, int scope) {
+        pathData = new PathData(this, scope);
+        this.pathStrategy = pathStrategy;
+    }
 
     public synchronized void updateSoft() {
         try {
@@ -246,6 +257,19 @@ public abstract class Entity extends GameObject {
         setAndLimitSpeed(xSpeed + xSpeedDelta / resistance, ySpeed + ySpeedDelta / resistance);
     }
 
+    public void changeSpeed(double xSpeedDelta, double ySpeedDelta) {
+        if (Math.signum(xSpeed) != Math.signum(xSpeedDelta)) {
+            xSpeed = xSpeed + (xSpeedDelta / resistance);
+        } else {
+            xSpeed = (xSpeed + xSpeedDelta) / 2;
+        }
+        if (Math.signum(ySpeed) != Math.signum(ySpeedDelta)) {
+            ySpeed = ySpeed + (ySpeedDelta / resistance);
+        } else {
+            ySpeed = (ySpeed + ySpeedDelta) / 2;
+        }
+    }
+
     private void setAndLimitSpeed(double xSpeed, double ySpeed) {
         this.xSpeed = Methods.interval(-maxSpeed, xSpeed, maxSpeed);
         this.ySpeed = Methods.interval(-maxSpeed, ySpeed, maxSpeed);
@@ -259,22 +283,6 @@ public abstract class Entity extends GameObject {
         return !unableToMove;
     }
 
-    public void setUnableToMove(boolean unableToMove) {
-        this.unableToMove = unableToMove;
-    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int d) {
-        direction = d;
-    }
-
-    public double getSpeed() {
-        return Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
-    }
-
     public boolean isJumping() {
         return jumping;
     }
@@ -285,6 +293,10 @@ public abstract class Entity extends GameObject {
 
     public double getResistance() {
         return resistance;
+    }
+
+    public double getRange() {
+        return range;
     }
 
     public double getMaxSpeed() {
@@ -305,6 +317,26 @@ public abstract class Entity extends GameObject {
 
     public Place getPlace() {
         return place;
+    }
+
+    public GameObject getTarget() {
+        return target;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public double getSpeed() {
+        return Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
+    }
+
+    public void setUnableToMove(boolean unableToMove) {
+        this.unableToMove = unableToMove;
+    }
+
+    public void setDirection(int d) {
+        direction = d;
     }
 
     public void setJumping(boolean jumping) {
@@ -337,5 +369,9 @@ public abstract class Entity extends GameObject {
 
     public void setPlace(Place place) {
         this.place = place;
+    }
+
+    public void setScope(int scope) {
+        pathData.setScope(scope);
     }
 }

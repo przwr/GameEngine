@@ -20,8 +20,8 @@ public class Delay {
         started = false;
     }
 
-    public void setFrameLength(int d) {
-        this.length = d;
+    public void setFrameLength(int lenght) {
+        this.length = lenght;
     }
 
     public void setFPS(int fps) {

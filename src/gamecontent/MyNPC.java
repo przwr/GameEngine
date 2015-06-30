@@ -37,16 +37,16 @@ public class MyNPC extends Mob {
 
     @Override
     public void update() {
-        if (prey != null && ((MyPlayer) prey).isInGame()) {
-            MyPlayer mpPrey = (MyPlayer) prey;
-            direction = Methods.pointAngle8Directions(getX(), getY(), prey.getX(), prey.getY());
-            int d = Methods.pointDistance(getX(), getY(), prey.getX(), prey.getY());
+        if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
+            MyPlayer mpPrey = (MyPlayer) getTarget();
+            direction = Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY());
+            int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
             if (mpPrey.getController().isKeyClicked(MyController.JUMP) && d <= Place.tileSize * 1.5 && !mpPrey.getTextController().isStarted()) {
                 mpPrey.getTextController().lockEntity(mpPrey);
                 mpPrey.getTextController().startFromFile("melodia", mpPrey.getX() > x);
             }
-            if (d > range * 1.5 || prey.getMap() != map) {
-                prey = null;
+            if (d > range * 1.5 || getTarget().getMap() != map) {
+                target = null;
             }
         } else {
             look(place.players);

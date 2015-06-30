@@ -67,11 +67,6 @@ public class NavigationMeshGenerator {
     private static int sharedPoints;
     private static NavigationMesh navigationMesh;
 
-    private static boolean showMesh = false;
-    public static int areas = 0;
-
-    public static Window mesh;
-
     public static NavigationMesh generateNavigationMesh(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
         findBoundsAndSetCollisionSpots(tiles, blocks, xArea, yArea);
         createLinesFromSpots();
@@ -81,13 +76,6 @@ public class NavigationMeshGenerator {
         solveLines();
         createTriangles();
         generateNavigationMesh();
-
-        if (showMesh) {
-            mesh = new Window();
-            mesh.setVisible(true);
-            showMesh = false;
-        }
-
         return navigationMesh;
     }
 

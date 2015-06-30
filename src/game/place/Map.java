@@ -13,7 +13,6 @@ import engine.BlueArray;
 import engine.Drawer;
 import static engine.Drawer.clearScreen;
 import engine.Methods;
-import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import static game.place.Area.X_IN_TILES;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import navmeshpathfinding.NavigationMeshGenerator;
 import org.newdawn.slick.Color;
 
 /**
