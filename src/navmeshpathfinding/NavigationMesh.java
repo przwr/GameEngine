@@ -9,7 +9,6 @@ import engine.BlueArray;
 import engine.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -219,16 +218,15 @@ public class NavigationMesh {
         }
     }
 
-    public PathBase getPathBase(Point startPoint, Point destinationPoint) {
-        PathBase pathBase = new PathBase();
+    public Triangle[] getPathBase(Point startPoint, Point destinationPoint, Triangle[] pathBase) {
         boolean start = true, end = true;
         for (Triangle triangle : mesh) {
             if (start && triangle.isPointInTriangle(startPoint)) {
-                pathBase.startTriangle = triangle;
+                pathBase[0] = triangle;
                 start = false;
             }
             if (end && triangle.isPointInTriangle(destinationPoint)) {
-                pathBase.endTriangle = triangle;
+                pathBase[1] = triangle;
                 end = false;
             }
         }
@@ -245,34 +243,22 @@ public class NavigationMesh {
     }
 
     public boolean lineIntersectsMeshBounds(int xStart, int yStart, int xEnd, int yEnd) {
-        if (bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, xStart, yStart, xEnd, yEnd)))) {
-            return true;
-        }
-        return false;
+        return bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, xStart, yStart, xEnd, yEnd)));
     }
 
     public boolean lineIntersectsMeshBounds(Point start, Point end) {
-        if (bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, start.getX(), start.getY(), end.getX(), end.getY())))) {
-            return true;
-        }
-        return false;
+        return bounds.stream().anyMatch((bound) -> (lineIntersectsPointsNotLies(bound, start.getX(), start.getY(), end.getX(), end.getY())));
     }
 
     public boolean linesIntersectsMeshBounds(Point start, Point end) {
-        if (bounds.stream().anyMatch((bound) -> (anyLineIntersects(bound, start, end)))) {
-            return true;
-        }
-        return false;
+        return bounds.stream().anyMatch((bound) -> (anyLineIntersects(bound, start, end)));
     }
 
     private boolean anyLineIntersects(Bound bound, Point start, Point end) {
         if (end.getX() != 0 && lineIntersectsPointsNotLies(bound, start.getX() + (int) FastMath.signum(end.getX()), start.getY(), start.getX() + end.getX(), start.getY())) {
             return true;
         }
-        if (end.getX() != 0 && lineIntersects(bound, start.getX(), start.getY() + (int) FastMath.signum(end.getY()), start.getX(), start.getY() + end.getY())) {
-            return true;
-        }
-        return false;
+        return end.getX() != 0 && lineIntersects(bound, start.getX(), start.getY() + (int) FastMath.signum(end.getY()), start.getX(), start.getY() + end.getY());
     }
 
     private boolean lineIntersectsPointsNotLies(Bound bound, int xStart, int yStart, int xEnd, int yEnd) {

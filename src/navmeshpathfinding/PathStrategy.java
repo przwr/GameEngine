@@ -5,12 +5,14 @@
  */
 package navmeshpathfinding;
 
+import game.gameobject.Entity;
+
 /**
  *
  * @author przemek
  */
-public class PathBase {
-
-    public Triangle startTriangle;
-    public Triangle endTriangle;
+public interface PathStrategy {
+    
+    public void findPath(Entity requester, PathData data, int xDest, int yDest);
+   
 }

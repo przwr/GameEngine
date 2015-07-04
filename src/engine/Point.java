@@ -45,7 +45,7 @@ public class Point implements Comparable<Object> {
     public void setY(int y) {
         this.y = y;
     }
-
+    
     public void set(int x, int y) {
         this.x = x;
         this.y = y;

@@ -8,6 +8,7 @@ package game.place;
 import engine.Light;
 import collision.Block;
 import collision.Figure;
+import collision.PointContener;
 import engine.Methods;
 import engine.Point;
 import navmeshpathfinding.NavigationMeshGenerator;
@@ -66,7 +67,7 @@ public class Area {
         navigationMesh = NavigationMeshGenerator.generateNavigationMesh(tiles, blocksForMesh, xArea, yArea);
     }
 
-    public Point[] findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+    public PointContener findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         return PathFinder.findPath(navigationMesh, xStart, yStart, xDestination, yDestination, collision);
     }
 

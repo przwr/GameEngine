@@ -41,10 +41,8 @@ public class GladeMap extends Map {
         test = new PuzzleObject("smukly", place);
         test.placePuzzle(-1, 0, this);
 
-        WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20
-                * tileSize, "Kamienna");
-        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize,
-                IN_SHADE_NO_SHADOW, warp));
+        WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
+        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
         addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
         PuzzleObject portal = new PuzzleObject("portal", place);
@@ -58,11 +56,9 @@ public class GladeMap extends Map {
         addObject(new Rabbit(256, 2048, 128, 28, 6, 1024, "very perverted rabbit", place, true, mobID++));
         addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
         addObject(new MyNPC(384, 990, place, mobID++));
-        for (int i = 0; i < 0; i += 2) {
-            addObject(new Rabbit(192 + 192 * (i % 50), 3072 + 192 * (i / 50),
-                    128, 28, 6, 1024, "rabbit", place, true, mobID++));
-            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160
-                    * ((i + 1) / 50) + ((int) (FastMath.random() * 150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));
+        for (int i = 0; i < 10; i += 2) {
+            addObject(new Rabbit(192 + 192 * (i % 50), 3072 + 192 * (i / 50), 128, 28, 6, 1024, "rabbit", place, true, mobID++));
+            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() * 150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));
         }
         GameObject light = new LightSource(1784, 1296, 206, 64, "lamp", place, "lamp", false);
         light.setDepth(1024);

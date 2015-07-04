@@ -100,39 +100,32 @@ public abstract class Figure implements Comparable<Figure> {
         return null;
     }
 
-    public static List<Figure> whatClose(GameObject owner, int x, int y, int range, int xDest, int yDest, Map map) {
-        List<Figure> colided = new BlueArray<>();
-
+    public static List<Figure> whatClose(GameObject owner, int x, int y, int range, int xDest, int yDest, Map map, List<Figure> close) {
+        close.clear();
         setScope(x, y, range);
-        for (Block object : map.getBlocks(x, y)) {
-            if (object.isSolid() && scope.isCollideSingle(x, y, object.getCollision())) {
-                Figure figure = object.getCollision();
-                figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
-                colided.add(figure);
-            }
-        }
-        for (GameObject object : map.getSolidMobs(x, y)) {
-            if (object != owner && scope.isCollideSingle(x, y, object.getCollision())) {
-                Figure figure = object.getCollision();
-                figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
-                colided.add(figure);
-            }
-        }
-        for (GameObject object : map.getSolidObjects(x, y)) {
-            if (object != owner && scope.isCollideSingle(x, y, object.getCollision())) {
-                Figure figure = object.getCollision();
-                figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
-                colided.add(figure);
-            }
-        }
-        return colided;
+        map.getBlocks(x, y).stream().filter((object) -> (object.isSolid() && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
+            Figure figure = object.getCollision();
+            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
+            close.add(figure);
+        });
+        map.getSolidMobs(x, y).stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
+            Figure figure = object.getCollision();
+            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
+            close.add(figure);
+        });
+        map.getSolidObjects(x, y).stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
+            Figure figure = object.getCollision();
+            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
+            close.add(figure);
+        });
+        return close;
     }
 
     public static void setScope(int x, int y, int range) {
         scope.setXStart(x - range);
         scope.setYStart(y - range);
         scope.width = 2 * range;
-        scope.height = 2 * range;
+        scope.height = scope.width;
         scope.updateTilePoints();
     }
 
@@ -289,7 +282,7 @@ public abstract class Figure implements Comparable<Figure> {
         return xStart;
     }
 
-    public int getYStart() { // Czy aby potrzebne? <(^=^<)
+    public int getYStart() {
         return yStart;
     }
 

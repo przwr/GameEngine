@@ -56,18 +56,6 @@ public abstract class GameObject {
         this.map.addObject(this);
     }
 
-//        public void changeMap(Map map) {
-//        if (this.map != null) {
-//            if (this.map != map) {
-//                this.map.deleteObject(this);
-//                this.map = map;
-//                this.map.addObject(this);
-//            }
-//        } else {
-//            this.map = map;
-//            this.map.addObject(this);
-//        }
-//    }
     public void updateAreaPlacement() {
         if (map != null) {
             if (area != -1 && prevArea != -1) {
