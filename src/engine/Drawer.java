@@ -84,7 +84,7 @@ public class Drawer {
     public static void translate(float x, float y) {
         xCurrent += x;
         yCurrent += y;
-        glTranslatef(x, y, 0f);
+        glTranslatef((int) x, (int) y, 0f);
     }
 
     public static void returnToCentralPoint() {
