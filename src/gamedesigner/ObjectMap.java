@@ -140,9 +140,7 @@ public class ObjectMap extends Map {
             }
         }
         for (Area area : areas) {
-
             area.clear();
-
         }
         GameObject object;
         for (Area area : areas) {
@@ -273,11 +271,11 @@ public class ObjectMap extends Map {
     }
 
     public void deleteBlocks(int x, int y, int width, int height) {
-        gameObjects.clear();
+        foregroundTiles.clear();
         for (Area area : areas) {
-            gameObjects.addAll(area.getFlatObjects());
+            foregroundTiles.addAll(area.getFlatObjects());
         }
-        Object[] tmpTab = gameObjects.toArray();
+        Object[] tmpTab = foregroundTiles.toArray();
         for (Object go : tmpTab) {
             if (go instanceof TemporaryBlock) {
                 TemporaryBlock tb = (TemporaryBlock) go;

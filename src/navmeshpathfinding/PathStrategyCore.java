@@ -6,7 +6,7 @@
 package navmeshpathfinding;
 
 import collision.Figure;
-import collision.PointContener;
+import engine.PointContener;
 import collision.Rectangle;
 import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.LEFT_TOP;
@@ -18,6 +18,7 @@ import engine.PointedValue;
 import game.gameobject.Entity;
 import java.awt.Polygon;
 import java.util.List;
+import static navmeshpathfinding.PathData.*;
 import net.jodk.lang.FastMath;
 
 /**
@@ -27,65 +28,25 @@ import net.jodk.lang.FastMath;
 public class PathStrategyCore {
 
     public static void followPath(Entity requester, PathData data, int xDest, int yDest) {
+        updatePath(data);
         chooseDestinationPoint(requester, data, xDest, yDest);
         managePassing(requester, data);
         data.calculateSpeed(requester.getMaxSpeed());
         manageBlockedAndAdjustSpeed(data, requester.getMaxSpeed());
         data.rememberPast();
+//        System.out.println(requester.getName() + " " + data.xSpeed + " " + data.ySpeed);
     }
 
-    private static void chooseDestinationPoint(Entity requester, PathData data, int xDest, int yDest) {
-        if (!data.delay.isOver()) {
-            if (!data.path.isEmpty()) {
-                data.destination = data.getCurrentPoint();
-                if (Methods.pointDistance(data.x, data.y, data.getCurrentPoint().getX(), data.getCurrentPoint().getY()) < requester.getMaxSpeed()) {
-                    if (data.currentPoint < data.path.size() - 2) {
-                        data.currentPoint++;
-                    } else {
-                        data.path.clear();
-                    }
-                }
-            } else {
-                delayOverChoice(requester, data, xDest, yDest);
+    private static void updatePath(PathData data) {
+        if (data.newPath != null) {
+            if (data.newPath.size() > 1) {
+                copyPath(data.newPath, data);
+                data.currentPoint = 1;
+                correctDestinationPointIfNeeded(data.path, data);
             }
-        } else {
-            data.delay.start();
-            delayOverChoice(requester, data, xDest, yDest);
-        }
-    }
-
-    private static void delayOverChoice(Entity requester, PathData data, int xDest, int yDest) {
-        if (data.obstacleBeetween || data.stuck || Methods.pointDistance(data.x, data.y, xDest, yDest) > data.scope) {
-            if (data.path.isEmpty() || data.obstacleBeetween || data.stuck || (Methods.pointDistance(data.getLastPoint().getX(), data.getLastPoint().getY(), xDest, yDest) > requester.getMaxSpeed())) {
-                requestForPath(requester.getMap().findPath(data.x, data.y, xDest, yDest, requester.getCollision()), requester, data);
-            }
-            if (!data.path.isEmpty()) {
-                data.destination = data.getCurrentPoint();
-            } else {
-                data.destination = data.finalDestination;
-            }
-        } else {
-            data.destination = data.finalDestination;
-        }
-    }
-
-    private static void requestForPath(PointContener newPath, Entity requester, PathData data) {
-        if (!data.pathRequested) {
-//            data.pathRequested = true;
-//            data.pathRequested = false;
-            if (newPath != null) {
-                if (newPath.size() > 1) {
-                    copyPath(newPath, data);
-                    data.currentPoint = 1;
-                    correctDestinationPointIfNeeded(data.path, requester, data);
-                } else if (newPath.isEmpty()) {
-                    data.diffrentArea = true;
-                    return;
-                }
-            } else if (data.stuck) {
-                data.path.clear();
-            }
-            data.diffrentArea = false;
+            data.newPath = null;
+        } else if (data.flags.get(STUCK)) {
+            data.path.clear();
         }
     }
 
@@ -96,11 +57,9 @@ public class PathStrategyCore {
         }
     }
 
-    private static void correctDestinationPointIfNeeded(PointContener path, Entity requester, PathData data) {
+    private static void correctDestinationPointIfNeeded(PointContener path, PathData data) {
         if (data.destination != null) {
-            data.close = Figure.whatClose(requester, data.x, data.y, (data.width + data.height) * 2, data.destination.getX(), data.destination.getY(), requester.getMap(), data.close);
             if (!data.close.isEmpty()) {
-                data.close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
                 data.desired = path.get(path.size() - 1);
                 setTestingPosition(data.testing, data.desired);
                 data.collided = whatColidesWithTesting(data.close, data.testing);
@@ -152,24 +111,70 @@ public class PathStrategyCore {
         testing.updateTilePoints();
     }
 
-    private static void managePassing(Entity requester, PathData data) {
-        if (data.passing) {
-            passing(requester, data);
-        } else if (data.passed) {
-            passed(requester, data);
+    private static void chooseDestinationPoint(Entity requester, PathData data, int xDest, int yDest) {
+        if (!data.delay.isOver()) {
+            if (!data.path.isEmpty()) {
+                data.destination = data.getCurrentPoint();
+                if (Methods.pointDistance(data.x, data.y, data.getCurrentPoint().getX(), data.getCurrentPoint().getY()) < requester.getMaxSpeed()) {
+                    if (data.currentPoint < data.path.size() - 2) {
+                        data.currentPoint++;
+                    } else {
+                        data.path.clear();
+                    }
+                }
+            } else {
+                delayOverChoice(requester, data, xDest, yDest);
+            }
         } else {
-            normal(requester, data);
+            data.delay.start();
+            delayOverChoice(requester, data, xDest, yDest);
         }
     }
 
-    private static void passing(Entity requester, PathData data) {
-        if (data.stuck || data.x == data.correction.getX() && data.y == data.correction.getY() || (data.inAWay != null && (data.inAWay.getX() != data.xInAWay || data.inAWay.getY() != data.yInAWay))) {
-            data.passing = false;
-            data.passed = true;
+    private static void delayOverChoice(Entity requester, PathData data, int xDest, int yDest) {
+        if (data.flags.get(OBSTACLE_BEETWEEN) || data.flags.get(STUCK) || Methods.pointDistance(data.x, data.y, xDest, yDest) > data.scope) {
+            if (data.path.isEmpty() || data.flags.get(OBSTACLE_BEETWEEN) || data.flags.get(STUCK) || (Methods.pointDistance(data.getLastPoint().getX(), data.getLastPoint().getY(), xDest, yDest) > requester.getMaxSpeed())) {
+                requestForPath(requester, data, xDest, yDest);
+            }
+            if (!data.path.isEmpty()) {
+                data.destination = data.getCurrentPoint();
+            } else {
+                data.destination = data.finalDestination;
+            }
+        } else {
+            data.destination = data.finalDestination;
+        }
+    }
+
+    private static void requestForPath(Entity requester, PathData data, int xDest, int yDest) {
+        if (!data.flags.get(PATH_REQUESTED)) {
+//            PathFindingModule.requestPath(requester, xDest, yDest);
+        }
+        setPath(requester, data, xDest, yDest);
+    }
+
+    public synchronized static void setPath(Entity requester, PathData data, int xDest, int yDest) {
+        data.newPath = requester.getMap().findPath(data.x, data.y, xDest, yDest, requester.getCollision());
+    }
+
+    private static void managePassing(Entity requester, PathData data) {
+        if (data.flags.get(PASSING)) {
+            passing(data);
+        } else if (data.flags.get(PASSED)) {
+            passed(requester, data);
+        } else {
+            normal(data);
+        }
+    }
+
+    private static void passing(PathData data) {
+        if (data.flags.get(STUCK) || data.x == data.correction.getX() && data.y == data.correction.getY() || (data.inAWay != null && (data.inAWay.getX() != data.xInAWay || data.inAWay.getY() != data.yInAWay))) {
+            data.flags.clear(PASSING);
+            data.flags.set(PASSED);
         } else {
             if (data.inAWay != null && data.inAWay.isMobile()) {
                 data.lastInAWay = null;
-                isSomethingOnTheWay(requester, data);
+                isSomethingOnTheWay(data);
             } else {
                 data.lastInAWay = data.inAWay;
             }
@@ -185,28 +190,32 @@ public class PathStrategyCore {
             data.ySpeed = 0;
         }
         if (data.xSpeed != 0 && data.ySpeed != 0) {
-            if (data.choice) {
+            if (data.flags.get(CHOICE)) {
                 data.ySpeed = 0;
             } else {
                 data.xSpeed = 0;
             }
         } else if (data.xSpeed == 0 && data.ySpeed == 0) {
-            if (data.choice) {
+            if (data.flags.get(CHOICE)) {
                 data.xSpeed = requester.getMaxSpeed();
             } else {
                 data.ySpeed = requester.getMaxSpeed();
             }
         }
+        countPass(data);
+    }
+
+    private static void countPass(PathData data) {
         data.passedCount++;
         if (data.passedCount >= 4) {
             data.passedCount = 0;
-            data.passed = false;
-            data.choice = FastMath.random() > 0.5;
+            data.flags.clear(PASSED);
+            data.flags.set(CHOICE, FastMath.random() > 0.5);
         }
     }
 
-    private static void normal(Entity requester, PathData data) {
-        isSomethingOnTheWay(requester, data);
+    private static void normal(PathData data) {
+        isSomethingOnTheWay(data);
         if (!data.path.isEmpty() || data.destination.equals(data.finalDestination)) {
             data.lastInAWay = null;
             data.last2CorrectionPoint.set(-1, -1);
@@ -214,36 +223,36 @@ public class PathStrategyCore {
         }
     }
 
-    private static void isSomethingOnTheWay(Entity requester, PathData data) {
-        data.close = Figure.whatClose(requester, data.x, data.y, ((int) (requester.getRange()) >> 2), data.x, data.y, requester.getMap(), data.close);
+    private static void isSomethingOnTheWay(PathData data) {
         if (!data.close.isEmpty()) {
-            data.close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
-            PathStrategyCore.setPolygonForTesting(data, data.finalDestination);
+            setPolygonForTesting(data, data.destination);
             data.inAWay = PathStrategyCore.anyFigureInAWay(data.poly, data.close);
             if (data.inAWay != data.lastInAWay && isNeedToPass(data)) {
-                data.xCorrection = data.widthHalf + 1;
-                data.yCorrection = data.heightHalf + 1;
-                data.correctionPoints.clear();
-                data.xInAWay = data.inAWay.getX();
-                data.yInAWay = data.inAWay.getY();
-                data.tempCorrection.set(data.inAWay.getX() - data.xCorrection, data.inAWay.getY() - data.yCorrection);
-                addPointIfClearPath(data, data.tempCorrection, LEFT_TOP);
-                data.tempCorrection.set(data.inAWay.getX() - data.xCorrection, data.inAWay.getYEnd() + data.yCorrection);
-                addPointIfClearPath(data, data.tempCorrection, LEFT_BOTTOM);
-                data.tempCorrection.set(data.inAWay.getXEnd() + data.xCorrection, data.inAWay.getYEnd() + data.yCorrection);
-                addPointIfClearPath(data, data.tempCorrection, RIGHT_BOTTOM);
-                data.tempCorrection.set(data.inAWay.getXEnd() + data.xCorrection, data.inAWay.getY() - data.yCorrection);
-                addPointIfClearPath(data, data.tempCorrection, RIGHT_TOP);
-                setCorrectionIfFits(data);
+                findCorrectionPoint(data);
             }
         }
     }
 
+    private static void findCorrectionPoint(PathData data) {
+        data.correctionPoints.clear();
+        data.xInAWay = data.inAWay.getX();
+        data.yInAWay = data.inAWay.getY();
+        data.tempCorrection.set(data.inAWay.getX() - data.xCorrection, data.inAWay.getY() - data.yCorrection);
+        addPointIfClearPath(data, data.tempCorrection, LEFT_TOP);
+        data.tempCorrection.set(data.inAWay.getX() - data.xCorrection, data.inAWay.getYEnd() + data.yCorrection);
+        addPointIfClearPath(data, data.tempCorrection, LEFT_BOTTOM);
+        data.tempCorrection.set(data.inAWay.getXEnd() + data.xCorrection, data.inAWay.getYEnd() + data.yCorrection);
+        addPointIfClearPath(data, data.tempCorrection, RIGHT_BOTTOM);
+        data.tempCorrection.set(data.inAWay.getXEnd() + data.xCorrection, data.inAWay.getY() - data.yCorrection);
+        addPointIfClearPath(data, data.tempCorrection, RIGHT_TOP);
+        setCorrectionIfFits(data);
+    }
+
     private static void addPointIfClearPath(PathData data, Point correction, int corner) {
         if (!correction.equals(data.last1CorrectionPoint) || !data.last1CorrectionPoint.equals(data.last2CorrectionPoint)) {
-            PathStrategyCore.setPolygonForTesting(data, data.finalDestination);
-            if (PathStrategyCore.anyFigureInAWay(data.poly, data.close) == null) {
-                data.correctionPoints.add(new PointedValue(correction.getX(), correction.getY(), corner));
+            PathStrategyCore.setPolygonForTesting(data, correction);
+            if (data.destination.equals(data.finalDestination) || PathStrategyCore.anyFigureInAWay(data.poly, data.close) == null || corner == data.lastCorner) {
+                data.correctionPoints.add(correction.getX(), correction.getY(), corner);
             }
         }
     }
@@ -251,23 +260,33 @@ public class PathStrategyCore {
     private static void setCorrectionIfFits(PathData data) {
         data.min = Integer.MAX_VALUE;
         data.closest = null;
-        data.correctionPoints.stream().forEach((point) -> {
-            data.temp = Methods.pointDistance(point.getX(), point.getY(), data.destination.getX(), data.destination.getY());
-            if (data.temp < data.min) {
-                data.min = data.temp;
-                data.closest = point;
+        for (int i = 0; i < data.correctionPoints.size(); i++) {
+            PointedValue point = data.correctionPoints.get(i);
+            PathStrategyCore.setPolygonForTesting(data, data.destination);
+            if (data.correctionPoints.size() == 1 || point.getValue() != data.lastCorner) {
+                data.temp = Methods.pointDistance(point.getX(), point.getY(), data.destination.getX(), data.destination.getY());
+                if (data.temp < data.min) {
+                    data.min = data.temp;
+                    data.closest = point;
+                }
             }
-        });
+        }
         if (data.closest != null) {
             setCorrection(data);
         }
     }
 
     private static void setCorrection(PathData data) {
-        data.passing = true;
-        data.passed = false;
+        data.flags.set(PASSING);
+        data.flags.clear(PASSED);
         data.last2CorrectionPoint.set(data.last1CorrectionPoint.getX(), data.last1CorrectionPoint.getY());
         data.last1CorrectionPoint.set(data.closest.getX(), data.closest.getY());
+        data.lastCorner = data.closest.getValue();
+        adjustClosest(data);
+        data.correction.set(data.closest.getX(), data.closest.getY());
+    }
+
+    private static void adjustClosest(PathData data) {
         switch (data.closest.getValue()) {
             case LEFT_TOP:
                 data.xPass = 1;
@@ -290,7 +309,6 @@ public class PathStrategyCore {
                 data.closest.set(data.closest.getX() - 1, data.closest.getY() + 1);
                 break;
         }
-        data.correction.set(data.closest.getX(), data.closest.getY());
     }
 
     private static boolean isNeedToPass(PathData data) {
@@ -322,26 +340,27 @@ public class PathStrategyCore {
     }
 
     public static void manageBlockedAndAdjustSpeed(PathData data, double maxSpeed) {
-        if (data.blocked) {
+        if (data.flags.get(BLOCKED)) {
             data.xSpeed = data.pastXSpeed;
             data.ySpeed = data.pastYSpeed;
             data.alternateCount++;
-            int value = Methods.roundDouble((data.pastYSpeed > data.pastXSpeed ? data.height * 2 : data.width * 2) / maxSpeed);
-            if (data.alternateCount > value) {
+            if (data.alternateCount > Methods.roundDouble((data.pastYSpeed > data.pastXSpeed ? data.height * 2 : data.width * 2) / maxSpeed)) {
                 data.alternateCount = 0;
-                data.blocked = false;
+                data.flags.clear(BLOCKED);
             }
         } else {
-            if (data.xSpeed * data.pastXSpeed > 0 && data.x == data.pastPosition.getX()) {
-                data.xSpeed = 0;
-                data.ySpeed = (Math.abs(data.ySpeed) > 0) ? Math.signum(data.ySpeed) * maxSpeed : (data.choice ? maxSpeed : -maxSpeed);
-                data.blocked = true;
-                data.choice = FastMath.random() > 0.5;
-            } else if (data.ySpeed * data.pastYSpeed > 0 && data.y == data.pastPosition.getY()) {
-                data.ySpeed = 0;
-                data.xSpeed = (Math.abs(data.xSpeed) > 0) ? Math.signum(data.xSpeed) * maxSpeed : (data.choice ? maxSpeed : -maxSpeed);
-                data.blocked = true;
-                data.choice = FastMath.random() > 0.5;
+            if (data.inAWay != null && (data.inAWay.isMobile())) {
+                if (data.xSpeed * data.pastXSpeed > 0 && data.x == data.pastPosition.getX()) {
+                    data.xSpeed = 0;
+                    data.ySpeed = (Math.abs(data.ySpeed) > 0) ? Math.signum(data.ySpeed) * maxSpeed : (data.flags.get(CHOICE) ? maxSpeed : -maxSpeed);
+                    data.flags.set(BLOCKED);
+                    data.flags.set(CHOICE, FastMath.random() > 0.5);
+                } else if (data.ySpeed * data.pastYSpeed > 0 && data.y == data.pastPosition.getY()) {
+                    data.ySpeed = 0;
+                    data.xSpeed = (Math.abs(data.xSpeed) > 0) ? Math.signum(data.xSpeed) * maxSpeed : (data.flags.get(CHOICE) ? maxSpeed : -maxSpeed);
+                    data.flags.set(BLOCKED);
+                    data.flags.set(CHOICE, FastMath.random() > 0.5);
+                }
             }
             adjustSpeed(data, maxSpeed);
         }
@@ -368,10 +387,10 @@ public class PathStrategyCore {
         }
     }
 
-    public static void setPolygonForTesting(PathData data, Point destination) {
-        Methods.getCastingPoints((2 * data.x - destination.getX()), (2 * data.y - destination.getY()), data.xS, data.xE, data.yS, data.yE, data.castingPoints);
-        setDestinationCorners(destination, data);
-        Methods.getCastingPoints((2 * destination.getX() - data.x), (2 * destination.getY() - data.y), data.xDS, data.xDE, data.yDS, data.yDE, data.castingDestination);
+    public static void setPolygonForTesting(PathData data, Point correction) {
+        Methods.getCastingPoints((2 * data.x - correction.getX()), (2 * data.y - correction.getY()), data.xS, data.xE, data.yS, data.yE, data.castingPoints);
+        setDestinationCorners(correction, data);
+        Methods.getCastingPoints((2 * correction.getX() - data.x), (2 * correction.getY() - data.y), data.xDS, data.xDE, data.yDS, data.yDE, data.castingDestination);
         data.poly.reset();
         data.poly.addPoint(data.castingPoints[0].getX(), data.castingPoints[0].getY());
         data.poly.addPoint(data.castingPoints[1].getX(), data.castingPoints[1].getY());

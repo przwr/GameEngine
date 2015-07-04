@@ -92,6 +92,9 @@ public class MyPlace extends Place {
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
         }
+        tempMaps.stream().forEach((map) -> {
+            map.updateAreasToUpdate();
+        });
     }
 
     private void updatePlayersOffline() {

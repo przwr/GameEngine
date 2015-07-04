@@ -268,6 +268,7 @@ public abstract class Entity extends GameObject {
         } else {
             ySpeed = (ySpeed + ySpeedDelta) / 2;
         }
+        setAndLimitSpeed(xSpeed, ySpeed);
     }
 
     private void setAndLimitSpeed(double xSpeed, double ySpeed) {
@@ -327,6 +328,10 @@ public abstract class Entity extends GameObject {
         return direction;
     }
 
+    public PathData getPathData() {
+        return pathData;
+    }
+
     public double getSpeed() {
         return Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
     }
@@ -374,4 +379,5 @@ public abstract class Entity extends GameObject {
     public void setScope(int scope) {
         pathData.setScope(scope);
     }
+
 }

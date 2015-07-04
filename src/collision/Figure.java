@@ -5,6 +5,7 @@
  */
 package collision;
 
+import engine.PointContener;
 import engine.BlueArray;
 import engine.Methods;
 import engine.Point;
@@ -15,6 +16,7 @@ import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import engine.Shadow;
+import game.place.Area;
 import java.util.List;
 
 /**
@@ -49,20 +51,23 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public boolean isCollideSolid(int x, int y, Map map) {
-        if (map.getBlocks(getOwner().getArea()).stream().anyMatch((object) -> (object.isSolid() && object.isCollide(x, y, this)))) {
-            return true;
-        }
-        if (map.getSolidMobs(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
-            return true;
-        }
-        if (map.getSolidObjects(getOwner().getArea()).stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
-            return true;
-        }
-        tiles = map.getNearNullTiles(this);
-        for (int i = 0; i < tiles.size(); i++) {
-            setTile(tiles.get(i));
-            if (isCollideSingle(x, y, tempTile)) {
+        if (getOwner().getArea() != -1) {
+            Area area = map.getArea(getOwner().getArea());
+            if (area.getNearBlocks().stream().anyMatch((block) -> (block.isSolid() && block.isCollide(x, y, this)))) {
                 return true;
+            }
+            if (area.getNearSolidMobs().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
+                return true;
+            }
+            if (area.getNearSolidObjects().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
+                return true;
+            }
+            tiles = map.getNearNullTiles(this);
+            for (int i = 0; i < tiles.size(); i++) {
+                setTile(tiles.get(i));
+                if (isCollideSingle(x, y, tempTile)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -75,50 +80,53 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public Figure whatCollideSolid(int x, int y, Map map) {
-        for (Block object : map.getBlocks(x, y)) {
-            if (object.isSolid() && object.isCollide(x, y, this)) {
-                return object.getCollision();
+        if (getOwner().getArea() != -1) {
+            Area area = map.getArea(getOwner().getArea());
+            for (Block block : area.getNearBlocks()) {
+                if (block.isSolid() && block.isCollide(x, y, this)) {
+                    return block.getCollision();
+                }
             }
-        }
-        for (GameObject object : map.getSolidMobs(x, y)) {
-            if (checkCollison(x, y, object)) {
-                return object.getCollision();
+            for (GameObject object : area.getNearSolidMobs()) {
+                if (checkCollison(x, y, object)) {
+                    return object.getCollision();
+                }
             }
-        }
-        for (GameObject object : map.getSolidObjects(x, y)) {
-            if (checkCollison(x, y, object)) {
-                return object.getCollision();
+            for (GameObject object : area.getNearSolidObjects()) {
+                if (checkCollison(x, y, object)) {
+                    return object.getCollision();
+                }
             }
-        }
-        tiles = map.getNearNullTiles(this);
-        for (int i = 0; i < tiles.size(); i++) {
-            setTile(tiles.get(i));
-            if (isCollideSingle(x, y, tempTile)) {
-                return tempTile;
+            tiles = map.getNearNullTiles(this);
+            for (int i = 0; i < tiles.size(); i++) {
+                setTile(tiles.get(i));
+                if (isCollideSingle(x, y, tempTile)) {
+                    return tempTile;
+                }
             }
         }
         return null;
     }
 
-    public static List<Figure> whatClose(GameObject owner, int x, int y, int range, int xDest, int yDest, Map map, List<Figure> close) {
+    public static void updateWhatClose(GameObject owner, int x, int y, int range, int xDest, int yDest, Map map, List<Figure> close) {
         close.clear();
         setScope(x, y, range);
-        map.getBlocks(x, y).stream().filter((object) -> (object.isSolid() && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
+        Area area = map.getArea(x, y);
+        area.getNearBlocks().stream().filter((block) -> (block.isSolid() && scope.isCollideSingle(x, y, block.getCollision()))).forEach((block) -> {
+            Figure figure = block.getCollision();
+            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
+            close.add(figure);
+        });
+        area.getNearSolidMobs().stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
             Figure figure = object.getCollision();
             figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
             close.add(figure);
         });
-        map.getSolidMobs(x, y).stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
+        area.getNearSolidObjects().stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
             Figure figure = object.getCollision();
             figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
             close.add(figure);
         });
-        map.getSolidObjects(x, y).stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
-            Figure figure = object.getCollision();
-            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
-            close.add(figure);
-        });
-        return close;
     }
 
     public static void setScope(int x, int y, int range) {

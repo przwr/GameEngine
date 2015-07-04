@@ -492,7 +492,9 @@ public class Methods {
 
     public static void logAndPrint(String string) {
         System.err.print(string);
-        errorToFile(string);
+        if (Main.LOG) {
+            errorToFile(string);
+        }
     }
 
     public static void logToFile(String string) {
