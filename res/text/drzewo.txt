@@ -1,0 +1,20 @@
+﻿
+sp:1
+au:Melodia
+au:Aria
+au:???
+po:melodiaPortret:1
+po:ariaPortret:0
+
+$AU0$$PO0$Jak się nazywasz?$QUTak:1:Nie:2:...:3$
+#B1
+$AU1$$PO1$tak$JU4$
+##$JU2$
+#B2
+$AU1$$PO1$nie$JU4$
+#B3
+$AU1$$PO1$$EX3$$VE0.1$.....$VN $FL
+$AU0$$PO0$$EX0$yyyy....
+Nie wiesz jak masz na imię?$QUWiem!:4:Nie wiem...:4$
+#B4
+$AU0$$PO0$.....
