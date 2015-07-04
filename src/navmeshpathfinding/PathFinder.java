@@ -6,7 +6,7 @@
 package navmeshpathfinding;
 
 import collision.Figure;
-import collision.PointContener;
+import engine.PointContener;
 import engine.Methods;
 import engine.Point;
 import game.place.Place;
@@ -27,7 +27,7 @@ public class PathFinder {
     private static final Set<Node> closedList = new HashSet<>();
     private static final PriorityQueue<Node> openList = new PriorityQueue<>(24, (Node n1, Node n2) -> n1.getFCost() - n2.getFCost());
     private static final Point[] castingPoints = {new Point(), new Point()}, castingDestination = {new Point(), new Point()};
-    private static final PointContener shifted = new PointContener(16);
+    private static PointContener shifted;
     private static final Polygon poly = new Polygon();
     private static final Point temp1 = new Point(), temp2 = new Point();
 
@@ -234,6 +234,7 @@ public class PathFinder {
     }
 
     private static PointContener printSolution(Node destination, NavigationMesh mesh) {
+        shifted = new PointContener(16);
         shifted.clear();
         Point point;
         Node currentNode = destination;

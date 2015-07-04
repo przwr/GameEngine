@@ -6,15 +6,17 @@
 package navmeshpathfinding;
 
 import collision.Figure;
-import collision.PointContener;
+import engine.PointContener;
 import collision.Rectangle;
 import engine.BlueArray;
 import engine.Delay;
 import engine.Methods;
 import engine.Point;
 import engine.PointedValue;
+import engine.PointedValueContener;
 import game.gameobject.Entity;
 import java.awt.Polygon;
+import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -23,20 +25,22 @@ import java.util.List;
  */
 public class PathData {
 
-    protected final int width, height, widthHalf, heightHalf;
+    protected final static int PASSING = 0, PASSED = 1, CHOICE = 2, BLOCKED = 3, STUCK = 4, OBSTACLE_BEETWEEN = 5, PATH_REQUESTED = 6, PATH_RETURNED = 7;
+    protected final int width, height, widthHalf, heightHalf, xCorrection, yCorrection;
     protected final Point finalDestination = new Point(), pastPosition = new Point(), preyPoint = new Point(), correction = new Point(), last1CorrectionPoint = new Point(), last2CorrectionPoint = new Point(), tempCorrection = new Point();
     protected final Rectangle testing;
 
-    protected boolean passing, passed, choice, blocked, diffrentArea, stuck, obstacleBeetween, pathRequested;
+    protected BitSet flags = new BitSet();
     protected int x, y, xS, xE, yS, yE, xRef, yRef, stuckCount, passedCount, alternateCount, min, temp;
-    protected int xDS, xDE, yDS, yDE, xPass, yPass, xInAWay, yInAWay, currentPoint, xDistance, yDistance, xCorrection, yCorrection, scope;
+    protected int xDS, xDE, yDS, yDE, xPass, yPass, xInAWay, yInAWay, currentPoint, xDistance, yDistance, scope, lastCorner = -1;
     protected double xSpeed, ySpeed, pastXSpeed, pastYSpeed;
     protected Point destination, desired;
     protected PointedValue closest;
     protected Point[] castingPoints = {new Point(), new Point()};
     protected Point[] castingDestination = {new Point(), new Point()};
     protected PointContener path = new PointContener(16);
-    protected List<PointedValue> correctionPoints = new BlueArray<>();
+    protected PointContener newPath;
+    protected PointedValueContener correctionPoints = new PointedValueContener(4);
     protected List<Figure> close = new BlueArray<>();
     protected Figure inAWay, lastInAWay, collided;
     protected Polygon poly = new Polygon();
@@ -48,6 +52,8 @@ public class PathData {
         widthHalf = width / 2;
         height = owner.getCollision().getHeight();
         heightHalf = height / 2;
+        xCorrection = widthHalf + 1;
+        yCorrection = heightHalf + 1;
         testing = Rectangle.createTileRectangle(width, height);
         delay.start();
     }
@@ -64,29 +70,29 @@ public class PathData {
             xRef = owner.getMap().areas[owner.getArea()].getXInPixels();
             yRef = owner.getMap().areas[owner.getArea()].getYInPixels();
         }
-        obstacleBeetween = isObstacleBeetween(owner);
+        Figure.updateWhatClose(owner, x, y, ((int) (owner.getRange()) >> 2), x, y, owner.getMap(), close);
+        close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
+        flags.set(OBSTACLE_BEETWEEN, isObstacleBeetween());
         updateStuck();
     }
 
     private void updateStuck() {
         if (x == pastPosition.getX() && y == pastPosition.getY()) {
             stuckCount++;
-            if (stuckCount >= 6) {
-                stuck = true;
+            if (stuckCount >= 2) {
+                flags.set(STUCK);
                 return;
             }
         } else {
             stuckCount = 0;
         }
-        stuck = false;
+        flags.clear(STUCK);
     }
 
-    private boolean isObstacleBeetween(Entity owner) {
-        close = Figure.whatClose(owner, x, y, ((int) (owner.getRange()) >> 2), x, y, owner.getMap(), close);
+    private boolean isObstacleBeetween() {
         if (close.isEmpty()) {
             return false;
         }
-        close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
         PathStrategyCore.setPolygonForTesting(this, finalDestination);
         return PathStrategyCore.anyFigureInAWay(poly, close) != null;
     }

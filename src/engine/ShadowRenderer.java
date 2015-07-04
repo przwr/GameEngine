@@ -73,7 +73,7 @@ public class ShadowRenderer {
     }
 
     private static void searchBlocks(Light light, Map map) {
-        for (Block block : map.getBlocks(light.getX(), light.getY())) {
+        for (Block block : map.getArea(light.getX(), light.getY()).getNearBlocks()) {
             tempShade = block.getCollision();
             if (tempShade != null && tempShade.getType() != TRANSPARENT) {
                 if (tempShade.getY() - FastMath.abs(tempShade.getShadowHeight()) - Place.tileSize <= light.getY() + lightHeightHalf && tempShade.getYEnd() >= light.getY() - lightHeightHalf
@@ -105,7 +105,7 @@ public class ShadowRenderer {
 //        }
 //    }
     private static void searchObjects(Light light, Map map) {
-        for (GameObject object : map.getDepthObjects(light.getX(), light.getY())) {
+        for (GameObject object : map.getArea(light.getX(), light.getY()).getNearDepthObjects()) {
             tempShade = object.getCollision();
             if (tempShade != null && tempShade.isLittable()
                     && object.getY() - tempShade.getActualHeight() + tempShade.getHeight() / 2 <= light.getY() + lightHeightHalf && object.getY() + tempShade.getActualHeight() - tempShade.getHeight() / 2 >= light.getY() - lightHeightHalf

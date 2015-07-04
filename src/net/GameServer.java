@@ -175,7 +175,7 @@ public class GameServer {
                 if (temp != null) {
                     tempInGame = temp.inGame();
                     if (tempInGame != null) {
-                        for (Mob mob : game.game.getPlace().getMapById(temp.getMapId()).getSolidMobs(tempInGame.getX(), tempInGame.getY())) {
+                        for (Mob mob : game.game.getPlace().getMapById(temp.getMapId()).getArea(tempInGame.getX(), tempInGame.getY()).getNearSolidMobs()) {
                             mobX = mob.getX();
                             mobY = mob.getY();
                             temp.getPU().MobUpdate(mob.mobID, mobX, mobY);

@@ -13,6 +13,9 @@ public class PointedValue {
 
     private int x, y, value;
 
+    public PointedValue() {
+    }
+
     public PointedValue(int x, int y, int value) {
         this.x = x;
         this.y = y;
@@ -38,7 +41,7 @@ public class PointedValue {
     public void setY(int y) {
         this.y = y;
     }
-    
+
     public void setValue(int value) {
         this.value = value;
     }
@@ -47,7 +50,7 @@ public class PointedValue {
         this.x = x;
         this.y = y;
     }
-    
+
     public void set(int x, int y, int value) {
         this.x = x;
         this.y = y;

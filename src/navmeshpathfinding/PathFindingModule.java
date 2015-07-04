@@ -1,16 +1,15 @@
 package navmeshpathfinding;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import engine.Methods;
-import game.gameobject.GameObject;
+import game.gameobject.Entity;
+import static navmeshpathfinding.PathData.PATH_REQUESTED;
 
 public class PathFindingModule implements Runnable {
 
     public static final PathStrategy GET_CLOSE = new GetClosePathStrategy();
     public static boolean run;
-    private List<GameObject> requestedPaths = new ArrayList<>();
+    private static PathRequestContener requestedPaths = new PathRequestContener(16);
+    protected static int actualPath = 0;
 
     @Override
     public void run() {
@@ -25,15 +24,32 @@ public class PathFindingModule implements Runnable {
     }
 
     private void findAndReturnRequestedPaths() {
-
+        PathRequest request = requestedPaths.get(actualPath);
+        if (request.requester != null) {
+            returnPath(request);
+            requestedPaths.remove(actualPath);
+        }
+        incrementPath();
     }
 
-    private void returnPath() {
-
+    private void incrementPath() {
+        actualPath++;
+        if (actualPath > requestedPaths.size()) {
+            actualPath = 0;
+        }
     }
 
-    public void requestPath(GameObject reqester) {
-        requestedPaths.add(reqester);
+    private synchronized static void returnPath(PathRequest request) {
+        PathStrategyCore.setPath(request.requester, request.requester.getPathData(), request.xDest, request.yDest);
+        request.requester.getPathData().flags.clear(PATH_REQUESTED);
     }
 
+    public synchronized static void requestPath(Entity requester, int xDest, int yDest) {
+        requester.getPathData().flags.set(PATH_REQUESTED);
+        requestedPaths.add(requester, xDest, yDest);
+    }
+
+    public static void stop() {
+        run = false;
+    }
 }

@@ -18,6 +18,7 @@ import game.place.cameras.PlayersCamera;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
 import java.io.File;
+import navmeshpathfinding.PathFindingModule;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -244,6 +245,11 @@ public class MyGame extends Game {
             Map map = place.maps.get(0);
             players[p].changeMap(map);
         }
+
+        PathFindingModule path = new PathFindingModule();
+        Thread thread = new Thread(path);
+        thread.start();
+       
         started = running = true;
     }
 
@@ -342,7 +348,7 @@ public class MyGame extends Game {
         place = new MyPlace(this, 64);
         place.players = new GameObject[4];
         place.playersCount = 1;
-        players[0].initialize( 56, 104, place);
+        players[0].initialize(56, 104, place);
         players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         System.arraycopy(players, 0, place.players, 0, 1);
         place.makeShadows();

@@ -7,6 +7,7 @@ package navmeshpathfinding;
 
 import engine.Methods;
 import game.gameobject.Entity;
+import static navmeshpathfinding.PathData.OBSTACLE_BEETWEEN;
 
 /**
  *
@@ -17,7 +18,7 @@ public class GetClosePathStrategy implements PathStrategy {
     @Override
     public void findPath(Entity requester, PathData data, int xDest, int yDest) {
         data.update(requester, xDest, yDest);
-        if (!data.obstacleBeetween && Methods.pointDistance(data.x, data.y, xDest, yDest) < data.scope) {
+        if (!data.flags.get(OBSTACLE_BEETWEEN) && Methods.pointDistance(data.x, data.y, xDest, yDest) < data.scope) {
             data.xSpeed = data.ySpeed = 0;
             requester.brake(2);
         } else {

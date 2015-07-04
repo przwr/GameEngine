@@ -8,9 +8,9 @@ package game.place;
 import engine.Light;
 import collision.Block;
 import collision.Figure;
-import collision.PointContener;
+import engine.BlueArray;
+import engine.PointContener;
 import engine.Methods;
-import engine.Point;
 import navmeshpathfinding.NavigationMeshGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
@@ -36,18 +36,26 @@ public class Area {
     private final Map map;
     private final int xArea, yArea, xInPixels, yInPixels;
     private final Tile[] tiles;
-    private final ArrayList<Block> blocks = new ArrayList<>();
 
+    private final ArrayList<Block> blocks = new ArrayList<>();
     private final ArrayList<Mob> solidMobs = new ArrayList<>();
     private final ArrayList<Mob> flatMobs = new ArrayList<>();
-    protected final ArrayList<GameObject> solidObjects = new ArrayList<>();
-    protected final ArrayList<GameObject> flatObjects = new ArrayList<>();
-    protected final ArrayList<Light> emitters = new ArrayList<>();
-    protected final ArrayList<WarpPoint> warps = new ArrayList<>();
+    private final ArrayList<GameObject> solidObjects = new ArrayList<>();
+    private final ArrayList<GameObject> flatObjects = new ArrayList<>();
+    private final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
+    private final ArrayList<GameObject> topObjects = new ArrayList<>();
+    private final ArrayList<GameObject> depthObjects = new ArrayList<>();
+    private final ArrayList<WarpPoint> warps = new ArrayList<>();
 
-    protected final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
-    protected final ArrayList<GameObject> topObjects = new ArrayList<>();
-    protected final ArrayList<GameObject> depthObjects = new ArrayList<>();
+    private final ArrayList<Light> lights = new ArrayList<>();
+
+    private final BlueArray<Block> nearBlocks = new BlueArray<>();
+    private final BlueArray<Mob> nearSolidMobs = new BlueArray<>();
+    private final BlueArray<Mob> nearFlatMobs = new BlueArray<>();
+    private final BlueArray<GameObject> nearSolidObjects = new BlueArray<>();
+    private final BlueArray<GameObject> nearFlatObjects = new BlueArray<>();
+    private final BlueArray<WarpPoint> nearWarps = new BlueArray<>();
+    private final BlueArray<GameObject> nearDepthObjects = new BlueArray<>();
 
     protected NavigationMesh navigationMesh;
 
@@ -55,16 +63,25 @@ public class Area {
         this.place = place;
         this.map = map;
         tiles = new Tile[X_IN_TILES * Y_IN_TILES];
-        
+
         this.xArea = xArea;
         this.yArea = yArea;
         this.xInPixels = xArea * xAreaInPixels;
         this.yInPixels = yArea * yAreaInPixels;
     }
 
-
     public void generateNavigationMesh(Set<Block> blocksForMesh) {
         navigationMesh = NavigationMeshGenerator.generateNavigationMesh(tiles, blocksForMesh, xArea, yArea);
+    }
+
+    public void updateContainers(int area) {
+        map.updateNearBlocks(area, nearBlocks);
+        map.updateNearSolidMobs(area, nearSolidMobs);
+        map.updateNearFlatMobs(area, nearFlatMobs);
+        map.updateNearSolidObjects(area, nearSolidObjects);
+        map.updateNearFlatObjects(area, nearFlatObjects);
+        map.updateNearWarps(area, nearWarps);
+        map.updateNearDepthObjects(area, nearDepthObjects);
     }
 
     public PointContener findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
@@ -138,7 +155,7 @@ public class Area {
     private void addNotPlayerObject(GameObject object) {
         if (object.isEmitter()) {
             object.getLights().stream().forEach((light) -> {
-                emitters.add(light);
+                lights.add(light);
             });
         }
         if (object instanceof WarpPoint) {
@@ -172,7 +189,7 @@ public class Area {
             deleteNotPlayerObject(object);
         } else if (object.isEmitter()) {
             object.getLights().stream().forEach((light) -> {
-                emitters.remove(light);
+                lights.remove(light);
             });
         }
         if (object.isOnTop()) {
@@ -185,7 +202,7 @@ public class Area {
     private void deleteNotPlayerObject(GameObject object) {
         if (object.isEmitter()) {
             object.getLights().stream().forEach((light) -> {
-                emitters.remove(light);
+                lights.remove(light);
             });
         }
         if (object instanceof WarpPoint) {
@@ -227,11 +244,18 @@ public class Area {
         flatMobs.clear();
         solidObjects.clear();
         flatObjects.clear();
-        emitters.clear();
+        lights.clear();
         blocks.clear();
         depthObjects.clear();
         foregroundTiles.clear();
         topObjects.clear();
+        nearBlocks.clearReally();
+        nearSolidMobs.clearReally();
+        nearFlatMobs.clearReally();
+        nearSolidObjects.clearReally();
+        nearFlatObjects.clearReally();
+        nearWarps.clearReally();
+        nearDepthObjects.clearReally();
     }
 
     public Tile getTile(int x, int y) {
@@ -258,8 +282,8 @@ public class Area {
         return flatObjects;
     }
 
-    public List<Light> getEmitters() {
-        return emitters;
+    public List<Light> getLights() {
+        return lights;
     }
 
     public List<GameObject> getDepthObjects() {
@@ -308,5 +332,33 @@ public class Area {
 
     public void setForegroundTiles(int i, ForegroundTile foregroundTile) {
         foregroundTiles.set(i, foregroundTile);
+    }
+
+    public List<Block> getNearBlocks() {
+        return nearBlocks;
+    }
+
+    public List<Mob> getNearSolidMobs() {
+        return nearSolidMobs;
+    }
+
+    public List<Mob> getNearFlatMobs() {
+        return nearFlatMobs;
+    }
+
+    public List<GameObject> getNearSolidObjects() {
+        return nearSolidObjects;
+    }
+
+    public List<GameObject> getNearFlatObjects() {
+        return nearFlatObjects;
+    }
+
+    public List<GameObject> getNearDepthObjects() {
+        return nearDepthObjects;
+    }
+
+    public BlueArray<WarpPoint> getNearWarps() {
+        return nearWarps;
     }
 }
