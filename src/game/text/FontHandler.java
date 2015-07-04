@@ -49,7 +49,7 @@ public class FontHandler {
 
     public FontHandler(String name, int type, int size) {
         font = new Font(name, type, size);
-        trueFont = new TrueTypeFont(new Font(name, type, size), true, chars);
+        trueFont = new TrueTypeFont(font, true, chars);
     }
 
     private FontHandler(TrueTypeFont trueFont, Font font) {

@@ -9,20 +9,20 @@ po:melodiaPortret:1
 $AU0$$PO0$$EX0$$MEWitaj!
 Jak się nazywasz?
 $NOJa jestem Aria ($ITname not final$NO)$FL
-$AU2$$PO1$$VE0.05$hmm... $VENja?$FL
+$AU2$$PO1$$VE0.05$hmm... $VNja?$FL
 Jestem... 
-$VE0.1$yyy....$VEN
+$VE0.1$yyy....$VN
 Melodia$AU1$ ($ITname probably final$NO)...
 $AU0$$PO0$$EX3$$VE0.05$Melodia?
-$EX2$$VENŁadnie!
+$EX2$$VNŁadnie!
 Co tutaj robisz, Melodio?
 $AU1$$PO1$$EX0$Co $BOja$PL tu robię?
-$VE0.05$......$VEN
+$VE0.05$......$VN
 To trudne pytanie...
 Wygląda na to, że Wojtek musiał jakoś przetestować 
 ten $ITdialog$PL.... 
 a ja byłam jedynym modelem 3D pod ręką...
 
 
-$VE0.05$...$VENehh...
+$VE0.05$...$VNehh...
 $AU0$$PO0$$EX1$....!
