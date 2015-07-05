@@ -5,7 +5,14 @@
  */
 package collision;
 
-import static collision.RoundRectangle.*;
+import static collision.RoundRectangle.LEFT;
+import static collision.RoundRectangle.LEFT_BOTTOM;
+import static collision.RoundRectangle.LEFT_BOTTOM_TO_RIGHT_TOP;
+import static collision.RoundRectangle.LEFT_TOP;
+import static collision.RoundRectangle.LEFT_TOP_TO_RIGHT_BOTTOM;
+import static collision.RoundRectangle.RIGHT;
+import static collision.RoundRectangle.RIGHT_BOTTOM;
+import static collision.RoundRectangle.RIGHT_TOP;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;

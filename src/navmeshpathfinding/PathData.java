@@ -98,11 +98,13 @@ public class PathData {
     }
 
     public void calculateSpeed(double maxSpeed) {
-        double angle = Methods.pointAngleMax360(x, y, destination.getX(), destination.getY());
-        xDistance = Math.abs(x - destination.getX());
-        yDistance = Math.abs(y - destination.getY());
-        xSpeed = Methods.xRadius(angle, Math.min(maxSpeed, xDistance));
-        ySpeed = Methods.yRadius(angle, Math.min(maxSpeed, yDistance));
+        if (!flags.get(PASSED)) {
+            double angle = Methods.pointAngleMax360(x, y, destination.getX(), destination.getY());
+            xDistance = Math.abs(x - destination.getX());
+            yDistance = Math.abs(y - destination.getY());
+            xSpeed = Methods.xRadius(angle, Math.min(maxSpeed, xDistance));
+            ySpeed = Methods.yRadius(angle, Math.min(maxSpeed, yDistance));
+        }
     }
 
     public void rememberPast() {

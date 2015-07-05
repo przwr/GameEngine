@@ -187,7 +187,9 @@ public class MyPlayer extends Player {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
             Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
-                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
+                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
+                    place.standardFont,
+                    map.getLightColor());
             glPopMatrix();
         }
     }
@@ -230,10 +232,12 @@ public class MyPlayer extends Player {
         xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
         yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
         moveIfPossible(xTempSpeed, yTempSpeed);
-        for (WarpPoint warp : map.getArea(area).getNearWarps()) {
-            if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                warp.Warp(this);
-                break;
+        if (area != -1) {
+            for (WarpPoint warp : map.getArea(area).getNearWarps()) {
+                if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
+                    warp.Warp(this);
+                    break;
+                }
             }
         }
         brakeOthers();

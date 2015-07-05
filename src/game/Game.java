@@ -5,10 +5,10 @@
  */
 package game;
 
-import net.GameOnline;
 import game.gameobject.Player;
 import game.place.Menu;
 import game.place.Place;
+import net.GameOnline;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -26,6 +26,7 @@ public abstract class Game {
     protected final String title;
     protected Player menuPlayer;
     protected Menu menu;
+    protected Thread pathThread;
 
     public Game(String title) {
         this.title = title;

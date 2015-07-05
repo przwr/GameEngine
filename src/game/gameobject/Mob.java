@@ -50,7 +50,9 @@ public abstract class Mob extends Entity {
     public synchronized void chase(GameObject prey) {
         if (prey != null && pathStrategy != null) {
             pathStrategy.findPath(this, pathData, prey.getX(), prey.getY());
-            changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
+            xSpeed =pathData.getXSpeed();
+            ySpeed = pathData.getYSpeed();
+//            changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
         }
     }
 

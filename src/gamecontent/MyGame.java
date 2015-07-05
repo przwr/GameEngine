@@ -7,13 +7,13 @@ package gamecontent;
 
 import engine.Drawer;
 import engine.Methods;
-import game.Game;
+import engine.SplitScreen;
 import static engine.inout.IO.loadInputFromFile;
+import game.Game;
+import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
-import game.Settings;
 import game.place.Map;
-import engine.SplitScreen;
 import game.place.cameras.PlayersCamera;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
@@ -50,6 +50,7 @@ public class MyGame extends Game {
         menu.players = new GameObject[1];
         menu.players[0] = menuPlayer;
         menuPlayer.setMenu(menu);
+        pathThread = new Thread(new PathFindingModule());
         players[0].setMenu(menu);
         players[1].setMenu(menu);
         players[2].setMenu(menu);
@@ -244,12 +245,10 @@ public class MyGame extends Game {
         for (int p = 0; p < playersCount; p++) {
             Map map = place.maps.get(0);
             players[p].changeMap(map);
+            players[p].updateAreaPlacement();
         }
-
-        PathFindingModule path = new PathFindingModule();
-        Thread thread = new Thread(path);
-        thread.start();
-       
+        pathThread.start();
+        pathThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
     }
 
@@ -340,6 +339,7 @@ public class MyGame extends Game {
         place.generateAsGuest();
         Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
+        players[0].updateAreaPlacement();
         started = running = true;
     }
 
@@ -355,6 +355,9 @@ public class MyGame extends Game {
         place.generateAsHost();
         Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
+        players[0].updateAreaPlacement();
+        pathThread.start();
+        pathThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
     }
 
@@ -366,6 +369,7 @@ public class MyGame extends Game {
         for (Player player : players) {
             player.setNotInGame();
         }
+        PathFindingModule.stop();
         online.cleanUp();
         mode = 0;
     }
