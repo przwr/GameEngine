@@ -1,18 +1,24 @@
 ﻿
 sp:1
+co:000000
+co:FF0000
+co:FFFF00
+co:66FF33
+co:00FFFF
+co:0000FF
+co:FF00FF
 au:Melodia
 au:Aria
 au:???
 po:melodiaPortret:1
 po:ariaPortret:0
 
-$AU0$$PO0$Jak się nazywasz?$QUTak:1:Nie:2:...:3$
+$AU0$$PO0$Jak się nazywasz?$QUTĘCZOWKA!!:1:...:2$
 #B1
-$AU1$$PO1$tak$JU4$
-##$JU2$
+$AU1$$PO1$$EX2$JAK $CO1$POBIJESZ$CN TO IMIĘ?!!!1$FL
+$AU0$$PO0$$EX0$$VE0.1$.....$VN
+$CO1$b$CO2$l$CO3$a$CO4$r$CO5$g$CO6$h$CN
 #B2
-$AU1$$PO1$nie$JU4$
-#B3
 $AU1$$PO1$$EX3$$VE0.1$.....$VN $FL
 $AU0$$PO0$$EX0$yyyy....
 Nie wiesz jak masz na imię?$QUWiem!:4:Nie wiem...:4$
