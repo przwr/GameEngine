@@ -50,7 +50,7 @@ public class MyGame extends Game {
         menu.players = new GameObject[1];
         menu.players[0] = menuPlayer;
         menuPlayer.setMenu(menu);
-        pathThread = new Thread(new PathFindingModule());
+        pathFinding = new PathFindingModule();
         players[0].setMenu(menu);
         players[1].setMenu(menu);
         players[2].setMenu(menu);
@@ -247,6 +247,7 @@ public class MyGame extends Game {
             players[p].changeMap(map);
             players[p].updateAreaPlacement();
         }
+        pathThread = new Thread(pathFinding);
         pathThread.start();
         pathThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
@@ -356,6 +357,7 @@ public class MyGame extends Game {
         Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
         players[0].updateAreaPlacement();
+        pathThread = new Thread(pathFinding);
         pathThread.start();
         pathThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
@@ -370,6 +372,7 @@ public class MyGame extends Game {
             player.setNotInGame();
         }
         PathFindingModule.stop();
+        pathThread = null;
         online.cleanUp();
         mode = 0;
     }

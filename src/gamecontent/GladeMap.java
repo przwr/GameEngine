@@ -52,7 +52,7 @@ public class GladeMap extends Map {
 
     @Override
     public void populate() {
-        addObject(new Rabbit(256, 2048, 128, 28, 6, 1024, "very perverted rabbit", place, true, mobID++));
+        addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "very perverted rabbit", place, true, mobID++));
         addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
         addObject(new MyNPC(384, 990, place, mobID++));
         for (int i = 0; i < 200; i += 2) {
