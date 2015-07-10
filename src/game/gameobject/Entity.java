@@ -150,12 +150,6 @@ public abstract class Entity extends GameObject {
         collision.prepareSlideSpeed(xMagnitude, yMagnitude);
         moveIfPossible(xTempSpeed, yTempSpeed);
         collision.resetSlideSpeed();
-        /*if (collision.getXSlideSpeed() != 0 || collision.getYSlideSpeed() != 0) {
-            System.out.println(xMagnitude + " " + yMagnitude + " : "
-                    + collision.getXSlideSpeed() + " " + collision.getYSlideSpeed());
-        } else {
-            System.out.println("nic!!!");
-        }*/
     }
 
     public void moveIfPossible(int xMagnitude, int yMagnitude) {

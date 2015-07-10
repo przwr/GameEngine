@@ -7,6 +7,7 @@ package gamecontent;
 
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.Executive;
 import engine.Methods;
 import game.Settings;
 import game.gameobject.Mob;
@@ -24,6 +25,7 @@ import sprites.SpriteSheet;
 public class MyNPC extends Mob {
 
     private SpriteSheet spritesheet;
+    private boolean spinning;
 
     public MyNPC(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID);
@@ -37,11 +39,26 @@ public class MyNPC extends Mob {
     public void update() {
         if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
             MyPlayer mpPrey = (MyPlayer) getTarget();
-            direction = Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY());
+            direction = spinning ? direction + 1
+                    : Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY());
+            if (direction > 7) {
+                direction = 0;
+            }
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
             if (mpPrey.getController().isKeyClicked(MyController.JUMP) && d <= Place.tileSize * 1.5 && !mpPrey.getTextController().isStarted()) {
                 mpPrey.getTextController().lockEntity(mpPrey);
                 mpPrey.getTextController().startFromFile("drzewo");
+                Executive e = new Executive() {
+
+                    @Override
+                    public void execute() {
+                        spinning = !spinning;
+                    }
+                };
+                mpPrey.getTextController().addExternalEvent(e, "0", false);
+                mpPrey.getTextController().addExternalEvent(e, "1", false);
+                mpPrey.getTextController().addExternalEvent(e, "2", false);
+                mpPrey.getTextController().addExternalEvent(e, "3", false);
             }
             if (d > range * 1.5 || getTarget().getMap() != map) {
                 target = null;

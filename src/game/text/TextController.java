@@ -6,6 +6,7 @@
 package game.text;
 
 import engine.Drawer;
+import engine.Executive;
 import engine.Main;
 import game.Settings;
 import game.gameobject.Entity;
@@ -362,7 +363,18 @@ public class TextController extends GUIObject {
         }
         return 0;
     }
-    
+
+    public void addExternalEvent(Executive event, String branch, boolean onStart) {
+        if (started) {
+            Branch b = branches.get(jumpLocation(branch));
+            if (onStart) {
+                b.startEvent = event;
+            } else {
+                b.endEvent = event;
+            }
+        }
+    }
+
     private TextEvent generateEvent(int type, String text, int start, int xStart, int lineNum, Color color, FontHandler font) {
         TextEvent ret = null;
         switch (type) {
@@ -407,6 +419,7 @@ public class TextController extends GUIObject {
                     portraits.get(portrait).image.renderPiece(expression);
                 }
             } else {
+                events.startingEvent();
                 firstStep = false;
             }
 
@@ -441,6 +454,7 @@ public class TextController extends GUIObject {
                     } else if (jumpTo >= 0) {
                         flushReady = true;
                     } else if (controler.isKeyClicked(MyController.JUMP)) {
+                        events.endingEvent();
                         stopTextViewing();
                     }
                 } else {
@@ -472,7 +486,9 @@ public class TextController extends GUIObject {
                 flushing = false;
                 change = 1;
                 if (jumpTo >= 0) {
+                    events.endingEvent();
                     events = branches.get(jumpTo);
+                    events.startingEvent();
                     index = 0;
                     deltaLines = 0;
                     jumpTo = -1;
@@ -600,11 +616,11 @@ public class TextController extends GUIObject {
     public boolean isStarted() {
         return started;
     }
-    
+
     public void setRows(int rows) {
         this.rows = rows;
     }
-    
+
     public int getRows() {
         return rows;
     }
@@ -688,9 +704,22 @@ public class TextController extends GUIObject {
     private class Branch extends ArrayList<TextRow> {
 
         int length;
+        Executive startEvent, endEvent;
 
         public void setLength(int l) {
             length = l;
+        }
+
+        public void startingEvent() {
+            if (startEvent != null) {
+                startEvent.execute();
+            }
+        }
+
+        public void endingEvent() {
+            if (endEvent != null) {
+                endEvent.execute();
+            }
         }
     }
 
