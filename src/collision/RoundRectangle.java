@@ -191,11 +191,13 @@ public class RoundRectangle extends Figure {
         }
         return false;
     }
-
+    
     private boolean rectangleCollsion(int x, int y, Figure figure) {
         Rectangle rectangle = (Rectangle) figure;
-        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
-                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
+        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) 
+                || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
+                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) 
+                || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
     }
 
     private boolean roundRectangleCollsion(int x, int y, Figure figure) {       //TO DO

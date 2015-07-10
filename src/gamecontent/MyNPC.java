@@ -7,10 +7,8 @@ package gamecontent;
 
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.Drawer;
 import engine.Methods;
 import game.Settings;
-import game.gameobject.Entity;
 import game.gameobject.Mob;
 import game.place.Place;
 import static org.lwjgl.opengl.GL11.glPopMatrix;

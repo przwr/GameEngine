@@ -7,7 +7,6 @@ package game.text;
 
 import engine.Drawer;
 import engine.Main;
-import engine.RandomGenerator;
 import game.Settings;
 import game.gameobject.Entity;
 import game.gameobject.GUIObject;
@@ -79,41 +78,6 @@ public class TextController extends GUIObject {
         jumpPlacements = new ArrayList<>(1);
         colors = new ArrayList<>(1);
         firstStep = true;
-    }
-
-    private void stopTextViewing() {
-        started = false;
-        index = 0;
-        speed = 1;
-        change = 1;
-        time = 0;
-        deltaLines = 0;
-        rowsInPlace = 0;
-        flushing = false;
-        flushReady = false;
-        stop = false;
-        firstStep = true;
-        events.clear();
-        branches.clear();
-        jumpPlacements.clear();
-        speakers.clear();
-        speaker = 0;
-        portraits.clear();
-        expression = 0;
-        if (locked != null) {
-            for (Entity e : locked) {
-                e.setUnableToMove(false);
-            }
-        }
-    }
-
-    private int jumpLocation(String pointer) {
-        for (int i = 0; i < jumpPlacements.size(); i++) {
-            if (jumpPlacements.get(i).equals(pointer)) {
-                return i;
-            }
-        }
-        return 0;
     }
 
     public void startFromFile(String file) {
@@ -364,6 +328,41 @@ public class TextController extends GUIObject {
         }
     }
 
+    private void stopTextViewing() {
+        started = false;
+        index = 0;
+        speed = 1;
+        change = 1;
+        time = 0;
+        deltaLines = 0;
+        rowsInPlace = 0;
+        flushing = false;
+        flushReady = false;
+        stop = false;
+        firstStep = true;
+        events.clear();
+        branches.clear();
+        jumpPlacements.clear();
+        speakers.clear();
+        speaker = 0;
+        portraits.clear();
+        expression = 0;
+        if (locked != null) {
+            for (Entity e : locked) {
+                e.setUnableToMove(false);
+            }
+        }
+    }
+
+    private int jumpLocation(String pointer) {
+        for (int i = 0; i < jumpPlacements.size(); i++) {
+            if (jumpPlacements.get(i).equals(pointer)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+    
     private TextEvent generateEvent(int type, String text, int start, int xStart, int lineNum, Color color, FontHandler font) {
         TextEvent ret = null;
         switch (type) {
@@ -600,6 +599,14 @@ public class TextController extends GUIObject {
 
     public boolean isStarted() {
         return started;
+    }
+    
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+    
+    public int getRows() {
+        return rows;
     }
 
     public void lockEntities(Entity[] locked) {

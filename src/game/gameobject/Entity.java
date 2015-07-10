@@ -6,6 +6,7 @@
 package game.gameobject;
 
 import engine.Methods;
+import engine.Point;
 import engine.Time;
 import game.place.Place;
 import navmeshpathfinding.PathData;
@@ -34,6 +35,8 @@ public abstract class Entity extends GameObject {
     private int currentUpdateID, deltasCount, xPosition, yPosition, xDelta, yDelta, xDestination, yDestination;
     private Player colided;
     protected int direction;  //Obecny, badz ostatni kierunek ruchu (stopnie)
+
+    private int xTempSpeed, yTempSpeed;
 
     public abstract void updateOnline();
 
@@ -139,6 +142,20 @@ public abstract class Entity extends GameObject {
 
     private boolean inSameUpdate() {
         return currentUpdate != null && deltasCount < currentUpdate.getXDeltas().size();
+    }
+
+    public void moveWithSliding(double xMagnitude, double yMagnitude) {
+        xTempSpeed = (int) (xMagnitude + collision.getXSlideSpeed());
+        yTempSpeed = (int) (yMagnitude + collision.getYSlideSpeed());
+        collision.prepareSlideSpeed(xMagnitude, yMagnitude);
+        moveIfPossible(xTempSpeed, yTempSpeed);
+        collision.resetSlideSpeed();
+        /*if (collision.getXSlideSpeed() != 0 || collision.getYSlideSpeed() != 0) {
+            System.out.println(xMagnitude + " " + yMagnitude + " : "
+                    + collision.getXSlideSpeed() + " " + collision.getYSlideSpeed());
+        } else {
+            System.out.println("nic!!!");
+        }*/
     }
 
     public void moveIfPossible(int xMagnitude, int yMagnitude) {

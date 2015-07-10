@@ -14,6 +14,7 @@ import engine.Light;
 import sprites.Animation;
 import engine.Drawer;
 import engine.Methods;
+import engine.Point;
 import engine.RandomGenerator;
 import engine.Time;
 import game.Settings;
@@ -42,8 +43,6 @@ public class MyPlayer extends Player {
     private Cloth dress;
 
     private final int framesPerDir = 19;
-
-    private int xTempSpeed, yTempSpeed;
 
     private TextController textControl;
 
@@ -178,11 +177,10 @@ public class MyPlayer extends Player {
             //glTranslatef(50, 0, 0);
             //testBody.renderPiece((int) testIndex);
             //test.renderPiece((int) testIndex);
-            testIndex += 0.1;
-            if (testIndex >= 80) {
-                testIndex = 0;
-            }
-
+            //testIndex += 0.1;
+            //if (testIndex >= 80) {
+            //    testIndex = 0;
+            //}
             if (Settings.scaled) {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
@@ -203,9 +201,7 @@ public class MyPlayer extends Player {
                 jumpDelta = 22.6f;
             }
         }
-        xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
-        yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
-        moveIfPossible(xTempSpeed, yTempSpeed);
+        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         if (area != -1) {
             for (WarpPoint warp : map.getArea(area).getNearWarps()) {
                 if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
@@ -227,9 +223,7 @@ public class MyPlayer extends Player {
                 jumpDelta = 22.6f;
             }
         }
-        xTempSpeed = (int) (xEnvironmentalSpeed + super.xSpeed);
-        yTempSpeed = (int) (yEnvironmentalSpeed + super.ySpeed);
-        moveIfPossible(xTempSpeed, yTempSpeed);
+        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         for (WarpPoint warp : map.getArea(area).getNearWarps()) {
             if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
                 warp.Warp(this);
