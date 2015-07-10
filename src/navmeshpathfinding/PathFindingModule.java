@@ -7,6 +7,8 @@ import static navmeshpathfinding.PathData.PATH_REQUESTED;
 public class PathFindingModule implements Runnable {
 
     public static final PathStrategy GET_CLOSE = new GetClosePathStrategy();
+    public static final PathStrategy WONDER_AROUND = new WonderAroundPathStrategy();
+    public static final PathStrategy GET_TO = new GetToPathStrategy();
     private static boolean run;
     private static boolean cleaning;
     private static PathRequestContener requestedPaths = new PathRequestContener(512);
@@ -71,7 +73,12 @@ public class PathFindingModule implements Runnable {
     }
 
     private synchronized static void returnPath(PathRequest request) {
-        PathStrategyCore.setPath(request.requester, request.requester.getPathData(), request.xDest, request.yDest);
+        Entity requesterCopy = request.requester;
+        if (requesterCopy != null) {
+            PathStrategyCore.findPath(requesterCopy,
+                    request.requester.getPathData(), request.xDest,
+                    request.yDest);
+        }
     }
 
     public synchronized static void requestPath(Entity requester, int xDest, int yDest) {

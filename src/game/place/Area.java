@@ -5,13 +5,12 @@
  */
 package game.place;
 
-import engine.Light;
 import collision.Block;
 import collision.Figure;
 import engine.BlueArray;
-import engine.PointContener;
+import engine.Light;
 import engine.Methods;
-import navmeshpathfinding.NavigationMeshGenerator;
+import engine.PointContener;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
@@ -22,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import navmeshpathfinding.NavigationMesh;
+import navmeshpathfinding.NavigationMeshGenerator;
 import navmeshpathfinding.PathFinder;
 
 /**

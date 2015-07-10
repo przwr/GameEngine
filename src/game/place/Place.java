@@ -6,14 +6,11 @@
 package game.place;
 
 import engine.DayCycle;
-import engine.SplitScreen;
-import engine.Renderer;
 import engine.Drawer;
-import game.text.FontBase;
-import game.Game;
-import game.place.cameras.Camera;
-import java.util.ArrayList;
+import engine.Renderer;
 import engine.SoundBase;
+import engine.SplitScreen;
+import game.Game;
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
 import game.Settings;
@@ -22,9 +19,18 @@ import game.gameobject.GameObject;
 import game.gameobject.Player;
 import static game.place.Area.X_IN_TILES;
 import static game.place.Area.Y_IN_TILES;
+import game.place.cameras.Camera;
+import game.text.FontBase;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteBase;
@@ -98,6 +104,7 @@ public abstract class Place extends ScreenPlace {
             Renderer.resetOrtho(splitScreenMode);
             Renderer.border(splitScreenMode);
         };
+
         renders[ONLINE] = () -> {
             Map map = players[0].getMap();
             try {
@@ -122,12 +129,12 @@ public abstract class Place extends ScreenPlace {
                     currentCamera.renderGUI();
                     console.setCamera(currentCamera);
                     console.render(0, 0);
+                    glDisable(GL_SCISSOR_TEST);
                 }
             } catch (Exception e) {
                 glPopMatrix();
                 throw e;
             }
-            glDisable(GL_SCISSOR_TEST);
         };
     }
 

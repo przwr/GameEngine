@@ -376,14 +376,14 @@ public abstract class Map {
         }
     }
 
-    public void renderObjects(Camera camera) {
+    public void renderObjects(Camera camera) {       
         Drawer.refreshForRegularDrawing();
         renderBottom(camera);
         renderTop(camera);
     }
 
     public void renderBottom(Camera camera) {
-        updateNearForegroundTiles(camera.getArea());
+        updateNearForegroundTiles(camera.getArea());        
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
         Methods.insort(depthObjects);
         int y = 0;

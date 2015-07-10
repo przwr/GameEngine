@@ -61,7 +61,7 @@ public class MyGame extends Game {
     }
 
     private void initializeMethods() {
-        inputs[0] = () -> {
+        inputs[OFFLINE] = () -> {
             if (!pauseFlag) {
                 pause();
                 if (running) {
@@ -101,24 +101,7 @@ public class MyGame extends Game {
                 resume();
             }
         };
-        inputs[1] = () -> {
-            if (running) {
-                if (players[0].isMenuOn()) {
-                    running = false;
-                    soundPause();
-                }
-                if (players[0].isInGame()) {
-                    players[0].getInput();
-                }
-            } else {
-                if (place == null) {
-                    menuPlayer.getMenuInput();
-                } else {
-                    players[0].getMenuInput();
-                }
-            }
-        };
-        ups[0] = () -> {
+        ups[OFFLINE] = () -> {
             if (!pauseFlag) {
                 if (running) {
                     place.update();
@@ -135,7 +118,25 @@ public class MyGame extends Game {
                 }
             }
         };
-        ups[1] = () -> {
+
+        inputs[ONLINE] = () -> {
+            if (running) {
+                if (players[0].isMenuOn()) {
+                    running = false;
+                    soundPause();
+                }
+                if (players[0].isInGame()) {
+                    players[0].getInput();
+                }
+            } else {
+                if (place == null) {
+                    menuPlayer.getMenuInput();
+                } else {
+                    players[0].getMenuInput();
+                }
+            }
+        };
+        ups[ONLINE] = () -> {
             if ((online.client == null && online.server == null) || (online.client != null && !online.client.isConnected)) {
                 endGame();
                 Methods.error(Settings.language.menu.Disconnected);

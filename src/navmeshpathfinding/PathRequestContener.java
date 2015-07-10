@@ -98,4 +98,13 @@ public class PathRequestContener {
     public boolean isSufficientCapacity() {
         return requestCount < requests.length;
     }
+
+    @Override
+    public String toString() {
+        String string = requestCount + ": ";
+        for (PathRequest request : requests) {
+            string += " " + request.requester + " - " + request.xDest + " " + request.yDest + ";";
+        }
+        return string;
+    }
 }
