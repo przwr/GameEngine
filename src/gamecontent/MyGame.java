@@ -7,13 +7,13 @@ package gamecontent;
 
 import engine.Drawer;
 import engine.Methods;
-import game.Game;
+import engine.SplitScreen;
 import static engine.inout.IO.loadInputFromFile;
+import game.Game;
+import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
-import game.Settings;
 import game.place.Map;
-import engine.SplitScreen;
 import game.place.cameras.PlayersCamera;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
@@ -50,6 +50,7 @@ public class MyGame extends Game {
         menu.players = new GameObject[1];
         menu.players[0] = menuPlayer;
         menuPlayer.setMenu(menu);
+        pathFinding = new PathFindingModule();
         players[0].setMenu(menu);
         players[1].setMenu(menu);
         players[2].setMenu(menu);
@@ -60,7 +61,7 @@ public class MyGame extends Game {
     }
 
     private void initializeMethods() {
-        inputs[0] = () -> {
+        inputs[OFFLINE] = () -> {
             if (!pauseFlag) {
                 pause();
                 if (running) {
@@ -100,24 +101,7 @@ public class MyGame extends Game {
                 resume();
             }
         };
-        inputs[1] = () -> {
-            if (running) {
-                if (players[0].isMenuOn()) {
-                    running = false;
-                    soundPause();
-                }
-                if (players[0].isInGame()) {
-                    players[0].getInput();
-                }
-            } else {
-                if (place == null) {
-                    menuPlayer.getMenuInput();
-                } else {
-                    players[0].getMenuInput();
-                }
-            }
-        };
-        ups[0] = () -> {
+        ups[OFFLINE] = () -> {
             if (!pauseFlag) {
                 if (running) {
                     place.update();
@@ -134,7 +118,25 @@ public class MyGame extends Game {
                 }
             }
         };
-        ups[1] = () -> {
+
+        inputs[ONLINE] = () -> {
+            if (running) {
+                if (players[0].isMenuOn()) {
+                    running = false;
+                    soundPause();
+                }
+                if (players[0].isInGame()) {
+                    players[0].getInput();
+                }
+            } else {
+                if (place == null) {
+                    menuPlayer.getMenuInput();
+                } else {
+                    players[0].getMenuInput();
+                }
+            }
+        };
+        ups[ONLINE] = () -> {
             if ((online.client == null && online.server == null) || (online.client != null && !online.client.isConnected)) {
                 endGame();
                 Methods.error(Settings.language.menu.Disconnected);
@@ -244,12 +246,11 @@ public class MyGame extends Game {
         for (int p = 0; p < playersCount; p++) {
             Map map = place.maps.get(0);
             players[p].changeMap(map);
+            players[p].updateAreaPlacement();
         }
-
-        PathFindingModule path = new PathFindingModule();
-        Thread thread = new Thread(path);
-        thread.start();
-       
+        pathThread = new Thread(pathFinding);
+        pathThread.start();
+        pathThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
     }
 
@@ -340,6 +341,7 @@ public class MyGame extends Game {
         place.generateAsGuest();
         Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
+        players[0].updateAreaPlacement();
         started = running = true;
     }
 
@@ -355,6 +357,10 @@ public class MyGame extends Game {
         place.generateAsHost();
         Map map = place.getMapById((short) 0);
         players[0].changeMap(map);
+        players[0].updateAreaPlacement();
+        pathThread = new Thread(pathFinding);
+        pathThread.start();
+        pathThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
     }
 
@@ -366,6 +372,8 @@ public class MyGame extends Game {
         for (Player player : players) {
             player.setNotInGame();
         }
+        PathFindingModule.stop();
+        pathThread = null;
         online.cleanUp();
         mode = 0;
     }

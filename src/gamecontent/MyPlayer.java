@@ -185,7 +185,9 @@ public class MyPlayer extends Player {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
             Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
-                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
+                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
+                    place.standardFont,
+                    map.getLightColor());
             glPopMatrix();
         }
     }

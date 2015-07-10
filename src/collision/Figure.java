@@ -5,19 +5,19 @@
  */
 package collision;
 
-import engine.PointContener;
 import engine.BlueArray;
 import engine.Methods;
 import engine.Point;
 import engine.PointedValue;
+import engine.PointContener;
+import engine.Shadow;
 import engine.ShadowContener;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
+import game.place.Area;
 import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
-import engine.Shadow;
-import game.place.Area;
 import java.util.List;
 import net.jodk.lang.FastMath;
 

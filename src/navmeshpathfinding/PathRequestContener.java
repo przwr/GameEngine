@@ -39,6 +39,12 @@ public class PathRequestContener {
         requestCount++;
     }
 
+    public void set(int i, PathRequest request) {
+        requests[i].xDest = request.xDest;
+        requests[i].yDest = request.yDest;
+        requests[i].requester = request.requester;
+    }
+
     private static int caps, maxSize;
 
     private void ensureCapacity(int capacity) {
@@ -75,10 +81,30 @@ public class PathRequestContener {
     }
 
     public void clear() {
+        for (PathRequest request : requests) {
+            request.requester = null;
+        }
         requestCount = 0;
+    }
+
+    public void setSize(int size) {
+        requestCount = size;
     }
 
     public int size() {
         return requestCount;
+    }
+
+    public boolean isSufficientCapacity() {
+        return requestCount < requests.length;
+    }
+
+    @Override
+    public String toString() {
+        String string = requestCount + ": ";
+        for (PathRequest request : requests) {
+            string += " " + request.requester + " - " + request.xDest + " " + request.yDest + ";";
+        }
+        return string;
     }
 }

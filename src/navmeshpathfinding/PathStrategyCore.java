@@ -6,7 +6,6 @@
 package navmeshpathfinding;
 
 import collision.Figure;
-import engine.PointContener;
 import collision.Rectangle;
 import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.LEFT_TOP;
@@ -14,11 +13,18 @@ import static collision.RoundRectangle.RIGHT_BOTTOM;
 import static collision.RoundRectangle.RIGHT_TOP;
 import engine.Methods;
 import engine.Point;
+import engine.PointContener;
 import engine.PointedValue;
 import game.gameobject.Entity;
 import java.awt.Polygon;
 import java.util.List;
-import static navmeshpathfinding.PathData.*;
+import static navmeshpathfinding.PathData.BLOCKED;
+import static navmeshpathfinding.PathData.CHOICE;
+import static navmeshpathfinding.PathData.OBSTACLE_BEETWEEN;
+import static navmeshpathfinding.PathData.PASSED;
+import static navmeshpathfinding.PathData.PASSING;
+import static navmeshpathfinding.PathData.PATH_REQUESTED;
+import static navmeshpathfinding.PathData.STUCK;
 import net.jodk.lang.FastMath;
 
 /**
@@ -34,7 +40,7 @@ public class PathStrategyCore {
         data.calculateSpeed(requester.getMaxSpeed());
         manageBlockedAndAdjustSpeed(data, requester.getMaxSpeed());
         data.rememberPast();
-//        System.out.println(requester.getName() + " " + data.xSpeed + " " + data.ySpeed);
+//        System.out.println(requester.getName() + " " + data.xSpeed + " " + data.ySpeed + " " + requester.getX() + " " + requester.getY());
     }
 
     private static void updatePath(PathData data) {
@@ -44,6 +50,7 @@ public class PathStrategyCore {
                 data.currentPoint = 1;
                 correctDestinationPointIfNeeded(data.path, data);
             }
+            data.flags.clear(PATH_REQUESTED);
             data.newPath = null;
         } else if (data.flags.get(STUCK)) {
             data.path.clear();
@@ -148,12 +155,11 @@ public class PathStrategyCore {
 
     private static void requestForPath(Entity requester, PathData data, int xDest, int yDest) {
         if (!data.flags.get(PATH_REQUESTED)) {
-//            PathFindingModule.requestPath(requester, xDest, yDest);
+            PathFindingModule.requestPath(requester, xDest, yDest);
         }
-        setPath(requester, data, xDest, yDest);
     }
 
-    public synchronized static void setPath(Entity requester, PathData data, int xDest, int yDest) {
+    public synchronized static void findPath(Entity requester, PathData data, int xDest, int yDest) {
         data.newPath = requester.getMap().findPath(data.x, data.y, xDest, yDest, requester.getCollision());
     }
 
@@ -171,6 +177,7 @@ public class PathStrategyCore {
         if (data.flags.get(STUCK) || data.x == data.correction.getX() && data.y == data.correction.getY() || (data.inAWay != null && (data.inAWay.getX() != data.xInAWay || data.inAWay.getY() != data.yInAWay))) {
             data.flags.clear(PASSING);
             data.flags.set(PASSED);
+            data.destination = data.correction;
         } else {
             if (data.inAWay != null && data.inAWay.isMobile()) {
                 data.lastInAWay = null;
@@ -202,12 +209,17 @@ public class PathStrategyCore {
                 data.ySpeed = requester.getMaxSpeed();
             }
         }
+        if (data.xSpeed != 0) {
+            data.xSpeed = requester.getMaxSpeed();
+        } else if (data.ySpeed != 0) {
+            data.ySpeed = requester.getMaxSpeed();
+        }
         countPass(data);
     }
 
     private static void countPass(PathData data) {
         data.passedCount++;
-        if (data.passedCount >= 4) {
+        if (data.passedCount >= 6) {
             data.passedCount = 0;
             data.flags.clear(PASSED);
             data.flags.set(CHOICE, FastMath.random() > 0.5);
@@ -249,9 +261,9 @@ public class PathStrategyCore {
     }
 
     private static void addPointIfClearPath(PathData data, Point correction, int corner) {
-        if (!correction.equals(data.last1CorrectionPoint) || !data.last1CorrectionPoint.equals(data.last2CorrectionPoint)) {
+        if (!data.last1CorrectionPoint.equals(data.last2CorrectionPoint) || !correction.equals(data.last1CorrectionPoint)) {
             PathStrategyCore.setPolygonForTesting(data, correction);
-            if (data.destination.equals(data.finalDestination) || PathStrategyCore.anyFigureInAWay(data.poly, data.close) == null || corner == data.lastCorner) {
+            if (data.destination.equals(data.finalDestination) || PathStrategyCore.anyFigureInAWay(data.poly, data.close) == null || (corner == data.lastCorner && data.path.isEmpty())) {
                 data.correctionPoints.add(correction.getX(), correction.getY(), corner);
             }
         }
@@ -262,7 +274,6 @@ public class PathStrategyCore {
         data.closest = null;
         for (int i = 0; i < data.correctionPoints.size(); i++) {
             PointedValue point = data.correctionPoints.get(i);
-            PathStrategyCore.setPolygonForTesting(data, data.destination);
             if (data.correctionPoints.size() == 1 || point.getValue() != data.lastCorner) {
                 data.temp = Methods.pointDistance(point.getX(), point.getY(), data.destination.getX(), data.destination.getY());
                 if (data.temp < data.min) {
@@ -272,7 +283,9 @@ public class PathStrategyCore {
             }
         }
         if (data.closest != null) {
-            setCorrection(data);
+            if ((data.closest.getY() >= data.y && data.closest.getY() <= data.destination.getY()) || (data.closest.getY() <= data.y && data.closest.getY() >= data.destination.getY()) || data.inAWay.isMobile()) {
+                setCorrection(data);
+            }
         }
     }
 
@@ -349,7 +362,7 @@ public class PathStrategyCore {
                 data.flags.clear(BLOCKED);
             }
         } else {
-            if (data.inAWay != null && (data.inAWay.isMobile())) {
+            if (data.inAWay != null && data.inAWay.isMobile()) {
                 if (data.xSpeed * data.pastXSpeed > 0 && data.x == data.pastPosition.getX()) {
                     data.xSpeed = 0;
                     data.ySpeed = (Math.abs(data.ySpeed) > 0) ? Math.signum(data.ySpeed) * maxSpeed : (data.flags.get(CHOICE) ? maxSpeed : -maxSpeed);
@@ -362,7 +375,9 @@ public class PathStrategyCore {
                     data.flags.set(CHOICE, FastMath.random() > 0.5);
                 }
             }
-            adjustSpeed(data, maxSpeed);
+            if (!data.flags.get(PASSED)) {
+                adjustSpeed(data, maxSpeed);
+            }
         }
     }
 

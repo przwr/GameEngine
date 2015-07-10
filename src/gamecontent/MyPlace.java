@@ -6,19 +6,18 @@
 package gamecontent;
 
 import engine.Delay;
-import game.Game;
-import game.Settings;
-import game.place.Place;
-import game.text.FontBase;
 import engine.Main;
+import game.Game;
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
+import game.Settings;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Entity;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
+import game.place.Place;
 import navmeshpathfinding.NavigationMeshGenerator;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
@@ -38,12 +37,13 @@ public class MyPlace extends Place {
     {
         updates[OFFLINE] = () -> {
             updateInputs();
-            updateAreas();
+            updateAreasOffline();
             updatePlayersOffline();
             updateMobsOffline();
             dayCycle.updateTime();
         };
         updates[ONLINE] = () -> {
+            updateAreasOnline();
             updateMobsOnline();
             updatePlayersOnline();
             dayCycle.updateTime();
@@ -82,7 +82,7 @@ public class MyPlace extends Place {
         updates[game.mode].update();
     }
 
-    private void updateAreas() {
+    private void updateAreasOffline() {
         tempMaps.clear();
         for (int i = 0; i < playersCount; i++) {
             map = players[i].getMap();
@@ -92,9 +92,20 @@ public class MyPlace extends Place {
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
         }
-        tempMaps.stream().forEach((map) -> {
-            map.updateAreasToUpdate();
+        tempMaps.stream().forEach((mapToUpdate) -> {
+            mapToUpdate.updateAreasToUpdate();
         });
+    }
+
+    private void updateAreasOnline() {
+        if (game.online.server != null) {
+            updateAreasOffline();
+        } else if (game.online.client != null) {
+            Map map = players[0].getMap();
+            map.clearAreasToUpdate();
+            map.addAreasToUpdate(map.getNearAreas(players[0].getArea()));
+            map.updateAreasToUpdate();
+        }
     }
 
     private void updatePlayersOffline() {
@@ -130,15 +141,11 @@ public class MyPlace extends Place {
 
     private void updateMobsOnline() {
         if (game.online.server != null) {
-            updateAreas();
             tempMaps.stream().forEach((map) -> {
                 map.updateMobsFromAreasToUpdate();
             });
         } else if (game.online.client != null) {
-            Map map = players[0].getMap();
-            map.clearAreasToUpdate();
-            map.addAreasToUpdate(map.getNearAreas(players[0].getArea()));
-            map.hardUpdateMobsFromAreasToUpdate();
+            players[0].getMap().hardUpdateMobsFromAreasToUpdate();
         }
     }
 
