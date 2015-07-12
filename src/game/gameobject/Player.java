@@ -6,13 +6,13 @@
 package game.gameobject;
 
 import engine.Drawer;
-import sprites.Animation;
 import game.place.Map;
 import game.place.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
 import java.util.ArrayList;
 import net.GameOnline;
+import sprites.Animation;
 
 /**
  *

@@ -8,17 +8,16 @@ package gamecontent;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
-import game.gameobject.Player;
-import game.place.Place;
-import engine.Light;
-import sprites.Animation;
 import engine.Drawer;
+import engine.Light;
 import engine.Methods;
 import engine.RandomGenerator;
 import engine.Time;
 import game.Settings;
+import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
+import game.place.Place;
 import game.place.WarpPoint;
 import game.text.TextController;
 import gamecontent.equipment.Cloth;
@@ -27,8 +26,12 @@ import net.jodk.lang.FastMath;
 import net.packets.MPlayerUpdate;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
+import sprites.Animation;
 import sprites.SpriteSheet;
 
 /**
@@ -81,7 +84,6 @@ public class MyPlayer extends Player {
     public void initializeSetPosition(int width, int height, Place place, int x, int y) {
         initialize(width, height, place);
         initialize(name, x, y);
-
     }
 
     @Override
@@ -187,7 +189,8 @@ public class MyPlayer extends Player {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
             Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
-                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
+                    (int) ((collision.getHeight()
+                    * Place.getCurrentScale()) / 2),
                     place.standardFont,
                     map.getLightColor());
             glPopMatrix();

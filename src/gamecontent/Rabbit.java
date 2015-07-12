@@ -22,7 +22,7 @@ public class Rabbit extends Mob {
         super(x, y, speed, range, name, place, "rabbit", solid, ID);
         setCollision(Rectangle.create(width, height, OpticProperties.NO_SHADOW, this));
         collision.setMobile(true);
-        setPathStrategy(PathFindingModule.GET_TO, 250);
+        setPathStrategy(PathFindingModule.GET_CLOSE, 250);
     }
 
     @Override

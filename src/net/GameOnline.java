@@ -23,7 +23,7 @@ import net.packets.PacketUpdate;
 public abstract class GameOnline {
 
     public Point[] pastPositions = new Point[2048];
-    protected final change[] changes;
+    protected final OnlineChange[] changes;
     protected final boolean[] isChanged;
     protected final NewMPlayer[] newPlayers;
     protected final byte removeIDs[];
@@ -41,7 +41,7 @@ public abstract class GameOnline {
 
     public GameOnline(Game game, int nrChanges, int players) {
         this.game = game;
-        changes = new change[nrChanges];
+        changes = new OnlineChange[nrChanges];
         isChanged = new boolean[nrChanges];
         newPlayers = new NewMPlayer[players];
         removeIDs = new byte[players];
@@ -79,8 +79,4 @@ public abstract class GameOnline {
 
     public abstract Player getPlayerByID(byte id);
 
-    protected interface change {
-
-        void doIt();
-    }
 }

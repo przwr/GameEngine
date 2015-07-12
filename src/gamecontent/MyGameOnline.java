@@ -29,6 +29,8 @@ import net.packets.PacketUpdate;
  */
 public class MyGameOnline extends GameOnline {
 
+    private static int ADD_PLAYER = 0, REMOVE_PLAYER = 1, UPDATE_MOBS = 2;
+
     public MyGameOnline(Game game, int changes, int players) {
         super(game, changes, players);
     }
@@ -76,7 +78,7 @@ public class MyGameOnline extends GameOnline {
             } else if (newPlayers[2] == null) {
                 newPlayers[2] = player;
             }
-            isChanged[0] = true;
+            isChanged[ADD_PLAYER] = true;
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
             Methods.logAndPrint(error);
@@ -93,7 +95,7 @@ public class MyGameOnline extends GameOnline {
             } else if (removeIDs[1] == 0) {
                 removeIDs[2] = playerID;
             }
-            isChanged[1] = true;
+            isChanged[REMOVE_PLAYER] = true;
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
             Methods.logAndPrint(error);
@@ -150,7 +152,7 @@ public class MyGameOnline extends GameOnline {
                 mapIDsForUpdate[1] = mapId;
                 activeFirstMobsUpdates = false;
             }
-            isChanged[2] = true;
+            isChanged[UPDATE_MOBS] = true;
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
             Methods.logAndPrint(error);
@@ -184,7 +186,7 @@ public class MyGameOnline extends GameOnline {
 
     @Override
     public synchronized void initializeChanges() {
-        changes[0] = () -> {
+        changes[ADD_PLAYER] = () -> {
             try {
                 tempPlace = game.getPlace();
                 if (tempPlace != null) {
@@ -211,7 +213,7 @@ public class MyGameOnline extends GameOnline {
                 Methods.logAndPrint(error);
             }
         };
-        changes[1] = () -> {
+        changes[REMOVE_PLAYER] = () -> {
             try {
                 tempPlace = game.getPlace();
                 if (tempPlace != null) {
@@ -239,7 +241,7 @@ public class MyGameOnline extends GameOnline {
                 Methods.logAndPrint(error);
             }
         };
-        changes[2] = () -> {
+        changes[UPDATE_MOBS] = () -> {
             try {
                 boolean found;
                 boolean addNew = false;
@@ -312,7 +314,7 @@ public class MyGameOnline extends GameOnline {
             for (int i = 0; i < isChanged.length; i++) {
                 if (isChanged[i]) {
                     isChanged[i] = false;
-                    changes[i].doIt();
+                    changes[i].change();
                 }
             }
         }

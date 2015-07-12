@@ -13,16 +13,33 @@ import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.RIGHT_BOTTOM;
 import static engine.Drawer.clearScreen;
 import static engine.Drawer.displayHeight;
-import static engine.ShadowDrawer.*;
+import static engine.Shadow.BRIGHT;
+import static engine.Shadow.BRIGHTEN;
+import static engine.Shadow.BRIGHTEN_OBJECT;
+import static engine.Shadow.DARK;
+import static engine.Shadow.DARKEN;
+import static engine.Shadow.DARKEN_OBJECT;
+import static engine.Shadow.shadowLength;
+import static engine.ShadowDrawer.drawAllShadows;
+import static engine.ShadowDrawer.drawConcaveTop;
+import static engine.ShadowDrawer.drawLeftConcaveBottom;
+import static engine.ShadowDrawer.drawRightConcaveBottom;
+import static engine.ShadowDrawer.drawShadow;
+import static engine.ShadowDrawer.drawShadowFromConcave;
 import game.gameobject.GameObject;
 import game.place.Map;
 import game.place.Place;
-import static engine.Shadow.*;
 import java.awt.Polygon;
 import java.util.Collections;
-import java.util.List;
 import net.jodk.lang.FastMath;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 
 /**
  *

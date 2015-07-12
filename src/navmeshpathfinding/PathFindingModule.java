@@ -76,7 +76,7 @@ public class PathFindingModule implements Runnable {
         Entity requesterCopy = request.requester;
         if (requesterCopy != null) {
             PathStrategyCore.findPath(requesterCopy,
-                    request.requester.getPathData(), request.xDest,
+                    requesterCopy.getPathData(), request.xDest,
                     request.yDest);
         }
     }

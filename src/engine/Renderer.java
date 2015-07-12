@@ -140,11 +140,13 @@ public class Renderer {
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
         camera.getVisibleLights().stream().forEach((light) -> {
+
             if (Settings.shadowOff || !light.isGiveShadows()) {
                 light.render(camera.getXOffsetEffect(), camera.getYOffsetEffect(), camera);
             } else {
                 drawLight(light, camera);
             }
+
         });
         frame.deactivate();
     }
