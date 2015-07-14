@@ -10,7 +10,17 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_BINDING_2D;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glGetInteger;
+import static org.lwjgl.opengl.GL11.glTexCoord2d;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glVertex2f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
@@ -21,9 +31,10 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class Sprite implements Appearance {
 
-    protected Texture texture;
+    protected int texture;
 
     protected SpriteBase spriteBase;
+    protected float widthWhole, heightWhole;
     protected int width;
     protected int height;
     protected int xStart;
@@ -37,13 +48,29 @@ public class Sprite implements Appearance {
 
     protected double begin, ending;
 
+    public static Sprite create(int texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new Sprite(texture, width, height, xStart, yStart, spriteBase);
+    }
+
     public static Sprite create(String textureKey, int width, int height, SpriteBase base) {
         return new Sprite(textureKey, width, height, 0, 0, base);
     }
 
+    protected Sprite(int texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        this.texture = texture;
+        this.spriteBase = spriteBase;
+        this.xStart = -xStart;
+        this.yStart = -yStart;
+        this.width = width;
+        this.height = height;
+    }
+
     protected Sprite(String textureKey, int width, int height, int xStart, int yStart, SpriteBase base) {
         if (textureKey != null) {
-            this.texture = loadTexture(textureKey);
+            Texture tempTexture = loadTexture(textureKey);
+            this.widthWhole = tempTexture.getImageWidth();
+            this.heightWhole = tempTexture.getImageHeight();
+            this.texture = tempTexture.getTextureID();
             this.key = textureKey;
             this.spriteBase = base;
             this.xStart = -xStart;
@@ -62,30 +89,10 @@ public class Sprite implements Appearance {
         return null;
     }
 
-    public static Sprite create(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        return new Sprite(texture, width, height, xStart, yStart, spriteBase);
-    }
-
-    protected Sprite(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        this.texture = texture;
-        this.spriteBase = spriteBase;
-        this.xStart = -xStart;
-        this.yStart = -yStart;
-        this.width = width;
-        this.height = height;
-    }
-
     @Override
-    public void bindCheckByID() {
-        if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture.getTextureID()) {
-            glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
-        }
-    }
-
-    @Override
-    public void bindCheckByTexture() {
-        if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture.getTextureID()) {
-            texture.bind();
+    public void bindCheck() {
+        if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
+            glBindTexture(GL_TEXTURE_2D, texture);
         }
     }
 
@@ -97,7 +104,7 @@ public class Sprite implements Appearance {
 
     @Override
     public void render() {
-        bindCheckByID();
+        bindCheck();
         moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
@@ -113,7 +120,7 @@ public class Sprite implements Appearance {
 
     @Override
     public void renderMirrored() {
-        bindCheckByID();
+        bindCheck();
         moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(1, 0);
@@ -129,7 +136,7 @@ public class Sprite implements Appearance {
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
-        bindCheckByID();
+        bindCheck();
         moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2d(((double) partXStart / (double) width), 0);
@@ -145,7 +152,7 @@ public class Sprite implements Appearance {
 
     @Override
     public void renderPartMirrored(int partXstart, int partXend) {
-        bindCheckByID();
+        bindCheck();
         moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2d(((double) partXend / (double) width), 0);
@@ -160,7 +167,7 @@ public class Sprite implements Appearance {
     }
 
     public void renderSpritePiece(float xBegin, float xEnd, float yBegin, float yEnd) {
-        bindCheckByID();
+        bindCheck();
         moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(xBegin, yBegin);
@@ -173,9 +180,9 @@ public class Sprite implements Appearance {
         glVertex2f(width, 0);
         glEnd();
     }
-    
+
     public void renderSpritePieceResized(float xBegin, float xEnd, float yBegin, float yEnd, float width, float height) {
-        bindCheckByID();
+        bindCheck();
         moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(xBegin, yBegin);
@@ -190,7 +197,7 @@ public class Sprite implements Appearance {
     }
 
     public void renderSpritePieceHere(float xBegin, float xEnd, float yBegin, float yEnd) {
-        bindCheckByID();
+        bindCheck();
         glBegin(GL_QUADS);
         glTexCoord2f(xBegin, yBegin);
         glVertex2f(0, 0);
@@ -204,7 +211,7 @@ public class Sprite implements Appearance {
     }
 
     public void renderSpritePieceMirrored(float xBegin, float xEnd, float yBegin, float yEnd) {
-        bindCheckByID();
+        bindCheck();
         moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(xEnd, yBegin);
@@ -219,7 +226,7 @@ public class Sprite implements Appearance {
     }
 
     public void renderSpritePiecePart(float xBegin, float xEnd, float yBegin, float yEnd, int partXStart, int partXEnd, float xTiles) {
-        bindCheckByID();
+        bindCheck();
         begin = xBegin + ((double) partXStart) / (double) width / xTiles;
         ending = xBegin + ((double) partXEnd) / (double) width / xTiles;
         moveToStart();
@@ -236,7 +243,7 @@ public class Sprite implements Appearance {
     }
 
     public void renderSpritePiecePartMirrored(float xBegin, float xEnd, float yBegin, float yEnd, int partXStart, int partXEnd, float xTiles) { //NOT TESTED!
-        bindCheckByID();
+        bindCheck();
         begin = xBegin + ((double) partXStart) / (double) width / xTiles;
         ending = xBegin + ((double) partXEnd) / (double) width / xTiles;
         moveToStart();
@@ -250,6 +257,22 @@ public class Sprite implements Appearance {
         glTexCoord2d(ending, yEnd);
         glVertex2f(partXStart, height);
         glEnd();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Sprite) {
+            Sprite s = (Sprite) object;
+            return s.texture == texture;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(texture);
+        return hash;
     }
 
     public int getWidth() {
@@ -276,7 +299,7 @@ public class Sprite implements Appearance {
         this.key = key;
     }
 
-    public Texture getTexture() {
+    public int getTexture() {
         return texture;
     }
 
@@ -288,20 +311,8 @@ public class Sprite implements Appearance {
         this.height = h;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof Sprite) {
-            Sprite s = (Sprite) object;
-            return s.texture.getTextureID() == texture.getTextureID();
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.texture.getTextureID());
-        return hash;
+    public SpriteBase getSpriteBase() {
+        return spriteBase;
     }
 
     public int getActualWidth() {
@@ -319,4 +330,13 @@ public class Sprite implements Appearance {
     public int getYOffset() {
         return yOffset;
     }
+
+    public float getWidthWhole() {
+        return widthWhole;
+    }
+
+    public float getHeightWhole() {
+        return heightWhole;
+    }
+
 }

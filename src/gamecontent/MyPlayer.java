@@ -8,18 +8,16 @@ package gamecontent;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
-import game.gameobject.Player;
-import game.place.Place;
-import engine.Light;
-import sprites.Animation;
 import engine.Drawer;
+import engine.Light;
 import engine.Methods;
-import engine.Point;
 import engine.RandomGenerator;
 import engine.Time;
 import game.Settings;
+import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
+import game.place.Place;
 import game.place.WarpPoint;
 import game.text.TextController;
 import gamecontent.equipment.Cloth;
@@ -28,8 +26,12 @@ import net.jodk.lang.FastMath;
 import net.packets.MPlayerUpdate;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
+import sprites.Animation;
 import sprites.SpriteSheet;
 
 /**
@@ -122,11 +124,48 @@ public class MyPlayer extends Player {
         return false;
     }
 
+    @Override
+    public void render(int xEffect, int yEffect) {
+        if (sprite != null) {
+            animation.updateTexture(this);
+            glPushMatrix();
+            glTranslatef(xEffect, yEffect, 0);
+            if (Settings.scaled) {
+                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+            }
+            glTranslatef(getX(), getY(), 0);
+            Drawer.setColor(JUMP_SHADOW_COLOR);
+            Drawer.drawElipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
+            Drawer.refreshColor();
+            glTranslatef(0, (int) -jumpHeight, 0);
+            animation.render();
+//            renderClothed(animation.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
+            animation.updateFrame();
+
+            //glTranslatef(50, 0, 0);
+            //testBody.renderPiece((int) testIndex);
+            //test.renderPiece((int) testIndex);
+            //testIndex += 0.1;
+            //if (testIndex >= 80) {
+            //    testIndex = 0;
+            //}
+            if (Settings.scaled) {
+                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
+            }
+            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
+                    (int) ((collision.getHeight()
+                    * Place.getCurrentScale()) / 2),
+                    place.standardFont,
+                    map.getLightColor());
+            glPopMatrix();
+        }
+    }
+
+    @Override
     public void renderClothed(int frame) {
         boolean rightUp = frame < 4 * framesPerDir;
         boolean frontUp = (frame < 3 * framesPerDir) || (frame >= 6 * framesPerDir);
-
-        glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);
+//        glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);  // Translatuję przy aktualizacji, odkomentuaj, jakbyś testował <(,o,<)
         if (legs != null) {
             if (rightUp) {
                 legs.getLeftPart().renderPieceHere(frame);
@@ -155,40 +194,6 @@ public class MyPlayer extends Player {
                 torso.getCentralPart().renderPieceHere(frame);
                 torso.getLeftPart().renderPieceHere(frame);
             }
-        }
-    }
-
-    @Override
-    public void render(int xEffect, int yEffect) {
-        if (sprite != null) {
-            glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            if (Settings.scaled) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            }
-            glTranslatef(getX(), getY(), 0);
-            Drawer.setColor(JUMP_SHADOW_COLOR);
-            Drawer.drawElipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
-            Drawer.refreshColor();
-            glTranslatef(0, (int) -jumpHeight, 0);
-            getAnimation().render();
-
-            //renderClothed(animation.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
-            //glTranslatef(50, 0, 0);
-            //testBody.renderPiece((int) testIndex);
-            //test.renderPiece((int) testIndex);
-            //testIndex += 0.1;
-            //if (testIndex >= 80) {
-            //    testIndex = 0;
-            //}
-            if (Settings.scaled) {
-                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            }
-            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
-                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
-                    place.standardFont,
-                    map.getLightColor());
-            glPopMatrix();
         }
     }
 
@@ -284,7 +289,7 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
-        if (sprite != null) {
+        if (animation != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
             Drawer.drawShapeInShade(animation, 1);
@@ -294,7 +299,7 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
-        if (sprite != null) {
+        if (animation != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
             Drawer.drawShapeInBlack(animation);
@@ -304,7 +309,7 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
-        if (sprite != null) {
+        if (animation != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
             Drawer.drawShapePartInShade(animation, 1, xStart, xEnd);
@@ -314,7 +319,7 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
-        if (sprite != null) {
+        if (animation != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
             Drawer.drawShapePartInBlack(animation, xStart, xEnd);

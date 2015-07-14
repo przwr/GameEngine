@@ -5,16 +5,32 @@
  */
 package engine;
 
-import game.place.fbo.RegularFrameBufferObject;
-import game.place.fbo.FrameBufferObject;
 import game.Settings;
 import game.gameobject.Player;
 import game.place.Map;
 import game.place.Place;
 import game.place.cameras.Camera;
+import game.place.fbo.FrameBufferObject;
+import game.place.fbo.RegularFrameBufferObject;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
+import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_ZERO;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glTranslated;
+import static org.lwjgl.opengl.GL11.glVertex2f;
+import static org.lwjgl.opengl.GL11.glViewport;
 import org.newdawn.slick.Color;
 
 /**
@@ -27,7 +43,6 @@ public class Renderer {
     private static FrameBufferObject frame;
     private static final int[] xStart = new int[7], xEnd = new int[7], yStart = new int[7], yEnd = new int[7];
     private static boolean visible;
-    private static int lightX, lightY;
     private static float lightColor, lightBrightness, lightStrength;
     private static Camera camera;
     private static Place place;
@@ -140,13 +155,11 @@ public class Renderer {
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
         camera.getVisibleLights().stream().forEach((light) -> {
-
             if (Settings.shadowOff || !light.isGiveShadows()) {
                 light.render(camera.getXOffsetEffect(), camera.getYOffsetEffect(), camera);
             } else {
                 drawLight(light, camera);
             }
-
         });
         frame.deactivate();
     }
@@ -158,24 +171,8 @@ public class Renderer {
             glScaled(camera.getScale(), camera.getScale(), 1);
         }
         glTranslated(light.getX() - light.getXCenterShift(), light.getY() - light.getYCenterShift(), 0);
-        renderLightPiece(light);
+        light.getFrameBufferObject().render();
         glPopMatrix();
-    }
-
-    private static void renderLightPiece(Light light) {
-        lightX = light.getWidth();
-        lightY = light.getHeight();
-        glBindTexture(GL_TEXTURE_2D, light.getFrameBufferObject().getTexture());
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);
-        glVertex2f(0, 0);
-        glTexCoord2f(1, 1);
-        glVertex2f(lightX, 0);
-        glTexCoord2f(1, 0);
-        glVertex2f(lightX, lightY);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, lightY);
-        glEnd();
     }
 
     public static void renderLights(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
@@ -191,24 +188,8 @@ public class Renderer {
         glColor3f(lightColor, lightColor, lightColor);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < lightStrength; i++) {
-            drawTexture(frame.getTexture(), displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
+            frame.renderScreenPart(displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
         }
-    }
-
-    private static void drawTexture(int textureHandle, float w, float h, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
-        glPushMatrix();
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
-        glBegin(GL_QUADS);
-        glTexCoord2f(xTStart, yTEnd);
-        glVertex2f(xStart * w, yStart * h);
-        glTexCoord2f(xTEnd, yTEnd);
-        glVertex2f(xEnd * w, yStart * h);
-        glTexCoord2f(xTEnd, yTStart);
-        glVertex2f(xEnd * w, yEnd * h);
-        glTexCoord2f(xTStart, yTStart);
-        glVertex2f(xStart * w, yEnd * h);
-        glEnd();
-        glPopMatrix();
     }
 
     public static void initializeVariables() {

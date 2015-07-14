@@ -6,13 +6,13 @@
 package engine;
 
 import collision.Figure;
-import game.place.fbo.RegularFrameBufferObject;
-import game.place.fbo.MultisampleFrameBufferObject;
-import game.place.fbo.FrameBufferObject;
 import game.Settings;
 import game.gameobject.GameObject;
 import static game.place.Placement.CENTER;
 import game.place.cameras.Camera;
+import game.place.fbo.FrameBufferObject;
+import game.place.fbo.MultisampleFrameBufferObject;
+import game.place.fbo.RegularFrameBufferObject;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;

@@ -22,8 +22,8 @@ import org.newdawn.slick.opengl.Texture;
  */
 public class SpriteSheet extends Sprite {
 
-    private final float xTiles;
-    private final float yTiles;
+    private float xTiles;
+    private float yTiles;
 
     private final boolean isStartMoving;
     private int frame;
@@ -41,28 +41,42 @@ public class SpriteSheet extends Sprite {
         return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, true);
     }
 
+    public static SpriteSheet createFrameBuffered(int texture, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new SpriteSheet(texture, widthWhole, heightWhole, width, height, xStart, yStart, spriteBase);
+    }
+
     protected SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
-        super(texture, width, height, xStart, yStart, spriteBase);
+        super(texture.getTextureID(), width, height, xStart, yStart, spriteBase);
         isStartMoving = false;
-        if (scale) {
-            this.xTiles = (int) (texture.getImageWidth() * Settings.nativeScale) / width;
-            this.yTiles = (int) (texture.getImageHeight() * Settings.nativeScale) / height;
-        } else {
-            this.xTiles = texture.getImageWidth() / width;
-            this.yTiles = texture.getImageHeight() / height;
-        }
+        widthWhole = texture.getImageWidth();
+        heightWhole = texture.getImageHeight();
+        setTilesCount(scale);
     }
 
     protected SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, Point[] startingPoints) {
-        super(texture, width, height, xStart, yStart, spriteBase);
+        super(texture.getTextureID(), width, height, xStart, yStart, spriteBase);
         this.startingPoints = startingPoints;
         isStartMoving = true;
+        widthWhole = texture.getImageWidth();
+        heightWhole = texture.getImageHeight();
+        setTilesCount(scale);
+    }
+
+    protected SpriteSheet(int texture, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        super(texture, width, height, xStart, yStart, spriteBase);
+        isStartMoving = false;
+        this.widthWhole = widthWhole;
+        this.heightWhole = heightWhole;
+        setTilesCount(false);
+    }
+
+    private void setTilesCount(boolean scale) {
         if (scale) {
-            this.xTiles = (int) (texture.getImageWidth() * Settings.nativeScale) / width;
-            this.yTiles = (int) (texture.getImageHeight() * Settings.nativeScale) / height;
+            this.xTiles = (int) (widthWhole * Settings.nativeScale) / width;
+            this.yTiles = (int) (heightWhole * Settings.nativeScale) / height;
         } else {
-            this.xTiles = texture.getImageWidth() / width;
-            this.yTiles = texture.getImageHeight() / height;
+            this.xTiles = widthWhole / width;
+            this.yTiles = heightWhole / height;
         }
     }
 
@@ -81,9 +95,7 @@ public class SpriteSheet extends Sprite {
 
     @Override
     public void render() {  //Rysuje CAŁY spritesheet
-        bindCheckByID();
-        float widthWhole = texture.getImageWidth();
-        float heightWhole = texture.getImageHeight();
+        bindCheck();
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
@@ -112,7 +124,7 @@ public class SpriteSheet extends Sprite {
             renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
         }
     }
-    
+
     public void renderPieceResized(int x, int y, float width, float height) {
         if (areValidCoordinates(x, y)) {
             frame = (int) (x + y * xTiles);

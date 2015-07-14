@@ -37,6 +37,8 @@ public abstract class Player extends Entity {
 
     public abstract void sendUpdate();
 
+    public abstract void renderClothed(int frame);
+
     public Player(String name) {
         this.name = name;
     }
@@ -158,7 +160,7 @@ public abstract class Player extends Entity {
     public boolean isFirst() {
         return first;
     }
-    
+
     public Menu getMenu() {
         return menu;
     }
@@ -166,7 +168,7 @@ public abstract class Player extends Entity {
     public Controler getController() {
         return controler;
     }
-    
+
     public void getInput() {
         controler.getInput();
     }

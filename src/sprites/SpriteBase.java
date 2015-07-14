@@ -139,7 +139,7 @@ public class SpriteBase {
                 System.out.println("BUM");
             }
         } else {
-            image = Sprite.create(texture, width, height, startX, startY, this);
+            image = Sprite.create(texture.getTextureID(), width, height, startX, startY, this);
         }
         image.setKey(key);
         image.xOffset = xoffset;
@@ -183,7 +183,7 @@ public class SpriteBase {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        sprite = Sprite.create(texture, width, height, 0, 0, this);
+        sprite = Sprite.create(texture.getTextureID(), width, height, 0, 0, this);
         sprite.setKey(key);
         return sprite;
     }
@@ -191,8 +191,8 @@ public class SpriteBase {
     public SpriteSheet getSpriteSheetSetScale(String textureKey) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)
-                    && (sprite.getWidth() == (int) (sprite.getTexture().getImageWidth() * Settings.nativeScale)
-                    && sprite.getHeight() == (int) (sprite.getTexture().getImageHeight() * Settings.nativeScale))) {
+                    && (sprite.getWidth() == (int) (sprite.getWidthWhole() * Settings.nativeScale)
+                    && sprite.getHeight() == (int) (sprite.getHeightWhole() * Settings.nativeScale))) {
                 return (SpriteSheet) sprite;
             }
         }
@@ -237,7 +237,7 @@ public class SpriteBase {
         if (spriteSheet) {
             image = SpriteSheet.createSetScale(texture, pieceWidth, pieceHeight, startX, startY, this);
         } else {
-            image = Sprite.create(texture, width, height, startX, startY, this);
+            image = Sprite.create(texture.getTextureID(), width, height, startX, startY, this);
         }
         image.setKey(key);
         return image;

@@ -19,7 +19,6 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import java.awt.geom.Line2D;
 import java.util.List;
-import net.jodk.lang.FastMath;
 
 /**
  *

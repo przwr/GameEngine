@@ -3,7 +3,7 @@ package game.place.fbo;
 import game.Settings;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.EXTFramebufferObject;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glGenTextures;
 import org.lwjgl.opengl.GL30;
 
 public class MultisampleFrameBufferObject extends FrameBufferObject {

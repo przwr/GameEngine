@@ -74,7 +74,7 @@ public class Tile extends GameObject implements Appearance {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(),1);
+            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), 1);
         } else {
             Drawer.drawShapeInShade(this, 1);
         }
@@ -94,7 +94,7 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect,  Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
@@ -144,7 +144,7 @@ public class Tile extends GameObject implements Appearance {
         copy.setDepth(depth);
         return copy;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof Tile) {
@@ -171,13 +171,8 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void bindCheckByID() {
-        spriteSheet.bindCheckByID();
-    }
-
-    @Override
-    public void bindCheckByTexture() {
-        spriteSheet.bindCheckByTexture();
+    public void bindCheck() {
+        spriteSheet.bindCheck();
     }
 
     @Override

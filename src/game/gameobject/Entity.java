@@ -6,7 +6,6 @@
 package game.gameobject;
 
 import engine.Methods;
-import engine.Point;
 import engine.Time;
 import game.place.Place;
 import navmeshpathfinding.PathData;

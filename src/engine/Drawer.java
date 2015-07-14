@@ -202,7 +202,7 @@ public class Drawer {
 
     public static void drawShapeInShade(Appearance appearance, float color) {
         prepareDrawingShape(color);
-        appearance.bindCheckByTexture();
+        appearance.bindCheck();
         changeShapeToColor();
         appearance.render();
         cleanAfterDrawingShape();
@@ -210,21 +210,21 @@ public class Drawer {
 
     public static void drawShapePartInShade(Appearance appearance, float color, int partXStart, int partXEnd) {
         prepareDrawingShape(color);
-        appearance.bindCheckByTexture();
+        appearance.bindCheck();
         changeShapeToColor();
         appearance.renderPart(partXStart, partXEnd);
         cleanAfterDrawingShape();
     }
 
     public static void drawShapeInBlack(Appearance appearance) {
-        appearance.bindCheckByTexture();
+        appearance.bindCheck();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         appearance.render();
         setBlendAttributesForShadows();
     }
 
     public static void drawShapePartInBlack(Appearance appearance, int partXStart, int partXEnd) {
-        appearance.bindCheckByTexture();
+        appearance.bindCheck();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderPart(partXStart, partXEnd);
         setBlendAttributesForShadows();

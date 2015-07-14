@@ -7,6 +7,8 @@ package sprites;
 
 import engine.Delay;
 import engine.Methods;
+import game.gameobject.Player;
+import game.place.fbo.FrameBufferedSpriteSheet;
 
 /**
  *
@@ -14,11 +16,12 @@ import engine.Methods;
  */
 public class Animation implements Appearance {
 
-    private final SpriteSheet spriteSheet;
+    private SpriteSheet spriteSheet;
+    private FrameBufferedSpriteSheet fboSpriteSheet;
+
     private final Delay delay;
-    private int start, end;
+    private int start, end, currentFrame;
     private boolean animate = true;
-    private int currentFrame;
 
     public Animation(SpriteSheet sprite, int delayTime) {
         this.spriteSheet = sprite;
@@ -26,89 +29,110 @@ public class Animation implements Appearance {
         this.end = spriteSheet.getSize() - 1;
         delay = new Delay(delayTime);
         delay.start();
+        fboSpriteSheet = new FrameBufferedSpriteSheet(64, 128, 152, sprite.getXStart(), sprite.getYStart());
     }
 
-    @Override
-    public void bindCheckByID() {
-        spriteSheet.bindCheckByID();
+    private void setCurrentFrame(int newFrame) {
+        currentFrame = newFrame;
+        if (fboSpriteSheet != null) {
+            fboSpriteSheet.updateFrame(currentFrame);
+        }
     }
 
-    @Override
-    public void bindCheckByTexture() {
-        spriteSheet.bindCheckByTexture();
+    public void updateTexture(Player owner) {
+        fboSpriteSheet.updateTexture(owner);
     }
 
-    @Override
-    public void render() {
-        spriteSheet.renderPiece(currentFrame);
-        changeFrameIfNeeded();
-    }
-
-    @Override
-    public void renderMirrored() {
-        spriteSheet.renderPieceMirrored(currentFrame);
-        changeFrameIfNeeded();
-    }
-
-    @Override
-    public void renderPart(int partXStart, int partXEnd) {
-        spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
-        changeFrameIfNeeded();
-    }
-
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
-        spriteSheet.renderPiecePartMirrored(currentFrame, partXStart, partXEnd);
-        changeFrameIfNeeded();
-    }
-
-    private void changeFrameIfNeeded() {
-        if (animate &&  delay.isOver()) {
-            currentFrame++;
+    public void updateFrame() {
+        if (animate && delay.isOver()) {
             delay.start();
+            setCurrentFrame(currentFrame + 1);
             if (currentFrame > end) {
-                currentFrame = start;
+                setCurrentFrame(start);
             }
         }
     }
 
     public void animateSingle(int index) {
         animate = false;
-        currentFrame = Methods.interval(0, index, spriteSheet.getSize() - 1);
+        setCurrentFrame(Methods.interval(0, index, spriteSheet.getSize() - 1));
     }
 
     public void animateWhole() {
         start = 0;
         end = spriteSheet.getSize() - 1;
         if (currentFrame < start || currentFrame > end) {
-            currentFrame = 0;
+            setCurrentFrame(0);
             animate = true;
         }
     }
 
-    public void animateInterval(int iSt, int iEn) {
-        start = iSt;
-        end = iEn;
+    public void animateInterval(int start, int end) {
+        this.start = start;
+        this.end = end;
         if (currentFrame < start || currentFrame > end) {
-            currentFrame = iSt;
+            setCurrentFrame(start);
             animate = true;
         }
+    }
+
+    @Override
+    public void bindCheck() {
+        if (fboSpriteSheet == null) {
+            spriteSheet.bindCheck();
+        }
+    }
+
+    @Override
+    public void render() {
+        if (fboSpriteSheet != null) {
+            fboSpriteSheet.render();
+        } else {
+            spriteSheet.renderPiece(currentFrame);
+        }
+    }
+
+    @Override
+    public void renderMirrored() {
+        spriteSheet.renderPieceMirrored(currentFrame);
+    }
+
+    @Override
+    public void renderPart(int partXStart, int partXEnd) {
+        if (fboSpriteSheet != null) {
+            fboSpriteSheet.renderPart(partXStart, partXEnd);
+        } else {
+            spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
+        }
+    }
+
+    @Override
+    public void renderPartMirrored(int partXStart, int partXEnd) {
+        spriteSheet.renderPiecePartMirrored(currentFrame, partXStart, partXEnd);
+    }
+
+    public boolean isUpToDate() {
+        return fboSpriteSheet.isUpToDate();
     }
 
     public int getCurrentFrameIndex() {
-        changeFrameIfNeeded();
         return currentFrame;
     }
 
-    public void setDelay(int d) {
-        delay.setFrameLength(d);
+    public void setUpToDate(boolean upToDate) {
+        fboSpriteSheet.setUpToDate(upToDate);
     }
 
-    public void setFPS(int d) {
-        delay.setFPS(d);
+    public void setDelay(int length) {
+        delay.setFrameLength(length);
+    }
+
+    public void setFPS(int fps) {
+        delay.setFPS(fps);
     }
 
     public void setAnimate(boolean animate) {
         this.animate = animate;
     }
+
 }
