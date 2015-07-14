@@ -21,6 +21,6 @@ $CO1$b$CO2$l$CO3$a$CO4$r$CO5$g$CO6$h$CN
 #B2
 $AU1$$PO1$$EX3$$VE0.1$.....$VN $FL
 $AU0$$PO0$$EX0$yyyy....
-Nie wiesz jak masz na imię?$QUWiem!:4:Nie wiem...:4$
-#B4
+Nie wiesz jak masz na imię?$QUWiem!:3:Nie wiem...:3$
+#B3
 $AU0$$PO0$.....

@@ -8,6 +8,7 @@ package collision;
 import engine.BlueArray;
 import engine.Methods;
 import engine.Point;
+import engine.PointedValue;
 import engine.PointContener;
 import engine.Shadow;
 import engine.ShadowContener;
@@ -18,6 +19,7 @@ import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
 import java.util.List;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -35,6 +37,7 @@ public abstract class Figure implements Comparable<Figure> {
     protected final BlueArray<Point> points;
     private static PointContener tiles;
     private boolean mobile = false, small = false;
+    private final DoublePoint slideSpeed;
 
     public abstract boolean isCollideSingle(int x, int y, Figure figure);
 
@@ -48,6 +51,7 @@ public abstract class Figure implements Comparable<Figure> {
         this.owner = owner;
         this.opticProperties = opticProperties;
         this.points = new BlueArray<>(4);
+        slideSpeed = new DoublePoint();
     }
 
     public boolean isCollideSolid(int x, int y, Map map) {
@@ -216,6 +220,39 @@ public abstract class Figure implements Comparable<Figure> {
             return getYEnd() - Place.tileSize;
         }
         return getY();
+    }
+
+    public void prepareSlideSpeed(double xSpeed, double ySpeed) {   //YOUR SPPED WITHOUT SLIDING
+        slideSpeed.setStart(xSpeed, ySpeed);
+        slideSpeed.changed = false;
+    }
+
+    public void setSlideSpeed(double xSpeed, double ySpeed) {
+        slideSpeed.changeSlide(xSpeed, ySpeed);
+        slideSpeed.changed = true;
+    }
+
+    public void resetSlideSpeed() {
+        if (!slideSpeed.changed) {
+            slideSpeed.changeSlide(0, 0);
+            slideSpeed.changed = false;
+        }
+    }
+
+    public double getXStartSlideSpeed() {
+        return slideSpeed.getStartX();
+    }
+
+    public double getYStartSlideSpeed() {
+        return slideSpeed.getStartY();
+    }
+    
+    public double getXSlideSpeed() {
+        return slideSpeed.getAllX();
+    }
+
+    public double getYSlideSpeed() {
+        return slideSpeed.getAllY();
     }
 
     public boolean isLittable() {
@@ -392,5 +429,41 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setShadowHeight(int shadowHeight) {
         opticProperties.setType(shadowHeight);
+    }
+
+    private class DoublePoint {
+
+        private double x, y;
+        private double startX, startY;
+        private boolean changed;
+        private double lastX, lastY;
+        
+        public double getAllX() {
+            return x != 0 ? x : lastX;
+        }
+
+        public double getAllY() {
+            return y != 0 ? y : lastY;
+        }
+        
+        public double getStartX() {
+            return startX;
+        }
+
+        public double getStartY() {
+            return startY;
+        }
+
+        public void changeSlide(double x, double y) {
+            lastX = this.x;
+            lastY = this.y;
+            this.x = x;
+            this.y = y;
+        }
+
+        public void setStart(double x, double y) {
+            startX = x;
+            startY = y;
+        }
     }
 }

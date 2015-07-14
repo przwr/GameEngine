@@ -8,6 +8,7 @@ package game.gameobject;
 import collision.Figure;
 import engine.Drawer;
 import engine.Methods;
+import engine.Point;
 import game.Settings;
 import game.place.Place;
 import net.packets.Update;
