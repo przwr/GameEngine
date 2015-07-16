@@ -178,7 +178,7 @@ public class MyGame extends Game {
         if (running && place != null) {
             place.render();
         } else {
-            glClear(GL_COLOR_BUFFER_BIT);
+            Drawer.clearScreen(0);
             menu.render();
         }
     }

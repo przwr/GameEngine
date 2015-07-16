@@ -14,14 +14,12 @@ import game.place.fbo.FrameBufferObject;
 import game.place.fbo.RegularFrameBufferObject;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ONE;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_ZERO;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glOrtho;
@@ -151,7 +149,7 @@ public class Renderer {
 
     public static void preRenderShadowedLights(Place place, Camera camera) {
         frame.activate();
-        glClear(GL_COLOR_BUFFER_BIT);
+        Drawer.clearScreen(0);
         glColor3f(1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
         camera.getVisibleLights().stream().forEach((light) -> {
