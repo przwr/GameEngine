@@ -7,6 +7,7 @@ package game.place.fbo;
 
 import game.Settings;
 import game.gameobject.Player;
+import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -85,7 +86,7 @@ public class FrameBufferedSpriteSheet {
         frameBufferObject.activate();
         glClear(GL_COLOR_BUFFER_BIT);
         glColor3f(1, 1, 1);
-        glTranslatef(0, Settings.resolutionHeight - fboSize, 0);
+        glTranslatef(0, Display.getHeight() - fboSize, 0);
     }
 
     private void endTextureUpdate(FrameBufferObject frameBufferObject) {
