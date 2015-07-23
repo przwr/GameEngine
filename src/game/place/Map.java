@@ -5,14 +5,13 @@
  */
 package game.place;
 
-import engine.Light;
 import collision.Block;
 import collision.Figure;
-import engine.PointContener;
 import engine.BlueArray;
 import engine.Drawer;
-import static engine.Drawer.clearScreen;
+import engine.Light;
 import engine.Methods;
+import engine.PointContener;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import static game.place.Area.X_IN_TILES;
@@ -24,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 import org.newdawn.slick.Color;
 
 /**
@@ -352,7 +353,7 @@ public abstract class Map {
     }
 
     public void renderBackground(Camera camera) {
-        clearScreen(0);
+        Drawer.clearScreen(0);
         Drawer.refreshForRegularDrawing();
         for (int i : placement.getNearAreas(camera.getArea())) {
             if (i >= 0 && i < areas.length) {
@@ -376,14 +377,14 @@ public abstract class Map {
         }
     }
 
-    public void renderObjects(Camera camera) {       
+    public void renderObjects(Camera camera) {
         Drawer.refreshForRegularDrawing();
         renderBottom(camera);
         renderTop(camera);
     }
 
     public void renderBottom(Camera camera) {
-        updateNearForegroundTiles(camera.getArea());        
+        updateNearForegroundTiles(camera.getArea());
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
         Methods.insort(depthObjects);
         int y = 0;

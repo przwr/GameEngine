@@ -48,16 +48,8 @@ public class Drawer {
     }
 
     public static void clearScreen(float color) {
-        glDisable(GL_TEXTURE_2D);
-        glBlendFunc(GL_ONE, GL_ZERO);
-        glColor3f(color, color, color);
-        glBegin(GL_QUADS);
-        glVertex2f(0, 0);
-        glVertex2f(0, displayHeight);
-        glVertex2f(displayWidth, displayHeight);
-        glVertex2f(displayWidth, 0);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        glClearColor(color, color, color, 0f);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     public static void refreshForRegularDrawing() {

@@ -2,9 +2,9 @@ package engine;
 
 import collision.Figure;
 import collision.Rectangle;
+import collision.RoundRectangle;
 import game.gameobject.GameObject;
 import game.place.Place;
-
 import java.awt.geom.Line2D;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -20,11 +20,8 @@ import java.io.Writer;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.JOptionPane;
-
 import net.jodk.lang.FastMath;
-
 import org.lwjgl.input.Keyboard;
 
 /*
@@ -58,7 +55,7 @@ public class Methods {
     }
 
     public static int pointDistanceSimple(int x, int y, int xa, int ya) {
-        return (int) (FastMath.abs(xa - x) + FastMath.abs(ya - y));
+        return FastMath.abs(xa - x) + FastMath.abs(ya - y);
     }
 
     public static int pointDistanceSimple2(int x, int y, int xa, int ya) {
@@ -93,7 +90,7 @@ public class Methods {
     }
 
     public static double pointAngleMax360(int xSt, int ySt, int xEn, int yEn) {     //0 <=> PRAWO; 90 <=> DÓŁ; 180 <=> LEWO; 270 <=> GÓRA; czy to dobrze??
-        xDelta = xEn - xSt;
+        xDelta = xEn - xSt;                                                         // Ja i tak to muszę obrócić o krotność 45 stopni, więc nic by mi to nie działo, gdybym miał obrócone.
         yDelta = yEn - ySt;
         det = FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
         return det >= 0 ? det : det + 360;
@@ -259,6 +256,9 @@ public class Methods {
     public static void getCastingPointsIndexes(int x, int y, Figure figure, Point result) {
         if (figure instanceof Rectangle) {
             getCastingPointsFromRectangle(x, y, figure, result);
+        } else if (figure instanceof RoundRectangle) {
+            // TODO from RoundRectangle, or not.
+            getCastingPointsFromRest(x, y, figure.getPoints(), result);
         } else {
             getCastingPointsFromRest(x, y, figure.getPoints(), result);
         }
@@ -357,6 +357,54 @@ public class Methods {
 
     public static boolean isPointOnTheRightToLine(int xb, int yb, int xe, int ye, int xp, int yp) {
         return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) <= 0;
+    }
+
+    public static Point getXIntersetction(double a, double b, int xStart, int yStart, int xEnd, int yEnd, RoundRectangle other) {
+        if (other.isTriangular()) {
+            if (other.isLeftBottomRound()) {
+                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other.getYEnd());
+            } else {
+                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getXEnd(), other.getYEnd() - Place.tileSize, other.getX(), other.getYEnd());
+            }
+        } else {
+            if (other.isConcave()) {
+                if (other.isLeftBottomRound()) {
+                    return Methods.getTopCircleLineIntersection(-a, -b, other.getX(), other.getYEnd());
+                } else {
+                    return Methods.getTopCircleLineIntersection(-a, -b, other.getXEnd(), other.getYEnd());
+                }
+            } else {
+                if (other.isLeftBottomRound()) {
+                    return Methods.getBottomCircleLineIntersection(-a, -b, other.getXEnd(), other.getYEnd() - Place.tileSize);
+                } else {
+                    return Methods.getBottomCircleLineIntersection(-a, -b, other.getX(), other.getYEnd() - Place.tileSize);
+                }
+            }
+        }
+    }
+
+    public static Point getXIntersetctionFromTop(double a, double b, int xStart, int yStart, int xEnd, int yEnd, RoundRectangle other) {
+        if (other.isTriangular()) {
+            if (other.isLeftBottomRound()) {
+                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other.getYEnd());
+            } else {
+                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getXEnd(), other.getYEnd() - Place.tileSize, other.getX(), other.getYEnd());
+            }
+        } else {
+            if (other.isConcave()) {
+                if (other.isLeftBottomRound()) {
+                    return Methods.getBottomCircleLineIntersection(-a, -b, other.getX(), other.getYEnd());
+                } else {
+                    return Methods.getBottomCircleLineIntersection(-a, -b, other.getXEnd(), other.getYEnd());
+                }
+            } else {
+                if (other.isLeftBottomRound()) {
+                    return Methods.getTopCircleLineIntersection(-a, -b, other.getXEnd(), other.getYEnd() - Place.tileSize);
+                } else {
+                    return Methods.getTopCircleLineIntersection(-a, -b, other.getX(), other.getYEnd() - Place.tileSize);
+                }
+            }
+        }
     }
 
     // sorts from smallest to biggest

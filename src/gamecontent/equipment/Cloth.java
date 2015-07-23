@@ -35,60 +35,61 @@ public class Cloth {
             throw new FileNotFoundException(name);
         }
     }
-/*
-    public void addClothes(ArrayList<ClothPart> otherList, int addPriority) {
-        for (ClothPart cp : list) {
-            cp.priority += addPriority;
-        }
-        otherList.addAll(list);
-    }
-    */
-        
+    /*
+     public void addClothes(ArrayList<ClothPart> otherList, int addPriority) {
+     for (ClothPart cp : list) {
+     cp.priority += addPriority;
+     }
+     otherList.addAll(list);
+     }
+     */
+
     public SpriteSheet getLeftPart() {
         return list.get(0);
     }
-    
+
     public SpriteSheet getRightPart() {
         return list.get(list.size() - 1);
     }
-    
+
     public SpriteSheet getCentralPart() {
-        if (list.size() > 2)
+        if (list.size() > 2) {
             return list.get(1);
+        }
         return null;
     }
-/*
-    public static void sortClothes(ArrayList<ClothPart> list) {
-        int i, j, newValue;
-        ClothPart cloth;
-        for (i = 1; i < list.size(); i++) {
-            cloth = list.get(i);
-            newValue = cloth.priority;
-            j = i;
-            while (j > 0 && list.get(j - 1).priority > newValue) {
-                list.set(j, list.get(j - 1));
-                j--;
-            }
-            list.set(j, cloth);
-        }
-    }
+    /*
+     public static void sortClothes(ArrayList<ClothPart> list) {
+     int i, j, newValue;
+     ClothPart cloth;
+     for (i = 1; i < list.size(); i++) {
+     cloth = list.get(i);
+     newValue = cloth.priority;
+     j = i;
+     while (j > 0 && list.get(j - 1).priority > newValue) {
+     list.set(j, list.get(j - 1));
+     j--;
+     }
+     list.set(j, cloth);
+     }
+     }
 
-    public class ClothPart {
+     public class ClothPart {
 
-        int priority;
-        SpriteSheet sprite;
+     int priority;
+     SpriteSheet sprite;
 
-        protected ClothPart(int priority, SpriteSheet sprite) {
-            this.priority = priority;
-            this.sprite = sprite;
-        }
+     protected ClothPart(int priority, SpriteSheet sprite) {
+     this.priority = priority;
+     this.sprite = sprite;
+     }
 
-        public int getPriority() {
-            return priority;
-        }
+     public int getPriority() {
+     return priority;
+     }
 
-        public SpriteSheet getSprite() {
-            return sprite;
-        }
-    }*/
+     public SpriteSheet getSprite() {
+     return sprite;
+     }
+     }*/
 }
