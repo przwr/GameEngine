@@ -11,6 +11,7 @@ import collision.Rectangle;
 import engine.Drawer;
 import engine.Light;
 import engine.Methods;
+import engine.Point;
 import engine.RandomGenerator;
 import engine.Time;
 import game.Settings;
@@ -51,7 +52,7 @@ public class MyPlayer extends Player {
     //---------<('.'<) TYMCZASOWE!-------------//
     private float jumpDelta = 22.6f;
     //private SpriteSheet test, testBody;    //NIE KASOWAĆ! <('o'<)
-    float testIndex = 0;
+    //float testIndex = 0;
     //---------------------------------------//
 
     public MyPlayer(boolean first, String name) {
@@ -96,13 +97,22 @@ public class MyPlayer extends Player {
         textControl = new TextController(place);
         addGui(textControl);
 
-        //test = place.getSpriteSheet("wynik");         //NIE KASOWAĆ! <('o'<)
-        //testBody = place.getSpriteSheet("wynik1");
+        //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
+        //testBody = place.getSpriteSheet("kulka1");
         try {
             RandomGenerator r = RandomGenerator.create();
-            torso = new Cloth((String) r.choose("sweater", "torso", "blueSweater"), place);
-            legs = new Cloth((String) r.choose("boots", "legs"), place);
-            dress = r.chance(30) ? new Cloth((String) r.choose("dress", "blueDress"), place) : null;
+            torso = new Cloth(r.choose("sweater", "torso", "blueSweater"), place);
+            legs = new Cloth(r.choose("boots", "legs"), place);
+            dress = r.chance(30) ? new Cloth(r.choose("dress", "blueDress"), place) : null;
+            Point[] p = SpriteSheet.getMergedDimentions(new SpriteSheet[] 
+                {legs.getLeftPart(), legs.getRightPart(), 
+                dress != null ? dress.getLeftPart() : null, 
+                dress != null ? dress.getRightPart() : null, 
+                torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
+            System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
+                    + "\nWymiary połączonej ubranej babki : " + p[0]
+                    + "\nPunkt centralny obrazka : " + p[1]
+                    + "\nUWAGA! wymiary nie są 2-ójkowe");
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
@@ -143,7 +153,9 @@ public class MyPlayer extends Player {
             animation.updateFrame();
 
             //glTranslatef(50, 0, 0);
+            //Drawer.setCentralPoint();
             //testBody.renderPiece((int) testIndex);
+            //Drawer.returnToCentralPoint();
             //test.renderPiece((int) testIndex);
             //testIndex += 0.1;
             //if (testIndex >= 80) {

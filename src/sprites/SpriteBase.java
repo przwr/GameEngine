@@ -116,7 +116,6 @@ public class SpriteBase {
                             startPoints[i] = lastOne;
                             break;
                     }
-                    System.out.println(i + ". " + startPoints[i] + " " + line);
                     i++;
                 }
             }
@@ -136,7 +135,6 @@ public class SpriteBase {
                 image = SpriteSheet.create(texture, pieceWidth, pieceHeight, startX, startY, this);
             } else {
                 image = SpriteSheet.createWithMovingStart(texture, pieceWidth, pieceHeight, startX, startY, this, startPoints);
-                System.out.println("BUM");
             }
         } else {
             image = Sprite.create(texture.getTextureID(), width, height, startX, startY, this);
