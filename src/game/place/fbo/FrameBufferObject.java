@@ -58,18 +58,6 @@ public abstract class FrameBufferObject {
         }
     }
 
-    public int getTexture() {
-        return texture;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
     public void render() {
         checkBind();
         glBegin(GL_QUADS);
@@ -100,7 +88,7 @@ public abstract class FrameBufferObject {
         glPopMatrix();
     }
 
-    public void renderPiece(int xStart, int yStart,  float xBeg, float yBeg, float xEnd, float yEnd) {
+    public void renderPiece(int xStart, int yStart, float xBeg, float yBeg, float xEnd, float yEnd) {
         checkBind();
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
@@ -117,9 +105,21 @@ public abstract class FrameBufferObject {
     }
 
     private void checkBind() {
+        glBindTexture(GL_TEXTURE_2D, texture);
         if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
             glBindTexture(GL_TEXTURE_2D, texture);
         }
     }
 
+    public int getTexture() {
+        return texture;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
 }

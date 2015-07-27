@@ -8,14 +8,25 @@ package engine;
 import collision.Figure;
 import collision.RoundRectangle;
 import static engine.Drawer.displayHeight;
-import game.place.Place;
 import static engine.Shadow.BRIGHT;
 import static engine.Shadow.BRIGHTEN;
 import static engine.Shadow.BRIGHTEN_OBJECT;
 import static engine.Shadow.DARK;
 import static engine.Shadow.DARKEN;
 import static engine.Shadow.DARKEN_OBJECT;
-import static org.lwjgl.opengl.GL11.*;
+import game.place.Place;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.glVertex2f;
 
 /**
  *

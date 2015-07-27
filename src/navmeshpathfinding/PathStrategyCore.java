@@ -16,6 +16,7 @@ import engine.Point;
 import engine.PointContener;
 import engine.PointedValue;
 import game.gameobject.Entity;
+import game.place.Area;
 import java.awt.Polygon;
 import java.util.List;
 import static navmeshpathfinding.PathData.BLOCKED;
@@ -33,19 +34,39 @@ import net.jodk.lang.FastMath;
  */
 public class PathStrategyCore {
 
+    private static PathWindow pathWindow = new PathWindow();
+
+    private static boolean DEBUG = false, WINDOW_SHOWED;
+
+    private static void DEBUG(String message) {
+        if (DEBUG) {
+            System.out.println(message);
+        }
+        if (!WINDOW_SHOWED && DEBUG) {
+            pathWindow.setVisible(true);
+            WINDOW_SHOWED = true;
+        }
+    }
+
     public static void followPath(Entity requester, PathData data, int xDest, int yDest) {
         updatePath(data);
+        if (WINDOW_SHOWED) {
+            Area area = requester.getMap().getArea(requester.getArea());
+            pathWindow.addVariables(area.getNavigationMesh(), new Point(xDest, yDest),
+                    new Point(requester.getX(), requester.getY()),
+                    data.path, area.getXInPixels(), area.getYInPixels());
+        }
         chooseDestinationPoint(requester, data, xDest, yDest);
         managePassing(requester, data);
         data.calculateSpeed(requester.getMaxSpeed());
         manageBlockedAndAdjustSpeed(data, requester.getMaxSpeed());
         data.rememberPast();
-//        System.out.println(requester.getName() + " " + data.xSpeed + " " + data.ySpeed + " " + requester.getX() + " " + requester.getY());
     }
 
     private static void updatePath(PathData data) {
         if (data.newPath != null) {
             if (data.newPath.size() > 1) {
+                DEBUG("NEW PATH");
                 copyPath(data.newPath, data);
                 data.currentPoint = 1;
                 correctDestinationPointIfNeeded(data.path, data);
@@ -166,10 +187,13 @@ public class PathStrategyCore {
     private static void managePassing(Entity requester, PathData data) {
         if (data.flags.get(PASSING)) {
             passing(data);
+            DEBUG("PASSING");
         } else if (data.flags.get(PASSED)) {
             passed(requester, data);
+            DEBUG("PASSED");
         } else {
             normal(data);
+            DEBUG("NORMAL");
         }
     }
 
@@ -186,6 +210,7 @@ public class PathStrategyCore {
                 data.lastInAWay = data.inAWay;
             }
             data.destination = data.correction;
+            System.out.println(data.correction);
         }
     }
 
@@ -354,6 +379,7 @@ public class PathStrategyCore {
 
     public static void manageBlockedAndAdjustSpeed(PathData data, double maxSpeed) {
         if (data.flags.get(BLOCKED)) {
+            DEBUG("BLOCKED");
             data.xSpeed = data.pastXSpeed;
             data.ySpeed = data.pastYSpeed;
             data.alternateCount++;

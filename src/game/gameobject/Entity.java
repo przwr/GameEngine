@@ -5,6 +5,7 @@
  */
 package game.gameobject;
 
+import engine.ErrorHandler;
 import engine.Methods;
 import engine.Time;
 import game.place.Place;
@@ -64,7 +65,7 @@ public abstract class Entity extends GameObject {
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in "
                     + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -111,7 +112,7 @@ public abstract class Entity extends GameObject {
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in "
                     + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 

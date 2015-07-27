@@ -39,6 +39,7 @@ public class PathFinder {
 
     public static PointContener findPath(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         if (mesh == null) {
+            System.out.println("Brak siatki nawigacji - znalezienie ścieżki niemożliwe");
             return null;
         }
         startPoint = new Point(xStart, yStart);

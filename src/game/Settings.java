@@ -5,6 +5,7 @@
  */
 package game;
 
+import engine.ErrorHandler;
 import engine.Methods;
 import engine.SoundBase;
 import game.gameobject.Player;
@@ -150,7 +151,7 @@ public class Settings {
                 supportedFrameBufferObjectVersion = EXT;
                 multiSampleSupported = false;
             } else {
-                Methods.javaError(language.menu.FBOError);
+                ErrorHandler.javaError(language.menu.FBOError);
             }
         }
     }

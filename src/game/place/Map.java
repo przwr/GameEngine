@@ -254,6 +254,7 @@ public abstract class Map {
         prepareMobsToUpdate();
         tempMobs.stream().forEach((mob) -> {
             mob.update();
+            mob.weapon.checkCollision(place.players);
         });
     }
 

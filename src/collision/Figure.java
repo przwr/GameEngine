@@ -211,8 +211,8 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     @Override
-    public int compareTo(Figure Figure) { // Check this out
-        return ((getDepth() - ((Figure) Figure).getDepth()) << 13) - (getLightDistance() - ((Figure) Figure).getLightDistance());
+    public int compareTo(Figure figure) { // Check this out
+        return ((getDepth() - figure.getDepth()) << 13) - (getLightDistance() - figure.getLightDistance());
     }
 
     private int getDepth() {

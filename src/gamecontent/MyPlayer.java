@@ -9,6 +9,7 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
+import engine.ErrorHandler;
 import engine.Light;
 import engine.Methods;
 import engine.RandomGenerator;
@@ -265,7 +266,7 @@ public class MyPlayer extends Player {
             setEmits(((MPlayerUpdate) update).isEmits());
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -283,7 +284,7 @@ public class MyPlayer extends Player {
             }
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 

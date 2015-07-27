@@ -5,7 +5,7 @@
  */
 package sprites;
 
-import engine.Methods;
+import engine.ErrorHandler;
 import engine.Point;
 import game.Settings;
 import java.io.BufferedReader;
@@ -122,7 +122,7 @@ public class SpriteBase {
             }
             input.close();
         } catch (IOException e) {
-            Methods.error("File " + name + " not found!\n" + e.getMessage());
+            ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
         try {
@@ -174,7 +174,7 @@ public class SpriteBase {
             image = line;
             input.close();
         } catch (IOException e) {
-            Methods.error("File " + name + " not found!\n" + e.getMessage());
+            ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
         try {
@@ -225,7 +225,7 @@ public class SpriteBase {
             pieceHeight = (int) (Integer.parseInt(data[1]) * Settings.nativeScale);
             input.close();
         } catch (IOException e) {
-            Methods.error("File " + name + " not found!\n" + e.getMessage());
+            ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
         try {

@@ -15,6 +15,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import engine.Delay;
+import engine.ErrorHandler;
 import engine.Methods;
 import game.gameobject.Mob;
 import game.gameobject.Player;
@@ -135,7 +136,7 @@ public class GameServer {
             try {
                 server.bind(KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
             } catch (IOException ex) {
-                Methods.error(ex.getMessage() + "!");
+                ErrorHandler.error(ex.getMessage() + "!");
                 return;
             }
             MPlayers[0] = new MPlayer((short) 0, id, "Server", null);
@@ -214,7 +215,7 @@ public class GameServer {
         isRunning = false;
         Close();
         game.game.endGame();
-        Methods.exception(exception);
+        ErrorHandler.exception(exception);
     }
 
     private synchronized void makeSureIdIsUnique() {

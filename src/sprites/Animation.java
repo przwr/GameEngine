@@ -40,7 +40,9 @@ public class Animation implements Appearance {
     }
 
     public void updateTexture(Player owner) {
-        fboSpriteSheet.updateTexture(owner);
+        if (fboSpriteSheet != null) {
+            fboSpriteSheet.updateTexture(owner);
+        }
     }
 
     public void updateFrame() {

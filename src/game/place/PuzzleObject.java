@@ -6,6 +6,7 @@
 package game.place;
 
 import collision.Block;
+import engine.ErrorHandler;
 import engine.Methods;
 import engine.Point;
 import engine.PointedValue;
@@ -69,7 +70,7 @@ public class PuzzleObject {
             height = Math.abs(yEnd - yBegin) + 1;
             input.close();
         } catch (IOException e) {
-            Methods.error("File " + file + " not found!\n" + e.getMessage());
+            ErrorHandler.error("File " + file + " not found!\n" + e.getMessage());
         }
     }
     
@@ -119,7 +120,7 @@ public class PuzzleObject {
                 break;
 
             default:
-                Methods.error("The object \"" + lineTab[0] + "\" is undefined");
+                ErrorHandler.error("The object \"" + lineTab[0] + "\" is undefined");
         }
     }
 

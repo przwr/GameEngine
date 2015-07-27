@@ -1,5 +1,6 @@
 package navmeshpathfinding;
 
+import engine.ErrorHandler;
 import engine.Methods;
 import game.gameobject.Entity;
 import static navmeshpathfinding.PathData.PATH_REQUESTED;
@@ -22,7 +23,7 @@ public class PathFindingModule implements Runnable {
             try {
                 findAndReturnRequestedPaths();
             } catch (Exception exception) {
-                Methods.swallowLogAndPrint(exception);
+                ErrorHandler.swallowLogAndPrint(exception);
             }
         }
     }

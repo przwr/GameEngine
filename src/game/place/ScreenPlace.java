@@ -5,10 +5,10 @@
  */
 package game.place;
 
-import game.text.FontBase;
-import game.text.FontHandler;
 import game.Game;
 import game.gameobject.GameObject;
+import game.text.FontBase;
+import game.text.FontHandler;
 
 /**
  *

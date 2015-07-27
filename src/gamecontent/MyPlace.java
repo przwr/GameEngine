@@ -101,10 +101,10 @@ public class MyPlace extends Place {
         if (game.online.server != null) {
             updateAreasOffline();
         } else if (game.online.client != null) {
-            Map map = players[0].getMap();
-            map.clearAreasToUpdate();
-            map.addAreasToUpdate(map.getNearAreas(players[0].getArea()));
-            map.updateAreasToUpdate();
+            Map curMap = players[0].getMap();
+            curMap.clearAreasToUpdate();
+            curMap.addAreasToUpdate(curMap.getNearAreas(players[0].getArea()));
+            curMap.updateAreasToUpdate();
         }
     }
 

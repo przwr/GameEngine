@@ -35,7 +35,7 @@ public class SoundBase {
                 //System.out.println(temp[0]);
                 sounds.add(new Sound(temp[0], dzwiek));
             } catch (IOException e) {
-                Methods.error(e.toString());
+                ErrorHandler.error(e.toString());
             }
         });
         Settings.sounds = this;

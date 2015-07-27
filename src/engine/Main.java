@@ -58,7 +58,7 @@ public class Main {
         Time.initialize();
         refreshGamma();
         if (LOG) {
-            Methods.logToFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
+            ErrorHandler.logToFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
         }
         delay.start();
         gameLoop();
@@ -69,7 +69,7 @@ public class Main {
         try {
             tryInitializeDisplay();
         } catch (LWJGLException | IOException exception) {
-            Methods.javaError(exception.toString());
+            ErrorHandler.javaError(exception.toString());
         }
     }
 
@@ -92,7 +92,7 @@ public class Main {
             try {
                 setNewMode(width, height, frequency, fullscreen);
             } catch (LWJGLException exception) {
-                Methods.javaError("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + " " + exception.getMessage());
+                ErrorHandler.javaError("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + " " + exception.getMessage());
             }
         }
     }
@@ -106,7 +106,7 @@ public class Main {
         }
         if (targetDisplayMode == null) {
             updateSettingsToDesktopMode();
-            Methods.error("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
+            ErrorHandler.error("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
             return;
         }
         Display.setDisplayMode(targetDisplayMode);
@@ -147,7 +147,7 @@ public class Main {
             Display.create(new PixelFormat(32, 0, 24, 0, 0));
         } catch (Exception exception) {
             Display.destroy();
-            Methods.javaError(exception.getMessage());
+            ErrorHandler.javaError(exception.getMessage());
         }
     }
 
@@ -190,12 +190,15 @@ public class Main {
                 int frames = (int) (60 / Time.getDelta());
                 if (game != null && game.getPlace() != null) {
                     info = " [" + frames + " fps] " + game.getPlace().getTime();
+                    if (Settings.fullScreen) {
+                        game.getPlace().printMessage(info);
+                    }
                 } else {
                     info = " [" + frames + " fps]";
                 }
                 Display.setTitle(game.getTitle() + info);
                 if (LOG) {
-                    Methods.logToFile(info + "\n");
+                    ErrorHandler.logToFile(info + "\n");
                 }
             }
             if (!pause) {
@@ -229,7 +232,7 @@ public class Main {
         } catch (Exception exception) {
             game.endGame();
             game.update();
-            Methods.exception(exception);
+            ErrorHandler.exception(exception);
         }
     }
 
@@ -239,7 +242,7 @@ public class Main {
         } catch (Exception exception) {
             game.endGame();
             game.update();
-            Methods.exception(exception);
+            ErrorHandler.exception(exception);
         }
         renderMessageIfNeeded();
         Display.sync(60);

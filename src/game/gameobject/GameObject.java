@@ -137,6 +137,22 @@ public abstract class GameObject {
         return (int) y + collision.getHeight() / 2;
     }
 
+    public int getXSpriteTextureCorner() {
+        if (sprite != null) {
+            return (int) x + sprite.getXOffset();
+        } else {
+            return (int) x;
+        }
+    }
+
+    public int getYSpriteTextureCorner() {
+        if (sprite != null) {
+            return (int) y + sprite.getYOffset();
+        } else {
+            return (int) y;
+        }
+    }
+
     public int getXSpriteBegin() {
         if (sprite != null) {
             return (int) x + sprite.getXOffset() + sprite.getXStart();

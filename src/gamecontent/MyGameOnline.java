@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import engine.ErrorHandler;
 import engine.Methods;
 import game.Game;
 import game.Settings;
@@ -64,7 +65,7 @@ public class MyGameOnline extends GameOnline {
             }
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -81,7 +82,7 @@ public class MyGameOnline extends GameOnline {
             isChanged[ADD_PLAYER] = true;
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -98,7 +99,7 @@ public class MyGameOnline extends GameOnline {
             isChanged[REMOVE_PLAYER] = true;
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -111,7 +112,7 @@ public class MyGameOnline extends GameOnline {
             }
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -137,7 +138,7 @@ public class MyGameOnline extends GameOnline {
             }
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -155,7 +156,7 @@ public class MyGameOnline extends GameOnline {
             isChanged[UPDATE_MOBS] = true;
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -180,7 +181,7 @@ public class MyGameOnline extends GameOnline {
             }
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -210,7 +211,7 @@ public class MyGameOnline extends GameOnline {
                 }
             } catch (Exception exception) {
                 String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-                Methods.logAndPrint(error);
+                ErrorHandler.logAndPrint(error);
             }
         };
         changes[REMOVE_PLAYER] = () -> {
@@ -238,7 +239,7 @@ public class MyGameOnline extends GameOnline {
                 }
             } catch (Exception exception) {
                 String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-                Methods.logAndPrint(error);
+                ErrorHandler.logAndPrint(error);
             }
         };
         changes[UPDATE_MOBS] = () -> {
@@ -302,7 +303,7 @@ public class MyGameOnline extends GameOnline {
                 }
             } catch (Exception exception) {
                 String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-                Methods.logAndPrint(error);
+                ErrorHandler.logAndPrint(error);
             }
         };
     }

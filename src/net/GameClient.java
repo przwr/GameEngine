@@ -13,6 +13,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import engine.Delay;
+import engine.ErrorHandler;
 import engine.Methods;
 import game.Settings;
 import game.gameobject.Player;
@@ -146,13 +147,13 @@ public class GameClient {
         isConnected = false;
         Close();
         game.game.endGame();
-        Methods.exception(e);
+        ErrorHandler.exception(e);
     }
 
     private synchronized void cleanUp(String msg) {
         isConnected = false;
         Close();
         game.game.endGame();
-        Methods.error(msg);
+        ErrorHandler.error(msg);
     }
 }

@@ -38,7 +38,7 @@ public class Drawer {
             return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/textures/white.png"), GL_LINEAR);
         } catch (IOException exception) {
             Logger.getLogger(ScreenPlace.class.getName()).log(Level.SEVERE, null, exception);
-            Methods.javaError(exception.getMessage());
+            ErrorHandler.javaError(exception.getMessage());
         }
         return null;
     }

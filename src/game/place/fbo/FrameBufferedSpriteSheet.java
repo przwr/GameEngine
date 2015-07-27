@@ -6,14 +6,12 @@
 package game.place.fbo;
 
 import engine.Drawer;
-import game.Settings;
 import game.gameobject.Player;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -24,12 +22,12 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
  * @author przemek
  */
 public class FrameBufferedSpriteSheet {
-    
+
     private static int fboSize = 512;
     private FrameBufferObject[] frameBufferObjects;
     private int xStart, yStart, xFrames, yFrames, frameWidth, frameHeight, framesCount, framesPerSpriteSheet, currentSpriteSheet, currentSpriteSheetFrame;
     private boolean upToDate;
-    
+
     public FrameBufferedSpriteSheet(int frameWidth, int frameHeight, int framesCount, int xStart, int yStart) {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
@@ -39,23 +37,23 @@ public class FrameBufferedSpriteSheet {
         xFrames = fboSize / frameWidth;
         yFrames = fboSize / frameHeight;
         framesPerSpriteSheet = xFrames * yFrames;
-        
+
         float spriteSheetsCount = framesCount / ((float) framesPerSpriteSheet);
         if (spriteSheetsCount > (int) spriteSheetsCount) {
             spriteSheetsCount++;
         }
-        
+
         frameBufferObjects = new FrameBufferObject[(int) spriteSheetsCount];
         for (int i = 0; i < frameBufferObjects.length; i++) {
             frameBufferObjects[i] = new RegularFrameBufferObject(fboSize, fboSize);
         }
     }
-    
+
     public void updateFrame(int currentFrame) {
         currentSpriteSheet = currentFrame / framesPerSpriteSheet;
         currentSpriteSheetFrame = currentFrame % framesPerSpriteSheet;
     }
-    
+
     public void updateTexture(Player owner) {
         if (!upToDate) {
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -66,6 +64,7 @@ public class FrameBufferedSpriteSheet {
                 for (int j = 0; j < yFrames; j++) {
                     for (int k = 0; k < xFrames; k++) {
                         owner.renderClothed(frame);
+//                        owner.renderShadow(0,0, null);
                         glTranslatef(frameWidth, 0, 0);
                         frame++;
                         if (frame > framesCount) {
@@ -80,40 +79,40 @@ public class FrameBufferedSpriteSheet {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
     }
-    
+
     private void prepareTextureUpdate(FrameBufferObject frameBufferObject) {
         glPushMatrix();
         frameBufferObject.activate();
         Drawer.clearScreen(0);
         glColor3f(1, 1, 1);
-        glTranslatef(0, Settings.resolutionHeight - fboSize, 0);
+        glTranslatef(0, Display.getHeight() - fboSize, 0);
     }
-    
+
     private void endTextureUpdate(FrameBufferObject frameBufferObject) {
         glPopMatrix();
         frameBufferObject.deactivate();
     }
-    
+
     public void render() {
         int xShift = (currentSpriteSheetFrame % xFrames) * frameWidth;
         int yShift = fboSize - frameHeight - ((currentSpriteSheetFrame / xFrames) * frameHeight);
         glTranslatef(xStart, yStart, 0);
         frameBufferObjects[currentSpriteSheet].renderPiece(-xShift, -yShift, xShift, yShift, xShift + frameWidth, yShift + frameHeight);
     }
-    
+
     public void renderPart(int partXStart, int partXEnd) {
         int xShift = (currentSpriteSheetFrame % xFrames) * frameWidth;
         int yShift = fboSize - frameHeight - ((currentSpriteSheetFrame / xFrames) * frameHeight);
         glTranslatef(xStart, yStart, 0);
         frameBufferObjects[currentSpriteSheet].renderPiece(-xShift, -yShift, xShift + partXStart, yShift, xShift + partXEnd, yShift + frameHeight);
     }
-    
+
     public boolean isUpToDate() {
         return upToDate;
     }
-    
+
     public void setUpToDate(boolean upToDate) {
         this.upToDate = upToDate;
     }
-    
+
 }

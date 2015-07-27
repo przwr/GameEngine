@@ -6,6 +6,7 @@
 package gamecontent;
 
 import engine.Drawer;
+import engine.ErrorHandler;
 import engine.Methods;
 import engine.SplitScreen;
 import static engine.inout.IO.loadInputFromFile;
@@ -139,7 +140,7 @@ public class MyGame extends Game {
         ups[ONLINE] = () -> {
             if ((online.client == null && online.server == null) || (online.client != null && !online.client.isConnected)) {
                 endGame();
-                Methods.error(Settings.language.menu.Disconnected);
+                ErrorHandler.error(Settings.language.menu.Disconnected);
             } else {
                 online.update();
             }

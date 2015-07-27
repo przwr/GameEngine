@@ -8,6 +8,7 @@ package navmeshpathfinding;
 import collision.Figure;
 import static engine.Methods.roundDouble;
 import engine.Point;
+import engine.PointContener;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -18,23 +19,24 @@ import javax.swing.JPanel;
  *
  * @author WROBELP1
  */
-public class Window extends javax.swing.JFrame {
+public class PathWindow extends javax.swing.JFrame {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates new form Window
      */
-    public Window() {
+    public PathWindow() {
         initComponents();
     }
 
-    public void addVariables(NavigationMesh mesh, Point end, Point start, Point[] path, int x, int y) {
+    public void addVariables(NavigationMesh mesh, Point end, Point start, PointContener path, int x, int y) {
         this.mesh = mesh;
         this.end = new Point(end.getX() - x, end.getY() - y);
         this.start = new Point(start.getX() - x, start.getY() - y);
         if (path != null) {
-            Point[] npath = new Point[path.length];
-            for (int i = 0; i < path.length; i++) {
-                npath[i] = new Point(path[i].getX() - x, path[i].getY() - y);
+            Point[] npath = new Point[path.size()];
+            for (int i = 0; i < path.size(); i++) {
+                npath[i] = new Point(path.get(i).getX() - x, path.get(i).getY() - y);
             }
             this.destination = npath;
         }
@@ -78,30 +80,38 @@ public class Window extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
 	// <editor-fold defaultstate="collapsed"
-	// desc="Generated Code">//GEN-BEGIN:initComponents
-	private void initComponents() {
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-		jPanel1 = new GPanel();
+        jPanel1 = new GPanel();
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setFocusTraversalPolicyProvider(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setFocusTraversalPolicyProvider(true);
 
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGap(0, 1044, Short.MAX_VALUE));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGap(0, 660, Short.MAX_VALUE));
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1044, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 660, Short.MAX_VALUE)
+        );
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(
-				jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(
-				jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
-		pack();
-	}// </editor-fold>//GEN-END:initComponents
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
     /**
      * @param args the command line arguments
@@ -124,8 +134,9 @@ public class Window extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PathWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+		// </editor-fold>
 		// </editor-fold>
 
 		// </editor-fold>
@@ -134,7 +145,7 @@ public class Window extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Window().setVisible(true);
+                new PathWindow().setVisible(true);
             }
         });
     }
@@ -144,11 +155,11 @@ public class Window extends javax.swing.JFrame {
     Point[] destination;
     Point[] polygon = new Point[4];
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JPanel jPanel1;
-
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    // End of variables declaration//GEN-END:variables
 	class GPanel extends JPanel {
+        private static final long serialVersionUID = 1L;
 
         public GPanel() {
         }
@@ -161,6 +172,7 @@ public class Window extends javax.swing.JFrame {
             double SCALE = 0.5;
             Polygon poly = new Polygon();
             if (mesh != null) {
+                System.out.println(mesh);
                 for (Triangle triangle : mesh.getTriangles()) {
                     for (int j = 0; j < 3; j++) {
                         Node nd = triangle.getNode(j);

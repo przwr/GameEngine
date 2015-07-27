@@ -8,7 +8,6 @@ package game.gameobject;
 import collision.Figure;
 import engine.Drawer;
 import engine.Methods;
-import engine.Point;
 import game.Settings;
 import game.place.Place;
 import net.packets.Update;
@@ -27,6 +26,8 @@ public abstract class Mob extends Entity {
 
     public abstract void update();
 
+    public Weapon weapon;
+
     public Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
         this.solid = solid;
@@ -35,6 +36,7 @@ public abstract class Mob extends Entity {
         this.sprite = place.getSprite(spriteName);
         initialize(name, x, y);
         this.mobID = mobID;
+        weapon = new Weapon(this, place.getSprite("banana"));
     }
 
     public synchronized void look(GameObject[] players) {
@@ -51,7 +53,7 @@ public abstract class Mob extends Entity {
     public synchronized void chase(GameObject prey) {
         if (prey != null && pathStrategy != null) {
             pathStrategy.findPath(this, pathData, prey.getX(), prey.getY());
-            xSpeed =pathData.getXSpeed();
+            xSpeed = pathData.getXSpeed();
             ySpeed = pathData.getYSpeed();
 //            changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
         }
@@ -83,7 +85,7 @@ public abstract class Mob extends Entity {
             }
             glTranslatef(getX(), getY(), 0);
             sprite.render();
-
+            weapon.render();
             if (Settings.scaled) {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
