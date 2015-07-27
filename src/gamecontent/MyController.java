@@ -25,6 +25,7 @@ public class MyController extends Controler {
 
     private int direction;
     private boolean running, diagonal;
+    private Animation playerAnimation;
 
     public MyController(Entity inControl) {
         super(inControl);
@@ -64,102 +65,69 @@ public class MyController extends Controler {
                 }
             }
         }
-        diagonal = true;
-
-        if (inControl.isAbleToMove()) {
-            if (isKeyPressed(UP)) {
-                inControl.addSpeed(0, -4);
-            } else if (isKeyPressed(DOWN)) {
-                inControl.addSpeed(0, 4);
-            } else {
-                diagonal = false;
-                inControl.brake(1);
-            }
-            if (isKeyPressed(LEFT)) {
-                inControl.addSpeed(-4, 0);
-            } else if (isKeyPressed(RIGHT)) {
-                inControl.addSpeed(4, 0);
-            } else {
-                diagonal = false;
-                inControl.brake(0);
-            }
-        }
-
         //ANIMACJA//
         direction = inControl.getDirection();
         running = !isKeyPressed(RUN);
 
-        Animation playerAnimation = inControl.getAnimation();
+        playerAnimation = inControl.getAnimation();
+
         playerAnimation.setAnimate(true);
+        diagonal = true;
+
         if (inControl.isAbleToMove()) {
-            if (isKeyPressed(UP)) {
-                if (isKeyPressed(LEFT)) {
-                    if (running) {
-                        playerAnimation.animateInterval(64, 75);
-                    } else {
-                        playerAnimation.animateInterval(58, 63);
-                    }
-                    inControl.setDirection(135);
-                } else if (isKeyPressed(RIGHT)) {
-                    if (running) {
-                        playerAnimation.animateInterval(102, 113);
-                    } else {
-                        playerAnimation.animateInterval(96, 101);
-                    }
-                    inControl.setDirection(45);
-                } else {
-                    if (running) {
-                        playerAnimation.animateInterval(83, 94);
-                    } else {
-                        playerAnimation.animateInterval(77, 82);
-                    }
-                    inControl.setDirection(90);
-                }
-            } else if (isKeyPressed(DOWN)) {
-                if (isKeyPressed(LEFT)) {
-                    if (running) {
-                        playerAnimation.animateInterval(26, 37);
-                    } else {
-                        playerAnimation.animateInterval(20, 25);
-                    }
-                    inControl.setDirection(225);
-                } else if (isKeyPressed(RIGHT)) {
-                    if (running) {
-                        playerAnimation.animateInterval(140, 151);
-                    } else {
-                        playerAnimation.animateInterval(134, 139);
-                    }
-                    inControl.setDirection(315);
-                } else {
-                    if (running) {
-                        playerAnimation.animateInterval(7, 18);
-                    } else {
-                        playerAnimation.animateInterval(1, 6);
-                    }
-                    inControl.setDirection(270);
-                }
-            } else if (isKeyPressed(RIGHT)) {
-                if (running) {
-                    playerAnimation.animateInterval(121, 132);
-                } else {
-                    playerAnimation.animateInterval(115, 120);
-                }
-                inControl.setDirection(0);
-            } else if (isKeyPressed(LEFT)) {
-                if (running) {
-                    playerAnimation.animateInterval(45, 56);
-                } else {
-                    playerAnimation.animateInterval(39, 44);
-                }
-                inControl.setDirection(180);
+            if (isKeyPressed(JUMP)) {
+                playerAnimation.setStopAtEnd(true);
+                playerAnimation.animateIntervalInDirection(direction / 45, 21, 23);
+                inControl.brake(2);
             } else {
-                playerAnimation.animateSingle((270 - direction) / 45 * 19);
+                playerAnimation.setStopAtEnd(false);
+                if (isKeyPressed(UP)) {
+                    if (isKeyPressed(LEFT)) {
+                        animateMoving(135);
+                        inControl.addSpeed(-4, -4);
+                    } else if (isKeyPressed(RIGHT)) {
+                        animateMoving(45);
+                        inControl.addSpeed(4, -4);
+                    } else {
+                        animateMoving(90);
+                        inControl.addSpeed(0, -4);
+                    }
+                } else if (isKeyPressed(DOWN)) {
+                    if (isKeyPressed(LEFT)) {
+                        animateMoving(225);
+                        inControl.addSpeed(-4, 4);
+                    } else if (isKeyPressed(RIGHT)) {
+                        animateMoving(315);
+                        inControl.addSpeed(4, 4);
+                    } else {
+                        animateMoving(270);
+                        inControl.addSpeed(0, 4);
+                    }
+                } else {
+                    if (isKeyPressed(RIGHT)) {
+                        animateMoving(0);
+                        inControl.addSpeed(4, 0);
+                    } else if (isKeyPressed(LEFT)) {
+                        animateMoving(180);
+                        inControl.addSpeed(-4, 0);
+                    } else {
+                        playerAnimation.animateSingleInDirection(direction / 45, 0);
+                    }
+                }
+                if (!isKeyPressed(UP) && !isKeyPressed(DOWN)) {
+                    diagonal = false;
+                    inControl.brake(1);
+                }
+                if (!isKeyPressed(LEFT) && !isKeyPressed(RIGHT)) {
+                    diagonal = false;
+                    inControl.brake(0);
+                }
             }
 
-            if (isKeyPressed(JUMP)) {
-                inControl.setJumping(true);
-                inControl.setHop(true);
-            }
+            /*if (isKeyPressed(JUMP)) {
+             inControl.setJumping(true);
+             inControl.setHop(true);
+             }*/
             if (isKeyPressed(RUN)) {
                 inControl.setMaxSpeed(diagonal ? 1.5 : 2);
             } else {
@@ -174,13 +142,22 @@ public class MyController extends Controler {
                 }
             }
         } else {
-            playerAnimation.animateSingle((270 - direction) / 45 * 19);
+            playerAnimation.animateSingleInDirection(direction / 45, 0);
         }
         if (running) {
             playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
         } else {
             playerAnimation.setFPS((int) (inControl.getSpeed() * 5));
         }
+    }
+
+    private void animateMoving(int direction) {
+        if (running) {
+            playerAnimation.animateIntervalInDirection(direction / 45, 7, 18);
+        } else {
+            playerAnimation.animateIntervalInDirection(direction / 45, 1, 6);
+        }
+        inControl.setDirection(direction);
     }
 
     @Override

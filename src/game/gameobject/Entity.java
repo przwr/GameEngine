@@ -337,6 +337,10 @@ public abstract class Entity extends GameObject {
     public int getDirection() {
         return direction;
     }
+    
+    public int getDirection8Dir() {
+        return direction / 45;
+    }
 
     public PathData getPathData() {
         return pathData;

@@ -45,7 +45,7 @@ public class MyPlayer extends Player {
     private Cloth legs;
     private Cloth dress;
 
-    private final int framesPerDir = 19;
+    private final int framesPerDir = 24;
 
     private TextController textControl;
 
@@ -92,7 +92,7 @@ public class MyPlayer extends Player {
         this.online = place.game.online;
         emitter = true;
         emits = false;
-        sprite = place.getSpriteSheet("test");
+        sprite = place.getSpriteSheet("cloth/test");
 
         textControl = new TextController(place);
         addGui(textControl);
@@ -116,7 +116,7 @@ public class MyPlayer extends Player {
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
-        animation = new Animation((SpriteSheet) sprite, 200);
+        animation = new Animation((SpriteSheet) sprite, 200, framesPerDir);
         visible = true;
         depth = 0;
         setResistance(2);
