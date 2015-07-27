@@ -76,12 +76,12 @@ public class SpriteBase {
             sprite = sprite.replace("/", File.separator);
 
             data = input.readLine().split(";");
-            width = (int) (Integer.parseInt(data[0]));
-            height = (int) (Integer.parseInt(data[1]));
+            width = Integer.parseInt(data[0]);
+            height = Integer.parseInt(data[1]);
 
             data = input.readLine().split(";");
-            startX = (int) (Integer.parseInt(data[0]));
-            startY = (int) (Integer.parseInt(data[1]));
+            startX = Integer.parseInt(data[0]);
+            startY = Integer.parseInt(data[1]);
 
             data = input.readLine().split(";");
             pieceWidth = Integer.parseInt(data[0]);

@@ -36,7 +36,7 @@ public class Animation implements Appearance {
         delay = new Delay(delayTime);
         delay.start();
         this.framesPerDirection = framesPerDirection;
-        //fboSpriteSheet = new FrameBufferedSpriteSheet(64, 128, 152, sprite.getXStart(), sprite.getYStart());
+//        fboSpriteSheet = new FrameBufferedSpriteSheet(64, 116, 256, sprite.getXStart(), sprite.getYStart());
     }
 
     private void setCurrentFrame(int newFrame) {
@@ -54,10 +54,10 @@ public class Animation implements Appearance {
 
     public void updateFrame() {
         /*System.out.println(animate
-                + " d: " + delay.isOver()
-                + " cf: " + currentFrame
-                + " s: " + stopAtEnd
-                + " st.en: " + start + "." + end);*/
+         + " d: " + delay.isOver()
+         + " cf: " + currentFrame
+         + " s: " + stopAtEnd
+         + " st.en: " + start + "." + end);*/
         if (animate && delay.isOver()) {
             delay.start();
             setCurrentFrame(currentFrame + 1);

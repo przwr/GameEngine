@@ -9,6 +9,7 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
+import engine.ErrorHandler;
 import engine.Light;
 import engine.Methods;
 import engine.Point;
@@ -104,10 +105,9 @@ public class MyPlayer extends Player {
             torso = new Cloth(r.choose("sweater", "torso", "blueSweater"), place);
             legs = new Cloth(r.choose("boots", "legs"), place);
             dress = r.chance(30) ? new Cloth(r.choose("dress", "blueDress"), place) : null;
-            Point[] p = SpriteSheet.getMergedDimentions(new SpriteSheet[] 
-                {legs.getLeftPart(), legs.getRightPart(), 
-                dress != null ? dress.getLeftPart() : null, 
-                dress != null ? dress.getRightPart() : null, 
+            Point[] p = SpriteSheet.getMergedDimentions(new SpriteSheet[]{legs.getLeftPart(), legs.getRightPart(),
+                dress != null ? dress.getLeftPart() : null,
+                dress != null ? dress.getRightPart() : null,
                 torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
             System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
                     + "\nWymiary połączonej ubranej babki : " + p[0]
@@ -277,7 +277,7 @@ public class MyPlayer extends Player {
             setEmits(((MPlayerUpdate) update).isEmits());
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
@@ -295,7 +295,7 @@ public class MyPlayer extends Player {
             }
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            Methods.logAndPrint(error);
+            ErrorHandler.logAndPrint(error);
         }
     }
 
