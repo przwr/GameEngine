@@ -9,9 +9,9 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
-import engine.ErrorHandler;
 import engine.Light;
 import engine.Methods;
+import engine.Point;
 import engine.RandomGenerator;
 import engine.Time;
 import game.Settings;
@@ -45,14 +45,14 @@ public class MyPlayer extends Player {
     private Cloth legs;
     private Cloth dress;
 
-    private final int framesPerDir = 19;
+    private final int framesPerDir = 24;
 
     private TextController textControl;
 
     //---------<('.'<) TYMCZASOWE!-------------//
     private float jumpDelta = 22.6f;
     //private SpriteSheet test, testBody;    //NIE KASOWAĆ! <('o'<)
-    float testIndex = 0;
+    //float testIndex = 0;
     //---------------------------------------//
 
     public MyPlayer(boolean first, String name) {
@@ -92,22 +92,31 @@ public class MyPlayer extends Player {
         this.online = place.game.online;
         emitter = true;
         emits = false;
-        sprite = place.getSpriteSheet("test");
+        sprite = place.getSpriteSheet("cloth/test");
 
         textControl = new TextController(place);
         addGui(textControl);
 
-        //test = place.getSpriteSheet("wynik");         //NIE KASOWAĆ! <('o'<)
-        //testBody = place.getSpriteSheet("wynik1");
+        //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
+        //testBody = place.getSpriteSheet("kulka1");
         try {
             RandomGenerator r = RandomGenerator.create();
-            torso = new Cloth((String) r.choose("sweater", "torso", "blueSweater"), place);
-            legs = new Cloth((String) r.choose("boots", "legs"), place);
-            dress = r.chance(30) ? new Cloth((String) r.choose("dress", "blueDress"), place) : null;
+            torso = new Cloth(r.choose("sweater", "torso", "blueSweater"), place);
+            legs = new Cloth(r.choose("boots", "legs"), place);
+            dress = r.chance(30) ? new Cloth(r.choose("dress", "blueDress"), place) : null;
+            Point[] p = SpriteSheet.getMergedDimentions(new SpriteSheet[] 
+                {legs.getLeftPart(), legs.getRightPart(), 
+                dress != null ? dress.getLeftPart() : null, 
+                dress != null ? dress.getRightPart() : null, 
+                torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
+            System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
+                    + "\nWymiary połączonej ubranej babki : " + p[0]
+                    + "\nPunkt centralny obrazka : " + p[1]
+                    + "\nUWAGA! wymiary nie są 2-ójkowe");
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
-        animation = new Animation((SpriteSheet) sprite, 200);
+        animation = new Animation((SpriteSheet) sprite, 200, framesPerDir);
         visible = true;
         depth = 0;
         setResistance(2);
@@ -144,7 +153,9 @@ public class MyPlayer extends Player {
             animation.updateFrame();
 
             //glTranslatef(50, 0, 0);
+            //Drawer.setCentralPoint();
             //testBody.renderPiece((int) testIndex);
+            //Drawer.returnToCentralPoint();
             //test.renderPiece((int) testIndex);
             //testIndex += 0.1;
             //if (testIndex >= 80) {
@@ -266,7 +277,7 @@ public class MyPlayer extends Player {
             setEmits(((MPlayerUpdate) update).isEmits());
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            ErrorHandler.logAndPrint(error);
+            Methods.logAndPrint(error);
         }
     }
 
@@ -284,7 +295,7 @@ public class MyPlayer extends Player {
             }
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
-            ErrorHandler.logAndPrint(error);
+            Methods.logAndPrint(error);
         }
     }
 

@@ -64,6 +64,14 @@ public class RandomGenerator extends Random {
         return opts[random(opts.length - 1)];
     }
     
+    public String choose(String... opts) {
+        return opts[random(opts.length - 1)];
+    }
+    
+    public int choose(int... opts) {
+        return opts[random(opts.length - 1)];
+    }
+    
     public double preciseRandom(double limit, double precison) {
         return (random((int) (limit / precison)) * precison);
     }

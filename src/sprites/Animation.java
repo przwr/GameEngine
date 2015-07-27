@@ -21,15 +21,22 @@ public class Animation implements Appearance {
 
     private final Delay delay;
     private int start, end, currentFrame;
-    private boolean animate = true;
+    private int framesPerDirection;
+    private boolean animate = true,
+            stopAtEnd = false;
 
     public Animation(SpriteSheet sprite, int delayTime) {
+        this(sprite, delayTime, 0);
+    }
+
+    public Animation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
         this.end = spriteSheet.getSize() - 1;
         delay = new Delay(delayTime);
         delay.start();
-        fboSpriteSheet = new FrameBufferedSpriteSheet(64, 128, 152, sprite.getXStart(), sprite.getYStart());
+        this.framesPerDirection = framesPerDirection;
+        //fboSpriteSheet = new FrameBufferedSpriteSheet(64, 128, 152, sprite.getXStart(), sprite.getYStart());
     }
 
     private void setCurrentFrame(int newFrame) {
@@ -46,10 +53,22 @@ public class Animation implements Appearance {
     }
 
     public void updateFrame() {
+        /*System.out.println(animate
+                + " d: " + delay.isOver()
+                + " cf: " + currentFrame
+                + " s: " + stopAtEnd
+                + " st.en: " + start + "." + end);*/
         if (animate && delay.isOver()) {
             delay.start();
             setCurrentFrame(currentFrame + 1);
             if (currentFrame > end) {
+                if (stopAtEnd) {
+                    animate = false;
+                    setCurrentFrame(end);
+                } else {
+                    setCurrentFrame(start);
+                }
+            } else if (currentFrame < start) {
                 setCurrentFrame(start);
             }
         }
@@ -60,22 +79,23 @@ public class Animation implements Appearance {
         setCurrentFrame(Methods.interval(0, index, spriteSheet.getSize() - 1));
     }
 
+    public void animateSingleInDirection(int direction, int index) {
+        animateSingle(direction * framesPerDirection + index);
+    }
+
     public void animateWhole() {
-        start = 0;
-        end = spriteSheet.getSize() - 1;
-        if (currentFrame < start || currentFrame > end) {
-            setCurrentFrame(0);
-            animate = true;
-        }
+        animateInterval(0, spriteSheet.getSize() - 1);
     }
 
     public void animateInterval(int start, int end) {
         this.start = start;
         this.end = end;
-        if (currentFrame < start || currentFrame > end) {
-            setCurrentFrame(start);
-            animate = true;
-        }
+        animate = true;
+    }
+
+    public void animateIntervalInDirection(int direction, int start, int end) {
+        animateInterval(direction * framesPerDirection + start,
+                direction * framesPerDirection + end);
     }
 
     @Override
@@ -135,6 +155,26 @@ public class Animation implements Appearance {
 
     public void setAnimate(boolean animate) {
         this.animate = animate;
+    }
+
+    public boolean isAnimating() {
+        return animate;
+    }
+
+    public void setStopAtEnd(boolean stopAtEnd) {
+        this.stopAtEnd = stopAtEnd;
+    }
+
+    public boolean isStoppingAtEnd() {
+        return stopAtEnd;
+    }
+
+    public void setFramesPerDirection(int frames) {
+        framesPerDirection = frames;
+    }
+
+    public int getFramesPerDirection() {
+        return framesPerDirection;
     }
 
 }

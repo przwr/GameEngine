@@ -19,6 +19,7 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import java.awt.geom.Line2D;
 import java.util.List;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -154,9 +155,11 @@ public class Rectangle extends Figure {
                 if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(),
                         list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())) {
                     if (corner == LEFT_TOP) {
-                        setSlideSpeed(-getYStartSlideSpeed() / slideVariable, -getXStartSlideSpeed() / slideVariable);
+                        setSlideSpeed(-FastMath.abs(getYStartSlideSpeed() / slideVariable), 
+                                -FastMath.abs(getXStartSlideSpeed() / slideVariable));
                     } else {
-                        setSlideSpeed(getYStartSlideSpeed() / slideVariable, getXStartSlideSpeed() / slideVariable);
+                        setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable), 
+                                FastMath.abs(getXStartSlideSpeed() / slideVariable));
                     }
                     return true;
                 }
@@ -166,9 +169,11 @@ public class Rectangle extends Figure {
                 if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(),
                         list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())) {
                     if (corner == LEFT_BOTTOM) {
-                        setSlideSpeed(getYStartSlideSpeed() / slideVariable, getXStartSlideSpeed() / slideVariable);
+                        setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable), 
+                                FastMath.abs(getXStartSlideSpeed() / slideVariable));
                     } else {
-                        setSlideSpeed(-getYStartSlideSpeed() / slideVariable, -getXStartSlideSpeed() / slideVariable);
+                        setSlideSpeed(-FastMath.abs(getYStartSlideSpeed() / slideVariable), 
+                                -FastMath.abs(getXStartSlideSpeed() / slideVariable));
                     }
                     return true;
                 }
@@ -185,8 +190,8 @@ public class Rectangle extends Figure {
                 point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getX(), roundRectangle.getY());
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() >= roundRectangle.getY()) {
-                    setSlideSpeed(-getYStartSlideSpeed() / slideVariable * (point.getX() - roundRectangle.getX()) / Place.tileSize,
-                            -getXStartSlideSpeed() / slideVariable * (point.getY() - roundRectangle.getY()) / Place.tileSize);
+                    setSlideSpeed(-FastMath.abs(getYStartSlideSpeed() / slideVariable * (point.getX() - roundRectangle.getX()) / Place.tileSize),
+                            -FastMath.abs(getXStartSlideSpeed() / slideVariable * (point.getY() - roundRectangle.getY()) / Place.tileSize));
                     return true;
                 }
                 break;
@@ -194,8 +199,8 @@ public class Rectangle extends Figure {
                 point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getX(), roundRectangle.getYEnd());
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() <= roundRectangle.getYEnd()) {
-                    setSlideSpeed(-getYStartSlideSpeed() / slideVariable * (roundRectangle.getX() - point.getX()) / Place.tileSize,
-                            getXStartSlideSpeed() / slideVariable * (roundRectangle.getYEnd() - point.getY()) / Place.tileSize);
+                    setSlideSpeed(-FastMath.abs(getYStartSlideSpeed() / slideVariable * (roundRectangle.getX() - point.getX()) / Place.tileSize),
+                            FastMath.abs(getXStartSlideSpeed() / slideVariable * (roundRectangle.getYEnd() - point.getY()) / Place.tileSize));
                     return true;
                 }
                 break;
@@ -203,8 +208,8 @@ public class Rectangle extends Figure {
                 point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getXEnd(), roundRectangle.getYEnd());
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() <= roundRectangle.getYEnd()) {
-                    setSlideSpeed(getYStartSlideSpeed() / slideVariable * (point.getX() - roundRectangle.getXEnd()) / Place.tileSize,
-                            getXStartSlideSpeed() / slideVariable * (point.getY() - roundRectangle.getYEnd()) / Place.tileSize);
+                    setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable * (point.getX() - roundRectangle.getXEnd()) / Place.tileSize),
+                            FastMath.abs(getXStartSlideSpeed() / slideVariable * (point.getY() - roundRectangle.getYEnd()) / Place.tileSize));
                     return true;
                 }
                 break;
@@ -212,8 +217,8 @@ public class Rectangle extends Figure {
                 point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getXEnd(), roundRectangle.getY());
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX() && point.getY() >= roundRectangle.getY()) {
-                    setSlideSpeed(getYStartSlideSpeed() / slideVariable * (roundRectangle.getXEnd() - point.getX()) / Place.tileSize,
-                            -getXStartSlideSpeed() / slideVariable * (roundRectangle.getY() - point.getY()) / Place.tileSize);
+                    setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable * (roundRectangle.getXEnd() - point.getX()) / Place.tileSize),
+                            -FastMath.abs(getXStartSlideSpeed() / slideVariable * (roundRectangle.getY() - point.getY()) / Place.tileSize));
                     return true;
                 }
                 break;
@@ -229,8 +234,8 @@ public class Rectangle extends Figure {
                 point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getXEnd(), roundRectangle.getY() + Place.tileSize);
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX()) {
-                    setSlideSpeed(-getYStartSlideSpeed() / slideVariable * (roundRectangle.getXEnd() - point.getX()) / Place.tileSize,
-                            -getXStartSlideSpeed() / slideVariable * (roundRectangle.getY() + Place.tileSize - point.getY()) / Place.tileSize);
+                    setSlideSpeed(-FastMath.abs(getYStartSlideSpeed() / slideVariable * (roundRectangle.getXEnd() - point.getX()) / Place.tileSize),
+                            -FastMath.abs(getXStartSlideSpeed() / slideVariable * (roundRectangle.getY() + Place.tileSize - point.getY()) / Place.tileSize));
                     return true;
                 }
                 break;
@@ -238,8 +243,8 @@ public class Rectangle extends Figure {
                 point = Methods.getLeftCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getXEnd(), roundRectangle.getYEnd() - Place.tileSize);
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX()) {
-                    setSlideSpeed(-getYStartSlideSpeed() / slideVariable * (point.getX() - roundRectangle.getXEnd()) / Place.tileSize,
-                            getXStartSlideSpeed() / slideVariable * (point.getY() - roundRectangle.getYEnd() + Place.tileSize) / Place.tileSize);
+                    setSlideSpeed(-FastMath.abs(getYStartSlideSpeed() / slideVariable * (point.getX() - roundRectangle.getXEnd()) / Place.tileSize),
+                            FastMath.abs(getXStartSlideSpeed() / slideVariable * (point.getY() - roundRectangle.getYEnd() + Place.tileSize) / Place.tileSize));
                     return true;
                 }
                 break;
@@ -247,8 +252,8 @@ public class Rectangle extends Figure {
                 point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_TOP].getY(), roundRectangle.getX(), roundRectangle.getYEnd() - Place.tileSize);
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX()) {
-                    setSlideSpeed(getYStartSlideSpeed() / slideVariable * (roundRectangle.getX() - point.getX()) / Place.tileSize,
-                            getXStartSlideSpeed() / slideVariable * (roundRectangle.getYEnd() - Place.tileSize - point.getY()) / Place.tileSize);
+                    setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable * (roundRectangle.getX() - point.getX()) / Place.tileSize),
+                            FastMath.abs(getXStartSlideSpeed() / slideVariable * (roundRectangle.getYEnd() - Place.tileSize - point.getY()) / Place.tileSize));
                     return true;
                 }
                 break;
@@ -256,8 +261,8 @@ public class Rectangle extends Figure {
                 point = Methods.getRightCircleLineIntersection(0, -list[RIGHT_BOTTOM].getY(), roundRectangle.getX(), roundRectangle.getY() + Place.tileSize);
                 if (point != null && point.getX() <= list[RIGHT_TOP].getX() && point.getX() >= list[LEFT_TOP].getX()
                         && point.getX() <= roundRectangle.getXEnd() && point.getX() >= roundRectangle.getX()) {
-                    setSlideSpeed(getYStartSlideSpeed() / slideVariable * (point.getX() - roundRectangle.getX()) / Place.tileSize,
-                            -getXStartSlideSpeed() / slideVariable * (point.getY() - roundRectangle.getY() - Place.tileSize) / Place.tileSize);
+                    setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable * (point.getX() - roundRectangle.getX()) / Place.tileSize),
+                            -FastMath.abs(getXStartSlideSpeed() / slideVariable * (point.getY() - roundRectangle.getY() - Place.tileSize) / Place.tileSize));
                     return true;
                 }
                 break;

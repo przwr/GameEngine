@@ -8,6 +8,7 @@ package sprites;
 import engine.Drawer;
 import engine.Point;
 import game.Settings;
+import net.jodk.lang.FastMath;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glEnd;
@@ -214,5 +215,32 @@ public class SpriteSheet extends Sprite {
 
     public int getSize() {
         return (int) (xTiles * yTiles);
+    }
+
+    public static Point[] getMergedDimentions(SpriteSheet[] list) {
+        int xB = Integer.MAX_VALUE, yB = Integer.MAX_VALUE,
+                xE = 0, yE = 0, tmpXS, tmpYS, tmpXE, tmpYE;
+        for (SpriteSheet s : list) {
+            if (s != null) {
+                tmpXS = s.xStart + s.xOffset;
+                tmpYS = s.yStart + s.yOffset;
+                tmpXE = tmpXS + s.actualWidth;
+                tmpYE = tmpYS + s.actualHeight;
+                if (tmpXS < xB) {
+                    xB = tmpXS;
+                }
+                if (tmpYS < yB) {
+                    yB = tmpYS;
+                }
+                if (tmpXE > xE) {
+                    xE = tmpXE;
+                }
+                if (tmpYE > yE) {
+                    yE = tmpYE;
+                }
+            }
+        }
+        return new Point[] {new Point(xE - xB, yE - yB), 
+            new Point(FastMath.abs(xB), FastMath.abs(yB))};
     }
 }
