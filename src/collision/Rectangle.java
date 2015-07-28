@@ -159,7 +159,7 @@ public class Rectangle extends Figure {
                                 -FastMath.abs(getXStartSlideSpeed() / slideVariable));
                     } else {
                         setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable), 
-                                FastMath.abs(getXStartSlideSpeed() / slideVariable));
+                                -FastMath.abs(getXStartSlideSpeed() / slideVariable));
                     }
                     return true;
                 }
@@ -169,11 +169,11 @@ public class Rectangle extends Figure {
                 if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(),
                         list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())) {
                     if (corner == LEFT_BOTTOM) {
-                        setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable), 
+                        setSlideSpeed(-FastMath.abs(getYStartSlideSpeed() / slideVariable), 
                                 FastMath.abs(getXStartSlideSpeed() / slideVariable));
                     } else {
-                        setSlideSpeed(-FastMath.abs(getYStartSlideSpeed() / slideVariable), 
-                                -FastMath.abs(getXStartSlideSpeed() / slideVariable));
+                        setSlideSpeed(FastMath.abs(getYStartSlideSpeed() / slideVariable), 
+                                FastMath.abs(getXStartSlideSpeed() / slideVariable));
                     }
                     return true;
                 }

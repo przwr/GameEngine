@@ -46,7 +46,7 @@ public class MyPlayer extends Player {
     private Cloth legs;
     private Cloth dress;
 
-    private final int framesPerDir = 24;
+    private final int framesPerDir = 26;
 
     private TextController textControl;
 
