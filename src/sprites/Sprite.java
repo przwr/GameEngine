@@ -6,11 +6,7 @@
 package sprites;
 
 import engine.Drawer;
-import java.io.IOException;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_BINDING_2D;
@@ -22,8 +18,6 @@ import static org.lwjgl.opengl.GL11.glTexCoord2d;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
 
 /**
  *
@@ -34,6 +28,7 @@ public class Sprite implements Appearance {
     protected int texture;
 
     protected SpriteBase spriteBase;
+    protected byte[] data;
     protected float widthWhole, heightWhole;
     protected int width;
     protected int height;
@@ -48,12 +43,8 @@ public class Sprite implements Appearance {
 
     protected double begin, ending;
 
-    public static Sprite create(int texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+    public static Sprite create(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
         return new Sprite(texture, width, height, xStart, yStart, spriteBase);
-    }
-
-    public static Sprite create(String textureKey, int width, int height, SpriteBase base) {
-        return new Sprite(textureKey, width, height, 0, 0, base);
     }
 
     protected Sprite(int texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
@@ -65,28 +56,16 @@ public class Sprite implements Appearance {
         this.height = height;
     }
 
-    protected Sprite(String textureKey, int width, int height, int xStart, int yStart, SpriteBase base) {
-        if (textureKey != null) {
-            Texture tempTexture = loadTexture(textureKey);
-            this.widthWhole = tempTexture.getImageWidth();
-            this.heightWhole = tempTexture.getImageHeight();
-            this.texture = tempTexture.getTextureID();
-            this.key = textureKey;
-            this.spriteBase = base;
-            this.xStart = -xStart;
-            this.yStart = -yStart;
-            this.width = width;
-            this.height = height;
-        }
-    }
-
-    public static Texture loadTexture(String textureKey) {
-        try {
-            return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/textures/" + textureKey + ".png"), GL_LINEAR);
-        } catch (IOException ex) {
-            Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    protected Sprite(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        this.widthWhole = texture.getImageWidth();
+        this.heightWhole = texture.getImageHeight();
+        this.texture = texture.getTextureID();
+        this.data = texture.getTextureData();
+        this.spriteBase = spriteBase;
+        this.xStart = -xStart;
+        this.yStart = -yStart;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -339,4 +318,7 @@ public class Sprite implements Appearance {
         return heightWhole;
     }
 
+    public byte[] getPixelData() {
+        return data;
+    }
 }

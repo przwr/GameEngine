@@ -47,7 +47,7 @@ public class SpriteSheet extends Sprite {
     }
 
     protected SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
-        super(texture.getTextureID(), width, height, xStart, yStart, spriteBase);
+        super(texture, width, height, xStart, yStart, spriteBase);
         isStartMoving = false;
         widthWhole = texture.getImageWidth();
         heightWhole = texture.getImageHeight();
@@ -55,7 +55,7 @@ public class SpriteSheet extends Sprite {
     }
 
     protected SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, Point[] startingPoints) {
-        super(texture.getTextureID(), width, height, xStart, yStart, spriteBase);
+        super(texture, width, height, xStart, yStart, spriteBase);
         this.startingPoints = startingPoints;
         isStartMoving = true;
         widthWhole = texture.getImageWidth();

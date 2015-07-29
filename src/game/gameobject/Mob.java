@@ -36,7 +36,7 @@ public abstract class Mob extends Entity {
         this.sprite = place.getSprite(spriteName);
         initialize(name, x, y);
         this.mobID = mobID;
-        weapon = new Weapon(this, place.getSprite("banana"));
+        weapon = new Weapon(this);
     }
 
     public synchronized void look(GameObject[] players) {
@@ -85,7 +85,6 @@ public abstract class Mob extends Entity {
             }
             glTranslatef(getX(), getY(), 0);
             sprite.render();
-            weapon.render();
             if (Settings.scaled) {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }

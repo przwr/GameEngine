@@ -137,13 +137,14 @@ public class SpriteBase {
                 image = SpriteSheet.createWithMovingStart(texture, pieceWidth, pieceHeight, startX, startY, this, startPoints);
             }
         } else {
-            image = Sprite.create(texture.getTextureID(), width, height, startX, startY, this);
+            image = Sprite.create(texture, width, height, startX, startY, this);
         }
-        image.setKey(key);
+        image.setKey(key);        
         image.xOffset = xoffset;
         image.yOffset = yoffset;
         image.actualWidth = actualWidth;
         image.actualHeight = actualHeight;
+        
         return image;
     }
 
@@ -181,7 +182,7 @@ public class SpriteBase {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        sprite = Sprite.create(texture.getTextureID(), width, height, 0, 0, this);
+        sprite = Sprite.create(texture, width, height, 0, 0, this);
         sprite.setKey(key);
         return sprite;
     }
@@ -235,7 +236,7 @@ public class SpriteBase {
         if (spriteSheet) {
             image = SpriteSheet.createSetScale(texture, pieceWidth, pieceHeight, startX, startY, this);
         } else {
-            image = Sprite.create(texture.getTextureID(), width, height, startX, startY, this);
+            image = Sprite.create(texture, width, height, startX, startY, this);
         }
         image.setKey(key);
         return image;

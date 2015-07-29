@@ -21,21 +21,16 @@ public class PixelPerfectCollision {
     public static boolean isColliding(GameObject object, Weapon weapon) {
         if (isOverlaping(object, weapon)) {
             findBoundsOfCheck();
-            for (int i = left; i <= right; i++) { //horizontal
-                for (int j = bottom; j <= top; j++) { //vertical
-                    //Do Tests                    
-                }
-            }
             return true;
         }
         return false;
     }
 
     private static boolean isOverlaping(GameObject object, Weapon weapon) {
-        weaponXStart = weapon.getXSpriteBegin();
-        weaponXEnd = weapon.getXSpriteEnd();
-        weaponYStart = weapon.getYSpriteBegin();
-        weaponYEnd = weapon.getYSpriteEnd();
+        weaponXStart = weapon.getXBegin();
+        weaponXEnd = weapon.getXEnd();
+        weaponYStart = weapon.getYBegin();
+        weaponYEnd = weapon.getYEnd();
         objectXStart = object.getXSpriteBegin();
         objectXEnd = object.getXSpriteEnd();
         objectYStart = object.getYSpriteBegin();
