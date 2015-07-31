@@ -5,17 +5,13 @@
  */
 package gamecontent;
 
+import collision.CircleInteractiveCollision;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.Drawer;
-import engine.ErrorHandler;
-import engine.Light;
-import engine.Methods;
-import engine.Point;
-import engine.RandomGenerator;
-import engine.Time;
+import engine.*;
 import game.Settings;
+import game.gameobject.Interactive;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
@@ -23,30 +19,27 @@ import game.place.Place;
 import game.place.WarpPoint;
 import game.text.TextController;
 import gamecontent.equipment.Cloth;
-import java.io.FileNotFoundException;
 import net.jodk.lang.FastMath;
 import net.packets.MPlayerUpdate;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import java.io.FileNotFoundException;
+
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author przemek
  */
 public class MyPlayer extends Player {
 
+    private final int framesPerDir = 26;
     private Cloth torso;
     private Cloth legs;
     private Cloth dress;
-
-    private final int framesPerDir = 24;
 
     private TextController textControl;
 
@@ -64,6 +57,7 @@ public class MyPlayer extends Player {
         } else {
             initializeController();
         }
+        addInteractive(new Interactive(this, new CircleInteractiveCollision(32)));
     }
 
     private void initializeControllerForFirst() {
@@ -106,9 +100,9 @@ public class MyPlayer extends Player {
             legs = new Cloth(r.choose("boots", "legs"), place);
             dress = r.chance(30) ? new Cloth(r.choose("dress", "blueDress"), place) : null;
             Point[] p = SpriteSheet.getMergedDimentions(new SpriteSheet[]{legs.getLeftPart(), legs.getRightPart(),
-                dress != null ? dress.getLeftPart() : null,
-                dress != null ? dress.getRightPart() : null,
-                torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
+                    dress != null ? dress.getLeftPart() : null,
+                    dress != null ? dress.getRightPart() : null,
+                    torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
             System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
                     + "\nWymiary połączonej ubranej babki : " + p[0]
                     + "\nPunkt centralny obrazka : " + p[1]
@@ -128,10 +122,7 @@ public class MyPlayer extends Player {
 
     @Override
     protected boolean isCollided(int xMagnitude, int yMagnitude) {
-        if (isInGame()) {
-            return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
-        }
-        return false;
+        return isInGame() && collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
     }
 
     @Override
@@ -165,8 +156,7 @@ public class MyPlayer extends Player {
                 glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             }
             Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
-                    (int) ((collision.getHeight()
-                    * Place.getCurrentScale()) / 2),
+                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
                     place.standardFont,
                     map.getLightColor());
             glPopMatrix();

@@ -5,13 +5,7 @@
  */
 package gamecontent;
 
-import game.gameobject.Action;
-import game.gameobject.ActionOnOff;
-import game.gameobject.ActionHold;
-import game.gameobject.AnyInput;
-import game.gameobject.Controler;
-import game.gameobject.Entity;
-import game.gameobject.Player;
+import game.gameobject.*;
 import sprites.Animation;
 
 /**
@@ -77,8 +71,10 @@ public class MyController extends Controler {
         if (inControl.isAbleToMove()) {
             if (isKeyPressed(JUMP)) {
                 playerAnimation.setStopAtEnd(true);
-                playerAnimation.animateIntervalInDirection(direction / 45, 21, 23);
+                playerAnimation.animateIntervalInDirection(direction / 45, 21, 25);
                 inControl.brake(2);
+                // TODO zrobić to porządnie - kiedy zatrzymuje się animacja?
+                inControl.getInteractives().get(0).setActive(!inControl.getInteractives().get(0).isActive());
             } else {
                 playerAnimation.setStopAtEnd(false);
                 if (isKeyPressed(UP)) {
@@ -144,10 +140,14 @@ public class MyController extends Controler {
         } else {
             playerAnimation.animateSingleInDirection(direction / 45, 0);
         }
-        if (running) {
-            playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
+        if (!isKeyPressed(JUMP)) {
+            if (running) {
+                playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
+            } else {
+                playerAnimation.setFPS((int) (inControl.getSpeed() * 5));
+            }
         } else {
-            playerAnimation.setFPS((int) (inControl.getSpeed() * 5));
+            playerAnimation.setFPS(30);
         }
     }
 

@@ -5,12 +5,13 @@ import collision.Rectangle;
 import collision.RoundRectangle;
 import game.gameobject.GameObject;
 import game.place.Place;
+import net.jodk.lang.FastMath;
+import org.lwjgl.input.Keyboard;
+
 import java.awt.geom.Line2D;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
-import net.jodk.lang.FastMath;
-import org.lwjgl.input.Keyboard;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,9 +24,9 @@ import org.lwjgl.input.Keyboard;
  */
 public class Methods {
 
+    private static final Point point = new Point(0, 0);
     private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, angle, temp;
     private static int xOA, yOA, xOB, yOB, xBA, yBA, xDelta, yDelta, xS, xE, yS, yE;
-    private static final Point point = new Point(0, 0);
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;

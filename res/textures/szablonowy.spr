@@ -4,3 +4,12 @@ szerokosc;wysokosc (CALOSC)
 x;y (PUNKT CENTRALNY)
 szerokosc;wysokosc (KLATKA)
 x;y(OFFSET);szerokosc;wysokosc (PRAWDZIWA)
+	//Ponizsze jezeli jest ruchomy punkt centralny//
+ilosc-klatek
+x;y(PRZESUNIECIE POSZCZEGOLNEJ KLATKI)
+x;y(--||--)
+...;...
+...
+..
+.
+.

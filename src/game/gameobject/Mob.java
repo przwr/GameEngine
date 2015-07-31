@@ -5,16 +5,15 @@
  */
 package game.gameobject;
 
+import collision.CircleInteractiveCollision;
 import collision.Figure;
 import engine.Drawer;
 import engine.Methods;
 import game.Settings;
 import game.place.Place;
 import net.packets.Update;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -24,10 +23,6 @@ public abstract class Mob extends Entity {
 
     public short mobID;
 
-    public abstract void update();
-
-    public Weapon weapon;
-
     public Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
         this.solid = solid;
@@ -36,8 +31,10 @@ public abstract class Mob extends Entity {
         this.sprite = place.getSprite(spriteName);
         initialize(name, x, y);
         this.mobID = mobID;
-        weapon = new Weapon(this);
+        addInteractive(new Interactive(this, new CircleInteractiveCollision(32)));
     }
+
+    public abstract void update();
 
     public synchronized void look(GameObject[] players) {
         GameObject object;

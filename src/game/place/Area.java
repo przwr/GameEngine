@@ -12,20 +12,22 @@ import engine.Light;
 import engine.Methods;
 import engine.PointContener;
 import game.gameobject.GameObject;
+import game.gameobject.Interactive;
 import game.gameobject.Mob;
 import game.gameobject.Player;
-import static game.place.Place.xAreaInPixels;
-import static game.place.Place.yAreaInPixels;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import navmeshpathfinding.NavigationMesh;
 import navmeshpathfinding.NavigationMeshGenerator;
 import navmeshpathfinding.PathFinder;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import static game.place.Place.xAreaInPixels;
+import static game.place.Place.yAreaInPixels;
+
 /**
- *
  * @author przemek
  */
 public class Area {
@@ -46,8 +48,8 @@ public class Area {
     private final ArrayList<GameObject> topObjects = new ArrayList<>();
     private final ArrayList<GameObject> depthObjects = new ArrayList<>();
     private final ArrayList<WarpPoint> warps = new ArrayList<>();
-
     private final ArrayList<Light> lights = new ArrayList<>();
+    private final ArrayList<Interactive> interactives = new ArrayList<>();
 
     private final BlueArray<Block> nearBlocks = new BlueArray<>();
     private final BlueArray<Mob> nearSolidMobs = new BlueArray<>();
@@ -97,7 +99,7 @@ public class Area {
             tiles[x / Place.tileSize + y / Place.tileSize * Y_IN_TILES] = null;
         }
         GameObject object;
-        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
+        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext(); ) {
             object = iterator.next();
             if (object.isVisible() && object.getX() == x && object.getY() == y) {
                 iterator.remove();
@@ -124,10 +126,7 @@ public class Area {
     }
 
     public void deleteForegroundTile(int x, int y) {
-        foregroundTiles.stream().filter((foregroundTile)
-                -> (foregroundTile.getX() == x && foregroundTile.getY() == y)).forEach((foregroundTile) -> {
-                    foregroundTiles.remove(foregroundTile);
-                });
+        foregroundTiles.stream().filter((foregroundTile) -> (foregroundTile.getX() == x && foregroundTile.getY() == y)).forEach(foregroundTiles::remove);
     }
 
     public void addBlock(Block block) {
@@ -147,6 +146,9 @@ public class Area {
         } else {
             Methods.merge(depthObjects, object);
         }
+        if (object.isInteractive()) {
+            object.getInteractives().stream().forEach(interactives::add);
+        }
         if (!(object instanceof Player)) {
             addNotPlayerObject(object);
         }
@@ -154,9 +156,7 @@ public class Area {
 
     private void addNotPlayerObject(GameObject object) {
         if (object.isEmitter()) {
-            object.getLights().stream().forEach((light) -> {
-                lights.add(light);
-            });
+            object.getLights().stream().forEach(lights::add);
         }
         if (object instanceof WarpPoint) {
             addWarpPoint((WarpPoint) object);
@@ -185,28 +185,28 @@ public class Area {
     }
 
     public void deleteObject(GameObject object) {
-        if (!(object instanceof Player)) {
-            deleteNotPlayerObject(object);
-        } else if (object.isEmitter()) {
-            object.getLights().stream().forEach((light) -> {
-                lights.remove(light);
-            });
-        }
         if (object.isOnTop()) {
             topObjects.remove(object);
         } else {
             depthObjects.remove(object);
         }
+        if (object.isEmitter()) {
+            object.getLights().stream().forEach(lights::remove);
+        }
+        if (object.isInteractive()) {
+            object.getInteractives().stream().forEach(interactives::remove);
+        }
+        if (!(object instanceof Player)) {
+            deleteNotPlayerObject(object);
+        }
     }
 
     private void deleteNotPlayerObject(GameObject object) {
         if (object.isEmitter()) {
-            object.getLights().stream().forEach((light) -> {
-                lights.remove(light);
-            });
+            object.getLights().stream().forEach(lights::remove);
         }
         if (object instanceof WarpPoint) {
-            warps.remove((WarpPoint) object);
+            warps.remove(object);
         } else if (object instanceof Mob) {
             deleteMob((Mob) object);
         } else {
@@ -304,6 +304,10 @@ public class Area {
 
     public GameObject getForegroundTile(int i) {
         return foregroundTiles.get(i);
+    }
+
+    public List<Interactive> getInteractives() {
+        return interactives;
     }
 
     public int getXArea() {

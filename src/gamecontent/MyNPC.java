@@ -12,11 +12,9 @@ import engine.Methods;
 import game.Settings;
 import game.gameobject.Mob;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -39,8 +37,7 @@ public class MyNPC extends Mob {
     public void update() {
         if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
             MyPlayer mpPrey = (MyPlayer) getTarget();
-            direction = spinning ? direction + 1
-                    : Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY());
+            direction = spinning ? direction + 1 : Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY());
             if (direction > 7) {
                 direction = 0;
             }

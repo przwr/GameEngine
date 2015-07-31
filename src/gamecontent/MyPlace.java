@@ -8,8 +8,6 @@ package gamecontent;
 import engine.Delay;
 import engine.Main;
 import game.Game;
-import static game.Game.OFFLINE;
-import static game.Game.ONLINE;
 import game.Settings;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
@@ -21,6 +19,9 @@ import game.place.Place;
 import navmeshpathfinding.NavigationMeshGenerator;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
+
+import static game.Game.OFFLINE;
+import static game.Game.ONLINE;
 
 /**
  *
@@ -36,16 +37,19 @@ public class MyPlace extends Place {
 
     {
         updates[OFFLINE] = () -> {
+            System.out.println("UPDATE " + System.currentTimeMillis() + ": ");
             updateInputs();
             updateAreasOffline();
             updatePlayersOffline();
             updateMobsOffline();
+            updateInteractivesOffline();
             dayCycle.updateTime();
         };
         updates[ONLINE] = () -> {
             updateAreasOnline();
             updateMobsOnline();
             updatePlayersOnline();
+            updateInteractivesOnline();
             dayCycle.updateTime();
         };
         delay.start();
@@ -72,9 +76,7 @@ public class MyPlace extends Place {
     @Override
     public void generateAsHost() {
         generateAsGuest();
-        maps.stream().forEach((map) -> {
-            map.populate();
-        });
+        maps.stream().forEach(Map::populate);
     }
 
     @Override
@@ -92,9 +94,7 @@ public class MyPlace extends Place {
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
         }
-        tempMaps.stream().forEach((mapToUpdate) -> {
-            mapToUpdate.updateAreasToUpdate();
-        });
+        tempMaps.stream().forEach((mapToUpdate) -> mapToUpdate.updateAreasToUpdate());
     }
 
     private void updateAreasOnline() {
@@ -134,16 +134,12 @@ public class MyPlace extends Place {
     }
 
     private void updateMobsOffline() {
-        tempMaps.stream().forEach((map) -> {
-            map.updateMobsFromAreasToUpdate();
-        });
+        tempMaps.stream().forEach(Map::updateMobsFromAreasToUpdate);
     }
 
     private void updateMobsOnline() {
         if (game.online.server != null) {
-            tempMaps.stream().forEach((map) -> {
-                map.updateMobsFromAreasToUpdate();
-            });
+            tempMaps.stream().forEach(Map::updateMobsFromAreasToUpdate);
         } else if (game.online.client != null) {
             players[0].getMap().hardUpdateMobsFromAreasToUpdate();
         }
@@ -203,6 +199,14 @@ public class MyPlace extends Place {
         } else {
             return 1;
         }
+    }
+
+    private void updateInteractivesOffline() {
+        tempMaps.stream().forEach(Map::updateInteractivesFromAreasToUpdate);
+    }
+
+    private void updateInteractivesOnline() {
+        System.out.println("Not supported yet.");
     }
 
     private interface updater {

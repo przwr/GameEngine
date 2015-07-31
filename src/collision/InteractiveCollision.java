@@ -13,9 +13,11 @@ import game.gameobject.Player;
  *
  * @author przemek
  */
-public abstract class WeaponCollision {
+public abstract class InteractiveCollision {
 
     protected Point position = new Point();
+
+    protected int direction;
 
     public abstract void updatePosition(int x, int y);
 
