@@ -5,7 +5,13 @@
  */
 package gamecontent;
 
-import game.gameobject.*;
+import game.gameobject.Action;
+import game.gameobject.ActionOnOff;
+import game.gameobject.ActionHold;
+import game.gameobject.AnyInput;
+import game.gameobject.Controler;
+import game.gameobject.Entity;
+import game.gameobject.Player;
 import sprites.Animation;
 
 /**
@@ -145,7 +151,7 @@ public class MyController extends Controler {
                 playerAnimation.setFPS((int) (inControl.getSpeed() * 5));
             }
         } else {
-            playerAnimation.setFPS(30);
+            playerAnimation.setFPS((int) (30));
         }
     }
 

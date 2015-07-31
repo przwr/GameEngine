@@ -5,16 +5,21 @@
  */
 package collision;
 
+import static collision.RoundRectangle.LEFT;
+import static collision.RoundRectangle.LEFT_BOTTOM;
+import static collision.RoundRectangle.LEFT_BOTTOM_TO_RIGHT_TOP;
+import static collision.RoundRectangle.LEFT_TOP;
+import static collision.RoundRectangle.LEFT_TOP_TO_RIGHT_BOTTOM;
+import static collision.RoundRectangle.RIGHT;
+import static collision.RoundRectangle.RIGHT_BOTTOM;
+import static collision.RoundRectangle.RIGHT_TOP;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
-import net.jodk.lang.FastMath;
-
 import java.awt.geom.Line2D;
 import java.util.List;
-
-import static collision.RoundRectangle.*;
+import net.jodk.lang.FastMath;
 
 /**
  *
@@ -27,31 +32,6 @@ public class Rectangle extends Figure {
     private static int firstPushed, secondPushed, caseNumber;
     private static double slideVariable = 1.5;
     private boolean tile = false;
-
-    private Rectangle(int xStart, int yStart, int width, int height, int OpticPropertiesType, int shadowHeight, GameObject owner) {
-        super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
-        this.width = width;
-        this.height = height;
-        if (owner != null) {
-            points.add(new Point(super.getX(), super.getY()));
-            points.add(new Point(super.getX(), super.getY() + height));
-            points.add(new Point(super.getX() + width, super.getY() + height));
-            points.add(new Point(super.getX() + width, super.getY()));
-        }
-        centralize();
-    }
-
-    private Rectangle(int xStart, int yStart, int width, int height) {
-        super(xStart, yStart, null, null);
-        tile = true;
-        this.width = width;
-        this.height = height;
-        points.add(new Point(xStart, yStart));
-        points.add(new Point(xStart, yStart + height));
-        points.add(new Point(xStart + width, yStart + height));
-        points.add(new Point(xStart + width, yStart));
-        centralize();
-    }
 
     public static Rectangle createShadowHeight(int width, int height, int opticPropertiesType, int shadowHeight, GameObject owner) {
         return new Rectangle(-(width / 2), -(height / 2), width, height, opticPropertiesType, shadowHeight, owner);
@@ -69,12 +49,37 @@ public class Rectangle extends Figure {
         return new Rectangle(xStart, yStart, width, height, opticPropertiesType, 0, owner);
     }
 
+    private Rectangle(int xStart, int yStart, int width, int height, int OpticPropertiesType, int shadowHeight, GameObject owner) {
+        super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
+        this.width = width;
+        this.height = height;
+        if (owner != null) {
+            points.add(new Point(super.getX(), super.getY()));
+            points.add(new Point(super.getX(), super.getY() + height));
+            points.add(new Point(super.getX() + width, super.getY() + height));
+            points.add(new Point(super.getX() + width, super.getY()));
+        }
+        centralize();
+    }
+
     public static Rectangle createTileRectangle() {
         return new Rectangle(0, 0, Place.tileSize, Place.tileSize);
     }
 
     public static Rectangle createTileRectangle(int width, int height) {
         return new Rectangle(0, 0, width, height);
+    }
+
+    private Rectangle(int xStart, int yStart, int width, int height) {
+        super(xStart, yStart, null, null);
+        tile = true;
+        this.width = width;
+        this.height = height;
+        points.add(new Point(xStart, yStart));
+        points.add(new Point(xStart, yStart + height));
+        points.add(new Point(xStart + width, yStart + height));
+        points.add(new Point(xStart + width, yStart));
+        centralize();
     }
 
     private void centralize() {
@@ -379,7 +384,10 @@ public class Rectangle extends Figure {
             int ytmp = (yPosition + 1) / 2;
             return (Methods.pointDistance(circle.getX(), circle.getY(), getPoint(xtmp + 2 * ytmp).getX(), getPoint(xtmp + 2 * ytmp).getY()) <= circle.getRadius());
         }
-        return yPosition == 0 && ((xPosition < 0 && getX(x) - circle.getX() <= circle.getRadius())) || (yPosition < 0 && getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - getY(y) - height <= circle.getRadius());
+        if (yPosition == 0 && ((xPosition < 0 && getX(x) - circle.getX() <= circle.getRadius()) || (yPosition > 0 && circle.getX() - getX(x) - width <= circle.getRadius()))) {
+            return true;
+        }
+        return (yPosition < 0 && getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - getY(y) - height <= circle.getRadius());
     }
 
     private boolean lineCollision(int x, int y, Figure figure) {
