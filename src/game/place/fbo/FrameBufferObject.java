@@ -1,49 +1,38 @@
 package game.place.fbo;
 
 import game.Settings;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_BINDING_2D;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glGetInteger;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex2f;
+
+import static org.lwjgl.opengl.GL11.*;
 
 public abstract class FrameBufferObject {
 
     public static final int NATIVE = 0, ARB = 1, EXT = 2;
-    public static final FrameBufferType REGULAR_NATIVE = new RegularNative();
-    public static final FrameBufferType REGULAR_ARB = new RegularARB();
-    public static final FrameBufferType REGULAR_EXT = new RegularEXT();
-    public static final FrameBufferType MULTISAMPLE_NATIVE = new MultisampleNative();
-    public static final FrameBufferType MULTISAMPLE_ARB = new MultisampleARB();
-    public static final FrameBufferType MULTISAMPLE_EXT = new MultisampleEXT();
+    private static final FrameBufferType REGULAR_NATIVE = new RegularNative();
+    private static final FrameBufferType REGULAR_ARB = new RegularARB();
+    private static final FrameBufferType REGULAR_EXT = new RegularEXT();
+    private static final FrameBufferType MULTI_SAMPLE_NATIVE = new MultiSampleNative();
+    private static final FrameBufferType MULTI_SAMPLE_ARB = new MultiSampleARB();
+    private static final FrameBufferType MULTI_SAMPLE_EXT = new MultiSampleEXT();
 
-    protected final FrameBufferType type;
-    protected int height, width, texture, frameBufferObject, version;
+    final FrameBufferType type;
+    final int height;
+    final int width;
+    final int texture;
+    int frameBufferObject;
+    int version;
 
-    public abstract void activate();
-
-    public abstract void deactivate();
-
-    public FrameBufferObject(int width, int height, boolean multisample) {
+    FrameBufferObject(int width, int height, boolean multiSample) {
         this.width = width;
         this.height = height;
         texture = glGenTextures();
         version = Settings.supportedFrameBufferObjectVersion;
-        if (multisample && Settings.multiSampleSupported && Settings.samplesCount > 0) {
+        if (multiSample && Settings.multiSampleSupported && Settings.samplesCount > 0) {
             if (version == NATIVE) {
-                type = MULTISAMPLE_NATIVE;
+                type = MULTI_SAMPLE_NATIVE;
             } else if (version == ARB) {
-                type = MULTISAMPLE_ARB;
+                type = MULTI_SAMPLE_ARB;
             } else {
-                type = MULTISAMPLE_EXT;
+                type = MULTI_SAMPLE_EXT;
                 version = EXT;
             }
         } else {
@@ -57,6 +46,10 @@ public abstract class FrameBufferObject {
             }
         }
     }
+
+    public abstract void activate();
+
+    public abstract void deactivate();
 
     public void render() {
         checkBind();

@@ -8,10 +8,9 @@ package navmeshpathfinding;
 import engine.Point;
 
 /**
- *
  * @author WROBELP1
  */
-public class Bound {
+class Bound {
 
     private final Point start;
     private final Point end;
@@ -23,7 +22,7 @@ public class Bound {
 
     @Override
     public String toString() {
-        return "Linia: " + start.toString() + " - " + end.toString();
+        return "Line: " + start.toString() + " - " + end.toString();
     }
 
     public Point getStart() {

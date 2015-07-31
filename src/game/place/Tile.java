@@ -3,22 +3,20 @@ package game.place;
 import collision.Figure;
 import engine.Drawer;
 import engine.Point;
-import game.Settings;
 import game.gameobject.GameObject;
-import java.util.ArrayList;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.Appearance;
 import sprites.SpriteSheet;
 
+import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.*;
+
 public class Tile extends GameObject implements Appearance {
 
-    protected final SpriteSheet spriteSheet;
-    protected final ArrayList<Point> tileStack;
+    final SpriteSheet spriteSheet;
+    final ArrayList<Point> tileStack;
 
-    public Tile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
+    public Tile(SpriteSheet spriteSheet, int xSheet, int ySheet) {
         this.spriteSheet = spriteSheet;
         this.sprite = spriteSheet;
         tileStack = new ArrayList<>(1);
@@ -59,13 +57,9 @@ public class Tile extends GameObject implements Appearance {
     public void renderSpecific(int xEffect, int yEffect, int x, int y) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
-        if (Settings.scaled) {
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        }
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(x, y, 0);
-        tileStack.stream().forEach((piece) -> {
-            spriteSheet.renderPiece(piece.getX(), piece.getY());
-        });
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
         glPopMatrix();
     }
 
@@ -94,7 +88,7 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
@@ -106,7 +100,7 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         glPushMatrix();
         glTranslatef(getX() + xEffect, getY() + yEffect - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
@@ -121,14 +115,14 @@ public class Tile extends GameObject implements Appearance {
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
-        if (Settings.scaled) {
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        }
+
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+
         glTranslatef(getX(), getY(), 0);
-        tileStack.stream().forEach((piece) -> {
-            spriteSheet.renderPiece(piece.getX(), piece.getY());
-        });
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
+
         glPopMatrix();
+
     }
 
     public SpriteSheet getSpriteSheet() {
@@ -137,7 +131,7 @@ public class Tile extends GameObject implements Appearance {
 
     public Tile copy() {
         Point first = tileStack.get(0);
-        Tile copy = new Tile(spriteSheet, Place.tileSize, first.getX(), first.getY());
+        Tile copy = new Tile(spriteSheet, first.getX(), first.getY());
         for (int i = 1; i < tileStack.size(); i++) {
             copy.tileStack.add(tileStack.get(i));
         }
@@ -177,29 +171,21 @@ public class Tile extends GameObject implements Appearance {
 
     @Override
     public void render() {
-        tileStack.stream().forEach((piece) -> {
-            spriteSheet.renderPiece(piece.getX(), piece.getY());
-        });
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
     }
 
     @Override
     public void renderMirrored() {
-        tileStack.stream().forEach((piece) -> {
-            spriteSheet.renderPieceMirrored(piece.getX(), piece.getY());
-        });
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPieceMirrored(piece.getX(), piece.getY()));
     }
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
-        tileStack.stream().forEach((piece) -> {
-            spriteSheet.renderPiecePart(piece.getX(), piece.getY(), partXStart, partXEnd);
-        });
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPiecePart(piece.getX(), piece.getY(), partXStart, partXEnd));
     }
 
     @Override
     public void renderPartMirrored(int partXStart, int partXEnd) {
-        tileStack.stream().forEach((piece) -> {
-            spriteSheet.renderPiecePartMirrored(piece.getX(), piece.getY(), partXStart, partXEnd);
-        });
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPiecePartMirrored(piece.getX(), piece.getY(), partXStart, partXEnd));
     }
 }

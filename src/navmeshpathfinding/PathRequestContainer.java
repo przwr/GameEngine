@@ -8,23 +8,23 @@ package navmeshpathfinding;
 import game.gameobject.Entity;
 
 /**
- *
  * @author przemek
  */
-public class PathRequestContener {
+class PathRequestContainer {
 
     private static final byte INITIAL_POINT_COUNT = 8;
+    private static int caps, maxSize;
     private PathRequest[] requests;
     private int requestCount;
 
-    public PathRequestContener() {
+    public PathRequestContainer() {
         requests = new PathRequest[INITIAL_POINT_COUNT];
         for (int i = 0; i < INITIAL_POINT_COUNT; i++) {
             requests[i] = new PathRequest();
         }
     }
 
-    public PathRequestContener(int pointCount) {
+    public PathRequestContainer(int pointCount) {
         requests = new PathRequest[pointCount];
         for (int i = 0; i < pointCount; i++) {
             requests[i] = new PathRequest();
@@ -45,8 +45,6 @@ public class PathRequestContener {
         requests[i].requester = request.requester;
     }
 
-    private static int caps, maxSize;
-
     private void ensureCapacity(int capacity) {
         if (requestCount + capacity > requests.length) {
             PathRequest[] tempRequests = new PathRequest[(int) (1.5 * requests.length)];
@@ -59,7 +57,7 @@ public class PathRequestContener {
             if (requests.length > maxSize) {
                 maxSize = requests.length;
             }
-            System.out.println("Capacity of PathRequestContener enlarged " + caps + " times to maxSize: " + maxSize);
+            System.out.println("Capacity of PathRequestContainer enlarged " + caps + " times to maxSize: " + maxSize);
         }
     }
 

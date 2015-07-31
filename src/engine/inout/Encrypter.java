@@ -9,10 +9,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 /**
- *
  * @author Wojtek
  */
-public class Encrypter extends PrintWriter {
+class Encrypter extends PrintWriter {
 
     private final int[] key = {2, 6, 1, 0, 3, 5};
     private final int keySize;
@@ -32,7 +31,7 @@ public class Encrypter extends PrintWriter {
         }
         super.println(String.valueOf(output));
     }
-    
+
     @Override
     public void print(String text) {
         char[] output = text.toCharArray();

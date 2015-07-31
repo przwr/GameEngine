@@ -9,13 +9,13 @@ import engine.Methods;
 import engine.Point;
 import game.place.Map;
 import game.place.PuzzleObject;
+
 import java.util.ArrayList;
 
 /**
- *
  * @author Wojtek
  */
-public class DungeonGenerator {
+class DungeonGenerator {
 
     private final Map map;
     private final ArrayList<Exit> exits;
@@ -37,13 +37,13 @@ public class DungeonGenerator {
         p.chance = chance;
         puzzles.add(p);
     }
-    
+
     public void addPuzzleAmount(PuzzleObject puz, int amount) {
         Puzzle p = new Puzzle(puz);
         p.amount = amount;
         puzzles.add(p);
     }
-    
+
     public void addPuzzleSpecific(PuzzleObject puz, int angle, int percentRadius) {
         Puzzle p = new Puzzle(puz);
         Point point = getSquareRadius(angle, percentRadius);
@@ -69,10 +69,10 @@ public class DungeonGenerator {
         }
         return new Point(x, y);
     }
-    
+
     private class Puzzle {
 
-        PuzzleObject puzzle;
+        final PuzzleObject puzzle;
         Point[] links;
         int chance = 0;
         int amount = 0;
@@ -86,9 +86,9 @@ public class DungeonGenerator {
 
     private class Exit {
 
-        int x;
-        int y;
-        String link;
+        final int x;
+        final int y;
+        final String link;
 
         Exit(int x, int y, String link) {
             this.x = x;

@@ -18,8 +18,8 @@ import java.util.List;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
- *
  * @author Wojtek
  */
 public class Methods {
@@ -84,7 +84,7 @@ public class Methods {
         return det >= 0 ? det : det + 360;
     }
 
-    public static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
+    private static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
         xOA = xO - xA;
         yOA = yO - yA;
         xOB = xO - xB;
@@ -101,8 +101,8 @@ public class Methods {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
 
-    public static double interval(double leftBorder, double x, double rightBorder) {
-        return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
+    public static double interval(double leftBorder, double variable, double rightBorder) {
+        return FastMath.max(leftBorder, FastMath.min(rightBorder, variable));
     }
 
     public static float interval(float leftBorder, float x, float rightBorder) {
@@ -114,7 +114,7 @@ public class Methods {
     }
 
     public static Point getTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
-            float y4) {
+                                                float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
@@ -135,8 +135,8 @@ public class Methods {
         }
     }
 
-    public static Point getXTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
-            float y4) {
+    private static Point getXTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
+                                                  float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
@@ -158,7 +158,7 @@ public class Methods {
     }
 
     // only for 64 diameter
-    public static Point getTopCircleLineIntersection(double a, double b, double xc, double yc) {
+    private static Point getTopCircleLineIntersection(double a, double b, double xc, double yc) {
         calculateDelta(a, b, xc, yc);
         if (delta < 0) {
             return null;
@@ -178,7 +178,7 @@ public class Methods {
     }
 
     // only for 64 diameter
-    public static Point getBottomCircleLineIntersection(double a, double b, double xc, double yc) {
+    private static Point getBottomCircleLineIntersection(double a, double b, double xc, double yc) {
         calculateDelta(a, b, xc, yc);
         if (delta < 0) {
             return null;
@@ -252,7 +252,7 @@ public class Methods {
         }
     }
 
-    public static void getCastingPointsFromRest(int x, int y, List<Point> points, Point result) {
+    private static void getCastingPointsFromRest(int x, int y, List<Point> points, Point result) {
         angle = 0;
         temp = 0;
         int first = 0, second = 0;
@@ -286,7 +286,7 @@ public class Methods {
             if (y > yE) {
                 result[0].set(xS, yE);
                 result[1].set(xE, yE);
-            } else if (y > yS) {    // shity case - point inside Rectangle
+            } else if (y > yS) {    // shit case - point inside Rectangle
                 result[0].set(xS, yS);
                 result[1].set(xE, yE);
             } else {
@@ -307,7 +307,7 @@ public class Methods {
         }
     }
 
-    public static void getCastingPointsFromRectangle(int x, int y, Figure rectangle, Point result) {
+    private static void getCastingPointsFromRectangle(int x, int y, Figure rectangle, Point result) {
         xS = rectangle.getX();
         xE = rectangle.getXEnd();
         yS = rectangle.getY();
@@ -323,7 +323,7 @@ public class Methods {
         } else if (x > xS) {
             if (y > yE) {
                 result.set(1, 2);
-            } else if (y > yS) {   // shity case - point inside Rectangle
+            } else if (y > yS) {   // shit case - point inside Rectangle
                 result.set(0, 2);
             } else {
                 result.set(0, 3);
@@ -347,7 +347,7 @@ public class Methods {
         return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) <= 0;
     }
 
-    public static Point getXIntersetction(double a, double b, int xStart, int yStart, int xEnd, int yEnd, RoundRectangle other) {
+    public static Point getXIntersection(double a, double b, int xStart, int yStart, int xEnd, int yEnd, RoundRectangle other) {
         if (other.isTriangular()) {
             if (other.isLeftBottomRound()) {
                 return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other.getYEnd());
@@ -371,7 +371,7 @@ public class Methods {
         }
     }
 
-    public static Point getXIntersetctionFromTop(double a, double b, int xStart, int yStart, int xEnd, int yEnd, RoundRectangle other) {
+    public static Point getXIntersectionFromTop(double a, double b, int xStart, int yStart, int xEnd, int yEnd, RoundRectangle other) {
         if (other.isTriangular()) {
             if (other.isLeftBottomRound()) {
                 return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other.getYEnd());
@@ -396,7 +396,7 @@ public class Methods {
     }
 
     // sorts from smallest to biggest
-    public static void insort(List<GameObject> list) {
+    public static void inSort(List<GameObject> list) {
         int i, j, newValue;
         GameObject object;
         for (i = 1; i < list.size(); i++) {

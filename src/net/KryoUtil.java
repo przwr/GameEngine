@@ -5,24 +5,14 @@
  */
 package net;
 
-import net.packets.NewMPlayer;
-import net.packets.MPlayerUpdate;
-import net.packets.PacketMessage;
-import net.packets.PacketJoinResponse;
-import net.packets.PacketJoinRequest;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
+import net.packets.*;
+
 import java.util.ArrayList;
-import net.packets.MobUpdate;
-import net.packets.PacketAddMPlayer;
-import net.packets.PacketInput;
-import net.packets.PacketMPlayerUpdate;
-import net.packets.PacketRemoveMPlayer;
-import net.packets.PacketUpdate;
 
 /**
- *
  * @author przemek
  */
 public class KryoUtil {

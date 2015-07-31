@@ -6,31 +6,27 @@
 package gamecontent;
 
 import engine.ErrorHandler;
-import engine.Methods;
 import game.Game;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Mob;
 import game.gameobject.Player;
 import game.place.Map;
-import java.util.ArrayList;
-import java.util.Iterator;
 import net.GameClient;
 import net.GameOnline;
 import net.GameServer;
-import net.packets.MPlayerUpdate;
-import net.packets.MobUpdate;
-import net.packets.NewMPlayer;
-import net.packets.PacketMPlayerUpdate;
-import net.packets.PacketUpdate;
+import net.packets.*;
+
+import java.util.ArrayList;
 
 /**
- *
  * @author przemek
  */
 public class MyGameOnline extends GameOnline {
 
-    private static int ADD_PLAYER = 0, REMOVE_PLAYER = 1, UPDATE_MOBS = 2;
+    private static final int ADD_PLAYER = 0;
+    private static final int REMOVE_PLAYER = 1;
+    private static final int UPDATE_MOBS = 2;
 
     public MyGameOnline(Game game, int changes, int players) {
         super(game, changes, players);
@@ -258,9 +254,7 @@ public class MyGameOnline extends GameOnline {
                 Map map = tempPlace.getMapById(mapId);
                 for (MobUpdate mUp : mobs) {
                     found = false;
-                    Mob mob;
-                    for (Iterator<Mob> iterator = map.getArea(game.players[0].getArea()).getNearSolidMobs().iterator(); iterator.hasNext();) {
-                        mob = iterator.next();
+                    for (Mob mob : map.getArea(game.players[0].getArea()).getNearSolidMobs()) {
                         if (mUp.getId() == mob.mobID) {
                             mob.updates[mob.lastAdded] = mUp;
                             if (mob.lastAdded == 3) {

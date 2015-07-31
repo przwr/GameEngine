@@ -9,26 +9,45 @@ import engine.Drawer;
 import engine.Point;
 import game.Settings;
 import net.jodk.lang.FastMath;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex2f;
 import org.newdawn.slick.opengl.Texture;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author przemek
  */
 public class SpriteSheet extends Sprite {
 
+    private final boolean isStartMoving;
     private float xTiles;
     private float yTiles;
-
-    private final boolean isStartMoving;
     private int frame;
     private Point[] startingPoints;
+
+    private SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
+        super(texture, width, height, xStart, yStart, spriteBase);
+        isStartMoving = false;
+        widthWhole = texture.getImageWidth();
+        heightWhole = texture.getImageHeight();
+        setTilesCount(scale);
+    }
+
+    private SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, Point[] startingPoints) {
+        super(texture, width, height, xStart, yStart, spriteBase);
+        this.startingPoints = startingPoints;
+        isStartMoving = true;
+        widthWhole = texture.getImageWidth();
+        heightWhole = texture.getImageHeight();
+        setTilesCount(scale);
+    }
+
+    private SpriteSheet(int texture, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        super(texture, width, height, xStart, yStart, spriteBase);
+        isStartMoving = false;
+        this.widthWhole = widthWhole;
+        this.heightWhole = heightWhole;
+        setTilesCount(false);
+    }
 
     public static SpriteSheet create(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
         return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, false);
@@ -46,29 +65,31 @@ public class SpriteSheet extends Sprite {
         return new SpriteSheet(texture, widthWhole, heightWhole, width, height, xStart, yStart, spriteBase);
     }
 
-    protected SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
-        super(texture, width, height, xStart, yStart, spriteBase);
-        isStartMoving = false;
-        widthWhole = texture.getImageWidth();
-        heightWhole = texture.getImageHeight();
-        setTilesCount(scale);
-    }
-
-    protected SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, Point[] startingPoints) {
-        super(texture, width, height, xStart, yStart, spriteBase);
-        this.startingPoints = startingPoints;
-        isStartMoving = true;
-        widthWhole = texture.getImageWidth();
-        heightWhole = texture.getImageHeight();
-        setTilesCount(scale);
-    }
-
-    protected SpriteSheet(int texture, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        super(texture, width, height, xStart, yStart, spriteBase);
-        isStartMoving = false;
-        this.widthWhole = widthWhole;
-        this.heightWhole = heightWhole;
-        setTilesCount(false);
+    public static Point[] getMergedDimensions(SpriteSheet[] list) {
+        int xB = Integer.MAX_VALUE, yB = Integer.MAX_VALUE,
+                xE = 0, yE = 0, tmpXS, tmpYS, tmpXE, tmpYE;
+        for (SpriteSheet s : list) {
+            if (s != null) {
+                tmpXS = s.xStart + s.xOffset;
+                tmpYS = s.yStart + s.yOffset;
+                tmpXE = tmpXS + s.actualWidth;
+                tmpYE = tmpYS + s.actualHeight;
+                if (tmpXS < xB) {
+                    xB = tmpXS;
+                }
+                if (tmpYS < yB) {
+                    yB = tmpYS;
+                }
+                if (tmpXE > xE) {
+                    xE = tmpXE;
+                }
+                if (tmpYE > yE) {
+                    yE = tmpYE;
+                }
+            }
+        }
+        return new Point[]{new Point(xE - xB, yE - yB),
+                new Point(FastMath.abs(xB), FastMath.abs(yB))};
     }
 
     private void setTilesCount(boolean scale) {
@@ -95,7 +116,7 @@ public class SpriteSheet extends Sprite {
     }
 
     @Override
-    public void render() {  //Rysuje CAŁY spritesheet
+    public void render() {  //Rysuje CAŁY spriteSheet
         bindCheck();
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
@@ -154,14 +175,14 @@ public class SpriteSheet extends Sprite {
         int y = (int) (id / xTiles);
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
             frame = (int) (x + y * xTiles);
-            renderSpritePiecePart((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
+            renderSpritePiecePart((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }
 
     public void renderPiecePart(int x, int y, int xStart, int xEnd) {
         if (areValidCoordinates(x, y)) {
             frame = (int) (x + y * xTiles);
-            renderSpritePiecePart((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
+            renderSpritePiecePart((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }
 
@@ -186,14 +207,14 @@ public class SpriteSheet extends Sprite {
         int y = (int) (id / xTiles);
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
             frame = id;
-            renderSpritePiecePartMirrored((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
+            renderSpritePiecePartMirrored((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }
 
     public void renderPiecePartMirrored(int x, int y, int xStart, int xEnd) {
         if (areValidCoordinates(x, y)) {
             frame = (int) (x + y * xTiles);
-            renderSpritePiecePartMirrored((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
+            renderSpritePiecePartMirrored((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }
 
@@ -205,42 +226,15 @@ public class SpriteSheet extends Sprite {
         return !(x > xTiles || y > yTiles);
     }
 
-    public int getXlimit() {
+    public int getXLimit() {
         return (int) xTiles;
     }
 
-    public int getYlimit() {
+    public int getYLimit() {
         return (int) yTiles;
     }
 
     public int getSize() {
         return (int) (xTiles * yTiles);
-    }
-
-    public static Point[] getMergedDimentions(SpriteSheet[] list) {
-        int xB = Integer.MAX_VALUE, yB = Integer.MAX_VALUE,
-                xE = 0, yE = 0, tmpXS, tmpYS, tmpXE, tmpYE;
-        for (SpriteSheet s : list) {
-            if (s != null) {
-                tmpXS = s.xStart + s.xOffset;
-                tmpYS = s.yStart + s.yOffset;
-                tmpXE = tmpXS + s.actualWidth;
-                tmpYE = tmpYS + s.actualHeight;
-                if (tmpXS < xB) {
-                    xB = tmpXS;
-                }
-                if (tmpYS < yB) {
-                    yB = tmpYS;
-                }
-                if (tmpXE > xE) {
-                    xE = tmpXE;
-                }
-                if (tmpYE > yE) {
-                    yE = tmpYE;
-                }
-            }
-        }
-        return new Point[] {new Point(xE - xB, yE - yB), 
-            new Point(FastMath.abs(xB), FastMath.abs(yB))};
     }
 }

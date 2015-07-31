@@ -6,17 +6,17 @@
 package game;
 
 /**
- *
  * @author przemek
  */
 public class Language {
 
+    public final Menu menu = new Menu();
     public String lang;
-    public Menu menu = new Menu();
 
     //Menu && Errors
     public class Menu {
 
+        public final String[] Actions = new String[36];
         public String Menu;
         public String Start;
         public String LocalGame;
@@ -39,7 +39,7 @@ public class Language {
         public String SplitScreen;
         public String Vertical;
         public String Horizontal;
-        public String Brigthness;
+        public String Brightness;
         public String Volume;
         public String Resolution;
         public String FullScreen;
@@ -54,9 +54,8 @@ public class Language {
         public String Player2;
         public String Player3;
         public String Player4;
-        public String[] Actions = new String[36];
         public String PushButton;
-        public String Unchangable;
+        public String Unchangeable;
         public String VSync;
         public String ShadowOff;
         public String SmoothShadows;

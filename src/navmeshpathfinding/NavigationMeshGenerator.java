@@ -8,40 +8,25 @@ package navmeshpathfinding;
 import collision.Block;
 import collision.Figure;
 import collision.RoundRectangle;
-import static collision.RoundRectangle.LEFT_BOTTOM;
-import static collision.RoundRectangle.LEFT_TOP;
-import static collision.RoundRectangle.RIGHT_BOTTOM;
-import static collision.RoundRectangle.RIGHT_TOP;
 import engine.BlueArray;
 import engine.Point;
+import game.place.Place;
+import game.place.Tile;
+
+import java.awt.geom.Line2D;
+import java.util.*;
+
+import static collision.RoundRectangle.*;
 import static game.place.Area.X_IN_TILES;
 import static game.place.Area.Y_IN_TILES;
-import game.place.Place;
 import static game.place.Place.xAreaInPixels;
 import static game.place.Place.yAreaInPixels;
-import game.place.Tile;
-import java.awt.geom.Line2D;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-import static navmeshpathfinding.PathFinder.TO_LEFT_BOTTOM;
-import static navmeshpathfinding.PathFinder.TO_LEFT_TOP;
-import static navmeshpathfinding.PathFinder.TO_RIGHT_BOTTOM;
-import static navmeshpathfinding.PathFinder.TO_RIGHT_TOP;
+import static navmeshpathfinding.PathFinder.*;
 
 /**
- *
  * @author przemek
  */
 public class NavigationMeshGenerator {
-
-    private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart, leftTop, rightTop, leftBottom, rightBottom;
-    private static double xd, yd;
-    private static byte[] shiftDirections;
 
     private static final BitSet spots = new BitSet();
     private static final byte[] diagonals = new byte[X_IN_TILES * Y_IN_TILES];
@@ -53,14 +38,16 @@ public class NavigationMeshGenerator {
     private static final Set<Line> linesToCheck = new HashSet<>();
     private static final Set<Point> pointsToConnect = new HashSet<>();
     private static final Set<Triangle> triangles = new HashSet<>();
-    private static final Map<Line, NeightbourTriangles> linesTriangles = new HashMap<>();
-
+    private static final Map<Line, NeighbourTriangles> linesTriangles = new HashMap<>();
     private static final Point tempPoint = new Point();
-
-    private static Point start, end, xModed, yModed;
+    private final static float EPSILON = 0.001f;
+    private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart, leftTop, rightTop, leftBottom, rightBottom;
+    private static double xd, yd;
+    private static byte[] shiftDirections;
+    private static Point start, end, xModded, yModded;
     private static Line tempLine1, tempLine2, tempLine3, currentLine;
     private static Triangle currentTriangle;
-    private static NeightbourTriangles neightbours;
+    private static NeighbourTriangles neighbours;
     private static Figure figure;
     private static RoundRectangle round;
     private static boolean intersects, inline, changed, previous, next, linePrevious, lineNext;
@@ -260,13 +247,13 @@ public class NavigationMeshGenerator {
 
     private static void createLinesFromSpots() {
         newLines.clear();
-        createHorisontalLines();
+        createHorizontalLines();
         createVerticalLines();
         sureLines.clear();
         sureLines.addAll(newLines);
     }
 
-    private static void createHorisontalLines() {
+    private static void createHorizontalLines() {
         inline = previous = next = linePrevious = lineNext = false;
         for (int y = yStartBound - 1; y <= yEndBound; y++) {
             for (int x = xStartBound; x <= xEndBound + 1; x++) {
@@ -320,10 +307,7 @@ public class NavigationMeshGenerator {
     }
 
     private static boolean isCollision(int x, int y) {
-        if (y > yEndBound || x > xEndBound || y < yStartBound || x < xStartBound) {
-            return true;
-        }
-        return spots.get(getIndex(x, y));
+        return y > yEndBound || x > xEndBound || y < yStartBound || x < xStartBound || spots.get(getIndex(x, y));
     }
 
     private static void createAndAddDiagonalLines(Set<Block> blocks) {
@@ -394,10 +378,7 @@ public class NavigationMeshGenerator {
     }
 
     private static boolean isCollisionFromCoordinates(int x, int y) {
-        if (y > yEndBound || x > xEndBound || y < yStartBound || x < xStartBound) {
-            return true;
-        }
-        return spots.get(getIndex(x, y));
+        return y > yEndBound || x > xEndBound || y < yStartBound || x < xStartBound || spots.get(getIndex(x, y));
     }
 
     private static void correctLine(int corner, RoundRectangle collision) {
@@ -413,7 +394,7 @@ public class NavigationMeshGenerator {
                 cornerOnTheLine(corner, line);
             }
         });
-        newLines.add(new Line(xModed, yModed));
+        newLines.add(new Line(xModded, yModded));
         sureLines.removeAll(linesToRemove);
         sureLines.addAll(linesToAdd);
     }
@@ -445,13 +426,13 @@ public class NavigationMeshGenerator {
                 yMod = y + Place.tileSize;
                 break;
         }
-        xModed = new Point(xMod, y);
-        yModed = new Point(x, yMod);
+        xModded = new Point(xMod, y);
+        yModded = new Point(x, yMod);
         tempPoint.set(x, y);
     }
 
     private static void cornerAtEndOfLine(Line line) {
-        if (line.isHorisontal()) {
+        if (line.isHorizontal()) {
             if (line.getStart().getX() == line.getEnd().getX() - Place.tileSize) {
                 linesToRemove.add(line);
             } else {
@@ -467,7 +448,7 @@ public class NavigationMeshGenerator {
     }
 
     private static void cornerAtStartOfLine(Line line) {
-        if (line.isHorisontal()) {
+        if (line.isHorizontal()) {
             if (line.getStart().getX() + Place.tileSize == line.getEnd().getX()) {
                 linesToRemove.add(line);
             } else {
@@ -500,7 +481,7 @@ public class NavigationMeshGenerator {
     }
 
     private static void leftTopCorner(Line line) {
-        if (line.isHorisontal()) {
+        if (line.isHorizontal()) {
             if (line.getEnd().getY() == y && line.getStart().getX() < x && x < line.getEnd().getX()) {
                 if (xMod != line.getEnd().getX()) {
                     linesToAdd.add(new Line(new Point(xMod, y), new Point(line.getEnd().getX(), y)));
@@ -526,7 +507,7 @@ public class NavigationMeshGenerator {
     }
 
     private static void leftBottomCorner(Line line) {
-        if (line.isHorisontal()) {
+        if (line.isHorizontal()) {
             if (line.getEnd().getY() == y && line.getStart().getX() < x && x < line.getEnd().getX()) {
                 if (xMod != line.getEnd().getX()) {
                     linesToAdd.add(new Line(new Point(xMod, y), new Point(line.getEnd().getX(), y)));
@@ -539,9 +520,7 @@ public class NavigationMeshGenerator {
             }
         } else if (line.isVertical()) {
             if (line.getEnd().getX() == x && line.getStart().getY() < y && y < line.getEnd().getY()) {
-                if (y != line.getEnd().getY()) {
-                    linesToAdd.add(new Line(new Point(x, y), new Point(x, line.getEnd().getY())));
-                }
+                linesToAdd.add(new Line(new Point(x, y), new Point(x, line.getEnd().getY())));
                 if (line.getStart().getY() != yMod) {
                     line.setYEnd(yMod);
                 } else {
@@ -552,11 +531,9 @@ public class NavigationMeshGenerator {
     }
 
     private static void rightBottomCorner(Line line) {
-        if (line.isHorisontal()) {
+        if (line.isHorizontal()) {
             if (line.getEnd().getY() == y && line.getStart().getX() < x && x < line.getEnd().getX()) {
-                if (x != line.getEnd().getX()) {
-                    linesToAdd.add(new Line(new Point(x, y), new Point(line.getEnd().getX(), y)));
-                }
+                linesToAdd.add(new Line(new Point(x, y), new Point(line.getEnd().getX(), y)));
                 if (line.getStart().getX() != xMod) {
                     line.setXEnd(xMod);
                 } else {
@@ -565,9 +542,7 @@ public class NavigationMeshGenerator {
             }
         } else if (line.isVertical()) {
             if (line.getEnd().getX() == x && line.getStart().getY() < y && y < line.getEnd().getY()) {
-                if (y != line.getEnd().getY()) {
-                    linesToAdd.add(new Line(new Point(x, y), new Point(x, line.getEnd().getY())));
-                }
+                linesToAdd.add(new Line(new Point(x, y), new Point(x, line.getEnd().getY())));
                 if (line.getStart().getY() != yMod) {
                     line.setYEnd(yMod);
                 } else {
@@ -578,11 +553,9 @@ public class NavigationMeshGenerator {
     }
 
     private static void rightTopCorner(Line line) {
-        if (line.isHorisontal()) {
+        if (line.isHorizontal()) {
             if (line.getEnd().getY() == y && line.getStart().getX() < x && x < line.getEnd().getX()) {
-                if (x != line.getEnd().getX()) {
-                    linesToAdd.add(new Line(new Point(x, y), new Point(line.getEnd().getX(), y)));
-                }
+                linesToAdd.add(new Line(new Point(x, y), new Point(line.getEnd().getX(), y)));
                 if (line.getStart().getX() != xMod) {
                     line.setXEnd(xMod);
                 } else {
@@ -612,7 +585,7 @@ public class NavigationMeshGenerator {
                 newLines.remove(tempLine1);
                 tempLine1 = null;
             }
-            mainloop:
+            mainLoop:
             for (Line line1 : newLines) {
                 for (Line line2 : newLines) {
                     if (!line1.equals(line2)) {
@@ -620,19 +593,19 @@ public class NavigationMeshGenerator {
                         if (line1.getStart().equals(line2.getStart()) && line2.getDirectional() == a) {
                             line2.setStart(line1.getEnd());
                             removeLine(line1);
-                            break mainloop;
+                            break mainLoop;
                         } else if (line1.getStart().equals(line2.getEnd()) && line2.getDirectional() == a) {
                             line2.setEnd(line1.getEnd());
                             removeLine(line1);
-                            break mainloop;
+                            break mainLoop;
                         } else if (line1.getEnd().equals(line2.getStart()) && line2.getDirectional() == a) {
                             line2.setStart(line1.getStart());
                             removeLine(line1);
-                            break mainloop;
+                            break mainLoop;
                         } else if (line1.getEnd().equals(line2.getEnd()) && line2.getDirectional() == a) {
                             line2.setEnd(line1.getStart());
                             removeLine(line1);
-                            break mainloop;
+                            break mainLoop;
                         }
                     }
                 }
@@ -679,11 +652,7 @@ public class NavigationMeshGenerator {
         x = (int) xd;
         y = (int) yd;
         int i = getIndex(x, y);
-        if (!spots.get(i)) {
-            return true;
-        } else {
-            return isWalkableOnDiagonal(i);
-        }
+        return !spots.get(i) || isWalkableOnDiagonal(i);
     }
 
     private static boolean isWalkableOnDiagonal(int i) {
@@ -691,25 +660,13 @@ public class NavigationMeshGenerator {
             case -1:
                 return false;
             case LEFT_TOP:
-                if ((xd - x) + (yd - y) < Place.tileSize) {
-                    return true;
-                }
-                return false;
+                return (xd - x) + (yd - y) < Place.tileSize;
             case LEFT_BOTTOM:
-                if ((xd - x) < (yd - y)) {
-                    return true;
-                }
-                return false;
+                return (xd - x) < (yd - y);
             case RIGHT_BOTTOM:
-                if (Math.abs(xd - x) + Math.abs(yd - y) > Place.tileSize) {
-                    return true;
-                }
-                return false;
+                return Math.abs(xd - x) + Math.abs(yd - y) > Place.tileSize;
             case RIGHT_TOP:
-                if (Math.abs(xd - x) > (yd - y)) {
-                    return true;
-                }
-                return false;
+                return Math.abs(xd - x) > (yd - y);
         }
         return false;
     }
@@ -747,9 +704,9 @@ public class NavigationMeshGenerator {
     private static void solveLines() {
         sortedLines.clear();
         newLines.stream().forEach((line) -> {
-            line.calculateLength();
-            sortedLines.add(line);
-        }
+                    line.calculateLength();
+                    sortedLines.add(line);
+                }
         );
         newLines.clear();
         newLines.addAll(sureLines);
@@ -809,19 +766,19 @@ public class NavigationMeshGenerator {
             Line line3 = new Line(first, second);
             if (!triangles.contains(triangle)) {
                 if (linesTriangles.containsKey(line1)) {
-                    ((NeightbourTriangles) linesTriangles.get(line1)).addTriangle(triangle);
+                    linesTriangles.get(line1).addTriangle(triangle);
                 } else {
-                    linesTriangles.put(line1, new NeightbourTriangles(triangle));
+                    linesTriangles.put(line1, new NeighbourTriangles(triangle));
                 }
                 if (linesTriangles.containsKey(line2)) {
-                    ((NeightbourTriangles) linesTriangles.get(line2)).addTriangle(triangle);
+                    linesTriangles.get(line2).addTriangle(triangle);
                 } else {
-                    linesTriangles.put(line2, new NeightbourTriangles(triangle));
+                    linesTriangles.put(line2, new NeighbourTriangles(triangle));
                 }
                 if (linesTriangles.containsKey(line3)) {
-                    ((NeightbourTriangles) linesTriangles.get(line3)).addTriangle(triangle);
+                    linesTriangles.get(line3).addTriangle(triangle);
                 } else {
-                    linesTriangles.put(line3, new NeightbourTriangles(triangle));
+                    linesTriangles.put(line3, new NeighbourTriangles(triangle));
                 }
                 triangles.add(triangle);
             }
@@ -836,21 +793,13 @@ public class NavigationMeshGenerator {
 
     private static boolean isTrianglesContainsOtherPoints(Point point1, Point point2, Point point3) {
         calculateBounds(point1, point2, point3);
-        if (pointsToConnect.stream().filter((point) -> (!point.equals(point1) && !point.equals(point2) && !point.equals(point3))).anyMatch((point)
-                -> (isPointInTriangle(point, point1, point2, point3)))) {
-            return true;
-        }
-        return false;
+        return pointsToConnect.stream().filter((point) -> (!point.equals(point1) && !point.equals(point2) && !point.equals(point3))).anyMatch((point)
+                -> (isPointInTriangle(point, point1, point2, point3)));
     }
 
     private static boolean isPointInTriangle(Point point, Point point1, Point point2, Point point3) {
-        if (isOutOfBoundsToEpsilon(point)) {
-            return false;
-        }
-        return baricentricPointInTriangle(point, point1, point2, point3);
+        return !isOutOfBoundsToEpsilon(point) && barycentricPointInTriangle(point, point1, point2, point3);
     }
-
-    private final static float EPSILON = 0.001f;
 
     private static void calculateBounds(Point point1, Point point2, Point point3) {
         xStartTemp = Math.min(Math.min(point1.getX(), point2.getX()), point3.getX());
@@ -866,7 +815,7 @@ public class NavigationMeshGenerator {
                 || (point.getY() - EPSILON > yETemp);
     }
 
-    private static boolean baricentricPointInTriangle(Point point, Point point1, Point point2, Point point3) {
+    private static boolean barycentricPointInTriangle(Point point, Point point1, Point point2, Point point3) {
         double denominator = getDenominator(point1, point2, point3);
         double a = ((point2.getY() - point3.getY()) * (point.getX() - point3.getX())
                 + ((point3.getX() - point2.getX()) * (point.getY() - point3.getY()))) / denominator;
@@ -913,10 +862,10 @@ public class NavigationMeshGenerator {
             while (!linesToCheck.isEmpty()) {
                 currentLine = poll(linesToCheck);
                 if (currentLine != null) {
-                    neightbours = linesTriangles.get(currentLine);
+                    neighbours = linesTriangles.get(currentLine);
                     linesTriangles.remove(currentLine);
-                    for (int i = 0; i < neightbours.size; i++) {
-                        currentTriangle = neightbours.getTriangle(i);
+                    for (int i = 0; i < neighbours.size; i++) {
+                        currentTriangle = neighbours.getTriangle(i);
                         if (currentTriangle != null) {
                             navigationMesh.addTriangle(currentTriangle);
                             tempLine1 = new Line(currentTriangle.getPointFromNode(0), currentTriangle.getPointFromNode(1));
@@ -948,7 +897,7 @@ public class NavigationMeshGenerator {
         return line;
     }
 
-    public static int getIndex(int x, int y) {
+    private static int getIndex(int x, int y) {
         return x + y * X_IN_TILES;
     }
 

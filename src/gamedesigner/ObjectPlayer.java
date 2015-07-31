@@ -10,7 +10,6 @@ import collision.Figure;
 import engine.Drawer;
 import engine.Methods;
 import engine.Point;
-import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
@@ -19,53 +18,29 @@ import game.place.Place;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.RoundedTMPBlock;
 import gamedesigner.designerElements.TemporaryBlock;
-import java.util.ArrayList;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
-import static org.lwjgl.input.Keyboard.KEY_A;
-import static org.lwjgl.input.Keyboard.KEY_B;
-import static org.lwjgl.input.Keyboard.KEY_DELETE;
-import static org.lwjgl.input.Keyboard.KEY_DOWN;
-import static org.lwjgl.input.Keyboard.KEY_HOME;
-import static org.lwjgl.input.Keyboard.KEY_LCONTROL;
-import static org.lwjgl.input.Keyboard.KEY_LEFT;
-import static org.lwjgl.input.Keyboard.KEY_LMENU;
-import static org.lwjgl.input.Keyboard.KEY_LSHIFT;
-import static org.lwjgl.input.Keyboard.KEY_M;
-import static org.lwjgl.input.Keyboard.KEY_R;
-import static org.lwjgl.input.Keyboard.KEY_RETURN;
-import static org.lwjgl.input.Keyboard.KEY_RIGHT;
-import static org.lwjgl.input.Keyboard.KEY_SPACE;
-import static org.lwjgl.input.Keyboard.KEY_UP;
-import static org.lwjgl.input.Keyboard.KEY_Z;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+
+import java.util.ArrayList;
+
+import static org.lwjgl.input.Keyboard.*;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author przemek
  */
 public class ObjectPlayer extends Player {
 
-    private int maxtimer;
+    private final SimpleKeyboard key;
+    private int maxTimer;
     private int ix, iy;
-    private int xtimer, ytimer;
+    private int xTimer, yTimer;
     private int tileSize;
     private int xStop, yStop;
-
     private ObjectMap objMap;
     private ObjectPlace objPlace;
     private ObjectUI ui;
-    private final SimpleKeyboard key;
-
     private int blockHeight, radius, mode;
     private boolean roundBlocksMode;
     private boolean paused;
@@ -76,22 +51,22 @@ public class ObjectPlayer extends Player {
     public ObjectPlayer(boolean first, String name) {
         super(name);
         this.first = first;
-        maxtimer = 7;
-        xtimer = 0;
-        ytimer = 0;
+        maxTimer = 7;
+        xTimer = 0;
+        yTimer = 0;
         radius = 1;
         key = new SimpleKeyboard();
         initializeController();
     }
 
     private void initializeController() {
-        controler = new ObjectController(this);
-        controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
-        controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
-        controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        controler.inputs[6] = new InputKeyBoard(Keyboard.KEY_END);
-        controler.initialize();
+        playerController = new ObjectController(this);
+        playerController.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+        playerController.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+        playerController.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+        playerController.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+        playerController.inputs[6] = new InputKeyBoard(Keyboard.KEY_END);
+        playerController.initialize();
     }
 
     @Override
@@ -122,36 +97,30 @@ public class ObjectPlayer extends Player {
 
     @Override
     protected boolean isCollided(int xMagnitude, int yMagnitude) {
-        if (isInGame()) {
-            return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
-        }
-        return false;
+        return isInGame() && collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
     }
 
     @Override
     protected void move(int xPosition, int yPosition) {
-        boolean cltr = key.key(KEY_LCONTROL);
-        if (xtimer == 0) {
-            ix = Methods.interval(0, ix + xPosition, map.getWidthInTIles());
+        boolean ctrl = key.key(KEY_LCONTROL);
+        if (xTimer == 0) {
+            ix = Methods.interval(0, ix + xPosition, map.getWidthInTiles());
             setX(ix * tileSize);
         }
-        if (ytimer == 0) {
+        if (yTimer == 0) {
             iy = Methods.interval(0, iy + yPosition, map.getHeightInTiles());
             setY(iy * tileSize);
         }
         updateAreaPlacement();
         if (key.key(KEY_M) && movingBlock != null) {
-            movingBlock.stream().forEach((tmpb) -> {
-                tmpb.move(xtimer == 0 ? xPosition * tileSize : 0, ytimer == 0 ? yPosition * tileSize : 0);
-
-            });
+            movingBlock.stream().forEach((tmpB) -> tmpB.move(xTimer == 0 ? xPosition * tileSize : 0, yTimer == 0 ? yPosition * tileSize : 0));
         }
 
         if (mode < 2) {
-            if (xtimer == 0 && (!cltr || roundBlocksMode)) {
-                xStop = Methods.interval(0, xStop + xPosition, map.getWidthInTIles());
+            if (xTimer == 0 && (!ctrl || roundBlocksMode)) {
+                xStop = Methods.interval(0, xStop + xPosition, map.getWidthInTiles());
             }
-            if (ytimer == 0 && !cltr) {
+            if (yTimer == 0 && !ctrl) {
                 yStop = Methods.interval(0, yStop + yPosition, map.getHeightInTiles());
             }
         } else {
@@ -163,13 +132,13 @@ public class ObjectPlayer extends Player {
         if (camera != null) {
             camera.update();
         }
-        xtimer++;
-        ytimer++;
-        if (xtimer >= maxtimer) {
-            xtimer = 0;
+        xTimer++;
+        yTimer++;
+        if (xTimer >= maxTimer) {
+            xTimer = 0;
         }
-        if (ytimer >= maxtimer) {
-            ytimer = 0;
+        if (yTimer >= maxTimer) {
+            yTimer = 0;
         }
     }
 
@@ -184,7 +153,7 @@ public class ObjectPlayer extends Player {
             int xPos = 0;
             int yPos = 0;
 
-            maxtimer = key.key(KEY_A) ? 2 : 7;
+            maxTimer = key.key(KEY_A) ? 2 : 7;
 
             if (key.key(KEY_LCONTROL) && key.key(KEY_Z)) {
                 xStop = ix;
@@ -196,14 +165,14 @@ public class ObjectPlayer extends Player {
             } else if (key.key(KEY_DOWN)) {
                 yPos++;
             } else {
-                ytimer = 0;
+                yTimer = 0;
             }
             if (key.key(KEY_LEFT)) {
                 xPos--;
             } else if (key.key(KEY_RIGHT)) {
                 xPos++;
             } else {
-                xtimer = 0;
+                xTimer = 0;
             }
 
             if (mode == 0) {
@@ -232,22 +201,22 @@ public class ObjectPlayer extends Player {
 
             if (xPos != 0 || yPos != 0) {
                 if (ui.isChanged()) {
-                    if (xtimer == 0 && ytimer == 0) {
+                    if (xTimer == 0 && yTimer == 0) {
                         ui.changeCoordinates(xPos, yPos);
-                        xtimer = 1;
-                        ytimer = 1;
+                        xTimer = 1;
+                        yTimer = 1;
                     }
                 } else if (mode == 1 && key.key(KEY_LSHIFT)) {
-                    if (xtimer == 0 && ytimer == 0) {
+                    if (xTimer == 0 && yTimer == 0) {
                         blockHeight = FastMath.max(0, -yPos + blockHeight);
-                        xtimer = 1;
-                        ytimer = 1;
+                        xTimer = 1;
+                        yTimer = 1;
                     }
                 } else if (mode == 3 && key.key(KEY_LSHIFT)) {
-                    if (xtimer == 0 && ytimer == 0) {
+                    if (xTimer == 0 && yTimer == 0) {
                         radius = Methods.interval(1, radius - yPos, 20);
-                        xtimer = 1;
-                        ytimer = 1;
+                        xTimer = 1;
+                        yTimer = 1;
                     }
                 } else {
                     move(xPos, yPos);
@@ -343,11 +312,8 @@ public class ObjectPlayer extends Player {
         int xd = (Math.abs(ix - xStop) + 1) * tileSize;
         int yd = (Math.abs(iy - yStop) + 1) * tileSize;
         glTranslatef(xEffect, yEffect, 0);
-        if (Settings.scaled) {
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        }
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(Math.min(ix, xStop) * tileSize, Math.min(iy, yStop) * tileSize, 0);
-
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         glColor4f(1f, 1f, 1f, 1f);
         Drawer.setCentralPoint();
@@ -421,7 +387,7 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
     }
 
     @Override
@@ -429,7 +395,7 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
     }
 
     @Override

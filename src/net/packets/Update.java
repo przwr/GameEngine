@@ -8,14 +8,14 @@ package net.packets;
 import java.util.ArrayList;
 
 /**
- *
  * @author przemek
  */
 public abstract class Update {
 
-    protected int x, y;
-    protected ArrayList<Short> xDeltas = new ArrayList<>();
-    protected ArrayList<Short> yDeltas = new ArrayList<>();
+    final ArrayList<Short> xDeltas = new ArrayList<>();
+    final ArrayList<Short> yDeltas = new ArrayList<>();
+    int x;
+    int y;
 
     public synchronized int getX() {
         return x;

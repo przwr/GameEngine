@@ -10,7 +10,7 @@ import collision.Figure;
 import engine.BlueArray;
 import engine.Light;
 import engine.Methods;
-import engine.PointContener;
+import engine.PointContainer;
 import game.gameobject.GameObject;
 import game.gameobject.Interactive;
 import game.gameobject.Mob;
@@ -49,7 +49,7 @@ public class Area {
     private final ArrayList<GameObject> depthObjects = new ArrayList<>();
     private final ArrayList<WarpPoint> warps = new ArrayList<>();
     private final ArrayList<Light> lights = new ArrayList<>();
-    private final ArrayList<Interactive> interactives = new ArrayList<>();
+    private final ArrayList<Interactive> interactiveObjects = new ArrayList<>();
 
     private final BlueArray<Block> nearBlocks = new BlueArray<>();
     private final BlueArray<Mob> nearSolidMobs = new BlueArray<>();
@@ -59,7 +59,7 @@ public class Area {
     private final BlueArray<WarpPoint> nearWarps = new BlueArray<>();
     private final BlueArray<GameObject> nearDepthObjects = new BlueArray<>();
 
-    protected NavigationMesh navigationMesh;
+    private NavigationMesh navigationMesh;
 
     public Area(Place place, Map map, int xArea, int yArea) {
         this.place = place;
@@ -86,7 +86,7 @@ public class Area {
         map.updateNearDepthObjects(area, nearDepthObjects);
     }
 
-    public PointContener findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+    public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         return PathFinder.findPath(navigationMesh, xStart, yStart, xDestination, yDestination, collision);
     }
 
@@ -114,7 +114,7 @@ public class Area {
         addForegroundTile(tile);
     }
 
-    public void addForegroundTile(GameObject tile) {
+    private void addForegroundTile(GameObject tile) {
         tile.setMapNotChange(map);
         Methods.merge(foregroundTiles, tile);
 
@@ -147,7 +147,7 @@ public class Area {
             Methods.merge(depthObjects, object);
         }
         if (object.isInteractive()) {
-            object.getInteractives().stream().forEach(interactives::add);
+            object.getInteractiveObjects().stream().forEach(interactiveObjects::add);
         }
         if (!(object instanceof Player)) {
             addNotPlayerObject(object);
@@ -194,7 +194,7 @@ public class Area {
             object.getLights().stream().forEach(lights::remove);
         }
         if (object.isInteractive()) {
-            object.getInteractives().stream().forEach(interactives::remove);
+            object.getInteractiveObjects().stream().forEach(interactiveObjects::remove);
         }
         if (!(object instanceof Player)) {
             deleteNotPlayerObject(object);
@@ -306,8 +306,8 @@ public class Area {
         return foregroundTiles.get(i);
     }
 
-    public List<Interactive> getInteractives() {
-        return interactives;
+    public List<Interactive> getInteractiveObjects() {
+        return interactiveObjects;
     }
 
     public int getXArea() {

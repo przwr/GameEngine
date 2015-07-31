@@ -6,18 +6,21 @@
 package engine.inout;
 
 import game.Settings;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author przemek
  */
-public final class AnalizerSettings {
+public final class AnalyzerSettings {
 
-    public static void analizeSetting(String name) {
+    private AnalyzerSettings() {
+    }
+
+    public static void analyzeSetting(String name) {
         final String[] p = name.split("\\s+");
         switch (p[0]) {
             case "FullScreen:":
@@ -136,10 +139,7 @@ public final class AnalizerSettings {
             writer.write("Language: " + Settings.languageName);
             writer.close();
         } catch (IOException ex) {
-            Logger.getLogger(AnalizerSettings.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AnalyzerSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private AnalizerSettings() {
     }
 }

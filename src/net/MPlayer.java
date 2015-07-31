@@ -10,12 +10,11 @@ import game.gameobject.Player;
 import net.packets.PacketUpdate;
 
 /**
- *
  * @author przemek
  */
 public class MPlayer {
 
-    private Connection conection;
+    private Connection connection;
     private short mapId;
     private byte id;
     private String name;
@@ -30,7 +29,7 @@ public class MPlayer {
         this.mapId = mapId;
         this.id = id;
         this.name = name;
-        this.conection = connection;
+        this.connection = connection;
         pu = new PacketUpdate();
     }
 
@@ -42,8 +41,8 @@ public class MPlayer {
 
     public void sendUpTCP() {
         pu.Trim();
-        if (conection.isConnected()) {
-            conection.sendTCP(pu);
+        if (connection.isConnected()) {
+            connection.sendTCP(pu);
         }
         pu.Reset();
     }
@@ -69,7 +68,7 @@ public class MPlayer {
     }
 
     public Connection getConnection() {
-        return conection;
+        return connection;
     }
 
     public void setPosition(int x, int y) {

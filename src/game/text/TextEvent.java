@@ -6,14 +6,14 @@
 package game.text;
 
 /**
- *
  * @author Wojtek
  */
-public abstract class TextEvent {
+abstract class TextEvent {
 
-    int start, lineNum;
+    final int start;
+    private final int lineNum;
 
-    protected TextEvent(int start, int lineNum) {
+    TextEvent(int start, int lineNum) {
         this.start = start;
         this.lineNum = lineNum;
     }

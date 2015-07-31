@@ -8,17 +8,17 @@ package navmeshpathfinding;
 import game.gameobject.Entity;
 
 /**
- *
  * @author przemek
  */
 public class PathRequest {
 
-    protected Entity requester;
-    protected int xDest, yDest;
+    Entity requester;
+    int xDest;
+    int yDest;
 
-    public PathRequest(){        
+    public PathRequest() {
     }
-    
+
     public PathRequest(Entity requester, int xDest, int yDest) {
         this.requester = requester;
         this.xDest = xDest;

@@ -5,13 +5,12 @@
  */
 package gamecontent.choices;
 
+import engine.SplitScreen;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
-import engine.SplitScreen;
 
 /**
- *
  * @author przemek
  */
 public class JoinSplitScreenChoice extends MenuChoice {

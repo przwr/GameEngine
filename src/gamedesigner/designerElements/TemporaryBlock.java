@@ -7,10 +7,8 @@ package gamedesigner.designerElements;
 
 import collision.Block;
 import collision.Figure;
-import static collision.OpticProperties.TRANSPARENT;
 import engine.Drawer;
 import engine.Point;
-import game.Settings;
 import game.gameobject.GameObject;
 import game.place.ForegroundTile;
 import game.place.Map;
@@ -18,28 +16,29 @@ import game.place.Place;
 import game.place.Tile;
 import gamedesigner.ObjectMap;
 import gamedesigner.ObjectPlace;
-import java.util.ArrayList;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
 
+import java.util.ArrayList;
+
+import static collision.OpticProperties.TRANSPARENT;
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author Wojtek
  */
 public class TemporaryBlock extends GameObject {
 
-    protected final int tile;
-    protected final int width, height, upHeight, xTiles, yTiles;
-    protected final ObjectPlace objPlace;
-    protected final ObjectMap objMap;
-
-    protected Block block;
-    protected ArrayList<ForegroundTile> tiles;
-    protected boolean blocked;
+    final int tile;
+    final int width;
+    final int height;
+    final int upHeight;
+    final int yTiles;
+    final ObjectPlace objPlace;
+    private final int xTiles;
+    private final ObjectMap objMap;
+    private final ArrayList<ForegroundTile> tiles;
+    Block block;
+    boolean blocked;
 
     public TemporaryBlock(int x, int y, int upHeight, int width, int height, Map map) {
         this.initialize("tmpBlock", x, y);
@@ -60,12 +59,12 @@ public class TemporaryBlock extends GameObject {
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
-        if (Settings.scaled) {
+
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        }
+
         glTranslatef(getX(), getY(), 0);
         int mode = objPlace.getMode();
-        if (mode != 2 && (!objPlace.isNoBlocksMode() || mode == 1)) {
+        if (mode != 2 && (objPlace.isBlocksMode() || mode == 1)) {
             int d = 2;
             Drawer.refreshColor();
             int tmpH = upHeight * tile;
@@ -114,8 +113,8 @@ public class TemporaryBlock extends GameObject {
         }
     }
 
-    public boolean isBlocked() {
-        return blocked;
+    public boolean isNotBlocked() {
+        return !blocked;
     }
 
     public void setBlocked(boolean blocked) {
@@ -162,14 +161,13 @@ public class TemporaryBlock extends GameObject {
         return !(x > xEnd || x < xBegin || y > yEnd || y < yBegin);
     }
 
-    public ForegroundTile addTile(ForegroundTile fgt) {
+    public void addTile(ForegroundTile fgt) {
         map.addForegroundTile(fgt);
         tiles.add(fgt);
         if (block == null) {
             createBlock();
         }
         block.addForegroundTile(fgt);
-        return fgt;
     }
 
     public ForegroundTile addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altMode) {
@@ -201,7 +199,7 @@ public class TemporaryBlock extends GameObject {
         return fgt;
     }
 
-    public void createBlock() {
+    void createBlock() {
         block = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
         if (upHeight == 0) {
             block.getCollision().setOpticProperties(TRANSPARENT);
@@ -209,7 +207,7 @@ public class TemporaryBlock extends GameObject {
         map.addBlock(block);
     }
 
-    protected ForegroundTile createTile(SpriteSheet texture, int x, int tile, int xSheet, int ySheet, int level, boolean altMode) {
+    ForegroundTile createTile(SpriteSheet texture, int y, int tile, int xSheet, int ySheet, int level, boolean altMode) {
         if (level + 1 <= upHeight) {
             return ForegroundTile.createWall(texture, tile, xSheet, ySheet);
         } else {
@@ -253,7 +251,7 @@ public class TemporaryBlock extends GameObject {
     public void decompose() {
         tiles.stream().forEach((fgt) -> {
             Point p = fgt.popTileFromStackBack();
-            Tile t = new Tile(fgt.getSpriteSheet(), tile, p.getX(), p.getY());
+            Tile t = new Tile(fgt.getSpriteSheet(), p.getX(), p.getY());
             while ((p = fgt.popTileFromStackBack()) != null) {
                 t.addTileToStack(p.getX(), p.getY());
             }
@@ -289,7 +287,7 @@ public class TemporaryBlock extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
     }
 
     @Override
@@ -297,7 +295,7 @@ public class TemporaryBlock extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
     }
 
 }

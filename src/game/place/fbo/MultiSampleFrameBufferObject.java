@@ -3,15 +3,16 @@ package game.place.fbo;
 import game.Settings;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.EXTFramebufferObject;
-import static org.lwjgl.opengl.GL11.glGenTextures;
 import org.lwjgl.opengl.GL30;
 
-public class MultisampleFrameBufferObject extends FrameBufferObject {
+import static org.lwjgl.opengl.GL11.glGenTextures;
 
-    private int frameBufferObjectMultiSample;
+public class MultiSampleFrameBufferObject extends FrameBufferObject {
+
     private final int multiSampleTexture;
+    private int frameBufferObjectMultiSample;
 
-    public MultisampleFrameBufferObject(int width, int height) {
+    public MultiSampleFrameBufferObject(int width, int height) {
         super(width, height, true);
         multiSampleTexture = glGenTextures();
         createFrameBufferObjects();

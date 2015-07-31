@@ -11,12 +11,10 @@ import game.place.Place;
 import game.place.cameras.PlayersCamera;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glScissor;
-import static org.lwjgl.opengl.GL11.glViewport;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author przemek
  */
 public class SplitScreen {
@@ -36,6 +34,9 @@ public class SplitScreen {
     private static final int width1o2 = Display.getWidth() / 2;
     private static final int heigth1o2 = Display.getHeight() / 2;
 
+    private SplitScreen() {
+    }
+
     public static void setSplitScreen(Place place, int playersLength, int player) {
         place.singleCamera = false;
         splits[playersLength - 1].setSplit(place, player);
@@ -54,19 +55,19 @@ public class SplitScreen {
         }
     }
 
-    public static boolean isClose2(Place place) {
+    private static boolean isClose2(Place place) {
         return place.players[0].getMap() == place.players[1].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width3o4 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < heigth3o4;
     }
 
-    public static boolean isClose3(Place place) {
+    private static boolean isClose3(Place place) {
         return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < heigth2o3 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[2].getY()) < heigth2o3 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < heigth2o3;
     }
 
-    public static boolean isClose4(Place place) {
+    private static boolean isClose4(Place place) {
         return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && place.players[0].getMap() == place.players[3].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < heigth1o2 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[2].getY()) < heigth1o2 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < heigth1o2 && FastMath.abs(place.players[0].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[3].getY()) < heigth1o2 && FastMath.abs(place.players[1].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[3].getY()) < heigth1o2 && FastMath.abs(place.players[2].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[2].getY() - place.players[3].getY()) < heigth1o2;
     }
 
-    public static boolean isFar(Place place) {
+    private static boolean isFar(Place place) {
         if (!place.singleCamera) {
             for (int p = 0; p < place.playersCount; p++) {
                 if (place.players[0].getMap() != place.players[p].getMap() || place.players[p].getX() > place.cameras[place.playersCount - 2].getXEnd() || place.players[p].getX() < place.cameras[place.playersCount - 2].getXStart() || place.players[p].getY() > place.cameras[place.playersCount - 2].getYEnd() || place.players[p].getY() < place.cameras[place.playersCount - 2].getYStart()) {
@@ -110,7 +111,7 @@ public class SplitScreen {
         }
     }
 
-    public static void initialzie() {
+    public static void initialise() {
         players2h[0] = (Place place) -> {
             glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
             glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
@@ -162,7 +163,7 @@ public class SplitScreen {
                 orients2[Settings.horizontalSplitScreen ? 0 : 1].setOrientation(place, player);
             } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                place.currentCamera = place.cameras[0];
+                Place.currentCamera = place.cameras[0];
                 place.splitScreenMode = 0;
                 place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
                 place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
@@ -234,7 +235,7 @@ public class SplitScreen {
                 orients3[Settings.horizontalSplitScreen ? 0 : 1].setOrientation(place, p);
             } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                place.currentCamera = place.cameras[1];
+                Place.currentCamera = place.cameras[1];
                 place.splitScreenMode = 0;
                 place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
                 place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
@@ -278,7 +279,7 @@ public class SplitScreen {
                 players4[player].setPlayer(place);
             } else {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
-                place.currentCamera = place.cameras[2];
+                Place.currentCamera = place.cameras[2];
                 place.splitScreenMode = 0;
                 place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
                 place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
@@ -300,8 +301,5 @@ public class SplitScreen {
     private interface setPlayerNumber {
 
         void setPlayer(Place player);
-    }
-
-    private SplitScreen() {
     }
 }

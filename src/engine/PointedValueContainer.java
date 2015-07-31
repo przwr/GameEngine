@@ -5,75 +5,63 @@
  */
 package engine;
 
-import engine.Point;
-
 /**
- *
  * @author przemek
  */
-public class PointContener {
+public class PointedValueContainer {
 
     private static final byte INITIAL_POINT_COUNT = 8;
-    private Point[] points;
+    private static int caps, maxSize;
+    private PointedValue[] points;
     private int pointCount;
 
-    public PointContener() {
-        points = new Point[INITIAL_POINT_COUNT];
+    public PointedValueContainer() {
+        points = new PointedValue[INITIAL_POINT_COUNT];
         for (int i = 0; i < INITIAL_POINT_COUNT; i++) {
-            points[i] = new Point();
+            points[i] = new PointedValue();
         }
     }
 
-    public PointContener(int pointCount) {
-        points = new Point[pointCount];
+    public PointedValueContainer(int pointCount) {
+        points = new PointedValue[pointCount];
         for (int i = 0; i < pointCount; i++) {
-            points[i] = new Point();
+            points[i] = new PointedValue();
         }
     }
 
-    public void add(int x, int y) {
+    public void add(int x, int y, int value) {
         ensureCapacity(1);
         points[pointCount].setX(x);
         points[pointCount].setY(y);
+        points[pointCount].setValue(value);
         pointCount++;
     }
-
-    public void add(Point point) {
-        ensureCapacity(1);
-        points[pointCount].setX(point.getX());
-        points[pointCount].setY(point.getY());
-        pointCount++;
-    }
-
-    private static int caps, maxSize;
 
     private void ensureCapacity(int capacity) {
         if (pointCount + capacity > points.length) {
-            Point[] tempPoints = new Point[(int) (1.5 * points.length)];
+            PointedValue[] tempPoints = new PointedValue[(int) (1.5 * points.length)];
             System.arraycopy(points, 0, tempPoints, 0, points.length);
             points = tempPoints;
             for (int i = pointCount; i < points.length; i++) {
-                points[i] = new Point();
+                points[i] = new PointedValue();
             }
             caps++;
             if (points.length > maxSize) {
                 maxSize = points.length;
             }
-            System.out.println("Capacity of PointContener enlarged " + caps + " times to maxSize: " + maxSize);
+            System.out.println("Capacity of PointedValueContainer enlarged " + caps + " times to maxSize: " + maxSize);
         }
     }
 
-    public Point get(int i) {
+    public PointedValue get(int i) {
         return points[i];
     }
 
     public void remove(int index) {
         if (index < pointCount && index >= 0) {
             pointCount--;
-            Point temp = points[index];
-            for (int i = index; i < pointCount; i++) {
-                points[i] = points[i + 1];
-            }
+            PointedValue temp = points[index];
+            System.arraycopy(points, index + 1, points, index, pointCount - index);
             points[pointCount] = temp;
         }
     }

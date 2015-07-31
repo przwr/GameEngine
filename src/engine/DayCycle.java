@@ -8,7 +8,6 @@ package engine;
 import org.newdawn.slick.Color;
 
 /**
- *
  * @author Domi
  */
 public class DayCycle {
@@ -16,10 +15,11 @@ public class DayCycle {
     public static final float NIGHT = 0.2f;
     private static final short REAL_MINUTES_IN_HOUR = 6, SUNRISE = 300, SUNSET = 1260, TRANSITION_TIME = 120, NOONTIME = 240;
     private static final int DAWN = (SUNRISE + TRANSITION_TIME), DUSK = (SUNSET - TRANSITION_TIME), NOON = ((SUNSET + SUNRISE) / 2), HALF_TRANSITION_TIME = TRANSITION_TIME / 2, QUARTER_TRANSITION_TIME = TRANSITION_TIME / 4, THREE_QUARTERS_TRANSITION_TIME = 3 * QUARTER_TRANSITION_TIME;
-    private Color lightColor = new Color(0.2f, 0.2f, 0.2f);
+    private final Color lightColor = new Color(0.2f, 0.2f, 0.2f);
     private short timeInMinutes = 0;
-    private long midnightTime, currentTime, diffrence, tempMinutes;
-    private float delta, temp;
+    private long midnightTime;
+    private long currentTime;
+    private long difference;
 
     // TO DO stop / start Time!
     public DayCycle() {
@@ -27,18 +27,18 @@ public class DayCycle {
     }
 
     public void updateTime() {
-        updateDiffrence();
-        calculateMinutes(diffrence / 1000);
+        updateDifference();
+        calculateMinutes(difference / 1000);
         updateLightColor();
     }
 
-    private void updateDiffrence() {
+    private void updateDifference() {
         currentTime = System.currentTimeMillis();
-        diffrence = currentTime - midnightTime;
+        difference = currentTime - midnightTime;
     }
 
     private void calculateMinutes(long seconds) {
-        tempMinutes = (seconds / REAL_MINUTES_IN_HOUR);
+        long tempMinutes = (seconds / REAL_MINUTES_IN_HOUR);
         if (tempMinutes > 1440) {
             tempMinutes -= 1440;
             resetMidnightTime();
@@ -51,7 +51,8 @@ public class DayCycle {
     }
 
     private void updateLightColor() {
-        delta = (1 - NIGHT) / (NOON - SUNRISE - NOONTIME);
+        float delta = (1 - NIGHT) / (NOON - SUNRISE - NOONTIME);
+        float temp;
         if (timeInMinutes >= SUNRISE && timeInMinutes < DAWN) {
             temp = (timeInMinutes - SUNRISE) * delta;
             lightColor.r = lightColor.g = NIGHT + temp;
@@ -102,8 +103,8 @@ public class DayCycle {
     }
 
     public void setTime(int hour, int minutes) {
-        updateDiffrence();
-        midnightTime -= (((hour * 60 + minutes) * REAL_MINUTES_IN_HOUR * 1000) - diffrence);
+        updateDifference();
+        midnightTime -= (((hour * 60 + minutes) * REAL_MINUTES_IN_HOUR * 1000) - difference);
         updateTime();
     }
 
@@ -111,7 +112,7 @@ public class DayCycle {
         addHours(1);
     }
 
-    public void addHours(int hours) {
+    private void addHours(int hours) {
         midnightTime -= hours * REAL_MINUTES_IN_HOUR * 60000;
         updateTime();
     }

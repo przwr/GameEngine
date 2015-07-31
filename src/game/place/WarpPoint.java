@@ -11,7 +11,6 @@ import game.gameobject.GameObject;
 import game.gameobject.Player;
 
 /**
- *
  * @author Wojtek
  */
 public class WarpPoint extends GameObject {
@@ -114,7 +113,7 @@ public class WarpPoint extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xs, int xe) {
+    public void renderShadowLit(int xEffect, int yEffect, int xs, int xe) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }
@@ -128,7 +127,7 @@ public class WarpPoint extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure, int xs, int xe) {
+    public void renderShadow(int xEffect, int yEffect, int xs, int xe) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

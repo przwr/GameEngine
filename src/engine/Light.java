@@ -8,52 +8,37 @@ package engine;
 import collision.Figure;
 import game.Settings;
 import game.gameobject.GameObject;
-import static game.place.Placement.CENTER;
 import game.place.cameras.Camera;
 import game.place.fbo.FrameBufferObject;
-import game.place.fbo.MultisampleFrameBufferObject;
+import game.place.fbo.MultiSampleFrameBufferObject;
 import game.place.fbo.RegularFrameBufferObject;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteSheet;
 
+import static game.place.Placement.CENTER;
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author przemek
  */
 public class Light {
 
-    public static final int LEFT_TOP_PART = 0, RIGHT_TOP_PART = 1, LEFT_BOTTOM_PART = 2, RIGHT_BOTTOM_PART = 3;
+    private static final int LEFT_TOP_PART = 0;
+    private static final int RIGHT_TOP_PART = 1;
+    private static final int LEFT_BOTTOM_PART = 2;
+    private static final int RIGHT_BOTTOM_PART = 3;
     private final GameObject owner;
     private final boolean giveShadows;
     private final int width, height;
+    private final int nearAreas[] = new int[9];
     private Color color;
-
     private SpriteSheet spriteSheet;
     private int xCenterShift, yCenterShift;
     private int piece;
     private int widthWholeLight, heightWholeLight;
-
     private Sprite sprite;
     private FrameBufferObject frameBufferObject;
-    private final int nearAreas[] = new int[9];
-
-    public static Light create(Sprite sprite, Color color, int width, int height, GameObject owner) {
-        return new Light(sprite, color, width, height, owner, true);
-    }
-
-    public static Light createNoShadows(Sprite sprite, Color color, int width, int height, GameObject owner) {
-        return new Light(sprite, color, width, height, owner, false);
-    }
-
-    public static Light createNoShadows(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
-        return new Light(spriteSheet, color, width, height, owner, piece);
-    }
 
     private Light(Sprite sprite, Color color, int width, int height, GameObject owner, boolean giveShadows) {
         this.color = color;
@@ -64,13 +49,6 @@ public class Light {
         this.giveShadows = giveShadows;
         setFrameBuffer();
         setShift();
-    }
-
-    private void setFrameBuffer() {
-        if (!Settings.shadowOff && giveShadows) {
-            frameBufferObject = (Settings.samplesCount > 0) ? new MultisampleFrameBufferObject(width, height)
-                    : new RegularFrameBufferObject(width, height);
-        }
     }
 
     private Light(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
@@ -86,6 +64,25 @@ public class Light {
         setShift();
     }
 
+    public static Light create(Sprite sprite, Color color, int width, int height, GameObject owner) {
+        return new Light(sprite, color, width, height, owner, true);
+    }
+
+    public static Light createNoShadows(Sprite sprite, Color color, int width, int height, GameObject owner) {
+        return new Light(sprite, color, width, height, owner, false);
+    }
+
+    public static Light createNoShadows(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
+        return new Light(spriteSheet, color, width, height, owner, piece);
+    }
+
+    private void setFrameBuffer() {
+        if (!Settings.shadowOff && giveShadows) {
+            frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(width, height)
+                    : new RegularFrameBufferObject(width, height);
+        }
+    }
+
     public void updateNearAreas(int[] nearAreas) {
         System.arraycopy(nearAreas, 0, this.nearAreas, 0, nearAreas.length);
     }
@@ -95,9 +92,7 @@ public class Light {
             glColor3f(color.getRed(), color.getGreen(), color.getBlue());
             glPushMatrix();
             glTranslatef(x, y, 0);
-            if (Settings.scaled) {
-                glScaled(camera.getScale(), camera.getScale(), 1);
-            }
+            glScaled(camera.getScale(), camera.getScale(), 1);
             glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
             spriteSheet.renderPiece(piece);
             glPopMatrix();
@@ -105,9 +100,7 @@ public class Light {
             glColor3f(color.getRed(), color.getGreen(), color.getBlue());
             glPushMatrix();
             glTranslatef(x, y, 0);
-            if (Settings.scaled) {
-                glScaled(camera.getScale(), camera.getScale(), 1);
-            }
+            glScaled(camera.getScale(), camera.getScale(), 1);
             glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
             sprite.render();
             glPopMatrix();
@@ -159,10 +152,6 @@ public class Light {
     public void setSize(int width, int height) {
         spriteSheet.setWidth(width);
         spriteSheet.setHeight(height);
-    }
-
-    public void setPiece(int piece) {
-        this.piece = piece;
     }
 
     public void setColor(Color color) {
@@ -249,6 +238,10 @@ public class Light {
 
     public int getPiece() {
         return piece;
+    }
+
+    public void setPiece(int piece) {
+        this.piece = piece;
     }
 
     public Figure getOwnerCollision() {

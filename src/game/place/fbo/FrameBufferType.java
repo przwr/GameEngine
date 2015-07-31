@@ -6,18 +6,17 @@
 package game.place.fbo;
 
 /**
- *
  * @author Domi
  */
 public interface FrameBufferType {
 
-    public void activate(int frameBufferObject);
+    void activate(int frameBufferObject);
 
-    public void deactivate();
+    void deactivate();
 
-    public void deactivate(int frameBufferObjectMultisample, int frameBufferObject, int width, int height);
+    void deactivate(int frameBufferObjectMultiSample, int frameBufferObject, int width, int height);
 
-    public void makeTexture(int texture, int frameBufferObject, int width, int height);
+    void makeTexture(int texture, int frameBufferObject, int width, int height);
 
-    public void makeMultiSample(int samplesCount, int multiSampleTexture, int width, int height, int frameBufferObjectMultiSample);
+    void makeMultiSample(int samplesCount, int multiSampleTexture, int width, int height, int frameBufferObjectMultiSample);
 }

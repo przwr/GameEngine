@@ -6,16 +6,14 @@
 package game.gameobject;
 
 /**
- *
  * @author przemek
  */
 public abstract class Action {
 
-    protected boolean on;
-
     public AnyInput input;
+    boolean on;
 
-    public Action(AnyInput in) {
+    Action(AnyInput in) {
         this.input = in;
     }
 

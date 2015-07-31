@@ -5,12 +5,12 @@
  */
 package net.packets;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import net.MPlayer;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
- *
  * @author przemek
  */
 public class PacketUpdate implements Serializable {
@@ -54,7 +54,7 @@ public class PacketUpdate implements Serializable {
         }
     }
 
-    public synchronized MPlayerUpdate getPlayer(byte id) {
+    private synchronized MPlayerUpdate getPlayer(byte id) {
         for (MPlayerUpdate mpu : players) {
             if (mpu.getId() == id) {
                 return mpu;
@@ -63,7 +63,7 @@ public class PacketUpdate implements Serializable {
         return null;
     }
 
-    public synchronized MobUpdate getMob(short id) {
+    private synchronized MobUpdate getMob(short id) {
         for (MobUpdate mu : mobs) {
             if (mu.getId() == id) {
                 return mu;
@@ -79,12 +79,8 @@ public class PacketUpdate implements Serializable {
     public synchronized void Trim() {
         players.trimToSize();
         mobs.trimToSize();
-        for (MPlayerUpdate mpu : players) {
-            mpu.Trim();
-        }
-        for (MobUpdate mu : mobs) {
-            mu.Trim();
-        }
+        players.forEach(net.packets.MPlayerUpdate::Trim);
+        mobs.forEach(net.packets.MobUpdate::Trim);
     }
 
     public synchronized void Reset() {

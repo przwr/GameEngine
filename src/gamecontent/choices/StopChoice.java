@@ -5,13 +5,11 @@
  */
 package gamecontent.choices;
 
-import engine.Sound;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class StopChoice extends MenuChoice {
@@ -24,9 +22,7 @@ public class StopChoice extends MenuChoice {
     public void action() {
         if (menu.game.getPlace() != null) {
             if (Settings.sounds != null) {
-                for (Sound s : Settings.sounds.getSoundsList()) {
-                    s.stop();
-                }
+                Settings.sounds.getSoundsList().forEach(engine.Sound::stop);
             }
             menu.game.endGame();
         }

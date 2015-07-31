@@ -8,7 +8,6 @@ package engine;
 import static engine.Main.cleanUp;
 
 /**
- *
  * @author przemek
  */
 public class Launcher {

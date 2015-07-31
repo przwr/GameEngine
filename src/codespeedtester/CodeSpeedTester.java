@@ -9,21 +9,19 @@ import engine.Methods;
 import net.jodk.lang.FastMath;
 
 /**
- *
  * @author przemek
  */
 public class CodeSpeedTester {
 
-    private static int runs = 1000000;   // znajdź najmniejszą libczę dla krórej puste testy nadal pokazują wyniki bliskie zero.
-    private static int precision = 10;  // z jaką dokładnością wyświetla się wynik 10 - jedno miejsce po przecinku, 100 - dwa
+    private static final int runs = 1000000;   // znajdź najmniejszą libczę dla krórej puste testy nadal pokazują wyniki bliskie zero.
+    private static final int precision = 10;  // z jaką dokładnością wyświetla się wynik 10 - jedno miejsce po przecinku, 100 - dwa
+    // przygotuj zmienne potrzebne do testowania kodu
+    private static final double angle = 70;
+    private static final double rad = 180;
     private static double zeroTime;
 
-    // przygotuj zmienne potrzebne do testowania kodu
-    private static double angle = 70;
-    private static double rad = 180;
-
     private static void firstCodeToTest() {
-        
+
         double result = FastMath.sin(FastMath.toRadians(angle)) * rad;
     }
 
@@ -31,7 +29,7 @@ public class CodeSpeedTester {
         double x = 100;
         double x2 = 100;
 //        System.out.println(Math.signum(x-x2));
-        
+
     }
 
     /**

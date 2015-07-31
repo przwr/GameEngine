@@ -5,14 +5,14 @@
  */
 package engine;
 
-import game.text.FontBase;
 import game.Settings;
+import game.text.FontBase;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author przemek
  */
 public class Popup {
@@ -21,10 +21,12 @@ public class Popup {
     private static final String[] messages = new String[100];
     private final FontBase fonts;
     private final int middleOk;
+    private final int border = 3;
     private int messagesPointer = -1;
-
-    private int width, height, space, shift, biggest, border = 3;
-    private String lines[];
+    private int width;
+    private int height;
+    private int space;
+    private int shift;
 
     public Popup(String font) {
         fonts = new FontBase(2);
@@ -49,22 +51,22 @@ public class Popup {
         messages[++messagesPointer] = message;
     }
 
-    public void renderMesagges() {
+    public void renderMessages() {
         for (int i = 0; i <= messagesPointer; i++) {
             renderMessage(i);
         }
     }
 
-    public void renderMessage(int id) {
-        lines = messages[id].split("\\r?\\n");
+    private void renderMessage(int id) {
+        String[] lines = messages[id].split("\\r?\\n");
         shift = fonts.getFont(0).getHeight();
         space = fonts.getFont(1).getHeight();
-        biggest = fonts.getFont(1).getWidth(Main.getTitle());
+        int biggest = fonts.getFont(1).getWidth(Main.getTitle());
         for (String line : lines) {
             biggest = fonts.getFont(0).getWidth(line) > biggest ? fonts.getFont(0).getWidth(line) : biggest;
         }
         width = Methods.interval(WIDTH_HALF >> 2, biggest + shift, (WIDTH_HALF << 1) - (border << 1));
-        height = Methods.interval(0, space + shift + (int) (shift * (lines.length + 1)) + 2 * border, (HEIGHT_HALF << 1) - (border << 1));
+        height = Methods.interval(0, space + shift + shift * (lines.length + 1) + 2 * border, (HEIGHT_HALF << 1) - (border << 1));
         renderBackground();
         for (int i = 0; i < lines.length; i++) {
             renderLine(0, WIDTH_HALF, HEIGHT_HALF - height / 2 + space + shift / 2 + shift * (i + 1) + border, lines[i], Color.black);

@@ -9,7 +9,6 @@ import game.gameobject.AnyInput;
 import org.lwjgl.input.Keyboard;
 
 /**
- *
  * @author przemek
  */
 public class InputKeyBoard extends AnyInput {
@@ -21,10 +20,7 @@ public class InputKeyBoard extends AnyInput {
 
     @Override
     public boolean isPut() {
-        if (Keyboard.isCreated()) {
-            return Keyboard.isKeyDown(key);
-        }
-        return false;
+        return Keyboard.isCreated() && Keyboard.isKeyDown(key);
     }
 
     @Override

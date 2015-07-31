@@ -8,26 +8,21 @@ package gamedesigner.designerElements;
 import collision.Block;
 import collision.RoundRectangle;
 import engine.Drawer;
-import game.Settings;
 import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author Wojtek
  */
 public class RoundedTMPBlock extends TemporaryBlock {
 
     private int upperState;
     private int lowerState;
-    protected boolean complete;
+    private boolean complete;
 
     public RoundedTMPBlock(int x, int y, int upHeight, int height, Map map) {
         super(x, y, upHeight, 1, height, map);
@@ -186,12 +181,10 @@ public class RoundedTMPBlock extends TemporaryBlock {
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
-        if (Settings.scaled) {
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        }
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX(), getY(), 0);
         int mode = objPlace.getMode();
-        if (mode != 2 && (!objPlace.isNoBlocksMode() || mode == 1)) {
+        if (mode != 2 && (objPlace.isBlocksMode() || mode == 1)) {
             int d = 2;
             Drawer.refreshColor();
             int tmpH = upHeight * tile;

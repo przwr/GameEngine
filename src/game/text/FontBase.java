@@ -5,22 +5,20 @@
  */
 package game.text;
 
-import game.text.FontHandler;
 import java.util.ArrayList;
 
 /**
- *
  * @author przemek
  */
 public class FontBase {
 
-    protected final ArrayList<FontHandler> fonts;
+    private final ArrayList<FontHandler> fonts;
 
     public FontBase(int size) {
         fonts = new ArrayList<>(size);
     }
 
-    public FontHandler add(String name, int type, int size) {
+    private FontHandler add(String name, int type, int size) {
         FontHandler temp = new FontHandler(name, type, size);
         fonts.add(temp);
         return temp;

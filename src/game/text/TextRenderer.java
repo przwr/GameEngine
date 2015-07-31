@@ -8,17 +8,18 @@ package game.text;
 import org.newdawn.slick.Color;
 
 /**
- *
  * @author Wojtek
  */
-public class TextRenderer extends TextEvent {
+class TextRenderer extends TextEvent {
 
-    protected final int x, y, end;
-    protected final String text;
-    protected final float height;
-    protected final FontHandler font;
-    protected final TextController control;
-    protected final Color color;
+    final int x;
+    final int y;
+    final int end;
+    final String text;
+    final FontHandler font;
+    final TextController control;
+    final Color color;
+    private final float height;
 
     TextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc) {
         super(start, lineNum);
@@ -36,7 +37,7 @@ public class TextRenderer extends TextEvent {
         return font.getWidth(text);
     }
 
-    boolean isVisible(int index, int lineNum) {
+    boolean isVisible(int index) {
         return index >= start;
     }
 
@@ -47,7 +48,7 @@ public class TextRenderer extends TextEvent {
 
     @Override
     void event(int index, int lineNum) {
-        if (isVisible(index, lineNum)) {
+        if (isVisible(index)) {
             int i = index - start + 1;
             if (i < end) {
                 font.drawLine(text.substring(0, i), x, y, changeColor(color, lineNum));

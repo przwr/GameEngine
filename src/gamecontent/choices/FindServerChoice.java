@@ -7,24 +7,24 @@ package gamecontent.choices;
 
 import com.esotericsoftware.kryonet.Client;
 import engine.Delay;
-import engine.inout.AnalizerSettings;
+import engine.inout.AnalyzerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
-import java.net.InetAddress;
 import net.KryoUtil;
 
+import java.net.InetAddress;
+
 /**
- *
  * @author przemek
  */
 public class FindServerChoice extends MenuChoice {
 
     private final Client client;
-    private String status;
-    private Thread thread;
     private final Runnable run;
     private final Delay delay;
+    private String status;
+    private Thread thread;
     private boolean isSearching;
 
     public FindServerChoice(String label, final Menu menu) {
@@ -40,7 +40,7 @@ public class FindServerChoice extends MenuChoice {
             } else {
                 status = " - " + Settings.language.menu.Found;
                 Settings.serverIP = address.toString().replace("/", "");
-                AnalizerSettings.update();
+                AnalyzerSettings.update();
             }
             end();
         };

@@ -5,12 +5,10 @@
  */
 package gamecontent.choices;
 
-import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class PlayerControllerChoice extends MenuChoice {

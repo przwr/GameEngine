@@ -5,34 +5,34 @@ package engine;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
- *
  * @author przemek
  */
 public final class Time {
 
     private static final float DAMPING = 16000000;
-    private static long curentTime;
+    private static long currentTime;
     private static long lastTime;
+
+    private Time() {
+    }
 
     public static long getTime() {
         return System.nanoTime();
     }
 
     public static float getDelta() {
-        return (curentTime - lastTime) / DAMPING;
+        return (currentTime - lastTime) / DAMPING;
     }
 
     public static void update() {
-        lastTime = curentTime;
-        curentTime = getTime();
+        lastTime = currentTime;
+        currentTime = getTime();
     }
 
     public static void initialize() {
         lastTime = getTime();
-        curentTime = getTime();
-    }
-
-    private Time() {
+        currentTime = getTime();
     }
 }

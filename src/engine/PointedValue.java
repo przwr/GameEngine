@@ -6,7 +6,6 @@
 package engine;
 
 /**
- *
  * @author przemek
  */
 public class PointedValue {
@@ -26,20 +25,20 @@ public class PointedValue {
         return x;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
     public void setX(int x) {
         this.x = x;
     }
 
+    public int getY() {
+        return y;
+    }
+
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public void setValue(int value) {

@@ -9,29 +9,25 @@ import game.gameobject.AnyInput;
 import org.lwjgl.input.Mouse;
 
 /**
- *
  * @author przemek
  */
 public class InputMouse extends AnyInput {
-    
+
     public InputMouse(int key) {
         this.key = key;
         label = "MOUSE: " + Mouse.getButtonName(key).toUpperCase();
     }
-    
+
     @Override
     public boolean isPut() {
-        if (Mouse.isCreated()) {
-            return Mouse.isButtonDown(key);
-        }
-        return false;
+        return Mouse.isCreated() && Mouse.isButtonDown(key);
     }
-    
+
     @Override
     public String getLabel() {
         return label;
     }
-    
+
     @Override
     public String toString() {
         return AnyInput.MOUSE + " " + key;

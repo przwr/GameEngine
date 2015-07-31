@@ -5,21 +5,12 @@
  */
 package engine;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import javax.swing.*;
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
- *
  * @author przemek
  */
 public class ErrorHandler {
@@ -70,14 +61,12 @@ public class ErrorHandler {
             try (final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "UTF-8"))) {
                 writer.append(string);
             }
-        } catch (UnsupportedEncodingException | FileNotFoundException ex) {
-            Logger.getLogger(ErrorHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(ErrorHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static void errorToFile(String string) {
+    private static void errorToFile(String string) {
         file = new File("logs/error_" + Main.STARTED_DATE + ".txt");
         if (file.exists() && !file.isDirectory()) {
             log(string);

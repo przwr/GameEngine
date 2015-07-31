@@ -6,7 +6,6 @@
 package game.gameobject;
 
 /**
- *
  * @author przemek
  */
 
@@ -21,27 +20,35 @@ import java.util.List;
 
 public abstract class GameObject {
 
+    protected final ArrayList<Light> lights = new ArrayList<>(1);
+    private final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
     protected double x, y;
     protected int depth;
-    protected boolean solid, emitter, emits, onTop, simpleLighting, visible, wall, mobile;
+    protected boolean solid;
+    protected boolean emitter;
+    protected boolean emits;
+    protected boolean onTop;
+    protected boolean simpleLighting;
+    protected boolean visible;
+    protected boolean wall;
     protected Sprite sprite;
-    protected ArrayList<Light> lights = new ArrayList<>(1);
-    protected ArrayList<Interactive> interactives = new ArrayList<>(1);
     protected String name;
     protected Map map;
-    protected int area = -1, prevArea = -1;
+    protected int area = -1;
     protected Figure collision;
     protected Animation animation;
+    private boolean mobile;
+    private int prevArea = -1;
 
     public abstract void render(int xEffect, int yEffect);
 
     public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
+    public abstract void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd);
 
     public abstract void renderShadow(int xEffect, int yEffect, Figure figure);
 
-    public abstract void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd);
+    public abstract void renderShadow(int xEffect, int yEffect, int xStart, int xEnd);
 
     protected void initialize(String name, int x, int y) {
         this.name = name;
@@ -72,12 +79,12 @@ public abstract class GameObject {
         }
     }
 
-    public void addLight(Light light) {
+    protected void addLight(Light light) {
         lights.add(light);
     }
 
-    public void addInteractive(Interactive interactive) {
-        interactives.add(interactive);
+    void addInteractive(Interactive interactive) {
+        interactiveObjects.add(interactive);
     }
 
     public boolean isSolid() {
@@ -133,14 +140,14 @@ public abstract class GameObject {
     }
 
     public boolean isInteractive() {
-        return !interactives.isEmpty();
+        return !interactiveObjects.isEmpty();
     }
 
     public int getX() {
         return (int) x;
     }
 
-    public void setX(double x) {
+    protected void setX(double x) {
         this.x = x;
     }
 
@@ -148,7 +155,7 @@ public abstract class GameObject {
         return (int) y;
     }
 
-    public void setY(double y) {
+    protected void setY(double y) {
         this.y = y;
     }
 
@@ -288,8 +295,8 @@ public abstract class GameObject {
         return lights;
     }
 
-    public List<Interactive> getInteractives() {
-        return interactives;
+    public List<Interactive> getInteractiveObjects() {
+        return interactiveObjects;
     }
 
     public Sprite getSprite() {

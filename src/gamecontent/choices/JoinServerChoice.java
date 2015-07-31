@@ -11,13 +11,12 @@ import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class JoinServerChoice extends MenuChoice {
 
-    private String status;
     private final Delay delay;
+    private String status;
 
     public JoinServerChoice(String label, Menu menu) {
         super(label, menu);

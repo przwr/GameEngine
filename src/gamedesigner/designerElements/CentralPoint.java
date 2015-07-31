@@ -8,21 +8,13 @@ package gamedesigner.designerElements;
 import collision.Figure;
 import engine.Drawer;
 import engine.Point;
-import game.Settings;
 import game.gameobject.GameObject;
 import game.place.Place;
 import gamedesigner.ObjectPlace;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author Wojtek
  */
 public class CentralPoint extends GameObject {
@@ -52,9 +44,7 @@ public class CentralPoint extends GameObject {
         if (objPlace.getMode() != 2) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
-            if (Settings.scaled) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            }
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
             glColor4f(0f, 0f, 1f, 1f);
@@ -70,7 +60,7 @@ public class CentralPoint extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect,  Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
     }
 
     @Override
@@ -78,6 +68,6 @@ public class CentralPoint extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
     }
 }

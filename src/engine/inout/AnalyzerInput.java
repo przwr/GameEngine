@@ -8,18 +8,18 @@ package engine.inout;
 import game.Settings;
 import game.gameobject.AnyInput;
 import game.gameobject.Player;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author przemek
  */
-public class AnalizerInput {
+public class AnalyzerInput {
 
-    public static void AnalizeInput(String name) {
+    public static void AnaliseInput(String name) {
         String[] p = name.split("\\s+");
         int players = Integer.parseInt(p[0]);
         int act = Integer.parseInt(p[1]);
@@ -29,7 +29,7 @@ public class AnalizerInput {
             table[i] = Integer.parseInt(p[i + 3]);
         }
         if (players != 1 || act >= 4) {
-            Settings.players[players - 1].controler.actions[act].input = AnyInput.createInput(type, table);
+            Settings.players[players - 1].playerController.actions[act].input = AnyInput.createInput(type, table);
         }
     }
 
@@ -39,10 +39,10 @@ public class AnalizerInput {
             fw = new FileWriter("res/input.ini");
             int p = 1;
             for (Player pl : Settings.players) {
-                if (pl.controler != null) {
+                if (pl.playerController != null) {
                     for (int i = 0; i < Settings.actionsCount; i++) {
-                        if (pl.controler.actions[i].input != null) {
-                            fw.write(p + " " + i + " " + pl.controler.actions[i].input.toString() + "\n");
+                        if (pl.playerController.actions[i].input != null) {
+                            fw.write(p + " " + i + " " + pl.playerController.actions[i].input.toString() + "\n");
                         }
                     }
                 }
@@ -51,7 +51,7 @@ public class AnalizerInput {
 
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(AnalizerInput.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AnalyzerInput.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

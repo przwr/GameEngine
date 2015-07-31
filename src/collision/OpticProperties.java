@@ -5,11 +5,10 @@
  */
 package collision;
 
-import engine.ShadowContener;
 import engine.Shadow;
+import engine.ShadowContainer;
 
 /**
- *
  * @author przemek
  */
 public class OpticProperties {
@@ -20,7 +19,13 @@ public class OpticProperties {
     private int type;
     private int shadowHeight;
     private int lightDistance;
-    private ShadowContener shadows;
+    private ShadowContainer shadows;
+
+    private OpticProperties(int type, int shadowHeight) {
+        this.type = type;
+        this.shadowHeight = shadowHeight;
+        this.shadows = new ShadowContainer();
+    }
 
     public static OpticProperties create(int type, int shadowHeight) {
         return new OpticProperties(type, shadowHeight);
@@ -30,17 +35,11 @@ public class OpticProperties {
         return new OpticProperties(type, 0);
     }
 
-    private OpticProperties(int type, int shadowHeight) {
-        this.type = type;
-        this.shadowHeight = shadowHeight;
-        this.shadows = new ShadowContener();
-    }
-
     public void addShadow(Shadow shadow) {
         shadows.add(shadow);
     }
 
-    public void addAllShadows(ShadowContener shadow) {
+    public void addAllShadows(ShadowContainer shadow) {
         shadows.addAll(shadow);
     }
 
@@ -76,12 +75,24 @@ public class OpticProperties {
         return type;
     }
 
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public int getShadowHeight() {
         return shadowHeight;
     }
 
+    public void setShadowHeight(int shadowHeight) {
+        this.shadowHeight = shadowHeight;
+    }
+
     public int getLightDistance() {
         return lightDistance;
+    }
+
+    public void setLightDistance(int lightDistance) {
+        this.lightDistance = lightDistance;
     }
 
     public int getShadowCount() {
@@ -90,17 +101,5 @@ public class OpticProperties {
 
     public Shadow getShadow(int i) {
         return shadows.get(i);
-    }
-
-    public void setLightDistance(int lightDistance) {
-        this.lightDistance = lightDistance;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public void setShadowHeight(int shadowHeight) {
-        this.shadowHeight = shadowHeight;
     }
 }

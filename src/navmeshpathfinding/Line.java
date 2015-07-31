@@ -7,22 +7,22 @@ package navmeshpathfinding;
 
 import engine.Methods;
 import engine.Point;
+
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
  * @author przemek
  */
-public class Line implements Comparable<Object> {
+class Line implements Comparable<Object> {
 
+    private final Set<Line> joined = new HashSet<>();
     private Point start, end;
     private int length;
-    private Set<Line> joined = new HashSet<>();
 
-    public Line(){        
+    public Line() {
     }
-    
+
     public Line(Point point1, Point point2) {
         start = point1;
         end = point2;
@@ -57,11 +57,19 @@ public class Line implements Comparable<Object> {
         return start;
     }
 
+    public void setStart(Point point1) {
+        start = point1;
+    }
+
     public Point getEnd() {
         return end;
     }
 
-    public boolean isHorisontal() {
+    public void setEnd(Point point2) {
+        end = point2;
+    }
+
+    public boolean isHorizontal() {
         return start.getY() == end.getY();
     }
 
@@ -97,14 +105,6 @@ public class Line implements Comparable<Object> {
     @Override
     public int compareTo(Object o) {
         return length - ((Line) o).length;
-    }
-
-    public void setStart(Point point1) {
-        start = point1;
-    }
-
-    public void setEnd(Point point2) {
-        end = point2;
     }
 
     public void setXStart(int x) {

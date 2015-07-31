@@ -11,25 +11,24 @@ import game.gameobject.menu.MenuOptions;
 import org.lwjgl.opengl.Display;
 
 /**
- *
  * @author przemek
  */
 public abstract class Menu extends ScreenPlace {
-
-    protected int current;
-    protected MenuOptions[] menus;
 
     protected final int widthHalf = Display.getWidth();
     protected final int heightHalf = Display.getHeight();
     public boolean isMapping;
     public Delay delay;
+    protected int current;
+    protected MenuOptions[] menus;
 
-    public Menu(Game game) {
+    protected Menu(Game game) {
         super(game);
     }
 
     @Override
-    public abstract void update();
+    public void update() {
+    }
 
     @Override
     public abstract void render();
@@ -38,15 +37,15 @@ public abstract class Menu extends ScreenPlace {
 
     public abstract void back();
 
-    public void setChoosen(int i) {
+    public void setChosen(int i) {
         if (!isMapping && delay.isOver()) {
-            menus[current].setChoosen(i);
+            menus[current].setChosen(i);
         }
     }
 
     public void choice() {
         if (!isMapping && delay.isOver()) {
-            menus[current].getChoosen().action();
+            menus[current].getChosen().action();
         }
     }
 

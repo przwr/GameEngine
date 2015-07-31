@@ -6,20 +6,20 @@
 package game.gameobject;
 
 /**
- *
  * @author przemek
  */
+
 import game.place.Place;
 import game.place.cameras.Camera;
 
 public abstract class GUIObject {
 
     protected Player player;
-    protected Controler controler;
-    protected String name;
+    protected PlayerController playerController;
     protected Place place;
     protected boolean visible;
     protected int priority;
+    private String name;
 
     protected GUIObject(String name, Place place) {
         this.name = name;
@@ -29,19 +29,19 @@ public abstract class GUIObject {
 
     public abstract void render(int xEffect, int yEffect);
 
-    public void setPlayer(Player player) {
-        this.player = player;
-        controler = player.controler;
-    }
-    
     public Player getPlayer() {
         return player;
     }
-    
-    public Camera getCamera() {
+
+    public void setPlayer(Player player) {
+        this.player = player;
+        playerController = player.playerController;
+    }
+
+    protected Camera getCamera() {
         return player.camera;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -65,7 +65,7 @@ public abstract class GUIObject {
     public void setPriority(int priority) {
         this.priority = priority;
     }
-    
+
     public boolean isVisible() {
         return visible;
     }

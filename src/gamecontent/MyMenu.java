@@ -7,33 +7,28 @@ package gamecontent;
 
 import engine.Delay;
 import engine.Drawer;
-import game.text.FontBase;
-import game.text.FontHandler;
 import engine.Methods;
 import game.Game;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.gameobject.menu.MenuOptions;
 import game.place.Menu;
+import game.text.FontBase;
+import game.text.FontHandler;
 import gamecontent.choices.*;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glScissor;
-import static org.lwjgl.opengl.GL11.glViewport;
 import org.newdawn.slick.Color;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author przemek
  */
 public class MyMenu extends Menu {
 
+    private static int positions;
     private FontHandler smallFont, bigFont;
     private Color color;
-    private static int positions;
 
     public MyMenu(Game game) {
         super(game);
@@ -97,28 +92,28 @@ public class MyMenu extends Menu {
             menus[3].addChoice(new NotMapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0], i));
         }
         for (; i < Settings.actionsCount; i++) {
-            menus[3].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0].controler, i));
+            menus[3].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0].playerController, i));
         }
     }
 
     private void generateM4() {
         menus[4] = new MenuOptions(16, Settings.language.menu.Player2);
         for (int i = 3; i < Settings.actionsCount; i++) {
-            menus[4].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[1].controler, i));
+            menus[4].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[1].playerController, i));
         }
     }
 
     private void generateM5() {
         menus[5] = new MenuOptions(16, Settings.language.menu.Player3);
         for (int i = 3; i < Settings.actionsCount; i++) {
-            menus[5].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[2].controler, i));
+            menus[5].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[2].playerController, i));
         }
     }
 
     private void generateM6() {
         menus[6] = new MenuOptions(16, Settings.language.menu.Player4);
         for (int i = 3; i < Settings.actionsCount; i++) {
-            menus[6].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[3].controler, i));
+            menus[6].addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[3].playerController, i));
         }
     }
 
@@ -138,9 +133,6 @@ public class MyMenu extends Menu {
         menus[8].addChoice(new ServerUDPPortChoice(Settings.language.menu.Port, this));
     }
 
-    @Override
-    public void update() {
-    }
 
     @Override
     public void render() {
@@ -155,7 +147,7 @@ public class MyMenu extends Menu {
     protected void renderText() {
         positions = menus[current].getOptionsNumber() + 1;
         Drawer.renderStringCentered(menus[current].getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * positions - (menus[current].getOptionsNumber() + 1))
-                * fonts.getFont(0).getHeight() * 0.7),
+                        * fonts.getFont(0).getHeight() * 0.7),
                 bigFont, new Color(color.r, color.g, color.b));
         positions--;
         for (int i = 0; i < menus[current].getOptionsNumber(); i++) {
@@ -167,8 +159,8 @@ public class MyMenu extends Menu {
         }
     }
 
-    public Color getColor(MenuChoice choice) {
-        if (choice == menus[current].getChoosen()) {
+    private Color getColor(MenuChoice choice) {
+        if (choice == menus[current].getChosen()) {
             return new Color(1f, 1f, 0.5f);
         } else {
             return new Color(1f, 1f, 1f);

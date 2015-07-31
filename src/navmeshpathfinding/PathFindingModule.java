@@ -1,8 +1,8 @@
 package navmeshpathfinding;
 
 import engine.ErrorHandler;
-import engine.Methods;
 import game.gameobject.Entity;
+
 import static navmeshpathfinding.PathData.PATH_REQUESTED;
 
 public class PathFindingModule implements Runnable {
@@ -10,11 +10,34 @@ public class PathFindingModule implements Runnable {
     public static final PathStrategy GET_CLOSE = new GetClosePathStrategy();
     public static final PathStrategy WONDER_AROUND = new WonderAroundPathStrategy();
     public static final PathStrategy GET_TO = new GetToPathStrategy();
+    private static final PathRequestContainer requestedPaths = new PathRequestContainer(512);
     private static boolean run;
     private static boolean cleaning;
-    private static PathRequestContener requestedPaths = new PathRequestContener(512);
     private static PathRequest request;
     private static int actualPath = 0;
+
+    private synchronized static void returnPath(PathRequest request) {
+        Entity requesterCopy = request.requester;
+        if (requesterCopy != null) {
+            PathStrategyCore.findPath(requesterCopy,
+                    requesterCopy.getPathData(), request.xDest,
+                    request.yDest);
+        }
+    }
+
+    public synchronized static void requestPath(Entity requester, int xDest, int yDest) {
+        if (requestedPaths.isSufficientCapacity()) {
+            requestedPaths.add(requester, xDest, yDest);
+            requester.getPathData().flags.set(PATH_REQUESTED);
+        } else {
+            cleaning = true;
+        }
+    }
+
+    public static void stop() {
+        requestedPaths.clear();
+        run = false;
+    }
 
     @Override
     public void run() {
@@ -71,28 +94,5 @@ public class PathFindingModule implements Runnable {
         if (actualPath >= requestedPaths.size()) {
             actualPath = 0;
         }
-    }
-
-    private synchronized static void returnPath(PathRequest request) {
-        Entity requesterCopy = request.requester;
-        if (requesterCopy != null) {
-            PathStrategyCore.findPath(requesterCopy,
-                    requesterCopy.getPathData(), request.xDest,
-                    request.yDest);
-        }
-    }
-
-    public synchronized static void requestPath(Entity requester, int xDest, int yDest) {
-        if (requestedPaths.isSufficientCapacity()) {
-            requestedPaths.add(requester, xDest, yDest);
-            requester.getPathData().flags.set(PATH_REQUESTED);
-        } else {
-            cleaning = true;
-        }
-    }
-
-    public static void stop() {
-        requestedPaths.clear();
-        run = false;
     }
 }

@@ -6,15 +6,15 @@
 package engine;
 
 import game.Settings;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
- *
  * @author Wojtek
  */
 public class SoundBase {

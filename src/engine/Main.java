@@ -5,20 +5,11 @@
  */
 package engine;
 
-import engine.inout.AnalizerSettings;
-import engine.inout.Controlers;
+import engine.inout.AnalyzerSettings;
+import engine.inout.PlayerControllers;
 import game.Game;
-import static engine.inout.IO.setSettingsFromFile;
 import game.Settings;
-import static game.Settings.calculateScale;
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import gamecontent.MyGame;
-import java.util.Date;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
@@ -27,27 +18,38 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import org.lwjgl.opengl.PixelFormat;
 import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static engine.inout.IO.setSettingsFromFile;
+import static game.Settings.calculateScale;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+
 /**
- *
  * @author przemek
  */
 public class Main {
 
-    public static boolean DEBUG = false, LOG = false;
-    public static Game game;
-    public static Popup pop;
-    public static Controller[] controllers;
-    public static boolean pause, enter = true;
-    private static boolean lastFrame;
+    public static final boolean DEBUG = false;
+    public static final boolean LOG = false;
     private static final Delay delay = new Delay(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
+    public static boolean pause, enter = true;
+    private static Game game;
+    private static Popup pop;
+    private static Controller[] controllers;
+    private static boolean lastFrame;
 
     public static void run() {
         setSettingsFromFile(new File("res/settings.ini"));
@@ -84,7 +86,7 @@ public class Main {
         Mouse.create();
         Mouse.setNativeCursor(CursorLoader.get().getCursor("res/cursor.png", 1, 1));
         Controllers.create();
-        controllers = Controlers.initialize();
+        controllers = PlayerControllers.initialize();
     }
 
     private static void setDisplayMode(int width, int height, int frequency, boolean fullscreen) {
@@ -117,8 +119,7 @@ public class Main {
         DisplayMode targetDisplayMode = null;
         for (DisplayMode current : Settings.modesTemp) {
             if ((current.getWidth() == width) && (current.getHeight() == height) && (current.getFrequency() == frequency)) {
-                if (((targetDisplayMode == null) || (current.getFrequency() >= frequency))
-                        && ((targetDisplayMode == null) || (current.getBitsPerPixel() >= targetDisplayMode.getBitsPerPixel()))) {
+                if (((targetDisplayMode == null) || (current.getBitsPerPixel() >= targetDisplayMode.getBitsPerPixel()))) {
                     targetDisplayMode = current;
                 }
                 if ((current.getBitsPerPixel() == Display.getDesktopDisplayMode().getBitsPerPixel())
@@ -139,7 +140,7 @@ public class Main {
                 Settings.currentMode = i;
             }
         }
-        AnalizerSettings.update();
+        AnalyzerSettings.update();
     }
 
     private static void createDisplay() {
@@ -154,8 +155,8 @@ public class Main {
     private static void setIcon() {
         try {
             Display.setIcon(new ByteBuffer[]{
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
             });
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
@@ -254,7 +255,7 @@ public class Main {
     private static void renderMessageIfNeeded() {
         if (pop.getId() != -1) {
             pause = true;
-            pop.renderMesagges();
+            pop.renderMessages();
         }
     }
 

@@ -5,14 +5,13 @@
  */
 package gamecontent.choices;
 
-import engine.inout.AnalizerSettings;
+import engine.SplitScreen;
+import engine.inout.AnalyzerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
-import engine.SplitScreen;
 
 /**
- *
  * @author przemek
  */
 public class SplitScreenChoice extends MenuChoice {
@@ -36,7 +35,7 @@ public class SplitScreenChoice extends MenuChoice {
                 Settings.horizontalSplitScreen = !Settings.horizontalSplitScreen;
             }
         }
-        AnalizerSettings.update();
+        AnalyzerSettings.update();
     }
 
     @Override

@@ -8,7 +8,6 @@ package net.packets;
 import net.MPlayer;
 
 /**
- *
  * @author przemek
  */
 public class NewMPlayer {

@@ -8,26 +8,23 @@ package game.text;
 import engine.Drawer;
 import engine.Executive;
 import engine.Main;
-import game.Settings;
 import game.gameobject.Entity;
 import game.gameobject.GUIObject;
 import game.place.Place;
 import gamecontent.MyController;
+import org.newdawn.slick.Color;
+import sprites.SpriteSheet;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import org.newdawn.slick.Color;
-import sprites.SpriteSheet;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author Wojtek
  */
 public class TextController extends GUIObject {
@@ -42,24 +39,19 @@ public class TextController extends GUIObject {
 
     private final FontHandler[] fonts;
     private final FontHandler littleFont;
-    private Branch events;
     private final ArrayList<Branch> branches;
     private final SpriteSheet frame;
-
-    private float index, speed, change, realSpeed;
-    private int time, rows, deltaLines, rowsInPlace, speaker, portrait, expression, answer, jumpTo;
-
-    private boolean started, flushing, flushReady, stop, question, firstStep;
-
-    private Entity[] locked;
     private final ArrayList<String> speakers;
     private final ArrayList<Portrait> portraits;
-
-    private String[] answerText;
-    private String[] answerJump;
-
     private final ArrayList<String> jumpPlacements;
     private final ArrayList<Color> colors;
+    private Branch events;
+    private float index, speed, change, realSpeed;
+    private int time, rows, deltaLines, rowsInPlace, speaker, portrait, expression, answer, jumpTo;
+    private boolean started, flushing, flushReady, stop, question, firstStep;
+    private Entity[] locked;
+    private String[] answerText;
+    private String[] answerJump;
 
     public TextController(Place place) {
         super("TextController", place);
@@ -83,7 +75,7 @@ public class TextController extends GUIObject {
 
     public void startFromFile(String file) {
         if (!started) {
-            try (BufferedReader read = new BufferedReader(new FileReader("res/text/" + file + ".txt"));) {
+            try (BufferedReader read = new BufferedReader(new FileReader("res/text/" + file + ".txt"))) {
                 String line;
                 String[] tab;
                 speed = 1;
@@ -138,7 +130,7 @@ public class TextController extends GUIObject {
                         last = 0;
                         tmp = new TextRow(lineNum);
                         if (line.length() != 0) {
-                            for (lineIndex = 0; lineIndex < line.length();) {
+                            for (lineIndex = 0; lineIndex < line.length(); ) {
                                 if (line.charAt(lineIndex) == '$') {
                                     switch (line.substring(lineIndex + 1, lineIndex + 3).toLowerCase()) {
                                         case "ve":   //CHANGE SPEED
@@ -396,12 +388,12 @@ public class TextController extends GUIObject {
         if (started) {
             int tile = Place.tileSize;
             glPushMatrix();
-            if (Settings.scaled) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            }
-            if (Settings.scaled) {
-                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            }
+
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+
+
+            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
+
             glTranslatef(xEffect, yEffect + getCamera().getHeight() - 3.5f * tile, 0);
 
             Drawer.setCentralPoint();
@@ -442,7 +434,7 @@ public class TextController extends GUIObject {
             if (time == 60) {
                 time = 0;
             }
-            realSpeed = speed * (controler.isKeyPressed(MyController.RUN) ? 2f : 1f);
+            realSpeed = speed * (playerController.isKeyPressed(MyController.RUN) ? 2f : 1f);
 
             if (flushing) {
                 handleFlushing();
@@ -453,13 +445,13 @@ public class TextController extends GUIObject {
                         change = 1;
                     } else if (jumpTo >= 0) {
                         flushReady = true;
-                    } else if (controler.isKeyClicked(MyController.JUMP)) {
+                    } else if (playerController.isKeyClicked(MyController.JUMP)) {
                         events.endingEvent();
                         stopTextViewing();
                     }
                 } else {
                     if (!question) {
-                        if (controler.isKeyClicked(MyController.JUMP)) {
+                        if (playerController.isKeyClicked(MyController.JUMP)) {
                             flushing = true;
                             flushReady = false;
                             change = 0;
@@ -469,9 +461,7 @@ public class TextController extends GUIObject {
                     }
                 }
             }
-            events.stream().forEach((te) -> {
-                handleEvent(te);
-            });
+            events.stream().forEach(this::handleEvent);
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
         }
@@ -571,19 +561,19 @@ public class TextController extends GUIObject {
 
     private void handleQuestion() {
         if (answer != -1) {
-            if (controler.isKeyClicked(MyController.UP)) {
+            if (playerController.isKeyClicked(MyController.UP)) {
                 answer--;
                 if (answer < 0) {
                     answer = answerText.length - 1;
                 }
             }
-            if (controler.isKeyClicked(MyController.DOWN)) {
+            if (playerController.isKeyClicked(MyController.DOWN)) {
                 answer++;
                 if (answer > answerText.length - 1) {
                     answer = 0;
                 }
             }
-            if (controler.isKeyClicked(MyController.JUMP)) {
+            if (playerController.isKeyClicked(MyController.JUMP)) {
                 jumpTo = jumpLocation(answerJump[answer]);
                 question = false;
                 flushing = true;
@@ -591,10 +581,10 @@ public class TextController extends GUIObject {
                 change = 0;
             }
         } else {
-            if (controler.isKeyClicked(MyController.UP)) {
+            if (playerController.isKeyClicked(MyController.UP)) {
                 answer = 0;
             }
-            if (controler.isKeyClicked(MyController.DOWN)) {
+            if (playerController.isKeyClicked(MyController.DOWN)) {
                 answer = 1;
             }
         }
@@ -617,15 +607,15 @@ public class TextController extends GUIObject {
         return started;
     }
 
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
-
     public int getRows() {
         return rows;
     }
 
-    public void lockEntities(Entity[] locked) {
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    private void lockEntities(Entity[] locked) {
         this.locked = locked;
         for (Entity e : locked) {
             e.setUnableToMove(true);
@@ -636,52 +626,52 @@ public class TextController extends GUIObject {
         lockEntities(new Entity[]{locked});
     }
 
-    protected void flushText() {
+    void flushText() {
         flushReady = true;
         rowsInPlace++;
     }
 
-    protected int getCurrentRow() {
+    int getCurrentRow() {
         return deltaLines;
     }
 
-    protected float getChange() {
+    float getChange() {
         return change;
     }
 
-    protected int getTime() {
+    int getTime() {
         return time;
     }
 
-    protected boolean isFlushing() {
+    boolean isFlushing() {
         return flushing;
     }
 
-    protected void setIndex(int index) {
+    void setIndex(int index) {
         this.index = index;
     }
 
-    protected void setSpeed(float speed) {
+    void setSpeed(float speed) {
         this.speed = speed;
     }
 
-    protected void setSpeaker(int speaker) {
+    void setSpeaker(int speaker) {
         this.speaker = speaker;
     }
 
-    protected void setPortrait(int portrait) {
+    void setPortrait(int portrait) {
         this.portrait = portrait;
     }
 
-    protected void setExpression(int expression) {
+    void setExpression(int expression) {
         this.expression = expression;
     }
 
-    protected void setJumpLocation(String location) {
+    void setJumpLocation(String location) {
         jumpTo = jumpLocation(location);
     }
 
-    protected void setQuestion(String[] answers, String[] jumpLocations) {
+    void setQuestion(String[] answers, String[] jumpLocations) {
         question = true;
         answerText = answers;
         answerJump = jumpLocations;
@@ -692,8 +682,8 @@ public class TextController extends GUIObject {
 
     private class Portrait {
 
-        SpriteSheet image;
-        boolean onRight;
+        final SpriteSheet image;
+        final boolean onRight;
 
         Portrait(SpriteSheet image, boolean onRight) {
             this.image = image;
@@ -726,10 +716,10 @@ public class TextController extends GUIObject {
     private class TextRow {
 
         private final int rowNum;
-        private int end;
-        private boolean ending;
         private final ArrayList<TextEvent> list;
         private final ArrayList<TextEvent> changers;
+        private int end;
+        private boolean ending;
 
         public TextRow(int rowNum) {
             this.rowNum = rowNum;
@@ -764,15 +754,11 @@ public class TextController extends GUIObject {
         }
 
         public void event(int start) {
-            list.stream().forEach((te) -> {
-                te.event(start, rowNum);
-            });
+            list.stream().forEach((te) -> te.event(start, rowNum));
         }
 
         public void changers(int start) {
-            changers.stream().forEach((te) -> {
-                te.event(start, rowNum);
-            });
+            changers.stream().forEach((te) -> te.event(start, rowNum));
         }
     }
 }

@@ -12,18 +12,19 @@ import collision.InteractiveCollision;
 import java.util.List;
 
 /**
- *
  * @author przemek
  */
 public class Interactive {
 
-    public static InteractiveAction HURT = new InteractiveActionHurt();
+    private static final InteractiveAction HURT = new InteractiveActionHurt();
 
-    private GameObject owner;
-    private InteractiveCollision collision;
-    private InteractiveAction action = HURT;
+    private final GameObject owner;
+    private final InteractiveCollision collision;
+    private final InteractiveAction action = HURT;
+    private final boolean COLLIDES_WITH_SELF = false;
+    private final boolean COLLIDES_WITH_PLAYERS = true;
+    private final boolean COLLIDES_WITH_MOBS = true;
     private boolean active;
-    private boolean COLLIDES_WITH_SELF = false, COLLIDES_WITH_PLAYERS = true, COLLIDES_WITH_MOBS = true;
 
     public Interactive(GameObject owner, InteractiveCollision collision) {
         this.owner = owner;

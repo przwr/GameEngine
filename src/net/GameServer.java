@@ -5,42 +5,32 @@
  */
 package net;
 
-import net.packets.NewMPlayer;
-import net.packets.PacketMessage;
-import net.packets.PacketJoinResponse;
-import net.packets.PacketJoinRequest;
-import net.packets.PacketAddMPlayer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import engine.Delay;
 import engine.ErrorHandler;
-import engine.Methods;
 import game.gameobject.Mob;
 import game.gameobject.Player;
+import net.packets.*;
+
 import java.io.IOException;
-import net.packets.PacketMPlayerUpdate;
-import net.packets.PacketRemoveMPlayer;
 
 /**
- *
  * @author przemek
  */
 public class GameServer {
 
     private final Server server;
     private final GameOnline game;
-//    private final int scopeX, scopeY;
+    private final MPlayer[] MPlayers = new MPlayer[4];
+    private final boolean[] isConnected = new boolean[4];
+    private final Delay delay;
+    //    private final int scopeX, scopeY;
     public boolean isRunning;
-    private MPlayer temp;
-    private Player tempInGame;
-    private MPlayer[] MPlayers = new MPlayer[4];
-    private boolean[] isConnected = new boolean[4];
     private int nrPlayers = 0;
     private byte id = 0;
-    private Delay delay;
-    private Thread thread;
 
     public GameServer(final Player player, final GameOnline game) {
         this.game = game;
@@ -86,9 +76,7 @@ public class GameServer {
                             nrPlayers--;
                             MPlayers[i] = null;
                             if (i < nrPlayers + 1) {
-                                for (int j = i; j < nrPlayers; j++) {
-                                    MPlayers[j] = MPlayers[j + 1];
-                                }
+                                System.arraycopy(MPlayers, i + 1, MPlayers, i, nrPlayers - i);
                             }
                         }
                     }
@@ -102,14 +90,14 @@ public class GameServer {
                 @Override
                 public synchronized void received(Connection connection, Object obj) {
                     if (obj instanceof PacketMPlayerUpdate) {
-                        PacketMPlayerUpdate pmpu = (PacketMPlayerUpdate) obj;
-                        game.playerUpdate(pmpu);
-                        MPlayer curPl = findPlayer(pmpu.up().getId());
+                        PacketMPlayerUpdate pmPu = (PacketMPlayerUpdate) obj;
+                        game.playerUpdate(pmPu);
+                        MPlayer curPl = findPlayer(pmPu.up().getId());
                         if (curPl != null) {
-                            curPl.update(pmpu.up().getMapId(), pmpu.up().getX(), pmpu.up().getY());
+                            curPl.update(pmPu.up().getMapId(), pmPu.up().getX(), pmPu.up().getY());
                             for (int i = 1; i < nrPlayers; i++) {
-                                if (MPlayers[i].getId() != pmpu.up().getId()) {
-                                    MPlayers[i].getPU().PlayerUpdate(pmpu.up());
+                                if (MPlayers[i].getId() != pmPu.up().getId()) {
+                                    MPlayers[i].getPU().PlayerUpdate(pmPu.up());
                                 }
                             }
                         }
@@ -154,7 +142,7 @@ public class GameServer {
     }
 
     public synchronized void Start() {
-        thread = new Thread(server, "Server");
+        Thread thread = new Thread(server, "Server");
         try {
             thread.start();
         } catch (Exception e) {
@@ -171,10 +159,11 @@ public class GameServer {
         try {
             MPlayers[0].update(mapId, x, y);
             int mobX, mobY;
+            MPlayer temp;
             for (int i = 1; i < nrPlayers; i++) {
                 temp = MPlayers[i];
                 if (temp != null) {
-                    tempInGame = temp.inGame();
+                    Player tempInGame = temp.inGame();
                     if (tempInGame != null) {
                         for (Mob mob : game.game.getPlace().getMapById(temp.getMapId()).getArea(tempInGame.getX(), tempInGame.getY()).getNearSolidMobs()) {
                             mobX = mob.getX();

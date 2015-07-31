@@ -8,20 +8,19 @@ package game.gameobject.menu;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public abstract class MenuChoice {
 
-    protected String label;
-    protected Menu menu;
+    protected final String label;
+    protected final Menu menu;
 
-    public abstract void action();
-
-    public MenuChoice(String label, Menu menu) {
+    protected MenuChoice(String label, Menu menu) {
         this.label = label;
         this.menu = menu;
     }
+
+    public abstract void action();
 
     public String getLabel() {
         return label;

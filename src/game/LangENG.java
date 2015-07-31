@@ -6,10 +6,9 @@
 package game;
 
 /**
- *
  * @author przemek
  */
-public class LangENG extends Language {
+class LangENG extends Language {
 
     public LangENG() {
         lang = "ENG";
@@ -35,7 +34,7 @@ public class LangENG extends Language {
         menu.SplitScreen = "SplitScreen: ";
         menu.Vertical = "Vertical";
         menu.Horizontal = "Horizontal";
-        menu.Brigthness = "Brightness: ";
+        menu.Brightness = "Brightness: ";
         menu.Volume = "Volume: ";
         menu.Resolution = "Resolution: ";
         menu.FullScreen = "FullScreen: ";
@@ -63,7 +62,7 @@ public class LangENG extends Language {
         menu.Actions[10] = "Light";
         menu.Actions[11] = "Zoom In/Out";
         menu.PushButton = "Push the button!";
-        menu.Unchangable = "unchangable!";
+        menu.Unchangeable = "unchangeable!";
         menu.VSync = "Vertical synchronization: ";
         menu.ShadowOff = "No shadows: ";
         menu.SmoothShadows = "Smooth shadows: ";

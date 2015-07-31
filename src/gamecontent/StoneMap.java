@@ -8,15 +8,10 @@ package gamecontent;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.DayCycle;
-import game.place.Map;
-import game.place.Place;
-import game.place.PuzzleObject;
-import game.place.Tile;
-import game.place.WarpPoint;
+import game.place.*;
 import org.newdawn.slick.Color;
 
 /**
- *
  * @author Wojtek
  */
 public class StoneMap extends Map {
@@ -24,9 +19,9 @@ public class StoneMap extends Map {
     public StoneMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "Kamienna", place, width, height, tileSize);
         setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT));
-        Tile GROUND = new Tile(place.getSpriteSheet("tlo"), tileSize, 2, 12);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 1);
-        Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), tileSize, 0, 12);
+        Tile GROUND = new Tile(place.getSpriteSheet("tlo"), 2, 12);
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo"), 1, 1);
+        Tile PORTAL = new Tile(place.getSpriteSheet("tlo"), 0, 12);
 
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
@@ -53,7 +48,7 @@ public class StoneMap extends Map {
         portal.placePuzzle(20, 20, this);
 
         generateNavigationMeshes();
-        
+
 //        System.out.println("FullTime: " + (NavigationMeshGenerator.fullTime / 1000000d) + " ms");
     }
 

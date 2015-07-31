@@ -6,26 +6,24 @@
 package game.text;
 
 /**
- *
  * @author Wojtek
  */
-public class PropertyChanger extends TextEvent {
+class PropertyChanger extends TextEvent {
 
-    protected static final int PROP_SPEED = 0;
-    protected static final int PROP_SPEAKER = 1;
-    protected static final int PROP_FLUSH = 2;
-    protected static final int PROP_PORTRAIT = 3;
-    protected static final int PROP_EXPRESSION = 4;
-    
-    protected final int type;
-    private final float quatity;
-    protected boolean done;
-    protected TextController text;
+    static final int PROP_SPEED = 0;
+    static final int PROP_SPEAKER = 1;
+    static final int PROP_FLUSH = 2;
+    static final int PROP_PORTRAIT = 3;
+    static final int PROP_EXPRESSION = 4;
+    final TextController text;
+    private final int type;
+    private final float quality;
+    boolean done;
 
-    protected PropertyChanger(int start, int type, float quatity, TextController tc) {
+    PropertyChanger(int start, int type, float quality, TextController tc) {
         super(start, 0);
         this.type = type;
-        this.quatity = Math.min(quatity, 10);
+        this.quality = Math.min(quality, 10);
         text = tc;
     }
 
@@ -34,19 +32,19 @@ public class PropertyChanger extends TextEvent {
         if (i >= start && !done) {
             switch (type) {
                 case PROP_SPEED:
-                    text.setSpeed((float) quatity);
+                    text.setSpeed(quality);
                     break;
                 case PROP_FLUSH:
                     text.flushText();
                     break;
                 case PROP_SPEAKER:
-                    text.setSpeaker((int) quatity);
+                    text.setSpeaker((int) quality);
                     break;
                 case PROP_PORTRAIT:
-                    text.setPortrait((int) quatity);
+                    text.setPortrait((int) quality);
                     break;
                 case PROP_EXPRESSION:
-                    text.setExpression((int) quatity);
+                    text.setExpression((int) quality);
                     break;
             }
             done = true;

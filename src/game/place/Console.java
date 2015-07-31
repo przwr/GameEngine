@@ -6,24 +6,20 @@
 package game.place;
 
 import engine.Drawer;
-import game.Settings;
 import game.gameobject.GUIObject;
 import game.place.cameras.Camera;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author Wojtek
  */
 public class Console extends GUIObject {
 
-    private float alpha;
     private final String[] messages;
     private final int tile;
+    private float alpha;
     private Camera camera;
 
     public Console(Place place) {
@@ -35,9 +31,7 @@ public class Console extends GUIObject {
 
     public void write(String message) {
         alpha = 3f;
-        for (int i = messages.length - 1; i > 0; i--) {
-            messages[i] = messages[i - 1];
-        }
+        System.arraycopy(messages, 0, messages, 1, messages.length - 1);
         messages[0] = message;
     }
 
@@ -49,13 +43,9 @@ public class Console extends GUIObject {
     public void render(int xEffect, int yEffect) {
         if (alpha > 0f) {
             glPushMatrix();
-            if (Settings.scaled) {
-                glScaled(camera.getScale(), camera.getScale(), 1);
-            }
+            glScaled(camera.getScale(), camera.getScale(), 1);
             glTranslatef(xEffect, yEffect, 0);
-            if (Settings.scaled) {
-                glScaled(1 / camera.getScale(), 1 / camera.getScale(), 1);
-            }
+            glScaled(1 / camera.getScale(), 1 / camera.getScale(), 1);
             for (int i = 0; i < messages.length; i++) {
                 if (messages[i] != null) {
                     Drawer.renderString(messages[i], (int) ((tile * 0.1) * camera.getScale()),

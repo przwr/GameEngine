@@ -30,35 +30,36 @@ import static game.place.Place.yAreaInPixels;
  */
 public abstract class Map {
 
-    private static final PointContener DIFFRENT_AREAS = new PointContener(0);
+    private static final PointContainer DIFFERENT_AREAS = new PointContainer(0);
     private static Tile tempTile;
     public final Place place;
     public final Area[] areas;
-    protected final String name;
-    protected final int width, height, tileSize;
+    protected final int tileSize;
     protected final int widthInTiles, heightInTiles;
-    protected final short mapID;
-    protected final PointContener tempTilePositions = new PointContener();
-    protected final BlueArray<WarpPoint> tempWarps = new BlueArray<>();
-    protected final Set<Block> tempBlocks = new HashSet<>();
-    protected final BlueArray<Mob> tempMobs = new BlueArray<>();
-    protected final BlueArray<Interactive> tempInteractives = new BlueArray<>();
-    protected final BlueArray<GameObject> topObjects = new BlueArray<>();
     protected final BlueArray<GameObject> foregroundTiles = new BlueArray<>();
-    protected final ArrayList<WarpPoint> warps = new ArrayList<>();
-    protected final BlueArray<Light> lights = new BlueArray<>();
-    protected final BlueArray<Block> blocks = new BlueArray<>();
-    protected final BlueArray<Mob> mobs = new BlueArray<>();
+    private final String name;
+    private final int width;
+    private final int height;
+    private final short mapID;
+    private final PointContainer tempTilePositions = new PointContainer();
+    private final Set<Block> tempBlocks = new HashSet<>();
+    private final BlueArray<Mob> tempMobs = new BlueArray<>();
+    private final BlueArray<Interactive> tempInteractiveObjects = new BlueArray<>();
+    private final BlueArray<GameObject> topObjects = new BlueArray<>();
+    private final ArrayList<WarpPoint> warps = new ArrayList<>();
+    private final BlueArray<Light> lights = new BlueArray<>();
+    private final BlueArray<Block> blocks = new BlueArray<>();
     private final BlueArray<Light> visibleLights = new BlueArray<>();
     private final Set<Integer> areasToUpdate = new HashSet<>(36);
     private final Placement placement;
-    protected Color lightColor;
+    private final int xAreas;
+    private final int yAreas;
     protected short mobID = 0;
-    protected int xAreas, yAreas;
-    protected List<GameObject> depthObjects;
+    private Color lightColor;
+    private List<GameObject> depthObjects;
     private int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
 
-    public Map(short mapID, String name, Place place, int width, int height, int tileSize) {
+    protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
         this.name = name;
         this.mapID = mapID;
@@ -78,7 +79,7 @@ public abstract class Map {
 
     public abstract void populate();
 
-    public void generateNavigationMeshes() {     // call after adding All blocks and tiles        
+    protected void generateNavigationMeshes() {     // call after adding All blocks and tiles
         int areaIndex = 0;
         for (Area area : areas) {
             tempBlocks.clear();
@@ -107,10 +108,10 @@ public abstract class Map {
         return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getY()) == area;
     }
 
-    public PointContener findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+    public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         int area = getAreaIndex(xStart, yStart);
         if (area != getAreaIndex(xDestination, yDestination)) {
-            return DIFFRENT_AREAS;
+            return DIFFERENT_AREAS;
         }
         int x = areas[area].getXInPixels();
         int y = areas[area].getYInPixels();
@@ -212,16 +213,7 @@ public abstract class Map {
         }
     }
 
-    public void updateNearInteractives(int area, BlueArray<Interactive> interactives) {
-        interactives.clear();
-        for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
-                interactives.addAll(areas[i].getInteractives());
-            }
-        }
-    }
-
-    public PointContener getNearNullTiles(Figure collision) {
+    public PointContainer getNearNullTiles(Figure collision) {
         tempTilePositions.clear();
         int xs = (collision.getX() / Place.tileSize) - 1;
         int ys = (collision.getY() / Place.tileSize) - 1;
@@ -255,17 +247,17 @@ public abstract class Map {
         });
     }
 
-    public void updateInteractivesFromAreasToUpdate() {
+    public void updateInteractiveObjectsFromAreasToUpdate() {
         prepareInteractive();
-        tempInteractives.stream().filter((interactive) -> (interactive.isActive())).forEach((interactive) -> {
+        tempInteractiveObjects.stream().filter((interactive) -> (interactive.isActive())).forEach((interactive) -> {
             interactive.updateCollision();
             interactive.checkCollision(place.players, tempMobs);
         });
     }
 
     private void prepareInteractive() {
-        tempInteractives.clear();
-        areasToUpdate.stream().filter((area) -> (area >= 0 && area < areas.length)).forEach((area) -> tempInteractives.addAll(areas[area].getInteractives()));
+        tempInteractiveObjects.clear();
+        areasToUpdate.stream().filter((area) -> (area >= 0 && area < areas.length)).forEach((area) -> tempInteractiveObjects.addAll(areas[area].getInteractiveObjects()));
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {
@@ -334,7 +326,7 @@ public abstract class Map {
         }
     }
 
-    public void changeArea(int area, int prevArea, GameObject object) {
+    private void changeArea(int area, int prevArea, GameObject object) {
         areas[prevArea].deleteObject(object);
         areas[area].addObject(object);
     }
@@ -379,10 +371,10 @@ public abstract class Map {
         renderTop(camera);
     }
 
-    public void renderBottom(Camera camera) {
+    private void renderBottom(Camera camera) {
         updateNearForegroundTiles(camera.getArea());
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
-        Methods.insort(depthObjects);
+        Methods.inSort(depthObjects);
         int y = 0;
         for (GameObject object : areas[camera.getArea()].getNearDepthObjects()) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
@@ -401,7 +393,7 @@ public abstract class Map {
         }
     }
 
-    public void renderTop(Camera camera) {
+    private void renderTop(Camera camera) {
         updateNearTopObjects(camera.getArea());
         topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render(cameraXOffEffect, cameraYOffEffect));
     }
@@ -432,12 +424,10 @@ public abstract class Map {
         warps.clear();
         lights.clear();
         blocks.clear();
-        mobs.clear();
         tempMobs.clear();
-        tempWarps.clear();
     }
 
-    public int getWidthInTIles() {
+    public int getWidthInTiles() {
         return widthInTiles;
     }
 
@@ -492,7 +482,7 @@ public abstract class Map {
         return areas.length;
     }
 
-    public int getAreaIndexCoordinatesInTiles(int x, int y) {
+    private int getAreaIndexCoordinatesInTiles(int x, int y) {
         return x / X_IN_TILES + y / Y_IN_TILES * xAreas;
     }
 
@@ -528,7 +518,7 @@ public abstract class Map {
         }
     }
 
-    public void setColor(Color color) {
+    protected void setColor(Color color) {
         this.lightColor = color;
     }
 }

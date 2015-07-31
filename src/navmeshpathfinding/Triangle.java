@@ -9,27 +9,17 @@ import engine.Point;
 import net.jodk.lang.FastMath;
 
 /**
- *
  * @author WROBELP1
  */
 public class Triangle {
 
-    public final static int MIN = 0, MAX = 1;
+    private final static int MIN = 0;
+    private final static int MAX = 1;
     private final static float EPSILON = 0.001f;
     private final Node[] nodes = new Node[3];
     private final Point[] bounds;
     private final Connection[] connections = new Connection[3];
     private int connectionsNumber = 0;
-
-    public static Triangle create(Point firstPoint, Point secondPoint, Point thirdPoint) {
-        return new Triangle(firstPoint, secondPoint, thirdPoint);
-    }
-
-    public static Triangle createAndConnectNeightbours(Point firstPoint, Point secondPoint, Point thirdPoint) {
-        Triangle triangle = new Triangle(firstPoint, secondPoint, thirdPoint);
-        triangle.connectNeightbours();
-        return triangle;
-    }
 
     private Triangle(Point firstPoint, Point secondPoint, Point thirdPoint) {
         nodes[0] = new Node(firstPoint);
@@ -38,14 +28,14 @@ public class Triangle {
         bounds = calculateBounds();
     }
 
-    private Point[] calculateBounds() {
-        Point[] tempBounds = new Point[2];
-        tempBounds[MIN] = new Point(nodes[0].getX(), nodes[0].getY());
-        tempBounds[MAX] = new Point(-1, -1);
-        for (Node node : nodes) {
-            tempBounds = findMinAndMaxValues(node.getPoint(), tempBounds);
-        }
-        return tempBounds;
+    public static Triangle create(Point firstPoint, Point secondPoint, Point thirdPoint) {
+        return new Triangle(firstPoint, secondPoint, thirdPoint);
+    }
+
+    public static Triangle createAndConnectNeighbours(Point firstPoint, Point secondPoint, Point thirdPoint) {
+        Triangle triangle = new Triangle(firstPoint, secondPoint, thirdPoint);
+        triangle.connectNeighbours();
+        return triangle;
     }
 
     private static Point[] findMinAndMaxValues(Point point, Point[] bounds) {
@@ -58,13 +48,27 @@ public class Triangle {
         return bounds;
     }
 
-    private void connectNeightbours() {
-        nodes[0].addNeightbour(nodes[1]);
-        nodes[0].addNeightbour(nodes[2]);
-        nodes[1].addNeightbour(nodes[0]);
-        nodes[1].addNeightbour(nodes[2]);
-        nodes[2].addNeightbour(nodes[0]);
-        nodes[2].addNeightbour(nodes[1]);
+    private static boolean isInZeroOneRangeToEpsilon(float number) {
+        return -EPSILON <= number && number <= 1 + EPSILON;
+    }
+
+    private Point[] calculateBounds() {
+        Point[] tempBounds = new Point[2];
+        tempBounds[MIN] = new Point(nodes[0].getX(), nodes[0].getY());
+        tempBounds[MAX] = new Point(-1, -1);
+        for (Node node : nodes) {
+            tempBounds = findMinAndMaxValues(node.getPoint(), tempBounds);
+        }
+        return tempBounds;
+    }
+
+    private void connectNeighbours() {
+        nodes[0].addNeighbour(nodes[1]);
+        nodes[0].addNeighbour(nodes[2]);
+        nodes[1].addNeighbour(nodes[0]);
+        nodes[1].addNeighbour(nodes[2]);
+        nodes[2].addNeighbour(nodes[0]);
+        nodes[2].addNeighbour(nodes[1]);
     }
 
     public void addConnection(Connection connection) {
@@ -72,10 +76,7 @@ public class Triangle {
     }
 
     public boolean isPointInTriangle(Point point) {
-        if (isOutOfBoundsToEpsilon(point)) {
-            return false;
-        }
-        return baricentricPointInTriangle(point);
+        return !isOutOfBoundsToEpsilon(point) && barycentricPointInTriangle(point);
     }
 
     private boolean isOutOfBoundsToEpsilon(Point point) {
@@ -85,7 +86,7 @@ public class Triangle {
                 || (point.getY() - EPSILON > bounds[MAX].getY());
     }
 
-    private boolean baricentricPointInTriangle(Point point) {
+    private boolean barycentricPointInTriangle(Point point) {
         float denominator = getDenominator();
         float a = ((nodes[1].getY() - nodes[2].getY()) * (point.getX() - nodes[2].getX())
                 + ((nodes[2].getX() - nodes[1].getX()) * (point.getY() - nodes[2].getY()))) / denominator;
@@ -98,10 +99,6 @@ public class Triangle {
     private float getDenominator() {
         return (float) ((nodes[1].getY() - nodes[2].getY()) * (nodes[0].getX() - nodes[2].getX()))
                 + ((nodes[2].getX() - nodes[1].getX()) * (nodes[0].getY() - nodes[2].getY()));
-    }
-
-    private static boolean isInZeroOneRangeToEpsilon(float number) {
-        return -EPSILON <= number && number <= 1 + EPSILON;
     }
 
     public boolean containsConnection(Node firstNode, Node secondNode) {
@@ -148,7 +145,7 @@ public class Triangle {
     public Point[] getBounds() {
         return bounds;
     }
-    
+
 
     @Override
     public boolean equals(Object o) {

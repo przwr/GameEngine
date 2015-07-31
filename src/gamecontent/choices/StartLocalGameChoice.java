@@ -11,7 +11,6 @@ import game.place.Menu;
 import gamecontent.MyGame;
 
 /**
- *
  * @author przemek
  */
 public class StartLocalGameChoice extends MenuChoice {
@@ -22,7 +21,7 @@ public class StartLocalGameChoice extends MenuChoice {
 
     @Override
     public void action() {
-        ((MyGame)menu.game).setDesignerMode(false);
+        ((MyGame) menu.game).setDesignerMode(false);
         menu.game.startGame();
         Main.refreshGamma();
         menu.setCurrent(0);

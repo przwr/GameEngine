@@ -8,24 +8,26 @@ package game.place.fbo;
 import engine.Drawer;
 import game.gameobject.Player;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author przemek
  */
 public class FrameBufferedSpriteSheet {
 
-    private static int fboSize = 512;
-    private FrameBufferObject[] frameBufferObjects;
-    private int xStart, yStart, xFrames, yFrames, frameWidth, frameHeight, framesCount, framesPerSpriteSheet, currentSpriteSheet, currentSpriteSheetFrame;
+    private static final int fboSize = 512;
+    private final FrameBufferObject[] frameBufferObjects;
+    private final int xStart;
+    private final int yStart;
+    private final int xFrames;
+    private final int yFrames;
+    private final int frameWidth;
+    private final int frameHeight;
+    private final int framesCount;
+    private final int framesPerSpriteSheet;
+    private int currentSpriteSheet;
+    private int currentSpriteSheetFrame;
     private boolean upToDate;
 
     public FrameBufferedSpriteSheet(int frameWidth, int frameHeight, int framesCount, int xStart, int yStart) {

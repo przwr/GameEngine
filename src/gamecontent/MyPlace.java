@@ -24,7 +24,6 @@ import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
 
 /**
- *
  * @author przemek
  */
 public class MyPlace extends Place {
@@ -42,14 +41,14 @@ public class MyPlace extends Place {
             updateAreasOffline();
             updatePlayersOffline();
             updateMobsOffline();
-            updateInteractivesOffline();
+            updateInteractiveObjectsOffline();
             dayCycle.updateTime();
         };
         updates[ONLINE] = () -> {
             updateAreasOnline();
             updateMobsOnline();
             updatePlayersOnline();
-            updateInteractivesOnline();
+            updateInteractiveObjectsOnline();
             dayCycle.updateTime();
         };
         delay.start();
@@ -64,9 +63,9 @@ public class MyPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        GladeMap polana = new GladeMap(mapIDcounter++, this, 4096, 8192, tileSize);
+        GladeMap polana = new GladeMap(mapIDCounter++, this, 4096, 8192, tileSize);
         maps.add(polana);
-        StoneMap kamienna = new StoneMap(mapIDcounter++, this, 10240, 10240, tileSize);
+        StoneMap kamienna = new StoneMap(mapIDCounter++, this, 10240, 10240, tileSize);
         maps.add(kamienna);
 //        sounds.initialize("res");
         SoundStore.get().poll(0);
@@ -201,11 +200,11 @@ public class MyPlace extends Place {
         }
     }
 
-    private void updateInteractivesOffline() {
-        tempMaps.stream().forEach(Map::updateInteractivesFromAreasToUpdate);
+    private void updateInteractiveObjectsOffline() {
+        tempMaps.stream().forEach(Map::updateInteractiveObjectsFromAreasToUpdate);
     }
 
-    private void updateInteractivesOnline() {
+    private void updateInteractiveObjectsOnline() {
         System.out.println("Not supported yet.");
     }
 

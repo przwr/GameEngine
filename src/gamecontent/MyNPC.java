@@ -9,7 +9,6 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Executive;
 import engine.Methods;
-import game.Settings;
 import game.gameobject.Mob;
 import game.place.Place;
 import sprites.SpriteSheet;
@@ -17,7 +16,6 @@ import sprites.SpriteSheet;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author Wojtek
  */
 public class MyNPC extends Mob {
@@ -70,15 +68,10 @@ public class MyNPC extends Mob {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
-            if (Settings.scaled) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            }
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             spritesheet.renderPiece(direction);
-
-            if (Settings.scaled) {
-                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            }
+            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }
     }

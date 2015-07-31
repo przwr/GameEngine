@@ -10,7 +10,6 @@ import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class StartChoice extends MenuChoice {

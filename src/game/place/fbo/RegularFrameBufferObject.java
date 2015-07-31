@@ -8,7 +8,7 @@ public class RegularFrameBufferObject extends FrameBufferObject {
 
     public RegularFrameBufferObject(int width, int height) {
         super(width, height, false);
-        createFrameBuferObjects();
+        createFrameBufferObjects();
         type.activate(frameBufferObject);
         type.makeTexture(texture, frameBufferObject, width, height);
         type.deactivate();
@@ -24,7 +24,7 @@ public class RegularFrameBufferObject extends FrameBufferObject {
         type.deactivate();
     }
 
-    private void createFrameBuferObjects() {
+    private void createFrameBufferObjects() {
         if (version == NATIVE) {
             frameBufferObject = GL30.glGenFramebuffers();
         } else if (version == ARB) {

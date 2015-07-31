@@ -13,10 +13,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 /**
- *
  * @author przemek
  */
-public final class Controlers {
+public final class PlayerControllers {
 
     private static Controller[] controllers;
 
@@ -68,51 +67,51 @@ public final class Controlers {
     }
 
     private static AnyInput checkControllers(int noiseAxes[], int maxAxesNumber) {
-        for (int controler = 0; controler < controllers.length; controler++) {
-            if (controllers[controler] != null) {
-                for (int button = 0; button < controllers[controler].getButtonCount(); button++) {
-                    if (controllers[controler].isButtonPressed(button)) {
-                        return new InputPadKey(controllers, controler, button);
+        for (int controller = 0; controller < controllers.length; controller++) {
+            if (controllers[controller] != null) {
+                for (int button = 0; button < controllers[controller].getButtonCount(); button++) {
+                    if (controllers[controller].isButtonPressed(button)) {
+                        return new InputPadKey(controllers, controller, button);
                     }
                 }
-                AnyInput dPad = checkDPad(controler);
+                AnyInput dPad = checkDPad(controller);
                 if (dPad != null) {
                     return dPad;
                 } else {
-                    return checkAxes(controler, noiseAxes, maxAxesNumber);
+                    return checkAxes(controller, noiseAxes, maxAxesNumber);
                 }
             }
         }
         return null;
     }
 
-    private static AnyInput checkDPad(int controler) {
-        if (controllers[controler].getPovX() > 0.1f) {
-            return new InputPadDPad(controllers, controler, true, true);
-        } else if (controllers[controler].getPovX() < -0.1f) {
-            return new InputPadDPad(controllers, controler, true, false);
-        } else if (controllers[controler].getPovY() > 0.1f) {
-            return new InputPadDPad(controllers, controler, false, true);
-        } else if (controllers[controler].getPovY() < -0.1f) {
-            return new InputPadDPad(controllers, controler, false, false);
+    private static AnyInput checkDPad(int controller) {
+        if (controllers[controller].getPovX() > 0.1f) {
+            return new InputPadDPad(controllers, controller, true, true);
+        } else if (controllers[controller].getPovX() < -0.1f) {
+            return new InputPadDPad(controllers, controller, true, false);
+        } else if (controllers[controller].getPovY() > 0.1f) {
+            return new InputPadDPad(controllers, controller, false, true);
+        } else if (controllers[controller].getPovY() < -0.1f) {
+            return new InputPadDPad(controllers, controller, false, false);
         }
         return null;
     }
 
-    private static AnyInput checkAxes(int controler, int noiseAxes[], int maxAxesNumber) {
+    private static AnyInput checkAxes(int controller, int noiseAxes[], int maxAxesNumber) {
         boolean noisy = false;
-        for (int i = 0; i < controllers[controler].getAxisCount(); i++) {
-            for (int j = 0; j < controllers[controler].getAxisCount(); j++) {
-                if (i == noiseAxes[controler * maxAxesNumber + j]) {
+        for (int i = 0; i < controllers[controller].getAxisCount(); i++) {
+            for (int j = 0; j < controllers[controller].getAxisCount(); j++) {
+                if (i == noiseAxes[controller * maxAxesNumber + j]) {
                     noisy = true;
                 }
             }
             if (noisy) {
                 noisy = false;
-            } else if (controllers[controler].getAxisValue(i) > 0.1f) {
-                return new InputPadStick(controllers, controler, i, true);
-            } else if (controllers[controler].getAxisValue(i) < -0.1f) {
-                return new InputPadStick(controllers, controler, i, false);
+            } else if (controllers[controller].getAxisValue(i) > 0.1f) {
+                return new InputPadStick(controllers, controller, i, true);
+            } else if (controllers[controller].getAxisValue(i) < -0.1f) {
+                return new InputPadStick(controllers, controller, i, false);
             }
         }
         return null;

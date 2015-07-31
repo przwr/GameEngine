@@ -13,7 +13,6 @@ import game.place.Place;
 import navmeshpathfinding.PathFindingModule;
 
 /**
- *
  * @author przemek
  */
 public class Rabbit extends Mob {
