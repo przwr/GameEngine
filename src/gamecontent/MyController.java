@@ -73,8 +73,6 @@ public class MyController extends Controler {
                 playerAnimation.setStopAtEnd(true);
                 playerAnimation.animateIntervalInDirection(direction / 45, 21, 25);
                 inControl.brake(2);
-                // TODO zrobić to porządnie - kiedy zatrzymuje się animacja?
-                inControl.getInteractives().get(0).setActive(!inControl.getInteractives().get(0).isActive());
             } else {
                 playerAnimation.setStopAtEnd(false);
                 if (isKeyPressed(UP)) {
