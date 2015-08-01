@@ -11,9 +11,9 @@ package game.gameobject;
 public abstract class PlayerController {
 
     public static final byte KEY_PRESSED = 1;
-    private static final byte KEY_NO_INPUT = 0;
-    private static final byte KEY_CLICKED = 2;
-    private static final byte KEY_RELEASED = -1;
+    public static final byte KEY_NO_INPUT = 0;
+    public static final byte KEY_CLICKED = 2;
+    public static final byte KEY_RELEASED = -1;
     protected final Entity inControl;
     public Action[] actions;
     public AnyInput[] inputs;

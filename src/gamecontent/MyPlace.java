@@ -36,7 +36,7 @@ public class MyPlace extends Place {
 
     {
         updates[OFFLINE] = () -> {
-            System.out.println("UPDATE " + System.currentTimeMillis() + ": ");
+            //System.out.println("UPDATE " + System.currentTimeMillis() + ": ");
             updateInputs();
             updateAreasOffline();
             updatePlayersOffline();

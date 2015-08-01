@@ -134,9 +134,11 @@ public class MyPlayer extends Player {
             Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
+            Drawer.setCentralPoint();
             animation.render();
 //            renderClothed(animation.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
             animation.updateFrame();
+            Drawer.returnToCentralPoint();
 
             //glTranslatef(50, 0, 0);
             //Drawer.setCentralPoint();
@@ -148,8 +150,7 @@ public class MyPlayer extends Player {
             //    testIndex = 0;
             //}
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
-                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
+            Drawer.renderStringCentered(name, 0, -(int) ((sprite.getActualHeight() * Place.getCurrentScale()) / 1.2),
                     place.standardFont, map.getLightColor());
             glPopMatrix();
         }
