@@ -7,12 +7,12 @@
 package net.packets;
 
 /**
- *
  * @author przemek
  */
 public class PacketJoinRequest {
 
     private String name;
+
     public PacketJoinRequest() {
     }
 
@@ -20,7 +20,7 @@ public class PacketJoinRequest {
         this.name = name;
     }
 
-    public  synchronized String getName() {
+    public synchronized String getName() {
         return name;
     }
 }

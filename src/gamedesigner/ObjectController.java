@@ -5,19 +5,12 @@
  */
 package gamedesigner;
 
-import game.gameobject.Action;
-import game.gameobject.ActionOnOff;
-import game.gameobject.ActionHold;
-import game.gameobject.AnyInput;
-import game.gameobject.Controler;
-import game.gameobject.Entity;
-import game.gameobject.Player;
+import game.gameobject.*;
 
 /**
- *
  * @author przemek
  */
-public class ObjectController extends Controler {
+public class ObjectController extends PlayerController {
 
     public ObjectController(Entity inControl) {
         super(inControl);
@@ -46,7 +39,7 @@ public class ObjectController extends Controler {
     public boolean isMenuOn() {
         if (actions[3].input != null) {
             if (actions[3].input.isPut()) {
-                if (!actions[3].input.isPressed()) {
+                if (actions[3].input.isNotPressed()) {
                     actions[3].input.setPressed(true);
                     return true;
                 }
@@ -63,9 +56,9 @@ public class ObjectController extends Controler {
             actions[i].act();
         }
         if (actions[0].isOn()) {
-            ((Player) inControl).getMenu().setChoosen(-1);
+            ((Player) inControl).getMenu().setChosen(-1);
         } else if (actions[1].isOn()) {
-            ((Player) inControl).getMenu().setChoosen(1);
+            ((Player) inControl).getMenu().setChosen(1);
         }
         if (actions[2].isOn()) {
             ((Player) inControl).getMenu().choice();

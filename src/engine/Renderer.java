@@ -14,38 +14,25 @@ import game.place.fbo.FrameBufferObject;
 import game.place.fbo.RegularFrameBufferObject;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
-import static org.lwjgl.opengl.GL11.GL_ONE;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_ZERO;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslated;
-import static org.lwjgl.opengl.GL11.glVertex2f;
-import static org.lwjgl.opengl.GL11.glViewport;
 import org.newdawn.slick.Color;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author przemek
  */
 public class Renderer {
 
     private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), halfDisplayWidth = (displayWidth / 2), halfDisplayHeight = (displayHeight / 2);
-    private static FrameBufferObject frame;
     private static final int[] xStart = new int[7], xEnd = new int[7], yStart = new int[7], yEnd = new int[7];
-    private static boolean visible;
-    private static float lightColor, lightBrightness, lightStrength;
-    private static Camera camera;
-    private static Place place;
     private static final drawBorder[] borders = new drawBorder[5];
-    private static final resetOrtho[] orthos = new resetOrtho[5];
+    private static final resetOrthogonal[] orthos = new resetOrthogonal[5];
+    private static FrameBufferObject frame;
+    private static boolean visible;
+    private static Place place;
+
+    private Renderer() {
+    }
 
     public static void findVisibleLights(Map map, int playersLength) {
         place = map.place;
@@ -116,6 +103,7 @@ public class Renderer {
     }
 
     private static void readyVarsToFindLights(Map map) {
+        Camera camera;
         for (int p = 0; p < place.getPlayersCount(); p++) {
             if (map == place.players[p].getMap()) {
                 camera = (((Player) place.players[p]).getCamera());
@@ -141,13 +129,11 @@ public class Renderer {
 
     public static void preRenderLights(Map map) {
         if (!Settings.shadowOff) {
-            map.getVisibleLights().stream().filter((light) -> (light.isGiveShadows())).forEach((light) -> {
-                ShadowRenderer.prerenderLight(map, light);
-            });
+            map.getVisibleLights().stream().filter((light) -> (light.isGiveShadows())).forEach((light) -> ShadowRenderer.preRenderLight(map, light));
         }
     }
 
-    public static void preRenderShadowedLights(Place place, Camera camera) {
+    public static void preRenderShadowedLights(Camera camera) {
         frame.activate();
         Drawer.clearScreen(0);
         glColor3f(1, 1, 1);
@@ -162,20 +148,19 @@ public class Renderer {
         frame.deactivate();
     }
 
-    public static void drawLight(Light light, Camera camera) {
+    private static void drawLight(Light light, Camera camera) {
         glPushMatrix();
         glTranslated(camera.getXOffsetEffect(), camera.getYOffsetEffect(), 0);
-        if (Settings.scaled) {
-            glScaled(camera.getScale(), camera.getScale(), 1);
-        }
+        glScaled(camera.getScale(), camera.getScale(), 1);
         glTranslated(light.getX() - light.getXCenterShift(), light.getY() - light.getYCenterShift(), 0);
         light.getFrameBufferObject().render();
         glPopMatrix();
     }
 
     public static void renderLights(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
-        lightBrightness = FastMath.max(color.r, FastMath.max(color.g, color.b));
-        lightStrength = 6 - (int) (10 * lightBrightness);
+        float lightBrightness = FastMath.max(color.r, FastMath.max(color.g, color.b));
+        float lightStrength = 6 - (int) (10 * lightBrightness);
+        float lightColor;
         if (lightStrength <= 2) {
             lightStrength = 2;
             lightColor = 1.00f - 0.95f * lightBrightness;
@@ -255,15 +240,9 @@ public class Renderer {
             glEnd();
         };
 
-        orthos[0] = () -> {
-            glOrtho(-1.0, 1.0, -2.0, 2.0, 1.0, -1.0);
-        };
-        orthos[1] = () -> {
-            glOrtho(-2.0, 2.0, -1.0, 1.0, 1.0, -1.0);
-        };
-        orthos[2] = orthos[3] = orthos[4] = () -> {
-            glOrtho(-2.0, 2.0, -2.0, 2.0, 1.0, -1.0);
-        };
+        orthos[0] = () -> glOrtho(-1.0, 1.0, -2.0, 2.0, 1.0, -1.0);
+        orthos[1] = () -> glOrtho(-2.0, 2.0, -1.0, 1.0, 1.0, -1.0);
+        orthos[2] = orthos[3] = orthos[4] = () -> glOrtho(-2.0, 2.0, -2.0, 2.0, 1.0, -1.0);
     }
 
     public static void border(int splitScreenMode) {
@@ -275,7 +254,7 @@ public class Renderer {
         }
     }
 
-    public static void resetOrtho(int ssMode) {
+    public static void resetOrthogonal(int ssMode) {
         if (ssMode != 0) {
             orthos[ssMode - 1].reset();
         }
@@ -286,10 +265,7 @@ public class Renderer {
         void draw();
     }
 
-    private Renderer() {
-    }
-
-    private interface resetOrtho {
+    private interface resetOrthogonal {
 
         void reset();
     }

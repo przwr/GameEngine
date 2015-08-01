@@ -7,36 +7,29 @@ package navmeshpathfinding;
 
 import collision.Figure;
 import collision.Rectangle;
-import static collision.RoundRectangle.LEFT_BOTTOM;
-import static collision.RoundRectangle.LEFT_TOP;
-import static collision.RoundRectangle.RIGHT_BOTTOM;
-import static collision.RoundRectangle.RIGHT_TOP;
 import engine.Methods;
 import engine.Point;
-import engine.PointContener;
+import engine.PointContainer;
 import engine.PointedValue;
 import game.gameobject.Entity;
 import game.place.Area;
-import java.awt.Polygon;
-import java.util.List;
-import static navmeshpathfinding.PathData.BLOCKED;
-import static navmeshpathfinding.PathData.CHOICE;
-import static navmeshpathfinding.PathData.OBSTACLE_BEETWEEN;
-import static navmeshpathfinding.PathData.PASSED;
-import static navmeshpathfinding.PathData.PASSING;
-import static navmeshpathfinding.PathData.PATH_REQUESTED;
-import static navmeshpathfinding.PathData.STUCK;
 import net.jodk.lang.FastMath;
 
+import java.awt.*;
+import java.util.List;
+
+import static collision.RoundRectangle.*;
+import static navmeshpathfinding.PathData.*;
+
 /**
- *
  * @author przemek
  */
-public class PathStrategyCore {
+class PathStrategyCore {
 
-    private static PathWindow pathWindow = new PathWindow();
+    private static final PathWindow pathWindow = new PathWindow();
 
-    private static boolean DEBUG = false, WINDOW_SHOWED;
+    private static final boolean DEBUG = false;
+    private static boolean WINDOW_SHOWED;
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -78,19 +71,19 @@ public class PathStrategyCore {
         }
     }
 
-    private static void copyPath(PointContener newPath, PathData data) {
+    private static void copyPath(PointContainer newPath, PathData data) {
         data.path.clear();
         for (int i = 0; i < newPath.size(); i++) {
             data.path.add(newPath.get(i).getX() + data.xRef, newPath.get(i).getY() + data.yRef);
         }
     }
 
-    private static void correctDestinationPointIfNeeded(PointContener path, PathData data) {
+    private static void correctDestinationPointIfNeeded(PointContainer path, PathData data) {
         if (data.destination != null) {
             if (!data.close.isEmpty()) {
                 data.desired = path.get(path.size() - 1);
                 setTestingPosition(data.testing, data.desired);
-                data.collided = whatColidesWithTesting(data.close, data.testing);
+                data.collided = whatCollidesWithTesting(data.close, data.testing);
                 if (data.collided != null) {
                     correctDestinationPoint(path, data);
                 }
@@ -98,7 +91,7 @@ public class PathStrategyCore {
         }
     }
 
-    private static void correctDestinationPoint(PointContener path, PathData data) {
+    private static void correctDestinationPoint(PointContainer path, PathData data) {
         if (data.collided.getX() >= data.desired.getX()) {
             if (data.collided.getY() >= data.desired.getY()) {
                 path.get(path.size() - 1).set(data.collided.getX() - (data.widthHalf), data.collided.getY() - (data.heightHalf));
@@ -124,7 +117,7 @@ public class PathStrategyCore {
         }
     }
 
-    private static Figure whatColidesWithTesting(List<Figure> close, Figure testing) {
+    private static Figure whatCollidesWithTesting(List<Figure> close, Figure testing) {
         for (Figure figure : close) {
             if (testing.isCollideSingle(0, 0, figure)) {
                 return figure;
@@ -160,8 +153,8 @@ public class PathStrategyCore {
     }
 
     private static void delayOverChoice(Entity requester, PathData data, int xDest, int yDest) {
-        if (data.flags.get(OBSTACLE_BEETWEEN) || data.flags.get(STUCK) || Methods.pointDistance(data.x, data.y, xDest, yDest) > data.scope) {
-            if (data.path.isEmpty() || data.flags.get(OBSTACLE_BEETWEEN) || data.flags.get(STUCK) || (Methods.pointDistance(data.getLastPoint().getX(), data.getLastPoint().getY(), xDest, yDest) > requester.getMaxSpeed())) {
+        if (data.flags.get(OBSTACLE_BETWEEN) || data.flags.get(STUCK) || Methods.pointDistance(data.x, data.y, xDest, yDest) > data.scope) {
+            if (data.path.isEmpty() || data.flags.get(OBSTACLE_BETWEEN) || data.flags.get(STUCK) || (Methods.pointDistance(data.getLastPoint().getX(), data.getLastPoint().getY(), xDest, yDest) > requester.getMaxSpeed())) {
                 requestForPath(requester, data, xDest, yDest);
             }
             if (!data.path.isEmpty()) {
@@ -352,11 +345,7 @@ public class PathStrategyCore {
     private static boolean isNeedToPass(PathData data) {
         if (data.inAWay != null) {
             if (!data.path.isEmpty()) {
-                if (data.path.size() - 1 != data.currentPoint) {
-                    return true;
-                } else {
-                    return isPassingRequired(data);
-                }
+                return data.path.size() - 1 != data.currentPoint || isPassingRequired(data);
             } else {
                 return isPassingRequired(data);
             }
@@ -377,7 +366,7 @@ public class PathStrategyCore {
         return false;
     }
 
-    public static void manageBlockedAndAdjustSpeed(PathData data, double maxSpeed) {
+    private static void manageBlockedAndAdjustSpeed(PathData data, double maxSpeed) {
         if (data.flags.get(BLOCKED)) {
             DEBUG("BLOCKED");
             data.xSpeed = data.pastXSpeed;

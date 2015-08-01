@@ -5,24 +5,17 @@
  */
 package collision;
 
-import engine.BlueArray;
-import engine.Methods;
-import engine.Point;
-import engine.PointedValue;
-import engine.PointContener;
-import engine.Shadow;
-import engine.ShadowContener;
+import engine.*;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.Area;
 import game.place.ForegroundTile;
 import game.place.Map;
 import game.place.Place;
+
 import java.util.List;
-import net.jodk.lang.FastMath;
 
 /**
- *
  * @author Wojtek
  */
 public abstract class Figure implements Comparable<Figure> {
@@ -30,20 +23,13 @@ public abstract class Figure implements Comparable<Figure> {
     private static Figure figure;
     private static Rectangle tempTile = Rectangle.createTileRectangle();
     private static Rectangle scope = Rectangle.createTileRectangle();
-
-    protected GameObject owner;
-    private final OpticProperties opticProperties;
-    protected int xStart, yStart, width, height, xCenter, yCenter;
+    private static PointContainer tiles;
     protected final BlueArray<Point> points;
-    private static PointContener tiles;
-    private boolean mobile = false, small = false;
+    private final OpticProperties opticProperties;
     private final DoublePoint slideSpeed;
-
-    public abstract boolean isCollideSingle(int x, int y, Figure figure);
-
-    public abstract List<Point> getPoints();
-
-    public abstract void updatePoints();
+    protected GameObject owner;
+    protected int xStart, yStart, width, height, xCenter, yCenter;
+    private boolean mobile = false, small = false;
 
     public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
         this.xStart = xStart;
@@ -54,16 +40,51 @@ public abstract class Figure implements Comparable<Figure> {
         slideSpeed = new DoublePoint();
     }
 
+    public static void updateWhatClose(GameObject owner, int x, int y, int range, int xDest, int yDest, Map map, List<Figure> close) {
+        close.clear();
+        setScope(x, y, range);
+        Area area = map.getArea(x, y);
+        area.getNearBlocks().stream().filter((block) -> (block.isSolid() && scope.isCollideSingle(x, y, block.getCollision()))).forEach((block) -> {
+            Figure figure = block.getCollision();
+            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
+            close.add(figure);
+        });
+        area.getNearSolidMobs().stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
+            Figure figure = object.getCollision();
+            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
+            close.add(figure);
+        });
+        area.getNearSolidObjects().stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
+            Figure figure = object.getCollision();
+            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
+            close.add(figure);
+        });
+    }
+
+    public static void setScope(int x, int y, int range) {
+        scope.setXStart(x - range);
+        scope.setYStart(y - range);
+        scope.width = 2 * range;
+        scope.height = 2 * range;
+        scope.updateTilePoints();
+    }
+
+    public abstract boolean isCollideSingle(int x, int y, Figure figure);
+
+    public abstract List<Point> getPoints();
+
+    public abstract void updatePoints();
+
     public boolean isCollideSolid(int x, int y, Map map) {
         if (getOwner().getArea() != -1) {
             Area area = map.getArea(getOwner().getArea());
             if (area.getNearBlocks().stream().anyMatch((block) -> (block.isSolid() && block.isCollide(x, y, this)))) {
                 return true;
             }
-            if (area.getNearSolidMobs().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
+            if (area.getNearSolidMobs().stream().anyMatch((object) -> (checkCollision(x, y, object)))) {
                 return true;
             }
-            if (area.getNearSolidObjects().stream().anyMatch((object) -> (checkCollison(x, y, object)))) {
+            if (area.getNearSolidObjects().stream().anyMatch((object) -> (checkCollision(x, y, object)))) {
                 return true;
             }
             tiles = map.getNearNullTiles(this);
@@ -92,12 +113,12 @@ public abstract class Figure implements Comparable<Figure> {
                 }
             }
             for (GameObject object : area.getNearSolidMobs()) {
-                if (checkCollison(x, y, object)) {
+                if (checkCollision(x, y, object)) {
                     return object.getCollision();
                 }
             }
             for (GameObject object : area.getNearSolidObjects()) {
-                if (checkCollison(x, y, object)) {
+                if (checkCollision(x, y, object)) {
                     return object.getCollision();
                 }
             }
@@ -112,42 +133,13 @@ public abstract class Figure implements Comparable<Figure> {
         return null;
     }
 
-    public static void updateWhatClose(GameObject owner, int x, int y, int range, int xDest, int yDest, Map map, List<Figure> close) {
-        close.clear();
-        setScope(x, y, range);
-        Area area = map.getArea(x, y);
-        area.getNearBlocks().stream().filter((block) -> (block.isSolid() && scope.isCollideSingle(x, y, block.getCollision()))).forEach((block) -> {
-            Figure figure = block.getCollision();
-            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
-            close.add(figure);
-        });
-        area.getNearSolidMobs().stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
-            Figure figure = object.getCollision();
-            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
-            close.add(figure);
-        });
-        area.getNearSolidObjects().stream().filter((object) -> (object != owner && scope.isCollideSingle(x, y, object.getCollision()))).forEach((object) -> {
-            Figure figure = object.getCollision();
-            figure.setLightDistance(Methods.pointDistance(figure.getXCentral(), figure.getYCentral(), xDest, yDest));
-            close.add(figure);
-        });
-    }
-
-    public static void setScope(int x, int y, int range) {
-        scope.setXStart(x - range);
-        scope.setYStart(y - range);
-        scope.width = 2 * range;
-        scope.height = scope.width;
-        scope.updateTilePoints();
-    }
-
     public boolean isCollide(int x, int y, List<GameObject> objects) {
-        return objects.stream().anyMatch((object) -> (checkCollison(x, y, object)));
+        return objects.stream().anyMatch((object) -> (checkCollision(x, y, object)));
     }
 
     public GameObject whatCollide(int x, int y, List<GameObject> objects) {
         for (GameObject object : objects) {
-            if (checkCollison(x, y, object)) {
+            if (checkCollision(x, y, object)) {
                 return object;
             }
         }
@@ -156,7 +148,7 @@ public abstract class Figure implements Comparable<Figure> {
 
     public boolean isCollidePlayer(int x, int y, Place place) {
         for (int i = 0; i < place.playersCount; i++) {
-            if (checkCollison(x, y, place.players[i])) {
+            if (checkCollision(x, y, place.players[i])) {
                 return true;
             }
         }
@@ -164,25 +156,22 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public Player firstPlayerCollide(int x, int y, Place place) {
-        if (place.players[0].getMap() == owner.getMap() && checkCollison(x, y, place.players[0])) {
+        if (place.players[0].getMap() == owner.getMap() && checkCollision(x, y, place.players[0])) {
             return (Player) place.players[0];
         }
         return null;
     }
 
-    private boolean checkCollison(int x, int y, GameObject object) {
+    private boolean checkCollision(int x, int y, GameObject object) {
         figure = object.getCollision();
-        return checkCollison(x, y, object, figure);
+        return checkCollision(x, y, object, figure);
     }
 
-    private boolean checkCollison(int x, int y, GameObject object, Figure figure) {
-        if (object == owner || figure == null) {
-            return false;
-        }
-        return isCollideSingle(x, y, figure);
+    private boolean checkCollision(int x, int y, GameObject object, Figure figure) {
+        return !(object == owner || figure == null) && isCollideSingle(x, y, figure);
     }
 
-    public void addAllShadows(ShadowContener shadows) {
+    public void addAllShadows(ShadowContainer shadows) {
         opticProperties.addAllShadows(shadows);
     }
 
@@ -222,7 +211,7 @@ public abstract class Figure implements Comparable<Figure> {
         return getY();
     }
 
-    public void prepareSlideSpeed(double xSpeed, double ySpeed) {   //YOUR SPPED WITHOUT SLIDING
+    public void prepareSlideSpeed(double xSpeed, double ySpeed) {   //YOUR SPEED WITHOUT SLIDING
         slideSpeed.setStart(xSpeed, ySpeed);
         slideSpeed.changed = false;
     }
@@ -246,7 +235,7 @@ public abstract class Figure implements Comparable<Figure> {
     public double getYStartSlideSpeed() {
         return slideSpeed.getStartY();
     }
-    
+
     public double getXSlideSpeed() {
         return slideSpeed.getAllX();
     }
@@ -267,8 +256,16 @@ public abstract class Figure implements Comparable<Figure> {
         return mobile;
     }
 
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
+    }
+
     public boolean isSmall() {
         return small;
+    }
+
+    public void setSmall(boolean small) {
+        this.small = small;
     }
 
     public boolean isConcave() {
@@ -327,8 +324,16 @@ public abstract class Figure implements Comparable<Figure> {
         return xStart;
     }
 
+    public void setXStart(int xStart) {
+        this.xStart = xStart;
+    }
+
     public int getYStart() {
         return yStart;
+    }
+
+    public void setYStart(int yStart) {
+        this.yStart = yStart;
     }
 
     public int getXSpriteOffset() {
@@ -387,8 +392,16 @@ public abstract class Figure implements Comparable<Figure> {
         return opticProperties.getShadowHeight();
     }
 
+    public void setShadowHeight(int shadowHeight) {
+        opticProperties.setType(shadowHeight);
+    }
+
     public int getLightDistance() {
         return opticProperties.getLightDistance();
+    }
+
+    public void setLightDistance(int lightDistance) {
+        opticProperties.setLightDistance(lightDistance);
     }
 
     public int getShadowCount() {
@@ -403,32 +416,8 @@ public abstract class Figure implements Comparable<Figure> {
         return opticProperties.getType();
     }
 
-    public void setMobile(boolean mobile) {
-        this.mobile = mobile;
-    }
-
-    public void setSmall(boolean small) {
-        this.small = small;
-    }
-
-    public void setXStart(int xStart) {
-        this.xStart = xStart;
-    }
-
-    public void setYStart(int yStart) {
-        this.yStart = yStart;
-    }
-
-    public void setLightDistance(int lightDistance) {
-        opticProperties.setLightDistance(lightDistance);
-    }
-
     public void setOpticProperties(int type) {
         opticProperties.setType(type);
-    }
-
-    public void setShadowHeight(int shadowHeight) {
-        opticProperties.setType(shadowHeight);
     }
 
     private class DoublePoint {
@@ -437,7 +426,7 @@ public abstract class Figure implements Comparable<Figure> {
         private double startX, startY;
         private boolean changed;
         private double lastX, lastY;
-        
+
         public double getAllX() {
             return x != 0 ? x : lastX;
         }
@@ -445,7 +434,7 @@ public abstract class Figure implements Comparable<Figure> {
         public double getAllY() {
             return y != 0 ? y : lastY;
         }
-        
+
         public double getStartX() {
             return startX;
         }

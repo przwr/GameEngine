@@ -6,27 +6,18 @@
 package game.gameobject;
 
 import game.Settings;
-import game.gameobject.inputs.InputKeyBoard;
-import game.gameobject.inputs.InputMouse;
-import game.gameobject.inputs.InputPadDPad;
-import game.gameobject.inputs.InputPadKey;
-import game.gameobject.inputs.InputPadStick;
+import game.gameobject.inputs.*;
 
 /**
- *
  * @author przemek
  */
 public abstract class AnyInput {
 
     public final static int ERROR2 = -2, ERROR = -1, KEYBOARD = 0, MOUSE = 1, CONTROLLER_KEY = 2, CONTROLLER_DPAD = 3, CONTROLLER_STICK = 4;
     protected String label;
-    protected boolean pressed;
     protected int key;
     protected int pad;
-
-    public abstract boolean isPut();
-
-    public abstract String getLabel();
+    private boolean pressed;
 
     public static AnyInput createInput(int type, int[] table) {
         if (type == KEYBOARD) {
@@ -47,12 +38,16 @@ public abstract class AnyInput {
         return value == 1;
     }
 
+    public abstract boolean isPut();
+
+    public abstract String getLabel();
+
     public void setPressed(boolean pressed) {
         this.pressed = pressed;
     }
 
-    public boolean isPressed() {
-        return pressed;
+    public boolean isNotPressed() {
+        return !pressed;
     }
 
     public int getPadNumber() {

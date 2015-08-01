@@ -6,10 +6,13 @@
 package gamedesigner;
 
 import engine.Drawer;
+import engine.ErrorHandler;
 import engine.Methods;
-import game.Settings;
 import game.gameobject.GUIObject;
 import game.place.Place;
+import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.Color;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,77 +20,68 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import org.lwjgl.input.Keyboard;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import org.newdawn.slick.Color;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author Wojtek
  */
 public class GUIHandler extends GUIObject {
 
-    private int mode, selected;
-    private ArrayList<File> list;
-    private String text = "";
     private final int tile, xStart, yStart;
     private final ObjectPlace objPlace;
     private final SimpleKeyboard key;
+    private final int DO_NOTHING = -1, NAMING = 0, CHOOSING = 1, HELPING = 2, QUESTIONING = 3, VIEWING = 4;
+    private final Comparator<File> nameComparator = (File firstObject, File secondObject)
+            -> firstObject.getName().compareTo(secondObject.getName());
+    private final String[] help = new String[]{
+            "H : Help",
+            "1 ... 4:               Change mode",
+            "S:                     Save as",
+            "ctrl + S:              QuickSave",
+            "L:                     Load object",
+            "ctrl + backspace       Clear map",
+            "",
+            "ctrl + arrows :        Change selection",
+            "ctrl + Z :             Reset selection",
+            "A:                     Run mode",
+            "BACKSPACE:             Cancel",
+            "U                      Undo",
+            "",
+            "SPACE:                 Create",
+            "DELETE:                Delete",
+            "ALT:                   Create altered",
+            "",
+            "V:                     Visibility options",
+            "B:                     Lock Block",
+            "M:                     Move Blocks",
+            "HOME:                  Set starting point",
+            "",
+            "//TILE MODE (1)",
+            "",
+            "SHIFT + arrows :       Change tile",
+            "T :                    Load spriteSheet",
+            "",
+            "//BLOCK MODE (2)",
+            "",
+            "SHIFT + arrows:        Change block height",
+            "R                      Rounded blocks mode",
+            "",
+            "//OBJECT MODE (4)",
+            "",
+            "SHIFT + arrows:        Change link radius"};
+    private int mode, selected;
+    private ArrayList<File> list;
+    private String text = "";
     private boolean firstLoop;
-
     private boolean[] options;
     private String[] prettyOptions;
 
-    private final int DONOTHING = -1, NAMING = 0, CHOOSING = 1, HELPING = 2, QUESTIONING = 3, VIEWING = 4;
-
-    private final Comparator<File> nameComparator = (File firstObject, File secondObject)
-            -> firstObject.getName().compareTo(secondObject.getName());
-
-    private final String[] help = new String[]{
-        "H : Help",
-        "1 ... 4:               Change mode",
-        "S:                     Save as",
-        "cltr + S:              Quicksave",
-        "L:                     Load object",
-        "cltr + backspace       Clear map",
-        "",
-        "cltr + arrows :        Change selection",
-        "cltr + Z :             Reset selection",
-        "A:                     Run mode",
-        "BACKSPACE:             Cancel",
-        "U                      Undo",
-        "",
-        "SPACE:                 Create",
-        "DELETE:                Delete",
-        "ALT:                   Create altered",
-        "",
-        "V:                     Visibility options",
-        "B:                     Lock Block",
-        "M:                     Move Blocks",
-        "HOME:                  Set starting point",
-        "",
-        "//TILE MODE (1)",
-        "",
-        "SHIFT + arrows :       Change tile",
-        "T :                    Load spritesheet",
-        "",
-        "//BLOCK MODE (2)",
-        "",
-        "SHIFT + arrows:        Change block height",
-        "R                      Rounded blocks mode",
-        "",
-        "//OBJECT MODE (4)",
-        "",
-        "SHIFT + arrows:        Change link radius"};
-
     public GUIHandler(Place place) {
-        super("guih", place);
+        super("gui", place);
         tile = Place.tileSize;
         objPlace = (ObjectPlace) place;
-        mode = DONOTHING;
+        mode = DO_NOTHING;
         key = new SimpleKeyboard();
         visible = false;
         xStart = (int) (tile * 0.1);
@@ -126,11 +120,11 @@ public class GUIHandler extends GUIObject {
     }
 
     public boolean isWorking() {
-        return mode != DONOTHING;
+        return mode != DO_NOTHING;
     }
 
     private void stop() {
-        mode = DONOTHING;
+        mode = DO_NOTHING;
         visible = false;
     }
 
@@ -155,6 +149,7 @@ public class GUIHandler extends GUIObject {
                     wczyt.close();
                     return;
                 } catch (IOException e) {
+                    ErrorHandler.exception(e);
                 }
                 objPlace.saveObject(text);
             }
@@ -288,13 +283,9 @@ public class GUIHandler extends GUIObject {
     public void render(int xEffect, int yEffect) {
         if (player != null) {
             glPushMatrix();
-            if (Settings.scaled) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            }
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(xEffect, yEffect, 0);
-            if (Settings.scaled) {
-                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            }
+            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             switch (mode) {
                 case QUESTIONING:
                     renderQuestion();

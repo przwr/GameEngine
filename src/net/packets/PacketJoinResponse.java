@@ -7,7 +7,6 @@
 package net.packets;
 
 /**
- *
  * @author przemek
  */
 public class PacketJoinResponse {

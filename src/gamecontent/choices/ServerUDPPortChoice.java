@@ -11,7 +11,6 @@ import game.place.Menu;
 import net.KryoUtil;
 
 /**
- *
  * @author przemek
  */
 public class ServerUDPPortChoice extends MenuChoice {
@@ -26,6 +25,6 @@ public class ServerUDPPortChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + " UDP: " + KryoUtil.UDP_PORT + " - " + Settings.language.menu.Unchangable;
+        return label + " UDP: " + KryoUtil.UDP_PORT + " - " + Settings.language.menu.Unchangeable;
     }
 }

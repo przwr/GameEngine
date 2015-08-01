@@ -5,32 +5,28 @@
  */
 package gamedesigner;
 
-import gamedesigner.designerElements.CentralPoint;
-import gamedesigner.designerElements.TemporaryBlock;
 import collision.Block;
 import engine.Point;
 import game.gameobject.GameObject;
-import game.place.Area;
-import game.place.ForegroundTile;
-import game.place.Map;
-import game.place.Place;
-import game.place.Tile;
+import game.place.*;
+import gamedesigner.designerElements.CentralPoint;
 import gamedesigner.designerElements.PuzzleLink;
-import java.util.ArrayList;
-import java.util.Iterator;
+import gamedesigner.designerElements.TemporaryBlock;
 import sprites.SpriteSheet;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 /**
- *
  * @author Wojtek
  */
 public class ObjectMap extends Map {
 
-    public Tile background;
-    private boolean isBackground, areTilesVisible, areBlocksVisible;
     private final CentralPoint centralPoint;
     private final ObjectPlace objPlace;
     private final ArrayList<PuzzleLink> links;
+    private Tile background;
+    private boolean isBackground, areTilesVisible, areBlocksVisible;
 
     public ObjectMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "ObjectMap", place, width, height, tileSize);
@@ -40,7 +36,7 @@ public class ObjectMap extends Map {
         centralPoint = new CentralPoint(0, 0, objPlace);
         addObject(centralPoint);
 
-        background = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
+        background = new Tile(place.getSpriteSheet("tlo"), 1, 8);
         background.setDepth(-1);
         isBackground = true;
         areTilesVisible = true;
@@ -50,7 +46,7 @@ public class ObjectMap extends Map {
     }
 
     public void setBackground(int xSheet, int ySheet, SpriteSheet texture) {
-        background = new Tile(texture, tileSize, xSheet, ySheet);
+        background = new Tile(texture, xSheet, ySheet);
         background.setDepth(-1);
         switchTiles(background);
     }
@@ -96,15 +92,13 @@ public class ObjectMap extends Map {
             }
         }
         if (lowest != null) {
-            lowest.setBlocked(!lowest.isBlocked());
+            lowest.setBlocked(lowest.isNotBlocked());
         }
     }
 
     public void setFGTVisibility(boolean visible) {
         for (Area area : areas) {
-            area.getForegroundTiles().stream().forEach((foregroundTile) -> {
-                foregroundTile.setVisible(visible);
-            });
+            area.getForegroundTiles().stream().forEach((foregroundTile) -> foregroundTile.setVisible(visible));
         }
     }
 
@@ -144,7 +138,7 @@ public class ObjectMap extends Map {
         }
         GameObject object;
         for (Area area : areas) {
-            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext();) {
+            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext(); ) {
                 object = iterator.next();
                 if (object instanceof TemporaryBlock) {
                     ((TemporaryBlock) object).clear();
@@ -155,21 +149,21 @@ public class ObjectMap extends Map {
     }
 
     public ArrayList<TemporaryBlock> getBlock(int x, int y, int width, int height) {
-        ArrayList<TemporaryBlock> tmplist = new ArrayList<>();
+        ArrayList<TemporaryBlock> tmpList = new ArrayList<>();
         for (Area area : areas) {
             for (GameObject go : area.getFlatObjects()) {
                 if (go instanceof TemporaryBlock) {
                     TemporaryBlock tb = (TemporaryBlock) go;
                     if (tb.checkCollision(x, y, width, height)) {
-                        tmplist.add(tb);
+                        tmpList.add(tb);
                     }
                 }
             }
         }
-        return tmplist;
+        return tmpList;
     }
 
-    public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altmode) {
+    public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altMode) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
             tile = tile.copy();
@@ -185,7 +179,7 @@ public class ObjectMap extends Map {
                     for (GameObject tb : area.getTopObjects()) {
                         if (tb instanceof TemporaryBlock) {
                             TemporaryBlock tmp = (TemporaryBlock) tb;
-                            if (!tmp.isBlocked() && tmp.checkIfContains(x, y) && tmp.getY() > max) {
+                            if (tmp.isNotBlocked() && tmp.checkIfContains(x, y) && tmp.getY() > max) {
                                 lowest = tmp;
                                 max = tmp.getY();
                             }
@@ -194,18 +188,18 @@ public class ObjectMap extends Map {
                 }
             }
             if (lowest != null) {
-                lowest.addTile(x, y, xSheet, ySheet, tex, altmode).getDepth();
+                lowest.addTile(x, y, xSheet, ySheet, tex, altMode).getDepth();
                 setTile(x, y, getBackground());
 //                !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //                sortObjectsByDepth(foregroundTiles);
             } else if (areTilesVisible) {
-                Tile newtile = new Tile(tex, tileSize, xSheet, ySheet);
-                setTile(x, y, newtile);
+                Tile newTile = new Tile(tex, xSheet, ySheet);
+                setTile(x, y, newTile);
             }
         }
     }
 
-    public Tile deleteTile(int x, int y) {
+    public void deleteTile(int x, int y) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
             Point p = tile.popTileFromStack();
@@ -213,18 +207,18 @@ public class ObjectMap extends Map {
                 if (tile.tileStackSize() == 0) {
                     setTile(x, y, getBackground());
                 }
-                return tile;
+                return;
             }
         } else {
             ForegroundTile fgt;
-            TemporaryBlock tmp = null;
+            TemporaryBlock tmp;
             TemporaryBlock max = null;
             int maxDepth = 0;
             for (Area area : areas) {
                 for (GameObject tb : area.getTopObjects()) {
                     if (tb instanceof TemporaryBlock) {
                         tmp = (TemporaryBlock) tb;
-                        if (!tmp.isBlocked() && tmp.getDepth() > maxDepth
+                        if (tmp.isNotBlocked() && tmp.getDepth() > maxDepth
                                 && tmp.checkIfContainsTile(x, y)) {
                             max = tmp;
                             maxDepth = tmp.getDepth();
@@ -236,12 +230,11 @@ public class ObjectMap extends Map {
                 if ((fgt = max.removeTile(x, y)) != null) {
                     removeForegroundTile(fgt);
                     max.getBlock().removeForegroundTile(fgt);
-                    return fgt;
+                    return;
                 }
             }
         }
         setTile(x, y, getBackground());
-        return null;
     }
 
     public void removeFGTiles(int xSt, int ySt, int xEn, int yEn) {
@@ -298,13 +291,13 @@ public class ObjectMap extends Map {
             }
         }
         if (object instanceof PuzzleLink) {
-            PuzzleLink tmppl = (PuzzleLink) object;
+            PuzzleLink tmpPl = (PuzzleLink) object;
             for (PuzzleLink pl : links) {
-                if (tmppl.getX() == pl.getX() && tmppl.getY() == pl.getY()) {
+                if (tmpPl.getX() == pl.getX() && tmpPl.getY() == pl.getY()) {
                     return;
                 }
             }
-            links.add(tmppl);
+            links.add(tmpPl);
         }
         super.addObject(object);
     }
@@ -338,9 +331,7 @@ public class ObjectMap extends Map {
 
         for (Area area : areas) {
             area.getForegroundTiles().stream().map((go) -> (ForegroundTile) go).filter((fgt)
-                    -> (fgt.getX() >= xBegin && fgt.getX() <= xEnd && fgt.getY() >= yBegin && fgt.getY() <= yEnd)).forEach((fgt) -> {
-                        tmp.add(fgt);
-                    });
+                    -> (fgt.getX() >= xBegin && fgt.getX() <= xEnd && fgt.getY() >= yBegin && fgt.getY() <= yEnd)).forEach(tmp::add);
         }
         return tmp;
     }

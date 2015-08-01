@@ -5,60 +5,47 @@
  */
 package game.place;
 
-import engine.DayCycle;
-import engine.Drawer;
-import engine.Renderer;
-import engine.SoundBase;
-import engine.SplitScreen;
+import engine.*;
 import game.Game;
-import static game.Game.OFFLINE;
-import static game.Game.ONLINE;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
-import static game.place.Area.X_IN_TILES;
-import static game.place.Area.Y_IN_TILES;
 import game.place.cameras.Camera;
 import game.text.FontBase;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteBase;
 import sprites.SpriteSheet;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import static game.Game.OFFLINE;
+import static game.Game.ONLINE;
+import static game.place.Area.X_IN_TILES;
+import static game.place.Area.Y_IN_TILES;
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author przemek
  */
 public abstract class Place extends ScreenPlace {
 
-    public static int tileSize, tileSquared, tileHalf, xAreaInPixels, yAreaInPixels;
-
-    protected static DayCycle dayCycle;
-
-    public final ArrayList<Map> maps = new ArrayList<>();
     protected static final Set<Map> tempMaps = new HashSet<>();
     private static final renderType[] renders = new renderType[2];
-
+    public static int tileSize, tileSquared, tileHalf, xAreaInPixels, yAreaInPixels;
     public static Camera currentCamera;
-    public Camera[] cameras = new Camera[3];
+    protected static DayCycle dayCycle;
+    public final ArrayList<Map> maps = new ArrayList<>();
+    public final Camera[] cameras = new Camera[3];
+    protected final SpriteBase sprites;
+    private final SoundBase sounds;
     public boolean isSplit, changeSSMode, singleCamera;
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int splitScreenMode, playersCount;
-
-    protected SoundBase sounds;
-    protected SpriteBase sprites;
-    protected short mapIDcounter = 0;
+    protected short mapIDCounter = 0;
 
     private Console console;
 
@@ -81,7 +68,7 @@ public abstract class Place extends ScreenPlace {
                         SplitScreen.setSplitScreen(this, playersCount, player);
                         if (player == 0 || !singleCamera) {
                             glEnable(GL_SCISSOR_TEST);
-                            Renderer.preRenderShadowedLights(this, currentCamera);
+                            Renderer.preRenderShadowedLights(currentCamera);
                             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                             map.updateCamerasVariables(currentCamera);
                             map.renderBackground(currentCamera);
@@ -101,7 +88,7 @@ public abstract class Place extends ScreenPlace {
                     throw e;
                 }
             }
-            Renderer.resetOrtho(splitScreenMode);
+            Renderer.resetOrthogonal(splitScreenMode);
             Renderer.border(splitScreenMode);
         };
 
@@ -117,7 +104,7 @@ public abstract class Place extends ScreenPlace {
                     currentCamera = (((Player) players[0]).getCamera());
                     SplitScreen.setSplitScreen(this, 1, 0);
                     glEnable(GL_SCISSOR_TEST);
-                    Renderer.preRenderShadowedLights(this, currentCamera);
+                    Renderer.preRenderShadowedLights(currentCamera);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     map.updateCamerasVariables(currentCamera);
                     map.renderBackground(currentCamera);
@@ -138,7 +125,7 @@ public abstract class Place extends ScreenPlace {
         };
     }
 
-    public Place(Game game, int tileSize) {
+    protected Place(Game game, int tileSize) {
         super(game);
         Place.tileSize = tileSize;
         Place.tileSquared = tileSize * tileSize;
@@ -151,6 +138,13 @@ public abstract class Place extends ScreenPlace {
         dayCycle = new DayCycle();
         fonts = new FontBase(20);
         standardFont = fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
+    }
+
+    public static double getCurrentScale() {
+        if (currentCamera != null) {
+            return currentCamera.getScale();
+        }
+        return Settings.nativeScale;
     }
 
     public abstract void generateAsGuest();
@@ -189,7 +183,7 @@ public abstract class Place extends ScreenPlace {
         return sounds;
     }
 
-//    public void addDebugConsoles() {
+    //    public void addDebugConsoles() {
 //        for (GameObject player : players) {
 //            if (player != null) {
 //                Camera camera = ((Player) player).getCamera();
@@ -247,13 +241,6 @@ public abstract class Place extends ScreenPlace {
 
     public String getTime() {
         return dayCycle.toString();
-    }
-
-    public static double getCurrentScale() {
-        if (currentCamera != null) {
-            return currentCamera.getScale();
-        }
-        return Settings.nativeScale;
     }
 
     private interface renderType {

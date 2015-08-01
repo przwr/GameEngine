@@ -6,25 +6,20 @@
 package navmeshpathfinding;
 
 /**
- *
  * @author WROBELP1
  */
 public class Connection {
 
-    private final Triangle neightbour;
+    private final Triangle neighbour;
     private final int[] nodesIndexes = new int[2];
 
-    public Connection(Triangle neightbour, int firstNodeIndex, int secondNodeIndex) {
-        this.neightbour = neightbour;
+    public Connection(Triangle neighbour, int firstNodeIndex, int secondNodeIndex) {
+        this.neighbour = neighbour;
         nodesIndexes[0] = firstNodeIndex;
         nodesIndexes[1] = secondNodeIndex;
     }
 
-    public Triangle getNeightbour() {
-        return neightbour;
-    }
-
     public Node getNode(int i) {
-        return neightbour.getNode(nodesIndexes[i]);
+        return neighbour.getNode(nodesIndexes[i]);
     }
 }

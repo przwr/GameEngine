@@ -9,7 +9,6 @@ import game.gameobject.AnyInput;
 import org.lwjgl.input.Controller;
 
 /**
- *
  * @author przemek
  */
 public class InputPadKey extends AnyInput {
@@ -25,10 +24,7 @@ public class InputPadKey extends AnyInput {
 
     @Override
     public boolean isPut() {
-        if (pad < controllers.length) {
-            return controllers[pad].isButtonPressed(key);
-        }
-        return false;
+        return pad < controllers.length && controllers[pad].isButtonPressed(key);
     }
 
     @Override

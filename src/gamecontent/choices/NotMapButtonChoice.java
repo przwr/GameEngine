@@ -1,23 +1,22 @@
-   /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package gamecontent.choices;
 
 import game.Settings;
-import game.gameobject.Controler;
 import game.gameobject.Player;
+import game.gameobject.PlayerController;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class NotMapButtonChoice extends MenuChoice {
 
-    private final Controler ctrl;
+    private final PlayerController ctrl;
     private final int i;
 
     public NotMapButtonChoice(String label, Menu menu, Player ctrl, int i) {
@@ -26,7 +25,7 @@ public class NotMapButtonChoice extends MenuChoice {
         if (ctrl == null) {
             this.ctrl = null;
         } else {
-            this.ctrl = ctrl.controler;
+            this.ctrl = ctrl.playerController;
         }
     }
 
@@ -38,9 +37,9 @@ public class NotMapButtonChoice extends MenuChoice {
     @Override
     public String getLabel() {
         if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].input != null) {
-            return label + ": [" + ctrl.inputs[i].getLabel() + "] - " + Settings.language.menu.Unchangable;
+            return label + ": [" + ctrl.inputs[i].getLabel() + "] - " + Settings.language.menu.Unchangeable;
         } else {
-            return label + ": " + Settings.language.menu.Empty + " - " + Settings.language.menu.Unchangable;
+            return label + ": " + Settings.language.menu.Empty + " - " + Settings.language.menu.Unchangeable;
         }
     }
 }

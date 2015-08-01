@@ -16,39 +16,44 @@ import net.packets.Update;
 import org.newdawn.slick.Color;
 
 /**
- *
  * @author przemek
  */
 public abstract class Entity extends GameObject {
 
-    protected double range;
-    public Update[] updates = new Update[4];
+    protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
+    public final Update[] updates = new Update[4];
     public int lastAdded;
+    protected double range;
     protected GameObject target;
     protected PathData pathData;
-    protected PathStrategy pathStrategy;
-    protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
-    protected double xEnvironmentalSpeed, yEnvironmentalSpeed, xSpeed, ySpeed, maxSpeed, jumpHeight, resistance = 1;
-    protected boolean jumping, hop, unableToMove;
+    protected double xEnvironmentalSpeed;
+    protected double yEnvironmentalSpeed;
+    protected double xSpeed;
+    protected double ySpeed;
+    protected double jumpHeight;
+    protected boolean jumping;
+    protected boolean hop;
     protected Place place;
+    protected int direction;  //Obecny, badz ostatni kierunek ruchu (stopnie)
+    PathStrategy pathStrategy;
+    private double maxSpeed;
+    private double resistance = 1;
+    private boolean unableToMove;
     private Update currentUpdate;
     private int currentUpdateID, deltasCount, xPosition, yPosition, xDelta, yDelta, xDestination, yDestination;
-    private Player colided;
-    protected int direction;  //Obecny, badz ostatni kierunek ruchu (stopnie)
-
-    private int xTempSpeed, yTempSpeed;
+    private Player collided;
 
     public abstract void updateOnline();
 
-    public abstract void updateRest(Update update);
+    protected abstract void updateRest(Update update);
 
     protected abstract boolean isCollided(int xMagnitude, int yMagnitude);
 
-    public abstract Player getCollided(int xMagnitude, int yMagnitude);
+    protected abstract Player getCollided(int xMagnitude, int yMagnitude);
 
     protected abstract void move(int xPosition, int yPosition);
 
-    public void setPathStrategy(PathStrategy pathStrategy, int scope) {
+    protected void setPathStrategy(PathStrategy pathStrategy, int scope) {
         pathData = new PathData(this, scope);
         this.pathStrategy = pathStrategy;
     }
@@ -144,15 +149,15 @@ public abstract class Entity extends GameObject {
         return currentUpdate != null && deltasCount < currentUpdate.getXDeltas().size();
     }
 
-    public void moveWithSliding(double xMagnitude, double yMagnitude) {
-        xTempSpeed = (int) (xMagnitude + collision.getXSlideSpeed());
-        yTempSpeed = (int) (yMagnitude + collision.getYSlideSpeed());
+    protected void moveWithSliding(double xMagnitude, double yMagnitude) {
+        int xTempSpeed = (int) (xMagnitude + collision.getXSlideSpeed());
+        int yTempSpeed = (int) (yMagnitude + collision.getYSlideSpeed());
         collision.prepareSlideSpeed(xMagnitude, yMagnitude);
         moveIfPossible(xTempSpeed, yTempSpeed);
         collision.resetSlideSpeed();
     }
 
-    public void moveIfPossible(int xMagnitude, int yMagnitude) {
+    protected void moveIfPossible(int xMagnitude, int yMagnitude) {
         calculatePositionsAndDeltas(xMagnitude, yMagnitude);
         while (xPosition != 0 || yPosition != 0) {
             moveXIfPossible();
@@ -182,7 +187,7 @@ public abstract class Entity extends GameObject {
         }
     }
 
-    public void moveToPoint(int xMagnitude, int yMagnitude) {
+    private void moveToPoint(int xMagnitude, int yMagnitude) {
         calculatePositionsAndDeltas(xMagnitude, yMagnitude);
         while (xPosition != 0 || yPosition != 0) {
             moveXToPoint();
@@ -193,11 +198,11 @@ public abstract class Entity extends GameObject {
 
     private void moveXToPoint() {
         if (xPosition != 0) {
-            colided = getCollided(xDelta, 0);
+            collided = getCollided(xDelta, 0);
             move(xDelta, 0);
             xPosition -= xDelta;
-            if (colided != null) {
-                colided.setToLastNotCollided();
+            if (collided != null) {
+                collided.setToLastNotCollided();
             }
             for (int i = 1; i < place.playersCount; i++) {
                 if (collision.isCollideSingle(getX(), getY(), place.players[i].getCollision())) {
@@ -210,11 +215,11 @@ public abstract class Entity extends GameObject {
 
     private void moveYToPoint() {
         if (yPosition != 0) {
-            colided = getCollided(0, yDelta);
+            collided = getCollided(0, yDelta);
             move(0, yDelta);
             yPosition -= yDelta;
-            if (colided != null) {
-                colided.setToLastNotCollided();
+            if (collided != null) {
+                collided.setToLastNotCollided();
             }
             for (int i = 1; i < place.playersCount; i++) {
                 if (collision.isCollideSingle(getX(), getY(), place.players[i].getCollision())) {
@@ -225,9 +230,9 @@ public abstract class Entity extends GameObject {
         }
     }
 
-    private void calculatePositionsAndDeltas(int xMagnitiude, int yMagnitiude) {
-        xPosition = (int) (xMagnitiude * Time.getDelta());
-        yPosition = (int) (yMagnitiude * Time.getDelta());
+    private void calculatePositionsAndDeltas(int xMagnitude, int yMagnitude) {
+        xPosition = (int) (xMagnitude * Time.getDelta());
+        yPosition = (int) (yMagnitude * Time.getDelta());
         xDelta = Integer.signum(xPosition);
         yDelta = Integer.signum(yPosition);
     }
@@ -254,7 +259,7 @@ public abstract class Entity extends GameObject {
         }
     }
 
-    public void brakeOthers() {
+    protected void brakeOthers() {
         double maxWeight = FastMath.max(1, resistance);
         if (FastMath.abs(xEnvironmentalSpeed) >= 1) {
             xEnvironmentalSpeed -= xEnvironmentalSpeed / (1 + maxWeight);
@@ -295,6 +300,10 @@ public abstract class Entity extends GameObject {
         return unableToMove;
     }
 
+    public void setUnableToMove(boolean unableToMove) {
+        this.unableToMove = unableToMove;
+    }
+
     public boolean isAbleToMove() {
         return !unableToMove;
     }
@@ -303,12 +312,24 @@ public abstract class Entity extends GameObject {
         return jumping;
     }
 
-    public boolean isHop() {
+    protected void setJumping(boolean jumping) {
+        this.jumping = jumping;
+    }
+
+    protected boolean isHop() {
         return hop;
+    }
+
+    public void setHop(boolean hop) {
+        this.hop = hop;
     }
 
     public double getResistance() {
         return resistance;
+    }
+
+    protected void setResistance(double weight) {
+        this.resistance = FastMath.max(1, weight);
     }
 
     public double getRange() {
@@ -319,30 +340,54 @@ public abstract class Entity extends GameObject {
         return maxSpeed;
     }
 
+    public void setMaxSpeed(double maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
     public double getJumpHeight() {
         return jumpHeight;
     }
 
-    public double getXEnvironmetalSpeed() {
+    public void setJumpHeight(double jumpHeight) {
+        this.jumpHeight = jumpHeight;
+    }
+
+    public double getXEnvironmentalSpeed() {
         return xEnvironmentalSpeed;
+    }
+
+    public void setXEnvironmentalSpeed(double xEnvironmentalSpeed) {
+        this.xEnvironmentalSpeed = xEnvironmentalSpeed;
     }
 
     public double getYEnvironmentalSpeed() {
         return yEnvironmentalSpeed;
     }
 
-    public Place getPlace() {
+    public void setYEnvironmentalSpeed(double yEnvironmentalSpeed) {
+        this.yEnvironmentalSpeed = yEnvironmentalSpeed;
+    }
+
+    protected Place getPlace() {
         return place;
     }
 
-    public GameObject getTarget() {
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
+    protected GameObject getTarget() {
         return target;
     }
 
     public int getDirection() {
         return direction;
     }
-    
+
+    public void setDirection(int d) {
+        direction = d;
+    }
+
     public int getDirection8Dir() {
         return direction / 45;
     }
@@ -353,46 +398,6 @@ public abstract class Entity extends GameObject {
 
     public double getSpeed() {
         return Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
-    }
-
-    public void setUnableToMove(boolean unableToMove) {
-        this.unableToMove = unableToMove;
-    }
-
-    public void setDirection(int d) {
-        direction = d;
-    }
-
-    public void setJumping(boolean jumping) {
-        this.jumping = jumping;
-    }
-
-    public void setHop(boolean hop) {
-        this.hop = hop;
-    }
-
-    public void setResistance(double weight) {
-        this.resistance = FastMath.max(1, weight);
-    }
-
-    public void setJumpHeight(double jumpHeight) {
-        this.jumpHeight = jumpHeight;
-    }
-
-    public void setXEnvironmetalSpeed(double xEnvironmentalSpeed) {
-        this.xEnvironmentalSpeed = xEnvironmentalSpeed;
-    }
-
-    public void setYEnvironmentalSpeed(double yEnvironmentalSpeed) {
-        this.yEnvironmentalSpeed = yEnvironmentalSpeed;
-    }
-
-    public void setMaxSpeed(double maxSpeed) {
-        this.maxSpeed = maxSpeed;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
     }
 
     public void setScope(int scope) {

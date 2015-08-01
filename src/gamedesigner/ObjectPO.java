@@ -5,9 +5,6 @@
  */
 package gamedesigner;
 
-import engine.Methods;
-import gamedesigner.designerElements.RoundedTMPBlock;
-import gamedesigner.designerElements.TemporaryBlock;
 import engine.Point;
 import engine.PointedValue;
 import game.place.ForegroundTile;
@@ -15,15 +12,14 @@ import game.place.Map;
 import game.place.Place;
 import game.place.PuzzleObject;
 import gamedesigner.designerElements.PuzzleLink;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
+import gamedesigner.designerElements.RoundedTMPBlock;
+import gamedesigner.designerElements.TemporaryBlock;
 import sprites.SpriteSheet;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+
 /**
- *
  * @author Wojtek
  */
 public class ObjectPO extends PuzzleObject {
@@ -44,11 +40,7 @@ public class ObjectPO extends PuzzleObject {
         int tileSize = map.getTileSize();
         ObjectMap objMap = (ObjectMap) map;
         objMap.setCentralPoint(xDelta, yDelta);
-        bgTiles.stream().forEach((TileContainer tc) -> {
-            tc.getPlaces().stream().forEach((p) -> {
-                map.setTile(p.getX() + x, p.getY() + y, tc.getTile());
-            });
-        });
+        bgTiles.stream().forEach((TileContainer tc) -> tc.getPlaces().stream().forEach((p) -> map.setTile(p.getX() + x, p.getY() + y, tc.getTile())));
         blocks.stream().forEach((block) -> {
             int[] values = block.getValues();
             TemporaryBlock tmp;
@@ -67,9 +59,7 @@ public class ObjectPO extends PuzzleObject {
                         map);
             }
             map.addObject(tmp);
-            block.getForegroundTiles().stream().forEach((tile) -> {
-                tmp.addTile(tile.generateFGT(x * tileSize, y * tileSize));
-            });
+            block.getForegroundTiles().stream().forEach((tile) -> tmp.addTile(tile.generateFGT(x * tileSize, y * tileSize)));
 
             if (block instanceof RoundBlockContainer) {
                 int[] corners = ((RoundBlockContainer) block).getCorners();
@@ -82,9 +72,7 @@ public class ObjectPO extends PuzzleObject {
                 }
             }
         });
-        objects.stream().forEach((obj) -> {
-            map.addObject(obj);
-        });
+        objects.stream().forEach(map::addObject);
         fgTiles.stream().forEach((FGTileContainer tile) -> {
             ForegroundTile tmp = tile.generateFGT(x * tileSize, y * tileSize);
             SpriteSheet tex = tmp.getSpriteSheet();

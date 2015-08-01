@@ -5,26 +5,26 @@
  */
 package gamedesigner;
 
-import game.text.FontBase;
 import engine.Point;
-import game.Game;
 import engine.inout.IO;
+import game.Game;
 import game.Settings;
-import game.place.Place;
 import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
+import game.place.Place;
+import game.text.FontBase;
+import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.openal.SoundStore;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.openal.SoundStore;
 
 /**
- *
  * @author przemek
  */
 public class ObjectPlace extends Place {
@@ -32,18 +32,16 @@ public class ObjectPlace extends Place {
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
-
+    private final SimpleKeyboard key;
+    private final String[] prettyOptions;
+    private final boolean[] viewingOptions;
     private ObjectUI ui;
     private int mode;
     private String lastName;
     private GUIHandler guiHandler;
     private ObjectPlayer editor;
-
-    private final SimpleKeyboard key;
     private boolean altMode, noBlocks, grid;
-    private final String[] prettyOptions;
-    private final boolean[] viewingOptions;
-    private ObjectMap objmap;
+    private ObjectMap objMap;
     private UndoControl undo;
 
     public ObjectPlace(Game game, int tileSize) {
@@ -63,14 +61,14 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        objmap = new ObjectMap(mapIDcounter++, this, 10240, 10240, Place.tileSize);
+        objMap = new ObjectMap(mapIDCounter++, this, 10240, 10240, Place.tileSize);
         ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo"), this);
         guiHandler = new GUIHandler(this);
-        maps.add(objmap);
+        maps.add(objMap);
         editor = ((ObjectPlayer) players[0]);
         editor.addGui(ui);
         editor.addGui(guiHandler);
-        undo = new UndoControl(objmap, 20);
+        undo = new UndoControl(objMap, 20);
         //sounds.init("res");
         fonts = new FontBase(20);
         fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
@@ -110,9 +108,7 @@ public class ObjectPlace extends Place {
                 ((Player) players[i]).update();
             }
         };
-        updates[1] = () -> {
-            System.err.println("ONLINE?..... pfft....");
-        };
+        updates[1] = () -> System.err.println("ONLINE?..... pfft....");
     }
 
     private void updateAreas() {
@@ -149,7 +145,7 @@ public class ObjectPlace extends Place {
             undo.undo();
         }
         if (key.key(Keyboard.KEY_BACK) && key.keyPressed(Keyboard.KEY_LCONTROL)) {
-            objmap.clear();
+            objMap.clear();
             lastName = "";
             printMessage("MAP CLEARED");
         }
@@ -190,19 +186,19 @@ public class ObjectPlace extends Place {
     public void setViewingOption(int index) {
         switch (index) {
             case 0:
-                objmap.setTilesVisibility(viewingOptions[index]);
+                objMap.setTilesVisibility(viewingOptions[index]);
                 break;
             case 1:
-                objmap.switchBackground();
+                objMap.switchBackground();
                 break;
             case 2:
-                objmap.setBlocksVisibility(viewingOptions[index]);
+                objMap.setBlocksVisibility(viewingOptions[index]);
                 break;
             case 3:
                 noBlocks = !viewingOptions[index];
                 break;
             case 4:
-                objmap.setFGTVisibility(viewingOptions[index]);
+                objMap.setFGTVisibility(viewingOptions[index]);
                 break;
         }
     }
@@ -211,18 +207,12 @@ public class ObjectPlace extends Place {
         return undo;
     }
 
-    private void setMode(int mode) {
-        this.mode = mode;
-        editor.setMode(mode);
-        ui.setMode(mode);
-    }
-
     public boolean isAltMode() {
         return altMode;
     }
 
-    public boolean isNoBlocksMode() {
-        return noBlocks;
+    public boolean isBlocksMode() {
+        return !noBlocks;
     }
 
     public boolean isGridEnabled() {
@@ -230,11 +220,17 @@ public class ObjectPlace extends Place {
     }
 
     public void setCentralPoint(int x, int y) {
-        objmap.setCentralPoint(x, y);
+        objMap.setCentralPoint(x, y);
     }
 
     public int getMode() {
         return mode;
+    }
+
+    private void setMode(int mode) {
+        this.mode = mode;
+        editor.setMode(mode);
+        ui.setMode(mode);
     }
 
     public boolean areKeysUsable() {
@@ -243,12 +239,10 @@ public class ObjectPlace extends Place {
 
     public void saveObject(String name) {
         lastName = name;
-        ArrayList<String> content = objmap.saveMap();
+        ArrayList<String> content = objMap.saveMap();
 
         try (PrintWriter save = new PrintWriter("res/objects/" + name + ".puz")) {
-            content.stream().forEach((line) -> {
-                save.println(line);
-            });
+            content.stream().forEach(save::println);
             printMessage("Object \"" + name + ".puz\" was saved.");
             save.close();
         } catch (FileNotFoundException e) {
@@ -266,7 +260,7 @@ public class ObjectPlace extends Place {
     }
 
     public void clearMap() {
-        objmap.clear();
+        objMap.clear();
         printMessage("Map cleaned");
     }
 
@@ -276,20 +270,20 @@ public class ObjectPlace extends Place {
         if (file[1].equals("spr")) {
             try {
                 ui.setSpriteSheet(sprites.getSpriteSheet(file[0]));
-                printMessage("Spritesheet \"" + name + "\" was loaded");
+                printMessage("SpriteSheet \"" + name + "\" was loaded");
             } catch (java.lang.ClassCastException e) {
-                printMessage("\"" + name + "\" is not a Spritesheet!");
+                printMessage("\"" + name + "\" is not a SpriteSheet!");
             }
         } else {
             ObjectPO loaded = new ObjectPO(file[0], this);
             //PuzzleObject loaded = new PuzzleObject(file[0], this);
             Point p = loaded.getStartingPoint();
-            objmap.clear();
-            loaded.placePuzzle(p.getX(), p.getY(), objmap);
+            objMap.clear();
+            loaded.placePuzzle(p.getX(), p.getY(), objMap);
             printMessage("Object \"" + name + "\" was loaded");
             undo.removeMoves();
             lastName = file[0];
-            editor.changeMap(objmap);
+            editor.changeMap(objMap);
         }
     }
 

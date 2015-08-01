@@ -7,65 +7,40 @@ package engine;
 
 import collision.Figure;
 import collision.RoundRectangle;
-import static engine.Drawer.displayHeight;
-import static engine.Shadow.BRIGHT;
-import static engine.Shadow.BRIGHTEN;
-import static engine.Shadow.BRIGHTEN_OBJECT;
-import static engine.Shadow.DARK;
-import static engine.Shadow.DARKEN;
-import static engine.Shadow.DARKEN_OBJECT;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex2f;
+
+import static engine.Drawer.displayHeight;
+import static engine.Shadow.*;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author przemek
  */
 public class ShadowDrawer {
 
-    protected static final shadeRenderer[] shadeRenderers = new shadeRenderer[6];
-    private static int firstShadowPoint, secondShadowPoint;
-    private static byte BLACK = 0, WHITE = 1;
+    private static final shadeRenderer[] shadeRenderers = new shadeRenderer[6];
+    private static final byte BLACK = 0;
     private static final Point corner = new Point();
 
     static {
-        shadeRenderers[DARK] = (Light emitter, Figure shade, Point point) -> {
-            shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade);
-        };
-        shadeRenderers[BRIGHT] = (Light emitter, Figure shade, Point point) -> {
-            shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade);
-        };
+        shadeRenderers[DARK] = (Light emitter, Figure shade, Point point) -> shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade);
+        shadeRenderers[BRIGHT] = (Light emitter, Figure shade, Point point) -> shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade);
         shadeRenderers[BRIGHTEN] = (Light emitter, Figure shade, Point point) -> {
             if (!shade.isBottomRounded()) {
                 drawShadeLit(emitter, shade, point);
             } else {
-                shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
+                shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), point.getX(), point.getY());
             }
         };
         shadeRenderers[DARKEN] = (Light emitter, Figure shade, Point point) -> {
             if (!shade.isBottomRounded()) {
                 drawShade(emitter, shade, point);
             } else {
-                shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
+                shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), point.getX(), point.getY());
             }
         };
-        shadeRenderers[BRIGHTEN_OBJECT] = (Light emitter, Figure shade, Point point) -> {
-            shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
-        };
-        shadeRenderers[DARKEN_OBJECT] = (Light emitter, Figure shade, Point point) -> {
-            shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade, point.getX(), point.getY());
-        };
+        shadeRenderers[BRIGHTEN_OBJECT] = (Light emitter, Figure shade, Point point) -> shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), point.getX(), point.getY());
+        shadeRenderers[DARKEN_OBJECT] = (Light emitter, Figure shade, Point point) -> shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), point.getX(), point.getY());
     }
 
     public static void drawAllShadows(Light light, Figure shaded) {
@@ -101,7 +76,7 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    public static void startDrawingShadow(Light emitter, byte color) {
+    private static void startDrawingShadow(Light emitter, byte color) {
         glDisable(GL_TEXTURE_2D);
         glColor3f(color, color, color);
         glPushMatrix();
@@ -148,12 +123,13 @@ public class ShadowDrawer {
     }
 
     private static void drawShadeLit(Light emitter, Figure shade, Point point) {
+        byte WHITE = 1;
         drawShadeInColor(WHITE, emitter, shade, point);
     }
 
     private static void drawShadeInColor(byte color, Light emitter, Figure shade, Point point) {
-        firstShadowPoint = shade.getYEnd();
-        secondShadowPoint = shade.getY() - shade.getShadowHeight();
+        int firstShadowPoint = shade.getYEnd();
+        int secondShadowPoint = shade.getY() - shade.getShadowHeight();
         startDrawingShadow(emitter, color);
         glBegin(GL_QUADS);
         glVertex2f(point.getX(), firstShadowPoint);

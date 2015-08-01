@@ -5,25 +5,24 @@
  */
 package game.text;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.util.ResourceLoader;
 
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author Wojtek
  */
 public class FontHandler {
 
-    TrueTypeFont trueFont;
-    Font font;
     private final char[] chars = {'ą', 'ę', 'ć', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ó', 'Ś', 'Ż', 'Ź'};
+    private TrueTypeFont trueFont;
+    private Font font;
 
     public FontHandler(String name, int size) {
         try {
@@ -33,17 +32,6 @@ public class FontHandler {
             trueFont = new TrueTypeFont(font, true, chars);
         } catch (FontFormatException | IOException ex) {
             Logger.getLogger(FontBase.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void drawLine(String text, int x, int y, Color color) {
-        trueFont.drawString(x, y, text, color);
-    }
-
-    public void drawManyLines(String text, int x, int y, Color color) {
-        String[] lines = text.split("\n");
-        for (int i = 0; i < lines.length; i++) {
-            trueFont.drawString(x, (float) (y + i * getHeight() * 1.2), lines[i], color);
         }
     }
 
@@ -57,11 +45,22 @@ public class FontHandler {
         this.trueFont = trueFont;
     }
 
+    public void drawLine(String text, int x, int y, Color color) {
+        trueFont.drawString(x, y, text, color);
+    }
+
+    public void drawManyLines(String text, int x, int y, Color color) {
+        String[] lines = text.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            trueFont.drawString(x, (float) (y + i * getHeight() * 1.2), lines[i], color);
+        }
+    }
+
     public FontHandler getFontWithSize(int size) {
         Font tmp = font.deriveFont(font.getStyle(), size);
         return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp);
     }
-    
+
     public FontHandler getFontWithStyle(int style) {
         Font tmp = font.deriveFont(style);
         return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp);

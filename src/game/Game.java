@@ -13,24 +13,28 @@ import net.GameOnline;
 import org.lwjgl.input.Keyboard;
 
 /**
- *
  * @author przemek
  */
 public abstract class Game {
 
     public static final byte OFFLINE = 0, ONLINE = 1;
+    private final String title;
     public int mode;
     public GameOnline online;
-    public boolean started, generated, running, pauseFlag, exitFlag, pause;
+    public boolean started;
+    public boolean generated;
+    public boolean exitFlag;
     public Player[] players;
+    protected boolean running;
+    protected boolean pauseFlag;
     protected Place place;
-    protected final String title;
     protected Player menuPlayer;
     protected Menu menu;
     protected PathFindingModule pathFinding;
     protected Thread pathThread;
+    private boolean pause;
 
-    public Game(String title) {
+    protected Game(String title) {
         this.title = title;
     }
 
@@ -67,7 +71,7 @@ public abstract class Game {
         return place;
     }
 
-    public void pause() {
+    protected void pause() {
         if (Keyboard.isKeyDown(Keyboard.KEY_PAUSE)) {
             if (!pause) {
                 pauseFlag = true;
@@ -78,7 +82,7 @@ public abstract class Game {
         }
     }
 
-    public void resume() {
+    protected void resume() {
         if (Keyboard.isKeyDown(Keyboard.KEY_PAUSE)) {
             if (!pause) {
                 pauseFlag = false;

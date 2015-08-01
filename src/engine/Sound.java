@@ -10,14 +10,13 @@ import net.jodk.lang.FastMath;
 import org.newdawn.slick.openal.Audio;
 
 /**
- *
  * @author Wojtek
  */
 public class Sound {
 
     private final Audio soundEffect;
     private final String name;
-    private boolean paused, stoped;
+    private boolean paused, stopped;
     private float gain, savedGainModifier, gainModifier = 1.0f, position = 0.0f, pitch = 1.0f;
     private boolean looped = true, fading = false;
 
@@ -91,7 +90,7 @@ public class Sound {
         }
     }
 
-    public void pause() {
+    private void pause() {
         if (soundEffect.isPlaying()) {
             position = soundEffect.getPosition();
             soundEffect.stop();
@@ -124,21 +123,7 @@ public class Sound {
         return soundEffect.setPosition(f);
     }
 
-    public void setStoped(boolean stoped) {
-        this.stoped = stoped;
-    }
-
-    public void setPitch(float a) {
-        if (soundEffect.isPlaying()) {
-            pause();
-            pitch = FastMath.max(0, a);
-            resume();
-        } else {
-            pitch = FastMath.max(0, a);
-        }
-    }
-
-    public void setGainModifier(float a) {
+    private void setGainModifier(float a) {
         if (soundEffect.isPlaying()) {
             pause();
             gainModifier = a;
@@ -162,8 +147,12 @@ public class Sound {
         return paused;
     }
 
-    public boolean isStoped() {
-        return stoped;
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
     }
 
     public float getPosition() {
@@ -180,6 +169,16 @@ public class Sound {
 
     public float getPitch() {
         return pitch;
+    }
+
+    private void setPitch(float a) {
+        if (soundEffect.isPlaying()) {
+            pause();
+            pitch = FastMath.max(0, a);
+            resume();
+        } else {
+            pitch = FastMath.max(0, a);
+        }
     }
 
     public float getGain() {

@@ -6,7 +6,6 @@
 package engine;
 
 /**
- *
  * @author przemek
  */
 public class Delay {
@@ -20,8 +19,8 @@ public class Delay {
         started = false;
     }
 
-    public void setFrameLength(int lenght) {
-        this.length = lenght;
+    public void setFrameLength(int length) {
+        this.length = length;
     }
 
     public void setFPS(int fps) {
@@ -34,10 +33,7 @@ public class Delay {
     }
 
     public boolean isOver() {
-        if (!started) {
-            return false;
-        }
-        return endTime <= Time.getTime();
+        return started && endTime <= Time.getTime();
     }
 
     public boolean isActive() {

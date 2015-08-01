@@ -8,16 +8,15 @@ package engine;
 import collision.Figure;
 
 /**
- *
  * @author przemek
  */
-public class ShadowContener {
+public class ShadowContainer {
 
-    private static byte INITIAL_SHADOWS_COUNT = 10;
+    private static final byte INITIAL_SHADOWS_COUNT = 10;
     private Shadow[] shadows;
     private int shadowsCount;
 
-    public ShadowContener() {
+    public ShadowContainer() {
         shadows = new Shadow[INITIAL_SHADOWS_COUNT];
         for (int i = 0; i < INITIAL_SHADOWS_COUNT; i++) {
             shadows[i] = new Shadow(0);
@@ -31,11 +30,11 @@ public class ShadowContener {
         shadowsCount++;
     }
 
-    public void addAll(ShadowContener newshadows) {
-        ensureCapacity(newshadows.shadowsCount);
-        for (int i = 0; i < newshadows.shadowsCount; i++) {
-            shadows[shadowsCount].type = newshadows.shadows[i].type;
-            shadows[shadowsCount].point.set(newshadows.shadows[i].point.getX(), newshadows.shadows[i].point.getY());
+    public void addAll(ShadowContainer newShadows) {
+        ensureCapacity(newShadows.shadowsCount);
+        for (int i = 0; i < newShadows.shadowsCount; i++) {
+            shadows[shadowsCount].type = newShadows.shadows[i].type;
+            shadows[shadowsCount].point.set(newShadows.shadows[i].point.getX(), newShadows.shadows[i].point.getY());
             shadowsCount++;
         }
     }

@@ -10,24 +10,27 @@ import game.place.Map;
 import game.place.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
-import java.util.ArrayList;
 import net.GameOnline;
 import sprites.Animation;
 
+import java.util.ArrayList;
+
 /**
- *
  * @author przemek
  */
 public abstract class Player extends Entity {
 
+    private final ArrayList<GUIObject> guiList = new ArrayList<>();
     public byte playerID;
-    protected Menu menu;
-    public Controler controler;
+    public PlayerController playerController;
     protected Camera camera;
     protected GameOnline online;
     protected boolean first, stopped;
+    private Menu menu;
 
-    protected ArrayList<GUIObject> guiList = new ArrayList<>();
+    protected Player(String name) {
+        this.name = name;
+    }
 
     public abstract void initializeSetPosition(int width, int height, Place place, int x, int y);
 
@@ -38,10 +41,6 @@ public abstract class Player extends Entity {
     public abstract void sendUpdate();
 
     public abstract void renderClothed(int frame);
-
-    public Player(String name) {
-        this.name = name;
-    }
 
     public void addGui(GUIObject gui) {
         guiList.add(gui);
@@ -65,7 +64,7 @@ public abstract class Player extends Entity {
         });
     }
 
-    public void sortGUI() {
+    private void sortGUI() {
         int i, j, newValue;
         GUIObject object;
         for (i = 1; i < guiList.size(); i++) {
@@ -154,31 +153,39 @@ public abstract class Player extends Entity {
     }
 
     public boolean isMenuOn() {
-        return controler.isMenuOn();
+        return playerController.isMenuOn();
     }
 
-    public boolean isFirst() {
-        return first;
+    public boolean isNotFirst() {
+        return !first;
     }
 
     public Menu getMenu() {
         return menu;
     }
 
-    public Controler getController() {
-        return controler;
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
+    public PlayerController getController() {
+        return playerController;
     }
 
     public void getInput() {
-        controler.getInput();
+        playerController.getInput();
     }
 
     public void getMenuInput() {
-        controler.getMenuInput();
+        playerController.getMenuInput();
     }
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
     }
 
     @Override
@@ -188,14 +195,6 @@ public abstract class Player extends Entity {
 
     public void setNotInGame() {
         this.place = null;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
-    public void setCamera(Camera camera) {
-        this.camera = camera;
     }
 
 }

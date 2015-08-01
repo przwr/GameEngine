@@ -6,7 +6,6 @@
 package game.gameobject;
 
 /**
- *
  * @author przemek
  */
 public class ActionOnOff extends Action {
@@ -19,7 +18,7 @@ public class ActionOnOff extends Action {
     public void act() {
         if (input != null) {
             if (input.isPut()) {
-                if (!input.isPressed()) {
+                if (input.isNotPressed()) {
                     input.setPressed(true);
                     on = true;
                 }

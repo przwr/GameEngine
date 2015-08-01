@@ -9,17 +9,13 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Executive;
 import engine.Methods;
-import game.Settings;
 import game.gameobject.Mob;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import sprites.SpriteSheet;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author Wojtek
  */
 public class MyNPC extends Mob {
@@ -39,8 +35,7 @@ public class MyNPC extends Mob {
     public void update() {
         if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
             MyPlayer mpPrey = (MyPlayer) getTarget();
-            direction = spinning ? direction + 1
-                    : Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY());
+            direction = spinning ? direction + 1 : Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY());
             if (direction > 7) {
                 direction = 0;
             }
@@ -73,15 +68,10 @@ public class MyNPC extends Mob {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
-            if (Settings.scaled) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            }
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             spritesheet.renderPiece(direction);
-
-            if (Settings.scaled) {
-                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            }
+            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }
     }

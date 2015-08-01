@@ -11,15 +11,22 @@ import engine.Point;
 import sprites.SpriteSheet;
 
 /**
- *
  * @author Wojtek
  */
 public class ForegroundTile extends Tile {
 
-    private static int type;
-    private boolean blockPart;
-    
     private final int tmpYStart;
+    private boolean blockPart;
+
+    ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round) {
+        super(spriteSheet, xSheet, ySheet);
+        solid = wall;
+        name = "FGTile";
+        tmpYStart = yStart;
+        int type = wall ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW;
+        setCollision(Rectangle.create(0, yStart, size, size, type, this));
+        simpleLighting = !round;
+    }
 
     public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
         return new ForegroundTile(spriteSheet, size, xSheet, ySheet, false, yStart, false);
@@ -53,16 +60,6 @@ public class ForegroundTile extends Tile {
         return new ForegroundTile(spriteSheet, size, xSheet, ySheet, true, 0, true);
     }
 
-    protected ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round) {
-        super(spriteSheet, size, xSheet, ySheet);
-        solid = wall;
-        name = "FGTile";
-        tmpYStart = yStart;
-        type = wall ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW;
-        setCollision(Rectangle.create(0, yStart, size, size, type, this));
-        simpleLighting = !round;
-    }
-
     @Override
     public ForegroundTile copy() {
         Point first = tileStack.get(0);
@@ -73,17 +70,17 @@ public class ForegroundTile extends Tile {
         }
         return copy;
     }
-    
+
     //0  1 2 4     5       6    7      8     9          10
     //ft:x:y:depth:texture:wall:yStart:round:TileXSheet:TileYSheet...
     public String saveToString(SpriteSheet s, int xBegin, int yBegin, int tile) {
-        String txt = "ft:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (depth / tile) + ":" 
+        String txt = "ft:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (depth / tile) + ":"
                 + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
         txt += ":" + (solid ? "1" : "0") + ":" + (collision.getYStart() / tile) + ":" + (simpleLighting ? 0 : 1);
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
     }
-    
+
     public String saveToStringAsTile(SpriteSheet s, int xBegin, int yBegin, int tile) {
         String txt = "t:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);

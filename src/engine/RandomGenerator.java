@@ -5,11 +5,11 @@
  */
 package engine;
 
-import java.util.Random;
 import net.jodk.lang.FastMath;
 
+import java.util.Random;
+
 /**
- *
  * @author przemek
  */
 public class RandomGenerator extends Random {
@@ -18,18 +18,18 @@ public class RandomGenerator extends Random {
     private static int index;
     private int seed;
 
+    private RandomGenerator(int seed) {
+        state = new long[16];
+        index = 0;
+        setSeed(seed);
+    }
+
     public static RandomGenerator create() {
         return new RandomGenerator((int) System.currentTimeMillis());
     }
 
     public static RandomGenerator create(int seed) {
         return new RandomGenerator(seed);
-    }
-
-    private RandomGenerator(int seed) {
-        state = new long[16];
-        index = 0;
-        setSeed(seed);
     }
 
     @Override
@@ -63,17 +63,17 @@ public class RandomGenerator extends Random {
     public Object choose(Object... opts) {
         return opts[random(opts.length - 1)];
     }
-    
+
     public String choose(String... opts) {
         return opts[random(opts.length - 1)];
     }
-    
+
     public int choose(int... opts) {
         return opts[random(opts.length - 1)];
     }
-    
-    public double preciseRandom(double limit, double precison) {
-        return (random((int) (limit / precison)) * precison);
+
+    private double preciseRandom(double limit, double precision) {
+        return (random((int) (limit / precision)) * precision);
     }
 
     public int randomInRange(int a, int b) {
@@ -100,14 +100,14 @@ public class RandomGenerator extends Random {
         return random((int) (100 / precision)) <= (chance / precision);
     }
 
+    public int getSeed() {
+        return seed;
+    }
+
     private void setSeed(int seed) {
         this.seed = FastMath.abs(seed);
         for (int i = 0; i < 16; i++) {
             state[i] = (seed + 1) * ((seed + 1) << 2) * i;
         }
-    }
-
-    public int getSeed() {
-        return seed;
     }
 }

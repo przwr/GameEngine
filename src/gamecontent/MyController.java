@@ -9,19 +9,21 @@ import game.gameobject.Action;
 import game.gameobject.ActionOnOff;
 import game.gameobject.ActionHold;
 import game.gameobject.AnyInput;
-import game.gameobject.Controler;
 import game.gameobject.Entity;
 import game.gameobject.Player;
+import game.gameobject.PlayerController;
+import static game.gameobject.PlayerController.KEY_PRESSED;
+import static java.awt.event.KeyEvent.KEY_RELEASED;
 import sprites.Animation;
 
 /**
  *
  * @author przemek
  */
-public class MyController extends Controler {
+public class MyController extends PlayerController {
 
-    public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7;
-    public static final int FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 11;
+    public static final byte UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7;
+    public static final byte FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 11;
 
     private int direction, lagDuration;
     private boolean running, diagonal, inputLag;
@@ -196,7 +198,7 @@ public class MyController extends Controler {
     public boolean isMenuOn() {
         if (actions[3].input != null) {
             if (actions[3].input.isPut()) {
-                if (!actions[3].input.isPressed()) {
+                if (actions[3].input.isNotPressed()) {
                     actions[3].input.setPressed(true);
                     return true;
                 }
@@ -213,9 +215,9 @@ public class MyController extends Controler {
             actions[i].act();
         }
         if (actions[0].isOn()) {
-            ((Player) inControl).getMenu().setChoosen(-1);
+            ((Player) inControl).getMenu().setChosen(-1);
         } else if (actions[1].isOn()) {
-            ((Player) inControl).getMenu().setChoosen(1);
+            ((Player) inControl).getMenu().setChosen(1);
         }
         if (actions[2].isOn()) {
             ((Player) inControl).getMenu().choice();

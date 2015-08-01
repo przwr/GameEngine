@@ -6,11 +6,10 @@
 package net;
 
 /**
- *
  * @author przemek
  */
 public interface OnlineChange {
 
-    public void change();
+    void change();
 
 }

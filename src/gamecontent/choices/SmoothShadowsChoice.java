@@ -5,13 +5,12 @@
  */
 package gamecontent.choices;
 
-import engine.inout.AnalizerSettings;
+import engine.inout.AnalyzerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class SmoothShadowsChoice extends MenuChoice {
@@ -30,10 +29,10 @@ public class SmoothShadowsChoice extends MenuChoice {
             if (Settings.samplesCount > Settings.maxSamples) {
                 Settings.samplesCount = 0;
             }
-            AnalizerSettings.update();
+            AnalyzerSettings.update();
         } else {
             Settings.samplesCount = 0;
-            AnalizerSettings.update();
+            AnalyzerSettings.update();
         }
     }
 

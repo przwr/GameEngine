@@ -5,14 +5,12 @@
  */
 package gamecontent.choices;
 
-import engine.Sound;
-import engine.inout.AnalizerSettings;
+import engine.inout.AnalyzerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class VolumeChoice extends MenuChoice {
@@ -27,17 +25,15 @@ public class VolumeChoice extends MenuChoice {
         if (Settings.volume > 1.01f) {
             Settings.volume = 0.00f;
         }
-        if(Settings.sounds != null){
-            for(Sound s: Settings.sounds.getSoundsList()){
-                s.updateGain();
-            }
+        if (Settings.sounds != null) {
+            Settings.sounds.getSoundsList().forEach(engine.Sound::updateGain);
         }
-        AnalizerSettings.update();
+        AnalyzerSettings.update();
     }
 
     @Override
     public String getLabel() {
-        int v = (int)(Settings.volume * 100);
-            return label + v + "%";
+        int v = (int) (Settings.volume * 100);
+        return label + v + "%";
     }
 }

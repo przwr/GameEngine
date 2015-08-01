@@ -6,45 +6,88 @@
 package navmeshpathfinding;
 
 import collision.Figure;
-import engine.PointContener;
 import collision.Rectangle;
-import engine.BlueArray;
-import engine.Delay;
-import engine.Methods;
+import engine.*;
 import engine.Point;
-import engine.PointedValue;
-import engine.PointedValueContener;
 import game.gameobject.Entity;
-import java.awt.Polygon;
+
+import java.awt.*;
 import java.util.BitSet;
 import java.util.List;
 
 /**
- *
  * @author przemek
  */
 public class PathData {
 
-    protected final static int PASSING = 0, PASSED = 1, CHOICE = 2, BLOCKED = 3, STUCK = 4, OBSTACLE_BEETWEEN = 5, PATH_REQUESTED = 6, PATH_RETURNED = 7;
-    protected final int width, height, widthHalf, heightHalf, xCorrection, yCorrection;
-    protected final Point finalDestination = new Point(), pastPosition = new Point(), preyPoint = new Point(), correction = new Point(), last1CorrectionPoint = new Point(), last2CorrectionPoint = new Point(), tempCorrection = new Point();
-    protected final Rectangle testing;
+    protected final static int PATH_RETURNED = 7;
+    final static int PASSING = 0;
+    final static int PASSED = 1;
+    final static int CHOICE = 2;
+    final static int BLOCKED = 3;
+    final static int STUCK = 4;
+    final static int OBSTACLE_BETWEEN = 5;
+    final static int PATH_REQUESTED = 6;
+    protected final Point preyPoint = new Point();
+    final int width;
+    final int height;
+    final int widthHalf;
+    final int heightHalf;
+    final int xCorrection;
+    final int yCorrection;
+    final Point finalDestination = new Point();
+    final Point pastPosition = new Point();
+    final Point correction = new Point();
+    final Point last1CorrectionPoint = new Point();
+    final Point last2CorrectionPoint = new Point();
+    final Point tempCorrection = new Point();
+    final Rectangle testing;
 
-    protected BitSet flags = new BitSet();
-    protected int x, y, xS, xE, yS, yE, xRef, yRef, stuckCount, passedCount, alternateCount, min, temp;
-    protected int xDS, xDE, yDS, yDE, xPass, yPass, xInAWay, yInAWay, currentPoint, xDistance, yDistance, scope, lastCorner = -1;
-    protected double xSpeed, ySpeed, pastXSpeed, pastYSpeed;
-    protected Point destination, desired;
-    protected PointedValue closest;
-    protected Point[] castingPoints = {new Point(), new Point()};
-    protected Point[] castingDestination = {new Point(), new Point()};
-    protected PointContener path = new PointContener(16);
-    protected PointContener newPath;
-    protected PointedValueContener correctionPoints = new PointedValueContener(4);
-    protected List<Figure> close = new BlueArray<>();
-    protected Figure inAWay, lastInAWay, collided;
-    protected Polygon poly = new Polygon();
-    protected Delay delay = new Delay(250);
+    final BitSet flags = new BitSet();
+    final Point[] castingPoints = {new Point(), new Point()};
+    final Point[] castingDestination = {new Point(), new Point()};
+    final PointContainer path = new PointContainer(16);
+    final PointedValueContainer correctionPoints = new PointedValueContainer(4);
+    final List<Figure> close = new BlueArray<>();
+    final Polygon poly = new Polygon();
+    final Delay delay = new Delay(250);
+    int x;
+    int y;
+    int xS;
+    int xE;
+    int yS;
+    int yE;
+    int xRef;
+    int yRef;
+    int passedCount;
+    int alternateCount;
+    int min;
+    int temp;
+    int xDS;
+    int xDE;
+    int yDS;
+    int yDE;
+    int xPass;
+    int yPass;
+    int xInAWay;
+    int yInAWay;
+    int currentPoint;
+    int xDistance;
+    int yDistance;
+    int scope;
+    int lastCorner = -1;
+    double xSpeed;
+    double ySpeed;
+    double pastXSpeed;
+    double pastYSpeed;
+    Point destination;
+    Point desired;
+    PointedValue closest;
+    PointContainer newPath;
+    Figure inAWay;
+    Figure lastInAWay;
+    Figure collided;
+    private int stuckCount;
 
     public PathData(Entity owner, int scope) {
         this.scope = scope;
@@ -72,7 +115,7 @@ public class PathData {
         }
         Figure.updateWhatClose(owner, x, y, ((int) (owner.getRange()) >> 2), x, y, owner.getMap(), close);
         close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
-        flags.set(OBSTACLE_BEETWEEN, isObstacleBeetween());
+        flags.set(OBSTACLE_BETWEEN, isObstacleBetween());
         updateStuck();
     }
 
@@ -89,7 +132,7 @@ public class PathData {
         flags.clear(STUCK);
     }
 
-    private boolean isObstacleBeetween() {
+    private boolean isObstacleBetween() {
         if (close.isEmpty()) {
             return false;
         }

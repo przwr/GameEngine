@@ -8,6 +8,10 @@ package sprites;
 import engine.ErrorHandler;
 import engine.Point;
 import game.Settings;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,13 +19,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
 
 /**
- *
  * @author Wojtek
  */
 public class SpriteBase {
@@ -58,7 +59,7 @@ public class SpriteBase {
     }
 
     private Sprite loadSprite(String name) {
-        int width, height, startX, startY, pieceWidth, pieceHeight, xoffset, yoffset, actualWidth, actualHeight;
+        int width, height, startX, startY, pieceWidth, pieceHeight, xOffset, yOffset, actualWidth, actualHeight;
         boolean spriteSheet, movingStart = false;
         Point[] startPoints = null;
         String sprite, key;
@@ -88,8 +89,8 @@ public class SpriteBase {
             pieceHeight = Integer.parseInt(data[1]);
 
             data = input.readLine().split(";");
-            xoffset = Integer.parseInt(data[0]);
-            yoffset = Integer.parseInt(data[1]);
+            xOffset = Integer.parseInt(data[0]);
+            yOffset = Integer.parseInt(data[1]);
             actualWidth = Integer.parseInt(data[2]);
             actualHeight = Integer.parseInt(data[3]);
 
@@ -137,13 +138,14 @@ public class SpriteBase {
                 image = SpriteSheet.createWithMovingStart(texture, pieceWidth, pieceHeight, startX, startY, this, startPoints);
             }
         } else {
-            image = Sprite.create(texture.getTextureID(), width, height, startX, startY, this);
+            image = Sprite.create(texture, width, height, startX, startY, this);
         }
         image.setKey(key);
-        image.xOffset = xoffset;
-        image.yOffset = yoffset;
+        image.xOffset = xOffset;
+        image.yOffset = yOffset;
         image.actualWidth = actualWidth;
         image.actualHeight = actualHeight;
+
         return image;
     }
 
@@ -181,7 +183,7 @@ public class SpriteBase {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        sprite = Sprite.create(texture.getTextureID(), width, height, 0, 0, this);
+        sprite = Sprite.create(texture, width, height, 0, 0, this);
         sprite.setKey(key);
         return sprite;
     }
@@ -199,7 +201,7 @@ public class SpriteBase {
         return temp;
     }
 
-    public Sprite loadSpriteSetScale(String name) {
+    private Sprite loadSpriteSetScale(String name) {
         int width, height, startX, startY, pieceWidth, pieceHeight;
         boolean spriteSheet;
         String sprite, key;
@@ -235,7 +237,7 @@ public class SpriteBase {
         if (spriteSheet) {
             image = SpriteSheet.createSetScale(texture, pieceWidth, pieceHeight, startX, startY, this);
         } else {
-            image = Sprite.create(texture.getTextureID(), width, height, startX, startY, this);
+            image = Sprite.create(texture, width, height, startX, startY, this);
         }
         image.setKey(key);
         return image;

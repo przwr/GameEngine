@@ -6,39 +6,34 @@
 package game;
 
 import engine.ErrorHandler;
-import engine.Methods;
 import engine.SoundBase;
 import game.gameobject.Player;
-import static game.place.fbo.FrameBufferObject.ARB;
-import static game.place.fbo.FrameBufferObject.EXT;
-import static game.place.fbo.FrameBufferObject.NATIVE;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Controller;
+import org.lwjgl.opengl.*;
+
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Controller;
-import org.lwjgl.opengl.ARBFramebufferObject;
-import org.lwjgl.opengl.ARBTextureMultisample;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+
+import static game.place.fbo.FrameBufferObject.*;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.glGetInteger;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
-import org.lwjgl.opengl.GLContext;
 
 /**
- *
  * @author przemek
  */
 public class Settings {
 
-    public static final int MIN_WIDTH = 1024, MIN_HEIGHT = 768, MAX_WIDTH = 1920, MAX_HEIGHT = 1200;
-    public static final DisplayMode display = Display.getDesktopDisplayMode();
-    public static final int depth = display.getBitsPerPixel();
+    public static final ArrayList<Language> languages = new ArrayList<>();
+    private static final int MIN_WIDTH = 1024;
+    private static final int MIN_HEIGHT = 768;
+    private static final int MAX_WIDTH = 1920;
+    private static final int MAX_HEIGHT = 1200;
+    private static final DisplayMode display = Display.getDesktopDisplayMode();
+    private static final int depth = display.getBitsPerPixel();
     public static DisplayMode[] modesTemp;
     public static DisplayMode[] modes;
-    public static int modesCount;
     public static int currentMode;
     public static boolean fullScreen;
     public static boolean horizontalSplitScreen;
@@ -53,7 +48,6 @@ public class Settings {
     public static int samplesCount = 0;
     public static String languageName;
     public static Language language;
-    public static ArrayList<Language> languages = new ArrayList<>();
     public static int actionsCount;
     public static Player[] players;
     public static Controller[] controllers;
@@ -62,9 +56,9 @@ public class Settings {
     public static boolean multiSampleSupported;
     public static boolean shadowOff;
     public static boolean scaled;
-    public static double scale; // TODO scale for each Player/Camera - individual scale for each splitScreen
     public static double nativeScale;
     public static String serverIP = "127.0.0.1";
+    private static int modesCount;
 
     public static void initialize() {
         try {
@@ -105,20 +99,11 @@ public class Settings {
     }
 
     private static boolean isBigger(DisplayMode checked, DisplayMode temp) {
-        if (checked.getBitsPerPixel() > temp.getBitsPerPixel()) {
-            return true;
-        } else if (checked.getWidth() > temp.getWidth()) {
-            return true;
-        } else if (checked.getWidth() == temp.getWidth() && checked.getHeight() > temp.getHeight()) {
-            return true;
-        } else {
-            return checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency();
-        }
+        return checked.getBitsPerPixel() > temp.getBitsPerPixel() || checked.getWidth() > temp.getWidth() || checked.getWidth() == temp.getWidth() && checked.getHeight() > temp.getHeight() || checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency();
     }
 
     public static void calculateScale() {
-        scale = ((int) ((resolutionHeight / 1024d / 0.25)) * 0.25) >= 1 ? 1 : (int) ((resolutionHeight / 1024d / 0.25)) * 0.25;
-        nativeScale = scale;
+        nativeScale = ((int) ((resolutionHeight / 1024d / 0.25)) * 0.25) >= 1 ? 1 : (int) ((resolutionHeight / 1024d / 0.25)) * 0.25;
         scaled = true;
     }
 

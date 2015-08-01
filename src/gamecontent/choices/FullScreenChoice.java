@@ -5,13 +5,12 @@
  */
 package gamecontent.choices;
 
-import engine.inout.AnalizerSettings;
+import engine.inout.AnalyzerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class FullScreenChoice extends MenuChoice {
@@ -23,7 +22,7 @@ public class FullScreenChoice extends MenuChoice {
     @Override
     public void action() {
         Settings.fullScreen = !Settings.fullScreen;
-        AnalizerSettings.update();
+        AnalyzerSettings.update();
     }
 
     @Override

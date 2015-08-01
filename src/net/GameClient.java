@@ -5,37 +5,30 @@
  */
 package net;
 
-import net.packets.PacketMessage;
-import net.packets.PacketJoinResponse;
-import net.packets.PacketJoinRequest;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import engine.Delay;
 import engine.ErrorHandler;
-import engine.Methods;
 import game.Settings;
 import game.gameobject.Player;
+import net.packets.*;
+
 import java.io.IOException;
-import net.packets.PacketAddMPlayer;
-import net.packets.PacketMPlayerUpdate;
-import net.packets.PacketRemoveMPlayer;
-import net.packets.PacketUpdate;
 
 /**
- *
  * @author przemek
  */
 public class GameClient {
 
     private final Client client;
-    private PacketMPlayerUpdate mpup;
     private final GameOnline game;
-    private Connection server;
+    private final Delay delay;
     public boolean isConnected;
     public short tempMapId = -1;
-    private Delay delay;
+    private PacketMPlayerUpdate mpUp;
+    private Connection server;
 
     public GameClient(final Player player, final GameOnline game, String IP) {
         this.game = game;
@@ -66,7 +59,7 @@ public class GameClient {
                         game.update((PacketUpdate) obj);
                     }
                     if (obj instanceof PacketMessage) {
-                        System.out.println("Recived from server: " + ((PacketMessage) obj).getMessage());
+                        System.out.println("Received from server: " + ((PacketMessage) obj).getMessage());
                     } else if (obj instanceof PacketAddMPlayer) {
                         game.addPlayer(((PacketAddMPlayer) obj).getPlayer());
                     } else if (obj instanceof PacketRemoveMPlayer) {
@@ -77,7 +70,7 @@ public class GameClient {
                             player.playerID = ((PacketJoinResponse) obj).getId();
                             player.setPosition(((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY());
                             tempMapId = ((PacketJoinResponse) obj).getMapId();
-                            mpup = new PacketMPlayerUpdate(tempMapId, player.playerID, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
+                            mpUp = new PacketMPlayerUpdate(tempMapId, player.playerID, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());
                         } else {
                             cleanUp(Settings.language.menu.FullServer);
@@ -97,8 +90,8 @@ public class GameClient {
             try {
                 /* Make sure to connect using both tcp and udp port */
                 client.connect(5000, IP, KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);
-            } catch (IOException ex) {
-                System.out.println(ex);
+            } catch (IOException exception) {
+                ErrorHandler.exception(exception);
                 client.stop();
                 client.close();
                 return;
@@ -116,7 +109,7 @@ public class GameClient {
         }
     }
 
-//    public void sendInput(PacketInput input) {
+    //    public void sendInput(PacketInput input) {
 //        server.sendTCP(input);
 //    }
 //
@@ -124,10 +117,10 @@ public class GameClient {
 //        server.sendTCP(update);
 //    }
     public void sendPlayerUpdate(short mapId, byte id, int x, int y, boolean isEmits, boolean isHop) {
-        mpup.update(mapId, id, x, y, isEmits, isHop);
+        mpUp.update(mapId, id, x, y, isEmits, isHop);
         if (delay.isOver()) {
-            server.sendTCP(mpup);
-            mpup.reset();
+            server.sendTCP(mpUp);
+            mpUp.reset();
             delay.start();
         }
     }

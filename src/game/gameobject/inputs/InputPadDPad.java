@@ -9,7 +9,6 @@ import game.gameobject.AnyInput;
 import org.lwjgl.input.Controller;
 
 /**
- *
  * @author przemek
  */
 public class InputPadDPad extends AnyInput {

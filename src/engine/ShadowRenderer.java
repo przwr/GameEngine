@@ -7,59 +7,41 @@ package engine;
 
 import collision.Block;
 import collision.Figure;
-import static collision.OpticProperties.TRANSPARENT;
 import collision.RoundRectangle;
+import game.gameobject.GameObject;
+import game.place.Map;
+import game.place.Place;
+import net.jodk.lang.FastMath;
+
+import java.awt.*;
+import java.util.Collections;
+
+import static collision.OpticProperties.TRANSPARENT;
 import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.RIGHT_BOTTOM;
 import static engine.Drawer.clearScreen;
 import static engine.Drawer.displayHeight;
-import static engine.Shadow.BRIGHT;
-import static engine.Shadow.BRIGHTEN;
-import static engine.Shadow.BRIGHTEN_OBJECT;
-import static engine.Shadow.DARK;
-import static engine.Shadow.DARKEN;
-import static engine.Shadow.DARKEN_OBJECT;
-import static engine.Shadow.shadowLength;
-import static engine.ShadowDrawer.drawAllShadows;
-import static engine.ShadowDrawer.drawConcaveTop;
-import static engine.ShadowDrawer.drawLeftConcaveBottom;
-import static engine.ShadowDrawer.drawRightConcaveBottom;
-import static engine.ShadowDrawer.drawShadow;
-import static engine.ShadowDrawer.drawShadowFromConcave;
-import game.gameobject.GameObject;
-import game.place.Map;
-import game.place.Place;
-import java.awt.Polygon;
-import java.util.Collections;
-import net.jodk.lang.FastMath;
-import static org.lwjgl.opengl.GL11.GL_DST_COLOR;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
+import static engine.Shadow.*;
+import static engine.ShadowDrawer.*;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author przemek
  */
-public class ShadowRenderer {
+class ShadowRenderer {
 
     private static final BlueArray<Figure> shades = new BlueArray<>(512);
     private static final Point center = new Point();
     private static final Point[] shadowPoints = {new Point(), new Point(), new Point(), new Point()};
     private static final Polygon polygon = new Polygon();
+    private static final boolean DEBUG = false, OBJECT_DEBUG = false;
     private static boolean checked;
     private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightHeightHalf, lightWidthHalf, minValue, maxValue, points;
     private static double angle, al, bl, ar, br, as, bs, XOL, XOR, YOL, YOL2, YOR, YOR2;
     private static Shadow tempShadow, minShadow, maxShadow;
     private static Figure tempShade;
     private static Point tempPoint, casting = new Point();
-    private static ShadowContener darkenSpots = new ShadowContener(), brightenSpots = new ShadowContener();
-
-    private static final boolean DEBUG = false, OBJECT_DEBUG = false;
+    private static ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -73,12 +55,12 @@ public class ShadowRenderer {
         }
     }
 
-    public static void prerenderLight(Map map, Light light) {
+    public static void preRenderLight(Map map, Light light) {
         findShades(light, map);
-        prepareToPrerender(light);
+        prepareToPreRender(light);
         calculateShadows(light);
         renderShadows(light);
-        endPrerender(light);
+        endPreRender(light);
     }
 
     private static void findShades(Light light, Map map) {
@@ -122,7 +104,7 @@ public class ShadowRenderer {
         }
     }
 
-    private static void prepareToPrerender(Light light) {
+    private static void prepareToPreRender(Light light) {
         lightHeightHalf = light.getHeight() >> 1;
         lightWidthHalf = light.getWidth() >> 1;
         light.getFrameBufferObject().activate();
@@ -133,18 +115,18 @@ public class ShadowRenderer {
 
     private static void calculateShadows(Light light) {
         shades.stream().forEach((shaded) -> {
-            if (shaded != light.getOwnerCollision()) {
-                if (shaded.isGiveShadow()) {
-                    calculateShadowAndWalls(light, shaded);
-                    if (shaded instanceof RoundRectangle) {
-                        calculateAndDrawSelfShadow(light, (RoundRectangle) shaded);
+                    if (shaded != light.getOwnerCollision()) {
+                        if (shaded.isGiveShadow()) {
+                            calculateShadowAndWalls(light, shaded);
+                            if (shaded instanceof RoundRectangle) {
+                                calculateAndDrawSelfShadow(light, (RoundRectangle) shaded);
+                            }
+                        }
+                        calculateShadowShade(shaded, light);
+                    } else {
+                        shaded.addShadowType(BRIGHT);
                     }
                 }
-                calculateShadowShade(shaded, light);
-            } else {
-                shaded.addShadowType(BRIGHT);
-            }
-        }
         );
     }
 
@@ -316,7 +298,7 @@ public class ShadowRenderer {
         } else {
             shaded.addShadow(DARKEN, xc, Place.tileSize);
         }
-        DEBUG("SelftShadow Left From Bottom");
+        DEBUG("SelfShadow Left From Bottom");
     }
 
     private static void calculateConcaveLeftFromTopSelfShadow(Light emitter, RoundRectangle shaded) {
@@ -334,7 +316,7 @@ public class ShadowRenderer {
         } else {
             shaded.addShadow(DARKEN, 0, xc);
         }
-        DEBUG("SelftShadow Left From Top");
+        DEBUG("SelfShadow Left From Top");
     }
 
     private static void calculateConcaveRightFromBottomSelfShadow(Light emitter, RoundRectangle shaded) {
@@ -351,7 +333,7 @@ public class ShadowRenderer {
         } else {
             shaded.addShadow(DARKEN, 0, xc);
         }
-        DEBUG("SelftShadow Right From Bottom");
+        DEBUG("SelfShadow Right From Bottom");
     }
 
     private static void calculateConcaveRightFromTopSelfShadow(Light emitter, RoundRectangle shaded) {
@@ -369,7 +351,7 @@ public class ShadowRenderer {
         } else {
             shaded.addShadow(DARKEN, xc, Place.tileSize);
         }
-        DEBUG("SelftShadow Right From Top");
+        DEBUG("SelfShadow Right From Top");
     }
 
     private static void calculateConvexSelfShadow(Light emitter, RoundRectangle shaded) {
@@ -426,7 +408,7 @@ public class ShadowRenderer {
         });
     }
 
-    private static void endPrerender(Light light) {
+    private static void endPreRender(Light light) {
         glEnable(GL_TEXTURE_2D);
         glColor3f(1f, 1f, 1f);
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
@@ -459,7 +441,7 @@ public class ShadowRenderer {
     private static boolean isRoundInLight(RoundRectangle shaded, Light light) {
         if (shaded.isBottomRounded()) {
             if (shaded.isTriangular()) {
-                return isTraingularInLight(shaded, light);
+                return isTriangularInLight(shaded, light);
             } else {
                 return isConcaveConvexInLight(shaded, light);
             }
@@ -468,7 +450,7 @@ public class ShadowRenderer {
         }
     }
 
-    private static boolean isTraingularInLight(RoundRectangle shaded, Light light) {
+    private static boolean isTriangularInLight(RoundRectangle shaded, Light light) {
         if (shaded.isLeftBottomRound()) {
             angle = 45 - Methods.pointAngle(light.getX(), light.getY(),
                     shaded.getX() + shaded.getPushValueOfCorner(LEFT_BOTTOM).getX(),
@@ -517,15 +499,15 @@ public class ShadowRenderer {
             shaded.addShadowType(BRIGHT);
         }
         if (shaded.isLittable() && brightenSpots.size() > 1) {
-            solveBrigthenSpots();
-            addSolvedBrigthenSpots(shaded);
+            solveBrightenSpots();
+            addSolvedBrightenSpots(shaded);
         } else {
             shaded.addAllShadows(brightenSpots);
         }
         shaded.addAllShadows(darkenSpots);
     }
 
-    private static void solveBrigthenSpots() {
+    private static void solveBrightenSpots() {
         minShadow = maxShadow = null;
         minValue = Integer.MAX_VALUE;
         maxValue = -1;
@@ -579,7 +561,7 @@ public class ShadowRenderer {
         return false;
     }
 
-    private static void addSolvedBrigthenSpots(Figure shaded) {
+    private static void addSolvedBrightenSpots(Figure shaded) {
         if (minShadow != null) {
             shaded.addShadow(minShadow.type, minShadow.point.getX(), minShadow.point.getY());
         }
@@ -846,7 +828,7 @@ public class ShadowRenderer {
     private static void calculateRightBlock(Figure other, Figure current, Light source) {
         if (other != null && other.getYEnd() < source.getY() && shadowPoints[1].getY() > other.getYEnd()
                 && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
-            setRigtBlockVariables(other, source);
+            setRightBlockVariables(other, source);
             if (XR1 >= other.getX() && XR1 <= other.getXEnd()) {
                 if (shouldAddLightRightBlock(other, current, source)) { // dodaj światło
                     addLightRightBLock(other, current, source);
@@ -859,7 +841,7 @@ public class ShadowRenderer {
         }
     }
 
-    private static void setRigtBlockVariables(Figure other, Light source) {
+    private static void setRightBlockVariables(Figure other, Light source) {
         if (shadowPoints[1].getX() == shadowPoints[3].getX()) {
             XR1 = shadowPoints[1].getX();
             XR2 = other.getX();
@@ -950,7 +932,7 @@ public class ShadowRenderer {
                 XL1 = Methods.roundDouble((other.getYEnd() - bl) / al); // liczenie przecięcia linii      
                 if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX())
                         || (XL1 > other.getX() && XL1 < other.getXEnd())) {
-                    tempPoint = Methods.getXIntersetction(al, bl, shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2].getY(), other);
+                    tempPoint = Methods.getXIntersection(al, bl, shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2].getY(), other);
                     if (tempPoint != null && other.getYEnd() <= current.getYEnd() && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
                         XL1 = tempPoint.getX();
                     } else {
@@ -1006,9 +988,7 @@ public class ShadowRenderer {
             } else {
                 XL2 = other.getXEnd();
             }
-            if (XL1 != XL2) {
-                other.addShadow(DARKEN, XL1 - other.getX(), XL2 - other.getX());
-            }
+            other.addShadow(DARKEN, XL1 - other.getX(), XL2 - other.getX());
         }
     }
 
@@ -1040,7 +1020,7 @@ public class ShadowRenderer {
                 XR1 = Methods.roundDouble((other.getYEnd() - br) / ar); // liczenie przecięcia linii
                 if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX())
                         || (XR1 > other.getX() && XR1 < other.getXEnd())) {
-                    tempPoint = Methods.getXIntersetction(ar, br, shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3].getY(), other);
+                    tempPoint = Methods.getXIntersection(ar, br, shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3].getY(), other);
                     if (tempPoint != null && other.getYEnd() <= current.getYEnd() && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
                         XR1 = tempPoint.getX();
                     } else {
@@ -1126,7 +1106,7 @@ public class ShadowRenderer {
                 && ((other.isLeftBottomRound() && other.getX() > current.getX()) || (other.isRightBottomRound() && other.getX() < current.getX()))) {
             XL1 = Methods.roundDouble((other.getYEnd() - bl) / al); // liczenie przecięcia linii
             if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX()) || (XL1 > other.getX() && XL1 < other.getXEnd())) {
-                tempPoint = Methods.getXIntersetctionFromTop(al, bl, shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2].getY(), other);
+                tempPoint = Methods.getXIntersectionFromTop(al, bl, shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2].getY(), other);
                 if (tempPoint != null && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
                     XL1 = tempPoint.getX();
                 } else {
@@ -1169,7 +1149,7 @@ public class ShadowRenderer {
                 && ((other.isLeftBottomRound() && other.getX() > current.getX()) || (other.isRightBottomRound() && other.getX() < current.getX()))) {
             XR1 = Methods.roundDouble((other.getYEnd() - br) / ar); // liczenie przecięcia linii
             if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX()) || (XR1 > other.getX() && XR1 < other.getXEnd())) {
-                tempPoint = Methods.getXIntersetctionFromTop(ar, br, shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3].getY(), other);
+                tempPoint = Methods.getXIntersectionFromTop(ar, br, shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3].getY(), other);
                 if (tempPoint != null && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
                     XR1 = tempPoint.getX();
                 } else {
@@ -1304,8 +1284,7 @@ public class ShadowRenderer {
 
     private static void findRoundDarkness(RoundRectangle other, Figure current) {
         if (!checked) {
-            if ((current.getYEnd() != other.getYEnd()) || (!current.isBottomRounded() && current.getYEnd() - Place.tileSize != other.getYEnd() && ((other.isLeftBottomRound() && other.getX() == current.getXEnd()) || (other.isRightBottomRound() && other.getXEnd() == current.getX()))) || (other.getX() != current.getXEnd() && other.getX() + Place.tileSize != current.getX())
-                    || (current instanceof RoundRectangle && current.getYEnd() == other.getYEnd() && ((current.getX() < other.getX() && other.isLeftBottomRound()) || (current.getX() > other.getX() && other.isRightBottomRound())))) {
+            if ((current.getYEnd() != other.getYEnd()) || (!current.isBottomRounded() && current.getYEnd() - Place.tileSize != other.getYEnd() && ((other.isLeftBottomRound() && other.getX() == current.getXEnd()) || (other.isRightBottomRound() && other.getXEnd() == current.getX()))) || (other.getX() != current.getXEnd() && other.getX() + Place.tileSize != current.getX()) || (current instanceof RoundRectangle && ((current.getX() < other.getX() && other.isLeftBottomRound()) || (current.getX() > other.getX() && other.isRightBottomRound())))) {
                 points = 0;
                 if (polygon.contains(other.getX() + 2, other.getYEnd() - Place.tileSize + 1)) {
                     points++;
@@ -1347,7 +1326,7 @@ public class ShadowRenderer {
                     if (polygon.contains(other.getX() + other.getPushValueOfCorner(LEFT_BOTTOM).getX() + 1,
                             other.getYEnd() - other.getPushValueOfCorner(LEFT_BOTTOM).getY() - 1)
                             || polygon.contains(other.getX() + other.getPushValueOfCorner(LEFT_BOTTOM).getX() - 1,
-                                    other.getYEnd() - other.getPushValueOfCorner(LEFT_BOTTOM).getY() + 1)) {
+                            other.getYEnd() - other.getPushValueOfCorner(LEFT_BOTTOM).getY() + 1)) {
                         other.addShadowType(DARK);
                         DEBUG("LeftRounded Top Darkness...");
                     }

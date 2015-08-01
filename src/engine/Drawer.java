@@ -5,33 +5,35 @@
  */
 package engine;
 
-import game.text.FontHandler;
 import game.place.Place;
 import game.place.ScreenPlace;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL15.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Appearance;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL15.GL_SRC0_RGB;
+import static org.lwjgl.opengl.GL15.GL_SRC1_RGB;
+
 /**
- *
  * @author Wojtek
  */
 public class Drawer {
 
-    public static final Texture font = loadFontTexture();
     public static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight();
+    private static final Texture font = loadFontTexture();
+    public static Place place;
     private static float xCurrent, yCurrent;
     private static Color currentColor;
-    public static Place place;
 
     private static Texture loadFontTexture() {
         try {
@@ -121,10 +123,10 @@ public class Drawer {
     }
 
     public static void drawCircle(int xStart, int yStart, int radius, int precision) {
-        drawElipse(xStart, yStart, radius, radius, precision);
+        drawEllipse(xStart, yStart, radius, radius, precision);
     }
 
-    public static void drawElipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {  //Zbyt mała precyzja tworzy figury foremne
+    public static void drawEllipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {  //Zbyt mała precyzja tworzy figury foremne
         translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLE_FAN);

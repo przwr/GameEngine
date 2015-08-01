@@ -9,37 +9,33 @@ import engine.Point;
 import game.Game;
 import game.gameobject.Player;
 import game.place.Place;
+import net.packets.*;
+
 import java.util.ArrayList;
-import net.packets.MPlayerUpdate;
-import net.packets.MobUpdate;
-import net.packets.NewMPlayer;
-import net.packets.PacketMPlayerUpdate;
-import net.packets.PacketUpdate;
 
 /**
- *
  * @author przemek
  */
 public abstract class GameOnline {
 
-    public Point[] pastPositions = new Point[2048];
+    public final Point[] pastPositions = new Point[2048];
+    public final Game game;
     protected final OnlineChange[] changes;
     protected final boolean[] isChanged;
     protected final NewMPlayer[] newPlayers;
     protected final byte removeIDs[];
-    protected final MPlayerUpdate[] playersUpdates;
-    protected MobUpdate[] newMobs;
-    protected ArrayList<MobUpdate> firstMobsUpdates;
-    protected ArrayList<MobUpdate> secondMobsUpdates;
-    protected short[] mapIDsForUpdate = new short[2];
-    protected boolean activeFirstMobsUpdates;
+    protected final MobUpdate[] newMobs;
+    protected final short[] mapIDsForUpdate = new short[2];
+    private final MPlayerUpdate[] playersUpdates;
     public int pastPositionsNumber;
-    public final Game game;
     public GameServer server;
     public GameClient client;
+    protected ArrayList<MobUpdate> firstMobsUpdates;
+    protected ArrayList<MobUpdate> secondMobsUpdates;
+    protected boolean activeFirstMobsUpdates;
     protected Place tempPlace;
 
-    public GameOnline(Game game, int nrChanges, int players) {
+    protected GameOnline(Game game, int nrChanges, int players) {
         this.game = game;
         changes = new OnlineChange[nrChanges];
         isChanged = new boolean[nrChanges];

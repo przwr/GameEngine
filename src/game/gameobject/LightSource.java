@@ -9,17 +9,13 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
-import game.Settings;
 import engine.Light;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author Domi
  */
 public class LightSource extends GameObject {
@@ -45,9 +41,7 @@ public class LightSource extends GameObject {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
-            if (Settings.scaled) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            }
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             sprite.render();
             glPopMatrix();
@@ -75,7 +69,7 @@ public class LightSource extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
@@ -85,7 +79,7 @@ public class LightSource extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (sprite != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);

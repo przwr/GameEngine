@@ -6,7 +6,6 @@
 package game.gameobject.menu;
 
 /**
- *
  * @author przemek
  */
 public class MenuOptions {
@@ -14,7 +13,7 @@ public class MenuOptions {
     private final String label;
     private final MenuChoice[] choices;
     private int optionsCount;
-    private int choosenOption;
+    private int chosenOption;
 
     public MenuOptions(int size, String label) {
         choices = new MenuChoice[size];
@@ -25,17 +24,17 @@ public class MenuOptions {
         choices[optionsCount++] = choice;
     }
 
-    public void setChoosen(int i) {
-        choosenOption += i;
-        if (choosenOption > optionsCount - 1) {
-            choosenOption = 0;
-        } else if (choosenOption < 0) {
-            choosenOption = optionsCount - 1;
-        }
+    public MenuChoice getChosen() {
+        return choices[chosenOption];
     }
 
-    public MenuChoice getChoosen() {
-        return choices[choosenOption];
+    public void setChosen(int i) {
+        chosenOption += i;
+        if (chosenOption > optionsCount - 1) {
+            chosenOption = 0;
+        } else if (chosenOption < 0) {
+            chosenOption = optionsCount - 1;
+        }
     }
 
     public MenuChoice getChoice(int i) {

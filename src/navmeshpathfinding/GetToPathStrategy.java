@@ -6,10 +6,10 @@
 package navmeshpathfinding;
 
 import game.gameobject.Entity;
-import static navmeshpathfinding.PathData.OBSTACLE_BEETWEEN;
+
+import static navmeshpathfinding.PathData.OBSTACLE_BETWEEN;
 
 /**
- *
  * @author przemek
  */
 public class GetToPathStrategy implements PathStrategy {
@@ -17,7 +17,7 @@ public class GetToPathStrategy implements PathStrategy {
     @Override
     public void findPath(Entity requester, PathData data, int xDest, int yDest) {
         data.update(requester, xDest, yDest);
-        if (!data.flags.get(OBSTACLE_BEETWEEN) && data.x == xDest && data.y == yDest) {
+        if (!data.flags.get(OBSTACLE_BETWEEN) && data.x == xDest && data.y == yDest) {
             data.xSpeed = data.ySpeed = 0;
             requester.brake(2);
         } else {

@@ -5,9 +5,10 @@
  */
 package collision;
 
-import engine.Point;
 import engine.Methods;
+import engine.Point;
 import game.gameobject.GameObject;
+
 import java.awt.geom.Line2D;
 import java.util.List;
 
@@ -20,6 +21,18 @@ public class Circle extends Figure {
     private final int precision;
     private final int step;
     private final int radius;
+
+    private Circle(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, int shadowHeight, GameObject owner) {
+        super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
+        this.radius = radius;
+        this.precision = precision;
+        this.step = 360 / precision;
+        for (int i = 0; i < precision; i++) {
+            points.add(new Point((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius)));
+        }
+        points.trimToSize();
+        centralize();
+    }
 
     public static Circle create(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, GameObject owner) {
         return new Circle(xStart, yStart, radius, precision, OpticPropertiesType, 0, owner);
@@ -35,18 +48,6 @@ public class Circle extends Figure {
 
     public static Circle createShadowHeight(int radius, int precision, int OpticPropertiesType, int shadowHeight, GameObject owner) {
         return new Circle(0, 0, radius, precision, OpticPropertiesType, shadowHeight, owner);
-    }
-
-    private Circle(int xStart, int yStart, int radius, int precision, int OpticPropertiesType, int shadowHeight, GameObject owner) {
-        super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
-        this.radius = radius;
-        this.precision = precision;
-        this.step = 360 / precision;
-        for (int i = 0; i < precision; i++) {
-            points.add(new Point((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius)));
-        }
-        points.trimToSize();
-        centralize();
     }
 
     private void centralize() {
@@ -77,18 +78,15 @@ public class Circle extends Figure {
             return true;
         }
         if (xPosition != 0 && yPosition != 0) {
-            int xtmp = (xPosition + 1) / 2;
-            int ytmp = (yPosition + 1) / 2;
-            return (Methods.pointDistance(getX(x), getY(y), rectangle.getPoint(xtmp + 2 * ytmp).getX(), rectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
+            int xTmp = (xPosition + 1) / 2;
+            int yTmp = (yPosition + 1) / 2;
+            return (Methods.pointDistance(getX(x), getY(y), rectangle.getPoint(xTmp + 2 * yTmp).getX(), rectangle.getPoint(xTmp + 2 * yTmp).getY()) <= radius);
         }
-        if (yPosition == 0 && ((xPosition < 0 && rectangle.getX() - getX(x) <= radius) || (yPosition > 0 && getX(x) - rectangle.getX() - rectangle.getWidth() <= radius))) {
-            return true;
-        }
-        return (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
+        return yPosition == 0 && ((xPosition < 0 && rectangle.getX() - getX(x) <= radius)) || (yPosition < 0 && rectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - rectangle.getY() - rectangle.getHeight() <= radius);
     }
 
     private boolean roundRectangleCollision(int x, int y, Figure figure) {      //TO DO
-        System.out.println("Siplified Version of Collision with RoundRectangle. In Circle");
+        System.out.println("Simplified Version of Collision with RoundRectangle. In Circle");
         RoundRectangle roundRectangle = (RoundRectangle) figure;
         int xPosition = ((getX(x) < roundRectangle.getX() ? -1 : 1) + (getX(x) <= (roundRectangle.getX() + roundRectangle.getWidth()) ? -1 : 1)) / 2;
         int yPosition = ((getY(y) < roundRectangle.getY() ? -1 : 1) + (getY(y) <= (roundRectangle.getY() + roundRectangle.getHeight()) ? -1 : 1)) / 2;
@@ -96,14 +94,11 @@ public class Circle extends Figure {
             return true;
         }
         if (xPosition != 0 && yPosition != 0) {
-            int xtmp = (xPosition + 1) / 2;
-            int ytmp = (yPosition + 1) / 2;
-            return (Methods.pointDistance(getX(x), getY(y), roundRectangle.getPoint(xtmp + 2 * ytmp).getX(), roundRectangle.getPoint(xtmp + 2 * ytmp).getY()) <= radius);
+            int xTmp = (xPosition + 1) / 2;
+            int yTmp = (yPosition + 1) / 2;
+            return (Methods.pointDistance(getX(x), getY(y), roundRectangle.getPoint(xTmp + 2 * yTmp).getX(), roundRectangle.getPoint(xTmp + 2 * yTmp).getY()) <= radius);
         }
-        if (yPosition == 0 && ((xPosition < 0 && roundRectangle.getX() - getX(x) <= radius) || (yPosition > 0 && getX(x) - roundRectangle.getX() - roundRectangle.getWidth() <= radius))) {
-            return true;
-        }
-        return (yPosition < 0 && roundRectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - roundRectangle.getY() - roundRectangle.getHeight() <= radius);
+        return yPosition == 0 && ((xPosition < 0 && roundRectangle.getX() - getX(x) <= radius)) || (yPosition < 0 && roundRectangle.getY() - getY(y) <= radius) || (yPosition > 0 && getY(y) - roundRectangle.getY() - roundRectangle.getHeight() <= radius);
     }
 
     private boolean circleCollision(int x, int y, Figure figure) {

@@ -8,10 +8,9 @@ package game.text;
 import org.newdawn.slick.Color;
 
 /**
- *
  * @author Wojtek
  */
-public class MusicTextRenderer extends TextRenderer {
+class MusicTextRenderer extends TextRenderer {
 
     MusicTextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc) {
         super(text, start, startX, lineNum, color, font, tc);
@@ -19,7 +18,7 @@ public class MusicTextRenderer extends TextRenderer {
 
     @Override
     void event(int index, int lineNum) {
-        if (isVisible(index, lineNum)) {
+        if (isVisible(index)) {
             int e = Math.min(index - start + 1, end);
             String tmp;
             int xd = 0, dt = control.getTime();

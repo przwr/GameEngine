@@ -6,17 +6,16 @@
 package game.text;
 
 /**
- *
  * @author Wojtek
  */
-public class Jumper extends PropertyChanger {
+class Jumper extends PropertyChanger {
     private final String jumpLocation;
-    
+
     public Jumper(int start, String jumpLocation, TextController tc) {
         super(start, 0, 0, tc);
         this.jumpLocation = jumpLocation;
     }
-    
+
     @Override
     void event(int i, int lineNum) {
         if (i >= start && !done) {

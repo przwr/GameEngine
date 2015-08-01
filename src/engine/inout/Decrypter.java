@@ -11,10 +11,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- *
  * @author Wojtek
  */
-public class Decrypter extends BufferedReader {
+class Decrypter extends BufferedReader {
 
     private final int[] key = {2, 6, 1, 0, 3, 5};
     private final int keySize;

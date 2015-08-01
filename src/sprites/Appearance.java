@@ -6,18 +6,17 @@
 package sprites;
 
 /**
- *
  * @author przemek
  */
-public abstract interface Appearance {
+public interface Appearance {
 
-    public abstract void bindCheck();
+    void bindCheck();
 
-    public abstract void render();
+    void render();
 
-    public abstract void renderMirrored();
+    void renderMirrored();
 
-    public abstract void renderPart(int partXStart, int partXEnd);
+    void renderPart(int partXStart, int partXEnd);
 
-    public abstract void renderPartMirrored(int partXStart, int partXEnd);
+    void renderPartMirrored(int partXStart, int partXEnd);
 }

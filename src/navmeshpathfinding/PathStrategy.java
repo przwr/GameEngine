@@ -8,11 +8,10 @@ package navmeshpathfinding;
 import game.gameobject.Entity;
 
 /**
- *
  * @author przemek
  */
 public interface PathStrategy {
-    
-    public void findPath(Entity requester, PathData data, int xDest, int yDest);
-   
+
+    void findPath(Entity requester, PathData data, int xDest, int yDest);
+
 }

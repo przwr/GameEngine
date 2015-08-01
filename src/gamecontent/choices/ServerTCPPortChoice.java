@@ -11,7 +11,6 @@ import game.place.Menu;
 import net.KryoUtil;
 
 /**
- *
  * @author przemek
  */
 public class ServerTCPPortChoice extends MenuChoice {
@@ -26,6 +25,6 @@ public class ServerTCPPortChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + " TCP: " + KryoUtil.TCP_PORT + " - " + Settings.language.menu.Unchangable;
+        return label + " TCP: " + KryoUtil.TCP_PORT + " - " + Settings.language.menu.Unchangeable;
     }
 }

@@ -7,43 +7,42 @@ package game.place;
 
 import collision.Block;
 import engine.ErrorHandler;
-import engine.Methods;
 import engine.Point;
 import engine.PointedValue;
 import game.gameobject.GameObject;
+import sprites.SpriteSheet;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import sprites.SpriteSheet;
 
 /**
- *
  * @author Wojtek
  */
 public class PuzzleObject {
 
+    private final Place place;
+    private final int tileSize = Place.tileSize;
     protected ArrayList<TileContainer> bgTiles;
     protected ArrayList<GameObject> objects;
     protected ArrayList<FGTileContainer> fgTiles;
     protected ArrayList<BlockContainer> blocks;
     protected ArrayList<PointedValue> links;
-
     protected int xDelta, yDelta;
-    protected int xBegin, yBegin;
-    protected int xEnd, yEnd;
-    protected int width, height;
-
-    protected Place place;
-
+    private int xBegin;
+    private int yBegin;
+    private int xEnd;
+    private int yEnd;
+    private int width;
+    private int height;
     /*----*/
-    Tile tmpTile;
-    FGTileContainer tmpFgt;
-    BlockContainer tempBlock = null;
-    int index;
-    int tileSize = Place.tileSize;
-    SpriteSheet tmpSS = null;
-    String[] lineTab;
+    private Tile tmpTile;
+    private FGTileContainer tmpFgt;
+    private BlockContainer tempBlock = null;
+    private int index;
+    private SpriteSheet tmpSS = null;
+    private String[] lineTab;
     /*----*/
 
     public PuzzleObject(String file, Place place) {
@@ -73,8 +72,8 @@ public class PuzzleObject {
             ErrorHandler.error("File " + file + " not found!\n" + e.getMessage());
         }
     }
-    
-    public PuzzleObject(ArrayList<String> map, Place place) {
+
+    protected PuzzleObject(ArrayList<String> map, Place place) {
         this.place = place;
         bgTiles = new ArrayList<>();
         objects = new ArrayList<>();
@@ -96,7 +95,7 @@ public class PuzzleObject {
         height = Math.abs(yEnd - yBegin) + 1;
     }
 
-    protected void readLine(String line) {
+    private void readLine(String line) {
         lineTab = line.split(":");
         switch (lineTab[0]) {
             case "t":
@@ -128,7 +127,7 @@ public class PuzzleObject {
         if (!lineTab[3].equals("")) {
             tmpSS = place.getSpriteSheet(lineTab[3]);
         }
-        tmpTile = new Tile(tmpSS, tileSize, Integer.parseInt(lineTab[4]), Integer.parseInt(lineTab[5]));
+        tmpTile = new Tile(tmpSS, Integer.parseInt(lineTab[4]), Integer.parseInt(lineTab[5]));
         index = 6;
         while (index + 1 < lineTab.length) {
             tmpTile.addTileToStack(Integer.parseInt(lineTab[index]), Integer.parseInt(lineTab[index + 1]));
@@ -176,14 +175,14 @@ public class PuzzleObject {
                 Integer.parseInt(lineTab[4]) * tileSize,
                 Integer.parseInt(lineTab[5]) * tileSize);
         ((RoundBlockContainer) tempBlock).setCorners(new int[]{
-            (lineTab[7].equals("") ? 0 : Integer.parseInt(lineTab[7])),
-            (lineTab[8].equals("") ? 0 : Integer.parseInt(lineTab[8])),
-            (lineTab[9].equals("") ? 0 : Integer.parseInt(lineTab[9])),
-            (lineTab[10].equals("") ? 0 : Integer.parseInt(lineTab[10])),
-            (lineTab[11].equals("") ? 0 : Integer.parseInt(lineTab[11])),
-            (lineTab[12].equals("") ? 0 : Integer.parseInt(lineTab[12])),
-            (lineTab[13].equals("") ? 0 : Integer.parseInt(lineTab[13])),
-            (lineTab[14].equals("") ? 0 : Integer.parseInt(lineTab[14]))});
+                (lineTab[7].equals("") ? 0 : Integer.parseInt(lineTab[7])),
+                (lineTab[8].equals("") ? 0 : Integer.parseInt(lineTab[8])),
+                (lineTab[9].equals("") ? 0 : Integer.parseInt(lineTab[9])),
+                (lineTab[10].equals("") ? 0 : Integer.parseInt(lineTab[10])),
+                (lineTab[11].equals("") ? 0 : Integer.parseInt(lineTab[11])),
+                (lineTab[12].equals("") ? 0 : Integer.parseInt(lineTab[12])),
+                (lineTab[13].equals("") ? 0 : Integer.parseInt(lineTab[13])),
+                (lineTab[14].equals("") ? 0 : Integer.parseInt(lineTab[14]))});
         blocks.add(tempBlock);
         checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), Integer.parseInt(lineTab[3]), Integer.parseInt(lineTab[4]));
     }
@@ -206,7 +205,7 @@ public class PuzzleObject {
         return links;
     }
 
-    protected void addTile(Tile tile, int x, int y) {
+    private void addTile(Tile tile, int x, int y) {
         for (TileContainer tc : bgTiles) {
             if (tc.tile.equals(tile)) {
                 tc.places.add(new Point(x, y));
@@ -219,7 +218,7 @@ public class PuzzleObject {
         bgTiles.add(tmpContainer);
     }
 
-    protected void checkBoundaries(int x, int y, int width, int height) {
+    private void checkBoundaries(int x, int y, int width, int height) {
         if (x < xBegin) {
             xBegin = x;
         }
@@ -239,11 +238,7 @@ public class PuzzleObject {
     }
 
     public void placePuzzle(int x, int y, Map map) {
-        bgTiles.stream().forEach((TileContainer tc) -> {
-            tc.places.stream().forEach((p) -> {
-                map.setTile(p.getX() + x, p.getY() + y, tc.tile);
-            });
-        });
+        bgTiles.stream().forEach((TileContainer tc) -> tc.places.stream().forEach((p) -> map.setTile(p.getX() + x, p.getY() + y, tc.tile)));
         blocks.stream().forEach((block) -> {
             Block tmpBlock = block.generateBlock(x * tileSize, y * tileSize);
             map.addBlock(tmpBlock);
@@ -254,31 +249,25 @@ public class PuzzleObject {
                     map.addForegroundTile(fgt);
                 }
                 return fgt;
-            }).forEach((fgt) -> {
-                tmpBlock.addForegroundTile(fgt);
-            });
+            }).forEach(tmpBlock::addForegroundTile);
         });
-        objects.stream().forEach((obj) -> {
-            map.addObject(obj);
-        });
-        fgTiles.stream().forEach((tile) -> {
-            map.addForegroundTileAndReplace(tile.generateFGT(x * tileSize, y * tileSize));
-        });
+        objects.stream().forEach(map::addObject);
+        fgTiles.stream().forEach((tile) -> map.addForegroundTileAndReplace(tile.generateFGT(x * tileSize, y * tileSize)));
     }
 
-    public int getxBegin() {
+    public int getXBegin() {
         return xBegin;
     }
 
-    public int getyBegin() {
+    public int getYBegin() {
         return yBegin;
     }
 
-    public int getxEnd() {
+    public int getXEnd() {
         return xEnd;
     }
 
-    public int getyEnd() {
+    public int getYEnd() {
         return yEnd;
     }
 
@@ -292,7 +281,7 @@ public class PuzzleObject {
 
     protected class TileContainer {
 
-        ArrayList<Point> places = new ArrayList<>();
+        final ArrayList<Point> places = new ArrayList<>();
         Tile tile;
 
         public Tile getTile() {
@@ -306,11 +295,21 @@ public class PuzzleObject {
 
     protected class FGTileContainer {
 
-        ArrayList<Point> additionalPlaces = new ArrayList<>();
-        SpriteSheet texture;
-        int[] values;
-        boolean wall, round;
+        final ArrayList<Point> additionalPlaces = new ArrayList<>();
+        final SpriteSheet texture;
+        final int[] values;
+        final boolean wall;
+        final boolean round;
         int xBegin, yBegin;
+
+        //0  1 2 3       4    5      6          7
+        //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
+        public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round, int depth) {
+            texture = spriteSheet;
+            values = new int[]{size, xSheet, ySheet, yStart, depth + (round ? 1 : 0)};
+            this.wall = wall;
+            this.round = round;
+        }
 
         public void setBeginning(int x, int y) {
             xBegin = x;
@@ -341,38 +340,26 @@ public class PuzzleObject {
             return round;
         }
 
-        //0  1 2 3       4    5      6          7
-        //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
-        public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round, int depth) {
-            texture = spriteSheet;
-            values = new int[]{size, xSheet, ySheet, yStart, depth + (round ? 1 : 0)};
-            this.wall = wall;
-            this.round = round;
-        }
-
         public ForegroundTile generateFGT(int x, int y) {
             ForegroundTile fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], round);
             fgt.setPosition(xBegin + x, yBegin + y);
             fgt.setDepth(values[4]);
-            additionalPlaces.stream().forEach((p) -> {
-                fgt.addTileToStack(p.getX(), p.getY());
-            });
+            additionalPlaces.stream().forEach((p) -> fgt.addTileToStack(p.getX(), p.getY()));
             return fgt;
         }
     }
 
     protected class BlockContainer {
 
-        int[] values;
-        ArrayList<FGTileContainer> containedFGTs = new ArrayList<>();
+        final int[] values;
+        final ArrayList<FGTileContainer> containedFGTs = new ArrayList<>();
 
         public BlockContainer(int x, int y, int width, int height, int shadowHeight) {
             values = new int[]{x, y, width, height, shadowHeight};
         }
 
         public Block generateBlock(int x, int y) {
-            Block a = Block.create(values[0] + x, values[1] + y, values[2], values[3], values[4]);
-            return a;
+            return Block.create(values[0] + x, values[1] + y, values[2], values[3], values[4]);
         }
 
         public ArrayList<FGTileContainer> getForegroundTiles() {
@@ -396,12 +383,12 @@ public class PuzzleObject {
             super(x, y, width, height, shadowHeight);
         }
 
-        public void setCorners(int[] corners) {
-            this.corners = corners;
-        }
-
         public int[] getCorners() {
             return corners;
+        }
+
+        public void setCorners(int[] corners) {
+            this.corners = corners;
         }
 
         @Override

@@ -6,13 +6,12 @@
 package game.text;
 
 /**
- *
  * @author Wojtek
  */
-public class QuestionMaker extends PropertyChanger {
+class QuestionMaker extends PropertyChanger {
     private final String[] answers, jumps;
-    
-    protected QuestionMaker(int start, String[] answers, String[] jumps, TextController tc) {
+
+    QuestionMaker(int start, String[] answers, String[] jumps, TextController tc) {
         super(start, 0, 0, tc);
         this.answers = answers;
         this.jumps = jumps;

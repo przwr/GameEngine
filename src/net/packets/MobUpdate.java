@@ -8,7 +8,6 @@ package net.packets;
 import net.jodk.lang.FastMath;
 
 /**
- *
  * @author przemek
  */
 public class MobUpdate extends Update {

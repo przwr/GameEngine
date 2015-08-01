@@ -1,35 +1,34 @@
-   /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package gamecontent.choices;
 
-import engine.inout.Controlers;
-import engine.inout.AnalizerInput;
+import engine.inout.AnalyzerInput;
+import engine.inout.PlayerControllers;
 import game.Settings;
 import game.gameobject.Action;
 import game.gameobject.AnyInput;
-import game.gameobject.Controler;
+import game.gameobject.PlayerController;
 import game.gameobject.inputs.InputExitMapping;
 import game.gameobject.inputs.InputNull;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class MapButtonChoice extends MenuChoice {
 
-    private final Controler ctrl;
+    private final PlayerController ctrl;
     private final int i;
-    private Thread thread;
     private final Runnable run;
+    private Thread thread;
     private boolean mapped;
     private int maxAxNr;
 
-    public MapButtonChoice(String label, final Menu menu, final Controler ctrl, final int i) {
+    public MapButtonChoice(String label, final Menu menu, final PlayerController ctrl, final int i) {
         super(label, menu);
         this.i = i;
         this.ctrl = ctrl;
@@ -37,7 +36,7 @@ public class MapButtonChoice extends MenuChoice {
             int noiseAx[] = findNoiseAx();
             mapped = true;
             while (mapped) {
-                AnyInput in = Controlers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].input);
+                AnyInput in = PlayerControllers.mapInput(noiseAx, maxAxNr, ctrl.actions[2].input);
                 if (in != null) {
                     if (in instanceof InputExitMapping || (ctrl.actions[3] != null && ctrl.actions[3].input != null && ctrl.actions[3].input.toString().equals(in.toString()))) {
                         break;
@@ -49,16 +48,14 @@ public class MapButtonChoice extends MenuChoice {
                     if (i < 4) {
                         for (Action action : ctrl.actions) {
                             if (action != null && action.input != null && action.input.toString().equals(in.toString())) {
-                                AnyInput temp = ctrl.actions[i].input;
-                                action.input = temp;
+                                action.input = ctrl.actions[i].input;
                                 set(in);
                             }
                         }
                     } else {
                         for (int k = 4; k < ctrl.actions.length; k++) {
                             if (ctrl.actions[k] != null && ctrl.actions[k].input != null && ctrl.actions[k].input.toString().equals(in.toString())) {
-                                AnyInput temp = ctrl.actions[i].input;
-                                ctrl.actions[k].input = temp;
+                                ctrl.actions[k].input = ctrl.actions[i].input;
                                 set(in);
                             }
                         }
@@ -91,12 +88,12 @@ public class MapButtonChoice extends MenuChoice {
     }
 
     private int[] findNoiseAx() {
-        int size = Controlers.getControllers().length;
+        int size = PlayerControllers.getControllers().length;
         maxAxNr = 0;
         int curAxNr;
         int a, k;
         for (k = 0; k < size; k++) {
-            curAxNr = Controlers.getControllers()[k].getAxisCount();
+            curAxNr = PlayerControllers.getControllers()[k].getAxisCount();
             maxAxNr = curAxNr > maxAxNr ? curAxNr : maxAxNr;
         }
         int noiseAx[] = new int[maxAxNr * size];
@@ -104,9 +101,9 @@ public class MapButtonChoice extends MenuChoice {
             noiseAx[i] = -1;
         }
         for (k = 0; k < size; k++) {
-            if (Controlers.getControllers()[k] != null) {
-                for (a = 0; a < Controlers.getControllers()[k].getAxisCount(); a++) {
-                    if (Controlers.getControllers()[k].getAxisValue(a) > 0.3f || Controlers.getControllers()[k].getAxisValue(a) < -0.3f) {
+            if (PlayerControllers.getControllers()[k] != null) {
+                for (a = 0; a < PlayerControllers.getControllers()[k].getAxisCount(); a++) {
+                    if (PlayerControllers.getControllers()[k].getAxisValue(a) > 0.3f || PlayerControllers.getControllers()[k].getAxisValue(a) < -0.3f) {
                         noiseAx[k * maxAxNr + a] = a;
                     }
                 }
@@ -117,7 +114,7 @@ public class MapButtonChoice extends MenuChoice {
 
     private void set(AnyInput in) {
         ctrl.actions[i].input = in;
-        AnalizerInput.Update();
+        AnalyzerInput.Update();
         mapped = false;
     }
 

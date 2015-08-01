@@ -7,33 +7,33 @@ package navmeshpathfinding;
 
 import engine.BlueArray;
 import engine.Point;
+import net.jodk.lang.FastMath;
+
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.jodk.lang.FastMath;
 
 /**
- *
  * @author WROBELP1
  */
 public class NavigationMesh {
 
+    final ArrayList<Bound> bounds = new ArrayList<>();
     private final Set<Triangle> mesh = new HashSet<>();
     private final int NOT_SHARED = 2;
     private final Node[] sharedNodes = new Node[2];
     private final int tempNodeIndexes[] = new int[5], sharedNodesIndexes[] = new int[12];
-    private int sharedNodeNumber, sharedNodesNumber, connectionsNumber;
     private final Triangle[] connectedTriangles = new Triangle[3];
     private final List<Point> collisionPoints;
     private final byte[] shiftDirections;
 
-    BlueArray<Node> toRemove = new BlueArray<>();
-    ArrayList<Bound> bounds = new ArrayList<>();
+    private final BlueArray<Node> toRemove = new BlueArray<>();
+    private int sharedNodeNumber, sharedNodesNumber, connectionsNumber;
 
     public NavigationMesh(Point firstPoint, Point secondPoint, Point thirdPoint, List<Point> collisionPoints, byte[] shiftDirections) {
-        mesh.add(Triangle.createAndConnectNeightbours(firstPoint, secondPoint, thirdPoint));
+        mesh.add(Triangle.createAndConnectNeighbours(firstPoint, secondPoint, thirdPoint));
         this.collisionPoints = collisionPoints;
         this.shiftDirections = shiftDirections;
     }
@@ -48,7 +48,7 @@ public class NavigationMesh {
             findAndMergeSharedPoints(triangle, triangleToAdd);
             connectIfPossible(triangle, triangleToAdd);
         });
-        addAndSolveDependancesIfConnected(triangleToAdd);
+        addAndSolveDependenciesIfConnected(triangleToAdd);
     }
 
     private void findAndMergeSharedPoints(Triangle triangle, Triangle triangleToAdd) {
@@ -82,7 +82,7 @@ public class NavigationMesh {
     private void connectTriangles(Triangle triangle, Triangle triangleToAdd) {
         findNotSharedNode();
         ifNextConnectionSolveNodeDuplicates();
-        addNeightboursFromNeightbours(triangleToAdd);
+        addNeighboursFromNeighbours(triangleToAdd);
         saveConnectionNodes(triangle);
     }
 
@@ -101,8 +101,8 @@ public class NavigationMesh {
                 for (int j = 0; j < 2; j++) {
                     if (connectedTriangles[index].getPointFromNode(i).equals(sharedNodes[j].getPoint())) {
                         Node node = connectedTriangles[index].getNode(i);
-                        for (Node neightbour : node.getNeightbours()) {
-                            sharedNodes[j].addIfNotYetNeightbour(neightbour);
+                        for (Node neighbour : node.getNeighbours()) {
+                            sharedNodes[j].addIfNotYetNeighbour(neighbour);
                         }
                         connectedTriangles[index].setNode(i, sharedNodes[j]);
                     }
@@ -111,16 +111,16 @@ public class NavigationMesh {
         }
     }
 
-    private void addNeightboursFromNeightbours(Triangle triangleToAdd) {
+    private void addNeighboursFromNeighbours(Triangle triangleToAdd) {
         for (int i = 0; i < 2; i++) {
-            for (Node node : triangleToAdd.getNode(tempNodeIndexes[i]).getNeightbours()) {
-                sharedNodes[i].addIfNotYetNeightbour(node);
+            for (Node node : triangleToAdd.getNode(tempNodeIndexes[i]).getNeighbours()) {
+                sharedNodes[i].addIfNotYetNeighbour(node);
             }
             triangleToAdd.setNode(tempNodeIndexes[i], sharedNodes[i]);
             Node node = triangleToAdd.getNode(tempNodeIndexes[NOT_SHARED]);
-            node.addIfNotYetNeightbour(sharedNodes[i]);
+            node.addIfNotYetNeighbour(sharedNodes[i]);
 
-            sharedNodes[i].addIfNotYetNeightbour(node);
+            sharedNodes[i].addIfNotYetNeighbour(node);
         }
     }
 
@@ -133,7 +133,7 @@ public class NavigationMesh {
         sharedNodesIndexes[indexModifier + 3] = tempNodeIndexes[4];
     }
 
-    private void addAndSolveDependancesIfConnected(Triangle triangleToAdd) {
+    private void addAndSolveDependenciesIfConnected(Triangle triangleToAdd) {
         if (connectionsNumber > 0) {
             solveDuplicatedNodesAndAddConnections(triangleToAdd);
             mesh.add(triangleToAdd);
@@ -156,33 +156,27 @@ public class NavigationMesh {
         for (int i = 0; i < 3; i++) {
             toRemove.clear();
             Node node = triangle.getNode(i);
-            node.getNeightbours().stream().forEach((firstNeightbour) -> {
-                node.getNeightbours().stream().forEach((secondNeightbour) -> {
-                    chooseWhichOneToRemove(firstNeightbour, secondNeightbour);
-                });
-            });
-            node.removeNeightbours(toRemove);
+            node.getNeighbours().stream().forEach((firstNeighbour) -> node.getNeighbours().stream().forEach((secondNeighbour) -> chooseWhichOneToRemove(firstNeighbour, secondNeighbour)));
+            node.removeNeighbours(toRemove);
         }
     }
 
-    private void chooseWhichOneToRemove(Node firstNeightbour, Node secondNeightbour) {
-        if (firstNeightbour != secondNeightbour && firstNeightbour.getPoint().equals(secondNeightbour.getPoint())) {
-            if (firstNeightbour.getNeightboursSize() > secondNeightbour.getNeightboursSize()) {
-                toRemove.add(secondNeightbour);
+    private void chooseWhichOneToRemove(Node firstNeighbour, Node secondNeighbour) {
+        if (firstNeighbour != secondNeighbour && firstNeighbour.getPoint().equals(secondNeighbour.getPoint())) {
+            if (firstNeighbour.getNeighboursSize() > secondNeighbour.getNeighboursSize()) {
+                toRemove.add(secondNeighbour);
             } else {
-                toRemove.add(firstNeightbour);
+                toRemove.add(firstNeighbour);
             }
         }
     }
 
     private void recalculateBounds() {
         bounds.clear();
-        mesh.stream().forEach((triangle) -> {
-            checkforBoundsIfOnEdge(triangle);
-        });
+        mesh.stream().forEach(this::checkForBoundsIfOnEdge);
     }
 
-    private void checkforBoundsIfOnEdge(Triangle triangle) {
+    private void checkForBoundsIfOnEdge(Triangle triangle) {
         if (triangle.getConnectionsNumber() != 3) {
             for (int i = 0; i < 3; i++) {
                 addIfABound(triangle, triangle.getNode(i));
@@ -233,7 +227,7 @@ public class NavigationMesh {
         return pathBase;
     }
 
-    public Triangle getTriangleForPoint(Point point) {
+    private Triangle getTriangleForPoint(Point point) {
         for (Triangle triangle : mesh) {
             if (triangle.isPointInTriangle(point)) {
                 return triangle;
@@ -255,10 +249,7 @@ public class NavigationMesh {
     }
 
     private boolean anyLineIntersects(Bound bound, Point start, Point end) {
-        if (end.getX() != 0 && lineIntersectsPointsNotLies(bound, start.getX() + (int) FastMath.signum(end.getX()), start.getY(), start.getX() + end.getX(), start.getY())) {
-            return true;
-        }
-        return end.getX() != 0 && lineIntersects(bound, start.getX(), start.getY() + (int) FastMath.signum(end.getY()), start.getX(), start.getY() + end.getY());
+        return end.getX() != 0 && lineIntersectsPointsNotLies(bound, start.getX() + (int) FastMath.signum(end.getX()), start.getY(), start.getX() + end.getX(), start.getY()) || end.getX() != 0 && lineIntersects(bound, start.getX(), start.getY() + (int) FastMath.signum(end.getY()), start.getX(), start.getY() + end.getY());
     }
 
     private boolean lineIntersectsPointsNotLies(Bound bound, int xStart, int yStart, int xEnd, int yEnd) {
@@ -287,7 +278,7 @@ public class NavigationMesh {
         return mesh.size();
     }
 
-    public List<Point> getCollisonPoints() {
+    public List<Point> getCollisionPoints() {
         return collisionPoints;
     }
 
@@ -305,8 +296,6 @@ public class NavigationMesh {
     }
 
     public void reset() {
-        mesh.stream().forEach((triangle) -> {
-            triangle.reset();
-        });
+        mesh.stream().forEach(Triangle::reset);
     }
 }

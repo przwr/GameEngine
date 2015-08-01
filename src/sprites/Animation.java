@@ -11,15 +11,13 @@ import game.gameobject.Player;
 import game.place.fbo.FrameBufferedSpriteSheet;
 
 /**
- *
  * @author przemek
  */
 public class Animation implements Appearance {
 
-    private SpriteSheet spriteSheet;
-    private FrameBufferedSpriteSheet fboSpriteSheet;
-
+    private final SpriteSheet spriteSheet;
     private final Delay delay;
+    private FrameBufferedSpriteSheet fboSpriteSheet;
     private int start, end, currentFrame;
     private int framesPerDirection;
     private boolean animate = true,
@@ -74,7 +72,7 @@ public class Animation implements Appearance {
         }
     }
 
-    public void animateSingle(int index) {
+    private void animateSingle(int index) {
         animate = false;
         setCurrentFrame(Methods.interval(0, index, spriteSheet.getSize() - 1));
     }
@@ -87,7 +85,7 @@ public class Animation implements Appearance {
         animateInterval(0, spriteSheet.getSize() - 1);
     }
 
-    public void animateInterval(int start, int end) {
+    private void animateInterval(int start, int end) {
         this.start = start;
         this.end = end;
         animate = true;
@@ -137,12 +135,12 @@ public class Animation implements Appearance {
         return fboSpriteSheet.isUpToDate();
     }
 
-    public int getCurrentFrameIndex() {
-        return currentFrame;
-    }
-
     public void setUpToDate(boolean upToDate) {
         fboSpriteSheet.setUpToDate(upToDate);
+    }
+
+    public int getCurrentFrameIndex() {
+        return currentFrame;
     }
 
     public void setDelay(int length) {
@@ -169,12 +167,12 @@ public class Animation implements Appearance {
         return stopAtEnd;
     }
 
-    public void setFramesPerDirection(int frames) {
-        framesPerDirection = frames;
-    }
-
     public int getFramesPerDirection() {
         return framesPerDirection;
+    }
+
+    public void setFramesPerDirection(int frames) {
+        framesPerDirection = frames;
     }
 
 }

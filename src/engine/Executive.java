@@ -6,10 +6,9 @@
 package engine;
 
 /**
- *
  * @author Wojtek
  */
 public abstract class Executive {
-    
+
     public abstract void execute();
 }

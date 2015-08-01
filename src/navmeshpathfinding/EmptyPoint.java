@@ -8,7 +8,6 @@ package navmeshpathfinding;
 import engine.Point;
 
 /**
- *
  * @author WROBELP1
  */
 public class EmptyPoint extends Point {

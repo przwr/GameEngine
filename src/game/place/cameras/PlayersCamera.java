@@ -5,17 +5,17 @@
  */
 package game.place.cameras;
 
-import game.gameobject.GameObject;
 import game.Settings;
+import game.gameobject.GameObject;
 import org.lwjgl.opengl.Display;
 
 /**
- *
  * @author przemek
  */
 public class PlayersCamera extends Camera {
 
-    static final initializer[] inits = new initializer[3];
+    private static final initializer[] inits = new initializer[3];
+
     {
         inits[0] = (int ownersCount) -> {
             if (Settings.horizontalSplitScreen) {

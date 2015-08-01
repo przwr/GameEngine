@@ -1,17 +1,16 @@
-   /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package gamecontent.choices;
 
-import engine.inout.AnalizerSettings;
+import engine.inout.AnalyzerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 
 /**
- *
  * @author przemek
  */
 public class ResolutionChoice extends MenuChoice {
@@ -29,7 +28,7 @@ public class ResolutionChoice extends MenuChoice {
         Settings.resolutionWidth = Settings.modes[Settings.currentMode].getWidth();
         Settings.resolutionHeight = Settings.modes[Settings.currentMode].getHeight();
         Settings.frequency = Settings.modes[Settings.currentMode].getFrequency();
-        AnalizerSettings.update();
+        AnalyzerSettings.update();
     }
 
     @Override

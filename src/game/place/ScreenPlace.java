@@ -11,7 +11,6 @@ import game.text.FontBase;
 import game.text.FontHandler;
 
 /**
- *
  * @author przemek
  */
 public abstract class ScreenPlace {

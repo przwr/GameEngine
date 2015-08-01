@@ -7,6 +7,7 @@ package engine.inout;
 
 import engine.Main;
 import game.Settings;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,17 +17,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author przemek
  */
 public final class IO {
 
     public static void setSettingsFromFile(File file) {
-        try (BufferedReader read = new BufferedReader(new FileReader(file));) {
+        try (BufferedReader read = new BufferedReader(new FileReader(file))) {
             Settings.initialize();
             String line;
             while ((line = read.readLine()) != null) {
-                AnalizerSettings.analizeSetting(line);
+                AnalyzerSettings.analyzeSetting(line);
             }
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -34,17 +34,17 @@ public final class IO {
     }
 
     public static void loadInputFromFile(File file) {
-        try (BufferedReader read = new BufferedReader(new FileReader(file));) {
+        try (BufferedReader read = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = read.readLine()) != null) {
-                AnalizerInput.AnalizeInput(line);
+                AnalyzerInput.AnaliseInput(line);
             }
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public static ArrayList<File> getSpecificFilesList(File folder, String extension) {
+
+    private static ArrayList<File> getSpecificFilesList(File folder, String extension) {
         ArrayList<File> list = new ArrayList<>();
         File[] files = folder.listFiles();
         for (File f : files) {
@@ -56,7 +56,7 @@ public final class IO {
         }
         return list;
     }
-    
+
     public static ArrayList<File> getSpecificFilesList(String folder, String extension) {
         File f = new File(folder);
         return getSpecificFilesList(f, extension);

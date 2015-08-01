@@ -5,24 +5,23 @@
  */
 package gamecontent.choices;
 
-import engine.inout.AnalizerSettings;
+import engine.inout.AnalyzerSettings;
 import game.Settings;
 import game.gameobject.menu.MenuChoice;
 import game.place.Menu;
 import org.lwjgl.input.Keyboard;
 
 /**
- *
  * @author przemek
  */
 public class ServerIPChoice extends MenuChoice {
 
-    private Thread thread;
     private final Runnable run;
-    private char[] temp;
+    private final char[] temp;
+    private final boolean[] keys = new boolean[25];
+    private Thread thread;
     private String val;
     private int position;
-    private boolean[] keys = new boolean[25];
 
     public ServerIPChoice(String label, Menu menu) {
         super(label, menu);
@@ -39,7 +38,7 @@ public class ServerIPChoice extends MenuChoice {
                     if (!keys[22]) {
                         keys[22] = true;
                         Settings.serverIP = val.replace(" ", "");
-                        AnalizerSettings.update();
+                        AnalyzerSettings.update();
                         end();
                         break;
                     }
@@ -48,7 +47,7 @@ public class ServerIPChoice extends MenuChoice {
                 }
                 if (Keyboard.isCreated() && Keyboard.isKeyDown(Keyboard.KEY_NUMPADENTER)) {
                     Settings.serverIP = val.replace(" ", "");
-                    AnalizerSettings.update();
+                    AnalyzerSettings.update();
                     end();
                     break;
                 }

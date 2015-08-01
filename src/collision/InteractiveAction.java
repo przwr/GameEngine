@@ -3,19 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine;
+package collision;
 
-import collision.Figure;
-import java.util.List;
+import game.gameobject.GameObject;
 
 /**
- *
  * @author przemek
  */
-public class ColidedResponse {
+public interface InteractiveAction {
 
-   public List<Figure> colided = new BlueArray<>();
-    public boolean collison;
-    
-    
+    void act(GameObject object);
 }

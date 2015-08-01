@@ -6,18 +6,18 @@
 package navmeshpathfinding;
 
 import engine.Point;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- *
  * @author WROBELP1
  */
 public class Node {
 
     private static final int halfMaxValue = Integer.MAX_VALUE >> 1;
-    private final ArrayList<Node> neightbours = new ArrayList<>();
+    private final ArrayList<Node> neighbours = new ArrayList<>();
     private Point point;
     private Node parent, child;
     private int hCost = Integer.MAX_VALUE >> 1, gCost = Integer.MAX_VALUE >> 1, fCost = Integer.MAX_VALUE;
@@ -31,26 +31,22 @@ public class Node {
         parent.setChild(this);
     }
 
-    private void setChild(Node child) {
-        this.child = child;
-    }
-
-    public void addIfNotYetNeightbour(Node neightbour) {
-        if (!neightbours.contains(neightbour)) {
-            neightbours.add(neightbour);
+    public void addIfNotYetNeighbour(Node neighbour) {
+        if (!neighbours.contains(neighbour)) {
+            this.neighbours.add(neighbour);
         }
     }
 
-    public void addNeightbour(Node neightbour) {
-        neightbours.add(neightbour);
+    public void addNeighbour(Node neighbour) {
+        neighbours.add(neighbour);
     }
 
-    public void removeNeightbour(Node neightbour) {
-        neightbours.remove(neightbour);
+    public void removeNeighbour(Node neighbour) {
+        neighbours.remove(neighbour);
     }
 
-    public void removeNeightbours(Collection<Node> neightbours) {
-        neightbours.removeAll(neightbours);
+    public void removeNeighbours(Collection<Node> neighbours) {
+        this.neighbours.removeAll(neighbours);
     }
 
     public void reset() {
@@ -90,6 +86,10 @@ public class Node {
         return child;
     }
 
+    private void setChild(Node child) {
+        this.child = child;
+    }
+
     public int getHCost() {
         return hCost;
     }
@@ -122,11 +122,11 @@ public class Node {
         fCost = gCost + hCost;
     }
 
-    public int getNeightboursSize() {
-        return neightbours.size();
+    public int getNeighboursSize() {
+        return neighbours.size();
     }
 
-    public List<Node> getNeightbours() {
-        return neightbours;
+    public List<Node> getNeighbours() {
+        return neighbours;
     }
 }

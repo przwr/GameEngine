@@ -5,11 +5,11 @@
  */
 package net.packets;
 
-import java.io.Serializable;
 import net.jodk.lang.FastMath;
 
+import java.io.Serializable;
+
 /**
- *
  * @author przemek
  */
 public class MPlayerUpdate extends Update implements Serializable {

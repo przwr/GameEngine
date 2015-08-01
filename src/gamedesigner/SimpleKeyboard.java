@@ -8,22 +8,21 @@ package gamedesigner;
 import org.lwjgl.input.Keyboard;
 
 /**
- *
  * @author Wojtek
  */
-public class SimpleKeyboard {
+class SimpleKeyboard {
     private boolean pressed, prevClick;
-    
+
     public void keyboardStart() {
         pressed = false;
     }
-    
+
     public void keyboardEnd() {
         if (!pressed) {
             prevClick = false;
         }
     }
-    
+
     public boolean key(int k) {
         return Keyboard.isKeyDown(k);
     }

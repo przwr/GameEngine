@@ -11,17 +11,15 @@ import game.place.Map;
 import game.place.Place;
 import game.place.PuzzleObject;
 import game.place.Tile;
-import net.jodk.lang.FastMath;
 
 /**
- *
  * @author Wojtek
  */
 public class GladeMap extends Map {
 
     public GladeMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Polana", place, width, height, tileSize);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo"), tileSize, 1, 8);
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo"), 1, 8);
 
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
@@ -44,7 +42,7 @@ public class GladeMap extends Map {
 //        addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
 //        PuzzleObject portal = new PuzzleObject("portal", place);
 //        portal.placePuzzle(20, 20, this);
-        
+
         long start = System.nanoTime();
         generateNavigationMeshes();
         long end = System.nanoTime();

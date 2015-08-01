@@ -6,7 +6,6 @@
 package game.gameobject;
 
 /**
- *
  * @author przemek
  */
 public class ActionHold extends Action {

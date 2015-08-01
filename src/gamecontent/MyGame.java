@@ -7,9 +7,7 @@ package gamecontent;
 
 import engine.Drawer;
 import engine.ErrorHandler;
-import engine.Methods;
 import engine.SplitScreen;
-import static engine.inout.IO.loadInputFromFile;
 import game.Game;
 import game.Settings;
 import game.gameobject.GameObject;
@@ -18,15 +16,15 @@ import game.place.Map;
 import game.place.cameras.PlayersCamera;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
-import java.io.File;
 import navmeshpathfinding.PathFindingModule;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Keyboard;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
+
+import java.io.File;
+
+import static engine.inout.IO.loadInputFromFile;
 
 /**
- *
  * @author przemek
  */
 public class MyGame extends Game {
@@ -34,17 +32,17 @@ public class MyGame extends Game {
     private final getInput[] inputs = new getInput[2];
     private final updateType[] ups = new updateType[2];
 
-    public boolean designer = false;
+    private boolean designer = false;
 
     public MyGame(String title, Controller[] controllers) {
         super(title);
-        SplitScreen.initialzie();
+        SplitScreen.initialise();
         players = new Player[4];
         players[0] = new MyPlayer(true, "Player 1");
         players[1] = new MyPlayer(false, "Player 2");
         players[2] = new MyPlayer(false, "Player 3");
         players[3] = new MyPlayer(false, "Player 4");
-        Settings.update(players[0].controler.getActionsCount(), players, controllers);
+        Settings.update(players[0].playerController.getActionsCount(), players, controllers);
         loadInputFromFile(new File("res/input.ini"));
         menu = new MyMenu(this);
         menuPlayer = new MyPlayer(true, "Menu");
@@ -71,7 +69,7 @@ public class MyGame extends Game {
                         player = players[i];
                         if (player.isMenuOn()) {
                             if (player.isInGame()) {
-                                if (!player.isFirst()) {
+                                if (player.isNotFirst()) {
                                     removePlayerOffline(i);
                                 } else {
                                     running = false;
@@ -275,7 +273,7 @@ public class MyGame extends Game {
     }
 
     private void removePlayerOffline(int i) {
-        if (place.playersCount > 1 && !players[i].isFirst()) {
+        if (place.playersCount > 1 && players[i].isNotFirst()) {
             ((Player) place.players[i]).setNotInGame();
             place.players[i].getMap().deleteObject(place.players[i]);
             if (i != place.playersCount - 1) {
@@ -384,12 +382,12 @@ public class MyGame extends Game {
             Settings.sounds.getSoundsList().stream().forEach((sound) -> {
                 if (sound.isPlaying()) {
                     if (sound.isPaused()) {
-                        sound.setStoped(true);
+                        sound.setStopped(true);
                     } else {
                         sound.fade(0.01, true);
                     }
                 } else {
-                    sound.setStoped(true);
+                    sound.setStopped(true);
                 }
             });
         }
@@ -398,8 +396,8 @@ public class MyGame extends Game {
     private void soundResume() {
         if (Settings.sounds != null) {
             Settings.sounds.getSoundsList().stream().forEach((sound) -> {
-                if (sound.isStoped()) {
-                    sound.setStoped(false);
+                if (sound.isStopped()) {
+                    sound.setStopped(false);
                 } else {
                     sound.resume();
                     sound.smoothStart(0.5);

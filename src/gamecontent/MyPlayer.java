@@ -8,14 +8,7 @@ package gamecontent;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.Drawer;
-import engine.ErrorHandler;
-import engine.Light;
-import engine.Methods;
-import engine.Point;
-import engine.RandomGenerator;
-import engine.Time;
-import game.Settings;
+import engine.*;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
@@ -23,31 +16,27 @@ import game.place.Place;
 import game.place.WarpPoint;
 import game.text.TextController;
 import gamecontent.equipment.Cloth;
-import java.io.FileNotFoundException;
 import net.jodk.lang.FastMath;
 import net.packets.MPlayerUpdate;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import java.io.FileNotFoundException;
+
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author przemek
  */
 public class MyPlayer extends Player {
 
+    private final int framesPerDir = 26;
     private Cloth torso;
     private Cloth legs;
     private Cloth dress;
-
-    private final int framesPerDir = 26;
-
     private TextController textControl;
 
     //---------<('.'<) TYMCZASOWE!-------------//
@@ -67,17 +56,17 @@ public class MyPlayer extends Player {
     }
 
     private void initializeControllerForFirst() {
-        controler = new MyController(this);
-        controler.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
-        controler.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
-        controler.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
-        controler.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        controler.initialize();
+        playerController = new MyController(this);
+        playerController.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
+        playerController.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
+        playerController.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
+        playerController.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+        playerController.initialize();
     }
 
     private void initializeController() {
-        controler = new MyController(this);
-        controler.initialize();
+        playerController = new MyController(this);
+        playerController.initialize();
     }
 
     @Override
@@ -105,7 +94,7 @@ public class MyPlayer extends Player {
             torso = new Cloth(r.choose("sweater", "torso", "blueSweater"), place);
             legs = new Cloth(r.choose("boots", "legs"), place);
             dress = r.chance(30) ? new Cloth(r.choose("dress", "blueDress"), place) : null;
-            Point[] p = SpriteSheet.getMergedDimentions(new SpriteSheet[]{legs.getLeftPart(), legs.getRightPart(),
+            Point[] p = SpriteSheet.getMergedDimensions(new SpriteSheet[]{legs.getLeftPart(), legs.getRightPart(),
                 dress != null ? dress.getLeftPart() : null,
                 dress != null ? dress.getRightPart() : null,
                 torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
@@ -128,10 +117,7 @@ public class MyPlayer extends Player {
 
     @Override
     protected boolean isCollided(int xMagnitude, int yMagnitude) {
-        if (isInGame()) {
-            return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
-        }
-        return false;
+        return isInGame() && collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
     }
 
     @Override
@@ -140,12 +126,12 @@ public class MyPlayer extends Player {
             animation.updateTexture(this);
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
-            if (Settings.scaled) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            }
+
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+
             glTranslatef(getX(), getY(), 0);
             Drawer.setColor(JUMP_SHADOW_COLOR);
-            Drawer.drawElipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
+            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
             animation.render();
@@ -161,13 +147,10 @@ public class MyPlayer extends Player {
             //if (testIndex >= 80) {
             //    testIndex = 0;
             //}
-            if (Settings.scaled) {
-                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            }
-            /*Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
+            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
+            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
                     (int) ((collision.getHeight() * Place.getCurrentScale()) / 2),
-                    place.standardFont,
-                    map.getLightColor());*/
+                    place.standardFont, map.getLightColor());
             glPopMatrix();
         }
     }
@@ -319,7 +302,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure, int xStart, int xEnd) {
+    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (animation != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
@@ -329,7 +312,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure f, int xStart, int xEnd) {
+    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (animation != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);

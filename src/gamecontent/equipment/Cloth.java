@@ -6,18 +6,18 @@
 package gamecontent.equipment;
 
 import game.place.Place;
+import sprites.SpriteSheet;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import sprites.SpriteSheet;
 
 /**
- *
  * @author Wojtek
  */
 public class Cloth {
 
-    ArrayList<SpriteSheet> list;
+    private final ArrayList<SpriteSheet> list;
 
     public Cloth(String name, Place place) throws FileNotFoundException {
         if (new File("res/textures/cloth/" + name + ".spr").exists()) {
