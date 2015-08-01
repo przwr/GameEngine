@@ -233,7 +233,11 @@ public abstract class Entity extends GameObject {
     }
 
     public void brake(int axis) {
-        double maxWeight = FastMath.max(1, resistance);
+        brakeWithModifier(axis, 1);
+    }
+    
+    public void brakeWithModifier(int axis, double modifier) {
+        double maxWeight = FastMath.max(1, resistance * modifier);
         if (axis == 0 || axis == 2) {
             if (FastMath.abs(xSpeed) >= 1) {
                 xSpeed -= xSpeed / (1 + maxWeight);

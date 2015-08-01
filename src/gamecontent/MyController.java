@@ -23,8 +23,8 @@ public class MyController extends Controler {
     public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7;
     public static final int FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 11;
 
-    private int direction;
-    private boolean running, diagonal;
+    private int direction, lagDuration;
+    private boolean running, diagonal, inputLag;
     private Animation playerAnimation;
 
     public MyController(Entity inControl) {
@@ -47,22 +47,47 @@ public class MyController extends Controler {
         actions[ACTIONS_COUNT] = new ActionOnOff(inputs[ACTIONS_COUNT]);
     }
 
+    private void setInputLag(int time) {
+        if (!inputLag) {
+            inputLag = true;
+            lagDuration = time;
+        }
+    }
+
+    private void updateAction(int action) {
+        if (actions[action].isOn()) {
+            if (states[action - 4] == KEY_NO_INPUT) {
+                states[action - 4] = KEY_CLICKED;
+            } else {
+                states[action - 4] = KEY_PRESSED;
+            }
+        } else {
+            if (states[action - 4] == KEY_PRESSED) {
+                states[action - 4] = KEY_RELEASED;
+            } else {
+                states[action - 4] = KEY_NO_INPUT;
+            }
+        }
+    }
+
     @Override
     public void getInput() {
-        for (int i = 4; i <= ACTIONS_COUNT; i++) {
-            actions[i].act();
-            if (actions[i].isOn()) {
-                if (states[i - 4] == 0) {
-                    states[i - 4] = 2;
-                } else {
-                    states[i - 4] = 1;
+        if (inputLag) {
+            lagDuration--;
+            if (lagDuration < 0) {
+                inputLag = false;
+            }
+            for (int i = 4; i <= ACTIONS_COUNT; i++) {
+                if (states[i - 4] == KEY_CLICKED) {
+                    states[i - 4] = KEY_PRESSED;
+                } else if (states[i - 4] == KEY_RELEASED) {
+                    states[i - 4] = KEY_NO_INPUT;
                 }
-            } else {
-                if (states[i - 4] == 1) {
-                    states[i - 4] = 3;
-                } else {
-                    states[i - 4] = 0;
-                }
+            }
+        } else {
+            for (int i = 4; i <= ACTIONS_COUNT; i++) {
+                actions[i].act();
+                updateAction(i);
             }
         }
         //ANIMACJA//
@@ -76,9 +101,12 @@ public class MyController extends Controler {
 
         if (inControl.isAbleToMove()) {
             if (isKeyPressed(JUMP)) {
+                if (isKeyClicked(JUMP)) {
+                    setInputLag(30);
+                }
                 playerAnimation.setStopAtEnd(true);
                 playerAnimation.animateIntervalInDirection(direction / 45, 21, 25);
-                inControl.brake(2);
+                inControl.brakeWithModifier(2, 2);
             } else {
                 playerAnimation.setStopAtEnd(false);
                 if (isKeyPressed(UP)) {
