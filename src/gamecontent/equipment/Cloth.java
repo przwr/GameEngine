@@ -88,7 +88,7 @@ public class Cloth {
      return priority;
      }
 
-     public SpriteSheet getSprite() {
+     public SpriteSheet getAppearance() {
      return sprite;
      }
      }*/

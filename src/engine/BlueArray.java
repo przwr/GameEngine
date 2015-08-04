@@ -50,17 +50,13 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
         if (minCapacity < 0) {
             throw new OutOfMemoryError();
         }
-        return (minCapacity > MAX_ARRAY_SIZE)
-                ? Integer.MAX_VALUE
-                : MAX_ARRAY_SIZE;
+        return (minCapacity > MAX_ARRAY_SIZE) ? Integer.MAX_VALUE : MAX_ARRAY_SIZE;
     }
 
     public void trimToSize() {
         modCount++;
         if (size < elementData.length) {
-            elementData = (size == 0)
-                    ? EMPTY_ELEMENT_DATA
-                    : Arrays.copyOf(elementData, size);
+            elementData = (size == 0) ? EMPTY_ELEMENT_DATA : Arrays.copyOf(elementData, size);
         }
     }
 
@@ -431,7 +427,7 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
         @SuppressWarnings("unchecked")
         @Override
         public E next() {
-            checkForComodification();
+            checkForCoModification();
             int i = cursor;
             if (i >= size) {
                 throw new NoSuchElementException();
@@ -449,7 +445,7 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
             if (lastRet < 0) {
                 throw new IllegalStateException();
             }
-            checkForComodification();
+            checkForCoModification();
 
             try {
                 BlueArray.this.remove(lastRet);
@@ -479,10 +475,10 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
             }
             cursor = i;
             lastRet = i - 1;
-            checkForComodification();
+            checkForCoModification();
         }
 
-        final void checkForComodification() {
+        final void checkForCoModification() {
             if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
             }
@@ -514,7 +510,7 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
         @SuppressWarnings("unchecked")
         @Override
         public E previous() {
-            checkForComodification();
+            checkForCoModification();
             int i = cursor - 1;
             if (i < 0) {
                 throw new NoSuchElementException();
@@ -532,7 +528,7 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
             if (lastRet < 0) {
                 throw new IllegalStateException();
             }
-            checkForComodification();
+            checkForCoModification();
 
             try {
                 BlueArray.this.set(lastRet, e);
@@ -543,7 +539,7 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
 
         @Override
         public void add(E e) {
-            checkForComodification();
+            checkForCoModification();
 
             try {
                 int i = cursor;

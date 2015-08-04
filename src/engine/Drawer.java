@@ -70,7 +70,7 @@ public class Drawer {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, 1.0f);
     }
 
-    public static void setCentralPoint() {  //Miejsce do ktorego mozna wrocic
+    public static void setCentralPoint() {  //Miejsce do którego można wrócić
         xCurrent = 0;
         yCurrent = 0;
     }

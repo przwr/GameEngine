@@ -236,9 +236,9 @@ public class PathFinder {
         return (x * x + y * y);
     }
 
-    private static PointContainer produceResult(Node destiation, NavigationMesh mesh) {
-        if (destiation != null) {
-            return printSolution(destiation, mesh);
+    private static PointContainer produceResult(Node destination, NavigationMesh mesh) {
+        if (destination != null) {
+            return printSolution(destination, mesh);
         }
         return null;
     }

@@ -34,7 +34,6 @@ public abstract class Entity extends GameObject {
     protected boolean jumping;
     protected boolean hop;
     protected Place place;
-    protected int direction;  //Obecny, badz ostatni kierunek ruchu (stopnie)
     PathStrategy pathStrategy;
     private double maxSpeed;
     private double resistance = 1;
@@ -378,18 +377,6 @@ public abstract class Entity extends GameObject {
 
     protected GameObject getTarget() {
         return target;
-    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int d) {
-        direction = d;
-    }
-
-    public int getDirection8Dir() {
-        return direction / 45;
     }
 
     public PathData getPathData() {

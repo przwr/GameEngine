@@ -203,7 +203,6 @@ class PathStrategyCore {
                 data.lastInAWay = data.inAWay;
             }
             data.destination = data.correction;
-            System.out.println(data.correction);
         }
     }
 

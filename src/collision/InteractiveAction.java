@@ -12,5 +12,5 @@ import game.gameobject.GameObject;
  */
 public interface InteractiveAction {
 
-    void act(GameObject object);
+    void act(GameObject object, int pixelsIn);
 }

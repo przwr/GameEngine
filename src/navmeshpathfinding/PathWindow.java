@@ -29,6 +29,7 @@ public class PathWindow extends javax.swing.JFrame {
     private Point colS;
     private Point colE;
     private Point[] destination;
+
     /**
      * Creates new form Window
      */
@@ -167,7 +168,7 @@ public class PathWindow extends javax.swing.JFrame {
             double SCALE = 0.5;
             Polygon poly = new Polygon();
             if (mesh != null) {
-                System.out.println(mesh);
+//                System.out.println(mesh);
                 for (Triangle triangle : mesh.getTriangles()) {
                     for (int j = 0; j < 3; j++) {
                         Node nd = triangle.getNode(j);

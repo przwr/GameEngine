@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine/src/game/place/FGTile.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine/src/myGame/MyPlace.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine/src/game/gameobject/GameObject.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine/src/collision/Area.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine/src/collision/Rectangle.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine/src/game/place/ShadowRenderer.java</file>
-            <file>file:/media/kreacja/NetBeansProjects/GameEngine/src/game/place/Place.java</file>
+            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/game/gameobject/LightSource.java</file>
+            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/game/place/Tile.java</file>
+            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/gamecontent/MyNPC.java</file>
+            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/game/gameobject/Mob.java</file>
         </group>
     </open-files>
 </project-private>

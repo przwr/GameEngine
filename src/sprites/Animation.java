@@ -126,11 +126,6 @@ public class Animation implements Appearance {
         }
     }
 
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
-        spriteSheet.renderPiecePartMirrored(currentFrame, partXStart, partXEnd);
-    }
-
     public boolean isUpToDate() {
         return fboSpriteSheet.isUpToDate();
     }
@@ -175,4 +170,52 @@ public class Animation implements Appearance {
         framesPerDirection = frames;
     }
 
+    @Override
+    public void renderPartMirrored(int partXStart, int partXEnd) {
+        spriteSheet.renderPiecePartMirrored(currentFrame, partXStart, partXEnd);
+    }
+
+    @Override
+    public int getWidth() {
+        spriteSheet.getWidth();
+        return 0;
+    }
+
+    @Override
+    public int getHeight() {
+        spriteSheet.getHeight();
+        return 0;
+    }
+
+    @Override
+    public int getXStart() {
+        spriteSheet.getXStart();
+        return 0;
+    }
+
+    @Override
+    public int getYStart() {
+        spriteSheet.getYStart();
+        return 0;
+    }
+
+    @Override
+    public int getActualWidth() {
+        return spriteSheet.getActualWidth();
+    }
+
+    @Override
+    public int getActualHeight() {
+        return spriteSheet.getActualHeight();
+    }
+
+    @Override
+    public int getXOffset() {
+        return spriteSheet.getXOffset();
+    }
+
+    @Override
+    public int getYOffset() {
+        return spriteSheet.getYOffset();
+    }
 }

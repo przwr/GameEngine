@@ -13,7 +13,6 @@ import java.awt.geom.Line2D;
 import java.util.List;
 
 /**
- *
  * @author Wojtek
  */
 public class Circle extends Figure {

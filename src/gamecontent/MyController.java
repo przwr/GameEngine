@@ -5,19 +5,10 @@
  */
 package gamecontent;
 
-import game.gameobject.Action;
-import game.gameobject.ActionOnOff;
-import game.gameobject.ActionHold;
-import game.gameobject.AnyInput;
-import game.gameobject.Entity;
-import game.gameobject.Player;
-import game.gameobject.PlayerController;
-import static game.gameobject.PlayerController.KEY_PRESSED;
-import static java.awt.event.KeyEvent.KEY_RELEASED;
+import game.gameobject.*;
 import sprites.Animation;
 
 /**
- *
  * @author przemek
  */
 public class MyController extends PlayerController {
@@ -96,7 +87,7 @@ public class MyController extends PlayerController {
         direction = inControl.getDirection();
         running = !isKeyPressed(RUN);
 
-        playerAnimation = inControl.getAnimation();
+        playerAnimation = (Animation) inControl.getAppearance();
 
         playerAnimation.setAnimate(true);
         diagonal = true;
@@ -181,7 +172,7 @@ public class MyController extends PlayerController {
                 playerAnimation.setFPS((int) (inControl.getSpeed() * 5));
             }
         } else {
-            playerAnimation.setFPS((int) (30));
+            playerAnimation.setFPS(30);
         }
     }
 

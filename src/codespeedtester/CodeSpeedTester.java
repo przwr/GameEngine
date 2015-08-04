@@ -13,7 +13,7 @@ import net.jodk.lang.FastMath;
  */
 public class CodeSpeedTester {
 
-    private static final int runs = 1000000;   // znajdź najmniejszą libczę dla krórej puste testy nadal pokazują wyniki bliskie zero.
+    private static final int runs = 1000000;   // znajdź najmniejszą liczbę dla której puste testy nadal pokazują wyniki bliskie zero.
     private static final int precision = 10;  // z jaką dokładnością wyświetla się wynik 10 - jedno miejsce po przecinku, 100 - dwa
     // przygotuj zmienne potrzebne do testowania kodu
     private static final double angle = 70;

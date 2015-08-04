@@ -11,7 +11,6 @@ import game.place.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
 import net.GameOnline;
-import sprites.Animation;
 
 import java.util.ArrayList;
 
@@ -186,11 +185,6 @@ public abstract class Player extends Entity {
 
     public void setCamera(Camera camera) {
         this.camera = camera;
-    }
-
-    @Override
-    public Animation getAnimation() {
-        return animation;
     }
 
     public void setNotInGame() {

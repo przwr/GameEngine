@@ -131,6 +131,11 @@ public class SpriteSheet extends Sprite {
         glEnd();
     }
 
+    @Override
+    public int getCurrentFrameIndex() {
+        return 0;
+    }
+
     public void renderPiece(int piece) {
         if (isValidPiece(piece)) {
             int x = (int) (piece % xTiles);

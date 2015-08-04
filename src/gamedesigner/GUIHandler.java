@@ -144,9 +144,9 @@ public class GUIHandler extends GUIObject {
 
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
             if (text.length() > 0) {
-                try (BufferedReader wczyt = new BufferedReader(new FileReader("res/objects/" + text + ".puz"))) {
+                try (BufferedReader load = new BufferedReader(new FileReader("res/objects/" + text + ".puz"))) {
                     mode = QUESTIONING;
-                    wczyt.close();
+                    load.close();
                     return;
                 } catch (IOException e) {
                     ErrorHandler.exception(e);

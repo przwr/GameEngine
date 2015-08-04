@@ -100,4 +100,7 @@ public class ErrorHandler {
         logAndPrint("\n" + message + "\n");
     }
 
+    public static void warring(String string, Object object) {
+        System.out.println(string + " in CLASS " + object.getClass().getName() + " AT METHOD " + object.getClass().getEnclosingMethod().getName());
+    }
 }

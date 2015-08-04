@@ -5,9 +5,7 @@
  */
 package game.gameobject;
 
-import collision.InteractiveAction;
-import collision.InteractiveActionHurt;
-import collision.InteractiveCollision;
+import collision.*;
 
 import java.util.List;
 
@@ -16,42 +14,51 @@ import java.util.List;
  */
 public class Interactive {
 
-    private static final InteractiveAction HURT = new InteractiveActionHurt();
+    public static final InteractiveAction HURT = new InteractiveActionHurt();
+    public static final InteractiveActivator ALWAYS = new InteractiveActivatorAlways();
 
     private final GameObject owner;
     private final InteractiveCollision collision;
-    private final InteractiveAction action = HURT;
+    private final InteractiveAction action;
+    private final InteractiveActivator activator;
     private final boolean COLLIDES_WITH_SELF = false;
     private final boolean COLLIDES_WITH_PLAYERS = true;
     private final boolean COLLIDES_WITH_MOBS = true;
     private boolean active;
 
-    public Interactive(GameObject owner, InteractiveCollision collision) {
+    public Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action) {
         this.owner = owner;
+        this.activator = activator;
         this.collision = collision;
+        this.action = action;
+
     }
 
     public void checkCollision(GameObject[] players, List<Mob> mobs) {
         if (COLLIDES_WITH_MOBS) {
             mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || mob != owner))).forEach((mob) -> {
-                if (collision.isCollide(mob) > 0) {
-                    action.act(mob);
+                int pixelsIn = collision.collide(mob);
+                if (pixelsIn > 0) {
+                    action.act(mob, pixelsIn);
                 }
             });
         }
         if (COLLIDES_WITH_PLAYERS) {
             for (GameObject player : players) {
                 if ((COLLIDES_WITH_SELF || player != owner)) {
-                    if (collision.isCollide((Player) player) > 0) {
-                        action.act(player);
+                    int pixelsIn = collision.collide((Player) player);
+                    if (pixelsIn > 0) {
+                        action.act(player, pixelsIn);
                     }
                 }
             }
         }
     }
 
-    public void updateCollision() {
-        collision.updatePosition(owner.getCollision().getXEnd() + 32, owner.getCollision().getYEnd() - 10);
+    public void update() {
+        active = activator.checkActivation(owner);
+        if (active)
+            collision.updatePosition(owner);
     }
 
     public boolean isActive() {

@@ -52,7 +52,7 @@ class DungeonGenerator {
         puzzles.add(p);
     }
 
-    public void addExit(int angle, int percentRadius, String link) { //angle - ktora strona planszy, rad - jak daleko od srodka (100 - na brzegu, 0 - w centrum)
+    public void addExit(int angle, int percentRadius, String link) { //angle - która strona planszy, rad - jak daleko od środka (100 - na brzegu, 0 - w centrum)
         Point p = getSquareRadius(angle, percentRadius);
         exits.add(new Exit(p.getX(), p.getY(), link));
     }

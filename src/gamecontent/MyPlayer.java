@@ -5,10 +5,9 @@
  */
 package gamecontent;
 
-import collision.Figure;
-import collision.OpticProperties;
-import collision.Rectangle;
+import collision.*;
 import engine.*;
+import game.gameobject.Interactive;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
@@ -53,6 +52,8 @@ public class MyPlayer extends Player {
         } else {
             initializeController();
         }
+        int[] frames = {21, 22, 23, 24, 25, 47, 48, 49, 50, 51, 73, 74, 75, 76, 77, 99, 100, 101, 102, 103, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 177, 178, 179, 180, 181, 203, 204, 205, 206, 207};
+        addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CircleInteractiveCollision(32), Interactive.HURT));
     }
 
     private void initializeControllerForFirst() {
@@ -82,8 +83,6 @@ public class MyPlayer extends Player {
         this.online = place.game.online;
         emitter = true;
         emits = false;
-        sprite = place.getSpriteSheet("cloth/test");
-
         textControl = new TextController(place);
         addGui(textControl);
 
@@ -95,9 +94,9 @@ public class MyPlayer extends Player {
             legs = new Cloth(r.choose("boots", "legs"), place);
             dress = r.chance(30) ? new Cloth(r.choose("dress", "blueDress"), place) : null;
             Point[] p = SpriteSheet.getMergedDimensions(new SpriteSheet[]{legs.getLeftPart(), legs.getRightPart(),
-                dress != null ? dress.getLeftPart() : null,
-                dress != null ? dress.getRightPart() : null,
-                torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
+                    dress != null ? dress.getLeftPart() : null,
+                    dress != null ? dress.getRightPart() : null,
+                    torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
             System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
                     + "\nWymiary połączonej ubranej babki : " + p[0]
                     + "\nPunkt centralny obrazka : " + p[1]
@@ -105,14 +104,14 @@ public class MyPlayer extends Player {
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
-        animation = new Animation((SpriteSheet) sprite, 200, framesPerDir);
+        appearance = new Animation(place.getSpriteSheet("cloth/test"), 200, framesPerDir);
         visible = true;
         depth = 0;
         setResistance(2);
         if (lights.isEmpty()) {
             addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
-        setCollision(Rectangle.create(width, height / 4, OpticProperties.NO_SHADOW, this));
+        setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
     }
 
     @Override
@@ -122,8 +121,8 @@ public class MyPlayer extends Player {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        if (sprite != null) {
-            animation.updateTexture(this);
+        if (appearance != null) {
+            appearance.updateTexture(this);
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
 
@@ -135,9 +134,9 @@ public class MyPlayer extends Player {
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
             Drawer.setCentralPoint();
-            animation.render();
+            appearance.render();
 //            renderClothed(animation.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
-            animation.updateFrame();
+            appearance.updateFrame();
             Drawer.returnToCentralPoint();
 
             //glTranslatef(50, 0, 0);
@@ -150,7 +149,7 @@ public class MyPlayer extends Player {
             //    testIndex = 0;
             //}
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            Drawer.renderStringCentered(name, 0, -(int) ((sprite.getActualHeight() * Place.getCurrentScale()) / 1.2),
+            Drawer.renderStringCentered(name, 0, -(int) ((appearance.getActualHeight() * Place.getCurrentScale()) / 1.2),
                     place.standardFont, map.getLightColor());
             glPopMatrix();
         }
@@ -160,7 +159,7 @@ public class MyPlayer extends Player {
     public void renderClothed(int frame) {
         boolean rightUp = frame < 4 * framesPerDir;
         boolean frontUp = (frame < 3 * framesPerDir) || (frame >= 6 * framesPerDir);
-//        glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);  // Translatuję przy aktualizacji, odkomentuaj, jakbyś testował <(,o,<)
+//        glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);  // Translatuję przy aktualizacji, odkomentuj, jakbyś testował <(,o,<)
         if (legs != null) {
             if (rightUp) {
                 legs.getLeftPart().renderPieceHere(frame);
@@ -284,40 +283,40 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
-        if (animation != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
-            Drawer.drawShapeInShade(animation, 1);
+            Drawer.drawShapeInShade(appearance, 1);
             glPopMatrix();
         }
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
-        if (animation != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
-            Drawer.drawShapeInBlack(animation);
+            Drawer.drawShapeInBlack(appearance);
             glPopMatrix();
         }
     }
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
-        if (animation != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
-            Drawer.drawShapePartInShade(animation, 1, xStart, xEnd);
+            Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
             glPopMatrix();
         }
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
-        if (animation != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
-            Drawer.drawShapePartInBlack(animation, xStart, xEnd);
+            Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }
     }

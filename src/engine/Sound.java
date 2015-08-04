@@ -67,7 +67,7 @@ public class Sound {
     public void smoothStart(double time) {  //Smooth start on already started sound
         if (!fading && soundEffect.isPlaying()) {
             fading = true;
-            new Thread(new Fader(time, this, 50, false, false)).start();
+            new Thread(new Fade(time, this, 50, false, false)).start();
         }
     }
 
@@ -101,7 +101,7 @@ public class Sound {
     public void fade(double time, boolean pause) {
         if (!fading && soundEffect.isPlaying()) {
             fading = true;
-            new Thread(new Fader(time, this, 50, true, pause)).start();
+            new Thread(new Fade(time, this, 50, true, pause)).start();
         }
     }
 
@@ -189,14 +189,14 @@ public class Sound {
         return soundEffect.getBufferID();
     }
 
-    private class Fader implements Runnable {
+    private class Fade implements Runnable {
 
         private final double time;
         private final Sound sound;
         private final long period;
         private final boolean fade, pause;
 
-        private Fader(double time, Sound snd, int period, boolean fade, boolean pause) {
+        private Fade(double time, Sound snd, int period, boolean fade, boolean pause) {
             this.time = time;
             this.sound = snd;
             this.period = period;

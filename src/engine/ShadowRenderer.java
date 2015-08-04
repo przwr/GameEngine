@@ -82,7 +82,7 @@ class ShadowRenderer {
                     shades.add(tempShade);
                 }
                 for (Figure top : block.getTop()) {
-                    if (top != null && !top.isLittable() && top.getX() <= light.getX() + lightWidthHalf && top.getXEnd() >= light.getX() - lightWidthHalf
+                    if (top != null && !top.isLitable() && top.getX() <= light.getX() + lightWidthHalf && top.getXEnd() >= light.getX() - lightWidthHalf
                             && top.getY() - 2 * FastMath.abs(tempShade.getShadowHeight()) - tempShade.getHeight() <= light.getY() + lightHeightHalf) {
                         shades.add(top);
                     }
@@ -94,7 +94,7 @@ class ShadowRenderer {
     private static void searchObjects(Light light, Map map) {
         for (GameObject object : map.getArea(light.getX(), light.getY()).getNearDepthObjects()) {
             tempShade = object.getCollision();
-            if (tempShade != null && tempShade.isLittable()
+            if (tempShade != null && tempShade.isLitable()
                     && object.getY() - tempShade.getActualHeight() + tempShade.getHeight() / 2 <= light.getY() + lightHeightHalf
                     && object.getY() + tempShade.getActualHeight() - tempShade.getHeight() / 2 >= light.getY() - lightHeightHalf
                     && object.getX() - tempShade.getActualWidth() / 2 <= light.getX() + lightWidthHalf
@@ -417,7 +417,7 @@ class ShadowRenderer {
     }
 
     private static void calculateShadowShade(Figure shaded, Light light) {
-        if (shaded.isLittable()) {
+        if (shaded.isLitable()) {
             if (shaded instanceof RoundRectangle) {
                 calculateRoundShade((RoundRectangle) shaded, light);
             } else {
@@ -498,7 +498,7 @@ class ShadowRenderer {
         if (tempShadow != null && brightenSpots.isEmpty()) {
             shaded.addShadowType(BRIGHT);
         }
-        if (shaded.isLittable() && brightenSpots.size() > 1) {
+        if (shaded.isLitable() && brightenSpots.size() > 1) {
             solveBrightenSpots();
             addSolvedBrightenSpots(shaded);
         } else {
@@ -583,7 +583,7 @@ class ShadowRenderer {
                 } else if (current.getY() <= source.getY() && current.getYEnd() != other.getYEnd()) {
                     calculateRegularBlockVertical(other, current, source);
                 }
-            } else if (other.isLittable()) {
+            } else if (other.isLitable()) {
                 calculateObjectVertical(other, current, source);
             }
         });

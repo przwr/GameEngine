@@ -5,7 +5,6 @@
  */
 package game.gameobject;
 
-import collision.CircleInteractiveCollision;
 import collision.Figure;
 import engine.Drawer;
 import engine.Methods;
@@ -26,10 +25,10 @@ public abstract class Mob extends Entity {
         this.solid = solid;
         this.range = range;
         this.setMaxSpeed(speed);
-        this.sprite = place.getSprite(spriteName);
+        this.appearance = place.getSprite(spriteName);
         initialize(name, x, y);
         this.mobID = mobID;
-        addInteractive(new Interactive(this, new CircleInteractiveCollision(32)));
+//        addInteractive(new Interactive(this, Interactive.ALWAYS, new CircleInteractiveCollision(32), Interactive.HURT));
     }
 
     public abstract void update();
@@ -72,12 +71,12 @@ public abstract class Mob extends Entity {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        if (sprite != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
-            sprite.render();
+            appearance.render();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
         }
         Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
@@ -88,40 +87,40 @@ public abstract class Mob extends Entity {
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
-        if (sprite != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.drawShapeInShade(sprite, 1);
+            Drawer.drawShapeInShade(appearance, 1);
             glPopMatrix();
         }
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
-        if (sprite != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.drawShapeInBlack(sprite);
+            Drawer.drawShapeInBlack(appearance);
             glPopMatrix();
         }
     }
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
-        if (sprite != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.drawShapePartInShade(sprite, 1, xStart, xEnd);
+            Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
             glPopMatrix();
         }
     }
 
     @Override
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
-        if (sprite != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(getX() + xEffect, getY() + yEffect, 0);
-            Drawer.drawShapePartInBlack(sprite, xStart, xEnd);
+            Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }
     }

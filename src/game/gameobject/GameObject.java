@@ -12,8 +12,7 @@ package game.gameobject;
 import collision.Figure;
 import engine.Light;
 import game.place.Map;
-import sprites.Animation;
-import sprites.Sprite;
+import sprites.Appearance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,7 @@ public abstract class GameObject {
     private final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
     protected double x, y;
     protected int depth;
+    protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     protected boolean solid;
     protected boolean emitter;
     protected boolean emits;
@@ -31,12 +31,11 @@ public abstract class GameObject {
     protected boolean simpleLighting;
     protected boolean visible;
     protected boolean wall;
-    protected Sprite sprite;
+    protected Appearance appearance;
     protected String name;
     protected Map map;
     protected int area = -1;
     protected Figure collision;
-    protected Animation animation;
     private boolean mobile;
     private int prevArea = -1;
 
@@ -83,8 +82,12 @@ public abstract class GameObject {
         lights.add(light);
     }
 
-    void addInteractive(Interactive interactive) {
+    protected void addInteractive(Interactive interactive) {
         interactiveObjects.add(interactive);
+    }
+
+    protected void removeInteractive(Interactive interactive) {
+        interactiveObjects.remove(interactive);
     }
 
     public boolean isSolid() {
@@ -196,63 +199,63 @@ public abstract class GameObject {
     }
 
     public int getXSpriteTextureCorner() {
-        if (sprite != null) {
-            return (int) x + sprite.getXOffset();
+        if (appearance != null) {
+            return (int) x + appearance.getXOffset();
         } else {
             return (int) x;
         }
     }
 
     public int getYSpriteTextureCorner() {
-        if (sprite != null) {
-            return (int) y + sprite.getYOffset();
+        if (appearance != null) {
+            return (int) y + appearance.getYOffset();
         } else {
             return (int) y;
         }
     }
 
     public int getXSpriteBegin() {
-        if (sprite != null) {
-            return (int) x + sprite.getXOffset() + sprite.getXStart();
+        if (appearance != null) {
+            return (int) x + appearance.getXOffset() + appearance.getXStart();
         } else {
             return (int) x;
         }
     }
 
     public int getYSpriteBegin() {
-        if (sprite != null) {
-            return (int) y + sprite.getYOffset() + sprite.getYStart();
+        if (appearance != null) {
+            return (int) y + appearance.getYOffset() + appearance.getYStart();
         } else {
             return (int) y;
         }
     }
 
     public int getXSpriteEnd() {
-        if (sprite != null) {
-            return (int) x + sprite.getXOffset() + sprite.getXStart() + sprite.getActualWidth();
+        if (appearance != null) {
+            return (int) x + appearance.getXOffset() + appearance.getXStart() + appearance.getActualWidth();
         } else {
             return (int) x;
         }
     }
 
     public int getYSpriteEnd() {
-        if (sprite != null) {
-            return (int) y + sprite.getYOffset() + sprite.getYStart() + sprite.getActualHeight();
+        if (appearance != null) {
+            return (int) y + appearance.getYOffset() + appearance.getYStart() + appearance.getActualHeight();
         } else {
             return (int) y;
         }
     }
 
     public int getXSpriteOffset() {
-        return sprite.getXOffset();
+        return appearance.getXOffset();
     }
 
     public int getYSpriteOffset() {
-        return sprite.getYOffset();
+        return appearance.getYOffset();
     }
 
     public int getXSpriteOffsetWidth() {
-        return sprite.getXOffset() + sprite.getWidth();
+        return appearance.getXOffset() + appearance.getWidth();
     }
 
     public Figure getCollision() {
@@ -276,11 +279,11 @@ public abstract class GameObject {
     }
 
     public int getCollisionWidth() {
-        return collision != null ? collision.getWidth() : sprite.getActualWidth();
+        return collision != null ? collision.getWidth() : appearance.getActualWidth();
     }
 
     public int getCollisionHeight() {
-        return collision != null ? collision.getHeight() : sprite.getActualHeight();
+        return collision != null ? collision.getHeight() : appearance.getActualHeight();
     }
 
     public String getName() {
@@ -299,12 +302,8 @@ public abstract class GameObject {
         return interactiveObjects;
     }
 
-    public Sprite getSprite() {
-        return sprite;
-    }
-
-    public Animation getAnimation() {
-        return animation;
+    public Appearance getAppearance() {
+        return appearance;
     }
 
     public void setPosition(double x, double y) {
@@ -315,5 +314,17 @@ public abstract class GameObject {
 
     public void setMapNotChange(Map map) {
         this.map = map;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int d) {
+        direction = d;
+    }
+
+    public int getDirection8Way() {
+        return direction / 45;
     }
 }

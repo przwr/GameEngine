@@ -5,6 +5,8 @@
  */
 package sprites;
 
+import game.gameobject.Player;
+
 /**
  * @author przemek
  */
@@ -19,4 +21,28 @@ public interface Appearance {
     void renderPart(int partXStart, int partXEnd);
 
     void renderPartMirrored(int partXStart, int partXEnd);
+
+    void updateTexture(Player owner);
+
+    void updateFrame();
+
+    int getCurrentFrameIndex();
+
+    int getWidth();
+
+    int getHeight();
+
+    int getXStart();
+
+    int getYStart();
+
+    int getActualWidth();
+
+    int getActualHeight();
+
+    int getXOffset();
+
+    int getYOffset();
+
+
 }

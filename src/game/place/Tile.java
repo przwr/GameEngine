@@ -2,8 +2,10 @@ package game.place;
 
 import collision.Figure;
 import engine.Drawer;
+import engine.ErrorHandler;
 import engine.Point;
 import game.gameobject.GameObject;
+import game.gameobject.Player;
 import sprites.Appearance;
 import sprites.SpriteSheet;
 
@@ -18,7 +20,7 @@ public class Tile extends GameObject implements Appearance {
 
     public Tile(SpriteSheet spriteSheet, int xSheet, int ySheet) {
         this.spriteSheet = spriteSheet;
-        this.sprite = spriteSheet;
+        this.appearance = spriteSheet;
         tileStack = new ArrayList<>(1);
         tileStack.add(new Point(xSheet, ySheet));
         name = "Tile";
@@ -187,5 +189,67 @@ public class Tile extends GameObject implements Appearance {
     @Override
     public void renderPartMirrored(int partXStart, int partXEnd) {
         tileStack.stream().forEach((piece) -> spriteSheet.renderPiecePartMirrored(piece.getX(), piece.getY(), partXStart, partXEnd));
+    }
+
+    @Override
+    public void updateTexture(Player owner) {
+        ErrorHandler.warring("Incorrect method use", this);
+    }
+
+    @Override
+    public void updateFrame() {
+        ErrorHandler.warring("Incorrect method use", this);
+    }
+
+    @Override
+    public int getCurrentFrameIndex() {
+        return 0;
+    }
+
+    @Override
+    public int getWidth() {
+        return 0;
+    }
+
+    @Override
+    public int getHeight() {
+        ErrorHandler.warring("Incorrect method use", this);
+        return 0;
+    }
+
+    @Override
+    public int getXStart() {
+        ErrorHandler.warring("Incorrect method use", this);
+        return 0;
+    }
+
+    @Override
+    public int getYStart() {
+        ErrorHandler.warring("Incorrect method use", this);
+        return 0;
+    }
+
+    @Override
+    public int getActualWidth() {
+        ErrorHandler.warring("Incorrect method use", this);
+        return 0;
+    }
+
+    @Override
+    public int getActualHeight() {
+        ErrorHandler.warring("Incorrect method use", this);
+        return 0;
+    }
+
+    @Override
+    public int getXOffset() {
+        ErrorHandler.warring("Incorrect method use", this);
+        return 0;
+    }
+
+    @Override
+    public int getYOffset() {
+        ErrorHandler.warring("Incorrect method use", this);
+        return 0;
     }
 }

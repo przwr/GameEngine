@@ -244,7 +244,7 @@ public abstract class Figure implements Comparable<Figure> {
         return slideSpeed.getAllY();
     }
 
-    public boolean isLittable() {
+    public boolean isLitable() {
         return opticProperties.isLitable();
     }
 
@@ -373,11 +373,11 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public int getActualWidth() {
-        return owner.getSprite().getActualWidth();
+        return owner.getAppearance().getActualWidth();
     }
 
     public int getActualHeight() {
-        return owner.getSprite().getActualHeight();
+        return owner.getAppearance().getActualHeight();
     }
 
     public Point getPoint(int index) {

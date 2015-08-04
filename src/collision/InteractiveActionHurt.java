@@ -8,14 +8,13 @@ package collision;
 import game.gameobject.GameObject;
 
 /**
- *
  * @author przemek
  */
 public class InteractiveActionHurt implements InteractiveAction {
 
     @Override
-    public void act(GameObject object) {
-        System.out.println(object.getName() + ": Ałaaa, no weeeź...");
+    public void act(GameObject object, int pixelsIn) {
+        System.out.println(object.getName() + ": Ałaaa... Weszło na głębokość " + pixelsIn);
     }
 
 }

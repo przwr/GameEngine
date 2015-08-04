@@ -7,11 +7,11 @@ package collision;
 
 import engine.Point;
 import game.gameobject.GameObject;
+
 import java.awt.geom.Line2D;
 import java.util.List;
 
 /**
- *
  * @author Wojtek
  */
 public class Line extends Figure {
@@ -19,14 +19,6 @@ public class Line extends Figure {
     // Class never used
     private final int xVector;
     private final int yVector;
-
-    public static Line create(int dx, int dy, GameObject owner) {
-        return new Line(0, 0, dx, dy, owner);
-    }
-
-    public static Line create(int xStart, int yStart, int xVector, int yVector, GameObject owner) {
-        return new Line(xStart, yStart, xVector, yVector, owner);
-    }
 
     private Line(int xStart, int yStart, int xVector, int yVector, GameObject owner) {
         super(xStart, yStart, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
@@ -43,6 +35,14 @@ public class Line extends Figure {
         this.xVector = xVector;
         this.yVector = yVector;
         centralize();
+    }
+
+    public static Line create(int dx, int dy, GameObject owner) {
+        return new Line(0, 0, dx, dy, owner);
+    }
+
+    public static Line create(int xStart, int yStart, int xVector, int yVector, GameObject owner) {
+        return new Line(xStart, yStart, xVector, yVector, owner);
     }
 
     private void centralize() {

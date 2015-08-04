@@ -28,11 +28,11 @@ public class SplitScreen {
     private static final setPlayerNumber[] players3v = new setPlayerNumber[3];
     private static final setPlayerNumber[] players4 = new setPlayerNumber[4];
     private static final int width3o4 = (Display.getWidth() * 3) >> 2;
-    private static final int heigth3o4 = (Display.getHeight() * 3) >> 2;
+    private static final int height3o4 = (Display.getHeight() * 3) >> 2;
     private static final int width2o3 = (Display.getWidth() << 1) / 3;
-    private static final int heigth2o3 = (Display.getHeight() << 1) / 3;
+    private static final int height2o3 = (Display.getHeight() << 1) / 3;
     private static final int width1o2 = Display.getWidth() / 2;
-    private static final int heigth1o2 = Display.getHeight() / 2;
+    private static final int height1o2 = Display.getHeight() / 2;
 
     private SplitScreen() {
     }
@@ -56,15 +56,15 @@ public class SplitScreen {
     }
 
     private static boolean isClose2(Place place) {
-        return place.players[0].getMap() == place.players[1].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width3o4 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < heigth3o4;
+        return place.players[0].getMap() == place.players[1].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width3o4 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < height3o4;
     }
 
     private static boolean isClose3(Place place) {
-        return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < heigth2o3 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[2].getY()) < heigth2o3 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < heigth2o3;
+        return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < height2o3 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[2].getY()) < height2o3 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < height2o3;
     }
 
     private static boolean isClose4(Place place) {
-        return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && place.players[0].getMap() == place.players[3].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < heigth1o2 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[2].getY()) < heigth1o2 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < heigth1o2 && FastMath.abs(place.players[0].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[3].getY()) < heigth1o2 && FastMath.abs(place.players[1].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[3].getY()) < heigth1o2 && FastMath.abs(place.players[2].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[2].getY() - place.players[3].getY()) < heigth1o2;
+        return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && place.players[0].getMap() == place.players[3].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < height1o2 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[2].getY()) < height1o2 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < height1o2 && FastMath.abs(place.players[0].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[3].getY()) < height1o2 && FastMath.abs(place.players[1].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[3].getY()) < height1o2 && FastMath.abs(place.players[2].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[2].getY() - place.players[3].getY()) < height1o2;
     }
 
     private static boolean isFar(Place place) {
@@ -113,8 +113,8 @@ public class SplitScreen {
 
     public static void initialise() {
         players2h[0] = (Place place) -> {
-            glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
-            glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
+            glViewport(0, height1o2, Display.getWidth(), height1o2);
+            glScissor(0, height1o2, Display.getWidth(), height1o2);
             glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
             place.camXStart = place.camXTStart = 0f;
             place.camYStart = place.camYTStart = -0.5f;
@@ -122,8 +122,8 @@ public class SplitScreen {
             place.camYEnd = place.camYTEnd = 0.5f;
         };
         players2h[1] = (Place place) -> {
-            glViewport(0, 0, Display.getWidth(), heigth1o2);
-            glScissor(0, 0, Display.getWidth(), heigth1o2);
+            glViewport(0, 0, Display.getWidth(), height1o2);
+            glScissor(0, 0, Display.getWidth(), height1o2);
             place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
             place.camXEnd = place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = 0.5f;
@@ -176,8 +176,8 @@ public class SplitScreen {
 
     private static void initialize2() {
         players3h[0] = (Place place) -> {
-            glViewport(0, heigth1o2, Display.getWidth(), heigth1o2);
-            glScissor(0, heigth1o2, Display.getWidth(), heigth1o2);
+            glViewport(0, height1o2, Display.getWidth(), height1o2);
+            glScissor(0, height1o2, Display.getWidth(), height1o2);
             glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
             place.camXStart = place.camXTStart = 0f;
             place.camYStart = place.camYTStart = -0.5f;
@@ -185,15 +185,15 @@ public class SplitScreen {
             place.camYEnd = place.camYTEnd = 0.5f;
         };
         players3h[1] = (Place place) -> {
-            glViewport(0, 0, width1o2, heigth1o2);
-            glScissor(0, 0, width1o2, heigth1o2);
+            glViewport(0, 0, width1o2, height1o2);
+            glScissor(0, 0, width1o2, height1o2);
             glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
             place.camYStart = place.camYTStart = place.camXStart = place.camXTStart = 0f;
             place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
         };
         players3h[2] = (Place place) -> {
-            glViewport(width1o2, 0, width1o2, heigth1o2);
-            glScissor(width1o2, 0, width1o2, heigth1o2);
+            glViewport(width1o2, 0, width1o2, height1o2);
+            glScissor(width1o2, 0, width1o2, height1o2);
             place.camXStart = place.camYStart = place.camYTStart = 0f;
             place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;
@@ -207,16 +207,16 @@ public class SplitScreen {
             place.camYEnd = place.camYTEnd = 1f;
         };
         players3v[1] = (Place place) -> {
-            glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
-            glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
+            glViewport(width1o2, height1o2, width1o2, height1o2);
+            glScissor(width1o2, height1o2, width1o2, height1o2);
             glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
             place.camXTStart = place.camXEnd = place.camYTStart = place.camYEnd = 0.5f;
             place.camXTEnd = place.camYTEnd = 1f;
             place.camXStart = place.camYStart = 0f;
         };
         players3v[2] = (Place place) -> {
-            glViewport(width1o2, 0, width1o2, heigth1o2);
-            glScissor(width1o2, 0, width1o2, heigth1o2);
+            glViewport(width1o2, 0, width1o2, height1o2);
+            glScissor(width1o2, 0, width1o2, height1o2);
             place.camXStart = place.camYStart = place.camYTStart = 0f;
             place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;
@@ -246,29 +246,29 @@ public class SplitScreen {
 
     private static void initialize3() {
         players4[0] = (Place place) -> {
-            glViewport(0, heigth1o2, width1o2, heigth1o2);
-            glScissor(0, heigth1o2, width1o2, heigth1o2);
+            glViewport(0, height1o2, width1o2, height1o2);
+            glScissor(0, height1o2, width1o2, height1o2);
             glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
             place.camXStart = place.camXTStart = 0f;
             place.camYStart = place.camYTStart = -0.5f;
             place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
         };
         players4[1] = (Place place) -> {
-            glViewport(width1o2, heigth1o2, width1o2, heigth1o2);
-            glScissor(width1o2, heigth1o2, width1o2, heigth1o2);
+            glViewport(width1o2, height1o2, width1o2, height1o2);
+            glScissor(width1o2, height1o2, width1o2, height1o2);
             place.camXTStart = place.camXEnd = place.camYTStart = place.camYEnd = 0.5f;
             place.camXTEnd = place.camYTEnd = 1f;
             place.camXStart = place.camYStart = 0f;
         };
         players4[2] = (Place place) -> {
-            glViewport(0, 0, width1o2, heigth1o2);
-            glScissor(0, 0, width1o2, heigth1o2);
+            glViewport(0, 0, width1o2, height1o2);
+            glScissor(0, 0, width1o2, height1o2);
             place.camYStart = place.camYTStart = place.camXStart = place.camXTStart = 0f;
             place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
         };
         players4[3] = (Place place) -> {
-            glViewport(width1o2, 0, width1o2, heigth1o2);
-            glScissor(width1o2, 0, width1o2, heigth1o2);
+            glViewport(width1o2, 0, width1o2, height1o2);
+            glScissor(width1o2, 0, width1o2, height1o2);
             place.camXStart = place.camYStart = place.camYTStart = 0f;
             place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;

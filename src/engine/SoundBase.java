@@ -31,9 +31,9 @@ public class SoundBase {
         fileList.stream().forEach((file) -> {
             String[] temp = file.getName().split("\\.");
             try {
-                Audio dzwiek = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
+                Audio sound = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
                 //System.out.println(temp[0]);
-                sounds.add(new Sound(temp[0], dzwiek));
+                sounds.add(new Sound(temp[0], sound));
             } catch (IOException e) {
                 ErrorHandler.error(e.toString());
             }

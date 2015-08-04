@@ -24,7 +24,10 @@ import java.util.List;
  */
 public class Methods {
 
+
     private static final Point point = new Point(0, 0);
+    public static double SQRT_ROOT_OF_2 = Math.sqrt(2);
+    public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / Math.sqrt(2);
     private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, angle, temp;
     private static int xOA, yOA, xOB, yOB, xBA, yBA, xDelta, yDelta, xS, xE, yS, yE;
 

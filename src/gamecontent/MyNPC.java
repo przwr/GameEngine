@@ -26,8 +26,8 @@ public class MyNPC extends Mob {
     public MyNPC(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
-        if (sprite != null) {
-            spritesheet = (SpriteSheet) sprite;
+        if (appearance != null) {
+            spritesheet = (SpriteSheet) appearance;
         }
     }
 
@@ -65,7 +65,7 @@ public class MyNPC extends Mob {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        if (sprite != null) {
+        if (appearance != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);

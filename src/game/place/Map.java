@@ -249,9 +249,10 @@ public abstract class Map {
 
     public void updateInteractiveObjectsFromAreasToUpdate() {
         prepareInteractive();
-        tempInteractiveObjects.stream().filter((interactive) -> (interactive.isActive())).forEach((interactive) -> {
-            interactive.updateCollision();
-            interactive.checkCollision(place.players, tempMobs);
+        tempInteractiveObjects.stream().forEach((interactive) -> {
+            interactive.update();
+            if (interactive.isActive())
+                interactive.checkCollision(place.players, tempMobs);
         });
     }
 

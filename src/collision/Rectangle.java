@@ -17,7 +17,6 @@ import java.util.List;
 import static collision.RoundRectangle.*;
 
 /**
- *
  * @author Wojtek
  */
 public class Rectangle extends Figure {
@@ -423,7 +422,7 @@ public class Rectangle extends Figure {
         if (tile) {
             return xStart;
         } else {
-            return super.getX(x);       // Jeśli jest to kolizja tilowa, to x nie ma znaczania
+            return super.getX(x);       // Jeśli jest to kolizja tilowa, to x nie ma znaczenia
         }
     }
 
@@ -432,7 +431,7 @@ public class Rectangle extends Figure {
         if (tile) {
             return yStart;
         } else {
-            return super.getY(y);       // Jeśli jest to kolizja tilowa, to y nie ma znaczania - zastępuje go yStart - dzięki temu obiekt nie musi mieć właściciela.
+            return super.getY(y);       // Jeśli jest to kolizja tilowa, to y nie ma znaczenia - zastępuje go yStart - dzięki temu obiekt nie musi mieć właściciela.
         }
     }
 
