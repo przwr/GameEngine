@@ -20,8 +20,7 @@ public class Animation implements Appearance {
     private FrameBufferedSpriteSheet fboSpriteSheet;
     private int start, end, currentFrame;
     private int framesPerDirection;
-    private boolean animate = true,
-            stopAtEnd = false;
+    private boolean animate = true, stopAtEnd = false;
 
     public Animation(SpriteSheet sprite, int delayTime) {
         this(sprite, delayTime, 0);

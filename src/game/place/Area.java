@@ -61,11 +61,20 @@ public class Area {
 
     private NavigationMesh navigationMesh;
 
+    public Area(Place place, Map map, int width, int height, int tilesCount) {
+        this.place = place;
+        this.map = map;
+        tiles = new Tile[tilesCount];
+        this.xArea = 1;
+        this.yArea = 1;
+        this.xInPixels = width;
+        this.yInPixels = height;
+    }
+
     public Area(Place place, Map map, int xArea, int yArea) {
         this.place = place;
         this.map = map;
         tiles = new Tile[X_IN_TILES * Y_IN_TILES];
-
         this.xArea = xArea;
         this.yArea = yArea;
         this.xInPixels = xArea * xAreaInPixels;

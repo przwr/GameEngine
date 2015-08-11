@@ -32,6 +32,7 @@ public abstract class GameObject {
     protected boolean visible;
     protected boolean wall;
     protected Appearance appearance;
+    protected Stats stats;
     protected String name;
     protected Map map;
     protected int area = -1;
@@ -326,5 +327,13 @@ public abstract class GameObject {
 
     public int getDirection8Way() {
         return direction / 45;
+    }
+
+    public Stats getStats() {
+        return stats;
+    }
+
+    public void delete() {
+        map.deleteObject(this);
     }
 }

@@ -9,6 +9,7 @@ import collision.*;
 import engine.*;
 import game.gameobject.Interactive;
 import game.gameobject.Player;
+import game.gameobject.PlayerStats;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import game.place.Place;
@@ -54,6 +55,7 @@ public class MyPlayer extends Player {
         }
         int[] frames = {21, 22, 23, 24, 25, 47, 48, 49, 50, 51, 73, 74, 75, 76, 77, 99, 100, 101, 102, 103, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 177, 178, 179, 180, 181, 203, 204, 205, 206, 207};
         addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CircleInteractiveCollision(32), Interactive.HURT));
+        stats = new PlayerStats(this);
     }
 
     private void initializeControllerForFirst() {

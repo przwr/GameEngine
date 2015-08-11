@@ -9,6 +9,7 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Methods;
 import game.gameobject.Mob;
+import game.gameobject.MobStats;
 import game.place.Place;
 import navmeshpathfinding.PathFindingModule;
 
@@ -22,6 +23,7 @@ public class Rabbit extends Mob {
         setCollision(Rectangle.create(width, height, OpticProperties.NO_SHADOW, this));
         collision.setMobile(true);
         setPathStrategy(PathFindingModule.GET_CLOSE, 250);
+        stats = new MobStats(this);
     }
 
     @Override
