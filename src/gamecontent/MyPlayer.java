@@ -122,7 +122,7 @@ public class MyPlayer extends Player {
             System.err.println(ex.getMessage());
         }
         appearance = new Animation(place.getSpriteSheet("test", "cloth/" + characterName), 200, framesPerDir
-                , mergedDimentions[0], centralPoint[0]);
+                /*, mergedDimentions[0], centralPoint[0]*/);
         visible = true;
         depth = 0;
         setResistance(2);
@@ -152,8 +152,9 @@ public class MyPlayer extends Player {
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
             Drawer.setCentralPoint();
+            appearance.render();
             //((Animation)appearance).renderWhole();
-            renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
+            //renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
             appearance.updateFrame();
             Drawer.returnToCentralPoint();
 
