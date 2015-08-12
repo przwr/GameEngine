@@ -1,6 +1,11 @@
 bigtree;0
-res\textures\bigtree.png
+
+bigtree.png
+
 256;512
+
 127;446
+
 256;512
+
 0;201;256;309

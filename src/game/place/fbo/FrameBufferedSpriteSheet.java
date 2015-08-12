@@ -62,6 +62,8 @@ public class FrameBufferedSpriteSheet {
             int frame = 0;
             for (FrameBufferObject frameBufferObject : frameBufferObjects) {
                 prepareTextureUpdate(frameBufferObject);
+                Drawer.drawRectangle(0, 0, fboSize, fboSize);
+                glTranslatef(xStart + frameWidth / 2, yStart + frameHeight / 2, 0);
                 frames:
                 for (int j = 0; j < yFrames; j++) {
                     for (int k = 0; k < xFrames; k++) {
@@ -93,6 +95,13 @@ public class FrameBufferedSpriteSheet {
     private void endTextureUpdate(FrameBufferObject frameBufferObject) {
         glPopMatrix();
         frameBufferObject.deactivate();
+    }
+
+    public void renderWhole() {
+        int xShift = (currentSpriteSheetFrame % xFrames) * frameWidth;
+        int yShift = fboSize - frameHeight - ((currentSpriteSheetFrame / xFrames) * frameHeight);
+        glTranslatef(xStart, yStart, 0);
+        frameBufferObjects[currentSpriteSheet].render();
     }
 
     public void render() {

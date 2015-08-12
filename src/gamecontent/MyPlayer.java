@@ -14,6 +14,7 @@ import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import game.place.Place;
 import game.place.WarpPoint;
+import game.place.fbo.FrameBufferedSpriteSheet;
 import game.text.TextController;
 import gamecontent.equipment.Cloth;
 import net.jodk.lang.FastMath;
@@ -27,16 +28,25 @@ import sprites.SpriteSheet;
 import java.io.FileNotFoundException;
 
 import static org.lwjgl.opengl.GL11.*;
+import sprites.SpriteBase;
 
 /**
  * @author przemek
  */
 public class MyPlayer extends Player {
 
+    private String characterName = "aria";
     private final int framesPerDir = 26;
+    private Cloth head;
     private Cloth torso;
     private Cloth legs;
-    private Cloth dress;
+
+    private Cloth hat;
+    private Cloth hair;
+    private Cloth shirt;
+    private Cloth gloves;
+    private Cloth pants;
+    private Cloth boots;
     private TextController textControl;
 
     //---------<('.'<) TYMCZASOWE!-------------//
@@ -90,28 +100,34 @@ public class MyPlayer extends Player {
 
         //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
         //testBody = place.getSpriteSheet("kulka1");
+        Point[] mergedDimentions = null, centralPoint = null;
         try {
             RandomGenerator r = RandomGenerator.create();
-            torso = new Cloth(r.choose("sweater", "torso", "blueSweater"), place);
-            legs = new Cloth(r.choose("boots", "legs"), place);
-            dress = r.chance(30) ? new Cloth(r.choose("dress", "blueDress"), place) : null;
-            Point[] p = SpriteSheet.getMergedDimensions(new SpriteSheet[]{legs.getLeftPart(), legs.getRightPart(),
-                    dress != null ? dress.getLeftPart() : null,
-                    dress != null ? dress.getRightPart() : null,
-                    torso.getLeftPart(), torso.getCentralPart(), torso.getRightPart()});
-            System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
-                    + "\nWymiary połączonej ubranej babki : " + p[0]
-                    + "\nPunkt centralny obrazka : " + p[1]
-                    + "\nUWAGA! wymiary nie są 2-ójkowe");
+            head = new Cloth("glowa", characterName, place);
+            hair = new Cloth("wlosy", characterName, place);
+            torso = new Cloth("tors", characterName, place);
+            legs = new Cloth("noga", characterName, place);
+            mergedDimentions = Cloth.getMergedDimensions(
+                    head, torso, legs, hair,
+                    hat, shirt, gloves, pants, boots);
+            
+            mergedDimentions[0].set(Methods.roundUpToBinaryNumber(mergedDimentions[0].getX()),
+                    Methods.roundUpToBinaryNumber(mergedDimentions[0].getY()));
+            centralPoint = new Point[] {place.getStartPointFromFile("atrapa", "cloth/" + characterName)};
+            /*System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
+             + "\nWymiary połączonej ubranej babki : " + p
+             + "\nPunkt centralny obrazka : "
+             + "\nUWAGA! wymiary nie są 2-ójkowe");*/
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
-        appearance = new Animation(place.getSpriteSheet("cloth/test"), 200, framesPerDir);
+        appearance = new Animation(place.getSpriteSheet("test", "cloth/" + characterName), 200, framesPerDir
+                /*, mergedDimentions[0], centralPoint[0]*/);
         visible = true;
         depth = 0;
         setResistance(2);
         if (lights.isEmpty()) {
-            addLight(Light.create(place.getSpriteInSize("light", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
+            addLight(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
     }
@@ -137,7 +153,8 @@ public class MyPlayer extends Player {
             glTranslatef(0, (int) -jumpHeight, 0);
             Drawer.setCentralPoint();
             appearance.render();
-//            renderClothed(animation.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
+            //((Animation)appearance).renderWhole();
+            //renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
             appearance.updateFrame();
             Drawer.returnToCentralPoint();
 
@@ -164,32 +181,38 @@ public class MyPlayer extends Player {
 //        glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);  // Translatuję przy aktualizacji, odkomentuj, jakbyś testował <(,o,<)
         if (legs != null) {
             if (rightUp) {
-                legs.getLeftPart().renderPieceHere(frame);
-                legs.getRightPart().renderPieceHere(frame);
+                legs.getFirstPart().renderPieceAndReturn(frame);
+                legs.getLastPart().renderPieceAndReturn(frame);
             } else {
-                legs.getRightPart().renderPieceHere(frame);
-                legs.getLeftPart().renderPieceHere(frame);
+                legs.getLastPart().renderPieceAndReturn(frame);
+                legs.getFirstPart().renderPieceAndReturn(frame);
             }
         }
-        if (dress != null) {
+        if (pants != null) {
             if (frontUp) {
-                dress.getRightPart().renderPieceHere(frame);
-                dress.getLeftPart().renderPieceHere(frame);
+                pants.getLastPart().renderPieceAndReturn(frame);
+                pants.getFirstPart().renderPieceAndReturn(frame);
             } else {
-                dress.getLeftPart().renderPieceHere(frame);
-                dress.getRightPart().renderPieceHere(frame);
+                pants.getFirstPart().renderPieceAndReturn(frame);
+                pants.getLastPart().renderPieceAndReturn(frame);
             }
         }
         if (torso != null) {
             if (rightUp) {
-                torso.getLeftPart().renderPieceHere(frame);
-                torso.getCentralPart().renderPieceHere(frame);
-                torso.getRightPart().renderPieceHere(frame);
+                torso.getSecondPart().renderPieceAndReturn(frame);
+                torso.getFirstPart().renderPieceAndReturn(frame);
+                torso.getLastPart().renderPieceAndReturn(frame);
             } else {
-                torso.getRightPart().renderPieceHere(frame);
-                torso.getCentralPart().renderPieceHere(frame);
-                torso.getLeftPart().renderPieceHere(frame);
+                torso.getLastPart().renderPieceAndReturn(frame);
+                torso.getFirstPart().renderPieceAndReturn(frame);
+                torso.getSecondPart().renderPieceAndReturn(frame);
             }
+        }
+        if (head != null) {
+            head.getFirstPart().renderPieceAndReturn(frame);
+        }
+        if (hair != null) {
+            hair.getFirstPart().renderPieceAndReturn(frame);
         }
     }
 

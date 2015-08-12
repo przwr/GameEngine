@@ -163,20 +163,24 @@ public abstract class Place extends ScreenPlace {
         return sprites;
     }
 
-    public Sprite getSprite(String textureKey) {
-        return sprites.getSprite(textureKey);
+    public Sprite getSprite(String textureKey, String folder) {
+        return sprites.getSprite(textureKey, folder);
     }
 
-    public Sprite getSpriteInSize(String textureKey, int width, int height) {
-        return sprites.getSpriteInSize(textureKey, width, height);
+    public Sprite getSpriteInSize(String textureKey, String folder, int width, int height) {
+        return sprites.getSpriteInSize(textureKey, folder, width, height);
     }
 
-    public SpriteSheet getSpriteSheet(String textureKey) {
-        return sprites.getSpriteSheet(textureKey);
+    public SpriteSheet getSpriteSheet(String textureKey, String folder) {
+        return sprites.getSpriteSheet(textureKey, folder);
     }
 
-    public SpriteSheet getSpriteSheetSetScale(String textureKey) {
-        return sprites.getSpriteSheetSetScale(textureKey);
+    public SpriteSheet getSpriteSheetSetScale(String textureKey, String folder) {
+        return sprites.getSpriteSheetSetScale(textureKey, folder);
+    }
+    
+    public Point getStartPointFromFile(String textureKey, String folder) {
+        return sprites.getStartPointFromFile(textureKey, folder);
     }
 
     public SoundBase getSounds() {
