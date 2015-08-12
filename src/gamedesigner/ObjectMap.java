@@ -125,29 +125,6 @@ public class ObjectMap extends Map {
         }
     }
 
-    @Override
-    public void clear() {
-        Tile background = getBackground();
-        for (int y = 0; y < heightInTiles; y++) {
-            for (int x = 0; x < widthInTiles; x++) {
-                setTile(x, y, background);
-            }
-        }
-        for (Area area : areas) {
-            area.clear();
-        }
-        GameObject object;
-        for (Area area : areas) {
-            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext(); ) {
-                object = iterator.next();
-                if (object instanceof TemporaryBlock) {
-                    ((TemporaryBlock) object).clear();
-                    iterator.remove();
-                }
-            }
-        }
-    }
-
     public ArrayList<TemporaryBlock> getBlock(int x, int y, int width, int height) {
         ArrayList<TemporaryBlock> tmpList = new ArrayList<>();
         for (Area area : areas) {
@@ -381,6 +358,74 @@ public class ObjectMap extends Map {
         }
         map.add(linking);
         return map;
+    }
+
+    @Override
+    public void clear() {
+        Tile background = getBackground();
+        for (int y = 0; y < heightInTiles; y++) {
+            for (int x = 0; x < widthInTiles; x++) {
+                setTile(x, y, background);
+            }
+        }
+        for (Area area : areas) {
+            area.clear();
+        }
+        GameObject object;
+        for (Area area : areas) {
+            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext(); ) {
+                object = iterator.next();
+                if (object instanceof TemporaryBlock) {
+                    ((TemporaryBlock) object).clear();
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void createAreas() {
+        xAreas = 1;
+        yAreas = 1;
+        areas = new Area[1];
+        areas[0] = new Area(place, this, width, height, widthInTiles * heightInTiles);
+        placement = new Placement(this);
+    }
+
+    @Override
+    protected int getAreaIndexCoordinatesInTiles(int x, int y) {
+        return 0;
+    }
+
+    @Override
+    protected int getXInArea(int x) {
+        return x;
+    }
+
+    @Override
+    protected int getYInArea(int y) {
+        return y;
+    }
+
+    @Override
+    public int getAreaIndex(int x, int y) {
+        return 0;
+    }
+
+    @Override
+    protected void renderArea(int i) {
+        for (int yTiles = 0; yTiles < heightInTiles; yTiles++) {
+            if (cameraYStart < (yTiles + 1) * tileSize && cameraYEnd > yTiles * tileSize) {
+                for (int xTiles = 0; xTiles < widthInTiles; xTiles++) {
+                    if (cameraXStart < (xTiles + 1) * tileSize && cameraXEnd > xTiles * tileSize) {
+                        tempTile = areas[i].getTile(xTiles, yTiles);
+                        if (tempTile != null && tempTile.isVisible()) {
+                            tempTile.renderSpecific(cameraXOffEffect, cameraYOffEffect, xTiles * tileSize, yTiles * tileSize);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override

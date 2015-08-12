@@ -39,7 +39,7 @@ public class Interactive {
             mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || mob != owner))).forEach((mob) -> {
                 int pixelsIn = collision.collide(mob);
                 if (pixelsIn > 0) {
-                    action.act(mob, pixelsIn);
+                    action.act(mob, owner, pixelsIn);
                 }
             });
         }
@@ -48,7 +48,7 @@ public class Interactive {
                 if ((COLLIDES_WITH_SELF || player != owner)) {
                     int pixelsIn = collision.collide((Player) player);
                     if (pixelsIn > 0) {
-                        action.act(player, pixelsIn);
+                        action.act(player, owner, pixelsIn);
                     }
                 }
             }

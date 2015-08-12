@@ -30,34 +30,34 @@ import static game.place.Place.yAreaInPixels;
  */
 public abstract class Map {
 
-    private static final PointContainer DIFFERENT_AREAS = new PointContainer(0);
-    private static Tile tempTile;
+    protected static final PointContainer DIFFERENT_AREAS = new PointContainer(0);
+    protected static Tile tempTile;
     public final Place place;
-    public final Area[] areas;
     protected final int tileSize;
     protected final int widthInTiles, heightInTiles;
     protected final BlueArray<GameObject> foregroundTiles = new BlueArray<>();
-    private final String name;
-    private final int width;
-    private final int height;
-    private final short mapID;
-    private final PointContainer tempTilePositions = new PointContainer();
-    private final Set<Block> tempBlocks = new HashSet<>();
-    private final BlueArray<Mob> tempMobs = new BlueArray<>();
-    private final BlueArray<Interactive> tempInteractiveObjects = new BlueArray<>();
-    private final BlueArray<GameObject> topObjects = new BlueArray<>();
-    private final ArrayList<WarpPoint> warps = new ArrayList<>();
-    private final BlueArray<Light> lights = new BlueArray<>();
-    private final BlueArray<Block> blocks = new BlueArray<>();
-    private final BlueArray<Light> visibleLights = new BlueArray<>();
-    private final Set<Integer> areasToUpdate = new HashSet<>(36);
-    private final Placement placement;
-    private final int xAreas;
-    private final int yAreas;
+    protected final String name;
+    protected final int width;
+    protected final int height;
+    protected final short mapID;
+    protected final PointContainer tempTilePositions = new PointContainer();
+    protected final Set<Block> tempBlocks = new HashSet<>();
+    protected final BlueArray<Mob> tempMobs = new BlueArray<>();
+    protected final BlueArray<Interactive> tempInteractiveObjects = new BlueArray<>();
+    protected final BlueArray<GameObject> topObjects = new BlueArray<>();
+    protected final ArrayList<WarpPoint> warps = new ArrayList<>();
+    protected final BlueArray<Light> lights = new BlueArray<>();
+    protected final BlueArray<Block> blocks = new BlueArray<>();
+    protected final BlueArray<Light> visibleLights = new BlueArray<>();
+    protected final Set<Integer> areasToUpdate = new HashSet<>(36);
+    public Area[] areas;
+    protected Placement placement;
+    protected int xAreas;
+    protected int yAreas;
     protected short mobID = 0;
-    private Color lightColor;
-    private List<GameObject> depthObjects;
-    private int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
+    protected Color lightColor;
+    protected List<GameObject> depthObjects;
+    protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
@@ -68,7 +68,11 @@ public abstract class Map {
         this.tileSize = tileSize;
         widthInTiles = width / tileSize;
         heightInTiles = height / tileSize;
-        xAreas = (widthInTiles / Area.X_IN_TILES) + (widthInTiles % Area.X_IN_TILES != 0 ? 1 : 0);
+        createAreas();
+    }
+
+    public void createAreas() {     // must be called after constructor super
+        xAreas = (this.widthInTiles / Area.X_IN_TILES) + (widthInTiles % Area.X_IN_TILES != 0 ? 1 : 0);
         yAreas = (heightInTiles / Area.Y_IN_TILES) + (heightInTiles % Area.Y_IN_TILES != 0 ? 1 : 0);
         areas = new Area[xAreas * yAreas];
         for (int areaIndex = 0; areaIndex < areas.length; areaIndex++) {
@@ -346,19 +350,23 @@ public abstract class Map {
         Drawer.refreshForRegularDrawing();
         for (int i : placement.getNearAreas(camera.getArea())) {
             if (i >= 0 && i < areas.length) {
-                int yTemp = (i / xAreas) * Y_IN_TILES;
-                int xTemp = (i % xAreas) * X_IN_TILES;
-                for (int yTiles = 0; yTiles < Y_IN_TILES; yTiles++) {
-                    int y = yTemp + yTiles;
-                    if (cameraYStart < (y + 1) * tileSize && cameraYEnd > y * tileSize) {
-                        for (int xTiles = 0; xTiles < X_IN_TILES; xTiles++) {
-                            int x = xTemp + xTiles;
-                            if (cameraXStart < (x + 1) * tileSize && cameraXEnd > x * tileSize) {
-                                tempTile = areas[i].getTile(xTiles, yTiles);
-                                if (tempTile != null && tempTile.isVisible()) {
-                                    tempTile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
-                                }
-                            }
+                renderArea(i);
+            }
+        }
+    }
+
+    protected void renderArea(int i) {
+        int yTemp = (i / xAreas) * Y_IN_TILES;
+        int xTemp = (i % xAreas) * X_IN_TILES;
+        for (int yTiles = 0; yTiles < Y_IN_TILES; yTiles++) {
+            int y = yTemp + yTiles;
+            if (cameraYStart < (y + 1) * tileSize && cameraYEnd > y * tileSize) {
+                for (int xTiles = 0; xTiles < X_IN_TILES; xTiles++) {
+                    int x = xTemp + xTiles;
+                    if (cameraXStart < (x + 1) * tileSize && cameraXEnd > x * tileSize) {
+                        tempTile = areas[i].getTile(xTiles, yTiles);
+                        if (tempTile != null && tempTile.isVisible()) {
+                            tempTile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
                         }
                     }
                 }
@@ -474,7 +482,7 @@ public abstract class Map {
 
     public Tile getTile(int x, int y) {
         if (x >= 0 && x < widthInTiles && y >= 0 && y < heightInTiles) {
-            return areas[getAreaIndexCoordinatesInTiles(x, y)].getTile(x % (X_IN_TILES), y % (Y_IN_TILES));
+            return areas[getAreaIndexCoordinatesInTiles(x, y)].getTile(getXInArea(x), getYInArea(y));
         }
         return null;
     }
@@ -483,7 +491,7 @@ public abstract class Map {
         return areas.length;
     }
 
-    private int getAreaIndexCoordinatesInTiles(int x, int y) {
+    protected int getAreaIndexCoordinatesInTiles(int x, int y) {
         return x / X_IN_TILES + y / Y_IN_TILES * xAreas;
     }
 
@@ -515,8 +523,16 @@ public abstract class Map {
 
     public void setTile(int x, int y, Tile tile) {
         if (x < widthInTiles && y < heightInTiles) {
-            areas[getAreaIndexCoordinatesInTiles(x, y)].setTile(x % (X_IN_TILES), y % (Y_IN_TILES), tile);
+            areas[getAreaIndexCoordinatesInTiles(x, y)].setTile(getXInArea(x), getYInArea(y), tile);
         }
+    }
+
+    protected int getXInArea(int x) {
+        return x % (X_IN_TILES);
+    }
+
+    protected int getYInArea(int y) {
+        return y % (Y_IN_TILES);
     }
 
     protected void setColor(Color color) {

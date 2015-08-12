@@ -79,9 +79,10 @@ public abstract class Mob extends Entity {
             appearance.render();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
         }
-        Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
-                (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont,
-                map.getLightColor());
+        if (map != null)
+            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
+                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont,
+                    map.getLightColor());
         glPopMatrix();
     }
 

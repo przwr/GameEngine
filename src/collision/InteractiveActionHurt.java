@@ -13,8 +13,8 @@ import game.gameobject.GameObject;
 public class InteractiveActionHurt implements InteractiveAction {
 
     @Override
-    public void act(GameObject object, int pixelsIn) {
-        System.out.println(object.getName() + ": Ałaaa... Weszło na głębokość " + pixelsIn);
+    public void act(GameObject object, GameObject activator, int pixelsIn) {
+        object.getStats().decreaseHealth((pixelsIn * activator.getStats().getStrength()) / 10);
+        System.out.println(object.getName() + ": Aałła.. Zostało mi " + (100 * object.getStats().getHealth() / object.getStats().getMaxHealth()) + " % życia!");
     }
-
 }
