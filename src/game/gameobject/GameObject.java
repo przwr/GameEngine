@@ -334,6 +334,7 @@ public abstract class GameObject {
     }
 
     public void delete() {
-        map.deleteObject(this);
+        if (map != null)
+            map.deleteObject(this);
     }
 }

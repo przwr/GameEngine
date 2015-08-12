@@ -5,10 +5,12 @@
  */
 package game.place;
 
-import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Point;
 import sprites.SpriteSheet;
+
+import static collision.OpticProperties.FULL_SHADOW;
+import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 
 /**
  * @author Wojtek
@@ -23,7 +25,7 @@ public class ForegroundTile extends Tile {
         solid = wall;
         name = "FGTile";
         tmpYStart = yStart;
-        int type = wall ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW;
+        int type = wall ? FULL_SHADOW : IN_SHADE_NO_SHADOW;
         setCollision(Rectangle.create(0, yStart, size, size, type, this));
         simpleLighting = !round;
     }

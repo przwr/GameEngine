@@ -5,12 +5,12 @@
  */
 package gamecontent;
 
+import collision.Rectangle;
 import game.gameobject.GameObject;
 import game.gameobject.LightSource;
-import game.place.Map;
-import game.place.Place;
-import game.place.PuzzleObject;
-import game.place.Tile;
+import game.place.*;
+
+import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 
 /**
  * @author Wojtek
@@ -36,12 +36,12 @@ public class GladeMap extends Map {
         test = new PuzzleObject("smukly", place);
         test.placePuzzle(-1, 0, this);
 
-//        WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
-//        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
-//        addObject(warp);
-//        addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
-//        PuzzleObject portal = new PuzzleObject("portal", place);
-//        portal.placePuzzle(20, 20, this);
+        WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
+        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
+        addObject(warp);
+        addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
+        PuzzleObject portal = new PuzzleObject("portal", place);
+        portal.placePuzzle(20, 20, this);
 
         long start = System.nanoTime();
         generateNavigationMeshes();

@@ -49,7 +49,7 @@ public abstract class Mob extends Entity {
             pathStrategy.findPath(this, pathData, prey.getX(), prey.getY());
             xSpeed = pathData.getXSpeed();
             ySpeed = pathData.getYSpeed();
-//            changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
+            changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
         }
     }
 

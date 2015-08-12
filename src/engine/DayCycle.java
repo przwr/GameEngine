@@ -21,7 +21,7 @@ public class DayCycle {
     private long currentTime;
     private long difference;
 
-    // TO DO stop / start Time!
+    // TODO stop - start Time!
     public DayCycle() {
         midnightTime = System.currentTimeMillis();
     }

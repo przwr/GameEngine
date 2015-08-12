@@ -161,9 +161,12 @@ public class Renderer {
         float lightBrightness = FastMath.max(color.r, FastMath.max(color.g, color.b));
         float lightStrength = 6 - (int) (10 * lightBrightness);
         float lightColor;
-        if (lightStrength <= 2) {
+        if (lightBrightness >= 0.66) {
+            lightStrength = 1;
+            lightColor = 1.00f - 0.9f * lightBrightness; // ma być 0.05 dla 1.0
+        } else if (lightBrightness >= 0.33) {
             lightStrength = 2;
-            lightColor = 1.00f - 0.95f * lightBrightness;
+            lightColor = 1.46f - 2f * lightBrightness; // ma być 0.8 dla 0.33
         } else {
             lightStrength = 3;
             lightColor = 1.00f - 1.5f * lightBrightness;

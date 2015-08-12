@@ -14,6 +14,8 @@ import game.place.ForegroundTile;
 import java.util.ArrayList;
 import java.util.List;
 
+import static collision.OpticProperties.FULL_SHADOW;
+import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -32,10 +34,10 @@ public class Block extends GameObject {
         name = "area";
         solid = visible = true;
         if (round) {
-            setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
+            setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, FULL_SHADOW, shadowHeight, this));
         } else {
-            setCollision(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.FULL_SHADOW, shadowHeight, this));
-            top.add(Rectangle.createShadowHeight(0, 0, width, height, OpticProperties.IN_SHADE_NO_SHADOW, shadowHeight + height, this));
+            setCollision(Rectangle.createShadowHeight(0, 0, width, height, FULL_SHADOW, shadowHeight, this));
+            top.add(Rectangle.createShadowHeight(0, 0, width, height, IN_SHADE_NO_SHADOW, shadowHeight + height, this));
             simpleLighting = true;
         }
     }
