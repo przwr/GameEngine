@@ -62,7 +62,7 @@ public class ObjectPlace extends Place {
     @Override
     public void generateAsGuest() {
         objMap = new ObjectMap(mapIDCounter++, this, 10240, 10240, Place.tileSize);
-        ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo"), this);
+        ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo", ""), this);
         guiHandler = new GUIHandler(this);
         maps.add(objMap);
         editor = ((ObjectPlayer) players[0]);
@@ -269,7 +269,7 @@ public class ObjectPlace extends Place {
         String[] file = name.split("\\.");
         if (file[1].equals("spr")) {
             try {
-                ui.setSpriteSheet(sprites.getSpriteSheet(file[0]));
+                ui.setSpriteSheet(sprites.getSpriteSheet(file[0], ""));
                 printMessage("SpriteSheet \"" + name + "\" was loaded");
             } catch (java.lang.ClassCastException e) {
                 printMessage("\"" + name + "\" is not a SpriteSheet!");

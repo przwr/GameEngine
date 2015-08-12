@@ -36,7 +36,7 @@ public class ObjectMap extends Map {
         centralPoint = new CentralPoint(0, 0, objPlace);
         addObject(centralPoint);
 
-        background = new Tile(place.getSpriteSheet("tlo"), 1, 8);
+        background = new Tile(place.getSpriteSheet("tlo", ""), 1, 8);
         background.setDepth(-1);
         isBackground = true;
         areTilesVisible = true;

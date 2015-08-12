@@ -32,40 +32,66 @@ public class SpriteBase {
     public SpriteBase() {
     }
 
-    public Sprite getSprite(String textureKey) {
+    public Sprite getSprite(String textureKey, String folder) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)) {
                 return sprite;
             }
         }
-        Sprite newSprite = loadSprite(textureKey);
+        Sprite newSprite = loadSprite(textureKey, folder);
         if (newSprite != null) {
             sprites.add(newSprite);
         }
         return newSprite;
     }
 
-    public SpriteSheet getSpriteSheet(String textureKey) {
+    public SpriteSheet getSpriteSheet(String textureKey, String folder) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)) {
                 return (SpriteSheet) sprite;
             }
         }
-        SpriteSheet temp = (SpriteSheet) loadSprite(textureKey);
+        SpriteSheet temp = (SpriteSheet) loadSprite(textureKey, folder);
         if (temp != null) {
             sprites.add(temp);
         }
         return temp;
     }
 
-    private Sprite loadSprite(String name) {
+    public Point getStartPointFromFile(String name, String folder) {
+        for (Sprite sprite : sprites) {
+            if (sprite.getKey().equals(name)) {
+                return new Point(sprite.xStart, sprite.yStart);
+            }
+        }
+        int startX = 0, startY = 0;
+        try (BufferedReader input = new BufferedReader(
+                new FileReader("res/textures/" + folder + "/" + name + ".spr"))) {
+            input.readLine();
+            input.readLine();
+            input.readLine();
+
+            String[] data = input.readLine().split(";");
+            startX = Integer.parseInt(data[0]);
+            startY = Integer.parseInt(data[1]);
+
+            input.close();
+        } catch (IOException e) {
+            ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
+            return null;
+        }
+        return new Point(startX, startY);
+    }
+
+    private Sprite loadSprite(String name, String folder) {
         int width, height, startX, startY, pieceWidth, pieceHeight, xOffset, yOffset, actualWidth, actualHeight;
         boolean spriteSheet, movingStart = false;
         Point[] startPoints = null;
         String sprite, key;
         Texture texture;
         Sprite image;
-        try (BufferedReader input = new BufferedReader(new FileReader("res/textures/" + name + ".spr"))) {
+        folder = "res/textures/" + folder + "/";
+        try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];
@@ -122,11 +148,12 @@ public class SpriteBase {
             }
             input.close();
         } catch (IOException e) {
-            ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
+            ErrorHandler.error("File " + folder + name + " not found!\n" + e.getMessage());
             return null;
         }
         try {
-            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
+            texture = TextureLoader.getTexture("png",
+                    ResourceLoader.getResourceAsStream(folder + sprite), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -149,7 +176,7 @@ public class SpriteBase {
         return image;
     }
 
-    public Sprite getSpriteInSize(String textureKey, int width, int height) {
+    public Sprite getSpriteInSize(String textureKey, String folder, int width, int height) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)
                     && (sprite.getWidth() == width)
@@ -157,16 +184,17 @@ public class SpriteBase {
                 return sprite;
             }
         }
-        Sprite newSprite = loadSpriteInSize(textureKey, width, height);
+        Sprite newSprite = loadSpriteInSize(textureKey, folder, width, height);
         sprites.add(newSprite);
         return newSprite;
     }
 
-    private Sprite loadSpriteInSize(String name, int width, int height) {
+    private Sprite loadSpriteInSize(String name, String folder, int width, int height) {
         String image, key;
         Texture texture;
         Sprite sprite;
-        try (BufferedReader input = new BufferedReader(new FileReader("res/textures/" + name + ".spr"))) {
+        folder = "res/textures/" + folder + "/";
+        try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];
@@ -178,7 +206,7 @@ public class SpriteBase {
             return null;
         }
         try {
-            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(image), GL_LINEAR);
+            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(folder + image), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -188,7 +216,7 @@ public class SpriteBase {
         return sprite;
     }
 
-    public SpriteSheet getSpriteSheetSetScale(String textureKey) {
+    public SpriteSheet getSpriteSheetSetScale(String textureKey, String folder) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)
                     && (sprite.getWidth() == (int) (sprite.getWidthWhole() * Settings.nativeScale)
@@ -196,18 +224,19 @@ public class SpriteBase {
                 return (SpriteSheet) sprite;
             }
         }
-        SpriteSheet temp = (SpriteSheet) loadSpriteSetScale(textureKey);
+        SpriteSheet temp = (SpriteSheet) loadSpriteSetScale(textureKey, folder);
         sprites.add(temp);
         return temp;
     }
 
-    private Sprite loadSpriteSetScale(String name) {
+    private Sprite loadSpriteSetScale(String name, String folder) {
         int width, height, startX, startY, pieceWidth, pieceHeight;
         boolean spriteSheet;
         String sprite, key;
         Texture texture;
         Sprite image;
-        try (BufferedReader input = new BufferedReader(new FileReader("res/textures/" + name + ".spr"))) {
+        folder = "res/textures/" + folder + "/";
+        try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];
@@ -229,7 +258,8 @@ public class SpriteBase {
             return null;
         }
         try {
-            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite), GL_LINEAR);
+            texture = TextureLoader.getTexture("png", 
+                    ResourceLoader.getResourceAsStream(folder + sprite), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;

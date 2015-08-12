@@ -64,7 +64,7 @@ public class TextController extends GUIObject {
         littleFont = place.fonts.getFont("Amble-Regular", 0, 20);
         started = false;
         priority = 1;
-        frame = place.getSpriteSheet("messageFrame");
+        frame = place.getSpriteSheet("messageFrame", "");
         rows = 3;
         speakers = new ArrayList<>(1);
         portraits = new ArrayList<>(1);
@@ -89,7 +89,7 @@ public class TextController extends GUIObject {
                             speakers.add(tab[1]);
                             break;
                         case "po":
-                            portraits.add(new Portrait(place.getSpriteSheet(tab[1]), tab[2].equals("1")));
+                            portraits.add(new Portrait(place.getSpriteSheet(tab[1], ""), tab[2].equals("1")));
                             break;
                         case "co":
                             colors.add(new Color(Integer.parseInt(tab[1], 16)));

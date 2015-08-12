@@ -1,6 +1,11 @@
 banana;0
-res\textures\banana.png
+
+banana.png
+
 64;64
+
 0;0
+
 64;64
+
 0;0;64;64

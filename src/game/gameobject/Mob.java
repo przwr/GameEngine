@@ -25,7 +25,7 @@ public abstract class Mob extends Entity {
         this.solid = solid;
         this.range = range;
         this.setMaxSpeed(speed);
-        this.appearance = place.getSprite(spriteName);
+        this.appearance = place.getSprite(spriteName, "");
         initialize(name, x, y);
         this.mobID = mobID;
 //        addInteractive(new Interactive(this, Interactive.ALWAYS, new CircleInteractiveCollision(32), Interactive.HURT));

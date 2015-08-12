@@ -100,6 +100,14 @@ public class Methods {
         return FastMath.acos(((B * B) + (A * A) - (AB * AB)) / (2 * B * A));
     }
 
+    public static int roundUpToBinaryNumber(int num) {
+        int ret = 2;
+        while (num > ret) {
+            ret *= 2;
+        }
+        return ret;
+    }
+    
     public static int interval(int leftBorder, int x, int rightBorder) {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }

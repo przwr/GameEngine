@@ -5,6 +5,7 @@
  */
 package gamecontent.equipment;
 
+import engine.Point;
 import game.place.Place;
 import sprites.SpriteSheet;
 
@@ -19,77 +20,50 @@ public class Cloth {
 
     private final ArrayList<SpriteSheet> list;
 
-    public Cloth(String name, Place place) throws FileNotFoundException {
-        if (new File("res/textures/cloth/" + name + ".spr").exists()) {
-            list = new ArrayList<>(1);
-            list.add(place.getSpriteSheet("cloth/" + name));
-        } else {
-            list = new ArrayList<>(2);
-            int i = 0;
-            while (new File("res/textures/cloth/" + name + i + ".spr").exists()) {
-                list.add(place.getSpriteSheet("cloth/" + name + i));
-                i++;
-            }
+    public Cloth(String cloth, String character, Place place) throws FileNotFoundException {
+        list = new ArrayList<>(2);
+        int i = 0;
+        while (new File("res/textures/cloth/" + character + "/" + cloth + (i > 0 ? i : "") + ".spr").exists()) {
+            list.add(place.getSpriteSheet(cloth + (i > 0 ? i : ""), "cloth/" + character));
+            i++;
         }
         if (list.isEmpty()) {
-            throw new FileNotFoundException(name);
+            throw new FileNotFoundException(cloth);
         }
     }
-    /*
-     public void addClothes(ArrayList<ClothPart> otherList, int addPriority) {
-     for (ClothPart cp : list) {
-     cp.priority += addPriority;
-     }
-     otherList.addAll(list);
-     }
-     */
 
-    public SpriteSheet getLeftPart() {
-        return list.get(0);
-    }
-
-    public SpriteSheet getRightPart() {
-        return list.get(list.size() - 1);
-    }
-
-    public SpriteSheet getCentralPart() {
+    public SpriteSheet getSecondPart() {
         if (list.size() > 2) {
             return list.get(1);
         }
         return null;
     }
-    /*
-     public static void sortClothes(ArrayList<ClothPart> list) {
-     int i, j, newValue;
-     ClothPart cloth;
-     for (i = 1; i < list.size(); i++) {
-     cloth = list.get(i);
-     newValue = cloth.priority;
-     j = i;
-     while (j > 0 && list.get(j - 1).priority > newValue) {
-     list.set(j, list.get(j - 1));
-     j--;
-     }
-     list.set(j, cloth);
-     }
-     }
 
-     public class ClothPart {
+    public SpriteSheet getLastPart() {
+        return list.get(list.size() - 1);
+    }
 
-     int priority;
-     SpriteSheet sprite;
+    public SpriteSheet getFirstPart() {
+        return list.get(0);
+    }
 
-     protected ClothPart(int priority, SpriteSheet sprite) {
-     this.priority = priority;
-     this.sprite = sprite;
-     }
-
-     public int getPriority() {
-     return priority;
-     }
-
-     public SpriteSheet getAppearance() {
-     return sprite;
-     }
-     }*/
+    public static Point[] getMergedDimensions(Cloth... list) {
+        int length = 0;
+        for (Cloth c : list) {
+            if (c != null) {
+                length += c.list.size();
+            }
+        }
+        SpriteSheet[] slist = new SpriteSheet[length];
+        int i = 0;
+        for (Cloth c : list) {
+            if (c != null) {
+                for (SpriteSheet s : c.list) {
+                    slist[i] = s;
+                    i++;
+                }
+            }
+        }
+        return SpriteSheet.getMergedDimensions(slist);
+    }
 }

@@ -7,6 +7,7 @@ package sprites;
 
 import engine.Delay;
 import engine.Methods;
+import engine.Point;
 import game.gameobject.Player;
 import game.place.fbo.FrameBufferedSpriteSheet;
 
@@ -34,7 +35,18 @@ public class Animation implements Appearance {
         delay = new Delay(delayTime);
         delay.start();
         this.framesPerDirection = framesPerDirection;
-//        fboSpriteSheet = new FrameBufferedSpriteSheet(64, 116, 256, sprite.getXStart(), sprite.getYStart());
+    }
+    
+    public Animation(SpriteSheet sprite, int delayTime, int framesPerDirection, 
+            Point dimensions, Point centralPoint) {
+        this.spriteSheet = sprite;
+        this.start = currentFrame = 0;
+        this.end = spriteSheet.getSize() - 1;
+        delay = new Delay(delayTime);
+        delay.start();
+        this.framesPerDirection = framesPerDirection;
+        fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(), 
+                framesPerDirection * 8, -centralPoint.getX(), -centralPoint.getY());
     }
 
     private void setCurrentFrame(int newFrame) {
@@ -44,12 +56,14 @@ public class Animation implements Appearance {
         }
     }
 
+    @Override
     public void updateTexture(Player owner) {
         if (fboSpriteSheet != null) {
             fboSpriteSheet.updateTexture(owner);
         }
     }
 
+    @Override
     public void updateFrame() {
         /*System.out.println(animate
          + " d: " + delay.isOver()
@@ -112,6 +126,14 @@ public class Animation implements Appearance {
         }
     }
 
+    public void renderWhole() {
+        if (fboSpriteSheet != null) {
+            fboSpriteSheet.renderWhole();
+        } else {
+            spriteSheet.renderPiece(currentFrame);
+        }
+    }
+    
     @Override
     public void renderMirrored() {
         spriteSheet.renderPieceMirrored(currentFrame);
@@ -134,6 +156,7 @@ public class Animation implements Appearance {
         fboSpriteSheet.setUpToDate(upToDate);
     }
 
+    @Override
     public int getCurrentFrameIndex() {
         return currentFrame;
     }

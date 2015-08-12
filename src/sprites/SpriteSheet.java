@@ -65,7 +65,7 @@ public class SpriteSheet extends Sprite {
         return new SpriteSheet(texture, widthWhole, heightWhole, width, height, xStart, yStart, spriteBase);
     }
 
-    public static Point[] getMergedDimensions(SpriteSheet[] list) {
+    public static Point[] getMergedDimensions(SpriteSheet... list) {
         int xB = Integer.MAX_VALUE, yB = Integer.MAX_VALUE,
                 xE = 0, yE = 0, tmpXS, tmpYS, tmpXE, tmpYE;
         for (SpriteSheet s : list) {
@@ -88,8 +88,7 @@ public class SpriteSheet extends Sprite {
                 }
             }
         }
-        return new Point[]{new Point(xE - xB, yE - yB),
-                new Point(FastMath.abs(xB), FastMath.abs(yB))};
+        return new Point[] {new Point(xE - xB, yE - yB), new Point(xB, yB)};
     }
 
     private void setTilesCount(boolean scale) {
@@ -142,6 +141,23 @@ public class SpriteSheet extends Sprite {
             int y = (int) (piece / xTiles);
             frame = piece;
             renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+        }
+    }
+
+    public void renderPieceAndReturn(int piece) {
+        if (isValidPiece(piece)) {
+            int x = (int) (piece % xTiles);
+            int y = (int) (piece / xTiles);
+            frame = piece;
+            renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+            if (!isStartMoving) {
+                if (xStart != 0 && yStart != 0) {
+                    Drawer.translate(-xStart, -yStart);
+                }
+            } else {
+                Drawer.translate(-(xStart + startingPoints[frame].getX()),
+                        -(yStart + startingPoints[frame].getY()));
+            }
         }
     }
 

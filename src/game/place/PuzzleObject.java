@@ -125,7 +125,7 @@ public class PuzzleObject {
 
     private void decodeTile() {
         if (!lineTab[3].equals("")) {
-            tmpSS = place.getSpriteSheet(lineTab[3]);
+            tmpSS = place.getSpriteSheet(lineTab[3], "");
         }
         tmpTile = new Tile(tmpSS, Integer.parseInt(lineTab[4]), Integer.parseInt(lineTab[5]));
         index = 6;
@@ -139,7 +139,7 @@ public class PuzzleObject {
 
     private void decodeFGTile() {
         if (!lineTab[4].equals("")) {
-            tmpSS = place.getSpriteSheet(lineTab[4]);
+            tmpSS = place.getSpriteSheet(lineTab[4], "");
         }
         tmpFgt = new FGTileContainer(tmpSS, tileSize, Integer.parseInt(lineTab[8]), Integer.parseInt(lineTab[9]),
                 lineTab[5].equals("1"), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), Integer.parseInt(lineTab[3]) * tileSize);
