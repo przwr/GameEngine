@@ -23,6 +23,7 @@ import static engine.Drawer.clearScreen;
 import static engine.Drawer.displayHeight;
 import static engine.Shadow.*;
 import static engine.ShadowDrawer.*;
+import game.Settings;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -41,7 +42,7 @@ class ShadowRenderer {
     private static Shadow tempShadow, minShadow, maxShadow;
     private static Figure tempShade;
     private static Point tempPoint, casting = new Point();
-    private static ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
+    private static final ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -412,7 +413,7 @@ class ShadowRenderer {
         glEnable(GL_TEXTURE_2D);
         glColor3f(1f, 1f, 1f);
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        light.render(displayHeight - light.getHeight());
+        light.render(displayHeight);
         light.getFrameBufferObject().deactivate();
     }
 

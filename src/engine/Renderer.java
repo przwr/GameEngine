@@ -159,7 +159,7 @@ public class Renderer {
 
     public static void renderLights(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
         float lightBrightness = FastMath.max(color.r, FastMath.max(color.g, color.b));
-        float lightStrength = 6 - (int) (10 * lightBrightness);
+        float lightStrength;
         float lightColor;
         if (lightBrightness >= 0.66) {
             lightStrength = 1;
