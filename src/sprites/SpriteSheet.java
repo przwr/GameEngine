@@ -8,7 +8,6 @@ package sprites;
 import engine.Drawer;
 import engine.Point;
 import game.Settings;
-import net.jodk.lang.FastMath;
 import org.newdawn.slick.opengl.Texture;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -88,7 +87,7 @@ public class SpriteSheet extends Sprite {
                 }
             }
         }
-        return new Point[] {new Point(xE - xB, yE - yB), new Point(xB, yB)};
+        return new Point[]{new Point(xE - xB, yE - yB), new Point(xB, yB)};
     }
 
     private void setTilesCount(boolean scale) {

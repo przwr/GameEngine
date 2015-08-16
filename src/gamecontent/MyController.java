@@ -206,8 +206,6 @@ public class MyController extends PlayerController {
             actions[i].act();
         }
         if (actions[0].isOn()) {
-			
-		System.out.println("Tut");
             ((Player) inControl).getMenu().setChosen(-1);
         } else if (actions[1].isOn()) {
             ((Player) inControl).getMenu().setChosen(1);

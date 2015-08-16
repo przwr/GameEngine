@@ -22,8 +22,6 @@ public class Interactive {
     private final InteractiveAction action;
     private final InteractiveActivator activator;
     private final boolean COLLIDES_WITH_SELF = false;
-    private final boolean COLLIDES_WITH_PLAYERS = true;
-    private final boolean COLLIDES_WITH_MOBS = true;
     private boolean active;
 
     public Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action) {
@@ -35,6 +33,7 @@ public class Interactive {
     }
 
     public void checkCollision(GameObject[] players, List<Mob> mobs) {
+        boolean COLLIDES_WITH_MOBS = true;
         if (COLLIDES_WITH_MOBS) {
             mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || mob != owner))).forEach((mob) -> {
                 int pixelsIn = collision.collide(mob);
@@ -43,6 +42,7 @@ public class Interactive {
                 }
             });
         }
+        boolean COLLIDES_WITH_PLAYERS = true;
         if (COLLIDES_WITH_PLAYERS) {
             for (GameObject player : players) {
                 if ((COLLIDES_WITH_SELF || player != owner)) {

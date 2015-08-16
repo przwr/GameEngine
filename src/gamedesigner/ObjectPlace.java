@@ -121,6 +121,7 @@ public class ObjectPlace extends Place {
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
         }
+        tempMaps.stream().forEach((mapToUpdate) -> mapToUpdate.updateAreasToUpdate());
     }
 
     private void keyboardHandling() {

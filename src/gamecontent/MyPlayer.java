@@ -14,7 +14,6 @@ import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import game.place.Place;
 import game.place.WarpPoint;
-import game.place.fbo.FrameBufferedSpriteSheet;
 import game.text.TextController;
 import gamecontent.equipment.Cloth;
 import net.jodk.lang.FastMath;
@@ -23,20 +22,18 @@ import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 import sprites.Animation;
-import sprites.SpriteSheet;
 
 import java.io.FileNotFoundException;
 
 import static org.lwjgl.opengl.GL11.*;
-import sprites.SpriteBase;
 
 /**
  * @author przemek
  */
 public class MyPlayer extends Player {
 
-    private String characterName = "aria";
     private final int framesPerDir = 26;
+    private String characterName = "aria";
     private Cloth head;
     private Cloth torso;
     private Cloth legs;
@@ -110,10 +107,10 @@ public class MyPlayer extends Player {
             mergedDimentions = Cloth.getMergedDimensions(
                     head, torso, legs, hair,
                     hat, shirt, gloves, pants, boots);
-            
+
             mergedDimentions[0].set(Methods.roundUpToBinaryNumber(mergedDimentions[0].getX()),
                     Methods.roundUpToBinaryNumber(mergedDimentions[0].getY()));
-            centralPoint = new Point[] {place.getStartPointFromFile("atrapa", "cloth/" + characterName)};
+            centralPoint = new Point[]{place.getStartPointFromFile("atrapa", "cloth/" + characterName)};
             /*System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
              + "\nWymiary połączonej ubranej babki : " + p
              + "\nPunkt centralny obrazka : "

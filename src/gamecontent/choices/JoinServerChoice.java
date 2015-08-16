@@ -7,8 +7,8 @@ package gamecontent.choices;
 
 import engine.Delay;
 import game.Settings;
-import game.menu.MenuChoice;
 import game.menu.Menu;
+import game.menu.MenuChoice;
 
 /**
  * @author przemek

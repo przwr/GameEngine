@@ -5,8 +5,8 @@
  */
 package gamecontent.choices;
 
-import game.menu.MenuChoice;
 import game.menu.Menu;
+import game.menu.MenuChoice;
 
 /**
  * @author przemek

@@ -6,8 +6,8 @@
 package gamecontent.choices;
 
 import game.Settings;
-import game.menu.MenuChoice;
 import game.menu.Menu;
+import game.menu.MenuChoice;
 import net.KryoUtil;
 
 /**

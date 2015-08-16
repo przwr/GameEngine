@@ -28,8 +28,8 @@ public class Methods {
     private static final Point point = new Point(0, 0);
     public static double SQRT_ROOT_OF_2 = Math.sqrt(2);
     public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / Math.sqrt(2);
-    private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, angle, temp;
-    private static int xOA, yOA, xOB, yOB, xBA, yBA, xDelta, yDelta, xS, xE, yS, yE;
+    private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, temp;
+    private static int xDelta, yDelta;
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -88,12 +88,12 @@ public class Methods {
     }
 
     private static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
-        xOA = xO - xA;
-        yOA = yO - yA;
-        xOB = xO - xB;
-        yOB = yO - yB;
-        xBA = xB - xA;
-        yBA = yB - yA;
+        int xOA = xO - xA;
+        int yOA = yO - yA;
+        int xOB = xO - xB;
+        int yOB = yO - yB;
+        int xBA = xB - xA;
+        int yBA = yB - yA;
         A = FastMath.sqrt((xOA * xOA) + (yOA * yOA));
         B = FastMath.sqrt((xOB * xOB) + (yOB * yOB));
         AB = FastMath.sqrt((xBA * xBA) + (yBA * yBA));
@@ -107,7 +107,7 @@ public class Methods {
         }
         return ret;
     }
-    
+
     public static int interval(int leftBorder, int x, int rightBorder) {
         return FastMath.max(leftBorder, FastMath.min(rightBorder, x));
     }
@@ -264,7 +264,7 @@ public class Methods {
     }
 
     private static void getCastingPointsFromRest(int x, int y, List<Point> points, Point result) {
-        angle = 0;
+        double angle = 0;
         temp = 0;
         int first = 0, second = 0;
         for (int i = 0; i < points.size(); i++) {
@@ -319,10 +319,10 @@ public class Methods {
     }
 
     private static void getCastingPointsFromRectangle(int x, int y, Figure rectangle, Point result) {
-        xS = rectangle.getX();
-        xE = rectangle.getXEnd();
-        yS = rectangle.getY();
-        yE = rectangle.getYEnd();
+        int xS = rectangle.getX();
+        int xE = rectangle.getXEnd();
+        int yS = rectangle.getY();
+        int yE = rectangle.getYEnd();
         if (x > xE) {
             if (y > yE) {
                 result.set(1, 3);

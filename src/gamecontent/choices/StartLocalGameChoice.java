@@ -6,8 +6,8 @@
 package gamecontent.choices;
 
 import engine.Main;
-import game.menu.MenuChoice;
 import game.menu.Menu;
+import game.menu.MenuChoice;
 import gamecontent.MyGame;
 
 /**

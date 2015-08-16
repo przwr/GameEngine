@@ -11,6 +11,7 @@ import game.place.*;
 import org.newdawn.slick.Color;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+
 /**
  * @author Wojtek
  */

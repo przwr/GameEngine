@@ -52,7 +52,7 @@ public class GUIHandler extends GUIObject {
             "DELETE:                Delete",
             "ALT:                   Create altered",
             "",
-			"Z:                     Zoom in/out",
+            "Z:                     Zoom in/out",
             "V:                     Visibility options",
             "B:                     Lock Block",
             "M:                     Move Blocks",

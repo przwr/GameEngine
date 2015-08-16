@@ -5,23 +5,23 @@
  */
 package gamecontent.choices;
 
-import game.menu.MenuChoice;
 import game.menu.Menu;
+import game.menu.MenuChoice;
 
 /**
  * @author przemek
  */
 public class RunServerChoice extends MenuChoice {
 
-	public RunServerChoice(String label, Menu menu) {
-		super(label, menu);
-	}
+    public RunServerChoice(String label, Menu menu) {
+        super(label, menu);
+    }
 
-	@Override
-	public void action() {
-		menu.game.online.runServer();
-		if (menu.game.online.server != null) {
-			menu.setDefaultRoot();
-		}
-	}
+    @Override
+    public void action() {
+        menu.game.online.runServer();
+        if (menu.game.online.server != null) {
+            menu.setDefaultRoot();
+        }
+    }
 }

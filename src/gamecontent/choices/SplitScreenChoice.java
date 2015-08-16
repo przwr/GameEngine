@@ -8,8 +8,8 @@ package gamecontent.choices;
 import engine.SplitScreen;
 import engine.inout.AnalyzerSettings;
 import game.Settings;
-import game.menu.MenuChoice;
 import game.menu.Menu;
+import game.menu.MenuChoice;
 
 /**
  * @author przemek

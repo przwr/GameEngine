@@ -35,16 +35,16 @@ public class Animation implements Appearance {
         delay.start();
         this.framesPerDirection = framesPerDirection;
     }
-    
-    public Animation(SpriteSheet sprite, int delayTime, int framesPerDirection, 
-            Point dimensions, Point centralPoint) {
+
+    public Animation(SpriteSheet sprite, int delayTime, int framesPerDirection,
+                     Point dimensions, Point centralPoint) {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
         this.end = spriteSheet.getSize() - 1;
         delay = new Delay(delayTime);
         delay.start();
         this.framesPerDirection = framesPerDirection;
-        fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(), 
+        fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
                 framesPerDirection * 8, -centralPoint.getX(), -centralPoint.getY());
     }
 
@@ -132,7 +132,7 @@ public class Animation implements Appearance {
             spriteSheet.renderPiece(currentFrame);
         }
     }
-    
+
     @Override
     public void renderMirrored() {
         spriteSheet.renderPieceMirrored(currentFrame);
