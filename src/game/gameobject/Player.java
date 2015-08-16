@@ -7,7 +7,7 @@ package game.gameobject;
 
 import engine.Drawer;
 import game.place.Map;
-import game.place.Menu;
+import game.menu.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
 import net.GameOnline;

@@ -9,8 +9,8 @@ import com.esotericsoftware.kryonet.Client;
 import engine.Delay;
 import engine.inout.AnalyzerSettings;
 import game.Settings;
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.MenuChoice;
+import game.menu.Menu;
 import net.KryoUtil;
 
 import java.net.InetAddress;

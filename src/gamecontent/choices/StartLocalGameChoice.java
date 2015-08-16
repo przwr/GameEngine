@@ -6,8 +6,8 @@
 package gamecontent.choices;
 
 import engine.Main;
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.MenuChoice;
+import game.menu.Menu;
 import gamecontent.MyGame;
 
 /**
@@ -24,6 +24,6 @@ public class StartLocalGameChoice extends MenuChoice {
         ((MyGame) menu.game).setDesignerMode(false);
         menu.game.startGame();
         Main.refreshGamma();
-        menu.setCurrent(0);
+        menu.setDefaultRoot();
     }
 }

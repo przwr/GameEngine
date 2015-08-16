@@ -13,8 +13,8 @@ import game.gameobject.AnyInput;
 import game.gameobject.PlayerController;
 import game.gameobject.inputs.InputExitMapping;
 import game.gameobject.inputs.InputNull;
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.MenuChoice;
+import game.menu.Menu;
 
 /**
  * @author przemek

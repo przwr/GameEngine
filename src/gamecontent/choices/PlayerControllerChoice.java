@@ -5,23 +5,22 @@
  */
 package gamecontent.choices;
 
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.MenuChoice;
+import game.menu.Menu;
 
 /**
  * @author przemek
  */
 public class PlayerControllerChoice extends MenuChoice {
 
-    public PlayerControllerChoice(String label, Menu menu) {
-        super(label, menu);
-    }
+	public PlayerControllerChoice(String label, Menu menu) {
+		super(label, menu);
+	}
 
-    @Override
-    public void action() {
-        String[] p = label.split("\\s+");
-        int pos = Integer.parseInt(p[1]) + 2;
-        menu.setCurrent(pos);
-    }
-
+	@Override
+	public void action() {
+		String[] p = label.split("\\s+");
+		int pos = Integer.parseInt(p[1]) + 2;
+//		menu.setCurrent(pos);
+	}
 }

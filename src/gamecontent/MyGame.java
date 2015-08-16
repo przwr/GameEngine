@@ -110,7 +110,7 @@ public class MyGame extends Game {
                         setDesignerMode(true);
                         endGame();
                         startGame();
-                        menu.setCurrent(0);
+                        menu.setDefaultRoot();
                     }
                     //---------------------------------------------------------------------------//
                     menu.update();

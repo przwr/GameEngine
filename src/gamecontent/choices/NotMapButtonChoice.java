@@ -8,8 +8,8 @@ package gamecontent.choices;
 import game.Settings;
 import game.gameobject.Player;
 import game.gameobject.PlayerController;
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.MenuChoice;
+import game.menu.Menu;
 
 /**
  * @author przemek

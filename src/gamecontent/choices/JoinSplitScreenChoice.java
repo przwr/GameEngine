@@ -7,8 +7,8 @@ package gamecontent.choices;
 
 import engine.SplitScreen;
 import game.Settings;
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.MenuChoice;
+import game.menu.Menu;
 
 /**
  * @author przemek

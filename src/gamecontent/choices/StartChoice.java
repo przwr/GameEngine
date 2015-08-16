@@ -6,33 +6,33 @@
 package gamecontent.choices;
 
 import game.Settings;
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.MenuChoice;
+import game.menu.Menu;
 
 /**
  * @author przemek
  */
 public class StartChoice extends MenuChoice {
 
-    public StartChoice(String label, Menu menu) {
-        super(label, menu);
-    }
+	public StartChoice(String label, Menu menu) {
+		super(label, menu);
+	}
 
-    @Override
-    public void action() {
-        if (menu.game.getPlace() == null) {
-            menu.setCurrent(7);
-        } else {
-            menu.game.resumeGame();
-        }
-    }
+	@Override
+	public void action() {
+		if (menu.game.getPlace() == null) {
+			menu.setRoot(this);
+		} else {
+			menu.game.resumeGame();
+		}
+	}
 
-    @Override
-    public String getLabel() {
-        if (menu.game.getPlace() == null) {
-            return label;
-        } else {
-            return Settings.language.menu.Resume;
-        }
-    }
+	@Override
+	public String getLabel() {
+		if (menu.game.getPlace() == null) {
+			return label;
+		} else {
+			return Settings.language.menu.Resume;
+		}
+	}
 }
