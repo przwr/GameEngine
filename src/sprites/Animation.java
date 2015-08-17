@@ -37,7 +37,7 @@ public class Animation implements Appearance {
     }
     
     public Animation(SpriteSheet sprite, int delayTime, int framesPerDirection, 
-            Point dimensions, Point centralPoint) {
+            Point dimensions, Point centralPoint, Point delta) {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
         this.end = spriteSheet.getSize() - 1;
@@ -45,7 +45,7 @@ public class Animation implements Appearance {
         delay.start();
         this.framesPerDirection = framesPerDirection;
         fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(), 
-                framesPerDirection * 8, -centralPoint.getX(), -centralPoint.getY());
+                framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
     }
 
     private void setCurrentFrame(int newFrame) {

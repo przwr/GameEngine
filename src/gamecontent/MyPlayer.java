@@ -35,7 +35,7 @@ import sprites.SpriteBase;
  */
 public class MyPlayer extends Player {
 
-    private String characterName = "aria";
+    private final String characterName = "aria";
     private final int framesPerDir = 26;
     private Cloth head;
     private Cloth torso;
@@ -47,6 +47,8 @@ public class MyPlayer extends Player {
     private Cloth gloves;
     private Cloth pants;
     private Cloth boots;
+    
+    private Cloth weapon;
     private TextController textControl;
 
     //---------<('.'<) TYMCZASOWE!-------------//
@@ -100,29 +102,31 @@ public class MyPlayer extends Player {
 
         //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
         //testBody = place.getSpriteSheet("kulka1");
-        Point[] mergedDimentions = null, centralPoint = null;
+        Point[] dims = null;
+        Point centralPoint = null;
         try {
             RandomGenerator r = RandomGenerator.create();
             head = new Cloth("glowa", characterName, place);
             hair = new Cloth("wlosy", characterName, place);
             torso = new Cloth("tors", characterName, place);
             legs = new Cloth("noga", characterName, place);
-            mergedDimentions = Cloth.getMergedDimensions(
+            weapon = new Cloth("miecz", characterName, place);
+            dims = Cloth.getMergedDimensions(
                     head, torso, legs, hair,
-                    hat, shirt, gloves, pants, boots);
-            
-            mergedDimentions[0].set(Methods.roundUpToBinaryNumber(mergedDimentions[0].getX()),
-                    Methods.roundUpToBinaryNumber(mergedDimentions[0].getY()));
-            centralPoint = new Point[] {place.getStartPointFromFile("atrapa", "cloth/" + characterName)};
-            /*System.out.println("WIADOMOŚĆ DLA PRZEMKA!!"
-             + "\nWymiary połączonej ubranej babki : " + p
-             + "\nPunkt centralny obrazka : "
-             + "\nUWAGA! wymiary nie są 2-ójkowe");*/
+                    hat, shirt, gloves, pants, boots, weapon);
+            int tempx = dims[0].getX(), tempy = dims[0].getY();
+            dims[0].set(Methods.roundUpToBinaryNumber(dims[0].getX()),
+                    Methods.roundUpToBinaryNumber(dims[0].getY()));
+            centralPoint = place.getStartPointFromFile("atrapa", "cloth/" + characterName);
+            tempx = dims[0].getX() - tempx;
+            tempy = dims[0].getY() - tempy;
+            dims[1].set(centralPoint.getX() - (dims[1].getX() - tempx/2),
+                    centralPoint.getY() - (dims[1].getY() - tempy/2));
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
         appearance = new Animation(place.getSpriteSheet("test", "cloth/" + characterName), 200, framesPerDir
-                /*, mergedDimentions[0], centralPoint[0]*/);
+                , dims[0], dims[1], centralPoint);
         visible = true;
         depth = 0;
         setResistance(2);
@@ -152,7 +156,7 @@ public class MyPlayer extends Player {
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
             Drawer.setCentralPoint();
-            appearance.render();
+            appearance.render(); 
             //((Animation)appearance).renderWhole();
             //renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
             appearance.updateFrame();
@@ -213,6 +217,9 @@ public class MyPlayer extends Player {
         }
         if (hair != null) {
             hair.getFirstPart().renderPieceAndReturn(frame);
+        }
+        if (weapon != null) {
+            weapon.getFirstPart().renderPieceAndReturn(frame);
         }
     }
 
