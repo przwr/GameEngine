@@ -39,7 +39,7 @@ public class Rabbit extends Mob {
             look(place.players);
             brake(2);
         }
-        moveWithSliding((xEnvironmentalSpeed + xSpeed), (yEnvironmentalSpeed + ySpeed));
+        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         brakeOthers();
     }
 }

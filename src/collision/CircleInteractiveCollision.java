@@ -14,7 +14,7 @@ import game.gameobject.Player;
  */
 public class CircleInteractiveCollision extends InteractiveCollision {
 
-    int radius;
+    private int radius;
 
     public CircleInteractiveCollision(int radius) {
         this.radius = radius;

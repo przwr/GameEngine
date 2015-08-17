@@ -14,7 +14,6 @@ import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
 import game.place.Place;
 import game.place.WarpPoint;
-import game.place.fbo.FrameBufferedSpriteSheet;
 import game.text.TextController;
 import gamecontent.equipment.Cloth;
 import net.jodk.lang.FastMath;
@@ -23,20 +22,18 @@ import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 import sprites.Animation;
-import sprites.SpriteSheet;
 
 import java.io.FileNotFoundException;
 
 import static org.lwjgl.opengl.GL11.*;
-import sprites.SpriteBase;
 
 /**
  * @author przemek
  */
 public class MyPlayer extends Player {
 
-    private final String characterName = "aria";
     private final int framesPerDir = 26;
+    private String characterName = "aria";
     private Cloth head;
     private Cloth torso;
     private Cloth legs;

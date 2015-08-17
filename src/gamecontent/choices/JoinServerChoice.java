@@ -7,8 +7,8 @@ package gamecontent.choices;
 
 import engine.Delay;
 import game.Settings;
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.Menu;
+import game.menu.MenuChoice;
 
 /**
  * @author przemek
@@ -28,7 +28,7 @@ public class JoinServerChoice extends MenuChoice {
     public void action() {
         menu.game.online.joinServer();
         if (menu.game.online.client != null) {
-            menu.setCurrent(0);
+            menu.setDefaultRoot();
         } else {
             status = " - " + Settings.language.menu.UnableToConnect;
             delay.start();

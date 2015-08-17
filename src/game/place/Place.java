@@ -178,7 +178,7 @@ public abstract class Place extends ScreenPlace {
     public SpriteSheet getSpriteSheetSetScale(String textureKey, String folder) {
         return sprites.getSpriteSheetSetScale(textureKey, folder);
     }
-    
+
     public Point getStartPointFromFile(String textureKey, String folder) {
         return sprites.getStartPointFromFile(textureKey, folder);
     }

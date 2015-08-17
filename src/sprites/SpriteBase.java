@@ -258,7 +258,7 @@ public class SpriteBase {
             return null;
         }
         try {
-            texture = TextureLoader.getTexture("png", 
+            texture = TextureLoader.getTexture("png",
                     ResourceLoader.getResourceAsStream(folder + sprite), GL_LINEAR);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);

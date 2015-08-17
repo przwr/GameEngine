@@ -5,8 +5,8 @@
  */
 package gamecontent.choices;
 
-import game.gameobject.menu.MenuChoice;
-import game.place.Menu;
+import game.menu.Menu;
+import game.menu.MenuChoice;
 
 /**
  * @author przemek
@@ -21,7 +21,7 @@ public class RunServerChoice extends MenuChoice {
     public void action() {
         menu.game.online.runServer();
         if (menu.game.online.server != null) {
-            menu.setCurrent(0);
+            menu.setDefaultRoot();
         }
     }
 }

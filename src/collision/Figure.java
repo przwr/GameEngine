@@ -20,15 +20,14 @@ import java.util.List;
  */
 public abstract class Figure implements Comparable<Figure> {
 
-    private static Figure figure;
     private static Rectangle tempTile = Rectangle.createTileRectangle();
     private static Rectangle scope = Rectangle.createTileRectangle();
     private static PointContainer tiles;
-    protected final BlueArray<Point> points;
+    final BlueArray<Point> points;
     private final OpticProperties opticProperties;
     private final DoublePoint slideSpeed;
-    protected GameObject owner;
     protected int xStart, yStart, width, height, xCenter, yCenter;
+    private GameObject owner;
     private boolean mobile = false, small = false;
 
     public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
@@ -163,7 +162,7 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     private boolean checkCollision(int x, int y, GameObject object) {
-        figure = object.getCollision();
+        Figure figure = object.getCollision();
         return checkCollision(x, y, object, figure);
     }
 

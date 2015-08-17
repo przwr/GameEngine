@@ -12,6 +12,7 @@ import game.place.cameras.Camera;
 import game.place.fbo.FrameBufferObject;
 import game.place.fbo.MultiSampleFrameBufferObject;
 import game.place.fbo.RegularFrameBufferObject;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteSheet;
@@ -45,7 +46,7 @@ public class Light {
         this.owner = owner;
         this.sprite = sprite;
         this.width = width;
-        this.height = height;
+        this.height = adjustHeightForWindow(height);
         this.giveShadows = giveShadows;
         setFrameBuffer();
         setShift();
@@ -55,6 +56,7 @@ public class Light {
         this.color = color;
         this.owner = owner;
         this.spriteSheet = spriteSheet;
+        height = adjustHeightForWindow(height);
         this.width = Methods.roundDouble(width / (1.75f - Settings.nativeScale));
         this.height = Methods.roundDouble(height / (1.75f - Settings.nativeScale));
         this.piece = piece;
@@ -62,6 +64,13 @@ public class Light {
         this.widthWholeLight = this.width * 2;
         this.heightWholeLight = this.height * 2;
         setShift();
+    }
+
+    private static int adjustHeightForWindow(int height) {
+        if (height > Display.getHeight()) {
+            return Display.getHeight();
+        }
+        return height;
     }
 
     public static Light create(Sprite sprite, Color color, int width, int height, GameObject owner) {
@@ -111,13 +120,13 @@ public class Light {
         if (spriteSheet != null) {
             glColor3f(color.r, color.g, color.b);
             glPushMatrix();
-            glTranslatef(0, height, 0);
+            glTranslatef(0, height - this.height, 0);
             spriteSheet.renderPiece(piece);
             glPopMatrix();
         } else {
             glColor3f(color.r, color.g, color.b);
             glPushMatrix();
-            glTranslatef(0, height, 0);
+            glTranslatef(0, height - this.height, 0);
             sprite.render();
             glPopMatrix();
         }

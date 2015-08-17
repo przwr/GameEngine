@@ -35,23 +35,24 @@ public class GUIHandler extends GUIObject {
     private final Comparator<File> nameComparator = (File firstObject, File secondObject)
             -> firstObject.getName().compareTo(secondObject.getName());
     private final String[] help = new String[]{
-            "H : Help",
+            "H:                     Help",
             "1 ... 4:               Change mode",
             "S:                     Save as",
-            "ctrl + S:              QuickSave",
+            "CTRL + S:              QuickSave",
             "L:                     Load object",
-            "ctrl + backspace       Clear map",
+            "CTRL + BACKSPACE:      Clear map",
             "",
-            "ctrl + arrows :        Change selection",
-            "ctrl + Z :             Reset selection",
+            "CTRL + ARROWS:         Change selection",
+            "CTRL + Z:              Reset selection",
             "A:                     Run mode",
             "BACKSPACE:             Cancel",
-            "U                      Undo",
+            "U:                     Undo",
             "",
             "SPACE:                 Create",
             "DELETE:                Delete",
             "ALT:                   Create altered",
             "",
+            "Z:                     Zoom in/out",
             "V:                     Visibility options",
             "B:                     Lock Block",
             "M:                     Move Blocks",
@@ -59,17 +60,17 @@ public class GUIHandler extends GUIObject {
             "",
             "//TILE MODE (1)",
             "",
-            "SHIFT + arrows :       Change tile",
-            "T :                    Load spriteSheet",
+            "SHIFT + ARROWS:        Change tile",
+            "T:                     Load spriteSheet",
             "",
             "//BLOCK MODE (2)",
             "",
-            "SHIFT + arrows:        Change block height",
-            "R                      Rounded blocks mode",
+            "SHIFT + ARROWS:        Change block height",
+            "R:                     Rounded blocks mode",
             "",
             "//OBJECT MODE (4)",
             "",
-            "SHIFT + arrows:        Change link radius"};
+            "SHIFT + ARROWS:        Change link radius"};
     private int mode, selected;
     private ArrayList<File> list;
     private String text = "";

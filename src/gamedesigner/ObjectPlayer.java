@@ -1,4 +1,3 @@
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -281,6 +280,10 @@ public class ObjectPlayer extends Player {
 
             if (key.keyPressed(KEY_HOME)) {
                 objPlace.setCentralPoint(ix, iy);
+            }
+
+            if (key.keyPressed(KEY_Z)) {
+                camera.switchZoom();
             }
         } else if (paused) {
             if (roundBlocksMode) {

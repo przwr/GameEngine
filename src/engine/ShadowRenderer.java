@@ -35,13 +35,13 @@ class ShadowRenderer {
     private static final Point[] shadowPoints = {new Point(), new Point(), new Point(), new Point()};
     private static final Polygon polygon = new Polygon();
     private static final boolean DEBUG = false, OBJECT_DEBUG = false;
+    private static final ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
     private static boolean checked;
-    private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightHeightHalf, lightWidthHalf, minValue, maxValue, points;
+    private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightHeightHalf, lightWidthHalf, points;
     private static double angle, al, bl, ar, br, as, bs, XOL, XOR, YOL, YOL2, YOR, YOR2;
     private static Shadow tempShadow, minShadow, maxShadow;
     private static Figure tempShade;
     private static Point tempPoint, casting = new Point();
-    private static ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -412,7 +412,7 @@ class ShadowRenderer {
         glEnable(GL_TEXTURE_2D);
         glColor3f(1f, 1f, 1f);
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        light.render(displayHeight - light.getHeight());
+        light.render(displayHeight);
         light.getFrameBufferObject().deactivate();
     }
 
@@ -509,8 +509,8 @@ class ShadowRenderer {
 
     private static void solveBrightenSpots() {
         minShadow = maxShadow = null;
-        minValue = Integer.MAX_VALUE;
-        maxValue = -1;
+        int minValue = Integer.MAX_VALUE;
+        int maxValue = -1;
         for (int i = 0; i < brightenSpots.size(); i++) {
             tempPoint = brightenSpots.get(i).point;
             if (tempPoint.getX() < tempPoint.getY()) {

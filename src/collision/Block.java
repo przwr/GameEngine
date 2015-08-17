@@ -105,7 +105,7 @@ public class Block extends GameObject {
         return null;
     }
 
-    public Point getPushValueOfCorner(int corner) {
+    private Point getPushValueOfCorner(int corner) {
         if (collision instanceof RoundRectangle) {
             return ((RoundRectangle) collision).getPushValueOfCorner(corner);
         }

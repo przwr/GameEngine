@@ -132,7 +132,7 @@ public class Animation implements Appearance {
             spriteSheet.renderPiece(currentFrame);
         }
     }
-    
+
     @Override
     public void renderMirrored() {
         spriteSheet.renderPieceMirrored(currentFrame);

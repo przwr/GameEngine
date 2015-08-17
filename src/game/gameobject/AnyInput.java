@@ -13,7 +13,8 @@ import game.gameobject.inputs.*;
  */
 public abstract class AnyInput {
 
-    public final static int ERROR2 = -2, ERROR = -1, KEYBOARD = 0, MOUSE = 1, CONTROLLER_KEY = 2, CONTROLLER_DPAD = 3, CONTROLLER_STICK = 4;
+    public final static int ERROR2 = -2, ERROR = -1;
+    protected final static int KEYBOARD = 0, MOUSE = 1, CONTROLLER_KEY = 2, CONTROLLER_DPAD = 3, CONTROLLER_STICK = 4;
     protected String label;
     protected int key;
     protected int pad;

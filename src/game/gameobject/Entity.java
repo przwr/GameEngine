@@ -156,7 +156,7 @@ public abstract class Entity extends GameObject {
         collision.resetSlideSpeed();
     }
 
-    protected void moveIfPossible(int xMagnitude, int yMagnitude) {
+    private void moveIfPossible(int xMagnitude, int yMagnitude) {
         calculatePositionsAndDeltas(xMagnitude, yMagnitude);
         while (xPosition != 0 || yPosition != 0) {
             moveXIfPossible();
@@ -276,7 +276,7 @@ public abstract class Entity extends GameObject {
         setAndLimitSpeed(xSpeed + xSpeedDelta / resistance, ySpeed + ySpeedDelta / resistance);
     }
 
-    public void changeSpeed(double xSpeedDelta, double ySpeedDelta) {
+    void changeSpeed(double xSpeedDelta, double ySpeedDelta) {
         if (Math.signum(xSpeed) != Math.signum(xSpeedDelta)) {
             xSpeed = xSpeed + (xSpeedDelta / resistance);
         } else {

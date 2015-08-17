@@ -9,14 +9,12 @@ import static org.lwjgl.opengl.GL11.glGenTextures;
 
 public class MultiSampleFrameBufferObject extends FrameBufferObject {
 
-    private final int multiSampleTexture;
     private int frameBufferObjectMultiSample;
 
     public MultiSampleFrameBufferObject(int width, int height) {
         super(width, height, true);
-        multiSampleTexture = glGenTextures();
         createFrameBufferObjects();
-        type.makeMultiSample(Settings.samplesCount, multiSampleTexture, width, height, frameBufferObjectMultiSample);
+        type.makeMultiSample(Settings.samplesCount, glGenTextures(), width, height, frameBufferObjectMultiSample);
         type.makeTexture(texture, frameBufferObject, width, height);
         type.deactivate();
     }

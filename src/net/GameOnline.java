@@ -26,7 +26,6 @@ public abstract class GameOnline {
     protected final byte removeIDs[];
     protected final MobUpdate[] newMobs;
     protected final short[] mapIDsForUpdate = new short[2];
-    private final MPlayerUpdate[] playersUpdates;
     public int pastPositionsNumber;
     public GameServer server;
     public GameClient client;
@@ -41,7 +40,7 @@ public abstract class GameOnline {
         isChanged = new boolean[nrChanges];
         newPlayers = new NewMPlayer[players];
         removeIDs = new byte[players];
-        playersUpdates = new MPlayerUpdate[players];
+        MPlayerUpdate[] playersUpdates = new MPlayerUpdate[players];
         newMobs = new MobUpdate[1024];
         for (int i = 0; i < pastPositions.length; i += 8) {
             pastPositions[i] = new Point();
