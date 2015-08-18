@@ -36,6 +36,7 @@ class LangENG extends Language {
         menu.Horizontal = "Horizontal";
         menu.Brightness = "Brightness: ";
         menu.Volume = "Volume: ";
+        menu.Gamma = "Gamma (3rd # invisible): ";
         menu.Resolution = "Resolution: ";
         menu.FullScreen = "FullScreen: ";
         menu.On = "On";

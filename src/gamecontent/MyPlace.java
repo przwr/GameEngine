@@ -184,10 +184,15 @@ public class MyPlace extends Place {
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
-            Main.refreshGamma();
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_NEXT)) {
-            Main.resetGamma();
+            if (delay.isOver()) {
+                delay.start();
+                Settings.gameGamma += 0.1f;
+                if (Settings.gameGamma > 3.05f) {
+                    Settings.gameGamma = 1f;
+                }
+                Settings.gameGamma = (Math.round(Settings.gameGamma * 10)) / 10f;
+                Main.refreshGamma();
+            }
         }
     }
 

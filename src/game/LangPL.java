@@ -36,6 +36,7 @@ class LangPL extends Language {
         menu.Horizontal = "Poziomo";
         menu.Brightness = "Jasność: ";
         menu.Volume = "Głośność: ";
+        menu.Gamma = "Gamma (3ci # niewidoczny): ";
         menu.Resolution = "Rozdzielczość: ";
         menu.FullScreen = "Pełny ekran: ";
         menu.On = "Wł.";

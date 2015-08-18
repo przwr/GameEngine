@@ -24,6 +24,8 @@ public class Rabbit extends Mob {
         collision.setMobile(true);
         setPathStrategy(PathFindingModule.GET_CLOSE, 250);
         stats = new MobStats(this);
+//        addInteractive(new Interactive(this, Interactive.ALWAYS, new CircleInteractiveCollision(32), Interactive.HURT));
+
     }
 
     @Override

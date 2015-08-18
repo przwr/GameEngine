@@ -97,6 +97,18 @@ public final class AnalyzerSettings {
                     Settings.language = Settings.languages.get(1);
                 }
                 break;
+            case "DefaultGamma:":
+                final float d = Float.parseFloat(p[1]);
+                if (d >= 0 && d <= 2f) {
+                    Settings.defaultGamma = d;
+                }
+                break;
+            case "GameGamma:":
+                final float g = Float.parseFloat(p[1]);
+                if (g >= 1f && g <= 3f) {
+                    Settings.gameGamma = g;
+                }
+                break;
             default:
         }
     }
@@ -137,6 +149,8 @@ public final class AnalyzerSettings {
                 writer.write("Volume: " + vol + "\n");
             }
             writer.write("Language: " + Settings.languageName);
+            writer.write("DefaultGamma: " + Settings.defaultGamma + "\n");
+            writer.write("GameGamma: " + Settings.gameGamma + "\n");
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(AnalyzerSettings.class.getName()).log(Level.SEVERE, null, ex);

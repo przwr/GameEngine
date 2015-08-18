@@ -27,6 +27,11 @@ public class MyMenu extends Menu {
 
     private final FontHandler smallFont, bigFont;
     private final Color color;
+    private final Color normalColor = new Color(1f, 1f, 1f);
+    private final Color chosenColor = new Color(1f, 1f, 0.5f);
+    private final Color gammaColor1 = new Color(0.32f, 0.32f, 0.32f);
+    private final Color gammaColor2 = new Color(0.16f, 0.16f, 0.16f);
+    private final Color gammaColor3 = new Color(0.08f, 0.08f, 0.08f);
 
     public MyMenu(Game game) {
         super(game);
@@ -62,6 +67,7 @@ public class MyMenu extends Menu {
         addControlsChoices(controls);
         options.addChoice(controls);
         options.addChoice(new VolumeChoice(Settings.language.menu.Volume, this));
+        options.addChoice(new GammaChoice(Settings.language.menu.Gamma, this));
         options.addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this));
         options.addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this));
         options.addChoice(new VerticalSynchronizationChoice(Settings.language.menu.VSync, this));
@@ -112,18 +118,35 @@ public class MyMenu extends Menu {
                 bigFont, new Color(color.r, color.g, color.b));
         position--;
         for (int i = 0; i < root.getSize(); i++) {
+            if (root.getChoice(i) instanceof GammaChoice) {
+                renderGammaHelper(position, i);
+            }
             Drawer.renderStringCentered(root.getChoice(i).getLabel(), widthHalf / 2,
                     heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * fonts.getFont(0).getHeight() * 0.7),
                     smallFont, getColor(i));
+
+
             position--;
         }
     }
 
+    private void renderGammaHelper(int position, int i) {
+        Drawer.renderStringCentered("#", (widthHalf + fonts.getFont(0).getWidth(root.getChoice(i).getLabel() + "##")) / 2,
+                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * fonts.getFont(0).getHeight() * 0.7),
+                smallFont, gammaColor1);
+        Drawer.renderStringCentered("#", (widthHalf + fonts.getFont(0).getWidth(root.getChoice(i).getLabel() + "####")) / 2,
+                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * fonts.getFont(0).getHeight() * 0.7),
+                smallFont, gammaColor2);
+        Drawer.renderStringCentered("#", (widthHalf + fonts.getFont(0).getWidth(root.getChoice(i).getLabel() + "######")) / 2,
+                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * fonts.getFont(0).getHeight() * 0.7),
+                smallFont, gammaColor3);
+    }
+
     private Color getColor(int choice) {
         if (choice == root.getCurrent()) {
-            return new Color(1f, 1f, 0.5f);
+            return chosenColor;
         } else {
-            return new Color(1f, 1f, 1f);
+            return normalColor;
         }
     }
 }

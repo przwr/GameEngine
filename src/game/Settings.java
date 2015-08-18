@@ -58,6 +58,8 @@ public class Settings {
     public static boolean scaled;
     public static double nativeScale;
     public static String serverIP = "127.0.0.1";
+    public static float defaultGamma = 1.0f;
+    public static float gameGamma = 1.5f;
     private static int modesCount;
 
     public static void initialize() {

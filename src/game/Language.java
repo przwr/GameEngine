@@ -41,6 +41,8 @@ public class Language {
         public String Horizontal;
         public String Brightness;
         public String Volume;
+        public String Gamma;
+        public String GammaInstructions;
         public String Resolution;
         public String FullScreen;
         public String On;

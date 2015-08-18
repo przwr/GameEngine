@@ -271,8 +271,7 @@ public class Main {
 
     public static void refreshGamma() {
         try {
-            Display.setDisplayConfiguration(1f, 0f, 1f);
-            Display.setDisplayConfiguration(2f, 0f, 1f);
+            Display.setDisplayConfiguration(Settings.gameGamma, 0f, 1f);
         } catch (LWJGLException exception) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
         }
@@ -280,8 +279,7 @@ public class Main {
 
     public static void resetGamma() {
         try {
-            Display.setDisplayConfiguration(2f, 0f, 1f);
-            Display.setDisplayConfiguration(1f, 0f, 1f);
+            Display.setDisplayConfiguration(Settings.defaultGamma, 0f, 1f);
         } catch (LWJGLException exception) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
         }
