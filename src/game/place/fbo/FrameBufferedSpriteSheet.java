@@ -33,7 +33,7 @@ public class FrameBufferedSpriteSheet {
     private boolean upToDate;
 
     public FrameBufferedSpriteSheet(int frameWidth, int frameHeight, int framesCount,
-            int xStart, int yStart, int xDelta, int yDelta) {
+                                    int xStart, int yStart, int xDelta, int yDelta) {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
         this.framesCount = framesCount;
@@ -63,7 +63,6 @@ public class FrameBufferedSpriteSheet {
 
     public void updateTexture(Player owner) {
         if (!upToDate) {
-            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
             int frame = 0;
             for (FrameBufferObject frameBufferObject : frameBufferObjects) {
                 prepareTextureUpdate(frameBufferObject);
@@ -85,7 +84,6 @@ public class FrameBufferedSpriteSheet {
                 endTextureUpdate(frameBufferObject);
             }
             upToDate = true;
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
     }
 
@@ -105,21 +103,21 @@ public class FrameBufferedSpriteSheet {
     public void renderWhole() {
         int xShift = (currentSpriteSheetFrame % xFrames) * frameWidth;
         int yShift = fboSize - frameHeight - ((currentSpriteSheetFrame / xFrames) * frameHeight);
-        glTranslatef(xStart, yStart, 0);
+        Drawer.translate(xStart, yStart);
         frameBufferObjects[currentSpriteSheet].render();
     }
 
     public void render() {
         int xShift = (currentSpriteSheetFrame % xFrames) * frameWidth;
         int yShift = fboSize - frameHeight - ((currentSpriteSheetFrame / xFrames) * frameHeight);
-        glTranslatef(xStart, yStart, 0);
+        Drawer.translate(xStart, yStart);
         frameBufferObjects[currentSpriteSheet].renderPiece(-xShift, -yShift, xShift, yShift, xShift + frameWidth, yShift + frameHeight);
     }
 
     public void renderPart(int partXStart, int partXEnd) {
         int xShift = (currentSpriteSheetFrame % xFrames) * frameWidth;
         int yShift = fboSize - frameHeight - ((currentSpriteSheetFrame / xFrames) * frameHeight);
-        glTranslatef(xStart, yStart, 0);
+        Drawer.translate(xStart, yStart);
         frameBufferObjects[currentSpriteSheet].renderPiece(-xShift, -yShift, xShift + partXStart, yShift, xShift + partXEnd, yShift + frameHeight);
     }
 

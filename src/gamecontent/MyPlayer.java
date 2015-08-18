@@ -44,7 +44,7 @@ public class MyPlayer extends Player {
     private Cloth gloves;
     private Cloth pants;
     private Cloth boots;
-    
+
     private Cloth weapon;
     private TextController textControl;
 
@@ -117,8 +117,8 @@ public class MyPlayer extends Player {
             centralPoint = place.getStartPointFromFile("atrapa", "cloth/" + characterName);
             tempx = dims[0].getX() - tempx;
             tempy = dims[0].getY() - tempy;
-            dims[1].set(centralPoint.getX() - (dims[1].getX() - tempx/2),
-                    centralPoint.getY() - (dims[1].getY() - tempy/2));
+            dims[1].set(centralPoint.getX() - (dims[1].getX() - tempx / 2),
+                    centralPoint.getY() - (dims[1].getY() - tempy / 2));
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
@@ -153,22 +153,14 @@ public class MyPlayer extends Player {
             Drawer.refreshColor();
             glTranslatef(0, (int) -jumpHeight, 0);
             Drawer.setCentralPoint();
-            appearance.render(); 
+            appearance.render();
             //((Animation)appearance).renderWhole();
             //renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
             appearance.updateFrame();
             Drawer.returnToCentralPoint();
 
-            //glTranslatef(50, 0, 0);
-            //Drawer.setCentralPoint();
-            //testBody.renderPiece((int) testIndex);
-            //Drawer.returnToCentralPoint();
-            //test.renderPiece((int) testIndex);
-            //testIndex += 0.1;
-            //if (testIndex >= 80) {
-            //    testIndex = 0;
-            //}
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
+
             Drawer.renderStringCentered(name, 0, -(int) ((appearance.getActualHeight() * Place.getCurrentScale()) / 1.2),
                     place.standardFont, map.getLightColor());
             glPopMatrix();
