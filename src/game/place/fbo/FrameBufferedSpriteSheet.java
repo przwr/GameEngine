@@ -20,6 +20,8 @@ public class FrameBufferedSpriteSheet {
     private final FrameBufferObject[] frameBufferObjects;
     private final int xStart;
     private final int yStart;
+    private final int xDelta;
+    private final int yDelta;
     private final int xFrames;
     private final int yFrames;
     private final int frameWidth;
@@ -30,12 +32,15 @@ public class FrameBufferedSpriteSheet {
     private int currentSpriteSheetFrame;
     private boolean upToDate;
 
-    public FrameBufferedSpriteSheet(int frameWidth, int frameHeight, int framesCount, int xStart, int yStart) {
+    public FrameBufferedSpriteSheet(int frameWidth, int frameHeight, int framesCount,
+            int xStart, int yStart, int xDelta, int yDelta) {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
         this.framesCount = framesCount;
-        this.xStart = xStart;
-        this.yStart = yStart;
+        this.xDelta = xDelta;
+        this.yDelta = yDelta;
+        this.xStart = -xStart;
+        this.yStart = -yStart;
         xFrames = fboSize / frameWidth;
         yFrames = fboSize / frameHeight;
         framesPerSpriteSheet = xFrames * yFrames;
@@ -62,8 +67,8 @@ public class FrameBufferedSpriteSheet {
             int frame = 0;
             for (FrameBufferObject frameBufferObject : frameBufferObjects) {
                 prepareTextureUpdate(frameBufferObject);
-                Drawer.drawRectangle(0, 0, fboSize, fboSize);
-                glTranslatef(xStart + frameWidth / 2, yStart + frameHeight / 2, 0);
+                //Drawer.drawRectangle(0, 0, fboSize, fboSize);
+                glTranslatef(-xStart - xDelta, -yStart - yDelta, 0);
                 frames:
                 for (int j = 0; j < yFrames; j++) {
                     for (int k = 0; k < xFrames; k++) {
