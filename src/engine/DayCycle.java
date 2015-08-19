@@ -20,16 +20,36 @@ public class DayCycle {
     private long midnightTime;
     private long currentTime;
     private long difference;
+    private long stoppedAt;
+    private boolean stopped;
 
-    // TODO stop - start Time!
     public DayCycle() {
         midnightTime = System.currentTimeMillis();
     }
 
+    public void stopTime() {
+        if (!stopped) {
+            stopped = true;
+            updateDifference();
+            stoppedAt = difference - (timeInMinutes * REAL_MINUTES_IN_HOUR * 1000);
+        }
+    }
+
+    public void resumeTime() {
+        if (stopped) {
+            updateDifference();
+            midnightTime -= (timeInMinutes * REAL_MINUTES_IN_HOUR * 1000 - difference + stoppedAt);
+            stopped = false;
+            updateTime();
+        }
+    }
+
     public void updateTime() {
-        updateDifference();
-        calculateMinutes(difference / 1000);
-        updateLightColor();
+        if (!stopped) {
+            updateDifference();
+            calculateMinutes(difference / 1000);
+            updateLightColor();
+        }
     }
 
     private void updateDifference() {

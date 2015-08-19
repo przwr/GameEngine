@@ -7,6 +7,7 @@ package game;
 
 import game.gameobject.Player;
 import game.menu.Menu;
+import game.place.MapLoaderModule;
 import game.place.Place;
 import navmeshpathfinding.PathFindingModule;
 import net.GameOnline;
@@ -22,7 +23,6 @@ public abstract class Game {
     public int mode;
     public GameOnline online;
     public boolean started;
-    public boolean generated;
     public boolean exitFlag;
     public Player[] players;
     protected boolean running;
@@ -31,7 +31,9 @@ public abstract class Game {
     protected Player menuPlayer;
     protected Menu menu;
     protected PathFindingModule pathFinding;
+    protected MapLoaderModule mapLoader;
     protected Thread pathThread;
+    protected Thread mapThread;
     private boolean pause;
 
     protected Game(String title) {
@@ -91,5 +93,9 @@ public abstract class Game {
         } else {
             pause = false;
         }
+    }
+
+    public MapLoaderModule getMapLoader() {
+        return mapLoader;
     }
 }

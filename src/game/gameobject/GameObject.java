@@ -30,7 +30,6 @@ public abstract class GameObject {
     protected boolean onTop;
     protected boolean simpleLighting;
     protected boolean visible;
-    protected boolean wall;
     protected Appearance appearance;
     protected Stats stats;
     protected String name;
@@ -215,7 +214,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getXSpriteBegin() {
+    public int getXSpriteBegin() {  //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
             return (int) x + appearance.getXOffset() + appearance.getXStart();
         } else {
@@ -223,7 +222,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getYSpriteBegin() {
+    public int getYSpriteBegin() {  //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
             return (int) y + appearance.getYOffset() + appearance.getYStart();
         } else {
@@ -231,7 +230,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getXSpriteEnd() {
+    public int getXSpriteEnd() {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
             return (int) x + appearance.getXOffset() + appearance.getXStart() + appearance.getActualWidth();
         } else {
@@ -239,7 +238,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getYSpriteEnd() {
+    public int getYSpriteEnd() {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
             return (int) y + appearance.getYOffset() + appearance.getYStart() + appearance.getActualHeight();
         } else {

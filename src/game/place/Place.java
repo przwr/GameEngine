@@ -39,10 +39,12 @@ public abstract class Place extends ScreenPlace {
     public static Camera currentCamera;
     protected static DayCycle dayCycle;
     public final ArrayList<Map> maps = new ArrayList<>();
+    public final ArrayList<Map> mapsToAdd1 = new ArrayList<>();
+    public final ArrayList<Map> mapsToAdd2 = new ArrayList<>();
     public final Camera[] cameras = new Camera[3];
     protected final SpriteBase sprites;
     private final SoundBase sounds;
-    public boolean isSplit, changeSSMode, singleCamera;
+    public boolean isSplit, changeSSMode, singleCamera, firstMapsToAddActive;
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int splitScreenMode, playersCount;
     protected short mapIDCounter = 0;
@@ -229,6 +231,17 @@ public abstract class Place extends ScreenPlace {
             }
         }
         return null;
+    }
+
+    public synchronized void addMapsToAdd() {
+        ArrayList<Map> mapsToAdd = firstMapsToAddActive ? mapsToAdd1 : mapsToAdd2;
+        for (Map map : mapsToAdd) {
+            if (map != null && getMapByName(map.getName()) != map) {
+                maps.add(map);
+            }
+        }
+        mapsToAdd.clear();
+        firstMapsToAddActive = !firstMapsToAddActive;
     }
 
     public void makeShadows() {

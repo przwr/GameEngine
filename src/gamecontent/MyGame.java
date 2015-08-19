@@ -13,6 +13,7 @@ import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 import game.place.Map;
+import game.place.MapLoaderModule;
 import game.place.cameras.PlayersCamera;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
@@ -50,6 +51,7 @@ public class MyGame extends Game {
         menu.players[0] = menuPlayer;
         menuPlayer.setMenu(menu);
         pathFinding = new PathFindingModule();
+        mapLoader = new MapLoaderModule(this);
         players[0].setMenu(menu);
         players[1].setMenu(menu);
         players[2].setMenu(menu);
@@ -214,7 +216,7 @@ public class MyGame extends Game {
                 players[0].setCamera(new PlayersCamera(players[0], 4, 2, 0));
                 players[1].setCamera(new PlayersCamera(players[1], 4, 2, 1));
             }
-            place.cameras[0] = new PlayersCamera(players[0], players[1]);
+            Settings.joinSplitScreen = true;
         } else if (playersCount == 3) {
             players[0].initializeSetPosition(56, 104, place, 256, 256);
             players[1].initializeSetPosition(56, 104, place, 512, 1024);
@@ -226,7 +228,7 @@ public class MyGame extends Game {
             }
             players[1].setCamera(new PlayersCamera(players[1], 4, 4, 1));
             players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
-            place.cameras[1] = new PlayersCamera(players[0], players[1], players[2]);
+            Settings.joinSplitScreen = true;
         } else if (playersCount == 4) {
             players[0].initializeSetPosition(56, 104, place, 256, 256);
             players[1].initializeSetPosition(56, 104, place, 512, 1024);
@@ -236,35 +238,40 @@ public class MyGame extends Game {
             players[1].setCamera(new PlayersCamera(players[1], 4, 4, 1));
             players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
             players[3].setCamera(new PlayersCamera(players[3], 4, 4, 3));
-            place.cameras[2] = new PlayersCamera(players[0], players[1], players[2], players[3]);
+            Settings.joinSplitScreen = true;
         }
         System.arraycopy(players, 0, place.players, 0, 4);
         place.makeShadows();
         mode = 0;
         place.generateAsHost();
-        for (int p = 0; p < playersCount; p++) {
+        for (int i = 0; i < playersCount; i++) {
             Map map = place.maps.get(0);
-            players[p].changeMap(map);
-            players[p].updateAreaPlacement();
+            players[i].changeMap(map);
+            players[i].updateAreaPlacement();
         }
+        updatePlayersCameras();
         pathThread = new Thread(pathFinding);
         pathThread.start();
         pathThread.setPriority(Thread.MIN_PRIORITY);
+        mapThread = new Thread(mapLoader);
+        mapThread.start();
+        mapThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
     }
 
-    private void addPlayerOffline(int player) {
-        if (player < 4 && place.playersCount < 4) {
-            players[player].initializeSetPosition(56, 104, place, player * 256, player * 265);
-            ((Player) place.players[player]).setCamera(new PlayersCamera(place.players[player], 2, 2, player));
-            players[player].changeMap(players[0].getMap());
-            if (player != place.playersCount) {
+    private void addPlayerOffline(int i) {
+        if (i < 4 && place.playersCount < 4) {
+            players[i].initializeSetPosition(56, 104, place, i * 256, i * 265);
+            ((Player) place.players[i]).setCamera(new PlayersCamera(place.players[i], 2, 2, i));
+            players[i].changeMap(players[0].getMap());
+            players[i].updateAreaPlacement();
+            if (i != place.playersCount) {
                 Player tempG = players[place.playersCount];
                 GameObject tempP = place.players[place.playersCount];
-                players[place.playersCount] = players[player];
-                place.players[place.playersCount] = place.players[player];
-                players[player] = tempG;
-                place.players[player] = tempP;
+                players[place.playersCount] = players[i];
+                place.players[place.playersCount] = place.players[i];
+                players[i] = tempG;
+                place.players[i] = tempP;
             }
             place.playersCount++;
             Settings.joinSplitScreen = true;
@@ -373,6 +380,8 @@ public class MyGame extends Game {
         }
         PathFindingModule.stop();
         pathThread = null;
+        mapLoader.stop();
+        mapThread = null;
         online.cleanUp();
         mode = 0;
     }
@@ -401,7 +410,6 @@ public class MyGame extends Game {
                 } else {
                     sound.resume();
                     sound.smoothStart(0.5);
-
                 }
             });
         }

@@ -85,7 +85,6 @@ public class MyPlayer extends Player {
     public void initializeSetPosition(int width, int height, Place place, int x, int y) {
         initialize(width, height, place);
         initialize(name, x, y);
-
     }
 
     @Override
@@ -141,7 +140,6 @@ public class MyPlayer extends Player {
     @Override
     public void render(int xEffect, int yEffect) {
         if (appearance != null) {
-            appearance.updateTexture(this);
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
 
@@ -233,6 +231,7 @@ public class MyPlayer extends Player {
             }
         }
         brakeOthers();
+        appearance.updateTexture(this);
     }
 
     @Override

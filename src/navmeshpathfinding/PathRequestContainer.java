@@ -13,7 +13,7 @@ import game.gameobject.Entity;
 class PathRequestContainer {
 
     private static final byte INITIAL_POINT_COUNT = 8;
-    private static int caps, maxSize;
+    private int caps, maxSize;
     private PathRequest[] requests;
     private int requestCount;
 

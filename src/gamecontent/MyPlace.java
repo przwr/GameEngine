@@ -20,6 +20,9 @@ import navmeshpathfinding.NavigationMeshGenerator;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
 
@@ -32,6 +35,7 @@ public class MyPlace extends Place {
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
     private final Delay delay = new Delay(100);
+    private ArrayList<Map> unloadedMaps = new ArrayList<>();
     private Map map;
 
     {
@@ -93,7 +97,13 @@ public class MyPlace extends Place {
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
         }
+        unloadedMaps.clear();
+        unloadedMaps.addAll(maps.stream().filter(map -> !tempMaps.contains(map)).collect(Collectors.toList()));
+        if (game.getMapLoader().isRunning())
+            unloadedMaps.forEach(maps::remove);
+        addMapsToAdd();
         tempMaps.stream().forEach((mapToUpdate) -> mapToUpdate.updateAreasToUpdate());
+        game.getMapLoader().updateList(tempMaps);
     }
 
     private void updateAreasOnline() {
@@ -182,6 +192,20 @@ public class MyPlace extends Place {
                 dayCycle.addMinutes(5);
             }
         }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
+            if (delay.isOver()) {
+                delay.start();
+                dayCycle.stopTime();
+            }
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_V)) {
+            if (delay.isOver()) {
+                delay.start();
+                dayCycle.resumeTime();
+            }
+        }
+
 
         if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
             if (delay.isOver()) {

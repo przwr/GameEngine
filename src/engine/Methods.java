@@ -256,7 +256,6 @@ public class Methods {
         if (figure instanceof Rectangle) {
             getCastingPointsFromRectangle(x, y, figure, result);
         } else if (figure instanceof RoundRectangle) {
-            // TODO from RoundRectangle, or not.
             getCastingPointsFromRest(x, y, figure.getPoints(), result);
         } else {
             getCastingPointsFromRest(x, y, figure.getPoints(), result);

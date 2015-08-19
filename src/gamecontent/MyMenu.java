@@ -55,7 +55,7 @@ public class MyMenu extends Menu {
         onlineGameSettings.addChoice(new ServerTCPPortChoice(Settings.language.menu.Port, this));
         onlineGameSettings.addChoice(new ServerUDPPortChoice(Settings.language.menu.Port, this));
         start.addChoice(new StartLocalGameChoice(Settings.language.menu.LocalGame, this));
-        start.addChoice(onlineGameSettings);
+//        start.addChoice(onlineGameSettings);
         root.addChoice(start);
 
         MenuChoice options = new MenuChoice(Settings.language.menu.Options, this);

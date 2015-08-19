@@ -76,8 +76,8 @@ public class WarpPoint extends GameObject {
             if (isStatic) {
                 if (destination != null) {
                     object.changeMap(destination);
-                } else if (stringDestination != null) {
-                    object.changeMap(map.place.getMapByName(stringDestination));
+                } else {
+                    loadMap(object);
                 }
                 object.setPosition(xDestination, yDestination);
             } else {
@@ -86,14 +86,25 @@ public class WarpPoint extends GameObject {
                     object.changeMap(destination);
                     warp = destination.findWarp(name);
                 } else {
-                    Map thisMap = map.place.getMapByName(stringDestination);
-                    object.changeMap(thisMap);
-                    warp = thisMap.findWarp(name);
+                    warp = loadMap(object);
                 }
                 object.setPosition(warp.x, warp.y);
                 if (object instanceof Player && ((Player) object).getCamera() != null) {
                     ((Player) object).getCamera().update();
                 }
+            }
+        }
+    }
+
+    private WarpPoint loadMap(GameObject object) {
+        //TODO Ma(tra)pa - loadingScreen? - Nie.. Najwyżej przymuli
+        place.game.getMapLoader().requestMap(stringDestination, this);    //TODO Informacje które areas wczytać!
+        while (true) {
+            place.addMapsToAdd();
+            Map thisMap = map.place.getMapByName(stringDestination);
+            if (thisMap != null) {
+                object.changeMap(thisMap);
+                return thisMap.findWarp(name);
             }
         }
     }

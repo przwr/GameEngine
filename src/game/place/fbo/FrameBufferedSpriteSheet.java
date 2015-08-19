@@ -45,12 +45,12 @@ public class FrameBufferedSpriteSheet {
         yFrames = fboSize / frameHeight;
         framesPerSpriteSheet = xFrames * yFrames;
 
-        float spriteSheetsCount = framesCount / ((float) framesPerSpriteSheet);
-        if (spriteSheetsCount > (int) spriteSheetsCount) {
+        int spriteSheetsCount = (int) (framesCount / ((float) framesPerSpriteSheet));
+        if (spriteSheetsCount > spriteSheetsCount) {
             spriteSheetsCount++;
         }
 
-        frameBufferObjects = new FrameBufferObject[(int) spriteSheetsCount];
+        frameBufferObjects = new FrameBufferObject[spriteSheetsCount];
         for (int i = 0; i < frameBufferObjects.length; i++) {
             frameBufferObjects[i] = new RegularFrameBufferObject(fboSize, fboSize);
         }
@@ -66,8 +66,6 @@ public class FrameBufferedSpriteSheet {
             int frame = 0;
             for (FrameBufferObject frameBufferObject : frameBufferObjects) {
                 prepareTextureUpdate(frameBufferObject);
-                //Drawer.drawRectangle(0, 0, fboSize, fboSize);
-                glTranslatef(-xStart - xDelta, -yStart - yDelta, 0);
                 frames:
                 for (int j = 0; j < yFrames; j++) {
                     for (int k = 0; k < xFrames; k++) {
@@ -92,7 +90,7 @@ public class FrameBufferedSpriteSheet {
         frameBufferObject.activate();
         Drawer.clearScreen(0);
         glColor3f(1, 1, 1);
-        glTranslatef(0, Display.getHeight() - fboSize, 0);
+        glTranslatef(-xStart - xDelta, Display.getHeight() - fboSize - yStart - yDelta, 0);
     }
 
     private void endTextureUpdate(FrameBufferObject frameBufferObject) {
