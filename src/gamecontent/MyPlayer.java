@@ -121,7 +121,7 @@ public class MyPlayer extends Player {
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
-        appearance = new Animation(place.getSpriteSheet("test", "cloth/" + characterName), 200, framesPerDir
+        appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "cloth/" + characterName), 200, framesPerDir
                 , dims[0], dims[1], centralPoint);
         visible = true;
         depth = 0;

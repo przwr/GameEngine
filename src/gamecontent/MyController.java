@@ -169,7 +169,7 @@ public class MyController extends PlayerController {
             if (running) {
                 playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
             } else {
-                playerAnimation.setFPS((int) (inControl.getSpeed() * 5));
+                playerAnimation.setFPS((int) (inControl.getSpeed() * 3));
             }
         } else {
             playerAnimation.setFPS(30);

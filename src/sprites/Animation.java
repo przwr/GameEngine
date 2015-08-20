@@ -23,11 +23,7 @@ public class Animation implements Appearance {
     private int framesPerDirection;
     private boolean animate = true, stopAtEnd = false;
 
-    public Animation(SpriteSheet sprite, int delayTime) {
-        this(sprite, delayTime, 0);
-    }
-
-    public Animation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
+    private Animation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
         this.end = spriteSheet.getSize() - 1;
@@ -36,7 +32,7 @@ public class Animation implements Appearance {
         this.framesPerDirection = framesPerDirection;
     }
 
-    public Animation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
+    private Animation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
         this.end = spriteSheet.getSize() - 1;
@@ -45,6 +41,21 @@ public class Animation implements Appearance {
         this.framesPerDirection = framesPerDirection;
         fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
                 framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
+    }
+
+    public static Animation createSimpleAnimation(SpriteSheet sprite, int delayTime) {
+        return new Animation(sprite, delayTime, 0);
+    }
+
+    public static Animation createDirectionalAnimation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
+        return new Animation(sprite, delayTime, framesPerDirection);
+    }
+
+    public static Animation createFBOAnimation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
+        Animation tmp = new Animation(sprite, delayTime, framesPerDirection);
+        tmp.fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
+                framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
+        return tmp;
     }
 
     private void setCurrentFrame(int newFrame) {
@@ -63,11 +74,13 @@ public class Animation implements Appearance {
 
     @Override
     public void updateFrame() {
-        /*System.out.println(animate
+        /*if ("shen".equals(spriteSheet.getKey())) {
+         System.out.println(animate
          + " d: " + delay.isOver()
          + " cf: " + currentFrame
          + " s: " + stopAtEnd
-         + " st.en: " + start + "." + end);*/
+         + " st.en: " + start + "." + end);
+         }*/
         if (animate && delay.isOver()) {
             delay.start();
             setCurrentFrame(currentFrame + 1);
@@ -198,26 +211,22 @@ public class Animation implements Appearance {
 
     @Override
     public int getWidth() {
-        spriteSheet.getWidth();
-        return 0;
+        return spriteSheet.getWidth();
     }
 
     @Override
     public int getHeight() {
-        spriteSheet.getHeight();
-        return 0;
+        return spriteSheet.getHeight();
     }
 
     @Override
     public int getXStart() {
-        spriteSheet.getXStart();
-        return 0;
+        return spriteSheet.getXStart();
     }
 
     @Override
     public int getYStart() {
-        spriteSheet.getYStart();
-        return 0;
+        return spriteSheet.getYStart();
     }
 
     @Override

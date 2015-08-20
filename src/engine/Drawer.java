@@ -9,7 +9,6 @@ import game.place.Place;
 import game.place.ScreenPlace;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
@@ -23,6 +22,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.GL_SRC0_RGB;
 import static org.lwjgl.opengl.GL15.GL_SRC1_RGB;
+import org.newdawn.slick.Color;
 
 /**
  * @author Wojtek
