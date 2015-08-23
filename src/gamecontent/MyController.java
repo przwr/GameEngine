@@ -85,7 +85,7 @@ public class MyController extends PlayerController {
         }
         //ANIMACJA//
         direction = inControl.getDirection();
-        running = !isKeyPressed(RUN);
+        running = true;//!isKeyPressed(RUN);
 
         playerAnimation = (Animation) inControl.getAppearance();
 
@@ -99,6 +99,13 @@ public class MyController extends PlayerController {
                 }
                 playerAnimation.setStopAtEnd(true);
                 playerAnimation.animateIntervalInDirection(direction / 45, 21, 25);
+                inControl.brakeWithModifier(2, 2);
+            } else if (isKeyPressed(RUN)) {
+                if (isKeyClicked(RUN)) {
+                    setInputLag(30);
+                }
+                playerAnimation.setStopAtEnd(true);
+                playerAnimation.animateIntervalInDirection(direction / 45, 26, 28);
                 inControl.brakeWithModifier(2, 2);
             } else {
                 playerAnimation.setStopAtEnd(false);
@@ -149,7 +156,7 @@ public class MyController extends PlayerController {
              inControl.setJumping(true);
              inControl.setHop(true);
              }*/
-            if (isKeyPressed(RUN)) {
+            if (!running) {
                 inControl.setMaxSpeed(diagonal ? 1.5 : 2);
             } else {
                 inControl.setMaxSpeed(diagonal ? 6 : 8);
@@ -165,7 +172,7 @@ public class MyController extends PlayerController {
         } else {
             playerAnimation.animateSingleInDirection(direction / 45, 0);
         }
-        if (!isKeyPressed(JUMP)) {
+        if (!isKeyPressed(JUMP) && !isKeyPressed(RUN)) {
             if (running) {
                 playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
             } else {

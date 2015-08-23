@@ -32,17 +32,6 @@ public class Animation implements Appearance {
         this.framesPerDirection = framesPerDirection;
     }
 
-    private Animation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
-        this.spriteSheet = sprite;
-        this.start = currentFrame = 0;
-        this.end = spriteSheet.getSize() - 1;
-        delay = new Delay(delayTime);
-        delay.start();
-        this.framesPerDirection = framesPerDirection;
-        fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
-                framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
-    }
-
     public static Animation createSimpleAnimation(SpriteSheet sprite, int delayTime) {
         return new Animation(sprite, delayTime, 0);
     }
@@ -53,8 +42,8 @@ public class Animation implements Appearance {
 
     public static Animation createFBOAnimation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
         Animation tmp = new Animation(sprite, delayTime, framesPerDirection);
-        tmp.fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
-                framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
+//        tmp.fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
+//                framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
         return tmp;
     }
 
