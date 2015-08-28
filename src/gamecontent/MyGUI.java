@@ -48,7 +48,7 @@ public class MyGUI extends GUIObject {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getRelativePlayersX() - 2f * tile, getRelativePlayersY() - tile, 0);
             color.a = alpha;
-            alpha -= 0.1f;
+            alpha -= 0.06f;
             Drawer.setColor(color);
             attackIcons.renderPiece(attackType);
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
