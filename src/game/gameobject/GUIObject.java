@@ -73,4 +73,12 @@ public abstract class GUIObject {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+    
+    public int getRelativePlayersX() {
+        return player.getX() - player.camera.getXStart();
+    }
+    
+    public int getRelativePlayersY() {
+        return player.getY() - player.camera.getYStart();
+    }
 }

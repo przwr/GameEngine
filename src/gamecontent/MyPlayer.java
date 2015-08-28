@@ -32,7 +32,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyPlayer extends Player {
 
-    private final int framesPerDir = 29;
+    private final int framesPerDir = 32;
     private final String characterName = "aria";
     private Cloth head;
     private Cloth torso;
@@ -47,6 +47,8 @@ public class MyPlayer extends Player {
 
     private Cloth weapon;
     private TextController textControl;
+    
+    private MyGUI gui;
 
     //---------<('.'<) TYMCZASOWE!-------------//
     private float jumpDelta = 22.6f;
@@ -67,8 +69,16 @@ public class MyPlayer extends Player {
         stats = new PlayerStats(this);
     }
 
+    public MyGUI wezMyGUIBoKolejnoscTworzeniaObiektowJestZwalona() {
+        return gui;
+    }
+    
+    public int getAttackType() {
+        return ((MyController) playerController).getAttackType();
+    }
+    
     private void initializeControllerForFirst() {
-        playerController = new MyController(this);
+        playerController = new MyController(this, gui);
         playerController.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
         playerController.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
         playerController.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
@@ -77,7 +87,7 @@ public class MyPlayer extends Player {
     }
 
     private void initializeController() {
-        playerController = new MyController(this);
+        playerController = new MyController(this, gui);
         playerController.initialize();
     }
 
@@ -95,6 +105,8 @@ public class MyPlayer extends Player {
         emits = false;
         textControl = new TextController(place);
         addGui(textControl);
+        gui = new MyGUI("Player " + name + "'s GUI", place);
+        addGui(gui);
 
         //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
         //testBody = place.getSpriteSheet("kulka1");
@@ -121,8 +133,7 @@ public class MyPlayer extends Player {
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
-        appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "cloth/" + characterName), 200, framesPerDir
-                , dims[0], dims[1], centralPoint);
+        appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "cloth/" + characterName), 200, framesPerDir, dims[0], dims[1], centralPoint);
         visible = true;
         depth = 0;
         setResistance(2);

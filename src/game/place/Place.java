@@ -79,6 +79,7 @@ public abstract class Place extends ScreenPlace {
                                 Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
                             }
                             Drawer.setCurrentColor(Color.white);
+                            glPopMatrix();
                             currentCamera.renderGUI();
                             console.setCamera(currentCamera);
                             console.render(0, 0);
