@@ -72,5 +72,6 @@ class LangPL extends Language {
         menu.Unsupported = "nieobsługiwane";
         menu.MustBeClose = " (Gracze muszą być blisko)";
         menu.Empty = "brak!";
+        menu.Loading = "Wczytywanie";
     }
 }

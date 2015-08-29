@@ -15,11 +15,14 @@ import game.gameobject.Player;
 import game.place.Map;
 import game.place.MapLoaderModule;
 import game.place.cameras.PlayersCamera;
+import game.text.FontHandler;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
 import navmeshpathfinding.PathFindingModule;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
+import org.newdawn.slick.Color;
 
 import java.io.File;
 
@@ -201,6 +204,7 @@ public class MyGame extends Game {
             place = new MyPlace(this, 64);
         }
         Drawer.place = place;
+        showLoading();
         place.players = new GameObject[4];
         place.playersCount = playersCount;
         if (playersCount == 1) {
@@ -246,8 +250,7 @@ public class MyGame extends Game {
         place.generateAsHost();
         for (int i = 0; i < playersCount; i++) {
             Map map = place.maps.get(0);
-            players[i].changeMap(map);
-            players[i].updateAreaPlacement();
+            players[i].changeMap(map, players[i].getX(), players[i].getY());
         }
         updatePlayersCameras();
         pathThread = new Thread(pathFinding);
@@ -259,11 +262,19 @@ public class MyGame extends Game {
         started = running = true;
     }
 
+    private void showLoading() {
+        Drawer.clearScreen(0);
+        FontHandler font = Drawer.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
+        Drawer.renderStringCentered(Settings.language.menu.Loading + " ...", Display.getWidth() / 2, Display.getHeight() / 2, font, Color.white);
+        Display.sync(60);
+        Display.update();
+    }
+
     private void addPlayerOffline(int i) {
         if (i < 4 && place.playersCount < 4) {
             players[i].initializeSetPosition(56, 104, place, i * 256, i * 265);
             ((Player) place.players[i]).setCamera(new PlayersCamera(place.players[i], 2, 2, i));
-            players[i].changeMap(players[0].getMap());
+            players[i].changeMap(players[0].getMap(), players[i].getX(), players[i].getY());
             players[i].updateAreaPlacement();
             if (i != place.playersCount) {
                 Player tempG = players[place.playersCount];
@@ -346,7 +357,7 @@ public class MyGame extends Game {
         place.makeShadows();
         place.generateAsGuest();
         Map map = place.getMapById((short) 0);
-        players[0].changeMap(map);
+        players[0].changeMap(map, players[0].getX(), players[0].getY());
         players[0].updateAreaPlacement();
         started = running = true;
     }
@@ -362,7 +373,7 @@ public class MyGame extends Game {
         place.makeShadows();
         place.generateAsHost();
         Map map = place.getMapById((short) 0);
-        players[0].changeMap(map);
+        players[0].changeMap(map, players[0].getX(), players[0].getY());
         players[0].updateAreaPlacement();
         pathThread = new Thread(pathFinding);
         pathThread.start();

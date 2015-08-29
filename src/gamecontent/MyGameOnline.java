@@ -54,7 +54,7 @@ public class MyGameOnline extends GameOnline {
                 game.mode = 1;
                 while (client.tempMapId == -1) {
                 }
-                game.players[0].changeMap(game.getPlace().getMapById(client.tempMapId));
+                game.players[0].changeMap(game.getPlace().getMapById(client.tempMapId), game.players[0].getX(), game.players[0].getY());
             } else {
                 client.Close();
                 client = null;

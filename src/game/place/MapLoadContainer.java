@@ -24,6 +24,12 @@ public class MapLoadContainer {
         }
     }
 
+    public void add(String name, Iterable<Integer> areas, Map map) {
+        ensureCapacity(1);
+        requests[requestCount].set(name, areas);
+        requestCount++;
+    }
+
     public void add(String name, Iterable<Integer> areas) {
         ensureCapacity(1);
         requests[requestCount].set(name, areas);
@@ -77,12 +83,12 @@ public class MapLoadContainer {
         return requestCount < requests.length;
     }
 
-    public boolean containsMap(String name) {
+    public MapLoad getMapByName(String name) {
         for (int i = 0; i < requestCount; i++) {
             if (requests[i].name == name)
-                return true;
+                return requests[i];
         }
-        return false;
+        return null;
     }
 
 

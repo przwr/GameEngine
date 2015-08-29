@@ -148,7 +148,7 @@ public final class AnalyzerSettings {
                 final float vol = (float) v / 10;
                 writer.write("Volume: " + vol + "\n");
             }
-            writer.write("Language: " + Settings.languageName);
+            writer.write("Language: " + Settings.languageName + "\n");
             writer.write("DefaultGamma: " + Settings.defaultGamma + "\n");
             writer.write("GameGamma: " + Settings.gameGamma + "\n");
             writer.close();

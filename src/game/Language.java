@@ -67,5 +67,6 @@ public class Language {
         public String Unsupported;
         public String MustBeClose;
         public String Empty;
+        public String Loading;
     }
 }

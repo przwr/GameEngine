@@ -19,9 +19,11 @@ import java.util.ArrayList;
  */
 public abstract class Player extends Entity {
 
+
     private final ArrayList<GUIObject> guiList = new ArrayList<>();
     public byte playerID;
     public PlayerController playerController;
+    protected Map empty;
     protected Camera camera;
     protected GameOnline online;
     protected boolean first, stopped;
@@ -79,8 +81,8 @@ public abstract class Player extends Entity {
     }
 
     @Override
-    public void changeMap(Map map) {
-        super.changeMap(map);
+    public void changeMap(Map map, int x, int y) {
+        super.changeMap(map, x, y);
         if (camera != null) {
             camera.setMap(map);
         }

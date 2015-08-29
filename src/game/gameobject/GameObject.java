@@ -12,6 +12,7 @@ package game.gameobject;
 import collision.Figure;
 import engine.Light;
 import game.place.Map;
+import game.place.WarpPoint;
 import sprites.Appearance;
 
 import java.util.ArrayList;
@@ -34,8 +35,10 @@ public abstract class GameObject {
     protected Stats stats;
     protected String name;
     protected Map map;
+    protected Map prevMap;
     protected int area = -1;
     protected Figure collision;
+    protected WarpPoint warp;
     private boolean mobile;
     private int prevArea = -1;
 
@@ -57,12 +60,15 @@ public abstract class GameObject {
         visible = true;
     }
 
-    public void changeMap(Map map) {
-        if (this.map != null && this.map != map) {
-            this.map.deleteObject(this);
+    public void changeMap(Map map, int x, int y) {
+        if (this.map != map) {
+            if (this.map != null) {
+                this.map.deleteObject(this);
+            }
+            this.map = map;
+            this.setPosition(x, y);
+            this.map.addObject(this);
         }
-        this.map = map;
-        this.map.addObject(this);
     }
 
     public void updateAreaPlacement() {
@@ -70,7 +76,10 @@ public abstract class GameObject {
             if (area != -1 && prevArea != -1) {
                 prevArea = area;
                 area = map.getAreaIndex(getX(), getY());
-                map.changeAreaIfNeeded(area, prevArea, this);
+                if (area != prevArea && map == prevMap) {
+                    map.changeArea(area, prevArea, this);
+                }
+                prevMap = map;
             } else {
                 area = map.getAreaIndex(getX(), getY());
                 prevArea = area;
@@ -274,8 +283,8 @@ public abstract class GameObject {
         return area;
     }
 
-    public int getPrevArea() {
-        return prevArea;
+    public void setArea(int area) {
+        this.area = area;
     }
 
     public int getCollisionWidth() {
@@ -334,5 +343,9 @@ public abstract class GameObject {
 
     public void delete() {
         map.deleteObject(this);
+    }
+
+    public void setWarp(WarpPoint warp) {
+        this.warp = warp;
     }
 }

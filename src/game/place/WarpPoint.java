@@ -71,42 +71,42 @@ public class WarpPoint extends GameObject {
         isStatic = false;
     }
 
-    public void Warp(GameObject object) {
+    public void warp(GameObject object) {
         if (isWarp) {
             if (isStatic) {
                 if (destination != null) {
-                    object.changeMap(destination);
+                    object.changeMap(destination, xDestination, yDestination);
                 } else {
                     loadMap(object);
                 }
-                object.setPosition(xDestination, yDestination);
             } else {
                 WarpPoint warp;
                 if (destination != null) {
-                    object.changeMap(destination);
                     warp = destination.findWarp(name);
+                    object.changeMap(destination, warp.getX(), warp.getY());
                 } else {
-                    warp = loadMap(object);
+                    loadMap(object);
                 }
-                object.setPosition(warp.x, warp.y);
-                if (object instanceof Player && ((Player) object).getCamera() != null) {
-                    ((Player) object).getCamera().update();
-                }
+            }
+            if (object instanceof Player && ((Player) object).getCamera() != null) {
+                ((Player) object).getCamera().update();
             }
         }
     }
 
     private WarpPoint loadMap(GameObject object) {
-        //TODO Ma(tra)pa - loadingScreen? - Nie.. Najwyżej przymuli
-        place.game.getMapLoader().requestMap(stringDestination, this);    //TODO Informacje które areas wczytać!
-        while (true) {
-            place.addMapsToAdd();
-            Map thisMap = map.place.getMapByName(stringDestination);
-            if (thisMap != null) {
-                object.changeMap(thisMap);
-                return thisMap.findWarp(name);
+        place.game.getMapLoader().requestMap(stringDestination, this);
+        if (object.getMap() != null && object.getMap() != place.loadingMap) {
+            object.changeMap(place.loadingMap, 0, 0);
+            object.setWarp(this);
+        } else {
+            destination = place.getMapByName(stringDestination);
+            if (destination != null) {
+                WarpPoint warp = destination.findWarp(name);
+                object.changeMap(place.loadingMap, warp.getX(), warp.getY());
             }
         }
+        return this;
     }
 
     @Override

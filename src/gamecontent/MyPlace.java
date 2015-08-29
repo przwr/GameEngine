@@ -14,6 +14,7 @@ import game.gameobject.ActionOnOff;
 import game.gameobject.Entity;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
+import game.place.LoadingMap;
 import game.place.Map;
 import game.place.Place;
 import navmeshpathfinding.NavigationMeshGenerator;
@@ -63,6 +64,7 @@ public class MyPlace extends Place {
         dayCycle.setTime(7, 30);
         changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
+        loadingMap = new LoadingMap(this);
     }
 
     @Override
@@ -99,10 +101,16 @@ public class MyPlace extends Place {
         }
         unloadedMaps.clear();
         unloadedMaps.addAll(maps.stream().filter(map -> !tempMaps.contains(map)).collect(Collectors.toList()));
-        if (game.getMapLoader().isRunning())
+        if (game.getMapLoader().isRunning()) // TODO Wywalić, jak będzie wczytywane z pliku
             unloadedMaps.forEach(maps::remove);
         addMapsToAdd();
-        tempMaps.stream().forEach((mapToUpdate) -> mapToUpdate.updateAreasToUpdate());
+//        tempMaps.stream().forEach((mapToUpdate) -> mapToUpdate.updateAreasToUpdate());
+
+        for (Map mapToUpdate : tempMaps) {
+            mapToUpdate.updateAreasToUpdate();
+            if (game.getMapLoader().isRunning())// TODO Wywalić, jak będzie wczytywane z pliku
+                mapToUpdate.unloadUnNeededUpdate();
+        }
         game.getMapLoader().updateList(tempMaps);
     }
 

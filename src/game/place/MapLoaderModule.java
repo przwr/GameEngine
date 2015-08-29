@@ -13,18 +13,21 @@ import java.util.stream.Collectors;
 public class MapLoaderModule implements Runnable {
 
     private ArrayList<Map> maps = new ArrayList<>(); // TODO zamienić na wczytywanie z pliku
-
     private MapLoadContainer list1 = new MapLoadContainer();
     private MapLoadContainer list2 = new MapLoadContainer();
-
-    private ArrayList<Map> toUnload1 = new ArrayList<>();
-    private ArrayList<Map> toUnload2 = new ArrayList<>();
-
-    private boolean run, firstActive, pause, firstUnloadActive;
+    private boolean run, firstActive, pause;
     private Game game;
-
     public MapLoaderModule(Game game) {
         this.game = game;
+    }
+
+    private Map loadMap(String name) {
+        for (Map map : maps) {
+            if (map.name == name) {
+                return map;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -33,28 +36,42 @@ public class MapLoaderModule implements Runnable {
         run = true;
         while (run) {
             try {
-                loadMapAreas();
+                loadMaps();
             } catch (Exception exception) {
                 ErrorHandler.swallowLogAndPrint(exception);
             }
         }
     }
 
-    private void loadMapAreas() {
+    private void loadMaps() {
         if (this.game != null) {
             Place place = game.getPlace();
             if (place != null && !pause) {
                 MapLoadContainer workingList = firstActive ? list1 : list2;
-                for (Map loadedMap : maps) {
-                    if (workingList != null && workingList.containsMap(loadedMap.name)) {
-                        if (place.maps.contains(loadedMap)) {
-                            // todo
+                if (workingList != null) {
+                    for (int i = 0; i < workingList.size(); i++) {
+                        MapLoad mapLoad = workingList.get(i);
+                        Map placeMap = mapLoad.map;
+                        if (placeMap == null) {
+                            placeMap = loadMap(mapLoad.name);   //TODO Informacja które areas wczytać z pliku!
+                            loadAreas(mapLoad, placeMap);
+                            ArrayList<Map> workingMap = (place.firstMapsToAddActive ? place.mapsToAdd2 : place.mapsToAdd1);
+                            workingMap.add(placeMap);
                         } else {
-                            (place.firstMapsToAddActive ? place.mapsToAdd2 : place.mapsToAdd1).add(loadedMap);
+                            loadAreas(mapLoad, placeMap);
                         }
                     }
+                    workingList.clear();
                 }
                 firstActive = !firstActive;
+            }
+        }
+    }
+
+    private void loadAreas(MapLoad mapLoad, Map placeMap) {
+        for (int area : mapLoad.areas) {            // TODO przerobić na wczytywanie z pliku
+            if (placeMap != null && placeMap.areas[area] == null) {
+                placeMap.areas[area] = placeMap.areasCopies[area];
             }
         }
     }
@@ -70,9 +87,8 @@ public class MapLoaderModule implements Runnable {
     public synchronized void updateList(Set<Map> tempMaps) {
         pause = true;
         MapLoadContainer workingList = firstActive ? list2 : list1;
-        workingList.clear();
         for (Map map : tempMaps) {
-            workingList.add(map.name, map.areasToUpdate);
+            workingList.add(map.name, map.areasToUpdate, map);
         }
         pause = false;
     }

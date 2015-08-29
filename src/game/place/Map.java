@@ -51,6 +51,7 @@ public abstract class Map {
     protected final BlueArray<Light> visibleLights = new BlueArray<>();
     protected final Set<Integer> areasToUpdate = new HashSet<>(36);
     public Area[] areas;
+    public Area[] areasCopies; //Tylko do testów - powinno być wywalone - a areas wczytywane z pliku
     protected Placement placement;
     protected int xAreas;
     protected int yAreas;
@@ -75,8 +76,10 @@ public abstract class Map {
         xAreas = (this.widthInTiles / Area.X_IN_TILES) + (widthInTiles % Area.X_IN_TILES != 0 ? 1 : 0);
         yAreas = (heightInTiles / Area.Y_IN_TILES) + (heightInTiles % Area.Y_IN_TILES != 0 ? 1 : 0);
         areas = new Area[xAreas * yAreas];
+        areasCopies = new Area[xAreas * yAreas];
         for (int areaIndex = 0; areaIndex < areas.length; areaIndex++) {
             areas[areaIndex] = new Area(place, this, areaIndex % xAreas, areaIndex / xAreas);
+            areasCopies[areaIndex] = areas[areaIndex];
         }
         placement = new Placement(this);
     }
@@ -133,13 +136,23 @@ public abstract class Map {
     }
 
     public void updateAreasToUpdate() {
-        areasToUpdate.stream().filter((area) -> (area >= 0 && area < areas.length)).forEach((area) -> areas[area].updateContainers(area));
+        areasToUpdate.stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> areas[area].updateContainers(area));
+    }
+
+
+    public void unloadUnNeededUpdate() {
+        for (int area = 0; area < areas.length; area++) {
+            if (!areasToUpdate.contains(area)) {
+                //TODO save to file
+                areas[area] = null;
+            }
+        }
     }
 
     public void updateNearBlocks(int area, List<Block> blocks) {
         blocks.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 blocks.addAll(areas[i].getBlocks());
             }
         }
@@ -148,7 +161,7 @@ public abstract class Map {
     public void updateNearSolidMobs(int area, List<Mob> mobs) {
         mobs.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 mobs.addAll(areas[i].getSolidMobs());
             }
         }
@@ -157,7 +170,7 @@ public abstract class Map {
     public void updateNearFlatMobs(int area, List<Mob> mobs) {
         mobs.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 mobs.addAll(areas[i].getFlatMobs());
             }
         }
@@ -166,7 +179,7 @@ public abstract class Map {
     public void updateNearSolidObjects(int area, List<GameObject> objects) {
         objects.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 objects.addAll(areas[i].getSolidObjects());
             }
         }
@@ -175,7 +188,7 @@ public abstract class Map {
     public void updateNearFlatObjects(int area, List<GameObject> objects) {
         objects.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 objects.addAll(areas[i].getFlatObjects());
             }
         }
@@ -184,7 +197,7 @@ public abstract class Map {
     public void updateNearWarps(int area, List<WarpPoint> warps) {
         warps.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 warps.addAll(areas[i].getWarps());
             }
         }
@@ -193,7 +206,7 @@ public abstract class Map {
     public void updateNearDepthObjects(int area, List<GameObject> depthObjects) {
         depthObjects.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 Methods.merge(depthObjects, areas[i].getDepthObjects());
             }
         }
@@ -202,7 +215,7 @@ public abstract class Map {
     private void updateNearForegroundTiles(int area) {
         foregroundTiles.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 Methods.merge(foregroundTiles, areas[i].getForegroundTiles());
             }
         }
@@ -211,7 +224,7 @@ public abstract class Map {
     private void updateNearTopObjects(int area) {
         topObjects.clear();
         for (int i : placement.getNearAreas(area)) {
-            if (i >= 0 && i < areas.length) {
+            if (i >= 0 && i < areas.length && areas[i] != null) {
                 Methods.merge(topObjects, areas[i].getTopObjects());
             }
         }
@@ -245,7 +258,7 @@ public abstract class Map {
 
     private void prepareMobsToUpdate() {
         tempMobs.clear();
-        areasToUpdate.stream().filter((area) -> (area >= 0 && area < areas.length)).forEach((area) -> {
+        areasToUpdate.stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> {
             tempMobs.addAll(areas[area].getSolidMobs());
             tempMobs.addAll(areas[area].getFlatMobs());
         });
@@ -262,7 +275,7 @@ public abstract class Map {
 
     private void prepareInteractive() {
         tempInteractiveObjects.clear();
-        areasToUpdate.stream().filter((area) -> (area >= 0 && area < areas.length)).forEach((area) -> tempInteractiveObjects.addAll(areas[area].getInteractiveObjects()));
+        areasToUpdate.stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> tempInteractiveObjects.addAll(areas[area].getInteractiveObjects()));
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {
@@ -310,7 +323,9 @@ public abstract class Map {
         if (object instanceof WarpPoint) {
             warps.add((WarpPoint) object);
         }
-        areas[getAreaIndex(object.getX(), object.getY())].addObject(object);
+        int area = getAreaIndex(object.getX(), object.getY());
+        object.setArea(area);
+        areas[area].addObject(object);
     }
 
     public void deleteObject(GameObject object) {
@@ -318,20 +333,15 @@ public abstract class Map {
         if (object instanceof WarpPoint) {
             warps.remove(object);
         }
-        areas[getAreaIndex(object.getX(), object.getY())].deleteObject(object);
+        areas[object.getArea()].deleteObject(object);
+        object.setArea(-1);
     }
 
     protected void removeForegroundTile(GameObject foregroundTile) {
         areas[getAreaIndex(foregroundTile.getX(), foregroundTile.getY())].removeForegroundTile(foregroundTile);
     }
 
-    public void changeAreaIfNeeded(int area, int prevArea, GameObject object) {
-        if (area != prevArea) {
-            changeArea(area, prevArea, object);
-        }
-    }
-
-    private void changeArea(int area, int prevArea, GameObject object) {
+    public void changeArea(int area, int prevArea, GameObject object) {
         areas[prevArea].deleteObject(object);
         areas[area].addObject(object);
     }
@@ -364,7 +374,8 @@ public abstract class Map {
                 for (int xTiles = 0; xTiles < X_IN_TILES; xTiles++) {
                     int x = xTemp + xTiles;
                     if (cameraXStart < (x + 1) * tileSize && cameraXEnd > x * tileSize) {
-                        tempTile = areas[i].getTile(xTiles, yTiles);
+                        Area area = areas[i];
+                        tempTile = area != null ? area.getTile(xTiles, yTiles) : null;
                         if (tempTile != null && tempTile.isVisible()) {
                             tempTile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
                         }
@@ -482,7 +493,10 @@ public abstract class Map {
 
     public Tile getTile(int x, int y) {
         if (x >= 0 && x < widthInTiles && y >= 0 && y < heightInTiles) {
-            return areas[getAreaIndexCoordinatesInTiles(x, y)].getTile(getXInArea(x), getYInArea(y));
+            Area area = areas[getAreaIndexCoordinatesInTiles(x, y)];
+            if (area != null) {
+                return area.getTile(getXInArea(x), getYInArea(y));
+            }
         }
         return null;
     }
@@ -505,7 +519,7 @@ public abstract class Map {
 
     public List<Light> getLightsFromAreasToUpdate() {
         lights.clear();
-        areasToUpdate.stream().filter((i) -> (i >= 0 && i < areas.length)).forEach((i) -> lights.addAll(areas[i].getLights()));
+        areasToUpdate.stream().filter((i) -> (i >= 0 && i < areas.length && areas[i] != null)).forEach((i) -> lights.addAll(areas[i].getLights()));
         return lights;
     }
 

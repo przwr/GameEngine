@@ -62,8 +62,10 @@ public class MyPlayer extends Player {
         } else {
             initializeController();
         }
-        int[] frames = {21, 22, 23, 24, 25, 47, 48, 49, 50, 51, 73, 74, 75, 76, 77, 99, 100, 101, 102, 103, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 177, 178, 179, 180, 181, 203, 204, 205, 206, 207};
-        addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CircleInteractiveCollision(32), Interactive.HURT));
+        int[] framesSwing = {21, 22, 23, 24, 25, 50, 51, 52, 53, 54, 79, 80, 81, 82, 83, 108, 109, 110, 111, 112, 137, 138, 139, 140, 141, 166, 167, 168, 169, 170, 195, 196, 197, 198, 199, 224, 225, 226, 227, 228};
+        int[] framesPush = {26, 27, 28, 55, 56, 57, 84, 85, 86, 113, 114, 115, 142, 143, 144, 171, 172, 173, 200, 201, 202, 229, 230, 231};
+        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesSwing), new CircleInteractiveCollision(32), Interactive.HURT));
+//        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesPush), new CircleInteractiveCollision(32), Interactive.HURT));
         stats = new PlayerStats(this);
     }
 
@@ -212,6 +214,9 @@ public class MyPlayer extends Player {
 
     @Override
     public void update() {
+        if (map == place.loadingMap) {
+            warp.warp(this);
+        }
         if (jumping) {
             hop = false;
             jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
@@ -225,7 +230,7 @@ public class MyPlayer extends Player {
         if (area != -1) {
             for (WarpPoint warp : map.getArea(area).getNearWarps()) {
                 if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                    warp.Warp(this);
+                    warp.warp(this);
                     break;
                 }
             }
@@ -247,7 +252,7 @@ public class MyPlayer extends Player {
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         for (WarpPoint warp : map.getArea(area).getNearWarps()) {
             if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                warp.Warp(this);
+                warp.warp(this);
                 break;
             }
         }
@@ -271,7 +276,7 @@ public class MyPlayer extends Player {
         try {
             Map currentMap = getPlace().getMapById(((MPlayerUpdate) update).getMapId());
             if (currentMap != null && this.map != currentMap) {
-                changeMap(currentMap);
+                changeMap(currentMap, getX(), getY());
             }
             if (((MPlayerUpdate) update).isHop()) {
                 setJumping(true);

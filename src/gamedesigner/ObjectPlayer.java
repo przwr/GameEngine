@@ -365,8 +365,8 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void changeMap(Map newMap) {
-        super.changeMap(newMap);
+    public void changeMap(Map newMap, int x, int y) {
+        super.changeMap(newMap, x, y);
         if (camera != null) {
             camera.setMap(newMap);
         }

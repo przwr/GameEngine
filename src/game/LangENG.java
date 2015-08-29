@@ -72,5 +72,6 @@ class LangENG extends Language {
         menu.Unsupported = "unsupported";
         menu.MustBeClose = " (Players must be close)";
         menu.Empty = "empty!";
+        menu.Loading = "Loading";
     }
 }

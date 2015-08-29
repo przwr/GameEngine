@@ -284,7 +284,7 @@ public class ObjectPlace extends Place {
             printMessage("Object \"" + name + "\" was loaded");
             undo.removeMoves();
             lastName = file[0];
-            editor.changeMap(objMap);
+            editor.changeMap(objMap, p.getX(), p.getY());
         }
     }
 

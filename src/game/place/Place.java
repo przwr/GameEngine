@@ -44,6 +44,7 @@ public abstract class Place extends ScreenPlace {
     public final Camera[] cameras = new Camera[3];
     protected final SpriteBase sprites;
     private final SoundBase sounds;
+    public Map loadingMap;
     public boolean isSplit, changeSSMode, singleCamera, firstMapsToAddActive;
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int splitScreenMode, playersCount;
@@ -214,7 +215,7 @@ public abstract class Place extends ScreenPlace {
 
     public Map getMapByName(String name) {
         for (Map map : maps) {
-            if (map.getName().equals(name)) {
+            if (map != null && map.getName().equals(name)) {
                 return map;
             }
         }
