@@ -23,6 +23,8 @@ public class MyController extends PlayerController {
     private Animation playerAnimation;
     private MyGUI gui;
     private int attackType;
+    
+    private int[] attackFrames;
 
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);
@@ -31,6 +33,7 @@ public class MyController extends PlayerController {
         actions = new Action[36];
         states = new byte[8];
         attackType = 0;
+        attackFrames = new int[] {23, 27, 30};
     }
 
     @Override
@@ -69,6 +72,10 @@ public class MyController extends PlayerController {
         }
     }
 
+    public int[] getAttackFrames() {
+        return attackFrames;
+    }
+    
     public int getAttackType() {
         return attackType;
     }
