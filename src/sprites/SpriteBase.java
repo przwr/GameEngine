@@ -45,6 +45,14 @@ public class SpriteBase {
         return newSprite;
     }
 
+    private String fullFolderPath(String folder) {
+        if (folder.isEmpty()) {
+            return "res/textures/";
+        } else {
+            return "res/textures/" + folder + "/";
+        }
+    }
+
     public SpriteSheet getSpriteSheet(String textureKey, String folder) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)) {
@@ -66,7 +74,7 @@ public class SpriteBase {
         }
         int startX = 0, startY = 0;
         try (BufferedReader input = new BufferedReader(
-                new FileReader("res/textures/" + folder + "/" + name + ".spr"))) {
+                new FileReader(fullFolderPath(folder) + name + ".spr"))) {
             input.readLine();
             input.readLine();
             input.readLine();
@@ -90,7 +98,7 @@ public class SpriteBase {
         String sprite, key;
         Texture texture;
         Sprite image;
-        folder = "res/textures/" + folder + "/";
+        folder = fullFolderPath(folder);
         try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");
@@ -193,7 +201,7 @@ public class SpriteBase {
         String image, key;
         Texture texture;
         Sprite sprite;
-        folder = "res/textures/" + folder + "/";
+        folder = fullFolderPath(folder);
         try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");
@@ -235,7 +243,7 @@ public class SpriteBase {
         String sprite, key;
         Texture texture;
         Sprite image;
-        folder = "res/textures/" + folder + "/";
+        folder = fullFolderPath(folder);
         try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
             String line = input.readLine();
             String[] data = line.split(";");

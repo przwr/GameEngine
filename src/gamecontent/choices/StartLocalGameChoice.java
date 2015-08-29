@@ -21,6 +21,7 @@ public class StartLocalGameChoice extends MenuChoice {
 
     @Override
     public void action() {
+        System.out.println("The game is loading...");
         ((MyGame) menu.game).setDesignerMode(false);
         menu.game.startGame();
         Main.refreshGamma();
