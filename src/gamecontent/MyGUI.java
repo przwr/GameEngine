@@ -30,7 +30,7 @@ public class MyGUI extends GUIObject {
     public MyGUI(String name, Place place) {
         super(name, place);
         color = Color.white;
-        alpha = 1f;
+        alpha = 0f;
         attackType = 0;
         attackIcons = place.getSpriteSheet("attackIcons", "");
     }

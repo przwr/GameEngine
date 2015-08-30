@@ -24,6 +24,8 @@ public class MyController extends PlayerController {
     private MyGUI gui;
     private int attackType;
 
+    private int[] attackFrames;
+
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);
         gui = playersGUI;
@@ -31,6 +33,7 @@ public class MyController extends PlayerController {
         actions = new Action[36];
         states = new byte[9];
         attackType = 0;
+        attackFrames = new int[]{23, 27, 30}; // Zachowuj kolejność ataków taką, jak numeracja stałych ATTACK_SLASH ...
     }
 
     @Override
@@ -68,6 +71,10 @@ public class MyController extends PlayerController {
                 states[action - 4] = KEY_NO_INPUT;
             }
         }
+    }
+
+    public int[] getAttackFrames() {
+        return attackFrames;
     }
 
     public int getAttackType() {

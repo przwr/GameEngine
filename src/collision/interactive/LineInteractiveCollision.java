@@ -24,49 +24,49 @@ public class LineInteractiveCollision extends InteractiveCollision {
         int y = owner.getY();
         switch (owner.getDirection8Way()) {
             case 0:
-                x += owner.getCollision().getWidth() / 2 + shift;
+                x += (owner.getCollision().getWidth() / 2 + shift);
                 position.set(x, y);
                 x += length;
                 break;
             case 2:
-                y -= Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2 + shift;
+                y -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2 + shift);
                 position.set(x, y);
                 y -= length;
                 break;
             case 4:
-                x -= owner.getCollision().getWidth() / 2 + shift;
+                x -= (owner.getCollision().getWidth() / 2 + shift);
                 position.set(x, y);
                 x -= length;
                 break;
             case 6:
-                y += Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2 + shift;
+                y += (Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2 + shift);
                 position.set(x, y);
                 y += length;
                 break;
             case 1:
                 x += Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2 + shift;
-                y -= owner.getCollision().getWidth() / 4 + shift / 2;
+                y -= (owner.getCollision().getWidth() / 4 + shift / 2);
                 position.set(x, y);
                 x += length;
                 y += length / 2;
                 break;
             case 3:
                 x -= Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2 + shift;
-                y -= owner.getCollision().getWidth() / 4 + shift / 2;
+                y -= (owner.getCollision().getWidth() / 4 + shift / 2);
                 position.set(x, y);
                 x -= length;
                 y -= length / 2;
                 break;
             case 5:
                 x -= Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2 + shift;
-                y += owner.getCollision().getWidth() / 4 + shift / 2;
+                y += (owner.getCollision().getWidth() / 4 + shift / 2);
                 position.set(x, y);
                 x -= length;
                 y += length / 2;
                 break;
             case 7:
                 x += Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2 + shift;
-                y += owner.getCollision().getWidth() / 4 + shift / 2;
+                y += (owner.getCollision().getWidth() / 4 + shift / 2);
                 position.set(x, y);
                 x += length;
                 y += length / 2;

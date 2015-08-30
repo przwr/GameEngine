@@ -23,6 +23,6 @@ public class InteractiveActivatorFrames implements InteractiveActivator {
     }
 
     private boolean isActiveFrame(int key) {
-        return Arrays.binarySearch(activeFrames, key) > 0;
+        return Arrays.binarySearch(activeFrames, key) >= 0;
     }
 }

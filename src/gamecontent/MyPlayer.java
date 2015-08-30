@@ -30,7 +30,9 @@ import sprites.Animation;
 
 import java.io.FileNotFoundException;
 
+import static gamecontent.MyController.*;
 import static org.lwjgl.opengl.GL11.*;
+
 
 /**
  * @author przemek
@@ -74,33 +76,24 @@ public class MyPlayer extends Player {
     }
 
     private void initializeAttacks() {
-        int[] framesSlash = new int[8 * 4];
-        int i = 0;
-        for (int j = 0; j < 8; j++) {
-            for (int start = 21; start < 25; start++) {
-                framesSlash[i] = j * 32 + start;
-                i++;
+        int[] attacks = ((MyController) playerController).getAttackFrames();
+        for (int attack = 0; attack < attacks.length; attack++) {
+            int[] frames = new int[8];
+            for (int i = 0; i < frames.length; i++) {
+                frames[i] = i * 32 + attacks[attack];
+            }
+            switch (attack) {
+                case ATTACK_SLASH:
+                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CircleInteractiveCollision(32), Interactive.HURT));
+                    break;
+                case ATTACK_THRUST:
+                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(84, 6), Interactive.HURT));
+                    break;
+                case ATTACK_WEAK_PUNCH:
+                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(30, 2), Interactive.HURT));
+                    break;
             }
         }
-        i = 0;
-        int[] framesThrust = new int[8 * 2];
-        for (int j = 0; j < 8; j++) {
-            for (int start = 26; start < 28; start++) {
-                framesThrust[i] = j * 32 + start;
-                i++;
-            }
-        }
-        i = 0;
-        int[] framesWeakPunch = new int[8 * 2];
-        for (int j = 0; j < 8; j++) {
-            for (int start = 29; start < 31; start++) {
-                framesWeakPunch[i] = j * 32 + start;
-                i++;
-            }
-        }
-        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesSlash), new CircleInteractiveCollision(32), Interactive.HURT));
-        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesThrust), new LineInteractiveCollision(32, 58), Interactive.HURT));
-        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesWeakPunch), new LineInteractiveCollision(20, 22), Interactive.HURT));
     }
 
     public MyGUI wezMyGUIBoKolejnoscTworzeniaObiektowJestZwalona() {
