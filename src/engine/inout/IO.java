@@ -28,6 +28,7 @@ public final class IO {
             while ((line = read.readLine()) != null) {
                 AnalyzerSettings.analyzeSetting(line);
             }
+            read.close();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -39,6 +40,7 @@ public final class IO {
             while ((line = read.readLine()) != null) {
                 AnalyzerInput.AnaliseInput(line);
             }
+            read.close();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

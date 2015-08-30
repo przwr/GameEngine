@@ -22,7 +22,7 @@ public abstract class Player extends Entity {
 
     private final ArrayList<GUIObject> guiList = new ArrayList<>();
     public byte playerID;
-    public PlayerController playerController;
+    protected PlayerController playerController;
     protected Map empty;
     protected Camera camera;
     protected GameOnline online;

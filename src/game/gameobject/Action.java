@@ -26,4 +26,8 @@ public abstract class Action {
     }
 
     public abstract void act();
+
+    public void setInput(AnyInput input) {
+        this.input = input;
+    }
 }

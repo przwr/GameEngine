@@ -94,19 +94,18 @@ public class WarpPoint extends GameObject {
         }
     }
 
-    private WarpPoint loadMap(GameObject object) {
+    private void loadMap(GameObject object) {
         place.game.getMapLoader().requestMap(stringDestination, this);
         if (object.getMap() != null && object.getMap() != place.loadingMap) {
             object.changeMap(place.loadingMap, 0, 0);
             object.setWarp(this);
         } else {
-            destination = place.getMapByName(stringDestination);
-            if (destination != null) {
-                WarpPoint warp = destination.findWarp(name);
-                object.changeMap(place.loadingMap, warp.getX(), warp.getY());
+            Map map = place.getMapByName(stringDestination);
+            if (map != null) {
+                WarpPoint warp = map.findWarp(name);
+                object.changeMap(map, warp.getX(), warp.getY());
             }
         }
-        return this;
     }
 
     @Override

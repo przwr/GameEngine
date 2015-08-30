@@ -5,7 +5,12 @@
  */
 package gamecontent;
 
-import collision.*;
+import collision.Figure;
+import collision.OpticProperties;
+import collision.Rectangle;
+import collision.interactive.CircleInteractiveCollision;
+import collision.interactive.InteractiveActivatorFrames;
+import collision.interactive.LineInteractiveCollision;
 import engine.*;
 import game.gameobject.Interactive;
 import game.gameobject.Player;
@@ -47,7 +52,7 @@ public class MyPlayer extends Player {
 
     private Cloth weapon;
     private TextController textControl;
-    
+
     private MyGUI gui;
 
     //---------<('.'<) TYMCZASOWE!-------------//
@@ -64,21 +69,48 @@ public class MyPlayer extends Player {
         } else {
             initializeController();
         }
-        int[] framesSwing = {21, 22, 23, 24, 25, 50, 51, 52, 53, 54, 79, 80, 81, 82, 83, 108, 109, 110, 111, 112, 137, 138, 139, 140, 141, 166, 167, 168, 169, 170, 195, 196, 197, 198, 199, 224, 225, 226, 227, 228};
-        int[] framesPush = {26, 27, 28, 55, 56, 57, 84, 85, 86, 113, 114, 115, 142, 143, 144, 171, 172, 173, 200, 201, 202, 229, 230, 231};
-        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesSwing), new CircleInteractiveCollision(32), Interactive.HURT));
-//        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesPush), new CircleInteractiveCollision(32), Interactive.HURT));
+        initializeAttacks();
         stats = new PlayerStats(this);
+    }
+
+    private void initializeAttacks() {
+        int[] framesSlash = new int[8 * 4];
+        int i = 0;
+        for (int j = 0; j < 8; j++) {
+            for (int start = 21; start < 25; start++) {
+                framesSlash[i] = j * 32 + start;
+                i++;
+            }
+        }
+        i = 0;
+        int[] framesThrust = new int[8 * 2];
+        for (int j = 0; j < 8; j++) {
+            for (int start = 26; start < 28; start++) {
+                framesThrust[i] = j * 32 + start;
+                i++;
+            }
+        }
+        i = 0;
+        int[] framesWeakPunch = new int[8 * 2];
+        for (int j = 0; j < 8; j++) {
+            for (int start = 29; start < 31; start++) {
+                framesWeakPunch[i] = j * 32 + start;
+                i++;
+            }
+        }
+        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesSlash), new CircleInteractiveCollision(32), Interactive.HURT));
+        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesThrust), new LineInteractiveCollision(32, 58), Interactive.HURT));
+        addInteractive(new Interactive(this, new InteractiveActivatorFrames(framesWeakPunch), new LineInteractiveCollision(20, 22), Interactive.HURT));
     }
 
     public MyGUI wezMyGUIBoKolejnoscTworzeniaObiektowJestZwalona() {
         return gui;
     }
-    
+
     public int getAttackType() {
         return ((MyController) playerController).getAttackType();
     }
-    
+
     private void initializeControllerForFirst() {
         playerController = new MyController(this, gui);
         playerController.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);

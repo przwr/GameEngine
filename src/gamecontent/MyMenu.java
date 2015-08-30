@@ -89,12 +89,12 @@ public class MyMenu extends Menu {
             player1.addChoice(new NotMapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0], i));
         }
         for (; i < Settings.actionsCount; i++) {
-            player1.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0].playerController, i));
+            player1.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 0, i));
         }
         for (i = 3; i < Settings.actionsCount; i++) {
-            player2.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[1].playerController, i));
-            player3.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[2].playerController, i));
-            player4.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[3].playerController, i));
+            player2.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 1, i));
+            player3.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 2, i));
+            player4.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 3, i));
         }
         controls.addChoice(player1);
         controls.addChoice(player2);
@@ -107,7 +107,6 @@ public class MyMenu extends Menu {
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
         glScissor(0, 0, Display.getWidth(), Display.getHeight());
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(color.r, color.g, color.b);
         renderText();
     }
 

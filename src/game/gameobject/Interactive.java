@@ -5,7 +5,7 @@
  */
 package game.gameobject;
 
-import collision.*;
+import collision.interactive.*;
 
 import java.util.List;
 
@@ -37,6 +37,7 @@ public class Interactive {
         if (COLLIDES_WITH_MOBS) {
             mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || mob != owner))).forEach((mob) -> {
                 int pixelsIn = collision.collide(mob);
+//                System.out.println(pixelsIn);
                 if (pixelsIn > 0) {
                     action.act(mob, owner, pixelsIn);
                 }

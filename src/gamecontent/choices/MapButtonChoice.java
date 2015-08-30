@@ -21,17 +21,17 @@ import game.menu.MenuChoice;
  */
 public class MapButtonChoice extends MenuChoice {
 
-    private final PlayerController ctrl;
-    private final int i;
+    private final int i, player;
     private final Runnable run;
     private Thread thread;
     private boolean mapped;
     private int maxAxNr;
+    private PlayerController ctrl;
 
-    public MapButtonChoice(String label, final Menu menu, final PlayerController ctrl, final int i) {
+    public MapButtonChoice(String label, Menu menu, int player, int i) {
         super(label, menu);
         this.i = i;
-        this.ctrl = ctrl;
+        this.player = player;
         run = () -> {
             int noiseAx[] = findNoiseAx();
             mapped = true;
@@ -42,20 +42,20 @@ public class MapButtonChoice extends MenuChoice {
                         break;
                     }
                     if (in instanceof InputNull) {
-                        ctrl.actions[i].input = null;
+                        ctrl.actions[i].setInput(null);
                         break;
                     }
                     if (i < 4) {
                         for (Action action : ctrl.actions) {
                             if (action != null && action.input != null && action.input.toString().equals(in.toString())) {
-                                action.input = ctrl.actions[i].input;
+                                action.setInput(ctrl.actions[i].input);
                                 set(in);
                             }
                         }
                     } else {
                         for (int k = 4; k < ctrl.actions.length; k++) {
                             if (ctrl.actions[k] != null && ctrl.actions[k].input != null && ctrl.actions[k].input.toString().equals(in.toString())) {
-                                ctrl.actions[k].input = ctrl.actions[i].input;
+                                ctrl.actions[k].setInput(ctrl.actions[i].input);
                                 set(in);
                             }
                         }
@@ -69,6 +69,7 @@ public class MapButtonChoice extends MenuChoice {
 
     @Override
     public void action() {
+        ctrl = menu.game.players[player].getController();
         if (ctrl != null && ctrl.actions[i] != null) {
             menu.isMapping = true;
             thread = new Thread(run);
@@ -78,6 +79,7 @@ public class MapButtonChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
+        ctrl = menu.game.players[player].getController();
         if (thread != null) {
             return label + ": " + Settings.language.menu.PushButton;
         } else if (ctrl != null && ctrl.actions[i] != null && ctrl.actions[i].input != null) {
@@ -112,8 +114,8 @@ public class MapButtonChoice extends MenuChoice {
         return noiseAx;
     }
 
-    private void set(AnyInput in) {
-        ctrl.actions[i].input = in;
+    private void set(AnyInput input) {
+        ctrl.actions[i].setInput(input);
         AnalyzerInput.Update();
         mapped = false;
     }

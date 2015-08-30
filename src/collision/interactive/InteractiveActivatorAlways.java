@@ -1,4 +1,4 @@
-package collision;
+package collision.interactive;
 
 import game.gameobject.GameObject;
 

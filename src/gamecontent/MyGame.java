@@ -46,7 +46,7 @@ public class MyGame extends Game {
         players[1] = new MyPlayer(false, "Player 2");
         players[2] = new MyPlayer(false, "Player 3");
         players[3] = new MyPlayer(false, "Player 4");
-        Settings.update(players[0].playerController.getActionsCount(), players, controllers);
+        Settings.update(players[0].getController().getActionsCount(), players, controllers);
         loadInputFromFile(new File("res/input.ini"));
         menu = new MyMenu(this);
         menuPlayer = new MyPlayer(true, "Menu");
@@ -160,10 +160,12 @@ public class MyGame extends Game {
             players[0] = new ObjectPlayer(true, "Mapper");
             players[0].setMenu(menu);
             Settings.playersCount = 1;
+            Settings.players[0] = players[0];
         } else if (!(place instanceof MyPlace)) {
             players[0] = new MyPlayer(true, "Player 1");
             players[0].setMenu(menu);
             loadInputFromFile(new File("res/input.ini"));
+            Settings.players[0] = players[0];
         }
     }
 
@@ -244,7 +246,9 @@ public class MyGame extends Game {
             players[3].setCamera(new PlayersCamera(players[3], 4, 4, 3));
             Settings.joinSplitScreen = true;
         }
-        System.arraycopy(players, 0, place.players, 0, 4);
+        for (int i = 0; i < 4; i++) {
+            place.players[i] = players[i];
+        }
         place.makeShadows();
         mode = 0;
         place.generateAsHost();
@@ -265,7 +269,7 @@ public class MyGame extends Game {
     private void showLoading() {
         Drawer.clearScreen(0);
         FontHandler font = Drawer.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
-        Drawer.renderStringCentered(Settings.language.menu.Loading + " ...", Display.getWidth() / 2, Display.getHeight() / 2, font, Color.white);
+        Drawer.renderStringCentered(Settings.language.menu.Loading + " ...", Display.getWidth() / 2, Display.getHeight() / 2, font, new Color(1f, 1f, 1f));
         Display.sync(60);
         Display.update();
     }

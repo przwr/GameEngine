@@ -13,9 +13,9 @@ import sprites.Animation;
  */
 public class MyController extends PlayerController {
 
-    public static final byte UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7;
-    public static final byte FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 11;
-    
+    public static final byte UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7, CHANGE = 8;
+    public static final byte FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 12;
+
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_WEAK_PUNCH = 2;
 
     private int direction, lagDuration;
@@ -29,7 +29,7 @@ public class MyController extends PlayerController {
         gui = playersGUI;
         inputs = new AnyInput[36];
         actions = new Action[36];
-        states = new byte[8];
+        states = new byte[9];
         attackType = 0;
     }
 
@@ -39,9 +39,10 @@ public class MyController extends PlayerController {
         actions[1] = new ActionOnOff(inputs[1]);
         actions[2] = new ActionOnOff(inputs[2]);
         actions[3] = new ActionOnOff(inputs[3]);
-        for (byte i = FIRST_NO_MENU_ACTION; i < ACTIONS_COUNT - 1; i++) {
+        for (byte i = FIRST_NO_MENU_ACTION; i < ACTIONS_COUNT - 2; i++) {
             actions[i] = new ActionHold(inputs[i]);
         }
+        actions[ACTIONS_COUNT - 2] = new ActionOnOff(inputs[ACTIONS_COUNT - 2]);
         actions[ACTIONS_COUNT - 1] = new ActionOnOff(inputs[ACTIONS_COUNT - 1]);
         actions[ACTIONS_COUNT] = new ActionOnOff(inputs[ACTIONS_COUNT]);
     }
@@ -72,7 +73,7 @@ public class MyController extends PlayerController {
     public int getAttackType() {
         return attackType;
     }
-    
+
     @Override
     public void getInput() {
         if (gui == null) {
@@ -98,7 +99,7 @@ public class MyController extends PlayerController {
             }
             //ANIMACJA//
             direction = inControl.getDirection();
-            running = true;//!isKeyPressed(RUN);
+            running = !isKeyPressed(RUN);
 
             playerAnimation = (Animation) inControl.getAppearance();
 
@@ -172,13 +173,14 @@ public class MyController extends PlayerController {
                  inControl.setJumping(true);
                  inControl.setHop(true);
                  }*/
-                if (isKeyClicked(RUN)) {
+                if (isKeyClicked(CHANGE)) {
                     attackType += 1;
                     if (attackType > 2) {
                         attackType = 0;
                     }
                     gui.changeAttackIcon(attackType);
                 }
+
                 if (!running) {
                     inControl.setMaxSpeed(diagonal ? 1.5 : 2);
                 } else {

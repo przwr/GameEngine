@@ -21,6 +21,7 @@ public class LoadingMap extends Map {
 
     public LoadingMap(Place place) {
         super((short) -1, "Empty", place, Place.tileSize, Place.tileSize, Place.tileSize);
+        setColor(new Color(1f, 1f, 1f));
     }
 
     @Override
@@ -40,8 +41,8 @@ public class LoadingMap extends Map {
             }
         }
         FontHandler font = Drawer.getFont("Amble-Regular", (int) (camera.getScale() * 48));
-        Drawer.renderStringCentered(loading, camera.getWidth() / 2, camera.getHeight() / 2, font, Color.white);
-        Drawer.renderStringCentered(dots, (camera.getWidth() + font.getWidth(loading)) / 2, camera.getHeight() / 2, font, Color.white);
+        Drawer.renderStringCentered(loading, camera.getWidth() / 2, camera.getHeight() / 2, font, getLightColor());
+        Drawer.renderStringCentered(dots, (camera.getWidth() + font.getWidth(loading)) / 2, camera.getHeight() / 2, font, getLightColor());
     }
 
     @Override

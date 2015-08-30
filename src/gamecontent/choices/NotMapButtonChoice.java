@@ -25,7 +25,7 @@ public class NotMapButtonChoice extends MenuChoice {
         if (ctrl == null) {
             this.ctrl = null;
         } else {
-            this.ctrl = ctrl.playerController;
+            this.ctrl = ctrl.getController();
         }
     }
 

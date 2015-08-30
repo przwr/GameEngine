@@ -91,6 +91,7 @@ public class MyPlace extends Place {
 
     private void updateAreasOffline() {
         tempMaps.clear();
+        unloadedMaps.clear();
         for (int i = 0; i < playersCount; i++) {
             map = players[i].getMap();
             if (!tempMaps.contains(map)) {
@@ -99,13 +100,10 @@ public class MyPlace extends Place {
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
         }
-        unloadedMaps.clear();
         unloadedMaps.addAll(maps.stream().filter(map -> !tempMaps.contains(map)).collect(Collectors.toList()));
         if (game.getMapLoader().isRunning()) // TODO Wywalić, jak będzie wczytywane z pliku
             unloadedMaps.forEach(maps::remove);
         addMapsToAdd();
-//        tempMaps.stream().forEach((mapToUpdate) -> mapToUpdate.updateAreasToUpdate());
-
         for (Map mapToUpdate : tempMaps) {
             mapToUpdate.updateAreasToUpdate();
             if (game.getMapLoader().isRunning())// TODO Wywalić, jak będzie wczytywane z pliku

@@ -42,7 +42,6 @@ public class Language {
         public String Brightness;
         public String Volume;
         public String Gamma;
-        public String GammaInstructions;
         public String Resolution;
         public String FullScreen;
         public String On;
@@ -61,7 +60,6 @@ public class Language {
         public String VSync;
         public String ShadowOff;
         public String SmoothShadows;
-        public String Samples;
         public String JoinSS;
         public String FBOError;
         public String Unsupported;

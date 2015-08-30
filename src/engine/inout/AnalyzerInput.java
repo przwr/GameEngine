@@ -29,7 +29,7 @@ public class AnalyzerInput {
             table[i] = Integer.parseInt(p[i + 3]);
         }
         if (players != 1 || act >= 4) {
-            Settings.players[players - 1].playerController.actions[act].input = AnyInput.createInput(type, table);
+            Settings.players[players - 1].getController().actions[act].setInput(AnyInput.createInput(type, table));
         }
     }
 
@@ -39,16 +39,15 @@ public class AnalyzerInput {
             fw = new FileWriter("res/input.ini");
             int p = 1;
             for (Player pl : Settings.players) {
-                if (pl.playerController != null) {
+                if (pl.getController() != null) {
                     for (int i = 0; i < Settings.actionsCount; i++) {
-                        if (pl.playerController.actions[i].input != null) {
-                            fw.write(p + " " + i + " " + pl.playerController.actions[i].input.toString() + "\n");
+                        if (pl.getController().actions[i].input != null) {
+                            fw.write(p + " " + i + " " + pl.getController().actions[i].input.toString() + "\n");
                         }
                     }
                 }
                 p++;
             }
-
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(AnalyzerInput.class.getName()).log(Level.SEVERE, null, ex);

@@ -113,6 +113,11 @@ public class Settings {
         Settings.actionsCount = actionsCount;
         Settings.players = players;
         Settings.controllers = controllers;
+        detectFrameBuffers();
+
+    }
+
+    public static void detectFrameBuffers() {
         try {
             GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, samplesCount, GL_RGBA8, 10, 10, false);
             GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);

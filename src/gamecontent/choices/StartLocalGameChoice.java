@@ -6,6 +6,7 @@
 package gamecontent.choices;
 
 import engine.Main;
+import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;
 import gamecontent.MyGame;
@@ -21,7 +22,7 @@ public class StartLocalGameChoice extends MenuChoice {
 
     @Override
     public void action() {
-        System.out.println("The game is loading...");
+        System.out.println(Settings.language.menu.Loading + " ...");
         ((MyGame) menu.game).setDesignerMode(false);
         menu.game.startGame();
         Main.refreshGamma();

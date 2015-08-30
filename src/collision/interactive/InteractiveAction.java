@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package collision;
+package collision.interactive;
 
 import game.gameobject.GameObject;
 
