@@ -16,7 +16,8 @@ public class MyController extends PlayerController {
     public static final byte UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7, CHANGE = 8;
     public static final byte FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 12;
 
-    public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_WEAK_PUNCH = 2;
+    public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, 
+            ATTACK_UPPERSLASH = 2, ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
 
     private int direction, lagDuration;
     private boolean running, diagonal, inputLag;
@@ -24,7 +25,7 @@ public class MyController extends PlayerController {
     private MyGUI gui;
     private int attackType;
 
-    private int[] attackFrames;
+    private final int[] attackFrames;
 
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);
@@ -33,7 +34,8 @@ public class MyController extends PlayerController {
         actions = new Action[36];
         states = new byte[9];
         attackType = 0;
-        attackFrames = new int[]{23, 27, 30}; // Zachowuj kolejność ataków taką, jak numeracja stałych ATTACK_SLASH ...
+        attackFrames = new int[]{22, 27, 31, 38, 40}; 
+            // Zachowuj kolejność ataków taką, jak numeracja stałych ATTACK_SLASH ...
     }
 
     @Override
@@ -80,12 +82,14 @@ public class MyController extends PlayerController {
     public int getAttackType() {
         return attackType;
     }
+    
+    public void setPlayersGUI(MyGUI gui) {
+        this.gui = gui;
+    }
 
     @Override
     public void getInput() {
-        if (gui == null) {
-            gui = ((MyPlayer) inControl).wezMyGUIBoKolejnoscTworzeniaObiektowJestZwalona();
-        } else {
+        if (gui != null) {
             if (inputLag) {
                 lagDuration--;
                 if (lagDuration < 0) {
@@ -126,8 +130,14 @@ public class MyController extends PlayerController {
                         case ATTACK_THRUST:
                             playerAnimation.animateIntervalInDirection(direction / 45, 26, 28);
                             break;
+                        case ATTACK_UPPERSLASH:
+                            playerAnimation.animateIntervalInDirection(direction / 45, 29, 36);
+                            break;
                         case ATTACK_WEAK_PUNCH:
-                            playerAnimation.animateIntervalInDirection(direction / 45, 29, 31);
+                            playerAnimation.animateIntervalInDirection(direction / 45, 37, 39);
+                            break;
+                        case ATTACK_STRONG_PUNCH:
+                            playerAnimation.animateIntervalInDirection(direction / 45, 40, 41);
                             break;
                     }
                     inControl.brakeWithModifier(2, 2);
@@ -182,7 +192,7 @@ public class MyController extends PlayerController {
                  }*/
                 if (isKeyClicked(CHANGE)) {
                     attackType += 1;
-                    if (attackType > 2) {
+                    if (attackType > 4) {
                         attackType = 0;
                     }
                     gui.changeAttackIcon(attackType);

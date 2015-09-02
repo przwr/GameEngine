@@ -39,7 +39,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyPlayer extends Player {
 
-    private final int framesPerDir = 32;
+    private final int framesPerDir = 42;
     private final String characterName = "aria";
     private Cloth head;
     private Cloth torso;
@@ -96,10 +96,6 @@ public class MyPlayer extends Player {
         }
     }
 
-    public MyGUI wezMyGUIBoKolejnoscTworzeniaObiektowJestZwalona() {
-        return gui;
-    }
-
     public int getAttackType() {
         return ((MyController) playerController).getAttackType();
     }
@@ -134,6 +130,7 @@ public class MyPlayer extends Player {
         addGui(textControl);
         gui = new MyGUI("Player " + name + "'s GUI", place);
         addGui(gui);
+        ((MyController)playerController).setPlayersGUI(gui);
 
         //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
         //testBody = place.getSpriteSheet("kulka1");

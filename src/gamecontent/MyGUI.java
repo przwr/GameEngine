@@ -29,7 +29,7 @@ public class MyGUI extends GUIObject {
 
     public MyGUI(String name, Place place) {
         super(name, place);
-        color = Color.white;
+        color = new Color(Color.white);
         alpha = 0f;
         attackType = 0;
         attackIcons = place.getSpriteSheet("attackIcons", "");
@@ -51,6 +51,7 @@ public class MyGUI extends GUIObject {
             alpha -= 0.06f;
             Drawer.setColor(color);
             attackIcons.renderPiece(attackType);
+            Drawer.refreshColor();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }
