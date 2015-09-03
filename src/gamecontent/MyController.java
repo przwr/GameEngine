@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import engine.Delay;
 import game.gameobject.*;
 import sprites.Animation;
 
@@ -26,6 +27,9 @@ public class MyController extends PlayerController {
     private int attackType;
 
     private final int[] attackFrames;
+    
+    private int sideDirection;
+    private final Delay sideDelay;
 
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);
@@ -33,6 +37,7 @@ public class MyController extends PlayerController {
         inputs = new AnyInput[36];
         actions = new Action[36];
         states = new byte[9];
+        sideDelay = new Delay(10);
         attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40}; 
             // Zachowuj kolejność ataków taką, jak numeracja stałych ATTACK_SLASH ...
@@ -151,6 +156,14 @@ public class MyController extends PlayerController {
                             animateMoving(45);
                             inControl.addSpeed(4, -4);
                         } else {
+                            if (isKeyReleased(LEFT)) {
+                                sideDirection = 135;
+                                sideDelay.start();
+                            }
+                            if (isKeyReleased(RIGHT)) {
+                                sideDirection = 45;
+                                sideDelay.start();
+                            }
                             animateMoving(90);
                             inControl.addSpeed(0, -4);
                         }
@@ -162,14 +175,38 @@ public class MyController extends PlayerController {
                             animateMoving(315);
                             inControl.addSpeed(4, 4);
                         } else {
+                            if (isKeyReleased(LEFT)) {
+                                sideDirection = 225;
+                                sideDelay.start();
+                            }
+                            if (isKeyReleased(RIGHT)) {
+                                sideDirection = 315;
+                                sideDelay.start();
+                            }
                             animateMoving(270);
                             inControl.addSpeed(0, 4);
                         }
                     } else {
                         if (isKeyPressed(RIGHT)) {
+                            if (isKeyReleased(UP)) {
+                                sideDirection = 45;
+                                sideDelay.start();
+                            }
+                            if (isKeyReleased(DOWN)) {
+                                sideDirection = 315;
+                                sideDelay.start();
+                            }
                             animateMoving(0);
                             inControl.addSpeed(4, 0);
                         } else if (isKeyPressed(LEFT)) {
+                            if (isKeyReleased(UP)) {
+                                sideDirection = 135;
+                                sideDelay.start();
+                            }
+                            if (isKeyReleased(DOWN)) {
+                                sideDirection = 225;
+                                sideDelay.start();
+                            }
                             animateMoving(180);
                             inControl.addSpeed(-4, 0);
                         } else {
@@ -183,6 +220,13 @@ public class MyController extends PlayerController {
                     if (!isKeyPressed(LEFT) && !isKeyPressed(RIGHT)) {
                         diagonal = false;
                         inControl.brake(0);
+                    }
+                    if (sideDelay.isActive() && sideDelay.isOver()) {
+                        if (!isKeyPressed(UP) && !isKeyPressed(DOWN)
+                                && !isKeyPressed(LEFT) && !isKeyPressed(RIGHT)) {
+                            inControl.setDirection(sideDirection);
+                        }
+                        sideDelay.stop();
                     }
                 }
 
