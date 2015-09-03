@@ -6,6 +6,7 @@
 package collision.interactive;
 
 import game.gameobject.GameObject;
+import game.gameobject.Interactive;
 
 /**
  * @author przemek
@@ -13,8 +14,10 @@ import game.gameobject.GameObject;
 public class InteractiveActionHurt implements InteractiveAction {
 
     @Override
-    public void act(GameObject object, GameObject activator, int pixelsIn) {
-        object.getStats().decreaseHealth((pixelsIn * activator.getStats().getStrength()) / 10);
-        System.out.println(object.getName() + ": Aałła.. Zostało mi " + (100 * object.getStats().getHealth() / object.getStats().getMaxHealth()) + " % życia!");
+    public void act(GameObject object, Interactive activator, InteractiveResponse response) {
+        activator.recalculateData(response);
+        object.getStats().decreaseHealth(response);
+        System.out.println(object.getName() + ": Aałła.. Zostało mi " + object.getStats().getHealth() + "/" + object.getStats().getMaxHealth()
+                + " " + (100 * object.getStats().getHealth() / object.getStats().getMaxHealth()) + " % życia!");
     }
 }

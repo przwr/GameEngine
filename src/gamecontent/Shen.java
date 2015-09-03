@@ -9,26 +9,23 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Drawer;
 import engine.Methods;
-import engine.RandomGenerator;
 import game.gameobject.Mob;
 import game.gameobject.MobStats;
 import game.place.Place;
 import navmeshpathfinding.PathFindingModule;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author przemek
  */
 public class Shen extends Mob {
 
-    private Color skinColor;
     private final Animation animation;
+    private Color skinColor;
 
     public Shen(int x, int y, Place place, short ID) {
         super(x, y, 1, 500, "Shen", place, "shen", true, ID);
@@ -45,7 +42,7 @@ public class Shen extends Mob {
     }
 
     //animation.animateSingleInDirection(direction / 45, 6); - ANIMACJA ZRANIENIA!
-    
+
     @Override
     public void update() {
         if (target != null && (!(target instanceof MyPlayer) || ((MyPlayer) target).isInGame())) {
@@ -61,9 +58,10 @@ public class Shen extends Mob {
         }
         animation.setStopAtEnd(false);
         if (xSpeed != 0 || ySpeed != 0) {
-            direction = (int) Methods.pointAngleCorrect(0, 0, (int) xSpeed, (int) ySpeed);
+            direction = (int) Methods.pointAngleCounterClockwise(0, 0, (int) xSpeed, (int) ySpeed);
             animation.setFPS(7);
             animation.animateIntervalInDirection(direction / 45, 0, 5);
+            stats.setProtectionState(false);
         } else {
             if (target == null) {
                 animation.animateSingleInDirection(direction / 45, 0);
@@ -71,12 +69,13 @@ public class Shen extends Mob {
                 animation.setFPS(15);
                 animation.setStopAtEnd(true);
                 animation.animateIntervalInDirection(direction / 45, 7, 12);
+                stats.setProtectionState(true);
             }
         }
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         brakeOthers();
     }
-    
+
     @Override
     public void render(int xEffect, int yEffect) {
         if (appearance != null) {

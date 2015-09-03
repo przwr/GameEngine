@@ -382,7 +382,7 @@ class ShadowRenderer {
     }
 
     private static void calculateConvexRightSelfShadow(Light emitter, RoundRectangle shaded) {
-        angle = -135 + Methods.pointAngleMax360(emitter.getX(), emitter.getY(),
+        angle = -135 + Methods.pointAngleClockwise(emitter.getX(), emitter.getY(),
                 shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(),
                 shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
         if (angle > 0) {
@@ -457,7 +457,7 @@ class ShadowRenderer {
                     shaded.getYEnd() - shaded.getPushValueOfCorner(LEFT_BOTTOM).getY());
             return angle > 0.5 && angle < 179.5;
         } else {
-            angle = -135 + Methods.pointAngleMax360(light.getX(), light.getY(),
+            angle = -135 + Methods.pointAngleClockwise(light.getX(), light.getY(),
                     shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(),
                     shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
             return angle > 0.5 && angle < 179.5;
@@ -471,7 +471,7 @@ class ShadowRenderer {
                     shaded.getYEnd() - shaded.getPushValueOfCorner(LEFT_BOTTOM).getY());
             return angle > 0 && angle <= 222;
         } else {
-            angle = -135 + Methods.pointAngleMax360(light.getX(), light.getY(),
+            angle = -135 + Methods.pointAngleClockwise(light.getX(), light.getY(),
                     shaded.getX() + Place.tileSize - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getX(),
                     shaded.getYEnd() - shaded.getPushValueOfCorner(RIGHT_BOTTOM).getY());
             return angle > 0 && angle <= 222;

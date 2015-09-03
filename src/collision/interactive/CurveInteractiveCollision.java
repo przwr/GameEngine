@@ -1,7 +1,6 @@
 package collision.interactive;
 
 import engine.Methods;
-import engine.Point;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 
@@ -9,17 +8,16 @@ import static collision.interactive.InteractiveResponse.NO_RESPONSE;
 import static game.gameobject.GameObject.*;
 
 /**
- * Created by przemek on 29.08.15.
+ * @author przemek
  */
-public class LineInteractiveCollision extends InteractiveCollision {
+public class CurveInteractiveCollision extends InteractiveCollision {
 
-    private int length, width;
-    private Point end = new Point();
+    private int radius, activationAngle;
 
-    public LineInteractiveCollision(int fromBottom, int height, int shift, int length, int width) {
+    public CurveInteractiveCollision(int fromBottom, int height, int shift, int radius, int activationAngle) {
         super(fromBottom, height, shift);
-        this.length = length;
-        this.width = width;
+        this.radius = radius;
+        this.activationAngle = activationAngle;
     }
 
     @Override
@@ -29,54 +27,34 @@ public class LineInteractiveCollision extends InteractiveCollision {
         switch (owner.getDirection8Way()) {
             case RIGHT:
                 x += (owner.getCollision().getWidth() / 2 + shift);
-                position.set(x, y);
-                x += length;
                 break;
             case UP:
                 y -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
-                position.set(x, y);
-                y -= length;
                 break;
             case LEFT:
                 x -= (owner.getCollision().getWidth() / 2 + shift);
-                position.set(x, y);
-                x -= length;
                 break;
             case DOWN:
                 y += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
-                position.set(x, y);
-                y += length;
                 break;
             case UP_RIGHT:
                 x += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
-                y -= (owner.getCollision().getWidth() / 4 + shift / 2);
-                position.set(x, y);
-                x += length;
-                y += length / 2;
+                y -= owner.getCollision().getWidth() / 4 + shift / 2;
                 break;
             case UP_LEFT:
                 x -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
-                y -= (owner.getCollision().getWidth() / 4 + shift / 2);
-                position.set(x, y);
-                x -= length;
-                y -= length / 2;
+                y -= owner.getCollision().getWidth() / 4 + shift / 2;
                 break;
             case DOWN_LEFT:
                 x -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
-                y += (owner.getCollision().getWidth() / 4 + shift / 2);
-                position.set(x, y);
-                x -= length;
-                y += length / 2;
+                y += owner.getCollision().getWidth() / 4 + shift / 2;
                 break;
             case DOWN_RIGHT:
                 x += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
-                y += (owner.getCollision().getWidth() / 4 + shift / 2);
-                position.set(x, y);
-                x += length;
-                y += length / 2;
+                y += owner.getCollision().getWidth() / 4 + shift / 2;
                 break;
         }
-        end.set(x, y);
+        position.set(x, y);
     }
 
     @Override
@@ -87,11 +65,21 @@ public class LineInteractiveCollision extends InteractiveCollision {
             int bottom = (int) owner.getAboveGroundHeight() + fromBottom;
             int top = bottom + height;
             if (objectTop > bottom && objectBottom < top) {
-                int pixelsIn = lineToCircleDistance(object.getX(), object.getY(), (object.getCollisionWidth() + width) / 2, position, end, length);
+                int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), object.getX(), object.getY(), radius, object.getCollisionWidth() / 2);
                 if (pixelsIn > 0) {
-                    response.setData(pixelsIn);
-                    response.setDirection((byte) (calculateInteractionDirection(object.getDirection8Way(), object.getCollision(), owner.getX(), owner.getY())));
-                    return response;
+                    int direction = owner.getDirection8Way();
+                    double angle = Methods.pointAngleCounterClockwise(position.getX(), position.getY(), object.getX(), object.getY());
+                    if (direction == 0) {
+                        direction = 8;
+                    }
+                    if (angle == -0) {
+                        angle = 360;
+                    }
+                    if (Math.abs(direction * 45 - angle) <= activationAngle) {
+                        response.setData(pixelsIn);
+                        response.setDirection((byte) (calculateInteractionDirection(object.getDirection8Way(), object.getCollision(), owner.getX(), owner.getY())));
+                        return response;
+                    }
                 }
             }
         }
@@ -106,14 +94,18 @@ public class LineInteractiveCollision extends InteractiveCollision {
             int bottom = (int) owner.getAboveGroundHeight() + fromBottom;
             int top = bottom + height;
             if (playerTop > bottom && playerBottom < top) {
-                int pixelsIn = lineToCircleDistance(player.getX(), player.getY(), (player.getCollisionWidth() + width) / 2, position, end, length);
+                int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), player.getX(), player.getY(), radius, player.getCollisionWidth() / 2);
                 if (pixelsIn > 0) {
-                    response.setData(pixelsIn);
-                    response.setDirection((byte) (calculateInteractionDirection(player.getDirection8Way(), player.getCollision(), owner.getX(), owner.getY())));
-                    return response;
+                    double diffrence = Math.abs(owner.getDirection8Way() * 45 - Methods.pointAngleCounterClockwise(position.getX(), position.getY(), player.getX(), player.getY()));
+                    if (diffrence <= activationAngle) {
+                        response.setData(pixelsIn);
+                        response.setDirection((byte) (calculateInteractionDirection(player.getDirection8Way(), player.getCollision(), owner.getX(), owner.getY())));
+                        return response;
+                    }
                 }
             }
         }
         return NO_RESPONSE;
     }
+
 }
