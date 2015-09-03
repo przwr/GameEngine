@@ -20,6 +20,7 @@ import java.util.List;
 
 public abstract class GameObject {
 
+    public final static byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
     protected final ArrayList<Light> lights = new ArrayList<>(1);
     private final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
     protected double x, y;
@@ -31,6 +32,7 @@ public abstract class GameObject {
     protected boolean onTop;
     protected boolean simpleLighting;
     protected boolean visible;
+    protected double aboveGroundHeight;
     protected Appearance appearance;
     protected Stats stats;
     protected String name;
@@ -287,6 +289,22 @@ public abstract class GameObject {
         this.area = area;
     }
 
+    public double getAboveGroundHeight() {
+        return aboveGroundHeight;
+    }
+
+    public void setAboveGroundHeight(double aboveGroundHeight) {
+        this.aboveGroundHeight = aboveGroundHeight;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int d) {
+        direction = d;
+    }
+
     public int getCollisionWidth() {
         return collision != null ? collision.getWidth() : appearance.getActualWidth();
     }
@@ -323,14 +341,6 @@ public abstract class GameObject {
 
     public void setMapNotChange(Map map) {
         this.map = map;
-    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int d) {
-        direction = d;
     }
 
     public int getDirection8Way() {

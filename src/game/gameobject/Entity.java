@@ -30,7 +30,6 @@ public abstract class Entity extends GameObject {
     protected double yEnvironmentalSpeed;
     protected double xSpeed;
     protected double ySpeed;
-    protected double jumpHeight;
     protected boolean jumping;
     protected boolean hop;
     protected Place place;
@@ -341,14 +340,6 @@ public abstract class Entity extends GameObject {
 
     public void setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
-    }
-
-    public double getJumpHeight() {
-        return jumpHeight;
-    }
-
-    public void setJumpHeight(double jumpHeight) {
-        this.jumpHeight = jumpHeight;
     }
 
     public double getXEnvironmentalSpeed() {

@@ -6,11 +6,12 @@
 package collision.interactive;
 
 import game.gameobject.GameObject;
+import game.gameobject.Interactive;
 
 /**
  * @author przemek
  */
 public interface InteractiveAction {
 
-    void act(GameObject object, GameObject activator, int pixelsIn);
+    void act(GameObject object, Interactive activator, InteractiveResponse response);
 }

@@ -8,7 +8,7 @@ package gamecontent;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
-import collision.interactive.CircleInteractiveCollision;
+import collision.interactive.CurveInteractiveCollision;
 import collision.interactive.InteractiveActivatorFrames;
 import collision.interactive.LineInteractiveCollision;
 import engine.*;
@@ -80,17 +80,23 @@ public class MyPlayer extends Player {
         for (int attack = 0; attack < attacks.length; attack++) {
             int[] frames = new int[8];
             for (int i = 0; i < frames.length; i++) {
-                frames[i] = i * 32 + attacks[attack];
+                frames[i] = i * framesPerDir + attacks[attack];
             }
             switch (attack) {
                 case ATTACK_SLASH:
-                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CircleInteractiveCollision(32), Interactive.HURT));
+                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CurveInteractiveCollision(42, 32, 0, 64, 120), Interactive.HURT, 2f));
                     break;
                 case ATTACK_THRUST:
-                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(84, 6), Interactive.HURT));
+                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(52, 10, 6, 84, 24), Interactive.HURT, 2.5f));
                     break;
                 case ATTACK_WEAK_PUNCH:
-                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(30, 2), Interactive.HURT));
+                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(72, 12, 2, 30, 20), Interactive.HURT, 1f));
+                    break;
+                case ATTACK_STRONG_PUNCH:
+                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(72, 12, 2, 34, 20), Interactive.HURT, 1.5f));
+                    break;
+                case ATTACK_UPPER_SLASH:
+                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(0, 128, 16, 66, 40), Interactive.HURT, 2f));
                     break;
             }
         }
@@ -130,7 +136,7 @@ public class MyPlayer extends Player {
         addGui(textControl);
         gui = new MyGUI("Player " + name + "'s GUI", place);
         addGui(gui);
-        ((MyController)playerController).setPlayersGUI(gui);
+        ((MyController) playerController).setPlayersGUI(gui);
 
         //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
         //testBody = place.getSpriteSheet("kulka1");
@@ -184,7 +190,7 @@ public class MyPlayer extends Player {
             Drawer.setColor(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
-            glTranslatef(0, (int) -jumpHeight, 0);
+            glTranslatef(0, (int) -aboveGroundHeight, 0);
             Drawer.setCentralPoint();
             appearance.render();
             //((Animation)appearance).renderWhole();
@@ -252,7 +258,7 @@ public class MyPlayer extends Player {
         }
         if (jumping) {
             hop = false;
-            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
+            aboveGroundHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
             jumpDelta += Time.getDelta();
             if ((int) jumpDelta >= 68) {
                 jumping = false;
@@ -275,7 +281,7 @@ public class MyPlayer extends Player {
     @Override
     public synchronized void sendUpdate() {
         if (jumping) {
-            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+            aboveGroundHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
             jumpDelta += Time.getDelta();
             if ((int) jumpDelta >= 68) {
                 jumping = false;
@@ -326,7 +332,7 @@ public class MyPlayer extends Player {
         try {
             if (jumping) {
                 hop = false;
-                jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+                aboveGroundHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
                 jumpDelta += Time.getDelta();
                 if ((int) jumpDelta == 68) {
                     jumping = false;
@@ -343,7 +349,7 @@ public class MyPlayer extends Player {
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) aboveGroundHeight, 0);
             Drawer.drawShapeInShade(appearance, 1);
             glPopMatrix();
         }
@@ -353,7 +359,7 @@ public class MyPlayer extends Player {
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) aboveGroundHeight, 0);
             Drawer.drawShapeInBlack(appearance);
             glPopMatrix();
         }
@@ -363,7 +369,7 @@ public class MyPlayer extends Player {
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) aboveGroundHeight, 0);
             Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
             glPopMatrix();
         }
@@ -373,7 +379,7 @@ public class MyPlayer extends Player {
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) aboveGroundHeight, 0);
             Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }

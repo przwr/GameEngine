@@ -9,6 +9,9 @@ import engine.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.Player;
 
+import static collision.interactive.InteractiveResponse.NO_RESPONSE;
+import static game.gameobject.GameObject.*;
+
 /**
  * @author przemek
  */
@@ -16,7 +19,8 @@ public class CircleInteractiveCollision extends InteractiveCollision {
 
     private int radius;
 
-    public CircleInteractiveCollision(int radius) {
+    public CircleInteractiveCollision(int fromBottom, int height, int shift, int radius) {
+        super(fromBottom, height, shift);
         this.radius = radius;
     }
 
@@ -25,52 +29,74 @@ public class CircleInteractiveCollision extends InteractiveCollision {
         int x = owner.getX();
         int y = owner.getY();
         switch (owner.getDirection8Way()) {
-            case 0:
-                x += owner.getCollision().getWidth() / 2;
+            case RIGHT:
+                x += (owner.getCollision().getWidth() / 2 + shift);
                 break;
-            case 2:
-                y -= Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2;
+            case UP:
+                y -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
                 break;
-            case 4:
-                x -= owner.getCollision().getWidth() / 2;
+            case LEFT:
+                x -= (owner.getCollision().getWidth() / 2 + shift);
                 break;
-            case 6:
-                y += Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2;
+            case DOWN:
+                y += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
                 break;
-            case 1:
-                x += Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2);
-                y -= owner.getCollision().getWidth() / 4;
+            case UP_RIGHT:
+                x += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
+                y -= owner.getCollision().getWidth() / 4 + shift / 2;
                 break;
-            case 3:
-                x -= Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2;
-                y -= owner.getCollision().getWidth() / 4;
+            case UP_LEFT:
+                x -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
+                y -= owner.getCollision().getWidth() / 4 + shift / 2;
                 break;
-            case 5:
-                x -= Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2;
-                y += owner.getCollision().getWidth() / 4;
+            case DOWN_LEFT:
+                x -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
+                y += owner.getCollision().getWidth() / 4 + shift / 2;
                 break;
-            case 7:
-                x += Methods.ONE_BY_SQRT_ROOT_OF_2 * owner.getCollision().getWidth() / 2;
-                y += owner.getCollision().getWidth() / 4;
+            case DOWN_RIGHT:
+                x += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (owner.getCollision().getWidth() / 2 + shift));
+                y += owner.getCollision().getWidth() / 4 + shift / 2;
                 break;
         }
         position.set(x, y);
     }
 
     @Override
-    public int collide(GameObject object) {
+    public InteractiveResponse collide(GameObject owner, GameObject object) {
         if (object != null && object.getCollision() != null) {
-            return circleToCircleDistance(position.getX(), position.getY(), object.getX(), object.getY(), radius, object.getCollisionWidth() / 2);
+            int objectBottom = (int) object.getAboveGroundHeight();
+            int objectTop = objectBottom + object.getAppearance().getActualHeight();
+            int bottom = (int) owner.getAboveGroundHeight() + fromBottom;
+            int top = bottom + height;
+            if (objectTop > bottom && objectBottom < top) {
+                int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), object.getX(), object.getY(), radius, object.getCollisionWidth() / 2);
+                if (pixelsIn > 0) {
+                    response.setData(pixelsIn);
+                    response.setDirection((byte) (calculateInteractionDirection(object.getDirection8Way(), object.getCollision(), owner.getX(), owner.getY())));
+                    return response;
+                }
+            }
         }
-        return -1;
+        return NO_RESPONSE;
     }
 
     @Override
-    public int collide(Player player) {
+    public InteractiveResponse collide(GameObject owner, Player player) {
         if (player != null && player.isInGame()) {
-            return circleToCircleDistance(position.getX(), position.getY(), player.getX(), player.getY(), radius, player.getCollisionWidth() / 2);
+            int playerBottom = (int) player.getAboveGroundHeight();
+            int playerTop = playerBottom + player.getAppearance().getActualHeight();
+            int bottom = (int) owner.getAboveGroundHeight() + fromBottom;
+            int top = bottom + height;
+            if (playerTop > bottom && playerBottom < top) {
+                int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), player.getX(), player.getY(), radius, player.getCollisionWidth() / 2);
+                if (pixelsIn > 0) {
+                    response.setData(pixelsIn);
+                    response.setDirection((byte) (calculateInteractionDirection(player.getDirection8Way(), player.getCollision(), owner.getX(), owner.getY())));
+                    return response;
+                }
+            }
         }
-        return -1;
+        return NO_RESPONSE;
     }
 
 }

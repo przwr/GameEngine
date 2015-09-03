@@ -142,7 +142,7 @@ public class PathData {
 
     public void calculateSpeed(double maxSpeed) {
         if (!flags.get(PASSED)) {
-            double angle = Methods.pointAngleMax360(x, y, destination.getX(), destination.getY());
+            double angle = Methods.pointAngleClockwise(x, y, destination.getX(), destination.getY());
             xDistance = Math.abs(x - destination.getX());
             yDistance = Math.abs(y - destination.getY());
             xSpeed = Methods.xRadius(angle, Math.min(maxSpeed, xDistance));

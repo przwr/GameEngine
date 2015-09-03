@@ -17,9 +17,9 @@ public class MyController extends PlayerController {
     public static final byte UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, JUMP = 4, RUN = 5, LIGHT = 6, ZOOM = 7, CHANGE = 8;
     public static final byte FIRST_NO_MENU_ACTION = 4, ACTIONS_COUNT = 12;
 
-    public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, 
-            ATTACK_UPPERSLASH = 2, ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
-
+    public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1,
+            ATTACK_UPPER_SLASH = 2, ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
+    private final int[] attackFrames;
     private int direction, lagDuration;
     private boolean running, diagonal, inputLag;
     private Animation playerAnimation;
@@ -39,8 +39,8 @@ public class MyController extends PlayerController {
         states = new byte[9];
         sideDelay = new Delay(10);
         attackType = 0;
-        attackFrames = new int[]{22, 27, 31, 38, 40}; 
-            // Zachowuj kolejność ataków taką, jak numeracja stałych ATTACK_SLASH ...
+        attackFrames = new int[]{22, 27, 31, 38, 40};
+        // Zachowuj kolejność ataków taką, jak numeracja stałych ATTACK_SLASH ...
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MyController extends PlayerController {
     public int getAttackType() {
         return attackType;
     }
-    
+
     public void setPlayersGUI(MyGUI gui) {
         this.gui = gui;
     }
@@ -135,7 +135,7 @@ public class MyController extends PlayerController {
                         case ATTACK_THRUST:
                             playerAnimation.animateIntervalInDirection(direction / 45, 26, 28);
                             break;
-                        case ATTACK_UPPERSLASH:
+                        case ATTACK_UPPER_SLASH:
                             playerAnimation.animateIntervalInDirection(direction / 45, 29, 36);
                             break;
                         case ATTACK_WEAK_PUNCH:

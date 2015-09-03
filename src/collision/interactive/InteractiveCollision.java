@@ -5,6 +5,7 @@
  */
 package collision.interactive;
 
+import collision.Figure;
 import engine.Methods;
 import engine.Point;
 import game.gameobject.GameObject;
@@ -12,12 +13,24 @@ import game.gameobject.Player;
 
 import java.awt.geom.Line2D;
 
+import static collision.interactive.InteractiveResponse.*;
+import static game.gameobject.GameObject.*;
+
 /**
  * @author przemek
  */
 public abstract class InteractiveCollision {
 
+    private static int[] directions = {FRONT, FRONT, SIDE, BACK, BACK, BACK, SIDE, FRONT};
     protected Point position = new Point();
+    protected int fromBottom, height, shift;
+    protected InteractiveResponse response = new InteractiveResponse();
+
+    public InteractiveCollision(int fromBottom, int height, int shift) {
+        this.fromBottom = fromBottom;
+        this.height = height;
+        this.shift = shift;
+    }
 
     protected static int circleToCircleDistance(int xA, int yA, int xB, int yB, int radiusA, int radiusB) {
         return (radiusA + radiusB) - Methods.pointDistance(xA, (int) (yA * Methods.SQRT_ROOT_OF_2), xB, (int) (yB * Methods.SQRT_ROOT_OF_2));
@@ -46,7 +59,41 @@ public abstract class InteractiveCollision {
 
     public abstract void updatePosition(GameObject owner);
 
-    public abstract int collide(GameObject object);
+    public abstract InteractiveResponse collide(GameObject owner, GameObject object);
 
-    public abstract int collide(Player player);
+    public abstract InteractiveResponse collide(GameObject owner, Player player);
+
+    protected int calculateInteractionDirection(int objectDirection, Figure collision, int x, int y) {
+        int xS = collision.getX();
+        int xE = collision.getXEnd();
+        int yS = collision.getY();
+        int yE = collision.getYEnd();
+        int ownerDirection;
+        if (x > xE) {
+            if (y > yE) {
+                ownerDirection = DOWN_RIGHT;
+            } else if (y > yS) {
+                ownerDirection = RIGHT;
+            } else {
+                ownerDirection = UP_RIGHT;
+            }
+        } else if (x > xS) {
+            if (y > yE) {
+                ownerDirection = DOWN;
+            } else if (y > yS) {   // point inside
+                ownerDirection = objectDirection;
+            } else {
+                ownerDirection = UP;
+            }
+        } else {
+            if (y > yE) {
+                ownerDirection = DOWN_LEFT;
+            } else if (y > yS) {
+                ownerDirection = LEFT;
+            } else {
+                ownerDirection = UP_LEFT;
+            }
+        }
+        return directions[Math.abs(objectDirection - ownerDirection)];
+    }
 }
