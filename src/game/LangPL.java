@@ -58,11 +58,15 @@ class LangPL extends Language {
         menu.Actions[5] = "Dół";
         menu.Actions[6] = "Lewo";
         menu.Actions[7] = "Prawo";
-        menu.Actions[8] = "Skok";
+        menu.Actions[8] = "Atak";
         menu.Actions[9] = "Chód";
         menu.Actions[10] = "Światło";
         menu.Actions[11] = "Przybliżenie/Oddalenie";
         menu.Actions[12] = "Zmiana ataku";
+        menu.Actions[13] = "Blokowanie";
+        menu.Actions[14] = "Unik";
+        menu.Actions[15] = "Odwrócenie się";
+        menu.Actions[16] = "Skradanie się";
         menu.PushButton = "Naciśnij przycisk!";
         menu.Unchangeable = "niezmienny!";
         menu.VSync = "Synchronizacja pionowa: ";

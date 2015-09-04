@@ -58,11 +58,15 @@ class LangENG extends Language {
         menu.Actions[5] = "Down";
         menu.Actions[6] = "Left";
         menu.Actions[7] = "Right";
-        menu.Actions[8] = "Jump";
+        menu.Actions[8] = "Attack";
         menu.Actions[9] = "Walk";
         menu.Actions[10] = "Light";
         menu.Actions[11] = "Zoom In/Out";
-        menu.Actions[11] = "Change attack";
+        menu.Actions[12] = "Change attack";
+        menu.Actions[13] = "Block";
+        menu.Actions[14] = "Dodge";
+        menu.Actions[15] = "Reverse";
+        menu.Actions[16] = "Sneak";
         menu.PushButton = "Push the button!";
         menu.Unchangeable = "unchangeable!";
         menu.VSync = "Vertical synchronization: ";

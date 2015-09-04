@@ -40,7 +40,7 @@ public class MyNPC extends Mob {
                 direction = 0;
             }
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-            if (mpPrey.getController().isKeyClicked(MyController.JUMP) && d <= Place.tileSize * 1.5 && !mpPrey.getTextController().isStarted()) {
+            if (mpPrey.getController().isKeyClicked(MyController.ATTACK) && d <= Place.tileSize * 1.5 && !mpPrey.getTextController().isStarted()) {
                 mpPrey.getTextController().lockEntity(mpPrey);
                 mpPrey.getTextController().startFromFile("drzewo");
                 Executive e = new Executive() {

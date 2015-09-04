@@ -177,7 +177,7 @@ public class TextController extends GUIObject {
                                                 }
                                             }
                                             break;
-                                        case "ju":   //JUMP
+                                        case "ju":   //ATTACK
                                             for (int j = lineIndex + 3; j < line.length(); j++) {
                                                 if (line.charAt(j) == '$') {
                                                     tmp.addEvent(new Jumper(currIndex + lineIndex - 1, line.substring(lineIndex + 3, j), this));
@@ -445,13 +445,13 @@ public class TextController extends GUIObject {
                         change = 1;
                     } else if (jumpTo >= 0) {
                         flushReady = true;
-                    } else if (playerController.isKeyClicked(MyController.JUMP)) {
+                    } else if (playerController.isKeyClicked(MyController.ATTACK)) {
                         events.endingEvent();
                         stopTextViewing();
                     }
                 } else {
                     if (!question) {
-                        if (playerController.isKeyClicked(MyController.JUMP)) {
+                        if (playerController.isKeyClicked(MyController.ATTACK)) {
                             flushing = true;
                             flushReady = false;
                             change = 0;
@@ -573,7 +573,7 @@ public class TextController extends GUIObject {
                     answer = 0;
                 }
             }
-            if (playerController.isKeyClicked(MyController.JUMP)) {
+            if (playerController.isKeyClicked(MyController.ATTACK)) {
                 jumpTo = jumpLocation(answerJump[answer]);
                 question = false;
                 flushing = true;

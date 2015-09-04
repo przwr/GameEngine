@@ -16,7 +16,7 @@ public class ObjectController extends PlayerController {
         super(inControl);
         inputs = new AnyInput[36];
         actions = new Action[36]; // 4 pierwsze to menu  
-        states = new byte[9];
+        states = new byte[13];
     }
 
     @Override
