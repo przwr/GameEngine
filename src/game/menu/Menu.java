@@ -39,9 +39,9 @@ public abstract class Menu extends ScreenPlace {
         }
     }
 
-    public void choice() {
+    public void choice(int button) {
         if (!isMapping && delay.isOver()) {
-            root.actionCurrent();
+            root.actionCurrent(button);
         }
     }
 

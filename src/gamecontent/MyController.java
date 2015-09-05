@@ -14,9 +14,9 @@ import sprites.Animation;
  */
 public class MyController extends PlayerController {
 
-    public static final byte UP = 4, DOWN = 5, LEFT = 6, RIGHT = 7, ATTACK = 8, RUN = 9, LIGHT = 10, ZOOM = 11, NEXT = 12, PREVIOUS = 13, BLOCK = 14, DODGE = 15, REVERSE = 16, SNEAK = 17,
-            ACTION_9 = 18, ACTION_8 = 19, ACTION_7 = 20, ACTION_6 = 21, ACTION_5 = 22, ACTION_4 = 23, ACTION_3 = 24, ACTION_2 = 25, ACTION_1 = 26;
-    public static final byte MENU_ACTIONS = 4, ACTIONS_COUNT = 27, ATTACK_COUNT = 5;
+    public static final byte MENU_UP = 0, MENU_DOWN = 1, MENU_ACTION = 2, MENU_BACK = 3, MENU_LEFT = 4, MENU_RIGHT = 5, UP = 6, DOWN = 7, LEFT = 8, RIGHT = 9, ATTACK = 10, RUN = 11, LIGHT = 12, ZOOM = 13, NEXT = 14, PREVIOUS = 15, BLOCK = 16, DODGE = 17, REVERSE = 18, SNEAK = 19,
+            ACTION_9 = 20, ACTION_8 = 21, ACTION_7 = 22, ACTION_6 = 23, ACTION_5 = 24, ACTION_4 = 25, ACTION_3 = 26, ACTION_2 = 27, ACTION_1 = 28;
+    public static final byte MENU_ACTIONS_COUNT = 6, ACTIONS_COUNT = 29, ATTACK_COUNT = 5;
 
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2, ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
     private final int[] attackFrames;
@@ -83,11 +83,11 @@ public class MyController extends PlayerController {
             if (lagDuration < 0) {
                 inputLag = false;
             }
-            for (int i = MENU_ACTIONS; i < ACTIONS_COUNT; i++) {
+            for (int i = MENU_ACTIONS_COUNT; i < ACTIONS_COUNT; i++) {
                 actions[i].updatePassiveState();
             }
         } else {
-            for (int i = MENU_ACTIONS; i < ACTIONS_COUNT; i++) {
+            for (int i = MENU_ACTIONS_COUNT; i < ACTIONS_COUNT; i++) {
                 actions[i].updateActiveState();
             }
         }
@@ -243,23 +243,29 @@ public class MyController extends PlayerController {
 
     @Override
     public boolean isMenuOn() {
-        actions[3].updateActiveState();
-        return actions[3].isKeyClicked();
+        actions[MENU_BACK].updateActiveState();
+        return actions[MENU_BACK].isKeyClicked();
     }
 
     @Override
     public void getMenuInput() {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < MENU_ACTIONS_COUNT; i++) {
             actions[i].updateActiveState();
         }
-        if (actions[0].isKeyClicked()) {
+        actions[RIGHT].updateActiveState();
+        actions[LEFT].updateActiveState();
+        if (actions[MENU_UP].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(-1);
-        } else if (actions[1].isKeyClicked()) {
+        } else if (actions[MENU_DOWN].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(1);
         }
-        if (actions[2].isKeyClicked()) {
-            ((Player) inControl).getMenu().choice();
-        } else if (actions[3].isKeyClicked()) {
+        if (actions[MENU_ACTION].isKeyClicked()) {
+            ((Player) inControl).getMenu().choice(0);
+        } else if (actions[MENU_RIGHT].isKeyClicked() || actions[RIGHT].isKeyClicked()) {
+            ((Player) inControl).getMenu().choice(1);
+        } else if (actions[MENU_LEFT].isKeyClicked() || actions[LEFT].isKeyClicked()) {
+            ((Player) inControl).getMenu().choice(2);
+        } else if (actions[MENU_BACK].isKeyClicked()) {
             ((Player) inControl).getMenu().back();
         }
     }

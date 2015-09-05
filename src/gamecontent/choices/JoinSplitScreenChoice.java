@@ -20,7 +20,7 @@ public class JoinSplitScreenChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
+    public void action(int button) {
         if (menu.game.getPlace() != null) {
             if (Settings.joinSplitScreen) {
                 Settings.joinSplitScreen = false;

@@ -68,12 +68,14 @@ public class MapButtonChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        ctrl = menu.game.players[player].getController();
-        if (ctrl != null && ctrl.actions[i] != null) {
-            menu.isMapping = true;
-            thread = new Thread(run);
-            thread.start();
+    public void action(int button) {
+        if (button == ACTION) {
+            ctrl = menu.game.players[player].getController();
+            if (ctrl != null && ctrl.actions[i] != null) {
+                menu.isMapping = true;
+                thread = new Thread(run);
+                thread.start();
+            }
         }
     }
 

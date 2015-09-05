@@ -20,7 +20,7 @@ public class VerticalSynchronizationChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
+    public void action(int button) {
         Settings.verticalSynchronization = !Settings.verticalSynchronization;
         AnalyzerSettings.update();
     }

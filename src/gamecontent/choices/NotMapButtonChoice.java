@@ -30,8 +30,7 @@ public class NotMapButtonChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-
+    public void action(int button) {
     }
 
     @Override

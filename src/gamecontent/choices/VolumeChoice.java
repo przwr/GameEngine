@@ -20,10 +20,17 @@ public class VolumeChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        Settings.volume += 0.05f;
-        if (Settings.volume > 1.01f) {
-            Settings.volume = 0.00f;
+    public void action(int button) {
+        if (button == ACTION || button == RIGHT) {
+            Settings.volume += 0.05f;
+            if (Settings.volume > 1.01f) {
+                Settings.volume = 0.00f;
+            }
+        } else {
+            Settings.volume -= 0.05f;
+            if (Settings.volume < 0.00f) {
+                Settings.volume = 1.0f;
+            }
         }
         if (Settings.sounds != null) {
             Settings.sounds.getSoundsList().forEach(engine.Sound::updateGain);
@@ -34,6 +41,9 @@ public class VolumeChoice extends MenuChoice {
     @Override
     public String getLabel() {
         int v = (int) (Settings.volume * 100);
+        if (v == 0) {
+            return label + " " + Settings.language.menu.Off;
+        }
         return label + v + "%";
     }
 }

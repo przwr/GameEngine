@@ -21,7 +21,7 @@ public class SplitScreenChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
+    public void action(int button) {
         if (menu.game.getPlace() == null) {
             Settings.horizontalSplitScreen = !Settings.horizontalSplitScreen;
         } else {

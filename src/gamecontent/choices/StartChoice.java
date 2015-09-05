@@ -19,11 +19,13 @@ public class StartChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        if (menu.game.getPlace() == null) {
-            menu.setRoot(this);
-        } else {
-            menu.game.resumeGame();
+    public void action(int button) {
+        if (button == ACTION) {
+            if (menu.game.getPlace() == null) {
+                menu.setRoot(this);
+            } else {
+                menu.game.resumeGame();
+            }
         }
     }
 

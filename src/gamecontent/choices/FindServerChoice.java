@@ -47,11 +47,13 @@ public class FindServerChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        status = " - " + Settings.language.menu.Searching;
-        isSearching = true;
-        thread = new Thread(run);
-        thread.start();
+    public void action(int button) {
+        if (button == ACTION) {
+            status = " - " + Settings.language.menu.Searching;
+            isSearching = true;
+            thread = new Thread(run);
+            thread.start();
+        }
     }
 
     @Override

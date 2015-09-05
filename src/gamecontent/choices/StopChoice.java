@@ -19,12 +19,14 @@ public class StopChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        if (menu.game.getPlace() != null) {
-            if (Settings.sounds != null) {
-                Settings.sounds.getSoundsList().forEach(engine.Sound::stop);
+    public void action(int button) {
+        if (button == ACTION) {
+            if (menu.game.getPlace() != null) {
+                if (Settings.sounds != null) {
+                    Settings.sounds.getSoundsList().forEach(engine.Sound::stop);
+                }
+                menu.game.endGame();
             }
-            menu.game.endGame();
         }
     }
 }

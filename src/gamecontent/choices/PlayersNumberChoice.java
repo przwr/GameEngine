@@ -20,10 +20,17 @@ public class PlayersNumberChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        Settings.playersCount++;
-        if (Settings.playersCount > 4) {
-            Settings.playersCount = 1;
+    public void action(int button) {
+        if (button == ACTION || button == RIGHT) {
+            Settings.playersCount++;
+            if (Settings.playersCount > 4) {
+                Settings.playersCount = 1;
+            }
+        } else {
+            Settings.playersCount--;
+            if (Settings.playersCount < 1) {
+                Settings.playersCount = 4;
+            }
         }
         AnalyzerSettings.update();
     }

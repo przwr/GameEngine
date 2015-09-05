@@ -25,13 +25,15 @@ public class JoinServerChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        menu.game.online.joinServer();
-        if (menu.game.online.client != null) {
-            menu.setDefaultRoot();
-        } else {
-            status = " - " + Settings.language.menu.UnableToConnect;
-            delay.start();
+    public void action(int button) {
+        if (button == ACTION) {
+            menu.game.online.joinServer();
+            if (menu.game.online.client != null) {
+                menu.setDefaultRoot();
+            } else {
+                status = " - " + Settings.language.menu.UnableToConnect;
+                delay.start();
+            }
         }
     }
 

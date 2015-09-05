@@ -20,7 +20,7 @@ public class FullScreenChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
+    public void action(int button) {
         Settings.fullScreen = !Settings.fullScreen;
         AnalyzerSettings.update();
     }

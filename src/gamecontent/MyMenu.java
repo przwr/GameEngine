@@ -92,7 +92,7 @@ public class MyMenu extends Menu {
         MenuChoice player3 = new MenuChoice(Settings.language.menu.Player3, this);
         MenuChoice player4 = new MenuChoice(Settings.language.menu.Player4, this);
         int i;
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < MyController.MENU_ACTIONS_COUNT; i++) {
             player1.addChoice(new NotMapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0], i));
         }
         for (; i < Settings.actionsCount; i++) {

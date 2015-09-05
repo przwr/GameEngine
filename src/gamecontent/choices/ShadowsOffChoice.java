@@ -20,7 +20,7 @@ public class ShadowsOffChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
+    public void action(int button) {
         Settings.shadowOff = !Settings.shadowOff;
         AnalyzerSettings.update();
     }

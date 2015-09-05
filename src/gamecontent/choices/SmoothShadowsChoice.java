@@ -20,13 +20,18 @@ public class SmoothShadowsChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
+    public void action(int button) {
         if (Settings.multiSampleSupported) {
-            Settings.samplesCount *= 2;
-            if (Settings.samplesCount == 0) {
-                Settings.samplesCount = 2;
+            if (button == ACTION || button == RIGHT) {
+                Settings.samplesCount *= 2;
+                if (Settings.samplesCount == 0)
+                    Settings.samplesCount = 2;
+            } else {
+                Settings.samplesCount /= 2;
+                if (Settings.samplesCount == 0)
+                    Settings.samplesCount = Settings.maxSamples;
             }
-            if (Settings.samplesCount > Settings.maxSamples) {
+            if (Settings.samplesCount == 1 || Settings.samplesCount > Settings.maxSamples) {
                 Settings.samplesCount = 0;
             }
             AnalyzerSettings.update();

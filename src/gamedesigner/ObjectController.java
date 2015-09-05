@@ -12,17 +12,18 @@ import game.gameobject.*;
  */
 public class ObjectController extends PlayerController {
 
-    private final int ACTIONS_COUNT = 11;
+    public static final byte MENU_UP = 0, MENU_DOWN = 1, MENU_ACTION = 2, MENU_BACK = 3, LEFT = 6, RIGHT = 7;
+    private final int MENU_ACTIONS_COUNT = 11;
 
     public ObjectController(Entity inControl) {
         super(inControl);
-        inputs = new AnyInput[ACTIONS_COUNT];
-        actions = new Action[ACTIONS_COUNT]; // 4 pierwsze to menu
+        inputs = new AnyInput[MENU_ACTIONS_COUNT];
+        actions = new Action[MENU_ACTIONS_COUNT]; // 4 pierwsze to menu
     }
 
     @Override
     public void initialize() {
-        for (int i = 0; i < ACTIONS_COUNT; i++) {
+        for (int i = 0; i < MENU_ACTIONS_COUNT; i++) {
             actions[i] = new Action(inputs[i]);
         }
     }
@@ -33,29 +34,35 @@ public class ObjectController extends PlayerController {
 
     @Override
     public boolean isMenuOn() {
-        actions[3].updateActiveState();
-        return actions[3].isKeyClicked();
+        actions[MENU_BACK].updateActiveState();
+        return actions[MENU_BACK].isKeyClicked();
     }
 
     @Override
     public void getMenuInput() {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < MENU_ACTIONS_COUNT; i++) {
             actions[i].updateActiveState();
         }
-        if (actions[0].isKeyClicked()) {
+        actions[RIGHT].updateActiveState();
+        actions[LEFT].updateActiveState();
+        if (actions[MENU_UP].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(-1);
-        } else if (actions[1].isKeyClicked()) {
+        } else if (actions[MENU_DOWN].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(1);
         }
-        if (actions[2].isKeyClicked()) {
-            ((Player) inControl).getMenu().choice();
-        } else if (actions[3].isKeyClicked()) {
+        if (actions[MENU_ACTION].isKeyClicked()) {
+            ((Player) inControl).getMenu().choice(0);
+        } else if (actions[RIGHT].isKeyClicked()) {
+            ((Player) inControl).getMenu().choice(1);
+        } else if (actions[LEFT].isKeyClicked()) {
+            ((Player) inControl).getMenu().choice(2);
+        } else if (actions[MENU_BACK].isKeyClicked()) {
             ((Player) inControl).getMenu().back();
         }
     }
 
     @Override
     public int getActionsCount() {
-        return ACTIONS_COUNT;
+        return MENU_ACTIONS_COUNT;
     }
 }

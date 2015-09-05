@@ -16,10 +16,17 @@ public class GammaChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        Settings.gameGamma += 0.1f;
-        if (Settings.gameGamma > 3.05f) {
-            Settings.gameGamma = 1f;
+    public void action(int button) {
+        if (button == ACTION || button == RIGHT) {
+            Settings.gameGamma += 0.1f;
+            if (Settings.gameGamma > 3.05f) {
+                Settings.gameGamma = 1f;
+            }
+        } else {
+            Settings.gameGamma -= 0.1f;
+            if (Settings.gameGamma < 1f) {
+                Settings.gameGamma = 3f;
+            }
         }
         Settings.gameGamma = (Math.round(Settings.gameGamma * 10)) / 10f;
         AnalyzerSettings.update();

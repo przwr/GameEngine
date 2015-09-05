@@ -20,10 +20,17 @@ public class ResolutionChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        Settings.currentMode++;
-        if (Settings.currentMode >= Settings.modes.length) {
-            Settings.currentMode = 0;
+    public void action(int button) {
+        if (button == ACTION || button == RIGHT) {
+            Settings.currentMode++;
+            if (Settings.currentMode >= Settings.modes.length) {
+                Settings.currentMode = 0;
+            }
+        } else {
+            Settings.currentMode--;
+            if (Settings.currentMode < 0) {
+                Settings.currentMode = Settings.modes.length - 1;
+            }
         }
         Settings.resolutionWidth = Settings.modes[Settings.currentMode].getWidth();
         Settings.resolutionHeight = Settings.modes[Settings.currentMode].getHeight();

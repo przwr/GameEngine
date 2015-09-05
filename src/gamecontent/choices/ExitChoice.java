@@ -18,7 +18,8 @@ public class ExitChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        menu.game.exit();
+    public void action(int button) {
+        if (button == ACTION)
+            menu.game.exit();
     }
 }

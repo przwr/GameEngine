@@ -21,11 +21,13 @@ public class StartLocalGameChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        System.out.println(Settings.language.menu.Loading + " ...");
-        ((MyGame) menu.game).setDesignerMode(false);
-        menu.game.startGame();
-        Main.refreshGamma();
-        menu.setDefaultRoot();
+    public void action(int button) {
+        if (button == ACTION) {
+            System.out.println(Settings.language.menu.Loading + " ...");
+            ((MyGame) menu.game).setDesignerMode(false);
+            menu.game.startGame();
+            Main.refreshGamma();
+            menu.setDefaultRoot();
+        }
     }
 }

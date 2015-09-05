@@ -18,10 +18,12 @@ public class RunServerChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
-        menu.game.online.runServer();
-        if (menu.game.online.server != null) {
-            menu.setDefaultRoot();
+    public void action(int button) {
+        if (button == ACTION) {
+            menu.game.online.runServer();
+            if (menu.game.online.server != null) {
+                menu.setDefaultRoot();
+            }
         }
     }
 }

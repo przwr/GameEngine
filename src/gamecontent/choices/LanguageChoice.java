@@ -22,15 +22,21 @@ public class LanguageChoice extends MenuChoice {
     }
 
     @Override
-    public void action() {
+    public void action(int button) {
         for (i = 0; i < Settings.languages.size(); i++) {
             if (Settings.languages.get(i).lang.equals(Settings.languageName)) {
-                i++;
+                if (button == LEFT) {
+                    i--;
+                } else {
+                    i++;
+                }
                 break;
             }
         }
         if (i >= Settings.languages.size()) {
             i = 0;
+        } else if (i < 0) {
+            i = Settings.languages.size() - 1;
         }
         Settings.languageName = Settings.languages.get(i).lang;
         AnalyzerSettings.update();

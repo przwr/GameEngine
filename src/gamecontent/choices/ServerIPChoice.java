@@ -75,16 +75,18 @@ public class ServerIPChoice extends MenuChoice {
 
     @Override
 
-    public void action() {
-        for (int i = 0; i < 15; i++) {
-            temp[i] = ' ';
+    public void action(int button) {
+        if (button == ACTION) {
+            for (int i = 0; i < 15; i++) {
+                temp[i] = ' ';
+            }
+            val = new String(temp);
+            position = 0;
+            keys[22] = true;
+            menu.isMapping = true;
+            thread = new Thread(run);
+            thread.start();
         }
-        val = new String(temp);
-        position = 0;
-        keys[22] = true;
-        menu.isMapping = true;
-        thread = new Thread(run);
-        thread.start();
     }
 
     @Override

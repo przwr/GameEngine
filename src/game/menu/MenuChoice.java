@@ -12,6 +12,7 @@ import java.util.ArrayList;
  */
 public class MenuChoice {
 
+    protected final int ACTION = 0, RIGHT = 1, LEFT = 2;
     protected final String label;
     protected final Menu menu;
     protected final ArrayList<MenuChoice> choices = new ArrayList<>(1);
@@ -23,8 +24,9 @@ public class MenuChoice {
         this.menu = menu;
     }
 
-    public void action() {
-        menu.setRoot(this);
+    public void action(int button) {
+        if (button == ACTION)
+            menu.setRoot(this);
     }
 
     public void addChoice(MenuChoice choice) {
@@ -65,7 +67,7 @@ public class MenuChoice {
         return choices.get(i);
     }
 
-    public void actionCurrent() {
-        choices.get(current).action();
+    public void actionCurrent(int button) {
+        choices.get(current).action(button);
     }
 }

@@ -112,6 +112,8 @@ public class MyPlayer extends Player {
         playerController.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
         playerController.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
         playerController.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
+        playerController.inputs[4] = new InputKeyBoard(Keyboard.KEY_LEFT);
+        playerController.inputs[5] = new InputKeyBoard(Keyboard.KEY_RIGHT);
         playerController.initialize();
     }
 
