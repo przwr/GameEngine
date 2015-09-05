@@ -27,8 +27,6 @@ public abstract class Stats {
         this.owner = owner;
     }
 
-    // TODO ustawienie zachowania w zależności od potwora/gracza
-
     public void decreaseHealth(InteractiveResponse response) {
         if (health > 0) {
             int hurt = 0;
@@ -44,14 +42,22 @@ public abstract class Stats {
                     break;
             }
             health -= hurt;
-            System.out.println(owner.getName() + " dostał za " + hurt);
-            if (health <= 0) {
-                owner.delete();
-                System.out.println(owner.getName() + " zginał.");
+            if (health < 0) {
+                health = 0;
             }
-        }
+            System.out.println(owner.getName() + " dostał za " + hurt + " Życie: " + health + "/" + maxHealth);
+            if (health == 0) {
+                died();
+            }
 
+        }
     }
+
+    public void died() {
+        owner.delete();
+        System.out.println(owner.getName() + " zginał.");
+    }
+
 
     public int getHealth() {
         return health;
@@ -65,7 +71,7 @@ public abstract class Stats {
         return maxHealth;
     }
 
-    public int getStrength() {
+    public float getStrength() {
         return strength;
     }
 

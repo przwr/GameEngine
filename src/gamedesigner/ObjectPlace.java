@@ -10,7 +10,6 @@ import engine.inout.IO;
 import game.Game;
 import game.Settings;
 import game.gameobject.Action;
-import game.gameobject.ActionOnOff;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Map;
@@ -48,8 +47,8 @@ public class ObjectPlace extends Place {
         super(game, tileSize);
         dayCycle.setTime(7, 0);
         lastName = "";
-        changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
-        changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
+        changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
+        changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
 
         prettyOptions = new String[]{"Tiles: ", "Background: ", "Blocks: ", "Block Outlines: ", "FGTiles: "};
         viewingOptions = new boolean[prettyOptions.length];
@@ -93,12 +92,12 @@ public class ObjectPlace extends Place {
                 keyboardHandling();
             }
             if (playersCount > 1) {
-                changeSplitScreenJoin.act();
-                changeSplitScreenMode.act();
-                if (changeSplitScreenJoin.isOn()) {
+                changeSplitScreenJoin.updateActiveState();
+                changeSplitScreenMode.updateActiveState();
+                if (changeSplitScreenJoin.isKeyClicked()) {
                     Settings.joinSplitScreen = !Settings.joinSplitScreen;
                 }
-                if (changeSplitScreenMode.isOn()) {
+                if (changeSplitScreenMode.isKeyClicked()) {
                     changeSSMode = true;
                 }
                 cameras[playersCount - 2].update();

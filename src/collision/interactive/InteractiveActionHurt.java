@@ -17,7 +17,5 @@ public class InteractiveActionHurt implements InteractiveAction {
     public void act(GameObject object, Interactive activator, InteractiveResponse response) {
         activator.recalculateData(response);
         object.getStats().decreaseHealth(response);
-        System.out.println(object.getName() + ": Aałła.. Zostało mi " + object.getStats().getHealth() + "/" + object.getStats().getMaxHealth()
-                + " " + (100 * object.getStats().getHealth() / object.getStats().getMaxHealth()) + " % życia!");
     }
 }

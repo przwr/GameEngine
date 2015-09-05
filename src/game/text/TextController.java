@@ -434,7 +434,7 @@ public class TextController extends GUIObject {
             if (time == 60) {
                 time = 0;
             }
-            realSpeed = speed * (playerController.isKeyPressed(MyController.RUN) ? 2f : 1f);
+            realSpeed = speed * (playerController.getAction(MyController.RUN).isKeyPressed() ? 2f : 1f);
 
             if (flushing) {
                 handleFlushing();
@@ -445,13 +445,13 @@ public class TextController extends GUIObject {
                         change = 1;
                     } else if (jumpTo >= 0) {
                         flushReady = true;
-                    } else if (playerController.isKeyClicked(MyController.ATTACK)) {
+                    } else if (playerController.getAction(MyController.ATTACK).isKeyClicked()) {
                         events.endingEvent();
                         stopTextViewing();
                     }
                 } else {
                     if (!question) {
-                        if (playerController.isKeyClicked(MyController.ATTACK)) {
+                        if (playerController.getAction(MyController.ATTACK).isKeyClicked()) {
                             flushing = true;
                             flushReady = false;
                             change = 0;
@@ -561,19 +561,19 @@ public class TextController extends GUIObject {
 
     private void handleQuestion() {
         if (answer != -1) {
-            if (playerController.isKeyClicked(MyController.UP)) {
+            if (playerController.getAction(MyController.UP).isKeyClicked()) {
                 answer--;
                 if (answer < 0) {
                     answer = answerText.length - 1;
                 }
             }
-            if (playerController.isKeyClicked(MyController.DOWN)) {
+            if (playerController.getAction(MyController.DOWN).isKeyClicked()) {
                 answer++;
                 if (answer > answerText.length - 1) {
                     answer = 0;
                 }
             }
-            if (playerController.isKeyClicked(MyController.ATTACK)) {
+            if (playerController.getAction(MyController.ATTACK).isKeyClicked()) {
                 jumpTo = jumpLocation(answerJump[answer]);
                 question = false;
                 flushing = true;
@@ -581,10 +581,10 @@ public class TextController extends GUIObject {
                 change = 0;
             }
         } else {
-            if (playerController.isKeyClicked(MyController.UP)) {
+            if (playerController.getAction(MyController.UP).isKeyClicked()) {
                 answer = 0;
             }
-            if (playerController.isKeyClicked(MyController.DOWN)) {
+            if (playerController.getAction(MyController.DOWN).isKeyClicked()) {
                 answer = 1;
             }
         }

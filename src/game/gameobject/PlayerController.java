@@ -17,28 +17,13 @@ public abstract class PlayerController {
     protected final Entity inControl;
     public Action[] actions;
     public AnyInput[] inputs;
-    protected byte[] states;
 
     protected PlayerController(Entity inControl) {
         this.inControl = inControl;
     }
 
-    public void showInput() {
-        for (byte b : states)
-            System.out.print(b + " ");
-        System.out.println("");
-    }
-
-    public boolean isKeyReleased(int key) {
-        return states[key] == KEY_RELEASED;
-    }
-
-    public boolean isKeyClicked(int key) {
-        return states[key] == KEY_CLICKED;
-    }
-
-    public boolean isKeyPressed(int key) {
-        return states[key] > KEY_NO_INPUT;
+    public Action getAction(int i) {
+        return actions[i];
     }
 
     public abstract void getInput();

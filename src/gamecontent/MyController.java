@@ -17,7 +17,6 @@ public class MyController extends PlayerController {
     public static final byte UP = 4, DOWN = 5, LEFT = 6, RIGHT = 7, ATTACK = 8, RUN = 9, LIGHT = 10, ZOOM = 11, NEXT = 12, PREVIOUS = 13, BLOCK = 14, DODGE = 15, REVERSE = 16, SNEAK = 17,
             ACTION_9 = 18, ACTION_8 = 19, ACTION_7 = 20, ACTION_6 = 21, ACTION_5 = 22, ACTION_4 = 23, ACTION_3 = 24, ACTION_2 = 25, ACTION_1 = 26;
     public static final byte MENU_ACTIONS = 4, ACTIONS_COUNT = 27, ATTACK_COUNT = 5;
-    public static final int[] ON_OFF_ACTIONS = {0, 1, 2, 3, LIGHT, ZOOM, NEXT, PREVIOUS};
 
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2, ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
     private final int[] attackFrames;
@@ -32,7 +31,6 @@ public class MyController extends PlayerController {
         gui = playersGUI;
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
-        states = new byte[ACTIONS_COUNT];
         sideDelay = new Delay(25);
         attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40};
@@ -41,19 +39,9 @@ public class MyController extends PlayerController {
     @Override
     public void initialize() {
         for (int i = 0; i < ACTIONS_COUNT; i++) {
-            actions[i] = isOnOff(i) ? new ActionOnOff(inputs[i]) : new ActionHold(inputs[i]);
+            actions[i] = new Action(inputs[i]);
         }
     }
-
-    private boolean isOnOff(int action) {
-        for (int i = 0; i < ON_OFF_ACTIONS.length; i++) {
-            if (ON_OFF_ACTIONS[i] == action) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     @Override
     public void getInput() {
@@ -61,14 +49,14 @@ public class MyController extends PlayerController {
             updateActionsIfNoLag();
             //ANIMACJA//
             direction = inControl.getDirection();
-            running = !isKeyPressed(RUN);
+            running = !actions[RUN].isKeyPressed();
 
             playerAnimation = (Animation) inControl.getAppearance();
             playerAnimation.setAnimate(true);
             diagonal = true;
 
             if (inControl.isAbleToMove()) {
-                if (isKeyPressed(ATTACK)) {
+                if (actions[ATTACK].isKeyPressed()) {
                     updateAttack();
                 } else {
                     updateMovement();
@@ -77,7 +65,7 @@ public class MyController extends PlayerController {
             } else {
                 playerAnimation.animateSingleInDirection(direction / 45, 0);
             }
-            if (!isKeyPressed(ATTACK)) {
+            if (!actions[ATTACK].isKeyPressed()) {
                 if (running) {
                     playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
                 } else {
@@ -96,22 +84,17 @@ public class MyController extends PlayerController {
                 inputLag = false;
             }
             for (int i = MENU_ACTIONS; i < ACTIONS_COUNT; i++) {
-                if (states[i] == KEY_CLICKED) {
-                    states[i] = KEY_PRESSED;
-                } else if (states[i] == KEY_RELEASED) {
-                    states[i] = KEY_NO_INPUT;
-                }
+                actions[i].updatePassiveState();
             }
         } else {
             for (int i = MENU_ACTIONS; i < ACTIONS_COUNT; i++) {
-                actions[i].act();
-                updateAction(i);
+                actions[i].updateActiveState();
             }
         }
     }
 
     private void updateAttack() {
-        if (isKeyClicked(ATTACK)) {
+        if (actions[ATTACK].isKeyClicked()) {
             setInputLag(30);
         }
         playerAnimation.setStopAtEnd(true);
@@ -137,38 +120,38 @@ public class MyController extends PlayerController {
 
     private void updateMovement() {
         playerAnimation.setStopAtEnd(false);
-        if (isKeyPressed(UP)) {
-            if (isKeyPressed(LEFT)) {
+        if (actions[UP].isKeyPressed()) {
+            if (actions[LEFT].isKeyPressed()) {
                 animateMoving(135);
                 inControl.addSpeed(-4, -4);
-            } else if (isKeyPressed(RIGHT)) {
+            } else if (actions[RIGHT].isKeyPressed()) {
                 animateMoving(45);
                 inControl.addSpeed(4, -4);
             } else {
-                if (isKeyReleased(LEFT)) {
+                if (actions[LEFT].isKeyReleased()) {
                     sideDirection = 135;
                     sideDelay.start();
                 }
-                if (isKeyReleased(RIGHT)) {
+                if (actions[RIGHT].isKeyReleased()) {
                     sideDirection = 45;
                     sideDelay.start();
                 }
                 animateMoving(90);
                 inControl.addSpeed(0, -4);
             }
-        } else if (isKeyPressed(DOWN)) {
-            if (isKeyPressed(LEFT)) {
+        } else if (actions[DOWN].isKeyPressed()) {
+            if (actions[LEFT].isKeyPressed()) {
                 animateMoving(225);
                 inControl.addSpeed(-4, 4);
-            } else if (isKeyPressed(RIGHT)) {
+            } else if (actions[RIGHT].isKeyPressed()) {
                 animateMoving(315);
                 inControl.addSpeed(4, 4);
             } else {
-                if (isKeyReleased(LEFT)) {
+                if (actions[LEFT].isKeyReleased()) {
                     sideDirection = 225;
                     sideDelay.start();
                 }
-                if (isKeyReleased(RIGHT)) {
+                if (actions[RIGHT].isKeyReleased()) {
                     sideDirection = 315;
                     sideDelay.start();
                 }
@@ -176,23 +159,23 @@ public class MyController extends PlayerController {
                 inControl.addSpeed(0, 4);
             }
         } else {
-            if (isKeyPressed(RIGHT)) {
-                if (isKeyReleased(UP)) {
+            if (actions[RIGHT].isKeyPressed()) {
+                if (actions[UP].isKeyReleased()) {
                     sideDirection = 45;
                     sideDelay.start();
                 }
-                if (isKeyReleased(DOWN)) {
+                if (actions[DOWN].isKeyReleased()) {
                     sideDirection = 315;
                     sideDelay.start();
                 }
                 animateMoving(0);
                 inControl.addSpeed(4, 0);
-            } else if (isKeyPressed(LEFT)) {
-                if (isKeyReleased(UP)) {
+            } else if (actions[LEFT].isKeyPressed()) {
+                if (actions[UP].isKeyReleased()) {
                     sideDirection = 135;
                     sideDelay.start();
                 }
-                if (isKeyReleased(DOWN)) {
+                if (actions[DOWN].isKeyReleased()) {
                     sideDirection = 225;
                     sideDelay.start();
                 }
@@ -202,17 +185,17 @@ public class MyController extends PlayerController {
                 playerAnimation.animateSingleInDirection(direction / 45, 0);
             }
         }
-        if (!isKeyPressed(UP) && !isKeyPressed(DOWN)) {
+        if (!actions[UP].isKeyPressed() && !actions[DOWN].isKeyPressed()) {
             diagonal = false;
             inControl.brake(1);
         }
-        if (!isKeyPressed(LEFT) && !isKeyPressed(RIGHT)) {
+        if (!actions[LEFT].isKeyPressed() && !actions[RIGHT].isKeyPressed()) {
             diagonal = false;
             inControl.brake(0);
         }
         if (sideDelay.isActive() && sideDelay.isOver()) {
-            if (!isKeyPressed(UP) && !isKeyPressed(DOWN)
-                    && !isKeyPressed(LEFT) && !isKeyPressed(RIGHT)) {
+            if (!actions[UP].isKeyPressed() && !actions[DOWN].isKeyPressed()
+                    && !actions[LEFT].isKeyPressed() && !actions[RIGHT].isKeyPressed()) {
                 inControl.setDirection(sideDirection);
             }
             sideDelay.stop();
@@ -220,13 +203,13 @@ public class MyController extends PlayerController {
     }
 
     private void updateRest() {
-        if (isKeyClicked(NEXT)) {
+        if (actions[NEXT].isKeyClicked()) {
             attackType += 1;
             if (attackType > ATTACK_COUNT - 1) {
                 attackType = 0;
             }
             gui.changeAttackIcon(attackType);
-        } else if (isKeyClicked(PREVIOUS)) {
+        } else if (actions[PREVIOUS].isKeyClicked()) {
             attackType -= 1;
             if (attackType < 0) {
                 attackType = ATTACK_COUNT - 1;
@@ -238,44 +221,16 @@ public class MyController extends PlayerController {
         } else {
             inControl.setMaxSpeed(diagonal ? 6 : 8);
         }
-        if (isKeyPressed(LIGHT)) {
+        if (actions[LIGHT].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());
         }
-        if (isKeyPressed(ZOOM)) {
+        if (actions[ZOOM].isKeyClicked()) {
             if (inControl instanceof Player) {
                 ((Player) inControl).getCamera().switchZoom();
             }
         }
     }
 
-    private void setInputLag(int time) {
-        if (!inputLag) {
-            inputLag = true;
-            lagDuration = time;
-        }
-    }
-
-    private void updateAction(int action) {
-        if (actions[action].isOn()) {
-            if (states[action] == KEY_NO_INPUT) {
-
-                states[action] = KEY_CLICKED;
-            } else {
-                states[action] = KEY_PRESSED;
-            }
-        } else {
-            if (states[action] == KEY_PRESSED) {
-                states[action] = KEY_RELEASED;
-            } else {
-                states[action] = KEY_NO_INPUT;
-            }
-        }
-    }
-
-
-    public void setPlayersGUI(MyGUI gui) {
-        this.gui = gui;
-    }
 
     private void animateMoving(int direction) {
         if (running) {
@@ -288,32 +243,23 @@ public class MyController extends PlayerController {
 
     @Override
     public boolean isMenuOn() {
-        if (actions[3].input != null) {
-            if (actions[3].input.isPut()) {
-                if (actions[3].input.isNotPressed()) {
-                    actions[3].input.setPressed(true);
-                    return true;
-                }
-            } else {
-                actions[3].input.setPressed(false);
-            }
-        }
-        return false;
+        actions[3].updateActiveState();
+        return actions[3].isKeyClicked();
     }
 
     @Override
     public void getMenuInput() {
         for (int i = 0; i < 4; i++) {
-            actions[i].act();
+            actions[i].updateActiveState();
         }
-        if (actions[0].isOn()) {
+        if (actions[0].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(-1);
-        } else if (actions[1].isOn()) {
+        } else if (actions[1].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(1);
         }
-        if (actions[2].isOn()) {
+        if (actions[2].isKeyClicked()) {
             ((Player) inControl).getMenu().choice();
-        } else if (actions[3].isOn()) {
+        } else if (actions[3].isKeyClicked()) {
             ((Player) inControl).getMenu().back();
         }
     }
@@ -329,5 +275,16 @@ public class MyController extends PlayerController {
 
     public int getAttackType() {
         return attackType;
+    }
+
+    private void setInputLag(int time) {
+        if (!inputLag) {
+            inputLag = true;
+            lagDuration = time;
+        }
+    }
+
+    public void setPlayersGUI(MyGUI gui) {
+        this.gui = gui;
     }
 }

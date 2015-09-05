@@ -37,8 +37,8 @@ public class Shen extends Mob {
         collision.setMobile(true);
         setPathStrategy(PathFindingModule.GET_CLOSE, 250);
         stats = new MobStats(this);
-//        addInteractive(new Interactive(this, Interactive.ALWAYS, new CircleInteractiveCollision(32), Interactive.HURT));
-
+        stats.setStrength(1);
+//        addInteractive(new Interactive(this, Interactive.ALWAYS, new LineInteractiveCollision(0, 64, -32, 40, 20), Interactive.HURT, 0.5f));
     }
 
     //animation.animateSingleInDirection(direction / 45, 6); - ANIMACJA ZRANIENIA!

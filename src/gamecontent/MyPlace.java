@@ -10,7 +10,6 @@ import engine.Main;
 import game.Game;
 import game.Settings;
 import game.gameobject.Action;
-import game.gameobject.ActionOnOff;
 import game.gameobject.Entity;
 import game.gameobject.Player;
 import game.gameobject.inputs.InputKeyBoard;
@@ -62,8 +61,8 @@ public class MyPlace extends Place {
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
         dayCycle.setTime(7, 30);
-        changeSplitScreenMode = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_INSERT));
-        changeSplitScreenJoin = new ActionOnOff(new InputKeyBoard(Keyboard.KEY_END));
+        changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
+        changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
         loadingMap = new LoadingMap(this);
     }
 
@@ -125,12 +124,12 @@ public class MyPlace extends Place {
 
     private void updatePlayersOffline() {
         if (playersCount > 1) {
-            changeSplitScreenJoin.act();
-            changeSplitScreenMode.act();
-            if (changeSplitScreenJoin.isOn()) {
+            changeSplitScreenJoin.updateActiveState();
+            changeSplitScreenMode.updateActiveState();
+            if (changeSplitScreenJoin.isKeyClicked()) {
                 Settings.joinSplitScreen = !Settings.joinSplitScreen;
             }
-            if (changeSplitScreenMode.isOn()) {
+            if (changeSplitScreenMode.isKeyClicked()) {
                 changeSSMode = true;
             }
             cameras[playersCount - 2].update();
