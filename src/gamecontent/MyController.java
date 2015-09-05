@@ -14,10 +14,10 @@ import sprites.Animation;
  */
 public class MyController extends PlayerController {
 
-    public static final byte UP = 4, DOWN = 5, LEFT = 6, RIGHT = 7, ATTACK = 8, RUN = 9, LIGHT = 10, ZOOM = 11, CHANGE = 12, BLOCK = 13, DODGE = 14, REVERSE = 15, SNEAK = 16,
-            ACTION_5 = 17, ACTION_6 = 18, ACTION_7 = 19, ACTION_8 = 20, ACTION_9 = 21, ACTION_10 = 22, ACTION_11 = 23, ACTION_12 = 24, ACTION_13 = 25, ACTION_14 = 26, ACTION_15 = 27;
-    public static final byte MENU_ACTIONS = 4, ACTIONS_COUNT = 17;
-    public static final int[] ON_OFF_ACTIONS = {0, 1, 2, 3, LIGHT, ZOOM, CHANGE};
+    public static final byte UP = 4, DOWN = 5, LEFT = 6, RIGHT = 7, ATTACK = 8, RUN = 9, LIGHT = 10, ZOOM = 11, NEXT = 12, PREVIOUS = 13, BLOCK = 14, DODGE = 15, REVERSE = 16, SNEAK = 17,
+            ACTION_9 = 18, ACTION_8 = 19, ACTION_7 = 20, ACTION_6 = 21, ACTION_5 = 22, ACTION_4 = 23, ACTION_3 = 24, ACTION_2 = 25, ACTION_1 = 26;
+    public static final byte MENU_ACTIONS = 4, ACTIONS_COUNT = 27, ATTACK_COUNT = 5;
+    public static final int[] ON_OFF_ACTIONS = {0, 1, 2, 3, LIGHT, ZOOM, NEXT, PREVIOUS};
 
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2, ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
     private final int[] attackFrames;
@@ -220,10 +220,16 @@ public class MyController extends PlayerController {
     }
 
     private void updateRest() {
-        if (isKeyClicked(CHANGE)) {
+        if (isKeyClicked(NEXT)) {
             attackType += 1;
-            if (attackType > 4) {
+            if (attackType > ATTACK_COUNT - 1) {
                 attackType = 0;
+            }
+            gui.changeAttackIcon(attackType);
+        } else if (isKeyClicked(PREVIOUS)) {
+            attackType -= 1;
+            if (attackType < 0) {
+                attackType = ATTACK_COUNT - 1;
             }
             gui.changeAttackIcon(attackType);
         }

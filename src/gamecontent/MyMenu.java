@@ -26,8 +26,9 @@ import static org.lwjgl.opengl.GL11.*;
 public class MyMenu extends Menu {
 
     private final FontHandler smallFont, bigFont;
-    private final Color color;
+    private final int maxPositions;
     private final Color normalColor = new Color(1f, 1f, 1f);
+    private final Color darkColor = new Color(0.5f, 0.5f, 0.5f);
     private final Color chosenColor = new Color(1f, 1f, 0.5f);
     private final Color gammaColor1 = new Color(0.32f, 0.32f, 0.32f);
     private final Color gammaColor2 = new Color(0.16f, 0.16f, 0.16f);
@@ -36,13 +37,19 @@ public class MyMenu extends Menu {
     public MyMenu(Game game) {
         super(game);
         setFirstRoot(new MenuChoice(Settings.language.menu.Menu, this));
-        this.color = new Color(Color.white);
         fonts = new FontBase(20);
-        smallFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.nativeScale * 38));
-        bigFont = fonts.add("Amble-Regular", Methods.roundDouble(Settings.nativeScale * 64));
+        int normalFontSize = Methods.roundDouble(Settings.nativeScale * 38);
+        int bigFontSize = Methods.roundDouble(Settings.nativeScale * 64);
+        smallFont = fonts.add("Amble-Regular", normalFontSize);
+        bigFont = fonts.add("Amble-Regular", bigFontSize);
         delay = new Delay(25);
         delay.start();
+        maxPositions = calculateMaxPositions(normalFontSize, bigFontSize);
         generate();
+    }
+
+    private int calculateMaxPositions(int normal, int big) {
+        return (int) ((Display.getHeight() - big * 2) / (1.5 * normal)) - 2;
     }
 
     private void generate() {
@@ -111,21 +118,36 @@ public class MyMenu extends Menu {
     }
 
     private void renderText() {
-        int position = root.getSize() + 1;
-        Drawer.renderStringCentered(root.getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1))
+        int shift = 0;
+        int positions = root.getSize();
+        if (positions > maxPositions) {
+            positions = maxPositions;
+        }
+        int line = positions + 2;
+        if (root.getCurrent() >= positions) {
+            shift = root.getCurrent() - positions + 1;
+        }
+        Drawer.renderStringCentered(root.getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1))
                         * fonts.getFont(0).getHeight() * 0.7),
-                bigFont, new Color(color.r, color.g, color.b));
-        position--;
-        for (int i = 0; i < root.getSize(); i++) {
-            if (root.getChoice(i) instanceof GammaChoice) {
-                renderGammaHelper(position, i);
+                bigFont, normalColor);
+        line--;
+        if (shift > 0) {
+            Drawer.renderStringCentered("/|\\", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * fonts.getFont(0).getHeight() * 0.7),
+                    smallFont, darkColor);
+        }
+        line--;
+        for (int i = 0; i < positions; i++) {
+            if (root.getChoice(i + shift) instanceof GammaChoice) {
+                renderGammaHelper(line, i + shift);
             }
-            Drawer.renderStringCentered(root.getChoice(i).getLabel(), widthHalf / 2,
-                    heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * fonts.getFont(0).getHeight() * 0.7),
-                    smallFont, getColor(i));
-
-
-            position--;
+            Drawer.renderStringCentered(root.getChoice(i + shift).getLabel(), widthHalf / 2,
+                    heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * fonts.getFont(0).getHeight() * 0.7),
+                    smallFont, getColor(i + shift));
+            line--;
+        }
+        if (root.getSize() > maxPositions && root.getCurrent() != root.getSize() - 1) {
+            Drawer.renderStringCentered("\\|/", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * fonts.getFont(0).getHeight() * 0.7),
+                    smallFont, darkColor);
         }
     }
 

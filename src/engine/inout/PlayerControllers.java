@@ -67,6 +67,7 @@ public final class PlayerControllers {
     }
 
     private static AnyInput checkControllers(int noiseAxes[], int maxAxesNumber) {
+        AnyInput input;
         for (int controller = 0; controller < controllers.length; controller++) {
             if (controllers[controller] != null) {
                 for (int button = 0; button < controllers[controller].getButtonCount(); button++) {
@@ -74,11 +75,13 @@ public final class PlayerControllers {
                         return new InputPadKey(controllers, controller, button);
                     }
                 }
-                AnyInput dPad = checkDPad(controller);
-                if (dPad != null) {
-                    return dPad;
-                } else {
-                    return checkAxes(controller, noiseAxes, maxAxesNumber);
+                input = checkDPad(controller);
+                if (input != null) {
+                    return input;
+                }
+                input = checkAxes(controller, noiseAxes, maxAxesNumber);
+                if (input != null) {
+                    return input;
                 }
             }
         }
