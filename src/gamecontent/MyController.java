@@ -7,6 +7,7 @@ package gamecontent;
 
 import engine.Delay;
 import game.gameobject.*;
+import game.gameobject.temporalmodifiers.SpeedChanger;
 import sprites.Animation;
 
 /**
@@ -14,11 +15,15 @@ import sprites.Animation;
  */
 public class MyController extends PlayerController {
 
-    public static final byte MENU_UP = 0, MENU_DOWN = 1, MENU_ACTION = 2, MENU_BACK = 3, MENU_LEFT = 4, MENU_RIGHT = 5, UP = 6, DOWN = 7, LEFT = 8, RIGHT = 9, ATTACK = 10, RUN = 11, LIGHT = 12, ZOOM = 13, NEXT = 14, PREVIOUS = 15, BLOCK = 16, DODGE = 17, REVERSE = 18, SNEAK = 19,
-            ACTION_9 = 20, ACTION_8 = 21, ACTION_7 = 22, ACTION_6 = 23, ACTION_5 = 24, ACTION_4 = 25, ACTION_3 = 26, ACTION_2 = 27, ACTION_1 = 28;
+    public static final byte MENU_UP = 0, MENU_DOWN = 1, MENU_ACTION = 2, MENU_BACK = 3, MENU_LEFT = 4,
+            MENU_RIGHT = 5, UP = 6, DOWN = 7, LEFT = 8, RIGHT = 9, ATTACK = 10, RUN = 11, LIGHT = 12,
+            ZOOM = 13, NEXT = 14, PREVIOUS = 15, BLOCK = 16, DODGE = 17, REVERSE = 18, SNEAK = 19,
+            ACTION_9 = 20, ACTION_8 = 21, ACTION_7 = 22, ACTION_6 = 23, ACTION_5 = 24, ACTION_4 = 25,
+            ACTION_3 = 26, ACTION_2 = 27, ACTION_1 = 28;
     public static final byte MENU_ACTIONS_COUNT = 6, ACTIONS_COUNT = 29, ATTACK_COUNT = 5;
 
-    public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2, ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
+    public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2,
+            ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
     private final int[] attackFrames;
     private final Delay sideDelay;
     private int direction, lagDuration, attackType, sideDirection;
@@ -26,14 +31,20 @@ public class MyController extends PlayerController {
     private Animation playerAnimation;
     private MyGUI gui;
 
+    private int jumpDirection, jumpLag;
+    private final Delay jumpDelay;
+    private final SpeedChanger jumpMaker;
+
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);
         gui = playersGUI;
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
         sideDelay = new Delay(25);
+        jumpDelay = new Delay(200);
         attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40};
+        jumpMaker = new SpeedChanger(5);
     }
 
     @Override
@@ -59,7 +70,10 @@ public class MyController extends PlayerController {
                 if (actions[ATTACK].isKeyPressed()) {
                     updateAttack();
                 } else {
-                    updateMovement();
+                    if (jumpMaker.isOver()) {
+                        updateMovement();
+                    }
+                    updateDodgeJump();
                 }
                 updateRest();
             } else {
@@ -182,7 +196,11 @@ public class MyController extends PlayerController {
                 animateMoving(180);
                 inControl.addSpeed(-4, 0);
             } else {
-                playerAnimation.animateSingleInDirection(direction / 45, 0);
+                if (!sideDelay.isActive()) {
+                    playerAnimation.animateSingleInDirection(direction / 45, 0);
+                } else {
+                    playerAnimation.animateSingleInDirection(sideDirection / 45, 0);
+                }
             }
         }
         if (!actions[UP].isKeyPressed() && !actions[DOWN].isKeyPressed()) {
@@ -193,12 +211,54 @@ public class MyController extends PlayerController {
             diagonal = false;
             inControl.brake(0);
         }
-        if (sideDelay.isActive() && sideDelay.isOver()) {
+        if (sideDelay.isOver()) {
             if (!actions[UP].isKeyPressed() && !actions[DOWN].isKeyPressed()
                     && !actions[LEFT].isKeyPressed() && !actions[RIGHT].isKeyPressed()) {
                 inControl.setDirection(sideDirection);
             }
             sideDelay.stop();
+        }
+    }
+
+    private void updateDodgeJump() {
+        if (jumpMaker.isOver()) {
+            if (jumpLag == 0) {
+                int jumpSpeed = 15;
+                if (actions[UP].isKeyClicked()) {
+                    prepareDodgeJump(0, -jumpSpeed, 90);
+                }
+                if (actions[DOWN].isKeyClicked()) {
+                    prepareDodgeJump(0, jumpSpeed, 270);
+                }
+                if (actions[LEFT].isKeyClicked()) {
+                    prepareDodgeJump(-jumpSpeed, 0, 180);
+                }
+                if (actions[RIGHT].isKeyClicked()) {
+                    prepareDodgeJump(jumpSpeed, 0, 0);
+                }
+            } else {
+                jumpLag--;
+            }
+        }
+        if (jumpDelay.isActive() && jumpDelay.isOver()) {
+            jumpDelay.stop();
+        }
+    }
+
+    private void prepareDodgeJump(int xSpeed, int ySpeed, int direction) {
+        if (jumpDelay.isActive()) {
+            if (!jumpDelay.isOver() && jumpDirection == direction) {
+                jumpMaker.setSpeed(xSpeed, ySpeed);
+                jumpMaker.start();
+                inControl.addChanger(jumpMaker);
+                setInputLag(jumpMaker.getTotalTime());
+                jumpDelay.stop();
+                jumpLag = jumpMaker.getTotalTime() * 3;
+                playerAnimation.animateSingleInDirection(direction / 45, 44);
+            }
+        } else {
+            jumpDirection = direction;
+            jumpDelay.start();
         }
     }
 
@@ -230,7 +290,6 @@ public class MyController extends PlayerController {
             }
         }
     }
-
 
     private void animateMoving(int direction) {
         if (running) {

@@ -61,6 +61,10 @@ public class Action {
         return state > KEY_NO_INPUT;
     }
 
+    public int getState() {
+        return state;
+    }
+    
     public void setInput(AnyInput input) {
         this.input = input;
     }

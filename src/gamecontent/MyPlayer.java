@@ -39,7 +39,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyPlayer extends Player {
 
-    private final int framesPerDir = 42;
+    private final int framesPerDir = 45;
     private final String characterName = "aria";
     private Cloth head;
     private Cloth torso;
@@ -267,6 +267,7 @@ public class MyPlayer extends Player {
                 jumpDelta = 22.6f;
             }
         }
+        updateChangers();
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         if (area != -1) {
             for (WarpPoint warp : map.getArea(area).getNearWarps()) {

@@ -8,7 +8,10 @@ package game.gameobject;
 import engine.ErrorHandler;
 import engine.Methods;
 import engine.Time;
+import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.place.Place;
+import java.util.ArrayList;
+import java.util.Iterator;
 import navmeshpathfinding.PathData;
 import navmeshpathfinding.PathStrategy;
 import net.jodk.lang.FastMath;
@@ -40,6 +43,8 @@ public abstract class Entity extends GameObject {
     private Update currentUpdate;
     private int currentUpdateID, deltasCount, xPosition, yPosition, xDelta, yDelta, xDestination, yDestination;
     private Player collided;
+
+    private ArrayList<TemporalChanger> changers;
 
     public abstract void updateOnline();
 
@@ -145,6 +150,28 @@ public abstract class Entity extends GameObject {
 
     private boolean inSameUpdate() {
         return currentUpdate != null && deltasCount < currentUpdate.getXDeltas().size();
+    }
+
+    public void updateChangers() {
+        if (changers == null) {
+            changers = new ArrayList<>();
+        }
+        TemporalChanger tc;
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
+            tc = iterator.next();
+            tc.modifyEntity(this);
+            if (tc.isOver()) {
+                iterator.remove();
+                break;
+            }
+        }
+    }
+
+    public void addChanger(TemporalChanger tc) {
+        if (changers == null) {
+            changers = new ArrayList<>();
+        }
+        changers.add(tc);
     }
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
