@@ -14,7 +14,7 @@ import game.gameobject.Entity;
  */
 public abstract class TemporalChanger {
 
-    private int time, left;
+    int time, left;
 
     public TemporalChanger(int frames) {
         this.time = frames;

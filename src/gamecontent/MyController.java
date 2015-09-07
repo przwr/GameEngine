@@ -44,7 +44,8 @@ public class MyController extends PlayerController {
         jumpDelay = new Delay(200);
         attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40};
-        jumpMaker = new SpeedChanger(5);
+        jumpMaker = new SpeedChanger(15);
+        jumpMaker.setType(SpeedChanger.DECREASING);
     }
 
     @Override
@@ -70,8 +71,10 @@ public class MyController extends PlayerController {
                 if (actions[ATTACK].isKeyPressed()) {
                     updateAttack();
                 } else {
-                    if (jumpMaker.isOver()) {
+                    if (jumpLag == 0) {
                         updateMovement();
+                    } else {
+                        inControl.brake(2);
                     }
                     updateDodgeJump();
                 }
@@ -223,7 +226,7 @@ public class MyController extends PlayerController {
     private void updateDodgeJump() {
         if (jumpMaker.isOver()) {
             if (jumpLag == 0) {
-                int jumpSpeed = 15;
+                int jumpSpeed = 30;
                 if (actions[UP].isKeyClicked()) {
                     prepareDodgeJump(0, -jumpSpeed, 90);
                 }
@@ -238,7 +241,10 @@ public class MyController extends PlayerController {
                 }
             } else {
                 jumpLag--;
+                playerAnimation.animateSingleInDirection(direction / 45, 42);
             }
+        } else {
+            playerAnimation.animateSingleInDirection(direction / 45, 44);
         }
         if (jumpDelay.isActive() && jumpDelay.isOver()) {
             jumpDelay.stop();
@@ -253,8 +259,7 @@ public class MyController extends PlayerController {
                 inControl.addChanger(jumpMaker);
                 setInputLag(jumpMaker.getTotalTime());
                 jumpDelay.stop();
-                jumpLag = jumpMaker.getTotalTime() * 3;
-                playerAnimation.animateSingleInDirection(direction / 45, 44);
+                jumpLag = jumpMaker.getTotalTime() * 2;
             }
         } else {
             jumpDirection = direction;
