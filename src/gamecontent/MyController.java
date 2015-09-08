@@ -41,7 +41,7 @@ public class MyController extends PlayerController {
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
         sideDelay = new Delay(25);
-        jumpDelay = new Delay(200);
+        jumpDelay = new Delay(400);
         attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40};
         jumpMaker = new SpeedChanger(15);
@@ -68,6 +68,7 @@ public class MyController extends PlayerController {
             diagonal = true;
 
             if (inControl.isAbleToMove()) {
+                //System.out.println(getAllInput(UP, DOWN, LEFT, RIGHT));
                 if (actions[ATTACK].isKeyPressed()) {
                     updateAttack();
                 } else {
@@ -82,7 +83,7 @@ public class MyController extends PlayerController {
             } else {
                 playerAnimation.animateSingleInDirection(direction / 45, 0);
             }
-            if (!actions[ATTACK].isKeyPressed()) {
+            if (!actions[ATTACK].isKeyPressed() && jumpLag == 0) {
                 if (running) {
                     playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
                 } else {
@@ -226,25 +227,50 @@ public class MyController extends PlayerController {
     private void updateDodgeJump() {
         if (jumpMaker.isOver()) {
             if (jumpLag == 0) {
-                int jumpSpeed = 30;
+                int jumpSpeed = 40;
                 if (actions[UP].isKeyClicked()) {
-                    prepareDodgeJump(0, -jumpSpeed, 90);
+                    if (actions[LEFT].isKeyPressed()) {
+                        prepareDodgeJump(-jumpSpeed, (int) (-jumpSpeed * 0.7), 135);
+                    } else if (actions[RIGHT].isKeyPressed()) {
+                        prepareDodgeJump(jumpSpeed, (int) (-jumpSpeed * 0.7), 45);
+                    } else {
+                        prepareDodgeJump(0, (int) (-jumpSpeed * 0.7), 90);
+                    }
                 }
                 if (actions[DOWN].isKeyClicked()) {
-                    prepareDodgeJump(0, jumpSpeed, 270);
+                    if (actions[LEFT].isKeyPressed()) {
+                        prepareDodgeJump(-jumpSpeed, (int) (jumpSpeed * 0.7), 225);
+                    } else if (actions[RIGHT].isKeyPressed()) {
+                        prepareDodgeJump(jumpSpeed, (int) (jumpSpeed * 0.7), 315);
+                    } else {
+                        prepareDodgeJump(0, (int) (jumpSpeed * 0.7), 270);
+                    }
                 }
                 if (actions[LEFT].isKeyClicked()) {
-                    prepareDodgeJump(-jumpSpeed, 0, 180);
+                    if (actions[UP].isKeyPressed()) {
+                        prepareDodgeJump(-jumpSpeed, (int) (-jumpSpeed * 0.7), 135);
+                    } else if (actions[DOWN].isKeyPressed()) {
+                        prepareDodgeJump(-jumpSpeed, (int) (jumpSpeed * 0.7), 225);
+                    } else {
+                        prepareDodgeJump(-jumpSpeed, 0, 180);
+                    }
                 }
                 if (actions[RIGHT].isKeyClicked()) {
-                    prepareDodgeJump(jumpSpeed, 0, 0);
+                    if (actions[UP].isKeyPressed()) {
+                        prepareDodgeJump(jumpSpeed, (int) (-jumpSpeed * 0.7), 45);
+                    } else if (actions[DOWN].isKeyPressed()) {
+                        prepareDodgeJump(jumpSpeed, (int) (jumpSpeed * 0.7), 315);
+                    } else {
+                        prepareDodgeJump(jumpSpeed, 0, 0);
+                    }
                 }
             } else {
                 jumpLag--;
-                playerAnimation.animateSingleInDirection(direction / 45, 42);
+                playerAnimation.animateSingleInDirection(direction / 45, 45);
             }
         } else {
-            playerAnimation.animateSingleInDirection(direction / 45, 44);
+            playerAnimation.animateSingleInDirection(direction / 45, 43);
+            playerAnimation.setStopAtEnd(true);
         }
         if (jumpDelay.isActive() && jumpDelay.isOver()) {
             jumpDelay.stop();
@@ -257,7 +283,6 @@ public class MyController extends PlayerController {
                 jumpMaker.setSpeed(xSpeed, ySpeed);
                 jumpMaker.start();
                 inControl.addChanger(jumpMaker);
-                setInputLag(jumpMaker.getTotalTime());
                 jumpDelay.stop();
                 jumpLag = jumpMaker.getTotalTime() * 2;
             }

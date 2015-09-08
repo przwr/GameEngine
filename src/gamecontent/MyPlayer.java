@@ -39,7 +39,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyPlayer extends Player {
 
-    private final int framesPerDir = 45;
+    private final int framesPerDir = 46;
     private final String characterName = "aria";
     private Cloth head;
     private Cloth torso;
@@ -270,9 +270,9 @@ public class MyPlayer extends Player {
         updateChangers();
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         if (area != -1) {
-            for (WarpPoint warp : map.getArea(area).getNearWarps()) {
-                if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                    warp.warp(this);
+            for (WarpPoint wp : map.getArea(area).getNearWarps()) {
+                if (wp.getCollision() != null && wp.getCollision().isCollideSingle(wp.getX(), wp.getY(), collision)) {
+                    wp.warp(this);
                     break;
                 }
             }
@@ -292,9 +292,9 @@ public class MyPlayer extends Player {
             }
         }
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
-        for (WarpPoint warp : map.getArea(area).getNearWarps()) {
-            if (warp.getCollision() != null && warp.getCollision().isCollideSingle(warp.getX(), warp.getY(), collision)) {
-                warp.warp(this);
+        for (WarpPoint wp : map.getArea(area).getNearWarps()) {
+            if (wp.getCollision() != null && wp.getCollision().isCollideSingle(wp.getX(), wp.getY(), collision)) {
+                wp.warp(this);
                 break;
             }
         }

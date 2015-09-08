@@ -44,6 +44,10 @@ public abstract class TemporalChanger {
     public int getCurrentTime() {
         return time;
     }
+    
+    public int getTimePart(int parts) {
+        return Math.min(parts - 1 - (parts * left) / time, parts - 1);
+    }
 
     public void modifyEntity(Entity en) {
         if (left != 0) {

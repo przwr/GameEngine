@@ -26,6 +26,14 @@ public abstract class PlayerController {
         return actions[i];
     }
 
+    public String getAllInput(int... list) {    //<('_'<) WIEM ŻE NIE UŻYWANE, ALE ZOSTAW....
+        String ret = "";
+        for (int i : list) {
+            ret += actions[i].getState() + " ";
+        }
+        return ret;
+    }
+    
     public abstract void getInput();
 
     public abstract boolean isMenuOn();
