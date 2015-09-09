@@ -98,7 +98,10 @@ public class MyMenu extends Menu {
         for (; i < Settings.actionsCount; i++) {
             player1.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 0, i));
         }
-        for (i = 3; i < Settings.actionsCount; i++) {
+        player2.addChoice(new MapButtonChoice(Settings.language.menu.Actions[3], this, 1, 3));
+        player3.addChoice(new MapButtonChoice(Settings.language.menu.Actions[3], this, 2, 3));
+        player4.addChoice(new MapButtonChoice(Settings.language.menu.Actions[3], this, 3, 3));
+        for (i = MyController.MENU_ACTIONS_COUNT; i < Settings.actionsCount; i++) {
             player2.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 1, i));
             player3.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 2, i));
             player4.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 3, i));

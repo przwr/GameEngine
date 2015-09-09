@@ -17,7 +17,7 @@ public abstract class Stats {
     protected int defence = 2;
     protected float sideDefenceModifier = 10;
     protected float backDefenceModifier = 4;
-    protected float protection = 50;
+    protected float protection = 40;
     protected float protectionSideModifier = 4;
     protected float protectionBackModifier = 1;
     protected boolean protectionState;
@@ -71,12 +71,20 @@ public abstract class Stats {
         return maxHealth;
     }
 
-    public float getStrength() {
+    public int getStrength() {
         return strength;
     }
 
     public void setStrength(int strength) {
         this.strength = strength;
+    }
+
+    public int getDefence() {
+        return defence;
+    }
+
+    public void setDefence(int defence) {
+        this.defence = defence;
     }
 
     public boolean isProtectionState() {

@@ -5,18 +5,17 @@
  */
 package game.gameobject;
 
-import engine.ErrorHandler;
-import engine.Methods;
-import engine.Time;
+import engine.*;
 import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.place.Place;
-import java.util.ArrayList;
-import java.util.Iterator;
 import navmeshpathfinding.PathData;
 import navmeshpathfinding.PathStrategy;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.newdawn.slick.Color;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author przemek
@@ -28,6 +27,9 @@ public abstract class Entity extends GameObject {
     public int lastAdded;
     protected double range;
     protected GameObject target;
+    protected Point destination = new Point();
+    protected BlueArray<GameObject> closeEnemies = new BlueArray<>();
+    protected BlueArray<GameObject> closeFriends = new BlueArray<>();
     protected PathData pathData;
     protected double xEnvironmentalSpeed;
     protected double yEnvironmentalSpeed;

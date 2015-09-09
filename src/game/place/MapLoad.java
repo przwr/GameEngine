@@ -14,15 +14,6 @@ public class MapLoad {
     public MapLoad() {
     }
 
-    public MapLoad(String name, int[] areas) {
-        this.name = name;
-        this.areas.clear();
-        for (int area : areas) {
-            this.areas.add(area);
-        }
-    }
-
-
     public void set(String name, Iterable<Integer> areas) {
         this.name = name;
         this.areas.clear();

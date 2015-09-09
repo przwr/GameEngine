@@ -11,6 +11,8 @@ import engine.Methods;
 import game.place.Place;
 import net.packets.Update;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -19,6 +21,7 @@ import static org.lwjgl.opengl.GL11.*;
 public abstract class Mob extends Entity {
 
     public final short mobID;
+    protected ActionState state;
 
     protected Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
@@ -32,7 +35,7 @@ public abstract class Mob extends Entity {
 
     public abstract void update();
 
-    protected synchronized void look(GameObject[] players) {
+    protected synchronized void lookForPlayers(GameObject[] players) {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
@@ -43,16 +46,80 @@ public abstract class Mob extends Entity {
         }
     }
 
-    protected synchronized void chase(GameObject prey) {
-        if (prey != null && pathStrategy != null) {
-            pathStrategy.findPath(this, pathData, prey.getX(), prey.getY());
-            xSpeed = pathData.getXSpeed();
-            ySpeed = pathData.getYSpeed();
-            changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
+    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+        closeEnemies.clear();
+        closeFriends.clear();
+        GameObject object;
+        int x = getX(), y = getY();
+        for (int i = 0; i < getPlace().playersCount; i++) {
+            object = players[i];
+            if (object.getMap() == map && Methods.pointDistance(object.getX(), object.getY(), x, y) < range) {
+                closeEnemies.add(object);
+            }
+        }
+        for (GameObject mob : mobs) {
+            if (mob.getMap() == map && Methods.pointDistance(mob.getX(), mob.getY(), x, y) < range) {
+                if (mob.getClass().getName() == this.getClass().getName()) {
+                    closeFriends.add(mob);
+                } else {
+                    closeEnemies.add(mob);
+                }
+            }
+        }
+    }
+
+    protected synchronized void chase() {
+        if (target != null && pathStrategy != null) {
+            pathStrategy.findPath(this, pathData, target.getX(), target.getY());
+            if (this.getMaxSpeed() > 4) {
+                changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
+            } else {
+                xSpeed = pathData.getXSpeed();
+                ySpeed = pathData.getYSpeed();
+            }
+        }
+
+
+    }
+
+    protected synchronized void goTo() {
+        if (destination.getX() > 0) {
+            pathStrategy.findPath(this, pathData, destination.getX(), destination.getY());
+            if (this.getMaxSpeed() > 4) {
+                changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
+            } else {
+                xSpeed = pathData.getXSpeed();
+                ySpeed = pathData.getYSpeed();
+            }
+        }
+    }
+
+    protected synchronized void calculateDestinationsForEscape() {
+        if (closeEnemies.isEmpty()) {
+            destination.set(-1, -1);
+        } else {
+            int x = 0, y = 0;
+            for (GameObject object : closeEnemies) {
+                x += object.getX();
+                y += object.getY();
+            }
+            x = getX() - (x / closeEnemies.size());
+            y = getY() - (y / closeEnemies.size());
+            float ratio = Math.abs(y / (float) x);
+            x = (int) (Math.signum(x) * range) + getX();
+            y = (int) (Math.signum(y) * (ratio * Math.abs(x))) + getY();
+            if (x <= 0) {
+                x = 1;
+            }
+            if (y <= 0) {
+                y = 1;
+            }
+            destination.set(x, y);
         }
     }
 
     @Override
+
     protected boolean isCollided(int xMagnitude, int yMagnitude) {
         return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map)
                 || collision.isCollidePlayer(getX() + xMagnitude, getY() + yMagnitude, getPlace());

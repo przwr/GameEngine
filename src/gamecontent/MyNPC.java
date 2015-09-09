@@ -59,7 +59,7 @@ public class MyNPC extends Mob {
                 target = null;
             }
         } else {
-            look(place.players);
+            lookForPlayers(place.players);
         }
     }
 

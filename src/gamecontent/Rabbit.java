@@ -25,20 +25,19 @@ public class Rabbit extends Mob {
         setPathStrategy(PathFindingModule.GET_CLOSE, 250);
         stats = new MobStats(this);
 //        addInteractive(new Interactive(this, Interactive.ALWAYS, new CircleInteractiveCollision(32), Interactive.HURT));
-
     }
 
     @Override
     public void update() {
         if (target != null && (!(target instanceof MyPlayer) || ((MyPlayer) target).isInGame())) {
-            if (Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY()) > range * 1.5 || getTarget().getMap() != map) {
+            if (Methods.pointDistance(getX(), getY(), target.getX(), target.getY()) > range * 1.5 || getTarget().getMap() != map) {
                 target = null;
                 pathData.clearPath();
             } else {
-                chase(target);
+                chase();
             }
         } else {
-            look(place.players);
+            lookForPlayers(place.players);
             brake(2);
         }
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);

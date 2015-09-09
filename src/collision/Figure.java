@@ -367,8 +367,16 @@ public abstract class Figure implements Comparable<Figure> {
         return width;
     }
 
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
     public int getHeight() {
         return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public int getActualWidth() {
@@ -418,6 +426,12 @@ public abstract class Figure implements Comparable<Figure> {
     public void setOpticProperties(int type) {
         opticProperties.setType(type);
     }
+
+    public void setWidthAndHeight(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
 
     private class DoublePoint {
 

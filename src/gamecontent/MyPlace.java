@@ -105,8 +105,8 @@ public class MyPlace extends Place {
         addMapsToAdd();
         for (Map mapToUpdate : tempMaps) {
             mapToUpdate.updateAreasToUpdate();
-            if (game.getMapLoader().isRunning())// TODO Wywalić, jak będzie wczytywane z pliku
-                mapToUpdate.unloadUnNeededUpdate();
+//            if (game.getMapLoader().isRunning())// TODO Wywalić, jak będzie wczytywane z pliku
+//                mapToUpdate.unloadUnNeededUpdate();
         }
         game.getMapLoader().updateList(tempMaps);
     }
