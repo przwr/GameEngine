@@ -103,6 +103,7 @@ public class Animation implements Appearance {
         this.start = start;
         this.end = end;
         animate = true;
+        stopAtEnd = false;
     }
 
     public void animateIntervalInDirection(int direction, int start, int end) {
@@ -110,6 +111,13 @@ public class Animation implements Appearance {
                 direction * framesPerDirection + end);
     }
 
+    public void animateIntervalInDirectionOnce(int direction, int start, int end) {
+        animateInterval(direction * framesPerDirection + start,
+                direction * framesPerDirection + end);
+        setCurrentFrame(this.start);
+        stopAtEnd = true;
+    }
+    
     @Override
     public void bindCheck() {
         if (fboSpriteSheet == null) {

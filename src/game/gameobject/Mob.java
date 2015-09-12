@@ -26,6 +26,8 @@ public abstract class Mob extends Entity {
     protected ActionState state;
     protected BlueArray<Mob> closeFriends = new BlueArray<>();
     protected boolean alpha;
+    protected int pastDirections[] = new int[2];
+    protected int currentPastDirection;
 
     protected Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;

@@ -127,13 +127,6 @@ public class Shen extends Mob {
                 xSpeed = ySpeed = 0;
                 goTo(secondaryDestination);
                 repulsion();
-                if (xSpeed < 1 && xSpeed >= 0.5) {
-                    xSpeed = 1;
-                }
-                if (ySpeed < 1 && ySpeed >= 0.5) {
-                    ySpeed = 1;
-                }
-
                 calculateDestinationsForEscape();
                 if (destination.getX() > 0) {
                     state = idle;
@@ -259,9 +252,12 @@ public class Shen extends Mob {
     }
 
     private void updateAnimation() {
-        animation.setStopAtEnd(false);
         if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
-            direction = (int) Methods.pointAngleCounterClockwise(0, 0, xSpeed, ySpeed);
+            pastDirections[currentPastDirection++] = (int) Methods.pointAngleCounterClockwise(0, 0, xSpeed, ySpeed);
+            if (currentPastDirection > 1)
+                currentPastDirection = 0;
+            if (pastDirections[0] == pastDirections[1])
+                direction = pastDirections[0];
             if (target == null) {
                 animation.setFPS(7);
                 animation.animateIntervalInDirection(direction / 45, 0, 5);
@@ -275,8 +271,8 @@ public class Shen extends Mob {
         } else {
             if (stats.isProtectionState()) {
                 animation.setFPS(15);
-                animation.setStopAtEnd(true);
                 animation.animateIntervalInDirection(direction / 45, 7, 12);
+                animation.setStopAtEnd(true);
 //                collision.setWidthAndHeight(32, 23);
             } else {
                 animation.animateSingleInDirection(direction / 45, 0);
@@ -334,9 +330,5 @@ public class Shen extends Mob {
 
     public void setAlpha(boolean alpha) {
         this.alpha = alpha;
-    }
-
-    public String getName() {
-        return super.getName() + " " + alpha;
     }
 }
