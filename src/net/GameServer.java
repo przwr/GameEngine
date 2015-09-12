@@ -132,7 +132,7 @@ public class GameServer {
             MPlayers[0].setPlayer(player);
             player.setName(MPlayers[0].getName());
             player.playerID = id++;
-            player.setPosition(MPlayers[0].getX(), MPlayers[0].getY());
+            player.setPositionAreaUpdate(MPlayers[0].getX(), MPlayers[0].getY());
             nrPlayers++;
             isRunning = true;
             System.out.println("Server started!");

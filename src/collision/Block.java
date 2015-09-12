@@ -53,8 +53,8 @@ public class Block extends GameObject {
     public void move(int dx, int dy) {
         x += dx;
         y += dy;
-        topForegroundTiles.stream().forEach((fgt) -> fgt.setPosition(fgt.getX() + dx, fgt.getY() + dy));
-        wallForegroundTiles.stream().forEach((fgt) -> fgt.setPosition(fgt.getX() + dx, fgt.getY() + dy));
+        topForegroundTiles.stream().forEach((fgt) -> fgt.setPositionAreaUpdate(fgt.getX() + dx, fgt.getY() + dy));
+        wallForegroundTiles.stream().forEach((fgt) -> fgt.setPositionAreaUpdate(fgt.getX() + dx, fgt.getY() + dy));
         if (!collision.isMobile()) {
             collision.updatePoints();
         }

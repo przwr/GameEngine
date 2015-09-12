@@ -16,7 +16,7 @@ public class PlayerStats extends Stats {
 
     public void died() {
         health = maxHealth / 2;
-        owner.setPosition(128, 128);
+        owner.setPositionAreaUpdate(128, 128);
         System.out.println(owner.getName() + " zginał.");
     }
 
