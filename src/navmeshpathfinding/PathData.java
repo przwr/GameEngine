@@ -20,7 +20,6 @@ import java.util.List;
  */
 public class PathData {
 
-    protected final static int PATH_RETURNED = 7;
     final static int PASSING = 0;
     final static int PASSED = 1;
     final static int CHOICE = 2;
@@ -28,7 +27,6 @@ public class PathData {
     final static int STUCK = 4;
     final static int OBSTACLE_BETWEEN = 5;
     final static int PATH_REQUESTED = 6;
-    protected final Point preyPoint = new Point();
     final int width;
     final int height;
     final int widthHalf;
@@ -51,31 +49,8 @@ public class PathData {
     final List<Figure> close = new BlueArray<>();
     final Polygon poly = new Polygon();
     final Delay delay = new Delay(250);
-    int x;
-    int y;
-    int xS;
-    int xE;
-    int yS;
-    int yE;
-    int xRef;
-    int yRef;
-    int passedCount;
-    int alternateCount;
-    int min;
-    int temp;
-    int xDS;
-    int xDE;
-    int yDS;
-    int yDE;
-    int xPass;
-    int yPass;
-    int xInAWay;
-    int yInAWay;
-    int currentPoint;
-    int xDistance;
-    int yDistance;
-    int scope;
-    int lastCorner = -1;
+    int x, y, xS, xE, yS, yE, xRef, yRef, passedCount, alternateCount, min, temp, xDS, xDE, yDS, yDE,
+            xPass, yPass, xInAWay, yInAWay, currentPoint, xDistance, yDistance, scope, lastCorner = -1;
     double xSpeed;
     double ySpeed;
     double pastXSpeed;
@@ -156,6 +131,10 @@ public class PathData {
         pastPosition.set(x, y);
     }
 
+    public int getCurrentPointIndex() {
+        return currentPoint;
+    }
+
     public Point getCurrentPoint() {
         return path.get(currentPoint);
     }
@@ -182,6 +161,10 @@ public class PathData {
 
     public void setScope(int scope) {
         this.scope = scope;
+    }
+
+    public PointContainer getPath() {
+        return path;
     }
 
 }

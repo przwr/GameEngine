@@ -68,7 +68,7 @@ public abstract class GameObject {
                 this.map.deleteObject(this);
             }
             this.map = map;
-            this.setPosition(x, y);
+            this.setPositionAreaUpdate(x, y);
             this.map.addObject(this);
         }
     }
@@ -334,6 +334,11 @@ public abstract class GameObject {
     }
 
     public void setPosition(double x, double y) {
+        setX(x);
+        setY(y);
+    }
+
+    public void setPositionAreaUpdate(double x, double y) {
         setX(x);
         setY(y);
         updateAreaPlacement();

@@ -94,13 +94,15 @@ public class ObjectPlayer extends Player {
         onTop = true;
     }
 
+
     @Override
-    protected boolean isCollided(int xMagnitude, int yMagnitude) {
-        return isInGame() && collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
+    protected boolean isCollided(double xMagnitude, double yMagnitude) {
+        return isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override
-    protected void move(int xPosition, int yPosition) {
+    protected void move(double xPos, double yPos) {
+        int xPosition = (int) xPos, yPosition = (int) yPos;
         boolean ctrl = key.key(KEY_LCONTROL);
         if (xTimer == 0) {
             ix = Methods.interval(0, ix + xPosition, map.getWidthInTiles());
@@ -219,6 +221,7 @@ public class ObjectPlayer extends Player {
                     }
                 } else {
                     move(xPos, yPos);
+                    updateAreaPlacement();
                 }
             }
 

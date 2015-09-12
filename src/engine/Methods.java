@@ -28,8 +28,9 @@ public class Methods {
     private static final Point point = new Point(0, 0);
     public static double SQRT_ROOT_OF_2 = Math.sqrt(2);
     public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / Math.sqrt(2);
-    private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, temp;
-    private static int xDelta, yDelta;
+    private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, temp, xDDelta, yDDelta;
+    private static int xIDelta, yIDelta;
+
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -40,9 +41,9 @@ public class Methods {
     }
 
     public static int pointDistance(int x, int y, int xa, int ya) {
-        xDelta = xa - x;
-        yDelta = ya - y;
-        return (int) FastMath.sqrt(xDelta * xDelta + yDelta * yDelta);
+        xDDelta = xa - x;
+        yDDelta = ya - y;
+        return (int) FastMath.sqrt(xDDelta * xDDelta + yDDelta * yDDelta);
     }
 
     public static int pointDistanceSimple(int x, int y, int xa, int ya) {
@@ -50,9 +51,9 @@ public class Methods {
     }
 
     public static int pointDistanceSimple2(int x, int y, int xa, int ya) {
-        xDelta = xa - x;
-        yDelta = ya - y;
-        return xDelta * xDelta + yDelta * yDelta;
+        xIDelta = xa - x;
+        yIDelta = ya - y;
+        return xIDelta * xIDelta + yIDelta * yIDelta;
     }
 
     public static int pointDifference(int x, int y, int xa, int ya) {
@@ -60,30 +61,30 @@ public class Methods {
     }
 
     public static double pointAngle(int xSt, int ySt, int xEn, int yEn) {
-        xDelta = xEn - xSt;
-        yDelta = yEn - ySt;
-        return FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
+        xDDelta = xEn - xSt;
+        yDDelta = yEn - ySt;
+        return FastMath.atan2(yDDelta, xDDelta) * 180 / FastMath.PI;
     }
 
     public static int pointAngle8Directions(int xSt, int ySt, int xEn, int yEn) {
-        xDelta = xEn - xSt;
-        yDelta = yEn - ySt;
-        temp = -FastMath.atan2(yDelta, xDelta) * 4 / FastMath.PI + 0.5;
+        xDDelta = xEn - xSt;
+        yDDelta = yEn - ySt;
+        temp = -FastMath.atan2(yDDelta, xDDelta) * 4 / FastMath.PI + 0.5;
         temp = temp >= 0 ? temp : (temp + 8) % 8;
         return (int) temp;
     }
 
-    public static double pointAngleCounterClockwise(int xSt, int ySt, int xEn, int yEn) {    //0 <=> PRAWO; 90 <=> GÓRA; 180 <=> LEWO; 270 <=> DÓŁ;
-        xDelta = xEn - xSt;
-        yDelta = yEn - ySt;
-        det = -FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
+    public static double pointAngleCounterClockwise(double xSt, double ySt, double xEn, double yEn) {    //0 <=> PRAWO; 90 <=> GÓRA; 180 <=> LEWO; 270 <=> DÓŁ;
+        xDDelta = xEn - xSt;
+        yDDelta = yEn - ySt;
+        det = -FastMath.atan2(yDDelta, xDDelta) * 180 / FastMath.PI;
         return det >= 0 ? det : det + 360;
     }
 
-    public static double pointAngleClockwise(int xSt, int ySt, int xEn, int yEn) {     //0 <=> PRAWO; 90 <=> DÓŁ; 180 <=> LEWO; 270 <=> GÓRA; czy to dobrze??
-        xDelta = xEn - xSt;
-        yDelta = yEn - ySt;
-        det = FastMath.atan2(yDelta, xDelta) * 180 / FastMath.PI;
+    public static double pointAngleClockwise(double xSt, double ySt, double xEn, double yEn) {     //0 <=> PRAWO; 90 <=> DÓŁ; 180 <=> LEWO; 270 <=> GÓRA; czy to dobrze??
+        xDDelta = xEn - xSt;
+        yDDelta = yEn - ySt;
+        det = FastMath.atan2(yDDelta, xDDelta) * 180 / FastMath.PI;
         return det >= 0 ? det : det + 360;
     }
 

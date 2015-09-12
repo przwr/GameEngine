@@ -176,8 +176,8 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    protected boolean isCollided(int xMagnitude, int yMagnitude) {
-        return isInGame() && collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map);
+    protected boolean isCollided(double xMagnitude, double yMagnitude) {
+        return isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override

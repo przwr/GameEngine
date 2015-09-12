@@ -27,9 +27,8 @@ public abstract class Entity extends GameObject {
     public int lastAdded;
     protected double range;
     protected GameObject target;
-    protected Point destination = new Point();
+    protected Point destination = new Point(), secondaryDestination = new Point();
     protected BlueArray<GameObject> closeEnemies = new BlueArray<>();
-    protected BlueArray<GameObject> closeFriends = new BlueArray<>();
     protected PathData pathData;
     protected double xEnvironmentalSpeed;
     protected double yEnvironmentalSpeed;
@@ -39,11 +38,11 @@ public abstract class Entity extends GameObject {
     protected boolean hop;
     protected Place place;
     PathStrategy pathStrategy;
-    private double maxSpeed;
+    private double maxSpeed, xPosition, yPosition, xDelta, yDelta, xChange, yChange;
     private double resistance = 1;
     private boolean unableToMove;
     private Update currentUpdate;
-    private int currentUpdateID, deltasCount, xPosition, yPosition, xDelta, yDelta, xDestination, yDestination;
+    private int currentUpdateID, deltasCount, xDestination, yDestination;
     private Player collided;
 
     private ArrayList<TemporalChanger> changers;
@@ -52,11 +51,10 @@ public abstract class Entity extends GameObject {
 
     protected abstract void updateRest(Update update);
 
-    protected abstract boolean isCollided(int xMagnitude, int yMagnitude);
+    protected abstract boolean isCollided(double xMagnitude, double yMagnitude);
 
-    protected abstract Player getCollided(int xMagnitude, int yMagnitude);
+    protected abstract Player getCollided(double xMagnitude, double yMagnitude);
 
-    protected abstract void move(int xPosition, int yPosition);
 
     protected void setPathStrategy(PathStrategy pathStrategy, int scope) {
         pathData = new PathData(this, scope);
@@ -85,7 +83,7 @@ public abstract class Entity extends GameObject {
         if (collision.isCollideSolid(xDestination, yDestination, map)) {
             moveIfPossible(xDestination - getX(), yDestination - getY());
         } else {
-            setPosition(xDestination, yDestination);
+            setPositionAreaUpdate(xDestination, yDestination);
         }
         deltasCount++;
     }
@@ -104,7 +102,7 @@ public abstract class Entity extends GameObject {
             if (collision.isCollideSolid(xDestination, yDestination, map)) {
                 moveIfPossible(xDestination - getX(), yDestination - getY());
             } else {
-                setPosition(xDestination, yDestination);
+                setPositionAreaUpdate(xDestination, yDestination);
             }
             deltasCount = 0;
         }
@@ -159,7 +157,7 @@ public abstract class Entity extends GameObject {
             changers = new ArrayList<>();
         }
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
@@ -177,19 +175,20 @@ public abstract class Entity extends GameObject {
     }
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
-        int xTempSpeed = (int) (xMagnitude + collision.getXSlideSpeed());
-        int yTempSpeed = (int) (yMagnitude + collision.getYSlideSpeed());
+        double xTempSpeed = (xMagnitude + collision.getXSlideSpeed());
+        double yTempSpeed = (yMagnitude + collision.getYSlideSpeed());
         collision.prepareSlideSpeed(xMagnitude, yMagnitude);
         moveIfPossible(xTempSpeed, yTempSpeed);
         collision.resetSlideSpeed();
     }
 
-    private void moveIfPossible(int xMagnitude, int yMagnitude) {
+    private void moveIfPossible(double xMagnitude, double yMagnitude) {
         calculatePositionsAndDeltas(xMagnitude, yMagnitude);
         while (xPosition != 0 || yPosition != 0) {
             moveXIfPossible();
             moveYIfPossible();
         }
+        updateAreaPlacement();
     }
 
     private void moveXIfPossible() {
@@ -197,8 +196,9 @@ public abstract class Entity extends GameObject {
             if (isCollided(xDelta, 0)) {
                 xPosition = 0;
             } else {
-                move(xDelta, 0);
-                xPosition -= xDelta;
+                xChange = Math.abs(xPosition) < Math.abs(xDelta) ? xPosition : xDelta;
+                move(xChange, 0);
+                xPosition -= xChange;
             }
         }
     }
@@ -208,8 +208,9 @@ public abstract class Entity extends GameObject {
             if (isCollided(0, yDelta)) {
                 yPosition = 0;
             } else {
-                move(0, yDelta);
-                yPosition -= yDelta;
+                yChange = Math.abs(yPosition) < Math.abs(yDelta) ? yPosition : yDelta;
+                move(0, yChange);
+                yPosition -= yChange;
             }
         }
     }
@@ -257,11 +258,15 @@ public abstract class Entity extends GameObject {
         }
     }
 
-    private void calculatePositionsAndDeltas(int xMagnitude, int yMagnitude) {
-        xPosition = (int) (xMagnitude * Time.getDelta());
-        yPosition = (int) (yMagnitude * Time.getDelta());
-        xDelta = Integer.signum(xPosition);
-        yDelta = Integer.signum(yPosition);
+    protected void move(double xPosition, double yPosition) {
+        setPosition(x + xPosition, y + yPosition);
+    }
+
+    private void calculatePositionsAndDeltas(double xMagnitude, double yMagnitude) {
+        xPosition = (xMagnitude * Time.getDelta());
+        yPosition = (yMagnitude * Time.getDelta());
+        xDelta = FastMath.signum(xPosition);
+        yDelta = FastMath.signum(yPosition);
     }
 
     public void brake(int axis) {

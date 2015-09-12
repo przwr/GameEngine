@@ -6,8 +6,10 @@
 package game.gameobject;
 
 import collision.Figure;
+import engine.BlueArray;
 import engine.Drawer;
 import engine.Methods;
+import engine.Point;
 import game.place.Place;
 import net.packets.Update;
 
@@ -22,6 +24,8 @@ public abstract class Mob extends Entity {
 
     public final short mobID;
     protected ActionState state;
+    protected BlueArray<Mob> closeFriends = new BlueArray<>();
+    protected boolean alpha;
 
     protected Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
@@ -57,15 +61,27 @@ public abstract class Mob extends Entity {
                 closeEnemies.add(object);
             }
         }
-        for (GameObject mob : mobs) {
-            if (mob.getMap() == map && Methods.pointDistance(mob.getX(), mob.getY(), x, y) < range) {
-                if (mob.getClass().getName() == this.getClass().getName()) {
+        for (Mob mob : mobs) {
+            if (mob.getClass().getName() == this.getClass().getName()) {
+                if (this != mob && mob.getMap() == map && Methods.pointDistance(mob.getX(), mob.getY(), x, y) < range * 2) {
                     closeFriends.add(mob);
-                } else {
-                    closeEnemies.add(mob);
+                }
+            } else if (mob.getMap() == map && Methods.pointDistance(mob.getX(), mob.getY(), x, y) < range) {
+                closeEnemies.add(mob);
+            }
+        }
+        if (closeFriends.isEmpty()) {
+            alpha = false;
+        } else {
+            alpha = true;
+            for (Mob mob : closeFriends) {
+                if (mob.alpha) {
+                    alpha = false;
+                    break;
                 }
             }
         }
+
     }
 
     protected synchronized void chase() {
@@ -78,11 +94,9 @@ public abstract class Mob extends Entity {
                 ySpeed = pathData.getYSpeed();
             }
         }
-
-
     }
 
-    protected synchronized void goTo() {
+    protected synchronized void goTo(Point destination) {
         if (destination.getX() > 0) {
             pathStrategy.findPath(this, pathData, destination.getX(), destination.getY());
             if (this.getMaxSpeed() > 4) {
@@ -91,6 +105,8 @@ public abstract class Mob extends Entity {
                 xSpeed = pathData.getXSpeed();
                 ySpeed = pathData.getYSpeed();
             }
+        } else {
+            brake(2);
         }
     }
 
@@ -108,32 +124,46 @@ public abstract class Mob extends Entity {
             float ratio = Math.abs(y / (float) x);
             x = (int) (Math.signum(x) * range) + getX();
             y = (int) (Math.signum(y) * (ratio * Math.abs(x))) + getY();
-            if (x <= 0) {
-                x = 1;
+            if (x < collision.getWidth()) {
+                x = collision.getWidth();
             }
-            if (y <= 0) {
-                y = 1;
+            if (y < collision.getHeight()) {
+                y = collision.getHeight();
             }
             destination.set(x, y);
         }
     }
 
-    @Override
-
-    protected boolean isCollided(int xMagnitude, int yMagnitude) {
-        return collision.isCollideSolid(getX() + xMagnitude, getY() + yMagnitude, map)
-                || collision.isCollidePlayer(getX() + xMagnitude, getY() + yMagnitude, getPlace());
+    protected synchronized void calculateDestinationsForCloseFriends() {
+        if (!closeFriends.isEmpty()) {
+            int x = 0, y = 0;
+            for (GameObject object : closeFriends) {
+                x += object.getX();
+                y += object.getY();
+            }
+            x = (x / closeFriends.size());
+            y = (y / closeFriends.size());
+            if (x < collision.getWidth()) {
+                x = collision.getWidth();
+            }
+            if (y < collision.getHeight()) {
+                y = collision.getHeight();
+            }
+            secondaryDestination.set(x, y);
+        }
     }
 
     @Override
-    public Player getCollided(int xMagnitude, int yMagnitude) {
-        return collision.firstPlayerCollide(getX() + xMagnitude, getY() + yMagnitude, getPlace());
+    protected boolean isCollided(double xMagnitude, double yMagnitude) {
+        return collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map) ||
+                collision.isCollidePlayer((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), getPlace());
     }
 
     @Override
-    protected void move(int xPosition, int yPosition) {
-        setPosition(x + xPosition, y + yPosition);
+    public Player getCollided(double xMagnitude, double yMagnitude) {
+        return collision.firstPlayerCollide((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), getPlace());
     }
+
 
     @Override
     public void render(int xEffect, int yEffect) {
