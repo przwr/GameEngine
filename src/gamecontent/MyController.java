@@ -18,7 +18,7 @@ public class MyController extends PlayerController {
     public static final byte MENU_UP = 0, MENU_DOWN = 1, MENU_ACTION = 2, MENU_BACK = 3, MENU_LEFT = 4,
             MENU_RIGHT = 5, UP = 6, DOWN = 7, LEFT = 8, RIGHT = 9, ATTACK = 10, RUN = 11, LIGHT = 12,
             ZOOM = 13, NEXT = 14, PREVIOUS = 15, BLOCK = 16, DODGE = 17, REVERSE = 18, SNEAK = 19,
-            ACTION_9 = 20, ACTION_8 = 21, ACTION_7 = 22, ACTION_6 = 23, ACTION_5 = 24, ACTION_4 = 25,
+            ACTION = 20, ACTION_8 = 21, ACTION_7 = 22, ACTION_6 = 23, ACTION_5 = 24, ACTION_4 = 25,
             ACTION_3 = 26, ACTION_2 = 27, ACTION_1 = 28;
     public static final byte MENU_ACTIONS_COUNT = 6, ACTIONS_COUNT = 29, ATTACK_COUNT = 5;
 
@@ -26,15 +26,14 @@ public class MyController extends PlayerController {
             ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
     private final int[] attackFrames;
     private final Delay sideDelay;
+    private final Delay jumpDelay;
+    private final Delay doubleDelay;
+    private final SpeedChanger jumpMaker;
     private int direction, lagDuration, attackType, sideDirection;
     private boolean running, diagonal, inputLag;
     private Animation playerAnimation;
     private MyGUI gui;
-
     private int jumpDirection, jumpLag;
-    private final Delay jumpDelay;
-    private final Delay doubleDelay;
-    private final SpeedChanger jumpMaker;
 
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);

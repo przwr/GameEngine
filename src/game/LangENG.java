@@ -70,7 +70,7 @@ class LangENG extends Language {
         menu.Actions[17] = "Dodge";
         menu.Actions[18] = "Reverse";
         menu.Actions[19] = "Sneak";
-        menu.Actions[20] = "Action 9";
+        menu.Actions[20] = "Action";
         menu.Actions[21] = "Action 8";
         menu.Actions[22] = "Action 7";
         menu.Actions[23] = "Action 6";

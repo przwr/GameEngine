@@ -10,6 +10,7 @@ import collision.Rectangle;
 import engine.Executive;
 import engine.Methods;
 import game.gameobject.Mob;
+import game.gameobject.NPCStats;
 import game.place.Place;
 import sprites.SpriteSheet;
 
@@ -26,6 +27,7 @@ public class MyNPC extends Mob {
     public MyNPC(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
+        stats = new NPCStats(this);
         if (appearance != null) {
             spritesheet = (SpriteSheet) appearance;
         }
@@ -40,7 +42,7 @@ public class MyNPC extends Mob {
                 direction = 0;
             }
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-            if (mpPrey.getController().getAction(MyController.ATTACK).isKeyClicked() && d <= Place.tileSize * 1.5 && !mpPrey.getTextController().isStarted()) {
+            if (mpPrey.getController().getAction(MyController.ACTION).isKeyClicked() && d <= Place.tileSize * 1.5 && !mpPrey.getTextController().isStarted()) {
                 mpPrey.getTextController().lockEntity(mpPrey);
                 mpPrey.getTextController().startFromFile("drzewo");
                 Executive e = new Executive() {

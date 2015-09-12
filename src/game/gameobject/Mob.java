@@ -83,7 +83,6 @@ public abstract class Mob extends Entity {
                 }
             }
         }
-
     }
 
     protected synchronized void chase() {

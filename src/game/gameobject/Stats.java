@@ -49,7 +49,6 @@ public abstract class Stats {
             if (health == 0) {
                 died();
             }
-
         }
     }
 

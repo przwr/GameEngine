@@ -18,21 +18,17 @@ public final class Time {
     private Time() {
     }
 
-    public static long getTime() {
-        return System.nanoTime();
-    }
-
     public static float getDelta() {
         return (currentTime - lastTime) / DAMPING;
     }
 
     public static void update() {
         lastTime = currentTime;
-        currentTime = getTime();
+        currentTime = System.nanoTime();
     }
 
     public static void initialize() {
-        lastTime = getTime();
-        currentTime = getTime();
+        lastTime = System.nanoTime();
+        currentTime = System.nanoTime();
     }
 }

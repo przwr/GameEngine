@@ -70,7 +70,7 @@ class LangPL extends Language {
         menu.Actions[17] = "Unik";
         menu.Actions[18] = "Odwrócenie się";
         menu.Actions[19] = "Skradanie się";
-        menu.Actions[20] = "Akcja 9";
+        menu.Actions[20] = "Akcja";
         menu.Actions[21] = "Akcja 8";
         menu.Actions[22] = "Akcja 7";
         menu.Actions[23] = "Akcja 6";

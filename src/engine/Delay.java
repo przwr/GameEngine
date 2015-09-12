@@ -33,7 +33,7 @@ public class Delay {
     }
 
     public boolean isOver() {
-        return started && endTime <= Time.getTime();
+        return started && endTime <= System.nanoTime();
     }
 
     public boolean isActive() {
@@ -42,12 +42,12 @@ public class Delay {
 
     public void start() {
         started = true;
-        endTime = length * 1000000 + Time.getTime();
+        endTime = length * 1000000 + System.nanoTime();
     }
 
     public void startAt(int start) {
         started = true;
-        endTime = start * 1000000 + Time.getTime();
+        endTime = start * 1000000 + System.nanoTime();
     }
 
     public void stop() {

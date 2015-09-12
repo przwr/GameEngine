@@ -445,13 +445,13 @@ public class TextController extends GUIObject {
                         change = 1;
                     } else if (jumpTo >= 0) {
                         flushReady = true;
-                    } else if (playerController.getAction(MyController.ATTACK).isKeyClicked()) {
+                    } else if (playerController.getAction(MyController.ACTION).isKeyClicked()) {
                         events.endingEvent();
                         stopTextViewing();
                     }
                 } else {
                     if (!question) {
-                        if (playerController.getAction(MyController.ATTACK).isKeyClicked()) {
+                        if (playerController.getAction(MyController.ACTION).isKeyClicked()) {
                             flushing = true;
                             flushReady = false;
                             change = 0;
