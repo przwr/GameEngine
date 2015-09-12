@@ -33,6 +33,7 @@ public class MyController extends PlayerController {
 
     private int jumpDirection, jumpLag;
     private final Delay jumpDelay;
+    private final Delay doubleDelay;
     private final SpeedChanger jumpMaker;
 
     public MyController(Entity inControl, MyGUI playersGUI) {
@@ -42,6 +43,7 @@ public class MyController extends PlayerController {
         actions = new Action[ACTIONS_COUNT];
         sideDelay = new Delay(25);
         jumpDelay = new Delay(400);
+        doubleDelay = new Delay(5);
         attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40};
         jumpMaker = new SpeedChanger(15);
@@ -69,16 +71,16 @@ public class MyController extends PlayerController {
 
             if (inControl.isAbleToMove()) {
                 //System.out.println(getAllInput(UP, DOWN, LEFT, RIGHT));
-                if (actions[ATTACK].isKeyPressed()) {
-                    updateAttack();
-                } else {
-                    if (jumpLag == 0) {
-                        updateMovement();
+                if (jumpLag == 0) {
+                    if (actions[ATTACK].isKeyPressed()) {
+                        updateAttack();
                     } else {
-                        inControl.brake(2);
+                        updateMovement();
                     }
-                    updateDodgeJump();
+                } else {
+                    inControl.brake(2);
                 }
+                updateDodgeJump();
                 updateRest();
             } else {
                 playerAnimation.animateSingleInDirection(direction / 45, 0);
@@ -113,31 +115,29 @@ public class MyController extends PlayerController {
 
     private void updateAttack() {
         if (actions[ATTACK].isKeyClicked()) {
-            setInputLag(30);
-        }
-        playerAnimation.setStopAtEnd(true);
-        switch (attackType) {
-            case ATTACK_SLASH:
-                playerAnimation.animateIntervalInDirection(direction / 45, 21, 25);
-                break;
-            case ATTACK_THRUST:
-                playerAnimation.animateIntervalInDirection(direction / 45, 26, 28);
-                break;
-            case ATTACK_UPPER_SLASH:
-                playerAnimation.animateIntervalInDirection(direction / 45, 29, 36);
-                break;
-            case ATTACK_WEAK_PUNCH:
-                playerAnimation.animateIntervalInDirection(direction / 45, 37, 39);
-                break;
-            case ATTACK_STRONG_PUNCH:
-                playerAnimation.animateIntervalInDirection(direction / 45, 40, 41);
-                break;
+            setInputLag(15);
+            switch (attackType) {
+                case ATTACK_SLASH:
+                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 21, 25);
+                    break;
+                case ATTACK_THRUST:
+                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 26, 28);
+                    break;
+                case ATTACK_UPPER_SLASH:
+                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 29, 36);
+                    break;
+                case ATTACK_WEAK_PUNCH:
+                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 37, 39);
+                    break;
+                case ATTACK_STRONG_PUNCH:
+                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 40, 41);
+                    break;
+            }
         }
         inControl.brakeWithModifier(2, 2);
     }
 
     private void updateMovement() {
-        playerAnimation.setStopAtEnd(false);
         if (actions[UP].isKeyPressed()) {
             if (actions[LEFT].isKeyPressed()) {
                 animateMoving(135);
@@ -228,41 +228,10 @@ public class MyController extends PlayerController {
         if (jumpMaker.isOver()) {
             if (jumpLag == 0) {
                 int jumpSpeed = 40;
-                if (actions[UP].isKeyClicked()) {
-                    if (actions[LEFT].isKeyPressed()) {
-                        prepareDodgeJump(-jumpSpeed, (int) (-jumpSpeed * 0.7), 135);
-                    } else if (actions[RIGHT].isKeyPressed()) {
-                        prepareDodgeJump(jumpSpeed, (int) (-jumpSpeed * 0.7), 45);
-                    } else {
-                        prepareDodgeJump(0, (int) (-jumpSpeed * 0.7), 90);
-                    }
-                }
-                if (actions[DOWN].isKeyClicked()) {
-                    if (actions[LEFT].isKeyPressed()) {
-                        prepareDodgeJump(-jumpSpeed, (int) (jumpSpeed * 0.7), 225);
-                    } else if (actions[RIGHT].isKeyPressed()) {
-                        prepareDodgeJump(jumpSpeed, (int) (jumpSpeed * 0.7), 315);
-                    } else {
-                        prepareDodgeJump(0, (int) (jumpSpeed * 0.7), 270);
-                    }
-                }
-                if (actions[LEFT].isKeyClicked()) {
-                    if (actions[UP].isKeyPressed()) {
-                        prepareDodgeJump(-jumpSpeed, (int) (-jumpSpeed * 0.7), 135);
-                    } else if (actions[DOWN].isKeyPressed()) {
-                        prepareDodgeJump(-jumpSpeed, (int) (jumpSpeed * 0.7), 225);
-                    } else {
-                        prepareDodgeJump(-jumpSpeed, 0, 180);
-                    }
-                }
-                if (actions[RIGHT].isKeyClicked()) {
-                    if (actions[UP].isKeyPressed()) {
-                        prepareDodgeJump(jumpSpeed, (int) (-jumpSpeed * 0.7), 45);
-                    } else if (actions[DOWN].isKeyPressed()) {
-                        prepareDodgeJump(jumpSpeed, (int) (jumpSpeed * 0.7), 315);
-                    } else {
-                        prepareDodgeJump(jumpSpeed, 0, 0);
-                    }
+                if (!actions[DODGE].isKeyPressed()) {
+                    checkDoubleClickDodge(jumpSpeed);
+                } else {
+                    checkOneButtonDodge(jumpSpeed);
                 }
             } else {
                 jumpLag--;
@@ -270,26 +239,97 @@ public class MyController extends PlayerController {
             }
         } else {
             playerAnimation.animateSingleInDirection(direction / 45, 43);
-            playerAnimation.setStopAtEnd(true);
         }
         if (jumpDelay.isActive() && jumpDelay.isOver()) {
             jumpDelay.stop();
         }
     }
 
+    private void checkDoubleClickDodge(int jumpSpeed) {
+        if (actions[UP].isKeyClicked()) {
+            if (actions[LEFT].isKeyPressed()) {
+                prepareDodgeJump(-jumpSpeed, -jumpSpeed, 135);
+            } else if (actions[RIGHT].isKeyPressed()) {
+                prepareDodgeJump(jumpSpeed, -jumpSpeed, 45);
+            } else {
+                prepareDodgeJump(0, -jumpSpeed, 90);
+            }
+        }
+        if (actions[DOWN].isKeyClicked()) {
+            if (actions[LEFT].isKeyPressed()) {
+                prepareDodgeJump(-jumpSpeed, jumpSpeed, 225);
+            } else if (actions[RIGHT].isKeyPressed()) {
+                prepareDodgeJump(jumpSpeed, jumpSpeed, 315);
+            } else {
+                prepareDodgeJump(0, jumpSpeed, 270);
+            }
+        }
+        if (actions[LEFT].isKeyClicked()) {
+            if (actions[UP].isKeyPressed()) {
+                prepareDodgeJump(-jumpSpeed, -jumpSpeed, 135);
+            } else if (actions[DOWN].isKeyPressed()) {
+                prepareDodgeJump(-jumpSpeed, jumpSpeed, 225);
+            } else {
+                prepareDodgeJump(-jumpSpeed, 0, 180);
+            }
+        }
+        if (actions[RIGHT].isKeyClicked()) {
+            if (actions[UP].isKeyPressed()) {
+                prepareDodgeJump(jumpSpeed, -jumpSpeed, 45);
+            } else if (actions[DOWN].isKeyPressed()) {
+                prepareDodgeJump(jumpSpeed, jumpSpeed, 315);
+            } else {
+                prepareDodgeJump(jumpSpeed, 0, 0);
+            }
+        }
+    }
+
+    private void checkOneButtonDodge(int jumpSpeed) {
+        if (actions[UP].isKeyPressed()) {
+            if (actions[LEFT].isKeyPressed()) {
+                dodgeJump(-jumpSpeed, -jumpSpeed);
+            } else if (actions[RIGHT].isKeyPressed()) {
+                dodgeJump(jumpSpeed, -jumpSpeed);
+            } else {
+                dodgeJump(0, -jumpSpeed);
+            }
+        } else if (actions[DOWN].isKeyPressed()) {
+            if (actions[LEFT].isKeyPressed()) {
+                dodgeJump(-jumpSpeed, jumpSpeed);
+            } else if (actions[RIGHT].isKeyPressed()) {
+                dodgeJump(jumpSpeed, jumpSpeed);
+            } else {
+                dodgeJump(0, jumpSpeed);
+            }
+        } else if (actions[LEFT].isKeyPressed()) {
+            dodgeJump(-jumpSpeed, 0);
+        } else if (actions[RIGHT].isKeyPressed()) {
+            dodgeJump(jumpSpeed, 0);
+        }
+    }
+
     private void prepareDodgeJump(int xSpeed, int ySpeed, int direction) {
         if (jumpDelay.isActive()) {
             if (!jumpDelay.isOver() && jumpDirection == direction) {
-                jumpMaker.setSpeed(xSpeed, ySpeed);
-                jumpMaker.start();
-                inControl.addChanger(jumpMaker);
-                jumpDelay.stop();
-                jumpLag = jumpMaker.getTotalTime() * 2;
+                dodgeJump(xSpeed, ySpeed);
             }
         } else {
             jumpDirection = direction;
             jumpDelay.start();
         }
+    }
+
+    private void dodgeJump(int xSpeed, int ySpeed) {
+        if (xSpeed == 0 || ySpeed == 0) {
+            jumpMaker.setSpeed(xSpeed, ySpeed);
+        } else {
+            jumpMaker.setSpeed((int) (xSpeed * 0.7), (int) (ySpeed * 0.7));
+        }
+        jumpMaker.start();
+        inControl.addChanger(jumpMaker);
+        jumpDelay.stop();
+        jumpLag = jumpMaker.getTotalTime() / 2;
+        setInputLag(jumpLag);
     }
 
     private void updateRest() {

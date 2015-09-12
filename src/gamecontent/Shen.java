@@ -219,7 +219,6 @@ public class Shen extends Mob {
     }
 
     private void updateAnimation() {
-        animation.setStopAtEnd(false);
         if (xSpeed != 0 || ySpeed != 0) {
             if (Math.abs(xSpeed) > 0.9 || Math.abs(ySpeed) > 0.9)
                 direction = (int) Methods.pointAngleCounterClockwise(0, 0, (int) xSpeed, (int) ySpeed);
@@ -236,8 +235,8 @@ public class Shen extends Mob {
         } else {
             if (stats.isProtectionState()) {
                 animation.setFPS(15);
-                animation.setStopAtEnd(true);
                 animation.animateIntervalInDirection(direction / 45, 7, 12);
+                animation.setStopAtEnd(true);
 //                collision.setWidthAndHeight(32, 23);
             } else {
                 animation.animateSingleInDirection(direction / 45, 0);
