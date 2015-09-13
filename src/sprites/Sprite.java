@@ -5,9 +5,9 @@
  */
 package sprites;
 
-import engine.Drawer;
-import engine.ErrorHandler;
-import game.gameobject.Player;
+import engine.utilities.Drawer;
+import engine.utilities.ErrorHandler;
+import game.gameobject.entities.Player;
 import org.newdawn.slick.opengl.Texture;
 
 import java.util.Objects;

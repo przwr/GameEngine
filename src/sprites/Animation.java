@@ -5,10 +5,10 @@
  */
 package sprites;
 
-import engine.Delay;
-import engine.Methods;
-import engine.Point;
-import game.gameobject.Player;
+import engine.utilities.Delay;
+import engine.utilities.Methods;
+import engine.utilities.Point;
+import game.gameobject.entities.Player;
 import game.place.fbo.FrameBufferedSpriteSheet;
 
 /**
@@ -63,13 +63,6 @@ public class Animation implements Appearance {
 
     @Override
     public void updateFrame() {
-        /*if ("shen".equals(spriteSheet.getKey())) {
-         System.out.println(animate
-         + " d: " + delay.isOver()
-         + " cf: " + currentFrame
-         + " s: " + stopAtEnd
-         + " st.en: " + start + "." + end);
-         }*/
         if (animate && delay.isOver()) {
             delay.start();
             setCurrentFrame(currentFrame + 1);
@@ -86,7 +79,7 @@ public class Animation implements Appearance {
         }
     }
 
-    private void animateSingle(int index) {
+    public void animateSingle(int index) {
         animate = false;
         setCurrentFrame(Methods.interval(0, index, spriteSheet.getSize() - 1));
     }

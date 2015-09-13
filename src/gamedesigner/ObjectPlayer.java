@@ -6,14 +6,14 @@
 package gamedesigner;
 
 import collision.Figure;
-import engine.Drawer;
-import engine.Methods;
-import engine.Point;
+import engine.utilities.Drawer;
+import engine.utilities.Methods;
+import engine.utilities.Point;
 import game.gameobject.GUIObject;
-import game.gameobject.Player;
+import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.Map;
 import game.place.Place;
+import game.place.map.Map;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.RoundedTMPBlock;
 import gamedesigner.designerElements.TemporaryBlock;

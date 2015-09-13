@@ -6,8 +6,8 @@
 package gamecontent.choices;
 
 import com.esotericsoftware.kryonet.Client;
-import engine.Delay;
-import engine.inout.AnalyzerSettings;
+import engine.systemcommunication.AnalyzerSettings;
+import engine.utilities.Delay;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;

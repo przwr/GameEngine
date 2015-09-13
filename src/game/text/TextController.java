@@ -5,11 +5,11 @@
  */
 package game.text;
 
-import engine.Drawer;
-import engine.Executive;
 import engine.Main;
-import game.gameobject.Entity;
+import engine.utilities.Drawer;
+import engine.utilities.Executive;
 import game.gameobject.GUIObject;
+import game.gameobject.entities.Entity;
 import game.place.Place;
 import gamecontent.MyController;
 import org.newdawn.slick.Color;

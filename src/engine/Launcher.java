@@ -5,6 +5,8 @@
  */
 package engine;
 
+import engine.utilities.ErrorHandler;
+
 import static engine.Main.cleanUp;
 
 /**

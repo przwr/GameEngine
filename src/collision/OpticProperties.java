@@ -5,8 +5,8 @@
  */
 package collision;
 
-import engine.Shadow;
-import engine.ShadowContainer;
+import engine.lights.Shadow;
+import engine.utilities.ShadowContainer;
 
 /**
  * @author przemek

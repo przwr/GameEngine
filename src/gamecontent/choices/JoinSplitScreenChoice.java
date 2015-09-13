@@ -5,7 +5,7 @@
  */
 package gamecontent.choices;
 
-import engine.SplitScreen;
+import engine.view.SplitScreen;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;

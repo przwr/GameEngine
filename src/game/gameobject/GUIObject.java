@@ -9,6 +9,8 @@ package game.gameobject;
  * @author przemek
  */
 
+import game.gameobject.entities.Player;
+import game.gameobject.inputs.PlayerController;
 import game.place.Place;
 import game.place.cameras.Camera;
 
@@ -35,11 +37,11 @@ public abstract class GUIObject {
 
     public void setPlayer(Player player) {
         this.player = player;
-        playerController = player.playerController;
+        playerController = player.getController();
     }
 
     protected Camera getCamera() {
-        return player.camera;
+        return player.getCamera();
     }
 
     public String getName() {
@@ -73,12 +75,12 @@ public abstract class GUIObject {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
-    
+
     public int getRelativePlayersX() {
-        return player.getX() - player.camera.getXStart();
+        return player.getX() - player.getCamera().getXStart();
     }
-    
+
     public int getRelativePlayersY() {
-        return player.getY() - player.camera.getYStart();
+        return player.getY() - player.getCamera().getYStart();
     }
 }

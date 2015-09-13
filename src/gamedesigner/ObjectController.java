@@ -5,7 +5,11 @@
  */
 package gamedesigner;
 
-import game.gameobject.*;
+import game.gameobject.entities.Entity;
+import game.gameobject.entities.Player;
+import game.gameobject.inputs.Action;
+import game.gameobject.inputs.AnyInput;
+import game.gameobject.inputs.PlayerController;
 
 /**
  * @author przemek

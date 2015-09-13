@@ -5,10 +5,10 @@
  */
 package game.generators;
 
-import engine.Methods;
-import engine.Point;
-import game.place.Map;
-import game.place.PuzzleObject;
+import engine.utilities.Methods;
+import engine.utilities.Point;
+import game.place.map.Map;
+import game.place.map.PuzzleObject;
 
 import java.util.ArrayList;
 

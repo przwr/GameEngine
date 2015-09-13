@@ -5,8 +5,8 @@
  */
 package game.place.fbo;
 
-import engine.Drawer;
-import game.gameobject.Player;
+import engine.utilities.Drawer;
+import game.gameobject.entities.Player;
 import org.lwjgl.opengl.Display;
 
 import static org.lwjgl.opengl.GL11.*;

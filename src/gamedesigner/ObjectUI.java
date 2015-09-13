@@ -5,8 +5,8 @@
  */
 package gamedesigner;
 
-import engine.Drawer;
-import engine.Point;
+import engine.utilities.Drawer;
+import engine.utilities.Point;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.place.Place;

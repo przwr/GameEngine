@@ -5,12 +5,15 @@
  */
 package game;
 
-import engine.ErrorHandler;
-import engine.SoundBase;
-import game.gameobject.Player;
+import engine.utilities.ErrorHandler;
+import game.gameobject.entities.Player;
+import game.languages.LangENG;
+import game.languages.LangPL;
+import game.languages.Language;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.*;
+import sounds.SoundBase;
 
 import java.util.ArrayList;
 import java.util.logging.Level;

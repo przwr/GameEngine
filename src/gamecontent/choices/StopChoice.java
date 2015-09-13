@@ -8,6 +8,7 @@ package gamecontent.choices;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;
+import sounds.Sound;
 
 /**
  * @author przemek
@@ -23,7 +24,7 @@ public class StopChoice extends MenuChoice {
         if (button == ACTION) {
             if (menu.game.getPlace() != null) {
                 if (Settings.sounds != null) {
-                    Settings.sounds.getSoundsList().forEach(engine.Sound::stop);
+                    Settings.sounds.getSoundsList().forEach(Sound::stop);
                 }
                 menu.game.endGame();
             }

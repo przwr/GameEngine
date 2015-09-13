@@ -5,15 +5,22 @@
  */
 package game.place;
 
-import engine.*;
+import engine.utilities.Drawer;
+import engine.utilities.Point;
+import engine.view.Renderer;
+import engine.view.SplitScreen;
 import game.Game;
+import game.ScreenPlace;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
-import game.gameobject.Player;
+import game.gameobject.entities.Player;
+import game.logic.DayCycle;
 import game.place.cameras.Camera;
+import game.place.map.Map;
 import game.text.FontBase;
 import org.newdawn.slick.Color;
+import sounds.SoundBase;
 import sprites.Sprite;
 import sprites.SpriteBase;
 import sprites.SpriteSheet;
@@ -24,8 +31,8 @@ import java.util.Set;
 
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
-import static game.place.Area.X_IN_TILES;
-import static game.place.Area.Y_IN_TILES;
+import static game.place.map.Area.X_IN_TILES;
+import static game.place.map.Area.Y_IN_TILES;
 import static org.lwjgl.opengl.GL11.*;
 
 /**

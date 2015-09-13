@@ -5,13 +5,14 @@
  */
 package gamecontent;
 
-import engine.ErrorHandler;
+import engine.utilities.ErrorHandler;
 import game.Game;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.gameobject.Mob;
-import game.gameobject.Player;
-import game.place.Map;
+import game.gameobject.entities.Mob;
+import game.gameobject.entities.Player;
+import game.place.map.Map;
+import gamecontent.mobs.Rabbit;
 import net.GameClient;
 import net.GameOnline;
 import net.GameServer;
@@ -66,7 +67,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void addPlayer(NewMPlayer player) {
+    public synchronized void addPlayer(NewMultiPlayer player) {
         try {
             if (newPlayers[0] == null) {
                 newPlayers[0] = player;
@@ -112,12 +113,12 @@ public class MyGameOnline extends GameOnline {
         }
     }
 
-    private synchronized void UpdatePlayers(ArrayList<MPlayerUpdate> players) {
+    private synchronized void UpdatePlayers(ArrayList<MultiPlayerUpdate> players) {
         try {
             tempPlace = game.getPlace();
             if (tempPlace != null) {
                 Player player;
-                for (MPlayerUpdate playerUpdate : players) {
+                for (MultiPlayerUpdate playerUpdate : players) {
                     for (int p = 1; p < tempPlace.playersCount; p++) {
                         if (playerUpdate.getId() == game.players[p].playerID) {
                             player = game.players[p];
@@ -157,7 +158,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void playerUpdate(PacketMPlayerUpdate p) {
+    public synchronized void playerUpdate(PacketMultiPlayerUpdate p) {
         try {
             tempPlace = game.getPlace();
             if (tempPlace != null) {
@@ -189,7 +190,7 @@ public class MyGameOnline extends GameOnline {
                 if (tempPlace != null) {
                     for (int i = 0; i < newPlayers.length; i++) {
                         if (newPlayers[i] != null) {
-                            NewMPlayer temp = newPlayers[i];
+                            NewMultiPlayer temp = newPlayers[i];
                             System.out.println("Adding player with ID: " + temp.getId() + " - " + temp.getName());
                             game.players[tempPlace.playersCount].initializeSetPosition(56, 104, tempPlace, temp.getX(), temp.getY());
                             game.players[tempPlace.playersCount].playerID = temp.getId();

@@ -5,10 +5,11 @@
  */
 package gamecontent.choices;
 
-import engine.inout.AnalyzerSettings;
+import engine.systemcommunication.AnalyzerSettings;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;
+import sounds.Sound;
 
 /**
  * @author przemek
@@ -33,7 +34,7 @@ public class VolumeChoice extends MenuChoice {
             }
         }
         if (Settings.sounds != null) {
-            Settings.sounds.getSoundsList().forEach(engine.Sound::updateGain);
+            Settings.sounds.getSoundsList().forEach(Sound::updateGain);
         }
         AnalyzerSettings.update();
     }

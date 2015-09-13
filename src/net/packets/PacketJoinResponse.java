@@ -10,18 +10,18 @@ package net.packets;
  */
 public class PacketJoinResponse {
 
-    private MPlayerUpdate pl;
+    private MultiPlayerUpdate pl;
 
     public PacketJoinResponse() {
     }
 
     public PacketJoinResponse(short mapId, byte id, int x, int y) {
-        pl = new MPlayerUpdate(mapId, id);
+        pl = new MultiPlayerUpdate(mapId, id);
         pl.setPosition(x, y);
     }
 
     public PacketJoinResponse(byte id) {
-        pl = new MPlayerUpdate((short) -1, id);
+        pl = new MultiPlayerUpdate((short) -1, id);
     }
 
     public synchronized short getMapId() {

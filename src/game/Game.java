@@ -5,11 +5,11 @@
  */
 package game;
 
-import game.gameobject.Player;
+import game.gameobject.entities.Player;
+import game.logic.maploader.MapLoaderModule;
+import game.logic.navmeshpathfinding.PathFindingModule;
 import game.menu.Menu;
-import game.place.MapLoaderModule;
 import game.place.Place;
-import navmeshpathfinding.PathFindingModule;
 import net.GameOnline;
 import org.lwjgl.input.Keyboard;
 

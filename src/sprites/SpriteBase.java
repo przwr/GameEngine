@@ -5,8 +5,8 @@
  */
 package sprites;
 
-import engine.ErrorHandler;
-import engine.Point;
+import engine.utilities.ErrorHandler;
+import engine.utilities.Point;
 import game.Settings;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;

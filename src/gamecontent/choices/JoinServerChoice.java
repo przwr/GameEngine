@@ -5,7 +5,7 @@
  */
 package gamecontent.choices;
 
-import engine.Delay;
+import engine.utilities.Delay;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;

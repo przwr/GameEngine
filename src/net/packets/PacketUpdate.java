@@ -5,7 +5,7 @@
  */
 package net.packets;
 
-import net.MPlayer;
+import net.MultiPlayer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class PacketUpdate implements Serializable {
 
-    private final ArrayList<MPlayerUpdate> players;
+    private final ArrayList<MultiPlayerUpdate> players;
     private final ArrayList<MobUpdate> mobs;
     private short mapId;
 
@@ -24,23 +24,23 @@ public class PacketUpdate implements Serializable {
         mobs = new ArrayList<>(8);
     }
 
-    public PacketUpdate(MPlayerUpdate mp) {
+    public PacketUpdate(MultiPlayerUpdate mp) {
         players = new ArrayList<>(8);
         players.add(mp);
         mobs = new ArrayList<>(8);
     }
 
-    public synchronized void playerUpdate(MPlayer mpl, boolean isEmits, boolean isHop) {
-        MPlayerUpdate mp = getPlayer(mpl.getId());
+    public synchronized void playerUpdate(MultiPlayer mpl, boolean isEmits, boolean isHop) {
+        MultiPlayerUpdate mp = getPlayer(mpl.getId());
         if (mp == null || mp.getMapId() != mpl.getMapId()) {
-            mp = new MPlayerUpdate(mpl.getMapId(), mpl.getId(), mpl.getX(), mpl.getY(), isEmits, isHop);
+            mp = new MultiPlayerUpdate(mpl.getMapId(), mpl.getId(), mpl.getX(), mpl.getY(), isEmits, isHop);
             players.add(mp);
         } else {
             mp.Update(mpl.getX(), mpl.getY());
         }
     }
 
-    public synchronized void PlayerUpdate(MPlayerUpdate mpu) {
+    public synchronized void PlayerUpdate(MultiPlayerUpdate mpu) {
         players.add(mpu);
     }
 
@@ -54,8 +54,8 @@ public class PacketUpdate implements Serializable {
         }
     }
 
-    private synchronized MPlayerUpdate getPlayer(byte id) {
-        for (MPlayerUpdate mpu : players) {
+    private synchronized MultiPlayerUpdate getPlayer(byte id) {
+        for (MultiPlayerUpdate mpu : players) {
             if (mpu.getId() == id) {
                 return mpu;
             }
@@ -79,7 +79,7 @@ public class PacketUpdate implements Serializable {
     public synchronized void Trim() {
         players.trimToSize();
         mobs.trimToSize();
-        players.forEach(net.packets.MPlayerUpdate::Trim);
+        players.forEach(MultiPlayerUpdate::Trim);
         mobs.forEach(net.packets.MobUpdate::Trim);
     }
 
@@ -88,7 +88,7 @@ public class PacketUpdate implements Serializable {
         mobs.clear();
     }
 
-    public synchronized ArrayList<MPlayerUpdate> players() {
+    public synchronized ArrayList<MultiPlayerUpdate> players() {
         return players;
     }
 

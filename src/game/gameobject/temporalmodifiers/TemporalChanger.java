@@ -5,8 +5,7 @@
  */
 package game.gameobject.temporalmodifiers;
 
-import engine.Delay;
-import game.gameobject.Entity;
+import game.gameobject.entities.Entity;
 
 /**
  *

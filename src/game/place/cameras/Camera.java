@@ -5,14 +5,14 @@
  */
 package game.place.cameras;
 
-import engine.Delay;
-import engine.Drawer;
-import engine.Light;
-import engine.Methods;
+import engine.lights.Light;
+import engine.utilities.Delay;
+import engine.utilities.Drawer;
+import engine.utilities.Methods;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.gameobject.Player;
-import game.place.Map;
+import game.gameobject.entities.Player;
+import game.place.map.Map;
 import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;

@@ -7,10 +7,10 @@ package gamedesigner.designerElements;
 
 import collision.Block;
 import collision.RoundRectangle;
-import engine.Drawer;
-import game.place.ForegroundTile;
-import game.place.Map;
+import engine.utilities.Drawer;
 import game.place.Place;
+import game.place.map.ForegroundTile;
+import game.place.map.Map;
 import sprites.SpriteSheet;
 
 import static org.lwjgl.opengl.GL11.*;

@@ -5,9 +5,9 @@
  */
 package gamecontent;
 
-import engine.Delay;
-import engine.Drawer;
-import engine.Methods;
+import engine.utilities.Delay;
+import engine.utilities.Drawer;
+import engine.utilities.Methods;
 import game.Game;
 import game.Settings;
 import game.menu.Menu;

@@ -5,7 +5,7 @@
  */
 package codespeedtester;
 
-import engine.Methods;
+import engine.utilities.Methods;
 import net.jodk.lang.FastMath;
 
 /**

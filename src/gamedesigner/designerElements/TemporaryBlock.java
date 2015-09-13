@@ -7,13 +7,13 @@ package gamedesigner.designerElements;
 
 import collision.Block;
 import collision.Figure;
-import engine.Drawer;
-import engine.Point;
+import engine.utilities.Drawer;
+import engine.utilities.Point;
 import game.gameobject.GameObject;
-import game.place.ForegroundTile;
-import game.place.Map;
 import game.place.Place;
-import game.place.Tile;
+import game.place.map.ForegroundTile;
+import game.place.map.Map;
+import game.place.map.Tile;
 import gamedesigner.ObjectMap;
 import gamedesigner.ObjectPlace;
 import sprites.SpriteSheet;

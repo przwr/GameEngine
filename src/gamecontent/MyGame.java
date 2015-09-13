@@ -5,20 +5,20 @@
  */
 package gamecontent;
 
-import engine.Drawer;
-import engine.ErrorHandler;
-import engine.SplitScreen;
+import engine.utilities.Drawer;
+import engine.utilities.ErrorHandler;
+import engine.view.SplitScreen;
 import game.Game;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.gameobject.Player;
-import game.place.Map;
-import game.place.MapLoaderModule;
+import game.gameobject.entities.Player;
+import game.logic.maploader.MapLoaderModule;
+import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.cameras.PlayersCamera;
+import game.place.map.Map;
 import game.text.FontHandler;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
-import navmeshpathfinding.PathFindingModule;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -26,7 +26,7 @@ import org.newdawn.slick.Color;
 
 import java.io.File;
 
-import static engine.inout.IO.loadInputFromFile;
+import static engine.systemcommunication.IO.loadInputFromFile;
 
 /**
  * @author przemek

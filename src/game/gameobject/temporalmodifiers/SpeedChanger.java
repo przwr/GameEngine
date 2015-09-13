@@ -5,7 +5,7 @@
  */
 package game.gameobject.temporalmodifiers;
 
-import game.gameobject.Entity;
+import game.gameobject.entities.Entity;
 
 /**
  *
@@ -13,9 +13,9 @@ import game.gameobject.Entity;
  */
 public class SpeedChanger extends TemporalChanger {
 
+    public final static byte NORMAL = 0, INCREASING = 1, DECREASING = 2;
     int xSpeed, ySpeed, xTmpSpeed, yTmpSpeed;
     byte type;
-    public final static byte NORMAL = 0, INCREASING = 1, DECREASING = 2;
 
     public SpeedChanger(int frames) {
         super(frames);

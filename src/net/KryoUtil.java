@@ -29,8 +29,8 @@ public class KryoUtil {
     }
 
     private static void register(Kryo kryo) {
-        kryo.register(NewMPlayer.class);
-        kryo.register(MPlayerUpdate.class);
+        kryo.register(NewMultiPlayer.class);
+        kryo.register(MultiPlayerUpdate.class);
         kryo.register(MobUpdate.class);
         kryo.register(byte.class);
         kryo.register(boolean.class);
@@ -42,9 +42,9 @@ public class KryoUtil {
 
         kryo.register(PacketJoinRequest.class);
         kryo.register(PacketJoinResponse.class);
-        kryo.register(PacketAddMPlayer.class);
-        kryo.register(PacketRemoveMPlayer.class);
-        kryo.register(PacketMPlayerUpdate.class);
+        kryo.register(PacketAddMultiPlayer.class);
+        kryo.register(PacketRemoveMultiPlayer.class);
+        kryo.register(PacketMultiPlayerUpdate.class);
         kryo.register(PacketInput.class);
         kryo.register(PacketMessage.class);
         kryo.register(PacketUpdate.class);

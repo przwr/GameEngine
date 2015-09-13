@@ -5,14 +5,10 @@
 */
 package gamecontent.choices;
 
-import engine.inout.AnalyzerInput;
-import engine.inout.PlayerControllers;
+import engine.systemcommunication.AnalyzerInput;
+import engine.systemcommunication.PlayerControllers;
 import game.Settings;
-import game.gameobject.Action;
-import game.gameobject.AnyInput;
-import game.gameobject.PlayerController;
-import game.gameobject.inputs.InputExitMapping;
-import game.gameobject.inputs.InputNull;
+import game.gameobject.inputs.*;
 import game.menu.Menu;
 import game.menu.MenuChoice;
 

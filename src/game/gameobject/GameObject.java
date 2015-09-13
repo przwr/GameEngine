@@ -10,9 +10,11 @@ package game.gameobject;
  */
 
 import collision.Figure;
-import engine.Light;
-import game.place.Map;
-import game.place.WarpPoint;
+import engine.lights.Light;
+import game.gameobject.interactive.Interactive;
+import game.gameobject.stats.Stats;
+import game.place.map.Map;
+import game.place.map.WarpPoint;
 import sprites.Appearance;
 
 import java.util.ArrayList;
@@ -25,7 +27,6 @@ public abstract class GameObject {
     private final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
     protected double x, y;
     protected int depth;
-    protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     protected boolean solid;
     protected boolean emitter;
     protected boolean emits;
@@ -41,6 +42,8 @@ public abstract class GameObject {
     protected int area = -1;
     protected Figure collision;
     protected WarpPoint warp;
+    private int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
+    private int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     private boolean mobile;
     private int prevArea = -1;
 
@@ -161,7 +164,7 @@ public abstract class GameObject {
         return (int) x;
     }
 
-    protected void setX(double x) {
+    public void setX(double x) {
         this.x = x;
     }
 
@@ -169,7 +172,7 @@ public abstract class GameObject {
         return (int) y;
     }
 
-    protected void setY(double y) {
+    public void setY(double y) {
         this.y = y;
     }
 
@@ -301,8 +304,10 @@ public abstract class GameObject {
         return direction;
     }
 
-    public void setDirection(int d) {
-        direction = d;
+    public void setDirection(int direction) {
+        this.direction = direction % 360;
+        float temp = direction / 45 + 0.5f;
+        direction8Way = (int) (temp >= 0 ? temp : (temp + 8) % 8);
     }
 
     public int getCollisionWidth() {
@@ -349,7 +354,7 @@ public abstract class GameObject {
     }
 
     public int getDirection8Way() {
-        return direction / 45;
+        return direction8Way;
     }
 
     public Stats getStats() {

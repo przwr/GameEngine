@@ -6,7 +6,7 @@
 package gamedesigner.designerElements;
 
 import collision.Figure;
-import engine.Drawer;
+import engine.utilities.Drawer;
 import game.gameobject.GameObject;
 import game.place.Place;
 import gamedesigner.ObjectPlace;

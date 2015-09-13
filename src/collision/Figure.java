@@ -5,13 +5,14 @@
  */
 package collision;
 
-import engine.*;
+import engine.lights.Shadow;
+import engine.utilities.*;
 import game.gameobject.GameObject;
-import game.gameobject.Player;
-import game.place.Area;
-import game.place.ForegroundTile;
-import game.place.Map;
+import game.gameobject.entities.Player;
 import game.place.Place;
+import game.place.map.Area;
+import game.place.map.ForegroundTile;
+import game.place.map.Map;
 
 import java.util.List;
 

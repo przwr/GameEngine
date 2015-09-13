@@ -5,16 +5,13 @@
  */
 package gamecontent;
 
-import engine.Drawer;
-import engine.Methods;
+import engine.utilities.Drawer;
 import game.gameobject.GUIObject;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -23,8 +20,8 @@ import sprites.SpriteSheet;
 public class MyGUI extends GUIObject {
 
     private final SpriteSheet attackIcons;
-    private int attackType;
     private final Color color;
+    private int attackType;
     private float alpha;
 
     public MyGUI(String name, Place place) {

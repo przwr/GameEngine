@@ -5,9 +5,9 @@
  */
 package net;
 
-import engine.Point;
+import engine.utilities.Point;
 import game.Game;
-import game.gameobject.Player;
+import game.gameobject.entities.Player;
 import game.place.Place;
 import net.packets.*;
 
@@ -22,7 +22,7 @@ public abstract class GameOnline {
     public final Game game;
     protected final OnlineChange[] changes;
     protected final boolean[] isChanged;
-    protected final NewMPlayer[] newPlayers;
+    protected final NewMultiPlayer[] newPlayers;
     protected final byte removeIDs[];
     protected final MobUpdate[] newMobs;
     protected final short[] mapIDsForUpdate = new short[2];
@@ -38,9 +38,9 @@ public abstract class GameOnline {
         this.game = game;
         changes = new OnlineChange[nrChanges];
         isChanged = new boolean[nrChanges];
-        newPlayers = new NewMPlayer[players];
+        newPlayers = new NewMultiPlayer[players];
         removeIDs = new byte[players];
-        MPlayerUpdate[] playersUpdates = new MPlayerUpdate[players];
+        MultiPlayerUpdate[] playersUpdates = new MultiPlayerUpdate[players];
         newMobs = new MobUpdate[1024];
         for (int i = 0; i < pastPositions.length; i += 8) {
             pastPositions[i] = new Point();
@@ -64,13 +64,13 @@ public abstract class GameOnline {
 
     public abstract void initializeChanges();
 
-    public abstract void addPlayer(NewMPlayer pl);
+    public abstract void addPlayer(NewMultiPlayer pl);
 
     public abstract void removePlayer(byte id);
 
     public abstract void update(PacketUpdate update);
 
-    public abstract void playerUpdate(PacketMPlayerUpdate mPlayerUpdate);
+    public abstract void playerUpdate(PacketMultiPlayerUpdate mPlayerUpdate);
 
     public abstract Player getPlayerByID(byte id);
 

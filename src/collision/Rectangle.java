@@ -5,8 +5,8 @@
  */
 package collision;
 
-import engine.Methods;
-import engine.Point;
+import engine.utilities.Methods;
+import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
 import net.jodk.lang.FastMath;

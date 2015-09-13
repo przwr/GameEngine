@@ -5,8 +5,12 @@
  */
 package gamecontent;
 
-import engine.Delay;
-import game.gameobject.*;
+import engine.utilities.Delay;
+import game.gameobject.entities.Entity;
+import game.gameobject.entities.Player;
+import game.gameobject.inputs.Action;
+import game.gameobject.inputs.AnyInput;
+import game.gameobject.inputs.PlayerController;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import sprites.Animation;
 
@@ -29,7 +33,7 @@ public class MyController extends PlayerController {
     private final Delay jumpDelay;
     private final Delay doubleDelay;
     private final SpeedChanger jumpMaker;
-    private int direction, lagDuration, attackType, sideDirection;
+    private int tempDirection, lagDuration, attackType, sideDirection;
     private boolean running, diagonal, inputLag;
     private Animation playerAnimation;
     private MyGUI gui;
@@ -45,7 +49,7 @@ public class MyController extends PlayerController {
         doubleDelay = new Delay(5);
         attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40};
-        jumpMaker = new SpeedChanger(15);
+        jumpMaker = new SpeedChanger(8);
         jumpMaker.setType(SpeedChanger.DECREASING);
     }
 
@@ -61,7 +65,7 @@ public class MyController extends PlayerController {
         if (gui != null) {
             updateActionsIfNoLag();
             //ANIMACJA//
-            direction = inControl.getDirection();
+            tempDirection = inControl.getDirection8Way();
             running = !actions[RUN].isKeyPressed();
 
             playerAnimation = (Animation) inControl.getAppearance();
@@ -82,7 +86,7 @@ public class MyController extends PlayerController {
                 updateDodgeJump();
                 updateRest();
             } else {
-                playerAnimation.animateSingleInDirection(direction / 45, 0);
+                playerAnimation.animateSingleInDirection(tempDirection, 0);
             }
             if (!actions[ATTACK].isKeyPressed() && jumpLag == 0) {
                 if (running) {
@@ -117,19 +121,19 @@ public class MyController extends PlayerController {
             setInputLag(15);
             switch (attackType) {
                 case ATTACK_SLASH:
-                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 21, 25);
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
                     break;
                 case ATTACK_THRUST:
-                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 26, 28);
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 26, 28);
                     break;
                 case ATTACK_UPPER_SLASH:
-                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 29, 36);
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 29, 36);
                     break;
                 case ATTACK_WEAK_PUNCH:
-                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 37, 39);
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 37, 39);
                     break;
                 case ATTACK_STRONG_PUNCH:
-                    playerAnimation.animateIntervalInDirectionOnce(direction / 45, 40, 41);
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 40, 41);
                     break;
             }
         }
@@ -139,70 +143,70 @@ public class MyController extends PlayerController {
     private void updateMovement() {
         if (actions[UP].isKeyPressed()) {
             if (actions[LEFT].isKeyPressed()) {
-                animateMoving(135);
+                animateMoving(3);
                 inControl.addSpeed(-4, -4);
             } else if (actions[RIGHT].isKeyPressed()) {
-                animateMoving(45);
+                animateMoving(1);
                 inControl.addSpeed(4, -4);
             } else {
                 if (actions[LEFT].isKeyReleased()) {
-                    sideDirection = 135;
+                    sideDirection = 3;
                     sideDelay.start();
                 }
                 if (actions[RIGHT].isKeyReleased()) {
-                    sideDirection = 45;
+                    sideDirection = 1;
                     sideDelay.start();
                 }
-                animateMoving(90);
+                animateMoving(2);
                 inControl.addSpeed(0, -4);
             }
         } else if (actions[DOWN].isKeyPressed()) {
             if (actions[LEFT].isKeyPressed()) {
-                animateMoving(225);
+                animateMoving(5);
                 inControl.addSpeed(-4, 4);
             } else if (actions[RIGHT].isKeyPressed()) {
-                animateMoving(315);
+                animateMoving(7);
                 inControl.addSpeed(4, 4);
             } else {
                 if (actions[LEFT].isKeyReleased()) {
-                    sideDirection = 225;
+                    sideDirection = 5;
                     sideDelay.start();
                 }
                 if (actions[RIGHT].isKeyReleased()) {
-                    sideDirection = 315;
+                    sideDirection = 7;
                     sideDelay.start();
                 }
-                animateMoving(270);
+                animateMoving(6);
                 inControl.addSpeed(0, 4);
             }
         } else {
             if (actions[RIGHT].isKeyPressed()) {
                 if (actions[UP].isKeyReleased()) {
-                    sideDirection = 45;
+                    sideDirection = 1;
                     sideDelay.start();
                 }
                 if (actions[DOWN].isKeyReleased()) {
-                    sideDirection = 315;
+                    sideDirection = 7;
                     sideDelay.start();
                 }
                 animateMoving(0);
                 inControl.addSpeed(4, 0);
             } else if (actions[LEFT].isKeyPressed()) {
                 if (actions[UP].isKeyReleased()) {
-                    sideDirection = 135;
+                    sideDirection = 3;
                     sideDelay.start();
                 }
                 if (actions[DOWN].isKeyReleased()) {
-                    sideDirection = 225;
+                    sideDirection = 5;
                     sideDelay.start();
                 }
-                animateMoving(180);
+                animateMoving(4);
                 inControl.addSpeed(-4, 0);
             } else {
                 if (!sideDelay.isActive()) {
-                    playerAnimation.animateSingleInDirection(direction / 45, 0);
+                    playerAnimation.animateSingleInDirection(tempDirection, 0);
                 } else {
-                    playerAnimation.animateSingleInDirection(sideDirection / 45, 0);
+                    playerAnimation.animateSingleInDirection(sideDirection, 0);
                 }
             }
         }
@@ -217,7 +221,7 @@ public class MyController extends PlayerController {
         if (sideDelay.isOver()) {
             if (!actions[UP].isKeyPressed() && !actions[DOWN].isKeyPressed()
                     && !actions[LEFT].isKeyPressed() && !actions[RIGHT].isKeyPressed()) {
-                inControl.setDirection(sideDirection);
+                inControl.setDirection(sideDirection * 45);
             }
             sideDelay.stop();
         }
@@ -234,10 +238,10 @@ public class MyController extends PlayerController {
                 }
             } else {
                 jumpLag--;
-                playerAnimation.animateSingleInDirection(direction / 45, 45);
+                playerAnimation.animateSingleInDirection(tempDirection, 45);
             }
         } else {
-            playerAnimation.animateSingleInDirection(direction / 45, 43);
+            playerAnimation.animateSingleInDirection(tempDirection, 43);
         }
         if (jumpDelay.isActive() && jumpDelay.isOver()) {
             jumpDelay.stop();
@@ -362,11 +366,11 @@ public class MyController extends PlayerController {
 
     private void animateMoving(int direction) {
         if (running) {
-            playerAnimation.animateIntervalInDirection(direction / 45, 7, 18);
+            playerAnimation.animateIntervalInDirection(direction, 7, 18);
         } else {
-            playerAnimation.animateIntervalInDirection(direction / 45, 1, 6);
+            playerAnimation.animateIntervalInDirection(direction, 1, 6);
         }
-        inControl.setDirection(direction);
+        inControl.setDirection(direction * 45);
     }
 
     @Override

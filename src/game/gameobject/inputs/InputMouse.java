@@ -5,7 +5,6 @@
  */
 package game.gameobject.inputs;
 
-import game.gameobject.AnyInput;
 import org.lwjgl.input.Mouse;
 
 /**

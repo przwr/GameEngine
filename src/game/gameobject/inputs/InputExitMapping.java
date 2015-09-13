@@ -5,8 +5,6 @@
  */
 package game.gameobject.inputs;
 
-import game.gameobject.AnyInput;
-
 /**
  * @author przemek
  */

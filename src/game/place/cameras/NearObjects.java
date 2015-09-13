@@ -5,8 +5,8 @@
  */
 package game.place.cameras;
 
-import engine.BlueArray;
-import engine.Light;
+import engine.lights.Light;
+import engine.utilities.BlueArray;
 import game.gameobject.GUIObject;
 
 import java.util.ArrayList;

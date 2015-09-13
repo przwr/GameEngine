@@ -5,7 +5,7 @@
  */
 package sprites;
 
-import game.gameobject.Player;
+import game.gameobject.entities.Player;
 
 /**
  * @author przemek

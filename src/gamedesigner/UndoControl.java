@@ -5,7 +5,7 @@
  */
 package gamedesigner;
 
-import engine.Point;
+import engine.utilities.Point;
 
 import java.util.ArrayList;
 

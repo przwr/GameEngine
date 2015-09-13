@@ -5,9 +5,9 @@
  */
 package game.menu;
 
-import engine.Delay;
+import engine.utilities.Delay;
 import game.Game;
-import game.place.ScreenPlace;
+import game.ScreenPlace;
 import org.lwjgl.opengl.Display;
 
 /**

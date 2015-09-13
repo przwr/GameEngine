@@ -5,7 +5,7 @@
  */
 package game.text;
 
-import engine.RandomGenerator;
+import engine.utilities.RandomGenerator;
 import org.newdawn.slick.Color;
 
 /**

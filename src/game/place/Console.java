@@ -5,7 +5,7 @@
  */
 package game.place;
 
-import engine.Drawer;
+import engine.utilities.Drawer;
 import game.gameobject.GUIObject;
 import game.place.cameras.Camera;
 import org.newdawn.slick.Color;

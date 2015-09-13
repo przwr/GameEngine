@@ -5,8 +5,12 @@
  */
 package engine;
 
-import engine.inout.AnalyzerSettings;
-import engine.inout.PlayerControllers;
+import engine.systemcommunication.AnalyzerSettings;
+import engine.systemcommunication.PlayerControllers;
+import engine.systemcommunication.Time;
+import engine.utilities.Delay;
+import engine.utilities.ErrorHandler;
+import engine.view.Popup;
 import game.Game;
 import game.Settings;
 import gamecontent.MyGame;
@@ -30,7 +34,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static engine.inout.IO.setSettingsFromFile;
+import static engine.systemcommunication.IO.setSettingsFromFile;
 import static game.Settings.calculateScale;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;

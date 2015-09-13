@@ -5,7 +5,7 @@
  */
 package gamecontent.equipment;
 
-import engine.Point;
+import engine.utilities.Point;
 import game.place.Place;
 import sprites.SpriteSheet;
 
@@ -32,21 +32,6 @@ public class Cloth {
         }
     }
 
-    public SpriteSheet getSecondPart() {
-        if (list.size() > 2) {
-            return list.get(1);
-        }
-        return null;
-    }
-
-    public SpriteSheet getLastPart() {
-        return list.get(list.size() - 1);
-    }
-
-    public SpriteSheet getFirstPart() {
-        return list.get(0);
-    }
-
     public static Point[] getMergedDimensions(Cloth... list) {
         int length = 0;
         for (Cloth c : list) {
@@ -65,5 +50,20 @@ public class Cloth {
             }
         }
         return SpriteSheet.getMergedDimensions(slist);
+    }
+
+    public SpriteSheet getSecondPart() {
+        if (list.size() > 2) {
+            return list.get(1);
+        }
+        return null;
+    }
+
+    public SpriteSheet getLastPart() {
+        return list.get(list.size() - 1);
+    }
+
+    public SpriteSheet getFirstPart() {
+        return list.get(0);
     }
 }

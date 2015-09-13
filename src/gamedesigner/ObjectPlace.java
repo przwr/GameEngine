@@ -5,15 +5,15 @@
  */
 package gamedesigner;
 
-import engine.Point;
-import engine.inout.IO;
+import engine.systemcommunication.IO;
+import engine.utilities.Point;
 import game.Game;
 import game.Settings;
-import game.gameobject.Action;
-import game.gameobject.Player;
+import game.gameobject.entities.Player;
+import game.gameobject.inputs.Action;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.Map;
 import game.place.Place;
+import game.place.map.Map;
 import game.text.FontBase;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;

@@ -5,9 +5,9 @@
  */
 package gamedesigner;
 
-import engine.Drawer;
-import engine.ErrorHandler;
-import engine.Methods;
+import engine.utilities.Drawer;
+import engine.utilities.ErrorHandler;
+import engine.utilities.Methods;
 import game.gameobject.GUIObject;
 import game.place.Place;
 import org.lwjgl.input.Keyboard;

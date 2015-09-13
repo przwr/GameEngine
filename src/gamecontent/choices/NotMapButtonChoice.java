@@ -6,8 +6,8 @@
 package gamecontent.choices;
 
 import game.Settings;
-import game.gameobject.Player;
-import game.gameobject.PlayerController;
+import game.gameobject.entities.Player;
+import game.gameobject.inputs.PlayerController;
 import game.menu.Menu;
 import game.menu.MenuChoice;
 

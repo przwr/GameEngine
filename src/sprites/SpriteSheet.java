@@ -5,8 +5,8 @@
  */
 package sprites;
 
-import engine.Drawer;
-import engine.Point;
+import engine.utilities.Drawer;
+import engine.utilities.Point;
 import game.Settings;
 import org.newdawn.slick.opengl.Texture;
 

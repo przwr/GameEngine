@@ -5,12 +5,12 @@
  */
 package gamedesigner;
 
-import engine.Point;
-import engine.PointedValue;
-import game.place.ForegroundTile;
-import game.place.Map;
+import engine.utilities.Point;
+import engine.utilities.PointedValue;
 import game.place.Place;
-import game.place.PuzzleObject;
+import game.place.map.ForegroundTile;
+import game.place.map.Map;
+import game.place.map.PuzzleObject;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.RoundedTMPBlock;
 import gamedesigner.designerElements.TemporaryBlock;

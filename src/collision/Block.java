@@ -5,11 +5,11 @@
  */
 package collision;
 
-import engine.Drawer;
 import engine.Main;
-import engine.Point;
+import engine.utilities.Drawer;
+import engine.utilities.Point;
 import game.gameobject.GameObject;
-import game.place.ForegroundTile;
+import game.place.map.ForegroundTile;
 
 import java.util.ArrayList;
 import java.util.List;

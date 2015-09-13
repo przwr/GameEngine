@@ -8,21 +8,23 @@ package gamecontent;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
-import collision.interactive.CurveInteractiveCollision;
-import collision.interactive.InteractiveActivatorFrames;
-import collision.interactive.LineInteractiveCollision;
-import engine.*;
-import game.gameobject.Interactive;
-import game.gameobject.Player;
-import game.gameobject.PlayerStats;
+import engine.lights.Light;
+import engine.systemcommunication.Time;
+import engine.utilities.*;
+import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.Map;
+import game.gameobject.interactive.CurveInteractiveCollision;
+import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.InteractiveActivatorFrames;
+import game.gameobject.interactive.LineInteractiveCollision;
+import game.gameobject.stats.PlayerStats;
 import game.place.Place;
-import game.place.WarpPoint;
+import game.place.map.Map;
+import game.place.map.WarpPoint;
 import game.text.TextController;
 import gamecontent.equipment.Cloth;
 import net.jodk.lang.FastMath;
-import net.packets.MPlayerUpdate;
+import net.packets.MultiPlayerUpdate;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
@@ -316,14 +318,14 @@ public class MyPlayer extends Player {
     @Override
     public synchronized void updateRest(Update update) {
         try {
-            Map currentMap = getPlace().getMapById(((MPlayerUpdate) update).getMapId());
+            Map currentMap = getPlace().getMapById(((MultiPlayerUpdate) update).getMapId());
             if (currentMap != null && this.map != currentMap) {
                 changeMap(currentMap, getX(), getY());
             }
-            if (((MPlayerUpdate) update).isHop()) {
+            if (((MultiPlayerUpdate) update).isHop()) {
                 setJumping(true);
             }
-            setEmits(((MPlayerUpdate) update).isEmits());
+            setEmits(((MultiPlayerUpdate) update).isEmits());
         } catch (Exception exception) {
             String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
             ErrorHandler.logAndPrint(error);

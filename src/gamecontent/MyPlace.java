@@ -5,18 +5,20 @@
  */
 package gamecontent;
 
-import engine.Delay;
 import engine.Main;
+import engine.utilities.Delay;
 import game.Game;
 import game.Settings;
-import game.gameobject.Action;
-import game.gameobject.Entity;
-import game.gameobject.Player;
+import game.gameobject.entities.Entity;
+import game.gameobject.entities.Player;
+import game.gameobject.inputs.Action;
 import game.gameobject.inputs.InputKeyBoard;
-import game.place.LoadingMap;
-import game.place.Map;
+import game.logic.navmeshpathfinding.navigationmesh.NavigationMeshGenerator;
 import game.place.Place;
-import navmeshpathfinding.NavigationMeshGenerator;
+import game.place.map.LoadingMap;
+import game.place.map.Map;
+import gamecontent.maps.GladeMap;
+import gamecontent.maps.StoneMap;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 
