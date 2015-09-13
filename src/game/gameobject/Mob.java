@@ -11,6 +11,7 @@ import engine.Drawer;
 import engine.Methods;
 import engine.Point;
 import game.place.Place;
+import net.jodk.lang.FastMath;
 import net.packets.Update;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public abstract class Mob extends Entity {
         this.place = place;
         this.solid = solid;
         this.range = range;
+        this.range2 = range * range;
         this.setMaxSpeed(speed);
         this.appearance = place.getSprite(spriteName, "");
         initialize(name, x, y);
@@ -97,6 +99,13 @@ public abstract class Mob extends Entity {
         }
     }
 
+    protected synchronized void charge() {
+        if (target != null && pathStrategy != null) {
+            double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
+            changeSpeed(Methods.xRadius(angle, maxSpeed), Methods.yRadius(angle, maxSpeed));
+        }
+    }
+
     protected synchronized void goTo(Point destination) {
         if (destination.getX() > 0) {
             pathStrategy.findPath(this, pathData, destination.getX(), destination.getY());
@@ -137,20 +146,43 @@ public abstract class Mob extends Entity {
 
     protected synchronized void calculateDestinationsForCloseFriends() {
         if (!closeFriends.isEmpty()) {
-            int x = 0, y = 0;
-            for (GameObject object : closeFriends) {
-                x += object.getX();
-                y += object.getY();
+            if (closeFriends.size() == 1) {
+                secondaryDestination.set(closeFriends.get(0).getX(), closeFriends.get(0).getY());
+            } else {
+                int x = 0, y = 0;
+                Mob leader = this;
+                for (Mob mob : closeFriends) {
+                    if (!mob.isAlpha()) {
+                        x += mob.getX();
+                        y += mob.getY();
+                    } else {
+                        leader = mob;
+                    }
+                }
+                x += (closeFriends.size() - 1) * leader.getX();
+                y += (closeFriends.size() - 1) * leader.getY();
+                x = (x / (2 * (closeFriends.size() - 1)));
+                y = (y / (2 * (closeFriends.size() - 1)));
+                if (x < collision.getWidth()) {
+                    x = collision.getWidth();
+                }
+                if (y < collision.getHeight()) {
+                    y = collision.getHeight();
+                }
+                secondaryDestination.set(x, y);
             }
-            x = (x / closeFriends.size());
-            y = (y / closeFriends.size());
-            if (x < collision.getWidth()) {
-                x = collision.getWidth();
+        }
+    }
+
+    protected void normalizeSpeed() {
+        if (xSpeed != 0 && ySpeed != 0) {
+            double maxSpeed2 = maxSpeed * maxSpeed;
+            if (xSpeed * xSpeed + ySpeed * ySpeed > maxSpeed2) {
+                double ratio = ySpeed / xSpeed;
+                double normalizedX = FastMath.sqrt(maxSpeed2 / (ratio * ratio + 1));
+                xSpeed = Math.signum(xSpeed) * normalizedX;
+                ySpeed = Math.signum(ySpeed) * normalizedX * ratio;
             }
-            if (y < collision.getHeight()) {
-                y = collision.getHeight();
-            }
-            secondaryDestination.set(x, y);
         }
     }
 
@@ -229,5 +261,13 @@ public abstract class Mob extends Entity {
 
     @Override
     public void updateOnline() {
+    }
+
+    public boolean isAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(boolean alpha) {
+        this.alpha = alpha;
     }
 }

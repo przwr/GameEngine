@@ -27,6 +27,7 @@ public class PathData {
     final static int STUCK = 4;
     final static int OBSTACLE_BETWEEN = 5;
     final static int PATH_REQUESTED = 6;
+    final static int AVOID_MOBILE = 7;
     final int width;
     final int height;
     final int widthHalf;
@@ -165,6 +166,10 @@ public class PathData {
 
     public PointContainer getPath() {
         return path;
+    }
+
+    public void setAvoidMobile(boolean avoid) {
+        flags.set(AVOID_MOBILE, avoid);
     }
 
 }

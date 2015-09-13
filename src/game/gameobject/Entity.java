@@ -26,24 +26,25 @@ public abstract class Entity extends GameObject {
     public final Update[] updates = new Update[4];
     public int lastAdded;
     protected double range;
+    protected double range2;
     protected GameObject target;
     protected Point destination = new Point(), secondaryDestination = new Point();
     protected BlueArray<GameObject> closeEnemies = new BlueArray<>();
     protected PathData pathData;
-    protected double xEnvironmentalSpeed;
-    protected double yEnvironmentalSpeed;
+    protected double xEnvironmentalSpeed, yEnvironmentalSpeed;
     protected double xSpeed;
     protected double ySpeed;
     protected boolean jumping;
     protected boolean hop;
     protected Place place;
-    PathStrategy pathStrategy;
-    private double maxSpeed, xPosition, yPosition, xDelta, yDelta, xChange, yChange;
-    private double resistance = 1;
-    private boolean unableToMove;
-    private Update currentUpdate;
-    private int currentUpdateID, deltasCount, xDestination, yDestination;
-    private Player collided;
+    protected PathStrategy pathStrategy;
+    protected double maxSpeed;
+    protected double xPosition, yPosition, xDelta, yDelta, xChange, yChange;
+    protected double resistance = 1;
+    protected boolean unableToMove;
+    protected Update currentUpdate;
+    protected int currentUpdateID, deltasCount, xDestination, yDestination;
+    protected Player collided;
 
     private ArrayList<TemporalChanger> changers;
 
@@ -175,6 +176,8 @@ public abstract class Entity extends GameObject {
     }
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
+
+
         double xTempSpeed = (xMagnitude + collision.getXSlideSpeed());
         double yTempSpeed = (yMagnitude + collision.getYSlideSpeed());
         collision.prepareSlideSpeed(xMagnitude, yMagnitude);
@@ -416,4 +419,11 @@ public abstract class Entity extends GameObject {
         pathData.setScope(scope);
     }
 
+    public double getXSpeed() {
+        return xSpeed;
+    }
+
+    public double getYSpeed() {
+        return ySpeed;
+    }
 }

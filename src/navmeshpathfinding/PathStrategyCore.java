@@ -12,7 +12,6 @@ import engine.Point;
 import engine.PointContainer;
 import engine.PointedValue;
 import game.gameobject.Entity;
-import game.place.Area;
 import net.jodk.lang.FastMath;
 
 import java.awt.*;
@@ -43,12 +42,12 @@ class PathStrategyCore {
 
     public static void followPath(Entity requester, PathData data, int xDest, int yDest) {
         updatePath(data);
-        if (WINDOW_SHOWED) {
-            Area area = requester.getMap().getArea(requester.getArea());
-            pathWindow.addVariables(area.getNavigationMesh(), new Point(xDest, yDest),
-                    new Point(requester.getX(), requester.getY()),
-                    data.path, area.getXInPixels(), area.getYInPixels());
-        }
+//        if (WINDOW_SHOWED) {
+//            Area area = requester.getMap().getArea(requester.getArea());
+//            pathWindow.addVariables(area.getNavigationMesh(), new Point(xDest, yDest),
+//                    new Point(requester.getX(), requester.getY()),
+//                    data.path, area.getXInPixels(), area.getYInPixels());
+//        }
         chooseDestinationPoint(requester, data, xDest, yDest);
         managePassing(requester, data);
         data.calculateSpeed(requester.getMaxSpeed());
@@ -196,9 +195,9 @@ class PathStrategyCore {
             data.flags.set(PASSED);
             data.destination = data.correction;
         } else {
-            if (data.inAWay != null && data.inAWay.isMobile()) {
-                data.lastInAWay = null;
-                isSomethingOnTheWay(data);
+            if (data.flags.get(AVOID_MOBILE) && data.inAWay != null && data.inAWay.isMobile()) {
+//                data.lastInAWay = null;
+//                isSomethingOnTheWay(data);
             } else {
                 data.lastInAWay = data.inAWay;
             }
@@ -397,18 +396,20 @@ class PathStrategyCore {
 
     private static void adjustSpeed(PathData data, double maxSpeed) {
         if (data.x != data.destination.getX()) {
-            if (Math.abs(data.xSpeed) <= 1) {
-                data.xSpeed = Math.signum(data.xSpeed);
-            } else if (data.xDistance < maxSpeed) {
+//            if (Math.abs(data.xSpeed) <= 1) {
+//                data.xSpeed = Math.signum(data.xSpeed);
+//            } else
+            if (data.xDistance < maxSpeed) {
                 data.xSpeed = Math.signum(data.xSpeed) * data.xDistance;
             }
         } else {
             data.xSpeed = 0;
         }
         if (data.y != data.destination.getY()) {
-            if (Math.abs(data.ySpeed) <= 1) {
-                data.ySpeed = Math.signum(data.ySpeed);
-            } else if (data.yDistance < maxSpeed) {
+//            if (Math.abs(data.ySpeed) <= 1) {
+//                data.ySpeed = Math.signum(data.ySpeed);
+//            } else
+            if (data.yDistance < maxSpeed) {
                 data.ySpeed = Math.signum(data.ySpeed) * data.yDistance;
             }
         } else {

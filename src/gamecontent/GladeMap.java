@@ -52,12 +52,13 @@ public class GladeMap extends Map {
     @Override
     public void populate() {
         //addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
-        addObject(new Shen(356, 768, place, mobID++));
-//        addObject(new Shen(512, 1024, place, mobID++));
+//        addObject(new Shen(356, 768, place, mobID++));
+        addObject(new Shen(512, 1024, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));
+//        addObject(new Shen(648, 1400, place, mobID++));
 //        addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
-        addObject(new MyNPC(384, 990, place, mobID++));
+//        addObject(new MyNPC(384, 990, place, mobID++));
         for (int i = 0; i < 0; i += 2) {
 //            addObject(new Rabbit(192 + 192 * (i % 50), 3072 + 192 * (i / 50), 128, 28, 6, 1024, "rabbit", place, true, mobID++));
 //            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() * 150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));

@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Shen extends Mob {
 
     private final Animation animation;
-    int seconds = 0, max = 4;
+    int seconds = 0, max = 5;
     private Color skinColor;
     private Delay attack_delay = new Delay(1000);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = new Delay(1000);            //TODO - te wartości losowe i zależne od poziomu trudności
@@ -53,13 +53,17 @@ public class Shen extends Mob {
                     } else {
                         calculateDestinationsForCloseFriends();
                         if (alpha) {
-                            System.out.println("Wander");
+//                            System.out.println("Wander");
                             state = wander;
-                            setPathStrategy(PathFindingModule.GET_CLOSE, 250);
+                            destination.set(getX(), getY());
+                            seconds = 0;
+                            pathData.setAvoidMobile(true);
+                            setPathStrategy(PathFindingModule.GET_CLOSE, 90);
                         } else if (secondaryDestination.getX() > 0) {
-                            System.out.println("Follow");
+//                            System.out.println("Follow");
                             state = follow;
-                            setPathStrategy(PathFindingModule.GET_TO, 0);
+                            pathData.setAvoidMobile(false);
+                            setPathStrategy(PathFindingModule.GET_TO, collision.getWidth() * 2 * closeFriends.size());
                         }
                     }
                 }
@@ -92,10 +96,10 @@ public class Shen extends Mob {
                     if (closerEnemy == null) {
                         state = idle;
                         stats.setProtectionState(false);
-                    } else if (rest.isOver() && target == null && (Methods.pointDistance(closerEnemy.getX(), closerEnemy.getY(), getX(), getY()) < range && stats.getHealth() < stats.getMaxHealth())) {
+                    } else if (rest.isOver() && target == null && (Methods.pointDistanceSimple2(closerEnemy.getX(), closerEnemy.getY(), getX(), getY()) < range2 && stats.getHealth() < stats.getMaxHealth())) {
                         state = attack;
                         target = closerEnemy;
-                        setMaxSpeed(4);
+                        maxSpeed = 8;
                         setPathStrategy(PathFindingModule.GET_TO, 0);
                         attack_delay.start();
                     }
@@ -105,16 +109,16 @@ public class Shen extends Mob {
         attack = new ActionState() {
             @Override
             public void update() {
-                chase();
-
-                if (attack_delay.isOver() || Methods.pointDistance(getX(), getY(), target.getX(), target.getY()) > range * 1.5 || getTarget().getMap() != map) {
+                if (xSpeed == 0 && ySpeed == 0)
+                    charge();
+                if (attack_delay.isOver() || Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) > range2 * 2.25 || getTarget().getMap() != map) {
                     state = idle;
                     target = null;
                     pathData.clearPath();
                     brake(2);
                     rest.start();
                     stats.setProtectionState(false);
-                    setMaxSpeed(1);
+                    maxSpeed = 1;
                     setPathStrategy(PathFindingModule.GET_CLOSE, 250);
                 }
             }
@@ -125,63 +129,79 @@ public class Shen extends Mob {
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForCloseFriends();
                 xSpeed = ySpeed = 0;
-                goTo(secondaryDestination);
+                int distance = Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(), secondaryDestination.getY());
+                if (distance > collision.getWidth() * collision.getWidth() * 9) {
+                    goTo(secondaryDestination);
+                }
                 repulsion();
-                calculateDestinationsForEscape();
-                if (destination.getX() > 0) {
+//                if (xSpeed == 0 && ySpeed == 0)
+//                    alignment();
+                GameObject closerEnemy = getEnemyCloser();
+                if (closerEnemy != null) {
                     state = idle;
-                    destination.set(-1, -1);
+                    pathData.setAvoidMobile(true);
                     secondaryDestination.set(-1, -1);
                 }
-                if (Methods.pointDistance(getX(), getY(), secondaryDestination.getX(), secondaryDestination.getY()) > range * 1.5) {
+                if (distance > range * 1.5) {
                     state = idle;
+                    pathData.setAvoidMobile(true);
                     secondaryDestination.set(-1, -1);
                 }
-
             }
         };
         wander = new ActionState() {
             @Override
             public void update() {
                 if (rest.isOver()) {
+
                     RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
-                    if (seconds == 0) {
-                        int sign = Methods.roundDouble(random.next(10) > 512 ? range : -range);
-                        int shift = random.next(7) * sign;
+                    if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= 10000) {
+                        int sign = random.next(10) > 512 ? 1 : -1;
+                        int shift = ((int) range + random.next(10)) * sign;
                         destination.setX(getX() + shift);
-                        sign = Methods.roundDouble(random.next(10) > 512 ? range : -range);
-                        shift = random.next(7) * sign;
+                        sign = random.next(10) > 512 ? 1 : -1;
+                        shift = ((int) range + random.next(10)) * sign;
                         destination.setY(getY() + shift);
-                        if (destination.getX() < collision.getHeight()) {
-                            destination.setX(collision.getHeight());
+                        if (destination.getX() < collision.getWidth()) {
+                            destination.setX(collision.getWidth());
                         }
-                        if (destination.getY() < collision.getWidth()) {
-                            destination.setY(collision.getWidth());
+                        if (destination.getX() > map.getWidth()) {
+                            destination.setX(map.getWidth() - collision.getWidth());
                         }
+                        if (destination.getY() < collision.getHeight()) {
+                            destination.setY(collision.getHeight());
+                        }
+                        if (destination.getY() > map.getHeight()) {
+                            destination.setY(map.getHeight() - collision.getHeight());
+                        }
+//                        System.out.println("NEW DEST");
+                        System.out.println(destination);
                     }
                     seconds++;
                     if (seconds > max) {
                         seconds = 0;
-                        max = random.next(4);
+                        max = random.next(7);
+                        System.out.println(max);
                     }
                     rest.start();
                 }
-                goTo(destination);
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                GameObject closerEnemy = getEnemyCloser();
-                if (closerEnemy != null) {
+                if (!closeEnemies.isEmpty()) {
                     state = idle;
                     destination.set(-1, -1);
+//                    System.out.println("ENEMY");
                 }
-//                calculateDestinationsForCloseFriends();
-//                if (secondaryDestination.getX() > 0 && Methods.pointDistance(getX(), getY(), secondaryDestination.getX(), secondaryDestination.getY()) > collision.getWidth() * 18) {
-//                    state = idle;
-//                    destination.set(-1, -1);
-//                    secondaryDestination.set(-1, -1);
-//                }
+                calculateDestinationsForCloseFriends();
+                int distance = Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(), secondaryDestination.getY());
+                if (secondaryDestination.getX() > 0 && distance > collision.getWidth() * collision.getWidth() * 81) {
+                    secondaryDestination.set(-1, -1);
+                    brake(2);
+//                    System.out.println("TOO FAR");
+                } else {
+                    goTo(destination);
+                }
             }
         };
-
     }
 
     public Shen(int x, int y, Place place, short ID) {
@@ -203,23 +223,38 @@ public class Shen extends Mob {
         for (int i = 0; i < 8; i++) {
             frames[i] = 13 + i * animation.getFramesPerDirection();
         }
-        addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CircleInteractiveCollision(0, 64, 24, 28), Interactive.HURT, 0.1f));
+        addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.HURT, 0.5f));
     }
 
     private void repulsion() {
         for (Mob mob : closeFriends) {
-            int distance = Methods.pointDistance(getX(), getY(), mob.getX(), mob.getY());
-            if (distance < collision.getWidth() * 2f) {
-                float scale = 1 - (distance / (collision.getWidth() * 2f));
+            int distance = Methods.pointDistanceSimple2(getX(), getY(), mob.getX(), mob.getY());
+            if (distance < collision.getWidth() * collision.getWidth() * 4f) {
+                double scale = 1 - (FastMath.sqrt(distance) / (collision.getWidth() * 2f));
                 int x = getX() - mob.getX();
                 int y = getY() - mob.getY();
                 float ratio = Math.abs(y / (float) x);
                 x = (int) (Math.signum(x) * range) + getX();
                 y = (int) (Math.signum(y) * (ratio * Math.abs(x))) + getY();
                 double angle = Methods.pointAngleClockwise(getX(), getY(), x, y);
-                xSpeed += scale * Methods.xRadius(angle, getMaxSpeed());
-                ySpeed += scale * Methods.yRadius(angle, getMaxSpeed());
+                xSpeed += scale * Methods.xRadius(angle, maxSpeed);
+                ySpeed += scale * Methods.yRadius(angle, maxSpeed);
             }
+        }
+    }
+
+    private void alignment() {
+        if (!closeFriends.isEmpty()) {
+            int xSpeedAvg = 0;
+            int ySpeedAvg = 0;
+            for (Mob mob : closeFriends) {
+                xSpeedAvg += mob.getXSpeed();
+                ySpeedAvg += mob.getYSpeed();
+            }
+            xSpeedAvg /= closeFriends.size();
+            ySpeedAvg /= closeFriends.size();
+            xSpeed += xSpeedAvg / closeFriends.size();
+            ySpeed += ySpeedAvg / closeFriends.size();
         }
     }
 
@@ -232,19 +267,10 @@ public class Shen extends Mob {
         brakeOthers();
     }
 
-    protected void normalizeSpeed() {
-        double directionalSpeed = FastMath.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
-        if (directionalSpeed > getMaxSpeed()) {
-            directionalSpeed = getMaxSpeed();
-            double normalized = FastMath.sqrt((directionalSpeed * directionalSpeed) / 2);
-            xSpeed = Math.signum(xSpeed) * normalized;
-            ySpeed = Math.signum(ySpeed) * normalized;
-        }
-    }
 
     private GameObject getEnemyCloser() {
         for (GameObject object : closeEnemies) {
-            if (Methods.pointDistance(object.getX(), object.getY(), getX(), getY()) < range / 3) {
+            if (Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < range2 / 9) {
                 return object;
             }
         }
@@ -261,12 +287,9 @@ public class Shen extends Mob {
             if (target == null) {
                 animation.setFPS(7);
                 animation.animateIntervalInDirection(direction / 45, 0, 5);
-//                collision.setWidthAndHeight(48, 34);
-
             } else {
                 animation.setFPS(30);
                 animation.animateIntervalInDirection(direction / 45, 12, 14);
-//                collision.setWidthAndHeight(32, 23);
             }
         } else {
             if (stats.isProtectionState()) {
@@ -322,13 +345,5 @@ public class Shen extends Mob {
         }
         Drawer.refreshColor();
         glPopMatrix();
-    }
-
-    public boolean isAlpha() {
-        return alpha;
-    }
-
-    public void setAlpha(boolean alpha) {
-        this.alpha = alpha;
     }
 }
