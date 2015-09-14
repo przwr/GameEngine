@@ -57,7 +57,7 @@ public class MyNPC extends Mob {
                 mpPrey.getTextController().addExternalEvent(e, "2", false);
                 mpPrey.getTextController().addExternalEvent(e, "3", false);
             }
-            if (d > range * 1.5 || getTarget().getMap() != map) {
+            if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                 target = null;
             }
         } else {

@@ -31,7 +31,7 @@ public class Rabbit extends Mob {
     @Override
     public void update() {
         if (target != null && (!(target instanceof MyPlayer) || ((MyPlayer) target).isInGame())) {
-            if (Methods.pointDistance(getX(), getY(), target.getX(), target.getY()) > range * 1.5 || getTarget().getMap() != map) {
+            if (Methods.pointDistance(getX(), getY(), target.getX(), target.getY()) > hearRange * 1.5 || getTarget().getMap() != map) {
                 target = null;
                 pathData.clearPath();
             } else {

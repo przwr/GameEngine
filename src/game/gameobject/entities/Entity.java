@@ -5,6 +5,8 @@
  */
 package game.gameobject.entities;
 
+import collision.Block;
+import collision.Figure;
 import engine.systemcommunication.Time;
 import engine.utilities.BlueArray;
 import engine.utilities.ErrorHandler;
@@ -19,6 +21,7 @@ import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.newdawn.slick.Color;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -30,8 +33,11 @@ public abstract class Entity extends GameObject {
     protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
     public final Update[] updates = new Update[4];
     public int lastAdded;
-    protected double range;
-    protected double range2;
+    protected int hearRange;
+    protected int hearRange2;
+    protected int sightRange;
+    protected int sightRange2;
+    protected int sightAngle;
     protected GameObject target;
     protected Point destination = new Point(), secondaryDestination = new Point();
     protected BlueArray<GameObject> closeEnemies = new BlueArray<>();
@@ -336,6 +342,84 @@ public abstract class Entity extends GameObject {
         this.ySpeed = Methods.interval(-maxSpeed, ySpeed, maxSpeed);
     }
 
+    public boolean isInRange(GameObject object) {
+        return Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < Math.max(hearRange2, sightRange2);
+    }
+
+
+    public boolean isDistance2InRange(int distance) {
+        return distance < Math.max(hearRange2, sightRange2);
+    }
+
+    public boolean isDistance2OutOfRange(int distance) {
+        return distance > Math.max(hearRange2, sightRange2) * 2.25;
+    }
+
+    public boolean isOutOfRange(GameObject object) {
+        return Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) > Math.max(hearRange2, sightRange2) * 2.25;
+    }
+
+
+    public boolean isInHearingRange(GameObject object) {
+        return Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < hearRange2;
+    }
+
+    public boolean isHeard(GameObject object) {
+        int distance = Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY());
+        if (object.isMakeNoise()) {
+            return distance < hearRange2;
+        } else {
+            return distance < hearRange2 / 4;
+        }
+    }
+
+    public boolean isSeen(GameObject object) {
+        return isInSightRange(object) && isNotCovered(object);
+    }
+
+
+    public boolean isInHalfHearingRange(GameObject object) {
+        return Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < (hearRange2 / 4);
+    }
+
+    public boolean isInSightRange(GameObject object) {
+        if (Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < sightRange2) {
+            int direction = getDirection();
+            double angle = Methods.pointAngleCounterClockwise(getX(), getY(), object.getX(), object.getY());
+            if (direction == 0) {
+                if (Math.abs(360 - angle) <= sightAngle / 2) {
+                    return true;
+                }
+            }
+            if (Math.abs(direction - angle) <= sightAngle / 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isNotCovered(GameObject object) {
+        int xS = getX(), yS = getY(), xE = object.getX(), yE = object.getY();
+        Figure collision;
+        for (Block block : map.getArea(area).getNearBlocks()) {
+            collision = block.getCollision();
+            if (Line2D.linesIntersect(xS, yS, xE, yE, collision.getX(), collision.getY(), collision.getXEnd(), collision.getYEnd())
+                    || Line2D.linesIntersect(xS, yS, xE, yE, collision.getXEnd(), collision.getY(), collision.getX(), collision.getYEnd())) {
+                return false;
+            }
+        }
+        for (GameObject obj : map.getArea(area).getNearDepthObjects()) {
+            collision = obj.getCollision();
+            if (collision != null && !collision.isMobile() && !collision.isSmall() && collision.getWidth() < object.getCollision().getWidth()) {
+                if (Line2D.linesIntersect(xS, yS, xE, yE, collision.getX(), collision.getY(), collision.getXEnd(), collision.getYEnd())
+                        || Line2D.linesIntersect(xS, yS, xE, yE, collision.getXEnd(), collision.getY(), collision.getX(), collision.getYEnd())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean isUnableToMove() {
         return unableToMove;
     }
@@ -372,8 +456,8 @@ public abstract class Entity extends GameObject {
         this.resistance = FastMath.max(1, weight);
     }
 
-    public double getRange() {
-        return range;
+    public int getHearRange() {
+        return hearRange;
     }
 
     public double getMaxSpeed() {
@@ -430,5 +514,21 @@ public abstract class Entity extends GameObject {
 
     public double getYSpeed() {
         return ySpeed;
+    }
+
+    public int getHearRange2() {
+        return hearRange2;
+    }
+
+    public int getSightRange() {
+        return sightRange;
+    }
+
+    public int getSightRange2() {
+        return sightRange2;
+    }
+
+    public int getSightAngle() {
+        return sightAngle;
     }
 }

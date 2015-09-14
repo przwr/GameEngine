@@ -33,6 +33,7 @@ public abstract class GameObject {
     protected boolean onTop;
     protected boolean simpleLighting;
     protected boolean visible;
+    protected boolean makeNoise;
     protected double aboveGroundHeight;
     protected Appearance appearance;
     protected Stats stats;
@@ -44,7 +45,6 @@ public abstract class GameObject {
     protected WarpPoint warp;
     private int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     private int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
-    private boolean mobile;
     private int prevArea = -1;
 
     public abstract void render(int xEffect, int yEffect);
@@ -146,14 +146,6 @@ public abstract class GameObject {
 
     public void setVisible(boolean vis) {
         this.visible = vis;
-    }
-
-    public boolean isMobile() {
-        return mobile;
-    }
-
-    public void setMobile(boolean mobile) {
-        this.mobile = mobile;
     }
 
     public boolean isInteractive() {
@@ -367,5 +359,13 @@ public abstract class GameObject {
 
     public void setWarp(WarpPoint warp) {
         this.warp = warp;
+    }
+
+    public boolean isMakeNoise() {
+        return makeNoise;
+    }
+
+    public void setMakeNoise(boolean makeNoise) {
+        this.makeNoise = makeNoise;
     }
 }

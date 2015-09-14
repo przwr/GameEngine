@@ -16,7 +16,7 @@ import game.place.Place;
 public class Tree extends Mob {
 
     public Tree(int x, int y, int width, int height, double speed, int range, String name, Place place, boolean solid, short ID) {
-        super(x, y, speed, range, name, place, "bigTree", solid, ID);
+        super(x, y, speed, range, name, place, "tree", solid, ID);
         setCollision(Rectangle.create(width, height, OpticProperties.FULL_SHADOW, this));
         setSimpleLighting(false);
         collision.setSmall(true);

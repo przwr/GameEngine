@@ -89,7 +89,7 @@ public class PathData {
             xRef = owner.getMap().areas[owner.getArea()].getXInPixels();
             yRef = owner.getMap().areas[owner.getArea()].getYInPixels();
         }
-        Figure.updateWhatClose(owner, x, y, ((int) (owner.getRange()) >> 2), x, y, owner.getMap(), close);
+        Figure.updateWhatClose(owner, x, y, (owner.getHearRange() >> 2), x, y, owner.getMap(), close);
         close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
         flags.set(OBSTACLE_BETWEEN, isObstacleBetween());
         updateStuck();
