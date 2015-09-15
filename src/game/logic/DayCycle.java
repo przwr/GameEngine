@@ -12,7 +12,7 @@ import org.newdawn.slick.Color;
  */
 public class DayCycle {
 
-    public static final float NIGHT = 0.2f;
+    public static final float NIGHT = 0.4f;
     private static final short REAL_MINUTES_IN_HOUR = 6, SUNRISE = 300, SUNSET = 1260, TRANSITION_TIME = 120, NOONTIME = 240;
     private static final int DAWN = (SUNRISE + TRANSITION_TIME), DUSK = (SUNSET - TRANSITION_TIME), NOON = ((SUNSET + SUNRISE) / 2), HALF_TRANSITION_TIME = TRANSITION_TIME / 2, QUARTER_TRANSITION_TIME = TRANSITION_TIME / 4, THREE_QUARTERS_TRANSITION_TIME = 3 * QUARTER_TRANSITION_TIME;
     private final Color lightColor = new Color(0.2f, 0.2f, 0.2f);
@@ -113,8 +113,18 @@ public class DayCycle {
                 temp = 1.25f - ((timeInMinutes - DUSK - THREE_QUARTERS_TRANSITION_TIME) * delta);
                 lightColor.b = lightColor.r * temp;
             }
-        } else if (timeInMinutes >= SUNSET || timeInMinutes < SUNRISE) {
-            lightColor.r = lightColor.g = lightColor.b = NIGHT;
+        } else if (timeInMinutes >= SUNSET) {
+            if (timeInMinutes >= SUNSET + HALF_TRANSITION_TIME) {
+                lightColor.r = lightColor.g = lightColor.b = NIGHT / 2;
+            } else {
+                lightColor.r = lightColor.g = lightColor.b = NIGHT - (NIGHT / 2) * (timeInMinutes - SUNSET) / (float) HALF_TRANSITION_TIME;
+            }
+        } else if (timeInMinutes < SUNRISE) {
+            if (timeInMinutes < SUNRISE - HALF_TRANSITION_TIME) {
+                lightColor.r = lightColor.g = lightColor.b = NIGHT / 2;
+            } else {
+                lightColor.r = lightColor.g = lightColor.b = NIGHT / 2 + (NIGHT / 2) * (timeInMinutes + HALF_TRANSITION_TIME - SUNRISE) / (float) HALF_TRANSITION_TIME;
+            }
         }
     }
 
