@@ -14,7 +14,6 @@ import static game.gameobject.inputs.PlayerController.*;
 public class Action {
 
     public AnyInput input;
-    boolean on;
     byte state;
 
     public Action(AnyInput in) {
@@ -23,10 +22,6 @@ public class Action {
 
     public void updateActiveState() {
         if (input != null && input.isPut()) {
-            on = true;
-        }
-        if (on) {
-            on = false;
             if (state == KEY_NO_INPUT) {
                 state = KEY_CLICKED;
             } else {

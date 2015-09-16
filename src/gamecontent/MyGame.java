@@ -122,7 +122,6 @@ public class MyGame extends Game {
                 }
             }
         };
-
         inputs[ONLINE] = () -> {
             if (running) {
                 if (players[0].isMenuOn()) {
