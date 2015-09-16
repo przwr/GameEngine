@@ -48,7 +48,7 @@ public class TextController extends GUIObject {
     private Branch events;
     private float index, speed, change, realSpeed;
     private int time, rows, deltaLines, rowsInPlace, speaker, portrait, expression, answer, jumpTo;
-    private boolean started, flushing, flushReady, stop, question, firstStep;
+    private boolean started, flushing, flushReady, stop, question, firstStep, action;
     private Entity[] locked;
     private String[] answerText;
     private String[] answerJump;
@@ -387,6 +387,7 @@ public class TextController extends GUIObject {
     public void render(int xEffect, int yEffect) {
         if (started) {
             int tile = Place.tileSize;
+            action = playerController.getAction(MyController.ACTION).isKeyClicked();
             glPushMatrix();
 
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
@@ -434,7 +435,7 @@ public class TextController extends GUIObject {
             if (time == 60) {
                 time = 0;
             }
-            realSpeed = speed * (playerController.getAction(MyController.RUN).isKeyPressed() ? 2f : 1f);
+            realSpeed = speed * (playerController.getAction(MyController.BLOCK).isKeyPressed() ? 2f : 1f);
 
             if (flushing) {
                 handleFlushing();
@@ -445,13 +446,13 @@ public class TextController extends GUIObject {
                         change = 1;
                     } else if (jumpTo >= 0) {
                         flushReady = true;
-                    } else if (playerController.getAction(MyController.ACTION).isKeyClicked()) {
+                    } else if (action) {
                         events.endingEvent();
                         stopTextViewing();
                     }
                 } else {
                     if (!question) {
-                        if (playerController.getAction(MyController.ACTION).isKeyClicked()) {
+                        if (action) {
                             flushing = true;
                             flushReady = false;
                             change = 0;
@@ -573,7 +574,7 @@ public class TextController extends GUIObject {
                     answer = 0;
                 }
             }
-            if (playerController.getAction(MyController.ATTACK).isKeyClicked()) {
+            if (action) {
                 jumpTo = jumpLocation(answerJump[answer]);
                 question = false;
                 flushing = true;

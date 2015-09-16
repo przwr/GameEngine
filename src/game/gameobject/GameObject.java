@@ -43,7 +43,7 @@ public abstract class GameObject {
     protected Figure collision;
     protected WarpPoint warp;
     private int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
-    private int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
+    private int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     private boolean mobile;
     private int prevArea = -1;
 
@@ -304,10 +304,18 @@ public abstract class GameObject {
         return direction;
     }
 
+    public int getDirection8Way() {
+        return direction8Way;
+    }
+
     public void setDirection(int direction) {
         this.direction = direction % 360;
-        float temp = direction / 45 + 0.5f;
-        direction8Way = (int) (temp >= 0 ? temp : (temp + 8) % 8);
+        direction8Way = (int) (((float) direction / 45 + 0.5f) % 8);
+    }
+    
+    public void setDirection8way(int direction8Way) {
+        this.direction8Way = direction8Way % 8;
+        direction = direction8Way * 45;
     }
 
     public int getCollisionWidth() {
@@ -351,10 +359,6 @@ public abstract class GameObject {
 
     public void setMapNotChange(Map map) {
         this.map = map;
-    }
-
-    public int getDirection8Way() {
-        return direction8Way;
     }
 
     public Stats getStats() {

@@ -25,17 +25,17 @@ public class Delay {
 
     public void setFPS(int fps) {
         if (fps != 0) {
-            endTime -= length * 1000000;
+            endTime -= length;
             this.length = 1000 / fps;
             started = true;
-            endTime += length * 1000000;
+            endTime += length;
         } else {
             started = false;
         }
     }
 
     public boolean isOver() {
-        return started && endTime <= System.nanoTime();
+        return started && endTime <= System.currentTimeMillis();
     }
 
     public boolean isActive() {
@@ -44,12 +44,12 @@ public class Delay {
 
     public void start() {
         started = true;
-        endTime = length * 1000000 + System.nanoTime();
+        endTime = length + System.currentTimeMillis();
     }
 
     public void startAt(int start) {
         started = true;
-        endTime = start * 1000000 + System.nanoTime();
+        endTime = start + System.currentTimeMillis();
     }
 
     public void stop() {

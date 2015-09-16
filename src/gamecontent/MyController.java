@@ -31,26 +31,30 @@ public class MyController extends PlayerController {
     private final int[] attackFrames;
     private final Delay sideDelay;
     private final Delay jumpDelay;
-    private final Delay doubleDelay;
     private final SpeedChanger jumpMaker;
+    private final SpeedChanger attackMovement;
     private int tempDirection, lagDuration, attackType, sideDirection;
     private boolean running, diagonal, inputLag;
     private Animation playerAnimation;
     private MyGUI gui;
     private int jumpDirection, jumpLag;
 
+    private boolean[] blockedInputs;
+
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);
         gui = playersGUI;
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
+        blockedInputs = new boolean[ACTIONS_COUNT];
         sideDelay = new Delay(25);
         jumpDelay = new Delay(400);
-        doubleDelay = new Delay(5);
         attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40};
         jumpMaker = new SpeedChanger(8);
         jumpMaker.setType(SpeedChanger.DECREASING);
+        attackMovement = new SpeedChanger(4);
+        attackMovement.setType(SpeedChanger.DECREASING);
     }
 
     @Override
@@ -73,7 +77,7 @@ public class MyController extends PlayerController {
             diagonal = true;
 
             if (inControl.isAbleToMove()) {
-                //System.out.println(getAllInput(UP, DOWN, LEFT, RIGHT));
+                //System.out.println(getAllInput(ATTACK));
                 if (jumpLag == 0) {
                     if (actions[ATTACK].isKeyPressed()) {
                         updateAttack();
@@ -87,6 +91,7 @@ public class MyController extends PlayerController {
                 updateRest();
             } else {
                 playerAnimation.animateSingleInDirection(tempDirection, 0);
+                inControl.brake(2);
             }
             if (!actions[ATTACK].isKeyPressed() && jumpLag == 0) {
                 if (running) {
@@ -100,6 +105,18 @@ public class MyController extends PlayerController {
         }
     }
 
+    void setInputBlocked(boolean blocked, int... inputs) {
+        for (int i : inputs) {
+            blockedInputs[i] = blocked;
+        }
+    }
+
+    void setAllInputUnblocked() {
+        for (int i = 0; i < blockedInputs.length; i++) {
+            blockedInputs[i] = false;
+        }
+    }
+
     private void updateActionsIfNoLag() {
         if (inputLag) {
             lagDuration--;
@@ -107,11 +124,19 @@ public class MyController extends PlayerController {
                 inputLag = false;
             }
             for (int i = MENU_ACTIONS_COUNT; i < ACTIONS_COUNT; i++) {
-                actions[i].updatePassiveState();
+                if (blockedInputs[i]) {
+                    actions[i].updateBlockedState();
+                } else {
+                    actions[i].updatePassiveState();
+                }
             }
         } else {
             for (int i = MENU_ACTIONS_COUNT; i < ACTIONS_COUNT; i++) {
-                actions[i].updateActiveState();
+                if (blockedInputs[i]) {
+                    actions[i].updateBlockedState();
+                } else {
+                    actions[i].updateActiveState();
+                }
             }
         }
     }
@@ -119,6 +144,9 @@ public class MyController extends PlayerController {
     private void updateAttack() {
         if (actions[ATTACK].isKeyClicked()) {
             setInputLag(15);
+            attackMovement.setSpeedInDirection(tempDirection * 45, 10);
+            attackMovement.start();
+            inControl.addChanger(attackMovement);
             switch (attackType) {
                 case ATTACK_SLASH:
                     playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
@@ -239,6 +267,9 @@ public class MyController extends PlayerController {
             } else {
                 jumpLag--;
                 playerAnimation.animateSingleInDirection(tempDirection, 45);
+                if (jumpLag == 0) {
+                    setInputBlocked(false, ATTACK);
+                }
             }
         } else {
             playerAnimation.animateSingleInDirection(tempDirection, 43);
@@ -331,6 +362,7 @@ public class MyController extends PlayerController {
         jumpMaker.start();
         inControl.addChanger(jumpMaker);
         jumpDelay.stop();
+        setInputBlocked(true, ATTACK);
         jumpLag = jumpMaker.getTotalTime() / 2;
         setInputLag(jumpLag);
     }

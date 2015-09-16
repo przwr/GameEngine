@@ -41,12 +41,14 @@ public class MyNPC extends Mob {
         if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
             MyPlayer mpPrey = (MyPlayer) getTarget();
             if (spinning) {
-                setDirection(getDirection() + 45);
+                setDirection8way(getDirection8Way()+ 1);
             } else {
-                setDirection((int) Methods.pointAngleCounterClockwise(getX(), getY(), getTarget().getX(), getTarget().getY()));
+                setDirection8way((int) Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
             }
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-            if (mpPrey.getController().getAction(MyController.ACTION).isKeyClicked() && d <= Place.tileSize * 1.5 && !mpPrey.getTextController().isStarted()) {
+            if (mpPrey.getController().getAction(MyController.ACTION).isKeyClicked() 
+                    && d <= Place.tileSize * 1.5 
+                    && !mpPrey.getTextController().isStarted()) {
                 mpPrey.getTextController().lockEntity(mpPrey);
                 mpPrey.getTextController().startFromFile("drzewo");
                 Executive e = () -> {

@@ -5,6 +5,7 @@
  */
 package game.gameobject.temporalmodifiers;
 
+import engine.utilities.Methods;
 import game.gameobject.entities.Entity;
 
 /**
@@ -35,6 +36,11 @@ public class SpeedChanger extends TemporalChanger {
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
     }
+    
+    public void setSpeedInDirection(int direction, int speed) {
+        this.xSpeed = (int) Methods.xRadius(direction, speed);
+        this.ySpeed = (int) -Methods.yRadius(direction, speed);
+    }
 
     @Override
     void modifyEffect(Entity en) {
@@ -55,8 +61,8 @@ public class SpeedChanger extends TemporalChanger {
                 yTmpSpeed = (int) (ySpeed * tmp);
                 break;
         }
-        en.setXEnvironmentalSpeed(xTmpSpeed);
-        en.setYEnvironmentalSpeed(yTmpSpeed);
+        en.addXEnvironmentalSpeed(xTmpSpeed);
+        en.addYEnvironmentalSpeed(yTmpSpeed);
     }
 
 }

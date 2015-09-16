@@ -27,7 +27,7 @@ public class Circle extends Figure {
         this.precision = precision;
         this.step = 360 / precision;
         for (int i = 0; i < precision; i++) {
-            points.add(new Point((int) Methods.xRadius(i * step, radius), (int) Methods.yRadius(i * step, radius)));
+            points.add(new Point((int) Methods.xRadius(i * step, radius), (int) -Methods.yRadius(i * step, radius)));
         }
         points.trimToSize();
         centralize();

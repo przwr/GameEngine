@@ -48,6 +48,14 @@ public class Action {
             state = KEY_NO_INPUT;
         }
     }
+    
+    public void updateBlockedState() {
+        if (state > KEY_NO_INPUT) {
+            state = KEY_RELEASED;
+        } else if (state == KEY_RELEASED) {
+            state = KEY_NO_INPUT;
+        }
+    }
 
     public boolean isKeyReleased() {
         return state == KEY_RELEASED;

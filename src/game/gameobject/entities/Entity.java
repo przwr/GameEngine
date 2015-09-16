@@ -61,7 +61,6 @@ public abstract class Entity extends GameObject {
 
     protected abstract Player getCollided(double xMagnitude, double yMagnitude);
 
-
     protected void setPathStrategy(PathStrategy pathStrategy, int scope) {
         pathData = new PathData(this, scope);
         this.pathStrategy = pathStrategy;
@@ -163,7 +162,7 @@ public abstract class Entity extends GameObject {
             changers = new ArrayList<>();
         }
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
@@ -181,7 +180,6 @@ public abstract class Entity extends GameObject {
     }
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
-
 
         double xTempSpeed = (xMagnitude + collision.getXSlideSpeed());
         double yTempSpeed = (yMagnitude + collision.getYSlideSpeed());
@@ -300,17 +298,8 @@ public abstract class Entity extends GameObject {
     }
 
     protected void brakeOthers() {
-        double maxWeight = FastMath.max(1, resistance);
-        if (FastMath.abs(xEnvironmentalSpeed) >= 1) {
-            xEnvironmentalSpeed -= xEnvironmentalSpeed / (1 + maxWeight);
-        } else {
-            xEnvironmentalSpeed = 0;
-        }
-        if (FastMath.abs(yEnvironmentalSpeed) >= 1) {
-            yEnvironmentalSpeed -= yEnvironmentalSpeed / (1 + maxWeight);
-        } else {
-            yEnvironmentalSpeed = 0;
-        }
+        xEnvironmentalSpeed = 0;
+        yEnvironmentalSpeed = 0;
     }
 
     public void addSpeed(double xSpeedDelta, double ySpeedDelta) {
@@ -392,12 +381,20 @@ public abstract class Entity extends GameObject {
         this.xEnvironmentalSpeed = xEnvironmentalSpeed;
     }
 
+    public void addXEnvironmentalSpeed(double xEnvironmentalSpeed) {
+        this.xEnvironmentalSpeed += xEnvironmentalSpeed;
+    }
+
     public double getYEnvironmentalSpeed() {
         return yEnvironmentalSpeed;
     }
 
     public void setYEnvironmentalSpeed(double yEnvironmentalSpeed) {
         this.yEnvironmentalSpeed = yEnvironmentalSpeed;
+    }
+
+    public void addYEnvironmentalSpeed(double yEnvironmentalSpeed) {
+        this.yEnvironmentalSpeed += yEnvironmentalSpeed;
     }
 
     protected Place getPlace() {
