@@ -1,6 +1,7 @@
 package game.gameobject.stats;
 
 
+import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.interactive.InteractiveResponse;
 
@@ -46,6 +47,7 @@ public abstract class Stats {
             if (health < 0) {
                 health = 0;
             }
+            owner.getHurt(hurt, response.getAttacker());
             System.out.println(owner.getName() + " dostał za " + hurt + " Życie: " + health + "/" + maxHealth);
             if (health == 0) {
                 died();

@@ -18,6 +18,10 @@ public class SpeedChanger extends TemporalChanger {
     int xSpeed, ySpeed, xTmpSpeed, yTmpSpeed;
     byte type;
 
+    public SpeedChanger() {
+        super();
+    }
+    
     public SpeedChanger(int frames) {
         super(frames);
     }
@@ -65,4 +69,9 @@ public class SpeedChanger extends TemporalChanger {
         en.addYEnvironmentalSpeed(yTmpSpeed);
     }
 
+    @Override
+    public String toString() {
+        return "Speed : " + xSpeed + " " + ySpeed + " : " + super.toString(); 
+    }
+    
 }

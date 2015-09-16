@@ -262,6 +262,7 @@ public class Shen extends Mob {
         state.update();
         normalizeSpeed();
         updateAnimation();
+        updateChangers();
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         brakeOthers();
     }

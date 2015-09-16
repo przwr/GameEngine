@@ -15,11 +15,20 @@ public abstract class TemporalChanger {
 
     int time, left;
 
+    public TemporalChanger() {
+        time = 0;
+        left = 0;
+    }
+    
     public TemporalChanger(int frames) {
         this.time = frames;
         left = 0;
     }
 
+    public void setFrames(int time) {
+        this.time = time;
+    }
+    
     public void start() {
         left = time;
     }
@@ -57,5 +66,10 @@ public abstract class TemporalChanger {
         }
     }
 
+    @Override
+    public String toString() {
+        return left + " / " + time;
+    }
+    
     abstract void modifyEffect(Entity en);
 }

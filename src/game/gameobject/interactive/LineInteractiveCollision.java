@@ -88,8 +88,10 @@ public class LineInteractiveCollision extends InteractiveCollision {
             if (objectTop > bottom && objectBottom < top) {
                 int pixelsIn = lineToCircleDistance(object.getX(), object.getY(), (object.getCollisionWidth() + width) / 2, position, end, length);
                 if (pixelsIn > 0) {
-                    response.setPixels(pixelsIn);
-                    response.setDirection((byte) (calculateInteractionDirection(object.getDirection8Way(), object.getCollision(), owner.getX(), owner.getY())));
+                    response.setResponse(pixelsIn,
+                            (byte) (calculateInteractionDirection(object.getDirection8Way(),
+                                    object.getCollision(), owner.getX(), owner.getY())),
+                            owner);
                     return response;
                 }
             }
@@ -107,8 +109,10 @@ public class LineInteractiveCollision extends InteractiveCollision {
             if (playerTop > bottom && playerBottom < top) {
                 int pixelsIn = lineToCircleDistance(player.getX(), player.getY(), (player.getCollisionWidth() + width) / 2, position, end, length);
                 if (pixelsIn > 0) {
-                    response.setPixels(pixelsIn);
-                    response.setDirection((byte) (calculateInteractionDirection(player.getDirection8Way(), player.getCollision(), owner.getX(), owner.getY())));
+                    response.setResponse(pixelsIn,
+                            (byte) (calculateInteractionDirection(player.getDirection8Way(),
+                                    player.getCollision(), owner.getX(), owner.getY())),
+                            owner);
                     return response;
                 }
             }

@@ -21,39 +21,71 @@ public class Console extends GUIObject {
     private final int tile;
     private float alpha;
     private Camera camera;
+    private final String[] stat;
+    private int statNumber;
+    private boolean stats;
 
     public Console(Place place) {
         super("Console", place);
         this.alpha = 0f;
         this.messages = new String[20];
+        this.stat = new String[30];
+        statNumber = 0;
         tile = Place.tileSize;
+        stats = true;
     }
 
-    public void write(String message) {
+    public void printMessage(String message) {
         alpha = 3f;
         System.arraycopy(messages, 0, messages, 1, messages.length - 1);
         messages[0] = message;
     }
 
+    public void printStats(String message) {
+        if (statNumber < stat.length) {
+            stat[statNumber++] = message;
+        }
+    }
+
+    public void setStatsRendered(boolean stats) {
+        this.stats = stats;
+    }
+    
+    public boolean areStatsRendered() {
+        return stats;
+    }
+    
     public void setCamera(Camera cam) {
         camera = cam;
     }
 
     @Override
     public void render(int xEffect, int yEffect) {
-        if (alpha > 0f) {
+        if (alpha > 0f || stats) {
             glPushMatrix();
             glScaled(camera.getScale(), camera.getScale(), 1);
             glTranslatef(xEffect, yEffect, 0);
             glScaled(1 / camera.getScale(), 1 / camera.getScale(), 1);
-            for (int i = 0; i < messages.length; i++) {
-                if (messages[i] != null) {
-                    Drawer.renderString(messages[i], (int) ((tile * 0.1) * camera.getScale()),
-                            (int) (camera.getHeight() - (i + 1.1) * tile * 0.5 * camera.getScale()),
-                            place.standardFont, new Color(1f, 1f, 1f, Math.min(alpha, 1) * (i == 0 ? 1f : 0.7f)));
+            if (alpha > 0f) {
+                for (int i = 0; i < messages.length; i++) {
+                    if (messages[i] != null) {
+                        Drawer.renderString(messages[i], (int) ((tile * 0.1) * camera.getScale()),
+                                (int) (camera.getHeight() - (i + 1.1) * tile * 0.5 * camera.getScale()),
+                                place.standardFont, new Color(1f, 1f, 1f, Math.min(alpha, 1) * (i == 0 ? 1f : 0.5f)));
+                    }
                 }
+                alpha -= 0.01f;
             }
-            alpha -= 0.01f;
+            if (stats) {
+                for (int i = 0; i < stat.length; i++) {
+                    if (stat[i] != null) {
+                        Drawer.renderString(stat[i], (int) ((tile * 0.1) * camera.getScale()),
+                                (int) (i * tile * 0.5 * camera.getScale()),
+                                place.standardFont, Color.white);
+                    }
+                }
+                statNumber = 0;
+            }
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
         }

@@ -5,6 +5,7 @@
  */
 package gamedesigner;
 
+import engine.utilities.SimpleKeyboard;
 import collision.Figure;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;

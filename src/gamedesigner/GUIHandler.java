@@ -5,6 +5,7 @@
  */
 package gamedesigner;
 
+import engine.utilities.SimpleKeyboard;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Methods;

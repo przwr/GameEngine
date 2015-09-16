@@ -36,6 +36,8 @@ import java.util.logging.Logger;
 
 import static engine.systemcommunication.IO.setSettingsFromFile;
 import static game.Settings.calculateScale;
+import engine.utilities.SimpleKeyboard;
+import game.place.Console;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
@@ -54,6 +56,9 @@ public class Main {
     private static Popup pop;
     private static Controller[] controllers;
     private static boolean lastFrame;
+
+    private static SimpleKeyboard key;
+    private static Console console;
 
     public static void run() {
         setSettingsFromFile(new File("res/settings.ini"));
@@ -187,7 +192,9 @@ public class Main {
     }
 
     private static void gameLoop() {
+        key = new SimpleKeyboard();
         while (isRunning()) {
+            key.keyboardStart();
             Time.update();
             if (delay.isOver()) {
                 delay.start();
@@ -195,8 +202,12 @@ public class Main {
                 int frames = (int) (60 / Time.getDelta());
                 if (game != null && game.getPlace() != null) {
                     info = " [" + frames + " fps] " + game.getPlace().getTime();
-                    if (Settings.fullScreen) {
-                        game.getPlace().printMessage(info);
+                    console = game.getPlace().getConsole();
+                    if (key.keyPressed(Keyboard.KEY_F1)) {
+                        console.setStatsRendered(!console.areStatsRendered());
+                    }
+                    if (console.areStatsRendered()) {
+                        console.printStats(info);
                     }
                 } else {
                     info = " [" + frames + " fps]";
@@ -212,6 +223,7 @@ public class Main {
                 PopMessageIfNeeded();
             }
             render();
+            key.keyboardEnd();
         }
     }
 

@@ -75,8 +75,10 @@ public class CurveInteractiveCollision extends InteractiveCollision {
                         angle = 360;
                     }
                     if (Math.abs(direction * 45 - angle) <= activationAngle) {
-                        response.setPixels(pixelsIn);
-                        response.setDirection((byte) (calculateInteractionDirection(object.getDirection8Way(), object.getCollision(), owner.getX(), owner.getY())));
+                        response.setResponse(pixelsIn,
+                                (byte) (calculateInteractionDirection(object.getDirection8Way(), 
+                                        object.getCollision(), owner.getX(), owner.getY())),
+                                owner);
                         return response;
                     }
                 }
@@ -97,8 +99,10 @@ public class CurveInteractiveCollision extends InteractiveCollision {
                 if (pixelsIn > 0) {
                     double diffrence = Math.abs(owner.getDirection8Way() * 45 - Methods.pointAngleCounterClockwise(position.getX(), position.getY(), player.getX(), player.getY()));
                     if (diffrence <= activationAngle) {
-                        response.setPixels(pixelsIn);
-                        response.setDirection((byte) (calculateInteractionDirection(player.getDirection8Way(), player.getCollision(), owner.getX(), owner.getY())));
+                        response.setResponse(pixelsIn,
+                                (byte) (calculateInteractionDirection(player.getDirection8Way(), 
+                                        player.getCollision(), owner.getX(), owner.getY())),
+                                owner);
                         return response;
                     }
                 }

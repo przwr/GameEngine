@@ -208,8 +208,13 @@ public abstract class Place extends ScreenPlace {
 //            }
 //        }
 //    }
+    
+    public Console getConsole() {
+        return console;
+    }
+    
     public void printMessage(String message) {
-        console.write(message);
+        console.printMessage(message);
     }
 
     @Override

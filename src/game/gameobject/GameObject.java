@@ -45,7 +45,6 @@ public abstract class GameObject {
     protected WarpPoint warp;
     private int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     private int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
-    private boolean mobile;
     private int prevArea = -1;
 
     public abstract void render(int xEffect, int yEffect);
@@ -105,6 +104,10 @@ public abstract class GameObject {
         interactiveObjects.remove(interactive);
     }
 
+    public void getHurt(int damage, GameObject attacker) {
+        //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
+    }
+    
     public boolean isSolid() {
         return solid;
     }

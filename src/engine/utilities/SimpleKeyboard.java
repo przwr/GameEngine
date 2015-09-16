@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamedesigner;
+package engine.utilities;
 
 import org.lwjgl.input.Keyboard;
 
 /**
  * @author Wojtek
  */
-class SimpleKeyboard {
+public class SimpleKeyboard {
     private boolean pressed, prevClick;
 
     public void keyboardStart() {

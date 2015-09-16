@@ -13,6 +13,7 @@ import engine.utilities.ErrorHandler;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
+import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.logic.navmeshpathfinding.PathData;
 import game.logic.navmeshpathfinding.PathStrategy;
@@ -58,6 +59,7 @@ public abstract class Entity extends GameObject {
     protected Player collided;
 
     private ArrayList<TemporalChanger> changers;
+    private SpeedChanger knockback;
 
     public abstract void updateOnline();
 
@@ -70,6 +72,22 @@ public abstract class Entity extends GameObject {
     protected void setPathStrategy(PathStrategy pathStrategy, int scope) {
         pathData = new PathData(this, scope);
         this.pathStrategy = pathStrategy;
+    }
+
+    @Override
+    public void getHurt(int damage, GameObject attacker) {
+        if (knockback == null) {
+            knockback = new SpeedChanger();
+        }
+        knockback.setFrames(30);
+        knockback.setSpeedInDirection(
+                (int) Methods.pointAngleCounterClockwise(attacker.getX(), attacker.getY(), x, y),
+                Methods.interval(5, damage * 4, 20));
+        System.out.println(attacker);
+        knockback.setType(SpeedChanger.DECREASING);
+        knockback.start();
+        System.out.println(knockback);
+        addChanger(knockback);
     }
 
     public synchronized void updateSoft() {
@@ -168,13 +186,18 @@ public abstract class Entity extends GameObject {
             changers = new ArrayList<>();
         }
         TemporalChanger tc;
+        boolean isRemoved = false;
         for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
                 iterator.remove();
+                isRemoved = true;
                 break;
             }
+        }
+        if (isRemoved) {
+            changers.trimToSize();
         }
     }
 
@@ -182,7 +205,9 @@ public abstract class Entity extends GameObject {
         if (changers == null) {
             changers = new ArrayList<>();
         }
-        changers.add(tc);
+        if (!changers.contains(tc)) {
+            changers.add(tc);
+        }
     }
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
@@ -335,7 +360,6 @@ public abstract class Entity extends GameObject {
         return Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < Math.max(hearRange2, sightRange2);
     }
 
-
     public boolean isDistance2InRange(int distance) {
         return distance < Math.max(hearRange2, sightRange2);
     }
@@ -347,7 +371,6 @@ public abstract class Entity extends GameObject {
     public boolean isOutOfRange(GameObject object) {
         return Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) > Math.max(hearRange2, sightRange2) * 2.25;
     }
-
 
     public boolean isInHearingRange(GameObject object) {
         return Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < hearRange2;
@@ -365,7 +388,6 @@ public abstract class Entity extends GameObject {
     public boolean isSeen(GameObject object) {
         return isInSightRange(object) && isNotCovered(object);
     }
-
 
     public boolean isInHalfHearingRange(GameObject object) {
         return Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < (hearRange2 / 4);

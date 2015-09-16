@@ -5,6 +5,7 @@
  */
 package gamedesigner;
 
+import engine.utilities.SimpleKeyboard;
 import engine.systemcommunication.IO;
 import engine.utilities.Point;
 import game.Game;

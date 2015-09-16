@@ -1,5 +1,7 @@
 package game.gameobject.interactive;
 
+import game.gameobject.GameObject;
+
 /**
  * Created by przemek on 31.08.15.
  */
@@ -9,12 +11,19 @@ public class InteractiveResponse {
     public static InteractiveResponse NO_RESPONSE = new InteractiveResponse();
     private float pixels = -1f;
     private byte direction = -1;
+    private GameObject attacker;
 
 
     public float getPixels() {
         return pixels;
     }
 
+    public void setResponse(float pixels, byte direction, GameObject attacker) {
+        this.pixels = pixels;
+        this.direction = direction;
+        this.attacker = attacker;
+    }
+    
     public void setPixels(float pixels) {
         this.pixels = pixels;
     }
@@ -25,5 +34,13 @@ public class InteractiveResponse {
 
     public void setDirection(byte direction) {
         this.direction = direction;
+    }
+    
+    public GameObject getAttacker() {
+        return attacker;
+    }
+
+    public void setAttacker(GameObject attacker) {
+        this.attacker = attacker;
     }
 }
