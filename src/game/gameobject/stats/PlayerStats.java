@@ -1,6 +1,7 @@
 package game.gameobject.stats;
 
 import game.gameobject.entities.Player;
+import game.place.cameras.Camera;
 
 /**
  * Created by przemek on 10.08.15.
@@ -19,6 +20,10 @@ public class PlayerStats extends Stats {
     public void died() {
         health = maxHealth / 2;
         owner.setPositionAreaUpdate(128, 128);
+        Camera camera = ((Player) owner).getCamera();
+        if (camera != null) {
+            camera.update();
+        }
         System.out.println(owner.getName() + " zginał.");
     }
 

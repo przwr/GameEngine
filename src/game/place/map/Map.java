@@ -324,13 +324,17 @@ public abstract class Map {
     }
 
     public void addObject(GameObject object) {
-        object.setMapNotChange(this);
-        if (object instanceof WarpPoint) {
-            warps.add((WarpPoint) object);
+        if (object.getX() > 0 && object.getY() > 0 && object.getX() < width && object.getY() < height) {
+            object.setMapNotChange(this);
+            if (object instanceof WarpPoint) {
+                warps.add((WarpPoint) object);
+            }
+            int area = getAreaIndex(object.getX(), object.getY());
+            object.setArea(area);
+            areas[area].addObject(object);
+        } else {
+            System.out.println("Poza mapą - nie dodaję!");
         }
-        int area = getAreaIndex(object.getX(), object.getY());
-        object.setArea(area);
-        areas[area].addObject(object);
     }
 
     public void deleteObject(GameObject object) {

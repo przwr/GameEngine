@@ -188,6 +188,8 @@ public class MyController extends PlayerController {
                 animateMoving(2);
                 inControl.addSpeed(0, -4);
             }
+            if (running)
+                inControl.setMakeNoise(true);
         } else if (actions[DOWN].isKeyPressed()) {
             if (actions[LEFT].isKeyPressed()) {
                 animateMoving(5);
@@ -207,6 +209,8 @@ public class MyController extends PlayerController {
                 animateMoving(6);
                 inControl.addSpeed(0, 4);
             }
+            if (running)
+                inControl.setMakeNoise(true);
         } else {
             if (actions[RIGHT].isKeyPressed()) {
                 if (actions[UP].isKeyReleased()) {
@@ -219,6 +223,8 @@ public class MyController extends PlayerController {
                 }
                 animateMoving(0);
                 inControl.addSpeed(4, 0);
+                if (running)
+                    inControl.setMakeNoise(true);
             } else if (actions[LEFT].isKeyPressed()) {
                 if (actions[UP].isKeyReleased()) {
                     sideDirection = 3;
@@ -230,11 +236,15 @@ public class MyController extends PlayerController {
                 }
                 animateMoving(4);
                 inControl.addSpeed(-4, 0);
+                if (running)
+                    inControl.setMakeNoise(true);
             } else {
                 if (!sideDelay.isActive()) {
+                    inControl.setMakeNoise(false);
                     playerAnimation.animateSingleInDirection(tempDirection, 0);
                 } else {
                     playerAnimation.animateSingleInDirection(sideDirection, 0);
+                    inControl.setMakeNoise(false);
                 }
             }
         }
@@ -250,6 +260,7 @@ public class MyController extends PlayerController {
             if (!actions[UP].isKeyPressed() && !actions[DOWN].isKeyPressed()
                     && !actions[LEFT].isKeyPressed() && !actions[RIGHT].isKeyPressed()) {
                 inControl.setDirection(sideDirection * 45);
+                inControl.setMakeNoise(false);
             }
             sideDelay.stop();
         }
@@ -270,6 +281,7 @@ public class MyController extends PlayerController {
                 if (jumpLag == 0) {
                     setInputBlocked(false, ATTACK);
                 }
+                inControl.setMakeNoise(true);
             }
         } else {
             playerAnimation.animateSingleInDirection(tempDirection, 43);

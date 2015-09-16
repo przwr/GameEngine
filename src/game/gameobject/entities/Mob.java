@@ -31,11 +31,14 @@ public abstract class Mob extends Entity {
     protected int pastDirections[] = new int[2];
     protected int currentPastDirection;
 
-    protected Mob(int x, int y, double speed, int range, String name, Place place, String spriteName, boolean solid, short mobID) {
+    protected Mob(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
         this.solid = solid;
-        this.range = range;
-        this.range2 = range * range;
+        this.hearRange = hearRange;
+        this.hearRange2 = hearRange * hearRange;
+        this.sightRange = hearRange;
+        this.sightRange2 = sightRange * sightRange;
+        this.sightAngle = 180;
         this.setMaxSpeed(speed);
         this.appearance = place.getSprite(spriteName, "");
         initialize(name, x, y);
@@ -48,7 +51,7 @@ public abstract class Mob extends Entity {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
-            if (object.getMap() == map && Methods.pointDistance(object.getX(), object.getY(), getX(), getY()) < range) {
+            if (object.getMap() == map && isInRange(object)) {
                 target = object;
                 break;
             }
@@ -62,16 +65,16 @@ public abstract class Mob extends Entity {
         int x = getX(), y = getY();
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
-            if (object.getMap() == map && Methods.pointDistance(object.getX(), object.getY(), x, y) < range) {
+            if (object.getMap() == map && (isHeard(object) || isSeen(object))) {
                 closeEnemies.add(object);
             }
         }
         for (Mob mob : mobs) {
             if (mob.getClass().getName() == this.getClass().getName()) {
-                if (this != mob && mob.getMap() == map && Methods.pointDistance(mob.getX(), mob.getY(), x, y) < range * 2) {
+                if (this != mob && mob.getMap() == map && isInRange(mob)) {
                     closeFriends.add(mob);
                 }
-            } else if (mob.getMap() == map && Methods.pointDistance(mob.getX(), mob.getY(), x, y) < range) {
+            } else if (mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
                 closeEnemies.add(mob);
             }
         }
@@ -132,14 +135,22 @@ public abstract class Mob extends Entity {
             }
             x = getX() - (x / closeEnemies.size());
             y = getY() - (y / closeEnemies.size());
-            float ratio = Math.abs(y / (float) x);
-            x = (int) (Math.signum(x) * range) + getX();
-            y = (int) (Math.signum(y) * (ratio * Math.abs(x))) + getY();
-            if (x < collision.getWidth()) {
-                x = collision.getWidth();
+            double ratio = Math.abs(y / (double) x);
+            x = (int) (Math.signum(x) * sightRange);
+            y = (int) (Math.signum(y) * (ratio * Math.abs(x)));
+            x += getX();
+            y += getY();
+            if (x < sightRange / 2) {
+                destination.setX(sightRange / 2);
+            }
+            if (x > map.getWidth()) {
+                x = map.getWidth() - sightRange / 2;
             }
             if (y < collision.getHeight()) {
-                y = collision.getHeight();
+                y = sightRange / 2;
+            }
+            if (y > map.getHeight()) {
+                y = map.getHeight() - sightRange / 2;
             }
             destination.set(x, y);
         }
@@ -165,10 +176,19 @@ public abstract class Mob extends Entity {
                 x = (x / (2 * (closeFriends.size() - 1)));
                 y = (y / (2 * (closeFriends.size() - 1)));
                 if (x < collision.getWidth()) {
-                    x = collision.getWidth();
+                    x = sightRange;
+                }
+                if (x < sightRange / 2) {
+                    destination.setX(sightRange / 2);
+                }
+                if (x > map.getWidth()) {
+                    x = map.getWidth() - sightRange / 2;
                 }
                 if (y < collision.getHeight()) {
-                    y = collision.getHeight();
+                    y = sightRange / 2;
+                }
+                if (y > map.getHeight()) {
+                    y = map.getHeight() - sightRange / 2;
                 }
                 secondaryDestination.set(x, y);
             }
@@ -178,7 +198,7 @@ public abstract class Mob extends Entity {
     protected void normalizeSpeed() {
         if (xSpeed != 0 && ySpeed != 0) {
             double maxSpeed2 = maxSpeed * maxSpeed;
-            if (xSpeed * xSpeed + ySpeed * ySpeed > maxSpeed2) {
+            if (xSpeed * xSpeed + ySpeed * ySpeed > maxSpeed2 - 0.01) {
                 double ratio = Math.abs(ySpeed / xSpeed);
                 double normalizedX = FastMath.sqrt(maxSpeed2 / (ratio * ratio + 1));
                 xSpeed = Math.signum(xSpeed) * normalizedX;
