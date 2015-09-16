@@ -57,4 +57,9 @@ public abstract class AnyInput {
     public int getKey() {
         return key;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof AnyInput && pad == ((AnyInput) o).pad && key == ((AnyInput) o).key && label == ((AnyInput) o).label;
+    }
 }

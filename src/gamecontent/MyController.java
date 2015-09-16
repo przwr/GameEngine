@@ -6,6 +6,7 @@
 package gamecontent;
 
 import engine.utilities.Delay;
+import game.Settings;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
@@ -425,17 +426,17 @@ public class MyController extends PlayerController {
 
     @Override
     public void getMenuInput() {
-        for (int i = 0; i < MENU_ACTIONS_COUNT; i++) {
-            actions[i].updateActiveState();
+        boolean firstPlayer = !((MyPlayer) inControl).isNotFirst();
+        for (int i = 0; i < MENU_ACTIONS_COUNT + 5; i++) {
+            if (firstPlayer || isNotEqualToFirstPlayerMenuAction(actions[i].input))
+                actions[i].updateActiveState();
         }
-        actions[RIGHT].updateActiveState();
-        actions[LEFT].updateActiveState();
-        if (actions[MENU_UP].isKeyClicked()) {
+        if (actions[MENU_UP].isKeyClicked() || actions[UP].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(-1);
-        } else if (actions[MENU_DOWN].isKeyClicked()) {
+        } else if (actions[MENU_DOWN].isKeyClicked() || actions[DOWN].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(1);
         }
-        if (actions[MENU_ACTION].isKeyClicked()) {
+        if (actions[MENU_ACTION].isKeyClicked() || actions[ATTACK].isKeyClicked()) {
             ((Player) inControl).getMenu().choice(0);
         } else if (actions[MENU_RIGHT].isKeyClicked() || actions[RIGHT].isKeyClicked()) {
             ((Player) inControl).getMenu().choice(1);
@@ -444,6 +445,16 @@ public class MyController extends PlayerController {
         } else if (actions[MENU_BACK].isKeyClicked()) {
             ((Player) inControl).getMenu().back();
         }
+    }
+
+    private boolean isNotEqualToFirstPlayerMenuAction(AnyInput input) {
+        Action[] firstPlayerActions = Settings.players[0].getController().actions;
+        for (int i = 0; i < MENU_ACTIONS_COUNT; i++) {
+            if (firstPlayerActions[i].input.equals(input)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
