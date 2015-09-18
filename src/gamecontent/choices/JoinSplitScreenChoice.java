@@ -34,12 +34,12 @@ public class JoinSplitScreenChoice extends MenuChoice {
     public String getLabel() {
         if (menu.game.getPlace() != null) {
             if (Settings.joinSplitScreen) {
-                return label + Settings.language.menu.On;
+                return label + " [DELETE] " + Settings.language.menu.On;
             } else {
-                return label + Settings.language.menu.Off + Settings.language.menu.MustBeClose;
+                return label + " [DELETE] " + Settings.language.menu.Off + Settings.language.menu.MustBeClose;
             }
         } else {
-            return label + Settings.language.menu.StartGame;
+            return label + " [DELETE] " + Settings.language.menu.StartGame;
         }
     }
 }

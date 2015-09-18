@@ -30,9 +30,13 @@ public class MyMenu extends Menu {
     private final Color normalColor = new Color(1f, 1f, 1f);
     private final Color darkColor = new Color(0.5f, 0.5f, 0.5f);
     private final Color chosenColor = new Color(1f, 1f, 0.5f);
+    //    private final Color gammaColor1 = new Color(0.32f, 0.32f, 0.32f);
+//    private final Color gammaColor2 = new Color(0.16f, 0.16f, 0.16f);
+//    private final Color gammaColor3 = new Color(0.08f, 0.08f, 0.08f);
     private final Color gammaColor1 = new Color(0.32f, 0.32f, 0.32f);
     private final Color gammaColor2 = new Color(0.16f, 0.16f, 0.16f);
-    private final Color gammaColor3 = new Color(0.08f, 0.08f, 0.08f);
+    private final Color gammaColor3 = new Color(0.1f, 0.1f, 0.1f);
+
 
     public MyMenu(Game game) {
         super(game);
@@ -66,20 +70,32 @@ public class MyMenu extends Menu {
         root.addChoice(start);
 
         MenuChoice options = new MenuChoice(Settings.language.menu.Options, this);
-        options.addChoice(new PlayersNumberChoice(Settings.language.menu.Number_Of_Players, this));
-        options.addChoice(new SplitScreenChoice(Settings.language.menu.SplitScreen, this));
-        options.addChoice(new JoinSplitScreenChoice(Settings.language.menu.JoinSS, this));
-        options.addChoice(new LanguageChoice(Settings.language.menu.Language, this));
+//        options.addChoice(new PlayersNumberChoice(Settings.language.menu.Number_Of_Players, this));
+        MenuChoice gameplay = new MenuChoice(Settings.language.menu.Gameplay, this);
+        gameplay.addChoice(new SplitScreenChoice(Settings.language.menu.SplitScreen, this));
+        gameplay.addChoice(new JoinSplitScreenChoice(Settings.language.menu.JoinSS, this));
+        options.addChoice(gameplay);
+
+
         MenuChoice controls = new MenuChoice(Settings.language.menu.Controls, this);
         addControlsChoices(controls);
         options.addChoice(controls);
-        options.addChoice(new VolumeChoice(Settings.language.menu.Volume, this));
-        options.addChoice(new GammaChoice(Settings.language.menu.Gamma, this));
-        options.addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this));
-        options.addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this));
-        options.addChoice(new VerticalSynchronizationChoice(Settings.language.menu.VSync, this));
-        options.addChoice(new ShadowsOffChoice(Settings.language.menu.ShadowOff, this));
-        options.addChoice(new SmoothShadowsChoice(Settings.language.menu.SmoothShadows, this));
+//        options.addChoice(new VolumeChoice(Settings.language.menu.Volume, this));
+        MenuChoice graphic = new MenuChoice(Settings.language.menu.Video, this);
+        graphic.addChoice(new BrightnessChoice(Settings.language.menu.Brightness, this));
+        graphic.addChoice(new GammaChoice(Settings.language.menu.Gamma, this));
+        graphic.addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this));
+        graphic.addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this));
+        graphic.addChoice(new VerticalSynchronizationChoice(Settings.language.menu.VSync, this));
+//        graphic.addChoice(new ShadowsOffChoice(Settings.language.menu.ShadowOff, this));
+        graphic.addChoice(new SmoothShadowsChoice(Settings.language.menu.SmoothShadows, this));
+        options.addChoice(graphic);
+
+        MenuChoice language = new MenuChoice(Settings.language.menu.Language, this);
+        language.addChoice(new LanguageChoice(Settings.language.menu.Text, this));
+        options.addChoice(language);
+
+
         root.addChoice(options);
 
         root.addChoice(new StopChoice(Settings.language.menu.End, this));
@@ -127,8 +143,11 @@ public class MyMenu extends Menu {
             positions = maxPositions;
         }
         int line = positions + 2;
-        if (root.getCurrent() >= positions) {
-            shift = root.getCurrent() - positions + 1;
+        if (root.getCurrent() >= positions / 2 + 1 && root.getSize() > maxPositions) {
+            shift = root.getCurrent() - positions / 2 + 1;
+            if (positions + shift > root.getSize() - 1) {
+                shift = root.getSize() - positions;
+            }
         }
         Drawer.renderStringCentered(root.getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1))
                         * fonts.getFont(0).getHeight() * 0.7),
@@ -148,7 +167,7 @@ public class MyMenu extends Menu {
                     smallFont, getColor(i + shift));
             line--;
         }
-        if (root.getSize() > maxPositions && root.getCurrent() != root.getSize() - 1) {
+        if (root.getSize() > maxPositions && positions + shift <= root.getSize() - 1) {
             Drawer.renderStringCentered("\\|/", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * fonts.getFont(0).getHeight() * 0.7),
                     smallFont, darkColor);
         }

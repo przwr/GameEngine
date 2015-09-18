@@ -40,10 +40,6 @@ public class SplitScreenChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        if (Settings.horizontalSplitScreen) {
-            return label + Settings.language.menu.Horizontal + " [2/2]";
-        } else {
-            return label + Settings.language.menu.Vertical + " [1/2]";
-        }
+        return label + " [INSERT] " + (Settings.horizontalSplitScreen ? Settings.language.menu.Horizontal : Settings.language.menu.Vertical);
     }
 }

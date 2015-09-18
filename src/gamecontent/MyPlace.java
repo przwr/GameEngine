@@ -222,7 +222,7 @@ public class MyPlace extends Place {
                     Settings.gameGamma = 1f;
                 }
                 Settings.gameGamma = (Math.round(Settings.gameGamma * 10)) / 10f;
-                Main.refreshGamma();
+                Main.refreshGammaAndBrightness();
             }
         }
     }

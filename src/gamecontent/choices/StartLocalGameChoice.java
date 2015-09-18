@@ -26,7 +26,7 @@ public class StartLocalGameChoice extends MenuChoice {
             System.out.println(Settings.language.menu.Loading + " ...");
             ((MyGame) menu.game).setDesignerMode(false);
             menu.game.startGame();
-            Main.refreshGamma();
+            Main.refreshGammaAndBrightness();
             menu.setDefaultRoot();
         }
     }

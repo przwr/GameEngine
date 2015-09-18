@@ -40,6 +40,6 @@ public class ResolutionChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + Settings.resolutionWidth + " x " + Settings.resolutionHeight + " @ " + Settings.frequency + " Hz [" + (Settings.currentMode + 1) + "/" + Settings.modes.length + "]";
+        return label + Settings.resolutionWidth + " x " + Settings.resolutionHeight + " @ " + Settings.frequency + " Hz (" + (Settings.currentMode + 1) + "/" + Settings.modes.length + ")";
     }
 }

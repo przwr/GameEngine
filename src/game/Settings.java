@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static game.place.fbo.FrameBufferObject.*;
-import java.util.Calendar;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 
@@ -63,7 +62,9 @@ public class Settings {
     public static double nativeScale;
     public static String serverIP = "127.0.0.1";
     public static float defaultGamma = 1.0f;
+    public static float defaultBrightness = 0f;
     public static float gameGamma = 1.5f;
+    public static float gameBrightness = 0f;
     private static int modesCount;
 
     public static void initialize() {

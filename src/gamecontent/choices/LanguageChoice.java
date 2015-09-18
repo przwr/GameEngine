@@ -54,6 +54,6 @@ public class LanguageChoice extends MenuChoice {
         if (i >= Settings.languages.size()) {
             i = 0;
         }
-        return label + Settings.languageName + " [" + (i + 1) + "/" + Settings.languages.size() + "]";
+        return label + Settings.languageName + " (" + (i + 1) + "/" + Settings.languages.size() + ")";
     }
 }

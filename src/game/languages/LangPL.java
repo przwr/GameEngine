@@ -39,12 +39,13 @@ public class LangPL extends Language {
         menu.Gamma = "Gamma (3ci # niewidoczny): ";
         menu.Resolution = "Rozdzielczość: ";
         menu.FullScreen = "Pełny ekran: ";
+        menu.Text = "Tekst: ";
         menu.On = "Wł.";
         menu.Off = "Wył.";
         menu.Resume = "Wznów";
         menu.EndGame = "Zakończ grę!";
         menu.StartGame = "Uruchom grę!";
-        menu.Language = "Język: ";
+        menu.Language = "Język";
         menu.Controls = "Sterowanie";
         menu.Player1 = "Gracz 1";
         menu.Player2 = "Gracz 2";
@@ -90,5 +91,7 @@ public class LangPL extends Language {
         menu.MustBeClose = " (Gracze muszą być blisko)";
         menu.Empty = "brak!";
         menu.Loading = "Wczytywanie";
+        menu.Video = "Wideo";
+        menu.Gameplay = "Rozgrywka";
     }
 }

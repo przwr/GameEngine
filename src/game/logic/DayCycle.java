@@ -81,12 +81,12 @@ public class DayCycle {
                 temp = 1 + ((timeInMinutes - SUNRISE) * delta);
                 lightColor.b = lightColor.r * temp;
             } else if (timeInMinutes - SUNRISE < THREE_QUARTERS_TRANSITION_TIME) {
-                delta = 0.65f / HALF_TRANSITION_TIME;
+                delta = 0.75f / HALF_TRANSITION_TIME;
                 temp = 1.25f - ((timeInMinutes - SUNRISE - QUARTER_TRANSITION_TIME) * delta);
                 lightColor.b = lightColor.r * temp;
             } else {
-                delta = 0.40f / QUARTER_TRANSITION_TIME;
-                temp = 0.60f + ((timeInMinutes - SUNRISE - THREE_QUARTERS_TRANSITION_TIME) * delta);
+                delta = 0.50f / QUARTER_TRANSITION_TIME;
+                temp = 0.50f + ((timeInMinutes - SUNRISE - THREE_QUARTERS_TRANSITION_TIME) * delta);
             }
             lightColor.b = lightColor.r * temp;
             if (lightColor.b < 1)
@@ -103,12 +103,12 @@ public class DayCycle {
             temp = (timeInMinutes - NOON - NOONTIME) * delta;
             lightColor.r = lightColor.g = 1f - temp;
             if (timeInMinutes - DUSK < HALF_TRANSITION_TIME) {
-                delta = 0.40f / HALF_TRANSITION_TIME;
+                delta = 0.50f / HALF_TRANSITION_TIME;
                 temp = 1 - ((timeInMinutes - DUSK) * delta);
                 lightColor.b = lightColor.r * temp;
             } else if (timeInMinutes - DUSK < TRANSITION_TIME) {
-                delta = 0.65f / HALF_TRANSITION_TIME;
-                temp = 0.60f + ((timeInMinutes - DUSK - HALF_TRANSITION_TIME) * delta);
+                delta = 0.75f / HALF_TRANSITION_TIME;
+                temp = 0.50f + ((timeInMinutes - DUSK - HALF_TRANSITION_TIME) * delta);
             } else {
                 delta = 0.25f / QUARTER_TRANSITION_TIME;
                 temp = 1.25f - ((timeInMinutes - DUSK - TRANSITION_TIME) * delta);

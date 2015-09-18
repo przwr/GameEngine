@@ -10,9 +10,11 @@ import engine.systemcommunication.PlayerControllers;
 import engine.systemcommunication.Time;
 import engine.utilities.Delay;
 import engine.utilities.ErrorHandler;
+import engine.utilities.SimpleKeyboard;
 import engine.view.Popup;
 import game.Game;
 import game.Settings;
+import game.place.Console;
 import gamecontent.MyGame;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
@@ -36,8 +38,6 @@ import java.util.logging.Logger;
 
 import static engine.systemcommunication.IO.setSettingsFromFile;
 import static game.Settings.calculateScale;
-import engine.utilities.SimpleKeyboard;
-import game.place.Console;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
@@ -67,7 +67,7 @@ public class Main {
         calculateScale();
         initializeGame();
         Time.initialize();
-        refreshGamma();
+        refreshGammaAndBrightness();
         if (LOG) {
             ErrorHandler.logToFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
         }
@@ -164,8 +164,8 @@ public class Main {
     private static void setIcon() {
         try {
             Display.setIcon(new ByteBuffer[]{
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
             });
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
@@ -278,24 +278,24 @@ public class Main {
     private static void resolveGamma() {
         if (Display.isActive()) {
             if (!lastFrame) {
-                refreshGamma();
+                refreshGammaAndBrightness();
             }
         } else if (lastFrame) {
-            resetGamma();
+            resetGammaAndBrightness();
         }
     }
 
-    public static void refreshGamma() {
+    public static void refreshGammaAndBrightness() {
         try {
-            Display.setDisplayConfiguration(Settings.gameGamma, 0f, 1f);
+            Display.setDisplayConfiguration(Settings.gameGamma, Settings.gameBrightness, 1f);
         } catch (LWJGLException exception) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
         }
     }
 
-    public static void resetGamma() {
+    public static void resetGammaAndBrightness() {
         try {
-            Display.setDisplayConfiguration(Settings.defaultGamma, 0f, 1f);
+            Display.setDisplayConfiguration(Settings.defaultGamma, Settings.defaultBrightness, 1f);
         } catch (LWJGLException exception) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
         }
@@ -321,7 +321,7 @@ public class Main {
         Keyboard.destroy();
         Mouse.destroy();
         Controllers.destroy();
-        resetGamma();
+        resetGammaAndBrightness();
         Display.destroy();
         System.exit(0);
     }

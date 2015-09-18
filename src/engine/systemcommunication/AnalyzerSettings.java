@@ -99,7 +99,7 @@ public final class AnalyzerSettings {
                 break;
             case "DefaultGamma:":
                 final float d = Float.parseFloat(p[1]);
-                if (d >= 0 && d <= 2f) {
+                if (d >= 0f && d <= 2f) {
                     Settings.defaultGamma = d;
                 }
                 break;
@@ -107,6 +107,18 @@ public final class AnalyzerSettings {
                 final float g = Float.parseFloat(p[1]);
                 if (g >= 1f && g <= 3f) {
                     Settings.gameGamma = g;
+                }
+                break;
+            case "DefaultBrightness:":
+                final float db = Float.parseFloat(p[1]);
+                if (db >= -0.25f && db <= 0.25f) {
+                    Settings.defaultBrightness = db;
+                }
+                break;
+            case "GameBrightness:":
+                final float b = Float.parseFloat(p[1]);
+                if (b >= -0.25f && b <= 0.25f) {
+                    Settings.gameBrightness = b;
                 }
                 break;
             default:
@@ -151,6 +163,8 @@ public final class AnalyzerSettings {
             writer.write("Language: " + Settings.languageName + "\n");
             writer.write("DefaultGamma: " + Settings.defaultGamma + "\n");
             writer.write("GameGamma: " + Settings.gameGamma + "\n");
+            writer.write("DefaultBrightness: " + Settings.defaultBrightness + "\n");
+            writer.write("GameBrightness: " + Settings.gameBrightness + "\n");
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(AnalyzerSettings.class.getName()).log(Level.SEVERE, null, ex);

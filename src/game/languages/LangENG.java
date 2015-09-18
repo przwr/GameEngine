@@ -44,7 +44,7 @@ public class LangENG extends Language {
         menu.Resume = "Resume";
         menu.EndGame = "End game!";
         menu.StartGame = "Start game!";
-        menu.Language = "Language: ";
+        menu.Language = "Language";
         menu.Controls = "Controls";
         menu.Player1 = "Player 1";
         menu.Player2 = "Player 2";
@@ -90,5 +90,8 @@ public class LangENG extends Language {
         menu.MustBeClose = " (Players must be close)";
         menu.Empty = "empty!";
         menu.Loading = "Loading";
+        menu.Video = "Video";
+        menu.Gameplay = "Gameplay";
+        menu.Text = "Text: ";
     }
 }

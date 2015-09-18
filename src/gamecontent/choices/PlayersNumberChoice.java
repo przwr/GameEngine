@@ -37,6 +37,6 @@ public class PlayersNumberChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + "[" + Settings.playersCount + "/4]";
+        return label + "(" + Settings.playersCount + "/4)";
     }
 }

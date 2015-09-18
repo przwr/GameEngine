@@ -66,5 +66,8 @@ public class Language {
         public String MustBeClose;
         public String Empty;
         public String Loading;
+        public String Video;
+        public String Gameplay;
+        public String Text;
     }
 }

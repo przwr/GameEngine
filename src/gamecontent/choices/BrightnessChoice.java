@@ -9,32 +9,32 @@ import game.menu.MenuChoice;
 /**
  * Created by przemek on 17.08.15.
  */
-public class GammaChoice extends MenuChoice {
+public class BrightnessChoice extends MenuChoice {
 
-    public GammaChoice(String label, Menu menu) {
+    public BrightnessChoice(String label, Menu menu) {
         super(label, menu);
     }
 
     @Override
     public void action(int button) {
         if (button == ACTION || button == RIGHT) {
-            Settings.gameGamma += 0.05f;
-            if (Settings.gameGamma > 3.05f) {
-                Settings.gameGamma = 3f;
+            Settings.gameBrightness += 0.01f;
+            if (Settings.gameBrightness > 0.25f) {
+                Settings.gameBrightness = 0.25f;
             }
         } else {
-            Settings.gameGamma -= 0.05f;
-            if (Settings.gameGamma < 1f) {
-                Settings.gameGamma = 1f;
+            Settings.gameBrightness -= 0.01f;
+            if (Settings.gameBrightness < -0.25f) {
+                Settings.gameBrightness = -0.25f;
             }
         }
-        Settings.gameGamma = (Math.round(Settings.gameGamma * 20)) / 20f;
+        Settings.gameBrightness = (Math.round(Settings.gameBrightness * 100)) / 100f;
         AnalyzerSettings.update();
         Main.refreshGammaAndBrightness();
     }
 
     @Override
     public String getLabel() {
-        return label + Settings.gameGamma;
+        return label + Settings.gameBrightness;
     }
 }
