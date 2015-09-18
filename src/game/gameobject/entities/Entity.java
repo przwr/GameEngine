@@ -80,13 +80,12 @@ public abstract class Entity extends GameObject {
             knockback = new SpeedChanger();
         }
         knockback.setFrames(30);
+        int angle = (int) Methods.pointAngleCounterClockwise(attacker.getX(), attacker.getY(), x, y);
         knockback.setSpeedInDirection(
-                (int) Methods.pointAngleCounterClockwise(attacker.getX(), attacker.getY(), x, y),
+                angle - Methods.angleDifference(angle, attacker.getDirection()),
                 Methods.interval(5, damage * 4, 20));
-        System.out.println(attacker);
         knockback.setType(SpeedChanger.DECREASING);
         knockback.start();
-        System.out.println(knockback);
         addChanger(knockback);
     }
 

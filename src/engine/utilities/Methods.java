@@ -40,6 +40,11 @@ public class Methods {
         return FastMath.sin(FastMath.toRadians(angle)) * rad;
     }
 
+    public static int angleDifference(int angleA, int angleB) {
+        return (angleA = angleB - angleA) > 180 ? angleA - 360 : 
+                (angleA < -180 ? angleA + 360 : angleA);
+    }
+    
     public static int pointDistance(int x, int y, int xa, int ya) {
         xDDelta = xa - x;
         yDDelta = ya - y;
