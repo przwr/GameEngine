@@ -26,8 +26,23 @@ public class Interactive {
     private final InteractiveActivator activator;
     private boolean COLLIDES_WITH_SELF = false, COLLIDES_WITH_MOBS = true, COLLIDES_WITH_PLAYERS = true;
     private float modifier;
+    private byte weaponType = -1;
+    private byte attackType = -1;
     private boolean active;
 
+
+    // for Players and Weapons
+    public Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte attackType, float modifier) {
+        this.owner = owner;
+        this.activator = activator;
+        this.collision = collision;
+        this.action = action;
+        this.weaponType = weaponType;
+        this.attackType = attackType;
+        this.modifier = modifier;
+    }
+
+    // for Mobs and NPCs
     public Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, float modifier) {
         this.owner = owner;
         this.activator = activator;
@@ -84,5 +99,21 @@ public class Interactive {
 
     public void setModifier(float modifier) {
         this.modifier = modifier;
+    }
+
+    public byte getWeaponType() {
+        return weaponType;
+    }
+
+    public void setWeaponType(byte weaponType) {
+        this.weaponType = weaponType;
+    }
+
+    public byte getAttackType() {
+        return attackType;
+    }
+
+    public void setAttackType(byte attackType) {
+        this.attackType = attackType;
     }
 }

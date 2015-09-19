@@ -13,10 +13,8 @@ import engine.systemcommunication.Time;
 import engine.utilities.*;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
-import game.gameobject.interactive.CurveInteractiveCollision;
-import game.gameobject.interactive.Interactive;
-import game.gameobject.interactive.InteractiveActivatorFrames;
-import game.gameobject.interactive.LineInteractiveCollision;
+import game.gameobject.interactive.*;
+import game.gameobject.items.Weapon;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.map.Map;
@@ -31,7 +29,11 @@ import org.newdawn.slick.Color;
 import sprites.Animation;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
+import static game.gameobject.interactive.Interactive.HURT;
+import static game.gameobject.items.Weapon.SWORD;
+import static game.gameobject.items.Weapon.UNIVERSAL;
 import static gamecontent.MyController.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -55,6 +57,13 @@ public class MyPlayer extends Player {
     private Cloth boots;
 
     private Cloth weapon;
+    private Weapon activeWeapon;
+    private Weapon firstWeapon;
+    private Weapon secondWeapon;
+    private Weapon lastWeapon;
+    private Weapon universal = new Weapon("Hands", UNIVERSAL);
+    private ArrayList<InteractionSet> actionSets = new ArrayList<>();
+    private int activeActionSet;
     private TextController textControl;
 
     private MyGUI gui;
@@ -78,6 +87,15 @@ public class MyPlayer extends Player {
     }
 
     private void initializeAttacks() {
+        actionSets.add(new InteractionSet(UNIVERSAL));
+        actionSets.add(new InteractionSet(SWORD));
+        Weapon sword = new Weapon("Sword", SWORD);
+        activeWeapon = universal;
+        firstWeapon = sword;
+        activeActionSet = 0;
+
+        // TODO Interactives powinny być raz stworzone w Skillach!
+
         int[] attacks = ((MyController) playerController).getAttackFrames();
         for (int attack = 0; attack < attacks.length; attack++) {
             int[] frames = new int[8];
@@ -86,26 +104,100 @@ public class MyPlayer extends Player {
             }
             switch (attack) {
                 case ATTACK_SLASH:
-                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CurveInteractiveCollision(42, 32, 0, 64, 120), Interactive.HURT, 2f));
+                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new CurveInteractiveCollision(42, 32, 0, 64, 120), HURT, SWORD, (byte) attack, 2f));
                     break;
                 case ATTACK_THRUST:
-                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(52, 10, 6, 84, 24), Interactive.HURT, 2.5f));
+                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(52, 10, 6, 84, 24), HURT, SWORD, (byte) attack, 2.5f));
                     break;
                 case ATTACK_WEAK_PUNCH:
-                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(72, 12, 2, 30, 20), Interactive.HURT, 1f));
+                    actionSets.get(0).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(72, 12, 2, 30, 20), HURT, UNIVERSAL, (byte) attack, 1f));
+                    actionSets.get(1).setInteraction(2, 0, actionSets.get(0).getFirstInteractive());
                     break;
                 case ATTACK_STRONG_PUNCH:
-                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(72, 12, 2, 34, 20), Interactive.HURT, 1.5f));
+                    actionSets.get(0).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(72, 12, 2, 34, 20), HURT, UNIVERSAL, (byte) attack, 1.5f));
+                    actionSets.get(1).setInteraction(2, 1, actionSets.get(0).getSecondInteractive());
                     break;
                 case ATTACK_UPPER_SLASH:
-                    addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(0, 128, 16, 66, 40), Interactive.HURT, 2f));
+                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(0, 128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
                     break;
             }
         }
+
+
+        for (InteractionSet set : actionSets) {
+            for (Interactive interactive : set.getAllInteractives()) {
+                if (!interactiveObjects.contains(interactive))
+                    addInteractive(interactive);
+            }
+        }
+
     }
 
     public int getAttackType() {
         return ((MyController) playerController).getAttackType();
+    }
+
+    public byte getFirstAttackType() {
+        Interactive first = actionSets.get(activeActionSet).getFirstInteractive();
+        if (first != null) {
+            return first.getAttackType();
+        } else {
+            return -1;
+        }
+    }
+
+    public byte getSecondAttackType() {
+        Interactive second = actionSets.get(activeActionSet).getSecondInteractive();
+        if (second != null) {
+            return second.getAttackType();
+        } else {
+            return -1;
+        }
+    }
+
+    public void setActionPair(int pair) {
+        actionSets.get(activeActionSet).setActivePair(pair);
+    }
+
+    public void changeWeapon() {
+        if (activeWeapon == universal) {
+            if (lastWeapon != null && lastWeapon != universal) {
+                activeWeapon = lastWeapon;
+            } else if (firstWeapon != null) {
+                activeWeapon = firstWeapon;
+            } else if (secondWeapon != null) {
+                activeWeapon = secondWeapon;
+            }
+        } else {
+            if (activeWeapon == firstWeapon && secondWeapon != null) {
+                activeWeapon = secondWeapon;
+            } else if (activeWeapon == secondWeapon && firstWeapon != null) {
+                activeWeapon = firstWeapon;
+            } else if (activeWeapon == null) {
+                activeWeapon = universal;
+            }
+        }
+        updateActionSets();
+    }
+
+    public void hideWeapon() {
+        if (activeWeapon != universal)
+            lastWeapon = activeWeapon;
+        activeWeapon = universal;
+        updateActionSets();
+    }
+
+    private void updateActionSets() {
+        if (activeWeapon.getType() != actionSets.get(activeActionSet).getWeaponType()) {
+            for (int i = 0; i < actionSets.size(); i++) {
+                if (actionSets.get(i).getWeaponType() == activeWeapon.getType()) {
+                    activeActionSet = i;
+                    break;
+                } else if (actionSets.get(activeActionSet).getWeaponType() != UNIVERSAL && actionSets.get(i).getWeaponType() == UNIVERSAL) {
+                    activeActionSet = i;
+                }
+            }
+        }
     }
 
     private void initializeControllerForFirst() {

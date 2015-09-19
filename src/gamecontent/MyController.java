@@ -20,11 +20,11 @@ import sprites.Animation;
  */
 public class MyController extends PlayerController {
 
-    public static final byte MENU_UP = 0, MENU_DOWN = 1, MENU_ACTION = 2, MENU_BACK = 3, MENU_LEFT = 4,
-            MENU_RIGHT = 5, UP = 6, DOWN = 7, LEFT = 8, RIGHT = 9, ATTACK = 10, RUN = 11, LIGHT = 12,
-            ZOOM = 13, NEXT = 14, PREVIOUS = 15, BLOCK = 16, DODGE = 17, REVERSE = 18, SNEAK = 19,
-            ACTION = 20, ACTION_8 = 21, ACTION_7 = 22, ACTION_6 = 23, ACTION_5 = 24, ACTION_4 = 25,
-            ACTION_3 = 26, ACTION_2 = 27, ACTION_1 = 28;
+    public static final byte MENU_UP = 0, MENU_DOWN = 1, MENU_ACTION = 2, MENU_BACK = 3, MENU_LEFT = 4, MENU_RIGHT = 5,
+            UP = 6, DOWN = 7, LEFT = 8, RIGHT = 9, ACTION = 10, ATTACK = 11, SECOND_ATTACK = 12, BLOCK = 13,
+            RUN = 14, REVERSE = 15, DODGE = 16, CHANGE_WEAPON = 17, SNEAK = 18, CHANGE_SET = 19,
+            SLOT_UP = 20, SLOT_RIGHT = 21, SLOT_DOWN = 22, SLOT_LEFT = 23,
+            HANDY_MENU = 24, ACTION_1 = 25, ACTION_2 = 26, LIGHT = 27, ZOOM = 28;
     public static final byte MENU_ACTIONS_COUNT = 6, ACTIONS_COUNT = 29, ATTACK_COUNT = 5;
 
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2,
@@ -35,6 +35,7 @@ public class MyController extends PlayerController {
     private final SpeedChanger jumpMaker;
     private final SpeedChanger attackMovement;
     private int tempDirection, lagDuration, attackType, sideDirection;
+    private byte firstAttackType, secondAttackType;
     private boolean running, diagonal, inputLag;
     private Animation playerAnimation;
     private MyGUI gui;
@@ -80,7 +81,8 @@ public class MyController extends PlayerController {
             if (inControl.isAbleToMove()) {
                 //System.out.println(getAllInput(ATTACK));
                 if (jumpLag == 0) {
-                    if (actions[ATTACK].isKeyPressed()) {
+                    updateAttackTypes();
+                    if ((actions[ATTACK].isKeyPressed() && firstAttackType >= 0) || (actions[SECOND_ATTACK].isKeyPressed() && secondAttackType >= 0)) {
                         updateAttack();
                     } else {
                         updateMovement();
@@ -94,7 +96,7 @@ public class MyController extends PlayerController {
                 playerAnimation.animateSingleInDirection(tempDirection, 0);
                 inControl.brake(2);
             }
-            if (!actions[ATTACK].isKeyPressed() && jumpLag == 0) {
+            if ((!actions[ATTACK].isKeyPressed() || firstAttackType < 0) && (!actions[SECOND_ATTACK].isKeyPressed() || secondAttackType < 0) && jumpLag == 0) {
                 if (running) {
                     playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
                 } else {
@@ -142,31 +144,46 @@ public class MyController extends PlayerController {
         }
     }
 
+    private void updateAttackTypes() {
+        firstAttackType = ((MyPlayer) inControl).getFirstAttackType();
+        secondAttackType = ((MyPlayer) inControl).getSecondAttackType();
+    }
+
     private void updateAttack() {
         if (actions[ATTACK].isKeyClicked()) {
-            setInputLag(15);
-            attackMovement.setSpeedInDirection(tempDirection * 45, 10);
-            attackMovement.start();
-            inControl.addChanger(attackMovement);
-            switch (attackType) {
-                case ATTACK_SLASH:
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
-                    break;
-                case ATTACK_THRUST:
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 26, 28);
-                    break;
-                case ATTACK_UPPER_SLASH:
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 29, 36);
-                    break;
-                case ATTACK_WEAK_PUNCH:
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 37, 39);
-                    break;
-                case ATTACK_STRONG_PUNCH:
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 40, 41);
-                    break;
+            if (firstAttackType >= 0) {
+                attack(firstAttackType);
+            }
+        } else if (actions[SECOND_ATTACK].isKeyClicked()) {
+            if (secondAttackType >= 0) {
+                attack(secondAttackType);
             }
         }
         inControl.brakeWithModifier(2, 2);
+    }
+
+    private void attack(byte attack) {
+        setInputLag(15);
+        attackMovement.setSpeedInDirection(tempDirection * 45, 10);
+        attackMovement.start();
+        inControl.addChanger(attackMovement);
+        switch (attack) {
+            case ATTACK_SLASH:
+                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
+                break;
+            case ATTACK_THRUST:
+                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 26, 28);
+                break;
+            case ATTACK_UPPER_SLASH:
+                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 29, 36);
+                break;
+            case ATTACK_WEAK_PUNCH:
+                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 37, 39);
+                break;
+            case ATTACK_STRONG_PUNCH:
+                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 40, 41);
+                break;
+        }
     }
 
     private void updateMovement() {
@@ -280,7 +297,7 @@ public class MyController extends PlayerController {
                 jumpLag--;
                 playerAnimation.animateSingleInDirection(tempDirection, 45);
                 if (jumpLag == 0) {
-                    setInputBlocked(false, ATTACK);
+                    setInputBlocked(false, ATTACK, SECOND_ATTACK);
                 }
                 inControl.setMakeNoise(true);
             }
@@ -375,24 +392,25 @@ public class MyController extends PlayerController {
         jumpMaker.start();
         inControl.addChanger(jumpMaker);
         jumpDelay.stop();
-        setInputBlocked(true, ATTACK);
+        setInputBlocked(true, ATTACK, SECOND_ATTACK);
         jumpLag = jumpMaker.getTotalTime() / 2;
         setInputLag(jumpLag);
     }
 
     private void updateRest() {
-        if (actions[NEXT].isKeyClicked()) {
-            attackType += 1;
-            if (attackType > ATTACK_COUNT - 1) {
-                attackType = 0;
-            }
-            gui.changeAttackIcon(attackType);
-        } else if (actions[PREVIOUS].isKeyClicked()) {
-            attackType -= 1;
-            if (attackType < 0) {
-                attackType = ATTACK_COUNT - 1;
-            }
-            gui.changeAttackIcon(attackType);
+        if (actions[CHANGE_WEAPON].isKeyClicked()) {
+            ((MyPlayer) inControl).changeWeapon();
+        } else if (actions[CHANGE_SET].isKeyClicked()) {
+            ((MyPlayer) inControl).hideWeapon();
+        }
+        if (actions[SLOT_UP].isKeyClicked()) {
+            ((MyPlayer) inControl).setActionPair(0);
+        } else if (actions[SLOT_RIGHT].isKeyClicked()) {
+            ((MyPlayer) inControl).setActionPair(1);
+        } else if (actions[SLOT_DOWN].isKeyClicked()) {
+            ((MyPlayer) inControl).setActionPair(2);
+        } else if (actions[SLOT_LEFT].isKeyClicked()) {
+            ((MyPlayer) inControl).setActionPair(3);
         }
         if (!running) {
             inControl.setMaxSpeed(diagonal ? 1.5 : 2);
@@ -436,7 +454,7 @@ public class MyController extends PlayerController {
         } else if (actions[MENU_DOWN].isKeyClicked() || actions[DOWN].isKeyClicked()) {
             ((Player) inControl).getMenu().setChosen(1);
         }
-        if (actions[MENU_ACTION].isKeyClicked() || actions[ATTACK].isKeyClicked()) {
+        if (actions[MENU_ACTION].isKeyClicked() || actions[ACTION].isKeyClicked()) {
             ((Player) inControl).getMenu().choice(0);
         } else if (actions[MENU_RIGHT].isKeyClicked() || actions[RIGHT].isKeyClicked()) {
             ((Player) inControl).getMenu().choice(1);
