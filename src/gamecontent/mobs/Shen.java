@@ -75,8 +75,9 @@ public class Shen extends Mob {
         run_away = new ActionState() {
             @Override
             public void update() {
-                if (destination.getX() > 0)
+                if (destination.getX() > 0) {
                     secondaryDestination.set(destination.getX(), destination.getY());
+                }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForEscape();
                 goTo(destination.getX() > 0 ? destination : secondaryDestination);
@@ -114,11 +115,14 @@ public class Shen extends Mob {
         attack = new ActionState() {
             @Override
             public void update() {
-                if (xSpeed == 0 && ySpeed == 0)
+                if (xSpeed == 0 && ySpeed == 0) {
                     charge();
+                    unhurtable = true;
+                }
                 if (attack_delay.isOver() || isOutOfRange(target) || target.getMap() != map) {
                     state = idle;
                     target = null;
+                    unhurtable = false;
                     brake(2);
                     rest.start();
                     stats.setProtectionState(false);
@@ -138,8 +142,9 @@ public class Shen extends Mob {
                     goTo(secondaryDestination);
                 }
                 repulsion();
-                if (xSpeed == 0 && ySpeed == 0)
+                if (xSpeed == 0 && ySpeed == 0) {
                     alignment();
+                }
                 GameObject closerEnemy = getEnemyCloser();
                 if (closerEnemy != null) {
                     state = idle;
@@ -209,6 +214,7 @@ public class Shen extends Mob {
         stats = new MobStats(this);
         stats.setStrength(1);
         stats.setDefence(3);
+        stats.setWeight(70);
         attack_delay.start();
         rest.start();
         state = idle;
@@ -250,8 +256,9 @@ public class Shen extends Mob {
     private boolean isAnyFriendHurt() {
         if (!closeFriends.isEmpty()) {
             for (Mob mob : closeFriends) {
-                if (mob.getStats().getHealth() < mob.getStats().getMaxHealth())
+                if (mob.getStats().getHealth() < mob.getStats().getMaxHealth()) {
                     return true;
+                }
             }
         }
         return false;
@@ -259,14 +266,24 @@ public class Shen extends Mob {
 
     @Override
     public void update() {
-        state.update();
-        normalizeSpeed();
-        updateAnimation();
+        if (isHurt()) {
+            updateGettingHurt();
+        } else {
+            state.update();
+            normalizeSpeed();
+            updateAnimation();
+        }
         updateChangers();
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         brakeOthers();
     }
 
+    private void updateGettingHurt() {
+        setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(),
+                knockback.getYSpeed(), 0, 0));
+        animation.animateSingleInDirection(getDirection8Way(), 6);
+        brake(2);
+    }
 
     private GameObject getEnemyCloser() {
         for (GameObject object : closeEnemies) {
@@ -280,10 +297,12 @@ public class Shen extends Mob {
     private void updateAnimation() {
         if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
             pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
-            if (currentPastDirection > 1)
+            if (currentPastDirection > 1) {
                 currentPastDirection = 0;
-            if (pastDirections[0] == pastDirections[1])
+            }
+            if (pastDirections[0] == pastDirections[1]) {
                 setDirection(pastDirections[0] * 45);
+            }
             if (target == null) {
                 animation.setFPS(7);
                 animation.animateIntervalInDirection(getDirection8Way(), 0, 5);
@@ -303,7 +322,6 @@ public class Shen extends Mob {
         }
     }
 
-
     @Override
     public void render(int xEffect, int yEffect) {
         if (appearance != null) {
@@ -313,16 +331,18 @@ public class Shen extends Mob {
             glTranslatef(getX(), getY(), 0);
             //Drawer.setColor(skinColor);
             animation.updateFrame();
+            Drawer.setColor(JUMP_SHADOW_COLOR);
+            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
+            Drawer.refreshColor();
+            glTranslatef(0, (int) -aboveGroundHeight, 0);
             appearance.render();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            if (map != null) {
+            /*if (map != null) {
                 Drawer.renderString(name, 0, (int) -((animation.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
-            }
+            }*/
             glPopMatrix();
 
 //            renderPathPoints(xEffect, yEffect);
-
-
         }
     }
 

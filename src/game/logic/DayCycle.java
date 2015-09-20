@@ -13,8 +13,13 @@ import org.newdawn.slick.Color;
 public class DayCycle {
 
     public static final float NIGHT = 0.4f;
-    private static final short REAL_MINUTES_IN_HOUR = 6, SUNRISE = 300, SUNSET = 1260, TRANSITION_TIME = 120, NOONTIME = 240, HALF_TRANSITION_TIME = TRANSITION_TIME / 2, QUARTER_TRANSITION_TIME = TRANSITION_TIME / 4, THREE_QUARTERS_TRANSITION_TIME = 3 * QUARTER_TRANSITION_TIME;
-    private static final int DAWN = (SUNRISE + TRANSITION_TIME), DUSK = (SUNSET - TRANSITION_TIME - QUARTER_TRANSITION_TIME), NOON = ((SUNSET + SUNRISE) / 2);
+    private static final short REAL_MINUTES_IN_HOUR = 6, SUNRISE = 300, SUNSET = 1260, 
+            TRANSITION_TIME = 120, NOONTIME = 240, HALF_TRANSITION_TIME = TRANSITION_TIME / 2, 
+            QUARTER_TRANSITION_TIME = TRANSITION_TIME / 4, 
+            THREE_QUARTERS_TRANSITION_TIME = 3 * QUARTER_TRANSITION_TIME;
+    private static final int DAWN = (SUNRISE + TRANSITION_TIME), 
+            DUSK = (SUNSET - TRANSITION_TIME - QUARTER_TRANSITION_TIME), 
+            NOON = ((SUNSET + SUNRISE) / 2);
     private final Color lightColor = new Color(0.2f, 0.2f, 0.2f);
     private short timeInMinutes = 0;
     private long midnightTime;

@@ -1,11 +1,11 @@
 package game.gameobject.stats;
 
-
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.interactive.InteractiveResponse;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
+import net.jodk.lang.FastMath;
 
 /**
  * Created by przemek on 10.08.15.
@@ -17,13 +17,13 @@ public abstract class Stats {
     protected int maxHealth = 100;
     protected int strength = 2;
     protected int defence = 2;
+    protected int weight = 1;
     protected float sideDefenceModifier = 10;
     protected float backDefenceModifier = 4;
     protected float protection = 40;
     protected float protectionSideModifier = 4;
     protected float protectionBackModifier = 1;
     protected boolean protectionState;
-
 
     public Stats(GameObject owner) {
         this.owner = owner;
@@ -47,7 +47,10 @@ public abstract class Stats {
             if (health < 0) {
                 health = 0;
             }
-            owner.getHurt(hurt, response.getAttacker());
+            if (hurt != 0) {
+                owner.getHurt((int) (5 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1)), 
+                        response.getAttacker());
+            }
             System.out.println(owner.getName() + " dostał za " + hurt + " Życie: " + health + "/" + maxHealth);
             if (health == 0) {
                 died();
@@ -60,6 +63,13 @@ public abstract class Stats {
         System.out.println(owner.getName() + " zginał.");
     }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
 
     public int getHealth() {
         return health;

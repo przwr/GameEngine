@@ -69,6 +69,14 @@ public class SpeedChanger extends TemporalChanger {
         en.addYEnvironmentalSpeed(yTmpSpeed);
     }
 
+    public int getXSpeed() {
+        return xSpeed;
+    }
+    
+    public int getYSpeed() {
+        return ySpeed;
+    }
+    
     @Override
     public String toString() {
         return "Speed : " + xSpeed + " " + ySpeed + " : " + super.toString(); 

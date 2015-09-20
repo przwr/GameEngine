@@ -52,14 +52,20 @@ public abstract class Entity extends GameObject {
     protected PathStrategy pathStrategy;
     protected double maxSpeed;
     protected double xPosition, yPosition, xDelta, yDelta, xChange, yChange;
-    protected double resistance = 1;
-    protected boolean unableToMove;
+    protected double resistance = 0;
+    protected boolean unableToMove, unhurtable;
     protected Update currentUpdate;
     protected int currentUpdateID, deltasCount, xDestination, yDestination;
     protected Player collided;
 
-    private ArrayList<TemporalChanger> changers;
-    private SpeedChanger knockback;
+    protected ArrayList<TemporalChanger> changers;
+    protected SpeedChanger knockback;
+
+    public Entity() {
+        knockback = new SpeedChanger();
+        changers = new ArrayList<>();
+        unhurtable = false;
+    }
 
     public abstract void updateOnline();
 
@@ -75,18 +81,27 @@ public abstract class Entity extends GameObject {
     }
 
     @Override
-    public void getHurt(int damage, GameObject attacker) {
-        if (knockback == null) {
-            knockback = new SpeedChanger();
-        }
+    public void getHurt(int knockbackPower, GameObject attacker) {
         knockback.setFrames(30);
         int angle = (int) Methods.pointAngleCounterClockwise(attacker.getX(), attacker.getY(), x, y);
         knockback.setSpeedInDirection(
                 angle - Methods.angleDifference(angle, attacker.getDirection()),
-                Methods.interval(5, damage * 4, 20));
+                Methods.interval(1, knockbackPower, 20));
         knockback.setType(SpeedChanger.DECREASING);
         knockback.start();
         addChanger(knockback);
+    }
+
+    public boolean isHurt() {
+        if (!unhurtable) {
+            return !knockback.isOver();
+        } else {
+            return false;
+        }
+    }
+    
+    public SpeedChanger getKnockback() {
+        return knockback;
     }
 
     public synchronized void updateSoft() {
@@ -181,9 +196,6 @@ public abstract class Entity extends GameObject {
     }
 
     public void updateChangers() {
-        if (changers == null) {
-            changers = new ArrayList<>();
-        }
         TemporalChanger tc;
         boolean isRemoved = false;
         for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
@@ -201,9 +213,6 @@ public abstract class Entity extends GameObject {
     }
 
     public void addChanger(TemporalChanger tc) {
-        if (changers == null) {
-            changers = new ArrayList<>();
-        }
         if (!changers.contains(tc)) {
             changers.add(tc);
         }

@@ -104,7 +104,7 @@ public abstract class GameObject {
         interactiveObjects.remove(interactive);
     }
 
-    public void getHurt(int damage, GameObject attacker) {
+    public void getHurt(int knockbackPower, GameObject attacker) {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
     
