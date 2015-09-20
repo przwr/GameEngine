@@ -70,10 +70,8 @@ public class CircleInteractiveCollision extends InteractiveCollision {
             if (objectTop > bottom && objectBottom < top) {
                 int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), object.getX(), object.getY(), radius, object.getCollisionWidth() / 2);
                 if (pixelsIn > 0) {
-                    response.setResponse(pixelsIn,
-                            (byte) (calculateInteractionDirection(object.getDirection8Way(),
-                                    object.getCollision(), owner.getX(), owner.getY())),
-                            owner);
+                    response.setResponse(pixelsIn, (byte) (calculateInteractionDirection(object.getDirection8Way(),
+                            object.getCollision(), owner.getX(), owner.getY())), owner);
                     return response;
                 }
             }
@@ -91,10 +89,8 @@ public class CircleInteractiveCollision extends InteractiveCollision {
             if (playerTop > bottom && playerBottom < top) {
                 int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), player.getX(), player.getY(), radius, player.getCollisionWidth() / 2);
                 if (pixelsIn > 0) {
-                    response.setResponse(pixelsIn,
-                            (byte) (calculateInteractionDirection(player.getDirection8Way(),
-                                    player.getCollision(), owner.getX(), owner.getY())),
-                            owner);
+                    response.setResponse(pixelsIn, (byte) (calculateInteractionDirection(player.getDirection8Way(),
+                            player.getCollision(), owner.getX(), owner.getY())), owner);
                     return response;
                 }
             }

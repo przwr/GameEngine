@@ -24,7 +24,7 @@ public abstract class GameObject {
 
     public final static byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
     protected final ArrayList<Light> lights = new ArrayList<>(1);
-    private final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
+    protected final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
     protected double x, y;
     protected int depth;
     protected boolean solid;
@@ -300,13 +300,13 @@ public abstract class GameObject {
         return direction;
     }
 
-    public int getDirection8Way() {
-        return direction8Way;
-    }
-
     public void setDirection(int direction) {
         this.direction = direction % 360;
         direction8Way = (int) (((float) direction / 45 + 0.5f) % 8);
+    }
+
+    public int getDirection8Way() {
+        return direction8Way;
     }
     
     public void setDirection8way(int direction8Way) {
