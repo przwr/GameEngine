@@ -212,7 +212,7 @@ public class Shen extends Mob {
         collision.setMobile(true);
         setPathStrategy(PathFindingModule.GET_CLOSE, 250);
         stats = new MobStats(this);
-        stats.setStrength(1);
+        stats.setStrength(10);
         stats.setDefence(3);
         stats.setWeight(70);
         attack_delay.start();
@@ -222,7 +222,10 @@ public class Shen extends Mob {
         for (int i = 0; i < 8; i++) {
             frames[i] = 13 + i * animation.getFramesPerDirection();
         }
-        addInteractive(new Interactive(this, new InteractiveActivatorFrames(frames), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.HURT, 0.5f));
+        addInteractive(new Interactive(this, 
+                new InteractiveActivatorFrames(frames), 
+                new CircleInteractiveCollision(0, 64, -24, 32), 
+                Interactive.HURT, 0.5f));
     }
 
     private void repulsion() {
@@ -342,7 +345,7 @@ public class Shen extends Mob {
             }*/
             glPopMatrix();
 
-//            renderPathPoints(xEffect, yEffect);
+//          renderPathPoints(xEffect, yEffect);
         }
     }
 

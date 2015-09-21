@@ -81,16 +81,10 @@ public class MyController extends PlayerController {
             stats = (PlayerStats) inControl.getStats();
             playerAnimation.setAnimate(true);
             diagonal = true;
-
-            if (inControl.isAbleToMove()) {
-                //System.out.println(getAllInput(ATTACK));
-                if (jumpLag == 0) {
-                    updateAttackTypes();
-                    if ((actions[ATTACK].isKeyPressed() && firstAttackType >= 0) || (actions[SECOND_ATTACK].isKeyPressed() && secondAttackType >= 0)) {
-                        updateAttack();
             if (!inControl.isHurt()) {
                 if (inControl.isAbleToMove()) {
                     //System.out.println(getAllInput(ATTACK));
+                    updateAttackTypes();
                     if (jumpLag == 0) {
                         if (actions[ATTACK].isKeyPressed()) {
                             updateAttack();

@@ -108,6 +108,10 @@ public abstract class GameObject {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
     
+    public void reactToAttack(int knockbackPower, GameObject attacker) {
+        //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
+    }
+    
     public boolean isSolid() {
         return solid;
     }

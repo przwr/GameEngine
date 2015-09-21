@@ -2,6 +2,7 @@ package game.gameobject.stats;
 
 import game.Settings;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.interactive.InteractiveResponse;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
@@ -30,7 +31,7 @@ public abstract class Stats {
     }
 
     public void decreaseHealth(InteractiveResponse response) {
-        if (health > 0) {
+        if (health > 0 && ((Entity) owner).getKnockback().isOver()) {
             int hurt = 0;
             switch (response.getDirection()) {
                 case FRONT:

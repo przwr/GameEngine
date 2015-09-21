@@ -52,7 +52,7 @@ public abstract class Entity extends GameObject {
     protected PathStrategy pathStrategy;
     protected double maxSpeed;
     protected double xPosition, yPosition, xDelta, yDelta, xChange, yChange;
-    protected double resistance = 0;
+    protected double resistance;
     protected boolean unableToMove, unhurtable;
     protected Update currentUpdate;
     protected int currentUpdateID, deltasCount, xDestination, yDestination;
@@ -65,6 +65,7 @@ public abstract class Entity extends GameObject {
         knockback = new SpeedChanger();
         changers = new ArrayList<>();
         unhurtable = false;
+        resistance = 1;
     }
 
     public abstract void updateOnline();
@@ -356,6 +357,7 @@ public abstract class Entity extends GameObject {
         } else {
             ySpeed = (ySpeed + ySpeedDelta) / 2;
         }
+        System.out.println(xSpeed + " " + ySpeed);
         setAndLimitSpeed(xSpeed, ySpeed);
     }
 
