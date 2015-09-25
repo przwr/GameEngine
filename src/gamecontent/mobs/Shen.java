@@ -13,8 +13,9 @@ import game.gameobject.entities.ActionState;
 import game.gameobject.entities.Mob;
 import game.gameobject.interactive.CircleInteractiveCollision;
 import game.gameobject.interactive.Interactive;
-import game.gameobject.interactive.InteractiveActivatorFrames;
+import game.gameobject.interactive.UpdateBasedActivator;
 import game.gameobject.stats.MobStats;
+import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
 import net.jodk.lang.FastMath;
@@ -34,7 +35,37 @@ public class Shen extends Mob {
     private Color skinColor;
     private Delay attack_delay = new Delay(1000);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = new Delay(1000);            //TODO - te wartości losowe i zależne od poziomu trudności
-    private ActionState idle, run_away, hide, attack, wander, follow;
+    private ActionState idle, run_away, hide, attack, wander, follow, bounce;
+    private final static byte ATTACK_NORMAL = 0, ATTACK_CRITICAL = 1;
+
+    private SpeedChanger bouncer;
+
+    public Shen(int x, int y, Place place, short ID) {
+        super(x, y, 1, 500, "Shen", place, "shen", true, ID);
+        setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
+        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
+        appearance = animation;
+        //RandomGenerator r = RandomGenerator.create();
+        //skinColor = Color.getHSBColor(r.nextFloat(), 1, 1);
+        collision.setMobile(true);
+        setPathStrategy(PathFindingModule.GET_CLOSE, 250);
+        stats = new MobStats(this);
+        stats.setStrength(10);
+        stats.setDefence(3);
+        stats.setWeight(70);
+        attack_delay.start();
+        rest.start();
+        state = idle;
+        bouncer = new SpeedChanger();
+        addInteractive(new Interactive(this,
+                new UpdateBasedActivator(),
+                new CircleInteractiveCollision(0, 64, -24, 32),
+                Interactive.HURT, ATTACK_NORMAL, 0.5f));
+        addInteractive(new Interactive(this,
+                new UpdateBasedActivator(),
+                new CircleInteractiveCollision(0, 64, -24, 32),
+                Interactive.HURT, ATTACK_CRITICAL, 2f));
+    }
 
     {
         idle = new ActionState() {
@@ -105,7 +136,6 @@ public class Shen extends Mob {
                     } else if (rest.isOver() && target == null && (stats.getHealth() < stats.getMaxHealth() || isAnyFriendHurt()) && isInHalfHearingRange(closerEnemy)) {
                         state = attack;
                         target = closerEnemy;
-                        maxSpeed = 8;
                         setPathStrategy(PathFindingModule.GET_TO, 0);
                         attack_delay.start();
                     }
@@ -116,14 +146,49 @@ public class Shen extends Mob {
             @Override
             public void update() {
                 if (xSpeed == 0 && ySpeed == 0) {
+                    if (stats.getHealth() < stats.getMaxHealth() / 2) {
+                        maxSpeed = 11;
+                    } else {
+                        maxSpeed = 8;
+                    }
                     charge();
                     unhurtable = true;
+                } else {
+                    if (stats.getHealth() < stats.getMaxHealth() / 2) {
+                        getActivator(ATTACK_CRITICAL).setActivated(true);
+                    } else {
+                        getActivator(ATTACK_NORMAL).setActivated(true);
+                    }
                 }
                 if (attack_delay.isOver() || isOutOfRange(target) || target.getMap() != map) {
                     state = idle;
                     target = null;
                     unhurtable = false;
                     brake(2);
+                    rest.start();
+                    stats.setProtectionState(false);
+                    maxSpeed = 1;
+                    setPathStrategy(PathFindingModule.GET_CLOSE, 250);
+                }
+            }
+        };
+        bounce = new ActionState() {
+            @Override
+            public void update() {
+                if (xSpeed != 0 || ySpeed != 0) {
+                    bouncer.setFrames(30);
+                    bouncer.setSpeed((int) (-xSpeed / 2), (int) (-ySpeed / 2));
+                    bouncer.setType(SpeedChanger.DECREASING);
+                    bouncer.start();
+                    addChanger(bouncer);
+                    setJumpForce((Math.abs(xSpeed) + Math.abs(ySpeed)) / 2);
+                    unhurtable = true;
+                    xSpeed = 0;
+                    ySpeed = 0;
+                } else if (bouncer.isOver()) {
+                    state = idle;
+                    target = null;
+                    unhurtable = false;
                     rest.start();
                     stats.setProtectionState(false);
                     maxSpeed = 1;
@@ -202,32 +267,6 @@ public class Shen extends Mob {
         };
     }
 
-    public Shen(int x, int y, Place place, short ID) {
-        super(x, y, 1, 500, "Shen", place, "shen", true, ID);
-        setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
-        appearance = animation;
-        //RandomGenerator r = RandomGenerator.create();
-        //skinColor = Color.getHSBColor(r.nextFloat(), 1, 1);
-        collision.setMobile(true);
-        setPathStrategy(PathFindingModule.GET_CLOSE, 250);
-        stats = new MobStats(this);
-        stats.setStrength(10);
-        stats.setDefence(3);
-        stats.setWeight(70);
-        attack_delay.start();
-        rest.start();
-        state = idle;
-        int[] frames = new int[8];
-        for (int i = 0; i < 8; i++) {
-            frames[i] = 13 + i * animation.getFramesPerDirection();
-        }
-        addInteractive(new Interactive(this, 
-                new InteractiveActivatorFrames(frames), 
-                new CircleInteractiveCollision(0, 64, -24, 32), 
-                Interactive.HURT, 0.5f));
-    }
-
     private void repulsion() {
         for (Mob mob : closeFriends) {
             int distance = Methods.pointDistanceSimple2(getX(), getY(), mob.getX(), mob.getY());
@@ -277,6 +316,7 @@ public class Shen extends Mob {
             updateAnimation();
         }
         updateChangers();
+        updateWithGravity();
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         brakeOthers();
     }
@@ -337,16 +377,21 @@ public class Shen extends Mob {
             Drawer.setColor(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
             Drawer.refreshColor();
-            glTranslatef(0, (int) -aboveGroundHeight, 0);
+            glTranslatef(0, (int) -jumpHeight, 0);
             appearance.render();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             /*if (map != null) {
-                Drawer.renderString(name, 0, (int) -((animation.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
-            }*/
+             Drawer.renderString(name, 0, (int) -((animation.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
+             }*/
             glPopMatrix();
 
 //          renderPathPoints(xEffect, yEffect);
         }
+    }
+
+    @Override
+    public void reactToAttack(byte attackType, GameObject attacked) {
+        state = bounce;
     }
 
     private void renderPathPoints(int xEffect, int yEffect) {

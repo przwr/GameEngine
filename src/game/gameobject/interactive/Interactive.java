@@ -5,7 +5,6 @@
  */
 package game.gameobject.interactive;
 
-
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
@@ -30,9 +29,10 @@ public class Interactive {
     private byte attackType = -1;
     private boolean active;
 
-
     // for Players and Weapons
-    public Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte attackType, float modifier) {
+    public Interactive(GameObject owner, InteractiveActivator activator, 
+            InteractiveCollision collision, InteractiveAction action, 
+            byte weaponType, byte attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
@@ -43,18 +43,20 @@ public class Interactive {
     }
 
     // for Mobs and NPCs
-    public Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, float modifier) {
+    public Interactive(GameObject owner, InteractiveActivator activator, 
+            InteractiveCollision collision, InteractiveAction action, byte attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
         this.action = action;
         this.modifier = modifier;
+        this.attackType = attackType;
     }
 
     public void checkCollision(GameObject[] players, List<Mob> mobs) {
         if (COLLIDES_WITH_MOBS) {
             mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || mob != owner))).forEach((mob) -> {
-                InteractiveResponse response = collision.collide(owner, mob);
+                InteractiveResponse response = collision.collide(owner, mob, attackType);
                 if (response.getPixels() > 0) {
                     action.act(mob, this, response);
                 }
@@ -63,7 +65,7 @@ public class Interactive {
         if (COLLIDES_WITH_PLAYERS) {
             for (GameObject player : players) {
                 if ((COLLIDES_WITH_SELF || player != owner)) {
-                    InteractiveResponse response = collision.collide(owner, (Player) player);
+                    InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
                     if (response.getPixels() > 0) {
                         action.act(player, this, response);
                     }
@@ -74,16 +76,21 @@ public class Interactive {
 
     public void update() {
         active = activator.checkActivation(owner);
-        if (active)
+        if (active) {
             collision.updatePosition(owner);
+            activator.setActivated(false);
+        }
     }
 
     //TODO stworzyć Weapon, które ma właściwości jego użycia, jak przeliczenie danych, wygląd, czy używane statystyki
-
     public void recalculateData(InteractiveResponse response) {
         response.setPixels(response.getPixels() * modifier * owner.getStats().getStrength());
     }
 
+    public InteractiveActivator getActivator() {
+        return activator;
+    }
+    
     public boolean isActive() {
         return active;
     }
@@ -91,7 +98,6 @@ public class Interactive {
     public void setActive(boolean active) {
         this.active = active;
     }
-
 
     public float getModifier() {
         return modifier;

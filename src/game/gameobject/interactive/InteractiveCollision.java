@@ -58,9 +58,9 @@ public abstract class InteractiveCollision {
 
     public abstract void updatePosition(GameObject owner);
 
-    public abstract InteractiveResponse collide(GameObject owner, GameObject object);
+    public abstract InteractiveResponse collide(GameObject owner, GameObject object, byte attackType);
 
-    public abstract InteractiveResponse collide(GameObject owner, Player player);
+    public abstract InteractiveResponse collide(GameObject owner, Player player, byte attackType);
 
     protected int calculateInteractionDirection(int objectDirection, Figure collision, int x, int y) {
         int xS = collision.getX();

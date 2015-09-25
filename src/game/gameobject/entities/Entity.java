@@ -82,12 +82,12 @@ public abstract class Entity extends GameObject {
     }
 
     @Override
-    public void getHurt(int knockbackPower, GameObject attacker) {
+    public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
         knockback.setFrames(30);
         int angle = (int) Methods.pointAngleCounterClockwise(attacker.getX(), attacker.getY(), x, y);
-        knockback.setSpeedInDirection(
-                angle - Methods.angleDifference(angle, attacker.getDirection()),
+        knockback.setSpeedInDirection(angle,
                 Methods.interval(1, knockbackPower, 20));
+        setJumpForce(jumpPower);
         knockback.setType(SpeedChanger.DECREASING);
         knockback.start();
         addChanger(knockback);
@@ -357,7 +357,6 @@ public abstract class Entity extends GameObject {
         } else {
             ySpeed = (ySpeed + ySpeedDelta) / 2;
         }
-        System.out.println(xSpeed + " " + ySpeed);
         setAndLimitSpeed(xSpeed, ySpeed);
     }
 

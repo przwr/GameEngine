@@ -56,6 +56,10 @@ public abstract class TemporalChanger {
     public int getTimePart(int parts) {
         return Math.min(parts - 1 - (parts * left) / time, parts - 1);
     }
+    
+    public double getPercentDone() {
+        return (double) (time - left) / time;
+    }
 
     public void modifyEntity(Entity en) {
         if (left != 0) {

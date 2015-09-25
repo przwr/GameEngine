@@ -57,11 +57,11 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public InteractiveResponse collide(GameObject owner, GameObject object) {
+    public InteractiveResponse collide(GameObject owner, GameObject object, byte attackType) {
         if (object != null && object.getCollision() != null) {
-            int objectBottom = (int) object.getAboveGroundHeight();
+            int objectBottom = (int) object.getJumpHeight();
             int objectTop = objectBottom + object.getAppearance().getActualHeight();
-            int bottom = (int) owner.getAboveGroundHeight() + fromBottom;
+            int bottom = (int) owner.getJumpHeight() + fromBottom;
             int top = bottom + height;
             if (objectTop > bottom && objectBottom < top) {
                 int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), object.getX(), object.getY(), radius, object.getCollisionWidth() / 2);
@@ -76,7 +76,7 @@ public class CurveInteractiveCollision extends InteractiveCollision {
                     }
                     if (Math.abs(direction * 45 - angle) <= activationAngle) {
                         response.setResponse(pixelsIn, (byte) (calculateInteractionDirection(object.getDirection8Way(),
-                                object.getCollision(), owner.getX(), owner.getY())), owner);
+                                object.getCollision(), owner.getX(), owner.getY())), attackType, owner);
                         return response;
                     }
                 }
@@ -86,11 +86,11 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public InteractiveResponse collide(GameObject owner, Player player) {
+    public InteractiveResponse collide(GameObject owner, Player player, byte attackType) {
         if (player != null && player.isInGame()) {
-            int playerBottom = (int) player.getAboveGroundHeight();
+            int playerBottom = (int) player.getJumpHeight();
             int playerTop = playerBottom + player.getAppearance().getActualHeight();
-            int bottom = (int) owner.getAboveGroundHeight() + fromBottom;
+            int bottom = (int) owner.getJumpHeight() + fromBottom;
             int top = bottom + height;
             if (playerTop > bottom && playerBottom < top) {
                 int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), player.getX(), player.getY(), radius, player.getCollisionWidth() / 2);
@@ -98,7 +98,7 @@ public class CurveInteractiveCollision extends InteractiveCollision {
                     double diffrence = Math.abs(owner.getDirection8Way() * 45 - Methods.pointAngleCounterClockwise(position.getX(), position.getY(), player.getX(), player.getY()));
                     if (diffrence <= activationAngle) {
                         response.setResponse(pixelsIn, (byte) (calculateInteractionDirection(player.getDirection8Way(),
-                                player.getCollision(), owner.getX(), owner.getY())), owner);
+                                player.getCollision(), owner.getX(), owner.getY())), attackType, owner);
                         return response;
                     }
                 }

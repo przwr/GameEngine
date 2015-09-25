@@ -12,4 +12,7 @@ public class InteractiveActivatorAlways implements InteractiveActivator {
     public boolean checkActivation(GameObject owner) {
         return true;
     }
+
+    @Override
+    public void setActivated(boolean active) {}
 }

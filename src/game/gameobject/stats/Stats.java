@@ -49,8 +49,9 @@ public abstract class Stats {
                 health = 0;
             }
             if (hurt != 0) {
-                owner.getHurt((int) (5 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1)), 
-                        response.getAttacker());
+                double hurtPower = 5 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
+                owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
+                response.getAttacker().reactToAttack(FRONT, owner);
             }
             System.out.println(owner.getName() + " dostał za " + hurt + " Życie: " + health + "/" + maxHealth);
             if (health == 0) {

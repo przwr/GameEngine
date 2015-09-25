@@ -12,6 +12,7 @@ package game.gameobject;
 import collision.Figure;
 import engine.lights.Light;
 import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.InteractiveActivator;
 import game.gameobject.stats.Stats;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
@@ -34,7 +35,9 @@ public abstract class GameObject {
     protected boolean simpleLighting;
     protected boolean visible;
     protected boolean makeNoise;
-    protected double aboveGroundHeight;
+    protected double jumpHeight;
+    protected double jumpForce;
+    private final double gravity = 0.6f;
     protected Appearance appearance;
     protected Stats stats;
     protected String name;
@@ -104,11 +107,11 @@ public abstract class GameObject {
         interactiveObjects.remove(interactive);
     }
 
-    public void getHurt(int knockbackPower, GameObject attacker) {
+    public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
     
-    public void reactToAttack(int knockbackPower, GameObject attacker) {
+    public void reactToAttack(byte attackType, GameObject attacked) {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
     
@@ -292,14 +295,31 @@ public abstract class GameObject {
         this.area = area;
     }
 
-    public double getAboveGroundHeight() {
-        return aboveGroundHeight;
+    public double getJumpHeight() {
+        return jumpHeight;
     }
 
-    public void setAboveGroundHeight(double aboveGroundHeight) {
-        this.aboveGroundHeight = aboveGroundHeight;
+    public void setJumpHeight(double jumpHeight) {
+        this.jumpHeight = jumpHeight;
+    }
+    
+    public double getJumpForce() {
+        return jumpForce;
     }
 
+    public void setJumpForce(double jumpForce) {
+        this.jumpForce = jumpForce;
+    }
+
+    protected void updateWithGravity() {
+        if (jumpHeight > 0 || jumpForce > 0) {
+            jumpHeight += jumpForce;
+            jumpForce -= gravity;
+        } else {
+            jumpHeight = 0;
+        }
+    }
+    
     public int getDirection() {
         return direction;
     }
@@ -342,6 +362,10 @@ public abstract class GameObject {
         return interactiveObjects;
     }
 
+    public InteractiveActivator getActivator(int i) {
+        return interactiveObjects.get(i).getActivator();
+    }
+    
     public Appearance getAppearance() {
         return appearance;
     }

@@ -44,7 +44,7 @@ public class MyController extends PlayerController {
     private MyGUI gui;
     private int jumpDirection, jumpLag;
 
-    private boolean[] blockedInputs;
+    private final boolean[] blockedInputs;
 
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);
@@ -411,6 +411,7 @@ public class MyController extends PlayerController {
         inControl.addChanger(jumpMaker);
         jumpDelay.stop();
         setInputBlocked(true, ATTACK, SECOND_ATTACK);
+        inControl.setJumpForce(jumpMaker.getTotalTime() / 4);
         jumpLag = jumpMaker.getTotalTime() / 2;
         setInputLag(jumpLag);
     }
