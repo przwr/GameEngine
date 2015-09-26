@@ -43,7 +43,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyPlayer extends Player {
 
-    private final int framesPerDir = 46;
+    private final int framesPerDir = 26;//46;
     private final String characterName = "aria";
     private Cloth head;
     private Cloth torso;

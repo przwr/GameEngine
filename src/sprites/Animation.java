@@ -42,8 +42,8 @@ public class Animation implements Appearance {
 
     public static Animation createFBOAnimation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
         Animation tmp = new Animation(sprite, delayTime, framesPerDirection);
-//        tmp.fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
-//                framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
+        tmp.fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
+                framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
         return tmp;
     }
 
@@ -85,7 +85,7 @@ public class Animation implements Appearance {
     }
 
     public void animateSingleInDirection(int direction, int index) {
-        animateSingle(direction * framesPerDirection + index);
+        animateSingle(direction * framesPerDirection + Methods.interval(0, index, framesPerDirection - 1));
     }
 
     public void animateWhole() {
@@ -100,17 +100,16 @@ public class Animation implements Appearance {
     }
 
     public void animateIntervalInDirection(int direction, int start, int end) {
-        animateInterval(direction * framesPerDirection + start,
-                direction * framesPerDirection + end);
+        animateInterval(direction * framesPerDirection + Methods.interval(0, start, framesPerDirection - 1),
+                direction * framesPerDirection + Methods.interval(0, end, framesPerDirection - 1));
     }
 
     public void animateIntervalInDirectionOnce(int direction, int start, int end) {
-        animateInterval(direction * framesPerDirection + start,
-                direction * framesPerDirection + end);
+        animateIntervalInDirection(direction, start, end);
         setCurrentFrame(this.start);
         stopAtEnd = true;
     }
-    
+
     @Override
     public void bindCheck() {
         if (fboSpriteSheet == null) {

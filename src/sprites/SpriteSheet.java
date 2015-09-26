@@ -109,7 +109,9 @@ public class SpriteSheet extends Sprite {
         } else {
             //System.out.println(startingPoints[frame]);
             frame = Math.min(frame, startingPoints.length - 1);
-            Drawer.translate(xStart + startingPoints[frame].getX(), yStart + startingPoints[frame].getY());
+            if (startingPoints[frame] != null) {
+                Drawer.translate(xStart + startingPoints[frame].getX(), yStart + startingPoints[frame].getY());
+            }
         }
     }
 
@@ -149,7 +151,7 @@ public class SpriteSheet extends Sprite {
             int y = (int) (piece / xTiles);
             frame = piece;
             renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
-            if (!isStartMoving) {
+            if (!isStartMoving || startingPoints[frame] == null) {
                 if (xStart != 0 && yStart != 0) {
                     Drawer.translate(-xStart, -yStart);
                 }
