@@ -404,10 +404,6 @@ public abstract class Map {
         updateNearForegroundTiles(camera.getArea());
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
         Methods.inSort(depthObjects);
-//        System.out.println("\n" + name + ": ");
-//        for (GameObject object : depthObjects) {
-//            System.out.print(object.getName() + " ");
-//        }
         int y = 0;
         for (GameObject object : areas[camera.getArea()].getNearDepthObjects()) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {

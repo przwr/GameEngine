@@ -86,7 +86,7 @@ public abstract class Camera {
         Drawer.refreshForRegularDrawing();
         owners.stream().forEach((object) -> {
             if (object instanceof Player) {
-                ((Player) object).renderGUI();
+                ((Player) object).renderGUI(this.getXOffsetEffect(), this.getYOffsetEffect());
             }
         });
     }

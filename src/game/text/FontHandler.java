@@ -45,7 +45,7 @@ public class FontHandler {
         this.trueFont = trueFont;
     }
 
-    public void drawLine(String text, int x, int y, Color color) {
+    public void drawLine(String text, float x, float y, Color color) {
         trueFont.drawString(x, y, text, color);
     }
 

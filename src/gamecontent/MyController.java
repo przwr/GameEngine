@@ -36,15 +36,14 @@ public class MyController extends PlayerController {
     private final Delay jumpDelay;
     private final SpeedChanger jumpMaker;
     private final SpeedChanger attackMovement;
-    private int tempDirection, lagDuration, attackType, sideDirection;
+    private final boolean[] blockedInputs;
+    private int tempDirection, lagDuration, sideDirection;
     private byte firstAttackType, secondAttackType;
     private boolean running, diagonal, inputLag;
     private Animation playerAnimation;
     private PlayerStats stats;
     private MyGUI gui;
     private int jumpDirection, jumpLag;
-
-    private final boolean[] blockedInputs;
 
     public MyController(Entity inControl, MyGUI playersGUI) {
         super(inControl);
@@ -54,7 +53,6 @@ public class MyController extends PlayerController {
         blockedInputs = new boolean[ACTIONS_COUNT];
         sideDelay = new Delay(25);
         jumpDelay = new Delay(400);
-        attackType = 0;
         attackFrames = new int[]{22, 27, 31, 38, 40};
         jumpMaker = new SpeedChanger(8);
         jumpMaker.setType(SpeedChanger.DECREASING);
@@ -84,9 +82,9 @@ public class MyController extends PlayerController {
             if (!inControl.isHurt()) {
                 if (inControl.isAbleToMove()) {
                     //System.out.println(getAllInput(ATTACK));
-                    updateAttackTypes();
                     if (jumpLag == 0) {
-                        if (actions[ATTACK].isKeyPressed()) {
+                        updateAttackTypes();
+                        if (actions[ATTACK].isKeyPressed() || actions[SECOND_ATTACK].isKeyPressed()) {
                             updateAttack();
                         } else {
                             updateMovement();
@@ -418,18 +416,33 @@ public class MyController extends PlayerController {
 
     private void updateRest() {
         if (actions[CHANGE_WEAPON].isKeyClicked()) {
-            ((MyPlayer) inControl).changeWeapon();
+            if (((MyPlayer) inControl).changeWeapon()) {
+                updateAttackTypes();
+                gui.changeAttackIcon(firstAttackType, secondAttackType);
+            }
         } else if (actions[CHANGE_SET].isKeyClicked()) {
-            ((MyPlayer) inControl).hideWeapon();
+            if (((MyPlayer) inControl).hideWeapon()) {
+                updateAttackTypes();
+
+                gui.changeAttackIcon(firstAttackType, secondAttackType);
+            }
         }
         if (actions[SLOT_UP].isKeyClicked()) {
             ((MyPlayer) inControl).setActionPair(0);
+            updateAttackTypes();
+            gui.changeAttackIcon(firstAttackType, secondAttackType);
         } else if (actions[SLOT_RIGHT].isKeyClicked()) {
             ((MyPlayer) inControl).setActionPair(1);
+            updateAttackTypes();
+            gui.changeAttackIcon(firstAttackType, secondAttackType);
         } else if (actions[SLOT_DOWN].isKeyClicked()) {
             ((MyPlayer) inControl).setActionPair(2);
+            updateAttackTypes();
+            gui.changeAttackIcon(firstAttackType, secondAttackType);
         } else if (actions[SLOT_LEFT].isKeyClicked()) {
             ((MyPlayer) inControl).setActionPair(3);
+            updateAttackTypes();
+            gui.changeAttackIcon(firstAttackType, secondAttackType);
         }
         if (!running) {
             inControl.setMaxSpeed(diagonal ? 1.5 : 2);
@@ -502,10 +515,6 @@ public class MyController extends PlayerController {
 
     public int[] getAttackFrames() {
         return attackFrames;
-    }
-
-    public int getAttackType() {
-        return attackType;
     }
 
     private void setInputLag(int time) {
