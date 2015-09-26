@@ -14,26 +14,35 @@ import sprites.SpriteSheet;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author Wojtek
  */
 public class MyGUI extends GUIObject {
 
     private final SpriteSheet attackIcons;
     private final Color color;
-    private int attackType;
+    private int firstAttackType, secondAttackType;
     private float alpha;
+    private int emptySlot;
 
     public MyGUI(String name, Place place) {
         super(name, place);
         color = new Color(Color.white);
         alpha = 0f;
-        attackType = 0;
+        emptySlot = 5;
+        firstAttackType = emptySlot;
+        secondAttackType = emptySlot;
         attackIcons = place.getSpriteSheet("attackIcons", "");
     }
 
-    public void changeAttackIcon(int index) {
-        attackType = index;
+    public void changeAttackIcon(int first, int second) {
+        if (first < 0) {
+            first = emptySlot;
+        }
+        if (second < 0) {
+            second = emptySlot;
+        }
+        firstAttackType = first;
+        secondAttackType = second;
         alpha = 5f;
     }
 
@@ -47,7 +56,9 @@ public class MyGUI extends GUIObject {
             color.a = alpha;
             alpha -= 0.06f;
             Drawer.setColor(color);
-            attackIcons.renderPiece(attackType);
+            attackIcons.renderPiece(firstAttackType);
+            glTranslatef(0, -tile, 0);
+            attackIcons.renderPiece(secondAttackType);
             Drawer.refreshColor();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();

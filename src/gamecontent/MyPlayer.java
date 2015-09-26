@@ -145,10 +145,6 @@ public class MyPlayer extends Player {
 
     }
 
-    public int getAttackType() {
-        return ((MyController) playerController).getAttackType();
-    }
-
     public byte getFirstAttackType() {
         Interactive first = actionSets.get(activeActionSet).getFirstInteractive();
         if (first != null) {
@@ -171,7 +167,7 @@ public class MyPlayer extends Player {
         actionSets.get(activeActionSet).setActivePair(pair);
     }
 
-    public void changeWeapon() {
+    public boolean changeWeapon() {
         if (activeWeapon == universal) {
             if (lastWeapon != null && lastWeapon != universal) {
                 activeWeapon = lastWeapon;
@@ -189,17 +185,17 @@ public class MyPlayer extends Player {
                 activeWeapon = universal;
             }
         }
-        updateActionSets();
+        return updateActionSets();
     }
 
-    public void hideWeapon() {
+    public boolean hideWeapon() {
         if (activeWeapon != universal)
             lastWeapon = activeWeapon;
         activeWeapon = universal;
-        updateActionSets();
+        return updateActionSets();
     }
 
-    private void updateActionSets() {
+    private boolean updateActionSets() {
         if (activeWeapon.getType() != actionSets.get(activeActionSet).getWeaponType()) {
             for (int i = 0; i < actionSets.size(); i++) {
                 if (actionSets.get(i).getWeaponType() == activeWeapon.getType()) {
@@ -209,7 +205,9 @@ public class MyPlayer extends Player {
                     activeActionSet = i;
                 }
             }
+            return true;
         }
+        return false;
     }
 
     private void initializeControllerForFirst() {

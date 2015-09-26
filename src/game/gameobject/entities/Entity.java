@@ -100,7 +100,7 @@ public abstract class Entity extends GameObject {
             return false;
         }
     }
-    
+
     public SpeedChanger getKnockback() {
         return knockback;
     }
@@ -199,7 +199,7 @@ public abstract class Entity extends GameObject {
     public void updateChangers() {
         TemporalChanger tc;
         boolean isRemoved = false;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
