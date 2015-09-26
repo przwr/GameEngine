@@ -70,6 +70,22 @@ public class Drawer {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, 1.0f);
     }
 
+
+    public static Color percentToRGBColor(int percent, float alpha) {
+        if (percent == 100) {
+            percent = 99;
+        }
+        float r, g;
+        if (percent < 50) {
+            r = (percent / 50f);
+            g = 1f;
+        } else {
+            r = 1f;
+            g = ((50f - percent % 50f) / 50f);
+        }
+        return new Color(r, g, 0.25f, alpha);
+    }
+
     public static void setCentralPoint() {  //Miejsce do którego można wrócić
         xCurrent = 0;
         yCurrent = 0;
@@ -136,6 +152,29 @@ public class Drawer {
             glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
         }
         glVertex2f(xRadius, 0);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    public static void drawEllipseBow(int xStart, int yStart, int xRadius, int yRadius, int width, int startAngle, int endAngle, int precision) {
+        if (startAngle > endAngle) {
+            int tmp = startAngle;
+            startAngle = endAngle;
+            endAngle = tmp;
+        }
+        translate(xStart, yStart);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_QUAD_STRIP);
+        int step = (endAngle - startAngle) / precision;
+        if (step <= 0) {
+            step = 1;
+        }
+        for (int i = startAngle; i < endAngle; i += step) {
+            glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
+            glVertex2f((float) Methods.xRadius(i, xRadius - width), (float) Methods.yRadius(i, yRadius - width));
+        }
+        glVertex2f((float) Methods.xRadius(endAngle, xRadius), (float) Methods.yRadius(endAngle, yRadius));
+        glVertex2f((float) Methods.xRadius(endAngle, xRadius - width), (float) Methods.yRadius(endAngle, yRadius - width));
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
@@ -261,14 +300,14 @@ public class Drawer {
         return place.fonts.getFont(name, 0, size);
     }
 
-    public static void renderStringCentered(String message, int x, int y, FontHandler font, Color color) {
+    public static void renderStringCentered(String message, double x, double y, FontHandler font, Color color) {
         Drawer.bindFontTexture();
-        font.drawLine(message, x - font.getWidth(message) / 2,
-                y - (4 * font.getHeight()) / 3, color);
+        font.drawLine(message, (float) (x - font.getWidth(message) / 2),
+                (float) (y - (4 * font.getHeight()) / 3), color);
     }
 
-    public static void renderString(String message, int x, int y, FontHandler font, Color color) {
+    public static void renderString(String message, double x, double y, FontHandler font, Color color) {
         Drawer.bindFontTexture();
-        font.drawLine(message, x, y, color);
+        font.drawLine(message, (int) x, (int) y, color);
     }
 }

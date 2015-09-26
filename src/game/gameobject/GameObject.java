@@ -26,6 +26,7 @@ public abstract class GameObject {
     public final static byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
     protected final ArrayList<Light> lights = new ArrayList<>(1);
     protected final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
+    private final double gravity = 0.6f;
     protected double x, y;
     protected int depth;
     protected boolean solid;
@@ -35,9 +36,8 @@ public abstract class GameObject {
     protected boolean simpleLighting;
     protected boolean visible;
     protected boolean makeNoise;
-    protected double jumpHeight;
+    protected double floatHeight;
     protected double jumpForce;
-    private final double gravity = 0.6f;
     protected Appearance appearance;
     protected Stats stats;
     protected String name;
@@ -295,12 +295,12 @@ public abstract class GameObject {
         this.area = area;
     }
 
-    public double getJumpHeight() {
-        return jumpHeight;
+    public double getFloatHeight() {
+        return floatHeight;
     }
 
-    public void setJumpHeight(double jumpHeight) {
-        this.jumpHeight = jumpHeight;
+    public void setFloatHeight(double floatHeight) {
+        this.floatHeight = floatHeight;
     }
     
     public double getJumpForce() {
@@ -312,11 +312,11 @@ public abstract class GameObject {
     }
 
     protected void updateWithGravity() {
-        if (jumpHeight > 0 || jumpForce > 0) {
-            jumpHeight += jumpForce;
+        if (floatHeight > 0 || jumpForce > 0) {
+            floatHeight += jumpForce;
             jumpForce -= gravity;
         } else {
-            jumpHeight = 0;
+            floatHeight = 0;
         }
     }
     

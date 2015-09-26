@@ -81,9 +81,9 @@ public class LineInteractiveCollision extends InteractiveCollision {
     @Override
     public InteractiveResponse collide(GameObject owner, GameObject object, byte attackType) {
         if (object != null && object.getCollision() != null) {
-            int objectBottom = (int) object.getJumpHeight();
+            int objectBottom = (int) object.getFloatHeight();
             int objectTop = objectBottom + object.getAppearance().getActualHeight();
-            int bottom = (int) owner.getJumpHeight() + fromBottom;
+            int bottom = (int) owner.getFloatHeight() + fromBottom;
             int top = bottom + height;
             if (objectTop > bottom && objectBottom < top) {
                 int pixelsIn = lineToCircleDistance(object.getX(), object.getY(), (object.getCollisionWidth() + width) / 2, position, end, length);
@@ -100,9 +100,9 @@ public class LineInteractiveCollision extends InteractiveCollision {
     @Override
     public InteractiveResponse collide(GameObject owner, Player player, byte attackType) {
         if (player != null && player.isInGame()) {
-            int playerBottom = (int) player.getJumpHeight();
+            int playerBottom = (int) player.getFloatHeight();
             int playerTop = playerBottom + player.getAppearance().getActualHeight();
-            int bottom = (int) owner.getJumpHeight() + fromBottom;
+            int bottom = (int) owner.getFloatHeight() + fromBottom;
             int top = bottom + height;
             if (playerTop > bottom && playerBottom < top) {
                 int pixelsIn = lineToCircleDistance(player.getX(), player.getY(), (player.getCollisionWidth() + width) / 2, position, end, length);

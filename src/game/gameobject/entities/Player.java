@@ -58,11 +58,11 @@ public abstract class Player extends Entity {
         gui.setPlayer(null);
     }
 
-    public void renderGUI() {
+    public void renderGUI(int xEffect, int yEffect) {
         Drawer.refreshForRegularDrawing();
         guiList.stream().forEach((go) -> {
             if (go.isVisible()) {
-                go.render(0, 0);
+                go.render(xEffect, yEffect);
             }
         });
     }

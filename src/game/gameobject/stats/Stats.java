@@ -1,19 +1,17 @@
 package game.gameobject.stats;
 
-import game.Settings;
-import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.interactive.InteractiveResponse;
+import net.jodk.lang.FastMath;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
-import net.jodk.lang.FastMath;
 
 /**
  * Created by przemek on 10.08.15.
  */
 public abstract class Stats {
 
-    protected GameObject owner;
+    protected Entity owner;
     protected int health = 100;
     protected int maxHealth = 100;
     protected int strength = 2;
@@ -26,12 +24,12 @@ public abstract class Stats {
     protected float protectionBackModifier = 1;
     protected boolean protectionState;
 
-    public Stats(GameObject owner) {
+    public Stats(Entity owner) {
         this.owner = owner;
     }
 
     public void decreaseHealth(InteractiveResponse response) {
-        if (health > 0 && ((Entity) owner).getKnockback().isOver()) {
+        if (health > 0 && owner.getKnockback().isOver()) {
             int hurt = 0;
             switch (response.getDirection()) {
                 case FRONT:
@@ -48,15 +46,15 @@ public abstract class Stats {
             if (health < 0) {
                 health = 0;
             }
-            if (hurt != 0) {
-                double hurtPower = 5 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
-                owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
-                response.getAttacker().reactToAttack(FRONT, owner);
-            }
             System.out.println(owner.getName() + " dostał za " + hurt + " Życie: " + health + "/" + maxHealth);
             if (health == 0) {
                 died();
+            } else if (hurt != 0) {
+                double hurtPower = 3 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
+                owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
+                response.getAttacker().reactToAttack(FRONT, owner);
             }
+
         }
     }
 

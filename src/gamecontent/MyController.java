@@ -83,6 +83,7 @@ public class MyController extends PlayerController {
                 if (inControl.isAbleToMove()) {
                     //System.out.println(getAllInput(ATTACK));
                     if (jumpLag == 0) {
+                        updateAttackTypes();
                         if (actions[ATTACK].isKeyPressed() || actions[SECOND_ATTACK].isKeyPressed()) {
                             updateAttack();
                         } else {

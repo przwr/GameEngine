@@ -154,7 +154,7 @@ public class Main {
 
     private static void createDisplay() {
         try {
-            Display.create(new PixelFormat(32, 0, 24, 0, 0));
+            Display.create(new PixelFormat(32, 0, 24, 0, Settings.samplesCount));
         } catch (Exception exception) {
             Display.destroy();
             ErrorHandler.javaError(exception.getMessage());
@@ -186,7 +186,7 @@ public class Main {
     }
 
     private static void initializeGame() {
-        game = new MyGame("Pervert Rabbits Attack", controllers);
+        game = new MyGame("Spiritual Game (PROTOTYPE)", controllers);
         Display.setTitle(game.getTitle());
         pop = new Popup("Amble-Regular");
     }

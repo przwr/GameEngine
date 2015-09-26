@@ -49,18 +49,19 @@ public class MyGUI extends GUIObject {
     @Override
     public void render(int xEffect, int yEffect) {
         if (alpha > 0) {
-            int tile = Place.tileSize;
             glPushMatrix();
+            glTranslatef((int) ((player.getX()) * Place.getCurrentScale() + xEffect), (int) ((player.getY() - player.getFloatHeight()) * Place.getCurrentScale() + yEffect), 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getRelativePlayersX() - 2f * tile, getRelativePlayersY() - tile, 0);
+
             color.a = alpha;
             alpha -= 0.06f;
             Drawer.setColor(color);
+            glTranslatef(-2 * Place.tileSize, -Place.tileSize, 0);
             attackIcons.renderPiece(firstAttackType);
-            glTranslatef(0, -tile, 0);
+            glTranslatef(0, -Place.tileSize, 0);
             attackIcons.renderPiece(secondAttackType);
+
             Drawer.refreshColor();
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }
     }

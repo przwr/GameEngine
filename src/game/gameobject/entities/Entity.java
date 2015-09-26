@@ -559,4 +559,8 @@ public abstract class Entity extends GameObject {
     public int getSightAngle() {
         return sightAngle;
     }
+
+    public ArrayList<TemporalChanger> getChangers() {
+        return changers;
+    }
 }

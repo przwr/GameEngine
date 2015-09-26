@@ -90,9 +90,8 @@ public class MyPlayer extends Player {
         actionSets.add(new InteractionSet(UNIVERSAL));
         actionSets.add(new InteractionSet(SWORD));
         Weapon sword = new Weapon("Sword", SWORD);
-        activeWeapon = universal;
         firstWeapon = sword;
-        activeActionSet = 0;
+        activeWeapon = universal;
 
         // TODO Interactives powinny być raz stworzone w Skillach!
 
@@ -104,28 +103,28 @@ public class MyPlayer extends Player {
             }
             switch (attack) {
                 case ATTACK_SLASH:
-                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, 
-                            new InteractiveActivatorFrames(frames), 
-                            new CurveInteractiveCollision(42, 32, 0, 64, 120), 
+                    actionSets.get(1).addInteractionToNextFree(new Interactive(this,
+                            new InteractiveActivatorFrames(frames),
+                            new CurveInteractiveCollision(42, 32, 0, 64, 120),
                             HURT, SWORD, (byte) attack, 2f));
                     break;
                 case ATTACK_THRUST:
-                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, 
-                            new InteractiveActivatorFrames(frames), 
-                            new LineInteractiveCollision(52, 10, 6, 84, 24), 
+                    actionSets.get(1).addInteractionToNextFree(new Interactive(this,
+                            new InteractiveActivatorFrames(frames),
+                            new LineInteractiveCollision(52, 10, 6, 84, 24),
                             HURT, SWORD, (byte) attack, 2.5f));
                     break;
                 case ATTACK_WEAK_PUNCH:
-                    actionSets.get(0).addInteractionToNextFree(new Interactive(this, 
-                            new InteractiveActivatorFrames(frames), 
-                            new LineInteractiveCollision(72, 12, 2, 30, 20), 
+                    actionSets.get(0).addInteractionToNextFree(new Interactive(this,
+                            new InteractiveActivatorFrames(frames),
+                            new LineInteractiveCollision(72, 12, 2, 30, 20),
                             HURT, UNIVERSAL, (byte) attack, 1f));
                     actionSets.get(1).setInteraction(2, 0, actionSets.get(0).getFirstInteractive());
                     break;
                 case ATTACK_STRONG_PUNCH:
-                    actionSets.get(0).addInteractionToNextFree(new Interactive(this, 
-                            new InteractiveActivatorFrames(frames), 
-                            new LineInteractiveCollision(72, 12, 2, 34, 20), 
+                    actionSets.get(0).addInteractionToNextFree(new Interactive(this,
+                            new InteractiveActivatorFrames(frames),
+                            new LineInteractiveCollision(72, 12, 2, 34, 20),
                             HURT, UNIVERSAL, (byte) attack, 1.5f));
                     actionSets.get(1).setInteraction(2, 1, actionSets.get(0).getSecondInteractive());
                     break;
@@ -133,6 +132,7 @@ public class MyPlayer extends Player {
                     actionSets.get(1).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(0, 128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
                     break;
             }
+            updateActionSets();
         }
 
 
@@ -288,29 +288,45 @@ public class MyPlayer extends Player {
     public void render(int xEffect, int yEffect) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-
-            glTranslatef(getX(), getY(), 0);
+            glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) ((getY() - floatHeight) * Place.getCurrentScale() + yEffect), 0);
             Drawer.setColor(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
+            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight() * Place.getCurrentScale() / 2f), 24);
+            renderLifeIndicator();
             Drawer.refreshColor();
-            glTranslatef(0, (int) -jumpHeight, 0);
-            Drawer.setCentralPoint();
-            appearance.render();
-            //((Animation)appearance).renderWhole();
-            //renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
-            appearance.updateFrame();
-            Drawer.returnToCentralPoint();
-
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-
-            Drawer.renderStringCentered(name, 0, -(int) ((appearance.getActualHeight() * Place.getCurrentScale()) / 1.2),
+            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2),
                     place.standardFont, map.getLightColor());
+            glPopMatrix();
+
+
+            glPushMatrix();
+            glTranslatef(xEffect, yEffect, 0);
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            appearance.render();
+//            ((Animation)appearance).renderWhole();
+//            renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
+            appearance.updateFrame();
             glPopMatrix();
         }
     }
+
+
+    private void renderLifeIndicator() {
+        int halfLifeAngle = 90;
+        int lifePercentageAngle = Methods.roundDouble(stats.getHealth() * halfLifeAngle / (float) stats.getMaxHealth());
+        if (lifePercentageAngle <= 1 && stats.getHealth() != 0) {
+            lifePercentageAngle = 2;
+        }
+        int startAngle = 180 - lifePercentageAngle;
+        int endAngle = 180 + lifePercentageAngle;
+        int precision = (12 * lifePercentageAngle * halfLifeAngle) / halfLifeAngle;
+        if (precision == 0) {
+            precision = 1;
+        }
+        Drawer.setColor(Drawer.percentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, 0.9f));
+        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight() * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
+    }
+
 
     @Override
     public void renderClothed(int frame) {
@@ -362,10 +378,10 @@ public class MyPlayer extends Player {
         if (map == place.loadingMap) {
             warp.warp(this);
         }
-        
+
         if (jumping) {
             hop = false;
-            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
+            floatHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
             jumpDelta += Time.getDelta();
             if ((int) jumpDelta >= 68) {
                 jumping = false;
@@ -390,7 +406,7 @@ public class MyPlayer extends Player {
     @Override
     public synchronized void sendUpdate() {
         if (jumping) {
-            jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+            floatHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
             jumpDelta += Time.getDelta();
             if ((int) jumpDelta >= 68) {
                 jumping = false;
@@ -441,7 +457,7 @@ public class MyPlayer extends Player {
         try {
             if (jumping) {
                 hop = false;
-                jumpHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
+                floatHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
                 jumpDelta += Time.getDelta();
                 if ((int) jumpDelta == 68) {
                     jumping = false;
@@ -458,7 +474,7 @@ public class MyPlayer extends Player {
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapeInShade(appearance, 1);
             glPopMatrix();
         }
@@ -468,7 +484,7 @@ public class MyPlayer extends Player {
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapeInBlack(appearance);
             glPopMatrix();
         }
@@ -478,7 +494,7 @@ public class MyPlayer extends Player {
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
             glPopMatrix();
         }
@@ -488,7 +504,7 @@ public class MyPlayer extends Player {
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) jumpHeight, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }
