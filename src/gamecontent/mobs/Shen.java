@@ -152,7 +152,7 @@ public class Shen extends Mob {
                         maxSpeed = 8;
                     }
                     charge();
-                    unhurtable = true;
+                    stats.setUnhurtableState(true);
                 } else {
                     if (stats.getHealth() < stats.getMaxHealth() / 2) {
                         getActivator(ATTACK_CRITICAL).setActivated(true);
@@ -163,7 +163,7 @@ public class Shen extends Mob {
                 if (attack_delay.isOver() || isOutOfRange(target) || target.getMap() != map) {
                     state = idle;
                     target = null;
-                    unhurtable = false;
+                    stats.setUnhurtableState(false);
                     brake(2);
                     rest.start();
                     stats.setProtectionState(false);
@@ -182,13 +182,13 @@ public class Shen extends Mob {
                     bouncer.start();
                     addChanger(bouncer);
                     setJumpForce((Math.abs(xSpeed) + Math.abs(ySpeed)) / 2);
-                    unhurtable = true;
+                    stats.setUnhurtableState(true);
                     xSpeed = 0;
                     ySpeed = 0;
                 } else if (bouncer.isOver()) {
                     state = idle;
                     target = null;
-                    unhurtable = false;
+                    stats.setUnhurtableState(false);
                     rest.start();
                     stats.setProtectionState(false);
                     maxSpeed = 1;

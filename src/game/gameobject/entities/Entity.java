@@ -53,7 +53,7 @@ public abstract class Entity extends GameObject {
     protected double maxSpeed;
     protected double xPosition, yPosition, xDelta, yDelta, xChange, yChange;
     protected double resistance;
-    protected boolean unableToMove, unhurtable;
+    protected boolean unableToMove;
     protected Update currentUpdate;
     protected int currentUpdateID, deltasCount, xDestination, yDestination;
     protected Player collided;
@@ -64,7 +64,6 @@ public abstract class Entity extends GameObject {
     public Entity() {
         knockback = new SpeedChanger();
         changers = new ArrayList<>();
-        unhurtable = false;
         resistance = 1;
     }
 
@@ -94,7 +93,7 @@ public abstract class Entity extends GameObject {
     }
 
     public boolean isHurt() {
-        if (!unhurtable) {
+        if (!stats.isUnhurtableState()) {
             return !knockback.isOver();
         } else {
             return false;

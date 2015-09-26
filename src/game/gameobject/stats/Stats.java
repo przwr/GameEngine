@@ -25,6 +25,7 @@ public abstract class Stats {
     protected float protectionSideModifier = 4;
     protected float protectionBackModifier = 1;
     protected boolean protectionState;
+    protected boolean unhurtableState;
 
     public Stats(GameObject owner) {
         this.owner = owner;
@@ -107,5 +108,13 @@ public abstract class Stats {
 
     public void setProtectionState(boolean protectionState) {
         this.protectionState = protectionState;
+    }
+    
+    public boolean isUnhurtableState() {
+        return unhurtableState;
+    }
+
+    public void setUnhurtableState(boolean unhurtableState) {
+        this.unhurtableState = unhurtableState;
     }
 }
