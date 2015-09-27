@@ -60,7 +60,8 @@ public class SpriteSheet extends Sprite {
         return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, true);
     }
 
-    public static SpriteSheet createFrameBuffered(int texture, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+    public static SpriteSheet createFrameBuffered(int texture, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase
+            spriteBase) {
         return new SpriteSheet(texture, widthWhole, heightWhole, width, height, xStart, yStart, spriteBase);
     }
 

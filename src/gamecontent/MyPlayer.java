@@ -25,12 +25,14 @@ import net.jodk.lang.FastMath;
 import net.packets.MultiPlayerUpdate;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Animation;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import static engine.utilities.Drawer.clearScreen;
 import static game.gameobject.interactive.Interactive.HURT;
 import static game.gameobject.items.Weapon.SWORD;
 import static game.gameobject.items.Weapon.UNIVERSAL;
@@ -129,7 +131,8 @@ public class MyPlayer extends Player {
                     actionSets.get(1).setInteraction(2, 1, actionSets.get(0).getSecondInteractive());
                     break;
                 case ATTACK_UPPER_SLASH:
-                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(0, 128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
+                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(0,
+                            128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
                     break;
             }
             updateActionSets();
@@ -238,12 +241,6 @@ public class MyPlayer extends Player {
         this.online = place.game.online;
         emitter = true;
         emits = false;
-        textControl = new TextController(place);
-        addGui(textControl);
-        gui = new MyGUI("Player " + name + "'s GUI", place);
-        addGui(gui);
-        ((MyController) playerController).setPlayersGUI(gui);
-
         //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
         //testBody = place.getSpriteSheet("kulka1");
         Point[] dims = null;
@@ -277,6 +274,11 @@ public class MyPlayer extends Player {
             addLight(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
+        textControl = new TextController(place);
+        addGui(textControl);
+        gui = new MyGUI("Player " + name + "'s GUI", place);
+        addGui(gui);
+        ((MyController) playerController).setPlayersGUI(gui);
     }
 
     @Override
@@ -286,17 +288,17 @@ public class MyPlayer extends Player {
 
     @Override
     public void render(int xEffect, int yEffect) {
+        preRenderGroundGUI();
         if (appearance != null) {
             glPushMatrix();
             glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) ((getY() - floatHeight) * Place.getCurrentScale() + yEffect), 0);
+            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
+                    map.getLightColor());
             Drawer.setColor(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight() * Place.getCurrentScale() / 2f), 24);
-            renderLifeIndicator();
+            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight() *
+                    Place.getCurrentScale() / 2f), 24);
             Drawer.refreshColor();
-            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2),
-                    place.standardFont, map.getLightColor());
             glPopMatrix();
-
 
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
@@ -311,22 +313,63 @@ public class MyPlayer extends Player {
     }
 
 
+    private void preRenderGroundGUI() {
+        gui.getFrameBufferObject().activate();
+        glPushMatrix();
+        clearScreen(0);
+        glTranslatef(gui.getFrameBufferObject().getWidth() / 2, -gui.getFrameBufferObject().getHeight() / 2 + Display.getHeight() - 1, 0);
+        renderLifeIndicator();
+        renderEnergyIndicator();
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+        Drawer.drawShapeInShade(appearance, 0);
+        glPopMatrix();
+        gui.getFrameBufferObject().deactivate();
+        Drawer.refreshForRegularDrawing();
+    }
+
     private void renderLifeIndicator() {
-        int halfLifeAngle = 90;
+        int halfLifeAngle = 90, startAngle, endAngle;
+        int minimumLifePercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
         int lifePercentageAngle = Methods.roundDouble(stats.getHealth() * halfLifeAngle / (float) stats.getMaxHealth());
-        if (lifePercentageAngle <= 1 && stats.getHealth() != 0) {
-            lifePercentageAngle = 2;
+        if (lifePercentageAngle < minimumLifePercentage && stats.getHealth() != 0) {
+            lifePercentageAngle = minimumLifePercentage;
+            startAngle = 180;
+            endAngle = 180 + lifePercentageAngle;
+        } else {
+            startAngle = 180 - lifePercentageAngle;
+            endAngle = 180 + lifePercentageAngle;
         }
-        int startAngle = 180 - lifePercentageAngle;
-        int endAngle = 180 + lifePercentageAngle;
+
         int precision = (12 * lifePercentageAngle * halfLifeAngle) / halfLifeAngle;
         if (precision == 0) {
             precision = 1;
         }
-        Drawer.setColor(Drawer.percentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, 0.9f));
-        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight() * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
+        Drawer.setColor(Drawer.setPercentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, gui.getLifeColor()));
+        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight() *
+                Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
     }
 
+    private void renderEnergyIndicator() {
+        int halfLifeAngle = 90, startAngle, endAngle;
+        int minimumEnergyPercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
+        int energyPercentageAngle = Methods.roundDouble(stats.getMaxHealth() * halfLifeAngle / (float) stats.getMaxHealth());
+        if (energyPercentageAngle < minimumEnergyPercentage && stats.getMaxHealth() != 0) { // TODO brać informacje o energii
+            energyPercentageAngle = minimumEnergyPercentage;
+            startAngle = 360;
+            endAngle = 360 + energyPercentageAngle;
+        } else {
+            startAngle = 360 - energyPercentageAngle;
+            endAngle = 360 + energyPercentageAngle;
+        }
+
+        int precision = (12 * energyPercentageAngle * halfLifeAngle) / halfLifeAngle;
+        if (precision == 0) {
+            precision = 1;
+        }
+        Drawer.setColor(gui.getEnergyColor());
+        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(
+                collision.getHeight() * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
+    }
 
     @Override
     public void renderClothed(int frame) {
@@ -447,7 +490,8 @@ public class MyPlayer extends Player {
             }
             setEmits(((MultiPlayerUpdate) update).isEmits());
         } catch (Exception exception) {
-            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this
+                    .getClass();
             ErrorHandler.logAndPrint(error);
         }
     }
@@ -465,7 +509,8 @@ public class MyPlayer extends Player {
                 }
             }
         } catch (Exception exception) {
-            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass();
+            String error = "ERROR: - " + exception.getMessage() + " in " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this
+                    .getClass();
             ErrorHandler.logAndPrint(error);
         }
     }

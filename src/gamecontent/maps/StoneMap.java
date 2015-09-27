@@ -23,7 +23,7 @@ public class StoneMap extends Map {
 
     public StoneMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "Kamienna", place, width, height, tileSize);
-        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT));
+        setColor(new Color(DayCycle.NIGHT / 2, DayCycle.NIGHT / 2, DayCycle.NIGHT / 2));
         Tile GROUND = new Tile(place.getSpriteSheet("tlo", ""), 2, 12);
         Tile GRASS = new Tile(place.getSpriteSheet("tlo", ""), 1, 1);
         Tile PORTAL = new Tile(place.getSpriteSheet("tlo", ""), 0, 12);

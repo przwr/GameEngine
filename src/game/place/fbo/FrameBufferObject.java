@@ -98,7 +98,6 @@ public abstract class FrameBufferObject {
     }
 
     private void checkBind() {
-        glBindTexture(GL_TEXTURE_2D, texture);
         if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
             glBindTexture(GL_TEXTURE_2D, texture);
         }

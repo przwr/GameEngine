@@ -117,7 +117,9 @@ public abstract class Map {
 
     private boolean isOnArea(Block block, int area) {
         Figure collision = block.getCollision();
-        return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getY()) == area;
+        return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area ||
+                getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() - Place
+                .tileSize, collision.getY()) == area;
     }
 
     public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
@@ -141,7 +143,8 @@ public abstract class Map {
     }
 
     public void updateAreasToUpdate() {
-        getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> areas[area].updateContainers(area));
+        getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> areas[area]
+                .updateContainers(area));
     }
 
 
@@ -280,7 +283,8 @@ public abstract class Map {
 
     private void prepareInteractive() {
         tempInteractiveObjects.clear();
-        getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> tempInteractiveObjects.addAll(areas[area].getInteractiveObjects()));
+        getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> tempInteractiveObjects
+                .addAll(areas[area].getInteractiveObjects()));
     }
 
     public void addForegroundTileAndReplace(GameObject tile) {
@@ -424,7 +428,8 @@ public abstract class Map {
 
     private void renderTop(Camera camera) {
         updateNearTopObjects(camera.getArea());
-        topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render(cameraXOffEffect, cameraYOffEffect));
+        topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render(cameraXOffEffect,
+                cameraYOffEffect));
     }
 
     private boolean isObjectInSight(GameObject object) {

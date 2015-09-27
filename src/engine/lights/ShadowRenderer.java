@@ -741,7 +741,8 @@ public class ShadowRenderer {
                 } else {
                     addShadowLeftBlock(other, current);
                 }
-            } else if (XL1 != current.getX() && XL1 != other.getX() && XL1 != other.getXEnd() && shadowPoints[0].getX() != shadowPoints[2].getX()) { // rysuj zaciemniony
+            } else if (XL1 != current.getX() && XL1 != other.getX() && XL1 != other.getXEnd() && shadowPoints[0].getX() != shadowPoints[2].getX()) { // rysuj
+                // zaciemniony
                 addDarkenLeftBlock(other, current, source);
             }
         }
@@ -839,7 +840,8 @@ public class ShadowRenderer {
                 } else {
                     addShadowRightBlock(other, current);
                 }
-            } else if (XR1 != current.getXEnd() && XR1 != other.getX() && XR1 != other.getXEnd() && shadowPoints[1].getX() != shadowPoints[3].getX()) { // rysuj zaciemniony
+            } else if (XR1 != current.getXEnd() && XR1 != other.getX() && XR1 != other.getXEnd() && shadowPoints[1].getX() != shadowPoints[3].getX()) { //
+                // rysuj zaciemniony
                 addDarkenRightBlock(other, current, source);
             }
         }
@@ -936,8 +938,10 @@ public class ShadowRenderer {
                 XL1 = Methods.roundDouble((other.getYEnd() - bl) / al); // liczenie przecięcia linii      
                 if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX())
                         || (XL1 > other.getX() && XL1 < other.getXEnd())) {
-                    tempPoint = Methods.getXIntersection(al, bl, shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2].getY(), other);
-                    if (tempPoint != null && other.getYEnd() <= current.getYEnd() && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
+                    tempPoint = Methods.getXIntersection(al, bl, shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2].getY
+                            (), other);
+                    if (tempPoint != null && other.getYEnd() <= current.getYEnd() && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY()
+                            <= other.getYEnd()) {
                         XL1 = tempPoint.getX();
                     } else {
                         findRoundDarkness(other, current);
@@ -947,7 +951,8 @@ public class ShadowRenderer {
                 XL2 = al > 0 ? other.getX() : other.getXEnd();
             }
             if (XL1 >= other.getX() && XL1 <= other.getXEnd()) {
-                if (XL1 < source.getX() || (XL1 == other.getXEnd() && XL1 == current.getX()) || (XL1 == other.getX() && XL1 == current.getXEnd())) { //dodaj światło
+                if (XL1 < source.getX() || (XL1 == other.getXEnd() && XL1 == current.getX()) || (XL1 == other.getX() && XL1 == current.getXEnd())) { //dodaj
+                    // światło
                     if (other.getYEnd() == current.getYEnd()) {
                         tempShadow = null;
                         for (int i = 0; i < other.getShadowCount(); i++) {
@@ -964,8 +969,10 @@ public class ShadowRenderer {
                         }
                     }
                     // special case for corner to corner situation
-                    if ((other.getX() == current.getXEnd() && current.getY() == other.getYEnd() && !other.isLeftBottomRound() && source.getX() > current.getXEnd())
-                            || (other.getXEnd() == current.getX() && current.getY() == other.getYEnd() && !other.isRightBottomRound() && source.getX() < current.getX())) {
+                    if ((other.getX() == current.getXEnd() && current.getY() == other.getYEnd() && !other.isLeftBottomRound() && source.getX() > current
+                            .getXEnd())
+                            || (other.getXEnd() == current.getX() && current.getY() == other.getYEnd() && !other.isRightBottomRound() && source.getX() <
+                            current.getX())) {
                         checked = true;
                         return;
                     }
@@ -979,7 +986,8 @@ public class ShadowRenderer {
                     checked = true;
                     DEBUG("Left Round Shade XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
                 }
-            } else if (XL1 != current.getX() && XL1 != other.getX() && XL1 != other.getXEnd() && shadowPoints[0].getX() != shadowPoints[2].getX()) { // rysuj zaciemniony
+            } else if (XL1 != current.getX() && XL1 != other.getX() && XL1 != other.getXEnd() && shadowPoints[0].getX() != shadowPoints[2].getX()) { // rysuj
+                // zaciemniony
                 addLightnessLeftRoundBlock(other, current, source);
             }
         }
@@ -1024,8 +1032,10 @@ public class ShadowRenderer {
                 XR1 = Methods.roundDouble((other.getYEnd() - br) / ar); // liczenie przecięcia linii
                 if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX())
                         || (XR1 > other.getX() && XR1 < other.getXEnd())) {
-                    tempPoint = Methods.getXIntersection(ar, br, shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3].getY(), other);
-                    if (tempPoint != null && other.getYEnd() <= current.getYEnd() && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
+                    tempPoint = Methods.getXIntersection(ar, br, shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3].getY
+                            (), other);
+                    if (tempPoint != null && other.getYEnd() <= current.getYEnd() && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY()
+                            <= other.getYEnd()) {
                         XR1 = tempPoint.getX();
                     } else {
                         findRoundDarkness(other, current);
@@ -1035,7 +1045,8 @@ public class ShadowRenderer {
                 XR2 = ar > 0 ? other.getX() : other.getXEnd();
             }
             if (XR1 >= other.getX() && XR1 <= other.getXEnd()) {
-                if (XR1 > source.getX() || (XR1 == other.getX() && XR1 == current.getXEnd()) || (XR1 == other.getXEnd() && XR1 == current.getX())) { // dodaj światło
+                if (XR1 > source.getX() || (XR1 == other.getX() && XR1 == current.getXEnd()) || (XR1 == other.getXEnd() && XR1 == current.getX())) { // dodaj
+                    // światło
                     if (other.getYEnd() == current.getYEnd()) {
                         tempShadow = null;
                         for (int i = 0; i < other.getShadowCount(); i++) {
@@ -1052,8 +1063,10 @@ public class ShadowRenderer {
                         }
                     }
                     // special case for corner to corner situation
-                    if ((other.getX() == current.getXEnd() && current.getY() == other.getYEnd() && !other.isLeftBottomRound() && source.getX() > current.getXEnd())
-                            || (other.getXEnd() == current.getX() && current.getY() == other.getYEnd() && !other.isRightBottomRound() && source.getX() < current.getX())) {
+                    if ((other.getX() == current.getXEnd() && current.getY() == other.getYEnd() && !other.isLeftBottomRound() && source.getX() > current
+                            .getXEnd())
+                            || (other.getXEnd() == current.getX() && current.getY() == other.getYEnd() && !other.isRightBottomRound() && source.getX() <
+                            current.getX())) {
                         checked = true;
                         return;
                     }
@@ -1109,14 +1122,19 @@ public class ShadowRenderer {
         if (other != null && other.getYEnd() > source.getY() && other.getYEnd() >= current.getY()
                 && ((other.isLeftBottomRound() && other.getX() > current.getX()) || (other.isRightBottomRound() && other.getX() < current.getX()))) {
             XL1 = Methods.roundDouble((other.getYEnd() - bl) / al); // liczenie przecięcia linii
-            if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX()) || (XL1 > other.getX() && XL1 < other.getXEnd())) {
-                tempPoint = Methods.getXIntersectionFromTop(al, bl, shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2].getY(), other);
+            if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX()) || (XL1 > other
+                    .getX() && XL1 < other.getXEnd())) {
+                tempPoint = Methods.getXIntersectionFromTop(al, bl, shadowPoints[0].getX(), shadowPoints[0].getY(), shadowPoints[2].getX(), shadowPoints[2]
+                        .getY(), other);
                 if (tempPoint != null && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
                     XL1 = tempPoint.getX();
                 } else {
-                    if ((XL1 < other.getX() || XL1 > other.getXEnd()) && shadowPoints[3].getY() > current.getYEnd() && shadowPoints[2].getY() > current.getYEnd() && other.getYEnd() >= current.getYEnd()
-                            && ((other.isRightBottomRound() && other.getX() < current.getX() && shadowPoints[1].getX() < current.getX() && YOL2 >= other.getYEnd() - Place.tileSize && YOL2 <= other.getYEnd())
-                            || (other.isLeftBottomRound() && other.getX() > current.getX() && shadowPoints[3].getX() > current.getYEnd() && YOL >= other.getYEnd() - Place.tileSize && YOL <= other.getYEnd()))) {
+                    if ((XL1 < other.getX() || XL1 > other.getXEnd()) && shadowPoints[3].getY() > current.getYEnd() && shadowPoints[2].getY() > current
+                            .getYEnd() && other.getYEnd() >= current.getYEnd()
+                            && ((other.isRightBottomRound() && other.getX() < current.getX() && shadowPoints[1].getX() < current.getX() && YOL2 >= other
+                            .getYEnd() - Place.tileSize && YOL2 <= other.getYEnd())
+                            || (other.isLeftBottomRound() && other.getX() > current.getX() && shadowPoints[3].getX() > current.getYEnd() && YOL >= other
+                            .getYEnd() - Place.tileSize && YOL <= other.getYEnd()))) {
                         other.addShadowType(DARK);
                         DEBUG("Left Round Top Darkness");
                         checked = true;
@@ -1152,14 +1170,19 @@ public class ShadowRenderer {
         if (other != null && other.getYEnd() > source.getY() && other.getYEnd() >= current.getY()
                 && ((other.isLeftBottomRound() && other.getX() > current.getX()) || (other.isRightBottomRound() && other.getX() < current.getX()))) {
             XR1 = Methods.roundDouble((other.getYEnd() - br) / ar); // liczenie przecięcia linii
-            if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX()) || (XR1 > other.getX() && XR1 < other.getXEnd())) {
-                tempPoint = Methods.getXIntersectionFromTop(ar, br, shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3].getY(), other);
+            if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX()) || (XR1 > other
+                    .getX() && XR1 < other.getXEnd())) {
+                tempPoint = Methods.getXIntersectionFromTop(ar, br, shadowPoints[1].getX(), shadowPoints[1].getY(), shadowPoints[3].getX(), shadowPoints[3]
+                        .getY(), other);
                 if (tempPoint != null && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
                     XR1 = tempPoint.getX();
                 } else {
-                    if ((XR1 < other.getX() || XR1 > other.getXEnd()) && shadowPoints[3].getY() > current.getYEnd() && shadowPoints[2].getY() > current.getYEnd() && other.getYEnd() >= current.getYEnd() && current.getX() != other.getXEnd() && current.getXEnd() != other.getX()
-                            && ((other.isRightBottomRound() && other.getX() < current.getX() && shadowPoints[3].getX() < current.getX() && YOR2 >= other.getYEnd() - Place.tileSize && YOR2 <= other.getYEnd())
-                            || (other.isLeftBottomRound() && other.getX() > current.getX() && shadowPoints[3].getX() > current.getYEnd() && YOR >= other.getYEnd() - Place.tileSize && YOR <= other.getYEnd()))) {
+                    if ((XR1 < other.getX() || XR1 > other.getXEnd()) && shadowPoints[3].getY() > current.getYEnd() && shadowPoints[2].getY() > current
+                            .getYEnd() && other.getYEnd() >= current.getYEnd() && current.getX() != other.getXEnd() && current.getXEnd() != other.getX()
+                            && ((other.isRightBottomRound() && other.getX() < current.getX() && shadowPoints[3].getX() < current.getX() && YOR2 >= other
+                            .getYEnd() - Place.tileSize && YOR2 <= other.getYEnd())
+                            || (other.isLeftBottomRound() && other.getX() > current.getX() && shadowPoints[3].getX() > current.getYEnd() && YOR >= other
+                            .getYEnd() - Place.tileSize && YOR <= other.getYEnd()))) {
                         other.addShadowType(DARK);
                         DEBUG("Right Round Top Darkness");
                         checked = true;
@@ -1231,7 +1254,8 @@ public class ShadowRenderer {
                     other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
                     XR2 = XR1 > current.getXEnd() ? other.getXSpriteOffset() : other.getXSpriteOffsetWidth();
                     other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
-                    OBJECT_DEBUG("Object Right Light XR1 " + (XR1 - other.getXSpriteBegin()) + " XR2 " + XR2 + other.getActualWidth() + " " + other.getXSpriteOffset());
+                    OBJECT_DEBUG("Object Right Light XR1 " + (XR1 - other.getXSpriteBegin()) + " XR2 " + XR2 + other.getActualWidth() + " " + other
+                            .getXSpriteOffset());
                     checked = true;
                 } else { //dodaj cień
                     if (shadowPoints[3].getX() < shadowPoints[2].getX() || shadowPoints[3].getY() > shadowPoints[2].getY()) {
@@ -1258,7 +1282,8 @@ public class ShadowRenderer {
     private static void findDarkness(Figure other, Figure current, Light source) {
         if (other.getYEnd() < source.getY()) {
             if (other.getY() - other.getShadowHeight() < current.getY() || other.getYEnd() < current.getYEnd()) {
-                if (current.getY() == other.getYEnd() && ((current.getX() == other.getXEnd() && source.getX() > current.getXEnd()) || (current.getXEnd() == other.getX() && source.getX() < current.getX())) && source.getY() < current.getYEnd()) {
+                if (current.getY() == other.getYEnd() && ((current.getX() == other.getXEnd() && source.getX() > current.getXEnd()) || (current.getXEnd() ==
+                        other.getX() && source.getX() < current.getX())) && source.getY() < current.getYEnd()) {
                     other.addShadowType(DARK);
                     DEBUG("Darkness Special Case...");
                 } else {
@@ -1288,7 +1313,10 @@ public class ShadowRenderer {
 
     private static void findRoundDarkness(RoundRectangle other, Figure current) {
         if (!checked) {
-            if ((current.getYEnd() != other.getYEnd()) || (!current.isBottomRounded() && current.getYEnd() - Place.tileSize != other.getYEnd() && ((other.isLeftBottomRound() && other.getX() == current.getXEnd()) || (other.isRightBottomRound() && other.getXEnd() == current.getX()))) || (other.getX() != current.getXEnd() && other.getX() + Place.tileSize != current.getX()) || (current instanceof RoundRectangle && ((current.getX() < other.getX() && other.isLeftBottomRound()) || (current.getX() > other.getX() && other.isRightBottomRound())))) {
+            if ((current.getYEnd() != other.getYEnd()) || (!current.isBottomRounded() && current.getYEnd() - Place.tileSize != other.getYEnd() && ((other
+                    .isLeftBottomRound() && other.getX() == current.getXEnd()) || (other.isRightBottomRound() && other.getXEnd() == current.getX()))) ||
+                    (other.getX() != current.getXEnd() && other.getX() + Place.tileSize != current.getX()) || (current instanceof RoundRectangle && ((current
+                    .getX() < other.getX() && other.isLeftBottomRound()) || (current.getX() > other.getX() && other.isRightBottomRound())))) {
                 points = 0;
                 if (polygon.contains(other.getX() + 2, other.getYEnd() - Place.tileSize + 1)) {
                     points++;

@@ -71,7 +71,7 @@ public class Drawer {
     }
 
 
-    public static Color percentToRGBColor(int percent, float alpha) {
+    public static Color setPercentToRGBColor(int percent, Color color) {
         if (percent == 100) {
             percent = 99;
         }
@@ -83,7 +83,10 @@ public class Drawer {
             r = 1f;
             g = ((50f - percent % 50f) / 50f);
         }
-        return new Color(r, g, 0.25f, alpha);
+        color.r = r;
+        color.g = g;
+        color.b = 0f;
+        return color;
     }
 
     public static void setCentralPoint() {  //Miejsce do którego można wrócić
