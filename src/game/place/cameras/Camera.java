@@ -82,6 +82,8 @@ public abstract class Camera {
         }
     }
 
+    public abstract void preRenderGUI();
+
     public void renderGUI() {
         Drawer.refreshForRegularDrawing();
         owners.stream().forEach((object) -> {

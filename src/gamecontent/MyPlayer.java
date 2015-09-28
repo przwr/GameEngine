@@ -84,8 +84,6 @@ public class MyPlayer extends Player {
         } else {
             initializeController();
         }
-        initializeAttacks();
-        stats = new PlayerStats(this);
     }
 
     private void initializeAttacks() {
@@ -274,11 +272,14 @@ public class MyPlayer extends Player {
             addLight(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
+        initializeAttacks();
+        stats = new PlayerStats(this);
         textControl = new TextController(place);
         addGui(textControl);
         gui = new MyGUI("Player " + name + "'s GUI", place);
         addGui(gui);
         ((MyController) playerController).setPlayersGUI(gui);
+
     }
 
     @Override
@@ -288,7 +289,6 @@ public class MyPlayer extends Player {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        preRenderGroundGUI();
         if (appearance != null) {
             glPushMatrix();
             glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) ((getY() - floatHeight) * Place.getCurrentScale() + yEffect), 0);
@@ -313,7 +313,7 @@ public class MyPlayer extends Player {
     }
 
 
-    private void preRenderGroundGUI() {
+    public void preRenderGroundGUI() {
         gui.getFrameBufferObject().activate();
         glPushMatrix();
         clearScreen(0);
@@ -324,7 +324,6 @@ public class MyPlayer extends Player {
         Drawer.drawShapeInShade(appearance, 0);
         glPopMatrix();
         gui.getFrameBufferObject().deactivate();
-        Drawer.refreshForRegularDrawing();
     }
 
     private void renderLifeIndicator() {

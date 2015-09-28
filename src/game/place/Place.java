@@ -61,6 +61,7 @@ public abstract class Place extends ScreenPlace {
 
     {
         renders[OFFLINE] = () -> {
+            SplitScreen.setSingleCamera(this);
             for (int p = 0; p < playersCount; p++) {
                 tempMaps.stream().forEach((map) -> {
                     Renderer.findVisibleLights(map, playersCount);
@@ -68,6 +69,16 @@ public abstract class Place extends ScreenPlace {
                         Renderer.preRenderLights(map);
                     }
                 });
+                if (!singleCamera) {
+                    currentCamera = (((Player) players[p]).getCamera());
+                    currentCamera.preRenderGUI();
+                }
+            }
+            if (singleCamera) {
+                for (Camera camera : cameras) {
+                    currentCamera = cameras[playersCount - 2];
+                    cameras[playersCount - 2].preRenderGUI();
+                }
             }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
@@ -91,8 +102,8 @@ public abstract class Place extends ScreenPlace {
                             currentCamera.renderGUI();
                             console.setCamera(currentCamera);
                             console.render(0, 0);
+                            glDisable(GL_SCISSOR_TEST);
                         }
-                        glDisable(GL_SCISSOR_TEST);
                     }
                 } catch (Exception e) { //BY WYJĄTEK PODCZAS RYSOWANIA NIE PSUŁ GRY :D
                     glPopMatrix();
@@ -114,6 +125,7 @@ public abstract class Place extends ScreenPlace {
                     }
                     currentCamera = (((Player) players[0]).getCamera());
                     SplitScreen.setSplitScreen(this, 1, 0);
+                    currentCamera.preRenderGUI();
                     glEnable(GL_SCISSOR_TEST);
                     Renderer.preRenderShadowedLights(currentCamera);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -208,11 +220,11 @@ public abstract class Place extends ScreenPlace {
 //            }
 //        }
 //    }
-    
+
     public Console getConsole() {
         return console;
     }
-    
+
     public void printMessage(String message) {
         console.printMessage(message);
     }

@@ -7,7 +7,10 @@ package game.place.cameras;
 
 import game.Settings;
 import game.gameobject.GameObject;
+import gamecontent.MyPlayer;
 import org.lwjgl.opengl.Display;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author przemek
@@ -127,6 +130,14 @@ public class PlayersCamera extends Camera {
         heightHalf = Display.getHeight() / ssY;
         setScale(ssX, ssY, ownersCount);
         update();
+    }
+
+    @Override
+    public void preRenderGUI() {
+        for (GameObject owner : owners) {
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            ((MyPlayer) owner).preRenderGroundGUI();
+        }
     }
 
     private interface initializer {

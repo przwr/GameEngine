@@ -42,6 +42,14 @@ public class SplitScreen {
         splits[playersLength - 1].setSplit(place, player);
     }
 
+    public static void setSingleCamera(Place place) {
+        if (place.playersCount == 1) {
+            place.singleCamera = false;
+        } else {
+            place.singleCamera = Settings.joinSplitScreen && !isFar(place);
+        }
+    }
+
     public static boolean isClose(Place place) {
         switch (place.getPlayersCount()) {
             case 2:
@@ -56,21 +64,35 @@ public class SplitScreen {
     }
 
     private static boolean isClose2(Place place) {
-        return place.players[0].getMap() == place.players[1].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width3o4 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < height3o4;
+        return place.players[0].getMap() == place.players[1].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width3o4 &&
+                FastMath.abs(place.players[0].getY() - place.players[1].getY()) < height3o4;
     }
 
     private static boolean isClose3(Place place) {
-        return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < height2o3 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[2].getY()) < height2o3 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < height2o3;
+        return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && FastMath.abs(place
+                .players[0].getX() - place.players[1].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < height2o3 &&
+                FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[0].getY() - place.players[2].getY())
+                < height2o3 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width2o3 && FastMath.abs(place.players[1].getY() - place
+                .players[2].getY()) < height2o3;
     }
 
     private static boolean isClose4(Place place) {
-        return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && place.players[0].getMap() == place.players[3].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[1].getY()) < height1o2 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[2].getY()) < height1o2 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < height1o2 && FastMath.abs(place.players[0].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[3].getY()) < height1o2 && FastMath.abs(place.players[1].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[3].getY()) < height1o2 && FastMath.abs(place.players[2].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[2].getY() - place.players[3].getY()) < height1o2;
+        return place.players[0].getMap() == place.players[1].getMap() && place.players[0].getMap() == place.players[2].getMap() && place.players[0].getMap()
+                == place.players[3].getMap() && FastMath.abs(place.players[0].getX() - place.players[1].getX()) < width1o2 && FastMath.abs(place.players[0]
+                .getY() - place.players[1].getY()) < height1o2 && FastMath.abs(place.players[0].getX() - place.players[2].getX()) < width1o2 && FastMath.abs
+                (place.players[0].getY() - place.players[2].getY()) < height1o2 && FastMath.abs(place.players[1].getX() - place.players[2].getX()) < width1o2
+                && FastMath.abs(place.players[1].getY() - place.players[2].getY()) < height1o2 && FastMath.abs(place.players[0].getX() - place.players[3]
+                .getX()) < width1o2 && FastMath.abs(place.players[0].getY() - place.players[3].getY()) < height1o2 && FastMath.abs(place.players[1].getX() -
+                place.players[3].getX()) < width1o2 && FastMath.abs(place.players[1].getY() - place.players[3].getY()) < height1o2 && FastMath.abs(place
+                .players[2].getX() - place.players[3].getX()) < width1o2 && FastMath.abs(place.players[2].getY() - place.players[3].getY()) < height1o2;
     }
 
     private static boolean isFar(Place place) {
         if (!place.singleCamera) {
             for (int p = 0; p < place.playersCount; p++) {
-                if (place.players[0].getMap() != place.players[p].getMap() || place.players[p].getX() > place.cameras[place.playersCount - 2].getXEnd() || place.players[p].getX() < place.cameras[place.playersCount - 2].getXStart() || place.players[p].getY() > place.cameras[place.playersCount - 2].getYEnd() || place.players[p].getY() < place.cameras[place.playersCount - 2].getYStart()) {
+                if (place.players[0].getMap() != place.players[p].getMap() || place.players[p].getX() > place.cameras[place.playersCount - 2].getXEnd() ||
+                        place.players[p].getX() < place.cameras[place.playersCount - 2].getXStart() || place.players[p].getY() > place.cameras[place
+                        .playersCount - 2].getYEnd() || place.players[p].getY() < place.cameras[place.playersCount - 2].getYStart()) {
                     Settings.joinSplitScreen = false;
                     return true;
                 }

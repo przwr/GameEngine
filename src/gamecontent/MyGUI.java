@@ -30,7 +30,7 @@ public class MyGUI extends GUIObject {
     private int emptySlot;
     private FrameBufferObject frameBufferObject;
     private Color lifeColor = new Color(0f, 0f, 0f), energyColor = new Color(0f, 0f, 1f);
-    private boolean lowLife, riseLifeAlpha;
+    private boolean lowHealth, riseLifeAlpha;
 
     public MyGUI(String name, Place place) {
         super(name, place);
@@ -68,20 +68,23 @@ public class MyGUI extends GUIObject {
         }
         firstAttackType = first;
         secondAttackType = second;
+        activateMenu();
+    }
+
+    public void activateMenu() {
         alpha = 3f;
     }
 
     @Override
     public void render(int xEffect, int yEffect) {
-        boolean lowHealth = player.getStats().getHealth() <= player.getStats().getMaxHealth() * 0.4f;
-        if (alpha > 0 || lowHealth) {
-            color.a = alpha;
-            alpha -= 0.02f;
+        lowHealth = player.getStats().getHealth() <= player.getStats().getMaxHealth() * 0.4f;
+        if (isOn()) {
+            updateAlpha();
             glPushMatrix();
             glTranslatef((int) ((player.getX()) * Place.getCurrentScale() - frameBufferObject.getWidth() / 2 + xEffect),
                     (int) ((player.getY() - player.getFloatHeight()) * Place.getCurrentScale() + yEffect - frameBufferObject.getHeight() / 2), 0);
 
-            renderGroundGUI(lowHealth);
+            renderGroundGUI();
 
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
 
@@ -96,8 +99,39 @@ public class MyGUI extends GUIObject {
         }
     }
 
-    private void renderGroundGUI(boolean lowHealth) {
-        glBlendFunc(GL_SRC_COLOR, GL_DST_ALPHA);
+    private void updateAlpha() {
+        color.a = alpha;
+        if (alpha > 0) {
+            alpha -= 0.02f;
+        } else {
+            alpha = 0;
+        }
+    }
+
+    private void renderGroundGUI() {
+        glBlendFunc(GL_SRC_COLOR, GL_DST_ALPHA); // 768, 772
+
+//        Inne działające funkcje - do przetestowania przez Wojtka:
+//        glBlendFunc(770, 772);
+//        glBlendFunc(772, 772);
+//        glBlendFunc(774, 772);
+//        glBlendFunc(775, 772);
+//        glBlendFunc(772, 769);
+
+        //TODO Zmień blendowanie
+
+        calculateLifeAlpha();
+        Drawer.setColor(lifeColor);
+        frameBufferObject.renderPiece(0, 0, 0, 0, frameBufferObject.getWidth() / 2, frameBufferObject.getHeight());
+        if (alpha > 0) {
+            energyColor.a = alpha;
+            Drawer.setColor(energyColor);
+            frameBufferObject.renderPiece(0, 0, frameBufferObject.getWidth() / 2, 0, frameBufferObject.getWidth(), frameBufferObject.getHeight());
+        }
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private void calculateLifeAlpha() {
         if (lowHealth) {
             if (player.getStats().getHealth() <= player.getStats().getMaxHealth() * 0.2f) {
                 if (riseLifeAlpha) {
@@ -121,14 +155,6 @@ public class MyGUI extends GUIObject {
             riseLifeAlpha = true;
             lifeColor.a = alpha;
         }
-        energyColor.a = alpha;
-        Drawer.setColor(lifeColor);
-        frameBufferObject.renderPiece(0, 0, 0, 0, frameBufferObject.getWidth() / 2, frameBufferObject.getHeight());
-        if (alpha > 0) {
-            Drawer.setColor(energyColor);
-            frameBufferObject.renderPiece(0, 0, frameBufferObject.getWidth() / 2, 0, frameBufferObject.getWidth(), frameBufferObject.getHeight());
-        }
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public float getAlpha() {
@@ -143,6 +169,10 @@ public class MyGUI extends GUIObject {
         return energyColor;
     }
 
+
+    public boolean isOn() {
+        return alpha > 0 || lowHealth;
+    }
 
     public FrameBufferObject getFrameBufferObject() {
         return frameBufferObject;

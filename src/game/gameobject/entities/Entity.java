@@ -31,7 +31,7 @@ import java.util.Iterator;
  */
 public abstract class Entity extends GameObject {
 
-    protected static final Color JUMP_SHADOW_COLOR = new Color(0, 0, 0, 51);
+    protected static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 0.2f);
     public final Update[] updates = new Update[4];
     public int lastAdded;
     protected int hearRange;
