@@ -14,9 +14,11 @@ public abstract class Stats {
     protected Entity owner;
     protected int health = 100;
     protected int maxHealth = 100;
-    protected int strength = 2;
+    protected int strength = 5;
     protected int defence = 2;
     protected int weight = 1;
+    protected int hurt = 0;
+    protected float temp;
     protected float sideDefenceModifier = 10;
     protected float backDefenceModifier = 4;
     protected float protection = 40;
@@ -31,18 +33,23 @@ public abstract class Stats {
 
     public void decreaseHealth(InteractiveResponse response) {
         if (health > 0 && owner.getKnockback().isOver()) {
-            int hurt = 0;
+            hurt = 0;
+//            temp = (float) FastMath.sqrt(response.getPixels());
+            temp = response.getPixels();
             switch (response.getDirection()) {
                 case FRONT:
-                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection : 1)));
+                    hurt = Math.round(temp / (defence * (protectionState ? protection : 1)));
                     break;
                 case BACK:
-                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionBackModifier : backDefenceModifier)));
+                    hurt = Math.round(temp / (defence * (protectionState ? protection * protectionBackModifier :
+                            backDefenceModifier)));
                     break;
                 case SIDE:
-                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionSideModifier : sideDefenceModifier)));
+                    hurt = Math.round(temp / (defence * (protectionState ? protection * protectionSideModifier :
+                            sideDefenceModifier)));
                     break;
             }
+            System.out.println(response.getPixels() + " " + temp + " " + hurt);
             health -= hurt;
             if (health < 0) {
                 health = 0;
@@ -51,9 +58,7 @@ public abstract class Stats {
             if (health == 0) {
                 died();
             } else if (hurt != 0) {
-                double hurtPower = 3 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
-                owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
-                response.getAttacker().reactToAttack(FRONT, owner);
+                hurtReaction(response);
             }
 
         }
@@ -62,6 +67,12 @@ public abstract class Stats {
     public void died() {
         owner.delete();
         System.out.println(owner.getName() + " zginał.");
+    }
+
+    public void hurtReaction(InteractiveResponse response) {
+        double hurtPower = 5 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
+        owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
+        response.getAttacker().reactToAttack(FRONT, owner);
     }
 
     public int getWeight() {
@@ -107,7 +118,7 @@ public abstract class Stats {
     public void setProtectionState(boolean protectionState) {
         this.protectionState = protectionState;
     }
-    
+
     public boolean isUnhurtableState() {
         return unhurtableState;
     }

@@ -5,9 +5,11 @@
  */
 package game.gameobject.interactive;
 
+import engine.utilities.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
+import net.jodk.lang.FastMath;
 
 import java.util.List;
 
@@ -30,9 +32,9 @@ public class Interactive {
     private boolean active;
 
     // for Players and Weapons
-    public Interactive(GameObject owner, InteractiveActivator activator, 
-            InteractiveCollision collision, InteractiveAction action, 
-            byte weaponType, byte attackType, float modifier) {
+    public Interactive(GameObject owner, InteractiveActivator activator,
+                       InteractiveCollision collision, InteractiveAction action,
+                       byte weaponType, byte attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
@@ -43,8 +45,8 @@ public class Interactive {
     }
 
     // for Mobs and NPCs
-    public Interactive(GameObject owner, InteractiveActivator activator, 
-            InteractiveCollision collision, InteractiveAction action, byte attackType, float modifier) {
+    public Interactive(GameObject owner, InteractiveActivator activator,
+                       InteractiveCollision collision, InteractiveAction action, byte attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
@@ -84,13 +86,13 @@ public class Interactive {
 
     //TODO stworzyć Weapon, które ma właściwości jego użycia, jak przeliczenie danych, wygląd, czy używane statystyki
     public void recalculateData(InteractiveResponse response) {
-        response.setPixels(response.getPixels() * modifier * owner.getStats().getStrength());
+        response.setPixels(Methods.roundDouble(FastMath.sqrt(response.getPixels()) * modifier * owner.getStats().getStrength()));
     }
 
     public InteractiveActivator getActivator() {
         return activator;
     }
-    
+
     public boolean isActive() {
         return active;
     }
