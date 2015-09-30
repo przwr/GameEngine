@@ -5,11 +5,13 @@ import game.gameobject.interactive.InteractiveResponse;
 import net.jodk.lang.FastMath;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
+import game.place.Place;
+import gamecontent.effects.DamageNumber;
 
 /**
  * Created by przemek on 10.08.15.
  */
-public abstract class Stats {
+public class Stats {
 
     protected Entity owner;
     protected int health = 100;
@@ -48,12 +50,15 @@ public abstract class Stats {
                 health = 0;
             }
             System.out.println(owner.getName() + " dostał za " + hurt + " Życie: " + health + "/" + maxHealth);
+            DamageNumber damage = new DamageNumber(hurt, owner.getX(), owner.getY(),
+                    Place.tileSize, owner.getMap().place);
+            owner.getMap().addObject(damage);
             if (health == 0) {
                 died();
             } else if (hurt != 0) {
                 double hurtPower = 3 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
                 owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
-                response.getAttacker().reactToAttack(FRONT, owner);
+                response.getAttacker().reactToAttack(response.getAttackType(), owner);
             }
 
         }
@@ -107,7 +112,7 @@ public abstract class Stats {
     public void setProtectionState(boolean protectionState) {
         this.protectionState = protectionState;
     }
-    
+
     public boolean isUnhurtableState() {
         return unhurtableState;
     }

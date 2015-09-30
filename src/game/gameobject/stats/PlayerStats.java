@@ -19,7 +19,7 @@ public class PlayerStats extends Stats {
 
     public void died() {
         health = maxHealth / 2;
-        owner.setPositionAreaUpdate(128, 128);
+        owner.setPosition(128, 128);
         Camera camera = ((Player) owner).getCamera();
         if (camera != null) {
             camera.update();

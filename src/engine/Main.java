@@ -48,7 +48,7 @@ public class Main {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG = false;
-    private static final Delay delay = new Delay(200);
+    private static final Delay delay = Delay.createDelayInMiliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
     public static boolean pause, enter = true;

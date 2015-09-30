@@ -97,8 +97,8 @@ public abstract class Player extends Entity {
 
 
     @Override
-    public void setPosition(double xPosition, double yPosition) {
-        super.setPosition(xPosition, yPosition);
+    public void setPositionWithoutAreaUpdate(double xPosition, double yPosition) {
+        super.setPositionWithoutAreaUpdate(xPosition, yPosition);
         if (camera != null) {
             camera.update();
         }
@@ -120,11 +120,11 @@ public abstract class Player extends Entity {
     private boolean setToLastNotCollidedToEnd(int i) {
         if (!collision.isCollideSolid(online.pastPositions[i].getX(), online.pastPositions[i].getY(), map)) {
             if (!collision.isCollideSolid(online.pastPositions[i].getX(), getY(), map)) {
-                setPositionAreaUpdate(online.pastPositions[i].getX(), getY());
+                setPosition(online.pastPositions[i].getX(), getY());
             } else if (!collision.isCollideSolid(getX(), online.pastPositions[i].getY(), map)) {
-                setPositionAreaUpdate(getX(), online.pastPositions[i].getY());
+                setPosition(getX(), online.pastPositions[i].getY());
             } else {
-                setPositionAreaUpdate(online.pastPositions[i].getX(), online.pastPositions[i].getY());
+                setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
             }
             camera.update();
             return true;
@@ -135,11 +135,11 @@ public abstract class Player extends Entity {
     private boolean setToLastNotCollidedFromStart(int i) {
         if (!collision.isCollideSolid(online.pastPositions[i].getX(), online.pastPositions[i].getY(), map)) {
             if (!collision.isCollideSolid(online.pastPositions[i].getX(), getY(), map)) {
-                setPositionAreaUpdate(online.pastPositions[i].getX(), getY());
+                setPosition(online.pastPositions[i].getX(), getY());
             } else if (!collision.isCollideSolid(getX(), online.pastPositions[i].getY(), map)) {
-                setPositionAreaUpdate(getX(), online.pastPositions[i].getY());
+                setPosition(getX(), online.pastPositions[i].getY());
             } else {
-                setPositionAreaUpdate(online.pastPositions[i].getX(), online.pastPositions[i].getY());
+                setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
             }
             camera.update();
             return true;

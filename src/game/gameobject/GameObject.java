@@ -8,7 +8,6 @@ package game.gameobject;
 /**
  * @author przemek
  */
-
 import collision.Figure;
 import engine.lights.Light;
 import game.gameobject.interactive.Interactive;
@@ -26,7 +25,7 @@ public abstract class GameObject {
     public final static byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
     protected final ArrayList<Light> lights = new ArrayList<>(1);
     protected final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
-    private final double gravity = 0.6f;
+    private double gravity = 0.6;
     protected double x, y;
     protected int depth;
     protected boolean solid;
@@ -74,7 +73,7 @@ public abstract class GameObject {
                 this.map.deleteObject(this);
             }
             this.map = map;
-            this.setPositionAreaUpdate(x, y);
+            this.setPosition(x, y);
             this.map.addObject(this);
         }
     }
@@ -110,9 +109,17 @@ public abstract class GameObject {
     public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
-    
+
     public void reactToAttack(byte attackType, GameObject attacked) {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
+    }
+
+    public double getGravity() {
+        return gravity;
+    }
+    
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
     }
     
     public boolean isSolid() {
@@ -302,7 +309,7 @@ public abstract class GameObject {
     public void setFloatHeight(double floatHeight) {
         this.floatHeight = floatHeight;
     }
-    
+
     public double getJumpForce() {
         return jumpForce;
     }
@@ -319,7 +326,7 @@ public abstract class GameObject {
             floatHeight = 0;
         }
     }
-    
+
     public int getDirection() {
         return direction;
     }
@@ -332,7 +339,7 @@ public abstract class GameObject {
     public int getDirection8Way() {
         return direction8Way;
     }
-    
+
     public void setDirection8way(int direction8Way) {
         this.direction8Way = direction8Way % 8;
         direction = direction8Way * 45;
@@ -365,17 +372,17 @@ public abstract class GameObject {
     public InteractiveActivator getActivator(int i) {
         return interactiveObjects.get(i).getActivator();
     }
-    
+
     public Appearance getAppearance() {
         return appearance;
     }
 
-    public void setPosition(double x, double y) {
+    public void setPositionWithoutAreaUpdate(double x, double y) {
         setX(x);
         setY(y);
     }
 
-    public void setPositionAreaUpdate(double x, double y) {
+    public void setPosition(double x, double y) {
         setX(x);
         setY(y);
         updateAreaPlacement();

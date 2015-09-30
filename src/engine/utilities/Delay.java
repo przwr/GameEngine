@@ -14,13 +14,41 @@ public class Delay {
     private long endTime;
     private boolean started;
 
-    public Delay(int length) {
+    public static Delay createDelayInMinutesAndSeconds(int minutes, int seconds) {
+        return new Delay((seconds + minutes * 60) * 1000);
+    }
+    
+    public static Delay createDelayInSecondsAndMiliseconds(int seconds, int miliseconds) {
+        return new Delay(miliseconds + seconds * 1000);
+    }
+    
+    public static Delay createDelayInSeconds(int seconds) {
+        return new Delay(seconds * 1000);
+    }
+    
+    public static Delay createDelayInMiliseconds(int miliseconds) {
+        return new Delay(miliseconds);
+    }
+    
+    private Delay(int length) {
         this.length = length;
         started = false;
     }
 
-    public void setFrameLength(int length) {
-        this.length = length;
+    public void setFrameLengthInSecondsAndMiliseconds(int seconds, int miliseconds) {
+        this.length = seconds * 1000 + miliseconds;
+    }
+    
+    public void setFrameLengthInMinutesAndSeconds(int minutes, int seconds) {
+        this.length = (minutes * 60 + seconds) * 1000;
+    }
+    
+    public void setFrameLengthInMiliseconds(int miliseconds) {
+        this.length = miliseconds;
+    }
+    
+    public void setFrameLengthInSeconds(int seconds) {
+        this.length = seconds * 1000;
     }
 
     public void setFPS(int fps) {

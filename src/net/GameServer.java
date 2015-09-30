@@ -36,7 +36,7 @@ public class GameServer {
         this.game = game;
 //        this.scopeX = 2400;
 //        this.scopeY = 1500;
-        delay = new Delay(50);
+        delay = Delay.createDelayInMiliseconds(50);
         delay.terminate();
         Server tempServer = null;
         try {
@@ -132,7 +132,7 @@ public class GameServer {
             MultiPlayers[0].setPlayer(player);
             player.setName(MultiPlayers[0].getName());
             player.playerID = id++;
-            player.setPositionAreaUpdate(MultiPlayers[0].getX(), MultiPlayers[0].getY());
+            player.setPosition(MultiPlayers[0].getX(), MultiPlayers[0].getY());
             nrPlayers++;
             isRunning = true;
             System.out.println("Server started!");

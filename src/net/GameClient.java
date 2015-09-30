@@ -32,7 +32,7 @@ public class GameClient {
 
     public GameClient(final Player player, final GameOnline game, String IP) {
         this.game = game;
-        delay = new Delay(20);
+        delay = Delay.createDelayInMiliseconds(20);
         delay.terminate();
         Client temp = null;
         try {
@@ -68,7 +68,7 @@ public class GameClient {
                         if (((PacketJoinResponse) obj).getId() != -1) {
                             server = connection;
                             player.playerID = ((PacketJoinResponse) obj).getId();
-                            player.setPositionAreaUpdate(((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY());
+                            player.setPosition(((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY());
                             tempMapId = ((PacketJoinResponse) obj).getMapId();
                             mpUp = new PacketMultiPlayerUpdate(tempMapId, player.playerID, ((PacketJoinResponse) obj).getX(), ((PacketJoinResponse) obj).getY(), false, false);
                             System.out.println("Joined with id " + ((PacketJoinResponse) obj).getId());

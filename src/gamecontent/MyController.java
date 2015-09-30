@@ -13,8 +13,10 @@ import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
 import game.gameobject.inputs.AnyInput;
 import game.gameobject.inputs.PlayerController;
+import game.gameobject.items.Arrow;
 import game.gameobject.stats.PlayerStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
+import game.place.Place;
 import sprites.Animation;
 
 /**
@@ -30,7 +32,7 @@ public class MyController extends PlayerController {
     public static final byte MENU_ACTIONS_COUNT = 6, ACTIONS_COUNT = 29, ATTACK_COUNT = 5;
 
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2,
-            ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4;
+            ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4, ATTACK_NORMAL_ARROW_SHOT = 5;
     private final int[] attackFrames;
     private final Delay sideDelay;
     private final Delay jumpDelay;
@@ -51,8 +53,8 @@ public class MyController extends PlayerController {
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
         blockedInputs = new boolean[ACTIONS_COUNT];
-        sideDelay = new Delay(25);
-        jumpDelay = new Delay(400);
+        sideDelay = Delay.createDelayInMiliseconds(25);
+        jumpDelay = Delay.createDelayInMiliseconds(400);
         attackFrames = new int[]{22, 27, 31, 38, 40};
         jumpMaker = new SpeedChanger(8);
         jumpMaker.setType(SpeedChanger.DECREASING);
@@ -81,7 +83,6 @@ public class MyController extends PlayerController {
             diagonal = true;
             if (!inControl.isHurt()) {
                 if (inControl.isAbleToMove()) {
-                    //System.out.println(getAllInput(ATTACK));
                     if (jumpLag == 0) {
                         updateAttackTypes();
                         if (actions[ATTACK].isKeyPressed() || actions[SECOND_ATTACK].isKeyPressed()) {
@@ -103,7 +104,7 @@ public class MyController extends PlayerController {
             }
             if ((!actions[ATTACK].isKeyPressed() || firstAttackType < 0) && (!actions[SECOND_ATTACK].isKeyPressed() || secondAttackType < 0) && jumpLag == 0) {
                 if (running) {
-                    playerAnimation.setFPS((int) (inControl.getSpeed() * 4));
+                    playerAnimation.setFPS((int) (inControl.getSpeed() * 3.5));
                 } else {
                     playerAnimation.setFPS((int) (inControl.getSpeed() * 3));
                 }
@@ -191,9 +192,15 @@ public class MyController extends PlayerController {
                 break;
             case ATTACK_WEAK_PUNCH:
                 playerAnimation.animateIntervalInDirectionOnce(tempDirection, 37, 39);
+                Arrow arrow = new Arrow(80, tempDirection * 45, (int) (Place.tileSize), inControl);
+                arrow.setPositionWithoutAreaUpdate(inControl.getX(), inControl.getY());
+                inControl.getMap().addObject(arrow);
                 break;
             case ATTACK_STRONG_PUNCH:
                 playerAnimation.animateIntervalInDirectionOnce(tempDirection, 40, 41);
+                break;
+            case ATTACK_NORMAL_ARROW_SHOT:
+                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 46, 49);
                 break;
         }
     }

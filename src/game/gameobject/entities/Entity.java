@@ -18,6 +18,7 @@ import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.logic.navmeshpathfinding.PathData;
 import game.logic.navmeshpathfinding.PathStrategy;
 import game.place.Place;
+import gamecontent.effects.DamageNumber;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.newdawn.slick.Color;
@@ -124,9 +125,9 @@ public abstract class Entity extends GameObject {
         xDestination = currentUpdate.getX() - currentUpdate.getXDeltas().get(deltasCount);
         yDestination = currentUpdate.getY() - currentUpdate.getYDeltas().get(deltasCount);
         if (collision.isCollideSolid(xDestination, yDestination, map)) {
-            moveIfPossible(xDestination - getX(), yDestination - getY());
+            moveIfPossibleWithoutSliding(xDestination - getX(), yDestination - getY());
         } else {
-            setPositionAreaUpdate(xDestination, yDestination);
+            setPosition(xDestination, yDestination);
         }
         deltasCount++;
     }
@@ -143,9 +144,9 @@ public abstract class Entity extends GameObject {
             xDestination = currentUpdate.getX();
             yDestination = currentUpdate.getY();
             if (collision.isCollideSolid(xDestination, yDestination, map)) {
-                moveIfPossible(xDestination - getX(), yDestination - getY());
+                moveIfPossibleWithoutSliding(xDestination - getX(), yDestination - getY());
             } else {
-                setPositionAreaUpdate(xDestination, yDestination);
+                setPosition(xDestination, yDestination);
             }
             deltasCount = 0;
         }
@@ -219,15 +220,14 @@ public abstract class Entity extends GameObject {
     }
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
-
         double xTempSpeed = (xMagnitude + collision.getXSlideSpeed());
         double yTempSpeed = (yMagnitude + collision.getYSlideSpeed());
         collision.prepareSlideSpeed(xMagnitude, yMagnitude);
-        moveIfPossible(xTempSpeed, yTempSpeed);
+        moveIfPossibleWithoutSliding(xTempSpeed, yTempSpeed);
         collision.resetSlideSpeed();
     }
 
-    private void moveIfPossible(double xMagnitude, double yMagnitude) {
+    protected void moveIfPossibleWithoutSliding(double xMagnitude, double yMagnitude) {
         calculatePositionsAndDeltas(xMagnitude, yMagnitude);
         while (xPosition != 0 || yPosition != 0) {
             moveXIfPossible();
@@ -304,7 +304,7 @@ public abstract class Entity extends GameObject {
     }
 
     protected void move(double xPosition, double yPosition) {
-        setPosition(x + xPosition, y + yPosition);
+        setPositionWithoutAreaUpdate(x + xPosition, y + yPosition);
     }
 
     private void calculatePositionsAndDeltas(double xMagnitude, double yMagnitude) {

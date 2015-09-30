@@ -62,7 +62,7 @@ public class Methods {
     }
 
     public static int pointDifference(int x, int y, int xa, int ya) {
-        return FastMath.min(xa - x, ya - y);
+        return FastMath.max(Math.abs(xa - x), Math.abs(ya - y));
     }
 
     public static double pointAngle(int xSt, int ySt, int xEn, int yEn) {

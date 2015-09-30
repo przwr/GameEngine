@@ -33,19 +33,19 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import static engine.utilities.Drawer.clearScreen;
+import game.gameobject.GameObject;
 import static game.gameobject.interactive.Interactive.HURT;
 import static game.gameobject.items.Weapon.SWORD;
 import static game.gameobject.items.Weapon.UNIVERSAL;
 import static gamecontent.MyController.*;
 import static org.lwjgl.opengl.GL11.*;
 
-
 /**
  * @author przemek
  */
 public class MyPlayer extends Player {
 
-    private final int framesPerDir = 26;//46;
+    private final int framesPerDir = 50;
     private final String characterName = "aria";
     private Cloth head;
     private Cloth torso;
@@ -94,7 +94,6 @@ public class MyPlayer extends Player {
         activeWeapon = universal;
 
         // TODO Interactives powinny być raz stworzone w Skillach!
-
         int[] attacks = ((MyController) playerController).getAttackFrames();
         for (int attack = 0; attack < attacks.length; attack++) {
             int[] frames = new int[8];
@@ -136,11 +135,11 @@ public class MyPlayer extends Player {
             updateActionSets();
         }
 
-
         for (InteractionSet set : actionSets) {
             for (Interactive interactive : set.getAllInteractives()) {
-                if (!interactiveObjects.contains(interactive))
+                if (!interactiveObjects.contains(interactive)) {
                     addInteractive(interactive);
+                }
             }
         }
 
@@ -190,8 +189,9 @@ public class MyPlayer extends Player {
     }
 
     public boolean hideWeapon() {
-        if (activeWeapon != universal)
+        if (activeWeapon != universal) {
             lastWeapon = activeWeapon;
+        }
         activeWeapon = universal;
         return updateActionSets();
     }
@@ -295,8 +295,8 @@ public class MyPlayer extends Player {
             Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
                     map.getLightColor());
             Drawer.setColor(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight() *
-                    Place.getCurrentScale() / 2f), 24);
+            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
+                    * Place.getCurrentScale() / 2f), 24);
             Drawer.refreshColor();
             glPopMatrix();
 
@@ -311,7 +311,6 @@ public class MyPlayer extends Player {
             glPopMatrix();
         }
     }
-
 
     public void preRenderGroundGUI() {
         gui.getFrameBufferObject().activate();
@@ -344,8 +343,8 @@ public class MyPlayer extends Player {
             precision = 1;
         }
         Drawer.setColor(Drawer.setPercentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, gui.getLifeColor()));
-        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight() *
-                Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
+        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
+                * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
     }
 
     private void renderEnergyIndicator() {
@@ -444,7 +443,7 @@ public class MyPlayer extends Player {
         appearance.updateTexture(this);
         updateWithGravity();
     }
-
+    
     @Override
     public synchronized void sendUpdate() {
         if (jumping) {

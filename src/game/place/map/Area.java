@@ -119,7 +119,7 @@ public class Area {
     }
 
     public void addForegroundTile(GameObject tile, int x, int y, int depth) {
-        tile.setPositionAreaUpdate(x, y);
+        tile.setPosition(x, y);
         tile.setDepth(depth);
         addForegroundTile(tile);
     }
