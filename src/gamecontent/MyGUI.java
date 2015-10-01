@@ -30,7 +30,7 @@ public class MyGUI extends GUIObject {
     private int emptySlot;
     private FrameBufferObject frameBufferObject;
     private Color lifeColor = new Color(0f, 0f, 0f), energyColor = new Color(0f, 0f, 1f);
-    private boolean lowHealth, riseLifeAlpha;
+    private boolean lowHealth, riseLifeAlpha, on;
 
     public MyGUI(String name, Place place) {
         super(name, place);
@@ -68,17 +68,28 @@ public class MyGUI extends GUIObject {
         }
         firstAttackType = first;
         secondAttackType = second;
-        activateMenu();
+        activate();
     }
 
-    public void activateMenu() {
+    public void activate() {
+        alpha = 3f;
+        on = true;
+    }
+
+    public void deactivate() {
+        alpha = 0f;
+        on = false;
+    }
+
+    public void activateLifeIndicator() {
         alpha = 3f;
     }
 
+
     @Override
     public void render(int xEffect, int yEffect) {
-        lowHealth = player.getStats().getHealth() <= player.getStats().getMaxHealth() * 0.4f;
         if (isOn()) {
+            lowHealth = player.getStats().getHealth() <= player.getStats().getMaxHealth() * 0.4f;
             updateAlpha();
             glPushMatrix();
             glTranslatef((int) ((player.getX()) * Place.getCurrentScale() - frameBufferObject.getWidth() / 2 + xEffect),
@@ -86,14 +97,14 @@ public class MyGUI extends GUIObject {
 
             renderGroundGUI();
 
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-
-            Drawer.setColor(color);
-            glTranslatef(-player.getCollision().getWidth() * 1.5f, -player.getCollision().getHeight() / 2, 0);
-            attackIcons.renderPiece(firstAttackType);
-            glTranslatef(0, -Place.tileSize, 0);
-            attackIcons.renderPiece(secondAttackType);
-
+            if (on) {
+                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+                Drawer.setColor(color);
+                glTranslatef(-player.getCollision().getWidth() * 1.5f, -player.getCollision().getHeight() / 2, 0);
+                attackIcons.renderPiece(firstAttackType);
+                glTranslatef(0, -Place.tileSize, 0);
+                attackIcons.renderPiece(secondAttackType);
+            }
             Drawer.refreshColor();
             glPopMatrix();
         }
@@ -104,26 +115,17 @@ public class MyGUI extends GUIObject {
         if (alpha > 0) {
             alpha -= 0.02f;
         } else {
+            on = false;
             alpha = 0;
         }
     }
 
     private void renderGroundGUI() {
-        glBlendFunc(GL_SRC_COLOR, GL_DST_ALPHA); // 768, 772
-
-//        Inne działające funkcje - do przetestowania przez Wojtka:
-//        glBlendFunc(770, 772);
-//        glBlendFunc(772, 772);
-//        glBlendFunc(774, 772);
-//        glBlendFunc(775, 772);
-//        glBlendFunc(772, 769);
-
-        //TODO Zmień blendowanie
-
+        glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_COLOR);
         calculateLifeAlpha();
         Drawer.setColor(lifeColor);
         frameBufferObject.renderPiece(0, 0, 0, 0, frameBufferObject.getWidth() / 2, frameBufferObject.getHeight());
-        if (alpha > 0) {
+        if (on) {
             energyColor.a = alpha;
             Drawer.setColor(energyColor);
             frameBufferObject.renderPiece(0, 0, frameBufferObject.getWidth() / 2, 0, frameBufferObject.getWidth(), frameBufferObject.getHeight());
@@ -171,7 +173,7 @@ public class MyGUI extends GUIObject {
 
 
     public boolean isOn() {
-        return alpha > 0 || lowHealth;
+        return alpha > 0 || lowHealth || on;
     }
 
     public FrameBufferObject getFrameBufferObject() {

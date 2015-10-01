@@ -556,4 +556,8 @@ public class MyPlayer extends Player {
     public TextController getTextController() {
         return textControl;
     }
+
+    public MyGUI getGUI() {
+        return gui;
+    }
 }
