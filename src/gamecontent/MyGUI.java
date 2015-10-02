@@ -36,12 +36,11 @@ public class MyGUI extends GUIObject {
         super(name, place);
         color = new Color(Color.white);
         alpha = 0f;
-        emptySlot = 5;
+        emptySlot = 0;
         firstAttackType = emptySlot;
         secondAttackType = emptySlot;
         attackIcons = place.getSpriteSheet("attackIcons", "");
     }
-
 
     @Override
     public void setPlayer(Player player) {
@@ -52,8 +51,8 @@ public class MyGUI extends GUIObject {
     private void setFrameBuffer() {
         if (!Settings.shadowOff) {
             frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(player.getCollision().getWidth(),
-                    player.getCollision().getHeight()) :
-                    new RegularFrameBufferObject(player.
+                    player.getCollision().getHeight())
+                    : new RegularFrameBufferObject(player.
                             getCollision().getWidth(),
                             player.getCollision().getHeight());
         }
@@ -61,13 +60,15 @@ public class MyGUI extends GUIObject {
 
     public void changeAttackIcon(int first, int second) {
         if (first < 0) {
-            first = emptySlot;
+            firstAttackType = emptySlot;
+        } else {
+            firstAttackType = first + 1;
         }
         if (second < 0) {
-            second = emptySlot;
+            secondAttackType = emptySlot;
+        } else {
+            secondAttackType = second + 1;
         }
-        firstAttackType = first;
-        secondAttackType = second;
         activate();
     }
 
@@ -84,7 +85,6 @@ public class MyGUI extends GUIObject {
     public void activateLifeIndicator() {
         alpha = 3f;
     }
-
 
     @Override
     public void render(int xEffect, int yEffect) {
@@ -170,7 +170,6 @@ public class MyGUI extends GUIObject {
     public Color getEnergyColor() {
         return energyColor;
     }
-
 
     public boolean isOn() {
         return alpha > 0 || lowHealth || on;

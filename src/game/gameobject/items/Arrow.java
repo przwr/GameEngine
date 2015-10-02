@@ -66,7 +66,7 @@ public class Arrow extends Entity {
         boolean ret = collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
         if (ret) {
             stopped = true;
-            getActivator(0).setActivated(true);
+            getAttackActivator().setActivated(true);
         }
         return ret;
     }

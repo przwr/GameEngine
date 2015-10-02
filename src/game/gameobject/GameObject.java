@@ -369,8 +369,16 @@ public abstract class GameObject {
         return interactiveObjects;
     }
 
-    public InteractiveActivator getActivator(int i) {
-        return interactiveObjects.get(i).getActivator();
+    public InteractiveActivator getAttackActivator(byte attackType) {
+        for (Interactive i : interactiveObjects) {
+            if (i.getAttackType() == attackType)
+                return i.getActivator();
+        }
+        return null;
+    }
+    
+    public InteractiveActivator getAttackActivator() {
+        return interactiveObjects.get(0).getActivator();
     }
 
     public Appearance getAppearance() {

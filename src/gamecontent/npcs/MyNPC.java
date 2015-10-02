@@ -46,7 +46,7 @@ public class MyNPC extends Mob {
                 setDirection8way((int) Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
             }
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-            if (mpPrey.getController().getAction(MyController.ACTION).isKeyClicked() 
+            if (mpPrey.getController().getAction(MyController.INPUT_ACTION).isKeyClicked() 
                     && d <= Place.tileSize * 1.5 
                     && !mpPrey.getTextController().isStarted()) {
                 mpPrey.getTextController().lockEntity(mpPrey);

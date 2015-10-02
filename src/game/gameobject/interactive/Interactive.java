@@ -33,8 +33,8 @@ public class Interactive {
 
     // for Players and Weapons
     public Interactive(GameObject owner, InteractiveActivator activator,
-                       InteractiveCollision collision, InteractiveAction action,
-                       byte weaponType, byte attackType, float modifier) {
+            InteractiveCollision collision, InteractiveAction action,
+            byte weaponType, byte attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
@@ -46,7 +46,7 @@ public class Interactive {
 
     // for Mobs and NPCs
     public Interactive(GameObject owner, InteractiveActivator activator,
-                       InteractiveCollision collision, InteractiveAction action, byte attackType, float modifier) {
+            InteractiveCollision collision, InteractiveAction action, byte attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
@@ -56,30 +56,36 @@ public class Interactive {
     }
 
     public void checkCollision(GameObject[] players, List<Mob> mobs) {
-        if (COLLIDES_WITH_MOBS) {
-            mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || mob != owner))).forEach((mob) -> {
-                InteractiveResponse response = collision.collide(owner, mob, attackType);
-                if (response.getPixels() > 0) {
-                    action.act(mob, this, response);
-                }
-            });
-        }
-        if (COLLIDES_WITH_PLAYERS) {
-            for (GameObject player : players) {
-                if ((COLLIDES_WITH_SELF || player != owner)) {
-                    InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
+        if (collision != null) {
+            if (COLLIDES_WITH_MOBS) {
+                mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || mob != owner))).forEach((mob) -> {
+                    InteractiveResponse response = collision.collide(owner, mob, attackType);
                     if (response.getPixels() > 0) {
-                        action.act(player, this, response);
+                        action.act(mob, this, response);
+                    }
+                });
+            }
+            if (COLLIDES_WITH_PLAYERS) {
+                for (GameObject player : players) {
+                    if ((COLLIDES_WITH_SELF || player != owner)) {
+                        InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
+                        if (response.getPixels() > 0) {
+                            action.act(player, this, response);
+                        }
                     }
                 }
             }
+        } else {    //To obejście dla ataków nie-kolizyjnych jest strasznie chamskie... trzeba będzie coś wymyślić innego <(-_-<)
+            action.act(owner, this, InteractiveResponse.NO_RESPONSE);
         }
     }
 
     public void update() {
         active = activator.checkActivation(owner);
         if (active) {
-            collision.updatePosition(owner);
+            if (collision != null) {
+                collision.updatePosition(owner);
+            }
             activator.setActivated(false);
         }
     }

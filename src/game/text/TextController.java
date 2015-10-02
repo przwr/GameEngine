@@ -387,7 +387,7 @@ public class TextController extends GUIObject {
     public void render(int xEffect, int yEffect) {
         if (started) {
             int tile = Place.tileSize;
-            action = playerController.getAction(MyController.ACTION).isKeyClicked();
+            action = playerController.getAction(MyController.INPUT_ACTION).isKeyClicked();
             glPushMatrix();
 
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
@@ -435,7 +435,7 @@ public class TextController extends GUIObject {
             if (time == 60) {
                 time = 0;
             }
-            realSpeed = speed * (playerController.getAction(MyController.BLOCK).isKeyPressed() ? 2f : 1f);
+            realSpeed = speed * (playerController.getAction(MyController.INPUT_BLOCK).isKeyPressed() ? 2f : 1f);
 
             if (flushing) {
                 handleFlushing();
@@ -562,13 +562,13 @@ public class TextController extends GUIObject {
 
     private void handleQuestion() {
         if (answer != -1) {
-            if (playerController.getAction(MyController.UP).isKeyClicked()) {
+            if (playerController.getAction(MyController.INPUT_UP).isKeyClicked()) {
                 answer--;
                 if (answer < 0) {
                     answer = answerText.length - 1;
                 }
             }
-            if (playerController.getAction(MyController.DOWN).isKeyClicked()) {
+            if (playerController.getAction(MyController.INPUT_DOWN).isKeyClicked()) {
                 answer++;
                 if (answer > answerText.length - 1) {
                     answer = 0;
@@ -582,10 +582,10 @@ public class TextController extends GUIObject {
                 change = 0;
             }
         } else {
-            if (playerController.getAction(MyController.UP).isKeyClicked()) {
+            if (playerController.getAction(MyController.INPUT_UP).isKeyClicked()) {
                 answer = 0;
             }
-            if (playerController.getAction(MyController.DOWN).isKeyClicked()) {
+            if (playerController.getAction(MyController.INPUT_DOWN).isKeyClicked()) {
                 answer = 1;
             }
         }

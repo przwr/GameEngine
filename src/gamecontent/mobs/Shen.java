@@ -135,9 +135,9 @@ public class Shen extends Mob {
                             stats.setUnhurtableState(true);
                         } else {
                             if (stats.getHealth() < stats.getMaxHealth() / 2) {
-                                getActivator(ATTACK_CRITICAL).setActivated(true);
+                                getAttackActivator(ATTACK_CRITICAL).setActivated(true);
                             } else {
-                                getActivator(ATTACK_NORMAL).setActivated(true);
+                                getAttackActivator(ATTACK_NORMAL).setActivated(true);
                             }
                         }
                         if (attack_delay.isOver()) {

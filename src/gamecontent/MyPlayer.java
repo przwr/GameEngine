@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import static engine.utilities.Drawer.clearScreen;
 import game.gameobject.GameObject;
 import static game.gameobject.interactive.Interactive.HURT;
+import game.gameobject.items.Arrow;
 import static game.gameobject.items.Weapon.SWORD;
 import static game.gameobject.items.Weapon.UNIVERSAL;
 import static gamecontent.MyController.*;
@@ -130,6 +131,17 @@ public class MyPlayer extends Player {
                 case ATTACK_UPPER_SLASH:
                     actionSets.get(1).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(0,
                             128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
+                    break;
+                case ATTACK_NORMAL_ARROW_SHOT:  //Trochę bez sensu bo robię "pusty" atak
+                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new UpdateBasedActivator(), null,
+                            new InteractiveAction() {
+                                @Override
+                                public void act(GameObject object, Interactive activator, InteractiveResponse response) {
+                                    Arrow arrow = new Arrow(80, getDirection(), (int) (Place.tileSize), object);
+                                    arrow.setPositionWithoutAreaUpdate(object.getX(), object.getY());
+                                    object.getMap().addObject(arrow);
+                                }
+                            }, SWORD, (byte) attack, 0f));
                     break;
             }
             updateActionSets();
@@ -304,6 +316,7 @@ public class MyPlayer extends Player {
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+//            renderClothed(((Animation) appearance).getCurrentFrameIndex());
             appearance.render();
 //            ((Animation)appearance).renderWhole();
 //            renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
@@ -373,7 +386,7 @@ public class MyPlayer extends Player {
     public void renderClothed(int frame) {
         boolean rightUp = frame < 4 * framesPerDir;
         boolean frontUp = (frame < 3 * framesPerDir) || (frame >= 6 * framesPerDir);
-//        glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);  // Translatuję przy aktualizacji, odkomentuj, jakbyś testował <(,o,<)
+//       glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);  // Translatuję przy aktualizacji, odkomentuj, jakbyś testował <(,o,<)
         if (legs != null) {
             if (rightUp) {
                 legs.getFirstPart().renderPieceAndReturn(frame);
@@ -443,7 +456,7 @@ public class MyPlayer extends Player {
         appearance.updateTexture(this);
         updateWithGravity();
     }
-    
+
     @Override
     public synchronized void sendUpdate() {
         if (jumping) {
