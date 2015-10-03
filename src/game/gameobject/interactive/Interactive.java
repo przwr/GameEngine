@@ -9,6 +9,7 @@ import engine.utilities.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
+import java.util.ArrayList;
 import net.jodk.lang.FastMath;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class Interactive {
     private byte weaponType = -1;
     private byte attackType = -1;
     private boolean active;
+    private ArrayList<GameObject> exceptions;
 
     // for Players and Weapons
     public Interactive(GameObject owner, InteractiveActivator activator,
@@ -55,10 +57,23 @@ public class Interactive {
         this.attackType = attackType;
     }
 
+    public void addException(GameObject exception) {
+        if (exceptions == null) {
+            exceptions = new ArrayList<>();
+        }
+        exceptions.add(exception);
+    }
+
+    public void clearExceptions() {
+        if (exceptions != null) {
+            exceptions.clear();
+        }
+    }
+
     public void checkCollision(GameObject[] players, List<Mob> mobs) {
         if (collision != null) {
             if (COLLIDES_WITH_MOBS) {
-                mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || mob != owner))).forEach((mob) -> {
+                mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || (mob != owner && !checkExceptions(mob))))).forEach((mob) -> {
                     InteractiveResponse response = collision.collide(owner, mob, attackType);
                     if (response.getPixels() > 0) {
                         action.act(mob, this, response);
@@ -67,7 +82,7 @@ public class Interactive {
             }
             if (COLLIDES_WITH_PLAYERS) {
                 for (GameObject player : players) {
-                    if ((COLLIDES_WITH_SELF || player != owner)) {
+                    if ((COLLIDES_WITH_SELF || (player != owner && !checkExceptions(player)))) {
                         InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
                         if (response.getPixels() > 0) {
                             action.act(player, this, response);
@@ -78,6 +93,10 @@ public class Interactive {
         } else {    //To obejście dla ataków nie-kolizyjnych jest strasznie chamskie... trzeba będzie coś wymyślić innego <(-_-<)
             action.act(owner, this, InteractiveResponse.NO_RESPONSE);
         }
+    }
+
+    private boolean checkExceptions(GameObject object) {    //To sprawdza czy obiekt należy do listy wyjątków (które nie będą sprawdzane)
+        return exceptions != null && exceptions.stream().anyMatch((go) -> (object == go));
     }
 
     public void update() {

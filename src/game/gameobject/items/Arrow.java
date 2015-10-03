@@ -33,7 +33,7 @@ import org.newdawn.slick.Color;
 public class Arrow extends Entity {
 
     private boolean stopped;
-    private GameObject owner;
+    private final GameObject owner;
 
     public Arrow(double speed, int direction, int height, GameObject owner) {
         this.floatHeight = height;
@@ -45,10 +45,12 @@ public class Arrow extends Entity {
         visible = true;
         stats = new Stats(this);
         stats.setStrength(20);
-        addInteractive(new Interactive(this,
+        Interactive attack = new Interactive(this,
                 new UpdateBasedActivator(),
                 new CircleInteractiveCollision(0, 64, -24, 64),
-                Interactive.HURT, (byte) 0, 1f));
+                Interactive.HURT, (byte) 0, 1f);
+        attack.addException(owner);
+        addInteractive(attack);
     }
 
     @Override
@@ -71,6 +73,11 @@ public class Arrow extends Entity {
         return ret;
     }
 
+    @Override
+    public void reactToAttack(byte attackType, GameObject attacked) {
+        delete();
+    }
+    
     @Override
     protected Player getCollided(double xMagnitude, double yMagnitude) {
         return null;
