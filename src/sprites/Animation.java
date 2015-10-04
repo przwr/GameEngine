@@ -21,7 +21,7 @@ public class Animation implements Appearance {
     private FrameBufferedSpriteSheet fboSpriteSheet;
     private int start, end, currentFrame;
     private int framesPerDirection;
-    private boolean animate = true, stopAtEnd = false;
+    private boolean animate = true, stopAtEnd = false, reversed = false;
 
     private Animation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
         this.spriteSheet = sprite;
@@ -65,16 +65,30 @@ public class Animation implements Appearance {
     public void updateFrame() {
         if (animate && delay.isOver()) {
             delay.start();
-            setCurrentFrame(currentFrame + 1);
-            if (currentFrame > end) {
-                if (stopAtEnd) {
-                    animate = false;
-                    setCurrentFrame(end);
-                } else {
+            if (!reversed) {    //NORMALNE
+                setCurrentFrame(currentFrame + 1);
+                if (currentFrame > end) {
+                    if (stopAtEnd) {
+                        animate = false;
+                        setCurrentFrame(end);
+                    } else {
+                        setCurrentFrame(start);
+                    }
+                } else if (currentFrame < start) {
                     setCurrentFrame(start);
                 }
-            } else if (currentFrame < start) {
-                setCurrentFrame(start);
+            } else {    //ODWROCONE
+                setCurrentFrame(currentFrame - 1);
+                if (currentFrame < end) {
+                    if (stopAtEnd) {
+                        animate = false;
+                        setCurrentFrame(end);
+                    } else {
+                        setCurrentFrame(start);
+                    }
+                } else if (currentFrame > start) {
+                    setCurrentFrame(start);
+                }
             }
         }
     }
@@ -95,6 +109,7 @@ public class Animation implements Appearance {
     private void animateInterval(int start, int end) {
         this.start = start;
         this.end = end;
+        reversed = start > end;
         animate = true;
         stopAtEnd = false;
     }
@@ -102,6 +117,22 @@ public class Animation implements Appearance {
     public void animateIntervalInDirection(int direction, int start, int end) {
         animateInterval(direction * framesPerDirection + Methods.interval(0, start, framesPerDirection - 1),
                 direction * framesPerDirection + Methods.interval(0, end, framesPerDirection - 1));
+    }
+    
+    public void setReversed(boolean reversed) {
+        if (this.reversed != reversed)
+            reverseAnimation();
+    }
+    
+    public void reverseAnimation() {
+        int tmp = start;
+        start = end;
+        end = tmp;
+        reversed = !reversed;
+    }
+    
+    public boolean isReversed() {
+        return reversed;
     }
 
     public void animateIntervalInDirectionOnce(int direction, int start, int end) {

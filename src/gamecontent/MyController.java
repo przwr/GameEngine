@@ -34,6 +34,7 @@ public class MyController extends PlayerController {
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2,
             ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4, ATTACK_NORMAL_ARROW_SHOT = 5;
     private final int[] attackFrames;
+    private final Delay lagDelay;
     private final Delay sideDelay;
     private final Delay jumpDelay;
     private final Delay chargingDelay;
@@ -41,7 +42,7 @@ public class MyController extends PlayerController {
     private final SpeedChanger attackMovement;
     private final boolean[] blockedInputs;
     private int tempDirection, lagDuration, sideDirection;
-    private byte firstAttackType, secondAttackType, chargingType, chargingButton;
+    private byte firstAttackType, secondAttackType, chargingType, lastAttackButton;
     private boolean running, diagonal, inputLag, charging;
     private Animation playerAnimation;
     private PlayerStats stats;
@@ -54,6 +55,7 @@ public class MyController extends PlayerController {
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
         blockedInputs = new boolean[ACTIONS_COUNT];
+        lagDelay = Delay.createDelayInMiliseconds(250);
         sideDelay = Delay.createDelayInMiliseconds(25);
         jumpDelay = Delay.createDelayInMiliseconds(400);
         chargingDelay = Delay.createDelayInMiliseconds(300);
@@ -63,6 +65,7 @@ public class MyController extends PlayerController {
         jumpMaker.setType(SpeedChanger.DECREASING);
         attackMovement = new SpeedChanger(4);
         attackMovement.setType(SpeedChanger.DECREASING);
+        lastAttackButton = INPUT_ATTACK;
     }
 
     @Override
@@ -124,6 +127,8 @@ public class MyController extends PlayerController {
     private void updateGettingHurt() {
         inControl.setDirection8way(Methods.pointAngle8Directions(inControl.getKnockback().getXSpeed(),
                 inControl.getKnockback().getYSpeed(), 0, 0));
+        charging = false;
+        actions[lastAttackButton].setInterrupted();
         playerAnimation.animateSingleInDirection(inControl.getDirection8Way(), 6);
         inControl.brake(2);
     }
@@ -142,8 +147,8 @@ public class MyController extends PlayerController {
 
     private void updateActionsIfNoLag() {
         if (inputLag) {
-            lagDuration--;
-            if (lagDuration < 0) {
+            if (lagDelay.isOver()) {
+                actions[lastAttackButton].setInterrupted();
                 inputLag = false;
             }
             for (int i = MENU_ACTIONS_COUNT; i < ACTIONS_COUNT; i++) {
@@ -173,23 +178,19 @@ public class MyController extends PlayerController {
         if (actions[INPUT_ATTACK].isKeyClicked()) {
             if (firstAttackType >= 0) {
                 startAttack(firstAttackType);
-            }
-            if (charging) {
-                chargingButton = INPUT_ATTACK;
+                lastAttackButton = INPUT_ATTACK;
             }
         } else if (actions[INPUT_SECOND_ATTACK].isKeyClicked()) {
             if (secondAttackType >= 0) {
                 startAttack(secondAttackType);
-            }
-            if (charging) {
-                chargingButton = INPUT_SECOND_ATTACK;
+                lastAttackButton = INPUT_SECOND_ATTACK;
             }
         }
         inControl.brakeWithModifier(2, 2);
     }
 
     private void startAttack(byte attack) {
-        setInputLag(15);
+        setInputLag(220);
         attackMovement.setSpeedInDirection(tempDirection * 45, 10);
         attackMovement.start();
         inControl.addChanger(attackMovement);
@@ -212,6 +213,7 @@ public class MyController extends PlayerController {
             case ATTACK_NORMAL_ARROW_SHOT:
                 playerAnimation.animateIntervalInDirectionOnce(tempDirection, 46, 48);
                 attackMovement.stop();
+                stopInputLag();
                 charging = true;
                 chargingType = ATTACK_NORMAL_ARROW_SHOT;
                 break;
@@ -219,7 +221,7 @@ public class MyController extends PlayerController {
     }
 
     private void updateCharging() {
-        if (actions[chargingButton].isKeyReleased()) {
+        if (actions[lastAttackButton].isKeyReleased()) {
             switch (chargingType) {
                 case ATTACK_NORMAL_ARROW_SHOT:
                     playerAnimation.animateSingleInDirection(tempDirection, 49);
@@ -593,8 +595,12 @@ public class MyController extends PlayerController {
     private void setInputLag(int time) {
         if (!inputLag) {
             inputLag = true;
-            lagDuration = time;
+            lagDelay.startAt(time);
         }
+    }
+
+    private void stopInputLag() {
+        inputLag = false;
     }
 
     public void setPlayersGUI(MyGUI gui) {

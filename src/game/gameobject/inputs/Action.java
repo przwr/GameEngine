@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package game.gameobject.inputs;
 
 import static game.gameobject.inputs.PlayerController.*;
@@ -15,6 +14,7 @@ public class Action {
 
     public AnyInput input;
     byte state;
+    boolean interrupted;
 
     public Action(AnyInput in) {
         this.input = in;
@@ -22,10 +22,14 @@ public class Action {
 
     public void updateActiveState() {
         if (input != null && input.isPut()) {
-            if (state == KEY_NO_INPUT) {
-                state = KEY_CLICKED;
+            if (!interrupted) {
+                if (state == KEY_NO_INPUT) {
+                    state = KEY_CLICKED;
+                } else {
+                    state = KEY_PRESSED;
+                }
             } else {
-                state = KEY_PRESSED;
+                updateBlockedState();
             }
         } else {
             if (state == KEY_PRESSED) {
@@ -33,6 +37,7 @@ public class Action {
             } else {
                 state = KEY_NO_INPUT;
             }
+            interrupted = false;
         }
     }
 
@@ -43,7 +48,7 @@ public class Action {
             state = KEY_NO_INPUT;
         }
     }
-    
+
     public void updateBlockedState() {
         if (state > KEY_NO_INPUT) {
             state = KEY_RELEASED;
@@ -68,6 +73,10 @@ public class Action {
         return state;
     }
     
+    public void setInterrupted() {
+        interrupted = true;
+    }
+
     public void setInput(AnyInput input) {
         this.input = input;
     }
