@@ -2,11 +2,11 @@ package game.gameobject.stats;
 
 import game.gameobject.entities.Entity;
 import game.gameobject.interactive.InteractiveResponse;
+import game.place.Place;
+import gamecontent.effects.DamageNumber;
 import net.jodk.lang.FastMath;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
-import game.place.Place;
-import gamecontent.effects.DamageNumber;
 
 /**
  * Created by przemek on 10.08.15.
@@ -20,10 +20,9 @@ public class Stats {
     protected int defence = 2;
     protected int weight = 1;
     protected int hurt = 0;
-    protected float temp;
     protected float sideDefenceModifier = 10;
     protected float backDefenceModifier = 4;
-    protected float protection = 40;
+    protected float protection = 10;
     protected float protectionSideModifier = 4;
     protected float protectionBackModifier = 1;
     protected boolean protectionState;
@@ -36,22 +35,19 @@ public class Stats {
     public void decreaseHealth(InteractiveResponse response) {
         if (health > 0 && owner.getKnockback().isOver()) {
             hurt = 0;
-//            temp = (float) FastMath.sqrt(response.getPixels());
-            temp = response.getPixels();
             switch (response.getDirection()) {
                 case FRONT:
-                    hurt = Math.round(temp / (defence * (protectionState ? protection : 1)));
+                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection : 1)));
                     break;
                 case BACK:
-                    hurt = Math.round(temp / (defence * (protectionState ? protection * protectionBackModifier :
+                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionBackModifier :
                             backDefenceModifier)));
                     break;
                 case SIDE:
-                    hurt = Math.round(temp / (defence * (protectionState ? protection * protectionSideModifier :
+                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionSideModifier :
                             sideDefenceModifier)));
                     break;
             }
-            System.out.println(response.getPixels() + " " + temp + " " + hurt);
             health -= hurt;
             if (health < 0) {
                 health = 0;

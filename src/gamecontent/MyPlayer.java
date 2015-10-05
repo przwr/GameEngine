@@ -11,9 +11,11 @@ import collision.Rectangle;
 import engine.lights.Light;
 import engine.systemcommunication.Time;
 import engine.utilities.*;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.gameobject.interactive.*;
+import game.gameobject.items.Arrow;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
@@ -33,9 +35,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import static engine.utilities.Drawer.clearScreen;
-import game.gameobject.GameObject;
 import static game.gameobject.interactive.Interactive.HURT;
-import game.gameobject.items.Arrow;
 import static game.gameobject.items.Weapon.SWORD;
 import static game.gameobject.items.Weapon.UNIVERSAL;
 import static gamecontent.MyController.*;
@@ -383,7 +383,7 @@ public class MyPlayer extends Player {
     public void renderClothed(int frame) {
         boolean rightUp = frame < 4 * framesPerDir;
         boolean frontUp = (frame < 3 * framesPerDir) || (frame >= 6 * framesPerDir);
-//       glTranslatef(sprite.getXStart(), sprite.getYStart(), 0);  // Translatuję przy aktualizacji, odkomentuj, jakbyś testował <(,o,<)
+//        glTranslatef(appearance.getXStart(), appearance.getYStart(), 0);  // Translatuję przy aktualizacji
         if (legs != null) {
             if (rightUp) {
                 legs.getFirstPart().renderPieceAndReturn(frame);

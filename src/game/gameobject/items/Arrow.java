@@ -16,24 +16,20 @@ import game.gameobject.entities.Player;
 import game.gameobject.interactive.CircleInteractiveCollision;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.UpdateBasedActivator;
-import game.gameobject.stats.MobStats;
 import game.gameobject.stats.Stats;
 import game.place.Place;
 import net.packets.Update;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author Wojtek
  */
 public class Arrow extends Entity {
 
-    private boolean stopped;
     private final GameObject owner;
+    private boolean stopped;
 
     public Arrow(double speed, int direction, int height, GameObject owner) {
         this.floatHeight = height;
@@ -77,7 +73,7 @@ public class Arrow extends Entity {
     public void reactToAttack(byte attackType, GameObject attacked) {
         delete();
     }
-    
+
     @Override
     protected Player getCollided(double xMagnitude, double yMagnitude) {
         return null;
@@ -106,8 +102,8 @@ public class Arrow extends Entity {
         Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                 * Place.getCurrentScale() / 2f), 24);
         Drawer.setColor(Color.black);
-        Drawer.drawEllipse(0, (int) -floatHeight, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
-                * Place.getCurrentScale() / 2f), 24);
+        Drawer.drawEllipse(0, (int) -floatHeight, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision
+                .getHeight() * Place.getCurrentScale() / 2f), 24);
         Drawer.refreshColor();
         glPopMatrix();
     }

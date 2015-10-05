@@ -8,6 +8,7 @@ package game.gameobject;
 /**
  * @author przemek
  */
+
 import collision.Figure;
 import engine.lights.Light;
 import game.gameobject.interactive.Interactive;
@@ -25,7 +26,6 @@ public abstract class GameObject {
     public final static byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
     protected final ArrayList<Light> lights = new ArrayList<>(1);
     protected final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
-    private double gravity = 0.6;
     protected double x, y;
     protected int depth;
     protected boolean solid;
@@ -45,6 +45,7 @@ public abstract class GameObject {
     protected int area = -1;
     protected Figure collision;
     protected WarpPoint warp;
+    private double gravity = 0.6;
     private int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     private int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     private int prevArea = -1;
@@ -117,11 +118,11 @@ public abstract class GameObject {
     public double getGravity() {
         return gravity;
     }
-    
+
     public void setGravity(double gravity) {
         this.gravity = gravity;
     }
-    
+
     public boolean isSolid() {
         return solid;
     }
@@ -376,7 +377,7 @@ public abstract class GameObject {
         }
         return null;
     }
-    
+
     public InteractiveActivator getAttackActivator() {
         return interactiveObjects.get(0).getActivator();
     }

@@ -152,7 +152,6 @@ public class Animation implements Appearance {
     public void render() {
         if (fboSpriteSheet != null) {
             fboSpriteSheet.render();
-
         } else {
             spriteSheet.renderPiece(currentFrame);
         }
