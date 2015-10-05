@@ -104,43 +104,40 @@ public class MyPlayer extends Player {
             switch (attack) {
                 case ATTACK_SLASH:
                     actionSets.get(1).addInteractionToNextFree(new Interactive(this,
-                            new InteractiveActivatorFrames(frames),
+                            new UpdateBasedActivator(),
                             new CurveInteractiveCollision(42, 32, 0, 64, 120),
                             HURT, SWORD, (byte) attack, 2f));
                     break;
                 case ATTACK_THRUST:
                     actionSets.get(1).addInteractionToNextFree(new Interactive(this,
-                            new InteractiveActivatorFrames(frames),
+                            new UpdateBasedActivator(),
                             new LineInteractiveCollision(52, 10, 6, 84, 24),
                             HURT, SWORD, (byte) attack, 2.5f));
                     break;
                 case ATTACK_WEAK_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(new Interactive(this,
-                            new InteractiveActivatorFrames(frames),
+                            new UpdateBasedActivator(),
                             new LineInteractiveCollision(72, 12, 2, 30, 20),
                             HURT, UNIVERSAL, (byte) attack, 1f));
                     actionSets.get(1).setInteraction(2, 0, actionSets.get(0).getFirstInteractive());
                     break;
                 case ATTACK_STRONG_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(new Interactive(this,
-                            new InteractiveActivatorFrames(frames),
+                            new UpdateBasedActivator(),
                             new LineInteractiveCollision(72, 12, 2, 34, 20),
                             HURT, UNIVERSAL, (byte) attack, 1.5f));
                     actionSets.get(1).setInteraction(2, 1, actionSets.get(0).getSecondInteractive());
                     break;
                 case ATTACK_UPPER_SLASH:
-                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new InteractiveActivatorFrames(frames), new LineInteractiveCollision(0,
+                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new UpdateBasedActivator(), new LineInteractiveCollision(0,
                             128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
                     break;
                 case ATTACK_NORMAL_ARROW_SHOT:  //Trochę bez sensu bo robię "pusty" atak
                     actionSets.get(1).addInteractionToNextFree(new Interactive(this, new UpdateBasedActivator(), null,
-                            new InteractiveAction() {
-                                @Override
-                                public void act(GameObject object, Interactive activator, InteractiveResponse response) {
-                                    Arrow arrow = new Arrow(80, getDirection(), (int) (Place.tileSize), object);
-                                    arrow.setPositionWithoutAreaUpdate(object.getX(), object.getY());
-                                    object.getMap().addObject(arrow);
-                                }
+                            (GameObject object, Interactive activator, InteractiveResponse response) -> {
+                                Arrow arrow = new Arrow(80, getDirection(), (int) (Place.tileSize), object);
+                                arrow.setPositionWithoutAreaUpdate(object.getX(), object.getY());
+                                object.getMap().addObject(arrow);
                             }, SWORD, (byte) attack, 0f));
                     break;
             }

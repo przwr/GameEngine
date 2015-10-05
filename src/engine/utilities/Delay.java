@@ -65,6 +65,10 @@ public class Delay {
     public boolean isOver() {
         return started && endTime <= System.currentTimeMillis();
     }
+    
+    public boolean isWorking() {
+        return started && endTime > System.currentTimeMillis();
+    }
 
     public boolean isActive() {
         return started;

@@ -13,10 +13,8 @@ import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
 import game.gameobject.inputs.AnyInput;
 import game.gameobject.inputs.PlayerController;
-import game.gameobject.items.Arrow;
 import game.gameobject.stats.PlayerStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
-import game.place.Place;
 import sprites.Animation;
 
 /**
@@ -37,12 +35,12 @@ public class MyController extends PlayerController {
     private final Delay lagDelay;
     private final Delay sideDelay;
     private final Delay jumpDelay;
-    private final Delay chargingDelay;
+    private final Delay chargingDelay, attackDelay, preAttackDelay;
     private final SpeedChanger jumpMaker;
     private final SpeedChanger attackMovement;
     private final boolean[] blockedInputs;
-    private int tempDirection, lagDuration, sideDirection;
-    private byte firstAttackType, secondAttackType, chargingType, lastAttackButton;
+    private int tempDirection, sideDirection;
+    private byte firstAttackType, secondAttackType, chargingType, lastAttackButton, lastAttackType;
     private boolean running, diagonal, inputLag, charging;
     private Animation playerAnimation;
     private PlayerStats stats;
@@ -55,6 +53,8 @@ public class MyController extends PlayerController {
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
         blockedInputs = new boolean[ACTIONS_COUNT];
+        attackDelay = Delay.createDelayInMiliseconds(30);
+        preAttackDelay = Delay.createDelayInMiliseconds(30);
         lagDelay = Delay.createDelayInMiliseconds(250);
         sideDelay = Delay.createDelayInMiliseconds(25);
         jumpDelay = Delay.createDelayInMiliseconds(400);
@@ -186,14 +186,24 @@ public class MyController extends PlayerController {
                 lastAttackButton = INPUT_SECOND_ATTACK;
             }
         }
+        if (preAttackDelay.isOver()) {
+            attackDelay.start();
+            preAttackDelay.stop();
+        }
+        if (attackDelay.isWorking()) {
+            inControl.getAttackActivator(lastAttackType).setActivated(true);
+        }
         inControl.brakeWithModifier(2, 2);
     }
 
     private void startAttack(byte attack) {
         setInputLag(220);
+        preAttackDelay.start();
+        lastAttackType = attack;
         attackMovement.setSpeedInDirection(tempDirection * 45, 10);
         attackMovement.start();
         inControl.addChanger(attackMovement);
+        updateDirection();
         switch (attack) {
             case ATTACK_SLASH:
                 playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
@@ -273,6 +283,33 @@ public class MyController extends PlayerController {
         }
     }
 
+    private void updateDirection() {
+        if (actions[INPUT_UP].isKeyPressed()) {
+            if (actions[INPUT_LEFT].isKeyPressed()) {
+                inControl.setDirection8way(3);
+            } else if (actions[INPUT_RIGHT].isKeyPressed()) {
+                inControl.setDirection8way(1);
+            } else {
+                inControl.setDirection8way(2);
+            }
+        } else if (actions[INPUT_DOWN].isKeyPressed()) {
+            if (actions[INPUT_LEFT].isKeyPressed()) {
+                inControl.setDirection8way(5);
+            } else if (actions[INPUT_RIGHT].isKeyPressed()) {
+                inControl.setDirection8way(7);
+            } else {
+                inControl.setDirection8way(6);
+            }
+        } else {
+            if (actions[INPUT_RIGHT].isKeyPressed()) {
+                inControl.setDirection8way(0);
+            } else if (actions[INPUT_LEFT].isKeyPressed()) {
+                inControl.setDirection8way(4);
+            }
+        }
+        tempDirection = inControl.getDirection8Way();
+    }
+    
     private void updateMovement() {
         if (actions[INPUT_UP].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
