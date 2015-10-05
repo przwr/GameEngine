@@ -5,13 +5,12 @@
  */
 package game.gameobject.interactive;
 
-import engine.utilities.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
-import java.util.ArrayList;
 import net.jodk.lang.FastMath;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,8 +34,8 @@ public class Interactive {
 
     // for Players and Weapons
     public Interactive(GameObject owner, InteractiveActivator activator,
-            InteractiveCollision collision, InteractiveAction action,
-            byte weaponType, byte attackType, float modifier) {
+                       InteractiveCollision collision, InteractiveAction action,
+                       byte weaponType, byte attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
@@ -48,7 +47,7 @@ public class Interactive {
 
     // for Mobs and NPCs
     public Interactive(GameObject owner, InteractiveActivator activator,
-            InteractiveCollision collision, InteractiveAction action, byte attackType, float modifier) {
+                       InteractiveCollision collision, InteractiveAction action, byte attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
@@ -111,7 +110,8 @@ public class Interactive {
 
     //TODO stworzyć Weapon, które ma właściwości jego użycia, jak przeliczenie danych, wygląd, czy używane statystyki
     public void recalculateData(InteractiveResponse response) {
-        response.setPixels(Methods.roundDouble(FastMath.sqrt(response.getPixels()) * modifier * owner.getStats().getStrength()));
+        response.setPixels((1 + (response.getPixels() / (response.getMaxPixels() * 5f) + (float) FastMath.random() / 10f)) * modifier * owner.getStats()
+                .getStrength());
     }
 
     public InteractiveActivator getActivator() {

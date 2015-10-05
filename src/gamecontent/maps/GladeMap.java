@@ -34,12 +34,12 @@ public class GladeMap extends Map {
 
 //        PuzzleObject test = new PuzzleObject("bloczek", place);
 //        test.placePuzzle(0, 0, this);
-        PuzzleObject test = new PuzzleObject("zatoczka", place);
-        test.placePuzzle(5, 3, this);
-        test = new PuzzleObject("test", place);
-        test.placePuzzle(11, 26, this);
-        test = new PuzzleObject("smukly", place);
-        test.placePuzzle(-1, 0, this);
+//        PuzzleObject test = new PuzzleObject("zatoczka", place);
+//        test.placePuzzle(5, 3, this);
+//        test = new PuzzleObject("test", place);
+//        test.placePuzzle(11, 26, this);
+//        test = new PuzzleObject("smukly", place);
+//        test.placePuzzle(-1, 0, this);
 
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
