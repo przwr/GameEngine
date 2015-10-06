@@ -277,7 +277,7 @@ public abstract class Map {
         tempInteractiveObjects.stream().forEach((interactive) -> {
             interactive.update();
             if (interactive.isActive())
-                interactive.checkCollision(place.players, tempMobs);
+                interactive.actIfActivated(place.players, tempMobs);
         });
     }
 
@@ -342,11 +342,18 @@ public abstract class Map {
     }
 
     public void deleteObject(GameObject object) {
+        if (!areas[object.getArea()].deleteObject(object)) {
+            for (int i : getAreasToUpdate()) {
+                if (i > 0 && i < areas.length && areas[i] != null && areas[i].deleteObject(object)) {
+                    System.out.println("Removed on second try");
+                    break;
+                }
+            }
+        }
         object.setMapNotChange(null);
         if (object instanceof WarpPoint) {
             warps.remove(object);
         }
-        areas[object.getArea()].deleteObject(object);
         object.setArea(-1);
     }
 
@@ -355,7 +362,14 @@ public abstract class Map {
     }
 
     public void changeArea(int area, int prevArea, GameObject object) {
-        areas[prevArea].deleteObject(object);
+        if (!areas[prevArea].deleteObject(object)) {
+            for (int i : getAreasToUpdate()) {
+                if (i >= 0 && i < areas.length && areas[i] != null && areas[i].deleteObject(object)) {
+                    System.out.println("Removed on second try");
+                    break;
+                }
+            }
+        }
         areas[area].addObject(object);
     }
 

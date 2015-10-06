@@ -112,7 +112,8 @@ public class MyController extends PlayerController {
             } else {
                 updateGettingHurt();
             }
-            if ((!actions[INPUT_ATTACK].isKeyPressed() || firstAttackType < 0) && (!actions[INPUT_SECOND_ATTACK].isKeyPressed() || secondAttackType < 0) && jumpLag == 0) {
+            if ((!actions[INPUT_ATTACK].isKeyPressed() || firstAttackType < 0) && (!actions[INPUT_SECOND_ATTACK].isKeyPressed() || secondAttackType < 0) &&
+                    jumpLag == 0) {
                 if (running) {
                     playerAnimation.setFPS((int) (inControl.getSpeed() * 3.5));
                 } else {
@@ -613,7 +614,7 @@ public class MyController extends PlayerController {
     private boolean isNotEqualToFirstPlayerMenuAction(AnyInput input) {
         Action[] firstPlayerActions = Settings.players[0].getController().actions;
         for (int i = 0; i < MENU_ACTIONS_COUNT; i++) {
-            if (firstPlayerActions[i].input.equals(input)) {
+            if (firstPlayerActions[i].input != null && firstPlayerActions[i].input.equals(input)) {
                 return false;
             }
         }

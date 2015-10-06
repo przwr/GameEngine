@@ -5,7 +5,7 @@ package game.gameobject.items;
  */
 public class Weapon {
 
-    public static byte UNIVERSAL = 0, SWORD = 1;
+    public static byte UNIVERSAL = 0, SWORD = 1, BOW = 2;
 
     private byte type;
     private String name;

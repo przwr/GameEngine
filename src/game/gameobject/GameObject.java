@@ -406,7 +406,8 @@ public abstract class GameObject {
     }
 
     public void delete() {
-        map.deleteObject(this);
+        if (map != null)
+            map.deleteObject(this);
     }
 
     public void setWarp(WarpPoint warp) {
