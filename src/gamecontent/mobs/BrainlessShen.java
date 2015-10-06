@@ -8,6 +8,7 @@ package gamecontent.mobs;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.utilities.*;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.MobStats;
 import game.place.Place;
@@ -25,7 +26,7 @@ public class BrainlessShen extends Mob {
     private final Animation animation;
     private Color color;
     private RandomGenerator rand;
-    private boolean isHit;
+    private float colorHue;
 
     public BrainlessShen(int x, int y, Place place, short ID) {
         super(x, y, 1, 500, "Shen", place, "shen", true, ID);
@@ -34,7 +35,8 @@ public class BrainlessShen extends Mob {
         appearance = animation;
         collision.setMobile(true);
         rand = RandomGenerator.create();
-        color = new Color(rand.random(255), rand.random(255), rand.random(255));
+        colorHue = rand.random(360);
+        color = Methods.createHSVColor(colorHue, 1, 1);
         stats = new MobStats(this);
         stats.setStrength(10);
         stats.setDefence(3);
@@ -46,21 +48,21 @@ public class BrainlessShen extends Mob {
     @Override
     public void update() {
         if (isHurt()) {
-            if (!isHit) {
-                color.r = (float) rand.random(100) / 100;
-                color.g = (float) rand.random(100) / 100;
-                color.b = (float) rand.random(100) / 100;
-                isHit = true;
-            }
             updateGettingHurt();
         } else {
-            isHit = false;
             updateAnimation();
         }
         updateChangers();
         updateWithGravity();
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         brakeOthers();
+    }
+
+    @Override
+    public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
+        super.getHurt(knockbackPower, jumpPower, attacker);
+        colorHue += knockbackPower + 1;
+        Methods.changeColorWithHSV(color, colorHue, 1, 1);
     }
 
     private void updateGettingHurt() {
@@ -71,31 +73,7 @@ public class BrainlessShen extends Mob {
     }
 
     private void updateAnimation() {
-        if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
-            pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
-            if (currentPastDirection > 1) {
-                currentPastDirection = 0;
-            }
-            if (pastDirections[0] == pastDirections[1]) {
-                setDirection(pastDirections[0] * 45);
-            }
-            if (target == null) {
-                animation.setFPS(7);
-                animation.animateIntervalInDirection(getDirection8Way(), 0, 5);
-            } else {
-                animation.setFPS(30);
-                animation.animateIntervalInDirection(getDirection8Way(), 12, 14);
-            }
-        } else {
-            if (stats.isProtectionState()) {
-                animation.setFPS(15);
-                animation.animateIntervalInDirection(getDirection8Way(), 7, 12);
-                animation.setStopAtEnd(true);
-//                collision.setWidthAndHeight(32, 23);
-            } else {
-                animation.animateSingleInDirection(getDirection8Way(), 0);
-            }
-        }
+        animation.animateSingleInDirection(getDirection8Way(), 0);
     }
 
     @Override

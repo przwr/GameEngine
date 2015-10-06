@@ -12,25 +12,23 @@ import java.awt.geom.Line2D;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import org.newdawn.slick.Color;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  * @author Wojtek
  */
 public class Methods {
-
 
     private static final Point point = new Point(0, 0);
     public static double SQRT_ROOT_OF_2 = Math.sqrt(2);
     public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / Math.sqrt(2);
     private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, temp, xDDelta, yDDelta;
     private static int xIDelta, yIDelta;
-
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -41,10 +39,10 @@ public class Methods {
     }
 
     public static int angleDifference(int angleA, int angleB) {
-        return (angleA = angleB - angleA) > 180 ? angleA - 360 : 
-                (angleA < -180 ? angleA + 360 : angleA);
+        return (angleA = angleB - angleA) > 180 ? angleA - 360
+                : (angleA < -180 ? angleA + 360 : angleA);
     }
-    
+
     public static int pointDistance(int x, int y, int xa, int ya) {
         xDDelta = xa - x;
         yDDelta = ya - y;
@@ -131,7 +129,7 @@ public class Methods {
     }
 
     public static Point getTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
-                                                float y4) {
+            float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
@@ -153,7 +151,7 @@ public class Methods {
     }
 
     private static Point getXTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
-                                                  float y4) {
+            float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
@@ -453,6 +451,62 @@ public class Methods {
         objectOutputStream.close();
         byteObject.close();
         return byteObject.toByteArray().length;
+    }
+
+    public static Color createHSVColor(float hue, float saturation, float value) {
+        return changeColorWithHSV(new Color(0), hue, saturation, value);
+    }
+    
+    public static Color changeColorWithHSV(Color color, float hue, float saturation, float value) {
+        if (value == 0) {
+            color.r = 0;
+            color.g = 0;
+            color.b = 0;
+        } else {
+            hue = (hue % 360) / 60;
+            int i = (int) hue;
+            float f = hue - i;
+            float p = value * (1 - saturation);
+            float q = value * (1 - (saturation * f));
+            float t = value * (1 - (saturation * (1 - f)));
+            switch (i) {
+                case 0:
+                    color.r = value;
+                    color.g = t;
+                    color.b = p;
+                    break;
+                case 1:
+                    color.r = q;
+                    color.g = value;
+                    color.b = p;
+                    break;
+                case 2:
+                    color.r = p;
+                    color.g = value;
+                    color.b = t;
+                    break;
+                case 3:
+                    color.r = p;
+                    color.g = q;
+                    color.b = value;
+                    break;
+                case 4:
+                    color.r = t;
+                    color.g = p;
+                    color.b = value;
+                    break;
+                case 5:
+                    color.r = value;
+                    color.g = p;
+                    color.b = q;
+                    break;
+                default:
+                    color.r = 0;
+                    color.g = 0;
+                    color.b = 0;
+            }
+        }
+        return color;
     }
 
     public static String editWithKeyboard(String text) {

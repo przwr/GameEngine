@@ -136,7 +136,7 @@ public class MyPlayer extends Player {
                     actionSets.get(1).addInteractionToNextFree(new Interactive(this, new UpdateBasedActivator(), null,
                             (GameObject object, Interactive activator, InteractiveResponse response) -> {
                                 Arrow arrow = new Arrow(80, getDirection(), (int) (Place.tileSize), object);
-                                arrow.setPositionWithoutAreaUpdate(object.getX(), object.getY());
+                                arrow.setPosition(object.getX(), object.getY());
                                 object.getMap().addObject(arrow);
                             }, SWORD, (byte) attack, 0f));
                     break;

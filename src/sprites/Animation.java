@@ -119,6 +119,13 @@ public class Animation implements Appearance {
                 direction * framesPerDirection + Methods.interval(0, end, framesPerDirection - 1));
     }
     
+    public void changeDirection(int direction) {
+        int directionalStart = direction * framesPerDirection;
+        start = directionalStart + start % framesPerDirection;
+        end = directionalStart + end % framesPerDirection;
+        setCurrentFrame(directionalStart + currentFrame % framesPerDirection);
+    }
+    
     public void setReversed(boolean reversed) {
         if (this.reversed != reversed)
             reverseAnimation();
