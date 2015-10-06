@@ -11,11 +11,9 @@ import collision.Rectangle;
 import engine.lights.Light;
 import engine.systemcommunication.Time;
 import engine.utilities.*;
-import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.gameobject.interactive.*;
-import game.gameobject.items.Arrow;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
@@ -36,8 +34,7 @@ import java.util.ArrayList;
 
 import static engine.utilities.Drawer.clearScreen;
 import static game.gameobject.interactive.Interactive.HURT;
-import static game.gameobject.items.Weapon.SWORD;
-import static game.gameobject.items.Weapon.UNIVERSAL;
+import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -90,8 +87,11 @@ public class MyPlayer extends Player {
     private void initializeAttacks() {
         actionSets.add(new InteractionSet(UNIVERSAL));
         actionSets.add(new InteractionSet(SWORD));
+        actionSets.add(new InteractionSet(BOW));
         Weapon sword = new Weapon("Sword", SWORD);
+        Weapon bow = new Weapon("Bow", BOW);
         firstWeapon = sword;
+        secondWeapon = bow;
         activeWeapon = universal;
 
         // TODO Interactives powinny być raz stworzone w Skillach!
@@ -103,42 +103,30 @@ public class MyPlayer extends Player {
             }
             switch (attack) {
                 case ATTACK_SLASH:
-                    actionSets.get(1).addInteractionToNextFree(new Interactive(this,
-                            new UpdateBasedActivator(),
-                            new CurveInteractiveCollision(42, 32, 0, 64, 120),
-                            HURT, SWORD, (byte) attack, 2f));
+                    actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
+                            new CurveInteractiveCollision(42, 32, 0, 64, 120), HURT, SWORD, (byte) attack, 2f));
                     break;
                 case ATTACK_THRUST:
-                    actionSets.get(1).addInteractionToNextFree(new Interactive(this,
-                            new UpdateBasedActivator(),
-                            new LineInteractiveCollision(52, 10, 6, 84, 24),
-                            HURT, SWORD, (byte) attack, 2.5f));
+                    actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
+                            new LineInteractiveCollision(52, 10, 6, 84, 24), HURT, SWORD, (byte) attack, 2.5f));
                     break;
                 case ATTACK_WEAK_PUNCH:
-                    actionSets.get(0).addInteractionToNextFree(new Interactive(this,
-                            new UpdateBasedActivator(),
-                            new LineInteractiveCollision(72, 12, 2, 30, 20),
-                            HURT, UNIVERSAL, (byte) attack, 1f));
+                    actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
+                            new LineInteractiveCollision(72, 12, 2, 30, 20), HURT, UNIVERSAL, (byte) attack, 1f));
                     actionSets.get(1).setInteraction(2, 0, actionSets.get(0).getFirstInteractive());
                     break;
                 case ATTACK_STRONG_PUNCH:
-                    actionSets.get(0).addInteractionToNextFree(new Interactive(this,
-                            new UpdateBasedActivator(),
-                            new LineInteractiveCollision(72, 12, 2, 34, 20),
-                            HURT, UNIVERSAL, (byte) attack, 1.5f));
+                    actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
+                            new LineInteractiveCollision(72, 12, 2, 34, 20), HURT, UNIVERSAL, (byte) attack, 1.5f));
                     actionSets.get(1).setInteraction(2, 1, actionSets.get(0).getSecondInteractive());
                     break;
                 case ATTACK_UPPER_SLASH:
-                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new UpdateBasedActivator(), new LineInteractiveCollision(0,
-                            128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
+                    actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
+                            new LineInteractiveCollision(0, 128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
                     break;
-                case ATTACK_NORMAL_ARROW_SHOT:  //Trochę bez sensu bo robię "pusty" atak
-                    actionSets.get(1).addInteractionToNextFree(new Interactive(this, new UpdateBasedActivator(), null,
-                            (GameObject object, Interactive activator, InteractiveResponse response) -> {
-                                Arrow arrow = new Arrow(80, getDirection(), (int) (Place.tileSize), object);
-                                arrow.setPosition(object.getX(), object.getY());
-                                object.getMap().addObject(arrow);
-                            }, SWORD, (byte) attack, 0f));
+                case ATTACK_NORMAL_ARROW_SHOT:
+                    InteractiveAction arrow = new InteractiveActionArrow();
+                    actionSets.get(2).addInteractionToNextFree(Interactive.createSpawner(this, new UpdateBasedActivator(), arrow, BOW, (byte) attack));
                     break;
             }
             updateActionSets();

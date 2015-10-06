@@ -32,10 +32,9 @@ public class Interactive {
     private boolean active;
     private ArrayList<GameObject> exceptions;
 
-    // for Players and Weapons
-    public Interactive(GameObject owner, InteractiveActivator activator,
-                       InteractiveCollision collision, InteractiveAction action,
-                       byte weaponType, byte attackType, float modifier) {
+
+    private Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte
+            attackType, float modifier) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
@@ -45,15 +44,18 @@ public class Interactive {
         this.modifier = modifier;
     }
 
-    // for Mobs and NPCs
-    public Interactive(GameObject owner, InteractiveActivator activator,
-                       InteractiveCollision collision, InteractiveAction action, byte attackType, float modifier) {
-        this.owner = owner;
-        this.activator = activator;
-        this.collision = collision;
-        this.action = action;
-        this.modifier = modifier;
-        this.attackType = attackType;
+    public static Interactive create(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
+                                     byte weaponType, byte attackType, float modifier) {
+        return new Interactive(owner, activator, collision, action, weaponType, attackType, modifier);
+    }
+
+    public static Interactive createNotWeapon(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte
+            attackType, float modifier) {
+        return new Interactive(owner, activator, collision, action, (byte) -1, attackType, modifier);
+    }
+
+    public static Interactive createSpawner(GameObject owner, InteractiveActivator activator, InteractiveAction action, byte weaponType, byte attackType) {
+        return new Interactive(owner, activator, null, action, weaponType, attackType, 0);
     }
 
     public void addException(GameObject exception) {
@@ -69,10 +71,10 @@ public class Interactive {
         }
     }
 
-    public void checkCollision(GameObject[] players, List<Mob> mobs) {
-        if (collision != null) {
+    public void actIfActivated(GameObject[] players, List<Mob> mobs) {
+        if (collisionActivated()) {
             if (COLLIDES_WITH_MOBS) {
-                mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || (mob != owner && !checkExceptions(mob))))).forEach((mob) -> {
+                mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || (mob != owner && !isException(mob))))).forEach((mob) -> {
                     InteractiveResponse response = collision.collide(owner, mob, attackType);
                     if (response.getPixels() > 0) {
                         action.act(mob, this, response);
@@ -81,7 +83,7 @@ public class Interactive {
             }
             if (COLLIDES_WITH_PLAYERS) {
                 for (GameObject player : players) {
-                    if ((COLLIDES_WITH_SELF || (player != owner && !checkExceptions(player)))) {
+                    if ((COLLIDES_WITH_SELF || (player != owner && !isException(player)))) {
                         InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
                         if (response.getPixels() > 0) {
                             action.act(player, this, response);
@@ -89,12 +91,12 @@ public class Interactive {
                     }
                 }
             }
-        } else {    //To obejście dla ataków nie-kolizyjnych jest strasznie chamskie... trzeba będzie coś wymyślić innego <(-_-<)
+        } else {
             action.act(owner, this, InteractiveResponse.NO_RESPONSE);
         }
     }
 
-    private boolean checkExceptions(GameObject object) {    //To sprawdza czy obiekt należy do listy wyjątków (które nie będą sprawdzane)
+    private boolean isException(GameObject object) {
         return exceptions != null && exceptions.stream().anyMatch((go) -> (object == go));
     }
 
@@ -148,5 +150,9 @@ public class Interactive {
 
     public void setAttackType(byte attackType) {
         this.attackType = attackType;
+    }
+
+    private boolean collisionActivated() {
+        return collision != null;
     }
 }

@@ -194,21 +194,25 @@ public class Area {
         }
     }
 
-    public void deleteObject(GameObject object) {
+    public boolean deleteObject(GameObject object) {
+        boolean removed;
         if (object.isOnTop()) {
-            topObjects.remove(object);
+            removed = topObjects.remove(object);
         } else {
-            depthObjects.remove(object);
+            removed = depthObjects.remove(object);
         }
-        if (object.isEmitter()) {
-            object.getLights().stream().forEach(lights::remove);
+        if (removed) {
+            if (object.isEmitter()) {
+                object.getLights().stream().forEach(lights::remove);
+            }
+            if (object.isInteractive()) {
+                object.getInteractiveObjects().stream().forEach(interactiveObjects::remove);
+            }
+            if (!(object instanceof Player)) {
+                deleteNotPlayerObject(object);
+            }
         }
-        if (object.isInteractive()) {
-            object.getInteractiveObjects().stream().forEach(interactiveObjects::remove);
-        }
-        if (!(object instanceof Player)) {
-            deleteNotPlayerObject(object);
-        }
+        return removed;
     }
 
     private void deleteNotPlayerObject(GameObject object) {

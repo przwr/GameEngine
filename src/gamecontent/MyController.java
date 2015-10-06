@@ -589,7 +589,7 @@ public class MyController extends PlayerController {
     private boolean isNotEqualToFirstPlayerMenuAction(AnyInput input) {
         Action[] firstPlayerActions = Settings.players[0].getController().actions;
         for (int i = 0; i < MENU_ACTIONS_COUNT; i++) {
-            if (firstPlayerActions[i].input.equals(input)) {
+            if (firstPlayerActions[i].input != null && firstPlayerActions[i].input.equals(input)) {
                 return false;
             }
         }
