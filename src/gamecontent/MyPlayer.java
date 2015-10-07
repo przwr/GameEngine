@@ -108,21 +108,21 @@ public class MyPlayer extends Player {
                     break;
                 case ATTACK_THRUST:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(52, 10, 6, 84, 24), HURT, SWORD, (byte) attack, 2.5f));
+                            new LineInteractiveCollision(52, 10, 6, 60, 24), HURT, SWORD, (byte) attack, 2.5f));
                     break;
                 case ATTACK_WEAK_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(72, 12, 2, 30, 20), HURT, UNIVERSAL, (byte) attack, 1f));
+                            new LineInteractiveCollision(72, 12, 2, 20, 20), HURT, UNIVERSAL, (byte) attack, 1f));
                     actionSets.get(1).setInteraction(2, 0, actionSets.get(0).getFirstInteractive());
                     break;
                 case ATTACK_STRONG_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(72, 12, 2, 34, 20), HURT, UNIVERSAL, (byte) attack, 1.5f));
+                            new LineInteractiveCollision(72, 12, 2, 20, 20), HURT, UNIVERSAL, (byte) attack, 1.5f));
                     actionSets.get(1).setInteraction(2, 1, actionSets.get(0).getSecondInteractive());
                     break;
                 case ATTACK_UPPER_SLASH:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(0, 128, 16, 66, 40), HURT, SWORD, (byte) attack, 2f));
+                            new LineInteractiveCollision(0, 128, 10, 48, 40), HURT, SWORD, (byte) attack, 2f));
                     break;
                 case ATTACK_NORMAL_ARROW_SHOT:
                     InteractiveAction arrow = new InteractiveActionArrow();
