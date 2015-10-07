@@ -363,6 +363,18 @@ public abstract class Map {
             if (!removed) {
                 System.out.println("Nie mogę usunąć - LIPA, chyba, że było przejście między mapami z wczytywaniem. Jak nie dodał, to i nie usunie.");
             }
+            if (!removed) {
+                for (int i = 0; i < areas.length; i++) {
+                    if (areas[i] != null && areas[i].deleteObject(object)) {
+//                        System.out.println("Removed on third try");
+                        removed = true;
+                        break;
+                    }
+                }
+            }
+            if (!removed) {
+                System.out.println("Nie mogę usunąć - LIPA, chyba, że było przejście między mapami z wczytywaniem. Jak nie dodał, to i nie usunie.");
+            }
         }
         object.setMapNotChange(null);
         if (object instanceof WarpPoint) {
