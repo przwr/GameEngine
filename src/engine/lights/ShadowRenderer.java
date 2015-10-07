@@ -98,7 +98,7 @@ public class ShadowRenderer {
     private static void searchObjects(Light light, Map map) {
         for (GameObject object : map.getArea(light.getX(), light.getY()).getNearDepthObjects()) {
             tempShade = object.getCollision();
-            if (tempShade != null && tempShade.isLitable()
+            if (tempShade != null && tempShade.isLitable() && tempShade.getOwner().getAppearance() != null
                     && object.getY() - tempShade.getActualHeight() + tempShade.getHeight() / 2 <= light.getY() + lightHeightHalf
                     && object.getY() + tempShade.getActualHeight() - tempShade.getHeight() / 2 >= light.getY() - lightHeightHalf
                     && object.getX() - tempShade.getActualWidth() / 2 <= light.getX() + lightWidthHalf

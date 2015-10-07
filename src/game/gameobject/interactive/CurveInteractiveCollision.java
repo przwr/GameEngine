@@ -74,7 +74,9 @@ public class CurveInteractiveCollision extends InteractiveCollision {
                     if (angle == -0) {
                         angle = 360;
                     }
-                    if (Math.abs(direction * 45 - angle) <= activationAngle) {
+                    double angleDifference = direction * 45 - angle;
+                    if (Math.abs(angleDifference) <= activationAngle || Math.abs(angleDifference - 360) <= activationAngle || Math.abs(angleDifference + 360)
+                            <= activationAngle) {
                         response.setResponse(pixelsIn, shift + radius, (byte) (calculateInteractionDirection(object
                                 .getDirection8Way(), object.getCollision(), owner.getX(), owner.getY())), attackType, owner);
                         return response;

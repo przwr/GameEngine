@@ -343,11 +343,26 @@ public abstract class Map {
 
     public void deleteObject(GameObject object) {
         if (!areas[object.getArea()].deleteObject(object)) {
+            boolean removed = false;
             for (int i : getAreasToUpdate()) {
                 if (i > 0 && i < areas.length && areas[i] != null && areas[i].deleteObject(object)) {
-                    System.out.println("Removed on second try");
+//                    System.out.println("Removed on second try");
+                    removed = true;
                     break;
                 }
+            }
+            if (!removed) {
+                for (int i = 0; i < areas.length; i++) {
+                    if (areas[i] != null && areas[i].deleteObject(object)) {
+//                        System.out.println("Removed on third try");
+                        removed = true;
+                        break;
+                    }
+                }
+            }
+            if (!removed) {
+                System.out.println("Nie mogę usunąć - LIPA, chyba, że było przejście między mapami z wczytywaniem. Jak nie dodał, to i nie usunie.");
+
             }
         }
         object.setMapNotChange(null);
@@ -363,11 +378,25 @@ public abstract class Map {
 
     public void changeArea(int area, int prevArea, GameObject object) {
         if (!areas[prevArea].deleteObject(object)) {
+            boolean removed = false;
             for (int i : getAreasToUpdate()) {
                 if (i >= 0 && i < areas.length && areas[i] != null && areas[i].deleteObject(object)) {
-                    System.out.println("Removed on second try");
+//                    System.out.println("Removed on second try");
+                    removed = true;
                     break;
                 }
+            }
+            if (!removed) {
+                for (int i = 0; i < areas.length; i++) {
+                    if (areas[i] != null && areas[i].deleteObject(object)) {
+//                        System.out.println("Removed on third try");
+                        removed = true;
+                        break;
+                    }
+                }
+            }
+            if (!removed) {
+                System.out.println("Nie mogę usunąć - LIPA, chyba, że było przejście między mapami z wczytywaniem. Jak nie dodał, to i nie usunie.");
             }
         }
         areas[area].addObject(object);
