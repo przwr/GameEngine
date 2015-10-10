@@ -131,7 +131,7 @@ public class PathFinder {
     private static boolean isFittingPoint(Point point, Point parent, NavigationMesh mesh) {
         if (point.getX() > 0 && point.getY() > 0) {
             setPolygonForTesting(getShiftPoint(parent, temp1, mesh, widthHalf, heightHalf), getShiftPoint(point, temp2, mesh, widthHalf, heightHalf));
-            isClearWay(poly, mesh.getCollisionPoints());
+            return isClearWay(poly, mesh.getCollisionPoints());
         }
         return false;
     }

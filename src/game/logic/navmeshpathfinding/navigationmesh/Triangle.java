@@ -5,6 +5,7 @@
  */
 package game.logic.navmeshpathfinding.navigationmesh;
 
+import engine.utilities.Methods;
 import engine.utilities.Point;
 import net.jodk.lang.FastMath;
 
@@ -111,6 +112,16 @@ public class Triangle {
         return false;
     }
 
+    public int getPointDistance(Point point) {
+        int xCenter = 0;
+        int yCenter = 0;
+        for (Node node : nodes) {
+            xCenter += node.getX();
+            yCenter += node.getY();
+        }
+        return Methods.pointDistanceSimple2(xCenter / 3, yCenter / 3, point.getX(), point.getY());
+    }
+
     public void reset() {
         for (Node node : nodes) {
             node.reset();
@@ -119,7 +130,8 @@ public class Triangle {
 
     @Override
     public String toString() {
-        return "(" + nodes[0].getX() + "," + nodes[0].getY() + ")(" + nodes[1].getX() + "," + nodes[1].getY() + ")(" + nodes[2].getX() + "," + nodes[2].getY() + ")";
+        return "(" + nodes[0].getX() + "," + nodes[0].getY() + ")(" + nodes[1].getX() + "," + nodes[1].getY() + ")(" + nodes[2].getX() + "," + nodes[2].getY
+                () + ")";
     }
 
     public Point getPointFromNode(int index) {

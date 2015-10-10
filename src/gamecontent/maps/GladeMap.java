@@ -13,10 +13,11 @@ import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
+import gamecontent.mobs.Blazag;
 import gamecontent.mobs.BrainlessShen;
+import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import gamecontent.mobs.Blazag;
 
 /**
  * @author Wojtek
@@ -35,12 +36,12 @@ public class GladeMap extends Map {
 
 //        PuzzleObject test = new PuzzleObject("bloczek", place);
 //        test.placePuzzle(0, 0, this);
-//        PuzzleObject test = new PuzzleObject("zatoczka", place);
-//        test.placePuzzle(5, 3, this);
-//        test = new PuzzleObject("test", place);
-//        test.placePuzzle(11, 26, this);
-//        test = new PuzzleObject("smukly", place);
-//        test.placePuzzle(-1, 0, this);
+        PuzzleObject test = new PuzzleObject("zatoczka", place);
+        test.placePuzzle(5, 3, this);
+        test = new PuzzleObject("test", place);
+        test.placePuzzle(11, 26, this);
+        test = new PuzzleObject("smukly", place);
+        test.placePuzzle(-1, 0, this);
 
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
@@ -63,7 +64,7 @@ public class GladeMap extends Map {
 //        addObject(new Shen(512, 1024, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));
-//        addObject(new Shen(648, 1400, place, mobID++));
+        addObject(new Shen(648, 1400, place, mobID++));
 //        addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
 //        addObject(new MyNPC(384, 590, place, mobID++));
         for (int i = 0; i < 20; i += 2) {

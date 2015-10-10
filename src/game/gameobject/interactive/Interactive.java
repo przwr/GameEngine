@@ -152,7 +152,7 @@ public class Interactive {
         this.attackType = attackType;
     }
 
-    private boolean collisionActivated() {
+    public boolean collisionActivated() {
         return collision != null;
     }
 }

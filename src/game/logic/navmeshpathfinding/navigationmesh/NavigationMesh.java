@@ -156,7 +156,8 @@ public class NavigationMesh {
         for (int i = 0; i < 3; i++) {
             toRemove.clear();
             Node node = triangle.getNode(i);
-            node.getNeighbours().stream().forEach((firstNeighbour) -> node.getNeighbours().stream().forEach((secondNeighbour) -> chooseWhichOneToRemove(firstNeighbour, secondNeighbour)));
+            node.getNeighbours().stream().forEach((firstNeighbour) -> node.getNeighbours().stream().forEach((secondNeighbour) -> chooseWhichOneToRemove
+                    (firstNeighbour, secondNeighbour)));
             node.removeNeighbours(toRemove);
         }
     }
@@ -223,8 +224,35 @@ public class NavigationMesh {
                 pathBase[1] = triangle;
                 end = false;
             }
+            if (!start && !end) {
+                break;
+            }
+        }
+        if (start || end) {
+            findCloseTriangles(start, end, startPoint, destinationPoint, pathBase);
         }
         return pathBase;
+    }
+
+    private void findCloseTriangles(boolean start, boolean end, Point startPoint, Point destinationPoint, Triangle[] pathBase) {
+        int triangleStartDistance = Integer.MAX_VALUE, triangleEndDistance = Integer.MAX_VALUE;
+        int tempStartDistance, tempEndDistance;
+        for (Triangle triangle : mesh) {
+            if (start) {
+                tempStartDistance = triangle.getPointDistance(startPoint);
+                if (tempStartDistance < triangleStartDistance) {
+                    triangleStartDistance = tempStartDistance;
+                    pathBase[0] = triangle;
+                }
+            }
+            if (end) {
+                tempEndDistance = triangle.getPointDistance(destinationPoint);
+                if (tempEndDistance < triangleEndDistance) {
+                    triangleEndDistance = tempEndDistance;
+                    pathBase[1] = triangle;
+                }
+            }
+        }
     }
 
     private Triangle getTriangleForPoint(Point point) {
@@ -249,7 +277,9 @@ public class NavigationMesh {
     }
 
     private boolean anyLineIntersects(Bound bound, Point start, Point end) {
-        return end.getX() != 0 && lineIntersectsPointsNotLies(bound, start.getX() + (int) FastMath.signum(end.getX()), start.getY(), start.getX() + end.getX(), start.getY()) || end.getX() != 0 && lineIntersects(bound, start.getX(), start.getY() + (int) FastMath.signum(end.getY()), start.getX(), start.getY() + end.getY());
+        return end.getX() != 0 && lineIntersectsPointsNotLies(bound, start.getX() + (int) FastMath.signum(end.getX()), start.getY(), start.getX() + end.getX
+                (), start.getY()) || end.getX() != 0 && lineIntersects(bound, start.getX(), start.getY() + (int) FastMath.signum(end.getY()), start.getX(),
+                start.getY() + end.getY());
     }
 
     private boolean lineIntersectsPointsNotLies(Bound bound, int xStart, int yStart, int xEnd, int yEnd) {
