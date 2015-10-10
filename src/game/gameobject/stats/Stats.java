@@ -26,7 +26,7 @@ public class Stats {
     protected float protectionSideModifier = 4;
     protected float protectionBackModifier = 1;
     protected boolean protectionState;
-    protected boolean unhurtableState;
+    protected boolean unhurtableState;  //stan kiedy nie ma reakcji na ból
 
     public Stats(Entity owner) {
         this.owner = owner;

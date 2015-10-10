@@ -113,8 +113,8 @@ public class MyController extends PlayerController {
             } else {
                 updateGettingHurt();
             }
-            if ((!actions[INPUT_ATTACK].isKeyPressed() || firstAttackType < 0) 
-                    && (!actions[INPUT_SECOND_ATTACK].isKeyPressed() || secondAttackType < 0) 
+            if ((!actions[INPUT_ATTACK].isKeyPressed() || firstAttackType < 0)
+                    && (!actions[INPUT_SECOND_ATTACK].isKeyPressed() || secondAttackType < 0)
                     && jumpLag == 0) {
                 if (running) {
                     playerAnimation.setFPS((int) (inControl.getSpeed() * 3.5));
@@ -191,31 +191,32 @@ public class MyController extends PlayerController {
                     lastAttackButton = INPUT_SECOND_ATTACK;
                 }
             }
-        }
-        if (preAttackDelay.isWorking()) {
-            int tmpDir = tempDirection;
-            updateDirection();
-            if (tmpDir != tempDirection) {
-                playerAnimation.changeDirection(tempDirection);
+        } else {
+            if (preAttackDelay.isWorking()) {
+                int tmpDir = tempDirection;
+                updateDirection();
+                if (tmpDir != tempDirection) {
+                    playerAnimation.changeDirection(tempDirection);
+                }
             }
+            if (preAttackDelay.isOver()) {
+                attackDelay.start();
+                preAttackDelay.stop();
+            }
+            if (attackDelay.isWorking()) {
+                inControl.getAttackActivator(lastAttackType).setActivated(true);
+            }
+            if (attackDelay.isOver()) {
+                afterAttackDelay.start();
+                attackDelay.stop();
+            }
+            if (afterAttackDelay.isOver()) {
+                actions[lastAttackButton].setInterrupted();
+                attacking = false;
+                afterAttackDelay.stop();
+            }
+            inControl.brakeWithModifier(2, 2);
         }
-        if (preAttackDelay.isOver()) {
-            attackDelay.start();
-            preAttackDelay.stop();
-        }
-        if (attackDelay.isWorking()) {
-            inControl.getAttackActivator(lastAttackType).setActivated(true);
-        }
-        if (attackDelay.isOver()) {
-           afterAttackDelay.start();
-           attackDelay.stop();
-        }
-        if (afterAttackDelay.isOver()) {
-            actions[lastAttackButton].setInterrupted();
-            attacking = false;
-            afterAttackDelay.stop();
-        }
-        inControl.brakeWithModifier(2, 2);
     }
 
     private void startAttack(byte attack) {
