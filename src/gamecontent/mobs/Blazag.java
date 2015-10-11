@@ -27,7 +27,7 @@ public class Blazag extends Mob {
     public Blazag(int x, int y, Place place, short ID) {
         super(x, y, 1, 500, "Blazag", place, "blazag", true, ID);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 22);
+        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 29);
         appearance = animation;
         collision.setMobile(true);
         stats = new MobStats(this);
@@ -58,18 +58,18 @@ public class Blazag extends Mob {
     animation.animateSingleInDirection(getDirection8Way(), 2); - zranienie
     animation.animateSingleInDirection(getDirection8Way(), 3); - blok
     
-    animation.animateIntervalInDirection(getDirection8Way(), 4, 11); - bieg
+    animation.animateIntervalInDirection(getDirection8Way(), 4, 18); - bieg
     
-    animation.animateSingleInDirection(getDirection8Way(), 12); - przygotowanie do skoku
-    animation.animateSingleInDirection(getDirection8Way(), 13); - skok 1/2
-    animation.animateSingleInDirection(getDirection8Way(), 14); - skok 2/2
-    animation.animateSingleInDirection(getDirection8Way(), 15); - lądowanie
+    animation.animateSingleInDirection(getDirection8Way(), 19); - przygotowanie do skoku
+    animation.animateSingleInDirection(getDirection8Way(), 20); - skok 1/2
+    animation.animateSingleInDirection(getDirection8Way(), 21); - skok 2/2
+    animation.animateSingleInDirection(getDirection8Way(), 22); - lądowanie
     
-    animation.animateSingleInDirection(getDirection8Way(), 16); - skok z atakiem 1/2
-    animation.animateSingleInDirection(getDirection8Way(), 17); - skok z atakiem 2/2
-    animation.animateSingleInDirection(getDirection8Way(), 18); - atak po skoku
+    animation.animateSingleInDirection(getDirection8Way(), 23); - skok z atakiem 1/2
+    animation.animateSingleInDirection(getDirection8Way(), 24); - skok z atakiem 2/2
+    animation.animateSingleInDirection(getDirection8Way(), 25); - atak po skoku
     
-    animation.animateIntervalInDirectionOnce(getDirection8Way(), 19, 21); - ciachnięcie
+    animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 28); - ciachnięcie
     */
     
     @Override
