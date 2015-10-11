@@ -27,7 +27,7 @@ public class Blazag extends Mob {
     public Blazag(int x, int y, Place place, short ID) {
         super(x, y, 1, 500, "Blazag", place, "blazag", true, ID);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
+        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 22);
         appearance = animation;
         collision.setMobile(true);
         stats = new MobStats(this);
@@ -51,6 +51,27 @@ public class Blazag extends Mob {
         brakeOthers();
     }
 
+    /*
+                    <('-^<) PRZEMKO-SCIAGA (>^-')>
+    animation.animateSingleInDirection(getDirection8Way(), 0); - siedzenie
+    animation.animateSingleInDirection(getDirection8Way(), 1); - stanie
+    animation.animateSingleInDirection(getDirection8Way(), 2); - zranienie
+    animation.animateSingleInDirection(getDirection8Way(), 3); - blok
+    
+    animation.animateIntervalInDirection(getDirection8Way(), 4, 11); - bieg
+    
+    animation.animateSingleInDirection(getDirection8Way(), 12); - przygotowanie do skoku
+    animation.animateSingleInDirection(getDirection8Way(), 13); - skok 1/2
+    animation.animateSingleInDirection(getDirection8Way(), 14); - skok 2/2
+    animation.animateSingleInDirection(getDirection8Way(), 15); - lądowanie
+    
+    animation.animateSingleInDirection(getDirection8Way(), 16); - skok z atakiem 1/2
+    animation.animateSingleInDirection(getDirection8Way(), 17); - skok z atakiem 2/2
+    animation.animateSingleInDirection(getDirection8Way(), 18); - atak po skoku
+    
+    animation.animateIntervalInDirectionOnce(getDirection8Way(), 19, 21); - ciachnięcie
+    */
+    
     @Override
     public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
         super.getHurt(knockbackPower, jumpPower, attacker);
@@ -59,12 +80,12 @@ public class Blazag extends Mob {
     private void updateGettingHurt() {
         setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(),
                 knockback.getYSpeed(), 0, 0));
-        //animation.animateSingleInDirection(getDirection8Way(), 6);
+        animation.animateSingleInDirection(getDirection8Way(), 2);
         brake(2);
     }
 
     private void updateAnimation() {
-        animation.animateSingleInDirection(getDirection8Way(), 0);
+        animation.animateSingleInDirection(getDirection8Way(), 1);
     }
 
     @Override
