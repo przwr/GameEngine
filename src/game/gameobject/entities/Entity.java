@@ -83,9 +83,9 @@ public abstract class Entity extends GameObject {
     @Override
     public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
         knockback.setFrames(30);
+        knockback.setAttackerDirection(attacker.getDirection());
         int angle = (int) Methods.pointAngleCounterClockwise(attacker.getX(), attacker.getY(), x, y);
-        knockback.setSpeedInDirection(angle,
-                Methods.interval(1, knockbackPower, 20));
+        knockback.setSpeedInDirection(angle, Methods.interval(1, knockbackPower, 20));
         setJumpForce(jumpPower);
         knockback.setType(SpeedChanger.DECREASING);
         knockback.start();

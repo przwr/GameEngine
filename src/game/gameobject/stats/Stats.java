@@ -91,13 +91,13 @@ public class Stats {
     public void setHealth(int health) {
         this.health = health;
     }
-    
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
-    }
 
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
     }
 
     public int getStrength() {
@@ -130,5 +130,45 @@ public class Stats {
 
     public void setUnhurtableState(boolean unhurtableState) {
         this.unhurtableState = unhurtableState;
+    }
+
+    public float getSideDefenceModifier() {
+        return sideDefenceModifier;
+    }
+
+    public void setSideDefenceModifier(float sideDefenceModifier) {
+        this.sideDefenceModifier = sideDefenceModifier;
+    }
+
+    public float getBackDefenceModifier() {
+        return backDefenceModifier;
+    }
+
+    public void setBackDefenceModifier(float backDefenceModifier) {
+        this.backDefenceModifier = backDefenceModifier;
+    }
+
+    public float getProtection() {
+        return protection;
+    }
+
+    public void setProtection(float protection) {
+        this.protection = protection;
+    }
+
+    public float getProtectionSideModifier() {
+        return protectionSideModifier;
+    }
+
+    public void setProtectionSideModifier(float protectionSideModifier) {
+        this.protectionSideModifier = protectionSideModifier;
+    }
+
+    public float getProtectionBackModifier() {
+        return protectionBackModifier;
+    }
+
+    public void setProtectionBackModifier(float protectionBackModifier) {
+        this.protectionBackModifier = protectionBackModifier;
     }
 }

@@ -30,6 +30,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Shen extends Mob {
 
+    public static final String RUN_AWAY = "RUN_AWAY";
     private final static byte ATTACK_NORMAL = 0, ATTACK_CRITICAL = 1;
     private final Animation animation;
     int seconds = 0, max = 5;
@@ -44,6 +45,7 @@ public class Shen extends Mob {
         idle = new ActionState() {
             @Override
             public void update() {
+//                System.out.println("IDLE");
                 if (rest.isOver()) {
                     brake(2);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
@@ -56,7 +58,6 @@ public class Shen extends Mob {
                     } else if (destination.getX() > 0) {
                         state = run_away;
                         destination.set(-1, -1);
-                        setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
                     } else {
                         calculateDestinationsForCloseFriends();
                         if (alpha) {
@@ -64,12 +65,15 @@ public class Shen extends Mob {
                             maxSpeed = 0.8;
                             destination.set(getX(), getY());
                             seconds = 0;
-                            pathData.setAvoidMobile(true);
-                            setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
                         } else if (secondaryDestination.getX() > 0) {
                             state = follow;
                             pathData.setAvoidMobile(false);
                             setPathStrategy(PathFindingModule.GET_TO, collision.getWidth() * 2);
+                        } else {
+                            state = wander;
+                            maxSpeed = 0.8;
+                            destination.set(getX(), getY());
+                            seconds = 0;
                         }
                     }
                 }
@@ -78,6 +82,7 @@ public class Shen extends Mob {
         run_away = new ActionState() {
             @Override
             public void update() {
+//                System.out.println(RUN_AWAY);
                 if (destination.getX() > 0) {
                     secondaryDestination.set(destination.getX(), destination.getY());
                 }
@@ -90,8 +95,8 @@ public class Shen extends Mob {
                     destination.set(-1, -1);
                     secondaryDestination.set(-1, -1);
                     stats.setProtectionState(true);
-                } else if (destination.getX() < 0 && Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(), secondaryDestination.getY())
-                        < 4 * hearRange2 / 9) {
+                } else if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination
+                        .getX(), secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
                     state = idle;
                     secondaryDestination.set(-1, -1);
                     destination.set(-1, -1);
@@ -101,6 +106,7 @@ public class Shen extends Mob {
         hide = new ActionState() {
             @Override
             public void update() {
+//                System.out.println("HIDE");
                 brake(2);
                 if (appearance.getCurrentFrameIndex() % animation.getFramesPerDirection() == 12) {
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
@@ -123,6 +129,7 @@ public class Shen extends Mob {
         attack = new ActionState() {
             @Override
             public void update() {
+//                System.out.println("ATTACK");
                 if (rest.isOver()) {
                     if (!attacking && attack_delay.isOver()) {
                         attack_delay.start();
@@ -171,6 +178,7 @@ public class Shen extends Mob {
         bounce = new ActionState() {
             @Override
             public void update() {
+//                System.out.println("BOUNCE");
                 if (xSpeed != 0 || ySpeed != 0) {
                     bouncer.setFrames(30);
                     bouncer.setSpeed((int) (-xSpeed / 2), (int) (-ySpeed / 2));
@@ -182,19 +190,20 @@ public class Shen extends Mob {
                     xSpeed = 0;
                     ySpeed = 0;
                 } else if (bouncer.isOver()) {
-                    state = idle;
                     target = null;
                     stats.setUnhurtableState(false);
                     rest.start();
                     stats.setProtectionState(false);
                     maxSpeed = 1;
                     setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
+                    state = idle;
                 }
             }
         };
         follow = new ActionState() {
             @Override
             public void update() {
+//                System.out.println("FOLLOW");
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForCloseFriends();
                 xSpeed = ySpeed = 0;
@@ -207,29 +216,26 @@ public class Shen extends Mob {
                     alignment();
                 }
                 GameObject closerEnemy = getCloserEnemy();
-                if (closerEnemy != null) {
+                if (closerEnemy != null || isDistance2OutOfRange(distance)) {
                     state = idle;
                     pathData.setAvoidMobile(true);
                     secondaryDestination.set(-1, -1);
-                }
-                if (isDistance2OutOfRange(distance)) {
-                    state = idle;
-                    pathData.setAvoidMobile(true);
-                    secondaryDestination.set(-1, -1);
+                    setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
                 }
             }
         };
         wander = new ActionState() {
             @Override
             public void update() {
+//                System.out.println("WANDER");
                 if (rest.isOver()) {
                     RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
-                    if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= 10000) {
-                        int sign = random.next(10) > 512 ? 1 : -1;
-                        int shift = (sightRange + random.next(10)) * sign;
+                    if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
+                        int sign = random.next(1) == 1 ? 1 : -1;
+                        int shift = (sightRange + random.next(9)) * sign;
                         destination.setX(homePosition.getX() + shift);
-                        sign = random.next(10) > 512 ? 1 : -1;
-                        shift = (sightRange + random.next(10)) * sign;
+                        sign = random.next(1) == 1 ? 1 : -1;
+                        shift = (sightRange + random.next(9)) * sign;
                         destination.setY(homePosition.getY() + shift);
                         if (destination.getX() < sightRange / 2) {
                             destination.setX(sightRange / 2);
@@ -243,16 +249,17 @@ public class Shen extends Mob {
                         if (destination.getY() > map.getHeight()) {
                             destination.setY(map.getHeight() - sightRange / 2);
                         }
+//                        System.out.println(destination);
                     }
                     seconds++;
                     if (seconds > max) {
                         seconds = 0;
-                        max = random.next(7);
+                        max = random.next(4);
                     }
                     rest.start();
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                if (!closeEnemies.isEmpty()) {
+                if (!closeEnemies.isEmpty() || (!alpha && !closeFriends.isEmpty())) {
                     state = idle;
                     destination.set(-1, -1);
                     maxSpeed = 1;
@@ -263,7 +270,7 @@ public class Shen extends Mob {
     }
 
     public Shen(int x, int y, Place place, short ID) {
-        super(x, y, 1, 500, "Shen", place, "shen", true, ID);
+        super(x, y, 1, 512, "Shen", place, "shen", true, ID);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
         appearance = animation;
@@ -329,6 +336,16 @@ public class Shen extends Mob {
     public void update() {
         if (isHurt()) {
             updateGettingHurt();
+            if (closeEnemies.isEmpty()) {
+                state = run_away;
+                destination.set(-1, -1);
+                secondaryDestination.set(-1, -1);
+                maxSpeed = 1;
+                stats.setProtectionState(false);
+                setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
+                destination.set(getX() + (int) Methods.xRadius(knockback.getAttackerDirection(), sightRange),
+                        getY() - (int) Methods.yRadius(knockback.getAttackerDirection(), sightRange));
+            }
         } else {
             state.update();
             normalizeSpeed();
@@ -341,8 +358,7 @@ public class Shen extends Mob {
     }
 
     private void updateGettingHurt() {
-        setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(),
-                knockback.getYSpeed(), 0, 0));
+        setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(), knockback.getYSpeed(), 0, 0));
         animation.animateSingleInDirection(getDirection8Way(), 6);
         brake(2);
     }
@@ -409,7 +425,7 @@ public class Shen extends Mob {
              Drawer.renderString(name, 0, (int) -((animation.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
              }*/
             glPopMatrix();
-            renderPathPoints(xEffect, yEffect);
+//            renderPathPoints(xEffect, yEffect);
         }
     }
 

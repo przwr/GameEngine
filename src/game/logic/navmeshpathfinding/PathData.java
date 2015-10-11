@@ -85,14 +85,18 @@ public class PathData {
         yS = owner.getCollision().getY();
         yE = owner.getCollision().getYEnd();
         finalDestination.set(xDest, yDest);
-        if (owner.getArea() != -1) {
-            xRef = owner.getMap().areas[owner.getArea()].getXInPixels();
-            yRef = owner.getMap().areas[owner.getArea()].getYInPixels();
-        }
         Figure.updateWhatClose(owner, x, y, (owner.getHearRange() >> 2), x, y, owner.getMap(), close);
         close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
         flags.set(OBSTACLE_BETWEEN, isObstacleBetween());
         updateStuck();
+    }
+
+    public void updateRef(Entity owner) {
+        int area = owner.getMap().getAreaIndex(x, y);
+        if (area != -1) {
+            xRef = owner.getMap().areas[area].getXInPixels();
+            yRef = owner.getMap().areas[area].getYInPixels();
+        }
     }
 
     private void updateStuck() {

@@ -174,6 +174,7 @@ class PathStrategyCore {
     }
 
     public synchronized static void findPath(Entity requester, PathData data, int xDest, int yDest) {
+        data.updateRef(requester);
         data.newPath = requester.getMap().findPath(data.x, data.y, xDest, yDest, requester.getCollision());
     }
 
