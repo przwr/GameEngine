@@ -133,27 +133,33 @@ public abstract class Mob extends Entity {
                 x += object.getX();
                 y += object.getY();
             }
-            x = getX() - (x / closeEnemies.size());
-            y = getY() - (y / closeEnemies.size());
-            double ratio = Math.abs(y / (double) x);
-            x = (int) (Math.signum(x) * sightRange);
-            y = (int) (Math.signum(y) * (ratio * Math.abs(x)));
-            x += getX();
-            y += getY();
-            if (x < sightRange / 2) {
-                destination.setX(sightRange / 2);
-            }
-            if (x > map.getWidth()) {
-                x = map.getWidth() - sightRange / 2;
-            }
-            if (y < collision.getHeight()) {
-                y = sightRange / 2;
-            }
-            if (y > map.getHeight()) {
-                y = map.getHeight() - sightRange / 2;
-            }
-            destination.set(x, y);
+            x /= closeEnemies.size();
+            y /= closeEnemies.size();
+            calculateDestinationForEscapeFromPoint(x, y);
         }
+    }
+
+    public void calculateDestinationForEscapeFromPoint(int x, int y) {
+        x = getX() - x;
+        y = getY() - y;
+        double ratio = Math.abs(y / (double) x);
+        x = (int) (Math.signum(x) * sightRange);
+        y = (int) (Math.signum(y) * (ratio * Math.abs(x)));
+        x += getX();
+        y += getY();
+        if (x < sightRange / 2) {
+            x = sightRange / 2;
+        }
+        if (x > map.getWidth()) {
+            x = map.getWidth() - sightRange / 2;
+        }
+        if (y < sightRange / 2) {
+            y = sightRange / 2;
+        }
+        if (y > map.getHeight()) {
+            y = map.getHeight() - sightRange / 2;
+        }
+        destination.set(x, y);
     }
 
     protected synchronized void calculateDestinationsForCloseFriends() {
@@ -175,16 +181,13 @@ public abstract class Mob extends Entity {
                 y += (closeFriends.size() - 1) * leader.getY();
                 x = (x / (2 * (closeFriends.size() - 1)));
                 y = (y / (2 * (closeFriends.size() - 1)));
-                if (x < collision.getWidth()) {
-                    x = sightRange;
-                }
                 if (x < sightRange / 2) {
-                    destination.setX(sightRange / 2);
+                    x = sightRange / 2;
                 }
                 if (x > map.getWidth()) {
                     x = map.getWidth() - sightRange / 2;
                 }
-                if (y < collision.getHeight()) {
+                if (y < sightRange / 2) {
                     y = sightRange / 2;
                 }
                 if (y > map.getHeight()) {

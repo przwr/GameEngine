@@ -28,7 +28,7 @@ class PathStrategyCore {
     private static final PathWindow pathWindow = new PathWindow();
 
     private static final boolean DEBUG = false;
-    private static boolean WINDOW_SHOWED;
+    private static boolean WINDOW_SHOWED = false;
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -153,7 +153,8 @@ class PathStrategyCore {
 
     private static void delayOverChoice(Entity requester, PathData data, int xDest, int yDest) {
         if (data.flags.get(OBSTACLE_BETWEEN) || data.flags.get(STUCK) || Methods.pointDistance(data.x, data.y, xDest, yDest) > data.scope) {
-            if (data.path.isEmpty() || data.flags.get(OBSTACLE_BETWEEN) || data.flags.get(STUCK) || (Methods.pointDistance(data.getLastPoint().getX(), data.getLastPoint().getY(), xDest, yDest) > requester.getMaxSpeed())) {
+            if (data.path.isEmpty() || data.flags.get(OBSTACLE_BETWEEN) || data.flags.get(STUCK) || (Methods.pointDistance(data.getLastPoint().getX(), data
+                    .getLastPoint().getY(), xDest, yDest) > requester.getMaxSpeed())) {
                 requestForPath(requester, data, xDest, yDest);
             }
             if (!data.path.isEmpty()) {
@@ -173,6 +174,7 @@ class PathStrategyCore {
     }
 
     public synchronized static void findPath(Entity requester, PathData data, int xDest, int yDest) {
+        data.updateRef(requester);
         data.newPath = requester.getMap().findPath(data.x, data.y, xDest, yDest, requester.getCollision());
     }
 
@@ -190,14 +192,15 @@ class PathStrategyCore {
     }
 
     private static void passing(PathData data) {
-        if (data.flags.get(STUCK) || data.x == data.correction.getX() && data.y == data.correction.getY() || (data.inAWay != null && (data.inAWay.getX() != data.xInAWay || data.inAWay.getY() != data.yInAWay))) {
+        if (data.flags.get(STUCK) || data.x == data.correction.getX() && data.y == data.correction.getY() || (data.inAWay != null && (data.inAWay.getX() !=
+                data.xInAWay || data.inAWay.getY() != data.yInAWay))) {
             data.flags.clear(PASSING);
             data.flags.set(PASSED);
             data.destination = data.correction;
         } else {
             if (data.flags.get(AVOID_MOBILE) && data.inAWay != null && data.inAWay.isMobile()) {
-//                data.lastInAWay = null;
-//                isSomethingOnTheWay(data);
+                data.lastInAWay = null;
+                isSomethingOnTheWay(data);
             } else {
                 data.lastInAWay = data.inAWay;
             }
@@ -279,7 +282,8 @@ class PathStrategyCore {
     private static void addPointIfClearPath(PathData data, Point correction, int corner) {
         if (!data.last1CorrectionPoint.equals(data.last2CorrectionPoint) || !correction.equals(data.last1CorrectionPoint)) {
             PathStrategyCore.setPolygonForTesting(data, correction);
-            if (data.destination.equals(data.finalDestination) || PathStrategyCore.anyFigureInAWay(data.poly, data.close) == null || (corner == data.lastCorner && data.path.isEmpty())) {
+            if (data.destination.equals(data.finalDestination) || PathStrategyCore.anyFigureInAWay(data.poly, data.close) == null || (corner == data
+                    .lastCorner && data.path.isEmpty())) {
                 data.correctionPoints.add(correction.getX(), correction.getY(), corner);
             }
         }
@@ -299,7 +303,8 @@ class PathStrategyCore {
             }
         }
         if (data.closest != null) {
-            if ((data.closest.getY() >= data.y && data.closest.getY() <= data.destination.getY()) || (data.closest.getY() <= data.y && data.closest.getY() >= data.destination.getY()) || data.inAWay.isMobile()) {
+            if ((data.closest.getY() >= data.y && data.closest.getY() <= data.destination.getY()) || (data.closest.getY() <= data.y && data.closest.getY() >=
+                    data.destination.getY()) || data.inAWay.isMobile()) {
                 setCorrection(data);
             }
         }
@@ -420,7 +425,8 @@ class PathStrategyCore {
     public static void setPolygonForTesting(PathData data, Point correction) {
         Methods.getCastingPoints((2 * data.x - correction.getX()), (2 * data.y - correction.getY()), data.xS, data.xE, data.yS, data.yE, data.castingPoints);
         setDestinationCorners(correction, data);
-        Methods.getCastingPoints((2 * correction.getX() - data.x), (2 * correction.getY() - data.y), data.xDS, data.xDE, data.yDS, data.yDE, data.castingDestination);
+        Methods.getCastingPoints((2 * correction.getX() - data.x), (2 * correction.getY() - data.y), data.xDS, data.xDE, data.yDS, data.yDE, data
+                .castingDestination);
         data.poly.reset();
         data.poly.addPoint(data.castingPoints[0].getX(), data.castingPoints[0].getY());
         data.poly.addPoint(data.castingPoints[1].getX(), data.castingPoints[1].getY());

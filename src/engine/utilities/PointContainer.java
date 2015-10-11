@@ -83,4 +83,17 @@ public class PointContainer {
     public int size() {
         return pointCount;
     }
+
+    public String toString() {
+        String string = "[";
+        for (int i = 0; i < pointCount; i++) {
+            if (i == 0) {
+                string += points[i].toString();
+            } else {
+                string += ", " + points[i].toString();
+            }
+        }
+        string += "]";
+        return string;
+    }
 }

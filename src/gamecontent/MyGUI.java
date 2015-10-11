@@ -53,8 +53,8 @@ public class MyGUI extends GUIObject {
             frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(player.getCollision().getWidth(),
                     player.getCollision().getHeight())
                     : new RegularFrameBufferObject(player.
-                            getCollision().getWidth(),
-                            player.getCollision().getHeight());
+                    getCollision().getWidth(),
+                    player.getCollision().getHeight());
         }
     }
 
@@ -74,16 +74,24 @@ public class MyGUI extends GUIObject {
 
     public void activate() {
         alpha = 3f;
+        if (!lowHealth) {
+            lifeAlpha = 3f;
+        }
         on = true;
     }
 
     public void deactivate() {
         alpha = 0f;
+        if (!lowHealth) {
+            lifeAlpha = 0f;
+        }
         on = false;
     }
 
     public void activateLifeIndicator() {
-        alpha = 3f;
+        if (!lowHealth) {
+            lifeAlpha = 3f;
+        }
     }
 
     @Override
@@ -117,6 +125,13 @@ public class MyGUI extends GUIObject {
         } else {
             on = false;
             alpha = 0;
+        }
+        if (!lowHealth) {
+            if (lifeAlpha > 0) {
+                lifeAlpha -= 0.02f;
+            } else {
+                lifeAlpha = 0;
+            }
         }
     }
 
@@ -153,9 +168,8 @@ public class MyGUI extends GUIObject {
                 lifeAlpha = 1f;
             }
         } else {
-            lifeAlpha = 1f;
             riseLifeAlpha = true;
-            lifeColor.a = alpha;
+            lifeColor.a = lifeAlpha;
         }
     }
 
@@ -172,7 +186,7 @@ public class MyGUI extends GUIObject {
     }
 
     public boolean isOn() {
-        return alpha > 0 || lowHealth || on;
+        return alpha > 0 || lifeAlpha > 0 || lowHealth || on;
     }
 
     public FrameBufferObject getFrameBufferObject() {

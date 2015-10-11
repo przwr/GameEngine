@@ -8,10 +8,7 @@ package game.place.map;
 import collision.Block;
 import collision.Figure;
 import engine.lights.Light;
-import engine.utilities.BlueArray;
-import engine.utilities.Drawer;
-import engine.utilities.Methods;
-import engine.utilities.PointContainer;
+import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
@@ -25,8 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static game.place.Place.xAreaInPixels;
-import static game.place.Place.yAreaInPixels;
+import static game.place.Place.*;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
 
@@ -35,7 +31,7 @@ import static game.place.map.Area.Y_IN_TILES;
  */
 public abstract class Map {
 
-    protected static final PointContainer DIFFERENT_AREAS = new PointContainer(0);
+    protected static final PointContainer NO_SOLUTION = new PointContainer(0);
     protected static Tile tempTile;
     public final Place place;
     protected final int tileSize;
@@ -124,12 +120,83 @@ public abstract class Map {
 
     public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         int area = getAreaIndex(xStart, yStart);
-        if (area != getAreaIndex(xDestination, yDestination)) {
-            return DIFFERENT_AREAS;
-        }
         int x = areas[area].getXInPixels();
         int y = areas[area].getYInPixels();
-        return areas[area].findPath(xStart - x, yStart - y, xDestination - x, yDestination - y, collision);
+        if (area != getAreaIndex(xDestination, yDestination)) {
+            return findInDifferentAreas(area, x, y, xStart, yStart, xDestination, yDestination, collision);
+        }
+        PointContainer solution = areas[area].findPath(xStart - x, yStart - y, xDestination - x, yDestination - y, collision);
+        if (solution != null) {
+            return solution;
+        } else {
+            return NO_SOLUTION;
+        }
+    }
+
+    private PointContainer findInDifferentAreas(int area, int x, int y, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+        if (xStart < x + tileSize || xStart > x + xAreaInPixels - tileSize
+                || yStart < y + tileSize || yStart > y + yAreaInPixels - tileSize) {
+            return NO_SOLUTION;
+        } else {
+            Point intersection = null;
+            if (xDestination > x + xAreaInPixels - tileHalf) {
+                if (yDestination > y + yAreaInPixels - tileHalf) {
+                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                            x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
+                    if (intersection == null) {
+                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                                x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+                    }
+                } else if (yDestination < y + tileHalf) {
+                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+                    if (intersection == null) {
+                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                                x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
+                    }
+                } else {
+                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+                }
+            } else if (xDestination < x + tileHalf) {
+                if (yDestination > y + yAreaInPixels - tileHalf) {
+                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
+                    if (intersection == null) {
+                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                                x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
+                    }
+                } else if (yDestination < y + tileHalf) {
+                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
+                    if (intersection == null) {
+                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                                x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+                    }
+                } else {
+                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
+                }
+            } else {
+                if (yDestination > y + yAreaInPixels - tileHalf) {
+                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                            x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
+                } else if (yDestination < y + tileHalf) {
+                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+                }
+            }
+            if (intersection != null) {
+                PointContainer solution = areas[area].findPath(xStart - x, yStart - y, intersection.getX() - x, intersection.getY() - y, collision);
+                if (solution != null) {
+                    return solution;
+                } else {
+                    return NO_SOLUTION;
+                }
+            } else {
+                return NO_SOLUTION;
+            }
+        }
     }
 
     public void addAreasToUpdate(int[] newAreas) {
