@@ -27,7 +27,7 @@ public class Blazag extends Mob {
     public Blazag(int x, int y, Place place, short ID) {
         super(x, y, 1, 500, "Blazag", place, "blazag", true, ID);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 29);
+        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 44);
         appearance = animation;
         collision.setMobile(true);
         stats = new MobStats(this);
@@ -52,26 +52,26 @@ public class Blazag extends Mob {
     }
 
     /*
-                    <('-^<) PRZEMKO-SCIAGA (>^-')>
-    animation.animateSingleInDirection(getDirection8Way(), 0); - siedzenie
-    animation.animateSingleInDirection(getDirection8Way(), 1); - stanie
-    animation.animateSingleInDirection(getDirection8Way(), 2); - zranienie
-    animation.animateSingleInDirection(getDirection8Way(), 3); - blok
+     <('-^<) PRZEMKO-SCIAGA (>^-')>
+     animation.animateSingleInDirection(getDirection8Way(), 0); - siedzenie
+     animation.animateSingleInDirection(getDirection8Way(), 1); - stanie
+     animation.animateSingleInDirection(getDirection8Way(), 2); - zranienie
+     animation.animateSingleInDirection(getDirection8Way(), 3); - blok
     
-    animation.animateIntervalInDirection(getDirection8Way(), 4, 18); - bieg
+     animation.animateIntervalInDirection(getDirection8Way(), 4, 18); - bieg
     
-    animation.animateSingleInDirection(getDirection8Way(), 19); - przygotowanie do skoku
-    animation.animateSingleInDirection(getDirection8Way(), 20); - skok 1/2
-    animation.animateSingleInDirection(getDirection8Way(), 21); - skok 2/2
-    animation.animateSingleInDirection(getDirection8Way(), 22); - lądowanie
+     animation.animateSingleInDirection(getDirection8Way(), 19); - przygotowanie do skoku
+     animation.animateSingleInDirection(getDirection8Way(), 20); - skok 1/2
+     animation.animateSingleInDirection(getDirection8Way(), 21); - skok 2/2
+     animation.animateSingleInDirection(getDirection8Way(), 22); - lądowanie
     
-    animation.animateSingleInDirection(getDirection8Way(), 23); - skok z atakiem 1/2
-    animation.animateSingleInDirection(getDirection8Way(), 24); - skok z atakiem 2/2
-    animation.animateSingleInDirection(getDirection8Way(), 25); - atak po skoku
+     animation.animateSingleInDirection(getDirection8Way(), 23); - skok z atakiem 1/2
+     animation.animateSingleInDirection(getDirection8Way(), 24); - skok z atakiem 2/2
+     animation.animateSingleInDirection(getDirection8Way(), 25); - atak po skoku
     
-    animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 28); - ciachnięcie
-    */
-    
+     animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34); - ciachnięcie z prawej
+     animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43); - ciachnięcie z lewej
+     */
     @Override
     public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
         super.getHurt(knockbackPower, jumpPower, attacker);
