@@ -198,6 +198,10 @@ public class Animation implements Appearance {
     public int getCurrentFrameIndex() {
         return currentFrame;
     }
+    
+    public int getDirectionalFrameIndex() {
+        return currentFrame % framesPerDirection;
+    }
 
     public void setDelay(int length) {
         delay.setFrameLengthInMiliseconds(length);
