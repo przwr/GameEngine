@@ -30,7 +30,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Shen extends Mob {
 
-    public static final String RUN_AWAY = "RUN_AWAY";
     private final static byte ATTACK_NORMAL = 0, ATTACK_CRITICAL = 1;
     private final Animation animation;
     int seconds = 0, max = 5;
@@ -85,6 +84,7 @@ public class Shen extends Mob {
 //                System.out.println(RUN_AWAY);
                 if (destination.getX() > 0) {
                     secondaryDestination.set(destination.getX(), destination.getY());
+                    System.out.println(secondaryDestination);
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForEscape();
@@ -287,9 +287,9 @@ public class Shen extends Mob {
         state = idle;
         bouncer = new SpeedChanger();
         homePosition.set(getX(), getY());
-        addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.HURT,
+        addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,
                 ATTACK_NORMAL, 0.5f));
-        addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.HURT,
+        addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,
                 ATTACK_CRITICAL, 2f));
     }
 

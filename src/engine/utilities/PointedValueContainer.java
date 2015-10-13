@@ -66,6 +66,33 @@ public class PointedValueContainer {
         }
     }
 
+    public boolean contains(int x, int y, int value) {
+        for (int i = 0; i < pointCount; i++) {
+            if (points[i].getX() == x && points[i].getY() == y && points[i].getValue() == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsMoreValue(int x, int y, int value) {
+        for (int i = 0; i < pointCount; i++) {
+            if (points[i].getX() == x && points[i].getY() == y && points[i].getValue() > value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsLessValue(int x, int y, int value) {
+        for (int i = 0; i < pointCount; i++) {
+            if (points[i].getX() == x && points[i].getY() == y && points[i].getValue() < value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isEmpty() {
         return pointCount == 0;
     }

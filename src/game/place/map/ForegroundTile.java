@@ -19,7 +19,7 @@ import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 public class ForegroundTile extends Tile {
 
     private final int tmpYStart;
-    private boolean blockPart;
+    private boolean blockPart, inCollidingPosition;
 
     ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round) {
         super(spriteSheet, xSheet, ySheet);
@@ -100,5 +100,14 @@ public class ForegroundTile extends Tile {
 
     public boolean isWall() {
         return collision.isGiveShadow();
+    }
+
+    @Override
+    public boolean isInCollidingPosition() {
+        return inCollidingPosition;
+    }
+
+    public void setInCollidingPosition(boolean inCollidingPosition) {
+        this.inCollidingPosition = inCollidingPosition;
     }
 }

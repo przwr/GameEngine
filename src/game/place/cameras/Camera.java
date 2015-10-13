@@ -242,4 +242,8 @@ public abstract class Camera {
     public int getArea() {
         return area;
     }
+
+    public ArrayList<GameObject> getOwners() {
+        return owners;
+    }
 }

@@ -72,6 +72,15 @@ public class PointContainer {
         }
     }
 
+    public boolean contains(int x, int y) {
+        for (int i = 0; i < pointCount; i++) {
+            if (points[i].getX() == x && points[i].getY() == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isEmpty() {
         return pointCount == 0;
     }

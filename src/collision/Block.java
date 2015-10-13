@@ -58,7 +58,6 @@ public class Block extends GameObject {
         if (!collision.isMobile()) {
             collision.updatePoints();
         }
-
         // !!!!!!!!!!!!!!!!!!
         // map.sortForegroundTiles();
     }
@@ -80,6 +79,26 @@ public class Block extends GameObject {
             }
         }
         foregroundTile.setBlockPart(true);
+        foregroundTile.setInCollidingPosition(inCollision(foregroundTile));
+    }
+
+    private boolean inCollision(ForegroundTile foregroundTile) {
+//        if (collision instanceof RoundRectangle) {
+//            RoundRectangle round = (RoundRectangle) collision;
+//            if ((round.isCornerTriangular(LEFT_TOP) || round.isCornerConcave(LEFT_TOP))
+//                    && foregroundTile.getX() == collision.getX() && foregroundTile.getY() == collision.getY()) {
+//                return false;
+//            }
+//            if ((round.isCornerTriangular(RIGHT_TOP) || round.isCornerConcave(RIGHT_TOP))
+//                    && foregroundTile.getX() + Place.tileSize == collision.getXEnd() && foregroundTile.getY() == collision.getY()) {
+//                return false;
+//            }
+//            return foregroundTile.getX() >= collision.getX() && foregroundTile.getX() < collision.getXEnd() && foregroundTile.getY() >= collision.getY() &&
+//                    foregroundTile.getY() < collision.getYEnd();
+//        } else {
+        return foregroundTile.getX() >= collision.getX() && foregroundTile.getX() < collision.getXEnd() && foregroundTile.getY() >= collision.getY() &&
+                foregroundTile.getY() < collision.getYEnd();
+//        }
     }
 
     public void removeForegroundTile(ForegroundTile foregroundTile) {

@@ -370,8 +370,7 @@ public abstract class GameObject {
         return interactiveObjects;
     }
 
-    
-    
+
     public InteractiveActivator getAttackActivator(byte attackType) {
         for (Interactive i : interactiveObjects) {
             if (i.getAttackType() == attackType)
@@ -386,6 +385,10 @@ public abstract class GameObject {
 
     public Appearance getAppearance() {
         return appearance;
+    }
+
+    public boolean isInCollidingPosition() {
+        return collision != null;
     }
 
     public void setPositionWithoutAreaUpdate(double x, double y) {

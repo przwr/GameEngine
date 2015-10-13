@@ -8,6 +8,7 @@ package game.gameobject.entities;
 import engine.utilities.Drawer;
 import game.gameobject.GUIObject;
 import game.gameobject.inputs.PlayerController;
+import game.gameobject.items.Weapon;
 import game.menu.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
@@ -26,6 +27,7 @@ public abstract class Player extends Entity {
     public byte playerID;
     protected PlayerController playerController;
     protected Map empty;
+    protected Weapon activeWeapon;
     protected Camera camera;
     protected GameOnline online;
     protected boolean first, stopped;
@@ -189,6 +191,10 @@ public abstract class Player extends Entity {
 
     public void setNotInGame() {
         this.place = null;
+    }
+
+    public Weapon getWeapon() {
+        return activeWeapon;
     }
 
 }

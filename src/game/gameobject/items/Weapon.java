@@ -9,6 +9,7 @@ public class Weapon {
 
     private byte type;
     private String name;
+    private float modifier = 1;
 
 
     public Weapon(String name, byte type) {
@@ -26,6 +27,14 @@ public class Weapon {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public float getModifier() {
+        return modifier;
+    }
+
+    public void setModifier(float modifier) {
+        this.modifier = modifier;
     }
 
     //TODO wygląd broni i statystyki

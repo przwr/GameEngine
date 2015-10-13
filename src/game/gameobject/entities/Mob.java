@@ -143,7 +143,7 @@ public abstract class Mob extends Entity {
         x = getX() - x;
         y = getY() - y;
         double ratio = Math.abs(y / (double) x);
-        x = (int) (Math.signum(x) * sightRange);
+        x = (int) (Math.signum(x) * (sightRange / ratio));
         y = (int) (Math.signum(y) * (ratio * Math.abs(x)));
         x += getX();
         y += getY();

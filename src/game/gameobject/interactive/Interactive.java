@@ -8,7 +8,8 @@ package game.gameobject.interactive;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
-import net.jodk.lang.FastMath;
+import game.gameobject.items.Arrow;
+import game.gameobject.items.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,8 @@ import java.util.List;
  */
 public class Interactive {
 
-    public static final InteractiveAction HURT = new InteractiveActionHurt();
+    public static final InteractiveAction STRENGTH_HURT = new InteractiveActionStrengthHurt();
+    public static final InteractiveAction BOW_HURT = new InteractiveActionBowHurt();
     public static final InteractiveActivator ALWAYS = new InteractiveActivatorAlways();
 
     private final GameObject owner;
@@ -110,12 +112,6 @@ public class Interactive {
         }
     }
 
-    //TODO stworzyć Weapon, które ma właściwości jego użycia, jak przeliczenie danych, wygląd, czy używane statystyki
-    public void recalculateData(InteractiveResponse response) {
-        response.setPixels((1 + (response.getPixels() / (response.getMaxPixels() * 5f) + (float) FastMath.random() / 10f)) * modifier * owner.getStats()
-                .getStrength());
-    }
-
     public InteractiveActivator getActivator() {
         return activator;
     }
@@ -154,5 +150,32 @@ public class Interactive {
 
     public boolean collisionActivated() {
         return collision != null;
+    }
+
+    public GameObject getOwner() {
+        return owner;
+    }
+
+    public float getWeaponModifier() {
+        if (owner instanceof Player) {
+            Weapon weapon = ((Player) owner).getWeapon();
+            if (weapon != null) {
+                if (weapon.getType() == weaponType) {
+                    return weapon.getModifier();
+                }
+            }
+        }
+        if (owner instanceof Arrow) {
+            GameObject ow = ((Arrow) owner).getOwner();
+            if (ow instanceof Player) {
+                Weapon weapon = ((Player) ow).getWeapon();
+                if (weapon != null) {
+                    if (weapon.getType() == weaponType) {
+                        return weapon.getModifier();
+                    }
+                }
+            }
+        }
+        return 1;
     }
 }

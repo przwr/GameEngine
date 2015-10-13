@@ -33,7 +33,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import static engine.utilities.Drawer.clearScreen;
-import static game.gameobject.interactive.Interactive.HURT;
+import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -57,7 +57,6 @@ public class MyPlayer extends Player {
     private Cloth boots;
 
     private Cloth weapon;
-    private Weapon activeWeapon;
     private Weapon firstWeapon;
     private Weapon secondWeapon;
     private Weapon lastWeapon;
@@ -89,7 +88,9 @@ public class MyPlayer extends Player {
         actionSets.add(new InteractionSet(SWORD));
         actionSets.add(new InteractionSet(BOW));
         Weapon sword = new Weapon("Sword", SWORD);
+        sword.setModifier(1.2f);
         Weapon bow = new Weapon("Bow", BOW);
+        bow.setModifier(5f);
         firstWeapon = sword;
         secondWeapon = bow;
         activeWeapon = universal;
@@ -104,25 +105,25 @@ public class MyPlayer extends Player {
             switch (attack) {
                 case ATTACK_SLASH:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new CurveInteractiveCollision(42, 32, 0, 64, 120), HURT, SWORD, (byte) attack, 2f));
+                            new CurveInteractiveCollision(42, 32, 0, 64, 120), STRENGTH_HURT, SWORD, (byte) attack, 2f));
                     break;
                 case ATTACK_THRUST:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(52, 10, 6, 60, 24), HURT, SWORD, (byte) attack, 2.5f));
+                            new LineInteractiveCollision(52, 10, 6, 60, 24), STRENGTH_HURT, SWORD, (byte) attack, 2.5f));
                     break;
                 case ATTACK_WEAK_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(72, 12, 2, 20, 20), HURT, UNIVERSAL, (byte) attack, 1f));
+                            new LineInteractiveCollision(72, 12, 2, 20, 20), STRENGTH_HURT, UNIVERSAL, (byte) attack, 1f));
                     actionSets.get(1).setInteraction(2, 0, actionSets.get(0).getFirstInteractive());
                     break;
                 case ATTACK_STRONG_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(72, 12, 2, 20, 20), HURT, UNIVERSAL, (byte) attack, 1.5f));
+                            new LineInteractiveCollision(72, 12, 2, 20, 20), STRENGTH_HURT, UNIVERSAL, (byte) attack, 1.5f));
                     actionSets.get(1).setInteraction(2, 1, actionSets.get(0).getSecondInteractive());
                     break;
                 case ATTACK_UPPER_SLASH:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(0, 128, 10, 48, 40), HURT, SWORD, (byte) attack, 2f));
+                            new LineInteractiveCollision(0, 128, 10, 48, 40), STRENGTH_HURT, SWORD, (byte) attack, 2f));
                     break;
                 case ATTACK_NORMAL_ARROW_SHOT:
                     InteractiveAction arrow = new InteractiveActionArrow();

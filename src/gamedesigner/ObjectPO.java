@@ -87,5 +87,6 @@ public class ObjectPO extends PuzzleObject {
             PuzzleLink pl = new PuzzleLink(pv.getX() * tileSize, pv.getY() * tileSize, pv.getValue(), (ObjectPlace) map.place);
             objMap.addObject(pl, false);
         });
+
     }
 }

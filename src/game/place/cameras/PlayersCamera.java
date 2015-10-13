@@ -136,7 +136,8 @@ public class PlayersCamera extends Camera {
     public void preRenderGUI() {
         for (GameObject owner : owners) {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            ((MyPlayer) owner).preRenderGroundGUI();
+            if (owner instanceof MyPlayer)
+                ((MyPlayer) owner).preRenderGroundGUI();
         }
     }
 

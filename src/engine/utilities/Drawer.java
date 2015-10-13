@@ -70,6 +70,10 @@ public class Drawer {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, 1.0f);
     }
 
+    public static void setColorAlpha(float alpha) {
+        glColor4f(currentColor.r, currentColor.g, currentColor.b, alpha);
+    }
+
 
     public static Color setPercentToRGBColor(int percent, Color color) {
         if (percent == 100) {

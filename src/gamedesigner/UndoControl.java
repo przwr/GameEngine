@@ -67,6 +67,7 @@ public class UndoControl {
             map.clear();
             Point p = po.getStartingPoint();
             po.placePuzzle(p.getX(), p.getY(), map);
+
             mapCopy = null;
         }
 

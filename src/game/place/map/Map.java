@@ -12,9 +12,11 @@ import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
+import game.gameobject.entities.Player;
 import game.gameobject.interactive.Interactive;
 import game.place.Place;
 import game.place.cameras.Camera;
+import gamecontent.MyPlayer;
 import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
@@ -60,6 +62,8 @@ public abstract class Map {
     protected Color lightColor;
     protected List<GameObject> depthObjects;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
+    protected PointedValueContainer transparentTiles = new PointedValueContainer();
+    protected float transparentAlpha = 0.75f;
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
@@ -487,6 +491,16 @@ public abstract class Map {
         cameraYEnd = camera.getYEnd();
         cameraXOffEffect = camera.getXOffsetEffect();
         cameraYOffEffect = camera.getYOffsetEffect();
+        transparentTiles.clear();
+        for (GameObject owner : camera.getOwners()) {
+            if (owner instanceof MyPlayer) {
+                for (int x = Math.round(owner.getXSpriteBegin() / tileSize); x <= Math.round(owner.getXSpriteEnd() / tileSize) + 1; x++) {
+                    for (int y = Math.round(owner.getYSpriteBegin() / tileSize) - 1; y <= Math.round(owner.getYSpriteEnd() / tileSize) + 1; y++) {
+                        transparentTiles.add(x, y, owner.getDepth());
+                    }
+                }
+            }
+        }
     }
 
     public void renderBackground(Camera camera) {
@@ -533,16 +547,36 @@ public abstract class Map {
         for (GameObject object : areas[camera.getArea()].getNearDepthObjects()) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
                 if (foregroundTiles.get(y).isVisible() && isObjectInSight(foregroundTiles.get(y))) {
-                    foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
+                    if (!foregroundTiles.get(y).isInCollidingPosition() && transparentTiles.containsLessValue(foregroundTiles.get(y).getX() / tileSize,
+                            foregroundTiles.get(y).getY() / tileSize, foregroundTiles.get(y).getDepth())) {
+                        Drawer.setColorAlpha(transparentAlpha);
+                        foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
+                        Drawer.refreshColor();
+                    } else {
+                        foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
+                    }
                 }
             }
             if (object.isVisible() && isObjectInSight(object)) {
-                object.render(cameraXOffEffect, cameraYOffEffect);
+                if (!(object instanceof Player) && transparentTiles.containsLessValue(object.getX() / tileSize, object.getY() / tileSize, object.getDepth())) {
+                    Drawer.setColorAlpha(transparentAlpha);
+                    object.render(cameraXOffEffect, cameraYOffEffect);
+                    Drawer.refreshColor();
+                } else {
+                    object.render(cameraXOffEffect, cameraYOffEffect);
+                }
             }
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
             if (foregroundTiles.get(i).isVisible() && isObjectInSight(foregroundTiles.get(i))) {
-                foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
+                if (!foregroundTiles.get(i).isInCollidingPosition() && transparentTiles.containsLessValue(foregroundTiles.get(i).getX() / tileSize,
+                        foregroundTiles.get(i).getY() / tileSize, foregroundTiles.get(i).getDepth())) {
+                    Drawer.setColorAlpha(transparentAlpha);
+                    foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
+                    Drawer.refreshColor();
+                } else {
+                    foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
+                }
             }
         }
     }

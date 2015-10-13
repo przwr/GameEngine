@@ -5,9 +5,9 @@
  */
 package gamedesigner;
 
-import engine.utilities.SimpleKeyboard;
 import engine.systemcommunication.IO;
 import engine.utilities.Point;
+import engine.utilities.SimpleKeyboard;
 import game.Game;
 import game.Settings;
 import game.gameobject.entities.Player;
@@ -144,6 +144,8 @@ public class ObjectPlace extends Place {
         }
         if (key.keyPressed(Keyboard.KEY_U)) {
             undo.undo();
+            objMap.deleteObject(editor);
+            objMap.addObject(editor);
         }
         if (key.key(Keyboard.KEY_BACK) && key.keyPressed(Keyboard.KEY_LCONTROL)) {
             objMap.clear();
@@ -281,6 +283,8 @@ public class ObjectPlace extends Place {
             Point p = loaded.getStartingPoint();
             objMap.clear();
             loaded.placePuzzle(p.getX(), p.getY(), objMap);
+            objMap.deleteObject(editor);
+            objMap.addObject(editor);
             printMessage("Object \"" + name + "\" was loaded");
             undo.removeMoves();
             lastName = file[0];

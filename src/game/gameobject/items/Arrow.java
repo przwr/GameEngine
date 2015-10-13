@@ -21,6 +21,8 @@ import game.place.Place;
 import net.packets.Update;
 import org.newdawn.slick.Color;
 
+import static game.gameobject.interactive.Interactive.BOW_HURT;
+import static game.gameobject.items.Weapon.BOW;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -41,8 +43,7 @@ public class Arrow extends Entity {
         visible = true;
         stats = new Stats(this);
         stats.setStrength(20);
-        Interactive attack = Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), Interactive.HURT,
-                (byte) -1, 1f);
+        Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 1f);
         attack.addException(owner);
         addInteractive(attack);
     }
@@ -144,6 +145,10 @@ public class Arrow extends Entity {
             Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }
+    }
+
+    public GameObject getOwner() {
+        return owner;
     }
 
 }

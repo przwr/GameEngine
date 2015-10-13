@@ -9,6 +9,7 @@ import collision.Figure;
 import collision.Rectangle;
 import engine.utilities.*;
 import engine.utilities.Point;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 
 import java.awt.*;
@@ -91,7 +92,7 @@ public class PathData {
         updateStuck();
     }
 
-    public void updateRef(Entity owner) {
+    public void updateRef(GameObject owner) {
         int area = owner.getMap().getAreaIndex(x, y);
         if (area != -1) {
             xRef = owner.getMap().areas[area].getXInPixels();
