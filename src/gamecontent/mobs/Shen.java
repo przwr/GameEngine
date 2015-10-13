@@ -84,7 +84,7 @@ public class Shen extends Mob {
 //                System.out.println(RUN_AWAY);
                 if (destination.getX() > 0) {
                     secondaryDestination.set(destination.getX(), destination.getY());
-                    System.out.println(secondaryDestination);
+//                    System.out.println(secondaryDestination);
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForEscape();
