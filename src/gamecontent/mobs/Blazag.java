@@ -7,7 +7,8 @@ package gamecontent.mobs;
 
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.utilities.*;
+import engine.utilities.Drawer;
+import engine.utilities.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.MobStats;
@@ -32,10 +33,15 @@ public class Blazag extends Mob {
         collision.setMobile(true);
         stats = new MobStats(this);
         stats.setStrength(10);
-        stats.setDefence(1);
-        stats.setWeight(50);
-        stats.setMaxHealth(10000);
-        stats.setHealth(10000);
+        stats.setDefence(2);
+        stats.setWeight(90);
+        stats.setMaxHealth(150);
+        stats.setHealth(150);
+        stats.setSideDefenceModifier(1);
+        stats.setBackDefenceModifier(0.5f);
+        stats.setProtection(3);
+        stats.setProtectionSideModifier(1);
+        stats.setProtectionBackModifier(1);
     }
 
     @Override

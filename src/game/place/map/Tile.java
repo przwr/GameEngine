@@ -7,6 +7,9 @@ import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.place.Place;
+import game.place.fbo.FrameBufferObject;
+import game.place.fbo.RegularFrameBufferObject;
+import org.lwjgl.opengl.Display;
 import sprites.Appearance;
 import sprites.SpriteSheet;
 
@@ -18,6 +21,8 @@ public class Tile extends GameObject implements Appearance {
 
     final SpriteSheet spriteSheet;
     final ArrayList<Point> tileStack;
+    FrameBufferObject fbo;
+    boolean upToDate;
 
     public Tile(SpriteSheet spriteSheet, int xSheet, int ySheet) {
         this.spriteSheet = spriteSheet;
@@ -33,6 +38,30 @@ public class Tile extends GameObject implements Appearance {
         if (!tileStack.contains(p)) {
             tileStack.add(p);
         }
+        updateFBO();
+    }
+
+    private void updateFBO() {
+        if (fbo == null && tileStack.size() > 1) {
+            fbo = new RegularFrameBufferObject(Place.tileSize, Place.tileSize);
+            renderToFBO();
+        }
+        if (fbo != null) {
+            if (tileStack.size() <= 1) {
+                fbo = null;
+            } else {
+                renderToFBO();
+            }
+        }
+    }
+
+    private void renderToFBO() {
+        fbo.activate();
+        glPushMatrix();
+        glTranslatef(0, Display.getHeight() - Place.tileSize, 0);
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
+        glPopMatrix();
+        fbo.deactivate();
     }
 
     public int tileStackSize() {
@@ -43,6 +72,7 @@ public class Tile extends GameObject implements Appearance {
         if (!tileStack.isEmpty()) {
             Point p = tileStack.remove(tileStack.size() - 1);
             tileStack.trimToSize();
+            updateFBO();
             return p;
         }
         return null;
@@ -122,8 +152,12 @@ public class Tile extends GameObject implements Appearance {
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
 
         glTranslatef(getX(), getY(), 0);
-        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
 
+        if (tileStack.size() <= 1 || fbo == null) {
+            tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
+        } else {
+            fbo.render();
+        }
         glPopMatrix();
 
     }

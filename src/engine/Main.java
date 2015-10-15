@@ -186,7 +186,7 @@ public class Main {
     }
 
     private static void initializeGame() {
-        game = new MyGame("Spiritual Game (PROTOTYPE)", controllers);
+        game = new MyGame("Crossroads (PROTOTYPE)", controllers);
         Display.setTitle(game.getTitle());
         pop = new Popup("Amble-Regular");
     }

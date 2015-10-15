@@ -282,6 +282,11 @@ public class Shen extends Mob {
         stats.setStrength(10);
         stats.setDefence(3);
         stats.setWeight(70);
+        stats.setSideDefenceModifier(10);
+        stats.setBackDefenceModifier(4);
+        stats.setProtection(10);
+        stats.setProtectionSideModifier(4);
+        stats.setProtectionBackModifier(1);
         attack_delay.start();
         rest.start();
         state = idle;

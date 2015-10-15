@@ -12,11 +12,9 @@ import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
-import game.gameobject.entities.Player;
 import game.gameobject.interactive.Interactive;
 import game.place.Place;
 import game.place.cameras.Camera;
-import gamecontent.MyPlayer;
 import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
@@ -27,6 +25,7 @@ import java.util.Set;
 import static game.place.Place.*;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author Wojtek
@@ -39,6 +38,7 @@ public abstract class Map {
     protected final int tileSize;
     protected final int widthInTiles, heightInTiles;
     protected final BlueArray<GameObject> foregroundTiles = new BlueArray<>();
+    protected final BlueArray<GameObject> pointingArrows = new BlueArray<>();
     protected final String name;
     protected final int width;
     protected final int height;
@@ -62,8 +62,7 @@ public abstract class Map {
     protected Color lightColor;
     protected List<GameObject> depthObjects;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
-    protected PointedValueContainer transparentTiles = new PointedValueContainer();
-    protected float transparentAlpha = 0.75f;
+    protected Color pointingColor = new Color(0f, 0f, 0f, 0.5f);
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
@@ -491,16 +490,7 @@ public abstract class Map {
         cameraYEnd = camera.getYEnd();
         cameraXOffEffect = camera.getXOffsetEffect();
         cameraYOffEffect = camera.getYOffsetEffect();
-        transparentTiles.clear();
-        for (GameObject owner : camera.getOwners()) {
-            if (owner instanceof MyPlayer) {
-                for (int x = Math.round(owner.getXSpriteBegin() / tileSize); x <= Math.round(owner.getXSpriteEnd() / tileSize) + 1; x++) {
-                    for (int y = Math.round(owner.getYSpriteBegin() / tileSize) - 1; y <= Math.round(owner.getYSpriteEnd() / tileSize) + 1; y++) {
-                        transparentTiles.add(x, y, owner.getDepth());
-                    }
-                }
-            }
-        }
+        pointingArrows.clear();
     }
 
     public void renderBackground(Camera camera) {
@@ -547,44 +537,61 @@ public abstract class Map {
         for (GameObject object : areas[camera.getArea()].getNearDepthObjects()) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
                 if (foregroundTiles.get(y).isVisible() && isObjectInSight(foregroundTiles.get(y))) {
-                    if (!foregroundTiles.get(y).isInCollidingPosition() && transparentTiles.containsLessValue(foregroundTiles.get(y).getX() / tileSize,
-                            foregroundTiles.get(y).getY() / tileSize, foregroundTiles.get(y).getDepth())) {
-                        Drawer.setColorAlpha(transparentAlpha);
-                        foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
-                        Drawer.refreshColor();
-                    } else {
-                        foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
-                    }
+                    foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
                 }
             }
             if (object.isVisible() && isObjectInSight(object)) {
-                if (!(object instanceof Player) && transparentTiles.containsLessValue(object.getX() / tileSize, object.getY() / tileSize, object.getDepth())) {
-                    Drawer.setColorAlpha(transparentAlpha);
-                    object.render(cameraXOffEffect, cameraYOffEffect);
-                    Drawer.refreshColor();
-                } else {
-                    object.render(cameraXOffEffect, cameraYOffEffect);
+                if (isBehindForegroundTile(object)) {
+                    pointingArrows.add(object);
                 }
+                object.render(cameraXOffEffect, cameraYOffEffect);
             }
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
             if (foregroundTiles.get(i).isVisible() && isObjectInSight(foregroundTiles.get(i))) {
-                if (!foregroundTiles.get(i).isInCollidingPosition() && transparentTiles.containsLessValue(foregroundTiles.get(i).getX() / tileSize,
-                        foregroundTiles.get(i).getY() / tileSize, foregroundTiles.get(i).getDepth())) {
-                    Drawer.setColorAlpha(transparentAlpha);
-                    foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
-                    Drawer.refreshColor();
-                } else {
-                    foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
-                }
+                foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
             }
         }
+    }
+
+    private boolean isBehindForegroundTile(GameObject object) {
+        for (GameObject tile : foregroundTiles) {
+            if (tile.getDepth() > object.getDepth()
+                    && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
+                    && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2) /
+                    tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeight() / 2 - object.getAppearance()
+                    .getActualHeight() / 2) / tileSize))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void renderTop(Camera camera) {
         updateNearTopObjects(camera.getArea());
         topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render(cameraXOffEffect,
                 cameraYOffEffect));
+        Methods.inSort(pointingArrows);
+        for (GameObject pointer : pointingArrows) {
+            renderPointingArrow(pointer);
+        }
+
+    }
+
+    private void renderPointingArrow(GameObject object) {
+        glPushMatrix();
+        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+        glTranslatef(object.getX(), object.getY() - object.getAppearance().getActualHeight() + object.getCollision().getHeight() / 2, 0);
+        Drawer.setColor(pointingColor);
+        Drawer.drawEllipseBow(0, 0, 5, 10, 5, -30, 210, 15);
+//        Drawer.drawEllipseBow(0, -32, 8, 64, 8, 45, 135, 4);
+        Drawer.setColorAlpha(0.5f);
+        glScaled(0.5f, 0.5f, 1);
+        glTranslatef(0, -object.getAppearance().getActualHeight() / 4 - 12, 0);
+        object.getAppearance().render();
+        Drawer.refreshColor();
+        glPopMatrix();
     }
 
     private boolean isObjectInSight(GameObject object) {
