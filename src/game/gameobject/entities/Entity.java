@@ -482,6 +482,11 @@ public abstract class Entity extends GameObject {
         return hearRange;
     }
 
+    public void setHearRange(int hearRange) {
+        this.hearRange = hearRange;
+        this.hearRange2 = hearRange * hearRange;
+    }
+
     public double getMaxSpeed() {
         return maxSpeed;
     }
@@ -554,12 +559,21 @@ public abstract class Entity extends GameObject {
         return sightRange;
     }
 
+    public void setSightRange(int sightRange) {
+        this.sightRange = sightRange;
+        this.sightRange2 = sightRange * sightRange;
+    }
+
     public int getSightRange2() {
         return sightRange2;
     }
 
     public int getSightAngle() {
         return sightAngle;
+    }
+
+    public void setSightAngle(int sightAngle) {
+        this.sightAngle = sightAngle;
     }
 
     public ArrayList<TemporalChanger> getChangers() {

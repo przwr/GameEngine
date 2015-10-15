@@ -16,14 +16,14 @@ public class Stats {
     protected Entity owner;
     protected int health = 100;
     protected int maxHealth = 100;
-    protected int strength = 5;
-    protected int defence = 2;
+    protected int strength = 1;
+    protected int defence = 1;
     protected int weight = 1;
     protected int hurt = 0;
-    protected float sideDefenceModifier = 10;
-    protected float backDefenceModifier = 4;
-    protected float protection = 10;
-    protected float protectionSideModifier = 4;
+    protected float sideDefenceModifier = 1;
+    protected float backDefenceModifier = 1;
+    protected float protection = 1;
+    protected float protectionSideModifier = 1;
     protected float protectionBackModifier = 1;
     protected boolean protectionState;
     protected boolean unhurtableState;  //stan kiedy nie ma reakcji na ból
@@ -71,7 +71,7 @@ public class Stats {
     }
 
     public void hurtReaction(InteractiveResponse response) {
-        double hurtPower = 5 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
+        double hurtPower = 4 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
         owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
         response.getAttacker().reactToAttack(FRONT, owner);
     }

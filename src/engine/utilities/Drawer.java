@@ -33,7 +33,7 @@ public class Drawer {
     private static final Texture font = loadFontTexture();
     public static Place place;
     private static float xCurrent, yCurrent;
-    private static Color currentColor;
+    private static Color currentColor = Color.white;
 
     private static Texture loadFontTexture() {
         try {
