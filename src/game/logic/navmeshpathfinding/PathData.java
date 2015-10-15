@@ -21,14 +21,7 @@ import java.util.List;
  */
 public class PathData {
 
-    final static int PASSING = 0;
-    final static int PASSED = 1;
-    final static int CHOICE = 2;
-    final static int BLOCKED = 3;
-    final static int STUCK = 4;
-    final static int OBSTACLE_BETWEEN = 5;
-    final static int PATH_REQUESTED = 6;
-    final static int AVOID_MOBILE = 7;
+    public final static int PASSING = 0, PASSED = 1, CHOICE = 2, BLOCKED = 3, STUCK = 4, OBSTACLE_BETWEEN = 5, PATH_REQUESTED = 6, AVOID_MOBILE = 7;
     final int width;
     final int height;
     final int widthHalf;
@@ -171,6 +164,10 @@ public class PathData {
 
     public PointContainer getPath() {
         return path;
+    }
+
+    public boolean isTrue(int what) {
+        return flags.get(what);
     }
 
     public void setAvoidMobile(boolean avoid) {

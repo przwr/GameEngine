@@ -71,7 +71,7 @@ public class Stats {
     }
 
     public void hurtReaction(InteractiveResponse response) {
-        double hurtPower = 5 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
+        double hurtPower = 4 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
         owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
         response.getAttacker().reactToAttack(FRONT, owner);
     }

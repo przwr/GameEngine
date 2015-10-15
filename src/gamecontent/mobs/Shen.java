@@ -32,7 +32,7 @@ public class Shen extends Mob {
 
     private final static byte ATTACK_NORMAL = 0, ATTACK_CRITICAL = 1;
     private final Animation animation;
-    int seconds = 0, max = 5;
+    private int seconds = 0, max = 5;
     private Color skinColor;
     private Delay attack_delay = Delay.createDelayInMiliseconds(1250);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createDelayInMiliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
@@ -108,7 +108,7 @@ public class Shen extends Mob {
             public void update() {
 //                System.out.println("HIDE");
                 brake(2);
-                if (appearance.getCurrentFrameIndex() % animation.getFramesPerDirection() == 12) {
+                if (animation.getDirectionalFrameIndex() == 12) {
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     GameObject closerEnemy = getCloserEnemy();
                     if (closerEnemy == null) {
@@ -121,7 +121,7 @@ public class Shen extends Mob {
                         setPathStrategy(PathFindingModule.GET_TO, 0);
                         attack_delay.start();
                     }
-                } else if (!stats.isProtectionState() && appearance.getCurrentFrameIndex() % animation.getFramesPerDirection() == 7) {
+                } else if (!stats.isProtectionState() && animation.getDirectionalFrameIndex() == 7) {
                     state = idle;
                 }
             }
@@ -136,7 +136,7 @@ public class Shen extends Mob {
                         attacking = true;
                         stats.setProtectionState(true);
                     }
-                    if (appearance.getCurrentFrameIndex() % animation.getFramesPerDirection() == 12) {
+                    if (animation.getDirectionalFrameIndex() == 12) {
                         if (xSpeed == 0 && ySpeed == 0) {
                             if (stats.getHealth() < stats.getMaxHealth() / 2) {
                                 maxSpeed = 11;
@@ -180,23 +180,25 @@ public class Shen extends Mob {
             public void update() {
 //                System.out.println("BOUNCE");
                 if (xSpeed != 0 || ySpeed != 0) {
+                    xSpeed = 0;
+                    ySpeed = 0;
                     bouncer.setFrames(30);
                     bouncer.setSpeed((int) (-xSpeed / 2), (int) (-ySpeed / 2));
                     bouncer.setType(SpeedChanger.DECREASING);
                     bouncer.start();
+                    stats.setUnhurtableState(true);
                     addChanger(bouncer);
                     setJumpForce((Math.abs(xSpeed) + Math.abs(ySpeed)) / 2);
-                    stats.setUnhurtableState(true);
-                    xSpeed = 0;
-                    ySpeed = 0;
-                } else if (bouncer.isOver()) {
+                } else if (bouncer.isOver() && animation.getDirectionalFrameIndex() != 7) {
                     target = null;
-                    stats.setUnhurtableState(false);
-                    rest.start();
-                    stats.setProtectionState(false);
+                    unfold = true;
                     maxSpeed = 1;
+                    stats.setUnhurtableState(false);
+                    stats.setProtectionState(false);
                     setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
+                } else if (!stats.isProtectionState() && animation.getDirectionalFrameIndex() == 7) {
                     state = idle;
+                    rest.start();
                 }
             }
         };
@@ -271,13 +273,13 @@ public class Shen extends Mob {
 
     public Shen(int x, int y, Place place, short ID) {
         super(x, y, 1, 512, "Shen", place, "shen", true, ID);
-        setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
-        appearance = animation;
         //RandomGenerator r = RandomGenerator.create();
         //skinColor = Color.getHSBColor(r.nextFloat(), 1, 1);
-        collision.setMobile(true);
+        setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
+        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
+        appearance = animation;
+        collision.setMobile(true);
         stats = new MobStats(this);
         stats.setStrength(10);
         stats.setDefence(3);
@@ -337,20 +339,20 @@ public class Shen extends Mob {
         return false;
     }
 
+    private GameObject getCloserEnemy() {
+        for (GameObject object : closeEnemies) {
+            if (isInHalfHearingRange(object)) {
+                return object;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void update() {
         if (isHurt()) {
             updateGettingHurt();
-            if (closeEnemies.isEmpty()) {
-                state = run_away;
-                destination.set(-1, -1);
-                secondaryDestination.set(-1, -1);
-                maxSpeed = 1;
-                stats.setProtectionState(false);
-                setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
-                destination.set(getX() + (int) Methods.xRadius(knockback.getAttackerDirection(), sightRange),
-                        getY() - (int) Methods.yRadius(knockback.getAttackerDirection(), sightRange));
-            }
+            runWhenHurt();
         } else {
             state.update();
             normalizeSpeed();
@@ -368,13 +370,17 @@ public class Shen extends Mob {
         brake(2);
     }
 
-    private GameObject getCloserEnemy() {
-        for (GameObject object : closeEnemies) {
-            if (isInHalfHearingRange(object)) {
-                return object;
-            }
+    private void runWhenHurt() {
+        if (closeEnemies.isEmpty()) {
+            state = run_away;
+            destination.set(-1, -1);
+            secondaryDestination.set(-1, -1);
+            maxSpeed = 1;
+            stats.setProtectionState(false);
+            setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
+            destination.set(getX() + (int) Methods.xRadius(knockback.getAttackerDirection(), sightRange),
+                    getY() - (int) Methods.yRadius(knockback.getAttackerDirection(), sightRange));
         }
-        return null;
     }
 
     private void updateAnimation() {
@@ -402,7 +408,7 @@ public class Shen extends Mob {
                 animation.setFPS(15);
                 animation.animateIntervalInDirection(getDirection8Way(), 12, 7);
                 animation.setStopAtEnd(true);
-                if (appearance.getCurrentFrameIndex() % animation.getFramesPerDirection() == 7) {
+                if (animation.getDirectionalFrameIndex() == 7) {
                     unfold = false;
                 }
             } else {

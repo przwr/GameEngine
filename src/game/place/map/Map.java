@@ -62,7 +62,7 @@ public abstract class Map {
     protected Color lightColor;
     protected List<GameObject> depthObjects;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
-    protected Color pointingColor = new Color(0f, 0f, 0f, 0.5f);
+    protected Color pointingColor = new Color(0f, 0f, 0f, 0.7f);
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
@@ -556,7 +556,7 @@ public abstract class Map {
 
     private boolean isBehindForegroundTile(GameObject object) {
         for (GameObject tile : foregroundTiles) {
-            if (tile.getDepth() > object.getDepth()
+            if (object.getAppearance() != null && tile.getDepth() > object.getDepth()
                     && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
                     && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2) /
                     tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeight() / 2 - object.getAppearance()
@@ -586,7 +586,7 @@ public abstract class Map {
         Drawer.setColor(pointingColor);
         Drawer.drawEllipseBow(0, 0, 5, 10, 5, -30, 210, 15);
 //        Drawer.drawEllipseBow(0, -32, 8, 64, 8, 45, 135, 4);
-        Drawer.setColorAlpha(0.5f);
+        Drawer.setColorAlpha(0.7f);
         glScaled(0.5f, 0.5f, 1);
         glTranslatef(0, -object.getAppearance().getActualHeight() / 4 - 12, 0);
         object.getAppearance().render();
