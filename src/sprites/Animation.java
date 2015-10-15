@@ -19,9 +19,9 @@ public class Animation implements Appearance {
     private final SpriteSheet spriteSheet;
     private final Delay delay;
     private FrameBufferedSpriteSheet fboSpriteSheet;
-    private int start, end, currentFrame;
+    private int start, end, currentFrame, fps;
     private int framesPerDirection;
-    private boolean animate = true, stopAtEnd = false, reversed = false;
+    private boolean animate = true, stopAtEnd = false, reversed = false, fluctuate = false;
 
     private Animation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
         this.spriteSheet = sprite;
@@ -72,7 +72,12 @@ public class Animation implements Appearance {
                         animate = false;
                         setCurrentFrame(end);
                     } else {
-                        setCurrentFrame(start);
+                        if (fluctuate) {
+                            setCurrentFrame(end);
+                            reverseAnimation();
+                        } else {
+                            setCurrentFrame(start);
+                        }
                     }
                 } else if (currentFrame < start) {
                     setCurrentFrame(start);
@@ -84,7 +89,12 @@ public class Animation implements Appearance {
                         animate = false;
                         setCurrentFrame(end);
                     } else {
-                        setCurrentFrame(start);
+                        if (fluctuate) {
+                            setCurrentFrame(end);
+                            reverseAnimation();
+                        } else {
+                            setCurrentFrame(start);
+                        }
                     }
                 } else if (currentFrame > start) {
                     setCurrentFrame(start);
@@ -95,7 +105,7 @@ public class Animation implements Appearance {
 
     public void animateSingle(int index) {
         animate = false;
-        setCurrentFrame(Methods.interval(0, index, spriteSheet.getSize() - 1));
+        setCurrentFrame(start = end = Methods.interval(0, index, spriteSheet.getSize() - 1));
     }
 
     public void animateSingleInDirection(int direction, int index) {
@@ -112,32 +122,34 @@ public class Animation implements Appearance {
         reversed = start > end;
         animate = true;
         stopAtEnd = false;
+        fluctuate = false;
     }
 
     public void animateIntervalInDirection(int direction, int start, int end) {
         animateInterval(direction * framesPerDirection + Methods.interval(0, start, framesPerDirection - 1),
                 direction * framesPerDirection + Methods.interval(0, end, framesPerDirection - 1));
     }
-    
+
     public void changeDirection(int direction) {
         int directionalStart = direction * framesPerDirection;
         start = directionalStart + start % framesPerDirection;
         end = directionalStart + end % framesPerDirection;
         setCurrentFrame(directionalStart + currentFrame % framesPerDirection);
     }
-    
+
     public void setReversed(boolean reversed) {
-        if (this.reversed != reversed)
+        if (this.reversed != reversed) {
             reverseAnimation();
+        }
     }
-    
+
     public void reverseAnimation() {
         int tmp = start;
         start = end;
         end = tmp;
         reversed = !reversed;
     }
-    
+
     public boolean isReversed() {
         return reversed;
     }
@@ -146,6 +158,23 @@ public class Animation implements Appearance {
         animateIntervalInDirection(direction, start, end);
         setCurrentFrame(this.start);
         stopAtEnd = true;
+    }
+
+    public void animateIntervalInDirectionFluctuating(int direction, int start, int end) {
+        start = direction * framesPerDirection + Methods.interval(0, start, framesPerDirection - 1);
+        end = direction * framesPerDirection + Methods.interval(0, end, framesPerDirection - 1);
+        if ((this.start != start || this.end != end) && (this.start != end || this.end != start)) {
+            animateInterval(start, end);
+        }
+        fluctuate = true;
+    }
+
+    public void setFluctuating(boolean fluctuate) {
+        this.fluctuate = fluctuate;
+    }
+
+    public boolean isFluctuating() {
+        return fluctuate;
     }
 
     @Override
@@ -198,7 +227,7 @@ public class Animation implements Appearance {
     public int getCurrentFrameIndex() {
         return currentFrame;
     }
-    
+
     public int getDirectionalFrameIndex() {
         return currentFrame % framesPerDirection;
     }
@@ -208,7 +237,13 @@ public class Animation implements Appearance {
     }
 
     public void setFPS(int fps) {
-        delay.setFPS(fps);
+        if (this.fps != fps) {
+            delay.setFPS(fps);
+        }
+    }
+
+    public int getFPS() {
+        return fps;
     }
 
     public void setAnimate(boolean animate) {

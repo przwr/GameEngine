@@ -18,6 +18,7 @@ import gamecontent.mobs.BrainlessShen;
 import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Tongub;
 
 /**
@@ -63,6 +64,7 @@ public class GladeMap extends Map {
         addObject(new BrainlessShen(356, 768, place, mobID++));
         addObject(new Blazag(756, 768, place, mobID++));
         addObject(new Tongub(1256, 768, place, mobID++));
+        addObject(new Plurret(1156, 968, place, mobID++));
         addObject(new Shen(512, 1024, place, mobID++));
         addObject(new Shen(768, 1280, place, mobID++));
         addObject(new Shen(512, 1500, place, mobID++));
