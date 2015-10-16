@@ -1215,7 +1215,8 @@ public class ShadowRenderer {
     }
 
     private static void calculateLeftObject(Figure other, Figure current, Light source) {
-        if (other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
+        if (((other.getX() > current.getX() && other.getX() > source.getX()) || (other.getX() < current.getX() && other.getX() < source.getX()))
+                && other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
             setLeftObjectVariables(other, current);
             if (XL1 >= other.getXSpriteBegin() && XL1 < other.getXSpriteEnd()) {
                 if (XL1 < current.getX()) { //dodaj światło
@@ -1247,7 +1248,8 @@ public class ShadowRenderer {
     }
 
     private static void calculateRightObject(Figure other, Figure current, Light source) {
-        if (other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
+        if (((other.getX() > current.getX() && other.getX() > source.getX()) || (other.getX() < current.getX() && other.getX() < source.getX()))
+                && other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
             setRightObjectVariables(other, current);
             if (XR1 >= other.getXSpriteBegin() && XR1 <= other.getXSpriteEnd()) {
                 if (XR1 > current.getXEnd()) { // dodaj światło                    

@@ -71,18 +71,17 @@ public class Blazag extends Mob {
             public void update() {
 //                System.out.println("ATTACK");
                 int distance = Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY());
+                if (distance >= sightRange2 || target == null) {
+                    target = null;
+                    state = idle;
+                    chasing = false;
+                }
                 if (chasing && distance >= sightRange2 / 16 || getPathData().isTrue(OBSTACLE_BETWEEN)) {
                     chase();
                     attack_delay.start();
                 } else {
-                    if (distance >= sightRange2) {
-                        target = null;
-                        state = idle;
-                        chasing = false;
-                    }
                     if (attack_delay.isOver()) {
                         attack_delay.start();
-
                     }
                     chasing = distance >= sightRange2 / 8;
                     brake(2);
