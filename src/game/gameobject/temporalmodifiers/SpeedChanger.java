@@ -14,7 +14,8 @@ import game.gameobject.entities.Entity;
 public class SpeedChanger extends TemporalChanger {
 
     public final static byte NORMAL = 0, INCREASING = 1, DECREASING = 2;
-    int xSpeed, ySpeed, xTmpSpeed, yTmpSpeed, attackerDirection;
+    int attackerDirection;
+    double xSpeed, ySpeed, xTmpSpeed, yTmpSpeed;
     byte type;
 
     public SpeedChanger() {
@@ -25,7 +26,7 @@ public class SpeedChanger extends TemporalChanger {
         super(frames);
     }
 
-    public SpeedChanger(int xSpeed, int ySpeed, int frames) {
+    public SpeedChanger(double xSpeed, double ySpeed, int frames) {
         super(frames);
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
@@ -35,14 +36,14 @@ public class SpeedChanger extends TemporalChanger {
         this.type = type;
     }
 
-    public void setSpeed(int xSpeed, int ySpeed) {
+    public void setSpeed(double xSpeed, double ySpeed) {
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
     }
 
-    public void setSpeedInDirection(int direction, int speed) {
-        this.xSpeed = (int) Methods.xRadius(direction, speed);
-        this.ySpeed = (int) -Methods.yRadius(direction, speed);
+    public void setSpeedInDirection(int direction, double speed) {
+        this.xSpeed = Methods.xRadius(direction, speed);
+        this.ySpeed = -Methods.yRadius(direction, speed);
     }
 
     @Override
@@ -68,11 +69,11 @@ public class SpeedChanger extends TemporalChanger {
         en.addYEnvironmentalSpeed(yTmpSpeed);
     }
 
-    public int getXSpeed() {
+    public double getXSpeed() {
         return xSpeed;
     }
 
-    public int getYSpeed() {
+    public double getYSpeed() {
         return ySpeed;
     }
 
