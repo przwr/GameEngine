@@ -13,7 +13,6 @@ import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Shen;
-import gamecontent.mobs.Tongub;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import gamecontent.mobs.Plurret;
@@ -62,15 +61,11 @@ public class GladeMap extends Map {
 //        addObject(new BrainlessShen(356, 768, place, mobID++));
         addObject(new Blazag(768, 2048, place, mobID++));
         addObject(new Tongub(1256, 768, place, mobID++));
+        addObject(new Plurret(1156, 968, place, mobID++));
         addObject(new Shen(512, 800, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));
 //        addObject(new Shen(648, 1400, place, mobID++));
-        addObject(new Plurret(1156, 968, place, mobID++));
-        addObject(new Shen(512, 1024, place, mobID++));
-        addObject(new Shen(768, 1280, place, mobID++));
-        addObject(new Shen(512, 1500, place, mobID++));
-        addObject(new Shen(648, 1400, place, mobID++));
 //        addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
 //        addObject(new MyNPC(384, 590, place, mobID++));
         for (int i = 0; i < 20; i += 2) {
