@@ -12,11 +12,8 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.mobs.Blazag;
-import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import gamecontent.mobs.Plurret;
-import gamecontent.mobs.Tongub;
 
 /**
  * @author Wojtek
@@ -60,9 +57,13 @@ public class GladeMap extends Map {
         //addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
 //        addObject(new BrainlessShen(356, 768, place, mobID++));
         addObject(new Blazag(768, 2048, place, mobID++));
-        addObject(new Tongub(1256, 768, place, mobID++));
-        addObject(new Plurret(1156, 968, place, mobID++));
-        addObject(new Shen(512, 800, place, mobID++));
+//        addObject(new Tongub(1256, 768, place, mobID++));
+//        addObject(new Shen(512, 800, place, mobID++));
+//        addObject(new Shen(768, 1280, place, mobID++));
+//        addObject(new Shen(512, 1500, place, mobID++));
+//        addObject(new Shen(648, 1400, place, mobID++));
+//        addObject(new Plurret(1156, 968, place, mobID++));
+//        addObject(new Shen(512, 1024, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));
 //        addObject(new Shen(648, 1400, place, mobID++));

@@ -104,7 +104,7 @@ public abstract class Mob extends Entity {
     }
 
     protected synchronized void charge() {
-        if (target != null && pathStrategy != null) {
+        if (target != null) {
             double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
             changeSpeed(Methods.xRadius(angle, maxSpeed), Methods.yRadius(angle, maxSpeed));
         }

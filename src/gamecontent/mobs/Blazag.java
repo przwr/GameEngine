@@ -7,13 +7,14 @@ package gamecontent.mobs;
 
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.utilities.Delay;
-import engine.utilities.Drawer;
-import engine.utilities.Methods;
-import engine.utilities.RandomGenerator;
+import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
 import game.gameobject.entities.Mob;
+import game.gameobject.interactive.CurveInteractiveCollision;
+import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.LineInteractiveCollision;
+import game.gameobject.interactive.UpdateBasedActivator;
 import game.gameobject.stats.MobStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
@@ -30,14 +31,16 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Blazag extends Mob {
 
-    private final static byte ATTACK_NORMAL = 0, ATTACK_CRITICAL = 1;
+    private final static byte ATTACK_SLASH = 0, ATTACK_JUMP = 1;
     private final Animation animation;
     private int seconds = 0, max = 5;
-    private ActionState idle, run_away, protect, attack, wander, follow, bounce;
-    private Delay attack_delay = Delay.createDelayInMiliseconds(500);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay rest = Delay.createDelayInMiliseconds(500);                  //TODO - te wartości losowe i zależne od poziomu trudności
-    private boolean attacking = true, chasing;
-    private SpeedChanger bouncer;
+    private ActionState idle, attack, wander, jump, jumpAttack, protect;
+    private Delay attackDelay = Delay.createDelayInMiliseconds(600);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createDelayInMiliseconds(1000);                  //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay jumpDelay = Delay.createDelayInMiliseconds(400);             //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay getHurtDelay = Delay.createDelayInMiliseconds(600);             //TODO - te wartości losowe i zależne od poziomu trudności
+    private boolean attacking = true, chasing, jumpOver;
+    private SpeedChanger jumper;
 
     {
         idle = new ActionState() {
@@ -45,9 +48,7 @@ public class Blazag extends Mob {
             public void update() {
 //                System.out.println("IDLE");
                 if (rest.isOver()) {
-                    brake(2);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-//                    calculateDestinationsForCloseFriends();
                     if (closeEnemies.isEmpty()) {
                         state = wander;
                         seconds = 0;
@@ -56,60 +57,118 @@ public class Blazag extends Mob {
                         chasing = true;
                         setEnemyToAttack();
                     }
+                } else {
+                    brake(2);
+                }
+            }
+        };
+        attack = new ActionState() {
+            @Override
+            public void update() {
+                if (animation.getDirectionalFrameIndex() < 26) {
+                    int distance = Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY());
+                    if (distance >= sightRange2 || target == null) {
+                        target = null;
+                        state = idle;
+                        chasing = false;
+                        brake(2);
+                    } else {
+                        if ((chasing && distance >= sightRange2 / 4) || getPathData().isTrue(OBSTACLE_BETWEEN)) {
+                            chase();
+                            attackDelay.start();
+                        } else {
+                            if (attackDelay.isOver()) {
+//                                if (!closeFriends.isEmpty()) {
+//                                    if (alpha) {
+//                                        setOrders();
+//                                    } else {
+//                                        getOrders();
+//                                    }
+//                                } else {
+                                loneAttack(distance);
+//                                }
+                            } else {
+                                brake(2);
+                            }
+                            chasing = distance >= sightRange2 / 8;
+                        }
+                    }
+                } else {
+                    brake(2);
                 }
             }
         };
         protect = new ActionState() {
             @Override
             public void update() {
-//                System.out.println("PROTECT");
                 brake(2);
+                setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
+                animation.animateSingleInDirection(getDirection8Way(), 3);
+                if (attackDelay.isOver()) {
+                    jumpOver = false;
+                    stats.setProtectionState(false);
+                    state = attack;
+                }
             }
         };
-        attack = new ActionState() {
+        jump = new ActionState() {
             @Override
             public void update() {
-//                System.out.println("ATTACK");
-                int distance = Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY());
-                if (chasing && distance >= sightRange2 / 16 || getPathData().isTrue(OBSTACLE_BETWEEN)) {
-                    chase();
-                    attack_delay.start();
+                if (jumper.isOver()) {
+                    if (jumpDelay.isOver()) {
+                        if (jumpOver) {
+                            animation.animateSingleInDirection(getDirection8Way(), 22);
+                            stats.setUnhurtableState(false);
+                            jumpOver = false;
+                            state = attack;
+                        } else if (jumpDelay.isOver()) {
+                            jumper.setFrames(30);
+                            double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
+                            jumper.setSpeed(Methods.xRadius(angle, 3.5 * maxSpeed), Methods.yRadius(angle, 3.5 * maxSpeed));
+                            jumper.setType(SpeedChanger.DECREASING);
+                            jumper.start();
+                            jumpOver = true;
+                            stats.setUnhurtableState(true);
+                            addChanger(jumper);
+                            setJumpForce(maxSpeed);
+                        }
+                    }
                 } else {
-                    if (distance >= sightRange2) {
-                        target = null;
-                        state = idle;
-                        chasing = false;
-                    }
-                    if (attack_delay.isOver()) {
-                        attack_delay.start();
-
-                    }
-                    chasing = distance >= sightRange2 / 8;
-                    brake(2);
+                    animation.animateSingleInDirection(getDirection8Way(), jumper.getPercentDone() > 0.5 ? 21 : 20);
                 }
             }
         };
-        follow = new ActionState() {
+        jumpAttack = new ActionState() {
             @Override
             public void update() {
-//                System.out.println("FOLLOW");
-                lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                calculateDestinationsForCloseFriends();
-                xSpeed = ySpeed = 0;
-                int distance = Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(), secondaryDestination.getY());
-                if (distance > collision.getWidth() * collision.getWidth() * 4) {
-                    goTo(secondaryDestination);
+                if (jumper.isOver()) {
+                    if (jumpDelay.isOver()) {
+                        if (jumpOver) {
+                            animation.animateSingleInDirection(getDirection8Way(), 25);
+                            stats.setUnhurtableState(false);
+                            jumpOver = false;
+                            state = attack;
+                            jumpDelay.start();
+                        } else {
+                            jumper.setFrames(30);
+                            double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
+                            jumper.setSpeed(Methods.xRadius(angle, 4 * maxSpeed), Methods.yRadius(angle, 4 * maxSpeed));
+                            jumper.setType(SpeedChanger.DECREASING);
+                            jumper.start();
+                            jumpOver = true;
+                            stats.setUnhurtableState(true);
+                            addChanger(jumper);
+                            setJumpForce(maxSpeed);
+                        }
+                    }
+                } else {
+                    if (jumper.getPercentDone() > 0.5) {
+                        getAttackActivator(ATTACK_JUMP).setActivated(true);
+                        animation.animateSingleInDirection(getDirection8Way(), 24);
+                    } else {
+                        animation.animateSingleInDirection(getDirection8Way(), 23);
+                    }
                 }
-                repulsion();
-                if (xSpeed == 0 && ySpeed == 0) {
-                    alignment();
-                }
-//                if (closerEnemy != null || isDistance2OutOfRange(distance)) {
-//                    state = idle;
-//                    pathData.setAvoidMobile(true);
-//                    secondaryDestination.set(-1, -1);
-//                    setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
-//                }
             }
         };
         wander = new ActionState() {
@@ -118,7 +177,8 @@ public class Blazag extends Mob {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
                     RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
-                    if (destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
+                    if (destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 /
+                            16) {
                         int sign = random.next(1) == 1 ? 1 : -1;
                         int shift = (sightRange + random.next(9)) * sign;
                         destination.setX(homePosition.getX() + shift);
@@ -175,61 +235,81 @@ public class Blazag extends Mob {
         stats.setProtectionSideModifier(1);
         stats.setProtectionBackModifier(1);
         rest.start();
+        jumpDelay.start();
+        getHurtDelay.start();
         state = idle;
-        bouncer = new SpeedChanger();
+        jumper = new SpeedChanger();
         homePosition.set(getX(), getY());
+        addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CurveInteractiveCollision(48, 32, 0, 38, 180),
+                Interactive.STRENGTH_HURT, ATTACK_SLASH, 0.5f));
+        addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 128, 0, 24, 24),
+                Interactive.STRENGTH_HURT, ATTACK_JUMP, 2f));
     }
 
-    private void repulsion() {
-        for (Mob mob : closeFriends) {
-            int distance = Methods.pointDistanceSimple2(getX(), getY(), mob.getX(), mob.getY());
-            if (distance < collision.getWidth() * collision.getWidth() * 4f) {
-                double scale = 1 - (FastMath.sqrt(distance) / (collision.getWidth() * 2f));
-                int x = getX() - mob.getX();
-                int y = getY() - mob.getY();
-                float ratio = Math.abs(y / (float) x);
-                x = (int) (Math.signum(x) * hearRange / 2);
-                y = (int) (Math.signum(y) * (ratio * Math.abs(x)));
-                x += getX();
-                y += getY();
-                double angle = Methods.pointAngleClockwise(getX(), getY(), x, y);
-                xSpeed += scale * Methods.xRadius(angle, maxSpeed);
-                ySpeed += scale * Methods.yRadius(angle, maxSpeed);
-            }
-        }
-    }
-
-    private void alignment() {
-        if (!closeFriends.isEmpty()) {
-            closeFriends.stream().filter(mob -> mob.isAlpha()).forEach(mob -> {
-                xSpeed += mob.getXSpeed() / 2;
-                ySpeed += mob.getYSpeed() / 2;
-            });
-        }
-    }
-
-    private boolean isAnyFriendHurt() {
-        if (!closeFriends.isEmpty()) {
-            for (Mob mob : closeFriends) {
-                if (mob.getStats().getHealth() < mob.getStats().getMaxHealth()) {
-                    return true;
+    private void loneAttack(int distance) {
+//        System.out.println("LONE ATTACK");
+        int close = 1444 + (target.getCollision().getWidth() * target.getCollision().getWidth() + collision.getWidth() * collision.getWidth()) / 2;
+        if (target != null && jumpDelay.isOver() && jumper.isOver()) {
+            if (distance >= sightRange2 / 8) {
+                brake(2);
+                setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
+                animation.animateSingleInDirection(getDirection8Way(), 19);
+                jumpDelay.start();
+                if (distance <= sightRange2 / 7) {
+                    state = jumpAttack;
+                } else {
+                    state = jump;
                 }
+                attackDelay.start();
+            } else if (distance <= close) {
+                brake(2);
+                setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
+                double random = FastMath.random();
+                double lifePercent = ((stats.getMaxHealth() - stats.getHealth()) / (double) stats.getMaxHealth()) / 4;
+                if (random < 0.2 + lifePercent) {
+                    stats.setProtectionState(true);
+                    jumpOver = true;
+                    state = protect;
+                } else if (random > 0.6 + lifePercent / 2) {
+                    getAttackActivator(ATTACK_SLASH).setActivated(true);
+                    animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
+                } else {
+                    getAttackActivator(ATTACK_SLASH).setActivated(true);
+                    animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+                }
+                attacking = true;
+                attackDelay.start();
+            } else if (attackDelay.isOver() && distance >= close && animation.getDirectionalFrameIndex() < 19) {
+                charge();
+            } else {
+                brake(2);
             }
+        } else {
+            brake(2);
         }
-        return false;
     }
 
-    private void runWhenHurt() {
-        if (closeEnemies.isEmpty()) {
-            state = run_away;
-            destination.set(-1, -1);
-            secondaryDestination.set(-1, -1);
-            maxSpeed = 1;
-            stats.setProtectionState(false);
-            setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
-            destination.set(getX() + (int) Methods.xRadius(knockback.getAttackerDirection(), sightRange),
-                    getY() - (int) Methods.yRadius(knockback.getAttackerDirection(), sightRange));
+    private void getOrders() {
+        Blazag alpha = null;
+        for (Mob mob : closeFriends) {
+            if (mob.isAlpha()) {
+                alpha = ((Blazag) mob);
+            }
         }
+        if (alpha != null) {
+            Order order = alpha.getOrder();
+            if (order != null) {
+
+            }
+        }
+    }
+
+    private void setOrders() {
+
+    }
+
+    private Order getOrder() {
+        return new Order();
     }
 
     private void setEnemyToAttack() {
@@ -248,7 +328,7 @@ public class Blazag extends Mob {
     public void update() {
         if (isHurt()) {
             updateGettingHurt();
-            runWhenHurt();
+            getHurtDelay.start();
         } else {
             state.update();
             normalizeSpeed();
@@ -258,6 +338,11 @@ public class Blazag extends Mob {
         updateWithGravity();
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
         brakeOthers();
+    }
+
+    @Override
+    public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
+        super.getHurt(knockbackPower, jumpPower, attacker);
     }
 
     /*
@@ -283,55 +368,33 @@ public class Blazag extends Mob {
     animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43); - ciachnięcie z lewej
     */
 
-    @Override
-    public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
-        super.getHurt(knockbackPower, jumpPower, attacker);
-    }
-
     private void updateGettingHurt() {
-        setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(),
-                knockback.getYSpeed(), 0, 0));
+        setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(), knockback.getYSpeed(), 0, 0));
         animation.animateSingleInDirection(getDirection8Way(), 2);
         brake(2);
     }
 
     private void updateAnimation() {
-        if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
-            pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
-            if (currentPastDirection > 1) {
-                currentPastDirection = 0;
+        int frame = animation.getDirectionalFrameIndex();
+        if ((!jumpOver || !jumpDelay.isOver()) && (frame < 19 || frame == 34 || frame == 43 || frame == 22 || frame == 25)) {
+            if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
+                pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
+                if (currentPastDirection > 1) {
+                    currentPastDirection = 0;
+                }
+                if (pastDirections[0] == pastDirections[1]) {
+                    setDirection(pastDirections[0] * 45);
+                }
+                animation.setFPS(30);
+                animation.animateIntervalInDirection(getDirection8Way(), 4, 18);
+            } else {
+                if (attacking) {
+                    attacking = false;
+                } else {
+                    animation.animateSingleInDirection(getDirection8Way(), 1);
+                }
             }
-            if (pastDirections[0] == pastDirections[1]) {
-                setDirection(pastDirections[0] * 45);
-            }
-            animation.setFPS(30);
-            animation.animateIntervalInDirection(getDirection8Way(), 4, 18);
-//            if (target == null) {
-//                animation.setFPS(7);
-//                animation.animateIntervalInDirection(getDirection8Way(), 0, 5);
-//            } else {
-//
-//                animation.animateIntervalInDirection(getDirection8Way(), 12, 14);
-//            }
-        } else {
-            animation.animateSingleInDirection(getDirection8Way(), 1);
-//            if (stats.isProtectionState()) {
-//                animation.setFPS(15);
-//                animation.animateIntervalInDirection(getDirection8Way(), 7, 12);
-//                animation.setStopAtEnd(true);
-//            } else if (unfold) {
-//                animation.setFPS(15);
-//                animation.animateIntervalInDirection(getDirection8Way(), 12, 7);
-//                animation.setStopAtEnd(true);
-//                if (appearance.getCurrentFrameIndex() % animation.getFramesPerDirection() == 7) {
-//                    unfold = false;
-//                }
-//            } else {
-//                animation.animateSingleInDirection(getDirection8Way(), 0);
-//            }
         }
-
-
     }
 
     @Override
@@ -357,5 +420,11 @@ public class Blazag extends Mob {
 
 //          renderPathPoints(xEffect, yEffect);
         }
+    }
+
+    private class Order {
+        private final static byte ATTACK = 0, GO_TO = 1;
+        private byte order;
+        private Point point = new Point();
     }
 }

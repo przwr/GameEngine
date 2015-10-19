@@ -41,7 +41,7 @@ public class AnalyzerInput {
             for (Player pl : Settings.players) {
                 if (pl.getController() != null) {
                     for (int i = 0; i < Settings.actionsCount; i++) {
-                        if (pl.getController().actions[i].input != null) {
+                        if (pl.getController().actions[i] != null && pl.getController().actions[i].input != null) {
                             fw.write(p + " " + i + " " + pl.getController().actions[i].input.toString() + "\n");
                         }
                     }
