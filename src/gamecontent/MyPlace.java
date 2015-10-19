@@ -62,7 +62,7 @@ public class MyPlace extends Place {
 
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
-        dayCycle.setTime(12, 0);
+        dayCycle.setTime(9, 00);
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
         loadingMap = new LoadingMap(this);

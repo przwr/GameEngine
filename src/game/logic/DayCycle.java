@@ -13,13 +13,19 @@ import org.newdawn.slick.Color;
 public class DayCycle {
 
     public static final float NIGHT = 0.4f;
-    private static final short REAL_MINUTES_IN_HOUR = 6, SUNRISE = 300, SUNSET = 1260, 
-            TRANSITION_TIME = 120, NOONTIME = 240, HALF_TRANSITION_TIME = TRANSITION_TIME / 2, 
-            QUARTER_TRANSITION_TIME = TRANSITION_TIME / 4, 
-            THREE_QUARTERS_TRANSITION_TIME = 3 * QUARTER_TRANSITION_TIME;
-    private static final int DAWN = (SUNRISE + TRANSITION_TIME), 
-            DUSK = (SUNSET - TRANSITION_TIME - QUARTER_TRANSITION_TIME), 
-            NOON = ((SUNSET + SUNRISE) / 2);
+    private static final short REAL_MINUTES_IN_HOUR = 1;
+    private final short TIME_BEGIN_PREDAWN = 5 * 60, TIME_BEGIN_DAWN = 6 * 60, TIME_END_DAWN = 8 * 60, TIME_END_AFTERDAWN = 9 * 60;
+    private final short TIME_BEGIN_PREDUSK = 17 * 60, TIME_BEGIN_DUSK = 18 * 60, TIME_END_DUSK = 20 * 60, TIME_END_AFTERDUSK = 21 * 60;
+    
+    private final float NIGHT_LIGHT = 0.2f;
+
+    private final Color NIGHT_SKY = new Color(NIGHT_LIGHT, NIGHT_LIGHT, NIGHT_LIGHT),
+            DARK_BLUE_SKY = new Color(0x5A5A91),
+            RED_SKY = new Color(0x824544),
+            ORANGE_SKY = new Color(0x82513F),
+            YELLOW_SKY = new Color(0xFFFF69), 
+            DAY_SKY = new Color(Color.white);
+
     private final Color lightColor = new Color(0.2f, 0.2f, 0.2f);
     private short timeInMinutes = 0;
     private long midnightTime;
@@ -76,65 +82,98 @@ public class DayCycle {
     }
 
     private void updateLightColor() {
-        float delta = (1 - NIGHT) / (NOON - SUNRISE - NOONTIME);
-        float temp;
-        if (timeInMinutes >= SUNRISE && timeInMinutes < DAWN) {
-            temp = (timeInMinutes - SUNRISE) * delta;
-            lightColor.r = lightColor.g = NIGHT + temp;
-            if (timeInMinutes - SUNRISE < QUARTER_TRANSITION_TIME) {
-                delta = 0.25f / QUARTER_TRANSITION_TIME;
-                temp = 1 + ((timeInMinutes - SUNRISE) * delta);
-                lightColor.b = lightColor.r * temp;
-            } else if (timeInMinutes - SUNRISE < THREE_QUARTERS_TRANSITION_TIME) {
-                delta = 0.75f / HALF_TRANSITION_TIME;
-                temp = 1.25f - ((timeInMinutes - SUNRISE - QUARTER_TRANSITION_TIME) * delta);
-                lightColor.b = lightColor.r * temp;
+        float delta;
+        if (timeInMinutes < TIME_BEGIN_PREDAWN || timeInMinutes > TIME_END_AFTERDUSK) {
+            //NOC
+            lightColor.r = lightColor.g = lightColor.b = NIGHT_LIGHT;
+        } else if (timeInMinutes <= TIME_BEGIN_DAWN) {
+            //PRZED-WSCHOD
+            delta = (float) (timeInMinutes - TIME_BEGIN_PREDAWN) / (TIME_BEGIN_DAWN - TIME_BEGIN_PREDAWN);
+            mixColors(lightColor, NIGHT_SKY, DARK_BLUE_SKY, delta);
+        } else if (timeInMinutes <= TIME_END_DAWN) {
+            //WSCHOD
+            delta = (float) (timeInMinutes - TIME_BEGIN_DAWN) / ((TIME_END_DAWN - TIME_BEGIN_DAWN) / 2);
+            if (delta < 1f) {
+                mixColors(lightColor, DARK_BLUE_SKY, ORANGE_SKY, delta);
             } else {
-                delta = 0.50f / QUARTER_TRANSITION_TIME;
-                temp = 0.50f + ((timeInMinutes - SUNRISE - THREE_QUARTERS_TRANSITION_TIME) * delta);
+                mixColors(lightColor, ORANGE_SKY, YELLOW_SKY, delta - 1f);
             }
-            lightColor.b = lightColor.r * temp;
-            if (lightColor.b < 1)
-                lightColor.g = (0.9f * lightColor.b + lightColor.r) / 1.9f;
-        } else if (timeInMinutes >= DAWN && timeInMinutes < NOON - NOONTIME) {
-            temp = (timeInMinutes - SUNRISE) * delta;
-            lightColor.r = lightColor.g = lightColor.b = NIGHT + temp;
-        } else if (timeInMinutes >= NOON - NOONTIME && timeInMinutes < NOON + NOONTIME) {
+        } else if (timeInMinutes <= TIME_END_AFTERDAWN) {
+            //PO-WSCHOD
+            delta = (float) (timeInMinutes - TIME_END_DAWN) / (TIME_END_AFTERDAWN - TIME_END_DAWN);
+            mixColors(lightColor, YELLOW_SKY, DAY_SKY, delta);
+        } else if (timeInMinutes <= TIME_BEGIN_PREDUSK) {
+            //DZIEN
             lightColor.r = lightColor.g = lightColor.b = 1f;
-        } else if (timeInMinutes >= NOON + NOONTIME && timeInMinutes < DUSK) {
-            temp = (timeInMinutes - NOON - NOONTIME) * delta;
-            lightColor.r = lightColor.g = lightColor.b = 1f - temp;
-        } else if (timeInMinutes >= DUSK && timeInMinutes < SUNSET) {
-            temp = (timeInMinutes - NOON - NOONTIME) * delta;
-            lightColor.r = lightColor.g = 1f - temp;
-            if (timeInMinutes - DUSK < HALF_TRANSITION_TIME) {
-                delta = 0.50f / HALF_TRANSITION_TIME;
-                temp = 1 - ((timeInMinutes - DUSK) * delta);
-                lightColor.b = lightColor.r * temp;
-            } else if (timeInMinutes - DUSK < TRANSITION_TIME) {
-                delta = 0.75f / HALF_TRANSITION_TIME;
-                temp = 0.50f + ((timeInMinutes - DUSK - HALF_TRANSITION_TIME) * delta);
+        } else if (timeInMinutes <= TIME_BEGIN_DUSK) {
+            //PRZED-ZACHOD
+            delta = (float) (timeInMinutes - TIME_BEGIN_PREDUSK) / (TIME_BEGIN_DUSK - TIME_BEGIN_PREDUSK);
+            mixColors(lightColor, DAY_SKY, YELLOW_SKY, delta);
+        } else if (timeInMinutes <= TIME_END_DUSK) {
+            //ZACHOD
+            delta = (float) (timeInMinutes - TIME_BEGIN_DUSK) / ((TIME_END_DUSK - TIME_BEGIN_DUSK) / 2);
+            if (delta < 1f) {
+                mixColors(lightColor, YELLOW_SKY, RED_SKY, delta);
             } else {
-                delta = 0.25f / QUARTER_TRANSITION_TIME;
-                temp = 1.25f - ((timeInMinutes - DUSK - TRANSITION_TIME) * delta);
+                mixColors(lightColor, RED_SKY, DARK_BLUE_SKY, delta - 1f);
             }
-            lightColor.b = lightColor.r * temp;
-            if (lightColor.b < 1)
-                lightColor.g = (0.9f * lightColor.b + lightColor.r) / 1.9f;
-        } else if (timeInMinutes >= SUNSET) {
-            if (timeInMinutes >= SUNSET + HALF_TRANSITION_TIME) {
-                lightColor.r = lightColor.g = lightColor.b = NIGHT / 2;
-            } else {
-                lightColor.r = lightColor.g = lightColor.b = NIGHT - (NIGHT / 2) * (timeInMinutes - SUNSET) / (float) HALF_TRANSITION_TIME;
-            }
-        } else if (timeInMinutes < SUNRISE) {
-            if (timeInMinutes < SUNRISE - HALF_TRANSITION_TIME) {
-                lightColor.r = lightColor.g = lightColor.b = NIGHT / 2;
-            } else {
-                lightColor.r = lightColor.g = lightColor.b = NIGHT / 2 + (NIGHT / 2) * (timeInMinutes + HALF_TRANSITION_TIME - SUNRISE) / (float) HALF_TRANSITION_TIME;
-            }
+        } else if (timeInMinutes <= TIME_END_AFTERDUSK) {
+            //PO-ZACHOD
+            delta = (float) (timeInMinutes - TIME_END_DUSK) / (TIME_END_AFTERDUSK - TIME_END_DUSK);
+            mixColors(lightColor, DARK_BLUE_SKY, NIGHT_SKY, delta);
         }
     }
+
+    private void mixColors(Color mix, Color from, Color to, float alpha) {
+        mix.r = from.r + (to.r - from.r) * alpha;
+        mix.g = from.g + (to.g - from.g) * alpha;
+        mix.b = from.b + (to.b - from.b) * alpha;
+        mix.a = from.a + (to.a - from.a) * alpha;
+    }
+
+//    private void updateLightColorOld() {
+//        float delta;
+//        if (timeInMinutes < TIME_BEGIN_PREDAWN || timeInMinutes > TIME_END_AFTERDUSK) {
+//            //NOC
+//            lightColor.r = lightColor.g = lightColor.b = NIGHT_LIGHT;
+//        } else if (timeInMinutes <= TIME_BEGIN_DAWN) {
+//            //PRZED-WSCHOD
+//            delta = (float) (timeInMinutes - TIME_BEGIN_PREDAWN) / (TIME_BEGIN_DAWN - TIME_BEGIN_PREDAWN);
+//            Methods.changeColorWithHSV(lightColor, 240, delta * SATURATION_LIMIT, NIGHT_LIGHT * (1 + delta));
+//        } else if (timeInMinutes <= TIME_END_DAWN) {
+//            //WSCHOD
+//            delta = (float) (timeInMinutes - TIME_BEGIN_DAWN) / (TIME_END_DAWN - TIME_BEGIN_DAWN);
+//            colorAngle = (float) ((240 + delta * 180) % 360);
+//            lightValue = NIGHT_LIGHT * 2 + delta * DELTA_LIGHT;
+//            Methods.changeColorWithHSV(lightColor, colorAngle, SATURATION_LIMIT, lightValue);
+//            lightColor.b /= 1 + delta / 2;
+//        } else if (timeInMinutes <= TIME_END_AFTERDAWN) {
+//            //PO-WSCHOD
+//            saturation = 1 - (float) (timeInMinutes - TIME_END_DAWN) / (TIME_END_AFTERDAWN - TIME_END_DAWN);
+//            Methods.changeColorWithHSV(lightColor, 60, saturation * SATURATION_LIMIT, 1f);
+//        } else if (timeInMinutes <= TIME_BEGIN_PREDUSK) {
+//            //DZIEN
+//            lightColor.r = lightColor.g = lightColor.b = 1f;
+//        } else if (timeInMinutes <= TIME_BEGIN_DUSK) {
+//            //PRZED-ZACHOD
+//            saturation = (float) (timeInMinutes - TIME_BEGIN_PREDUSK) / (TIME_BEGIN_DUSK - TIME_BEGIN_PREDUSK);
+//            Methods.changeColorWithHSV(lightColor, 60, saturation * SATURATION_LIMIT, 1f);
+//        } else if (timeInMinutes <= TIME_END_DUSK) {
+//            //ZACHOD
+//            delta = 1 - (float) (timeInMinutes - TIME_BEGIN_DUSK) / (TIME_END_DUSK - TIME_BEGIN_DUSK);
+//            colorAngle = (float) ((240 + delta * 180) % 360);
+//            lightValue = NIGHT_LIGHT * 2 + delta * DELTA_LIGHT;
+//            Methods.changeColorWithHSV(lightColor, colorAngle, SATURATION_LIMIT, lightValue);
+//            lightColor.b /= 1 + delta / 2;
+//        } else if (timeInMinutes <= TIME_END_AFTERDUSK) {
+//            //PO-ZACHOD
+//            delta = 1 - (float) (timeInMinutes - TIME_END_DUSK) / (TIME_END_AFTERDUSK - TIME_END_DUSK);
+//            Methods.changeColorWithHSV(lightColor, 240, delta * SATURATION_LIMIT, NIGHT_LIGHT * (1 + delta));
+//        }
+////        System.out.println((int) (lightColor.r * 1000) + " "
+////                + (int) (lightColor.g * 1000) + " "
+////                + (int) (lightColor.b * 1000));
+//    }
 
     public short getTime() {
         return timeInMinutes;
