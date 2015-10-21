@@ -408,9 +408,9 @@ public class Blazag extends Mob {
     }
 
     private void setAttackingAndFollowing() {
+//        TODO - brać pod uwagę tylko graczy?
         Blazag friend;
-//        int attacks = closeEnemies.size() * 2;
-        int attacks = 1;
+        int attacks = closeEnemies.size() * 2;
         byte goes = (byte) closeFriends.size();
         for (Mob mob : closeFriends) {
             friend = (Blazag) mob;
