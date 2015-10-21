@@ -348,7 +348,7 @@ public abstract class Entity extends GameObject {
         setAndLimitSpeed(xSpeed + xSpeedDelta / resistance, ySpeed + ySpeedDelta / resistance);
     }
 
-    void changeSpeed(double xSpeedDelta, double ySpeedDelta) {
+    protected void changeSpeed(double xSpeedDelta, double ySpeedDelta) {
         if (Math.signum(xSpeed) != Math.signum(xSpeedDelta)) {
             xSpeed = xSpeed + (xSpeedDelta / resistance);
         } else {
@@ -393,6 +393,15 @@ public abstract class Entity extends GameObject {
             return distance < hearRange2;
         } else {
             return distance < hearRange2 / 4;
+        }
+    }
+
+    public boolean isHeardWhileSleep(GameObject object) {
+        int distance = Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY());
+        if (object.isMakeNoise()) {
+            return distance < hearRange2 / 4;
+        } else {
+            return distance < hearRange2 / 16;
         }
     }
 
@@ -578,5 +587,9 @@ public abstract class Entity extends GameObject {
 
     public ArrayList<TemporalChanger> getChangers() {
         return changers;
+    }
+
+    public BlueArray<GameObject> getCloseEnemies() {
+        return closeEnemies;
     }
 }

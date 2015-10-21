@@ -14,25 +14,25 @@ public class Delay {
     private long endTime;
     private boolean started;
 
-    public static Delay createDelayInMinutesAndSeconds(int minutes, int seconds) {
-        return new Delay((seconds + minutes * 60) * 1000);
-    }
-    
-    public static Delay createDelayInSecondsAndMiliseconds(int seconds, int miliseconds) {
-        return new Delay(miliseconds + seconds * 1000);
-    }
-    
-    public static Delay createDelayInSeconds(int seconds) {
-        return new Delay(seconds * 1000);
-    }
-    
-    public static Delay createDelayInMiliseconds(int miliseconds) {
-        return new Delay(miliseconds);
-    }
-    
     private Delay(int length) {
         this.length = length;
         started = false;
+    }
+
+    public static Delay createInMinutesAndSeconds(int minutes, int seconds) {
+        return new Delay((seconds + minutes * 60) * 1000);
+    }
+
+    public static Delay createInSecondsAndMiliseconds(int seconds, int miliseconds) {
+        return new Delay(miliseconds + seconds * 1000);
+    }
+
+    public static Delay createInSeconds(int seconds) {
+        return new Delay(seconds * 1000);
+    }
+
+    public static Delay createInMiliseconds(int miliseconds) {
+        return new Delay(miliseconds);
     }
 
     public void setFrameLengthInSecondsAndMiliseconds(int seconds, int miliseconds) {

@@ -62,7 +62,6 @@ public abstract class Mob extends Entity {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;
-        int x = getX(), y = getY();
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
             if (object.getMap() == map && (isHeard(object) || isSeen(object))) {
@@ -75,6 +74,38 @@ public abstract class Mob extends Entity {
                     closeFriends.add(mob);
                 }
             } else if (mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
+                closeEnemies.add(mob);
+            }
+        }
+        if (closeFriends.isEmpty()) {
+            alpha = false;
+        } else {
+            alpha = true;
+            for (Mob mob : closeFriends) {
+                if (mob.alpha) {
+                    alpha = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    protected synchronized void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
+        closeEnemies.clear();
+        closeFriends.clear();
+        GameObject object;
+        for (int i = 0; i < getPlace().playersCount; i++) {
+            object = players[i];
+            if (object.getMap() == map && (isHeardWhileSleep(object))) {
+                closeEnemies.add(object);
+            }
+        }
+        for (Mob mob : mobs) {
+            if (mob.getClass().getName() == this.getClass().getName()) {
+                if (this != mob && mob.getMap() == map && isHeardWhileSleep(mob)) {
+                    closeFriends.add(mob);
+                }
+            } else if (mob.getMap() == map && (isHeardWhileSleep(mob))) {
                 closeEnemies.add(mob);
             }
         }

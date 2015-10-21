@@ -36,7 +36,7 @@ public class MyPlace extends Place {
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
-    private final Delay delay = Delay.createDelayInMiliseconds(100);
+    private final Delay delay = Delay.createInMiliseconds(100);
     private ArrayList<Map> unloadedMaps = new ArrayList<>();
     private Map map;
 
@@ -62,7 +62,7 @@ public class MyPlace extends Place {
 
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
-        dayCycle.setTime(12, 0);
+        dayCycle.setTime(17, 30);
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
         loadingMap = new LoadingMap(this);

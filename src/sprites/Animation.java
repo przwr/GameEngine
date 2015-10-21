@@ -27,7 +27,7 @@ public class Animation implements Appearance {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
         this.end = spriteSheet.getSize() - 1;
-        delay = Delay.createDelayInMiliseconds(delayTime);
+        delay = Delay.createInMiliseconds(delayTime);
         delay.start();
         this.framesPerDirection = framesPerDirection;
     }
@@ -137,12 +137,6 @@ public class Animation implements Appearance {
         setCurrentFrame(directionalStart + currentFrame % framesPerDirection);
     }
 
-    public void setReversed(boolean reversed) {
-        if (this.reversed != reversed) {
-            reverseAnimation();
-        }
-    }
-
     public void reverseAnimation() {
         int tmp = start;
         start = end;
@@ -152,6 +146,12 @@ public class Animation implements Appearance {
 
     public boolean isReversed() {
         return reversed;
+    }
+
+    public void setReversed(boolean reversed) {
+        if (this.reversed != reversed) {
+            reverseAnimation();
+        }
     }
 
     public void animateIntervalInDirectionOnce(int direction, int start, int end) {
@@ -169,12 +169,12 @@ public class Animation implements Appearance {
         fluctuate = true;
     }
 
-    public void setFluctuating(boolean fluctuate) {
-        this.fluctuate = fluctuate;
-    }
-
     public boolean isFluctuating() {
         return fluctuate;
+    }
+
+    public void setFluctuating(boolean fluctuate) {
+        this.fluctuate = fluctuate;
     }
 
     @Override
@@ -236,14 +236,14 @@ public class Animation implements Appearance {
         delay.setFrameLengthInMiliseconds(length);
     }
 
+    public int getFPS() {
+        return fps;
+    }
+
     public void setFPS(int fps) {
         if (this.fps != fps) {
             delay.setFPS(fps);
         }
-    }
-
-    public int getFPS() {
-        return fps;
     }
 
     public void setAnimate(boolean animate) {

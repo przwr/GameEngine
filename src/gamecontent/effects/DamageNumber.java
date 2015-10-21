@@ -6,28 +6,17 @@
 package gamecontent.effects;
 
 import collision.Figure;
-import collision.OpticProperties;
-import collision.Rectangle;
 import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.RandomGenerator;
-import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
-import game.gameobject.interactive.CircleInteractiveCollision;
-import game.gameobject.interactive.Interactive;
-import game.gameobject.interactive.UpdateBasedActivator;
-import game.gameobject.stats.MobStats;
-import game.gameobject.stats.Stats;
 import game.place.Place;
-import game.text.FontHandler;
 import net.packets.Update;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 import org.newdawn.slick.Color;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -51,7 +40,7 @@ public class DamageNumber extends Entity {
         setGravity(0.1);
         this.xSpeed = Methods.xRadius(direction, speed);
         this.ySpeed = -Methods.yRadius(direction, speed);
-        time = Delay.createDelayInMiliseconds((rand.random(5) + 5) * 100);
+        time = Delay.createInMiliseconds((rand.random(5) + 5) * 100);
         time.start();
         onTop = true;
         setDirection(direction);

@@ -32,7 +32,7 @@ public class GameClient {
 
     public GameClient(final Player player, final GameOnline game, String IP) {
         this.game = game;
-        delay = Delay.createDelayInMiliseconds(20);
+        delay = Delay.createInMiliseconds(20);
         delay.terminate();
         Client temp = null;
         try {

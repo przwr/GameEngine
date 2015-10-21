@@ -50,6 +50,11 @@ public class Point implements Comparable<Object> {
         this.y = y;
     }
 
+    public void set(Point point) {
+        this.x = point.x;
+        this.y = point.y;
+    }
+
     public void copy(Point point) {
         this.x = point.x;
         this.y = point.y;

@@ -31,7 +31,7 @@ public class FindServerChoice extends MenuChoice {
         super(label, menu);
         client = new Client();
         status = "";
-        delay = Delay.createDelayInSeconds(2);
+        delay = Delay.createInSeconds(2);
         run = () -> {
             menu.isMapping = true;
             InetAddress address = client.discoverHost(KryoUtil.TCP_PORT, KryoUtil.UDP_PORT);

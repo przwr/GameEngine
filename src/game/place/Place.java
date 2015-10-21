@@ -286,6 +286,10 @@ public abstract class Place extends ScreenPlace {
         return dayCycle.toString();
     }
 
+    public short getTimeInMinutes() {
+        return dayCycle.getTime();
+    }
+
     private interface renderType {
 
         void render();

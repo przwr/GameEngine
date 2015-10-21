@@ -272,6 +272,8 @@ public class MyPlayer extends Player {
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
         initializeAttacks();
         stats = new PlayerStats(this);
+        stats.setMaxHealth(1000);
+        stats.setHealth(1000);
         textControl = new TextController(place);
         addGui(textControl);
         gui = new MyGUI("Player " + name + "'s GUI", place);
