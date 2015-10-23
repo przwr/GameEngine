@@ -11,6 +11,7 @@ import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
 import game.gameobject.entities.Mob;
+import game.gameobject.entities.Player;
 import game.gameobject.interactive.CurveInteractiveCollision;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.LineInteractiveCollision;
@@ -22,6 +23,7 @@ import game.place.Place;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,8 +36,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class Blazag extends Mob {
 
     private final static byte ATTACK_SLASH = 0, ATTACK_JUMP = 1;
+    private final static Comparator<Mob> comparator = (Mob firstObject, Mob secondObject)
+            -> ((Blazag) firstObject).targetDistance - ((Blazag) secondObject).targetDistance;
     private final Animation animation;
-    private int seconds = 0, max = 5;
+    private int seconds = 0, max = 5, targetDistance;
     private float SLEEP_END = 17.5f, SLEEP_START = 7.5f;
     private float current_sleep_end, current_sleep_start;
     private ActionState idle, attack, wander, jump, jumpAttack, protect, sleep, run_to;
@@ -175,7 +179,7 @@ public class Blazag extends Mob {
                         } else if (jumpDelay.isOver()) {
                             jumper.setFrames(30);
                             double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
-                            jumper.setSpeed(Methods.xRadius(angle, 3.5 * maxSpeed), Methods.yRadius(angle, 3.5 * maxSpeed));
+                            jumper.setSpeed(Methods.xRadius(angle, 4.5 * maxSpeed), Methods.yRadius(angle, 4.5 * maxSpeed));
                             jumper.setType(SpeedChanger.DECREASING);
                             jumper.start();
                             jumpOver = true;
@@ -326,37 +330,38 @@ public class Blazag extends Mob {
                     }
                     attackDelay.start();
                     jumpRestDelay.start();
+                    return;
                 } else if (animation.getDirectionalFrameIndex() < 19) {
                     charge();
-                } else {
+                    return;
+                }
+            } else if (attackDelay.isOver()) {
+                if (distance <= close) {
                     brake(2);
+                    setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
+                    float rand = random.next(10) / 1024f;
+                    double lifePercent = (((stats.getMaxHealth() - stats.getHealth()) / (double) stats.getMaxHealth()) / 4) - 0.1;
+                    if (rand < lifePercent) {
+                        stats.setProtectionState(true);
+                        jumpOver = true;
+                        state = protect;
+                    } else if (rand > 0.5 + lifePercent / 2) {
+                        getAttackActivator(ATTACK_SLASH).setActivated(true);
+                        animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
+                    } else {
+                        getAttackActivator(ATTACK_SLASH).setActivated(true);
+                        animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+                    }
+                    attacking = true;
+                    attackDelay.start();
+                    return;
+                } else if (attackDelay.isOver() && distance >= close && animation.getDirectionalFrameIndex() < 19) {
+                    charge();
+                    return;
                 }
-            } else if (distance <= close) {
-                brake(2);
-                setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
-                float rand = random.next(10) / 1024f;
-                double lifePercent = (((stats.getMaxHealth() - stats.getHealth()) / (double) stats.getMaxHealth()) / 4) - 0.1;
-                if (rand < lifePercent) {
-                    stats.setProtectionState(true);
-                    jumpOver = true;
-                    state = protect;
-                } else if (rand > 0.5 + lifePercent / 2) {
-                    getAttackActivator(ATTACK_SLASH).setActivated(true);
-                    animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
-                } else {
-                    getAttackActivator(ATTACK_SLASH).setActivated(true);
-                    animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
-                }
-                attacking = true;
-                attackDelay.start();
-            } else if (attackDelay.isOver() && distance >= close && animation.getDirectionalFrameIndex() < 19) {
-                charge();
-            } else {
-                brake(2);
             }
-        } else {
-            brake(2);
         }
+        brake(2);
     }
 
     private void getOrders() {
@@ -408,28 +413,42 @@ public class Blazag extends Mob {
     }
 
     private void setAttackingAndFollowing() {
-//        TODO - brać pod uwagę tylko graczy?
         Blazag friend;
-        int attacks = closeEnemies.size() * 2;
-        byte goes = (byte) closeFriends.size();
-        for (Mob mob : closeFriends) {
-            friend = (Blazag) mob;
-            if (friend != null && friend.awake) {
-                friend.order.target = target;
-                if (attacks > 0) {
-                    friend.order.order = Order.ATTACK;
-                    attacks--;
-                } else {
-                    friend.order.order = Order.GO_TO;
-                    friend.order.type = goes;
-                    goes--;
+        if (target != null) {
+            int attacks = 0;
+            for (GameObject object : closeEnemies) {
+                if (object instanceof Player) {
+                    attacks += 2;
                 }
             }
-        }
-        if (attacks > 0) {
-            loneAttack(Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()));
-        } else {
-            walkAround(goes);
+            if (attacks == 0) {
+                attacks = 2;
+            }
+            byte goes = (byte) closeFriends.size();
+            for (Mob mob : closeFriends) {
+                friend = (Blazag) mob;
+                friend.targetDistance = Methods.pointDistanceSimple2(friend.getX(), friend.getY(), target.getX(), target.getY());
+            }
+            closeFriends.sort(comparator);
+            for (Mob mob : closeFriends) {
+                friend = (Blazag) mob;
+                if (friend != null && friend.awake) {
+                    friend.order.target = target;
+                    if (attacks > 0) {
+                        friend.order.order = Order.ATTACK;
+                        attacks--;
+                    } else {
+                        friend.order.order = Order.GO_TO;
+                        friend.order.type = goes;
+                        goes--;
+                    }
+                }
+            }
+            if (attacks > 0) {
+                loneAttack(Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()));
+            } else {
+                walkAround(goes);
+            }
         }
     }
 
@@ -452,16 +471,16 @@ public class Blazag extends Mob {
     private void shiftDestination(int way, Point destination) {
         switch (way % 4) {
             case 0:
-                destination.set(target.getX() + sightRange / 3 + getPlusMinusRandom(8), target.getY() + getPlusMinusRandom(8));
+                destination.set(target.getX() + sightRange / 2 + getPlusMinusRandom(8), target.getY() + getPlusMinusRandom(8));
                 break;
             case 1:
-                destination.set(target.getX() - sightRange / 3 + getPlusMinusRandom(8), target.getY() + getPlusMinusRandom(8));
+                destination.set(target.getX() - sightRange / 2 + getPlusMinusRandom(8), target.getY() + getPlusMinusRandom(8));
                 break;
             case 2:
-                destination.set(target.getX() + getPlusMinusRandom(8), target.getY() + sightRange / 3 + getPlusMinusRandom(8));
+                destination.set(target.getX() + getPlusMinusRandom(8), target.getY() + sightRange / 2 + getPlusMinusRandom(8));
                 break;
             case 3:
-                destination.set(target.getX() + getPlusMinusRandom(8), target.getY() - sightRange / 3 + getPlusMinusRandom(8));
+                destination.set(target.getX() + getPlusMinusRandom(8), target.getY() - sightRange / 2 + getPlusMinusRandom(8));
                 break;
         }
     }
@@ -500,6 +519,7 @@ public class Blazag extends Mob {
 
     private void runTo() {
         if (closeEnemies.isEmpty()) {
+            awake = true;
             state = run_to;
             stats.setProtectionState(false);
             destination.set(getX() - (int) Methods.xRadius(knockback.getAttackerDirection(), sightRange),

@@ -259,7 +259,7 @@ public abstract class Mob extends Entity {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY(), 0);
+            glTranslatef(getX(), getY() - (int) floatHeight, 0);
             appearance.render();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
         }
@@ -274,7 +274,7 @@ public abstract class Mob extends Entity {
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapeInShade(appearance, 1);
             glPopMatrix();
         }
@@ -284,7 +284,7 @@ public abstract class Mob extends Entity {
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapeInBlack(appearance);
             glPopMatrix();
         }
@@ -294,7 +294,7 @@ public abstract class Mob extends Entity {
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
             glPopMatrix();
         }
@@ -304,7 +304,7 @@ public abstract class Mob extends Entity {
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }

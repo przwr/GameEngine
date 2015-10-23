@@ -12,6 +12,7 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.mobs.Blazag;
+import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 
@@ -60,10 +61,10 @@ public class GladeMap extends Map {
 //        addObject(new Blazag(1200, 2048, place, mobID++));
 //        addObject(new Blazag(2048, 2048, place, mobID++));
 //        addObject(new Tongub(1256, 768, place, mobID++));
-//        addObject(new Shen(512, 800, place, mobID++));
-//        addObject(new Shen(768, 1280, place, mobID++));
-//        addObject(new Shen(512, 1500, place, mobID++));
-//        addObject(new Shen(648, 1400, place, mobID++));
+        addObject(new Shen(512, 800, place, mobID++));
+        addObject(new Shen(768, 1280, place, mobID++));
+        addObject(new Shen(512, 1500, place, mobID++));
+        addObject(new Shen(648, 1400, place, mobID++));
 //        addObject(new Plurret(1156, 968, place, mobID++));
 //        addObject(new Shen(512, 1024, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
@@ -71,7 +72,7 @@ public class GladeMap extends Map {
 //        addObject(new Shen(648, 1400, place, mobID++));
 //        addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
 //        addObject(new MyNPC(384, 590, place, mobID++));
-        for (int i = 0; i < 8; i += 2) {
+        for (int i = 0; i < 40; i += 2) {
 //            addObject(new Shen(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
             addObject(new Blazag(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
 //            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() *

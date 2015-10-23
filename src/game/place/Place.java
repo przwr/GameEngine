@@ -170,6 +170,10 @@ public abstract class Place extends ScreenPlace {
         return Settings.nativeScale;
     }
 
+    public static DayCycle getDayCycle() {
+        return dayCycle;
+    }
+
     public abstract void generateAsGuest();
 
     public abstract void generateAsHost();
