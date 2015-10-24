@@ -12,14 +12,12 @@ import org.newdawn.slick.Color;
  */
 public class DayCycle {
 
-    public static final float NIGHT = 0.4f;
+    public static final float NIGHT = 0.2f;
     private static final short REAL_MINUTES_IN_HOUR = 1;
     private final short TIME_BEGIN_PREDAWN = 5 * 60, TIME_BEGIN_DAWN = 6 * 60, TIME_END_DAWN = 8 * 60, TIME_END_AFTERDAWN = 9 * 60;
     private final short TIME_BEGIN_PREDUSK = 17 * 60, TIME_BEGIN_DUSK = 18 * 60, TIME_END_DUSK = 20 * 60, TIME_END_AFTERDUSK = 21 * 60;
     
-    private final float NIGHT_LIGHT = 0.2f;
-
-    private final Color NIGHT_SKY = new Color(NIGHT_LIGHT, NIGHT_LIGHT, NIGHT_LIGHT),
+    private final Color NIGHT_SKY = new Color(NIGHT, NIGHT, NIGHT),
             DARK_BLUE_SKY = new Color(0x5A5A91),
             RED_SKY = new Color(0x824544),
             ORANGE_SKY = new Color(0x82513F),
@@ -85,7 +83,7 @@ public class DayCycle {
         float delta;
         if (timeInMinutes < TIME_BEGIN_PREDAWN || timeInMinutes > TIME_END_AFTERDUSK) {
             //NOC
-            lightColor.r = lightColor.g = lightColor.b = NIGHT_LIGHT;
+            lightColor.r = lightColor.g = lightColor.b = NIGHT;
         } else if (timeInMinutes <= TIME_BEGIN_DAWN) {
             //PRZED-WSCHOD
             delta = (float) (timeInMinutes - TIME_BEGIN_PREDAWN) / (TIME_BEGIN_DAWN - TIME_BEGIN_PREDAWN);

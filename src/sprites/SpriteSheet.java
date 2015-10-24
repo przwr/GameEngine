@@ -23,16 +23,16 @@ public class SpriteSheet extends Sprite {
     private int frame;
     private Point[] startingPoints;
 
-    private SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
-        super(texture, width, height, xStart, yStart, spriteBase);
+    private SpriteSheet(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
+        super(texture, folder, width, height, xStart, yStart, spriteBase);
         isStartMoving = false;
         widthWhole = texture.getImageWidth();
         heightWhole = texture.getImageHeight();
         setTilesCount(scale);
     }
 
-    private SpriteSheet(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, Point[] startingPoints) {
-        super(texture, width, height, xStart, yStart, spriteBase);
+    private SpriteSheet(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, Point[] startingPoints) {
+        super(texture, folder, width, height, xStart, yStart, spriteBase);
         this.startingPoints = startingPoints;
         isStartMoving = true;
         widthWhole = texture.getImageWidth();
@@ -40,29 +40,28 @@ public class SpriteSheet extends Sprite {
         setTilesCount(scale);
     }
 
-    private SpriteSheet(int texture, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        super(texture, width, height, xStart, yStart, spriteBase);
+    private SpriteSheet(int texture, String folder, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        super(texture, folder, width, height, xStart, yStart, spriteBase);
         isStartMoving = false;
         this.widthWhole = widthWhole;
         this.heightWhole = heightWhole;
         setTilesCount(false);
     }
 
-    public static SpriteSheet create(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, false);
+    public static SpriteSheet create(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new SpriteSheet(texture, folder, width, height, xStart, yStart, spriteBase, false);
     }
 
-    public static SpriteSheet createWithMovingStart(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase, Point[] stPoints) {
-        return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, false, stPoints);
+    public static SpriteSheet createWithMovingStart(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, Point[] stPoints) {
+        return new SpriteSheet(texture, folder, width, height, xStart, yStart, spriteBase, false, stPoints);
     }
 
-    public static SpriteSheet createSetScale(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        return new SpriteSheet(texture, width, height, xStart, yStart, spriteBase, true);
+    public static SpriteSheet createSetScale(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new SpriteSheet(texture, folder, width, height, xStart, yStart, spriteBase, true);
     }
 
-    public static SpriteSheet createFrameBuffered(int texture, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase
-            spriteBase) {
-        return new SpriteSheet(texture, widthWhole, heightWhole, width, height, xStart, yStart, spriteBase);
+    public static SpriteSheet createFrameBuffered(int texture, String folder, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new SpriteSheet(texture, folder, widthWhole, heightWhole, width, height, xStart, yStart, spriteBase);
     }
 
     public static Point[] getMergedDimensions(SpriteSheet... list) {

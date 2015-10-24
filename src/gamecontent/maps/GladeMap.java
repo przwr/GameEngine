@@ -22,7 +22,7 @@ public class GladeMap extends Map {
 
     public GladeMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Polana", place, width, height, tileSize);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo", ""), 1, 8);
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
 
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
@@ -38,6 +38,8 @@ public class GladeMap extends Map {
         test.placePuzzle(11, 26, this);
         test = new PuzzleObject("smukly", place);
         test.placePuzzle(-1, 0, this);
+        test = new PuzzleObject("domek", place);
+        test.placePuzzle(7, 18, this);
 
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
@@ -56,7 +58,7 @@ public class GladeMap extends Map {
     public void populate() {
         //addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
 //        addObject(new BrainlessShen(356, 768, place, mobID++));
-//        addObject(new Blazag(768, 2048, place, mobID++));
+        addObject(new Blazag(768, 2048, place, mobID++));
 //        addObject(new Tongub(1256, 768, place, mobID++));
 //        addObject(new Shen(512, 800, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));

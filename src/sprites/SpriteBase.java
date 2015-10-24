@@ -32,6 +32,11 @@ public class SpriteBase {
     public SpriteBase() {
     }
 
+    public static String getSpritePath(File f) {    // C:/...<('-'<).../res/textures/folder/podfolder/sprite.spr -> folder/podfolder
+        String sep = File.pathSeparator.equals("/") ? "\\/" : "\\\\";
+        return f.getPath().replaceAll(".*textures" + sep + "|" + sep + "[^" + File.pathSeparator + "]*$", "");
+    }
+    
     public Sprite getSprite(String textureKey, String folder) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)) {
@@ -168,12 +173,12 @@ public class SpriteBase {
         }
         if (spriteSheet) {
             if (!movingStart) {
-                image = SpriteSheet.create(texture, pieceWidth, pieceHeight, startX, startY, this);
+                image = SpriteSheet.create(texture, folder, pieceWidth, pieceHeight, startX, startY, this);
             } else {
-                image = SpriteSheet.createWithMovingStart(texture, pieceWidth, pieceHeight, startX, startY, this, startPoints);
+                image = SpriteSheet.createWithMovingStart(texture, folder, pieceWidth, pieceHeight, startX, startY, this, startPoints);
             }
         } else {
-            image = Sprite.create(texture, width, height, startX, startY, this);
+            image = Sprite.create(texture, folder, width, height, startX, startY, this);
         }
         image.setKey(key);
         image.xOffset = xOffset;
@@ -219,7 +224,7 @@ public class SpriteBase {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        sprite = Sprite.create(texture, width, height, 0, 0, this);
+        sprite = Sprite.create(texture, folder, width, height, 0, 0, this);
         sprite.setKey(key);
         return sprite;
     }
@@ -273,9 +278,9 @@ public class SpriteBase {
             return null;
         }
         if (spriteSheet) {
-            image = SpriteSheet.createSetScale(texture, pieceWidth, pieceHeight, startX, startY, this);
+            image = SpriteSheet.createSetScale(texture, folder, pieceWidth, pieceHeight, startX, startY, this);
         } else {
-            image = Sprite.create(texture, width, height, startX, startY, this);
+            image = Sprite.create(texture, folder, width, height, startX, startY, this);
         }
         image.setKey(key);
         return image;

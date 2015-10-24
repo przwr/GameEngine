@@ -32,11 +32,12 @@ public class Sprite implements Appearance {
     int xOffset;
     int yOffset;
     private String key;
+    private String folder;
 
     private double begin;
     private double ending;
 
-    Sprite(int texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+    Sprite(int texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
         this.texture = texture;
         this.spriteBase = spriteBase;
         this.xStart = -xStart;
@@ -45,7 +46,7 @@ public class Sprite implements Appearance {
         this.height = height;
     }
 
-    Sprite(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+    Sprite(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
         this.widthWhole = texture.getImageWidth();
         this.heightWhole = texture.getImageHeight();
         this.texture = texture.getTextureID();
@@ -56,8 +57,8 @@ public class Sprite implements Appearance {
         this.height = height;
     }
 
-    public static Sprite create(Texture texture, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        return new Sprite(texture, width, height, xStart, yStart, spriteBase);
+    public static Sprite create(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new Sprite(texture, folder, width, height, xStart, yStart, spriteBase);
     }
 
     @Override

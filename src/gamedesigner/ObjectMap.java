@@ -37,7 +37,7 @@ public class ObjectMap extends Map {
         centralPoint = new CentralPoint(0, 0, objPlace);
         addObject(centralPoint);
 
-        background = new Tile(place.getSpriteSheet("tlo", ""), 1, 8);
+        background = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
         background.setDepth(-1);
         isBackground = true;
         areTilesVisible = true;
@@ -363,10 +363,10 @@ public class ObjectMap extends Map {
 
     @Override
     public void clear() {
-        Tile background = getBackground();
+        Tile bg = getBackground();
         for (int y = 0; y < heightInTiles; y++) {
             for (int x = 0; x < widthInTiles; x++) {
-                setTile(x, y, background);
+                setTile(x, y, bg);
             }
         }
         for (Area area : areas) {

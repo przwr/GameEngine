@@ -23,10 +23,9 @@ public class StoneMap extends Map {
 
     public StoneMap(short id, Place place, int width, int height, int tileSize) {
         super(id, "Kamienna", place, width, height, tileSize);
-        setColor(new Color(DayCycle.NIGHT / 2, DayCycle.NIGHT / 2, DayCycle.NIGHT / 2));
-        Tile GROUND = new Tile(place.getSpriteSheet("tlo", ""), 2, 12);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo", ""), 1, 1);
-        Tile PORTAL = new Tile(place.getSpriteSheet("tlo", ""), 0, 12);
+        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT));
+        Tile GROUND = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 2, 12);
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 1);
 
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {

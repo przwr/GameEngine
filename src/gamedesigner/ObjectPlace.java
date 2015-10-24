@@ -21,8 +21,12 @@ import org.newdawn.slick.openal.SoundStore;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import sprites.SpriteBase;
 
 /**
  * @author przemek
@@ -46,7 +50,7 @@ public class ObjectPlace extends Place {
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
-        dayCycle.setTime(7, 0);
+        dayCycle.setTime(12, 0);
         lastName = "";
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
@@ -62,7 +66,7 @@ public class ObjectPlace extends Place {
     @Override
     public void generateAsGuest() {
         objMap = new ObjectMap(mapIDCounter++, this, 10240, 10240, Place.tileSize);
-        ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo", ""), this);
+        ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo", "backgrounds"), this);
         guiHandler = new GUIHandler(this);
         maps.add(objMap);
         editor = ((ObjectPlayer) players[0]);
@@ -272,10 +276,13 @@ public class ObjectPlace extends Place {
         String[] file = name.split("\\.");
         if (file[1].equals("spr")) {
             try {
-                ui.setSpriteSheet(sprites.getSpriteSheet(file[0], ""));
+                System.out.println(f.getCanonicalPath() + " " +  file[0]);
+                ui.setSpriteSheet(sprites.getSpriteSheet(file[0], SpriteBase.getSpritePath(f)));
                 printMessage("SpriteSheet \"" + name + "\" was loaded");
             } catch (java.lang.ClassCastException e) {
                 printMessage("\"" + name + "\" is not a SpriteSheet!");
+            } catch (IOException ex) {
+                Logger.getLogger(ObjectPlace.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             ObjectPO loaded = new ObjectPO(file[0], this);

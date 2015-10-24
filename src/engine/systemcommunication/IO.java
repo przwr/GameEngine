@@ -63,4 +63,8 @@ public final class IO {
         File f = new File(folder);
         return getSpecificFilesList(f, extension);
     }
+    
+    public static String getFilePath(File f) {
+        return f.getPath().replace(File.separatorChar + f.getName(), "");
+    }
 }

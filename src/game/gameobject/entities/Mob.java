@@ -40,7 +40,7 @@ public abstract class Mob extends Entity {
         this.sightRange2 = sightRange * sightRange;
         this.sightAngle = 180;
         this.setMaxSpeed(speed);
-        this.appearance = place.getSprite(spriteName, "");
+        this.appearance = place.getSprite(spriteName, "entities/mobs");
         initialize(name, x, y);
         this.mobID = mobID;
     }
