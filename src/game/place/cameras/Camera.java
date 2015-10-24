@@ -53,7 +53,7 @@ public abstract class Camera {
     Camera(GameObject object) {
         owners.add(object);
         delayLength = 50;
-        shakeDelay = Delay.createDelayInMiliseconds(delayLength);
+        shakeDelay = Delay.createInMiliseconds(delayLength);
         shakeDelay.start();
     }
 

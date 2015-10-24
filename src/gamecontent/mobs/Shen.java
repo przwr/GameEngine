@@ -34,8 +34,8 @@ public class Shen extends Mob {
     private final Animation animation;
     private int seconds = 0, max = 5;
     private Color skinColor;
-    private Delay attack_delay = Delay.createDelayInMiliseconds(1250);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay rest = Delay.createDelayInMiliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay attack_delay = Delay.createInMiliseconds(1250);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createInMiliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
     private ActionState idle, run_away, hide, attack, wander, follow, bounce;
     private SpeedChanger bouncer;
     private boolean attacking = true, unfold;
@@ -289,8 +289,8 @@ public class Shen extends Mob {
         stats.setProtection(10);
         stats.setProtectionSideModifier(4);
         stats.setProtectionBackModifier(1);
-        attack_delay.start();
         rest.start();
+        attack_delay.start();
         state = idle;
         bouncer = new SpeedChanger();
         homePosition.set(getX(), getY());

@@ -14,6 +14,7 @@ import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.logic.maploader.MapLoaderModule;
 import game.logic.navmeshpathfinding.PathFindingModule;
+import game.place.Place;
 import game.place.cameras.PlayersCamera;
 import game.place.map.Map;
 import game.text.FontHandler;
@@ -79,6 +80,7 @@ public class MyGame extends Game {
                                 } else {
                                     running = false;
                                     soundPause();
+                                    Place.getDayCycle().stopTime();
                                 }
                             } else {
                                 addPlayerOffline(i);
@@ -192,6 +194,9 @@ public class MyGame extends Game {
     public void resumeGame() {
         if (place != null) {
             soundResume();
+            if (mode == OFFLINE) {
+                Place.getDayCycle().resumeTime();
+            }
             running = true;
         }
     }

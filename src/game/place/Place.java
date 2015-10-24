@@ -170,6 +170,10 @@ public abstract class Place extends ScreenPlace {
         return Settings.nativeScale;
     }
 
+    public static DayCycle getDayCycle() {
+        return dayCycle;
+    }
+
     public abstract void generateAsGuest();
 
     public abstract void generateAsHost();
@@ -284,6 +288,10 @@ public abstract class Place extends ScreenPlace {
 
     public String getTime() {
         return dayCycle.toString();
+    }
+
+    public short getTimeInMinutes() {
+        return dayCycle.getTime();
     }
 
     private interface renderType {

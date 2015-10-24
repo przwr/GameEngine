@@ -21,7 +21,7 @@ public class JoinServerChoice extends MenuChoice {
     public JoinServerChoice(String label, Menu menu) {
         super(label, menu);
         status = "";
-        delay = Delay.createDelayInSeconds(2);
+        delay = Delay.createInSeconds(2);
     }
 
     @Override

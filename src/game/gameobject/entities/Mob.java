@@ -62,7 +62,6 @@ public abstract class Mob extends Entity {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;
-        int x = getX(), y = getY();
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
             if (object.getMap() == map && (isHeard(object) || isSeen(object))) {
@@ -75,6 +74,38 @@ public abstract class Mob extends Entity {
                     closeFriends.add(mob);
                 }
             } else if (mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
+                closeEnemies.add(mob);
+            }
+        }
+        if (closeFriends.isEmpty()) {
+            alpha = false;
+        } else {
+            alpha = true;
+            for (Mob mob : closeFriends) {
+                if (mob.alpha) {
+                    alpha = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    protected synchronized void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
+        closeEnemies.clear();
+        closeFriends.clear();
+        GameObject object;
+        for (int i = 0; i < getPlace().playersCount; i++) {
+            object = players[i];
+            if (object.getMap() == map && (isHeardWhileSleep(object))) {
+                closeEnemies.add(object);
+            }
+        }
+        for (Mob mob : mobs) {
+            if (mob.getClass().getName() == this.getClass().getName()) {
+                if (this != mob && mob.getMap() == map && isHeardWhileSleep(mob)) {
+                    closeFriends.add(mob);
+                }
+            } else if (mob.getMap() == map && (isHeardWhileSleep(mob))) {
                 closeEnemies.add(mob);
             }
         }
@@ -228,7 +259,7 @@ public abstract class Mob extends Entity {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY(), 0);
+            glTranslatef(getX(), getY() - (int) floatHeight, 0);
             appearance.render();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
         }
@@ -243,7 +274,7 @@ public abstract class Mob extends Entity {
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapeInShade(appearance, 1);
             glPopMatrix();
         }
@@ -253,7 +284,7 @@ public abstract class Mob extends Entity {
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapeInBlack(appearance);
             glPopMatrix();
         }
@@ -263,7 +294,7 @@ public abstract class Mob extends Entity {
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
             glPopMatrix();
         }
@@ -273,7 +304,7 @@ public abstract class Mob extends Entity {
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
             Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }
