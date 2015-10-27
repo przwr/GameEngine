@@ -34,8 +34,8 @@ public class Shen extends Mob {
     private final Animation animation;
     private int seconds = 0, max = 5;
     private Color skinColor;
-    private Delay attack_delay = Delay.createInMiliseconds(1250);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay rest = Delay.createInMiliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay attack_delay = Delay.createInMilliseconds(1250);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createInMilliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
     private ActionState idle, run_away, hide, attack, wander, follow, bounce;
     private SpeedChanger bouncer;
     private boolean attacking = true, unfold;
@@ -70,7 +70,7 @@ public class Shen extends Mob {
                             setPathStrategy(PathFindingModule.GET_TO, collision.getWidth() * 2);
                         } else {
                             state = wander;
-                            maxSpeed = 0.8;
+                            maxSpeed = 1;
                             destination.set(getX(), getY());
                             seconds = 0;
                         }
@@ -365,7 +365,7 @@ public class Shen extends Mob {
     }
 
     private void updateGettingHurt() {
-        setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(), knockback.getYSpeed(), 0, 0));
+        setDirection8way(Methods.pointAngle8Directions(knockBack.getXSpeed(), knockBack.getYSpeed(), 0, 0));
         animation.animateSingleInDirection(getDirection8Way(), 6);
         brake(2);
     }
@@ -378,8 +378,8 @@ public class Shen extends Mob {
             maxSpeed = 1;
             stats.setProtectionState(false);
             setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
-            destination.set(getX() + (int) Methods.xRadius(knockback.getAttackerDirection(), sightRange),
-                    getY() - (int) Methods.yRadius(knockback.getAttackerDirection(), sightRange));
+            destination.set(getX() + (int) Methods.xRadius(knockBack.getAttackerDirection(), sightRange),
+                    getY() - (int) Methods.yRadius(knockBack.getAttackerDirection(), sightRange));
         }
     }
 

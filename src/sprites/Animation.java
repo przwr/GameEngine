@@ -27,7 +27,7 @@ public class Animation implements Appearance {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
         this.end = spriteSheet.getSize() - 1;
-        delay = Delay.createInMiliseconds(delayTime);
+        delay = Delay.createInMilliseconds(delayTime);
         delay.start();
         this.framesPerDirection = framesPerDirection;
     }
@@ -233,7 +233,7 @@ public class Animation implements Appearance {
     }
 
     public void setDelay(int length) {
-        delay.setFrameLengthInMiliseconds(length);
+        delay.setFrameLengthInMilliseconds(length);
     }
 
     public int getFPS() {

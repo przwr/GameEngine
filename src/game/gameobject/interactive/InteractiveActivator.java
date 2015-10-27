@@ -7,7 +7,7 @@ import game.gameobject.GameObject;
  */
 public interface InteractiveActivator {
 
-    public void setActivated(boolean active);
+    void setActivated(boolean active);
     
     boolean checkActivation(GameObject owner);
 

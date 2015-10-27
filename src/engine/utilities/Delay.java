@@ -23,7 +23,7 @@ public class Delay {
         return new Delay((seconds + minutes * 60) * 1000);
     }
 
-    public static Delay createInSecondsAndMiliseconds(int seconds, int miliseconds) {
+    public static Delay createInSecondsAndMilliseconds(int seconds, int miliseconds) {
         return new Delay(miliseconds + seconds * 1000);
     }
 
@@ -31,19 +31,19 @@ public class Delay {
         return new Delay(seconds * 1000);
     }
 
-    public static Delay createInMiliseconds(int miliseconds) {
+    public static Delay createInMilliseconds(int miliseconds) {
         return new Delay(miliseconds);
     }
 
-    public void setFrameLengthInSecondsAndMiliseconds(int seconds, int miliseconds) {
+    public void setFrameLengthInSecondsAndMilliseconds(int seconds, int miliseconds) {
         this.length = seconds * 1000 + miliseconds;
     }
     
     public void setFrameLengthInMinutesAndSeconds(int minutes, int seconds) {
         this.length = (minutes * 60 + seconds) * 1000;
     }
-    
-    public void setFrameLengthInMiliseconds(int miliseconds) {
+
+    public void setFrameLengthInMilliseconds(int miliseconds) {
         this.length = miliseconds;
     }
     

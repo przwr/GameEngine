@@ -43,11 +43,11 @@ public class Blazag extends Mob {
     private float SLEEP_END = 17.5f, SLEEP_START = 7.5f;
     private float current_sleep_end, current_sleep_start;
     private ActionState idle, attack, wander, jump, jumpAttack, protect, sleep, run_to;
-    private Delay attackDelay = Delay.createInMiliseconds(600);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay rest = Delay.createInMiliseconds(1000);                  //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay attackDelay = Delay.createInMilliseconds(600);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createInMilliseconds(1000);                  //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpRestDelay = Delay.createInSeconds(7);             //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay jumpDelay = Delay.createInMiliseconds(400);             //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay changeDelay = Delay.createInMiliseconds(750);              //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay jumpDelay = Delay.createInMilliseconds(400);             //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay changeDelay = Delay.createInMilliseconds(750);              //TODO - te wartości losowe i zależne od poziomu trudności
     private boolean attacking = true, chasing, jumpOver, awake = true;
     private SpeedChanger jumper;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
@@ -176,6 +176,7 @@ public class Blazag extends Mob {
                             stats.setUnhurtableState(false);
                             jumpOver = false;
                             state = attack;
+                            jumpDelay.start();
                         } else if (jumpDelay.isOver()) {
                             jumper.setFrames(30);
                             double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
@@ -522,14 +523,20 @@ public class Blazag extends Mob {
             awake = true;
             state = run_to;
             stats.setProtectionState(false);
-            destination.set(getX() - (int) Methods.xRadius(knockback.getAttackerDirection(), sightRange),
-                    getY() + (int) Methods.yRadius(knockback.getAttackerDirection(), sightRange));
+            destination.set(getX() - (int) Methods.xRadius(knockBack.getAttackerDirection(), sightRange),
+                    getY() + (int) Methods.yRadius(knockBack.getAttackerDirection(), sightRange));
         }
     }
 
     @Override
-    public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
-        super.getHurt(knockbackPower, jumpPower, attacker);
+    public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
+        super.getHurt(knockBackPower, jumpPower, attacker);
+    }
+
+    private void updateGettingHurt() {
+        setDirection8way(Methods.pointAngle8Directions(knockBack.getXSpeed(), knockBack.getYSpeed(), 0, 0));
+        animation.animateSingleInDirection(getDirection8Way(), 2);
+        brake(2);
     }
 
     /*
@@ -555,11 +562,6 @@ public class Blazag extends Mob {
     animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43); - ciachnięcie z lewej
     */
 
-    private void updateGettingHurt() {
-        setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(), knockback.getYSpeed(), 0, 0));
-        animation.animateSingleInDirection(getDirection8Way(), 2);
-        brake(2);
-    }
 
     private void updateAnimation() {
         int frame = animation.getDirectionalFrameIndex();

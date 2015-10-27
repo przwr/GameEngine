@@ -7,16 +7,18 @@ package gamecontent.mobs;
 
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.utilities.*;
+import engine.utilities.Drawer;
+import engine.utilities.Methods;
+import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.MobStats;
 import game.place.Place;
+import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
 import static org.lwjgl.opengl.GL11.*;
-import org.newdawn.slick.Color;
 
 /**
  * @author przemek
@@ -59,15 +61,15 @@ public class BrainlessShen extends Mob {
     }
 
     @Override
-    public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
-        super.getHurt(knockbackPower, jumpPower, attacker);
-        colorHue += knockbackPower + 1;
+    public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
+        super.getHurt(knockBackPower, jumpPower, attacker);
+        colorHue += knockBackPower + 1;
         Methods.changeColorWithHSV(color, colorHue, 1, 1);
     }
 
     private void updateGettingHurt() {
-        setDirection8way(Methods.pointAngle8Directions(knockback.getXSpeed(),
-                knockback.getYSpeed(), 0, 0));
+        setDirection8way(Methods.pointAngle8Directions(knockBack.getXSpeed(),
+                knockBack.getYSpeed(), 0, 0));
         animation.animateSingleInDirection(getDirection8Way(), 6);
         brake(2);
     }
