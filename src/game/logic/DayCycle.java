@@ -10,19 +10,14 @@ import org.newdawn.slick.Color;
 /**
  * @author Domi
  */
-public class DayCycle {
+public final class DayCycle {
 
     public static final float NIGHT = 0.2f;
-    private static final short REAL_MINUTES_IN_HOUR = 1;
+    private static final short REAL_MINUTES_IN_HOUR = 6;
     private final short TIME_BEGIN_PREDAWN = 5 * 60, TIME_BEGIN_DAWN = 6 * 60, TIME_END_DAWN = 8 * 60, TIME_END_AFTERDAWN = 9 * 60;
     private final short TIME_BEGIN_PREDUSK = 17 * 60, TIME_BEGIN_DUSK = 18 * 60, TIME_END_DUSK = 20 * 60, TIME_END_AFTERDUSK = 21 * 60;
-    
-    private final Color NIGHT_SKY = new Color(NIGHT, NIGHT, NIGHT),
-            DARK_BLUE_SKY = new Color(0x5A5A91),
-            RED_SKY = new Color(0x824544),
-            ORANGE_SKY = new Color(0x82513F),
-            YELLOW_SKY = new Color(0xFFFF69), 
-            DAY_SKY = new Color(Color.white);
+
+    private Color NIGHT_SKY, DARK_BLUE_SKY, RED_SKY, ORANGE_SKY, YELLOW_SKY, DAY_SKY;
 
     private final Color lightColor = new Color(0.2f, 0.2f, 0.2f);
     private short timeInMinutes = 0;
@@ -34,6 +29,16 @@ public class DayCycle {
 
     public DayCycle() {
         midnightTime = System.currentTimeMillis();
+        setNormalDayColors();
+    }
+
+    public void setNormalDayColors() {
+        NIGHT_SKY = new Color(NIGHT, NIGHT, NIGHT);
+        DARK_BLUE_SKY = new Color(0x5A5A91);
+        RED_SKY = new Color(0x824544);
+        ORANGE_SKY = new Color(0x82513F);
+        YELLOW_SKY = new Color(0xFFFF69);
+        DAY_SKY = new Color(Color.white);
     }
 
     public void stopTime() {
@@ -172,7 +177,6 @@ public class DayCycle {
 ////                + (int) (lightColor.g * 1000) + " "
 ////                + (int) (lightColor.b * 1000));
 //    }
-
     public short getTime() {
         return timeInMinutes;
     }

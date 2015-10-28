@@ -63,10 +63,10 @@ public class GladeMap extends Map {
 //        addObject(new Blazag(1200, 2048, place, mobID++));
 //        addObject(new Blazag(2048, 2048, place, mobID++));
 //        addObject(new Tongub(1256, 768, place, mobID++));
-        addObject(new Shen(512, 800, place, mobID++));
-        addObject(new Shen(768, 1280, place, mobID++));
-        addObject(new Shen(512, 1500, place, mobID++));
-        addObject(new Shen(648, 1400, place, mobID++));
+//        addObject(new Shen(512, 800, place, mobID++));
+//        addObject(new Shen(768, 1280, place, mobID++));
+//        addObject(new Shen(512, 1500, place, mobID++));
+//        addObject(new Shen(648, 1400, place, mobID++));
 //        addObject(new Plurret(1156, 968, place, mobID++));
 //        addObject(new Shen(512, 1024, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
