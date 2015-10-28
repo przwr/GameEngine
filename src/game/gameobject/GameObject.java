@@ -371,6 +371,14 @@ public abstract class GameObject {
     }
 
 
+    public Interactive getInteractive(byte attackType) {
+        for (Interactive interactive : interactiveObjects) {
+            if (interactive.getAttackType() == attackType)
+                return interactive;
+        }
+        return null;
+    }
+
     public InteractiveActivator getAttackActivator(byte attackType) {
         for (Interactive i : interactiveObjects) {
             if (i.getAttackType() == attackType)
