@@ -199,6 +199,48 @@ public class Tongub extends Mob {
         };
     }
 
+    private void closeRandomDestination(int xD, int yD) {
+        int sign = random.next(1) == 1 ? 1 : -1;
+        int shift = (sightRange + random.next(9)) * sign;
+        destination.setX(xD + shift);
+        sign = random.next(1) == 1 ? 1 : -1;
+        shift = (sightRange + random.next(9)) * sign;
+        destination.setY(yD + shift);
+        if (destination.getX() < sightRange / 2) {
+            destination.setX(sightRange / 2);
+        }
+        if (destination.getX() > map.getWidth()) {
+            destination.setX(map.getWidth() - sightRange / 2);
+        }
+        if (destination.getY() < collision.getHeight()) {
+            destination.setY(sightRange / 2);
+        }
+        if (destination.getY() > map.getHeight()) {
+            destination.setY(map.getHeight() - sightRange / 2);
+        }
+    }
+
+    private void closeRandomDestination(int xD, int yD) {
+        int sign = random.next(1) == 1 ? 1 : -1;
+        int shift = (sightRange + random.next(9)) * sign;
+        destination.setX(xD + shift);
+        sign = random.next(1) == 1 ? 1 : -1;
+        shift = (sightRange + random.next(9)) * sign;
+        destination.setY(yD + shift);
+        if (destination.getX() < sightRange / 2) {
+            destination.setX(sightRange / 2);
+        }
+        if (destination.getX() > map.getWidth()) {
+            destination.setX(map.getWidth() - sightRange / 2);
+        }
+        if (destination.getY() < collision.getHeight()) {
+            destination.setY(sightRange / 2);
+        }
+        if (destination.getY() > map.getHeight()) {
+            destination.setY(map.getHeight() - sightRange / 2);
+        }
+    }
+
     public Tongub(int x, int y, Place place, short ID) {
         super(x, y, 3, 768, "Tongub", place, "tongub", true, ID);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
