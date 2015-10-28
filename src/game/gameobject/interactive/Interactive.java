@@ -27,11 +27,11 @@ public class Interactive {
     private final InteractiveCollision collision;
     private final InteractiveAction action;
     private final InteractiveActivator activator;
-    private boolean COLLIDES_WITH_SELF = false, COLLIDES_WITH_MOBS = true, COLLIDES_WITH_PLAYERS = true;
+    private boolean COLLIDES_WITH_SELF = false, COLLIDES_WITH_MOBS = true, COLLIDES_WITH_PLAYERS = true, COLLIDES_WITH_FRIENDS = false;
     private float modifier;
     private byte weaponType = -1;
     private byte attackType = -1;
-    private boolean active;
+    private boolean active, activated;
     private ArrayList<GameObject> exceptions;
 
 
@@ -74,26 +74,31 @@ public class Interactive {
     }
 
     public void actIfActivated(GameObject[] players, List<Mob> mobs) {
-        if (collisionActivated()) {
+        activated = false;
+        if (collisionActivates()) {
             if (COLLIDES_WITH_MOBS) {
-                mobs.stream().filter((mob) -> ((COLLIDES_WITH_SELF || (mob != owner && !isException(mob))))).forEach((mob) -> {
+                mobs.stream().filter((mob) -> (!isException(mob) && (COLLIDES_WITH_SELF || mob != owner) && (COLLIDES_WITH_FRIENDS
+                        || mob.getClass().getName() != owner.getClass().getName()))).forEach((mob) -> {
                     InteractiveResponse response = collision.collide(owner, mob, attackType);
                     if (response.getPixels() > 0) {
+                        activated = true;
                         action.act(mob, this, response);
                     }
                 });
             }
             if (COLLIDES_WITH_PLAYERS) {
                 for (GameObject player : players) {
-                    if ((COLLIDES_WITH_SELF || (player != owner && !isException(player)))) {
+                    if (!isException(player) && (COLLIDES_WITH_SELF || (player != owner))) {
                         InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
                         if (response.getPixels() > 0) {
+                            activated = true;
                             action.act(player, this, response);
                         }
                     }
                 }
             }
         } else {
+            activated = true;
             action.act(owner, this, InteractiveResponse.NO_RESPONSE);
         }
     }
@@ -124,6 +129,10 @@ public class Interactive {
         this.active = active;
     }
 
+    public boolean isActivated() {
+        return activated;
+    }
+
     public float getModifier() {
         return modifier;
     }
@@ -148,7 +157,7 @@ public class Interactive {
         this.attackType = attackType;
     }
 
-    public boolean collisionActivated() {
+    public boolean collisionActivates() {
         return collision != null;
     }
 

@@ -23,6 +23,7 @@ import game.place.Place;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import static game.logic.navmeshpathfinding.PathData.OBSTACLE_BETWEEN;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -34,9 +35,11 @@ public class Tongub extends Mob {
     private final Animation animation;
     private int seconds = 0, max = 5;
     private ActionState idle, run_away, hide, attack, wander;
-    private Delay attack_delay = Delay.createInMilliseconds(1000);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay rest = Delay.createInMilliseconds(600);            //TODO - te wartości losowe i zależne od poziomu trudności
-    private boolean attacking, undig;
+    private Delay attack_delay = Delay.createInMilliseconds(1500);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createInMilliseconds(250);            //TODO - te wartości losowe i zależne od poziomu trudności
+    private boolean attacking, undig, side;
+    private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
+
 
     {
         idle = new ActionState() {
@@ -123,20 +126,41 @@ public class Tongub extends Mob {
 //                System.out.println("ATTACK");
                 if (rest.isOver()) {
                     if (attack_delay.isOver()) {
-                        if (attacking) {
+                        if (attacking || side) {
                             rest.start();
                             attacking = false;
-                            maxSpeed = 3;
+                            side = false;
                             brake(2);
+                            getAttackActivator(ATTACK_NORMAL).setActivated(false);
                         } else {
-                            maxSpeed = 5;
+                            attack_delay.setFrameLengthInMilliseconds(1000 + random.next(9));
                             attack_delay.start();
                             attacking = true;
+                            side = false;
                             getAttackActivator(ATTACK_NORMAL).setActivated(true);
                         }
                     } else {
-                        charge();
-                        getAttackActivator(ATTACK_NORMAL).setActivated(true);
+                        if (side) {
+                            chargeToPoint(destination);
+                        } else {
+                            if (getPathData().isTrue(OBSTACLE_BETWEEN)) {
+                                goTo(target.getX(), target.getY());
+                            } else {
+                                charge();
+                            }
+                            if (getInteractive(ATTACK_NORMAL).isActivated()) {
+                                getAttackActivator(ATTACK_NORMAL).setActivated(false);
+                                maxSpeed = 3;
+                                side = true;
+                                attacking = false;
+                                closeRandomDestination(getX(), getY());
+                                brake(2);
+                            } else {
+                                maxSpeed = 5;
+                                getAttackActivator(ATTACK_NORMAL).setActivated(true);
+                            }
+                        }
+
                     }
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     if (!attacking && (!isInRange(target) || target.getMap() != map || closeFriends.size() < 2)) {
@@ -154,26 +178,8 @@ public class Tongub extends Mob {
             public void update() {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
-                    RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
                     if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
-                        int sign = random.next(1) == 1 ? 1 : -1;
-                        int shift = (sightRange + random.next(9)) * sign;
-                        destination.setX(homePosition.getX() + shift);
-                        sign = random.next(1) == 1 ? 1 : -1;
-                        shift = (sightRange + random.next(9)) * sign;
-                        destination.setY(homePosition.getY() + shift);
-                        if (destination.getX() < sightRange / 2) {
-                            destination.setX(sightRange / 2);
-                        }
-                        if (destination.getX() > map.getWidth()) {
-                            destination.setX(map.getWidth() - sightRange / 2);
-                        }
-                        if (destination.getY() < collision.getHeight()) {
-                            destination.setY(sightRange / 2);
-                        }
-                        if (destination.getY() > map.getHeight()) {
-                            destination.setY(map.getHeight() - sightRange / 2);
-                        }
+                        closeRandomDestination(homePosition.getX(), homePosition.getY());
 //                        System.out.println(destination);
                     }
                     seconds++;
@@ -191,6 +197,48 @@ public class Tongub extends Mob {
                 goTo(destination);
             }
         };
+    }
+
+    private void closeRandomDestination(int xD, int yD) {
+        int sign = random.next(1) == 1 ? 1 : -1;
+        int shift = (sightRange + random.next(9)) * sign;
+        destination.setX(xD + shift);
+        sign = random.next(1) == 1 ? 1 : -1;
+        shift = (sightRange + random.next(9)) * sign;
+        destination.setY(yD + shift);
+        if (destination.getX() < sightRange / 2) {
+            destination.setX(sightRange / 2);
+        }
+        if (destination.getX() > map.getWidth()) {
+            destination.setX(map.getWidth() - sightRange / 2);
+        }
+        if (destination.getY() < collision.getHeight()) {
+            destination.setY(sightRange / 2);
+        }
+        if (destination.getY() > map.getHeight()) {
+            destination.setY(map.getHeight() - sightRange / 2);
+        }
+    }
+
+    private void closeRandomDestination(int xD, int yD) {
+        int sign = random.next(1) == 1 ? 1 : -1;
+        int shift = (sightRange + random.next(9)) * sign;
+        destination.setX(xD + shift);
+        sign = random.next(1) == 1 ? 1 : -1;
+        shift = (sightRange + random.next(9)) * sign;
+        destination.setY(yD + shift);
+        if (destination.getX() < sightRange / 2) {
+            destination.setX(sightRange / 2);
+        }
+        if (destination.getX() > map.getWidth()) {
+            destination.setX(map.getWidth() - sightRange / 2);
+        }
+        if (destination.getY() < collision.getHeight()) {
+            destination.setY(sightRange / 2);
+        }
+        if (destination.getY() > map.getHeight()) {
+            destination.setY(map.getHeight() - sightRange / 2);
+        }
     }
 
     public Tongub(int x, int y, Place place, short ID) {
