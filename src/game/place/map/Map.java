@@ -595,8 +595,8 @@ public abstract class Map {
     }
 
     private boolean isObjectInSight(GameObject object) {
-        return cameraYStart <= object.getYSpriteEnd()
-                && cameraYEnd >= object.getYSpriteBegin()
+        return cameraYStart <= object.getYSpriteEnd() + object.getFloatHeight()
+                && cameraYEnd >= object.getYSpriteBegin() - object.getFloatHeight()
                 && cameraXStart <= object.getXSpriteEnd()
                 && cameraXEnd >= object.getXSpriteBegin();
     }

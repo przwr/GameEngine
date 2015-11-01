@@ -20,7 +20,8 @@ import static game.gameobject.GameObject.*;
  */
 public abstract class InteractiveCollision {
 
-    private static int[] directions = {InteractiveResponse.FRONT, InteractiveResponse.FRONT, InteractiveResponse.SIDE, InteractiveResponse.BACK, InteractiveResponse.BACK, InteractiveResponse.BACK, InteractiveResponse.SIDE, InteractiveResponse.FRONT};
+    private static int[] directions = {InteractiveResponse.FRONT, InteractiveResponse.FRONT, InteractiveResponse.SIDE, InteractiveResponse.BACK,
+            InteractiveResponse.BACK, InteractiveResponse.BACK, InteractiveResponse.SIDE, InteractiveResponse.FRONT};
     protected Point position = new Point();
     protected int fromBottom, height, shift;
     protected InteractiveResponse response = new InteractiveResponse();
@@ -36,7 +37,8 @@ public abstract class InteractiveCollision {
     }
 
     protected static int lineToCircleDistance(int xC, int yC, int radius, Point start, Point end, int length) {
-        double d = Line2D.ptSegDist(start.getX(), (int) (start.getY() * Methods.SQRT_ROOT_OF_2), end.getX(), (end.getY() * Methods.SQRT_ROOT_OF_2), xC, (int) (yC * Methods.SQRT_ROOT_OF_2));
+        double d = Line2D.ptSegDist(start.getX(), (int) (start.getY() * Methods.SQRT_ROOT_OF_2), end.getX(), (end.getY() * Methods.SQRT_ROOT_OF_2), xC, (int)
+                (yC * Methods.SQRT_ROOT_OF_2));
         if (d <= radius) {
             int e = Methods.pointDistance(xC, (int) (yC * Methods.SQRT_ROOT_OF_2), end.getX(), (int) (end.getY() * Methods.SQRT_ROOT_OF_2));
             if (d < 1) {
@@ -58,9 +60,26 @@ public abstract class InteractiveCollision {
 
     public abstract void updatePosition(GameObject owner);
 
-    public abstract InteractiveResponse collide(GameObject owner, GameObject object, byte attackType);
+    protected abstract InteractiveResponse collideImplementation(GameObject owner, GameObject object, byte attackType);
 
-    public abstract InteractiveResponse collide(GameObject owner, Player player, byte attackType);
+    protected abstract InteractiveResponse collideImplementation(GameObject owner, Player player, byte attackType);
+
+    public InteractiveResponse collide(GameObject owner, GameObject object, byte attackType) {
+        if (owner.getCollision().isCollide() && object.getCollision().isHitable()) {
+            return collideImplementation(owner, object, attackType);
+        } else {
+            return InteractiveResponse.NO_RESPONSE;
+        }
+    }
+
+    public InteractiveResponse collide(GameObject owner, Player player, byte attackType) {
+        if (owner.getCollision().isCollide() && player.getCollision().isHitable()) {
+            return collideImplementation(owner, player, attackType);
+        } else {
+            return InteractiveResponse.NO_RESPONSE;
+        }
+    }
+
 
     protected int calculateInteractionDirection(int objectDirection, Figure collision, int x, int y) {
         int xS = collision.getX();

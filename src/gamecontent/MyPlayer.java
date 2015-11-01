@@ -291,13 +291,14 @@ public class MyPlayer extends Player {
     public void render(int xEffect, int yEffect) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) ((getY() - floatHeight) * Place.getCurrentScale() + yEffect), 0);
-            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
-                    map.getLightColor());
+            glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
             Drawer.setColor(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                     * Place.getCurrentScale() / 2f), 24);
+            glTranslatef(0, (int) (floatHeight * Place.getCurrentScale()), 0);
             Drawer.refreshColor();
+            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
+                    map.getLightColor());
             glPopMatrix();
 
             glPushMatrix();
@@ -442,7 +443,7 @@ public class MyPlayer extends Player {
         }
         brakeOthers();
         appearance.updateTexture(this);
-        updateWithGravity();
+//        updateWithGravity();
     }
 
     @Override

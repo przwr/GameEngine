@@ -49,7 +49,7 @@ public class Tongub extends Mob {
                 if (rest.isOver()) {
                     brake(2);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                    if (closeFriends.size() > 1) {
+                    if (closeEnemies.size() * 2 <= closeFriends.size()) {
                         GameObject closerEnemy = getCloserEnemy();
                         if (closerEnemy != null && isInHalfHearingRange(closerEnemy)) {
                             state = attack;
@@ -106,17 +106,18 @@ public class Tongub extends Mob {
 //                System.out.println("HIDE");
                 brake(2);
                 if (animation.getDirectionalFrameIndex() == 16) {
-                    collision.setWidth(0);
+                    collision.setCollide(false);
+                    collision.setHitable(false);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     GameObject closerEnemy = getCloserEnemy();
                     if (closerEnemy == null) {
                         stats.setProtectionState(false);
                         undig = true;
-                        collision.setWidth(48);
+                        collision.setCollide(true);
+                        collision.setHitable(true);
                     }
                 } else if (!stats.isProtectionState() && animation.getDirectionalFrameIndex() == 22) {
                     state = idle;
-
                 }
             }
         };

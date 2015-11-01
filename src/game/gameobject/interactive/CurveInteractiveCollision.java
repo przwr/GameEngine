@@ -57,10 +57,10 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public InteractiveResponse collide(GameObject owner, GameObject object, byte attackType) {
+    protected InteractiveResponse collideImplementation(GameObject owner, GameObject object, byte attackType) {
         if (object != null && object.getCollision() != null) {
             int objectBottom = (int) object.getFloatHeight();
-            int objectTop = objectBottom + object.getAppearance().getActualHeight();
+            int objectTop = objectBottom + object.getActualHeight();
             int bottom = (int) owner.getFloatHeight() + fromBottom;
             int top = bottom + height;
             if (objectTop > bottom && objectBottom < top) {
@@ -88,10 +88,10 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public InteractiveResponse collide(GameObject owner, Player player, byte attackType) {
+    protected InteractiveResponse collideImplementation(GameObject owner, Player player, byte attackType) {
         if (player != null && player.isInGame()) {
             int playerBottom = (int) player.getFloatHeight();
-            int playerTop = playerBottom + player.getAppearance().getActualHeight();
+            int playerTop = playerBottom + player.getActualHeight();
             int bottom = (int) owner.getFloatHeight() + fromBottom;
             int top = bottom + height;
             if (playerTop > bottom && playerBottom < top) {

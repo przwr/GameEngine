@@ -88,7 +88,7 @@ public class Interactive {
             }
             if (COLLIDES_WITH_PLAYERS) {
                 for (GameObject player : players) {
-                    if (!isException(player) && (COLLIDES_WITH_SELF || (player != owner))) {
+                    if (((Player) player).isInGame() && !isException(player) && (COLLIDES_WITH_SELF || (player != owner))) {
                         InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
                         if (response.getPixels() > 0) {
                             activated = true;

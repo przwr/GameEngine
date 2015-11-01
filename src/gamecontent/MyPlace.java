@@ -62,7 +62,7 @@ public class MyPlace extends Place {
 
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
-        dayCycle.setTime(17, 30);
+        dayCycle.setTime(8, 30);
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
         loadingMap = new LoadingMap(this);
@@ -196,14 +196,17 @@ public class MyPlace extends Place {
         if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
             if (delay.isOver()) {
                 delay.start();
-                dayCycle.addMinutes(5);
+                players[0].setFloatHeight(players[0].getFloatHeight() + 1);
+                System.out.println(players[0].getFloatHeight());
+//                dayCycle.addMinutes(5);
             }
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
             if (delay.isOver()) {
-                delay.start();
-                dayCycle.stopTime();
+                delay.start();                players[0].setFloatHeight(players[0].getFloatHeight() - 1);
+
+//                dayCycle.stopTime();
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_V)) {

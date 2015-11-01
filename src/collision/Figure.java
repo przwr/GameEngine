@@ -29,7 +29,7 @@ public abstract class Figure implements Comparable<Figure> {
     private final DoublePoint slideSpeed;
     protected int xStart, yStart, width, height, xCenter, yCenter;
     private GameObject owner;
-    private boolean mobile = false, small = false;
+    private boolean mobile = false, small = false, collide = true, hitable = true;
 
     public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
         this.xStart = xStart;
@@ -69,14 +69,32 @@ public abstract class Figure implements Comparable<Figure> {
         scope.updateTilePoints();
     }
 
-    public abstract boolean isCollideSingle(int x, int y, Figure figure);
+
+    protected abstract boolean isCollideSingleImplementation(int x, int y, Figure figure);
+
+    public boolean isCollideSingle(int x, int y, Figure figure) {
+        if (collide && figure.collide) {
+            if (owner != null && figure.getOwner() != null) {
+                int objectBottom = (int) figure.getOwner().getFloatHeight();
+                int objectTop = objectBottom + figure.getOwner().getActualHeight();
+                int bottom = (int) owner.getFloatHeight();
+                int top = bottom + owner.getActualHeight();
+                if (objectTop > bottom && objectBottom < top) {
+                    return isCollideSingleImplementation(x, y, figure);
+                }
+            } else {
+                return isCollideSingleImplementation(x, y, figure);
+            }
+        }
+        return false;
+    }
 
     public abstract List<Point> getPoints();
 
     public abstract void updatePoints();
 
     public boolean isCollideSolid(int x, int y, Map map) {
-        if (getOwner().getArea() != -1) {
+        if (collide && getOwner().getArea() != -1) {
             Area area = map.getArea(getOwner().getArea());
             if (area.getNearBlocks().stream().anyMatch((block) -> (block.isSolid() && block.isCollide(x, y, this)))) {
                 return true;
@@ -433,6 +451,21 @@ public abstract class Figure implements Comparable<Figure> {
         this.height = height;
     }
 
+    public boolean isCollide() {
+        return collide;
+    }
+
+    public void setCollide(boolean collide) {
+        this.collide = collide;
+    }
+
+    public boolean isHitable() {
+        return hitable;
+    }
+
+    public void setHitable(boolean hitable) {
+        this.hitable = hitable;
+    }
 
     private class DoublePoint {
 
