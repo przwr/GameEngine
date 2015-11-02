@@ -36,7 +36,7 @@ public class MyPlace extends Place {
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
-    private final Delay delay = Delay.createInMiliseconds(100);
+    private final Delay delay = Delay.createInMilliseconds(100);
     private ArrayList<Map> unloadedMaps = new ArrayList<>();
     private Map map;
 

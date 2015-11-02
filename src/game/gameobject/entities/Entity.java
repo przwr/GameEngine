@@ -59,10 +59,10 @@ public abstract class Entity extends GameObject {
     protected Player collided;
 
     protected ArrayList<TemporalChanger> changers;
-    protected SpeedChanger knockback;
+    protected SpeedChanger knockBack;
 
     public Entity() {
-        knockback = new SpeedChanger();
+        knockBack = new SpeedChanger();
         changers = new ArrayList<>();
         resistance = 1;
     }
@@ -81,31 +81,31 @@ public abstract class Entity extends GameObject {
     }
 
     @Override
-    public void getHurt(int knockbackPower, double jumpPower, GameObject attacker) {
-        knockBack(knockbackPower, jumpPower, attacker);
+    public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
+        knockBack(knockBackPower, jumpPower, attacker);
     }
 
-    public void knockBack(int knockbackPower, double jumpPower, GameObject attacker) {
-        knockback.setFrames(30);
-        knockback.setAttackerDirection(attacker.getDirection());
+    public void knockBack(int knockBackPower, double jumpPower, GameObject attacker) {
+        knockBack.setFrames(30);
+        knockBack.setAttackerDirection(attacker.getDirection());
         int angle = (int) Methods.pointAngleCounterClockwise(attacker.getX(), attacker.getY(), x, y);
-        knockback.setSpeedInDirection(angle, Methods.interval(1, knockbackPower, 20));
+        knockBack.setSpeedInDirection(angle, Methods.interval(1, knockBackPower, 20));
         setJumpForce(jumpPower);
-        knockback.setType(SpeedChanger.DECREASING);
-        knockback.start();
-        addChanger(knockback);
+        knockBack.setType(SpeedChanger.DECREASING);
+        knockBack.start();
+        addChanger(knockBack);
     }
 
     public boolean isHurt() {
         if (!stats.isUnhurtableState()) {
-            return !knockback.isOver();
+            return !knockBack.isOver();
         } else {
             return false;
         }
     }
 
-    public SpeedChanger getKnockback() {
-        return knockback;
+    public SpeedChanger getKnockBack() {
+        return knockBack;
     }
 
     public synchronized void updateSoft() {

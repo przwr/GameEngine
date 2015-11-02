@@ -13,7 +13,7 @@ import org.newdawn.slick.Color;
  */
 public class LoadingMap extends Map {
 
-    Delay delay = Delay.createInMiliseconds(500);
+    Delay delay = Delay.createInMilliseconds(500);
     int dotsCount = -1;
 
     {

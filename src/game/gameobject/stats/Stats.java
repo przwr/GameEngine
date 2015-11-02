@@ -33,7 +33,7 @@ public class Stats {
     }
 
     public void decreaseHealth(InteractiveResponse response) {
-        if (health > 0 && owner.getKnockback().isOver()) {
+        if (health > 0 && owner.getKnockBack().isOver()) {
             hurt = 0;
             switch (response.getDirection()) {
                 case FRONT:

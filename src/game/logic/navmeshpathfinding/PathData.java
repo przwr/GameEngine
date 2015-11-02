@@ -43,7 +43,7 @@ public class PathData {
     final PointedValueContainer correctionPoints = new PointedValueContainer(4);
     final List<Figure> close = new BlueArray<>();
     final Polygon poly = new Polygon();
-    final Delay delay = Delay.createInMiliseconds(250);
+    final Delay delay = Delay.createInMilliseconds(250);
     int x, y, xS, xE, yS, yE, xRef, yRef, passedCount, alternateCount, min, temp, xDS, xDE, yDS, yDE,
             xPass, yPass, xInAWay, yInAWay, currentPoint, xDistance, yDistance, scope, lastCorner = -1;
     double xSpeed;

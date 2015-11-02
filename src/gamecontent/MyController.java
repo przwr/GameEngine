@@ -53,13 +53,13 @@ public class MyController extends PlayerController {
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
         blockedInputs = new boolean[ACTIONS_COUNT];
-        attackDelay = Delay.createInMiliseconds(30);
-        preAttackDelay = Delay.createInMiliseconds(30);
-        afterAttackDelay = Delay.createInMiliseconds(160);
-        lagDelay = Delay.createInMiliseconds(250);
-        sideDelay = Delay.createInMiliseconds(25);
-        jumpDelay = Delay.createInMiliseconds(400);
-        chargingDelay = Delay.createInMiliseconds(300);
+        attackDelay = Delay.createInMilliseconds(30);
+        preAttackDelay = Delay.createInMilliseconds(30);
+        afterAttackDelay = Delay.createInMilliseconds(160);
+        lagDelay = Delay.createInMilliseconds(250);
+        sideDelay = Delay.createInMilliseconds(25);
+        jumpDelay = Delay.createInMilliseconds(400);
+        chargingDelay = Delay.createInMilliseconds(300);
         chargingDelay.terminate();
         attackFrames = new int[]{22, 27, 31, 38, 40, 123};
         jumpMaker = new SpeedChanger(8);
@@ -128,8 +128,8 @@ public class MyController extends PlayerController {
     }
 
     private void updateGettingHurt() {
-        inControl.setDirection8way(Methods.pointAngle8Directions(inControl.getKnockback().getXSpeed(),
-                inControl.getKnockback().getYSpeed(), 0, 0));
+        inControl.setDirection8way(Methods.pointAngle8Directions(inControl.getKnockBack().getXSpeed(),
+                inControl.getKnockBack().getYSpeed(), 0, 0));
         charging = false;
         attacking = false;
         actions[lastAttackButton].setInterrupted();
@@ -220,9 +220,9 @@ public class MyController extends PlayerController {
     }
 
     private void startAttack(byte attack) {
-        preAttackDelay.setFrameLengthInMiliseconds(30);
-        attackDelay.setFrameLengthInMiliseconds(30);
-        afterAttackDelay.setFrameLengthInMiliseconds(160);
+        preAttackDelay.setFrameLengthInMilliseconds(30);
+        attackDelay.setFrameLengthInMilliseconds(30);
+        afterAttackDelay.setFrameLengthInMilliseconds(160);
         lastAttackType = attack;
         attackMovement.setSpeedInDirection(tempDirection * 45, 10);
         attackMovement.start();

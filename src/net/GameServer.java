@@ -36,7 +36,7 @@ public class GameServer {
         this.game = game;
 //        this.scopeX = 2400;
 //        this.scopeY = 1500;
-        delay = Delay.createInMiliseconds(50);
+        delay = Delay.createInMilliseconds(50);
         delay.terminate();
         Server tempServer = null;
         try {

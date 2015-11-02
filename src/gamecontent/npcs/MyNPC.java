@@ -43,7 +43,7 @@ public class MyNPC extends Mob {
             if (spinning) {
                 setDirection8way(getDirection8Way()+ 1);
             } else {
-                setDirection8way((int) Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
+                setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
             }
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
             if (mpPrey.getController().getAction(MyController.INPUT_ACTION).isKeyClicked() 

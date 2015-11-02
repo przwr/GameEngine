@@ -40,7 +40,7 @@ public class DamageNumber extends Entity {
         setGravity(0.1);
         this.xSpeed = Methods.xRadius(direction, speed);
         this.ySpeed = -Methods.yRadius(direction, speed);
-        time = Delay.createInMiliseconds((rand.random(5) + 5) * 100);
+        time = Delay.createInMilliseconds((rand.random(5) + 5) * 100);
         time.start();
         onTop = true;
         setDirection(direction);
