@@ -141,9 +141,19 @@ public abstract class Mob extends Entity {
         }
     }
 
+    protected synchronized void chargeToPoint(Point destination) {
+        double angle = Methods.pointAngleClockwise(x, y, destination.getX(), destination.getY());
+        changeSpeed(Methods.xRadius(angle, maxSpeed), Methods.yRadius(angle, maxSpeed));
+    }
+
+
     protected synchronized void goTo(Point destination) {
-        if (destination.getX() > 0) {
-            pathStrategy.findPath(this, pathData, destination.getX(), destination.getY());
+        goTo(destination.getX(), destination.getY());
+    }
+
+    protected synchronized void goTo(int xD, int yD) {
+        if (xD > 0) {
+            pathStrategy.findPath(this, pathData, xD, yD);
             if (this.getMaxSpeed() > 4) {
                 changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
             } else {

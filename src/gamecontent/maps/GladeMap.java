@@ -11,7 +11,7 @@ import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
-import gamecontent.mobs.Tongub;
+import gamecontent.mobs.Plurret;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import gamecontent.mobs.Blazag;
@@ -34,14 +34,16 @@ public class GladeMap extends Map {
             }
         }
 
-//        PuzzleObject test = new PuzzleObject("bloczek", place);
-//        test.placePuzzle(0, 0, this);
-        PuzzleObject test = new PuzzleObject("zatoczka", place);
-        test.placePuzzle(5, 3, this);
+        PuzzleObject test = new PuzzleObject("bloczek", place);
+        test.placePuzzle(0, 0, this);
+//        PuzzleObject test = new PuzzleObject("zatoczka", place);
+//        test.placePuzzle(5, 3, this);
         test = new PuzzleObject("test", place);
         test.placePuzzle(11, 26, this);
         test = new PuzzleObject("smukly", place);
         test.placePuzzle(-1, 0, this);
+        test = new PuzzleObject("veryHighRound", place);
+        test.placePuzzle(5, 5, this);
         test = new PuzzleObject("domek", place);
         test.placePuzzle(7, 18, this);
 
@@ -61,22 +63,22 @@ public class GladeMap extends Map {
     @Override
     public void populate() {
         //addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
-        addObject(new BrainlessShen(356, 768, place, mobID++));
-        addObject(new Blazag(768, 2048, place, mobID++));
-        addObject(new Blazag(1200, 2048, place, mobID++));
-        addObject(new Blazag(2048, 2048, place, mobID++));
-        addObject(new Tongub(1256, 768, place, mobID++));
-        addObject(new Tongub(1256, 820, place, mobID++));
-        addObject(new Tongub(1256, 900, place, mobID++));
-        addObject(new Shen(512, 800, place, mobID++));
-        addObject(new Shen(768, 1280, place, mobID++));
-        addObject(new Shen(512, 1500, place, mobID++));
-        addObject(new Shen(648, 1400, place, mobID++));
+//        addObject(new BrainlessShen(356, 768, place, mobID++));
+//        addObject(new Blazag(768, 2048, place, mobID++));
+//        addObject(new Blazag(1200, 2048, place, mobID++));
+//        addObject(new Blazag(2048, 2048, place, mobID++));
+//        addObject(new Tongub(1256, 768, place, mobID++));
+//        addObject(new Tongub(1256, 820, place, mobID++));
+//        addObject(new Tongub(1256, 900, place, mobID++));
+//        addObject(new Shen(512, 800, place, mobID++));
+//        addObject(new Shen(768, 1280, place, mobID++));
+//        addObject(new Shen(512, 1500, place, mobID++));
+//        addObject(new Shen(648, 1400, place, mobID++));
         addObject(new Plurret(1156, 968, place, mobID++));
-        addObject(new Shen(512, 1024, place, mobID++));
-        addObject(new Shen(768, 1280, place, mobID++));
-        addObject(new Shen(512, 1500, place, mobID++));
-        addObject(new Shen(648, 1400, place, mobID++));
+//        addObject(new Shen(512, 1024, place, mobID++));
+//        addObject(new Shen(768, 1280, place, mobID++));
+//        addObject(new Shen(512, 1500, place, mobID++));
+//        addObject(new Shen(648, 1400, place, mobID++));
 //        addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
 //        addObject(new MyNPC(384, 590, place, mobID++));
         for (int i = 0; i < 40; i += 2) {

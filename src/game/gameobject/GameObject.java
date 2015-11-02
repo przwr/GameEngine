@@ -14,6 +14,7 @@ import engine.lights.Light;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.InteractiveActivator;
 import game.gameobject.stats.Stats;
+import game.place.Place;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
 import sprites.Appearance;
@@ -196,7 +197,7 @@ public abstract class GameObject {
     }
 
     public int getDepth() {
-        return (int) (depth + y);
+        return (int) (depth + y + floatHeight);
     }
 
     public void setDepth(int depth) {
@@ -371,6 +372,14 @@ public abstract class GameObject {
     }
 
 
+    public Interactive getInteractive(byte attackType) {
+        for (Interactive interactive : interactiveObjects) {
+            if (interactive.getAttackType() == attackType)
+                return interactive;
+        }
+        return null;
+    }
+
     public InteractiveActivator getAttackActivator(byte attackType) {
         for (Interactive i : interactiveObjects) {
             if (i.getAttackType() == attackType)
@@ -385,6 +394,13 @@ public abstract class GameObject {
 
     public Appearance getAppearance() {
         return appearance;
+    }
+
+    public int getActualHeight() {
+        if (appearance != null) {
+            return appearance.getActualHeight();
+        }
+        return Place.tileSize;
     }
 
     public boolean isInCollidingPosition() {

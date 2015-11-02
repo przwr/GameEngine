@@ -53,7 +53,7 @@ public class Line extends Figure {
     }
 
     @Override
-    public boolean isCollideSingle(int x, int y, Figure figure) {
+    protected boolean isCollideSingleImplementation(int x, int y, Figure figure) {
         if (figure instanceof Rectangle) {
             return rectangleCollision(x, y, figure);
         } else if (figure instanceof RoundRectangle) {

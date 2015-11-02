@@ -223,11 +223,15 @@ public abstract class Entity extends GameObject {
     }
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
-        double xTempSpeed = (xMagnitude + collision.getXSlideSpeed());
-        double yTempSpeed = (yMagnitude + collision.getYSlideSpeed());
-        collision.prepareSlideSpeed(xMagnitude, yMagnitude);
-        moveIfPossibleWithoutSliding(xTempSpeed, yTempSpeed);
-        collision.resetSlideSpeed();
+        if (collision != null) {
+            double xTempSpeed = (xMagnitude + collision.getXSlideSpeed());
+            double yTempSpeed = (yMagnitude + collision.getYSlideSpeed());
+            collision.prepareSlideSpeed(xMagnitude, yMagnitude);
+            moveIfPossibleWithoutSliding(xTempSpeed, yTempSpeed);
+            collision.resetSlideSpeed();
+        } else {
+            moveIfPossibleWithoutSliding(xMagnitude, yMagnitude);
+        }
     }
 
     protected void moveIfPossibleWithoutSliding(double xMagnitude, double yMagnitude) {

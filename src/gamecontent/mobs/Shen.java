@@ -39,6 +39,7 @@ public class Shen extends Mob {
     private ActionState idle, run_away, hide, attack, wander, follow, bounce;
     private SpeedChanger bouncer;
     private boolean attacking = true, unfold;
+    private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
 
     {
         idle = new ActionState() {
@@ -231,7 +232,6 @@ public class Shen extends Mob {
             public void update() {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
-                    RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
                     if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
                         int sign = random.next(1) == 1 ? 1 : -1;
                         int shift = (sightRange + random.next(9)) * sign;

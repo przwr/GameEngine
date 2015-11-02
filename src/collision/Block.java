@@ -233,6 +233,12 @@ public class Block extends GameObject {
         }
     }
 
+    @Override
+    public int getActualHeight() {
+//        System.out.println(collision.getHeight() + collision.getShadowHeight());
+        return collision.getHeight() + collision.getShadowHeight();
+    }
+
     //b:x:y:width:height:shadowHeight:round
     public String saveToString(int xBegin, int yBegin, int tile) {
         String string = ((collision instanceof RoundRectangle) ? "rb:" : "b:") + ((int) (x - xBegin) / tile) + ":" + ((int) (y - yBegin) / tile) + ":"
