@@ -10,6 +10,7 @@ import collision.Rectangle;
 import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
+import game.gameobject.entities.Agro;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.CurveInteractiveCollision;
@@ -122,12 +123,15 @@ public class Blazag extends Mob {
                 if (animation.getDirectionalFrameIndex() < 26) {
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     if (!closeFriends.isEmpty()) {
-                        if (alpha) {
-                            setOrders();
-                        } else {
-                            getOrders();
+                        if (!getPathData().isTrue(OBSTACLE_BETWEEN)) {
+                            if (alpha) {
+                                setOrders();
+                            } else {
+                                getOrders();
+                            }
                         }
                     } else {
+                        setEnemyToAttack();
                         int distance = target != null ? Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) : sightRange2;
                         if (distance >= sightRange2 || target == null) {
                             target = null;
@@ -492,15 +496,37 @@ public class Blazag extends Mob {
 
     private void setEnemyToAttack() {
         int distance = Integer.MAX_VALUE;
+        int agro = 0;
         int currentDistance;
+        int currentAgro;
+        boolean agresor = false;
         for (GameObject object : closeEnemies) {
-            currentDistance = Methods.pointDistanceSimple2(getX(), getY(), object.getX(), object.getY());
-            if (currentDistance < distance) {
-                target = object;
-                distance = currentDistance;
+            if (agresor) {
+                Agro a = getAgresor(object);
+                if (a != null) {
+                    currentAgro = a.getValue();
+                    if (currentAgro > agro) {
+                        agro = currentAgro;
+                        target = object;
+                    }
+                }
+            } else {
+                currentDistance = Methods.pointDistanceSimple2(getX(), getY(), object.getX(), object.getY());
+                Agro a = getAgresor(object);
+                if (a != null) {
+                    currentAgro = a.getValue();
+                    if (currentAgro > agro) {
+                        agro = currentAgro;
+                        target = object;
+                    }
+                } else if (currentDistance < distance) {
+                    target = object;
+                    distance = currentDistance;
+                }
             }
         }
     }
+
 
     @Override
     public void update() {

@@ -15,6 +15,7 @@ import game.place.Place;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -30,6 +31,7 @@ public abstract class Mob extends Entity {
     protected boolean alpha;
     protected int pastDirections[] = new int[2];
     protected int currentPastDirection;
+    protected BlueArray<Agro> agro = new BlueArray<>();
 
     protected Mob(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
@@ -320,6 +322,22 @@ public abstract class Mob extends Entity {
         }
     }
 
+
+    public void updateAgro(Agro newAgro, int diffrence) {
+        ArrayList<Agro> toRemove = new ArrayList<>();
+        for (Agro a : agro) {
+            if (a != newAgro) {
+                a.addValue(diffrence);
+                if (a.value <= 0) {
+                    toRemove.add(a);
+                }
+            }
+        }
+        for (Agro a : toRemove) {
+            agro.remove(a);
+        }
+    }
+
     @Override
     public void updateRest(Update update) {
     }
@@ -334,5 +352,28 @@ public abstract class Mob extends Entity {
 
     public void setAlpha(boolean alpha) {
         this.alpha = alpha;
+    }
+
+    public BlueArray<Agro> getAgro() {
+        return agro;
+    }
+
+    public boolean isAgresor(GameObject attacker) {
+        for (Agro a : agro) {
+            if (a.agresor == attacker) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public Agro getAgresor(GameObject attacker) {
+        for (Agro a : agro) {
+            if (a.agresor == attacker) {
+                return a;
+            }
+        }
+        return null;
     }
 }

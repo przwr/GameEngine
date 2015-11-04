@@ -295,7 +295,7 @@ public class MyPlayer extends Player {
             Drawer.setColor(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                     * Place.getCurrentScale() / 2f), 24);
-            glTranslatef(0, (int) (floatHeight * Place.getCurrentScale()), 0);
+            glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
             Drawer.refreshColor();
             Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
                     map.getLightColor());

@@ -112,7 +112,7 @@ public class Plurret extends Mob {
                     seconds++;
                     if (seconds > max) {
                         seconds = 0;
-                        max = random.next(6);
+                        max = random.next(7);
                     }
                     rest.start();
                 }
