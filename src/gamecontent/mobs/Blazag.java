@@ -515,10 +515,9 @@ public class Blazag extends Mob {
                 Agro a = getAgresor(object);
                 if (a != null) {
                     currentAgro = a.getValue();
-                    if (currentAgro > agro) {
-                        agro = currentAgro;
-                        target = object;
-                    }
+                    agresor = true;
+                    agro = currentAgro;
+                    target = object;
                 } else if (currentDistance < distance) {
                     target = object;
                     distance = currentDistance;

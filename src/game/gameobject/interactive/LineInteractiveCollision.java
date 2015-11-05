@@ -88,8 +88,8 @@ public class LineInteractiveCollision extends InteractiveCollision {
             if (objectTop > bottom && objectBottom < top) {
                 int pixelsIn = lineToCircleDistance(object.getX(), object.getY(), (object.getCollisionWidth() + width) / 2, position, end, length);
                 if (pixelsIn > 0) {
-                    response.setResponse(pixelsIn, length, (byte) (calculateInteractionDirection(object
-                            .getDirection8Way(), object.getCollision(), owner.getX(), owner.getY())), attackType, owner);
+                    response.setResponse(pixelsIn, length, (byte) (calculateInteractionDirection(object.getDirection8Way(), object.getCollision(), owner.getX
+                            (), owner.getY())), attackType, owner);
                     return response;
                 }
             }

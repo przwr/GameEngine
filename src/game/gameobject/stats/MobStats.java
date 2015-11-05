@@ -1,8 +1,10 @@
 package game.gameobject.stats;
 
+import game.gameobject.GameObject;
 import game.gameobject.entities.Agro;
 import game.gameobject.entities.Mob;
 import game.gameobject.interactive.InteractiveResponse;
+import game.gameobject.items.Arrow;
 
 /**
  * Created by przemek on 10.08.15.
@@ -19,11 +21,16 @@ public class MobStats extends Stats {
     public void hurtReaction(InteractiveResponse response) {
         super.hurtReaction(response);
         Mob own = (Mob) owner;
-        Agro agro = own.getAgresor(response.getAttacker());
+        GameObject attacker = response.getAttacker();
+        //TODO Projectile, nie Arrow
+        if (attacker instanceof Arrow) {
+            attacker = ((Arrow) attacker).getOwner();
+        }
+        Agro agro = own.getAgresor(attacker);
         if (agro != null) {
             agro.addValue(hurt);
         } else {
-            agro = new Agro(response.getAttacker(), hurt);
+            agro = new Agro(attacker, hurt);
             own.getAgro().add(agro);
         }
         own.updateAgro(agro, Math.round(hurt * agroModifier));
