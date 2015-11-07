@@ -55,9 +55,9 @@ public class BrainlessShen extends Mob {
             updateAnimation();
         }
         updateChangers();
-        updateWithGravity();
-        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
-        brakeOthers();
+//        updateWithGravity();
+//        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+//        brakeOthers();
     }
 
     @Override
