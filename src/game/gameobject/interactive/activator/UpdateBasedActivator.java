@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.gameobject.interactive;
+package game.gameobject.interactive.activator;
 
+import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.GameObject;
 
 /**

@@ -1,4 +1,4 @@
-package game.gameobject.interactive;
+package game.gameobject.interactive.activator;
 
 import game.gameobject.GameObject;
 

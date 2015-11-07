@@ -12,7 +12,7 @@ package game.gameobject;
 import collision.Figure;
 import engine.lights.Light;
 import game.gameobject.interactive.Interactive;
-import game.gameobject.interactive.InteractiveActivator;
+import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.stats.Stats;
 import game.place.Place;
 import game.place.map.Map;
