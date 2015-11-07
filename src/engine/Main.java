@@ -207,6 +207,7 @@ public class Main {
                         console.setStatsRendered(!console.areStatsRendered());
                     }
                     if (console.areStatsRendered()) {
+                        console.clearStats();
                         console.printStats(info);
                     }
                 } else {

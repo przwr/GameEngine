@@ -95,9 +95,9 @@ public class ObjectUI extends GUIObject {
             int hTex = texture.getHeight();
 
             glScaled(Settings.nativeScale, Settings.nativeScale, 1);
-            Drawer.translate(tile / 2 + xEffect, tile / 2 + yEffect);
+            Drawer.translate(tile / 2, tile / 2);
             Drawer.setCentralPoint();
-            if (mode == 0) {
+            if (mode == ObjectPlace.MODE_TILE) {
                 if (change) {
                     Drawer.translate(player.getCamera().getWidthHalf() / 2, player.getCamera().getHeightHalf() / 2);
                     glColor4f(1f, 1f, 1f, 1f);
@@ -118,7 +118,7 @@ public class ObjectUI extends GUIObject {
                 Drawer.drawRectangle(0, -hTex - 2, d - 1, hTex + 2);
                 Drawer.drawRectangle(wTex + d + 1, 0, d - 1, hTex + 2);
             }
-            if (mode != 2) {
+            if (mode != ObjectPlace.MODE_VIEWING) {
                 Drawer.returnToCentralPoint();
                 glScaled(1 / Settings.nativeScale, 1 / Settings.nativeScale, 1);
                 Drawer.renderString(playerPosition.getX() + ":" + playerPosition.getY() + " - "
