@@ -33,6 +33,8 @@ import sprites.SpriteBase;
  */
 public class ObjectPlace extends Place {
 
+    public static final int MODE_TILE = 0, MODE_BLOCK = 1, MODE_VIEWING = 2, MODE_OBJECT = 3;
+    
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
@@ -159,24 +161,24 @@ public class ObjectPlace extends Place {
         altMode = key.key(Keyboard.KEY_LMENU);
 
         if (key.keyPressed(Keyboard.KEY_1)) {
-            if (mode == 0) {
+            if (mode == MODE_TILE) {
                 noBlocks = !noBlocks;
                 printMessage("BLOCKS ARE " + (noBlocks ? "INVISIBLE" : "VISIBLE") + " NOW");
             } else {
                 printMessage("TILE MODE");
             }
-            setMode(0);
+            setMode(MODE_TILE);
         }
         if (key.keyPressed(Keyboard.KEY_2)) {
-            setMode(1);
+            setMode(MODE_BLOCK);
             printMessage("BLOCK MODE");
         }
         if (key.keyPressed(Keyboard.KEY_3)) {
-            setMode(2);
+            setMode(MODE_VIEWING);
             printMessage("VIEWING MODE");
         }
         if (key.keyPressed(Keyboard.KEY_4)) {
-            setMode(3);
+            setMode(MODE_OBJECT);
             printMessage("OBJECT MODE");
         }
 

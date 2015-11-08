@@ -36,48 +36,51 @@ public class GUIHandler extends GUIObject {
     private final Comparator<File> nameComparator = (File firstObject, File secondObject)
             -> firstObject.getName().compareTo(secondObject.getName());
     private final String[] help = new String[]{
-            "H:                     Help",
-            "1 ... 4:               Change mode",
-            "S:                     Save as",
-            "CTRL + S:              QuickSave",
-            "L:                     Load object",
-            "CTRL + BACKSPACE:      Clear map",
-            "",
-            "CTRL + ARROWS:         Change selection",
-            "CTRL + Z:              Reset selection",
-            "A:                     Run mode",
-            "BACKSPACE:             Cancel",
-            "U:                     Undo",
-            "",
-            "SPACE:                 Create",
-            "DELETE:                Delete",
-            "ALT:                   Create altered",
-            "",
-            "Z:                     Zoom in/out",
-            "V:                     Visibility options",
-            "B:                     Lock Block",
-            "M:                     Move Blocks",
-            "HOME:                  Set starting point",
-            "",
-            "//TILE MODE (1)",
-            "",
-            "SHIFT + ARROWS:        Change tile",
-            "T:                     Load spriteSheet",
-            "",
-            "//BLOCK MODE (2)",
-            "",
-            "SHIFT + ARROWS:        Change block height",
-            "R:                     Rounded blocks mode",
-            "",
-            "//OBJECT MODE (4)",
-            "",
-            "SHIFT + ARROWS:        Change link radius"};
+        "H:", "Help",
+        "1 ... 4:", "Change mode",
+        "S:", "Save as",
+        "CTRL + S:", "QuickSave",
+        "L:", "Load object",
+        "CTRL + BACKSPACE:", "Clear map",
+        "",
+        "CTRL + ARROWS:", "Change selection",
+        "CTRL + Z:", "Reset selection",
+        "A:", "Run mode",
+        "BACKSPACE:", "Cancel",
+        "U:", "Undo",
+        "",
+        "SPACE:", "Create",
+        "DELETE:", "Delete",
+        "ALT:", "Create altered",
+        "",
+        "Z:", "Zoom in/out",
+        "V:", "Visibility options",
+        "B:", "Lock Block",
+        "M:", "Move Blocks",
+        "HOME:", "Set starting point",
+        "PAGE UP/DOWN:", "Raise/Lower elevation",
+        "",
+        "//TILE MODE (1)",
+        "",
+        "SHIFT + ARROWS:", "Change tile",
+        "T:", "Load spriteSheet",
+        "",
+        "//BLOCK MODE (2)",
+        "",
+        "SHIFT + ARROWS:", "Change block height",
+        "R:", "Rounded blocks mode",
+        "",
+        "//OBJECT MODE (4)",
+        "",
+        "SHIFT + ARROWS:", "Change link radius"};
     private int mode, selected;
     private ArrayList<File> list;
     private String text = "";
     private boolean firstLoop;
     private boolean[] options;
     private String[] prettyOptions;
+
+    private int helpLength;
 
     public GUIHandler(Place place) {
         super("gui", place);
@@ -88,6 +91,13 @@ public class GUIHandler extends GUIObject {
         visible = false;
         xStart = (int) (tile * 0.1);
         yStart = (int) (tile * 2.5);
+
+        for (String s : help) {
+            if (!s.equals("") && s.charAt(s.length() - 1) == ':') {
+                helpLength = Math.max(helpLength, place.standardFont.getWidth(s));
+            }
+        }
+        helpLength *= 1.1;
     }
 
     public void changeToNamingConsole() {
@@ -203,10 +213,15 @@ public class GUIHandler extends GUIObject {
                 place.standardFont, new Color(1f, 1f, 1f));
 
         int delta;
-        for (int i = 0; i < help.length; i++) {
-            delta = (int) ((i - selected) * tile * 0.5);
+        int index = 0;
+        for (int i = 0; i < help.length; i++ ,index++) {
+            delta = (int) ((index - selected) * tile * 0.5);
             Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
                     place.standardFont, new Color(1f, 1f, 1f));
+            if (!help[i].equals("") && help[i].charAt(help[i].length() - 1) == ':') {
+                Drawer.renderString(help[++i], helpLength + (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
+                    place.standardFont, new Color(1f, 1f, 1f));
+            }
         }
         if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;

@@ -41,7 +41,7 @@ public class ObjectPlayer extends Player {
     private ObjectMap objMap;
     private ObjectPlace objPlace;
     private ObjectUI ui;
-    private int blockHeight, radius, mode;
+    private int blockHeight, tileHeight, radius, mode;
     private boolean roundBlocksMode;
     private boolean paused;
 
@@ -95,7 +95,6 @@ public class ObjectPlayer extends Player {
         onTop = true;
     }
 
-
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
         return isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
@@ -103,27 +102,28 @@ public class ObjectPlayer extends Player {
 
     @Override
     protected void move(double xPos, double yPos) {
-        int xPosition = (int) xPos, yPosition = (int) yPos;
+        int xdelta = (int) xPos;
+        int ydelta = (int) yPos;
         boolean ctrl = key.key(KEY_LCONTROL);
         if (xTimer == 0) {
-            ix = Methods.interval(0, ix + xPosition, map.getWidthInTiles());
+            ix = Methods.interval(0, ix + xdelta, map.getWidthInTiles());
             setX(ix * tileSize);
         }
         if (yTimer == 0) {
-            iy = Methods.interval(0, iy + yPosition, map.getHeightInTiles());
+            iy = Methods.interval(0, iy + ydelta, map.getHeightInTiles());
             setY(iy * tileSize);
         }
         updateAreaPlacement();
         if (key.key(KEY_M) && movingBlock != null) {
-            movingBlock.stream().forEach((tmpB) -> tmpB.move(xTimer == 0 ? xPosition * tileSize : 0, yTimer == 0 ? yPosition * tileSize : 0));
+            movingBlock.stream().forEach((tmpB) -> tmpB.move(xTimer == 0 ? xdelta * tileSize : 0, yTimer == 0 ? ydelta * tileSize : 0));
         }
 
-        if (mode < 2) {
+        if (mode < ObjectPlace.MODE_VIEWING) {
             if (xTimer == 0 && (!ctrl || roundBlocksMode)) {
-                xStop = Methods.interval(0, xStop + xPosition, map.getWidthInTiles());
+                xStop = Methods.interval(0, xStop + xdelta, map.getWidthInTiles());
             }
             if (yTimer == 0 && !ctrl) {
-                yStop = Methods.interval(0, yStop + yPosition, map.getHeightInTiles());
+                yStop = Methods.interval(0, yStop + ydelta, map.getHeightInTiles());
             }
         } else {
             xStop = ix;
@@ -144,138 +144,22 @@ public class ObjectPlayer extends Player {
         }
     }
 
-    public void setMode(int mode) {
-        this.mode = mode;
-    }
-
     @Override
     public void update() {
         key.keyboardStart();
         if (objPlace.areKeysUsable() && !paused) {
-            int xPos = 0;
-            int yPos = 0;
+            updateMovement();
 
-            maxTimer = key.key(KEY_A) ? 2 : 7;
+            updateModeSpecifics();
 
-            if (key.key(KEY_LCONTROL) && key.key(KEY_Z)) {
-                xStop = ix;
-                yStop = iy;
-            }
-
-            if (key.key(KEY_UP)) {
-                yPos--;
-            } else if (key.key(KEY_DOWN)) {
-                yPos++;
-            } else {
-                yTimer = 0;
-            }
-            if (key.key(KEY_LEFT)) {
-                xPos--;
-            } else if (key.key(KEY_RIGHT)) {
-                xPos++;
-            } else {
-                xTimer = 0;
-            }
-
-            if (mode == 0) {
-                ui.setChange(key.key(KEY_LSHIFT));
-                roundBlocksMode = false;
-            }
-            if (mode == 1 && key.keyPressed(KEY_R)) {
-                roundBlocksMode = !roundBlocksMode;
-            }
-            if (mode == 3) {
-                roundBlocksMode = false;
-            }
-
-            if (key.key(KEY_M)) {
-                if (movingBlock == null) {
-                    objPlace.getUndoControl().setUpUndo();
-                    int xBegin = Math.min(ix, xStop);
-                    int yBegin = Math.min(iy, yStop);
-                    int xd = (Math.abs(ix - xStop) + 1);
-                    int yd = (Math.abs(iy - yStop) + 1);
-                    movingBlock = objMap.getBlock(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
-                }
-            } else {
-                movingBlock = null;
-            }
-
-            if (xPos != 0 || yPos != 0) {
-                if (ui.isChanged()) {
-                    if (xTimer == 0 && yTimer == 0) {
-                        ui.changeCoordinates(xPos, yPos);
-                        xTimer = 1;
-                        yTimer = 1;
-                    }
-                } else if (mode == 1 && key.key(KEY_LSHIFT)) {
-                    if (xTimer == 0 && yTimer == 0) {
-                        blockHeight = FastMath.max(0, -yPos + blockHeight);
-                        xTimer = 1;
-                        yTimer = 1;
-                    }
-                } else if (mode == 3 && key.key(KEY_LSHIFT)) {
-                    if (xTimer == 0 && yTimer == 0) {
-                        radius = Methods.interval(1, radius - yPos, 20);
-                        xTimer = 1;
-                        yTimer = 1;
-                    }
-                } else {
-                    move(xPos, yPos);
-                    updateAreaPlacement();
-                }
-            }
+            moveBlocksKey();
 
             if (key.keyPressed(KEY_SPACE) || key.keyPressed(KEY_LMENU)) {
-                objPlace.getUndoControl().setUpUndo();
-                int xBegin = Math.min(ix, xStop);
-                int yBegin = Math.min(iy, yStop);
-                int xEnd = Math.max(ix, xStop);
-                int yEnd = Math.max(iy, yStop);
-                if (mode == 0) {
-                    for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                        for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                            Point p = ui.getCoordinates();
-                            objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
-                        }
-                    }
-                } else if (mode == 1) {
-                    int xd = (Math.abs(ix - xStop) + 1);
-                    int yd = (Math.abs(iy - yStop) + 1);
-                    if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
-                        if (roundBlocksMode) {
-                            rTmpBlock = new RoundedTMPBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, yd, map);
-                            objMap.addObject(rTmpBlock, key.key(KEY_LMENU));
-                            paused = true;
-                        } else {
-                            objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map), key.key(KEY_LMENU));
-                        }
-                    }
-                } else if (mode == 3) {
-                    PuzzleLink pl = new PuzzleLink(ix * tileSize, iy * tileSize, radius, objPlace);
-                    objMap.addObject(pl, false);
-                }
+                setInstance();
             }
 
             if (key.keyPressed(KEY_DELETE)) {
-                objPlace.getUndoControl().setUpUndo();
-                int xBegin = Math.min(ix, xStop);
-                int yBegin = Math.min(iy, yStop);
-                int xEnd = Math.max(ix, xStop);
-                int yEnd = Math.max(iy, yStop);
-                if (mode == 0) {
-                    for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                        for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                            objMap.deleteTile(xTemp, yTemp);
-                        }
-                    }
-                } else if (mode == 1) {
-                    int xd = (Math.abs(ix - xStop) + 1);
-                    int yd = (Math.abs(iy - yStop) + 1);
-                    objMap.deleteBlocks(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
-                } else if (mode == 3) {
-                    objMap.deleteLink(ix * tileSize, iy * tileSize);
-                }
+                deleteInstance();
             }
 
             if (key.keyPressed(KEY_B)) {
@@ -312,6 +196,154 @@ public class ObjectPlayer extends Player {
         key.keyboardEnd();
     }
 
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    private void moveBlocksKey() {
+        if (key.key(KEY_M)) {
+            if (movingBlock == null) {
+                objPlace.getUndoControl().setUpUndo();
+                int xBegin = Math.min(ix, xStop);
+                int yBegin = Math.min(iy, yStop);
+                int xd = (Math.abs(ix - xStop) + 1);
+                int yd = (Math.abs(iy - yStop) + 1);
+                movingBlock = objMap.getBlock(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
+            }
+        } else {
+            movingBlock = null;
+        }
+    }
+
+    private void updateMovement() {
+        int xPos = 0;
+        int yPos = 0;
+
+        maxTimer = key.key(KEY_A) ? 2 : 7;
+
+        if (key.key(KEY_LCONTROL) && key.key(KEY_Z)) {
+            xStop = ix;
+            yStop = iy;
+        }
+
+        if (key.key(KEY_UP)) {
+            yPos--;
+        } else if (key.key(KEY_DOWN)) {
+            yPos++;
+        } else {
+            yTimer = 0;
+        }
+        if (key.key(KEY_LEFT)) {
+            xPos--;
+        } else if (key.key(KEY_RIGHT)) {
+            xPos++;
+        } else {
+            xTimer = 0;
+        }
+
+        if (xPos != 0 || yPos != 0) {
+            if (ui.isChanged()) {
+                if (xTimer == 0 && yTimer == 0) {
+                    ui.changeCoordinates(xPos, yPos);
+                    xTimer = 1;
+                    yTimer = 1;
+                }
+            } else if (mode == ObjectPlace.MODE_BLOCK && key.key(KEY_LSHIFT)) {
+                if (xTimer == 0 && yTimer == 0) {
+                    blockHeight = FastMath.max(0, -yPos + blockHeight);
+                    xTimer = 1;
+                    yTimer = 1;
+                }
+            } else if (mode == ObjectPlace.MODE_OBJECT && key.key(KEY_LSHIFT)) {
+                if (xTimer == 0 && yTimer == 0) {
+                    radius = Methods.interval(1, radius - yPos, 20);
+                    xTimer = 1;
+                    yTimer = 1;
+                }
+            } else {
+                move(xPos, yPos);
+                updateAreaPlacement();
+            }
+        }
+    }
+
+    private void updateModeSpecifics() {
+        if (mode == ObjectPlace.MODE_TILE) {
+            if (key.keyPressed(KEY_PRIOR)) {
+                tileHeight++;
+            } else if (tileHeight > 0 && key.keyPressed(KEY_NEXT)) {
+                tileHeight--;
+            }
+            ui.setChange(key.key(KEY_LSHIFT));
+            roundBlocksMode = false;
+        }
+        if (mode == ObjectPlace.MODE_BLOCK) {
+            if (key.keyPressed(KEY_PRIOR)) {
+                blockHeight++;
+            } else if (blockHeight > 0 && key.keyPressed(KEY_NEXT)) {
+                blockHeight--;
+            }
+            if (key.keyPressed(KEY_R)) {
+                roundBlocksMode = !roundBlocksMode;
+            }
+        }
+        if (mode == ObjectPlace.MODE_OBJECT) {
+            roundBlocksMode = false;
+        }
+    }
+
+    private void setInstance() {
+        objPlace.getUndoControl().setUpUndo();
+        int xBegin = Math.min(ix, xStop);
+        int yBegin = Math.min(iy, yStop);
+        int xEnd = Math.max(ix, xStop);
+        int yEnd = Math.max(iy, yStop);
+        if (mode == ObjectPlace.MODE_TILE) {
+            for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                    Point p = ui.getCoordinates();
+                    objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
+                }
+            }
+        } else if (mode == ObjectPlace.MODE_BLOCK) {
+            int xd = (Math.abs(ix - xStop) + 1);
+            int yd = (Math.abs(iy - yStop) + 1);
+            if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
+                if (roundBlocksMode) {
+                    rTmpBlock = new RoundedTMPBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, yd, map);
+                    objMap.addObject(rTmpBlock, key.key(KEY_LMENU));
+                    paused = true;
+                } else {
+                    objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map), key.key(KEY_LMENU));
+                }
+            }
+        } else if (mode == ObjectPlace.MODE_OBJECT) {
+            PuzzleLink pl = new PuzzleLink(ix * tileSize, iy * tileSize, radius, objPlace);
+            objMap.addObject(pl, false);
+        }
+    }
+
+    private void deleteInstance() {
+        objPlace.getUndoControl().setUpUndo();
+        int xBegin = Math.min(ix, xStop);
+        int yBegin = Math.min(iy, yStop);
+        int xEnd = Math.max(ix, xStop);
+        int yEnd = Math.max(iy, yStop);
+        if (mode == ObjectPlace.MODE_TILE) {
+            for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+                for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                    objMap.deleteTile(xTemp, yTemp);
+                }
+            }
+        } else if (mode == ObjectPlace.MODE_BLOCK) {
+            int xd = (Math.abs(ix - xStop) + 1);
+            int yd = (Math.abs(iy - yStop) + 1);
+            objMap.deleteBlocks(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
+        } else if (mode == ObjectPlace.MODE_OBJECT) {
+            objMap.deleteLink(ix * tileSize, iy * tileSize);
+        }
+    }
+
     @Override
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
@@ -324,13 +356,20 @@ public class ObjectPlayer extends Player {
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         glColor4f(1f, 1f, 1f, 1f);
         Drawer.setCentralPoint();
-        if (mode == 0) {
+        if (mode == ObjectPlace.MODE_TILE) {
+            if (tileHeight > 0) {
+                Drawer.translate(0, -tileHeight * tileSize);
+            }
             Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
             Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
             Drawer.drawRectangle(0, -yd, d, yd);
             Drawer.drawRectangle(xd + d, 0, d, yd);
+            if (tileHeight > 0) {
+                Drawer.drawRectangle(-(d + xd) / 2, (d + yd) / 2, d, tileHeight * tileSize);
+                Drawer.drawCircle(0, tileHeight * tileSize, (int) (tileSize * 0.3), 10);
+            }
         }
-        if (mode == 1) {
+        if (mode == ObjectPlace.MODE_BLOCK) {
             if (roundBlocksMode) {
                 glColor3f(0f, 0f, 1f);
             } else {
@@ -350,11 +389,11 @@ public class ObjectPlayer extends Player {
                 Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd - d);
             }
         }
-        if (key.key(KEY_LMENU) && mode <= 1) {
+        if (key.key(KEY_LMENU) && mode <= ObjectPlace.MODE_BLOCK) {
             Drawer.returnToCentralPoint();
             Drawer.drawRing(-tileSize / 3, -tileSize / 3, tileSize / 5, d, 10);
         }
-        if (mode == 3) {
+        if (mode == ObjectPlace.MODE_OBJECT) {
             Drawer.drawRing(tileSize / 2, tileSize / 2, tileSize / 4, d, 10);
             int complex = radius * 2 + 10;
             if (radius % 2 == 1) {

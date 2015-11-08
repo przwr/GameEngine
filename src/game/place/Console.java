@@ -47,14 +47,20 @@ public class Console extends GUIObject {
         }
     }
 
+    public void clearStats() {
+        for (int i = 0; i < stat.length; i++) {
+            stat[i] = "";
+        }
+    }
+
     public void setStatsRendered(boolean stats) {
         this.stats = stats;
     }
-    
+
     public boolean areStatsRendered() {
         return stats;
     }
-    
+
     public void setCamera(Camera cam) {
         camera = cam;
     }
