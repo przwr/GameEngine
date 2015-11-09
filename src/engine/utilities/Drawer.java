@@ -163,6 +163,30 @@ public class Drawer {
         glEnable(GL_TEXTURE_2D);
     }
 
+
+    public static void drawCircleSector(int xStart, int yStart, int radius, int startAngle, int endAngle, int precision) {
+        drawEllipseSector(xStart, yStart, radius, radius, startAngle, endAngle, precision);
+    }
+
+    public static void drawEllipseSector(int xStart, int yStart, int xRadius, int yRadius, int startAngle, int endAngle, int precision) {
+        //Zbyt mała precyzja
+        // tworzy figury
+        // foremne
+        if (endAngle < startAngle) {
+            endAngle += 360;
+        }
+        translate(xStart, yStart);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex2f(0, 0);
+        int step = (endAngle - startAngle) / precision;
+        for (int i = startAngle; i <= endAngle; i += step) {
+            glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
+        }
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
+
     public static void drawEllipseBow(int xStart, int yStart, int xRadius, int yRadius, int width, int startAngle, int endAngle, int precision) {
         if (startAngle > endAngle) {
             int tmp = startAngle;

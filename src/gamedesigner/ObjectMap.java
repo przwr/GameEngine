@@ -393,25 +393,25 @@ public class ObjectMap extends Map {
         placement = new Placement(this);
     }
 
-    @Override
-    protected int getAreaIndexCoordinatesInTiles(int x, int y) {
-        return 0;
-    }
-
-    @Override
-    protected int getXInArea(int x) {
-        return x;
-    }
-
-    @Override
-    protected int getYInArea(int y) {
-        return y;
-    }
-
-    @Override
-    public int getAreaIndex(int x, int y) {
-        return 0;
-    }
+//    @Override
+//    protected int getAreaIndexCoordinatesInTiles(int x, int y) {
+//        return 0;
+//    }
+//
+//    @Override
+//    protected int getXInArea(int x) {
+//        return x;
+//    }
+//
+//    @Override
+//    protected int getYInArea(int y) {
+//        return y;
+//    }
+//
+//    @Override
+//    public int getAreaIndex(int x, int y) {
+//        return 0;
+//    }
 
     @Override
     protected void renderArea(int i) {

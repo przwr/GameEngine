@@ -33,7 +33,7 @@ import static game.place.Place.yAreaInPixels;
  */
 public class Area {
 
-    public static final short X_IN_TILES = 32, Y_IN_TILES = 20;
+    public static short X_IN_TILES = 32, Y_IN_TILES = 20;
 
     private final Place place;
     private final Map map;

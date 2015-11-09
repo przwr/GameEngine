@@ -15,6 +15,7 @@ import game.gameobject.inputs.Action;
 import game.gameobject.inputs.InputKeyBoard;
 import game.logic.navmeshpathfinding.navigationmesh.NavigationMeshGenerator;
 import game.place.Place;
+import game.place.map.Area;
 import game.place.map.LoadingMap;
 import game.place.map.Map;
 import gamecontent.maps.GladeMap;
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
 
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
+import static game.place.map.Area.X_IN_TILES;
+import static game.place.map.Area.Y_IN_TILES;
 
 /**
  * @author przemek
@@ -62,6 +65,10 @@ public class MyPlace extends Place {
 
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
+        Area.X_IN_TILES = 32;
+        Area.Y_IN_TILES = 20;
+        Place.xAreaInPixels = X_IN_TILES * tileSize;
+        Place.yAreaInPixels = Y_IN_TILES * tileSize;
         dayCycle.setTime(8, 30);
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
@@ -204,7 +211,8 @@ public class MyPlace extends Place {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
             if (delay.isOver()) {
-                delay.start();                players[0].setFloatHeight(players[0].getFloatHeight() - 1);
+                delay.start();
+                players[0].setFloatHeight(players[0].getFloatHeight() - 1);
 
 //                dayCycle.stopTime();
             }

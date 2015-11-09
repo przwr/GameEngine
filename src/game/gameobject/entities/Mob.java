@@ -32,6 +32,7 @@ public abstract class Mob extends Entity {
     protected int pastDirections[] = new int[2];
     protected int currentPastDirection;
     protected BlueArray<Agro> agro = new BlueArray<>();
+    protected ArrayList<String> neutral = new ArrayList<>();
 
     protected Mob(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
@@ -75,7 +76,7 @@ public abstract class Mob extends Entity {
                 if (this != mob && mob.getMap() == map && isInRange(mob)) {
                     closeFriends.add(mob);
                 }
-            } else if (mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
+            } else if (!isNeutral(mob) && mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
                 closeEnemies.add(mob);
             }
         }
@@ -90,6 +91,18 @@ public abstract class Mob extends Entity {
                 }
             }
         }
+    }
+
+    private boolean isNeutral(Mob mob) {
+        if (isAgresor(mob)) {
+            return false;
+        }
+        for (String className : neutral) {
+            if (className == mob.getClass().getName()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected synchronized void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {

@@ -14,10 +14,12 @@ import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Place;
+import game.place.map.Area;
 import game.place.map.Map;
 import game.text.FontBase;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
+import sprites.SpriteBase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,7 +28,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sprites.SpriteBase;
+
+import static game.place.map.Area.X_IN_TILES;
+import static game.place.map.Area.Y_IN_TILES;
 
 /**
  * @author przemek
@@ -34,7 +38,7 @@ import sprites.SpriteBase;
 public class ObjectPlace extends Place {
 
     public static final int MODE_TILE = 0, MODE_BLOCK = 1, MODE_VIEWING = 2, MODE_OBJECT = 3;
-    
+
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
@@ -49,9 +53,15 @@ public class ObjectPlace extends Place {
     private boolean altMode, noBlocks, grid;
     private ObjectMap objMap;
     private UndoControl undo;
+    private short xWorkingAreaInTiles = 160;
+    private short yWorkingAreaInTiles = 160;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
+        Area.X_IN_TILES = xWorkingAreaInTiles;
+        Area.Y_IN_TILES = yWorkingAreaInTiles;
+        Place.xAreaInPixels = X_IN_TILES * tileSize;
+        Place.yAreaInPixels = Y_IN_TILES * tileSize;
         dayCycle.setTime(12, 0);
         lastName = "";
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
@@ -67,7 +77,7 @@ public class ObjectPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        objMap = new ObjectMap(mapIDCounter++, this, 10240, 10240, Place.tileSize);
+        objMap = new ObjectMap(mapIDCounter++, this, xWorkingAreaInTiles * tileSize, yWorkingAreaInTiles * tileSize, Place.tileSize);
         ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo", "backgrounds"), this);
         guiHandler = new GUIHandler(this);
         maps.add(objMap);
@@ -278,7 +288,7 @@ public class ObjectPlace extends Place {
         String[] file = name.split("\\.");
         if (file[1].equals("spr")) {
             try {
-                System.out.println(f.getCanonicalPath() + " " +  file[0]);
+                System.out.println(f.getCanonicalPath() + " " + file[0]);
                 ui.setSpriteSheet(sprites.getSpriteSheet(file[0], SpriteBase.getSpritePath(f)));
                 printMessage("SpriteSheet \"" + name + "\" was loaded");
             } catch (java.lang.ClassCastException e) {
