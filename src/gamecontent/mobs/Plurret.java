@@ -165,6 +165,27 @@ public class Plurret extends Mob {
         }
     }
 
+    protected synchronized void calculateDestinationsForEscape() {
+        if (closeEnemies.isEmpty()) {
+            destination.set(-1, -1);
+        } else {
+            int x = 0, y = 0;
+            for (GameObject object : closeEnemies) {
+                if (object.getFloatHeight() + object.getActualHeight() > floatHeight) {
+                    x += object.getX();
+                    y += object.getY();
+                }
+            }
+            if (x > 0 && y > 0) {
+                x /= closeEnemies.size();
+                y /= closeEnemies.size();
+                calculateDestinationForEscapeFromPoint(x, y);
+            } else {
+                destination.set(-1, -1);
+            }
+        }
+    }
+
     @Override
     public void update() {
         if (isHurt()) {

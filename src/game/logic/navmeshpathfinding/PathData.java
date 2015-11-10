@@ -114,6 +114,11 @@ public class PathData {
         return PathStrategyCore.anyFigureInAWay(poly, close) != null;
     }
 
+    public boolean isObstacleBetween(Entity owner, int xDest, int yDest) {
+        update(owner, xDest, yDest);
+        return isObstacleBetween();
+    }
+
     public void calculateSpeed(double maxSpeed) {
         if (!flags.get(PASSED)) {
             double angle = Methods.pointAngleClockwise(x, y, destination.getX(), destination.getY());
