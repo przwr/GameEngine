@@ -48,8 +48,6 @@ public abstract class Mob extends Entity {
         this.mobID = mobID;
     }
 
-    public abstract void update();
-
     protected synchronized void lookForPlayers(GameObject[] players) {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {

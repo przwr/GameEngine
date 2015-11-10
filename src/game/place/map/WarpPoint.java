@@ -90,7 +90,7 @@ public class WarpPoint extends GameObject {
                 }
             }
             if (object instanceof Player && ((Player) object).getCamera() != null) {
-                ((Player) object).getCamera().update();
+                ((Player) object).getCamera().updateStatic();
             }
         }
     }

@@ -301,7 +301,7 @@ public class GUIHandler extends GUIObject {
         if (player != null) {
             glPushMatrix();
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(xEffect, yEffect, 0);
+            //glTranslatef(xEffect, yEffect, 0);
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             switch (mode) {
                 case QUESTIONING:

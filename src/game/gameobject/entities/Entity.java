@@ -107,7 +107,9 @@ public abstract class Entity extends GameObject {
     public SpeedChanger getKnockBack() {
         return knockBack;
     }
-
+    
+    public abstract void update();
+    
     public synchronized void updateSoft() {
         try {
             if (canUpdate()) {

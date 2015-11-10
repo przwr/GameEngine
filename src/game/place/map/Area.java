@@ -12,6 +12,7 @@ import engine.utilities.BlueArray;
 import engine.utilities.Methods;
 import engine.utilities.PointContainer;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.Interactive;
@@ -41,6 +42,7 @@ public class Area {
     private final Tile[] tiles;
 
     private final ArrayList<Block> blocks = new ArrayList<>();
+    private final ArrayList<Entity> entities = new ArrayList<>();
     private final ArrayList<Mob> solidMobs = new ArrayList<>();
     private final ArrayList<Mob> flatMobs = new ArrayList<>();
     private final ArrayList<GameObject> solidObjects = new ArrayList<>();
@@ -109,7 +111,7 @@ public class Area {
             tiles[x / Place.tileSize + y / Place.tileSize * Y_IN_TILES] = null;
         }
         GameObject object;
-        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext(); ) {
+        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
             object = iterator.next();
             if (object.isVisible() && object.getX() == x && object.getY() == y) {
                 iterator.remove();
@@ -172,6 +174,8 @@ public class Area {
             addWarpPoint((WarpPoint) object);
         } else if (object instanceof Mob) {
             addMob((Mob) object);
+        } else if (object instanceof Entity) {
+            entities.add((Entity) object);
         } else {
             if (object.isSolid()) {
                 solidObjects.add(object);
@@ -223,6 +227,8 @@ public class Area {
             warps.remove(object);
         } else if (object instanceof Mob) {
             deleteMob((Mob) object);
+        } else if (object instanceof Entity) {
+            entities.remove((Entity) object);
         } else {
             if (object.isSolid()) {
                 solidObjects.remove(object);
@@ -255,6 +261,7 @@ public class Area {
 
     public void clear() {
         solidMobs.clear();
+        entities.clear();
         flatMobs.clear();
         solidObjects.clear();
         flatObjects.clear();
@@ -278,6 +285,10 @@ public class Area {
 
     public List<Mob> getSolidMobs() {
         return solidMobs;
+    }
+
+    public List<Entity> getEntities() {
+        return entities;
     }
 
     public List<Mob> getFlatMobs() {

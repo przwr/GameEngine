@@ -50,6 +50,7 @@ public class MyPlace extends Place {
             updateAreasOffline();
             updatePlayersOffline();
             updateMobsOffline();
+            updateEntitiesOffline();
             updateInteractiveObjectsOffline();
             dayCycle.updateTime();
         };
@@ -59,6 +60,7 @@ public class MyPlace extends Place {
             updatePlayersOnline();
             updateInteractiveObjectsOnline();
             dayCycle.updateTime();
+            throw new UnsupportedOperationException("There is no updateEntitiesOnline");
         };
         delay.start();
     }
@@ -107,6 +109,7 @@ public class MyPlace extends Place {
                 tempMaps.add(map);
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
+            map.clearDeleteQueue();
         }
         unloadedMaps.addAll(maps.stream().filter(map -> !tempMaps.contains(map)).collect(Collectors.toList()));
         if (game.getMapLoader().isRunning()) // TODO Wywalić, jak będzie wczytywane z pliku
@@ -128,6 +131,7 @@ public class MyPlace extends Place {
             curMap.clearAreasToUpdate();
             curMap.addAreasToUpdate(curMap.getNearAreas(players[0].getArea()));
             curMap.updateAreasToUpdate();
+            map.clearDeleteQueue();
         }
     }
 
@@ -141,7 +145,7 @@ public class MyPlace extends Place {
             if (changeSplitScreenMode.isKeyClicked()) {
                 changeSSMode = true;
             }
-            cameras[playersCount - 2].update();
+            cameras[playersCount - 2].updateStatic();
         }
         for (int i = 0; i < playersCount; i++) {
             ((Player) players[i]).update();
@@ -156,6 +160,13 @@ public class MyPlace extends Place {
         }
     }
 
+    private void updateEntitiesOffline() {
+        for (Map m : tempMaps) {
+            m.updateEntitesFromAreasToUpdate();
+            m.executeDeleteQueue();
+        }
+    }
+    
     private void updateMobsOffline() {
         tempMaps.stream().forEach(Map::updateMobsFromAreasToUpdate);
     }

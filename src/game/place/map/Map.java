@@ -48,6 +48,7 @@ public abstract class Map {
     protected final BlueArray<Mob> tempMobs = new BlueArray<>();
     protected final BlueArray<Interactive> tempInteractiveObjects = new BlueArray<>();
     protected final BlueArray<GameObject> topObjects = new BlueArray<>();
+    protected final ArrayList<GameObject> deleteQueue = new ArrayList<>();
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
     protected final BlueArray<Light> lights = new BlueArray<>();
     protected final BlueArray<Block> blocks = new BlueArray<>();
@@ -116,9 +117,8 @@ public abstract class Map {
 
     private boolean isOnArea(Block block, int area) {
         Figure collision = block.getCollision();
-        return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area ||
-                getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() - Place
-                .tileSize, collision.getY()) == area;
+        return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area
+                || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getY()) == area;
     }
 
     public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
@@ -216,7 +216,6 @@ public abstract class Map {
         getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> areas[area]
                 .updateContainers(area));
     }
-
 
     public void unloadUnNeededUpdate() {
         for (int area = 0; area < areas.length; area++) {
@@ -324,9 +323,15 @@ public abstract class Map {
         return tempTilePositions;
     }
 
+    public void updateEntitesFromAreasToUpdate() {
+        getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> {
+            areas[area].getEntities().stream().forEach(Entity::update);
+        });
+    }
+
     public void updateMobsFromAreasToUpdate() {
         prepareMobsToUpdate();
-        tempMobs.stream().forEach(Mob::update);
+        tempMobs.stream().forEach(Entity::update);
     }
 
     public void hardUpdateMobsFromAreasToUpdate() {
@@ -346,8 +351,9 @@ public abstract class Map {
         prepareInteractive();
         tempInteractiveObjects.stream().forEach((interactive) -> {
             interactive.update();
-            if (interactive.isActive())
+            if (interactive.isActive()) {
                 interactive.actIfActivated(place.players, tempMobs);
+            }
         });
     }
 
@@ -408,6 +414,24 @@ public abstract class Map {
             areas[area].addObject(object);
         } else {
             System.out.println("Poza mapą - nie dodaję!");
+        }
+    }
+
+    public void addToDeleteQueue(GameObject object) {
+        deleteQueue.add(object);
+    }
+
+    public void clearDeleteQueue() {
+        if (!deleteQueue.isEmpty()) {
+            deleteQueue.clear();
+        }
+    }
+
+    public void executeDeleteQueue() {
+        if (!deleteQueue.isEmpty()) {
+            deleteQueue.stream().forEach((go) -> {
+                deleteObject(go);
+            });
         }
     }
 
@@ -558,9 +582,9 @@ public abstract class Map {
         for (GameObject tile : foregroundTiles) {
             if (object.getAppearance() != null && tile.getDepth() > object.getDepth()
                     && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
-                    && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2) /
-                    tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeight() / 2 - object.getAppearance()
-                    .getActualHeight() / 2) / tileSize))) {
+                    && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2)
+                    / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeight() / 2 - object.getAppearance()
+                            .getActualHeight() / 2) / tileSize))) {
                 return true;
             }
         }

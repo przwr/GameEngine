@@ -37,8 +37,11 @@ public abstract class Camera {
     int yUp;
     int ownersCount;
     private Map map;
-    private int xMiddle;
-    private int yMiddle;
+    private double xMiddle;
+    private double yMiddle;
+    private double xTmpMiddle;
+    private double yTmpMiddle;
+    private int cameraSpeed;
     private int xEffect;
     private int yEffect;
     private int delayLength;
@@ -55,15 +58,32 @@ public abstract class Camera {
         delayLength = 50;
         shakeDelay = Delay.createInMilliseconds(delayLength);
         shakeDelay.start();
+        cameraSpeed = 3;
     }
 
-    public synchronized void update() {
+    public synchronized void updateSmooth() {
+        if (map != null) {
+            if (cameraSpeed > 1) {
+                xTmpMiddle = xMiddle;
+                yTmpMiddle = yMiddle;
+                xMiddle = xTmpMiddle + (double) (getXMiddle() - xTmpMiddle) / cameraSpeed;
+                yMiddle = yTmpMiddle + (double) (getYMiddle() - yTmpMiddle) / cameraSpeed;
+                xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - xMiddle * scale, 0);
+                yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - yMiddle * scale, 0);
+                area = map.getAreaIndex((int) xMiddle, (int) yMiddle);
+            } else {
+                updateStatic();
+            }
+        }
+    }
+
+    public synchronized void updateStatic() {
         if (map != null) {
             xMiddle = getXMiddle();
             yMiddle = getYMiddle();
             xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - xMiddle * scale, 0);
             yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - yMiddle * scale, 0);
-            area = map.getAreaIndex(xMiddle, yMiddle);
+            area = map.getAreaIndex((int) xMiddle, (int) yMiddle);
         }
     }
 
@@ -96,7 +116,7 @@ public abstract class Camera {
     public void switchZoom() {
         zoomed = !zoomed;
         setScale(Display.getWidth() / widthHalf, Display.getHeight() / heightHalf, ownersCount);
-        update();
+        updateStatic();
     }
 
     void setScale(int ssX, int ssY, int ownersCount) {
@@ -122,13 +142,13 @@ public abstract class Camera {
         nearObjects.clearVisibleLights();
     }
 
-    private int getXMiddle() {
+    private double getXMiddle() {
         xMiddle = 0;
         owners.stream().forEach((owner) -> xMiddle += owner.getX());
         return xMiddle / owners.size();
     }
 
-    private int getYMiddle() {
+    private double getYMiddle() {
         yMiddle = 0;
         owners.stream().forEach((owner) -> yMiddle += owner.getY());
         return yMiddle / owners.size();
@@ -156,7 +176,7 @@ public abstract class Camera {
 
     public void setMap(Map map) {
         this.map = map;
-        update();
+        updateStatic();
     }
 
     public int getXOffset() {
@@ -181,6 +201,14 @@ public abstract class Camera {
 
     public int getYEffect() {
         return yEffect;
+    }
+
+    public void setCameraSpeed(int speed) {
+        this.cameraSpeed = speed;
+    }
+
+    public int getCameraSpeed() {
+        return cameraSpeed;
     }
 
     public void setXOff(int xOffset) {

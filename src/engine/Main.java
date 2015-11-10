@@ -48,7 +48,7 @@ public class Main {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG = false;
-    public static final boolean SHOW_INTERACTIVE_COLLISION = true;
+    public static boolean SHOW_INTERACTIVE_COLLISION;
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
@@ -206,6 +206,11 @@ public class Main {
                     console = game.getPlace().getConsole();
                     if (key.keyPressed(Keyboard.KEY_F1)) {
                         console.setStatsRendered(!console.areStatsRendered());
+                    }
+                    if (key.keyPressed(Keyboard.KEY_F2)) {
+                        SHOW_INTERACTIVE_COLLISION = !SHOW_INTERACTIVE_COLLISION;
+                        System.out.println(SHOW_INTERACTIVE_COLLISION);
+                        console.printMessage("SHOW/HIDE INTERACTIVE");
                     }
                     if (console.areStatsRendered()) {
                         console.clearStats();

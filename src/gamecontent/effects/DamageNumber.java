@@ -80,14 +80,18 @@ public class DamageNumber extends Entity {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void update() {
         moveIfPossibleWithoutSliding(xSpeed + xEnvironmentalSpeed, ySpeed + yEnvironmentalSpeed);
         xSpeed /= 1.1;
         ySpeed /= 1.1;
         if (time.isOver()) {
-            delete();
+            deleteInQueue();
         }
         updateWithGravity();
+    }
+
+    @Override
+    public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) ((getY() - floatHeight) * Place.getCurrentScale() + yEffect), 0);
         Drawer.renderStringCentered("" + damage, 0, 0, place.standardFont, color);

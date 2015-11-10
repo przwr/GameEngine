@@ -20,17 +20,19 @@ public class PlayerStats extends Stats {
         protectionBackModifier = 0.1f;
     }
 
+    @Override
     public void died() {
         health = maxHealth / 2;
         owner.setPosition(128, 128);
         Camera camera = ((Player) owner).getCamera();
         if (camera != null) {
-            camera.update();
+            camera.updateStatic();
         }
         ((MyPlayer) owner).getGUI().deactivate();
         System.out.println(owner.getName() + " zginał.");
     }
 
+    @Override
     public void hurtReaction(InteractiveResponse response) {
         super.hurtReaction(response);
         ((MyPlayer) owner).getGUI().activateLifeIndicator();

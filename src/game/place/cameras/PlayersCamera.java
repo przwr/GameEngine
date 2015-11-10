@@ -84,7 +84,7 @@ public class PlayersCamera extends Camera {
         widthHalf = Display.getWidth() / 2;
         heightHalf = Display.getHeight() / 2;
         setScale(0, 0, 0);
-        update();
+        updateStatic();
     }
 
     public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner) {
@@ -94,7 +94,7 @@ public class PlayersCamera extends Camera {
         widthHalf = Display.getWidth() / 2;
         heightHalf = Display.getHeight() / 2;
         setScale(0, 0, 0);
-        update();
+        updateStatic();
     }
 
     public PlayersCamera(GameObject firstOwner, GameObject secondOwner, GameObject thirdOwner, GameObject fourthOwner) {
@@ -105,7 +105,7 @@ public class PlayersCamera extends Camera {
         widthHalf = Display.getWidth() / 2;
         heightHalf = Display.getHeight() / 2;
         setScale(0, 0, 0);
-        update();
+        updateStatic();
     }
 
     private void initialize(int ssX, int ssY, int ownersCount) {
@@ -117,7 +117,7 @@ public class PlayersCamera extends Camera {
         widthHalf = Display.getWidth() / ssX;
         heightHalf = Display.getHeight() / ssY;
         setScale(ssX, ssY, ownersCount);
-        update();
+        updateStatic();
     }
 
     public void reInitialize(int ssX, int ssY, int ownersCount) {
@@ -129,7 +129,7 @@ public class PlayersCamera extends Camera {
         widthHalf = Display.getWidth() / ssX;
         heightHalf = Display.getHeight() / ssY;
         setScale(ssX, ssY, ownersCount);
-        update();
+        updateStatic();
     }
 
     @Override

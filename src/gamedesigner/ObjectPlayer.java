@@ -131,9 +131,6 @@ public class ObjectPlayer extends Player {
         }
 
         ui.setCursorStatus(ix, iy, Math.abs(ix - xStop) + 1, Math.abs(iy - yStop) + 1);
-        if (camera != null) {
-            camera.update();
-        }
         xTimer++;
         yTimer++;
         if (xTimer >= maxTimer) {
@@ -150,16 +147,28 @@ public class ObjectPlayer extends Player {
         if (objPlace.areKeysUsable() && !paused) {
             updateMovement();
 
+            if (camera != null) {
+                camera.setCameraSpeed(20);
+                camera.updateSmooth();
+            }
+
             updateModeSpecifics();
 
             moveBlocksKey();
 
-            if (key.keyPressed(KEY_SPACE) || key.keyPressed(KEY_LMENU)) {
-                setInstance();
+            if (key.key(KEY_SPACE) || key.key(KEY_LMENU)) {
+                if (mode == ObjectPlace.MODE_TILE) {
+                    setTile();
+                } else if (key.keyPressed(KEY_SPACE) || key.keyPressed(KEY_LMENU)) {
+                    setInstance();
+                }
             }
-
-            if (key.keyPressed(KEY_DELETE)) {
-                deleteInstance();
+            if (key.key(KEY_DELETE)) {
+                if (mode == ObjectPlace.MODE_TILE) {
+                    deleteTile();
+                } else if (key.keyPressed(KEY_DELETE)) {
+                    deleteInstance();
+                }
             }
 
             if (key.keyPressed(KEY_B)) {
@@ -292,20 +301,24 @@ public class ObjectPlayer extends Player {
         }
     }
 
-    private void setInstance() {
-        objPlace.getUndoControl().setUpUndo();
+    private void setTile() {
         int xBegin = Math.min(ix, xStop);
         int yBegin = Math.min(iy, yStop);
         int xEnd = Math.max(ix, xStop);
         int yEnd = Math.max(iy, yStop);
-        if (mode == ObjectPlace.MODE_TILE) {
-            for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                    Point p = ui.getCoordinates();
-                    objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
-                }
+        for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+            for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                Point p = ui.getCoordinates();
+                objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
             }
-        } else if (mode == ObjectPlace.MODE_BLOCK) {
+        }
+    }
+
+    private void setInstance() {
+        objPlace.getUndoControl().setUpUndo();
+        int xBegin = Math.min(ix, xStop);
+        int yBegin = Math.min(iy, yStop);
+        if (mode == ObjectPlace.MODE_BLOCK) {
             int xd = (Math.abs(ix - xStop) + 1);
             int yd = (Math.abs(iy - yStop) + 1);
             if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
@@ -323,19 +336,24 @@ public class ObjectPlayer extends Player {
         }
     }
 
-    private void deleteInstance() {
+    private void deleteTile() {
         objPlace.getUndoControl().setUpUndo();
         int xBegin = Math.min(ix, xStop);
         int yBegin = Math.min(iy, yStop);
         int xEnd = Math.max(ix, xStop);
         int yEnd = Math.max(iy, yStop);
-        if (mode == ObjectPlace.MODE_TILE) {
-            for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
-                for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                    objMap.deleteTile(xTemp, yTemp);
-                }
+        for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
+            for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
+                objMap.deleteTile(xTemp, yTemp);
             }
-        } else if (mode == ObjectPlace.MODE_BLOCK) {
+        }
+    }
+
+    private void deleteInstance() {
+        objPlace.getUndoControl().setUpUndo();
+        int xBegin = Math.min(ix, xStop);
+        int yBegin = Math.min(iy, yStop);
+        if (mode == ObjectPlace.MODE_BLOCK) {
             int xd = (Math.abs(ix - xStop) + 1);
             int yd = (Math.abs(iy - yStop) + 1);
             objMap.deleteBlocks(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);

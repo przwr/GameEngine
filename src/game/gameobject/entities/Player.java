@@ -101,9 +101,9 @@ public abstract class Player extends Entity {
     @Override
     public void setPositionWithoutAreaUpdate(double xPosition, double yPosition) {
         super.setPositionWithoutAreaUpdate(xPosition, yPosition);
-        if (camera != null) {
-            camera.update();
-        }
+        /*if (camera != null) {
+            camera.updateSmooth();
+        }*/
     }
 
     public void setToLastNotCollided() {
@@ -128,7 +128,7 @@ public abstract class Player extends Entity {
             } else {
                 setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
             }
-            camera.update();
+            /*camera.updateSmooth();*/
             return true;
         }
         return false;
@@ -143,7 +143,7 @@ public abstract class Player extends Entity {
             } else {
                 setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
             }
-            camera.update();
+            /*camera.updateSmooth();*/
             return true;
         }
         return false;

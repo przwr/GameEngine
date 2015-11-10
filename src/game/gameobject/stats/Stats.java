@@ -66,7 +66,7 @@ public class Stats {
     }
 
     public void died() {
-        owner.delete();
+        owner.deleteStatic();
         System.out.println(owner.getName() + " zginał.");
     }
 

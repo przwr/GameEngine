@@ -117,7 +117,7 @@ public class ObjectPlace extends Place {
                 if (changeSplitScreenMode.isKeyClicked()) {
                     changeSSMode = true;
                 }
-                cameras[playersCount - 2].update();
+                cameras[playersCount - 2].updateStatic();
             }
             updateAreas();
             for (int i = 0; i < playersCount; i++) {
