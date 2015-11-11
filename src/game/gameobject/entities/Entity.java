@@ -13,6 +13,9 @@ import engine.utilities.ErrorHandler;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
+import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.activator.UpdateBasedActivator;
+import game.gameobject.interactive.collision.CircleInteractiveCollision;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.logic.navmeshpathfinding.PathData;
@@ -31,7 +34,9 @@ import java.util.Iterator;
  */
 public abstract class Entity extends GameObject {
 
+
     protected static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 0.2f);
+    protected static final byte PUSH = -1;
     public final Update[] updates = new Update[4];
     public int lastAdded;
     protected int hearRange;
@@ -65,6 +70,13 @@ public abstract class Entity extends GameObject {
         knockBack = new SpeedChanger();
         changers = new ArrayList<>();
         resistance = 1;
+    }
+
+    protected void addPushInteraction() {
+        Interactive push = Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, appearance.getActualHeight(),
+                -collision.getWidth(), collision.getWidth() / 2), Interactive.PUSH, PUSH, 1f);
+        push.setCollidesFriends(true);
+        addInteractive(push);
     }
 
     public abstract void updateOnline();

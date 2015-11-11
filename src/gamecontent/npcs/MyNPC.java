@@ -34,6 +34,7 @@ public class MyNPC extends Mob {
         if (appearance != null) {
             appearance = animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 0);
         }
+        addPushInteraction();
     }
 
     @Override
@@ -41,13 +42,13 @@ public class MyNPC extends Mob {
         if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
             MyPlayer mpPrey = (MyPlayer) getTarget();
             if (spinning) {
-                setDirection8way(getDirection8Way()+ 1);
+                setDirection8way(getDirection8Way() + 1);
             } else {
                 setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
             }
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-            if (mpPrey.getController().getAction(MyController.INPUT_ACTION).isKeyClicked() 
-                    && d <= Place.tileSize * 1.5 
+            if (mpPrey.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
+                    && d <= Place.tileSize * 1.5
                     && !mpPrey.getTextController().isStarted()) {
                 mpPrey.getTextController().lockEntity(mpPrey);
                 mpPrey.getTextController().startFromFile("drzewo");

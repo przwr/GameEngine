@@ -5,11 +5,6 @@
  */
 package gamecontent;
 
-import game.gameobject.interactive.collision.CurveInteractiveCollision;
-import game.gameobject.interactive.collision.LineInteractiveCollision;
-import game.gameobject.interactive.action.InteractiveActionArrow;
-import game.gameobject.interactive.action.InteractiveAction;
-import game.gameobject.interactive.activator.UpdateBasedActivator;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
@@ -19,7 +14,13 @@ import engine.systemcommunication.Time;
 import engine.utilities.*;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
-import game.gameobject.interactive.*;
+import game.gameobject.interactive.InteractionSet;
+import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.action.InteractiveAction;
+import game.gameobject.interactive.action.InteractiveActionArrow;
+import game.gameobject.interactive.activator.UpdateBasedActivator;
+import game.gameobject.interactive.collision.CurveInteractiveCollision;
+import game.gameobject.interactive.collision.LineInteractiveCollision;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
@@ -285,6 +286,8 @@ public class MyPlayer extends Player {
         gui = new MyGUI("Player " + name + "'s GUI", place);
         addGui(gui);
         ((MyController) playerController).setPlayersGUI(gui);
+        addPushInteraction();
+    }
 
     }
 

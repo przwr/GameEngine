@@ -78,6 +78,10 @@ public abstract class Mob extends Entity {
                 closeEnemies.add(mob);
             }
         }
+        updateAlpha();
+    }
+
+    protected void updateAlpha() {
         if (closeFriends.isEmpty()) {
             alpha = false;
         } else {
@@ -91,7 +95,7 @@ public abstract class Mob extends Entity {
         }
     }
 
-    private boolean isNeutral(Mob mob) {
+    protected boolean isNeutral(Mob mob) {
         if (isAgresor(mob)) {
             return false;
         }
@@ -118,21 +122,11 @@ public abstract class Mob extends Entity {
                 if (this != mob && mob.getMap() == map && isHeardWhileSleep(mob)) {
                     closeFriends.add(mob);
                 }
-            } else if (mob.getMap() == map && (isHeardWhileSleep(mob))) {
+            } else if (!isNeutral(mob) && mob.getMap() == map && (isHeardWhileSleep(mob))) {
                 closeEnemies.add(mob);
             }
         }
-        if (closeFriends.isEmpty()) {
-            alpha = false;
-        } else {
-            alpha = true;
-            for (Mob mob : closeFriends) {
-                if (mob.alpha) {
-                    alpha = false;
-                    break;
-                }
-            }
-        }
+        updateAlpha();
     }
 
     protected synchronized void chase() {

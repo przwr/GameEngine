@@ -66,6 +66,9 @@ public class Blazag extends Mob {
                         short time = place.getTimeInMinutes();
                         if (time >= current_sleep_start && time <= current_sleep_end) {
                             state = sleep;
+                            if (alpha) {
+                                alpha = false;
+                            }
                         } else {
                             state = wander;
                             seconds = 0;
@@ -130,6 +133,8 @@ public class Blazag extends Mob {
                             } else {
                                 getOrders();
                             }
+                        } else {
+                            chase();
                         }
                     } else {
                         setEnemyToAttack();
@@ -312,11 +317,13 @@ public class Blazag extends Mob {
         current_sleep_end = (SLEEP_END + rand) * 60;
         rand = random.next(6) / 64f;
         neutral.add(Shen.class.getName());
+        neutral.add(Plurret.class.getName());
         current_sleep_start = (SLEEP_START + rand) * 60;
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CurveInteractiveCollision(48, 32, 0, 38, 180),
                 Interactive.STRENGTH_HURT, ATTACK_SLASH, 0.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 128, 0, 24, 24),
                 Interactive.STRENGTH_HURT, ATTACK_JUMP, 2f));
+        addPushInteraction();
     }
 
     private void loneAttack(int distance) {
@@ -339,7 +346,11 @@ public class Blazag extends Mob {
                     jumpRestDelay.start();
                     return;
                 } else if (animation.getDirectionalFrameIndex() < 19) {
-                    charge();
+                    if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
+                        chase();
+                    } else {
+                        charge();
+                    }
                     return;
                 }
             } else if (attackDelay.isOver()) {
@@ -363,7 +374,11 @@ public class Blazag extends Mob {
                     attackDelay.start();
                     return;
                 } else if (attackDelay.isOver() && distance >= close && animation.getDirectionalFrameIndex() < 19) {
-                    charge();
+                    if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
+                        chase();
+                    } else {
+                        charge();
+                    }
                     return;
                 }
             }
@@ -400,7 +415,10 @@ public class Blazag extends Mob {
     private void findTargetForGroup() {
         int xCenter = getX(), yCenter = getY();
         int distance = Integer.MAX_VALUE;
-        int current_distance;
+        int agro = 0;
+        int currentAgro;
+        int currentDistance;
+        boolean agresor = false;
         Set<GameObject> targets = new HashSet<>();
         for (Mob mob : closeFriends) {
             targets.addAll((mob.getCloseEnemies()));
@@ -409,12 +427,62 @@ public class Blazag extends Mob {
         }
         yCenter /= (closeFriends.size() + 1);
         xCenter /= (closeFriends.size() + 1);
-        if (closeFriends.size() >= targets.size()) {
-            for (GameObject object : targets) {
-                current_distance = Methods.pointDistanceSimple2(xCenter, yCenter, object.getX(), object.getY());
-                if (current_distance < distance) {
+        for (GameObject object : targets) {
+            if (agresor) {
+                currentAgro = 0;
+                Agro a = getAgresor(object);
+                if (a != null) {
+                    currentAgro += a.getValue();
+                }
+                for (Mob mob : closeFriends) {
+                    a = mob.getAgresor(object);
+                    if (a != null) {
+                        currentAgro += a.getValue();
+                    }
+                }
+                if (currentAgro > 0) {
+                    if (currentAgro > agro) {
+                        agro = currentAgro;
+                        target = object;
+                    }
+                }
+            } else {
+                currentDistance = Methods.pointDistanceSimple2(xCenter, yCenter, object.getX(), object.getY());
+                currentAgro = 0;
+                Agro a = getAgresor(object);
+                if (a != null) {
+                    currentAgro += a.getValue();
+                }
+                for (Mob mob : closeFriends) {
+                    a = mob.getAgresor(object);
+                    if (a != null) {
+                        currentAgro += a.getValue();
+                    }
+                }
+                if (currentAgro > 0) {
+                    agresor = true;
+                    agro = currentAgro;
                     target = object;
-                    distance = current_distance;
+                } else if (currentDistance < distance) {
+                    target = object;
+                    distance = currentDistance;
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void updateAlpha() {
+        if (closeFriends.isEmpty()) {
+            alpha = false;
+        } else {
+            if (awake) {
+                alpha = true;
+                for (Mob mob : closeFriends) {
+                    if (mob.isAlpha()) {
+                        alpha = false;
+                        break;
+                    }
                 }
             }
         }
