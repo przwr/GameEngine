@@ -323,6 +323,7 @@ public class Blazag extends Mob {
                 Interactive.STRENGTH_HURT, ATTACK_SLASH, 0.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 128, 0, 24, 24),
                 Interactive.STRENGTH_HURT, ATTACK_JUMP, 2f));
+        addPushInteraction();
     }
 
     private void loneAttack(int distance) {

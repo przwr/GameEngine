@@ -97,7 +97,7 @@ public abstract class Mob extends Entity {
         }
     }
 
-    private boolean isNeutral(Mob mob) {
+    protected boolean isNeutral(Mob mob) {
         if (isAgresor(mob)) {
             return false;
         }

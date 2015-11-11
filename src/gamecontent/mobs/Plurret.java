@@ -20,6 +20,8 @@ import game.place.Place;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -69,7 +71,6 @@ public class Plurret extends Mob {
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForEscape();
-//                destination.set(1800,1500);
                 if (floatHeight > aboveAllHeight) {
                     chargeToPoint(destination.getX() > 0 ? destination : secondaryDestination);
                 } else {
@@ -117,11 +118,14 @@ public class Plurret extends Mob {
                     rest.start();
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                if (!closeEnemies.isEmpty() || (!alpha && !closeFriends.isEmpty())) {
+                if (!closeEnemies.isEmpty()) {
                     state = idle;
                     destination.set(-1, -1);
+                    rest.terminate();
                 }
-                rise();
+                if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) > hearRange2 / 16) {
+                    rise();
+                }
                 if (floatHeight > aboveAllHeight) {
                     chargeToPoint(destination);
                 } else {
@@ -148,11 +152,12 @@ public class Plurret extends Mob {
         state = idle;
         homePosition.set(getX(), getY());
         setGravity(0.1);
+        addPushInteraction();
     }
 
     private void rise() {
         if (rising) {
-            setJumpForce(1);
+            setJumpForce(2);
             if (getFloatHeight() >= highLevel) {
                 rising = false;
                 lowLevel = 334 + random.next(4);
@@ -165,20 +170,46 @@ public class Plurret extends Mob {
         }
     }
 
+    @Override
+    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+        closeEnemies.clear();
+        closeFriends.clear();
+        GameObject object;
+        for (int i = 0; i < getPlace().playersCount; i++) {
+            object = players[i];
+            if (object.getMap() == map && (isHeard(object) || isSeen(object))) {
+                closeEnemies.add(object);
+            }
+        }
+        for (Mob mob : mobs) {
+            if (mob.getClass().getName() == this.getClass().getName()) {
+                if (this != mob && mob.getMap() == map && isInRange(mob)) {
+                    closeFriends.add(mob);
+                }
+            } else if (!isNeutral(mob) && mob.getMap() == map && mob.getFloatHeight() + mob.getActualHeight() * 2 > floatHeight && (isHeard(mob) || isSeen
+                    (mob))) {
+                closeEnemies.add(mob);
+            }
+        }
+        updateAlpha();
+    }
+
     protected synchronized void calculateDestinationsForEscape() {
         if (closeEnemies.isEmpty()) {
             destination.set(-1, -1);
         } else {
             int x = 0, y = 0;
+            int added = 0;
             for (GameObject object : closeEnemies) {
-                if (object.getFloatHeight() + object.getActualHeight() > floatHeight) {
+                if (object.getFloatHeight() + object.getActualHeight() * 2 > floatHeight) {
                     x += object.getX();
                     y += object.getY();
+                    added++;
                 }
             }
             if (x > 0 && y > 0) {
-                x /= closeEnemies.size();
-                y /= closeEnemies.size();
+                x /= added;
+                y /= added;
                 calculateDestinationForEscapeFromPoint(x, y);
             } else {
                 destination.set(-1, -1);
@@ -219,12 +250,16 @@ public class Plurret extends Mob {
 
     private void updateGettingHurt() {
         setDirection8way(Methods.pointAngle8Directions(knockBack.getXSpeed(), knockBack.getYSpeed(), 0, 0));
-        animation.animateSingleInDirection(getDirection8Way(), 11);
+        if (floatHeight > 0) {
+            animation.animateSingleInDirection(getDirection8Way(), 17);
+        } else {
+            animation.animateSingleInDirection(getDirection8Way(), 11);
+        }
         brake(2);
     }
 
     private void updateAnimation() {
-        if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
+        if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1 || rising) {
             pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
             if (currentPastDirection > 1) {
                 currentPastDirection = 0;

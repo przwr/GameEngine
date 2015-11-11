@@ -225,8 +225,9 @@ public class Tongub extends Mob {
         attack_delay.start();
         state = idle;
         homePosition.set(getX(), getY());
-        addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 64, 0, 16, 16), Interactive
+        addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 32, 0, 16, 16), Interactive
                 .STRENGTH_HURT, ATTACK_NORMAL, 0.5f));
+        addPushInteraction();
     }
 
     private boolean isObstacleBetween() {
