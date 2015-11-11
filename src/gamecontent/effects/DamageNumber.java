@@ -85,7 +85,7 @@ public class DamageNumber extends Entity {
         xSpeed /= 1.1;
         ySpeed /= 1.1;
         if (time.isOver()) {
-            deleteInQueue();
+            delete();
         }
         updateWithGravity();
     }

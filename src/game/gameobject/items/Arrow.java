@@ -71,7 +71,7 @@ public class Arrow extends Entity {
 
     @Override
     public void reactToAttack(byte attackType, GameObject attacked) {
-        deleteInQueue();
+        delete();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Arrow extends Entity {
         } else if ((delta = Methods.pointDifference(getX(), getY(), owner.getX(), owner.getY())) < Place.tileSize) {
             setPosition(x + (owner.getX() - x) / 5, y + (owner.getY() - y) / 5);
             if (delta < Place.tileHalf / 2) {
-                deleteInQueue();
+                delete();
             }
         }
     }

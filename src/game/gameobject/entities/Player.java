@@ -41,8 +41,6 @@ public abstract class Player extends Entity {
 
     public abstract void initialize(int width, int height, Place place);
 
-    public abstract void update();
-
     public abstract void sendUpdate();
 
     public abstract void renderClothed(int frame);

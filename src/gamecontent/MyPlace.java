@@ -109,7 +109,6 @@ public class MyPlace extends Place {
                 tempMaps.add(map);
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
-            map.clearDeleteQueue();
         }
         unloadedMaps.addAll(maps.stream().filter(map -> !tempMaps.contains(map)).collect(Collectors.toList()));
         if (game.getMapLoader().isRunning()) // TODO Wywalić, jak będzie wczytywane z pliku
@@ -131,7 +130,6 @@ public class MyPlace extends Place {
             curMap.clearAreasToUpdate();
             curMap.addAreasToUpdate(curMap.getNearAreas(players[0].getArea()));
             curMap.updateAreasToUpdate();
-            map.clearDeleteQueue();
         }
     }
 
@@ -163,7 +161,6 @@ public class MyPlace extends Place {
     private void updateEntitiesOffline() {
         for (Map m : tempMaps) {
             m.updateEntitesFromAreasToUpdate();
-            m.executeDeleteQueue();
         }
     }
     

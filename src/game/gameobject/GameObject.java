@@ -426,14 +426,10 @@ public abstract class GameObject {
         return stats;
     }
     
-    public void deleteStatic() {
+    public void delete() {
         if (map != null) {
             map.deleteObject(this);
         }
-    }
-    
-    public void deleteInQueue() {
-        map.addToDeleteQueue(this);
     }
     
     public void setWarp(WarpPoint warp) {

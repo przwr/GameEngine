@@ -46,6 +46,7 @@ public abstract class Map {
     protected final PointContainer tempTilePositions = new PointContainer();
     protected final Set<Block> tempBlocks = new HashSet<>();
     protected final BlueArray<Mob> tempMobs = new BlueArray<>();
+    protected final BlueArray<Entity> tempEntities = new BlueArray<>();
     protected final BlueArray<Interactive> tempInteractiveObjects = new BlueArray<>();
     protected final BlueArray<GameObject> topObjects = new BlueArray<>();
     protected final ArrayList<GameObject> deleteQueue = new ArrayList<>();
@@ -324,9 +325,11 @@ public abstract class Map {
     }
 
     public void updateEntitesFromAreasToUpdate() {
+        tempEntities.clear();
         getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> {
-            areas[area].getEntities().stream().forEach(Entity::update);
+            tempEntities.addAll(areas[area].getEntities());
         });
+        tempEntities.stream().forEach(Entity::update);
     }
 
     public void updateMobsFromAreasToUpdate() {
@@ -414,24 +417,6 @@ public abstract class Map {
             areas[area].addObject(object);
         } else {
             System.out.println("Poza mapą - nie dodaję!");
-        }
-    }
-
-    public void addToDeleteQueue(GameObject object) {
-        deleteQueue.add(object);
-    }
-
-    public void clearDeleteQueue() {
-        if (!deleteQueue.isEmpty()) {
-            deleteQueue.clear();
-        }
-    }
-
-    public void executeDeleteQueue() {
-        if (!deleteQueue.isEmpty()) {
-            deleteQueue.stream().forEach((go) -> {
-                deleteObject(go);
-            });
         }
     }
 
