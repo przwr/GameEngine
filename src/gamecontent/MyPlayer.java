@@ -289,7 +289,6 @@ public class MyPlayer extends Player {
         addPushInteraction();
     }
 
-    }
 
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {

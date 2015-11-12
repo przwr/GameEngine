@@ -7,10 +7,7 @@ package gamecontent.mobs;
 
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.utilities.Delay;
-import engine.utilities.Drawer;
-import engine.utilities.Methods;
-import engine.utilities.RandomGenerator;
+import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
 import game.gameobject.entities.Mob;
@@ -31,11 +28,12 @@ public class Plurret extends Mob {
 
     private final Animation animation;
     private int seconds = 0, max = 5, highLevel = 350, lowLevel = 334;
-    private Delay rest = Delay.createInMilliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createInSeconds(4);          //TODO - te wartości losowe i zależne od poziomu trudności
     private ActionState idle, run_away, wander;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private boolean rising = true;
     private int aboveAllHeight = 250;
+    private Point lastPosition = new Point(0, 0);
 
     {
         idle = new ActionState() {
@@ -71,13 +69,13 @@ public class Plurret extends Mob {
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForEscape();
-                if (floatHeight > aboveAllHeight) {
+                if (floatHeight > aboveAllHeight && (lastPosition.getX() != getX() || lastPosition.getY() != getY())) {
                     chargeToPoint(destination.getX() > 0 ? destination : secondaryDestination);
                 } else {
                     goTo(destination.getX() > 0 ? destination : secondaryDestination);
                 }
                 if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(),
-                        secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
+                        secondaryDestination.getY()) < hearRange2 / 4)) {
                     state = idle;
                     secondaryDestination.set(-1, -1);
                     destination.set(-1, -1);
@@ -89,7 +87,7 @@ public class Plurret extends Mob {
             public void update() {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
-                    if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
+                    if (seconds == 0) {
                         int sign = random.next(1) == 1 ? 1 : -1;
                         int shift = (sightRange + random.next(9)) * sign;
                         destination.setX(homePosition.getX() + shift);
@@ -113,7 +111,7 @@ public class Plurret extends Mob {
                     seconds++;
                     if (seconds > max) {
                         seconds = 0;
-                        max = random.next(7);
+                        max = random.next(2);
                     }
                     rest.start();
                 }
@@ -125,11 +123,13 @@ public class Plurret extends Mob {
                 }
                 if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) > hearRange2 / 16) {
                     rise();
-                }
-                if (floatHeight > aboveAllHeight) {
-                    chargeToPoint(destination);
-                } else {
-                    goTo(destination);
+                    if (floatHeight > aboveAllHeight && (lastPosition.getX() != getX() || lastPosition.getY() != getY())) {
+                        chargeToPoint(destination);
+                    } else {
+                        goTo(destination);
+                    }
+                } else if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) < hearRange2 / 49) {
+                    brake(2);
                 }
             }
         };
@@ -148,7 +148,7 @@ public class Plurret extends Mob {
         stats.setWeight(2);
         stats.setMaxHealth(5);
         stats.setHealth(5);
-        rest.start();
+        rest.terminate();
         state = idle;
         homePosition.set(getX(), getY());
         setGravity(0.1);
@@ -177,7 +177,7 @@ public class Plurret extends Mob {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
-            if (object.getMap() == map && (isHeard(object) || isSeen(object))) {
+            if (object.getMap() == map && object.getFloatHeight() + object.getActualHeight() > floatHeight && (isHeard(object) || isSeen(object))) {
                 closeEnemies.add(object);
             }
         }
@@ -186,35 +186,12 @@ public class Plurret extends Mob {
                 if (this != mob && mob.getMap() == map && isInRange(mob)) {
                     closeFriends.add(mob);
                 }
-            } else if (!isNeutral(mob) && mob.getMap() == map && mob.getFloatHeight() + mob.getActualHeight() * 2 > floatHeight && (isHeard(mob) || isSeen
+            } else if (!isNeutral(mob) && mob.getMap() == map && mob.getFloatHeight() + mob.getActualHeight() > floatHeight && (isHeard(mob) || isSeen
                     (mob))) {
                 closeEnemies.add(mob);
             }
         }
         updateAlpha();
-    }
-
-    protected synchronized void calculateDestinationsForEscape() {
-        if (closeEnemies.isEmpty()) {
-            destination.set(-1, -1);
-        } else {
-            int x = 0, y = 0;
-            int added = 0;
-            for (GameObject object : closeEnemies) {
-                if (object.getFloatHeight() + object.getActualHeight() * 2 > floatHeight) {
-                    x += object.getX();
-                    y += object.getY();
-                    added++;
-                }
-            }
-            if (x > 0 && y > 0) {
-                x /= added;
-                y /= added;
-                calculateDestinationForEscapeFromPoint(x, y);
-            } else {
-                destination.set(-1, -1);
-            }
-        }
     }
 
     @Override
@@ -223,6 +200,7 @@ public class Plurret extends Mob {
             updateGettingHurt();
         } else {
             state.update();
+            lastPosition.set(getX(), getY());
             updateAnimation();
         }
         updateChangers();
@@ -259,7 +237,7 @@ public class Plurret extends Mob {
     }
 
     private void updateAnimation() {
-        if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1 || rising) {
+        if (floatHeight > 0 || Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1 || rising) {
             pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
             if (currentPastDirection > 1) {
                 currentPastDirection = 0;
@@ -267,7 +245,7 @@ public class Plurret extends Mob {
             if (pastDirections[0] == pastDirections[1]) {
                 setDirection(pastDirections[0] * 45);
             }
-            animation.setFPS(20);
+            animation.setFPS((int) (getSpeed()) + 10);
             animation.animateIntervalInDirection(getDirection8Way(), 12, 15);
         } else {
             animation.setFPS(20);

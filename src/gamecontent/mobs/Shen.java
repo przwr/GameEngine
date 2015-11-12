@@ -182,8 +182,6 @@ public class Shen extends Mob {
             public void update() {
 //                System.out.println("BOUNCE");
                 if (xSpeed != 0 || ySpeed != 0) {
-                    xSpeed = 0;
-                    ySpeed = 0;
                     bouncer.setFrames(30);
                     bouncer.setSpeed((int) (-xSpeed / 2), (int) (-ySpeed / 2));
                     bouncer.setType(SpeedChanger.DECREASING);
@@ -191,6 +189,8 @@ public class Shen extends Mob {
                     stats.setUnhurtableState(true);
                     addChanger(bouncer);
                     setJumpForce((Math.abs(xSpeed) + Math.abs(ySpeed)) / 2);
+                    xSpeed = 0;
+                    ySpeed = 0;
                 } else if (bouncer.isOver() && animation.getDirectionalFrameIndex() != 7) {
                     target = null;
                     unfold = true;
@@ -395,10 +395,10 @@ public class Shen extends Mob {
                 setDirection(pastDirections[0] * 45);
             }
             if (target == null) {
-                animation.setFPS(7);
+                animation.setFPS((int) (getSpeed() * 10));
                 animation.animateIntervalInDirection(getDirection8Way(), 0, 5);
             } else {
-                animation.setFPS(30);
+                animation.setFPS((int) (getSpeed() * 2));
                 animation.animateIntervalInDirection(getDirection8Way(), 12, 14);
             }
         } else {
