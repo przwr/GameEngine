@@ -45,12 +45,13 @@ public class Blazag extends Mob {
     private float SLEEP_END = 17.5f, SLEEP_START = 7.5f;
     private float current_sleep_end, current_sleep_start;
     private ActionState idle, attack, wander, jump, jumpAttack, protect, sleep, run_to;
-    private Delay attackDelay = Delay.createInMilliseconds(600);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay attackDelay = Delay.createInMilliseconds(700);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay readyToAttackDelay = Delay.createInMilliseconds(300);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(1000);                  //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpRestDelay = Delay.createInSeconds(7);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpDelay = Delay.createInMilliseconds(400);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay changeDelay = Delay.createInMilliseconds(750);              //TODO - te wartości losowe i zależne od poziomu trudności
-    private boolean attacking = true, chasing, jumpOver, awake = true;
+    private boolean attacking = true, chasing, jumpOver, awake = true, can_attack;
     private SpeedChanger jumper;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private Order order = new Order();
@@ -357,29 +358,40 @@ public class Blazag extends Mob {
                 if (distance <= close) {
                     brake(2);
                     setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
-                    float rand = random.next(10) / 1024f;
-                    double lifePercent = (((stats.getMaxHealth() - stats.getHealth()) / (double) stats.getMaxHealth()) / 4) - 0.1;
-                    if (rand < lifePercent) {
-                        stats.setProtectionState(true);
-                        jumpOver = true;
-                        state = protect;
-                    } else if (rand > 0.5 + lifePercent / 2) {
-                        getAttackActivator(ATTACK_SLASH).setActivated(true);
-                        animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
-                    } else {
-                        getAttackActivator(ATTACK_SLASH).setActivated(true);
-                        animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+                    if (!can_attack) {
+                        can_attack = true;
+                        readyToAttackDelay.start();
+                    } else if (readyToAttackDelay.isOver()) {
+                        can_attack = false;
+                        float rand = random.next(10) / 1024f;
+                        double lifePercent = (((stats.getMaxHealth() - stats.getHealth()) / (double) stats.getMaxHealth()) / 4) - 0.1;
+                        if (rand < lifePercent) {
+                            stats.setProtectionState(true);
+                            jumpOver = true;
+                            state = protect;
+                        } else if (rand > 0.5 + lifePercent / 2) {
+                            animation.setFPS(30);
+                            getAttackActivator(ATTACK_SLASH).setActivated(true);
+                            animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
+                        } else {
+                            animation.setFPS(30);
+                            getAttackActivator(ATTACK_SLASH).setActivated(true);
+                            animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+                        }
+                        attacking = true;
+                        attackDelay.start();
                     }
-                    attacking = true;
-                    attackDelay.start();
                     return;
-                } else if (attackDelay.isOver() && distance >= close && animation.getDirectionalFrameIndex() < 19) {
-                    if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
-                        chase();
-                    } else {
-                        charge();
+                } else {
+                    can_attack = false;
+                    if (attackDelay.isOver() && distance >= close && animation.getDirectionalFrameIndex() < 19) {
+                        if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
+                            chase();
+                        } else {
+                            charge();
+                        }
+                        return;
                     }
-                    return;
                 }
             }
         }
@@ -666,7 +678,7 @@ public class Blazag extends Mob {
                 if (pastDirections[0] == pastDirections[1]) {
                     setDirection(pastDirections[0] * 45);
                 }
-                animation.setFPS(30);
+                animation.setFPS((int) (getSpeed() * 10));
                 animation.animateIntervalInDirection(getDirection8Way(), 4, 18);
             } else {
                 if (attacking) {

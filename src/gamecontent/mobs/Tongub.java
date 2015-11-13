@@ -24,7 +24,6 @@ import game.place.Place;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
-import static game.logic.navmeshpathfinding.PathData.OBSTACLE_BETWEEN;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -148,14 +147,10 @@ public class Tongub extends Mob {
                                 chargeToPoint(destination);
                             }
                         } else {
-                            if (getPathData().isTrue(OBSTACLE_BETWEEN)) {
-                                goTo(target.getX(), target.getY());
+                            if (isObstacleBetween()) {
+                                chase();
                             } else {
-                                if (isObstacleBetween()) {
-                                    chase();
-                                } else {
-                                    charge();
-                                }
+                                charge();
                             }
                             if (getInteractive(ATTACK_NORMAL).isActivated()) {
                                 getAttackActivator(ATTACK_NORMAL).setActivated(false);
@@ -166,7 +161,9 @@ public class Tongub extends Mob {
                                 brake(2);
                             } else {
                                 maxSpeed = 5;
-                                getAttackActivator(ATTACK_NORMAL).setActivated(true);
+                                if (Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) < hearRange2 / 36) {
+                                    getAttackActivator(ATTACK_NORMAL).setActivated(true);
+                                }
                             }
                         }
 
@@ -326,11 +323,11 @@ public class Tongub extends Mob {
             if (pastDirections[0] == pastDirections[1]) {
                 setDirection(pastDirections[0] * 45);
             }
-            if (attacking) {
-                animation.setFPS(30);
+            if (getInteractive(ATTACK_NORMAL).isActive()) {
+                animation.setFPS((int) (getSpeed() * 5));
                 animation.animateIntervalInDirection(getDirection8Way(), 7, 10);
             } else {
-                animation.setFPS(15);
+                animation.setFPS((int) (getSpeed() * 5));
                 animation.animateIntervalInDirection(getDirection8Way(), 2, 6);
             }
         } else {

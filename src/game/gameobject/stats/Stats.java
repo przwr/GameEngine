@@ -61,7 +61,6 @@ public class Stats {
             } else if (hurt != 0) {
                 hurtReaction(response);
             }
-
         }
     }
 

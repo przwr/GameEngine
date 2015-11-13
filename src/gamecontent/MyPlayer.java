@@ -289,6 +289,7 @@ public class MyPlayer extends Player {
         addPushInteraction();
     }
 
+
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
         return isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
