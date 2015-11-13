@@ -47,7 +47,7 @@ public class SpeedChanger extends TemporalChanger {
     }
 
     @Override
-    void modifyEffect(Entity en) {
+    public void modifyEffect(Entity en) {
         double tmp;
         switch (type) {
             case NORMAL:

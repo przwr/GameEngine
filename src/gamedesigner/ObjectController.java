@@ -5,7 +5,6 @@
  */
 package gamedesigner;
 
-import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
 import game.gameobject.inputs.AnyInput;
@@ -19,7 +18,7 @@ public class ObjectController extends PlayerController {
     public static final byte MENU_UP = 0, MENU_DOWN = 1, MENU_ACTION = 2, MENU_BACK = 3, LEFT = 6, RIGHT = 7;
     private final int MENU_ACTIONS_COUNT = 11;
 
-    public ObjectController(Entity inControl) {
+    public ObjectController(Player inControl) {
         super(inControl);
         inputs = new AnyInput[MENU_ACTIONS_COUNT];
         actions = new Action[MENU_ACTIONS_COUNT]; // 4 pierwsze to menu
@@ -50,18 +49,18 @@ public class ObjectController extends PlayerController {
         actions[RIGHT].updateActiveState();
         actions[LEFT].updateActiveState();
         if (actions[MENU_UP].isKeyClicked()) {
-            ((Player) inControl).getMenu().setChosen(-1);
+            inControl.getMenu().setChosen(-1);
         } else if (actions[MENU_DOWN].isKeyClicked()) {
-            ((Player) inControl).getMenu().setChosen(1);
+            inControl.getMenu().setChosen(1);
         }
         if (actions[MENU_ACTION].isKeyClicked()) {
-            ((Player) inControl).getMenu().choice(0);
+            inControl.getMenu().choice(0);
         } else if (actions[RIGHT].isKeyClicked()) {
-            ((Player) inControl).getMenu().choice(1);
+            inControl.getMenu().choice(1);
         } else if (actions[LEFT].isKeyClicked()) {
-            ((Player) inControl).getMenu().choice(2);
+            inControl.getMenu().choice(2);
         } else if (actions[MENU_BACK].isKeyClicked()) {
-            ((Player) inControl).getMenu().back();
+            inControl.getMenu().back();
         }
     }
 

@@ -42,8 +42,10 @@ public abstract class Camera {
     private double xTmpMiddle;
     private double yTmpMiddle;
     private int cameraSpeed;
-    private int xEffect;
+    private int xEffect;  //Added after computing placement
     private int yEffect;
+    private int xTarget, yTarget;
+    private double xEye, yEye;
     private int delayLength;
     private int shakeAmplitude = 8;
     private int area;
@@ -64,6 +66,7 @@ public abstract class Camera {
     public synchronized void updateSmooth() {
         if (map != null) {
             if (cameraSpeed > 1) {
+                updateLooking();
                 xTmpMiddle = xMiddle;
                 yTmpMiddle = yMiddle;
                 xMiddle = xTmpMiddle + (double) (getXMiddle() - xTmpMiddle) / cameraSpeed;
@@ -79,12 +82,48 @@ public abstract class Camera {
 
     public synchronized void updateStatic() {
         if (map != null) {
+            updateLooking();
             xMiddle = getXMiddle();
             yMiddle = getYMiddle();
             xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - xMiddle * scale, 0);
             yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - yMiddle * scale, 0);
             area = map.getAreaIndex((int) xMiddle, (int) yMiddle);
         }
+    }
+
+    private void updateLooking() {
+        if (Math.abs(xTarget - xEye) > 1) {
+            xEye += (double) (xTarget - xEye) / 30;
+        }
+        if (Math.abs(yTarget - yEye) > 1) {
+            yEye += (double) (yTarget - yEye) / 30;
+        }
+        xEffect -= xEye;
+        yEffect -= yEye;
+    }
+
+    public void clearLookingPoint() {
+        xTarget = 0;
+        yTarget = 0;
+    }
+
+    public void setLookingPoint(int x, int y) {
+        xTarget = x;
+        yTarget = y;
+    }
+
+    public void neutralizeEffect() {
+        if (xEffect != 0) {
+            xEffect = 0;
+        }
+        if (yEffect != 0) {
+            yEffect = 0;
+        }
+    }
+
+    public void addStaticEffect(int xEffect, int yEffect) {
+        this.xEffect += xEffect;
+        this.yEffect += yEffect;
     }
 
     public synchronized void shake() {

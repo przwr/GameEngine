@@ -15,6 +15,8 @@ import game.gameobject.inputs.AnyInput;
 import game.gameobject.inputs.PlayerController;
 import game.gameobject.stats.PlayerStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
+import game.gameobject.temporalmodifiers.TemporalChanger;
+import game.place.Place;
 import sprites.Animation;
 
 /**
@@ -28,6 +30,7 @@ public class MyController extends PlayerController {
             INPUT_SLOT_UP = 20, INPUT_SLOT_RIGHT = 21, INPUT_SLOT_DOWN = 22, INPUT_SLOT_LEFT = 23,
             INPUT_HANDY_MENU = 24, INPUT_ACTION_1 = 25, INPUT_ACTION_2 = 26, INPUT_LIGHT = 27, INPUT_ZOOM = 28;
     public static final byte MENU_ACTIONS_COUNT = 6, ACTIONS_COUNT = 29, ATTACK_COUNT = 5;
+    public static final byte CAMSPEED_NORMAL = 3, CAMSPEED_SCOPING = 40;
 
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2,
             ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4, ATTACK_NORMAL_ARROW_SHOT = 5;
@@ -41,13 +44,13 @@ public class MyController extends PlayerController {
     private final boolean[] blockedInputs;
     private int tempDirection, sideDirection;
     private byte firstAttackType, secondAttackType, chargingType, lastAttackButton, lastAttackType;
-    private boolean running, diagonal, inputLag, charging, attacking;
+    private boolean running, diagonal, inputLag, charging, attacking, scoping;
     private Animation playerAnimation;
     private PlayerStats stats;
     private MyGUI gui;
     private int jumpLag;
 
-    public MyController(Entity inControl, MyGUI playersGUI) {
+    public MyController(Player inControl, MyGUI playersGUI) {
         super(inControl);
         gui = playersGUI;
         inputs = new AnyInput[ACTIONS_COUNT];
@@ -93,7 +96,9 @@ public class MyController extends PlayerController {
                     if (!charging && chargingDelay.isOver()) {
                         if (jumpLag == 0) {
                             updateAttackTypes();
-                            if (attacking || actions[INPUT_ATTACK].isKeyPressed() || actions[INPUT_SECOND_ATTACK].isKeyPressed()) {
+                            if (actions[INPUT_BLOCK].isKeyPressed()) {
+                                updateBlock();
+                            } else if (attacking || actions[INPUT_ATTACK].isKeyPressed() || actions[INPUT_SECOND_ATTACK].isKeyPressed()) {
                                 updateAttack();
                             } else {
                                 updateMovement();
@@ -127,11 +132,28 @@ public class MyController extends PlayerController {
         }
     }
 
+    private void updateBlock() {
+        if (actions[INPUT_BLOCK].isKeyClicked()) {
+            //PERFEKCYJNY BLOK (pierwsza klatka obrony)
+        }
+        playerAnimation.animateSingleInDirection(tempDirection, 51);
+        updateChargingMovement();
+        //RESZTA BLOKOWANIA
+    }
+    
+    private void stopAttack() {
+        charging = false;
+        if (scoping) {
+            inControl.getCamera().clearLookingPoint();
+            scoping = false;
+        }
+        attacking = false;
+    }
+
     private void updateGettingHurt() {
         inControl.setDirection8way(Methods.pointAngle8Directions(inControl.getKnockBack().getXSpeed(),
                 inControl.getKnockBack().getYSpeed(), 0, 0));
-        charging = false;
-        attacking = false;
+        stopAttack();
         actions[lastAttackButton].setInterrupted();
         playerAnimation.animateSingleInDirection(inControl.getDirection8Way(), 6);
         inControl.brake(2);
@@ -212,7 +234,7 @@ public class MyController extends PlayerController {
             }
             if (afterAttackDelay.isOver()) {
                 actions[lastAttackButton].setInterrupted();
-                attacking = false;
+                stopAttack();
                 afterAttackDelay.stop();
             }
             inControl.brakeWithModifier(2, 2);
@@ -249,8 +271,14 @@ public class MyController extends PlayerController {
                 attackMovement.stop();
                 stopInputLag();
                 charging = true;
+                scoping = true;
                 chargingType = ATTACK_NORMAL_ARROW_SHOT;
                 break;
+        }
+        if (scoping) {
+            inControl.getCamera().setLookingPoint(
+                    (int) Methods.xRadius8Directions(tempDirection, 5 * Place.tileSize),
+                    -(int) Methods.yRadius8Directions(tempDirection, 5 * Place.tileSize));
         }
         preAttackDelay.start();
     }
@@ -264,8 +292,7 @@ public class MyController extends PlayerController {
                     break;
             }
             chargingDelay.start();
-            charging = false;
-            attacking = false;
+            stopAttack();
         }
         if (chargingDelay.isOver()) {
             updateChargingMovement();
@@ -572,18 +599,18 @@ public class MyController extends PlayerController {
             }
         }
         if (actions[INPUT_MENU_UP].isKeyClicked() || actions[INPUT_UP].isKeyClicked()) {
-            ((Player) inControl).getMenu().setChosen(-1);
+            inControl.getMenu().setChosen(-1);
         } else if (actions[INPUT_MENU_DOWN].isKeyClicked() || actions[INPUT_DOWN].isKeyClicked()) {
-            ((Player) inControl).getMenu().setChosen(1);
+            inControl.getMenu().setChosen(1);
         }
         if (actions[INPUT_MENU_ACTION].isKeyClicked() || actions[INPUT_ACTION].isKeyClicked()) {
-            ((Player) inControl).getMenu().choice(0);
+            inControl.getMenu().choice(0);
         } else if (actions[INPUT_MENU_RIGHT].isKeyClicked() || actions[INPUT_RIGHT].isKeyClicked()) {
-            ((Player) inControl).getMenu().choice(1);
+            inControl.getMenu().choice(1);
         } else if (actions[INPUT_MENU_LEFT].isKeyClicked() || actions[INPUT_LEFT].isKeyClicked()) {
-            ((Player) inControl).getMenu().choice(2);
+            inControl.getMenu().choice(2);
         } else if (actions[INPUT_MENU_BACK].isKeyClicked()) {
-            ((Player) inControl).getMenu().back();
+            inControl.getMenu().back();
         }
     }
 

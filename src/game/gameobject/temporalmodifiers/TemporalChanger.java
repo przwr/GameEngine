@@ -50,7 +50,7 @@ public abstract class TemporalChanger {
     }
     
     public int getCurrentTime() {
-        return time;
+        return left;
     }
     
     public int getTimePart(int parts) {
@@ -59,6 +59,10 @@ public abstract class TemporalChanger {
     
     public double getPercentDone() {
         return (double) (time - left) / time;
+    }
+    
+    public double getPercentLeft() {
+        return (double) left / time;
     }
 
     public void modifyEntity(Entity en) {
@@ -75,5 +79,5 @@ public abstract class TemporalChanger {
         return left + " / " + time;
     }
     
-    abstract void modifyEffect(Entity en);
+    abstract public void modifyEffect(Entity en);
 }

@@ -37,6 +37,36 @@ public class Methods {
     public static double yRadius(double angle, double rad) {
         return FastMath.sin(FastMath.toRadians(angle)) * rad;
     }
+    
+    public static double xRadius8Directions(int angle, double rad) {
+        switch (angle) {
+            case 0: return rad;
+            case 1: return rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 2: return 0;
+            case 3: return -rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 4: return -rad;
+            case 5: return -rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 6: return 0;
+            case 7: return rad * ONE_BY_SQRT_ROOT_OF_2;
+            default:
+                return 0;
+        }
+    }
+
+    public static double yRadius8Directions(int angle, double rad) {
+        switch (angle) {
+            case 0: return 0;
+            case 1: return rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 2: return rad;
+            case 3: return rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 4: return 0;
+            case 5: return -rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 6: return -rad;
+            case 7: return -rad * ONE_BY_SQRT_ROOT_OF_2;
+            default:
+                return 0;
+        }
+    }
 
     public static int angleDifference(int angleA, int angleB) {
         return (angleA = angleB - angleA) > 180 ? angleA - 360
