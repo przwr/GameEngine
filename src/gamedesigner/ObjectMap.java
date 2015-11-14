@@ -215,7 +215,7 @@ public class ObjectMap extends Map {
             for (Area area : areas) {
                 for (GameObject o : area.getForegroundTiles()) {
                     fg = (ForegroundTile) o;
-                    if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y && fg.getGravity() != 10) {
+                    if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y) {
                         lowest = fg;
                         break;
                     }
@@ -227,8 +227,6 @@ public class ObjectMap extends Map {
         }
         if (lowest != null) {
             System.out.print(lowest);
-            System.out.println("removed in " + x + " " + y + " fg: " + lowest.getX() + " " + lowest.getY());
-            //lowest.setGravity(10);
             removeForegroundTile(lowest);
         }
     }
