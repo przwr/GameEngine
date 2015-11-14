@@ -283,8 +283,11 @@ public class ObjectPlayer extends Player {
             } else if (tileHeight > 0 && key.keyPressed(KEY_NEXT)) {
                 tileHeight--;
             }
+            getCamera().setLookingPoint(0, -tileHeight * Place.tileSize);
             ui.setChange(key.key(KEY_LSHIFT));
             roundBlocksMode = false;
+        } else {
+            getCamera().clearLookingPoint();
         }
         if (mode == ObjectPlace.MODE_BLOCK) {
             if (key.keyPressed(KEY_PRIOR)) {
@@ -303,13 +306,17 @@ public class ObjectPlayer extends Player {
 
     private void setTile() {
         int xBegin = Math.min(ix, xStop);
-        int yBegin = Math.min(iy, yStop);
+        int yBegin = Math.min(iy, yStop) - tileHeight;
         int xEnd = Math.max(ix, xStop);
-        int yEnd = Math.max(iy, yStop);
+        int yEnd = Math.max(iy, yStop) - tileHeight;
         for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
             for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
                 Point p = ui.getCoordinates();
-                objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
+                if (tileHeight == 0) {
+                    objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
+                } else {
+                    objMap.addFGTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), tileHeight, key.key(KEY_LMENU));
+                }
             }
         }
     }
@@ -339,12 +346,16 @@ public class ObjectPlayer extends Player {
     private void deleteTile() {
         objPlace.getUndoControl().setUpUndo();
         int xBegin = Math.min(ix, xStop);
-        int yBegin = Math.min(iy, yStop);
+        int yBegin = Math.min(iy, yStop) - tileHeight;
         int xEnd = Math.max(ix, xStop);
-        int yEnd = Math.max(iy, yStop);
+        int yEnd = Math.max(iy, yStop) - tileHeight;
         for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
             for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                objMap.deleteTile(xTemp, yTemp);
+                if (tileHeight == 0) {
+                    objMap.deleteTile(xTemp, yTemp);
+                } else {
+                    objMap.deleteFGTile(xTemp, yTemp, tileHeight);
+                }
             }
         }
     }

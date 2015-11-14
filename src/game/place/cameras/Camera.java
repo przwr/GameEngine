@@ -108,8 +108,8 @@ public abstract class Camera {
     }
 
     public void setLookingPoint(int x, int y) {
-        xTarget = x;
-        yTarget = y;
+        xTarget = (int) (x * scale);
+        yTarget = (int) (y * scale);
     }
 
     public void neutralizeEffect() {

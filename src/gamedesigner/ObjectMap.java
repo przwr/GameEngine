@@ -177,6 +177,61 @@ public class ObjectMap extends Map {
         }
     }
 
+    public void addFGTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, int depth, boolean altMode) {
+        ForegroundTile lowest = null;
+        depth *= tileSize;
+        x *= tileSize;
+        y *= tileSize;
+        ForegroundTile fg;
+        if (areTilesVisible) {
+            for (Area area : areas) {
+                for (GameObject o : area.getForegroundTiles()) {
+                    fg = (ForegroundTile) o;
+                    if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y) {
+                        lowest = fg;
+                        break;
+                    }
+                }
+                if (lowest != null) {
+                    break;
+                }
+            }
+        }
+        if (lowest != null) {
+            lowest.addTileToStack(xSheet, ySheet);
+        } else {
+            ForegroundTile newTile = ForegroundTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, -depth /*TODO SOMETHING!!!*/);
+            addForegroundTile(newTile, x, y, depth);
+        }
+    }
+
+    public void deleteFGTile(int x, int y, int depth) {
+        ForegroundTile lowest = null;
+        depth *= tileSize;
+        x *= tileSize;
+        y *= tileSize;
+        ForegroundTile fg;
+        if (areTilesVisible) {
+            for (Area area : areas) {
+                for (GameObject o : area.getForegroundTiles()) {
+                    fg = (ForegroundTile) o;
+                    if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y && fg.getGravity() != 10) {
+                        lowest = fg;
+                        break;
+                    }
+                }
+                if (lowest != null) {
+                    break;
+                }
+            }
+        }
+        if (lowest != null) {
+            System.out.println("removed in " + x + " " + y + " fg: " + lowest.getX() + " " + lowest.getY());
+            lowest.setGravity(10);
+            //removeForegroundTile(lowest);
+        }
+    }
+
     public void deleteTile(int x, int y) {
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
@@ -374,7 +429,7 @@ public class ObjectMap extends Map {
         }
         GameObject object;
         for (Area area : areas) {
-            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext(); ) {
+            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext();) {
                 object = iterator.next();
                 if (object instanceof TemporaryBlock) {
                     ((TemporaryBlock) object).clear();
@@ -412,7 +467,6 @@ public class ObjectMap extends Map {
 //    public int getAreaIndex(int x, int y) {
 //        return 0;
 //    }
-
     @Override
     protected void renderArea(int i) {
         for (int yTiles = 0; yTiles < heightInTiles; yTiles++) {
