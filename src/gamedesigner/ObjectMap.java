@@ -200,7 +200,7 @@ public class ObjectMap extends Map {
         if (lowest != null) {
             lowest.addTileToStack(xSheet, ySheet);
         } else {
-            ForegroundTile newTile = ForegroundTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, -depth /*TODO SOMETHING!!!*/);
+            ForegroundTile newTile = ObjectFGTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, depth + tileSize /*TODO SOMETHING!!!*/);
             addForegroundTile(newTile, x, y, depth);
         }
     }
@@ -227,8 +227,8 @@ public class ObjectMap extends Map {
         }
         if (lowest != null) {
             System.out.println("removed in " + x + " " + y + " fg: " + lowest.getX() + " " + lowest.getY());
-            lowest.setGravity(10);
-            //removeForegroundTile(lowest);
+            //lowest.setGravity(10);
+            removeForegroundTile(lowest);
         }
     }
 
@@ -437,6 +437,7 @@ public class ObjectMap extends Map {
                 }
             }
         }
+        addObject(centralPoint);
     }
 
     @Override

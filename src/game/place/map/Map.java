@@ -406,7 +406,7 @@ public abstract class Map {
     }
 
     public void addObject(GameObject object) {
-        if (object.getX() > 0 && object.getY() > 0 && object.getX() < width && object.getY() < height) {
+        if (object.getX() >= 0 && object.getY() >= 0 && object.getX() < width && object.getY() < height) {
             object.setMapNotChange(this);
             if (object instanceof WarpPoint) {
                 warps.add((WarpPoint) object);
@@ -462,7 +462,7 @@ public abstract class Map {
     }
 
     protected void removeForegroundTile(GameObject foregroundTile) {
-        areas[getAreaIndex(foregroundTile.getX(), foregroundTile.getY())].removeForegroundTile(foregroundTile);
+        areas[getAreaIndex(foregroundTile.getX(), foregroundTile.getY())].deleteForegroundTile(foregroundTile);
     }
 
     public void changeArea(int area, int prevArea, GameObject object) {

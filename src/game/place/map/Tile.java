@@ -176,19 +176,16 @@ public class Tile extends GameObject implements Appearance {
         return copy;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof Tile) {
-            Tile tile = (Tile) o;
-            if (tile.spriteSheet.equals(spriteSheet)) {
-                if (tileStack.size() == tile.tileStack.size()) {
-                    for (int i = 0; i < tileStack.size(); i++) {
-                        if (!tileStack.get(i).equals(tile.tileStack.get(i))) {
-                            return false;
-                        }
+    public boolean isTheSame(Tile o) {
+        Tile tile = (Tile) o;
+        if (tile.spriteSheet.equals(spriteSheet)) {
+            if (tileStack.size() == tile.tileStack.size()) {
+                for (int i = 0; i < tileStack.size(); i++) {
+                    if (!tileStack.get(i).equals(tile.tileStack.get(i))) {
+                        return false;
                     }
-                    return true;
                 }
+                return true;
             }
         }
         return false;

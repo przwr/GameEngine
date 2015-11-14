@@ -74,14 +74,15 @@ public class ObjectPO extends PuzzleObject {
         });
         objects.stream().forEach(map::addObject);
         fgTiles.stream().forEach((FGTileContainer tile) -> {
-            ForegroundTile tmp = tile.generateFGT(x * tileSize, y * tileSize);
+            /*ForegroundTile tmp = tile.generateFGT(x * tileSize, y * tileSize);
             SpriteSheet tex = tmp.getSpriteSheet();
             Point p;
             int xStart = tmp.getX() / tileSize;
             int yStart = tmp.getY() / tileSize;
             while ((p = tmp.popTileFromStackBack()) != null) {
                 objMap.addTile(xStart, yStart, p.getX(), p.getY(), tex, false);
-            }
+            }*/
+            map.addForegroundTileAndReplace(tile.generateOFGT(x * tileSize, y * tileSize));
         });
         links.stream().forEach((PointedValue pv) -> {
             PuzzleLink pl = new PuzzleLink(pv.getX() * tileSize, pv.getY() * tileSize, pv.getValue(), (ObjectPlace) map.place);

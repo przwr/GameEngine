@@ -208,7 +208,7 @@ public class PuzzleObject {
 
     private void addTile(Tile tile, int x, int y) {
         for (TileContainer tc : bgTiles) {
-            if (tc.tile.equals(tile)) {
+            if (tc.tile.isTheSame(tile)) {
                 tc.places.add(new Point(x, y));
                 return;
             }
@@ -253,7 +253,9 @@ public class PuzzleObject {
             }).forEach(tmpBlock::addForegroundTile);
         });
         objects.stream().forEach(map::addObject);
-        fgTiles.stream().forEach((tile) -> map.addForegroundTileAndReplace(tile.generateFGT(x * tileSize, y * tileSize)));
+        fgTiles.stream().forEach((tile) -> {
+            map.addForegroundTileAndReplace(tile.generateFGT(x * tileSize, y * tileSize));
+        });
     }
 
     public int getXBegin() {
@@ -343,6 +345,14 @@ public class PuzzleObject {
 
         public ForegroundTile generateFGT(int x, int y) {
             ForegroundTile fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], round);
+            fgt.setPosition(xBegin + x, yBegin + y);
+            fgt.setDepth(values[4]);
+            additionalPlaces.stream().forEach((p) -> fgt.addTileToStack(p.getX(), p.getY()));
+            return fgt;
+        }
+        
+        public ForegroundTile generateOFGT(int x, int y) {
+            ObjectFGTile fgt = new ObjectFGTile(texture, values[0], values[1], values[2], wall, values[3], round);
             fgt.setPosition(xBegin + x, yBegin + y);
             fgt.setDepth(values[4]);
             additionalPlaces.stream().forEach((p) -> fgt.addTileToStack(p.getX(), p.getY()));

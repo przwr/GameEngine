@@ -42,7 +42,7 @@ public class ObjectPlayer extends Player {
     private ObjectPlace objPlace;
     private ObjectUI ui;
     private int blockHeight, tileHeight, radius, mode;
-    private boolean roundBlocksMode;
+    private boolean roundBlocksMode, alreadyPlaced;
     private boolean paused;
 
     private RoundedTMPBlock rTmpBlock;
@@ -105,13 +105,15 @@ public class ObjectPlayer extends Player {
         int xdelta = (int) xPos;
         int ydelta = (int) yPos;
         boolean ctrl = key.key(KEY_LCONTROL);
-        if (xTimer == 0) {
+        if (xdelta != 0 && xTimer == 0) {
             ix = Methods.interval(0, ix + xdelta, map.getWidthInTiles());
             setX(ix * tileSize);
+            alreadyPlaced = false;
         }
-        if (yTimer == 0) {
+        if (ydelta != 0 && yTimer == 0) {
             iy = Methods.interval(0, iy + ydelta, map.getHeightInTiles());
             setY(iy * tileSize);
+            alreadyPlaced = false;
         }
         updateAreaPlacement();
         if (key.key(KEY_M) && movingBlock != null) {
@@ -156,17 +158,23 @@ public class ObjectPlayer extends Player {
 
             moveBlocksKey();
 
-            if (key.key(KEY_SPACE) || key.key(KEY_LMENU)) {
+            if (!key.key(KEY_SPACE) && !key.key(KEY_LMENU) && !key.key(KEY_DELETE)) {
+                alreadyPlaced = false;
+            }
+
+            if (!alreadyPlaced && (key.key(KEY_SPACE) || key.key(KEY_LMENU))) {
+                alreadyPlaced = true;
                 if (mode == ObjectPlace.MODE_TILE) {
                     setTile();
-                } else if (key.keyPressed(KEY_SPACE) || key.keyPressed(KEY_LMENU)) {
+                } else {
                     setInstance();
                 }
             }
-            if (key.key(KEY_DELETE)) {
+            if (!alreadyPlaced && key.key(KEY_DELETE)) {
+                alreadyPlaced = true;
                 if (mode == ObjectPlace.MODE_TILE) {
                     deleteTile();
-                } else if (key.keyPressed(KEY_DELETE)) {
+                } else {
                     deleteInstance();
                 }
             }
@@ -271,7 +279,6 @@ public class ObjectPlayer extends Player {
                 }
             } else {
                 move(xPos, yPos);
-                updateAreaPlacement();
             }
         }
     }

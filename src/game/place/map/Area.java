@@ -107,9 +107,9 @@ public class Area {
     }
 
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
-        if (tile.isSimpleLighting()) {
+        /*if (tile.isSimpleLighting()) {
             tiles[x / Place.tileSize + y / Place.tileSize * Y_IN_TILES] = null;
-        }
+        }*/
         GameObject object;
         for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
             object = iterator.next();
@@ -244,10 +244,6 @@ public class Area {
         } else {
             flatMobs.remove(mob);
         }
-    }
-
-    public void removeForegroundTile(GameObject foregroundTile) {
-        foregroundTiles.remove(foregroundTile);
     }
 
     public WarpPoint findWarp(String name) {

@@ -161,7 +161,6 @@ public class GUIHandler extends GUIObject {
                     load.close();
                     return;
                 } catch (IOException e) {
-                    ErrorHandler.exception(e);
                 }
                 objPlace.saveObject(text);
             }
