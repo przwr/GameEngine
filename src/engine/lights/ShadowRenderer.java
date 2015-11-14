@@ -14,6 +14,7 @@ import engine.utilities.Point;
 import engine.utilities.ShadowContainer;
 import game.gameobject.GameObject;
 import game.place.Place;
+import game.place.map.ForegroundTile;
 import game.place.map.Map;
 import net.jodk.lang.FastMath;
 
@@ -70,6 +71,7 @@ public class ShadowRenderer {
     private static void findShades(Light light, Map map) {
         shades.clear();
         searchBlocks(light, map);
+        searchForegroundTiles(light, map);
         searchObjects(light, map);
         Collections.sort(shades);
     }
@@ -90,6 +92,21 @@ public class ShadowRenderer {
                             && top.getY() - 2 * FastMath.abs(tempShade.getShadowHeight()) - tempShade.getHeight() <= light.getY() + lightHeightHalf) {
                         shades.add(top);
                     }
+                }
+            }
+        }
+    }
+
+    private static void searchForegroundTiles(Light light, Map map) {
+        for (GameObject fgTile : map.getArea(light.getX(), light.getY()).getNearForegroundTiles()) {
+            if (!((ForegroundTile) fgTile).isInBlock()) {
+                tempShade = fgTile.getCollision();
+                if (tempShade != null && tempShade.isLitable() && tempShade.getOwner().getAppearance() != null
+                        && fgTile.getY() - tempShade.getActualHeight() + tempShade.getHeight() / 2 <= light.getY() + lightHeightHalf
+                        && fgTile.getY() + tempShade.getActualHeight() - tempShade.getHeight() / 2 >= light.getY() - lightHeightHalf
+                        && fgTile.getX() - tempShade.getActualWidth() / 2 <= light.getX() + lightWidthHalf
+                        && fgTile.getX() + tempShade.getActualWidth() / 2 >= light.getX() - lightWidthHalf) {
+                    shades.add(tempShade);
                 }
             }
         }

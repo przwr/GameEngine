@@ -11,11 +11,11 @@ import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
+import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import gamecontent.mobs.Shen;
 
 /**
  * @author Wojtek
@@ -80,12 +80,18 @@ public class GladeMap extends Map {
 //        addObject(new Shen(648, 1400, place, mobID++));
 //        addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
 //        addObject(new MyNPC(384, 590, place, mobID++));
-        for (int i = 0; i < 20; i += 2) {
-            addObject(new Shen(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
+//        for (int i = 0; i < 20; i += 2) {
+//            addObject(new Shen(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
 //            addObject(new Blazag(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
 //            addObject(new Tongub(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
 //            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() *
 //                    150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));
+//        }
+        int space = 64;
+        for (int x = 0; x < 2 * space; x += space) {
+            for (int y = 0; y < 3 * space; y += space) {
+                addObject(new Blazag(2048 + x, 2048 + y, place, mobID++));
+            }
         }
 //        GameObject light = new LightSource(1784, 1296, 206, 64, "lamp", place, "lamp", false);
 //        light.setDepth(1024);

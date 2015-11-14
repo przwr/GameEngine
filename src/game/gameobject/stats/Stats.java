@@ -61,7 +61,13 @@ public class Stats {
             } else if (hurt != 0) {
                 hurtReaction(response);
             }
+            if (protectionState) {
+                reactionWhileProtect();
+            }
         }
+    }
+
+    public void reactionWhileProtect() {
     }
 
     public void died() {

@@ -8,14 +8,12 @@ package gamecontent;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.Settings;
-import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
 import game.gameobject.inputs.AnyInput;
 import game.gameobject.inputs.PlayerController;
 import game.gameobject.stats.PlayerStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
-import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.place.Place;
 import sprites.Animation;
 
@@ -44,7 +42,7 @@ public class MyController extends PlayerController {
     private final boolean[] blockedInputs;
     private int tempDirection, sideDirection;
     private byte firstAttackType, secondAttackType, chargingType, lastAttackButton, lastAttackType;
-    private boolean running, diagonal, inputLag, charging, attacking, scoping;
+    private boolean running, sneaking, diagonal, inputLag, charging, attacking, attacked, scoping;
     private Animation playerAnimation;
     private PlayerStats stats;
     private MyGUI gui;
@@ -84,13 +82,24 @@ public class MyController extends PlayerController {
         if (gui != null) {
             updateActionsIfNoLag();
             //ANIMACJA//
-            tempDirection = inControl.getDirection8Way();
-            running = !actions[INPUT_RUN].isKeyPressed();
-
             playerAnimation = (Animation) inControl.getAppearance();
             stats = (PlayerStats) inControl.getStats();
             playerAnimation.setAnimate(true);
             diagonal = true;
+            tempDirection = inControl.getDirection8Way();
+            stats.setProtectionState(false);
+            if (stats.getEnergy() > 10) {
+                running = actions[INPUT_RUN].isKeyPressed();
+            } else {
+                running = false;
+            }
+            if (running) {
+                sneaking = false;
+            } else {
+                if (actions[INPUT_SNEAK].isKeyClicked()) {
+                    sneaking = !sneaking;
+                }
+            }
             if (!inControl.isHurt()) {
                 if (inControl.isAbleToMove()) {
                     if (!charging && chargingDelay.isOver()) {
@@ -118,16 +127,14 @@ public class MyController extends PlayerController {
             } else {
                 updateGettingHurt();
             }
-            if ((!actions[INPUT_ATTACK].isKeyPressed() || firstAttackType < 0)
-                    && (!actions[INPUT_SECOND_ATTACK].isKeyPressed() || secondAttackType < 0)
-                    && jumpLag == 0) {
-                if (running) {
-                    playerAnimation.setFPS((int) (inControl.getSpeed() * 3.5));
-                } else {
-                    playerAnimation.setFPS((int) (inControl.getSpeed() * 3));
-                }
-            } else {
+            if (attacking) {
                 playerAnimation.setFPS(60);
+            } else {
+                if (!running) {
+                    playerAnimation.setFPS((int) (inControl.getSpeed() * 3));
+                } else {
+                    playerAnimation.setFPS((int) (inControl.getSpeed() * 3.5));
+                }
             }
         }
     }
@@ -138,9 +145,10 @@ public class MyController extends PlayerController {
         }
         playerAnimation.animateSingleInDirection(tempDirection, 51);
         updateChargingMovement();
+        stats.setProtectionState(true);
         //RESZTA BLOKOWANIA
     }
-    
+
     private void stopAttack() {
         charging = false;
         if (scoping) {
@@ -202,6 +210,7 @@ public class MyController extends PlayerController {
 
     private void updateAttack() {
         if (!attacking) {
+            attacked = false;
             if (actions[INPUT_ATTACK].isKeyClicked()) {
                 if (firstAttackType >= 0) {
                     startAttack(firstAttackType);
@@ -213,7 +222,7 @@ public class MyController extends PlayerController {
                     lastAttackButton = INPUT_SECOND_ATTACK;
                 }
             }
-        } else {
+        } else if (attacked) {
             if (preAttackDelay.isWorking()) {
                 int tmpDir = tempDirection;
                 updateDirection();
@@ -242,29 +251,46 @@ public class MyController extends PlayerController {
     }
 
     private void startAttack(byte attack) {
-        preAttackDelay.setFrameLengthInMilliseconds(30);
-        attackDelay.setFrameLengthInMilliseconds(30);
-        afterAttackDelay.setFrameLengthInMilliseconds(160);
-        lastAttackType = attack;
-        attackMovement.setSpeedInDirection(tempDirection * 45, 10);
-        attackMovement.start();
-        attacking = true;
-        inControl.addChanger(attackMovement);
         switch (attack) {
             case ATTACK_SLASH:
-                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
+                if (stats.getEnergy() >= 10) {
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
+                    stats.decreaseEnergy(10);
+                    attacked = true;
+                }
                 break;
             case ATTACK_THRUST:
-                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 26, 28);
+                if (stats.getEnergy() >= 12) {
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 26, 28);
+                    stats.decreaseEnergy(12);
+                    attacked = true;
+
+                }
                 break;
             case ATTACK_UPPER_SLASH:
-                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 29, 36);
+                if (stats.getEnergy() >= 10) {
+
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 29, 36);
+                    stats.decreaseEnergy(10);
+                    attacked = true;
+
+                }
                 break;
             case ATTACK_WEAK_PUNCH:
-                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 37, 39);
+                if (stats.getEnergy() >= 1) {
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 37, 39);
+                    stats.decreaseEnergy(1);
+                    attacked = true;
+
+                }
                 break;
             case ATTACK_STRONG_PUNCH:
-                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 40, 41);
+                if (stats.getEnergy() >= 1.2f) {
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 40, 41);
+                    stats.decreaseEnergy(1.2f);
+                    attacked = true;
+
+                }
                 break;
             case ATTACK_NORMAL_ARROW_SHOT:
                 playerAnimation.animateIntervalInDirectionOnce(tempDirection, 46, 48);
@@ -273,6 +299,15 @@ public class MyController extends PlayerController {
                 charging = true;
                 scoping = true;
                 chargingType = ATTACK_NORMAL_ARROW_SHOT;
+                if (stats.getEnergy() >= 4) {
+                    stats.decreaseEnergy(4);
+                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 46, 48);
+                    attackMovement.stop();
+                    stopInputLag();
+                    charging = true;
+                    chargingType = ATTACK_NORMAL_ARROW_SHOT;
+                    attacked = true;
+                }
                 break;
         }
         if (scoping) {
@@ -281,6 +316,17 @@ public class MyController extends PlayerController {
                     -(int) Methods.yRadius8Directions(tempDirection, 5 * Place.tileSize));
         }
         preAttackDelay.start();
+        if (attacked) {
+            preAttackDelay.setFrameLengthInMilliseconds(30);
+            attackDelay.setFrameLengthInMilliseconds(30);
+            afterAttackDelay.setFrameLengthInMilliseconds(160);
+            lastAttackType = attack;
+            attackMovement.setSpeedInDirection(tempDirection * 45, 10);
+            attackMovement.start();
+            attacking = true;
+            inControl.addChanger(attackMovement);
+            preAttackDelay.start();
+        }
     }
 
     private void updateCharging() {
@@ -303,6 +349,7 @@ public class MyController extends PlayerController {
 
     private void updateChargingMovement() {
         running = false;
+        sneaking = false;
         if (actions[INPUT_UP].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
                 inControl.addSpeed(-4, -4);
@@ -383,7 +430,7 @@ public class MyController extends PlayerController {
                 animateMoving(2);
                 inControl.addSpeed(0, -4);
             }
-            if (running) {
+            if (!sneaking) {
                 inControl.setMakeNoise(true);
             }
         } else if (actions[INPUT_DOWN].isKeyPressed()) {
@@ -405,7 +452,7 @@ public class MyController extends PlayerController {
                 animateMoving(6);
                 inControl.addSpeed(0, 4);
             }
-            if (running) {
+            if (!sneaking) {
                 inControl.setMakeNoise(true);
             }
         } else {
@@ -420,7 +467,7 @@ public class MyController extends PlayerController {
                 }
                 animateMoving(0);
                 inControl.addSpeed(4, 0);
-                if (running) {
+                if (!sneaking) {
                     inControl.setMakeNoise(true);
                 }
             } else if (actions[INPUT_LEFT].isKeyPressed()) {
@@ -434,7 +481,7 @@ public class MyController extends PlayerController {
                 }
                 animateMoving(4);
                 inControl.addSpeed(-4, 0);
-                if (running) {
+                if (!sneaking) {
                     inControl.setMakeNoise(true);
                 }
             } else {
@@ -469,8 +516,9 @@ public class MyController extends PlayerController {
         if (jumpMaker.isOver()) {
             if (jumpLag == 0) {
                 int jumpSpeed = 40;
-                if (actions[INPUT_DODGE].isKeyPressed()) {
+                if (stats.getEnergy() >= 25 && actions[INPUT_DODGE].isKeyPressed()) {
                     checkOneButtonDodge(jumpSpeed);
+
                 }/* else {
                  checkDoubleClickDodge(jumpSpeed);
                  }*/
@@ -521,6 +569,7 @@ public class MyController extends PlayerController {
         } else {
             jumpMaker.setSpeed((int) (xSpeed * 0.7), (int) (ySpeed * 0.7));
         }
+        stats.decreaseEnergy(25);
         jumpMaker.start();
         inControl.addChanger(jumpMaker);
         jumpDelay.stop();
@@ -528,6 +577,7 @@ public class MyController extends PlayerController {
         inControl.setJumpForce(jumpMaker.getTotalTime() / 4);
         jumpLag = jumpMaker.getTotalTime() / 2;
         setInputLag(jumpLag);
+        playerAnimation.setFPS(60);
     }
 
     private void updateRest() {
@@ -561,25 +611,29 @@ public class MyController extends PlayerController {
             gui.changeAttackIcon(firstAttackType, secondAttackType);
         }
         if (!running) {
-            inControl.setMaxSpeed(diagonal ? 1.5 : 2);
+            if (sneaking) {
+                inControl.setMaxSpeed(diagonal ? 2.121 : 3);
+            } else {
+                inControl.setMaxSpeed(diagonal ? 4.949 : 7);
+            }
         } else {
-            inControl.setMaxSpeed(diagonal ? 6 : 8);
+            inControl.setMaxSpeed(diagonal ? 7.777 : 11);
         }
         if (actions[INPUT_LIGHT].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());
         }
         if (actions[INPUT_ZOOM].isKeyClicked()) {
             if (inControl instanceof Player) {
-                ((Player) inControl).getCamera().switchZoom();
+                inControl.getCamera().switchZoom();
             }
         }
     }
 
     private void animateMoving(int direction) {
-        if (running) {
-            playerAnimation.animateIntervalInDirection(direction, 7, 18);
-        } else {
+        if (sneaking) {
             playerAnimation.animateIntervalInDirection(direction, 1, 6);
+        } else {
+            playerAnimation.animateIntervalInDirection(direction, 7, 18);
         }
         inControl.setDirection(direction * 45);
     }
@@ -592,7 +646,7 @@ public class MyController extends PlayerController {
 
     @Override
     public void getMenuInput() {
-        boolean firstPlayer = !((MyPlayer) inControl).isNotFirst();
+        boolean firstPlayer = !inControl.isNotFirst();
         for (int i = 0; i < MENU_ACTIONS_COUNT + 5; i++) {
             if (firstPlayer || isNotEqualToFirstPlayerMenuAction(actions[i].input)) {
                 actions[i].updateActiveState();
@@ -646,5 +700,9 @@ public class MyController extends PlayerController {
 
     public void setPlayersGUI(MyGUI gui) {
         this.gui = gui;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }

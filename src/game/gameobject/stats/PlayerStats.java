@@ -10,8 +10,13 @@ import gamecontent.MyPlayer;
  */
 public class PlayerStats extends Stats {
 
+    private float energy = 200;
+    private float maxEnergy = 200;
+    private Player player;
+
     public PlayerStats(Player owner) {
         super(owner);
+        this.player = owner;
         strength = 20;
         sideDefenceModifier = 0.8f;
         backDefenceModifier = 0.5f;
@@ -23,19 +28,52 @@ public class PlayerStats extends Stats {
     @Override
     public void died() {
         health = maxHealth / 2;
-        owner.setPosition(128, 128);
-        Camera camera = ((Player) owner).getCamera();
+        player.setPosition(128, 128);
+        Camera camera = player.getCamera();
         if (camera != null) {
             camera.updateStatic();
         }
-        ((MyPlayer) owner).getGUI().deactivate();
-        System.out.println(owner.getName() + " zginał.");
+        ((MyPlayer) player).getGUI().deactivate();
+        System.out.println(player.getName() + " zginał.");
     }
 
     @Override
     public void hurtReaction(InteractiveResponse response) {
         super.hurtReaction(response);
-        ((MyPlayer) owner).getGUI().activateLifeIndicator();
+        if (health <= 900) {
+            System.out.println("____________R.I.P.___________");
+        }
+        ((MyPlayer) player).getGUI().activateLifeIndicator();
     }
 
+    @Override
+    public void reactionWhileProtect() {
+        decreaseEnergy(20);
+    }
+
+    public void decreaseEnergy(float amount) {
+        energy -= amount;
+        if (energy <= 0) {
+            energy = 0;
+        }
+        ((MyPlayer) player).getGUI().activateEnergyIndicator();
+    }
+
+    public void increaseEnergy(float amount) {
+        if (energy < maxEnergy) {
+            energy += amount;
+            if (energy >= maxEnergy) {
+                energy = maxEnergy;
+                ((MyPlayer) player).getGUI().activateEnergyIndicator();
+            }
+        }
+    }
+
+    public float getEnergy() {
+        return energy;
+    }
+
+    public float getMaxEnergy() {
+        return maxEnergy;
+    }
 }

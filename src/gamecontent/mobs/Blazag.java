@@ -48,7 +48,7 @@ public class Blazag extends Mob {
     private Delay attackDelay = Delay.createInMilliseconds(700);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay readyToAttackDelay = Delay.createInMilliseconds(300);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(1000);                  //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay jumpRestDelay = Delay.createInSeconds(7);             //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay jumpRestDelay = Delay.createInSeconds(4);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpDelay = Delay.createInMilliseconds(400);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay changeDelay = Delay.createInMilliseconds(750);              //TODO - te wartości losowe i zależne od poziomu trudności
     private boolean attacking = true, chasing, jumpOver, awake = true, can_attack;
@@ -321,9 +321,9 @@ public class Blazag extends Mob {
         neutral.add(Plurret.class.getName());
         current_sleep_start = (SLEEP_START + rand) * 60;
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CurveInteractiveCollision(48, 32, 0, 38, 180),
-                Interactive.STRENGTH_HURT, ATTACK_SLASH, 0.5f));
+                Interactive.STRENGTH_HURT, ATTACK_SLASH, 1.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 128, 0, 24, 24),
-                Interactive.STRENGTH_HURT, ATTACK_JUMP, 2f));
+                Interactive.STRENGTH_HURT, ATTACK_JUMP, 4f));
         addPushInteraction();
     }
 
@@ -336,7 +336,7 @@ public class Blazag extends Mob {
                     brake(2);
                     setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
                     animation.animateSingleInDirection(getDirection8Way(), 19);
-                    if (distance <= sightRange2 / 8) {
+                    if (distance <= sightRange2 / 16) {
                         state = jumpAttack;
                         jumpDelay.start();
                     } else {
@@ -400,7 +400,19 @@ public class Blazag extends Mob {
 
     private void getOrders() {
 //        System.out.println("GET_ORDERS");
-        if (order.order >= 0) {
+        int close = 0;
+        boolean listenToOrders = true;
+        for (GameObject enemy : closeEnemies) {
+            if (isAgresor(enemy)) {
+                close = 1444 + (enemy.getCollision().getWidth() * enemy.getCollision().getWidth() + collision.getWidth() * collision.getWidth()) / 2;
+                if (Methods.pointDistanceSimple2(getX(), getY(), enemy.getX(), enemy.getY()) < close) {
+                    target = enemy;
+                    listenToOrders = false;
+                    break;
+                }
+            }
+        }
+        if (listenToOrders && order.order >= 0) {
             switch (order.order) {
                 case Order.ATTACK:
                     target = order.target;

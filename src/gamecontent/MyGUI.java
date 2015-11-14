@@ -26,7 +26,7 @@ public class MyGUI extends GUIObject {
     private final SpriteSheet attackIcons;
     private final Color color;
     private int firstAttackType, secondAttackType;
-    private float alpha, lifeAlpha;
+    private float alpha, lifeAlpha, energyAlpha;
     private int emptySlot;
     private FrameBufferObject frameBufferObject;
     private Color lifeColor = new Color(0f, 0f, 0f), energyColor = new Color(0f, 0f, 1f);
@@ -51,10 +51,7 @@ public class MyGUI extends GUIObject {
     private void setFrameBuffer() {
         if (!Settings.shadowOff) {
             frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(player.getCollision().getWidth(),
-                    player.getCollision().getHeight())
-                    : new RegularFrameBufferObject(player.
-                    getCollision().getWidth(),
-                    player.getCollision().getHeight());
+                    player.getCollision().getHeight()) : new RegularFrameBufferObject(player.getCollision().getWidth(), player.getCollision().getHeight());
         }
     }
 
@@ -74,6 +71,7 @@ public class MyGUI extends GUIObject {
 
     public void activate() {
         alpha = 3f;
+        energyAlpha = 3f;
         if (!lowHealth) {
             lifeAlpha = 3f;
         }
@@ -82,6 +80,7 @@ public class MyGUI extends GUIObject {
 
     public void deactivate() {
         alpha = 0f;
+        energyAlpha = 0f;
         if (!lowHealth) {
             lifeAlpha = 0f;
         }
@@ -92,6 +91,11 @@ public class MyGUI extends GUIObject {
         if (!lowHealth) {
             lifeAlpha = 3f;
         }
+    }
+
+
+    public void activateEnergyIndicator() {
+        energyAlpha = 3f;
     }
 
     @Override
@@ -133,15 +137,22 @@ public class MyGUI extends GUIObject {
                 lifeAlpha = 0;
             }
         }
+        if (energyAlpha > 0) {
+            energyAlpha -= 0.02f;
+        } else {
+            energyAlpha = 0;
+        }
     }
 
     private void renderGroundGUI() {
         glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_COLOR);
         calculateLifeAlpha();
-        Drawer.setColor(lifeColor);
-        frameBufferObject.renderPiece(0, 0, 0, 0, frameBufferObject.getWidth() / 2, frameBufferObject.getHeight());
-        if (on) {
-            energyColor.a = alpha;
+        if (lifeAlpha > 0) {
+            Drawer.setColor(lifeColor);
+            frameBufferObject.renderPiece(0, 0, 0, 0, frameBufferObject.getWidth() / 2, frameBufferObject.getHeight());
+        }
+        if (energyAlpha > 0) {
+            energyColor.a = energyAlpha;
             Drawer.setColor(energyColor);
             frameBufferObject.renderPiece(0, 0, frameBufferObject.getWidth() / 2, 0, frameBufferObject.getWidth(), frameBufferObject.getHeight());
         }
@@ -186,7 +197,7 @@ public class MyGUI extends GUIObject {
     }
 
     public boolean isOn() {
-        return alpha > 0 || lifeAlpha > 0 || lowHealth || on;
+        return on || lifeAlpha > 0 || energyAlpha > 0 || lowHealth || on;
     }
 
     public FrameBufferObject getFrameBufferObject() {
