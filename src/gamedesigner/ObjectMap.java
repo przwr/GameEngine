@@ -34,9 +34,6 @@ public class ObjectMap extends Map {
         objPlace = (ObjectPlace) place;
         links = new ArrayList<>();
 
-        centralPoint = new CentralPoint(0, 0, objPlace);
-        addObject(centralPoint);
-
         background = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
         background.setDepth(-1);
         isBackground = true;
@@ -44,6 +41,9 @@ public class ObjectMap extends Map {
         areBlocksVisible = true;
 
         switchTiles(background);
+
+        centralPoint = new CentralPoint(0, 0, objPlace);
+        addObject(centralPoint);
     }
 
     public void setBackground(int xSheet, int ySheet, SpriteSheet texture) {
@@ -226,6 +226,7 @@ public class ObjectMap extends Map {
             }
         }
         if (lowest != null) {
+            System.out.print(lowest);
             System.out.println("removed in " + x + " " + y + " fg: " + lowest.getX() + " " + lowest.getY());
             //lowest.setGravity(10);
             removeForegroundTile(lowest);

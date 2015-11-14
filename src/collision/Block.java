@@ -58,7 +58,6 @@ public class Block extends GameObject {
         if (!collision.isMobile()) {
             collision.updatePoints();
         }
-        // !!!!!!!!!!!!!!!!!!
         // map.sortForegroundTiles();
     }
 

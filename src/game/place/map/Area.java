@@ -61,6 +61,7 @@ public class Area {
     private final BlueArray<GameObject> nearFlatObjects = new BlueArray<>();
     private final BlueArray<WarpPoint> nearWarps = new BlueArray<>();
     private final BlueArray<GameObject> nearDepthObjects = new BlueArray<>();
+    private final BlueArray<GameObject> nearForegroundTiles = new BlueArray<>();
 
     private NavigationMesh navigationMesh;
 
@@ -96,6 +97,7 @@ public class Area {
         map.updateNearFlatObjects(area, nearFlatObjects);
         map.updateNearWarps(area, nearWarps);
         map.updateNearDepthObjects(area, nearDepthObjects);
+        map.updateNearForegroundTiles(area, nearForegroundTiles);
     }
 
     public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
@@ -111,7 +113,7 @@ public class Area {
             tiles[x / Place.tileSize + y / Place.tileSize * Y_IN_TILES] = null;
         }*/
         GameObject object;
-        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
+        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext(); ) {
             object = iterator.next();
             if (object.isVisible() && object.getX() == x && object.getY() == y) {
                 iterator.remove();
@@ -129,7 +131,6 @@ public class Area {
     private void addForegroundTile(GameObject tile) {
         tile.setMapNotChange(map);
         Methods.merge(foregroundTiles, tile);
-
     }
 
     public void deleteForegroundTile(GameObject tile) {
@@ -228,7 +229,7 @@ public class Area {
         } else if (object instanceof Mob) {
             deleteMob((Mob) object);
         } else if (object instanceof Entity) {
-            entities.remove((Entity) object);
+            entities.remove(object);
         } else {
             if (object.isSolid()) {
                 solidObjects.remove(object);
@@ -273,6 +274,7 @@ public class Area {
         nearFlatObjects.clearReally();
         nearWarps.clearReally();
         nearDepthObjects.clearReally();
+        nearForegroundTiles.clearReally();
     }
 
     public Tile getTile(int x, int y) {
@@ -381,6 +383,10 @@ public class Area {
 
     public List<GameObject> getNearDepthObjects() {
         return nearDepthObjects;
+    }
+
+    public List<GameObject> getNearForegroundTiles() {
+        return nearForegroundTiles;
     }
 
     public BlueArray<WarpPoint> getNearWarps() {

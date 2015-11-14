@@ -44,7 +44,7 @@ public class Arrow extends Entity {
         visible = true;
         stats = new Stats(this);
         stats.setStrength(20);
-        Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 1f);
+        Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 2f);
         attack.addException(owner);
         addInteractive(attack);
     }

@@ -37,7 +37,6 @@ public abstract class Map {
     public final Place place;
     protected final int tileSize;
     protected final int widthInTiles, heightInTiles;
-    protected final BlueArray<GameObject> foregroundTiles = new BlueArray<>();
     protected final BlueArray<GameObject> pointingArrows = new BlueArray<>();
     protected final String name;
     protected final int width;
@@ -61,7 +60,7 @@ public abstract class Map {
     protected int yAreas;
     protected short mobID = 0;
     protected Color lightColor;
-    protected List<GameObject> depthObjects;
+    protected List<GameObject> depthObjects, foregroundTiles;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
     protected Color pointingColor = new Color(0f, 0f, 0f, 0.7f);
 
@@ -118,7 +117,8 @@ public abstract class Map {
     private boolean isOnArea(Block block, int area) {
         Figure collision = block.getCollision();
         return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area
-                || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getY()) == area;
+                || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() -
+                Place.tileSize, collision.getY()) == area;
     }
 
     public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
@@ -289,7 +289,7 @@ public abstract class Map {
         }
     }
 
-    private void updateNearForegroundTiles(int area) {
+    public void updateNearForegroundTiles(int area, List<GameObject> foregroundTiles) {
         foregroundTiles.clear();
         for (int i : placement.getNearAreas(area)) {
             if (i >= 0 && i < areas.length && areas[i] != null) {
@@ -539,7 +539,7 @@ public abstract class Map {
     }
 
     private void renderBottom(Camera camera) {
-        updateNearForegroundTiles(camera.getArea());
+        foregroundTiles = areas[camera.getArea()].getNearForegroundTiles();
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
         Methods.inSort(depthObjects);
         int y = 0;
@@ -569,7 +569,7 @@ public abstract class Map {
                     && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
                     && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2)
                     / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeight() / 2 - object.getAppearance()
-                            .getActualHeight() / 2) / tileSize))) {
+                    .getActualHeight() / 2) / tileSize))) {
                 return true;
             }
         }

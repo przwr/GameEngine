@@ -22,6 +22,7 @@ import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL;
+import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
@@ -48,10 +49,10 @@ public class Main {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG = false;
-    public static boolean SHOW_INTERACTIVE_COLLISION;
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
+    public static boolean SHOW_INTERACTIVE_COLLISION;
     public static boolean pause, enter = true;
     private static Game game;
     private static Popup pop;
@@ -155,7 +156,10 @@ public class Main {
 
     private static void createDisplay() {
         try {
-            Display.create(new PixelFormat(32, 0, 24, 0, Settings.samplesCount));
+            PixelFormat pixelFormat = new PixelFormat(32, 0, 24, 0, Settings.samplesCount);
+            ContextAttribs contextAttributes = new ContextAttribs(1, 1);
+            contextAttributes.withForwardCompatible(true);
+            Display.create(pixelFormat, contextAttributes);
         } catch (Exception exception) {
             Display.destroy();
             ErrorHandler.javaError(exception.getMessage());
@@ -165,8 +169,8 @@ public class Main {
     private static void setIcon() {
         try {
             Display.setIcon(new ByteBuffer[]{
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
             });
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
@@ -269,10 +273,10 @@ public class Main {
             ErrorHandler.exception(exception);
         }
         renderMessageIfNeeded();
-        Display.sync(60);
-        Display.update();
         resolveGamma();
         lastFrame = Display.isActive();
+        Display.update();
+        Display.sync(60);
     }
 
     private static void renderMessageIfNeeded() {

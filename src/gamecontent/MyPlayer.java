@@ -364,10 +364,11 @@ public class MyPlayer extends Player {
     }
 
     private void renderEnergyIndicator() {
-        int halfLifeAngle = 90, startAngle, endAngle;
+        PlayerStats playerStats = (PlayerStats) stats;
+        int halfEnergyAngle = 90, startAngle, endAngle;
         int minimumEnergyPercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
-        int energyPercentageAngle = Methods.roundDouble(stats.getMaxHealth() * halfLifeAngle / (float) stats.getMaxHealth());
-        if (energyPercentageAngle < minimumEnergyPercentage && stats.getMaxHealth() != 0) { // TODO brać informacje o energii
+        int energyPercentageAngle = Methods.roundDouble(playerStats.getEnergy() * halfEnergyAngle / playerStats.getMaxEnergy());
+        if (energyPercentageAngle < minimumEnergyPercentage && playerStats.getEnergy() != 0) {
             energyPercentageAngle = minimumEnergyPercentage;
             startAngle = 360;
             endAngle = 360 + energyPercentageAngle;
@@ -376,7 +377,7 @@ public class MyPlayer extends Player {
             endAngle = 360 + energyPercentageAngle;
         }
 
-        int precision = (12 * energyPercentageAngle * halfLifeAngle) / halfLifeAngle;
+        int precision = (12 * energyPercentageAngle * halfEnergyAngle) / halfEnergyAngle;
         if (precision == 0) {
             precision = 1;
         }
@@ -435,7 +436,6 @@ public class MyPlayer extends Player {
         if (map == place.loadingMap) {
             warp.warp(this);
         }
-
         if (jumping) {
             hop = false;
             floatHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
@@ -460,7 +460,16 @@ public class MyPlayer extends Player {
         }
         brakeOthers();
         appearance.updateTexture(this);
-//        updateWithGravity();
+        updateWithGravity();
+        updateEnergy();
+    }
+
+    private void updateEnergy() {
+        if (((MyController) playerController).isRunning()) {
+            ((PlayerStats) stats).decreaseEnergy(0.6f);
+        } else {
+            ((PlayerStats) stats).increaseEnergy(0.2f);
+        }
     }
 
     @Override

@@ -36,7 +36,7 @@ public class SpriteBase {
         String sep = File.pathSeparator.equals("/") ? "\\/" : "\\\\";
         return f.getPath().replaceAll(".*textures" + sep + "|" + sep + "[^" + File.pathSeparator + "]*$", "");
     }
-    
+
     public Sprite getSprite(String textureKey, String folder) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)) {
