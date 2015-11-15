@@ -50,20 +50,22 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyPlayer extends Player {
 
+    private final boolean renderClothed = true;
+
     private final int framesPerDir = 52;
     private final String characterName = "aria";
-    private Cloth head;
-    private Cloth torso;
-    private Cloth legs;
+    private Cloth head = Cloth.nullCloth;
+    private Cloth torso = Cloth.nullCloth;
+    private Cloth legs = Cloth.nullCloth;
 
-    private Cloth hat;
-    private Cloth hair;
-    private Cloth shirt;
-    private Cloth gloves;
-    private Cloth pants;
-    private Cloth boots;
+    private Cloth cap = Cloth.nullCloth;
+    private Cloth hair = Cloth.nullCloth;
+    private Cloth shirt = Cloth.nullCloth;
+    private Cloth gloves = Cloth.nullCloth;
+    private Cloth pants = Cloth.nullCloth;
+    private Cloth boots = Cloth.nullCloth;
 
-    private Cloth weapon;
+    private Cloth weapon = Cloth.nullCloth;
     private Weapon firstWeapon;
     private Weapon secondWeapon;
     private Weapon lastWeapon;
@@ -71,6 +73,8 @@ public class MyPlayer extends Player {
     private ArrayList<InteractionSet> actionSets = new ArrayList<>();
     private int activeActionSet;
     private TextController textControl;
+
+    private Point centralPoint, deltaPoint;
 
     private MyGUI gui;
 
@@ -244,32 +248,16 @@ public class MyPlayer extends Player {
         this.online = place.game.online;
         emitter = true;
         emits = false;
-        //test = place.getSpriteSheet("kulka");         //NIE KASOWAĆ! <('o'<)
-        //testBody = place.getSpriteSheet("kulka1");
-        Point[] dims = null;
-        Point centralPoint = null;
-        try {
-            RandomGenerator r = RandomGenerator.create();
-            head = new Cloth("glowa", characterName, place);
-            hair = new Cloth("wlosy", characterName, place);
-            torso = new Cloth("tors", characterName, place);
-            legs = new Cloth("noga", characterName, place);
-            weapon = new Cloth("miecz", characterName, place);
-            dims = Cloth.getMergedDimensions(
-                    head, torso, legs, hair,
-                    hat, shirt, gloves, pants, boots, weapon);
-            int tempx = dims[0].getX(), tempy = dims[0].getY();
-            dims[0].set(Methods.roundUpToBinaryNumber(dims[0].getX()),
-                    Methods.roundUpToBinaryNumber(dims[0].getY()));
-            centralPoint = place.getStartPointFromFile("atrapa", "cloth/" + characterName);
-            tempx = dims[0].getX() - tempx;
-            tempy = dims[0].getY() - tempy;
-            dims[1].set(centralPoint.getX() - (dims[1].getX() - tempx / 2),
-                    centralPoint.getY() - (dims[1].getY() - tempy / 2));
-        } catch (FileNotFoundException ex) {
-            System.err.println(ex.getMessage());
-        }
-        appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "cloth/" + characterName), 200, framesPerDir, dims[0], dims[1], centralPoint);
+        centralPoint = new Point(0, 0);
+
+        loadClothes();
+        randomizeClothes();
+        Point[] dims = calculateDimensions();
+        Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
+        centralPoint = renderPoints[0];
+        deltaPoint = renderPoints[1];
+
+        appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "characters/" + characterName), 200, framesPerDir, dims[0], dims[1], centralPoint);
         visible = true;
         depth = 0;
         setResistance(2);
@@ -289,6 +277,50 @@ public class MyPlayer extends Player {
         addPushInteraction();
     }
 
+    private void loadClothes() {
+        head = loadCloth("glowa", Cloth.BODY_TYPE);
+        hair = loadCloth("wlosy", Cloth.BODY_TYPE);
+        torso = loadCloth("tors", Cloth.BODY_TYPE);
+        legs = loadCloth("noga", Cloth.BODY_TYPE);
+
+        cap = loadCloth("cap", Cloth.CLOTH_TYPE);
+        shirt = loadCloth("shirt", Cloth.CLOTH_TYPE);
+        boots = loadCloth("boots", Cloth.CLOTH_TYPE);
+        pants = loadCloth("dress", Cloth.CLOTH_TYPE);
+        gloves = loadCloth("gloves", Cloth.CLOTH_TYPE);
+    }
+    
+    public void randomizeClothes() {
+        RandomGenerator r = RandomGenerator.create();
+        cap.setWearing(r.chance(50));
+        shirt.setWearing(r.chance(50));
+        boots.setWearing(r.chance(50));
+        pants.setWearing(r.chance(50));
+        gloves.setWearing(r.chance(50));
+    }
+
+    private Cloth loadCloth(String name, String type) {
+        try {
+            return new Cloth(name, type, characterName, place);
+        } catch (FileNotFoundException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return Cloth.nullCloth;
+    }
+
+    private Point[] calculateDimensions() {
+        Point[] dims = Cloth.getMergedDimensions(
+                head, torso, legs, hair,
+                cap, shirt, gloves, pants, boots, weapon);
+        int tempx = dims[0].getX(), tempy = dims[0].getY();
+        dims[0].set(Methods.roundUpToBinaryNumber(dims[0].getX()),
+                Methods.roundUpToBinaryNumber(dims[0].getY()));
+        tempx = dims[0].getX() - tempx;
+        tempy = dims[0].getY() - tempy;
+        dims[1].set(centralPoint.getX() - (dims[1].getX() - tempx / 2),
+                centralPoint.getY() - (dims[1].getY() - tempy / 2));
+        return dims;
+    }
 
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
@@ -318,8 +350,13 @@ public class MyPlayer extends Player {
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
-//            renderClothed(((Animation) appearance).getCurrentFrameIndex());
-            appearance.render();
+            if (renderClothed) {
+                glTranslatef(-centralPoint.getX() + deltaPoint.getX(), -centralPoint.getY() + deltaPoint.getY(), 0);
+                renderClothedLowerBody(((Animation) appearance).getCurrentFrameIndex());
+                renderClothedUpperBody(((Animation) appearance).getCurrentFrameIndex());
+            } else {
+                appearance.render();
+            }
 //            ((Animation)appearance).renderWhole();
 //            renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
             appearance.updateFrame();
@@ -387,48 +424,14 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void renderClothed(int frame) {
-        boolean rightUp = frame < 4 * framesPerDir;
-        boolean frontUp = (frame < 3 * framesPerDir) || (frame >= 6 * framesPerDir);
-//        glTranslatef(appearance.getXStart(), appearance.getYStart(), 0);  // Translatuję przy aktualizacji
-        if (legs != null) {
-            if (rightUp) {
-                legs.getFirstPart().renderPieceAndReturn(frame);
-                legs.getLastPart().renderPieceAndReturn(frame);
-            } else {
-                legs.getLastPart().renderPieceAndReturn(frame);
-                legs.getFirstPart().renderPieceAndReturn(frame);
-            }
-        }
-        if (pants != null) {
-            if (frontUp) {
-                pants.getLastPart().renderPieceAndReturn(frame);
-                pants.getFirstPart().renderPieceAndReturn(frame);
-            } else {
-                pants.getFirstPart().renderPieceAndReturn(frame);
-                pants.getLastPart().renderPieceAndReturn(frame);
-            }
-        }
-        if (torso != null) {
-            if (rightUp) {
-                torso.getSecondPart().renderPieceAndReturn(frame);
-                torso.getFirstPart().renderPieceAndReturn(frame);
-                torso.getLastPart().renderPieceAndReturn(frame);
-            } else {
-                torso.getLastPart().renderPieceAndReturn(frame);
-                torso.getFirstPart().renderPieceAndReturn(frame);
-                torso.getSecondPart().renderPieceAndReturn(frame);
-            }
-        }
-        if (head != null) {
-            head.getFirstPart().renderPieceAndReturn(frame);
-        }
-        if (hair != null) {
-            hair.getFirstPart().renderPieceAndReturn(frame);
-        }
-        if (weapon != null) {
-            weapon.getFirstPart().renderPieceAndReturn(frame);
-        }
+    public void renderClothedUpperBody(int frame) {
+        Cloth.renderTorso(torso, shirt, gloves, weapon, getDirection8Way(), frame);
+        Cloth.renderHead(head, hair, cap, getDirection8Way(), frame);
+    }
+
+    @Override
+    public void renderClothedLowerBody(int frame) {
+        Cloth.renderLegs(legs, boots, pants, getDirection8Way(), frame);
     }
 
     @Override

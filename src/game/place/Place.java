@@ -200,8 +200,8 @@ public abstract class Place extends ScreenPlace {
         return sprites.getSpriteSheetSetScale(textureKey, folder);
     }
 
-    public Point getStartPointFromFile(String textureKey, String folder) {
-        return sprites.getStartPointFromFile(textureKey, folder);
+    public Point[] getStartPointFromFile(String folder) {
+        return sprites.getStartPointFromFile(folder);
     }
 
     public SoundBase getSounds() {

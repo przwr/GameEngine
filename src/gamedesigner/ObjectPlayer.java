@@ -481,6 +481,10 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void renderClothed(int frame) {
+    public void renderClothedUpperBody(int frame) {
+    }
+
+    @Override
+    public void renderClothedLowerBody(int frame) {
     }
 }

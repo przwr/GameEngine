@@ -582,6 +582,7 @@ public class MyController extends PlayerController {
 
     private void updateRest() {
         if (actions[INPUT_CHANGE_WEAPON].isKeyClicked()) {
+            ((MyPlayer) inControl).randomizeClothes();
             if (((MyPlayer) inControl).changeWeapon()) {
                 updateAttackTypes();
                 gui.changeAttackIcon(firstAttackType, secondAttackType);

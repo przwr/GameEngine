@@ -71,29 +71,30 @@ public class SpriteBase {
         return temp;
     }
 
-    public Point getStartPointFromFile(String name, String folder) {
-        for (Sprite sprite : sprites) {
-            if (sprite.getKey().equals(name)) {
-                return new Point(sprite.xStart, sprite.yStart);
-            }
-        }
-        int startX = 0, startY = 0;
+    public Point[] getStartPointFromFile(String folder) { //[startingPoint, deltaPoint]
+        int startX, startY;
+        int deltaX, deltaY;
         try (BufferedReader input = new BufferedReader(
-                new FileReader(fullFolderPath(folder) + name + ".spr"))) {
-            input.readLine();
-            input.readLine();
-            input.readLine();
+                new FileReader(fullFolderPath(folder) + "dims.txt"))) {
 
             String[] data = input.readLine().split(";");
+            int wholeX = Integer.parseInt(data[0]);
+            int wholeY = Integer.parseInt(data[1]);
+            
+            data = input.readLine().split(";");
+            deltaX = wholeX - Integer.parseInt(data[0]);
+            deltaY = wholeY - Integer.parseInt(data[1]);
+            
+            data = input.readLine().split(";");
             startX = Integer.parseInt(data[0]);
             startY = Integer.parseInt(data[1]);
 
             input.close();
         } catch (IOException e) {
-            ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
+            ErrorHandler.error("File " + folder + File.pathSeparator + "dims.txt not found!\n" + e.getMessage());
             return null;
         }
-        return new Point(startX, startY);
+        return new Point[] {new Point(startX, startY), new Point(deltaX, deltaY)};
     }
 
     private Sprite loadSprite(String name, String folder) {

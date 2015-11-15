@@ -10,6 +10,8 @@ import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.entities.Player;
 import game.place.fbo.FrameBufferedSpriteSheet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author przemek
@@ -21,7 +23,7 @@ public class Animation implements Appearance {
     private FrameBufferedSpriteSheet fboSpriteSheet;
     private int start, end, currentFrame, fps;
     private int framesPerDirection;
-    private boolean animate = true, stopAtEnd = false, reversed = false, fluctuate = false;
+    private boolean animate = true, stopAtEnd = false, reversed = false, fluctuate = false, fbo;
 
     private Animation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
         this.spriteSheet = sprite;
@@ -42,6 +44,7 @@ public class Animation implements Appearance {
 
     public static Animation createFBOAnimation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
         Animation tmp = new Animation(sprite, delayTime, framesPerDirection);
+        tmp.fbo = true;
         //tmp.fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
         //        framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
         return tmp;
@@ -186,6 +189,18 @@ public class Animation implements Appearance {
 
     @Override
     public void render() {
+        if (fbo) {
+            try {
+                throw new Exception("\nJakbyś się zastanawiał skąd są te błędy graficzne :D"
+                        + "\bNie wiem jak to załatwić:"
+                        + "\nDo rysowania ziemnego GUI używasz appearance"
+                        + "\na MyPlayer w teori nie powinien go używać"
+                        + "\n(Gdyż renderuje poszczególne części...)\n");
+            } catch (Exception ex) {
+                fbo = false;
+                Logger.getLogger(Animation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         if (fboSpriteSheet != null) {
             fboSpriteSheet.render();
         } else {
