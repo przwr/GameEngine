@@ -10,6 +10,7 @@ import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.entities.Player;
 import game.place.fbo.FrameBufferedSpriteSheet;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

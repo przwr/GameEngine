@@ -328,8 +328,6 @@ public class Blazag extends Mob {
     }
 
     private void loneAttack(int distance) {
-//        System.out.println("LONE ATTACK");
-        int close = 1444 + (target.getCollision().getWidth() * target.getCollision().getWidth() + collision.getWidth() * collision.getWidth()) / 2;
         if (target != null && jumpDelay.isOver() && jumper.isOver()) {
             if (distance >= sightRange2 / 9) {
                 if (jumpRestDelay.isOver()) {
@@ -355,7 +353,7 @@ public class Blazag extends Mob {
                     return;
                 }
             } else if (attackDelay.isOver()) {
-                if (distance <= close) {
+                if (getInteractive(ATTACK_SLASH).wouldCollide(target)) {
                     brake(2);
                     setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
                     if (!can_attack) {
@@ -384,7 +382,7 @@ public class Blazag extends Mob {
                     return;
                 } else {
                     can_attack = false;
-                    if (attackDelay.isOver() && distance >= close && animation.getDirectionalFrameIndex() < 19) {
+                    if (attackDelay.isOver() && animation.getDirectionalFrameIndex() < 19) {
                         if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
                             chase();
                         } else {
@@ -400,12 +398,10 @@ public class Blazag extends Mob {
 
     private void getOrders() {
 //        System.out.println("GET_ORDERS");
-        int close = 0;
         boolean listenToOrders = true;
         for (GameObject enemy : closeEnemies) {
             if (isAgresor(enemy)) {
-                close = 1444 + (enemy.getCollision().getWidth() * enemy.getCollision().getWidth() + collision.getWidth() * collision.getWidth()) / 2;
-                if (Methods.pointDistanceSimple2(getX(), getY(), enemy.getX(), enemy.getY()) < close) {
+                if (getInteractive(ATTACK_SLASH).wouldCollide(enemy)) {
                     target = enemy;
                     listenToOrders = false;
                     break;

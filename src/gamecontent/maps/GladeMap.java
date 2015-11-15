@@ -64,7 +64,7 @@ public class GladeMap extends Map {
 //        addObject(new BrainlessShen(356, 768, place, mobID++));
 //        addObject(new BrainlessShen(356, 860, place, mobID++));
 //		addObject(new Blazag(768, 2048, place, mobID++));
-//        addObject(new Blazag(1200, 2048, place, mobID++));
+        addObject(new Blazag(1200, 1024, place, mobID++));
 //        addObject(new Blazag(2048, 2048, place, mobID++));
 //		addObject(new Tongub(1256, 768, place, mobID++))ss;
 //		addObject(new Tongub(1256, 820, place, mobID++));
@@ -90,7 +90,7 @@ public class GladeMap extends Map {
         int space = 64;
         for (int x = 0; x < 2 * space; x += space) {
             for (int y = 0; y < 3 * space; y += space) {
-                addObject(new Blazag(2048 + x, 2048 + y, place, mobID++));
+//                addObject(new Blazag(2048 + x, 2048 + y, place, mobID++));
             }
         }
 //        GameObject light = new LightSource(1784, 1296, 206, 64, "lamp", place, "lamp", false);

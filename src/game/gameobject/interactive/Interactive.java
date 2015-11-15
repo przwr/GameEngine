@@ -113,6 +113,28 @@ public class Interactive {
         }
     }
 
+    public boolean wouldCollide(GameObject object) {
+        collision.updatePosition(owner);
+        if (object instanceof Player) {
+            if (collidesPlayers) {
+                if (((Player) object).isInGame() && !isException(object) && (collidesSelf || (object != owner))) {
+                    InteractiveResponse response = collision.collide(owner, (Player) object, attackType);
+                    if (response.getPixels() > 0) {
+                        return true;
+                    }
+                }
+            }
+        } else if (collidesMobs) {
+            if (!isException(object) && (collidesSelf || object != owner) && (collidesFriends || object.getClass().getName() != owner.getClass().getName())) {
+                InteractiveResponse response = collision.collide(owner, object, attackType);
+                if (response.getPixels() > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean isException(GameObject object) {
         return exceptions != null && exceptions.stream().anyMatch((go) -> (object == go));
     }
