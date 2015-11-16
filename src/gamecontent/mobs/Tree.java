@@ -7,6 +7,7 @@ package gamecontent.mobs;
 
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.Main;
 import game.gameobject.entities.Mob;
 import game.place.Place;
 
@@ -25,4 +26,12 @@ public class Tree extends Mob {
     @Override
     public void update() {
     }
+
+    @Override
+    public void initialize(int x, int y, Place place, short ID) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
+    }
+
 }

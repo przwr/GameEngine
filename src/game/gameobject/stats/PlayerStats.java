@@ -10,8 +10,8 @@ import gamecontent.MyPlayer;
  */
 public class PlayerStats extends Stats {
 
-    private float energy = 200;
-    private float maxEnergy = 200;
+    private float energy = 100;
+    private float maxEnergy = 100;
     private Player player;
 
     public PlayerStats(Player owner) {

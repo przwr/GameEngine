@@ -88,7 +88,7 @@ public class MyController extends PlayerController {
             diagonal = true;
             tempDirection = inControl.getDirection8Way();
             stats.setProtectionState(false);
-            if (stats.getEnergy() > 10) {
+            if ((running && stats.getEnergy() > 0) || stats.getEnergy() > 30) {
                 running = actions[INPUT_RUN].isKeyPressed();
             } else {
                 running = false;
@@ -253,54 +253,44 @@ public class MyController extends PlayerController {
     private void startAttack(byte attack) {
         switch (attack) {
             case ATTACK_SLASH:
-                if (stats.getEnergy() >= 10) {
+                if (stats.getEnergy() >= 20) {
                     playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
-                    stats.decreaseEnergy(10);
+                    stats.decreaseEnergy(20);
                     attacked = true;
                 }
                 break;
             case ATTACK_THRUST:
-                if (stats.getEnergy() >= 12) {
+                if (stats.getEnergy() >= 24) {
                     playerAnimation.animateIntervalInDirectionOnce(tempDirection, 26, 28);
-                    stats.decreaseEnergy(12);
+                    stats.decreaseEnergy(24);
                     attacked = true;
-
                 }
                 break;
             case ATTACK_UPPER_SLASH:
-                if (stats.getEnergy() >= 10) {
-
+                if (stats.getEnergy() >= 20) {
                     playerAnimation.animateIntervalInDirectionOnce(tempDirection, 29, 36);
-                    stats.decreaseEnergy(10);
+                    stats.decreaseEnergy(20);
                     attacked = true;
-
                 }
                 break;
             case ATTACK_WEAK_PUNCH:
-                if (stats.getEnergy() >= 1) {
+                if (stats.getEnergy() >= 5) {
                     playerAnimation.animateIntervalInDirectionOnce(tempDirection, 37, 39);
-                    stats.decreaseEnergy(1);
+                    stats.decreaseEnergy(5);
                     attacked = true;
 
                 }
                 break;
             case ATTACK_STRONG_PUNCH:
-                if (stats.getEnergy() >= 1.2f) {
+                if (stats.getEnergy() >= 7) {
                     playerAnimation.animateIntervalInDirectionOnce(tempDirection, 40, 41);
-                    stats.decreaseEnergy(1.2f);
+                    stats.decreaseEnergy(7);
                     attacked = true;
 
                 }
                 break;
             case ATTACK_NORMAL_ARROW_SHOT:
-                playerAnimation.animateIntervalInDirectionOnce(tempDirection, 46, 48);
-                attackMovement.stop();
-                stopInputLag();
-                charging = true;
-                scoping = true;
-                chargingType = ATTACK_NORMAL_ARROW_SHOT;
-                if (stats.getEnergy() >= 4) {
-                    stats.decreaseEnergy(4);
+                if (stats.getEnergy() >= 15) {
                     playerAnimation.animateIntervalInDirectionOnce(tempDirection, 46, 48);
                     attackMovement.stop();
                     stopInputLag();
@@ -315,7 +305,6 @@ public class MyController extends PlayerController {
                     (int) Methods.xRadius8Directions(tempDirection, 5 * Place.tileSize),
                     -(int) Methods.yRadius8Directions(tempDirection, 5 * Place.tileSize));
         }
-        preAttackDelay.start();
         if (attacked) {
             preAttackDelay.setFrameLengthInMilliseconds(30);
             attackDelay.setFrameLengthInMilliseconds(30);
@@ -333,8 +322,11 @@ public class MyController extends PlayerController {
         if (actions[lastAttackButton].isKeyReleased()) {
             switch (chargingType) {
                 case ATTACK_NORMAL_ARROW_SHOT:
-                    playerAnimation.animateSingleInDirection(tempDirection, 49);
-                    inControl.getAttackActivator(ATTACK_NORMAL_ARROW_SHOT).setActivated(true);
+                    if (stats.getEnergy() >= 15) {
+                        playerAnimation.animateSingleInDirection(tempDirection, 49);
+                        inControl.getAttackActivator(ATTACK_NORMAL_ARROW_SHOT).setActivated(true);
+                        stats.decreaseEnergy(15);
+                    }
                     break;
             }
             chargingDelay.start();

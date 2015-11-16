@@ -40,13 +40,13 @@ public class Blazag extends Mob {
     private final static byte ATTACK_SLASH = 0, ATTACK_JUMP = 1;
     private final static Comparator<Mob> comparator = (Mob firstObject, Mob secondObject)
             -> ((Blazag) firstObject).targetDistance - ((Blazag) secondObject).targetDistance;
-    private final Animation animation;
+    private Animation animation;
     private int seconds = 0, max = 5, targetDistance;
     private float SLEEP_END = 17.5f, SLEEP_START = 7.5f;
     private float current_sleep_end, current_sleep_start;
     private ActionState idle, attack, wander, jump, jumpAttack, protect, sleep, run_to;
     private Delay attackDelay = Delay.createInMilliseconds(700);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay readyToAttackDelay = Delay.createInMilliseconds(300);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay readyToAttackDelay = Delay.createInMilliseconds(150);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(1000);                  //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpRestDelay = Delay.createInSeconds(4);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpDelay = Delay.createInMilliseconds(400);             //TODO - te wartości losowe i zależne od poziomu trudności
@@ -287,8 +287,15 @@ public class Blazag extends Mob {
         };
     }
 
+    public Blazag() {
+    }
+
     public Blazag(int x, int y, Place place, short ID) {
         super(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
+        setUp();
+    }
+
+    private void setUp() {
         setHearRange(512);
         setCollision(Rectangle.create(54, 38, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
@@ -325,6 +332,12 @@ public class Blazag extends Mob {
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 128, 0, 24, 24),
                 Interactive.STRENGTH_HURT, ATTACK_JUMP, 4f));
         addPushInteraction();
+    }
+
+    @Override
+    public void initialize(int x, int y, Place place, short ID) {
+        super.initialize(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
+        setUp();
     }
 
     private void loneAttack(int distance) {

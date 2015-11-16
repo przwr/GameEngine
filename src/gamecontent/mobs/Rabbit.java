@@ -7,6 +7,7 @@ package gamecontent.mobs;
 
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.Main;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.MobStats;
@@ -26,6 +27,13 @@ public class Rabbit extends Mob {
         setPathStrategy(PathFindingModule.GET_CLOSE, 250);
         stats = new MobStats(this);
 //        addInteractive(new Interactive(this, Interactive.ALWAYS, new CircleInteractiveCollision(32), Interactive.HURT));
+    }
+
+    @Override
+    public void initialize(int x, int y, Place place, short ID) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
     }
 
     @Override

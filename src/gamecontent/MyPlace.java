@@ -51,6 +51,7 @@ public class MyPlace extends Place {
             updatePlayersOffline();
             updateMobsOffline();
             updateEntitiesOffline();
+            updateObjectsOffline();
             updateInteractiveObjectsOffline();
             dayCycle.updateTime();
         };
@@ -146,7 +147,7 @@ public class MyPlace extends Place {
             cameras[playersCount - 2].updateStatic();
         }
         for (int i = 0; i < playersCount; i++) {
-            ((Player) players[i]).update();
+            players[i].update();
         }
     }
 
@@ -163,9 +164,14 @@ public class MyPlace extends Place {
             m.updateEntitesFromAreasToUpdate();
         }
     }
-    
+
     private void updateMobsOffline() {
         tempMaps.stream().forEach(Map::updateMobsFromAreasToUpdate);
+    }
+
+
+    private void updateObjectsOffline() {
+        tempMaps.stream().forEach(Map::updateObjectsFromAreasToUpdate);
     }
 
     private void updateMobsOnline() {

@@ -8,11 +8,13 @@ package collision;
 import engine.lights.Shadow;
 import engine.utilities.*;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.place.Place;
 import game.place.map.Area;
 import game.place.map.ForegroundTile;
 import game.place.map.Map;
+import gamecontent.SpawnPoint;
 
 import java.util.List;
 
@@ -180,9 +182,15 @@ public abstract class Figure implements Comparable<Figure> {
         return null;
     }
 
+
+    //TODO wyjątki, z którymi nie koliduje w innym miejscu? np w klasie bazowej
     private boolean checkCollision(int x, int y, GameObject object) {
-        Figure figure = object.getCollision();
-        return checkCollision(x, y, object, figure);
+        if (object instanceof SpawnPoint && owner instanceof Mob) {
+            if (owner.getClass() == ((SpawnPoint) object).getType()) {
+                return false;
+            }
+        }
+        return checkCollision(x, y, object, object.getCollision());
     }
 
     private boolean checkCollision(int x, int y, GameObject object, Figure figure) {

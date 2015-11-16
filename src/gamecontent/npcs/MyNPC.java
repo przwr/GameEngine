@@ -7,6 +7,7 @@ package gamecontent.npcs;
 
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.Main;
 import engine.utilities.Executive;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
@@ -67,6 +68,13 @@ public class MyNPC extends Mob {
             lookForPlayers(place.players);
         }
         animation.animateSingle(getDirection8Way());
+    }
+
+    @Override
+    public void initialize(int x, int y, Place place, short ID) {
+        if (Main.DEBUG) {
+            System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
+        }
     }
 
     @Override

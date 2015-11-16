@@ -32,7 +32,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Shen extends Mob {
 
     private final static byte ATTACK_NORMAL = 0, ATTACK_CRITICAL = 1;
-    private final Animation animation;
+    private Animation animation;
     private int seconds = 0, max = 5;
     private Color skinColor;
     private Delay attack_delay = Delay.createInMilliseconds(1250);           //TODO - te wartości losowe i zależne od poziomu trudności
@@ -272,8 +272,16 @@ public class Shen extends Mob {
         };
     }
 
+    public Shen() {
+    }
+
+
     public Shen(int x, int y, Place place, short ID) {
         super(x, y, 1, 512, "Shen", place, "shen", true, ID);
+        setUp();
+    }
+
+    private void setUp() {
         //RandomGenerator r = RandomGenerator.create();
         //skinColor = Color.getHSBColor(r.nextFloat(), 1, 1);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
@@ -300,6 +308,12 @@ public class Shen extends Mob {
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,
                 ATTACK_CRITICAL, 2f));
         addPushInteraction();
+    }
+
+    @Override
+    public void initialize(int x, int y, Place place, short ID) {
+        super.initialize(x, y, 1, 512, "Shen", place, "shen", true, ID);
+        setUp();
     }
 
     private void repulsion() {

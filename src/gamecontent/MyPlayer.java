@@ -257,7 +257,8 @@ public class MyPlayer extends Player {
         centralPoint = renderPoints[0];
         deltaPoint = renderPoints[1];
 
-        appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "characters/" + characterName), 200, framesPerDir, dims[0], dims[1], centralPoint);
+        appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "characters/" + characterName), 200, framesPerDir, dims[0], dims[1],
+                centralPoint);
         visible = true;
         depth = 0;
         setResistance(2);
@@ -289,7 +290,7 @@ public class MyPlayer extends Player {
         pants = loadCloth("dress", Cloth.CLOTH_TYPE);
         gloves = loadCloth("gloves", Cloth.CLOTH_TYPE);
     }
-    
+
     public void randomizeClothes() {
         RandomGenerator r = RandomGenerator.create();
         cap.setWearing(r.chance(50));
@@ -352,8 +353,8 @@ public class MyPlayer extends Player {
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             if (renderClothed) {
                 glTranslatef(-centralPoint.getX() + deltaPoint.getX(), -centralPoint.getY() + deltaPoint.getY(), 0);
-                renderClothedLowerBody(((Animation) appearance).getCurrentFrameIndex());
-                renderClothedUpperBody(((Animation) appearance).getCurrentFrameIndex());
+                renderClothedLowerBody(appearance.getCurrentFrameIndex());
+                renderClothedUpperBody(appearance.getCurrentFrameIndex());
             } else {
                 appearance.render();
             }
@@ -468,10 +469,10 @@ public class MyPlayer extends Player {
     }
 
     private void updateEnergy() {
-        if (((MyController) playerController).isRunning()) {
-            ((PlayerStats) stats).decreaseEnergy(0.6f);
+        if (((MyController) playerController).isRunning() && getSpeed() > 0) {
+            ((PlayerStats) stats).decreaseEnergy(0.5f);
         } else {
-            ((PlayerStats) stats).increaseEnergy(0.2f);
+            ((PlayerStats) stats).increaseEnergy(0.5f);
         }
     }
 
