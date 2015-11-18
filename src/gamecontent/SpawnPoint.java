@@ -8,6 +8,7 @@ import engine.utilities.Drawer;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.place.Place;
+import game.place.map.Area;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -16,8 +17,9 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class SpawnPoint extends GameObject {
 
-    Delay delay = Delay.createInSeconds(30);
+    Delay delay = Delay.createInSeconds(60);
     Class<? extends Mob> mob;
+    int maxMobs = 5;
 
     public SpawnPoint(int x, int y, int width, int height, Place place, String name, Class<? extends Mob> mob) {
         initialize(name, x, y);
@@ -32,14 +34,25 @@ public class SpawnPoint extends GameObject {
     public void update() {
         if (delay.isOver()) {
             delay.start();
-            try {
-                Mob m = mob.newInstance();
-                m.initialize(getX(), getY(), map.place, map.getNextMobID());
-                map.addObject(m);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            int mobs = 0;
+            Area area = map.getArea(getX(), getY());
+            for (Mob m : area.getNearSolidMobs()) {
+                if (m.getClass().getName() == mob.getName()) {
+                    mobs++;
+                }
+            }
+            if (mobs < maxMobs) {
+                if (area.getNearSolidMobs().stream().anyMatch((object) -> (object.getClass().getName() == mob.getName()
+                        && collision.checkCollision(getX(), getY(), object)))) {
+                    return;
+                }
+                try {
+                    Mob m = mob.newInstance();
+                    m.initialize(getX(), getY(), map.place, map.getNextMobID());
+                    map.addObject(m);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

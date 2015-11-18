@@ -12,7 +12,6 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
-import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 
@@ -65,7 +64,7 @@ public class GladeMap extends Map {
 //        addObject(new BrainlessShen(356, 768, place, mobID++));
 //        addObject(new BrainlessShen(356, 860, place, mobID++));
 //		addObject(new Blazag(768, 2048, place, mobID++));
-        addObject(new Blazag(1200, 1024, place, mobID++));
+//        addObject(new Blazag(1200, 1024, place, mobID++));
 //        addObject(new Blazag(2048, 2048, place, mobID++));
 //		addObject(new Tongub(1256, 768, place, mobID++))ss;
 //		addObject(new Tongub(1256, 820, place, mobID++));

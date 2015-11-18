@@ -184,7 +184,7 @@ public abstract class Figure implements Comparable<Figure> {
 
 
     //TODO wyjątki, z którymi nie koliduje w innym miejscu? np w klasie bazowej
-    private boolean checkCollision(int x, int y, GameObject object) {
+    public boolean checkCollision(int x, int y, GameObject object) {
         if (object instanceof SpawnPoint && owner instanceof Mob) {
             if (owner.getClass() == ((SpawnPoint) object).getType()) {
                 return false;
