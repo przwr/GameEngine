@@ -40,13 +40,13 @@ public class Blazag extends Mob {
     private final static byte ATTACK_SLASH = 0, ATTACK_JUMP = 1;
     private final static Comparator<Mob> comparator = (Mob firstObject, Mob secondObject)
             -> ((Blazag) firstObject).targetDistance - ((Blazag) secondObject).targetDistance;
-    private final Animation animation;
+    private Animation animation;
     private int seconds = 0, max = 5, targetDistance;
     private float SLEEP_END = 17.5f, SLEEP_START = 7.5f;
     private float current_sleep_end, current_sleep_start;
     private ActionState idle, attack, wander, jump, jumpAttack, protect, sleep, run_to;
     private Delay attackDelay = Delay.createInMilliseconds(700);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay readyToAttackDelay = Delay.createInMilliseconds(300);           //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay readyToAttackDelay = Delay.createInMilliseconds(150);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(1000);                  //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpRestDelay = Delay.createInSeconds(4);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpDelay = Delay.createInMilliseconds(400);             //TODO - te wartości losowe i zależne od poziomu trudności
@@ -287,8 +287,15 @@ public class Blazag extends Mob {
         };
     }
 
+    public Blazag() {
+    }
+
     public Blazag(int x, int y, Place place, short ID) {
         super(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
+        setUp();
+    }
+
+    private void setUp() {
         setHearRange(512);
         setCollision(Rectangle.create(54, 38, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
@@ -327,9 +334,13 @@ public class Blazag extends Mob {
         addPushInteraction();
     }
 
+    @Override
+    public void initialize(int x, int y, Place place, short ID) {
+        super.initialize(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
+        setUp();
+    }
+
     private void loneAttack(int distance) {
-//        System.out.println("LONE ATTACK");
-        int close = 1444 + (target.getCollision().getWidth() * target.getCollision().getWidth() + collision.getWidth() * collision.getWidth()) / 2;
         if (target != null && jumpDelay.isOver() && jumper.isOver()) {
             if (distance >= sightRange2 / 9) {
                 if (jumpRestDelay.isOver()) {
@@ -355,7 +366,7 @@ public class Blazag extends Mob {
                     return;
                 }
             } else if (attackDelay.isOver()) {
-                if (distance <= close) {
+                if (getInteractive(ATTACK_SLASH).wouldCollide(target)) {
                     brake(2);
                     setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
                     if (!can_attack) {
@@ -384,7 +395,7 @@ public class Blazag extends Mob {
                     return;
                 } else {
                     can_attack = false;
-                    if (attackDelay.isOver() && distance >= close && animation.getDirectionalFrameIndex() < 19) {
+                    if (attackDelay.isOver() && animation.getDirectionalFrameIndex() < 19) {
                         if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
                             chase();
                         } else {
@@ -400,12 +411,10 @@ public class Blazag extends Mob {
 
     private void getOrders() {
 //        System.out.println("GET_ORDERS");
-        int close = 0;
         boolean listenToOrders = true;
         for (GameObject enemy : closeEnemies) {
             if (isAgresor(enemy)) {
-                close = 1444 + (enemy.getCollision().getWidth() * enemy.getCollision().getWidth() + collision.getWidth() * collision.getWidth()) / 2;
-                if (Methods.pointDistanceSimple2(getX(), getY(), enemy.getX(), enemy.getY()) < close) {
+                if (getInteractive(ATTACK_SLASH).wouldCollide(enemy)) {
                     target = enemy;
                     listenToOrders = false;
                     break;
@@ -443,6 +452,7 @@ public class Blazag extends Mob {
         int currentAgro;
         int currentDistance;
         boolean agresor = false;
+        target = null;
         Set<GameObject> targets = new HashSet<>();
         for (Mob mob : closeFriends) {
             targets.addAll((mob.getCloseEnemies()));
@@ -453,10 +463,11 @@ public class Blazag extends Mob {
         xCenter /= (closeFriends.size() + 1);
         for (GameObject object : targets) {
             if (agresor) {
+                currentDistance = Methods.pointDistanceSimple2(xCenter, yCenter, object.getX(), object.getY());
                 currentAgro = 0;
                 Agro a = getAgresor(object);
                 if (a != null) {
-                    currentAgro += a.getValue();
+                    currentAgro = a.getValue();
                 }
                 for (Mob mob : closeFriends) {
                     a = mob.getAgresor(object);
@@ -464,7 +475,7 @@ public class Blazag extends Mob {
                         currentAgro += a.getValue();
                     }
                 }
-                if (currentAgro > 0) {
+                if (currentAgro > 0 && currentDistance < sightRange2) {
                     if (currentAgro > agro) {
                         agro = currentAgro;
                         target = object;
@@ -475,7 +486,7 @@ public class Blazag extends Mob {
                 currentAgro = 0;
                 Agro a = getAgresor(object);
                 if (a != null) {
-                    currentAgro += a.getValue();
+                    currentAgro = a.getValue();
                 }
                 for (Mob mob : closeFriends) {
                     a = mob.getAgresor(object);
@@ -483,11 +494,11 @@ public class Blazag extends Mob {
                         currentAgro += a.getValue();
                     }
                 }
-                if (currentAgro > 0) {
+                if (currentAgro > 0 && currentDistance < sightRange2) {
                     agresor = true;
                     agro = currentAgro;
                     target = object;
-                } else if (currentDistance < distance) {
+                } else if (currentDistance < distance && currentDistance < sightRange2) {
                     target = object;
                     distance = currentDistance;
                 }

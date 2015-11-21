@@ -25,13 +25,20 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class BrainlessShen extends Mob {
 
-    private final Animation animation;
+    private Animation animation;
     private Color color;
     private RandomGenerator rand;
     private float colorHue;
 
+    public BrainlessShen() {
+    }
+
     public BrainlessShen(int x, int y, Place place, short ID) {
         super(x, y, 1, 500, "Shen", place, "shen", true, ID);
+        setUp();
+    }
+
+    private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
         appearance = animation;
@@ -45,6 +52,12 @@ public class BrainlessShen extends Mob {
         stats.setWeight(70);
         stats.setMaxHealth(10000);
         stats.setHealth(10000);
+    }
+
+    @Override
+    public void initialize(int x, int y, Place place, short ID) {
+        super.initialize(x, y, 1, 500, "Shen", place, "shen", true, ID);
+        setUp();
     }
 
     @Override
@@ -77,6 +90,7 @@ public class BrainlessShen extends Mob {
     private void updateAnimation() {
         animation.animateSingleInDirection(getDirection8Way(), 0);
     }
+
 
     @Override
     public void render(int xEffect, int yEffect) {

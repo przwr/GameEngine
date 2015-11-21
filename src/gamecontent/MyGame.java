@@ -92,10 +92,14 @@ public class MyGame extends Game {
                     }
                 } else {
                     if (place == null) {
-                        menuPlayer.getMenuInput();
+                        if (menuPlayer.isMenuOn()) {
+                            menu.back();
+                        } else {
+                            menuPlayer.getMenuInput();
+                        }
                     } else {
                         for (Player player : players) {
-                            if (player.isMenuOn()) {
+                            if (!menu.isMapping && player.isMenuOn()) {
                                 menu.back();
                             } else {
                                 player.getMenuInput();
@@ -135,7 +139,13 @@ public class MyGame extends Game {
                 }
             } else {
                 if (place == null) {
-                    menuPlayer.getMenuInput();
+                    if (menuPlayer.isMenuOn()) {
+                        menu.back();
+                    } else {
+                        menuPlayer.getMenuInput();
+                    }
+                } else if (!menu.isMapping && players[0].isMenuOn()) {
+                    menu.back();
                 } else {
                     players[0].getMenuInput();
                 }

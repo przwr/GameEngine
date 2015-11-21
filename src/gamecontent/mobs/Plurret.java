@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Plurret extends Mob {
 
-    private final Animation animation;
+    private Animation animation;
     private int seconds = 0, max = 5, highLevel = 350, lowLevel = 334;
     private Delay rest = Delay.createInSeconds(4);          //TODO - te wartości losowe i zależne od poziomu trudności
     private ActionState idle, run_away, wander;
@@ -135,8 +135,15 @@ public class Plurret extends Mob {
         };
     }
 
+    public Plurret() {
+    }
+
     public Plurret(int x, int y, Place place, short ID) {
         super(x, y, 10, 1024, "Plurret", place, "plurret", true, ID);
+        setUp();
+    }
+
+    private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 18);
@@ -154,6 +161,13 @@ public class Plurret extends Mob {
         setGravity(0.1);
         addPushInteraction();
     }
+
+    @Override
+    public void initialize(int x, int y, Place place, short ID) {
+        super.initialize(x, y, 10, 1024, "Plurret", place, "plurret", true, ID);
+        setUp();
+    }
+
 
     private void rise() {
         if (rising) {

@@ -5,13 +5,15 @@ import game.gameobject.interactive.InteractiveResponse;
 import game.place.cameras.Camera;
 import gamecontent.MyPlayer;
 
+import static game.gameobject.interactive.InteractiveResponse.*;
+
 /**
  * Created by przemek on 10.08.15.
  */
 public class PlayerStats extends Stats {
 
-    private float energy = 200;
-    private float maxEnergy = 200;
+    private float energy = 100;
+    private float maxEnergy = 100;
     private Player player;
 
     public PlayerStats(Player owner) {
@@ -47,7 +49,23 @@ public class PlayerStats extends Stats {
     }
 
     @Override
-    public void reactionWhileProtect() {
+    public void reactionWhileProtect(InteractiveResponse response) {
+        if (energy < 20) {
+            int normalHurt = 0;
+            switch (response.getDirection()) {
+                case FRONT:
+                    normalHurt = Math.round(response.getPixels() / defence);
+                    break;
+                case BACK:
+                    normalHurt = Math.round(response.getPixels() / (defence * backDefenceModifier));
+                    break;
+                case SIDE:
+                    normalHurt = Math.round(response.getPixels() / (defence * sideDefenceModifier));
+                    break;
+            }
+            float percent = energy / 20f;
+            hurt = Math.round((percent * hurt + (1 - percent) * normalHurt));
+        }
         decreaseEnergy(20);
     }
 

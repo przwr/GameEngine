@@ -48,6 +48,9 @@ public class Stats {
                             sideDefenceModifier)));
                     break;
             }
+            if (protectionState) {
+                reactionWhileProtect(response);
+            }
             health -= hurt;
             if (health < 0) {
                 health = 0;
@@ -61,13 +64,10 @@ public class Stats {
             } else if (hurt != 0) {
                 hurtReaction(response);
             }
-            if (protectionState) {
-                reactionWhileProtect();
-            }
         }
     }
 
-    public void reactionWhileProtect() {
+    public void reactionWhileProtect(InteractiveResponse response) {
     }
 
     public void died() {

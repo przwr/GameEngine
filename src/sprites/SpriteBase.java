@@ -34,7 +34,14 @@ public class SpriteBase {
 
     public static String getSpritePath(File f) {    // C:/...<('-'<).../res/textures/folder/podfolder/sprite.spr -> folder/podfolder
         String sep = File.pathSeparator.equals("/") ? "\\/" : "\\\\";
-        return f.getPath().replaceAll(".*textures" + sep + "|" + sep + "[^" + File.pathSeparator + "]*$", "");
+        String path = f.getPath().replaceAll(".*textures" + sep + "|" + sep + "[^" + File.pathSeparator + "]*$", "");
+        if (path.endsWith(f.getName())) {
+            path = path.substring(0, path.length() - f.getName().length());
+        }
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        return path;
     }
 
     public Sprite getSprite(String textureKey, String folder) {
@@ -54,7 +61,11 @@ public class SpriteBase {
         if (folder.isEmpty()) {
             return "res/textures/";
         } else {
-            return "res/textures/" + folder + "/";
+            if (folder.startsWith("res/textures/")) {
+                return folder + (folder.endsWith("/") ? "" : "/");
+            } else {
+                return "res/textures/" + folder + (folder.endsWith("/") ? "" : "/");
+            }
         }
     }
 
@@ -80,11 +91,11 @@ public class SpriteBase {
             String[] data = input.readLine().split(";");
             int wholeX = Integer.parseInt(data[0]);
             int wholeY = Integer.parseInt(data[1]);
-            
+
             data = input.readLine().split(";");
             deltaX = wholeX - Integer.parseInt(data[0]);
             deltaY = wholeY - Integer.parseInt(data[1]);
-            
+
             data = input.readLine().split(";");
             startX = Integer.parseInt(data[0]);
             startY = Integer.parseInt(data[1]);
@@ -94,7 +105,7 @@ public class SpriteBase {
             ErrorHandler.error("File " + folder + File.pathSeparator + "dims.txt not found!\n" + e.getMessage());
             return null;
         }
-        return new Point[] {new Point(startX, startY), new Point(deltaX, deltaY)};
+        return new Point[]{new Point(startX, startY), new Point(deltaX, deltaY)};
     }
 
     private Sprite loadSprite(String name, String folder) {

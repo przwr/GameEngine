@@ -8,6 +8,7 @@ package engine.systemcommunication;
 import game.Settings;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.AnyInput;
+import gamedesigner.ObjectPlayer;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class AnalyzerInput {
             fw = new FileWriter("res/input.ini");
             int p = 1;
             for (Player pl : Settings.players) {
-                if (pl.getController() != null) {
+                if (pl.getController() != null && !(pl instanceof ObjectPlayer)) {
                     for (int i = 0; i < Settings.actionsCount; i++) {
                         if (pl.getController().actions[i] != null && pl.getController().actions[i].input != null) {
                             fw.write(p + " " + i + " " + pl.getController().actions[i].input.toString() + "\n");

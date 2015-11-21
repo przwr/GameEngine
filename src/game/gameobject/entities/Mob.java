@@ -25,7 +25,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public abstract class Mob extends Entity {
 
-    public final short mobID;
+    public short mobID;
     protected ActionState state;
     protected BlueArray<Mob> closeFriends = new BlueArray<>();
     protected boolean alpha;
@@ -34,7 +34,17 @@ public abstract class Mob extends Entity {
     protected BlueArray<Agro> agro = new BlueArray<>();
     protected ArrayList<String> neutral = new ArrayList<>();
 
+
+    public Mob() {
+    }
+
     protected Mob(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID) {
+        initialize(x, y, speed, hearRange, name, place, spriteName, solid, mobID);
+    }
+
+    public abstract void initialize(int x, int y, Place place, short ID);
+
+    public void initialize(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID) {
         this.place = place;
         this.solid = solid;
         this.hearRange = hearRange;
