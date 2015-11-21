@@ -349,7 +349,6 @@ public class MyController extends PlayerController {
 
     private void updateChargingMovement() {
         running = false;
-        sneaking = false;
         if (actions[INPUT_UP].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
                 inControl.addSpeed(-4, -4);
@@ -581,6 +580,14 @@ public class MyController extends PlayerController {
     }
 
     private void updateRest() {
+        if (actions[INPUT_CHANGE_WEAPON].isKeyPressed()) {
+            inControl.setFloatHeight(inControl.getFloatHeight() - 1);
+        }
+        if (actions[INPUT_LIGHT].isKeyPressed()) {
+            inControl.setFloatHeight(inControl.getFloatHeight() + 1);
+        }
+        
+        
         if (actions[INPUT_CHANGE_WEAPON].isKeyClicked()) {
             ((MyPlayer) inControl).randomizeClothes();
             if (((MyPlayer) inControl).changeWeapon()) {
@@ -612,7 +619,7 @@ public class MyController extends PlayerController {
             gui.changeAttackIcon(firstAttackType, secondAttackType);
         }
         if (!running) {
-            if (sneaking) {
+            if (sneaking || charging || actions[INPUT_BLOCK].isKeyPressed()) {
                 inControl.setMaxSpeed(diagonal ? 2.121 : 3);
             } else {
                 inControl.setMaxSpeed(diagonal ? 4.949 : 7);

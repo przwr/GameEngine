@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-
 /**
  * @author Wojtek
  */
 public class SpriteBase {
 
     private final ArrayList<Sprite> sprites = new ArrayList<>();
+    
+    private static final int GL_MODE = org.lwjgl.opengl.GL11.GL_NEAREST;
 
     public SpriteBase() {
     }
@@ -167,7 +167,7 @@ public class SpriteBase {
         }
         try {
             texture = TextureLoader.getTexture("png",
-                    ResourceLoader.getResourceAsStream(folder + sprite), GL_LINEAR);
+                    ResourceLoader.getResourceAsStream(folder + sprite), GL_MODE);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -220,7 +220,7 @@ public class SpriteBase {
             return null;
         }
         try {
-            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(folder + image), GL_LINEAR);
+            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(folder + image), GL_MODE);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -273,7 +273,7 @@ public class SpriteBase {
         }
         try {
             texture = TextureLoader.getTexture("png",
-                    ResourceLoader.getResourceAsStream(folder + sprite), GL_LINEAR);
+                    ResourceLoader.getResourceAsStream(folder + sprite), GL_MODE);
         } catch (IOException ex) {
             Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
             return null;

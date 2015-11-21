@@ -87,12 +87,12 @@ public class GladeMap extends Map {
 //            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() *
 //                    150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));
 //        }
-        int space = 64;
-        for (int x = 0; x < 2 * space; x += space) {
-            for (int y = 0; y < 3 * space; y += space) {
-                addObject(new Blazag(2048 + x, 2048 + y, place, mobID++));
-            }
-        }
+//        int space = 64;
+//        for (int x = 0; x < 2 * space; x += space) {
+//            for (int y = 0; y < 3 * space; y += space) {
+//                addObject(new Blazag(2048 + x, 2048 + y, place, mobID++));
+//            }
+//        }
 //        GameObject light = new LightSource(1784, 1296, 206, 64, "lamp", place, "lamp", false);
 //        light.setDepth(1024);
 //        addObject(light);

@@ -498,7 +498,6 @@ public abstract class Map {
         cameraYEnd = camera.getYEnd();
         cameraXOffEffect = camera.getXOffsetEffect();
         cameraYOffEffect = camera.getYOffsetEffect();
-        camera.neutralizeEffect();
         pointingArrows.clear();
     }
 

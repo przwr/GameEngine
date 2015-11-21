@@ -21,7 +21,6 @@ import sprites.SpriteSheet;
  */
 public class ObjectFGTile extends ForegroundTile {
 
-
     ObjectFGTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round) {
         super(spriteSheet, size, xSheet, ySheet, wall, yStart, round);
     }
@@ -60,26 +59,27 @@ public class ObjectFGTile extends ForegroundTile {
 
     @Override
     public void render(int xEffect, int yEffect) {
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
+        if (map != null) {
+            glPushMatrix();
+            glTranslatef(xEffect, yEffect, 0);
 
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
 
-        glTranslatef(getX(), getY(), 0);
+            glTranslatef(getX(), getY(), 0);
 
-        if (tileStack.size() <= 1 || fbo == null) {
-            tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
-        } else {
-            fbo.render();
+            if (tileStack.size() <= 1 || fbo == null) {
+                tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
+            } else {
+                fbo.render();
+            }
+            if (((ObjectPlace) map.place).getMode() == ObjectPlace.MODE_TILE) {
+                glColor4f(1f, 1f, 1f, 0.5f);
+                int tile = Place.tileSize;
+                Drawer.drawRectangle(tile / 2 - 1, tile, 2, depth - tile / 2);
+                Drawer.drawCircle(0, depth - tile / 2, (int) (tile * 0.3), 10);
+                Drawer.refreshForRegularDrawing();
+            }
+            glPopMatrix();
         }
-        if (((ObjectPlace) map.place).getMode() == ObjectPlace.MODE_TILE) {
-            glColor4f(1f, 1f, 1f, 0.5f);
-            int tile = Place.tileSize;
-            Drawer.drawRectangle(tile / 2 - 1, tile, 2, depth - tile / 2);
-            Drawer.drawCircle(0, depth - tile / 2, (int) (tile * 0.3), 10);
-            Drawer.refreshForRegularDrawing();
-        }
-        glPopMatrix();
-
     }
 }

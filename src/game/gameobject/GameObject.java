@@ -196,7 +196,7 @@ public abstract class GameObject {
     }
     
     public int getDepth() {
-        return (int) (depth + y + floatHeight);
+        return (int) (depth + y);
     }
     
     public void setDepth(int depth) {

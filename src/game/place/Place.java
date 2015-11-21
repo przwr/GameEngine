@@ -96,6 +96,7 @@ public abstract class Place extends ScreenPlace {
                             Drawer.setCurrentColor(Color.white);
                             glPopMatrix();
                             currentCamera.renderGUI();
+                            currentCamera.neutralizeEffect();
                             console.setCamera(currentCamera);
                             console.render(0, 0);
                             glDisable(GL_SCISSOR_TEST);
@@ -133,6 +134,7 @@ public abstract class Place extends ScreenPlace {
                     }
                     Drawer.setCurrentColor(Color.white);
                     currentCamera.renderGUI();
+                    currentCamera.neutralizeEffect();
                     console.setCamera(currentCamera);
                     console.render(0, 0);
                     glDisable(GL_SCISSOR_TEST);

@@ -189,18 +189,6 @@ public class Animation implements Appearance {
 
     @Override
     public void render() {
-        if (fbo) {
-            try {
-                throw new Exception("\nJakbyś się zastanawiał skąd są te błędy graficzne :D"
-                        + "\bNie wiem jak to załatwić:"
-                        + "\nDo rysowania ziemnego GUI używasz appearance"
-                        + "\na MyPlayer w teori nie powinien go używać"
-                        + "\n(Gdyż renderuje poszczególne części...)\n");
-            } catch (Exception ex) {
-                fbo = false;
-                Logger.getLogger(Animation.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         if (fboSpriteSheet != null) {
             fboSpriteSheet.render();
         } else {

@@ -57,6 +57,8 @@ public class MyPlayer extends Player {
     private Cloth head = Cloth.nullCloth;
     private Cloth torso = Cloth.nullCloth;
     private Cloth legs = Cloth.nullCloth;
+    private Cloth nudeTorso = Cloth.nullCloth;
+    private Cloth nudeLegs = Cloth.nullCloth;
 
     private Cloth cap = Cloth.nullCloth;
     private Cloth hair = Cloth.nullCloth;
@@ -251,7 +253,7 @@ public class MyPlayer extends Player {
         centralPoint = new Point(0, 0);
 
         loadClothes();
-        randomizeClothes();
+        //randomizeClothes();
         Point[] dims = calculateDimensions();
         Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
         centralPoint = renderPoints[0];
@@ -278,16 +280,20 @@ public class MyPlayer extends Player {
     }
 
     private void loadClothes() {
-        head = loadCloth("glowa", Cloth.BODY_TYPE);
-        hair = loadCloth("wlosy", Cloth.BODY_TYPE);
-        torso = loadCloth("tors", Cloth.BODY_TYPE);
-        legs = loadCloth("noga", Cloth.BODY_TYPE);
-
         cap = loadCloth("cap", Cloth.CLOTH_TYPE);
-        shirt = loadCloth("shirt", Cloth.CLOTH_TYPE);
+        shirt = loadCloth(/*"tshirt"*/"shirt", Cloth.CLOTH_TYPE);
         boots = loadCloth("boots", Cloth.CLOTH_TYPE);
         pants = loadCloth("dress", Cloth.CLOTH_TYPE);
         gloves = loadCloth("gloves", Cloth.CLOTH_TYPE);
+        weapon = loadCloth("sword", Cloth.WEAPON_TYPE);
+        System.out.println(weapon.isNull());
+        
+        head = loadCloth("head", Cloth.BODY_TYPE);
+        hair = loadCloth("hair", Cloth.BODY_TYPE);
+        torso = loadCloth("torso", Cloth.BODY_TYPE);
+        legs = loadCloth("leg", Cloth.BODY_TYPE);
+        nudeTorso = loadCloth("nudetorso", Cloth.BODY_TYPE);
+        nudeLegs = loadCloth("nudeleg", Cloth.BODY_TYPE);
     }
     
     public void randomizeClothes() {
@@ -425,13 +431,13 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderClothedUpperBody(int frame) {
-        Cloth.renderTorso(torso, shirt, gloves, weapon, getDirection8Way(), frame);
-        Cloth.renderHead(head, hair, cap, getDirection8Way(), frame);
+        Cloth.renderTorso(shirt.isWearing() ? nudeTorso : torso, shirt, gloves, weapon, frame / framesPerDir, frame);
+        Cloth.renderHead(head, hair, cap, frame / framesPerDir, frame);
     }
 
     @Override
     public void renderClothedLowerBody(int frame) {
-        Cloth.renderLegs(legs, boots, pants, getDirection8Way(), frame);
+        Cloth.renderLegs(pants.isWearing() ? nudeLegs : legs, boots, pants, frame / framesPerDir, frame);
     }
 
     @Override

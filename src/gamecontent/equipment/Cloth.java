@@ -18,10 +18,10 @@ import java.util.ArrayList;
  */
 public class Cloth {
 
-    public final static String BODY_TYPE = "body", CLOTH_TYPE = "cloth";
+    public final static String BODY_TYPE = "body", CLOTH_TYPE = "cloth", WEAPON_TYPE = "weapons";
     public final static Cloth nullCloth = new NullCloth();
     private final ArrayList<SpriteSheet> list;
-    private boolean wearing;
+    private boolean wearing, hasLast, hasSecond;
 
     private Cloth() {
         list = null;
@@ -36,6 +36,9 @@ public class Cloth {
         }
         if (list.isEmpty()) {
             throw new FileNotFoundException(cloth);
+        } else {
+            hasLast = list.size() > 1;
+            hasSecond = list.size() > 2;
         }
         wearing = true;
     }
@@ -69,13 +72,13 @@ public class Cloth {
     }
 
     public void renderSecondPart(int frame) {
-        if (wearing && list.size() > 2) {
+        if (wearing && hasSecond) {
             list.get(1).renderPieceAndReturn(frame);
         }
     }
 
     public void renderLastPart(int frame) {
-        if (wearing) {
+        if (wearing && hasLast) {
             list.get(list.size() - 1).renderPieceAndReturn(frame);
         }
     }
@@ -92,6 +95,10 @@ public class Cloth {
         cap.renderFirstPart(frame);
     }
 
+    public boolean isNull() {
+        return false;
+    }
+
     public static void renderTorso(Cloth torso, Cloth shirtIII, Cloth glovesIIIIII, Cloth weapon, int direction8Way, int frame) {
         switch (direction8Way) {
             case 7:
@@ -103,6 +110,7 @@ public class Cloth {
                 torso.renderFirstPart(frame);
                 shirtIII.renderFirstPart(frame);
                 torso.renderLastPart(frame);
+                weapon.renderFirstPart(frame);
                 glovesIIIIII.renderLastPart(frame);
                 shirtIII.renderLastPart(frame);
                 break;
@@ -112,6 +120,7 @@ public class Cloth {
                 torso.renderFirstPart(frame);
                 glovesIIIIII.renderFirstPart(frame);
                 shirtIII.renderSecondPart(frame);
+                weapon.renderFirstPart(frame);
                 glovesIIIIII.renderLastPart(frame);
                 shirtIII.renderLastPart(frame);
                 shirtIII.renderFirstPart(frame);
@@ -120,6 +129,7 @@ public class Cloth {
             case 4:
             case 5:
                 torso.renderLastPart(frame);
+                weapon.renderFirstPart(frame);
                 glovesIIIIII.renderLastPart(frame);
                 shirtIII.renderLastPart(frame);
                 torso.renderFirstPart(frame);
@@ -135,6 +145,7 @@ public class Cloth {
                 shirtIII.renderFirstPart(frame);
                 glovesIIIIII.renderFirstPart(frame);
                 shirtIII.renderSecondPart(frame);
+                weapon.renderFirstPart(frame);
                 glovesIIIIII.renderLastPart(frame);
                 shirtIII.renderLastPart(frame);
                 break;
@@ -180,6 +191,16 @@ public class Cloth {
 
         @Override
         public void renderFirstPart(int frame) {
+        }
+
+        @Override
+        public boolean isNull() {
+            return true;
+        }
+        
+        @Override
+        public boolean isWearing() {
+            return false;
         }
 
     }
