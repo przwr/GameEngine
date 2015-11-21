@@ -452,6 +452,7 @@ public class Blazag extends Mob {
         int currentAgro;
         int currentDistance;
         boolean agresor = false;
+        target = null;
         Set<GameObject> targets = new HashSet<>();
         for (Mob mob : closeFriends) {
             targets.addAll((mob.getCloseEnemies()));
@@ -462,10 +463,11 @@ public class Blazag extends Mob {
         xCenter /= (closeFriends.size() + 1);
         for (GameObject object : targets) {
             if (agresor) {
+                currentDistance = Methods.pointDistanceSimple2(xCenter, yCenter, object.getX(), object.getY());
                 currentAgro = 0;
                 Agro a = getAgresor(object);
                 if (a != null) {
-                    currentAgro += a.getValue();
+                    currentAgro = a.getValue();
                 }
                 for (Mob mob : closeFriends) {
                     a = mob.getAgresor(object);
@@ -473,7 +475,7 @@ public class Blazag extends Mob {
                         currentAgro += a.getValue();
                     }
                 }
-                if (currentAgro > 0) {
+                if (currentAgro > 0 && currentDistance < sightRange2) {
                     if (currentAgro > agro) {
                         agro = currentAgro;
                         target = object;
@@ -484,7 +486,7 @@ public class Blazag extends Mob {
                 currentAgro = 0;
                 Agro a = getAgresor(object);
                 if (a != null) {
-                    currentAgro += a.getValue();
+                    currentAgro = a.getValue();
                 }
                 for (Mob mob : closeFriends) {
                     a = mob.getAgresor(object);
@@ -492,11 +494,11 @@ public class Blazag extends Mob {
                         currentAgro += a.getValue();
                     }
                 }
-                if (currentAgro > 0) {
+                if (currentAgro > 0 && currentDistance < sightRange2) {
                     agresor = true;
                     agro = currentAgro;
                     target = object;
-                } else if (currentDistance < distance) {
+                } else if (currentDistance < distance && currentDistance < sightRange2) {
                     target = object;
                     distance = currentDistance;
                 }

@@ -12,6 +12,7 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
+import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 
@@ -74,7 +75,8 @@ public class GladeMap extends Map {
         addObject(new Shen(512, 1500, place, mobID++));
         addObject(new Shen(648, 1400, place, mobID++));
         addObject(new Plurret(1156, 968, place, mobID++));
-        addObject(new SpawnPoint(2048, 2048, 64, 64, place, "Shen spawn", Shen.class));
+//        addObject(SpawnPoint.createVisible(place,2048, 2048, 64, 64, "Shen spawn", Shen.class, 30, 5, place.getSprite("rabbit", "")));
+        addObject(SpawnPoint.createInVisible(place, 2048, 2048, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
 //        addObject(new Shen(512, 1024, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));
