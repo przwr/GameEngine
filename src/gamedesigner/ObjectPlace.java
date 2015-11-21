@@ -10,7 +10,6 @@ import engine.utilities.Point;
 import engine.utilities.SimpleKeyboard;
 import game.Game;
 import game.Settings;
-import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Place;
@@ -121,7 +120,7 @@ public class ObjectPlace extends Place {
             }
             updateAreas();
             for (int i = 0; i < playersCount; i++) {
-                ((Player) players[i]).update();
+                players[i].update();
             }
         };
         updates[1] = () -> System.err.println("ONLINE?..... pfft....");
@@ -165,6 +164,7 @@ public class ObjectPlace extends Place {
         }
         if (key.key(Keyboard.KEY_BACK) && key.keyPressed(Keyboard.KEY_LCONTROL)) {
             objMap.clear();
+            objMap.addObject(editor);
             lastName = "";
             printMessage("MAP CLEARED");
         }

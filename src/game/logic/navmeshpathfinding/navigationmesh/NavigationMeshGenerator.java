@@ -76,6 +76,7 @@ public class NavigationMeshGenerator {
         pointsToConnect.clear();
         triangles.clear();
         linesTriangles.clear();
+        spots.clear();
     }
 
     private static void findBoundsAndSetCollisionSpots(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {

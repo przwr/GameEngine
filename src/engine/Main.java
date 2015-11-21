@@ -47,6 +47,7 @@ import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
  */
 public class Main {
 
+    public static final boolean TEST = true;
     public static final boolean DEBUG = false;
     public static final boolean LOG = false;
     private static final Delay delay = Delay.createInMilliseconds(200);
@@ -213,7 +214,6 @@ public class Main {
                     }
                     if (key.keyPressed(Keyboard.KEY_F2)) {
                         SHOW_INTERACTIVE_COLLISION = !SHOW_INTERACTIVE_COLLISION;
-                        System.out.println(SHOW_INTERACTIVE_COLLISION);
                         console.printMessage("SHOW/HIDE INTERACTIVE");
                     }
                     if (console.areStatsRendered()) {

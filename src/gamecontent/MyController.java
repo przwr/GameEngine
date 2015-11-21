@@ -656,8 +656,6 @@ public class MyController extends PlayerController {
             inControl.getMenu().choice(1);
         } else if (actions[INPUT_MENU_LEFT].isKeyClicked() || actions[INPUT_LEFT].isKeyClicked()) {
             inControl.getMenu().choice(2);
-        } else if (actions[INPUT_MENU_BACK].isKeyClicked()) {
-            inControl.getMenu().back();
         }
     }
 

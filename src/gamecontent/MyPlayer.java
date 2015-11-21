@@ -98,12 +98,14 @@ public class MyPlayer extends Player {
         actionSets.add(new InteractionSet(UNIVERSAL));
         actionSets.add(new InteractionSet(SWORD));
         actionSets.add(new InteractionSet(BOW));
-        Weapon sword = new Weapon("Sword", SWORD);
-        sword.setModifier(1.2f);
-        Weapon bow = new Weapon("Bow", BOW);
-        bow.setModifier(5f);
-        firstWeapon = sword;
-        secondWeapon = bow;
+        if (!Main.TEST) {
+            Weapon sword = new Weapon("Sword", SWORD);
+            sword.setModifier(1.2f);
+            Weapon bow = new Weapon("Bow", BOW);
+            bow.setModifier(5f);
+            firstWeapon = sword;
+            secondWeapon = bow;
+        }
         activeWeapon = universal;
 
         // TODO Interactives powinny być raz stworzone w Skillach!

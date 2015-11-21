@@ -20,8 +20,8 @@ import game.place.map.LoadingMap;
 import game.place.map.Map;
 import gamecontent.maps.GladeMap;
 import gamecontent.maps.StoneMap;
+import gamecontent.maps.Test;
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.openal.SoundStore;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -80,12 +80,17 @@ public class MyPlace extends Place {
 
     @Override
     public void generateAsGuest() {
-        GladeMap polana = new GladeMap(mapIDCounter++, this, 4096, 8192, tileSize);
-        maps.add(polana);
-        StoneMap kamienna = new StoneMap(mapIDCounter++, this, 10240, 10240, tileSize);
-        maps.add(kamienna);
+        if (Main.TEST) {
+            Test test = new Test(mapIDCounter++, this, 4096, 8192, tileSize);
+            maps.add(test);
+        } else {
+            GladeMap polana = new GladeMap(mapIDCounter++, this, 4096, 8192, tileSize);
+            maps.add(polana);
+            StoneMap kamienna = new StoneMap(mapIDCounter++, this, 10240, 10240, tileSize);
+            maps.add(kamienna);
+        }
 //        sounds.initialize("res");
-        SoundStore.get().poll(0);
+//        SoundStore.get().poll(0);
         NavigationMeshGenerator.clear();
     }
 
