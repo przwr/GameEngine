@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.view.SplitScreen;
@@ -169,15 +170,14 @@ public class MyGame extends Game {
         this.designer = designer;
         if (designer) {
             players[0] = new ObjectPlayer(true, "Mapper");
-            players[0].setMenu(menu);
             Settings.playersCount = 1;
             Settings.players[0] = players[0];
         } else if (!(place instanceof MyPlace)) {
             players[0] = new MyPlayer(true, "Player 1");
-            players[0].setMenu(menu);
-            loadInputFromFile(new File("res/input.ini"));
-            Settings.players[0] = players[0];
         }
+        loadInputFromFile(new File("res/input.ini"));
+        players[0].setMenu(menu);
+        Settings.players[0] = players[0];
     }
 
     @Override
@@ -224,7 +224,11 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersCount = playersCount;
         if (playersCount == 1) {
-            players[0].initializeSetPosition(56, 104, place, 256, 256);
+            if (Main.TEST) {
+                players[0].initializeSetPosition(56, 104, place, 2048, 2048);
+            } else {
+                players[0].initializeSetPosition(56, 104, place, 256, 256);
+            }
             players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         } else if (playersCount == 2) {
             players[0].initializeSetPosition(56, 104, place, 256, 256);

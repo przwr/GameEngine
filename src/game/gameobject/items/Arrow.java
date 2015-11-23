@@ -84,7 +84,6 @@ public class Arrow extends Entity {
         int delta;
         if (!stopped) {
             moveIfPossibleWithoutSliding(xSpeed + xEnvironmentalSpeed, ySpeed + yEnvironmentalSpeed);
-            updateWithGravity();
             if (floatHeight == 0) {
                 stopped = true;
             }
@@ -94,6 +93,7 @@ public class Arrow extends Entity {
                 delete();
             }
         }
+        updateWithGravity();
     }
 
     @Override

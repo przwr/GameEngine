@@ -115,4 +115,8 @@ public abstract class InteractiveCollision {
 	}
 
 	public abstract void render(GameObject owner, int xEffect, int yEffect);
+
+	public Point getPosition() {
+		return position;
+	}
 }

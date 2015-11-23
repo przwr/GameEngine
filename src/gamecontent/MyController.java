@@ -17,6 +17,8 @@ import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.place.Place;
 import sprites.Animation;
 
+import static game.gameobject.GameObject.*;
+
 /**
  * @author przemek
  */
@@ -509,7 +511,6 @@ public class MyController extends PlayerController {
                 int jumpSpeed = 40;
                 if (stats.getEnergy() >= 25 && actions[INPUT_DODGE].isKeyPressed()) {
                     checkOneButtonDodge(jumpSpeed);
-
                 }/* else {
                  checkDoubleClickDodge(jumpSpeed);
                  }*/
@@ -531,19 +532,20 @@ public class MyController extends PlayerController {
     }
 
     private void checkOneButtonDodge(int jumpSpeed) {
+        int scaledValue = Methods.roundDouble(jumpSpeed * Methods.ONE_BY_SQRT_ROOT_OF_2);
         if (actions[INPUT_UP].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
-                dodgeJump(-jumpSpeed, -jumpSpeed);
+                dodgeJump(-scaledValue, -scaledValue);
             } else if (actions[INPUT_RIGHT].isKeyPressed()) {
-                dodgeJump(jumpSpeed, -jumpSpeed);
+                dodgeJump(scaledValue, -scaledValue);
             } else {
                 dodgeJump(0, -jumpSpeed);
             }
         } else if (actions[INPUT_DOWN].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
-                dodgeJump(-jumpSpeed, jumpSpeed);
+                dodgeJump(-scaledValue, scaledValue);
             } else if (actions[INPUT_RIGHT].isKeyPressed()) {
-                dodgeJump(jumpSpeed, jumpSpeed);
+                dodgeJump(scaledValue, scaledValue);
             } else {
                 dodgeJump(0, jumpSpeed);
             }
@@ -551,6 +553,33 @@ public class MyController extends PlayerController {
             dodgeJump(-jumpSpeed, 0);
         } else if (actions[INPUT_RIGHT].isKeyPressed()) {
             dodgeJump(jumpSpeed, 0);
+        } else {
+            switch (inControl.getDirection8Way()) {
+                case RIGHT:
+                    dodgeJump(jumpSpeed, 0);
+                    break;
+                case UP:
+                    dodgeJump(0, -jumpSpeed);
+                    break;
+                case LEFT:
+                    dodgeJump(-jumpSpeed, 0);
+                    break;
+                case DOWN:
+                    dodgeJump(0, jumpSpeed);
+                    break;
+                case UP_RIGHT:
+                    dodgeJump(scaledValue, -scaledValue);
+                    break;
+                case UP_LEFT:
+                    dodgeJump(-scaledValue, -scaledValue);
+                    break;
+                case DOWN_LEFT:
+                    dodgeJump(-scaledValue, scaledValue);
+                    break;
+                case DOWN_RIGHT:
+                    dodgeJump(scaledValue, scaledValue);
+                    break;
+            }
         }
     }
 
@@ -578,8 +607,6 @@ public class MyController extends PlayerController {
         if (actions[INPUT_LIGHT].isKeyPressed()) {
             inControl.setFloatHeight(inControl.getFloatHeight() + 1);
         }
-        
-        
         if (actions[INPUT_CHANGE_WEAPON].isKeyClicked()) {
             ((MyPlayer) inControl).randomizeClothes();
             if (((MyPlayer) inControl).changeWeapon()) {

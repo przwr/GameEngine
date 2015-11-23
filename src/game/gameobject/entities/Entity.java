@@ -100,7 +100,9 @@ public abstract class Entity extends GameObject {
     public void knockBack(int knockBackPower, double jumpPower, GameObject attacker) {
         knockBack.setFrames(30);
         knockBack.setAttackerDirection(attacker.getDirection());
-        int angle = (int) Methods.pointAngleCounterClockwise(attacker.getX(), attacker.getY(), x, y);
+        int attackerX = attacker.getX() + (attacker instanceof Block ? attacker.getCollision().getWidth() / 2 : 0);
+        int attackerY = attacker.getY() + (attacker instanceof Block ? attacker.getCollision().getHeight() / 2 : 0);
+        int angle = (int) Methods.pointAngleCounterClockwise(attackerX, attackerY, x, y);
         knockBack.setSpeedInDirection(angle, Methods.interval(1, knockBackPower, 20));
         setJumpForce(jumpPower);
         knockBack.setType(SpeedChanger.DECREASING);
@@ -119,9 +121,9 @@ public abstract class Entity extends GameObject {
     public SpeedChanger getKnockBack() {
         return knockBack;
     }
-    
+
     public abstract void update();
-    
+
     public synchronized void updateSoft() {
         try {
             if (canUpdate()) {

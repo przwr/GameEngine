@@ -81,7 +81,7 @@ public class MyPlace extends Place {
     @Override
     public void generateAsGuest() {
         if (Main.TEST) {
-            Test test = new Test(mapIDCounter++, this, 4096, 8192, tileSize);
+            Test test = new Test(mapIDCounter++, this, 8192, 8192, tileSize);
             maps.add(test);
         } else {
             GladeMap polana = new GladeMap(mapIDCounter++, this, 4096, 8192, tileSize);

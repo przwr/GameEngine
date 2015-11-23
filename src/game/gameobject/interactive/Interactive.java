@@ -5,6 +5,7 @@
  */
 package game.gameobject.interactive;
 
+import collision.Block;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
@@ -17,6 +18,7 @@ import game.gameobject.interactive.activator.InteractiveActivatorAlways;
 import game.gameobject.interactive.collision.InteractiveCollision;
 import game.gameobject.items.Arrow;
 import game.gameobject.items.Weapon;
+import game.place.map.Area;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ public class Interactive {
     private boolean collidesMobs = true;
     private boolean collidesPlayers = true;
     private boolean collidesFriends = false;
+    private boolean collidesWithEnvironment = true;
     private float modifier;
     private byte weaponType = -1;
     private byte attackType = -1;
@@ -86,6 +89,21 @@ public class Interactive {
     public void actIfActivated(GameObject[] players, List<Mob> mobs) {
         activated = false;
         if (collisionActivates()) {
+            if (collidesWithEnvironment) {
+                Area area = owner.getMap().getArea(owner.getArea());
+                for (Block block : area.getNearBlocks()) {
+                    if (block.isSolid() && block.isCollide(collision.getPosition().getX(), collision.getPosition().getY(), owner.getCollision())) {
+                        owner.getHurt(owner.getStats().getWeight() * 3, owner.getStats().getWeight(), block);
+                        break;
+                    }
+                }
+                for (GameObject object : area.getNearSolidObjects()) {
+                    if (owner.getCollision().checkCollision(collision.getPosition().getX(), collision.getPosition().getY(), object)) {
+                        owner.getHurt(owner.getStats().getWeight() * 3, owner.getStats().getWeight(), object);
+                        break;
+                    }
+                }
+            }
             if (collidesMobs) {
                 mobs.stream().filter((mob) -> (!isException(mob) && (collidesSelf || mob != owner) && (collidesFriends
                         || mob.getClass().getName() != owner.getClass().getName()))).forEach((mob) -> {
