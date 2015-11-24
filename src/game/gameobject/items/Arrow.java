@@ -46,6 +46,7 @@ public class Arrow extends Entity {
         stats.setStrength(20);
         Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 2f);
         attack.addException(owner);
+        attack.setCollidesWithEnvironment(false);
         addInteractive(attack);
     }
 
@@ -84,6 +85,7 @@ public class Arrow extends Entity {
         int delta;
         if (!stopped) {
             moveIfPossibleWithoutSliding(xSpeed + xEnvironmentalSpeed, ySpeed + yEnvironmentalSpeed);
+            updateWithGravity();
             if (floatHeight == 0) {
                 stopped = true;
             }
@@ -93,7 +95,7 @@ public class Arrow extends Entity {
                 delete();
             }
         }
-        updateWithGravity();
+//        updateWithGravity();
     }
 
     @Override

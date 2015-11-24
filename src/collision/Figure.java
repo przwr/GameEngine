@@ -422,6 +422,10 @@ public abstract class Figure implements Comparable<Figure> {
         return owner;
     }
 
+    public void setOwner(GameObject owner) {
+        this.owner = owner;
+    }
+
     public int getShadowHeight() {
         return opticProperties.getShadowHeight();
     }
