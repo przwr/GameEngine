@@ -11,10 +11,10 @@ package game.gameobject;
 
 import collision.Figure;
 import engine.lights.Light;
+import engine.utilities.Methods;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.stats.Stats;
-import game.place.Place;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
 import sprites.Appearance;
@@ -404,7 +404,10 @@ public abstract class GameObject {
         if (appearance != null) {
             return appearance.getActualHeight();
         }
-        return Place.tileSize;
+        if (collision != null) {
+            return Methods.roundDouble(collision.getHeight() * Methods.ONE_BY_SQRT_ROOT_OF_2);
+        }
+        return 0;
     }
 
     public boolean isInCollidingPosition() {

@@ -97,8 +97,10 @@ public class Rectangle extends Figure {
 
     private boolean rectangleCollision(int x, int y, Figure figure) {
         Rectangle rectangle = (Rectangle) figure;
-        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
-                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() - getY(y) < height));
+        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX
+                (x) < width))
+                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() -
+                getY(y) < height));
     }
 
     private boolean roundRectangle(int x, int y, Figure figure) {
@@ -376,9 +378,11 @@ public class Rectangle extends Figure {
         if (xPosition != 0 && yPosition != 0) {
             int xTmp = (xPosition + 1) / 2;
             int yTmp = (yPosition + 1) / 2;
-            return (Methods.pointDistance(circle.getX(), circle.getY(), getPoint(xTmp + 2 * yTmp).getX(), getPoint(xTmp + 2 * yTmp).getY()) <= circle.getRadius());
+            return (Methods.pointDistance(circle.getX(), circle.getY(), getPoint(xTmp + 2 * yTmp).getX(), getPoint(xTmp + 2 * yTmp).getY()) <= circle
+                    .getRadius());
         }
-        return yPosition == 0 && ((xPosition < 0 && getX(x) - circle.getX() <= circle.getRadius())) || (yPosition < 0 && getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - getY(y) - height <= circle.getRadius());
+        return yPosition == 0 && ((xPosition < 0 && getX(x) - circle.getX() <= circle.getRadius())) || (yPosition < 0 && getY(y) - circle.getY() <= circle
+                .getRadius()) || (yPosition > 0 && circle.getY() - getY(y) - height <= circle.getRadius());
     }
 
     private boolean lineCollision(int x, int y, Figure figure) {
@@ -388,10 +392,14 @@ public class Rectangle extends Figure {
         list[RIGHT_TOP].set(getX(x) + width, getY(y));
         list[RIGHT_BOTTOM].set(getX(x) + width, getY(y) + height);
         int[] linePoints = {line.getX(), line.getY(), line.getX() + line.getXVector(), line.getY() + line.getYVector()};
-        return (Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_TOP].getX(), list[LEFT_TOP].getY(), list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(), list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY()));
+        return (Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_TOP].getX(), list[LEFT_TOP].getY(),
+                list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(),
+                list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_TOP].getX(), list[LEFT_TOP].getY(),
+                list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(),
+                list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY()));
     }
 
     @Override
@@ -431,7 +439,8 @@ public class Rectangle extends Figure {
         if (tile) {
             return yStart;
         } else {
-            return super.getY(y);       // Jeśli jest to kolizja tilowa, to y nie ma znaczenia - zastępuje go yStart - dzięki temu obiekt nie musi mieć właściciela.
+            return super.getY(y);       // Jeśli jest to kolizja tilowa, to y nie ma znaczenia - zastępuje go yStart - dzięki temu obiekt nie musi mieć
+            // właściciela.
         }
     }
 

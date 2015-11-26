@@ -5,6 +5,7 @@
  */
 package game.gameobject.interactive;
 
+import collision.Block;
 import collision.Rectangle;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
@@ -18,6 +19,7 @@ import game.gameobject.interactive.activator.InteractiveActivatorAlways;
 import game.gameobject.interactive.collision.InteractiveCollision;
 import game.gameobject.items.Arrow;
 import game.gameobject.items.Weapon;
+import game.place.map.Area;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,22 +93,22 @@ public class Interactive {
     public void actIfActivated(GameObject[] players, List<Mob> mobs) {
         activated = false;
         if (collisionActivates()) {
-//            if (collidesWithEnvironment) {
-//                collision.setEnvironmentCollision(environmentCollision);
-//                Area area = owner.getMap().getArea(owner.getArea());
-//                for (Block block : area.getNearBlocks()) {
-//                    if (block.isSolid() && block.isCollide(0, 0, environmentCollision)) {
-//                        owner.getHurt(owner.getStats().getWeight() * 3, owner.getStats().getWeight(), block);
-//                        return;
-//                    }
-//                }
-//                for (GameObject object : area.getNearSolidObjects()) {
-//                    if (environmentCollision.checkCollision(0, 0, object)) {
-//                        owner.getHurt(owner.getStats().getWeight() * 3, owner.getStats().getWeight(), object);
-//                        return;
-//                    }
-//                }
-//            }
+            if (collidesWithEnvironment) {
+                collision.setEnvironmentCollision(environmentCollision);
+                Area area = owner.getMap().getArea(owner.getArea());
+                for (Block block : area.getNearBlocks()) {
+                    if (block.isSolid() && block.isCollide(0, 0, environmentCollision)) {
+                        owner.getHurt(owner.getStats().getWeight() * 3, owner.getStats().getWeight(), block);
+                        return;
+                    }
+                }
+                for (GameObject object : area.getNearSolidObjects()) {
+                    if (environmentCollision.checkCollision(0, 0, object)) {
+                        owner.getHurt(owner.getStats().getWeight() * 3, owner.getStats().getWeight(), object);
+                        return;
+                    }
+                }
+            }
             if (collidesMobs) {
                 mobs.stream().filter((mob) -> (!isException(mob) && (collidesSelf || mob != owner) && (collidesFriends
                         || mob.getClass().getName() != owner.getClass().getName()))).forEach((mob) -> {
