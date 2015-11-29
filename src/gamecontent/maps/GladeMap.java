@@ -71,29 +71,56 @@ public class GladeMap extends Map {
 //		addObject(new Tongub(1256, 768, place, mobID++))ss;
 //		addObject(new Tongub(1256, 820, place, mobID++));
 //		addObject(new Tongub(1256, 900, place, mobID++));
-        addObject(new Grass(400, 600, "Grass"));
-        addObject(new Grass(400, 616, "Grass"));
-        addObject(new Grass(400, 632, "Grass"));
-        addObject(new Grass(400, 648, "Grass"));
-        addObject(new Grass(400, 664, "Grass"));
-        addObject(new Grass(400, 680, "Grass"));
-        addObject(new Grass(400, 696, "Grass"));
 
-        addObject(new Grass(432, 600, "Grass"));
-        addObject(new Grass(432, 616, "Grass"));
-        addObject(new Grass(432, 632, "Grass"));
-        addObject(new Grass(432, 648, "Grass"));
-        addObject(new Grass(432, 664, "Grass"));
-        addObject(new Grass(432, 680, "Grass"));
-        addObject(new Grass(432, 696, "Grass"));
+        int xSpace = 32;
+        int ySpace = 8;
+        for (int x = 0; x < 512; x += xSpace) {
+            for (int y = 0; y < 512; y += ySpace) {
+                addObject(new Grass(x, y, "Grass"));
+            }
+        }
 
-        addObject(new Grass(464, 600, "Grass"));
-        addObject(new Grass(464, 616, "Grass"));
-        addObject(new Grass(464, 632, "Grass"));
-        addObject(new Grass(464, 648, "Grass"));
-        addObject(new Grass(464, 664, "Grass"));
-        addObject(new Grass(464, 680, "Grass"));
-        addObject(new Grass(464, 696, "Grass"));
+//        addObject(new Grass(400, 600, "Grass"));
+//        addObject(new Grass(400, 608, "Grass"));
+//        addObject(new Grass(400, 616, "Grass"));
+//        addObject(new Grass(400, 624, "Grass"));
+//        addObject(new Grass(400, 632, "Grass"));
+//        addObject(new Grass(400, 640, "Grass"));
+//        addObject(new Grass(400, 648, "Grass"));
+//        addObject(new Grass(400, 656, "Grass"));
+//        addObject(new Grass(400, 664, "Grass"));
+//        addObject(new Grass(400, 672, "Grass"));
+//        addObject(new Grass(400, 680, "Grass"));
+//        addObject(new Grass(400, 688, "Grass"));
+//        addObject(new Grass(400, 696, "Grass"));
+//
+//        addObject(new Grass(432, 600, "Grass"));
+//        addObject(new Grass(432, 608, "Grass"));
+//        addObject(new Grass(432, 616, "Grass"));
+//        addObject(new Grass(432, 624, "Grass"));
+//        addObject(new Grass(432, 632, "Grass"));
+//        addObject(new Grass(432, 640, "Grass"));
+//        addObject(new Grass(432, 648, "Grass"));
+//        addObject(new Grass(432, 656, "Grass"));
+//        addObject(new Grass(432, 664, "Grass"));
+//        addObject(new Grass(432, 672, "Grass"));
+//        addObject(new Grass(432, 680, "Grass"));
+//        addObject(new Grass(432, 688, "Grass"));
+//        addObject(new Grass(432, 696, "Grass"));
+//
+//        addObject(new Grass(464, 600, "Grass"));
+//        addObject(new Grass(464, 608, "Grass"));
+//        addObject(new Grass(464, 616, "Grass"));
+//        addObject(new Grass(464, 624, "Grass"));
+//        addObject(new Grass(464, 632, "Grass"));
+//        addObject(new Grass(464, 640, "Grass"));
+//        addObject(new Grass(464, 648, "Grass"));
+//        addObject(new Grass(464, 656, "Grass"));
+//        addObject(new Grass(464, 664, "Grass"));
+//        addObject(new Grass(464, 672, "Grass"));
+//        addObject(new Grass(464, 680, "Grass"));
+//        addObject(new Grass(464, 688, "Grass"));
+//        addObject(new Grass(464, 696, "Grass"));
 
         addObject(new Shen(512, 800, place, mobID++));
         addObject(new Shen(768, 1280, place, mobID++));

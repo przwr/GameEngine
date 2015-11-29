@@ -139,7 +139,7 @@ public class Plurret extends Mob {
     }
 
     public Plurret(int x, int y, Place place, short ID) {
-        super(x, y, 10, 1024, "Plurret", place, "plurret", true, ID);
+        super(x, y, 10, 512, "Plurret", place, "plurret", true, ID);
         setUp();
     }
 
