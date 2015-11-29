@@ -98,13 +98,13 @@ public class Interactive {
                 Area area = owner.getMap().getArea(owner.getArea());
                 for (Block block : area.getNearBlocks()) {
                     if (block.isSolid() && block.isCollide(0, 0, environmentCollision)) {
-                        owner.getHurt(owner.getStats().getWeight() * 3, owner.getStats().getWeight(), block);
+                        owner.getHurt(3, 1, block);
                         return;
                     }
                 }
                 for (GameObject object : area.getNearSolidObjects()) {
                     if (environmentCollision.checkCollision(0, 0, object)) {
-                        owner.getHurt(owner.getStats().getWeight() * 3, owner.getStats().getWeight(), object);
+                        owner.getHurt(3, 1, object);
                         return;
                     }
                 }

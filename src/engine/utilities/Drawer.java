@@ -121,6 +121,16 @@ public class Drawer {
         glColor3f(1f, 1f, 1f);
     }
 
+    public static void drawTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_TRIANGLES);
+        glVertex2f(xA, yA);
+        glVertex2f(xB, yB);
+        glVertex2f(xC, yC);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
+
     public static void drawRectangle(int xStart, int yStart, int width, int height) {
         translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);

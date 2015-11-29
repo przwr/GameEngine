@@ -15,7 +15,6 @@ import game.gameobject.entities.Mob;
 import game.gameobject.interactive.Interactive;
 import game.place.Place;
 import game.place.cameras.Camera;
-import gamecontent.SpawnPoint;
 import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
@@ -339,11 +338,7 @@ public abstract class Map {
 
     public void updateObjectsFromAreasToUpdate() {
         if (depthObjects != null) {
-            for (GameObject object : depthObjects) {
-                if (object instanceof SpawnPoint) {
-                    object.update();
-                }
-            }
+            depthObjects.stream().filter((object) -> object.isToUpdate()).forEach(GameObject::update);
         }
     }
 
