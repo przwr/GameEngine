@@ -72,21 +72,29 @@ public class GladeMap extends Map {
 //		addObject(new Tongub(1256, 820, place, mobID++));
 //		addObject(new Tongub(1256, 900, place, mobID++));
         addObject(new Grass(400, 600, "Grass"));
+        addObject(new Grass(400, 616, "Grass"));
         addObject(new Grass(400, 632, "Grass"));
+        addObject(new Grass(400, 648, "Grass"));
         addObject(new Grass(400, 664, "Grass"));
+        addObject(new Grass(400, 680, "Grass"));
         addObject(new Grass(400, 696, "Grass"));
+
         addObject(new Grass(432, 600, "Grass"));
+        addObject(new Grass(432, 616, "Grass"));
         addObject(new Grass(432, 632, "Grass"));
+        addObject(new Grass(432, 648, "Grass"));
         addObject(new Grass(432, 664, "Grass"));
+        addObject(new Grass(432, 680, "Grass"));
         addObject(new Grass(432, 696, "Grass"));
+
         addObject(new Grass(464, 600, "Grass"));
+        addObject(new Grass(464, 616, "Grass"));
         addObject(new Grass(464, 632, "Grass"));
+        addObject(new Grass(464, 648, "Grass"));
         addObject(new Grass(464, 664, "Grass"));
+        addObject(new Grass(464, 680, "Grass"));
         addObject(new Grass(464, 696, "Grass"));
-        addObject(new Grass(496, 600, "Grass"));
-        addObject(new Grass(496, 632, "Grass"));
-        addObject(new Grass(496, 664, "Grass"));
-        addObject(new Grass(496, 696, "Grass"));
+
         addObject(new Shen(512, 800, place, mobID++));
         addObject(new Shen(768, 1280, place, mobID++));
         addObject(new Shen(512, 1500, place, mobID++));

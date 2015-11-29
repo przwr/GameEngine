@@ -33,8 +33,8 @@ public class Grass extends GameObject {
         xBladesCount = 10;
         yBladesCount = 2;
         bladeWidth = 6;
-        bladeSpacing = Math.round(bladeWidth * 0.75f);
         bladeHeight = 32;
+        bladeSpacing = Math.round(bladeWidth * 0.75f);
         bladeHeightHalf = bladeHeight / 2;
         radius = xBladesCount * bladeWidth / 2;
         blades = new Point[3 * xBladesCount * yBladesCount];
@@ -72,6 +72,7 @@ public class Grass extends GameObject {
                     objectRadius = player.getCollision().getWidth() / 3;
                     objectRadiusSqrt2 = Methods.roundDouble(objectRadius * Methods.ONE_BY_SQRT_ROOT_OF_2);
                     object.set(player.getX(), player.getY());
+//                    depth = (int)-objectRadius;
                 }
             }
         }
