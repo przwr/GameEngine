@@ -22,11 +22,11 @@ public interface Appearance {
 
     void renderPartMirrored(int partXStart, int partXEnd);
 
-    void updateTexture(Player owner);
+    void updateTexture(Player owner); //Potrzebne tutaj?
 
-    void updateFrame();
+    void updateFrame(); //Potrzebne tutaj?
 
-    int getCurrentFrameIndex();
+    int getCurrentFrameIndex(); //Potrzebne tutaj?
 
     int getWidth();
 

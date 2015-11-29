@@ -1,0 +1,9 @@
+idle:0
+walk:1
+run:7
+sword:19
+fists:37
+akro:42
+bow:46
+shield:50
+51
