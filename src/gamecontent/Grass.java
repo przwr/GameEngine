@@ -30,9 +30,9 @@ public class Grass extends GameObject {
     public Grass(int x, int y, String name) {
         initialize(name, x, y);
         toUpdate = true;
-        xBladesCount = 12;
-        yBladesCount = xBladesCount / 2;
-        bladeWidth = 4;
+        xBladesCount = 10;
+        yBladesCount = 2;
+        bladeWidth = 6;
         bladeSpacing = Math.round(bladeWidth * 0.75f);
         bladeHeight = 32;
         bladeHeightHalf = bladeHeight / 2;
