@@ -4,6 +4,7 @@ import game.place.Place;
 import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
+import gamecontent.mobs.Shen;
 
 /**
  * Created by przemek on 21.11.15.
@@ -20,12 +21,14 @@ public class Test extends Map {
                 setTile(x, y, GRASS);
             }
         }
-        PuzzleObject puzzle = new PuzzleObject("domek2", place);
-        puzzle.placePuzzle(10, 10, this);
+        PuzzleObject puzzle = new PuzzleObject("start", place);
+        puzzle.placePuzzle(32, 32, this);
         generateNavigationMeshes();
     }
 
     @Override
     public void populate() {
+        addObject(new Shen(3072, 2048, place, mobID++));
+
     }
 }

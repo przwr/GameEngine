@@ -1,5 +1,6 @@
 package game.gameobject.interactive.collision;
 
+import collision.Rectangle;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.gameobject.GameObject;
@@ -130,9 +131,66 @@ public class CurveInteractiveCollision extends InteractiveCollision {
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         int angle = 360 - (owner.getDirection8Way() * 45);
-        Drawer.drawEllipseSector(position.getX(), position.getY(), radius, (int) (radius * Methods.ONE_BY_SQRT_ROOT_OF_2), angle - activationAngle / 2,
-                angle + activationAngle / 2, 32);
+        Drawer.drawEllipseSector(position.getX(), position.getY(), radius, Methods.roundDouble(radius * Methods.ONE_BY_SQRT_ROOT_OF_2), angle -
+                activationAngle / 2, angle + activationAngle / 2, 32);
         Drawer.refreshColor();
         glPopMatrix();
+    }
+
+
+    public void setEnvironmentCollision(Rectangle environmentCollision) {
+        int sqrt2Radius = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * radius);
+        switch (environmentCollision.getOwner().getDirection8Way()) {
+            case RIGHT:
+                environmentCollision.setXStart(position.getX());
+                environmentCollision.setYStart(position.getY() - sqrt2Radius);
+                environmentCollision.setWidth(radius);
+                environmentCollision.setHeight(sqrt2Radius * 2);
+                break;
+            case UP:
+                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setYStart(position.getY() - sqrt2Radius);
+                environmentCollision.setWidth(radius * 2);
+                environmentCollision.setHeight(sqrt2Radius);
+                break;
+            case LEFT:
+                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setYStart(position.getY() - sqrt2Radius);
+                environmentCollision.setWidth(radius);
+                environmentCollision.setHeight(sqrt2Radius * 2);
+                break;
+            case DOWN:
+                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setYStart(position.getY());
+                environmentCollision.setWidth(radius * 2);
+                environmentCollision.setHeight(sqrt2Radius);
+                break;
+            case UP_RIGHT:
+                environmentCollision.setXStart(position.getX() - sqrt2Radius);
+                environmentCollision.setYStart(position.getY() - sqrt2Radius);
+                environmentCollision.setWidth(sqrt2Radius + radius);
+                environmentCollision.setHeight(sqrt2Radius + radius / 2);
+                break;
+            case UP_LEFT:
+                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setYStart(position.getY() - sqrt2Radius);
+                environmentCollision.setWidth(sqrt2Radius + radius);
+                environmentCollision.setHeight(sqrt2Radius + radius / 2);
+                break;
+            case DOWN_LEFT:
+                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setYStart(position.getY() - radius / 2);
+                environmentCollision.setWidth(sqrt2Radius + radius);
+                environmentCollision.setHeight(sqrt2Radius + radius / 2);
+                break;
+            case DOWN_RIGHT:
+                environmentCollision.setXStart(position.getX() - sqrt2Radius);
+                environmentCollision.setYStart(position.getY() - radius / 2);
+                environmentCollision.setWidth(sqrt2Radius + radius);
+                environmentCollision.setHeight(sqrt2Radius + radius / 2);
+                break;
+        }
+
+
     }
 }

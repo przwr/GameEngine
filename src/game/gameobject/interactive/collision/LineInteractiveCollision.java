@@ -1,5 +1,6 @@
 package game.gameobject.interactive.collision;
 
+import collision.Rectangle;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
@@ -162,5 +163,23 @@ public class LineInteractiveCollision extends InteractiveCollision {
         }
         Drawer.refreshColor();
         glPopMatrix();
+    }
+
+    public void setEnvironmentCollision(Rectangle environmentCollision) {
+        int sqrt2WidthOver2 = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * width / 2);
+        if (position.getX() > end.getX()) {
+            environmentCollision.setXStart(end.getX() - width / 2);
+            environmentCollision.setWidth(position.getX() - end.getX() + width / 2);
+        } else {
+            environmentCollision.setXStart(position.getX() - width / 2);
+            environmentCollision.setWidth(end.getX() - position.getX() + width / 2);
+        }
+        if (position.getY() > end.getY()) {
+            environmentCollision.setYStart(end.getY() - sqrt2WidthOver2);
+            environmentCollision.setHeight(position.getY() - end.getY() + sqrt2WidthOver2);
+        } else {
+            environmentCollision.setYStart(position.getY() - sqrt2WidthOver2);
+            environmentCollision.setHeight(end.getY() - position.getY() + sqrt2WidthOver2);
+        }
     }
 }

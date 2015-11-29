@@ -5,16 +5,17 @@
  */
 package gamedesigner;
 
-import engine.utilities.SimpleKeyboard;
 import collision.Figure;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
+import engine.utilities.SimpleKeyboard;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Place;
 import game.place.map.Map;
+import gamecontent.MyController;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.RoundedTMPBlock;
 import gamedesigner.designerElements.TemporaryBlock;
@@ -60,12 +61,13 @@ public class ObjectPlayer extends Player {
     }
 
     private void initializeController() {
-        playerController = new ObjectController(this);
+        playerController = new MyController(this, null);
         playerController.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
         playerController.inputs[1] = new InputKeyBoard(Keyboard.KEY_DOWN);
         playerController.inputs[2] = new InputKeyBoard(Keyboard.KEY_RETURN);
         playerController.inputs[3] = new InputKeyBoard(Keyboard.KEY_ESCAPE);
-        playerController.inputs[6] = new InputKeyBoard(Keyboard.KEY_END);
+        playerController.inputs[4] = new InputKeyBoard(Keyboard.KEY_LEFT);
+        playerController.inputs[5] = new InputKeyBoard(Keyboard.KEY_RIGHT);
         playerController.initialize();
     }
 

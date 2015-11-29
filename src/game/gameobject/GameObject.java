@@ -11,10 +11,10 @@ package game.gameobject;
 
 import collision.Figure;
 import engine.lights.Light;
+import engine.utilities.Methods;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.stats.Stats;
-import game.place.Place;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
 import sprites.Appearance;
@@ -46,10 +46,11 @@ public abstract class GameObject {
     protected int area = -1;
     protected Figure collision;
     protected WarpPoint warp;
-    private double gravity = 0.6;
-    private int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
-    private int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
-    private int prevArea = -1;
+    protected double gravity = 0.6;
+    protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
+    protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
+    protected int prevArea = -1;
+    protected boolean toUpdate;
 
     public void update() {
     }
@@ -404,7 +405,10 @@ public abstract class GameObject {
         if (appearance != null) {
             return appearance.getActualHeight();
         }
-        return Place.tileSize;
+        if (collision != null) {
+            return Methods.roundDouble(collision.getHeight() * Methods.ONE_BY_SQRT_ROOT_OF_2);
+        }
+        return 0;
     }
 
     public boolean isInCollidingPosition() {
@@ -446,5 +450,13 @@ public abstract class GameObject {
 
     public void setMakeNoise(boolean makeNoise) {
         this.makeNoise = makeNoise;
+    }
+
+    public boolean isToUpdate() {
+        return toUpdate;
+    }
+
+    public void setToUpdate(boolean toUpdate) {
+        this.toUpdate = toUpdate;
     }
 }

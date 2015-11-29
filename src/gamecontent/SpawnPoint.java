@@ -24,35 +24,31 @@ public class SpawnPoint extends GameObject {
     Delay delay;
     Class<? extends Mob> mob;
     int maxMobs, width, height;
-    Place place;
 
 
-    private SpawnPoint(Place place, int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance
-            appearance) {
+    private SpawnPoint(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance appearance) {
         initialize(name, x, y);
         if (appearance != null) {
             setCollision(Rectangle.create(width, height, OpticProperties.TRANSPARENT, this));
             solid = true;
         }
-        this.place = place;
         this.width = width;
         this.height = height;
         this.mob = mob;
         this.appearance = appearance;
         this.maxMobs = maxMobs;
+        this.toUpdate = true;
         delay = Delay.createInSeconds(seconds);
         delay.start();
     }
 
-    public static SpawnPoint createVisible(Place place, int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs,
-                                           Appearance
-                                                   appearance) {
-        return new SpawnPoint(place, x, y, width, height, name, mob, seconds, maxMobs, appearance);
+    public static SpawnPoint createVisible(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance
+            appearance) {
+        return new SpawnPoint(x, y, width, height, name, mob, seconds, maxMobs, appearance);
     }
 
-    public static SpawnPoint createInVisible(Place place, int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int
-            maxMobs) {
-        return new SpawnPoint(place, x, y, width, height, name, mob, seconds, maxMobs, null);
+    public static SpawnPoint createInVisible(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs) {
+        return new SpawnPoint(x, y, width, height, name, mob, seconds, maxMobs, null);
     }
 
     @Override
@@ -87,10 +83,10 @@ public class SpawnPoint extends GameObject {
     private boolean canBeSeen() {
         Camera cam;
         Map map;
-        for (int player = 0; player < place.getPlayersCount(); player++) {
-            map = place.players[player].getMap();
+        for (int player = 0; player < this.map.place.getPlayersCount(); player++) {
+            map = this.map.place.players[player].getMap();
             if (map == this.map) {
-                cam = (((Player) place.players[player]).getCamera());
+                cam = (((Player) this.map.place.players[player]).getCamera());
                 if (cam.getYStart() <= y + height - Place.tileSize + floatHeight
                         && cam.getYEnd() >= y - height - Place.tileSize
                         && cam.getXStart() <= x - width - Place.tileSize
