@@ -2,6 +2,7 @@ package gamecontent;
 
 import collision.Figure;
 import engine.utilities.Drawer;
+import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
@@ -19,11 +20,11 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class GrassClump extends GameObject {
 
+    static boolean ALL_SAME = true;
+    static FrameBufferObject fboStatic; //STATIC
     Grass[] grasses;
     int xBladesCount, yBladesCount, bladeWidth, bladeHeight, xRadius, yRadius, ySpacing, xCount, yCount, xCentering;
-
     boolean updateGrass, prerendered;
-
     FrameBufferObject fbo;
 
     public GrassClump(int x, int y, int xCount, int yCount) {
@@ -37,6 +38,9 @@ public class GrassClump extends GameObject {
         bladeHeight = 32;
         xRadius = 20 * xCount;
         yRadius = 4 * yCount;
+        if (ALL_SAME) {
+            Grass.random = RandomGenerator.create(7); // Random Same Seed
+        }
         grasses = new Grass[xCount * yCount];
         ySpacing = 8;
         xCentering = Math.round((xBladesCount / 2f) * bladeWidth * 0.75f);
@@ -49,6 +53,12 @@ public class GrassClump extends GameObject {
         }
         fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(xCount * 64, yCount * 16) :
                 new RegularFrameBufferObject(xCount * 64, yCount * 16);
+        if (ALL_SAME) {
+            if (fboStatic == null) {
+                fboStatic = fbo;
+            }
+            fbo = fboStatic;
+        }
     }
 
     @Override
