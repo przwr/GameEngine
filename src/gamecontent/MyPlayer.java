@@ -246,6 +246,8 @@ public class MyPlayer extends Player {
         initialize(name, x, y);
     }
 
+    ClothedAppearance ca;
+
     @Override
     public void initialize(int width, int height, Place place) {
         this.place = place;
@@ -254,8 +256,10 @@ public class MyPlayer extends Player {
         emits = false;
         centralPoint = new Point(0, 0);
 
+        ca = new ClothedAppearance(place, characterName);
         loadClothes();
         //randomizeClothes();
+
         Point[] dims = calculateDimensions();
         Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
         centralPoint = renderPoints[0];
@@ -290,13 +294,14 @@ public class MyPlayer extends Player {
         gloves = loadCloth("gloves", Cloth.CLOTH_TYPE);
         weapon = loadCloth("sword", Cloth.WEAPON_TYPE);
         System.out.println(weapon.isNull());
-        
+
         head = loadCloth("head", Cloth.BODY_TYPE);
         hair = loadCloth("hair", Cloth.BODY_TYPE);
         torso = loadCloth("torso", Cloth.BODY_TYPE);
         legs = loadCloth("leg", Cloth.BODY_TYPE);
         nudeTorso = loadCloth("nudetorso", Cloth.BODY_TYPE);
         nudeLegs = loadCloth("nudeleg", Cloth.BODY_TYPE);
+        ca.setClothes(head, torso, legs, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon);
     }
 
     public void randomizeClothes() {
@@ -360,9 +365,8 @@ public class MyPlayer extends Player {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             if (renderClothed) {
-                glTranslatef(-centralPoint.getX() + deltaPoint.getX(), -centralPoint.getY() + deltaPoint.getY(), 0);
-                renderClothedLowerBody(appearance.getCurrentFrameIndex());
-                renderClothedUpperBody(appearance.getCurrentFrameIndex());
+                ca.setFrame(appearance.getCurrentFrameIndex());
+                ca.render();
             } else {
                 appearance.render();
             }

@@ -31,6 +31,7 @@ import java.util.Set;
 
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
+import gamecontent.ClothedAppearance;
 import static org.lwjgl.opengl.GL11.*;
 
 /**

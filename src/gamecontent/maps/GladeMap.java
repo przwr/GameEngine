@@ -72,13 +72,13 @@ public class GladeMap extends Map {
 //		addObject(new Tongub(1256, 820, place, mobID++));
 //		addObject(new Tongub(1256, 900, place, mobID++));
 
-        int xSpace = 32;
-        int ySpace = 8;
-        for (int x = 0; x < 512; x += xSpace) {
-            for (int y = 0; y < 512; y += ySpace) {
-                addObject(new Grass(x, y, "Grass"));
-            }
-        }
+//        int xSpace = 32;
+//        int ySpace = 8;
+//        for (int x = 0; x < 512; x += xSpace) {
+//            for (int y = 0; y < 512; y += ySpace) {
+//                addObject(new Grass(x, y, "Grass"));
+//            }
+//        }
 
 //        addObject(new Grass(400, 600, "Grass"));
 //        addObject(new Grass(400, 608, "Grass"));

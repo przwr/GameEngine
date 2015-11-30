@@ -8,6 +8,7 @@ package sprites;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import game.Settings;
+import gamecontent.ClothedAppearance;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
@@ -26,7 +27,7 @@ import java.util.logging.Logger;
 public class SpriteBase {
 
     private final ArrayList<Sprite> sprites = new ArrayList<>();
-    
+
     private static final int GL_MODE = org.lwjgl.opengl.GL11.GL_NEAREST;
 
     public SpriteBase() {
@@ -57,7 +58,7 @@ public class SpriteBase {
         return newSprite;
     }
 
-    private String fullFolderPath(String folder) {
+    public static String fullFolderPath(String folder) {
         if (folder.isEmpty()) {
             return "res/textures/";
         } else {
