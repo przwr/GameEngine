@@ -11,7 +11,8 @@ import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
-import gamecontent.Grass;
+import gamecontent.GrassClump;
+import gamecontent.GrassPatcher;
 import gamecontent.SpawnPoint;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
@@ -26,7 +27,8 @@ public class GladeMap extends Map {
 
     public GladeMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Polana", place, width, height, tileSize);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
+//        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 2, 12);
 
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
@@ -72,13 +74,26 @@ public class GladeMap extends Map {
 //		addObject(new Tongub(1256, 820, place, mobID++));
 //		addObject(new Tongub(1256, 900, place, mobID++));
 
-//        int xSpace = 32;
-//        int ySpace = 8;
-//        for (int x = 0; x < 512; x += xSpace) {
-//            for (int y = 0; y < 512; y += ySpace) {
-//                addObject(new Grass(x, y, "Grass"));
-//            }
-//        }
+//        WYNIKI: dla xCount: 1 - 35 FPS; 2 - 57 FPS, czasem skacze, 3 - 57, ale częściej skacze
+
+
+        int xCount = 3;         //TODO  TUTAJ ZMIENIASZ bok kwadratu jako wielokrotność Tile'a
+        int yCount = xCount * 4;
+        int xSpace = xCount * 40 + 4;
+        int ySpace = yCount * 8;
+        int xStart = 0;
+        int yStart = 0;
+        for (int x = xStart; x < xStart + 2048; x += xSpace) {
+            for (int y = yStart; y < yStart + 2048; y += ySpace) {
+                addObject(new GrassClump(x, y, xCount, yCount));
+                addObject(new GrassPatcher(x + xSpace - 4, y, 6, ySpace));
+            }
+        }
+
+//        addObject(new Grass(21, 700, 7, 2, 8, 32));
+//        addObject(new GrassClump(0, 768, 2, 8));
+//        addObject(new GrassClump(164, 768));
+//        addObject(new GrassPatcher(160, 768, 6, 128));
 
 //        addObject(new Grass(400, 600, "Grass"));
 //        addObject(new Grass(400, 608, "Grass"));
