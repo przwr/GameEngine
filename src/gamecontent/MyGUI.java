@@ -49,10 +49,8 @@ public class MyGUI extends GUIObject {
     }
 
     private void setFrameBuffer() {
-        if (!Settings.shadowOff) {
-            frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(player.getCollision().getWidth(),
-                    player.getCollision().getHeight()) : new RegularFrameBufferObject(player.getCollision().getWidth(), player.getCollision().getHeight());
-        }
+        frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(player.getCollision().getWidth(),
+                player.getCollision().getHeight()) : new RegularFrameBufferObject(player.getCollision().getWidth(), player.getCollision().getHeight());
     }
 
     public void changeAttackIcon(int first, int second) {

@@ -65,7 +65,8 @@ public abstract class FrameBufferObject {
         glEnd();
     }
 
-    public void renderScreenPart(float displayWidth, float displayHeight, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
+    public void renderScreenPart(float displayWidth, float displayHeight, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart,
+                                 float xTEnd, float yTEnd) {
         glPushMatrix();
         checkBind();
         glBegin(GL_QUADS);
