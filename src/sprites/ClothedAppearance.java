@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gamecontent;
+package sprites;
 
+import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Methods;
 import engine.utilities.Point;
@@ -15,9 +16,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import sprites.Appearance;
-import sprites.SpriteBase;
 
 /**
  *
@@ -28,10 +26,12 @@ public class ClothedAppearance implements Appearance {
     public int IDLE, WALK, RUN, SWORD, FISTS, ACROBATICS, BOW, SHIELD;
 
     private int framesPerDirection, frame;
-    private int xStart, yStart;
+    private int xOffset, yOffset;
     private int width, height;
-    private int xCentral, yCentral;
-    private int xDelta, yDelta;
+    private final int xStart, yStart;
+    private final int xDelta, yDelta;
+
+    private final Animation upperBody, lowerBody;
 
     private Cloth head = Cloth.nullCloth;
     private Cloth torso = Cloth.nullCloth;
@@ -48,13 +48,15 @@ public class ClothedAppearance implements Appearance {
 
     private Cloth weapon = Cloth.nullCloth;
 
-    public ClothedAppearance(Place place, String characterName) {
+    public ClothedAppearance(Place place, int delayTime, String characterName) {
         setClothParameters("characters/" + characterName);
         Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
-        xCentral = renderPoints[0].getX();
-        yCentral = renderPoints[0].getY();
+        xStart = renderPoints[0].getX();
+        yStart = renderPoints[0].getY();
         xDelta = renderPoints[1].getX();
         yDelta = renderPoints[1].getY();
+        upperBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
+        lowerBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
@@ -84,10 +86,10 @@ public class ClothedAppearance implements Appearance {
         int tempy = dims[0].getY();
         width = Methods.roundUpToBinaryNumber(dims[0].getX());
         height = Methods.roundUpToBinaryNumber(dims[0].getY());
-        xStart = xCentral - (dims[1].getX() - (dims[0].getX() - tempx) / 2);
-        yStart = yCentral - (dims[1].getY() - (dims[0].getY() - tempy) / 2);
+        xOffset = xStart - (dims[1].getX() - (dims[0].getX() - tempx) / 2);
+        yOffset = yStart - (dims[1].getY() - (dims[0].getY() - tempy) / 2);
     }
-    
+
     private void setClothParameters(String folder) {
         try (BufferedReader input = new BufferedReader(
                 new FileReader(SpriteBase.fullFolderPath(folder) + "intervals.txt"))) {
@@ -131,25 +133,88 @@ public class ClothedAppearance implements Appearance {
         }
     }
 
-    public int getFramesPerDirection() {
-        return framesPerDirection;
+    public Animation getUpperBody() {
+        return upperBody;
+    }
+
+    public Animation getLowerBody() {
+        return lowerBody;
     }
 
     public void setFramesPerDirection(int frames) {
-        framesPerDirection = frames;
+        upperBody.setFramesPerDirection(frames);
+        lowerBody.setFramesPerDirection(frames);
     }
-    
-    public void setFrame(int frame) {
-        this.frame = frame;
+
+    public void animateSingleInDirection(int direction, int interval, int index) {
+        upperBody.animateSingleInDirection(direction, interval + index);
+        lowerBody.animateSingleInDirection(direction, interval + index);
+    }
+
+    public void animateWhole() {
+        upperBody.animateWhole();
+        lowerBody.animateWhole();
+        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+    }
+
+    public void animateIntervalInDirection(int direction, int interval, int start, int end) {
+        upperBody.animateIntervalInDirection(direction, interval + start, interval + end);
+        lowerBody.animateIntervalInDirection(direction, interval + start, interval + end);
+        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+    }
+
+    public void changeDirection(int direction) {
+        upperBody.changeDirection(direction);
+        lowerBody.changeDirection(direction);
+        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+    }
+
+    public void reverseAnimation() {
+        upperBody.reverseAnimation();
+        lowerBody.reverseAnimation();
+    }
+
+    public void setReversed(boolean reversed) {
+        upperBody.setReversed(reversed);
+        lowerBody.setReversed(reversed);
+    }
+
+    public void animateIntervalInDirectionOnce(int direction, int interval, int start, int end) {
+        upperBody.animateIntervalInDirectionOnce(direction, interval + start, interval + end);
+        lowerBody.animateIntervalInDirectionOnce(direction, interval + start, interval + end);
+        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+    }
+
+    public void animateIntervalInDirectionFluctuating(int direction, int interval, int start, int end) {
+        upperBody.animateIntervalInDirectionFluctuating(direction, interval + start, interval + end);
+        lowerBody.animateIntervalInDirectionFluctuating(direction, interval + start, interval + end);
+        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+    }
+
+    public void setFluctuating(boolean fluctuate) {
+        upperBody.setFluctuating(fluctuate);
+        lowerBody.setFluctuating(fluctuate);
     }
 
     private void renderClothedUpperBody() {
+        frame = upperBody.getCurrentFrameIndex();
         Cloth.renderTorso(shirt.isWearing() ? nudeTorso : torso, shirt, gloves, weapon, frame / framesPerDirection, frame);
         Cloth.renderHead(head, hair, cap, frame / framesPerDirection, frame);
     }
 
     private void renderClothedLowerBody() {
+        frame = lowerBody.getCurrentFrameIndex();
         Cloth.renderLegs(pants.isWearing() ? nudeLegs : legs, boots, pants, frame / framesPerDirection, frame);
+    }
+
+    public void setFPS(int fps) {
+        upperBody.setFPS(fps);
+        lowerBody.setFPS(fps);
+    }
+
+    public void setAnimate(boolean animate) {
+        upperBody.setAnimate(animate);
+        lowerBody.setAnimate(animate);
     }
 
     @Override
@@ -159,34 +224,15 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void render() {
-        glTranslatef(-xCentral + xDelta, -yCentral + xDelta, 0);
+        Drawer.translate(-xStart + xDelta, -yStart + yDelta);
         renderClothedLowerBody();
         renderClothedUpperBody();
     }
 
     @Override
-    public void renderMirrored() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void renderPart(int partXStart, int partXEnd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void updateTexture(Player owner) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void updateFrame() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        upperBody.updateFrame();
+        lowerBody.updateFrame();
     }
 
     @Override
@@ -196,42 +242,61 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public int getWidth() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return width;
     }
 
     @Override
     public int getHeight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return height;
     }
 
     @Override
     public int getXStart() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return -xStart;
     }
 
     @Override
     public int getYStart() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return -yStart;
     }
 
     @Override
     public int getActualWidth() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return width;
     }
 
     @Override
     public int getActualHeight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return height;
     }
 
     @Override
     public int getXOffset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return xOffset;
     }
 
     @Override
     public int getYOffset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return yOffset;
     }
 
+    @Override
+    public void renderMirrored() {
+        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
+    }
+
+    @Override
+    public void renderPart(int partXStart, int partXEnd) {
+        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
+    }
+
+    @Override
+    public void renderPartMirrored(int partXStart, int partXEnd) {
+        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
+    }
+
+    @Override
+    public void updateTexture(Player owner) {
+        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
+    }
 }

@@ -8,7 +8,6 @@ package sprites;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import game.Settings;
-import gamecontent.ClothedAppearance;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;

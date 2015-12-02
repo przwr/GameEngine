@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import sprites.ClothedAppearance;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
@@ -256,7 +257,7 @@ public class MyPlayer extends Player {
         emits = false;
         centralPoint = new Point(0, 0);
 
-        ca = new ClothedAppearance(place, characterName);
+        ca = new ClothedAppearance(place, 200, characterName);
         loadClothes();
         //randomizeClothes();
 
@@ -265,8 +266,10 @@ public class MyPlayer extends Player {
         centralPoint = renderPoints[0];
         deltaPoint = renderPoints[1];
 
-        appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "characters/" + characterName), 200, framesPerDir, dims[0], dims[1],
-                centralPoint);
+        /*appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "characters/" + characterName), 200, framesPerDir, dims[0], dims[1],
+                centralPoint);*/
+        
+        appearance = ca;
         visible = true;
         depth = 0;
         setResistance(2);
@@ -365,7 +368,6 @@ public class MyPlayer extends Player {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             if (renderClothed) {
-                ca.setFrame(appearance.getCurrentFrameIndex());
                 ca.render();
             } else {
                 appearance.render();
@@ -475,7 +477,7 @@ public class MyPlayer extends Player {
             }
         }
         brakeOthers();
-        appearance.updateTexture(this);
+        //appearance.updateTexture(this);
         updateWithGravity();
         updateEnergy();
     }

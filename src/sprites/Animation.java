@@ -11,9 +11,6 @@ import engine.utilities.Point;
 import game.gameobject.entities.Player;
 import game.place.fbo.FrameBufferedSpriteSheet;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * @author przemek
  */
@@ -23,13 +20,18 @@ public class Animation implements Appearance {
     private final Delay delay;
     private FrameBufferedSpriteSheet fboSpriteSheet;
     private int start, end, currentFrame, fps;
+    private final int finalEnd;
     private int framesPerDirection;
     private boolean animate = true, stopAtEnd = false, reversed = false, fluctuate = false, fbo;
 
     private Animation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
         this.spriteSheet = sprite;
         this.start = currentFrame = 0;
-        this.end = spriteSheet.getSize() - 1;
+        if (sprite == null) {
+            this.finalEnd = this.end = framesPerDirection * 8 - 1;
+        } else {
+            this.finalEnd = this.end = spriteSheet.getSize() - 1;
+        }
         delay = Delay.createInMilliseconds(delayTime);
         delay.start();
         this.framesPerDirection = framesPerDirection;
@@ -51,7 +53,7 @@ public class Animation implements Appearance {
         return tmp;
     }
 
-    private void setCurrentFrame(int newFrame) {
+    protected void setCurrentFrame(int newFrame) {
         currentFrame = newFrame;
         if (fboSpriteSheet != null) {
             fboSpriteSheet.updateFrame(currentFrame);
@@ -109,7 +111,7 @@ public class Animation implements Appearance {
 
     public void animateSingle(int index) {
         animate = false;
-        setCurrentFrame(start = end = Methods.interval(0, index, spriteSheet.getSize() - 1));
+        setCurrentFrame(start = end = Methods.interval(0, index, finalEnd));
     }
 
     public void animateSingleInDirection(int direction, int index) {
@@ -117,7 +119,7 @@ public class Animation implements Appearance {
     }
 
     public void animateWhole() {
-        animateInterval(0, spriteSheet.getSize() - 1);
+        animateInterval(0, finalEnd);
     }
 
     private void animateInterval(int start, int end) {
