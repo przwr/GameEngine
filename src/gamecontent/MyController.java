@@ -130,7 +130,11 @@ public class MyController extends PlayerController {
                 updateGettingHurt();
             }
             if (attacking) {
-                animation.setFPS(60);
+                if (!charging) {
+                    animation.setFPS(60);
+                } else {
+                    animation.setFPS((int) (inControl.getSpeed() * 3));
+                }
             } else {
                 if (!running) {
                     animation.setFPS((int) (inControl.getSpeed() * 3));
@@ -145,7 +149,7 @@ public class MyController extends PlayerController {
         if (actions[INPUT_BLOCK].isKeyClicked()) {
             //PERFEKCYJNY BLOK (pierwsza klatka obrony)
         }
-        animation.animateSingleInDirection(tempDirection, animation.SHIELD, 0);
+        animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
         updateChargingMovement();
         stats.setProtectionState(true);
         //RESZTA BLOKOWANIA
@@ -347,24 +351,34 @@ public class MyController extends PlayerController {
         if (actions[INPUT_UP].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
                 inControl.addSpeed(-4, -4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else if (actions[INPUT_RIGHT].isKeyPressed()) {
                 inControl.addSpeed(4, -4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else {
                 inControl.addSpeed(0, -4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             }
         } else if (actions[INPUT_DOWN].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
                 inControl.addSpeed(-4, 4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else if (actions[INPUT_RIGHT].isKeyPressed()) {
                 inControl.addSpeed(4, 4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else {
                 inControl.addSpeed(0, 4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             }
         } else {
             if (actions[INPUT_RIGHT].isKeyPressed()) {
                 inControl.addSpeed(4, 0);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else if (actions[INPUT_LEFT].isKeyPressed()) {
                 inControl.addSpeed(-4, 0);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
+            } else {
+                animation.getLowerBody().animateSingleInDirection(tempDirection, animation.BOW + 2);
             }
         }
         if (!actions[INPUT_UP].isKeyPressed() && !actions[INPUT_DOWN].isKeyPressed()) {

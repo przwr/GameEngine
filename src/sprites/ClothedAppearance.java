@@ -133,6 +133,10 @@ public class ClothedAppearance implements Appearance {
         }
     }
 
+    private void synchronize() {
+        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+    }
+
     public Animation getUpperBody() {
         return upperBody;
     }
@@ -154,19 +158,19 @@ public class ClothedAppearance implements Appearance {
     public void animateWhole() {
         upperBody.animateWhole();
         lowerBody.animateWhole();
-        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+        synchronize();
     }
 
     public void animateIntervalInDirection(int direction, int interval, int start, int end) {
         upperBody.animateIntervalInDirection(direction, interval + start, interval + end);
         lowerBody.animateIntervalInDirection(direction, interval + start, interval + end);
-        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+        synchronize();
     }
 
     public void changeDirection(int direction) {
         upperBody.changeDirection(direction);
         lowerBody.changeDirection(direction);
-        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+        synchronize();
     }
 
     public void reverseAnimation() {
@@ -182,13 +186,13 @@ public class ClothedAppearance implements Appearance {
     public void animateIntervalInDirectionOnce(int direction, int interval, int start, int end) {
         upperBody.animateIntervalInDirectionOnce(direction, interval + start, interval + end);
         lowerBody.animateIntervalInDirectionOnce(direction, interval + start, interval + end);
-        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+        synchronize();
     }
 
     public void animateIntervalInDirectionFluctuating(int direction, int interval, int start, int end) {
         upperBody.animateIntervalInDirectionFluctuating(direction, interval + start, interval + end);
         lowerBody.animateIntervalInDirectionFluctuating(direction, interval + start, interval + end);
-        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+        synchronize();
     }
 
     public void setFluctuating(boolean fluctuate) {
