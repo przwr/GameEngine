@@ -29,9 +29,7 @@ public class SpawnPoint extends GameObject {
     private SpawnPoint(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance appearance) {
         initialize(name, x, y);
         setCollision(Rectangle.create(width, height, OpticProperties.TRANSPARENT, this));
-        if (appearance != null) {
-            solid = true;
-        }
+        solid = appearance != null;
         this.width = width;
         this.height = height;
         this.mob = mob;

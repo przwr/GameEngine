@@ -2,7 +2,6 @@ package gamecontent;
 
 import collision.Figure;
 import engine.utilities.Drawer;
-import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
@@ -20,71 +19,62 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class GrassClump extends GameObject {
 
-    static boolean ALL_SAME = true;
-    static FrameBufferObject fboStatic; //STATIC
     Grass[] grasses;
-    int xBladesCount, yBladesCount, bladeWidth, bladeHeight, xRadius, yRadius, ySpacing, xCount, yCount, xCentering;
+    int xBladesCount, yBladesCount, bladeWidth, bladeHeight, xRadius, yRadius, ySpacing, xCount, yCount, xCentering, grassWidth;
     boolean updateGrass, prerendered;
     FrameBufferObject fbo;
 
-    public GrassClump(int x, int y, int xCount, int yCount) {
+
+    private GrassClump(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
         initialize("GrassClump", x, y);
         toUpdate = true;
         this.xCount = xCount;
         this.yCount = yCount;
-        xBladesCount = 7;
-        yBladesCount = 2;
-        bladeWidth = 8;
-        bladeHeight = 32;
-        xRadius = 20 * xCount;
+        this.xBladesCount = xBladesCount;
+        this.yBladesCount = yBladesCount;
+        this.bladeWidth = bladeWidth;
+        this.bladeHeight = bladeHeight;
+        grassWidth = (bladeWidth - 2) * xBladesCount;
+        xRadius = grassWidth / 2 * xCount;
         yRadius = 4 * yCount;
-        if (ALL_SAME) {
-            Grass.random = RandomGenerator.create(7); // Random Same Seed
-        }
         grasses = new Grass[xCount * yCount];
         ySpacing = 8;
-        xCentering = Math.round((xBladesCount / 2f) * bladeWidth * 0.75f);
-        depth = yRadius;
+        xCentering = Math.round(xBladesCount * bladeWidth / 2f) - 4;
+        depth = 1;
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
-                grasses[i * xCount + j] = new Grass(x + xCentering + j * 40, y + (i + 1) * ySpacing, xBladesCount, yBladesCount,
+                grasses[i * xCount + j] = new Grass(x + xCentering + j * grassWidth, y + (i + 1) * ySpacing, xBladesCount, yBladesCount,
                         bladeWidth, bladeHeight);
             }
         }
-        fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(xCount * 64, yCount * 16) :
-                new RegularFrameBufferObject(xCount * 64, yCount * 16);
-        if (ALL_SAME) {
-            if (fboStatic == null) {
-                fboStatic = fbo;
-            }
-            fbo = fboStatic;
-        }
+        int fboWidth = (xCentering + xRadius) * 2;
+        int fboHeight = yRadius * 2 + bladeHeight + 8;
+        fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
+                new RegularFrameBufferObject(fboWidth, fboHeight);
+    }
+
+    public static GrassClump createRectangle(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
+        return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight);
     }
 
     @Override
     public void update() {
         updateGrass = false;
-        Area area = map.getArea(getX(), getY());
+        Area area = map.getArea(this.area);
         for (int i = 0; i < this.map.place.getPlayersCount(); i++) {
             GameObject player = map.place.players[i];
-            if (player.getFloatHeight() < bladeHeight) {
-                if (Math.abs(getX() + xRadius - player.getX()) < xRadius + player.getCollision().getWidth() / 2) {
-                    if (Math.abs(getY() + yRadius - player.getY()) < yRadius + player.getCollision().getHeight() / 2) {
-                        updateGrass = true;
-                        break;
-                    }
-                }
+            if (player.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - player.getX()) < xRadius + player.getCollision().getWidth() / 2
+                    && Math.abs(getY() + yRadius - player.getY()) < yRadius + player.getCollision().getHeight() / 2) {
+                updateGrass = true;
+                break;
             }
         }
         if (!updateGrass) {
             for (Mob mob : area.getNearSolidMobs()) {
-                if (mob.getFloatHeight() < bladeHeight) {
-                    if (Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidth() / 2) {
-                        if (Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeight() / 2) {
-                            updateGrass = true;
-                            break;
-                        }
-                    }
+                if (mob.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidth() / 2
+                        && Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeight() / 2) {
+                    updateGrass = true;
+                    break;
                 }
             }
         }
@@ -96,29 +86,33 @@ public class GrassClump extends GameObject {
         } else {
             for (int i = 0; i < grasses.length; i++) {
                 grasses[i].setVisible(false);
-                grasses[i].resetFactor();
+                grasses[i].reset();
             }
         }
         if (!prerendered) {
-            fbo.activate();
-            glPushMatrix();
-            glClearColor(0, 0.7f * Place.getDayCycle().getShade().g, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glTranslatef(xRadius, -2 * yRadius + ySpacing + Display.getHeight(), 0);
-            for (int i = 0; i < yCount; i++) {
-                for (int j = 0; j < xCount; j++) {
-                    grasses[i * xCount + j].renderStill();
-                    glTranslatef(40, 0, 0);
-                }
-                glTranslatef(-40 * (xCount), ySpacing, 0);
-            }
-            glPopMatrix();
-            fbo.deactivate();
-            prerendered = true;
-            for (int i = 0; i < grasses.length; i++) {
-                map.addObject(grasses[i]);
-            }
+            preRender();
         }
+    }
+
+    private void preRender() {
+        fbo.activate();
+        glPushMatrix();
+        glClearColor(0, 0.7f * Place.getDayCycle().getShade().g, 0, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glTranslatef(xRadius, -2 * yRadius + ySpacing + Display.getHeight(), 0);
+        for (int i = 0; i < yCount; i++) {
+            for (int j = 0; j < xCount; j++) {
+                grasses[i * xCount + j].renderStill();
+                glTranslatef(grassWidth, 0, 0);
+            }
+            glTranslatef(-grassWidth * (xCount), ySpacing, 0);
+        }
+        glPopMatrix();
+        fbo.deactivate();
+        for (int i = 0; i < grasses.length; i++) {
+            map.addObject(grasses[i]);
+        }
+        prerendered = true;
     }
 
     @Override
