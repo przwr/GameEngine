@@ -28,8 +28,8 @@ public class SpawnPoint extends GameObject {
 
     private SpawnPoint(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance appearance) {
         initialize(name, x, y);
+        setCollision(Rectangle.create(width, height, OpticProperties.TRANSPARENT, this));
         if (appearance != null) {
-            setCollision(Rectangle.create(width, height, OpticProperties.TRANSPARENT, this));
             solid = true;
         }
         this.width = width;
@@ -64,8 +64,8 @@ public class SpawnPoint extends GameObject {
                     }
                 }
                 if (mobs < maxMobs) {
-                    if (collision != null && area.getNearSolidMobs().stream().anyMatch((object) -> (object.getClass().getName() == mob.getName()
-                            && collision.checkCollision(getX(), getY(), object)))) {
+                    if (area.getNearSolidMobs().stream().anyMatch((object) -> (object.getClass().getName() == mob.getName() &&
+                            collision.checkCollision(getX(), getY(), object)))) {
                         return;
                     }
                     try {

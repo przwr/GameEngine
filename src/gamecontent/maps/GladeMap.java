@@ -27,8 +27,8 @@ public class GladeMap extends Map {
 
     public GladeMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Polana", place, width, height, tileSize);
-//        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 2, 12);
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
+//        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 2, 12);
 
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
@@ -77,18 +77,22 @@ public class GladeMap extends Map {
 //        WYNIKI: dla xCount: 1 - 35 FPS; 2 - 57 FPS, czasem skacze, 3 - 57, ale częściej skacze
 
 
-        int xCount = 3;         //TODO  TUTAJ ZMIENIASZ bok kwadratu jako wielokrotność Tile'a
+        int xCount = 2;         //TODO  TUTAJ ZMIENIASZ bok kwadratu jako wielokrotność Tile'a
         int yCount = xCount * 4;
         int xSpace = xCount * 40 + 4;
         int ySpace = yCount * 8;
         int xStart = 0;
         int yStart = 0;
+        int co = 0;
         for (int x = xStart; x < xStart + 2048; x += xSpace) {
             for (int y = yStart; y < yStart + 2048; y += ySpace) {
                 addObject(new GrassClump(x, y, xCount, yCount));
+                co++;
                 addObject(new GrassPatcher(x + xSpace - 4, y, 6, ySpace));
             }
         }
+
+        System.out.println(co);
 
 //        addObject(new Grass(21, 700, 7, 2, 8, 32));
 //        addObject(new GrassClump(0, 768, 2, 8));
