@@ -38,7 +38,7 @@ public class Tile extends GameObject implements Appearance {
         if (!tileStack.contains(p)) {
             tileStack.add(p);
         }
-        updateFBO();
+//        updateFBO();
     }
 
     private void updateFBO() {
@@ -72,7 +72,7 @@ public class Tile extends GameObject implements Appearance {
         if (!tileStack.isEmpty()) {
             Point p = tileStack.remove(tileStack.size() - 1);
             tileStack.trimToSize();
-            updateFBO();
+//            updateFBO();
             return p;
         }
         return null;
@@ -177,7 +177,7 @@ public class Tile extends GameObject implements Appearance {
     }
 
     public boolean isTheSame(Tile o) {
-        Tile tile = (Tile) o;
+        Tile tile = o;
         if (tile.spriteSheet.equals(spriteSheet)) {
             if (tileStack.size() == tile.tileStack.size()) {
                 for (int i = 0; i < tileStack.size(); i++) {

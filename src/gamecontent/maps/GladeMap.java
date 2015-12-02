@@ -12,7 +12,6 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.GrassClump;
-import gamecontent.GrassPatcher;
 import gamecontent.SpawnPoint;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
@@ -74,72 +73,34 @@ public class GladeMap extends Map {
 //		addObject(new Tongub(1256, 820, place, mobID++));
 //		addObject(new Tongub(1256, 900, place, mobID++));
 
-//        WYNIKI: dla xCount: 1 - 35 FPS; 2 - 57 FPS, czasem skacze, 3 - 57, ale częściej skacze
+
+        int xBladesCount = 7;
+        int yBladesCount = 2;
+        int bladeWidth = 8;
+        int bladeHeight = 32;
+
+        int grassWidth = (bladeWidth - 2) * xBladesCount;
 
 
         int xCount = 2;         //TODO  TUTAJ ZMIENIASZ bok kwadratu jako wielokrotność Tile'a
         int yCount = xCount * 4;
-        int xSpace = xCount * 40 + 4;
+        int xSpace = xCount * grassWidth;
         int ySpace = yCount * 8;
         int xStart = 0;
         int yStart = 0;
-        int co = 0;
         for (int x = xStart; x < xStart + 2048; x += xSpace) {
             for (int y = yStart; y < yStart + 2048; y += ySpace) {
-                addObject(new GrassClump(x, y, xCount, yCount));
-                co++;
-                addObject(new GrassPatcher(x + xSpace - 4, y, 6, ySpace));
+                addObject(GrassClump.createRectangle(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight));
+//                addObject(new GrassPatcher(x + xSpace - 2, y, 6, ySpace));
             }
         }
 
-        System.out.println(co);
 
 //        addObject(new Grass(21, 700, 7, 2, 8, 32));
-//        addObject(new GrassClump(0, 768, 2, 8));
-//        addObject(new GrassClump(164, 768));
-//        addObject(new GrassPatcher(160, 768, 6, 128));
+//        addObject(GrassClump.createRectangle(256, 512, 2, 8, 5, 2, 8, 32));
+//        addObject(new GrassClump(32, 768, 2, 8, 5, 2, 8, 32));
+//        addObject(new GrassPatcher(30, 768, 4, 128));
 
-//        addObject(new Grass(400, 600, "Grass"));
-//        addObject(new Grass(400, 608, "Grass"));
-//        addObject(new Grass(400, 616, "Grass"));
-//        addObject(new Grass(400, 624, "Grass"));
-//        addObject(new Grass(400, 632, "Grass"));
-//        addObject(new Grass(400, 640, "Grass"));
-//        addObject(new Grass(400, 648, "Grass"));
-//        addObject(new Grass(400, 656, "Grass"));
-//        addObject(new Grass(400, 664, "Grass"));
-//        addObject(new Grass(400, 672, "Grass"));
-//        addObject(new Grass(400, 680, "Grass"));
-//        addObject(new Grass(400, 688, "Grass"));
-//        addObject(new Grass(400, 696, "Grass"));
-//
-//        addObject(new Grass(432, 600, "Grass"));
-//        addObject(new Grass(432, 608, "Grass"));
-//        addObject(new Grass(432, 616, "Grass"));
-//        addObject(new Grass(432, 624, "Grass"));
-//        addObject(new Grass(432, 632, "Grass"));
-//        addObject(new Grass(432, 640, "Grass"));
-//        addObject(new Grass(432, 648, "Grass"));
-//        addObject(new Grass(432, 656, "Grass"));
-//        addObject(new Grass(432, 664, "Grass"));
-//        addObject(new Grass(432, 672, "Grass"));
-//        addObject(new Grass(432, 680, "Grass"));
-//        addObject(new Grass(432, 688, "Grass"));
-//        addObject(new Grass(432, 696, "Grass"));
-//
-//        addObject(new Grass(464, 600, "Grass"));
-//        addObject(new Grass(464, 608, "Grass"));
-//        addObject(new Grass(464, 616, "Grass"));
-//        addObject(new Grass(464, 624, "Grass"));
-//        addObject(new Grass(464, 632, "Grass"));
-//        addObject(new Grass(464, 640, "Grass"));
-//        addObject(new Grass(464, 648, "Grass"));
-//        addObject(new Grass(464, 656, "Grass"));
-//        addObject(new Grass(464, 664, "Grass"));
-//        addObject(new Grass(464, 672, "Grass"));
-//        addObject(new Grass(464, 680, "Grass"));
-//        addObject(new Grass(464, 688, "Grass"));
-//        addObject(new Grass(464, 696, "Grass"));
 
         addObject(new Shen(512, 800, place, mobID++));
         addObject(new Shen(768, 1280, place, mobID++));

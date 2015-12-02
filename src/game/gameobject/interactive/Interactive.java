@@ -92,47 +92,49 @@ public class Interactive {
 
     public void actIfActivated(GameObject[] players, List<Mob> mobs) {
         activated = false;
-        if (collisionActivates()) {
-            if (collidesWithEnvironment) {
-                collision.setEnvironmentCollision(environmentCollision);
-                Area area = owner.getMap().getArea(owner.getArea());
-                for (Block block : area.getNearBlocks()) {
-                    if (block.isSolid() && block.isCollide(0, 0, environmentCollision)) {
-                        owner.getHurt(3, 1, block);
-                        return;
+        if (owner != null) {
+            if (collisionActivates()) {
+                if (collidesWithEnvironment) {
+                    collision.setEnvironmentCollision(environmentCollision);
+                    Area area = owner.getMap().getArea(owner.getArea());
+                    for (Block block : area.getNearBlocks()) {
+                        if (block.isSolid() && block.isCollide(0, 0, environmentCollision)) {
+                            owner.getHurt(3, 1, block);
+                            return;
+                        }
                     }
-                }
-                for (GameObject object : area.getNearSolidObjects()) {
-                    if (environmentCollision.checkCollision(0, 0, object)) {
-                        owner.getHurt(3, 1, object);
-                        return;
-                    }
-                }
-            }
-            if (collidesMobs) {
-                mobs.stream().filter((mob) -> (!isException(mob) && (collidesSelf || mob != owner) && (collidesFriends
-                        || mob.getClass().getName() != owner.getClass().getName()))).forEach((mob) -> {
-                    InteractiveResponse response = collision.collide(owner, mob, attackType);
-                    if (response.getPixels() > 0) {
-                        activated = true;
-                        action.act(mob, this, response);
-                    }
-                });
-            }
-            if (collidesPlayers) {
-                for (GameObject player : players) {
-                    if (((Player) player).isInGame() && !isException(player) && (collidesSelf || (player != owner))) {
-                        InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
-                        if (response.getPixels() > 0) {
-                            activated = true;
-                            action.act(player, this, response);
+                    for (GameObject object : area.getNearSolidObjects()) {
+                        if (environmentCollision.checkCollision(0, 0, object)) {
+                            owner.getHurt(3, 1, object);
+                            return;
                         }
                     }
                 }
+                if (collidesMobs) {
+                    mobs.stream().filter((mob) -> (!isException(mob) && (collidesSelf || mob != owner) && (collidesFriends
+                            || mob.getClass().getName() != owner.getClass().getName()))).forEach((mob) -> {
+                        InteractiveResponse response = collision.collide(owner, mob, attackType);
+                        if (response.getPixels() > 0) {
+                            activated = true;
+                            action.act(mob, this, response);
+                        }
+                    });
+                }
+                if (collidesPlayers) {
+                    for (GameObject player : players) {
+                        if (((Player) player).isInGame() && !isException(player) && (collidesSelf || (player != owner))) {
+                            InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
+                            if (response.getPixels() > 0) {
+                                activated = true;
+                                action.act(player, this, response);
+                            }
+                        }
+                    }
+                }
+            } else {
+                activated = true;
+                action.act(owner, this, InteractiveResponse.NO_RESPONSE);
             }
-        } else {
-            activated = true;
-            action.act(owner, this, InteractiveResponse.NO_RESPONSE);
         }
     }
 

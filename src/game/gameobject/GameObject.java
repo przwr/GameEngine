@@ -51,7 +51,6 @@ public abstract class GameObject {
     protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     protected int prevArea = -1;
     protected boolean toUpdate;
-    protected boolean toRender = true;
 
     public void update() {
     }
