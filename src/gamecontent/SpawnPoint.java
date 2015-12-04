@@ -53,7 +53,7 @@ public class SpawnPoint extends GameObject {
     public void update() {
         if (delay.isOver()) {
             delay.start();
-            if (appearance != null || !canBeSeen()) {
+            if (appearance != null || cantBeSeen()) {
                 int mobs = 0;
                 Area area = map.getArea(getX(), getY());
                 for (Mob m : area.getNearSolidMobs()) {
@@ -78,18 +78,18 @@ public class SpawnPoint extends GameObject {
         }
     }
 
-    private boolean canBeSeen() {
+    private boolean cantBeSeen() {
         Camera cam;
         Map map;
         for (int player = 0; player < this.map.place.getPlayersCount(); player++) {
             map = this.map.place.players[player].getMap();
             if (map == this.map) {
                 cam = (((Player) this.map.place.players[player]).getCamera());
-                if (cam.getYStart() <= y + height - Place.tileSize + floatHeight
-                        && cam.getYEnd() >= y - height - Place.tileSize
-                        && cam.getXStart() <= x - width - Place.tileSize
-                        && cam.getXEnd() >= x + width + Place.tileSize) {
-                    return true;
+                if ((cam.getYStart() - height - Place.tileSize + floatHeight >= y
+                        || cam.getYEnd() + height + Place.tileSize <= y)
+                        && (cam.getXStart() - width - Place.tileSize >= x
+                        || cam.getXEnd() + width + Place.tileSize <= x)) {
+                    return false;
                 }
             }
         }
