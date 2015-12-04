@@ -48,7 +48,7 @@ public class Blazag extends Mob {
     private Delay attackDelay = Delay.createInMilliseconds(700);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay readyToAttackDelay = Delay.createInMilliseconds(attackDelayTime);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInSeconds(2);                  //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay jumpRestDelay = Delay.createInSeconds(4);             //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay jumpRestDelay = Delay.createInSeconds(5);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpDelay = Delay.createInMilliseconds(150);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay burstDelay = Delay.createInMilliseconds(500);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay changeDelay = Delay.createInMilliseconds(750);              //TODO - te wartości losowe i zależne od poziomu trudności
@@ -105,8 +105,12 @@ public class Blazag extends Mob {
                     lookForCloseEntitiesWhileSleep(place.players, map.getArea(area).getNearSolidMobs());
                     short time = place.getTimeInMinutes();
                     getOrders();
-                    if (!closeEnemies.isEmpty() || time <= current_sleep_start || time >= current_sleep_end || (!closeFriends.isEmpty() && order.order >= 0)) {
+                    if (!closeEnemies.isEmpty() || time <= current_sleep_start || time >= current_sleep_end) {
                         state = idle;
+                        awake = true;
+                    }
+                    if (!closeFriends.isEmpty() && order.order >= 0) {
+                        state = attack;
                         awake = true;
                     }
                     brake(2);
@@ -337,13 +341,13 @@ public class Blazag extends Mob {
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CurveInteractiveCollision(48, 32, 0, 38, 180),
                 Interactive.STRENGTH_HURT, ATTACK_SLASH, 1.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 128, 0, 24, 24),
-                Interactive.STRENGTH_HURT, ATTACK_JUMP, 4f));
+                Interactive.STRENGTH_HURT, ATTACK_JUMP, 3f));
         addPushInteraction();
     }
 
     @Override
     public void initialize(int x, int y, Place place, short ID) {
-        super.initialize(x, y, 4.5, 1024, "Blazag", place, "blazag", true, ID);
+        super.initialize(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
         setUp();
     }
 
@@ -362,12 +366,12 @@ public class Blazag extends Mob {
                 }
                 return;
             } else {
-                if (distance >= sightRange2 / 9) {
+                if (distance >= sightRange2 / 12) {
                     if (jumpRestDelay.isOver()) {
                         brake(2);
                         setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
                         animation.animateSingleInDirection(getDirection8Way(), 19);
-                        if (distance <= sightRange2 / 16) {
+                        if (distance <= sightRange2 / 9) {
                             state = jumpAttack;
                             jumpDelay.start();
                             attackCout += 2;
@@ -441,9 +445,29 @@ public class Blazag extends Mob {
                                                     attacking = true;
                                                     attackCout++;
                                                     if (rand > 0.75) {
-                                                        animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
+                                                        if (jumpRestDelay.isOver() && rand > 0.97) {
+                                                            brake(2);
+                                                            setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
+                                                            animation.animateSingleInDirection(getDirection8Way(), 19);
+                                                            attackCout++;
+                                                            state = jumpAttack;
+                                                            jumpDelay.start();
+                                                            jumpRestDelay.start();
+                                                        } else {
+                                                            animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
+                                                        }
                                                     } else {
-                                                        animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+                                                        if (jumpRestDelay.isOver() && rand > 0.72) {
+                                                            brake(2);
+                                                            setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
+                                                            animation.animateSingleInDirection(getDirection8Way(), 19);
+                                                            attackCout++;
+                                                            state = jumpAttack;
+                                                            jumpDelay.start();
+                                                            jumpRestDelay.start();
+                                                        } else {
+                                                            animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+                                                        }
                                                     }
                                                 }
                                             }

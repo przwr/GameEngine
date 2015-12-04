@@ -6,4 +6,4 @@ fists:37
 acro:42
 bow:46
 shield:50
-51
+52

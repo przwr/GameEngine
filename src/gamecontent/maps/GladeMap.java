@@ -7,17 +7,14 @@ package gamecontent.maps;
 
 import collision.Rectangle;
 import game.place.Place;
-import game.place.map.Map;
-import game.place.map.PuzzleObject;
-import game.place.map.Tile;
-import game.place.map.WarpPoint;
+import game.place.map.*;
 import gamecontent.GrassClump;
+import gamecontent.SpawnPoint;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import game.place.map.NullTile;
 
 /**
  * @author Wojtek
@@ -67,9 +64,9 @@ public class GladeMap extends Map {
         //addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
 //        addObject(new BrainlessShen(356, 768, place, mobID++));
 //        addObject(new BrainlessShen(356, 860, place, mobID++));
-        addObject(new Blazag(768, 2048, place, mobID++));
+//        addObject(new Blazag(768, 2048, place, mobID++));
 //        addObject(new Blazag(1200, 1024, place, mobID++));
-//        addObject(new Blazag(2048, 2048, place, mobID++));
+        addObject(new Blazag(1600, 2494, place, mobID++));
 //		addObject(new Tongub(1256, 768, place, mobID++))ss;
 //		addObject(new Tongub(1256, 820, place, mobID++));
 //		addObject(new Tongub(1256, 900, place, mobID++));
@@ -110,7 +107,7 @@ public class GladeMap extends Map {
         addObject(new Shen(648, 1400, place, mobID++));
         addObject(new Plurret(1156, 968, place, mobID++));
 //        addObject(SpawnPoint.createVisible(place,2048, 2048, 64, 64, "Shen spawn", Shen.class, 30, 5, place.getSprite("rabbit", "")));
-//        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
+        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
 //        addObject(new Shen(512, 1024, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));
