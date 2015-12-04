@@ -25,6 +25,7 @@ import game.place.Place;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +57,7 @@ public class Blazag extends Mob {
     private SpeedChanger jumper;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private Order order = new Order();
+    private ArrayList<Mob> toRemove = new ArrayList<>();
 
     {
         idle = new ActionState() {
@@ -107,10 +109,6 @@ public class Blazag extends Mob {
                     getOrders();
                     if (!closeEnemies.isEmpty() || time <= current_sleep_start || time >= current_sleep_end) {
                         state = idle;
-                        awake = true;
-                    }
-                    if (!closeFriends.isEmpty() && order.order >= 0) {
-                        state = attack;
                         awake = true;
                     }
                     brake(2);
@@ -532,6 +530,13 @@ public class Blazag extends Mob {
         boolean agresor = false;
         target = null;
         Set<GameObject> targets = new HashSet<>();
+        toRemove.clear();
+        for (Mob mob : closeFriends) {
+            if (!((Blazag) mob).awake) {
+                toRemove.add(mob);
+            }
+        }
+        closeFriends.removeAll(toRemove);
         for (Mob mob : closeFriends) {
             targets.addAll((mob.getCloseEnemies()));
             xCenter += mob.getX();

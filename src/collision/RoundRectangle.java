@@ -5,6 +5,8 @@
  */
 package collision;
 
+import engine.lights.Light;
+import engine.lights.ShadowRenderer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
@@ -15,12 +17,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static engine.lights.Shadow.BRIGHT;
+
 /**
  * @author Wojtek
  */
 public class RoundRectangle extends Figure {
 
-    public static final byte LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3, LEFT_BOTTOM_TO_RIGHT_TOP = 4, LEFT = 5, LEFT_TOP_TO_RIGHT_BOTTOM = 6, RIGHT = 7;
+    public static final byte LEFT_TOP = 0, LEFT_BOTTOM = 1, RIGHT_BOTTOM = 2, RIGHT_TOP = 3, LEFT_BOTTOM_TO_RIGHT_TOP = 4, LEFT = 5, LEFT_TOP_TO_RIGHT_BOTTOM
+            = 6, RIGHT = 7;
     public static final byte PREVIOUS = 0, CORNER = 1, NEXT = 2;
     private static final changer[] changers = new changer[4];
     private Corner[] corners = new Corner[4];
@@ -142,7 +147,8 @@ public class RoundRectangle extends Figure {
         return new RoundRectangle(-(width / 2), -(height / 2), width, height, opticPropertiesType, shadowHeight, owner);
     }
 
-    public static RoundRectangle createShadowHeight(int xStart, int yStart, int width, int height, int opticPropertiesType, int shadowHeight, GameObject owner) {
+    public static RoundRectangle createShadowHeight(int xStart, int yStart, int width, int height, int opticPropertiesType, int shadowHeight, GameObject
+            owner) {
         return new RoundRectangle(xStart, yStart, width, height, opticPropertiesType, shadowHeight, owner);
     }
 
@@ -204,8 +210,10 @@ public class RoundRectangle extends Figure {
     private boolean roundRectangleCollision(int x, int y, Figure figure) {       //TO DO
         System.out.println("Simplified Version of Collision with RoundRectangle. In RoundRectangle");
         RoundRectangle roundRectangle = (RoundRectangle) figure;
-        return ((getX(x) > roundRectangle.getX() && getX(x) - roundRectangle.getX() < roundRectangle.getWidth()) || (getX(x) <= roundRectangle.getX() && roundRectangle.getX() - getX(x) < width))
-                && ((getY(y) > roundRectangle.getY() && getY(y) - roundRectangle.getY() < roundRectangle.getHeight()) || (getY(y) <= roundRectangle.getY() && roundRectangle.getY() - getY(y) < height));
+        return ((getX(x) > roundRectangle.getX() && getX(x) - roundRectangle.getX() < roundRectangle.getWidth()) || (getX(x) <= roundRectangle.getX() &&
+                roundRectangle.getX() - getX(x) < width))
+                && ((getY(y) > roundRectangle.getY() && getY(y) - roundRectangle.getY() < roundRectangle.getHeight()) || (getY(y) <= roundRectangle.getY() &&
+                roundRectangle.getY() - getY(y) < height));
     }
 
     private boolean circleCollision(int x, int y, Figure figure) {
@@ -216,7 +224,10 @@ public class RoundRectangle extends Figure {
             return true;
         }
         getPoints();
-        return xPosition != 0 && yPosition != 0 && Methods.pointDistance(circle.getX(), circle.getY(), points.get((xPosition + 1) + 3 * (yPosition + 1)).getX(), points.get((xPosition + 1) + 3 * (yPosition + 1)).getY()) <= circle.getRadius() || yPosition == 0 && ((xPosition < 0 && getX(x) - circle.getX() <= circle.getRadius())) || (yPosition < 0 && getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - getY(y) - height <= circle.getRadius());
+        return xPosition != 0 && yPosition != 0 && Methods.pointDistance(circle.getX(), circle.getY(), points.get((xPosition + 1) + 3 * (yPosition + 1)).getX
+                (), points.get((xPosition + 1) + 3 * (yPosition + 1)).getY()) <= circle.getRadius() || yPosition == 0 && ((xPosition < 0 && getX(x) - circle
+                .getX() <= circle.getRadius())) || (yPosition < 0 && getY(y) - circle.getY() <= circle.getRadius()) || (yPosition > 0 && circle.getY() - getY
+                (y) - height <= circle.getRadius());
     }
 
     private boolean lineCollision(int x, int y, Figure figure) {
@@ -226,10 +237,14 @@ public class RoundRectangle extends Figure {
                 new Point(getX(x) + width, getY(y) + height),
                 new Point(getX(x) + width, getY(y))};
         int[] linePoints = {line.getX(), line.getY(), line.getX() + line.getXVector(), line.getY() + line.getYVector()};
-        return (Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[0].getX(), list[0].getY(), list[1].getX(), list[1].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[1].getX(), list[1].getY(), list[2].getX(), list[2].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[2].getX(), list[2].getY(), list[3].getX(), list[3].getY())
-                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[3].getX(), list[3].getY(), list[0].getX(), list[0].getY()));
+        return (Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[0].getX(), list[0].getY(), list[1].getX(), list[1]
+                .getY())
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[1].getX(), list[1].getY(), list[2].getX(), list[2]
+                .getY())
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[2].getX(), list[2].getY(), list[3].getX(), list[3]
+                .getY())
+                || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[3].getX(), list[3].getY(), list[0].getX(), list[0]
+                .getY()));
     }
 
     private void setTypeOfCorner(int corner, int xChange, int yChange) {
@@ -270,6 +285,24 @@ public class RoundRectangle extends Figure {
             corner.getPoints().stream().filter((point) -> (!points.contains(point))).forEach(points::add);
         }
         points.trimToSize();
+    }
+
+
+    @Override
+    public void calculateShadows(Light light) {
+        if (this != light.getOwnerCollision()) {
+            if (isGiveShadow()) {
+                ShadowRenderer.calculateShadowAndWalls(light, this);
+                ShadowRenderer.calculateAndDrawSelfShadow(light, this);
+            }
+            ShadowRenderer.calculateShadowShade(this, light);
+        } else {
+            addShadowType(BRIGHT);
+        }
+    }
+
+    public boolean isRoundRectangle() {
+        return true;
     }
 
     public Point getPushValueOfCorner(int corner) {
