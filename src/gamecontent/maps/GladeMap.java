@@ -17,6 +17,7 @@ import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import game.place.map.NullTile;
 
 /**
  * @author Wojtek
@@ -26,6 +27,7 @@ public class GladeMap extends Map {
     public GladeMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Polana", place, width, height, tileSize);
         Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
+        Tile nullTile = new NullTile();
 //        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 2, 12);
 
         for (int y = 0; y < height / tileSize; y++) {

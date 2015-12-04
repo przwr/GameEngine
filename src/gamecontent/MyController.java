@@ -15,9 +15,9 @@ import game.gameobject.inputs.PlayerController;
 import game.gameobject.stats.PlayerStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.place.Place;
-import sprites.Animation;
 
 import static game.gameobject.GameObject.*;
+import sprites.ClothedAppearance;
 
 /**
  * @author przemek
@@ -45,7 +45,7 @@ public class MyController extends PlayerController {
     private int tempDirection, sideDirection;
     private byte firstAttackType, secondAttackType, chargingType, lastAttackButton, lastAttackType;
     private boolean running, sneaking, diagonal, inputLag, charging, attacking, attacked, scoping;
-    private Animation playerAnimation;
+    private ClothedAppearance animation;
     private PlayerStats stats;
     private MyGUI gui;
     private int jumpLag;
@@ -84,9 +84,9 @@ public class MyController extends PlayerController {
         if (gui != null) {
             updateActionsIfNoLag();
             //ANIMACJA//
-            playerAnimation = (Animation) inControl.getAppearance();
+            animation = (ClothedAppearance) inControl.getAppearance();
             stats = (PlayerStats) inControl.getStats();
-            playerAnimation.setAnimate(true);
+            animation.setAnimate(true);
             diagonal = true;
             tempDirection = inControl.getDirection8Way();
             stats.setProtectionState(false);
@@ -123,19 +123,23 @@ public class MyController extends PlayerController {
                     }
                     updateRest();
                 } else {
-                    playerAnimation.animateSingleInDirection(tempDirection, 0);
+                    animation.animateSingleInDirection(tempDirection, animation.IDLE, 0);
                     inControl.brake(2);
                 }
             } else {
                 updateGettingHurt();
             }
             if (attacking) {
-                playerAnimation.setFPS(60);
+                if (!charging) {
+                    animation.setFPS(60);
+                } else {
+                    animation.setFPS((int) (inControl.getSpeed() * 3));
+                }
             } else {
                 if (!running) {
-                    playerAnimation.setFPS((int) (inControl.getSpeed() * 3));
+                    animation.setFPS((int) (inControl.getSpeed() * 3));
                 } else {
-                    playerAnimation.setFPS((int) (inControl.getSpeed() * 3.5));
+                    animation.setFPS((int) (inControl.getSpeed() * 3.5));
                 }
             }
         }
@@ -145,7 +149,7 @@ public class MyController extends PlayerController {
         if (actions[INPUT_BLOCK].isKeyClicked()) {
             //PERFEKCYJNY BLOK (pierwsza klatka obrony)
         }
-        playerAnimation.animateSingleInDirection(tempDirection, 51);
+        animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
         updateChargingMovement();
         stats.setProtectionState(true);
         //RESZTA BLOKOWANIA
@@ -165,7 +169,7 @@ public class MyController extends PlayerController {
                 inControl.getKnockBack().getYSpeed(), 0, 0));
         stopAttack();
         actions[lastAttackButton].setInterrupted();
-        playerAnimation.animateSingleInDirection(inControl.getDirection8Way(), 6);
+        animation.animateSingleInDirection(inControl.getDirection8Way(), animation.IDLE, 6);
         inControl.brake(2);
     }
 
@@ -229,7 +233,7 @@ public class MyController extends PlayerController {
                 int tmpDir = tempDirection;
                 updateDirection();
                 if (tmpDir != tempDirection) {
-                    playerAnimation.changeDirection(tempDirection);
+                    animation.changeDirection(tempDirection);
                 }
             }
             if (preAttackDelay.isOver()) {
@@ -256,28 +260,28 @@ public class MyController extends PlayerController {
         switch (attack) {
             case ATTACK_SLASH:
                 if (stats.getEnergy() >= 20) {
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 21, 25);
+                    animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 2, 6);
                     stats.decreaseEnergy(20);
                     attacked = true;
                 }
                 break;
             case ATTACK_THRUST:
                 if (stats.getEnergy() >= 24) {
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 26, 28);
+                    animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 7, 9);
                     stats.decreaseEnergy(24);
                     attacked = true;
                 }
                 break;
             case ATTACK_UPPER_SLASH:
                 if (stats.getEnergy() >= 20) {
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 29, 36);
+                    animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 10, 17);
                     stats.decreaseEnergy(20);
                     attacked = true;
                 }
                 break;
             case ATTACK_WEAK_PUNCH:
                 if (stats.getEnergy() >= 5) {
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 37, 39);
+                    animation.animateIntervalInDirectionOnce(tempDirection, animation.FISTS, 0, 2);
                     stats.decreaseEnergy(5);
                     attacked = true;
 
@@ -285,7 +289,7 @@ public class MyController extends PlayerController {
                 break;
             case ATTACK_STRONG_PUNCH:
                 if (stats.getEnergy() >= 7) {
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 40, 41);
+                    animation.animateIntervalInDirectionOnce(tempDirection, animation.FISTS, 3, 4);
                     stats.decreaseEnergy(7);
                     attacked = true;
 
@@ -293,12 +297,13 @@ public class MyController extends PlayerController {
                 break;
             case ATTACK_NORMAL_ARROW_SHOT:
                 if (stats.getEnergy() >= 15) {
-                    playerAnimation.animateIntervalInDirectionOnce(tempDirection, 46, 48);
+                    animation.animateIntervalInDirectionOnce(tempDirection, animation.BOW, 0, 2);
                     attackMovement.stop();
                     stopInputLag();
                     charging = true;
                     chargingType = ATTACK_NORMAL_ARROW_SHOT;
                     attacked = true;
+                    scoping = true;
                 }
                 break;
         }
@@ -325,7 +330,7 @@ public class MyController extends PlayerController {
             switch (chargingType) {
                 case ATTACK_NORMAL_ARROW_SHOT:
                     if (stats.getEnergy() >= 15) {
-                        playerAnimation.animateSingleInDirection(tempDirection, 49);
+                        animation.animateSingleInDirection(tempDirection, animation.BOW, 3);
                         inControl.getAttackActivator(ATTACK_NORMAL_ARROW_SHOT).setActivated(true);
                         stats.decreaseEnergy(15);
                     }
@@ -346,24 +351,34 @@ public class MyController extends PlayerController {
         if (actions[INPUT_UP].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
                 inControl.addSpeed(-4, -4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else if (actions[INPUT_RIGHT].isKeyPressed()) {
                 inControl.addSpeed(4, -4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else {
                 inControl.addSpeed(0, -4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             }
         } else if (actions[INPUT_DOWN].isKeyPressed()) {
             if (actions[INPUT_LEFT].isKeyPressed()) {
                 inControl.addSpeed(-4, 4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else if (actions[INPUT_RIGHT].isKeyPressed()) {
                 inControl.addSpeed(4, 4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else {
                 inControl.addSpeed(0, 4);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             }
         } else {
             if (actions[INPUT_RIGHT].isKeyPressed()) {
                 inControl.addSpeed(4, 0);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
             } else if (actions[INPUT_LEFT].isKeyPressed()) {
                 inControl.addSpeed(-4, 0);
+                animation.getLowerBody().animateIntervalInDirection(tempDirection, 1, 6);
+            } else {
+                animation.getLowerBody().animateSingleInDirection(tempDirection, animation.BOW + 2);
             }
         }
         if (!actions[INPUT_UP].isKeyPressed() && !actions[INPUT_DOWN].isKeyPressed()) {
@@ -480,9 +495,9 @@ public class MyController extends PlayerController {
             } else {
                 if (!sideDelay.isActive()) {
                     inControl.setMakeNoise(false);
-                    playerAnimation.animateSingleInDirection(tempDirection, 0);
+                    animation.animateSingleInDirection(tempDirection, animation.IDLE, 0);
                 } else {
-                    playerAnimation.animateSingleInDirection(sideDirection, 0);
+                    animation.animateSingleInDirection(sideDirection, animation.IDLE, 0);
                     inControl.setMakeNoise(false);
                 }
             }
@@ -517,14 +532,14 @@ public class MyController extends PlayerController {
 
             } else {
                 jumpLag--;
-                playerAnimation.animateSingleInDirection(tempDirection, 45);
+                animation.animateSingleInDirection(tempDirection, animation.ACROBATICS, 3);
                 if (jumpLag == 0) {
                     setInputBlocked(false, INPUT_ATTACK, INPUT_SECOND_ATTACK);
                 }
                 inControl.setMakeNoise(true);
             }
         } else {
-            playerAnimation.animateSingleInDirection(tempDirection, 43);
+            animation.animateSingleInDirection(tempDirection, animation.ACROBATICS, 1);
         }
         if (jumpDelay.isActive() && jumpDelay.isOver()) {
             jumpDelay.stop();
@@ -597,7 +612,7 @@ public class MyController extends PlayerController {
         inControl.setJumpForce(jumpMaker.getTotalTime() / 4);
         jumpLag = jumpMaker.getTotalTime() / 2;
         setInputLag(jumpLag);
-        playerAnimation.setFPS(60);
+        animation.setFPS(60);
     }
 
     private void updateRest() {
@@ -658,9 +673,9 @@ public class MyController extends PlayerController {
 
     private void animateMoving(int direction) {
         if (sneaking) {
-            playerAnimation.animateIntervalInDirection(direction, 1, 6);
+            animation.animateIntervalInDirection(direction, animation.IDLE, 1, 6);
         } else {
-            playerAnimation.animateIntervalInDirection(direction, 7, 18);
+            animation.animateIntervalInDirection(direction, animation.RUN, 0, 11);
         }
         inControl.setDirection(direction * 45);
     }

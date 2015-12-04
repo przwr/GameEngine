@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 public class SpriteBase {
 
     private final ArrayList<Sprite> sprites = new ArrayList<>();
-    
+
     private static final int GL_MODE = org.lwjgl.opengl.GL11.GL_NEAREST;
 
     public SpriteBase() {
@@ -57,7 +57,7 @@ public class SpriteBase {
         return newSprite;
     }
 
-    private String fullFolderPath(String folder) {
+    public static String fullFolderPath(String folder) {
         if (folder.isEmpty()) {
             return "res/textures/";
         } else {
