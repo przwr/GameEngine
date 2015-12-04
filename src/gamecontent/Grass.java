@@ -24,13 +24,16 @@ public class Grass extends GameObject {
             xCurrentDistance, yCurrentDistance, xRadius, yRadius;
     PointedValue object = new PointedValue();
     PointedValue[] blades;
+    boolean masking;
 
-    public Grass(int x, int y, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
+
+    private Grass(int x, int y, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, boolean masking) {
         initialize("Grass", x, y);
         this.xBladesCount = xBladesCount;
         this.yBladesCount = yBladesCount;
         this.bladeWidth = bladeWidth;
         this.bladeHeight = bladeHeight;
+        this.masking = masking;
         bladeSpacing = Math.round(bladeWidth * 0.75f);
         bladeHeightHalf = bladeHeight / 2;
         xRadius = xBladesCount * bladeWidth / 2;
@@ -52,6 +55,14 @@ public class Grass extends GameObject {
                 blades[idx + 2] = new PointedValue(placeR + Math.round((xCentralized + c) * bladeSpacing), (yCentralized + i) * bladeWidth, 0);
             }
         }
+    }
+
+    public static Grass createNonMasking(int x, int y, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
+        return new Grass(x, y, xBladesCount, yBladesCount, bladeWidth, bladeHeight, false);
+    }
+
+    public static Grass create(int x, int y, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
+        return new Grass(x, y, xBladesCount, yBladesCount, bladeWidth, bladeHeight, true);
     }
 
     public void update() {
@@ -95,19 +106,21 @@ public class Grass extends GameObject {
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX(), (int) (getY() - floatHeight), 0);
-        tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
-        Drawer.setColor(new Color(0, 0.7f * Place.getDayCycle().getShade().g, 0));
-        Drawer.setCentralPoint();
-        Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
-        Drawer.returnToCentralPoint();
+        if (masking) {
+            tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
+            Drawer.setColor(new Color(0, 0.7f * Place.getDayCycle().getShade().g, 0));
+            Drawer.setCentralPoint();
+            Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
+            Drawer.returnToCentralPoint();
+        }
         for (int i = 0; i < blades.length; i += 3) {
             calculateFactor(blades[i].getX(), blades[i + 1].getY());
             Drawer.setColor(new Color(0, (int) (blades[i].getValue() * Place.getDayCycle().getShade().g), 0));
             if (factor == 0) {
                 Drawer.drawTriangle(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY());
             } else {
-                tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
                 tempX = (blades[i].getX() + factor + (blades[i + 1].getX() + blades[i + 2].getX())) / 3;
+                tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
                 Drawer.drawTriangle(tempX, tempY, blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY());
                 if (factor > 0) {
                     Drawer.drawTriangle(blades[i].getX() + factor, blades[i].getY(), tempX, tempY, blades[i + 2].getX(), blades[i + 2].getY());
@@ -121,14 +134,16 @@ public class Grass extends GameObject {
     }
 
     public void renderStill() {
-        tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
-        Drawer.setColor(new Color(0, 0.7f * Place.getDayCycle().getShade().g, 0));
-        Drawer.setCentralPoint();
-        Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
-        Drawer.returnToCentralPoint();
+        if (masking) {
+            tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
+            Drawer.setColor(new Color(0, 0.7f * Place.getDayCycle().getShade().g, 0));
+            Drawer.setCentralPoint();
+            Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
+            Drawer.returnToCentralPoint();
+        }
         for (int i = 0; i < blades.length; i += 3) {
-            tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
             tempX = (blades[i].getX() + (blades[i + 1].getX() + blades[i + 2].getX())) / 3;
+            tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
             Drawer.setColor(new Color(0, (int) (blades[i].getValue() * Place.getDayCycle().getShade().g), 0));
             Drawer.drawTriangle(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY());
         }

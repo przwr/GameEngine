@@ -282,7 +282,7 @@ public class Shen extends Mob {
     }
 
     private void setUp() {
-        //RandomGenerator r = RandomGenerator.create();
+        //RandomGenerator r = RandomGenerator.createNonMasking();
         //skinColor = Color.getHSBColor(r.nextFloat(), 1, 1);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);

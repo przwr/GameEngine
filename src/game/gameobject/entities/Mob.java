@@ -129,7 +129,7 @@ public abstract class Mob extends Entity {
         }
         for (Mob mob : mobs) {
             if (mob.getClass().getName() == this.getClass().getName()) {
-                if (this != mob && mob.getMap() == map && isHeardWhileSleep(mob)) {
+                if (this != mob && mob.getMap() == map && isInRange(mob)) {
                     closeFriends.add(mob);
                 }
             } else if (!isNeutral(mob) && mob.getMap() == map && (isHeardWhileSleep(mob))) {

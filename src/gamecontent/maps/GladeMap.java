@@ -12,7 +12,6 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.GrassClump;
-import gamecontent.SpawnPoint;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
@@ -66,7 +65,7 @@ public class GladeMap extends Map {
         //addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
 //        addObject(new BrainlessShen(356, 768, place, mobID++));
 //        addObject(new BrainlessShen(356, 860, place, mobID++));
-//		addObject(new Blazag(768, 2048, place, mobID++));
+        addObject(new Blazag(768, 2048, place, mobID++));
 //        addObject(new Blazag(1200, 1024, place, mobID++));
 //        addObject(new Blazag(2048, 2048, place, mobID++));
 //		addObject(new Tongub(1256, 768, place, mobID++))ss;
@@ -87,7 +86,7 @@ public class GladeMap extends Map {
         int xSpace = xCount * grassWidth;
         int ySpace = yCount * 8;
         int xStart = 0;
-        int yStart = 0;
+        int yStart = 2304;
         for (int x = xStart; x < xStart + 2048; x += xSpace) {
             for (int y = yStart; y < yStart + 2048; y += ySpace) {
                 addObject(GrassClump.createRectangle(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight));
@@ -97,7 +96,8 @@ public class GladeMap extends Map {
 
 
 //        addObject(new Grass(21, 700, 7, 2, 8, 32));
-//        addObject(GrassClump.createRectangle(256, 512, 2, 8, 5, 2, 8, 32));
+        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
+        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
 //        addObject(new GrassClump(32, 768, 2, 8, 5, 2, 8, 32));
 //        addObject(new GrassPatcher(30, 768, 4, 128));
 
@@ -108,7 +108,7 @@ public class GladeMap extends Map {
         addObject(new Shen(648, 1400, place, mobID++));
         addObject(new Plurret(1156, 968, place, mobID++));
 //        addObject(SpawnPoint.createVisible(place,2048, 2048, 64, 64, "Shen spawn", Shen.class, 30, 5, place.getSprite("rabbit", "")));
-        addObject(SpawnPoint.createInVisible(2048, 2048, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
+//        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
 //        addObject(new Shen(512, 1024, place, mobID++));
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));

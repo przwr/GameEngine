@@ -748,6 +748,6 @@ public abstract class Map {
     }
 
     public short getNextMobID() {
-        return ++mobID;
+        return mobID++;
     }
 }
