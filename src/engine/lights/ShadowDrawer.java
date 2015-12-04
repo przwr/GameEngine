@@ -6,7 +6,6 @@
 package engine.lights;
 
 import collision.Figure;
-import collision.RoundRectangle;
 import engine.utilities.Point;
 import game.place.Place;
 
@@ -50,7 +49,7 @@ public class ShadowDrawer {
         }
     }
 
-    public static void drawLeftConcaveBottom(Light emitter, RoundRectangle shaded, int x, int y) {
+    public static void drawLeftConcaveBottom(Light emitter, Figure shaded, int x, int y) {
         startDrawingShadow(emitter, BLACK);
         glBegin(GL_TRIANGLES);
         glVertex2f(shaded.getX() + Place.tileSize, shaded.getYEnd());
@@ -59,7 +58,7 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    public static void drawConcaveTop(Light emitter, RoundRectangle shaded, int x, int y) {
+    public static void drawConcaveTop(Light emitter, Figure shaded, int x, int y) {
         startDrawingShadow(emitter, BLACK);
         glBegin(GL_TRIANGLES);
         glVertex2f(shaded.getX(), shaded.getYEnd() - Place.tileSize);
@@ -68,7 +67,7 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    public static void drawRightConcaveBottom(Light emitter, RoundRectangle shaded, int x, int y) {
+    public static void drawRightConcaveBottom(Light emitter, Figure shaded, int x, int y) {
         startDrawingShadow(emitter, BLACK);
         glBegin(GL_TRIANGLES);
         glVertex2f(shaded.getX(), shaded.getYEnd());
@@ -91,7 +90,7 @@ public class ShadowDrawer {
         glEnable(GL_TEXTURE_2D);
     }
 
-    public static void drawShadowFromConcave(Light emitter, RoundRectangle shaded, Point[] shadowPoints) {
+    public static void drawShadowFromConcave(Light emitter, Figure shaded, Point[] shadowPoints) {
         startDrawingShadow(emitter, BLACK);
         corner.set(shaded.getX() + (shaded.isLeftBottomRound() ? Place.tileSize : 0), shaded.getY());
         glBegin(GL_TRIANGLES);

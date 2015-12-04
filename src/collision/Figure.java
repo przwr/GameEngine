@@ -5,7 +5,9 @@
  */
 package collision;
 
+import engine.lights.Light;
 import engine.lights.Shadow;
+import engine.lights.ShadowRenderer;
 import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
@@ -18,11 +20,14 @@ import gamecontent.SpawnPoint;
 
 import java.util.List;
 
+import static engine.lights.Shadow.BRIGHT;
+
 /**
  * @author Wojtek
  */
 public abstract class Figure implements Comparable<Figure> {
 
+    private static final Point pushed = new Point(0, 0);
     private static Rectangle tempTile = Rectangle.createTileRectangle();
     private static Rectangle scope = Rectangle.createTileRectangle();
     private static PointContainer tiles;
@@ -254,6 +259,17 @@ public abstract class Figure implements Comparable<Figure> {
         }
     }
 
+    public void calculateShadows(Light light) {
+        if (this != light.getOwnerCollision()) {
+            if (opticProperties.isGiveShadow()) {
+                ShadowRenderer.calculateShadowAndWalls(light, this);
+            }
+            ShadowRenderer.calculateShadowShade(this, light);
+        } else {
+            addShadowType(BRIGHT);
+        }
+    }
+
     public double getXStartSlideSpeed() {
         return slideSpeed.getStartX();
     }
@@ -478,6 +494,23 @@ public abstract class Figure implements Comparable<Figure> {
     public void setHitable(boolean hitable) {
         this.hitable = hitable;
     }
+
+    public boolean isRoundRectangle() {
+        return false;
+    }
+
+    public boolean isRightBottomRound() {
+        return false;
+    }
+
+    public boolean isLeftBottomRound() {
+        return false;
+    }
+
+    public Point getPushValueOfCorner(byte leftBottom) {
+        return pushed;
+    }
+
 
     private class DoublePoint {
 

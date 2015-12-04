@@ -5,7 +5,6 @@
  */
 package gamecontent;
 
-import sprites.ClothedAppearance;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
@@ -35,7 +34,7 @@ import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
-import sprites.Animation;
+import sprites.ClothedAppearance;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -55,19 +54,18 @@ public class MyPlayer extends Player {
 
     private final int framesPerDir = 52;
     private final String characterName = "aria";
+    ClothedAppearance ca;
     private Cloth head = Cloth.nullCloth;
     private Cloth torso = Cloth.nullCloth;
     private Cloth legs = Cloth.nullCloth;
     private Cloth nudeTorso = Cloth.nullCloth;
     private Cloth nudeLegs = Cloth.nullCloth;
-
     private Cloth cap = Cloth.nullCloth;
     private Cloth hair = Cloth.nullCloth;
     private Cloth shirt = Cloth.nullCloth;
     private Cloth gloves = Cloth.nullCloth;
     private Cloth pants = Cloth.nullCloth;
     private Cloth boots = Cloth.nullCloth;
-
     private Cloth weapon = Cloth.nullCloth;
     private Weapon firstWeapon;
     private Weapon secondWeapon;
@@ -76,16 +74,13 @@ public class MyPlayer extends Player {
     private ArrayList<InteractionSet> actionSets = new ArrayList<>();
     private int activeActionSet;
     private TextController textControl;
-
     private Point centralPoint, deltaPoint;
-
     private MyGUI gui;
-
-    //---------<('.'<) TYMCZASOWE!-------------//
-    private float jumpDelta = 22.6f;
     //private SpriteSheet test, testBody;    //NIE KASOWAĆ! <('o'<)
     //float testIndex = 0;
     //---------------------------------------//
+    //---------<('.'<) TYMCZASOWE!-------------//
+    private float jumpDelta = 22.6f;
 
     public MyPlayer(boolean first, String name) {
         super(name);
@@ -247,8 +242,6 @@ public class MyPlayer extends Player {
         initialize(name, x, y);
     }
 
-    ClothedAppearance ca;
-
     @Override
     public void initialize(int width, int height, Place place) {
         this.place = place;
@@ -279,8 +272,8 @@ public class MyPlayer extends Player {
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
         initializeAttacks();
         stats = new PlayerStats(this);
-        stats.setMaxHealth(1000);
-        stats.setHealth(1000);
+//        stats.setMaxHealth(1000);
+//        stats.setHealth(1000);
         textControl = new TextController(place);
         addGui(textControl);
         gui = new MyGUI("Player " + name + "'s GUI", place);

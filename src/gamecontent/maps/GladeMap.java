@@ -61,11 +61,11 @@ public class GladeMap extends Map {
 
     @Override
     public void populate() {
-        //addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
-//        addObject(new BrainlessShen(356, 768, place, mobID++));
-//        addObject(new BrainlessShen(356, 860, place, mobID++));
-//        addObject(new Blazag(768, 2048, place, mobID++));
-//        addObject(new Blazag(1200, 1024, place, mobID++));
+//      addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
+//      addObject(new BrainlessShen(356, 768, place, mobID++));
+//      addObject(new BrainlessShen(356, 860, place, mobID++));
+//      addObject(new Blazag(768, 2048, place, mobID++));
+//      addObject(new Blazag(1200, 1024, place, mobID++));
         addObject(new Blazag(1600, 2494, place, mobID++));
 //		addObject(new Tongub(1256, 768, place, mobID++))ss;
 //		addObject(new Tongub(1256, 820, place, mobID++));

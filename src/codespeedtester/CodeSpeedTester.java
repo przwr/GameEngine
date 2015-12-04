@@ -5,8 +5,11 @@
  */
 package codespeedtester;
 
+import collision.Figure;
+import collision.OpticProperties;
+import collision.Rectangle;
+import collision.RoundRectangle;
 import engine.utilities.Methods;
-import net.jodk.lang.FastMath;
 
 /**
  * @author przemek
@@ -18,16 +21,25 @@ public class CodeSpeedTester {
     // przygotuj zmienne potrzebne do testowania kodu
     private static final double angle = 70;
     private static final double rad = 180;
+    static RoundRectangle rectangle = RoundRectangle.create(20, 20, 24, 24, OpticProperties.NO_SHADOW, null);
+    static Rectangle rectangle2 = Rectangle.create(20, 20, 24, 24, OpticProperties.NO_SHADOW, null);
+    static Figure f1 = rectangle;
+    static Figure f2 = rectangle2;
     private static double zeroTime;
 
     private static void firstCodeToTest() {
-
-        double result = FastMath.sin(FastMath.toRadians(angle)) * rad;
+        if (f1 instanceof RoundRectangle) {
+        }
+        if (f2 instanceof RoundRectangle) {
+        }
+//        double result = FastMath.sin(FastMath.toRadians(angle)) * rad;
     }
 
     private static void secondCodeToTest() {
-        double x = 100;
-        double x2 = 100;
+        if (f1.isRoundRectangle()) {
+        }
+        if (f2.isRoundRectangle()) {
+        }
 //        System.out.println(Math.signum(x-x2));
 
     }
@@ -36,7 +48,6 @@ public class CodeSpeedTester {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
         setZero();
         testFirst();
         testSecond();

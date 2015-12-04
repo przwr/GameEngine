@@ -7,12 +7,12 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import net.jodk.lang.FastMath;
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.Color;
 
 import java.awt.geom.Line2D;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
-import org.newdawn.slick.Color;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -391,7 +391,7 @@ public class Methods {
         return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) <= 0;
     }
 
-    public static Point getXIntersection(double a, double b, int xStart, int yStart, int xEnd, int yEnd, RoundRectangle other) {
+    public static Point getXIntersection(double a, double b, int xStart, int yStart, int xEnd, int yEnd, Figure other) {
         if (other.isTriangular()) {
             if (other.isLeftBottomRound()) {
                 return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other.getYEnd());
@@ -415,7 +415,7 @@ public class Methods {
         }
     }
 
-    public static Point getXIntersectionFromTop(double a, double b, int xStart, int yStart, int xEnd, int yEnd, RoundRectangle other) {
+    public static Point getXIntersectionFromTop(double a, double b, int xStart, int yStart, int xEnd, int yEnd, Figure other) {
         if (other.isTriangular()) {
             if (other.isLeftBottomRound()) {
                 return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other.getYEnd());
