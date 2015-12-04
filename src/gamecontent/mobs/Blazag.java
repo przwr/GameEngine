@@ -25,9 +25,9 @@ import game.place.Place;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static game.logic.navmeshpathfinding.PathData.OBSTACLE_BETWEEN;
@@ -57,7 +57,6 @@ public class Blazag extends Mob {
     private SpeedChanger jumper;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private Order order = new Order();
-    private ArrayList<Mob> toRemove = new ArrayList<>();
 
     {
         idle = new ActionState() {
@@ -349,6 +348,56 @@ public class Blazag extends Mob {
         setUp();
     }
 
+    @Override
+    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+        closeEnemies.clear();
+        closeFriends.clear();
+        GameObject object;
+        for (int i = 0; i < getPlace().playersCount; i++) {
+            object = players[i];
+            if (object.getMap() == map && (isHeard(object) || isSeen(object))) {
+                closeEnemies.add(object);
+            }
+        }
+        for (Mob mob : mobs) {
+            if (mob.getClass().getName() == this.getClass().getName()) {
+                if (this != mob && mob.getMap() == map && isInRange(mob)) {
+                    if (((Blazag) mob).awake) {
+                        closeFriends.add(mob);
+                    }
+                }
+            } else if (!isNeutral(mob) && mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
+                closeEnemies.add(mob);
+            }
+        }
+        updateAlpha();
+    }
+
+    @Override
+    protected synchronized void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
+        closeEnemies.clear();
+        closeFriends.clear();
+        GameObject object;
+        for (int i = 0; i < getPlace().playersCount; i++) {
+            object = players[i];
+            if (object.getMap() == map && (isHeardWhileSleep(object))) {
+                closeEnemies.add(object);
+            }
+        }
+        for (Mob mob : mobs) {
+            if (mob.getClass().getName() == this.getClass().getName()) {
+                if (this != mob && mob.getMap() == map && isInRange(mob)) {
+                    if (((Blazag) mob).awake) {
+                        closeFriends.add(mob);
+                    }
+                }
+            } else if (!isNeutral(mob) && mob.getMap() == map && (isHeardWhileSleep(mob))) {
+                closeEnemies.add(mob);
+            }
+        }
+        updateAlpha();
+    }
+
     private void loneAttack(int distance) {
         if (target != null && jumpDelay.isOver() && jumper.isOver()) {
             if (attackCout > maxAttackCount) {
@@ -530,13 +579,6 @@ public class Blazag extends Mob {
         boolean agresor = false;
         target = null;
         Set<GameObject> targets = new HashSet<>();
-        toRemove.clear();
-        for (Mob mob : closeFriends) {
-            if (!((Blazag) mob).awake) {
-                toRemove.add(mob);
-            }
-        }
-        closeFriends.removeAll(toRemove);
         for (Mob mob : closeFriends) {
             targets.addAll((mob.getCloseEnemies()));
             xCenter += mob.getX();
