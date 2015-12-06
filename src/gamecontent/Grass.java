@@ -224,6 +224,4 @@ public class Grass extends GameObject {
     public int getYSpriteEnd() {
         return getY() + yRadius;
     }
-
-
 }

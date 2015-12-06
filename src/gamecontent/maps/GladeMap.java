@@ -10,6 +10,7 @@ import game.place.Place;
 import game.place.map.*;
 import gamecontent.GrassClump;
 import gamecontent.SpawnPoint;
+import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
@@ -43,8 +44,8 @@ public class GladeMap extends Map {
         test.placePuzzle(-1, 0, this);
 //        test = new PuzzleObject("veryHighRound", place);
 //        test.placePuzzle(5, 5, this);
-        test = new PuzzleObject("domek", place);
-        test.placePuzzle(7, 18, this);
+//        test = new PuzzleObject("domek", place);
+//        test.placePuzzle(7, 18, this);
 
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
@@ -80,7 +81,7 @@ public class GladeMap extends Map {
         int grassWidth = (bladeWidth - 2) * xBladesCount;
 
 
-        int xCount = 2;         //TODO  TUTAJ ZMIENIASZ bok kwadratu jako wielokrotność Tile'a
+        int xCount = 2;
         int yCount = xCount * 4;
         int xSpace = xCount * grassWidth;
         int ySpace = yCount * 8;
@@ -89,16 +90,17 @@ public class GladeMap extends Map {
         for (int x = xStart; x < xStart + 2048; x += xSpace) {
             for (int y = yStart; y < yStart + 2048; y += ySpace) {
                 addObject(GrassClump.createRectangle(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight));
-//                addObject(new GrassPatcher(x + xSpace - 2, y, 6, ySpace));
             }
         }
 
 
-//        addObject(new Grass(21, 700, 7, 2, 8, 32));
+        addObject(new Tree(192, 800, 24, 150));
+        addObject(new Tree(620, 920, 24, 150));
+        addObject(new Tree(400, 1024, 32, 200));
+        addObject(new Tree(140, 1200, 32, 200));
         addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
         addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
 //        addObject(new GrassClump(32, 768, 2, 8, 5, 2, 8, 32));
-//        addObject(new GrassPatcher(30, 768, 4, 128));
 
 
         addObject(new Shen(512, 800, place, mobID++));
@@ -112,13 +114,11 @@ public class GladeMap extends Map {
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));
 //        addObject(new Shen(648, 1400, place, mobID++));
-//        addObject(new Tree(384, 960, 54, 27, 6, 1024, " ", place, true, mobID++));
 //        addObject(new MyNPC(384, 590, place, mobID++));
 //        for (int i = 0; i < 20; i += 2) {
 //            addObject(new Shen(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
 //            addObject(new Blazag(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
 //            addObject(new Tongub(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
-//            addObject(new Tree(192 + 160 * ((i + 1) % 50) + ((int) (FastMath.random() * 120)), 2112 + 160 * ((i + 1) / 50) + ((int) (FastMath.random() *
 //                    150)), 54, 27, 1.5, 1024, " ", place, true, mobID++));
 //        }
 //        int space = 64;

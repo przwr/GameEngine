@@ -70,6 +70,7 @@ public class SpawnPoint extends GameObject {
                         Mob m = mob.newInstance();
                         m.initialize(getX(), getY(), map.place, map.getNextMobID());
                         map.addObject(m);
+                        System.out.println("Adding " + m.getName());
                     } catch (InstantiationException | IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -85,8 +86,8 @@ public class SpawnPoint extends GameObject {
             map = this.map.place.players[player].getMap();
             if (map == this.map) {
                 cam = (((Player) this.map.place.players[player]).getCamera());
-                if ((cam.getYStart() - height - Place.tileSize + floatHeight >= y || cam.getYEnd() + height + Place.tileSize <= y)
-                        && (cam.getXStart() - width - Place.tileSize >= x || cam.getXEnd() + width + Place.tileSize <= x)) {
+                if ((cam.getYStart() - height - Place.tileSize + floatHeight < y && cam.getYEnd() + height + Place.tileSize > y)
+                        && (cam.getXStart() - width - Place.tileSize < x && cam.getXEnd() + width + Place.tileSize > x)) {
                     return false;
                 }
             }
