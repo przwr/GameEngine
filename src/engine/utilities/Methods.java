@@ -19,6 +19,7 @@ import java.util.List;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
  * @author Wojtek
  */
@@ -27,6 +28,7 @@ public class Methods {
     private static final Point point = new Point(0, 0);
     public static double SQRT_ROOT_OF_2 = Math.sqrt(2);
     public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / Math.sqrt(2);
+    private static short[] fibonacci = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610};
     private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, temp, xDDelta, yDDelta;
     private static int xIDelta, yIDelta;
 
@@ -37,17 +39,25 @@ public class Methods {
     public static double yRadius(double angle, double rad) {
         return FastMath.sin(FastMath.toRadians(angle)) * rad;
     }
-    
+
     public static double xRadius8Directions(int angle, double rad) {
         switch (angle) {
-            case 0: return rad;
-            case 1: return rad * ONE_BY_SQRT_ROOT_OF_2;
-            case 2: return 0;
-            case 3: return -rad * ONE_BY_SQRT_ROOT_OF_2;
-            case 4: return -rad;
-            case 5: return -rad * ONE_BY_SQRT_ROOT_OF_2;
-            case 6: return 0;
-            case 7: return rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 0:
+                return rad;
+            case 1:
+                return rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 2:
+                return 0;
+            case 3:
+                return -rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 4:
+                return -rad;
+            case 5:
+                return -rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 6:
+                return 0;
+            case 7:
+                return rad * ONE_BY_SQRT_ROOT_OF_2;
             default:
                 return 0;
         }
@@ -55,14 +65,22 @@ public class Methods {
 
     public static double yRadius8Directions(int angle, double rad) {
         switch (angle) {
-            case 0: return 0;
-            case 1: return rad * ONE_BY_SQRT_ROOT_OF_2;
-            case 2: return rad;
-            case 3: return rad * ONE_BY_SQRT_ROOT_OF_2;
-            case 4: return 0;
-            case 5: return -rad * ONE_BY_SQRT_ROOT_OF_2;
-            case 6: return -rad;
-            case 7: return -rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 0:
+                return 0;
+            case 1:
+                return rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 2:
+                return rad;
+            case 3:
+                return rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 4:
+                return 0;
+            case 5:
+                return -rad * ONE_BY_SQRT_ROOT_OF_2;
+            case 6:
+                return -rad;
+            case 7:
+                return -rad * ONE_BY_SQRT_ROOT_OF_2;
             default:
                 return 0;
         }
@@ -114,7 +132,8 @@ public class Methods {
         return det >= 0 ? det : det + 360;
     }
 
-    public static double pointAngleClockwise(double xSt, double ySt, double xEn, double yEn) {     //0 <=> PRAWO; 90 <=> DÓŁ; 180 <=> LEWO; 270 <=> GÓRA; czy to dobrze??
+    public static double pointAngleClockwise(double xSt, double ySt, double xEn, double yEn) {     //0 <=> PRAWO; 90 <=> DÓŁ; 180 <=> LEWO; 270 <=> GÓRA; czy
+        // to dobrze??
         xDDelta = xEn - xSt;
         yDDelta = yEn - ySt;
         det = FastMath.atan2(yDDelta, xDDelta) * 180 / FastMath.PI;
@@ -159,7 +178,7 @@ public class Methods {
     }
 
     public static Point getTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
-            float y4) {
+                                                float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
@@ -181,7 +200,7 @@ public class Methods {
     }
 
     private static Point getXTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
-            float y4) {
+                                                  float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
@@ -394,9 +413,11 @@ public class Methods {
     public static Point getXIntersection(double a, double b, int xStart, int yStart, int xEnd, int yEnd, Figure other) {
         if (other.isTriangular()) {
             if (other.isLeftBottomRound()) {
-                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other.getYEnd());
+                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other
+                        .getYEnd());
             } else {
-                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getXEnd(), other.getYEnd() - Place.tileSize, other.getX(), other.getYEnd());
+                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getXEnd(), other.getYEnd() - Place.tileSize, other.getX(), other
+                        .getYEnd());
             }
         } else {
             if (other.isConcave()) {
@@ -418,9 +439,11 @@ public class Methods {
     public static Point getXIntersectionFromTop(double a, double b, int xStart, int yStart, int xEnd, int yEnd, Figure other) {
         if (other.isTriangular()) {
             if (other.isLeftBottomRound()) {
-                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other.getYEnd());
+                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getX(), other.getYEnd() - Place.tileSize, other.getXEnd(), other
+                        .getYEnd());
             } else {
-                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getXEnd(), other.getYEnd() - Place.tileSize, other.getX(), other.getYEnd());
+                return Methods.getXTwoLinesIntersection(xStart, yStart, xEnd, yEnd, other.getXEnd(), other.getYEnd() - Place.tileSize, other.getX(), other
+                        .getYEnd());
             }
         } else {
             if (other.isConcave()) {
@@ -473,6 +496,10 @@ public class Methods {
         }
     }
 
+    public static int fibonacci(int i) {
+        return fibonacci[i];
+    }
+
     public static int sizeInBytes(Object obj) throws java.io.IOException {
         ByteArrayOutputStream byteObject = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteObject);
@@ -486,7 +513,7 @@ public class Methods {
     public static Color createHSVColor(float hue, float saturation, float value) {
         return changeColorWithHSV(new Color(0), hue, saturation, value);
     }
-    
+
     public static Color changeColorWithHSV(Color color, float hue, float saturation, float value) {
         if (value == 0) {
             color.r = 0;

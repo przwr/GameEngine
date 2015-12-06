@@ -155,6 +155,18 @@ public class Drawer {
         glEnable(GL_TEXTURE_2D);
     }
 
+
+    public static void drawQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_QUADS);
+        glVertex2f(xA, yA);
+        glVertex2f(xB, yB);
+        glVertex2f(xC, yC);
+        glVertex2f(xD, yD);
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
+    }
+
     public static void drawCircle(int xStart, int yStart, int radius, int precision) {
         drawEllipse(xStart, yStart, radius, radius, precision);
     }

@@ -96,17 +96,19 @@ public class Interactive {
             if (collisionActivates()) {
                 if (collidesWithEnvironment) {
                     collision.setEnvironmentCollision(environmentCollision);
-                    Area area = owner.getMap().getArea(owner.getArea());
-                    for (Block block : area.getNearBlocks()) {
-                        if (block.isSolid() && block.isCollide(0, 0, environmentCollision)) {
-                            owner.getHurt(3, 1, block);
-                            return;
+                    if (owner != null) {
+                        Area area = owner.getMap().getArea(owner.getArea());
+                        for (Block block : area.getNearBlocks()) {
+                            if (block.isSolid() && block.isCollide(0, 0, environmentCollision)) {
+                                owner.getHurt(3, 1, block);
+                                return;
+                            }
                         }
-                    }
-                    for (GameObject object : area.getNearSolidObjects()) {
-                        if (environmentCollision.checkCollision(0, 0, object)) {
-                            owner.getHurt(3, 1, object);
-                            return;
+                        for (GameObject object : area.getNearSolidObjects()) {
+                            if (environmentCollision.checkCollision(0, 0, object)) {
+                                owner.getHurt(3, 1, object);
+                                return;
+                            }
                         }
                     }
                 }
