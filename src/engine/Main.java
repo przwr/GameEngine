@@ -276,7 +276,7 @@ public class Main {
         resolveGamma();
         lastFrame = Display.isActive();
         Display.update();
-        Display.sync(60);
+        Display.sync(Settings.framesLimit);
     }
 
     private static void renderMessageIfNeeded() {

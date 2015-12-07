@@ -137,7 +137,9 @@ public class RoundRectangle extends Figure {
     private RoundRectangle(int xStart, int yStart, int width, int height, int OpticPropertiesType, int shadowHeight, GameObject owner) {
         super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
         this.width = width;
+        this.widthHalf = width / 2;
         this.height = height;
+        this.heightHalf = height / 2;
         initializeCorners();
         updatePoints();
         centralize();
@@ -290,14 +292,14 @@ public class RoundRectangle extends Figure {
 
     @Override
     public void calculateShadows(Light light) {
-        if (this != light.getOwnerCollision()) {
+        if (this == light.getOwnerCollision()) {
+            addShadowType(BRIGHT);
+        } else {
             if (isGiveShadow()) {
                 ShadowRenderer.calculateShadowAndWalls(light, this);
                 ShadowRenderer.calculateAndDrawSelfShadow(light, this);
             }
-            ShadowRenderer.calculateShadowShade(this, light);
-        } else {
-            addShadowType(BRIGHT);
+            ShadowRenderer.calculateShadowShade(light, this);
         }
     }
 

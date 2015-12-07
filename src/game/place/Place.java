@@ -31,7 +31,6 @@ import java.util.Set;
 
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
-import sprites.ClothedAppearance;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -41,7 +40,7 @@ public abstract class Place extends ScreenPlace {
 
     protected static final Set<Map> tempMaps = new HashSet<>();
     private static final renderType[] renders = new renderType[2];
-    public static int tileSize, tileSquared, tileHalf, xAreaInPixels, yAreaInPixels;
+    public static int tileSize, tileSquared, tileHalf, tileDoubleSize, xAreaInPixels, yAreaInPixels;
     public static Camera currentCamera;
     protected static DayCycle dayCycle;
     public final ArrayList<Map> maps = new ArrayList<>();
@@ -150,6 +149,7 @@ public abstract class Place extends ScreenPlace {
     protected Place(Game game, int tileSize) {
         super(game);
         Place.tileSize = tileSize;
+        Place.tileDoubleSize = tileSize + tileSize;
         Place.tileSquared = tileSize * tileSize;
         Place.tileHalf = tileSize / 2;
         sounds = new SoundBase();

@@ -33,48 +33,48 @@ public class LineInteractiveCollision extends InteractiveCollision {
         int y = owner.getY();
         switch (owner.getDirection8Way()) {
             case RIGHT:
-                x += (owner.getCollision().getWidth() / 2 + shift);
+                x += (owner.getCollision().getWidthHalf() + shift);
                 position.set(x, y);
                 x += length;
                 break;
             case UP:
-                y -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidth() / 2));
+                y -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidthHalf()));
                 position.set(x, y);
                 y -= Methods.ONE_BY_SQRT_ROOT_OF_2 * length;
                 break;
             case LEFT:
-                x -= (owner.getCollision().getWidth() / 2 + shift);
+                x -= (owner.getCollision().getWidthHalf() + shift);
                 position.set(x, y);
                 x -= length;
                 break;
             case DOWN:
-                y += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidth() / 2));
+                y += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidthHalf()));
                 position.set(x, y);
                 y += Methods.ONE_BY_SQRT_ROOT_OF_2 * length;
                 break;
             case UP_RIGHT:
-                x += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidth() / 2));
+                x += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidthHalf()));
                 y -= (owner.getCollision().getWidth() / 4 + shift / 2);
                 position.set(x, y);
                 x += Methods.ONE_BY_SQRT_ROOT_OF_2 * length;
                 y -= length / 2;
                 break;
             case UP_LEFT:
-                x -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidth() / 2));
+                x -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidthHalf()));
                 y -= (owner.getCollision().getWidth() / 4 + shift / 2);
                 position.set(x, y);
                 x -= Methods.ONE_BY_SQRT_ROOT_OF_2 * length;
                 y -= length / 2;
                 break;
             case DOWN_LEFT:
-                x -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidth() / 2));
+                x -= (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidthHalf()));
                 y += (owner.getCollision().getWidth() / 4 + shift / 2);
                 position.set(x, y);
                 x -= Methods.ONE_BY_SQRT_ROOT_OF_2 * length;
                 y += length / 2;
                 break;
             case DOWN_RIGHT:
-                x += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidth() / 2));
+                x += (Methods.ONE_BY_SQRT_ROOT_OF_2 * (shift + owner.getCollision().getWidthHalf()));
                 y += (owner.getCollision().getWidth() / 4 + shift / 2);
                 position.set(x, y);
                 x += Methods.ONE_BY_SQRT_ROOT_OF_2 * length;

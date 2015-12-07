@@ -56,8 +56,8 @@ public class PathFinder {
         }
         startPoint = new Point(xStart, yStart);
         destinationPoint = new Point(xDestination, yDestination);
-        widthHalf = collision.getWidth() / 2;
-        heightHalf = collision.getHeight() / 2;
+        widthHalf = collision.getWidthHalf();
+        heightHalf = collision.getHeightHalf();
         widthFraction = (int) (widthHalf * 0.7);
         heightFraction = (int) (heightHalf * 0.7);
         pathBase = mesh.getPathBase(destinationPoint, startPoint, pathBase);

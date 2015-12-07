@@ -76,8 +76,8 @@ public class Grass extends GameObject {
         for (int i = 0; i < map.place.getPlayersCount(); i++) {
             GameObject player = map.place.players[i];
             if (player.getFloatHeight() < bladeHeight) {
-                if ((xCurrentDistance = Math.abs(getX() - player.getX())) < xRadius + player.getCollision().getWidth() / 2) {
-                    if ((yCurrentDistance = Math.abs(getY() - player.getY())) < yRadius + player.getCollision().getHeight() / 2) {
+                if ((xCurrentDistance = Math.abs(getX() - player.getX())) < xRadius + player.getCollision().getWidthHalf()) {
+                    if ((yCurrentDistance = Math.abs(getY() - player.getY())) < yRadius + player.getCollision().getHeightHalf()) {
                         if (xCurrentDistance + yCurrentDistance < distance) {
                             distance = xCurrentDistance + yCurrentDistance;
                             object.set(player.getX(), player.getY());
@@ -88,8 +88,8 @@ public class Grass extends GameObject {
         }
         for (Mob mob : area.getNearSolidMobs()) {
             if (mob.getFloatHeight() < bladeHeight) {
-                if ((xCurrentDistance = Math.abs(getX() - mob.getX())) < xRadius + mob.getCollision().getWidth() / 2) {
-                    if ((yCurrentDistance = Math.abs(getY() - mob.getY())) < yRadius + mob.getCollision().getHeight() / 2) {
+                if ((xCurrentDistance = Math.abs(getX() - mob.getX())) < xRadius + mob.getCollision().getWidthHalf()) {
+                    if ((yCurrentDistance = Math.abs(getY() - mob.getY())) < yRadius + mob.getCollision().getHeightHalf()) {
                         if (xCurrentDistance + yCurrentDistance < distance) {
                             distance = xCurrentDistance + yCurrentDistance;
                             object.set(mob.getX(), mob.getY());

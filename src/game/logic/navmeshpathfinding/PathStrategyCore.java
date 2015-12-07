@@ -126,8 +126,8 @@ class PathStrategyCore {
     }
 
     private static void setTestingPosition(Rectangle testing, Point desired) {
-        testing.setXStart(desired.getX() - (testing.getWidth() / 2));
-        testing.setYStart(desired.getY() - (testing.getHeight() / 2));
+        testing.setXStart(desired.getX() - (testing.getWidthHalf()));
+        testing.setYStart(desired.getY() - (testing.getHeightHalf()));
         testing.updateTilePoints();
     }
 

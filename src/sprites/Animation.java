@@ -18,9 +18,9 @@ public class Animation implements Appearance {
 
     private final SpriteSheet spriteSheet;
     private final Delay delay;
+    private final int finalEnd;
     private FrameBufferedSpriteSheet fboSpriteSheet;
     private int start, end, currentFrame, fps;
-    private final int finalEnd;
     private int framesPerDirection;
     private boolean animate = true, stopAtEnd = false, reversed = false, fluctuate = false, fbo;
 
@@ -47,7 +47,7 @@ public class Animation implements Appearance {
 
     public static Animation createFBOAnimation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
         Animation tmp = new Animation(sprite, delayTime, framesPerDirection);
-        tmp.fbo = true;
+//        tmp.fbo = true;
         //tmp.fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
         //        framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
         return tmp;

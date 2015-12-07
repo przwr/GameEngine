@@ -34,7 +34,7 @@ public abstract class Figure implements Comparable<Figure> {
     final BlueArray<Point> points;
     private final OpticProperties opticProperties;
     private final DoublePoint slideSpeed;
-    protected int xStart, yStart, width, height, xCenter, yCenter;
+    protected int xStart, yStart, width, height, xCenter, yCenter, heightHalf, widthHalf;
     private GameObject owner;
     private boolean mobile = false, small = false, collide = true, hitable = true;
 
@@ -71,8 +71,10 @@ public abstract class Figure implements Comparable<Figure> {
     public static void setScope(int x, int y, int range) {
         scope.setXStart(x - range);
         scope.setYStart(y - range);
-        scope.width = 2 * range;
-        scope.height = 2 * range;
+        scope.width = range + range;
+        scope.widthHalf = range;
+        scope.height = range + range;
+        scope.heightHalf = range;
         scope.updateTilePoints();
     }
 
@@ -260,13 +262,13 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public void calculateShadows(Light light) {
-        if (this != light.getOwnerCollision()) {
+        if (this == light.getOwnerCollision()) {
+            addShadowType(BRIGHT);
+        } else {
             if (opticProperties.isGiveShadow()) {
                 ShadowRenderer.calculateShadowAndWalls(light, this);
             }
-            ShadowRenderer.calculateShadowShade(this, light);
-        } else {
-            addShadowType(BRIGHT);
+            ShadowRenderer.calculateShadowShade(light, this);
         }
     }
 
@@ -412,6 +414,11 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setWidth(int width) {
         this.width = width;
+        this.widthHalf = width / 2;
+    }
+
+    public int getWidthHalf() {
+        return widthHalf;
     }
 
     public int getHeight() {
@@ -420,6 +427,11 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setHeight(int height) {
         this.height = height;
+        this.heightHalf = height / 2;
+    }
+
+    public int getHeightHalf() {
+        return heightHalf;
     }
 
     public int getActualWidth() {
@@ -476,7 +488,9 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setWidthAndHeight(int width, int height) {
         this.width = width;
+        this.widthHalf = width / 2;
         this.height = height;
+        this.heightHalf = height / 2;
     }
 
     public boolean isCollide() {

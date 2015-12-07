@@ -102,7 +102,7 @@ public class BrainlessShen extends Mob {
             //Drawer.setColor(skinColor);
             animation.updateFrame();
             Drawer.setColor(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidth() / 2), Methods.roundDouble((float) collision.getHeight() / 2), 15);
+            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision.getHeightHalf()), 15);
             Drawer.setColor(color);
             glTranslatef(0, (int) -floatHeight, 0);
             appearance.render();
