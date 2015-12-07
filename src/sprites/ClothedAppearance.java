@@ -34,8 +34,10 @@ public class ClothedAppearance implements Appearance {
 
     private final Animation upperBody, lowerBody;
 
-    private SpriteSheet[] renderList;
-    private ArrayList<byte[]> renderQueue;
+    private SpriteSheet[] upperRenderList;
+    private SpriteSheet[] lowerRenderList;
+    private ArrayList<byte[]> upperQueue;
+    private ArrayList<byte[]> lowerQueue;
 
     public ClothedAppearance(Place place, int delayTime, String characterName) {
         setClothParameters("characters/" + characterName);
@@ -52,13 +54,15 @@ public class ClothedAppearance implements Appearance {
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
             Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
             Cloth pants, Cloth boots, Cloth weapon) {
-        renderList = new SpriteSheet[]{
+        lowerRenderList = new SpriteSheet[]{
             legs.getFirstPart(),
             boots.getFirstPart(),
             legs.getLastPart(),
             boots.getLastPart(),
             pants.getFirstPart(),
-            pants.getLastPart(),
+            pants.getLastPart()
+        };
+        upperRenderList = new SpriteSheet[]{
             torso.getSecondPart(),
             gloves.getFirstPart(),
             shirt.getSecondPart(),
@@ -76,7 +80,7 @@ public class ClothedAppearance implements Appearance {
     }
 
     private void calculateDimensions() {
-        Point[] dims = SpriteSheet.getMergedDimensions(renderList);
+        Point[] dims = SpriteSheet.getMergedDimensions(upperRenderList);
         int tempx = dims[0].getX();
         int tempy = dims[0].getY();
         width = Methods.roundUpToBinaryNumber(dims[0].getX());
@@ -91,22 +95,25 @@ public class ClothedAppearance implements Appearance {
             String line;
             String[] data;
             char[] chars;
-            byte[] to;
+            byte[] upper;
+            byte[] lower;
             char offset = 65;
-            renderQueue = new ArrayList<>();
+            upperQueue = new ArrayList<>();
+            lowerQueue = new ArrayList<>();
             while ((line = input.readLine()) != null) {
                 data = line.split(":");
-                chars = data[1].toCharArray();
-                to = new byte[line.length() - 1];
-                int j;
-                for (j = 0; j < chars.length; j++) {
-                    to[j] = (byte) (chars[j] - offset);
-                }
                 chars = data[0].toCharArray();
-                for (int k = 0; k < chars.length; k++) {
-                    to[k + j] = (byte) (chars[k] - offset + j);
+                upper = new byte[chars.length];
+                for (int j = 0; j < chars.length; j++) {
+                    upper[j] = (byte) (chars[j] - offset);
                 }
-                renderQueue.add(to);
+                chars = data[1].toCharArray();
+                lower = new byte[chars.length];
+                for (int k = 0; k < chars.length; k++) {
+                    lower[k] = (byte) (chars[k] - offset);
+                }
+                upperQueue.add(upper);
+                lowerQueue.add(lower);
             }
             input.close();
         } catch (IOException e) {
@@ -226,10 +233,16 @@ public class ClothedAppearance implements Appearance {
 
     private void renderClothedUpperBody() {
         frame = upperBody.getCurrentFrameIndex();
+        for (byte i : upperQueue.get(frame)) {
+            upperRenderList[i].renderPieceAndReturn(frame);
+        }
     }
 
     private void renderClothedLowerBody() {
         frame = lowerBody.getCurrentFrameIndex();
+        for (byte i : lowerQueue.get(frame)) {
+            lowerRenderList[i].renderPieceAndReturn(frame);
+        }
     }
 
     public void setFPS(int fps) {
@@ -250,11 +263,6 @@ public class ClothedAppearance implements Appearance {
     @Override
     public void render() {
         Drawer.translate(-xStart + xDelta, -yStart + yDelta);
-        frame = upperBody.getCurrentFrameIndex();
-        for (byte i : renderQueue.get(frame)) {
-            renderList[i].renderPieceAndReturn(frame);
-        }
-
         renderClothedLowerBody();
         renderClothedUpperBody();
     }
@@ -267,7 +275,7 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public int getCurrentFrameIndex() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
     }
 
     @Override
