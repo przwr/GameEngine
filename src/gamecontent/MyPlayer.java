@@ -289,7 +289,6 @@ public class MyPlayer extends Player {
         pants = loadCloth("dress", Cloth.CLOTH_TYPE);
         gloves = loadCloth("gloves", Cloth.CLOTH_TYPE);
         weapon = loadCloth("sword", Cloth.WEAPON_TYPE);
-        System.out.println(weapon.isNull());
 
         head = loadCloth("head", Cloth.BODY_TYPE);
         hair = loadCloth("hair", Cloth.BODY_TYPE);
@@ -297,7 +296,7 @@ public class MyPlayer extends Player {
         legs = loadCloth("leg", Cloth.BODY_TYPE);
         nudeTorso = loadCloth("nudetorso", Cloth.BODY_TYPE);
         nudeLegs = loadCloth("nudeleg", Cloth.BODY_TYPE);
-        ca.setClothes(head, torso, legs, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon);
+        ca.setClothes(head, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon);
     }
 
     public void randomizeClothes() {
@@ -433,13 +432,10 @@ public class MyPlayer extends Player {
 
     @Override
     public void renderClothedUpperBody(int frame) {
-        Cloth.renderTorso(shirt.isWearing() ? nudeTorso : torso, shirt, gloves, weapon, frame / framesPerDir, frame);
-        Cloth.renderHead(head, hair, cap, frame / framesPerDir, frame);
     }
 
     @Override
     public void renderClothedLowerBody(int frame) {
-        Cloth.renderLegs(pants.isWearing() ? nudeLegs : legs, boots, pants, frame / framesPerDir, frame);
     }
 
     @Override

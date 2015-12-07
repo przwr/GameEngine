@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
@@ -33,23 +34,12 @@ public class ClothedAppearance implements Appearance {
 
     private final Animation upperBody, lowerBody;
 
-    private Cloth head = Cloth.nullCloth;
-    private Cloth torso = Cloth.nullCloth;
-    private Cloth legs = Cloth.nullCloth;
-    private Cloth nudeTorso = Cloth.nullCloth;
-    private Cloth nudeLegs = Cloth.nullCloth;
-
-    private Cloth cap = Cloth.nullCloth;
-    private Cloth hair = Cloth.nullCloth;
-    private Cloth shirt = Cloth.nullCloth;
-    private Cloth gloves = Cloth.nullCloth;
-    private Cloth pants = Cloth.nullCloth;
-    private Cloth boots = Cloth.nullCloth;
-
-    private Cloth weapon = Cloth.nullCloth;
+    private SpriteSheet[] renderList;
+    private ArrayList<byte[]> renderQueue;
 
     public ClothedAppearance(Place place, int delayTime, String characterName) {
         setClothParameters("characters/" + characterName);
+        setRenderQueue("characters/" + characterName);
         Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
         xStart = renderPoints[0].getX();
         yStart = renderPoints[0].getY();
@@ -60,34 +50,68 @@ public class ClothedAppearance implements Appearance {
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
-            Cloth nudeTorso, Cloth nudeLegs, Cloth cap,
-            Cloth hair, Cloth shirt, Cloth gloves,
+            Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
             Cloth pants, Cloth boots, Cloth weapon) {
-        this.head = head;
-        this.torso = torso;
-        this.legs = legs;
-        this.nudeTorso = nudeTorso;
-        this.nudeLegs = nudeLegs;
-        this.cap = cap;
-        this.hair = hair;
-        this.shirt = shirt;
-        this.gloves = gloves;
-        this.pants = pants;
-        this.boots = boots;
-        this.weapon = weapon;
+        renderList = new SpriteSheet[]{
+            legs.getFirstPart(),
+            boots.getFirstPart(),
+            legs.getLastPart(),
+            boots.getLastPart(),
+            pants.getFirstPart(),
+            pants.getLastPart(),
+            torso.getSecondPart(),
+            gloves.getFirstPart(),
+            shirt.getSecondPart(),
+            torso.getFirstPart(),
+            shirt.getFirstPart(),
+            head.getFirstPart(),
+            hair.getFirstPart(),
+            cap.getFirstPart(),
+            torso.getLastPart(),
+            gloves.getLastPart(),
+            shirt.getLastPart(),
+            weapon.getFirstPart()
+        };
         calculateDimensions();
     }
 
     private void calculateDimensions() {
-        Point[] dims = Cloth.getMergedDimensions(
-                head, torso, legs, hair,
-                cap, shirt, gloves, pants, boots, weapon);
+        Point[] dims = SpriteSheet.getMergedDimensions(renderList);
         int tempx = dims[0].getX();
         int tempy = dims[0].getY();
         width = Methods.roundUpToBinaryNumber(dims[0].getX());
         height = Methods.roundUpToBinaryNumber(dims[0].getY());
         xOffset = xStart - (dims[1].getX() - (dims[0].getX() - tempx) / 2);
         yOffset = yStart - (dims[1].getY() - (dims[0].getY() - tempy) / 2);
+    }
+
+    private void setRenderQueue(String folder) {
+        try (BufferedReader input = new BufferedReader(
+                new FileReader(SpriteBase.fullFolderPath(folder) + "parts.txt"))) {
+            String line;
+            String[] data;
+            char[] chars;
+            byte[] to;
+            char offset = 65;
+            renderQueue = new ArrayList<>();
+            while ((line = input.readLine()) != null) {
+                data = line.split(":");
+                chars = data[1].toCharArray();
+                to = new byte[line.length() - 1];
+                int j;
+                for (j = 0; j < chars.length; j++) {
+                    to[j] = (byte) (chars[j] - offset);
+                }
+                chars = data[0].toCharArray();
+                for (int k = 0; k < chars.length; k++) {
+                    to[k + j] = (byte) (chars[k] - offset + j);
+                }
+                renderQueue.add(to);
+            }
+            input.close();
+        } catch (IOException e) {
+            ErrorHandler.error("File " + folder + File.pathSeparator + "parts.txt not found!\n" + e.getMessage());
+        }
     }
 
     private void setClothParameters(String folder) {
@@ -202,13 +226,10 @@ public class ClothedAppearance implements Appearance {
 
     private void renderClothedUpperBody() {
         frame = upperBody.getCurrentFrameIndex();
-        Cloth.renderTorso(shirt.isWearing() ? nudeTorso : torso, shirt, gloves, weapon, frame / framesPerDirection, frame);
-        Cloth.renderHead(head, hair, cap, frame / framesPerDirection, frame);
     }
 
     private void renderClothedLowerBody() {
         frame = lowerBody.getCurrentFrameIndex();
-        Cloth.renderLegs(pants.isWearing() ? nudeLegs : legs, boots, pants, frame / framesPerDirection, frame);
     }
 
     public void setFPS(int fps) {
@@ -229,6 +250,11 @@ public class ClothedAppearance implements Appearance {
     @Override
     public void render() {
         Drawer.translate(-xStart + xDelta, -yStart + yDelta);
+        frame = upperBody.getCurrentFrameIndex();
+        for (byte i : renderQueue.get(frame)) {
+            renderList[i].renderPieceAndReturn(frame);
+        }
+
         renderClothedLowerBody();
         renderClothedUpperBody();
     }

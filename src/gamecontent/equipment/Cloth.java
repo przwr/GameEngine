@@ -71,6 +71,18 @@ public class Cloth {
         this.wearing = wearing;
     }
 
+    public SpriteSheet getFirstPart() {
+        return list.get(0);
+    }
+    
+    public SpriteSheet getSecondPart() {
+        return hasSecond ? list.get(1) : null;
+    }
+    
+    public SpriteSheet getLastPart() {
+        return hasLast ? list.get(list.size() - 1) : null;
+    }
+    
     public void renderSecondPart(int frame) {
         if (wearing && hasSecond) {
             list.get(1).renderPieceAndReturn(frame);
@@ -89,94 +101,8 @@ public class Cloth {
         }
     }
 
-    public static void renderHead(Cloth head, Cloth hair, Cloth cap, int direction8Way, int frame) {
-        head.renderFirstPart(frame);
-        hair.renderFirstPart(frame);
-        cap.renderFirstPart(frame);
-    }
-
     public boolean isNull() {
         return false;
-    }
-
-    public static void renderTorso(Cloth torso, Cloth shirtIII, Cloth glovesIIIIII, Cloth weapon, int direction8Way, int frame) {
-        switch (direction8Way) {
-            case 7:
-            case 0:
-            case 1:
-                torso.renderSecondPart(frame);
-                glovesIIIIII.renderFirstPart(frame);
-                shirtIII.renderSecondPart(frame);
-                torso.renderFirstPart(frame);
-                shirtIII.renderFirstPart(frame);
-                torso.renderLastPart(frame);
-                weapon.renderFirstPart(frame);
-                glovesIIIIII.renderLastPart(frame);
-                shirtIII.renderLastPart(frame);
-                break;
-            case 2:
-                torso.renderSecondPart(frame);
-                torso.renderLastPart(frame);
-                torso.renderFirstPart(frame);
-                glovesIIIIII.renderFirstPart(frame);
-                shirtIII.renderSecondPart(frame);
-                weapon.renderFirstPart(frame);
-                glovesIIIIII.renderLastPart(frame);
-                shirtIII.renderLastPart(frame);
-                shirtIII.renderFirstPart(frame);
-                break;
-            case 3:
-            case 4:
-            case 5:
-                torso.renderLastPart(frame);
-                weapon.renderFirstPart(frame);
-                glovesIIIIII.renderLastPart(frame);
-                shirtIII.renderLastPart(frame);
-                torso.renderFirstPart(frame);
-                shirtIII.renderFirstPart(frame);
-                torso.renderSecondPart(frame);
-                glovesIIIIII.renderFirstPart(frame);
-                shirtIII.renderSecondPart(frame);
-                break;
-            case 6:
-                torso.renderFirstPart(frame);
-                torso.renderSecondPart(frame);
-                torso.renderLastPart(frame);
-                shirtIII.renderFirstPart(frame);
-                glovesIIIIII.renderFirstPart(frame);
-                shirtIII.renderSecondPart(frame);
-                weapon.renderFirstPart(frame);
-                glovesIIIIII.renderLastPart(frame);
-                shirtIII.renderLastPart(frame);
-                break;
-        }
-    }
-
-    public static void renderLegs(Cloth legs, Cloth boots, Cloth pants, int direction8Way, int frame) {
-        switch (direction8Way) {
-            case 7:
-            case 0:
-            case 1:
-            case 2:
-                legs.renderFirstPart(frame);
-                boots.renderFirstPart(frame);
-                legs.renderLastPart(frame);
-                boots.renderLastPart(frame);
-                pants.renderFirstPart(frame);
-                pants.renderLastPart(frame);
-                break;
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-                legs.renderLastPart(frame);
-                boots.renderLastPart(frame);
-                legs.renderFirstPart(frame);
-                boots.renderFirstPart(frame);
-                pants.renderLastPart(frame);
-                pants.renderFirstPart(frame);
-                break;
-        }
     }
 
     static class NullCloth extends Cloth {
@@ -197,7 +123,7 @@ public class Cloth {
         public boolean isNull() {
             return true;
         }
-        
+
         @Override
         public boolean isWearing() {
             return false;
