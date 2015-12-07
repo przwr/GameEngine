@@ -48,6 +48,8 @@ public class Line extends Figure {
     private void centralize() {
         width = xVector;
         height = yVector;
+        widthHalf = xVector / 2;
+        heightHalf = yVector / 2;
         xCenter = xVector / 2;
         yCenter = yVector / 2;
     }
@@ -67,22 +69,30 @@ public class Line extends Figure {
     }
 
     private boolean rectangleCollision(int x, int y, Figure figure) {
-        List<Point> tmpPoints = figure.getPoints();
+        List<Point> tmpPts = figure.getPoints();
         int[] w = {getX(x), getY(y), getX(x) + xVector, getY(y) + yVector};
-        return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(0).getX(), tmpPoints.get(0).getY(), tmpPoints.get(1).getX(), tmpPoints.get(1).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(1).getX(), tmpPoints.get(1).getY(), tmpPoints.get(2).getX(), tmpPoints.get(2).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(2).getX(), tmpPoints.get(2).getY(), tmpPoints.get(3).getX(), tmpPoints.get(3).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(3).getX(), tmpPoints.get(3).getY(), tmpPoints.get(0).getX(), tmpPoints.get(0).getY()));
+        return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPts.get(0).getX(), tmpPts.get(0).getY(), tmpPts.get(1).getX(), tmpPts.get(1)
+                .getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPts.get(1).getX(), tmpPts.get(1).getY(), tmpPts.get(2).getX(), tmpPts.get(2)
+                .getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPts.get(2).getX(), tmpPts.get(2).getY(), tmpPts.get(3).getX(), tmpPts.get(3)
+                .getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPts.get(3).getX(), tmpPts.get(3).getY(), tmpPts.get(0).getX(), tmpPts.get(0)
+                .getY()));
     }
 
     private boolean roundRectangleCollision(int x, int y, Figure figure) {      //TO DO
         System.out.println("Simplified Version of Collision with RoundRectangle. In Line");
-        List<Point> tmpPoints = figure.getPoints();
+        List<Point> tmpPts = figure.getPoints();
         int[] w = {getX(x), getY(y), getX(x) + xVector, getY(y) + yVector};
-        return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(0).getX(), tmpPoints.get(0).getY(), tmpPoints.get(1).getX(), tmpPoints.get(1).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(1).getX(), tmpPoints.get(1).getY(), tmpPoints.get(2).getX(), tmpPoints.get(2).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(2).getX(), tmpPoints.get(2).getY(), tmpPoints.get(3).getX(), tmpPoints.get(3).getY())
-                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPoints.get(3).getX(), tmpPoints.get(3).getY(), tmpPoints.get(0).getX(), tmpPoints.get(0).getY()));
+        return (Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPts.get(0).getX(), tmpPts.get(0).getY(), tmpPts.get(1).getX(), tmpPts.get(1)
+                .getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPts.get(1).getX(), tmpPts.get(1).getY(), tmpPts.get(2).getX(), tmpPts.get(2)
+                .getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPts.get(2).getX(), tmpPts.get(2).getY(), tmpPts.get(3).getX(), tmpPts.get(3)
+                .getY())
+                || Line2D.linesIntersect(w[0], w[1], w[2], w[3], tmpPts.get(3).getX(), tmpPts.get(3).getY(), tmpPts.get(0).getX(), tmpPts.get(0)
+                .getY()));
     }
 
     private boolean circleCollision(int x, int y, Figure figure) {

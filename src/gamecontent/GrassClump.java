@@ -101,16 +101,16 @@ public class GrassClump extends GameObject {
         Area area = map.getArea(this.area);
         for (int i = 0; i < this.map.place.getPlayersCount(); i++) {
             GameObject player = map.place.players[i];
-            if (player.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - player.getX()) < xRadius + player.getCollision().getWidth() / 2
-                    && Math.abs(getY() + yRadius - player.getY()) < yRadius + player.getCollision().getHeight() / 2) {
+            if (player.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - player.getX()) < xRadius + player.getCollision().getWidthHalf()
+                    && Math.abs(getY() + yRadius - player.getY()) < yRadius + player.getCollision().getHeightHalf()) {
                 updateGrass = true;
                 break;
             }
         }
         if (!updateGrass) {
             for (Mob mob : area.getNearSolidMobs()) {
-                if (mob.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidth() / 2
-                        && Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeight() / 2) {
+                if (mob.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidthHalf()
+                        && Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeightHalf()) {
                     updateGrass = true;
                     break;
                 }
@@ -135,7 +135,7 @@ public class GrassClump extends GameObject {
     private void preRender() {
         fbo.activate();
         glPushMatrix();
-        glClearColor(0, 0.7f * Place.getDayCycle().getShade().g, 0, 0);
+        glClearColor(0, 0.7f, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
         glTranslatef(xRadius + 2, -2 * yRadius + ySpacing + Display.getHeight(), 0);
         if (curve > 0) {

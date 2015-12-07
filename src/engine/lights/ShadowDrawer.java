@@ -10,7 +10,6 @@ import engine.utilities.Point;
 import game.place.Place;
 
 import static engine.lights.Shadow.*;
-import static engine.utilities.Drawer.displayHeight;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -19,38 +18,46 @@ import static org.lwjgl.opengl.GL11.*;
 public class ShadowDrawer {
 
     private static final shadeRenderer[] shadeRenderers = new shadeRenderer[6];
-    private static final byte BLACK = 0;
+    private static final byte BLACK = 0, WHITE = 1;
     private static final Point corner = new Point();
 
     static {
-        shadeRenderers[DARK] = (Light emitter, Figure shade, Point point) -> shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade);
-        shadeRenderers[BRIGHT] = (Light emitter, Figure shade, Point point) -> shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), shade);
-        shadeRenderers[BRIGHTEN] = (Light emitter, Figure shade, Point point) -> {
+        shadeRenderers[DARK] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadow
+                (lightXCentralShifted,
+                        lightYCentralShifted, shade);
+        shadeRenderers[BRIGHT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
+                .renderShadowLit(lightXCentralShifted,
+                        lightYCentralShifted, shade);
+        shadeRenderers[BRIGHTEN] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> {
             if (!shade.isBottomRounded()) {
-                drawShadeLit(emitter, shade, point);
+                drawShadeLit(shade, point, lightXCentralShifted, lightYCentralShifted);
             } else {
-                shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), point.getX(), point.getY());
+                shade.getOwner().renderShadowLit(lightXCentralShifted, lightYCentralShifted, point.getX(), point.getY());
             }
         };
-        shadeRenderers[DARKEN] = (Light emitter, Figure shade, Point point) -> {
+        shadeRenderers[DARKEN] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> {
             if (!shade.isBottomRounded()) {
-                drawShade(emitter, shade, point);
+                drawShade(shade, point, lightXCentralShifted, lightYCentralShifted);
             } else {
-                shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), point.getX(), point.getY());
+                shade.getOwner().renderShadow(lightXCentralShifted, lightYCentralShifted, point.getX(), point.getY());
             }
         };
-        shadeRenderers[BRIGHTEN_OBJECT] = (Light emitter, Figure shade, Point point) -> shade.getOwner().renderShadowLit((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), point.getX(), point.getY());
-        shadeRenderers[DARKEN_OBJECT] = (Light emitter, Figure shade, Point point) -> shade.getOwner().renderShadow((emitter.getXCenterShift()) - (emitter.getX()), (emitter.getYCenterShift()) - (emitter.getY()) + displayHeight - emitter.getHeight(), point.getX(), point.getY());
+        shadeRenderers[BRIGHTEN_OBJECT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
+                .renderShadowLit(lightXCentralShifted,
+                        lightYCentralShifted, point.getX(), point.getY());
+        shadeRenderers[DARKEN_OBJECT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
+                .renderShadow(lightXCentralShifted,
+                        lightYCentralShifted, point.getX(), point.getY());
     }
 
-    public static void drawAllShadows(Light light, Figure shaded) {
+    public static void drawAllShadows(Figure shaded, int lightXCentralShifted, int lightYCentralShifted) {
         for (int i = 0; i < shaded.getShadowCount(); i++) {
-            shadeRenderers[shaded.getShadow(i).type].render(light, shaded, shaded.getShadow(i).point);
+            shadeRenderers[shaded.getShadow(i).type].render(shaded, shaded.getShadow(i).point, lightXCentralShifted, lightYCentralShifted);
         }
     }
 
-    public static void drawLeftConcaveBottom(Light emitter, Figure shaded, int x, int y) {
-        startDrawingShadow(emitter, BLACK);
+    public static void drawLeftConcaveBottom(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
+        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         glBegin(GL_TRIANGLES);
         glVertex2f(shaded.getX() + Place.tileSize, shaded.getYEnd());
         glVertex2f(x, y);
@@ -58,8 +65,8 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    public static void drawConcaveTop(Light emitter, Figure shaded, int x, int y) {
-        startDrawingShadow(emitter, BLACK);
+    public static void drawConcaveTop(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
+        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         glBegin(GL_TRIANGLES);
         glVertex2f(shaded.getX(), shaded.getYEnd() - Place.tileSize);
         glVertex2f(x, y);
@@ -67,8 +74,8 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    public static void drawRightConcaveBottom(Light emitter, Figure shaded, int x, int y) {
-        startDrawingShadow(emitter, BLACK);
+    public static void drawRightConcaveBottom(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
+        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         glBegin(GL_TRIANGLES);
         glVertex2f(shaded.getX(), shaded.getYEnd());
         glVertex2f(x, y);
@@ -76,12 +83,11 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    private static void startDrawingShadow(Light emitter, byte color) {
+    private static void startDrawingShadow(byte color, int lightXCentralShifted, int lightYCentralShifted) {
         glDisable(GL_TEXTURE_2D);
         glColor3f(color, color, color);
         glPushMatrix();
-        glTranslatef((emitter.getXCenterShift()) - emitter.getX(), (emitter.getYCenterShift()) - emitter.getY() + displayHeight - emitter.getHeight(), 0);
-
+        glTranslatef(lightXCentralShifted, lightYCentralShifted, 0);
     }
 
     private static void endDrawingShadow() {
@@ -90,8 +96,8 @@ public class ShadowDrawer {
         glEnable(GL_TEXTURE_2D);
     }
 
-    public static void drawShadowFromConcave(Light emitter, Figure shaded, Point[] shadowPoints) {
-        startDrawingShadow(emitter, BLACK);
+    public static void drawShadowFromConcave(Figure shaded, Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
+        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         corner.set(shaded.getX() + (shaded.isLeftBottomRound() ? Place.tileSize : 0), shaded.getY());
         glBegin(GL_TRIANGLES);
         glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
@@ -108,8 +114,8 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    public static void drawShadow(Light emitter, Point[] shadowPoints) {
-        startDrawingShadow(emitter, BLACK);
+    public static void drawShadow(Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
+        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         glBegin(GL_QUADS);
         glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
         glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
@@ -118,19 +124,18 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    private static void drawShade(Light emitter, Figure shade, Point point) {
-        drawShadeInColor(BLACK, emitter, shade, point);
+    private static void drawShade(Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) {
+        drawShadeInColor(BLACK, shade, point, lightXCentralShifted, lightYCentralShifted);
     }
 
-    private static void drawShadeLit(Light emitter, Figure shade, Point point) {
-        byte WHITE = 1;
-        drawShadeInColor(WHITE, emitter, shade, point);
+    private static void drawShadeLit(Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) {
+        drawShadeInColor(WHITE, shade, point, lightXCentralShifted, lightYCentralShifted);
     }
 
-    private static void drawShadeInColor(byte color, Light emitter, Figure shade, Point point) {
+    private static void drawShadeInColor(byte color, Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) {
         int firstShadowPoint = shade.getYEnd();
         int secondShadowPoint = shade.getY() - shade.getShadowHeight();
-        startDrawingShadow(emitter, color);
+        startDrawingShadow(color, lightXCentralShifted, lightYCentralShifted);
         glBegin(GL_QUADS);
         glVertex2f(point.getX(), firstShadowPoint);
         glVertex2f(point.getX(), secondShadowPoint);
@@ -141,6 +146,6 @@ public class ShadowDrawer {
 
     protected interface shadeRenderer {
 
-        void render(Light emitter, Figure shade, Point point);
+        void render(Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted);
     }
 }

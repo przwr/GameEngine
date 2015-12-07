@@ -74,7 +74,7 @@ public abstract class Entity extends GameObject {
 
     protected void addPushInteraction() {
         Interactive push = Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, appearance.getActualHeight(),
-                -collision.getWidth(), collision.getWidth() / 2), Interactive.PUSH, PUSH, 1f);
+                -collision.getWidth(), collision.getWidthHalf()), Interactive.PUSH, PUSH, 1f);
         push.setCollidesFriends(true);
         addInteractive(push);
     }
@@ -100,8 +100,8 @@ public abstract class Entity extends GameObject {
     public void knockBack(int knockBackPower, double jumpPower, GameObject attacker) {
         knockBack.setFrames(30);
         knockBack.setAttackerDirection(attacker.getDirection());
-        int attackerX = attacker.getX() + (attacker instanceof Block ? attacker.getCollision().getWidth() / 2 : 0);
-        int attackerY = attacker.getY() + (attacker instanceof Block ? attacker.getCollision().getHeight() / 2 : 0);
+        int attackerX = attacker.getX() + (attacker instanceof Block ? attacker.getCollision().getWidthHalf() : 0);
+        int attackerY = attacker.getY() + (attacker instanceof Block ? attacker.getCollision().getHeightHalf() : 0);
         int angle = (int) Methods.pointAngleCounterClockwise(attackerX, attackerY, x, y);
         knockBack.setSpeedInDirection(angle, Methods.interval(1, knockBackPower, 20));
         setJumpForce(jumpPower);

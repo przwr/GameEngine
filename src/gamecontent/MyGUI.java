@@ -110,7 +110,7 @@ public class MyGUI extends GUIObject {
             if (on) {
                 glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
                 Drawer.setColor(color);
-                glTranslatef(-player.getCollision().getWidth() * 1.5f, -player.getCollision().getHeight() / 2, 0);
+                glTranslatef(-player.getCollision().getWidth() * 1.5f, -player.getCollision().getHeightHalf(), 0);
                 attackIcons.renderPiece(firstAttackType);
                 glTranslatef(0, -Place.tileSize, 0);
                 attackIcons.renderPiece(secondAttackType);

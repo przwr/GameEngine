@@ -30,7 +30,9 @@ public class Rectangle extends Figure {
     private Rectangle(int xStart, int yStart, int width, int height, int OpticPropertiesType, int shadowHeight, GameObject owner) {
         super(xStart, yStart, owner, OpticProperties.create(OpticPropertiesType, shadowHeight));
         this.width = width;
+        this.widthHalf = width / 2;
         this.height = height;
+        this.heightHalf = height / 2;
         if (owner != null) {
             points.add(new Point(super.getX(), super.getY()));
             points.add(new Point(super.getX(), super.getY() + height));
@@ -44,7 +46,9 @@ public class Rectangle extends Figure {
         super(xStart, yStart, null, null);
         tile = true;
         this.width = width;
+        this.widthHalf = width / 2;
         this.height = height;
+        this.heightHalf = height / 2;
         points.add(new Point(xStart, yStart));
         points.add(new Point(xStart, yStart + height));
         points.add(new Point(xStart + width, yStart + height));
