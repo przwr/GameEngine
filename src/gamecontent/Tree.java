@@ -39,7 +39,7 @@ public class Tree extends GameObject {
         this.width = width;
         this.height = height;
         int fboWidth = height * 2;
-        int fboHeight = height * 3;
+        int fboHeight = Math.round(height * 2.2f);
         fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
                 new RegularFrameBufferObject(fboWidth, fboHeight);
     }
@@ -60,7 +60,7 @@ public class Tree extends GameObject {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidth() / 2, getY() + 20 - fbo.getHeight() + collision.getHeight() / 2, 0);
+        glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
         fbo.render();
         Drawer.refreshColor();
         glPopMatrix();
@@ -69,11 +69,11 @@ public class Tree extends GameObject {
 
     private void drawTrunkAndBranches() {
         Drawer.setColor(new Color(0.5f * Place.getDayCycle().getShade().r, 0.35f * Place.getDayCycle().getShade().g, 0.2f * Place.getDayCycle().getShade().b));
-        change1 = -4 + random.next(3);
-        change2 = -4 + random.next(3);
-        change3 = -4 + random.next(3);
-        Drawer.drawTriangle(0, 0, width, -10, width + 16 + change1, 4);
-        Drawer.drawTriangle(width, 0, 0, -10, -20 + change2, 6);
+        change1 = -4 + random.next(3) + Math.round(height * 0.05f + height * random.next(10) / 10240f);
+        change2 = -4 + random.next(3) - Math.round(height * 0.05f + height * random.next(10) / 10240f);
+        change3 = -2 + random.next(2) + Math.round(height * 0.025f + height * random.next(10) / 20480f);
+        Drawer.drawTriangle(0, 0, width, -10, width + change1, 4);
+        Drawer.drawTriangle(width, 0, 0, -10, change2, 6);
         Drawer.drawTriangle(0, 0, width - width / 4, 0, change3 + width / 2, 12);
         height1 = Math.round(0.3f * height + (random.next(8) / 1024f) * 0.7f * height);
         height2 = Math.round(0.6f * height + (random.next(8) / 1024f) * 0.7f * height);
@@ -86,19 +86,65 @@ public class Tree extends GameObject {
         Drawer.drawQuad(change2, -height1, width + change1, -height1, width + change3, -height2, change4, -height2);
         Drawer.drawQuad(change4, -height2, width + change3, -height2, width + change5, -height, change5, -height);
         int thick = 16;
-
+        int length = height / 2 + Math.round(height * random.next(8) / 1024f);
+        int deviation = -8 + random.next(4);
         glTranslatef(change5, -height, 0);
-        drawBranch(0, 80 + random.next(4), -68 + random.next(4), thick, thick / 2, 1);
-        drawBranch(width / 2 - thick / 2, 80 + random.next(4), 0 + random.next(4), thick, thick / 2, 1);
-        glTranslatef(0, 10, 0);
-        drawBranch(width - thick, 72 + random.next(4), 36, thick, thick / 2, 1);
-        glTranslatef(0, 30, 0);
-        drawBranch(change4 - change5, 52 + random.next(4), -36, thick, thick / 2, 1);
+
+//      Top Branches
+        drawBranch(width / 2 - thick / 2, length, deviation, thick, thick / 2, 1);
+        boolean leftHigher = random.nextBoolean();
+
+        if (leftHigher) {
+            length = height / 2 + Math.round(height * random.next(6) / 1024f);
+            deviation = height / 3 + Math.round(height * random.next(4) / 1024f);
+            drawBranch(0, length, -deviation, thick, thick / 2, 1);
+            length = height / 2 + Math.round(height * random.next(8) / 1024f);
+            deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
+            glTranslatef(0, Math.round(height * 0.1f), 0);
+            drawBranch(width - thick, length, deviation, thick, thick / 2, 1);
+        } else {
+            length = height / 2 + Math.round(height * random.next(6) / 1024f);
+            deviation = height / 3 + Math.round(height * random.next(4) / 1024f);
+            drawBranch(width - thick, length, deviation, thick, thick / 2, 1);
+            length = height / 2 + Math.round(height * random.next(6) / 1024f);
+            deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
+            glTranslatef(0, Math.round(height * 0.1f), 0);
+            drawBranch(0, length, -deviation, thick, thick / 2, 1);
+        }
+        glTranslatef(0, Math.round(height * 0.3f), 0);
+        if (leftHigher) {
+            length = height / 2 + Math.round(height * random.next(3) / 1024f);
+            deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
+            drawBranch(-change5, length, -deviation, thick, thick / 2, 1);
+        } else {
+            length = height / 2 + Math.round(height * random.next(3) / 1024f);
+            deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
+            drawBranch(change4 - change5, length, deviation, thick, thick / 2, 1);
+        }
+
         glTranslatef(0, (height - height2) / 2, 0);
-        drawBranch(-change5, 80, 68 + random.next(4), thick, 10, 1);
-        drawBranch(change4 - change5, 40 + random.next(4), -78 + random.next(3), 16, 10, 1);
-//        glTranslatef(0, (height - height2) / 2, 0);
-//        drawBranch(change4 - change5, 50 + random.next(4), -78 + random.next(3), 16, 10, 1);
+        leftHigher = random.nextBoolean();
+        if (leftHigher) {
+            length = height / 3 + Math.round(height * random.next(3) / 1024f);
+            deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
+            drawBranch(-change5, length, -deviation, thick, thick / 2, 1);
+            leftHigher = random.nextBoolean();
+            if (leftHigher) {
+                length = height / 2 + Math.round(height * random.next(3) / 1024f);
+                deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
+                drawBranch(change4 - change5 + (width - thick) / 2, length, deviation, thick, thick / 2, 1);
+            }
+        } else {
+            length = height / 3 + Math.round(height * random.next(3) / 1024f);
+            deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
+            drawBranch(change4 - change5 + (width - thick) / 2, length, deviation, thick, thick / 2, 1);
+            leftHigher = random.nextBoolean();
+            if (leftHigher) {
+                length = height / 2 + Math.round(height * random.next(3) / 1024f);
+                deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
+                drawBranch(-change5, length, -deviation, thick, thick / 2, 1);
+            }
+        }
     }
 
     private void drawBranch(int x, int height, int deviation, int widthBase, int withTop, int smallCount) {
@@ -107,6 +153,7 @@ public class Tree extends GameObject {
         Drawer.drawQuad(x, 0, xPosition, -height / 2, xPosition + (withTop + widthBase) / 2, -height / 2, x + widthBase, 0);
         Drawer.drawQuad(xPosition, -height / 2, x + deviation, -height, x + deviation + withTop, -height, xPosition + (withTop + widthBase) / 2, -height / 2);
 
+//      small branch
         xPosition = deviation + change / 2;
         xA = x + Math.round(xPosition * 0.75f) + (deviation < 0 ? withTop / 2 : withTop / 2);
         yA = -Math.round(height * 0.75f);
@@ -118,6 +165,7 @@ public class Tree extends GameObject {
         }
         Drawer.drawTriangle(xA, yA, xB, yB, x + 5 * xPosition / 3, Math.round(-1.2f * height));
 
+//      small branch
         xPosition = deviation + change;
         xA = x + Math.round(xPosition * 0.35f) + (deviation < 0 ? withTop / 2 : withTop / 2);
         yA = -Math.round(height * 0.35f);
@@ -129,6 +177,7 @@ public class Tree extends GameObject {
         }
         Drawer.drawTriangle(xA, yA, xB, yB, x + 3 * xPosition / 2, Math.round(-0.8f * height));
 
+//      End of branch
         change = -16 + random.next(5);
         Drawer.drawTriangle(x + deviation, -height, x + deviation + withTop, -height, x + deviation + 2 * deviation / 3 + change, -height - 2 * height / 3);
     }
@@ -175,18 +224,18 @@ public class Tree extends GameObject {
     }
 
     public int getXSpriteBegin() {
-        return getX();
+        return getX() - (collision.getWidth() + fbo.getWidth()) / 2;
     }
 
     public int getYSpriteBegin() {
-        return getY();
+        return getY() - (collision.getHeight() + fbo.getHeight()) / 2;
     }
 
     public int getXSpriteEnd() {
-        return getX() + width;
+        return getX() + (collision.getWidth() + fbo.getWidth()) / 2;
     }
 
     public int getYSpriteEnd() {
-        return getY() + height;
+        return getY() + (collision.getHeight() + fbo.getHeight()) / 2;
     }
 }

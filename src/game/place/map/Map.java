@@ -573,7 +573,7 @@ public abstract class Map {
             if (object.getAppearance() != null && tile.getDepth() > object.getDepth()
                     && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
                     && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2)
-                    / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeight() / 2 - object.getAppearance()
+                    / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeightHalf() - object.getAppearance()
                     .getActualHeight() / 2) / tileSize))) {
                 return true;
             }
@@ -596,7 +596,7 @@ public abstract class Map {
         glPushMatrix();
         glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(object.getX(), object.getY() - object.getAppearance().getActualHeight() + object.getCollision().getHeight() / 2, 0);
+        glTranslatef(object.getX(), object.getY() - object.getAppearance().getActualHeight() + object.getCollision().getHeightHalf(), 0);
         Drawer.setColor(pointingColor);
         Drawer.drawEllipseBow(0, 0, 5, 10, 5, -30, 210, 15);
 //        Drawer.drawEllipseBow(0, -32, 8, 64, 8, 45, 135, 4);

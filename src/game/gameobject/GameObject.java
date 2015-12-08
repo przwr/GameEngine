@@ -221,11 +221,11 @@ public abstract class GameObject {
     }
 
     public int getEndOfX() {
-        return (int) x + collision.getWidth() / 2;
+        return (int) x + collision.getWidthHalf();
     }
 
     public int getEndOfY() {
-        return (int) y + collision.getHeight() / 2;
+        return (int) y + collision.getHeightHalf();
     }
 
     public int getXSpriteTextureCorner() {
@@ -450,6 +450,10 @@ public abstract class GameObject {
 
     public void setMakeNoise(boolean makeNoise) {
         this.makeNoise = makeNoise;
+    }
+
+    public boolean isInBlock() {
+        return false;
     }
 
     public boolean isToUpdate() {

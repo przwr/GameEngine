@@ -76,8 +76,8 @@ public class Grass extends GameObject {
         for (int i = 0; i < map.place.getPlayersCount(); i++) {
             GameObject player = map.place.players[i];
             if (player.getFloatHeight() < bladeHeight) {
-                if ((xCurrentDistance = Math.abs(getX() - player.getX())) < xRadius + player.getCollision().getWidth() / 2) {
-                    if ((yCurrentDistance = Math.abs(getY() - player.getY())) < yRadius + player.getCollision().getHeight() / 2) {
+                if ((xCurrentDistance = Math.abs(getX() - player.getX())) < xRadius + player.getCollision().getWidthHalf()) {
+                    if ((yCurrentDistance = Math.abs(getY() - player.getY())) < yRadius + player.getCollision().getHeightHalf()) {
                         if (xCurrentDistance + yCurrentDistance < distance) {
                             distance = xCurrentDistance + yCurrentDistance;
                             object.set(player.getX(), player.getY());
@@ -88,8 +88,8 @@ public class Grass extends GameObject {
         }
         for (Mob mob : area.getNearSolidMobs()) {
             if (mob.getFloatHeight() < bladeHeight) {
-                if ((xCurrentDistance = Math.abs(getX() - mob.getX())) < xRadius + mob.getCollision().getWidth() / 2) {
-                    if ((yCurrentDistance = Math.abs(getY() - mob.getY())) < yRadius + mob.getCollision().getHeight() / 2) {
+                if ((xCurrentDistance = Math.abs(getX() - mob.getX())) < xRadius + mob.getCollision().getWidthHalf()) {
+                    if ((yCurrentDistance = Math.abs(getY() - mob.getY())) < yRadius + mob.getCollision().getHeightHalf()) {
                         if (xCurrentDistance + yCurrentDistance < distance) {
                             distance = xCurrentDistance + yCurrentDistance;
                             object.set(mob.getX(), mob.getY());
@@ -136,7 +136,7 @@ public class Grass extends GameObject {
     public void renderStill() {
         if (masking) {
             tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
-            Drawer.setColor(new Color(0, 0.7f * Place.getDayCycle().getShade().g, 0));
+            Drawer.setColor(new Color(0, 0.7f, 0));
             Drawer.setCentralPoint();
             Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
             Drawer.returnToCentralPoint();
@@ -144,7 +144,7 @@ public class Grass extends GameObject {
         for (int i = 0; i < blades.length; i += 3) {
             tempX = (blades[i].getX() + (blades[i + 1].getX() + blades[i + 2].getX())) / 3;
             tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
-            Drawer.setColor(new Color(0, (int) (blades[i].getValue() * Place.getDayCycle().getShade().g), 0));
+            Drawer.setColor(new Color(0, blades[i].getValue(), 0));
             Drawer.drawTriangle(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY());
         }
         Drawer.refreshColor();
@@ -224,6 +224,4 @@ public class Grass extends GameObject {
     public int getYSpriteEnd() {
         return getY() + yRadius;
     }
-
-
 }

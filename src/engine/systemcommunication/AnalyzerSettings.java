@@ -68,7 +68,8 @@ public final class AnalyzerSettings {
                 final int h = Integer.parseInt(p[1]);
                 Settings.resolutionHeight = (h <= 0) ? Settings.modes[0].getHeight() : h;
                 for (int i = 0; i < Settings.modes.length; i++) {
-                    if (Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings.resolutionHeight && Settings.modes[i].getFrequency() == Settings.frequency) {
+                    if (Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings.resolutionHeight && Settings
+                            .modes[i].getFrequency() == Settings.frequency) {
                         Settings.currentMode = i;
                     }
                 }
@@ -77,7 +78,8 @@ public final class AnalyzerSettings {
                 final int f = Integer.parseInt(p[1]);
                 Settings.frequency = (f <= 0) ? Settings.modes[0].getFrequency() : f;
                 for (int i = 0; i < Settings.modes.length; i++) {
-                    if (Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings.resolutionHeight && Settings.modes[i].getFrequency() == Settings.frequency) {
+                    if (Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings.resolutionHeight && Settings
+                            .modes[i].getFrequency() == Settings.frequency) {
                         Settings.currentMode = i;
                     }
                 }
@@ -120,6 +122,10 @@ public final class AnalyzerSettings {
                 if (b >= -0.25f && b <= 0.25f) {
                     Settings.gameBrightness = b;
                 }
+                break;
+            case "FramesLimit:":
+                int framesLimit = Integer.parseInt(p[1]);
+                Settings.framesLimit = (framesLimit < 24 || framesLimit > 120) ? 60 : framesLimit;
                 break;
             default:
         }
@@ -165,6 +171,7 @@ public final class AnalyzerSettings {
             writer.write("GameGamma: " + Settings.gameGamma + "\n");
             writer.write("DefaultBrightness: " + Settings.defaultBrightness + "\n");
             writer.write("GameBrightness: " + Settings.gameBrightness + "\n");
+            writer.write("FramesLimit: " + Settings.framesLimit + "\n");
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(AnalyzerSettings.class.getName()).log(Level.SEVERE, null, ex);

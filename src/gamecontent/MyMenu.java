@@ -87,6 +87,7 @@ public class MyMenu extends Menu {
         graphic.addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this));
         graphic.addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this));
         graphic.addChoice(new VerticalSynchronizationChoice(Settings.language.menu.VSync, this));
+        graphic.addChoice(new FramesNumberChoice(Settings.language.menu.FramesLimit, this));
 //        graphic.addChoice(new ShadowsOffChoice(Settings.language.menu.ShadowOff, this));
         graphic.addChoice(new SmoothShadowsChoice(Settings.language.menu.SmoothShadows, this));
         options.addChoice(graphic);

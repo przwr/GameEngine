@@ -69,5 +69,6 @@ public class Language {
         public String Video;
         public String Gameplay;
         public String Text;
+        public String FramesLimit;
     }
 }

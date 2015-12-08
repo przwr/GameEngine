@@ -96,7 +96,7 @@ public class Interactive {
             if (collisionActivates()) {
                 if (collidesWithEnvironment) {
                     collision.setEnvironmentCollision(environmentCollision);
-                    if (owner != null) {
+                    if (owner.getMap() != null) {
                         Area area = owner.getMap().getArea(owner.getArea());
                         for (Block block : area.getNearBlocks()) {
                             if (block.isSolid() && block.isCollide(0, 0, environmentCollision)) {

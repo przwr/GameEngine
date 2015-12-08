@@ -94,6 +94,7 @@ public class ForegroundTile extends Tile {
         this.blockPart = blockPart;
     }
 
+    @Override
     public boolean isInBlock() {
         return blockPart;
     }

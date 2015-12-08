@@ -104,9 +104,9 @@ public class Arrow extends Entity {
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX(), getY(), 0);
         Drawer.setColor(JUMP_SHADOW_COLOR);
-        Drawer.drawEllipse(0, 0, collision.getWidth() / 2, collision.getHeight() / 2, 24);
+        Drawer.drawEllipse(0, 0, collision.getWidthHalf(), collision.getHeightHalf(), 24);
         Drawer.setColor(Color.black);
-        Drawer.drawEllipse(0, (int) -floatHeight - getActualHeight(), collision.getWidth() / 2, collision.getHeight() / 2, 24);
+        Drawer.drawEllipse(0, (int) -floatHeight - getActualHeight(), collision.getWidthHalf(), collision.getHeightHalf(), 24);
         Drawer.refreshColor();
         glPopMatrix();
         if (Main.SHOW_INTERACTIVE_COLLISION) {

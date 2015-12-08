@@ -49,6 +49,7 @@ public class Settings {
     public static int frequency;
     public static boolean verticalSynchronization;
     public static int samplesCount = 0;
+    public static int framesLimit = 60;
     public static String languageName;
     public static Language language;
     public static int actionsCount;
@@ -80,7 +81,8 @@ public class Settings {
         }
         int i, j;
         for (i = 1; i < modesTemp.length; i++) {
-            if (modesTemp[i].getWidth() >= MIN_WIDTH && modesTemp[i].getWidth() <= MAX_WIDTH && modesTemp[i].getHeight() >= MIN_HEIGHT && modesTemp[i].getHeight() <= MAX_HEIGHT && modesTemp[i].getBitsPerPixel() == depth) {
+            if (modesTemp[i].getWidth() >= MIN_WIDTH && modesTemp[i].getWidth() <= MAX_WIDTH && modesTemp[i].getHeight() >= MIN_HEIGHT && modesTemp[i]
+                    .getHeight() <= MAX_HEIGHT && modesTemp[i].getBitsPerPixel() == depth) {
                 modesCount++;
             }
             temp = modesTemp[i];
@@ -92,7 +94,8 @@ public class Settings {
         modes = new DisplayMode[modesCount];
         i = 0;
         for (DisplayMode mode : modesTemp) {
-            if (mode.getWidth() >= MIN_WIDTH && mode.getWidth() <= MAX_WIDTH && mode.getHeight() >= MIN_HEIGHT && mode.getHeight() <= MAX_HEIGHT && mode.getBitsPerPixel() == depth) {
+            if (mode.getWidth() >= MIN_WIDTH && mode.getWidth() <= MAX_WIDTH && mode.getHeight() >= MIN_HEIGHT && mode.getHeight() <= MAX_HEIGHT && mode
+                    .getBitsPerPixel() == depth) {
                 modes[i++] = mode;
             }
         }
@@ -106,7 +109,9 @@ public class Settings {
     }
 
     private static boolean isBigger(DisplayMode checked, DisplayMode temp) {
-        return checked.getBitsPerPixel() > temp.getBitsPerPixel() || checked.getWidth() > temp.getWidth() || checked.getWidth() == temp.getWidth() && checked.getHeight() > temp.getHeight() || checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency() > temp.getFrequency();
+        return checked.getBitsPerPixel() > temp.getBitsPerPixel() || checked.getWidth() > temp.getWidth() || checked.getWidth() == temp.getWidth() && checked
+                .getHeight() > temp.getHeight() || checked.getWidth() == temp.getWidth() && checked.getHeight() == temp.getHeight() && checked.getFrequency()
+                > temp.getFrequency();
     }
 
     public static void calculateScale() {
