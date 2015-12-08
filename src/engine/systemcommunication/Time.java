@@ -11,7 +11,7 @@ package engine.systemcommunication;
  */
 public final class Time {
 
-    private static final float DAMPING = 16000000;
+    private static final float DAMPING = 17000000;
     private static long currentTime;
     private static long lastTime;
 

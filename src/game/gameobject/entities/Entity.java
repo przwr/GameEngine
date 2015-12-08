@@ -342,7 +342,7 @@ public abstract class Entity extends GameObject {
     }
 
     public void brakeWithModifier(int axis, double modifier) {
-        double maxWeight = FastMath.max(1, resistance * modifier);
+        double maxWeight = FastMath.max(1, resistance * modifier / Time.getDelta());
         if (axis == 0 || axis == 2) {
             if (FastMath.abs(xSpeed) >= 1) {
                 xSpeed -= xSpeed / (1 + maxWeight);
@@ -369,6 +369,8 @@ public abstract class Entity extends GameObject {
     }
 
     protected void changeSpeed(double xSpeedDelta, double ySpeedDelta) {
+        xSpeedDelta *= Time.getDelta();
+        ySpeedDelta *= Time.getDelta();
         if (Math.signum(xSpeed) != Math.signum(xSpeedDelta)) {
             xSpeed = xSpeed + (xSpeedDelta / resistance);
         } else {

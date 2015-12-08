@@ -6,6 +6,7 @@
 package gamecontent;
 
 import engine.Main;
+import engine.systemcommunication.AnalyzerSettings;
 import engine.utilities.Delay;
 import game.Game;
 import game.Settings;
@@ -118,7 +119,9 @@ public class MyPlace extends Place {
         }
         unloadedMaps.addAll(maps.stream().filter(map -> !tempMaps.contains(map)).collect(Collectors.toList()));
         if (game.getMapLoader().isRunning()) // TODO Wywalić, jak będzie wczytywane z pliku
+        {
             unloadedMaps.forEach(maps::remove);
+        }
         addMapsToAdd();
         for (Map mapToUpdate : tempMaps) {
             mapToUpdate.updateAreasToUpdate();
@@ -174,7 +177,6 @@ public class MyPlace extends Place {
         tempMaps.stream().forEach(Map::updateMobsFromAreasToUpdate);
     }
 
-
     private void updateObjectsOffline() {
         tempMaps.stream().forEach(Map::updateObjectsFromAreasToUpdate);
     }
@@ -219,6 +221,13 @@ public class MyPlace extends Place {
 //            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
 //                sounds.getSound("MumboMountain").fade(0.5, false);
 //            }
+        if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
+            if (delay.isOver()) {
+                delay.start();
+                Settings.framesLimit = Settings.framesLimit == 30 ? 60 : 30;
+                AnalyzerSettings.update();
+            }
+        }
         if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
             if (delay.isOver()) {
                 delay.start();
@@ -238,7 +247,6 @@ public class MyPlace extends Place {
                 dayCycle.resumeTime();
             }
         }
-
 
         if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
             if (delay.isOver()) {

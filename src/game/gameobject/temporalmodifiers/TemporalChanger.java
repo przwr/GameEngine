@@ -5,6 +5,7 @@
  */
 package game.gameobject.temporalmodifiers;
 
+import engine.systemcommunication.Time;
 import game.gameobject.entities.Entity;
 
 /**
@@ -13,7 +14,7 @@ import game.gameobject.entities.Entity;
  */
 public abstract class TemporalChanger {
 
-    int time, left;
+    float time, left;
 
     public TemporalChanger() {
         time = 0;
@@ -42,19 +43,19 @@ public abstract class TemporalChanger {
     }
 
     public boolean isOver() {
-        return left == 0;
+        return left <= 0;
     }
     
     public int getTotalTime() {
-        return time;
+        return (int) time;
     }
     
     public int getCurrentTime() {
-        return left;
+        return (int) left;
     }
     
     public int getTimePart(int parts) {
-        return Math.min(parts - 1 - (parts * left) / time, parts - 1);
+        return (int) Math.min(parts - 1 - (parts * left) / time, parts - 1);
     }
     
     public double getPercentDone() {
@@ -69,7 +70,7 @@ public abstract class TemporalChanger {
         if (left != 0) {
             modifyEffect(en);
             if (left > 0) {
-                left--;
+                left -= Time.getDelta();
             }
         }
     }
