@@ -14,6 +14,7 @@ import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import gamecontent.mobs.Blazag;
 
 /**
  * @author Wojtek
