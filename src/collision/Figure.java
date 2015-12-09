@@ -521,7 +521,7 @@ public abstract class Figure implements Comparable<Figure> {
         return false;
     }
 
-    public Point getPushValueOfCorner(byte leftBottom) {
+    public Point getPushValueOfCorner(int corner) {
         return pushed;
     }
 

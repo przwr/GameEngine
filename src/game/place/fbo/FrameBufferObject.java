@@ -1,10 +1,12 @@
 package game.place.fbo;
 
 import game.Settings;
+import game.gameobject.entities.Player;
+import sprites.Appearance;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public abstract class FrameBufferObject {
+public abstract class FrameBufferObject implements Appearance {
 
     public static final int NATIVE = 0, ARB = 1, EXT = 2;
     private static final FrameBufferType REGULAR_NATIVE = new RegularNative();
@@ -52,7 +54,7 @@ public abstract class FrameBufferObject {
     public abstract void deactivate();
 
     public void render() {
-        checkBind();
+        bindCheck();
         glBegin(GL_QUADS);
         glTexCoord2f(0, 1);
         glVertex2f(0, 0);
@@ -68,7 +70,7 @@ public abstract class FrameBufferObject {
     public void renderScreenPart(float displayWidth, float displayHeight, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart,
                                  float xTEnd, float yTEnd) {
         glPushMatrix();
-        checkBind();
+        bindCheck();
         glBegin(GL_QUADS);
         glTexCoord2f(xTStart, yTEnd);
         glVertex2f(xStart * displayWidth, yStart * displayHeight);
@@ -83,7 +85,7 @@ public abstract class FrameBufferObject {
     }
 
     public void renderPiece(int xStart, int yStart, float xBeg, float yBeg, float xEnd, float yEnd) {
-        checkBind();
+        bindCheck();
         glTranslatef(xStart, yStart, 0);
         glBegin(GL_QUADS);
         glTexCoord2f(xBeg / width, yBeg / height);
@@ -98,11 +100,6 @@ public abstract class FrameBufferObject {
         glTranslatef(-xStart, -yStart, 0);
     }
 
-    private void checkBind() {
-        if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
-            glBindTexture(GL_TEXTURE_2D, texture);
-        }
-    }
 
     public int getTexture() {
         return texture;
@@ -114,5 +111,78 @@ public abstract class FrameBufferObject {
 
     public int getWidth() {
         return width;
+    }
+
+    @Override
+    public void bindCheck() {
+        if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
+            glBindTexture(GL_TEXTURE_2D, texture);
+        }
+    }
+
+    @Override
+    public void renderMirrored() {
+    }
+
+    @Override
+    public void renderPart(int partXStart, int partXEnd) {
+        bindCheck();
+        glBegin(GL_QUADS);
+        glTexCoord2f(partXStart / (float) width, 0);
+        glVertex2f(partXStart, height);
+        glTexCoord2f(partXStart / (float) width, 1);
+        glVertex2f(partXStart, 0);
+        glTexCoord2f(partXEnd / (float) width, 1);
+        glVertex2f(partXEnd, 0);
+        glTexCoord2f(partXEnd / (float) width, 0);
+        glVertex2f(partXEnd, height);
+        glEnd();
+    }
+
+    @Override
+    public void renderPartMirrored(int partXStart, int partXEnd) {
+    }
+
+    @Override
+    public void updateTexture(Player owner) {
+    }
+
+    @Override
+    public void updateFrame() {
+    }
+
+    @Override
+    public int getCurrentFrameIndex() {
+        return 0;
+    }
+
+    @Override
+    public int getXStart() {
+        return 0;
+    }
+
+    @Override
+    public int getYStart() {
+        return 0;
+    }
+
+    @Override
+    public int getActualWidth() {
+        return width;
+    }
+
+    @Override
+    public int getActualHeight() {
+        return height;
+    }
+
+    @Override
+    public int getXOffset() {
+        return 0;
+    }
+
+    @Override
+    public int getYOffset() {
+        return 0;
     }
 }

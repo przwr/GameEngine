@@ -9,7 +9,6 @@ import collision.Block;
 import collision.Figure;
 import engine.lights.Light;
 import engine.utilities.BlueArray;
-import engine.utilities.Methods;
 import engine.utilities.PointContainer;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
@@ -130,7 +129,7 @@ public class Area {
 
     private void addForegroundTile(GameObject tile) {
         tile.setMapNotChange(map);
-        Methods.merge(foregroundTiles, tile);
+        foregroundTiles.add(tile);
     }
 
     public void deleteForegroundTile(GameObject tile) {
@@ -155,9 +154,9 @@ public class Area {
     public void addObject(GameObject object) {
         object.setMapNotChange(map);
         if (object.isOnTop()) {
-            Methods.merge(topObjects, object);
+            topObjects.add(object);
         } else {
-            Methods.merge(depthObjects, object);
+            depthObjects.add(object);
         }
         if (object.isInteractive()) {
             object.getInteractiveObjects().stream().forEach(interactiveObjects::add);

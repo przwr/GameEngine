@@ -3,7 +3,6 @@ package engine.utilities;
 import collision.Figure;
 import collision.Rectangle;
 import collision.RoundRectangle;
-import game.gameobject.GameObject;
 import game.place.Place;
 import net.jodk.lang.FastMath;
 import org.lwjgl.input.Keyboard;
@@ -29,8 +28,7 @@ public class Methods {
     public static double SQRT_ROOT_OF_2 = Math.sqrt(2);
     public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / Math.sqrt(2);
     private static short[] fibonacci = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610};
-    private static double A, B, AB, delta, X1, Y1, X2, Y2, rx, ry, sx, sy, det, z, temp, xDDelta, yDDelta;
-    private static int xIDelta, yIDelta;
+    private static double A, B, AB, delta, X1, Y1, X2, Y2, xDDelta, yDDelta;
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -87,13 +85,12 @@ public class Methods {
     }
 
     public static int angleDifference(int angleA, int angleB) {
-        return (angleA = angleB - angleA) > 180 ? angleA - 360
-                : (angleA < -180 ? angleA + 360 : angleA);
+        return (angleA = angleB - angleA) > 180 ? angleA - 360 : (angleA < -180 ? angleA + 360 : angleA);
     }
 
     public static int pointDistance(int x, int y, int xa, int ya) {
-        xDDelta = xa - x;
-        yDDelta = ya - y;
+        int xDDelta = xa - x;
+        int yDDelta = ya - y;
         return (int) FastMath.sqrt(xDDelta * xDDelta + yDDelta * yDDelta);
     }
 
@@ -102,8 +99,8 @@ public class Methods {
     }
 
     public static int pointDistanceSimple2(int x, int y, int xa, int ya) {
-        xIDelta = xa - x;
-        yIDelta = ya - y;
+        int yIDelta = ya - y;
+        int xIDelta = xa - x;
         return xIDelta * xIDelta + yIDelta * yIDelta;
     }
 
@@ -112,44 +109,37 @@ public class Methods {
     }
 
     public static double pointAngle(int xSt, int ySt, int xEn, int yEn) {
-        xDDelta = xEn - xSt;
-        yDDelta = yEn - ySt;
-        return FastMath.atan2(yDDelta, xDDelta) * 180 / FastMath.PI;
+        return FastMath.atan2(yEn - ySt, xEn - xSt) * 180 / FastMath.PI;
     }
 
     public static int pointAngle8Directions(double xSt, double ySt, double xEn, double yEn) {
-        xDDelta = xEn - xSt;
-        yDDelta = yEn - ySt;
-        temp = -FastMath.atan2(yDDelta, xDDelta) * 4 / FastMath.PI + 0.5;
-        temp = temp >= 0 ? temp : (temp + 8) % 8;
-        return (int) temp;
+        int temp = -(int) (FastMath.atan2(yEn - ySt, xEn - xSt) * 4 / FastMath.PI + 0.5);
+        if (temp < 0) {
+            temp = (temp + 8) % 8;
+        }
+        return temp;
     }
 
     public static double pointAngleCounterClockwise(double xSt, double ySt, double xEn, double yEn) {    //0 <=> PRAWO; 90 <=> GÓRA; 180 <=> LEWO; 270 <=> DÓŁ;
-        xDDelta = xEn - xSt;
-        yDDelta = yEn - ySt;
-        det = -FastMath.atan2(yDDelta, xDDelta) * 180 / FastMath.PI;
+        double det = -FastMath.atan2(yEn - ySt, xEn - xSt) * 180 / FastMath.PI;
         return det >= 0 ? det : det + 360;
     }
 
     public static double pointAngleClockwise(double xSt, double ySt, double xEn, double yEn) {     //0 <=> PRAWO; 90 <=> DÓŁ; 180 <=> LEWO; 270 <=> GÓRA; czy
-        // to dobrze??
-        xDDelta = xEn - xSt;
-        yDDelta = yEn - ySt;
-        det = FastMath.atan2(yDDelta, xDDelta) * 180 / FastMath.PI;
+        double det = FastMath.atan2(yEn - ySt, xEn - xSt) * 180 / FastMath.PI;
         return det >= 0 ? det : det + 360;
     }
 
-    private static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
+    public static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
         int xOA = xO - xA;
         int yOA = yO - yA;
         int xOB = xO - xB;
         int yOB = yO - yB;
         int xBA = xB - xA;
         int yBA = yB - yA;
-        A = FastMath.sqrt((xOA * xOA) + (yOA * yOA));
-        B = FastMath.sqrt((xOB * xOB) + (yOB * yOB));
-        AB = FastMath.sqrt((xBA * xBA) + (yBA * yBA));
+        double A = FastMath.sqrt((xOA * xOA) + (yOA * yOA));
+        double B = FastMath.sqrt((xOB * xOB) + (yOB * yOB));
+        double AB = FastMath.sqrt((xBA * xBA) + (yBA * yBA));
         return FastMath.acos(((B * B) + (A * A) - (AB * AB)) / (2 * B * A));
     }
 
@@ -177,46 +167,44 @@ public class Methods {
         return FastMath.round((float) number);
     }
 
-    public static Point getTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
-                                                float y4) {
+    public static Point getTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
-        rx = x2 - x1;
-        ry = y2 - y1;
-        sx = x4 - x3;
-        sy = y4 - y3;
-        det = sx * ry - sy * rx;
+        float rx = x2 - x1;
+        float ry = y2 - y1;
+        float sx = x4 - x3;
+        float sy = y4 - y3;
+        float det = sx * ry - sy * rx;
         if (det == 0) {
             return null;
         } else {
-            z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
+            float z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
             if (z == 0 || z == 1) {
                 return null; // intersection at end point!
             }
-            point.set(roundDouble(x1 + z * rx), roundDouble(y1 + z * ry));
+            point.set(Math.round(x1 + z * rx), Math.round(y1 + z * ry));
             return point;
         }
     }
 
-    private static Point getXTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
-                                                  float y4) {
+    private static Point getXTwoLinesIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
         if (!Line2D.linesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
             return null;
         }
-        rx = x2 - x1;
-        ry = y2 - y1;
-        sx = x4 - x3;
-        sy = y4 - y3;
-        det = sx * ry - sy * rx;
+        float rx = x2 - x1;
+        float ry = y2 - y1;
+        float sx = x4 - x3;
+        float sy = y4 - y3;
+        float det = sx * ry - sy * rx;
         if (det == 0) {
             return null;
         } else {
-            z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
+            float z = (sx * (y3 - y1) + sy * (x1 - x3)) / det;
             if (z == 0 || z == 1) {
                 return null; // intersection at end point!
             }
-            point.set(roundDouble(x1 + z * rx), roundDouble(y1 + z * ry));
+            point.set(Math.round(x1 + z * rx), Math.round(y1 + z * ry));
             return point;
         }
     }
@@ -228,7 +216,7 @@ public class Methods {
             return null;
         }
         delta = FastMath.sqrt(delta);
-        A *= 2;
+        A += A;
         X1 = ((-B - delta) / A);
         Y1 = (a * X1 + b);
         X2 = ((-B + delta) / A);
@@ -248,7 +236,7 @@ public class Methods {
             return null;
         }
         delta = FastMath.sqrt(delta);
-        A *= 2;
+        A += A;
         X1 = ((-B - delta) / A);
         Y1 = (a * X1 + b);
         X2 = ((-B + delta) / A);
@@ -268,7 +256,7 @@ public class Methods {
             return null;
         }
         delta = FastMath.sqrt(delta);
-        A *= 2;
+        A += A;
         X1 = ((-B - delta) / A);
         X2 = ((-B + delta) / A);
         if (X1 < X2) {
@@ -286,7 +274,7 @@ public class Methods {
             return null;
         }
         delta = FastMath.sqrt(delta);
-        A *= 2;
+        A += A;
         X1 = ((-B - delta) / A);
         X2 = ((-B + delta) / A);
         if (X1 > X2) {
@@ -317,7 +305,7 @@ public class Methods {
 
     private static void getCastingPointsFromRest(int x, int y, List<Point> points, Point result) {
         double angle = 0;
-        temp = 0;
+        double temp = 0;
         int first = 0, second = 0;
         for (int i = 0; i < points.size(); i++) {
             for (int j = i + 1; j < points.size(); j++) {
@@ -458,40 +446,6 @@ public class Methods {
                 } else {
                     return Methods.getTopCircleLineIntersection(-a, -b, other.getX(), other.getYEnd() - Place.tileSize);
                 }
-            }
-        }
-    }
-
-    // sorts from smallest to biggest
-    public static void inSort(List<GameObject> list) {
-        int i, j, newValue;
-        GameObject object;
-        for (i = 1; i < list.size(); i++) {
-            object = list.get(i);
-            newValue = object.getDepth();
-            j = i;
-            while (j > 0 && list.get(j - 1).getDepth() > newValue) {
-                list.set(j, list.get(j - 1));
-                j--;
-            }
-            list.set(j, object);
-        }
-    }
-
-    public static void merge(List<GameObject> l1, List<GameObject> l2) {
-        for (int index1 = 0, index2 = 0; index2 < l2.size(); index1++) {
-            if (index1 == l1.size() || l1.get(index1).getDepth() > l2.get(index2).getDepth()) {
-                l1.add(index1, l2.get(index2++));
-            }
-        }
-    }
-
-    public static void merge(List<GameObject> l1, GameObject l2) {
-        boolean added = false;
-        for (int i = 0; !added; i++) {
-            if (i == l1.size() || l1.get(i).getDepth() > l2.getDepth()) {
-                l1.add(i, l2);
-                added = true;
             }
         }
     }

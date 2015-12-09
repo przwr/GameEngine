@@ -25,7 +25,6 @@ import gamecontent.maps.Test;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
@@ -117,10 +116,15 @@ public class MyPlace extends Place {
             }
             map.addAreasToUpdate(map.getNearAreas(players[i].getArea()));
         }
-        unloadedMaps.addAll(maps.stream().filter(map -> !tempMaps.contains(map)).collect(Collectors.toList()));
-        if (game.getMapLoader().isRunning()) // TODO Wywalić, jak będzie wczytywane z pliku
-        {
-            unloadedMaps.forEach(maps::remove);
+        for (Map map : maps) {
+            if (!tempMaps.contains(map)) {
+                unloadedMaps.add(map);
+            }
+        }
+        if (game.getMapLoader().isRunning()) { // TODO Wywalić, jak będzie wczytywane z pliku
+            for (Map map : unloadedMaps) {
+                maps.remove(map);
+            }
         }
         addMapsToAdd();
         for (Map mapToUpdate : tempMaps) {
@@ -176,6 +180,7 @@ public class MyPlace extends Place {
     private void updateMobsOffline() {
         tempMaps.stream().forEach(Map::updateMobsFromAreasToUpdate);
     }
+
 
     private void updateObjectsOffline() {
         tempMaps.stream().forEach(Map::updateObjectsFromAreasToUpdate);

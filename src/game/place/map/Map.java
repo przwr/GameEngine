@@ -17,10 +17,7 @@ import game.place.Place;
 import game.place.cameras.Camera;
 import org.newdawn.slick.Color;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static game.place.Place.*;
 import static game.place.map.Area.X_IN_TILES;
@@ -33,6 +30,8 @@ import static org.lwjgl.opengl.GL11.*;
 public abstract class Map {
 
     protected static final PointContainer NO_SOLUTION = new PointContainer(0);
+    protected static final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) ->
+            firstObject.getDepth() - secondObject.getDepth();
     protected static Tile tempTile;
     public final Place place;
     protected final int tileSize;
@@ -284,27 +283,30 @@ public abstract class Map {
         depthObjects.clear();
         for (int i : placement.getNearAreas(area)) {
             if (i >= 0 && i < areas.length && areas[i] != null) {
-                Methods.merge(depthObjects, areas[i].getDepthObjects());
+                depthObjects.addAll(areas[i].getDepthObjects());
             }
         }
+        depthObjects.sort(depthComparator);
     }
 
     public void updateNearForegroundTiles(int area, List<GameObject> foregroundTiles) {
         foregroundTiles.clear();
         for (int i : placement.getNearAreas(area)) {
             if (i >= 0 && i < areas.length && areas[i] != null) {
-                Methods.merge(foregroundTiles, areas[i].getForegroundTiles());
+                foregroundTiles.addAll(areas[i].getForegroundTiles());
             }
         }
+        foregroundTiles.sort(depthComparator);
     }
 
     private void updateNearTopObjects(int area) {
         topObjects.clear();
         for (int i : placement.getNearAreas(area)) {
             if (i >= 0 && i < areas.length && areas[i] != null) {
-                Methods.merge(topObjects, areas[i].getTopObjects());
+                topObjects.addAll(areas[i].getTopObjects());
             }
         }
+        topObjects.sort(depthComparator);
     }
 
     public PointContainer getNearNullTiles(Figure collision) {
@@ -546,7 +548,6 @@ public abstract class Map {
     private void renderBottom(Camera camera) {
         foregroundTiles = areas[camera.getArea()].getNearForegroundTiles();
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
-        Methods.inSort(depthObjects);
         int y = 0;
         for (GameObject object : areas[camera.getArea()].getNearDepthObjects()) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
@@ -585,7 +586,6 @@ public abstract class Map {
         updateNearTopObjects(camera.getArea());
         topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render(cameraXOffEffect,
                 cameraYOffEffect));
-        Methods.inSort(pointingArrows);
         for (GameObject pointer : pointingArrows) {
             renderPointingArrow(pointer);
         }

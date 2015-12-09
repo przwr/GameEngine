@@ -303,10 +303,12 @@ public class RoundRectangle extends Figure {
         }
     }
 
+    @Override
     public boolean isRoundRectangle() {
         return true;
     }
 
+    @Override
     public Point getPushValueOfCorner(int corner) {
         return changers[corner].get(corners, this);
     }

@@ -42,6 +42,7 @@ public class Tree extends GameObject {
         int fboHeight = Math.round(height * 2.2f);
         fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
                 new RegularFrameBufferObject(fboWidth, fboHeight);
+        appearance = fbo;
     }
 
     @Override
@@ -49,7 +50,7 @@ public class Tree extends GameObject {
         if (!prerendered) {
             fbo.activate();
             glPushMatrix();
-            glClearColor(0.5f * Place.getDayCycle().getShade().r, 0.35f * Place.getDayCycle().getShade().g, 0.2f * Place.getDayCycle().getShade().b, 0);
+            glClearColor(0.5f, 0.35f, 0.2f, 0);
             glClear(GL_COLOR_BUFFER_BIT);
             glTranslatef(fbo.getWidth() / 2, Display.getHeight() - 20, 0);
             drawTrunkAndBranches();
@@ -68,7 +69,7 @@ public class Tree extends GameObject {
 
 
     private void drawTrunkAndBranches() {
-        Drawer.setColor(new Color(0.5f * Place.getDayCycle().getShade().r, 0.35f * Place.getDayCycle().getShade().g, 0.2f * Place.getDayCycle().getShade().b));
+        Drawer.setColor(new Color(0.5f, 0.35f, 0.2f));
         change1 = -4 + random.next(3) + Math.round(height * 0.05f + height * random.next(10) / 10240f);
         change2 = -4 + random.next(3) - Math.round(height * 0.05f + height * random.next(10) / 10240f);
         change3 = -2 + random.next(2) + Math.round(height * 0.025f + height * random.next(10) / 20480f);
@@ -187,7 +188,8 @@ public class Tree extends GameObject {
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
+            glTranslatef(xEffect, yEffect, 0);
+            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
             Drawer.drawShapeInShade(appearance, 1);
             glPopMatrix();
         }
@@ -197,7 +199,8 @@ public class Tree extends GameObject {
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
+            glTranslatef(xEffect, yEffect, 0);
+            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
             Drawer.drawShapeInBlack(appearance);
             glPopMatrix();
         }
@@ -207,7 +210,8 @@ public class Tree extends GameObject {
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
+            glTranslatef(xEffect, yEffect, 0);
+            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
             Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
             glPopMatrix();
         }
@@ -217,7 +221,8 @@ public class Tree extends GameObject {
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
+            glTranslatef(xEffect, yEffect, 0);
+            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
             Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }
@@ -228,7 +233,7 @@ public class Tree extends GameObject {
     }
 
     public int getYSpriteBegin() {
-        return getY() - (collision.getHeight() + fbo.getHeight()) / 2;
+        return getY() + 20 - collision.getHeight() - fbo.getHeight() / 2;
     }
 
     public int getXSpriteEnd() {
@@ -236,6 +241,6 @@ public class Tree extends GameObject {
     }
 
     public int getYSpriteEnd() {
-        return getY() + (collision.getHeight() + fbo.getHeight()) / 2;
+        return getY() + 20 + collision.getHeight() + fbo.getHeight() / 2;
     }
 }

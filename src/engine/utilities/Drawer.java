@@ -191,9 +191,7 @@ public class Drawer {
     }
 
     public static void drawEllipseSector(int xStart, int yStart, int xRadius, int yRadius, int startAngle, int endAngle, int precision) {
-        //Zbyt mała precyzja
-        // tworzy figury
-        // foremne
+        // Zbyt mała precyzja tworzy figury foremne
         if (endAngle < startAngle) {
             endAngle += 360;
         }

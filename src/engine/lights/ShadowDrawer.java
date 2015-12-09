@@ -23,11 +23,9 @@ public class ShadowDrawer {
 
     static {
         shadeRenderers[DARK] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadow
-                (lightXCentralShifted,
-                        lightYCentralShifted, shade);
-        shadeRenderers[BRIGHT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
-                .renderShadowLit(lightXCentralShifted,
-                        lightYCentralShifted, shade);
+                (lightXCentralShifted, lightYCentralShifted, shade);
+        shadeRenderers[BRIGHT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadowLit
+                (lightXCentralShifted, lightYCentralShifted, shade);
         shadeRenderers[BRIGHTEN] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> {
             if (!shade.isBottomRounded()) {
                 drawShadeLit(shade, point, lightXCentralShifted, lightYCentralShifted);
@@ -43,11 +41,9 @@ public class ShadowDrawer {
             }
         };
         shadeRenderers[BRIGHTEN_OBJECT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
-                .renderShadowLit(lightXCentralShifted,
-                        lightYCentralShifted, point.getX(), point.getY());
+                .renderShadowLit(lightXCentralShifted, lightYCentralShifted, point.getX(), point.getY());
         shadeRenderers[DARKEN_OBJECT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
-                .renderShadow(lightXCentralShifted,
-                        lightYCentralShifted, point.getX(), point.getY());
+                .renderShadow(lightXCentralShifted, lightYCentralShifted, point.getX(), point.getY());
     }
 
     public static void drawAllShadows(Figure shaded, int lightXCentralShifted, int lightYCentralShifted) {

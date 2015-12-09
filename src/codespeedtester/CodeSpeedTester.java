@@ -5,10 +5,6 @@
  */
 package codespeedtester;
 
-import collision.Figure;
-import collision.OpticProperties;
-import collision.Rectangle;
-import collision.RoundRectangle;
 import engine.utilities.Methods;
 
 /**
@@ -17,29 +13,19 @@ import engine.utilities.Methods;
 public class CodeSpeedTester {
 
     private static final int runs = 1000000;   // znajdź najmniejszą liczbę dla której puste testy nadal pokazują wyniki bliskie zero.
-    private static final int precision = 10;  // z jaką dokładnością wyświetla się wynik 10 - jedno miejsce po przecinku, 100 - dwa
+    private static final int precision = 1000;  // z jaką dokładnością wyświetla się wynik 10 - jedno miejsce po przecinku, 100 - dwa
     // przygotuj zmienne potrzebne do testowania kodu
     private static final double angle = 70;
     private static final double rad = 180;
-    static RoundRectangle rectangle = RoundRectangle.create(20, 20, 24, 24, OpticProperties.NO_SHADOW, null);
-    static Rectangle rectangle2 = Rectangle.create(20, 20, 24, 24, OpticProperties.NO_SHADOW, null);
-    static Figure f1 = rectangle;
-    static Figure f2 = rectangle2;
     private static double zeroTime;
 
     private static void firstCodeToTest() {
-        if (f1 instanceof RoundRectangle) {
-        }
-        if (f2 instanceof RoundRectangle) {
-        }
+        Methods.pointDistance(2, 6, 7, 9);
 //        double result = FastMath.sin(FastMath.toRadians(angle)) * rad;
     }
 
     private static void secondCodeToTest() {
-        if (f1.isRoundRectangle()) {
-        }
-        if (f2.isRoundRectangle()) {
-        }
+        Methods.pointDistance(2, 6, 7, 9);
 //        System.out.println(Math.signum(x-x2));
 
     }

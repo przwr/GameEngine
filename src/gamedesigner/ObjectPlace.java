@@ -61,7 +61,7 @@ public class ObjectPlace extends Place {
         Area.Y_IN_TILES = yWorkingAreaInTiles;
         Place.xAreaInPixels = X_IN_TILES * tileSize;
         Place.yAreaInPixels = Y_IN_TILES * tileSize;
-        dayCycle.setTime(12, 0);
+        dayCycle.setTime(20, 0);
         lastName = "";
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
