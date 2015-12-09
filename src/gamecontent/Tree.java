@@ -14,6 +14,7 @@ import game.place.fbo.MultiSampleFrameBufferObject;
 import game.place.fbo.RegularFrameBufferObject;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
+import sprites.Sprite;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -28,7 +29,7 @@ public class Tree extends GameObject {
     int change, xPosition, height1, height2, change1, change2, change3, change4, change5, xA, yA, xB, yB;
     FrameBufferObject fbo;
     boolean prerendered;
-
+    Sprite sprite;
 
     public Tree(int x, int y, int width, int height) {
         initialize("Tree", x, y);
@@ -48,6 +49,7 @@ public class Tree extends GameObject {
     @Override
     public void render(int xEffect, int yEffect) {
         if (!prerendered) {
+            sprite = map.place.getSprite("bark", "");
             fbo.activate();
             glPushMatrix();
             glClearColor(0.5f, 0.35f, 0.2f, 0);
@@ -69,13 +71,15 @@ public class Tree extends GameObject {
 
 
     private void drawTrunkAndBranches() {
-        Drawer.setColor(new Color(0.5f, 0.35f, 0.2f));
+        glEnable(GL_TEXTURE_2D);
+        sprite.bindCheck();
+        Drawer.setColor(new Color(0.4f + (random.next(10) / 10240f), 0.3f + (random.next(10) / 10240f), 0.15f + (random.next(10) / 10240f)));
         change1 = -4 + random.next(3) + Math.round(height * 0.05f + height * random.next(10) / 10240f);
         change2 = -4 + random.next(3) - Math.round(height * 0.05f + height * random.next(10) / 10240f);
         change3 = -2 + random.next(2) + Math.round(height * 0.025f + height * random.next(10) / 20480f);
-        Drawer.drawTriangle(0, 0, width, -10, width + change1, 4);
-        Drawer.drawTriangle(width, 0, 0, -10, change2, 6);
-        Drawer.drawTriangle(0, 0, width - width / 4, 0, change3 + width / 2, 12);
+        Drawer.drawTextureTriangle(0, 0, width, -10, width + change1, 4);
+        Drawer.drawTextureTriangle(width, 0, 0, -10, change2, 6);
+        Drawer.drawTextureTriangle(0, 0, width - width / 4, 0, change3 + width / 2, 12);
         height1 = Math.round(0.3f * height + (random.next(8) / 1024f) * 0.7f * height);
         height2 = Math.round(0.6f * height + (random.next(8) / 1024f) * 0.7f * height);
         change1 = -4 + random.next(3);      // RIGHT
@@ -83,9 +87,9 @@ public class Tree extends GameObject {
         change3 = -4 + random.next(3);      // RIGHT
         change4 = -4 + random.next(3);      // LEFT
         change5 = -4 + random.next(3);      // WHOLE
-        Drawer.drawQuad(0, 0, width, 0, width + change1, -height1, change2, -height1);
-        Drawer.drawQuad(change2, -height1, width + change1, -height1, width + change3, -height2, change4, -height2);
-        Drawer.drawQuad(change4, -height2, width + change3, -height2, width + change5, -height, change5, -height);
+        Drawer.drawTextureQuad(0, 0, width, 0, width + change1, -height1, change2, -height1);
+        Drawer.drawTextureQuad(change2, -height1, width + change1, -height1, width + change3, -height2, change4, -height2);
+        Drawer.drawTextureQuad(change4, -height2, width + change3, -height2, width + change5, -height, change5, -height);
         int thick = 16;
         int length = height / 2 + Math.round(height * random.next(8) / 1024f);
         int deviation = -8 + random.next(4);
@@ -151,10 +155,13 @@ public class Tree extends GameObject {
     private void drawBranch(int x, int height, int deviation, int widthBase, int withTop, int smallCount) {
         change = -8 + random.next(4);
         xPosition = x + deviation / 2 + change;
-        Drawer.drawQuad(x, 0, xPosition, -height / 2, xPosition + (withTop + widthBase) / 2, -height / 2, x + widthBase, 0);
-        Drawer.drawQuad(xPosition, -height / 2, x + deviation, -height, x + deviation + withTop, -height, xPosition + (withTop + widthBase) / 2, -height / 2);
+        Drawer.drawTextureQuad(x, 0, xPosition, -height / 2, xPosition + (withTop + widthBase) / 2, -height / 2, x + widthBase, 0);
+        Drawer.drawTextureQuad(xPosition, -height / 2, x + deviation, -height, x + deviation + withTop, -height, xPosition + (withTop + widthBase) / 2,
+                -height / 2);
 
 //      small branch
+
+
         xPosition = deviation + change / 2;
         xA = x + Math.round(xPosition * 0.75f) + (deviation < 0 ? withTop / 2 : withTop / 2);
         yA = -Math.round(height * 0.75f);
@@ -164,7 +171,7 @@ public class Tree extends GameObject {
             xA += Math.round(xPosition * 0.1f);
             yA -= Math.round(height * 0.1f);
         }
-        Drawer.drawTriangle(xA, yA, xB, yB, x + 5 * xPosition / 3, Math.round(-1.2f * height));
+        Drawer.drawTextureTriangle(xA, yA, xB, yB, x + 5 * xPosition / 3, Math.round(-1.2f * height));
 
 //      small branch
         xPosition = deviation + change;
@@ -176,11 +183,14 @@ public class Tree extends GameObject {
             xA += Math.round(xPosition * 0.1f);
             yA -= Math.round(height * 0.1f);
         }
-        Drawer.drawTriangle(xA, yA, xB, yB, x + 3 * xPosition / 2, Math.round(-0.8f * height));
+        Drawer.drawTextureTriangle(xA, yA, xB, yB, x + 3 * xPosition / 2, Math.round(-0.8f * height));
 
 //      End of branch
+
+
         change = -16 + random.next(5);
-        Drawer.drawTriangle(x + deviation, -height, x + deviation + withTop, -height, x + deviation + 2 * deviation / 3 + change, -height - 2 * height / 3);
+        Drawer.drawTextureTriangle(x + deviation, -height, x + deviation + withTop, -height, x + deviation + 2 * deviation / 3 + change, -height - 2 * height
+                / 3);
     }
 
 

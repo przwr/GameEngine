@@ -91,7 +91,7 @@ public class GladeMap extends Map {
         }
 
 
-        addObject(new Tree(192, 800, 24, 150));
+        addObject(new Tree(400, 800, 24, 150));
         addObject(new Tree(620, 920, 24, 150));
         addObject(new Tree(250, 1024, 32, 200));
         addObject(new Tree(140, 1200, 32, 200));

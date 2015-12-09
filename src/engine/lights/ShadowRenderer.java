@@ -50,11 +50,7 @@ public class ShadowRenderer {
     private static Figure tempShade;
     private static Area area;
     private static engine.utilities.Point tempPoint;
-    private static long sum = 0;
-    private static int count = 0;
 
-//    private static long sum = 0;
-//    private static int count = 0;
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -69,20 +65,11 @@ public class ShadowRenderer {
     }
 
     public static void preRenderLight(Map map, Light light) {
-//        long start = System.nanoTime();
         prepareToPreRender(light);
         findShades(light, map);
         calculateShadows(light);
         renderShadows(light);
         endPreRender(light);
-//        long end = System.nanoTime();
-//        sum += (end - start);
-//        count++;
-//        if (count == 200) {
-//            System.out.println("Time: " + (sum / 200000f));
-//            sum = 0;
-//            count = 0;
-//        }
     }
 
     private static void prepareToPreRender(Light light) {
@@ -174,18 +161,7 @@ public class ShadowRenderer {
 
     private static void calculateShadow(Light source, Figure thisShade) {
         findPoints(source, thisShade);
-
-        long start = System.nanoTime();
         findLeftSideOfShadow();
-        long end = System.nanoTime();
-        sum += (end - start);
-        count++;
-        if (count == 200) {
-            System.out.println("Time: " + (sum / 200000f));
-            sum = 0;
-            count = 0;
-
-        }
         findRightSideOfShadow();
         setPolygonShape();
     }
@@ -258,12 +234,11 @@ public class ShadowRenderer {
         } else {
             al = ((centerY - shadow0Y)) / (float) (centerX - shadow0X);
             bl = shadow0Y - al * shadow0X;
+            shX = shadow0X;
             if (al == 0) {
-                shX = shadow0X;
                 shY = shadow0Y + (shadow0Y > centerY ? shadowLength : -shadowLength);
             } else {
-                shX = shadow0X + (al > 0 ? (shadow0Y > centerY ? shadowLength : -shadowLength) : (shadow0Y > centerY ? -shadowLength :
-                        shadowLength));
+                shX += (al > 0 ? (shadow0Y > centerY ? shadowLength : -shadowLength) : (shadow0Y > centerY ? -shadowLength : shadowLength));
                 shY = (int) (al * shX + bl);
             }
             shadowPoints[2].set(shX, shY);
@@ -280,12 +255,11 @@ public class ShadowRenderer {
         } else {
             ar = ((centerY - shadow1Y)) / (float) (centerX - shadow1X);
             br = shadow1Y - ar * shadow1X;
+            shX = shadow1X;
             if (ar == 0) {
-                shX = shadow1X;
                 shY = shadow1Y + (shadow1Y > centerY ? shadowLength : -shadowLength);
             } else {
-                shX = shadow1X + (ar > 0 ? (shadow1Y > centerY ? shadowLength : -shadowLength) : (shadow1Y > centerY ? -shadowLength :
-                        shadowLength));
+                shX += (ar > 0 ? (shadow1Y > centerY ? shadowLength : -shadowLength) : (shadow1Y > centerY ? -shadowLength : shadowLength));
                 shY = (int) (ar * shX + br);
             }
             shadowPoints[3].set(shX, shY);

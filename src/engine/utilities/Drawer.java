@@ -121,6 +121,18 @@ public class Drawer {
         glColor3f(1f, 1f, 1f);
     }
 
+
+    public static void drawTextureTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(1, 1);
+        glVertex2f(xA, yA);
+        glTexCoord2f(0, 1);
+        glVertex2f(xB, yB);
+        glTexCoord2f(1, 0);
+        glVertex2f(xC, yC);
+        glEnd();
+    }
+
     public static void drawTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLES);
@@ -153,6 +165,19 @@ public class Drawer {
         glVertex2f(width, 0);
         glEnd();
         glEnable(GL_TEXTURE_2D);
+    }
+
+    public static void drawTextureQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
+        glBegin(GL_QUADS);
+        glTexCoord2f(1, 0);
+        glVertex2f(xA, yA);
+        glTexCoord2f(0, 0);
+        glVertex2f(xB, yB);
+        glTexCoord2f(0, 1);
+        glVertex2f(xC, yC);
+        glTexCoord2f(1, 1);
+        glVertex2f(xD, yD);
+        glEnd();
     }
 
 
