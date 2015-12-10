@@ -81,12 +81,10 @@ public class ClothedAppearance implements Appearance {
 
     private void calculateDimensions() {
         Point[] dims = SpriteSheet.getMergedDimensions(upperRenderList);
-        int tempx = dims[0].getX();
-        int tempy = dims[0].getY();
-        width = Methods.roundUpToBinaryNumber(dims[0].getX());
-        height = Methods.roundUpToBinaryNumber(dims[0].getY());
-        xOffset = xStart - (dims[1].getX() - (dims[0].getX() - tempx) / 2);
-        yOffset = yStart - (dims[1].getY() - (dims[0].getY() - tempy) / 2);
+        width = dims[0].getX();
+        height = dims[0].getY();
+        xOffset = dims[1].getX();
+        yOffset = dims[1].getY();
     }
 
     private void setRenderQueue(String folder) {
@@ -290,12 +288,12 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public int getXStart() {
-        return -xStart;
+        return -xStart + xDelta;
     }
 
     @Override
     public int getYStart() {
-        return -yStart;
+        return -yStart + yDelta;
     }
 
     @Override

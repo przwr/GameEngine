@@ -6,6 +6,7 @@
 package game.place.cameras;
 
 import engine.lights.Light;
+import engine.systemcommunication.Time;
 import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
@@ -65,12 +66,13 @@ public abstract class Camera {
 
     public synchronized void updateSmooth() {
         if (map != null) {
-            if (cameraSpeed > 1) {
+            double tmpSpeed = cameraSpeed / Time.getDelta();
+            if (tmpSpeed > 1) {
                 updateLooking();
                 xTmpMiddle = xMiddle;
                 yTmpMiddle = yMiddle;
-                xMiddle = xTmpMiddle + (double) (getXMiddle() - xTmpMiddle) / cameraSpeed;
-                yMiddle = yTmpMiddle + (double) (getYMiddle() - yTmpMiddle) / cameraSpeed;
+                xMiddle = xTmpMiddle + (double) (getXMiddle() - xTmpMiddle) / tmpSpeed;
+                yMiddle = yTmpMiddle + (double) (getYMiddle() - yTmpMiddle) / tmpSpeed;
                 xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - xMiddle * scale, 0);
                 yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - yMiddle * scale, 0);
                 area = map.getAreaIndex((int) xMiddle, (int) yMiddle);

@@ -54,7 +54,6 @@ public class MyPlayer extends Player {
 
     private final int framesPerDir = 52;
     private final String characterName = "aria";
-    ClothedAppearance ca;
     private Cloth head = Cloth.nullCloth;
     private Cloth torso = Cloth.nullCloth;
     private Cloth legs = Cloth.nullCloth;
@@ -250,7 +249,7 @@ public class MyPlayer extends Player {
         emits = false;
         centralPoint = new Point(0, 0);
 
-        ca = new ClothedAppearance(place, 200, characterName);
+        appearance = new ClothedAppearance(place, 200, characterName);
         loadClothes();
         //randomizeClothes();
 
@@ -260,9 +259,7 @@ public class MyPlayer extends Player {
         deltaPoint = renderPoints[1];
 
         /*appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "characters/" + characterName), 200, framesPerDir, dims[0], dims[1],
-                centralPoint);*/
-        
-        appearance = ca;
+         centralPoint);*/
         visible = true;
         depth = 0;
         setResistance(2);
@@ -296,7 +293,7 @@ public class MyPlayer extends Player {
         legs = loadCloth("leg", Cloth.BODY_TYPE);
         nudeTorso = loadCloth("nudetorso", Cloth.BODY_TYPE);
         nudeLegs = loadCloth("nudeleg", Cloth.BODY_TYPE);
-        ca.setClothes(head, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon);
+        ((ClothedAppearance) appearance).setClothes(head, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon);
     }
 
     public void randomizeClothes() {
@@ -359,13 +356,21 @@ public class MyPlayer extends Player {
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
-            if (renderClothed) {
-                ca.render();
-            } else {
-                appearance.render();
-            }
-//            ((Animation)appearance).renderWhole();
-//            renderClothed(appearance.getCurrentFrameIndex());  //NIE KASOWAĆ ! <('o'<)
+            //Drawer.setCentralPoint();
+            appearance.render();
+            /*Drawer.returnToCentralPoint();
+            Drawer.setColor(Color.black);
+            Drawer.drawCircle(Place.tileSize * 2, 0, 6, 10);
+            Drawer.setCentralPoint();
+            
+            Drawer.translate(-appearance.getXStart() - appearance.getXOffset(), -appearance.getYStart() - appearance.getYOffset());
+            appearance.render();
+            
+            Drawer.refreshColor();
+            Drawer.returnToCentralPoint();
+            Drawer.translate(-appearance.getXStart(), -appearance.getYStart());
+            appearance.render();*/
+
             appearance.updateFrame();
             glPopMatrix();
 
