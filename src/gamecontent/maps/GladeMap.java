@@ -9,12 +9,13 @@ import collision.Rectangle;
 import game.place.Place;
 import game.place.map.*;
 import gamecontent.GrassClump;
+import gamecontent.SpawnPoint;
 import gamecontent.Tree;
+import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import gamecontent.mobs.Blazag;
 
 /**
  * @author Wojtek
@@ -105,8 +106,8 @@ public class GladeMap extends Map {
         addObject(new Shen(512, 1500, place, mobID++));
         addObject(new Shen(648, 1400, place, mobID++));
         addObject(new Plurret(1156, 968, place, mobID++));
-//        addObject(new Blazag(1600, 2494, place, mobID++));
-//        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
+        addObject(new Blazag(1600, 2494, place, mobID++));
+        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
 
 //        addObject(SpawnPoint.createVisible(place,2048, 2048, 64, 64, "Shen spawn", Shen.class, 30, 5, place.getSprite("rabbit", "")));
 //        addObject(new Shen(512, 1024, place, mobID++));

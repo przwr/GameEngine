@@ -227,8 +227,8 @@ public class MyGame extends Game {
             if (Main.TEST) {
                 players[0].initializeSetPosition(56, 104, place, 2048, 2048);
             } else {
-//                players[0].initializeSetPosition(56, 104, place, 256, 256);
-                players[0].initializeSetPosition(56, 104, place, 1200, 1920);
+                players[0].initializeSetPosition(56, 104, place, 256, 256);
+//                players[0].initializeSetPosition(56, 104, place, 1200, 1920);
 
             }
             players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS

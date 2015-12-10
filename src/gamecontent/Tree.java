@@ -74,12 +74,23 @@ public class Tree extends GameObject {
         glEnable(GL_TEXTURE_2D);
         sprite.bindCheck();
         Drawer.setColor(new Color(0.4f + (random.next(10) / 10240f), 0.3f + (random.next(10) / 10240f), 0.15f + (random.next(10) / 10240f)));
-        change1 = -4 + random.next(3) + Math.round(height * 0.05f + height * random.next(10) / 10240f);
-        change2 = -4 + random.next(3) - Math.round(height * 0.05f + height * random.next(10) / 10240f);
-        change3 = -2 + random.next(2) + Math.round(height * 0.025f + height * random.next(10) / 20480f);
-        Drawer.drawTextureTriangle(0, 0, width, -10, width + change1, 4);
-        Drawer.drawTextureTriangle(width, 0, 0, -10, change2, 6);
-        Drawer.drawTextureTriangle(0, 0, width - width / 4, 0, change3 + width / 2, 12);
+        // Roots
+        change1 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
+        change2 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
+        change3 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
+        Drawer.drawTextureQuad(width / 2, 0, width, -12, width + change1, -6, width + change1, 2);
+        Drawer.drawTextureTriangle(width + change1, -6, width + change1, 2, (width - change1) * 2, change2 < 6 ? change2 : 6);
+        Drawer.drawTextureQuad(width / 2, 0, 0, -12, -change2, -6, -change2, 2);
+        Drawer.drawTextureTriangle(-change2, -6, -change2, 2, -width + change1 * 2, change1 < 6 ? change1 : 6);
+        boolean left = random.nextBoolean();
+        if (left) {
+            Drawer.drawTextureQuad(2 * width / 3, 0, width / 4, -5, width / 3 - change3 / 2, 4, width / 3 + change3 / 2, 6);
+            Drawer.drawTextureTriangle(width / 3 - change3 / 2, 4, width / 3 + change3 / 2, 6, -3, 12);
+        } else {
+            Drawer.drawTextureQuad(width / 3, 0, 3 * width / 4, -5, 2 * width / 3 + change3 / 2, 4, 2 * width / 3 - change3 / 2, 6);
+            Drawer.drawTextureTriangle(2 * width / 3 + change3 / 2, 4, 2 * width / 3 - change3 / 2, 6, width + 3, 12);
+        }
+        // Trunk
         height1 = Math.round(0.3f * height + (random.next(8) / 1024f) * 0.7f * height);
         height2 = Math.round(0.6f * height + (random.next(8) / 1024f) * 0.7f * height);
         change1 = -4 + random.next(3);      // RIGHT
@@ -90,107 +101,147 @@ public class Tree extends GameObject {
         Drawer.drawTextureQuad(0, 0, width, 0, width + change1, -height1, change2, -height1);
         Drawer.drawTextureQuad(change2, -height1, width + change1, -height1, width + change3, -height2, change4, -height2);
         Drawer.drawTextureQuad(change4, -height2, width + change3, -height2, width + change5, -height, change5, -height);
+        // Branches
         int thick = 16;
         int length = height / 2 + Math.round(height * random.next(8) / 1024f);
         int deviation = -8 + random.next(4);
         glTranslatef(change5, -height, 0);
-
-//      Top Branches
-        drawBranch(width / 2 - thick / 2, length, deviation, thick, thick / 2, 1);
-        boolean leftHigher = random.nextBoolean();
-
-        if (leftHigher) {
+        drawBranch(width / 2 - thick / 2, length, deviation, thick, thick / 2);
+        left = random.nextBoolean();
+        if (left) {
             length = height / 2 + Math.round(height * random.next(6) / 1024f);
             deviation = height / 3 + Math.round(height * random.next(4) / 1024f);
-            drawBranch(0, length, -deviation, thick, thick / 2, 1);
+            drawBranch(0, length, -deviation, thick, thick / 2);
             length = height / 2 + Math.round(height * random.next(8) / 1024f);
             deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
             glTranslatef(0, Math.round(height * 0.1f), 0);
-            drawBranch(width - thick, length, deviation, thick, thick / 2, 1);
+            drawBranch(width - thick, length, deviation, thick, thick / 2);
         } else {
             length = height / 2 + Math.round(height * random.next(6) / 1024f);
             deviation = height / 3 + Math.round(height * random.next(4) / 1024f);
-            drawBranch(width - thick, length, deviation, thick, thick / 2, 1);
+            drawBranch(width - thick, length, deviation, thick, thick / 2);
             length = height / 2 + Math.round(height * random.next(6) / 1024f);
             deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
             glTranslatef(0, Math.round(height * 0.1f), 0);
-            drawBranch(0, length, -deviation, thick, thick / 2, 1);
+            drawBranch(0, length, -deviation, thick, thick / 2);
         }
         glTranslatef(0, Math.round(height * 0.3f), 0);
-        if (leftHigher) {
+        if (left) {
             length = height / 2 + Math.round(height * random.next(3) / 1024f);
             deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
-            drawBranch(-change5, length, -deviation, thick, thick / 2, 1);
+            drawBranch(-change5, length, -deviation, thick, thick / 2);
         } else {
             length = height / 2 + Math.round(height * random.next(3) / 1024f);
             deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
-            drawBranch(change4 - change5, length, deviation, thick, thick / 2, 1);
+            drawBranch(change4 - change5, length, deviation, thick, thick / 2);
         }
-
         glTranslatef(0, (height - height2) / 2, 0);
-        leftHigher = random.nextBoolean();
-        if (leftHigher) {
+        left = random.nextBoolean();
+        if (left) {
             length = height / 3 + Math.round(height * random.next(3) / 1024f);
             deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
-            drawBranch(-change5, length, -deviation, thick, thick / 2, 1);
-            leftHigher = random.nextBoolean();
-            if (leftHigher) {
+            drawBranch(-change5, length, -deviation, thick, thick / 2);
+            left = random.nextBoolean();
+            if (left) {
                 length = height / 2 + Math.round(height * random.next(3) / 1024f);
                 deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
-                drawBranch(change4 - change5 + (width - thick) / 2, length, deviation, thick, thick / 2, 1);
+                drawBranch(change4 - change5 + (width - thick) / 2, length, deviation, thick, thick / 2);
             }
         } else {
             length = height / 3 + Math.round(height * random.next(3) / 1024f);
             deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
-            drawBranch(change4 - change5 + (width - thick) / 2, length, deviation, thick, thick / 2, 1);
-            leftHigher = random.nextBoolean();
-            if (leftHigher) {
+            drawBranch(change4 - change5 + (width - thick) / 2, length, deviation, thick, thick / 2);
+            left = random.nextBoolean();
+            if (left) {
                 length = height / 2 + Math.round(height * random.next(3) / 1024f);
                 deviation = height / 3 + Math.round(height * random.next(3) / 1024f);
-                drawBranch(-change5, length, -deviation, thick, thick / 2, 1);
+                drawBranch(-change5, length, -deviation, thick, thick / 2);
             }
         }
     }
 
-    private void drawBranch(int x, int height, int deviation, int widthBase, int withTop, int smallCount) {
+    private void drawBranch(int x, int height, int deviation, int widthBase, int widthTop) {
         change = -8 + random.next(4);
         xPosition = x + deviation / 2 + change;
-        Drawer.drawTextureQuad(x, 0, xPosition, -height / 2, xPosition + (withTop + widthBase) / 2, -height / 2, x + widthBase, 0);
-        Drawer.drawTextureQuad(xPosition, -height / 2, x + deviation, -height, x + deviation + withTop, -height, xPosition + (withTop + widthBase) / 2,
+        Drawer.drawTextureQuad(x, 0, xPosition, -height / 2, xPosition + (widthTop + widthBase) / 2, -height / 2, x + widthBase, 0);
+        Drawer.drawTextureQuad(xPosition, -height / 2, x + deviation, -height, x + deviation + widthTop, -height, xPosition + (widthTop + widthBase) / 2,
                 -height / 2);
-
-//      small branch
-
-
-        xPosition = deviation + change / 2;
-        xA = x + Math.round(xPosition * 0.75f) + (deviation < 0 ? withTop / 2 : withTop / 2);
-        yA = -Math.round(height * 0.75f);
-        xB = x + xPosition + (deviation < 0 ? withTop / 2 : withTop / 2);
-        yB = -height;
-        while (Methods.pointDistanceSimple2(xA, yA, xB, yB) > withTop * withTop * 4) {
-            xA += Math.round(xPosition * 0.1f);
-            yA -= Math.round(height * 0.1f);
+        // End of branch
+        change2 = -16 + random.next(5);
+        Drawer.drawTextureTriangle(x + deviation, -height, x + deviation + widthTop, -height, x + deviation + 2 * deviation / 3 + change2, -height - 2 *
+                height / 3);
+        if (Math.abs(deviation) > 20) {
+            // Small Branch
+            xPosition = deviation + change / 2;
+            xA = x + Math.round(xPosition * 0.75f) + widthTop / 2;
+            yA = -Math.round(height * 0.75f);
+            xB = x + xPosition + widthTop / 2;
+            yB = -height;
+            while (Methods.pointDistanceSimple2(xA, yA, xB, yB) > widthTop * widthTop * 4) {
+                xA += Math.round(xPosition * 0.1f);
+                yA -= Math.round(height * 0.1f);
+            }
+            change1 = Math.round(height * (random.next(10) / 4096f));
+            Drawer.drawTextureQuad(xA, yA, xB, yB,
+                    x + Math.round(1.3f * xPosition), Math.round(-1f * height) + Math.round(-0.5f * widthTop),
+                    x + Math.round(1.3f * xPosition), Math.round(-1f * height));
+            Drawer.drawTextureQuad(x + Math.round(1.3f * xPosition), Math.round(-1f * height) + Math.round(-0.5f * widthTop),
+                    x + Math.round(1.3f * xPosition), Math.round(-1f * height),
+                    x + Math.round(1.5f * xPosition), Math.round(-0.95f * height) - change1,
+                    x + Math.round(1.5f * xPosition), Math.round(-0.95f * height) - change1 + Math.round(-0.4f * widthTop));
+            Drawer.drawTextureTriangle(x + Math.round(1.5f * xPosition), Math.round(-0.95f * height) - change1,
+                    x + Math.round(1.5f * xPosition), Math.round(-0.95f * height) - change1 + Math.round(-0.4f * widthTop),
+                    x + Math.round(1.6f * xPosition), Math.round(-1.2f * height));
+            // Small Branch
+            xPosition = deviation + change;
+            xA = x + Math.round(xPosition * 0.35f) + widthTop / 2;
+            yA = -Math.round(height * 0.35f);
+            xB = x + Math.round(xPosition * 0.6f) + widthTop / 2;
+            yB = -Math.round(height * 0.6f);
+            while (Methods.pointDistanceSimple2(xA, yA, xB, yB) > widthTop * widthTop * 6) {
+                xA += Math.round(xPosition * 0.1f);
+                yA -= Math.round(height * 0.1f);
+            }
+            Drawer.drawTextureQuad(xA, yA, xB, yB,
+                    x + Math.round(0.9f * xPosition), Math.round(-0.6f * height) + Math.round(-0.5f * widthTop),
+                    x + Math.round(0.9f * xPosition), Math.round(-0.6f * height));
+            Drawer.drawTextureTriangle(x + Math.round(0.9f * xPosition), Math.round(-0.6f * height) + Math.round(-0.5f * widthTop),
+                    x + Math.round(0.9f * xPosition), Math.round(-0.6f * height),
+                    x + Math.round(1.8f * xPosition), Math.round(-(0.75f + random.next(10) / 3072f) * height));
+            // Small Branch
+            Drawer.drawTextureQuad(xA, yA, xA + Math.round(0.125f * xPosition), yA - Math.round(height * 0.1f),
+                    xA + Math.round(0.35f * xPosition), Math.round(-1.0f * height),
+                    xA + Math.round(0.3f * xPosition), Math.round(-1.0f * height) + Math.round(-0.4f * widthTop));
+            Drawer.drawTextureTriangle(xA + Math.round(0.35f * xPosition), Math.round(-1.0f * height),
+                    xA + Math.round(0.3f * xPosition), Math.round(-1.0f * height) + Math.round(-0.4f * widthTop),
+                    xA + Math.round(0.45f * xPosition), Math.round(-(1.2f + random.next(10) / 3072f) * height));
+        } else {
+            // Small Branch
+            xPosition = deviation + change;
+            xA = x + Math.round(xPosition * 0.35f) + widthTop / 2;
+            yA = -Math.round(height * 0.35f);
+            xB = x + Math.round(xPosition * 0.6f) + widthTop / 2;
+            yB = -Math.round(height * 0.6f);
+            while (Methods.pointDistanceSimple2(xA, yA, xB, yB) > widthTop * widthTop * 6) {
+                xA += Math.round(xPosition * 0.1f);
+                yA -= Math.round(height * 0.1f);
+            }
+            Drawer.drawTextureQuad(xA, yA, xB, yB,
+                    xA + Math.round(Math.signum(xPosition) * height * 0.2f), Math.round(-0.9f * height) + Math.round(-0.5f * widthTop),
+                    xA + Math.round(Math.signum(xPosition) * height * 0.2f) + Math.round(-0.4f * widthTop), Math.round(-0.9f * height));
+            Drawer.drawTextureTriangle(xA + Math.round(Math.signum(xPosition) * height * 0.2f), Math.round(-0.9f * height) + Math.round(-0.5f * widthTop),
+                    xA + Math.round(Math.signum(xPosition) * height * 0.2f) + Math.round(-0.4f * widthTop), Math.round(-0.9f * height),
+                    xA + Math.round(Math.signum(xPosition) * height * 0.3f) + Math.round(-0.4f * widthTop), Math.round(-(1.1f + random.next(10) / 3072f) *
+                            height));
+            // Small Branch
+            Drawer.drawTextureQuad(xA, yA, xB, yB,
+                    xA - Math.round(Math.signum(xPosition) * height * 0.2f), Math.round(-0.9f * height) + Math.round(-0.5f * widthTop),
+                    xA - Math.round(Math.signum(xPosition) * height * 0.2f) - Math.round(-0.4f * widthTop), Math.round(-0.9f * height));
+            Drawer.drawTextureTriangle(xA - Math.round(Math.signum(xPosition) * height * 0.2f), Math.round(-0.9f * height) + Math.round(-0.5f * widthTop),
+                    xA - Math.round(Math.signum(xPosition) * height * 0.2f) - Math.round(-0.4f * widthTop), Math.round(-0.9f * height),
+                    xA - Math.round(Math.signum(xPosition) * height * 0.3f) - Math.round(-0.4f * widthTop), Math.round(-(1.1f + random.next(10) / 3072f) *
+                            height));
         }
-        Drawer.drawTextureTriangle(xA, yA, xB, yB, x + 5 * xPosition / 3, Math.round(-1.2f * height));
-
-//      small branch
-        xPosition = deviation + change;
-        xA = x + Math.round(xPosition * 0.35f) + (deviation < 0 ? withTop / 2 : withTop / 2);
-        yA = -Math.round(height * 0.35f);
-        xB = x + Math.round(xPosition * 0.6f) + (deviation < 0 ? withTop / 2 : withTop / 2);
-        yB = -Math.round(height * 0.6f);
-        while (Methods.pointDistanceSimple2(xA, yA, xB, yB) > withTop * withTop * 6) {
-            xA += Math.round(xPosition * 0.1f);
-            yA -= Math.round(height * 0.1f);
-        }
-        Drawer.drawTextureTriangle(xA, yA, xB, yB, x + 3 * xPosition / 2, Math.round(-0.8f * height));
-
-//      End of branch
-
-
-        change = -16 + random.next(5);
-        Drawer.drawTextureTriangle(x + deviation, -height, x + deviation + withTop, -height, x + deviation + 2 * deviation / 3 + change, -height - 2 * height
-                / 3);
     }
 
 

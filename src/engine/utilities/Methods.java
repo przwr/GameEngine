@@ -113,11 +113,9 @@ public class Methods {
     }
 
     public static int pointAngle8Directions(double xSt, double ySt, double xEn, double yEn) {
-        int temp = -(int) (FastMath.atan2(yEn - ySt, xEn - xSt) * 4 / FastMath.PI + 0.5);
-        if (temp < 0) {
-            temp = (temp + 8) % 8;
-        }
-        return temp;
+        double temp = -FastMath.atan2(yEn - ySt, xEn - xSt) * 4 / FastMath.PI + 0.5;
+        temp = temp >= 0 ? temp : (temp + 8) % 8;
+        return (int) temp;
     }
 
     public static double pointAngleCounterClockwise(double xSt, double ySt, double xEn, double yEn) {    //0 <=> PRAWO; 90 <=> GÓRA; 180 <=> LEWO; 270 <=> DÓŁ;

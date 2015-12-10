@@ -516,6 +516,7 @@ public class Blazag extends Mob {
                                                             animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
                                                         }
                                                     }
+                                                    return;
                                                 }
                                             }
                                         }
@@ -652,7 +653,11 @@ public class Blazag extends Mob {
         Blazag friend;
         if (target != null) {
             int attacks = 0;
+            boolean close = false;
             for (GameObject object : closeEnemies) {
+                if (!close && Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < sightRange2 / 36) {
+                    close = true;
+                }
                 if (object instanceof Player) {
                     attacks += 2;
                 }
@@ -680,7 +685,7 @@ public class Blazag extends Mob {
                     }
                 }
             }
-            if (attacks > 0) {
+            if (attacks > 0 || close) {
                 loneAttack(Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()));
             } else {
                 walkAround(goes);
