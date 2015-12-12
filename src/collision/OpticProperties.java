@@ -6,7 +6,7 @@
 package collision;
 
 import engine.lights.Shadow;
-import engine.utilities.ShadowContainer;
+import engine.lights.ShadowContainer;
 
 /**
  * @author przemek
