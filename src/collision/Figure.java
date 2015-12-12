@@ -7,8 +7,12 @@ package collision;
 
 import engine.lights.Light;
 import engine.lights.Shadow;
+import engine.lights.ShadowContainer;
 import engine.lights.ShadowRenderer;
-import engine.utilities.*;
+import engine.utilities.BlueArray;
+import engine.utilities.Methods;
+import engine.utilities.Point;
+import engine.utilities.PointContainer;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
