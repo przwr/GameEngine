@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine.utilities;
+package engine.lights;
 
 import collision.Figure;
-import engine.lights.Shadow;
 
 /**
  * @author przemek
@@ -27,7 +26,8 @@ public class ShadowContainer {
     public void add(Shadow shadow) {
         ensureCapacity(1);
         shadows[shadowsCount].type = shadow.type;
-        shadows[shadowsCount].point.set(shadow.point.getX(), shadow.point.getY());
+        shadows[shadowsCount].xS = shadow.xS;
+        shadows[shadowsCount].xE = shadow.xE;
         shadowsCount++;
     }
 
@@ -35,7 +35,8 @@ public class ShadowContainer {
         ensureCapacity(newShadows.shadowsCount);
         for (int i = 0; i < newShadows.shadowsCount; i++) {
             shadows[shadowsCount].type = newShadows.shadows[i].type;
-            shadows[shadowsCount].point.set(newShadows.shadows[i].point.getX(), newShadows.shadows[i].point.getY());
+            shadows[shadowsCount].xS = newShadows.shadows[i].xS;
+            shadows[shadowsCount].xE = newShadows.shadows[i].xE;
             shadowsCount++;
         }
     }
@@ -43,7 +44,8 @@ public class ShadowContainer {
     public void add(int type, int x, int y) {
         ensureCapacity(1);
         shadows[shadowsCount].type = type;
-        shadows[shadowsCount].point.set(x, y);
+        shadows[shadowsCount].xS = x;
+        shadows[shadowsCount].xE = y;
         shadowsCount++;
     }
 
@@ -56,8 +58,11 @@ public class ShadowContainer {
     public void addWithCaster(int type, int x, int y, Figure caster) {
         ensureCapacity(1);
         shadows[shadowsCount].type = type;
-        shadows[shadowsCount].point.set(x, y);
-        shadows[shadowsCount].caster = caster;
+        shadows[shadowsCount].type = type;
+        shadows[shadowsCount].xS = x;
+        shadows[shadowsCount].xE = y;
+        shadows[shadowsCount].xC = caster.getX();
+        shadows[shadowsCount].yC = caster.getYEnd();
         shadowsCount++;
     }
 
@@ -81,8 +86,10 @@ public class ShadowContainer {
             if (shadows[i] == shadow) {
                 shadowsCount--;
                 shadows[i].type = shadows[shadowsCount].type;
-                shadows[i].point.set(shadows[shadowsCount].point.getX(), shadows[shadowsCount].point.getY());
-                shadows[i].caster = shadows[shadowsCount].caster;
+                shadows[shadowsCount].xS = shadows[shadowsCount].xS;
+                shadows[shadowsCount].xE = shadows[shadowsCount].xE;
+                shadows[shadowsCount].xC = shadows[shadowsCount].xC;
+                shadows[shadowsCount].yC = shadows[shadowsCount].yC;
                 break;
             }
         }

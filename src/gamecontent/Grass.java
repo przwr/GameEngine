@@ -51,7 +51,7 @@ public class Grass extends GameObject {
                 int color = 170 + random.next(5);
                 blades[idx] = new PointedValue(placeR + widthR + Math.round((xCentralized + c) * bladeSpacing) + bladeWidth / 2, -bladeHeight + heightR +
                         (yCentralized + i) * bladeWidth, color);
-                blades[idx + 1] = new PointedValue(placeR + +Math.round((xCentralized + c + 1) * bladeSpacing), (yCentralized + i) * bladeWidth, 0);
+                blades[idx + 1] = new PointedValue(placeR + Math.round((xCentralized + c + 1) * bladeSpacing), (yCentralized + i) * bladeWidth, 0);
                 blades[idx + 2] = new PointedValue(placeR + Math.round((xCentralized + c) * bladeSpacing), (yCentralized + i) * bladeWidth, 0);
             }
         }

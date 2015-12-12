@@ -22,33 +22,33 @@ public class ShadowDrawer {
     private static final Point corner = new Point();
 
     static {
-        shadeRenderers[DARK] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadow
+        shadeRenderers[DARK] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadow
                 (lightXCentralShifted, lightYCentralShifted, shade);
-        shadeRenderers[BRIGHT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadowLit
+        shadeRenderers[BRIGHT] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadowLit
                 (lightXCentralShifted, lightYCentralShifted, shade);
-        shadeRenderers[BRIGHTEN] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> {
+        shadeRenderers[BRIGHTEN] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> {
             if (!shade.isBottomRounded()) {
-                drawShadeLit(shade, point, lightXCentralShifted, lightYCentralShifted);
+                drawShadeLit(shade, xS, xE, lightXCentralShifted, lightYCentralShifted);
             } else {
-                shade.getOwner().renderShadowLit(lightXCentralShifted, lightYCentralShifted, point.getX(), point.getY());
+                shade.getOwner().renderShadowLit(lightXCentralShifted, lightYCentralShifted, xS, xE);
             }
         };
-        shadeRenderers[DARKEN] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> {
+        shadeRenderers[DARKEN] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> {
             if (!shade.isBottomRounded()) {
-                drawShade(shade, point, lightXCentralShifted, lightYCentralShifted);
+                drawShade(shade, xS, xE, lightXCentralShifted, lightYCentralShifted);
             } else {
-                shade.getOwner().renderShadow(lightXCentralShifted, lightYCentralShifted, point.getX(), point.getY());
+                shade.getOwner().renderShadow(lightXCentralShifted, lightYCentralShifted, xS, xE);
             }
         };
-        shadeRenderers[BRIGHTEN_OBJECT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
-                .renderShadowLit(lightXCentralShifted, lightYCentralShifted, point.getX(), point.getY());
-        shadeRenderers[DARKEN_OBJECT] = (Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
-                .renderShadow(lightXCentralShifted, lightYCentralShifted, point.getX(), point.getY());
+        shadeRenderers[BRIGHTEN_OBJECT] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
+                .renderShadowLit(lightXCentralShifted, lightYCentralShifted, xS, xE);
+        shadeRenderers[DARKEN_OBJECT] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
+                .renderShadow(lightXCentralShifted, lightYCentralShifted, xS, xE);
     }
 
     public static void drawAllShadows(Figure shaded, int lightXCentralShifted, int lightYCentralShifted) {
         for (int i = 0; i < shaded.getShadowCount(); i++) {
-            shadeRenderers[shaded.getShadow(i).type].render(shaded, shaded.getShadow(i).point, lightXCentralShifted, lightYCentralShifted);
+            shadeRenderers[shaded.getShadow(i).type].render(shaded, shaded.getShadow(i).xS, shaded.getShadow(i).xE, lightXCentralShifted, lightYCentralShifted);
         }
     }
 
@@ -120,28 +120,28 @@ public class ShadowDrawer {
         endDrawingShadow();
     }
 
-    private static void drawShade(Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) {
-        drawShadeInColor(BLACK, shade, point, lightXCentralShifted, lightYCentralShifted);
+    private static void drawShade(Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) {
+        drawShadeInColor(BLACK, shade, xS, xE, lightXCentralShifted, lightYCentralShifted);
     }
 
-    private static void drawShadeLit(Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) {
-        drawShadeInColor(WHITE, shade, point, lightXCentralShifted, lightYCentralShifted);
+    private static void drawShadeLit(Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) {
+        drawShadeInColor(WHITE, shade, xS, xE, lightXCentralShifted, lightYCentralShifted);
     }
 
-    private static void drawShadeInColor(byte color, Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted) {
+    private static void drawShadeInColor(byte color, Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) {
         int firstShadowPoint = shade.getYEnd();
         int secondShadowPoint = shade.getY() - shade.getShadowHeight();
         startDrawingShadow(color, lightXCentralShifted, lightYCentralShifted);
         glBegin(GL_QUADS);
-        glVertex2f(point.getX(), firstShadowPoint);
-        glVertex2f(point.getX(), secondShadowPoint);
-        glVertex2f(point.getY(), secondShadowPoint);
-        glVertex2f(point.getY(), firstShadowPoint);
+        glVertex2f(xS, firstShadowPoint);
+        glVertex2f(xS, secondShadowPoint);
+        glVertex2f(xE, secondShadowPoint);
+        glVertex2f(xE, firstShadowPoint);
         endDrawingShadow();
     }
 
     protected interface shadeRenderer {
 
-        void render(Figure shade, Point point, int lightXCentralShifted, int lightYCentralShifted);
+        void render(Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted);
     }
 }

@@ -6,23 +6,20 @@
 package engine.lights;
 
 import collision.Figure;
-import engine.utilities.Point;
 
 /**
  * @author przemek
  */
 public class Shadow {
 
-    public static final short DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3,
-            BRIGHTEN_OBJECT = 4, DARKEN_OBJECT = 5;
+    public static final short DARK = 0, BRIGHT = 1, BRIGHTEN = 2, DARKEN = 3, BRIGHTEN_OBJECT = 4, DARKEN_OBJECT = 5;
     public static final int shadowLength = 32768;
-    public final Point point;
     public int type;
-    public Figure caster;
+    public int xS, xE;
+    public int xC, yC;
 
     public Shadow(int type) {
         this.type = type;
-        point = new Point();
     }
 
     public void setDark() {
@@ -33,29 +30,35 @@ public class Shadow {
         type = BRIGHT;
     }
 
-    public void setBrighten(int x, int y) {
+    public void setBrighten(int xS, int xE) {
         type = BRIGHTEN;
-        point.set(x, y);
+        this.xS = xS;
+        this.xE = xE;
     }
 
-    public void setBrighten(int x, int y, Figure caster) {
+    public void setBrighten(int xS, int xE, Figure caster) {
         type = BRIGHTEN;
-        point.set(x, y);
-        this.caster = caster;
+        this.xS = xS;
+        this.xE = xE;
+        this.xC = caster.getX();
+        this.yC = caster.getYEnd();
     }
 
-    public void setDarken(int x, int y) {
+    public void setDarken(int xS, int xE) {
         this.type = DARKEN;
-        point.set(x, y);
+        this.xS = xS;
+        this.xE = xE;
     }
 
-    public void setBrightenObject(int x, int y) {
+    public void setBrightenObject(int xS, int xE) {
         type = BRIGHTEN_OBJECT;
-        point.set(x, y);
+        this.xS = xS;
+        this.xE = xE;
     }
 
-    public void setDarkenObject(int x, int y) {
+    public void setDarkenObject(int xS, int xE) {
         this.type = DARKEN_OBJECT;
-        point.set(x, y);
+        this.xS = xS;
+        this.xE = xE;
     }
 }
