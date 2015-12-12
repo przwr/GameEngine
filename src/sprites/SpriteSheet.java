@@ -7,6 +7,7 @@ package sprites;
 
 import engine.utilities.Drawer;
 import engine.utilities.Point;
+import engine.utilities.PointedValue;
 import game.Settings;
 import org.newdawn.slick.opengl.Texture;
 
@@ -21,7 +22,7 @@ public class SpriteSheet extends Sprite {
     private float xTiles;
     private float yTiles;
     private int frame;
-    private Point[] startingPoints;
+    private PointedValue[] startingPoints;
 
     private SpriteSheet(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
         super(texture, folder, width, height, xStart, yStart, spriteBase);
@@ -31,7 +32,7 @@ public class SpriteSheet extends Sprite {
         setTilesCount(scale);
     }
 
-    private SpriteSheet(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, Point[] startingPoints) {
+    private SpriteSheet(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, PointedValue[] startingPoints) {
         super(texture, folder, width, height, xStart, yStart, spriteBase);
         this.startingPoints = startingPoints;
         isStartMoving = true;
@@ -52,7 +53,7 @@ public class SpriteSheet extends Sprite {
         return new SpriteSheet(texture, folder, width, height, xStart, yStart, spriteBase, false);
     }
 
-    public static SpriteSheet createWithMovingStart(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, Point[] stPoints) {
+    public static SpriteSheet createWithMovingStart(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, PointedValue[] stPoints) {
         return new SpriteSheet(texture, folder, width, height, xStart, yStart, spriteBase, false, stPoints);
     }
 
@@ -107,7 +108,6 @@ public class SpriteSheet extends Sprite {
                 Drawer.translate(xStart, yStart);
             }
         } else {
-            //System.out.println(startingPoints[frame]);
             frame = Math.min(frame, startingPoints.length - 1);
             if (startingPoints[frame] != null) {
                 Drawer.translate(xStart + startingPoints[frame].getX(), yStart + startingPoints[frame].getY());
@@ -136,29 +136,32 @@ public class SpriteSheet extends Sprite {
         return 0;
     }
 
-    public void renderPiece(int piece) {
-        if (isValidPiece(piece)) {
-            int x = (int) (piece % xTiles);
-            int y = (int) (piece / xTiles);
-            frame = piece;
-            renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+    public void returnFromTranslation(int frame) {
+        if (!isStartMoving || startingPoints[frame] == null) {
+            if (xStart != 0 && yStart != 0) {
+                Drawer.translate(-xStart, -yStart);
+            }
+        } else {
+            Drawer.translate(-(xStart + startingPoints[frame].getX()),
+                    -(yStart + startingPoints[frame].getY()));
         }
     }
+    
+    private int getFramesPosition(int frame) {
+        return isStartMoving ? 
+                (startingPoints[frame] != null ? 
+                    startingPoints[frame].getValue() 
+                    : -1) 
+                : frame;
+    }
 
-    public void renderPieceAndReturn(int piece) {
+    public void renderPiece(int piece) {
+        piece = getFramesPosition(piece);
         if (isValidPiece(piece)) {
             int x = (int) (piece % xTiles);
             int y = (int) (piece / xTiles);
             frame = piece;
             renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
-            if (!isStartMoving || startingPoints[frame] == null) {
-                if (xStart != 0 && yStart != 0) {
-                    Drawer.translate(-xStart, -yStart);
-                }
-            } else {
-                Drawer.translate(-(xStart + startingPoints[frame].getX()),
-                        -(yStart + startingPoints[frame].getY()));
-            }
         }
     }
 
@@ -177,6 +180,7 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderPieceHere(int piece) {
+        piece = getFramesPosition(piece);
         if (isValidPiece(piece)) {
             int x = (int) (piece % xTiles);
             int y = (int) (piece / xTiles);
@@ -193,6 +197,7 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderPiecePart(int id, int xStart, int xEnd) {
+        id = getFramesPosition(id);
         int x = (int) (id % xTiles);
         int y = (int) (id / xTiles);
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
@@ -209,6 +214,7 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderPieceMirrored(int id) {
+        id = getFramesPosition(id);
         int x = (int) (id % xTiles);
         int y = (int) (id / xTiles);
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
@@ -225,6 +231,7 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderPiecePartMirrored(int id, int xStart, int xEnd) {
+        id = getFramesPosition(id);
         int x = (int) (id % xTiles);
         int y = (int) (id / xTiles);
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
@@ -241,7 +248,7 @@ public class SpriteSheet extends Sprite {
     }
 
     private boolean isValidPiece(int piece) {
-        return piece <= xTiles * yTiles;
+        return piece >= 0 && piece <= xTiles * yTiles;
     }
 
     private boolean areValidCoordinates(int x, int y) {

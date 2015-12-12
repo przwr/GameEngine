@@ -7,6 +7,7 @@ package sprites;
 
 import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
+import engine.utilities.PointedValue;
 import game.Settings;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -111,7 +112,7 @@ public class SpriteBase {
     private Sprite loadSprite(String name, String folder) {
         int width, height, startX, startY, pieceWidth, pieceHeight, xOffset, yOffset, actualWidth, actualHeight;
         boolean spriteSheet, movingStart = false;
-        Point[] startPoints = null;
+        PointedValue[] startPoints = null;
         String sprite, key;
         Texture texture;
         Sprite image;
@@ -147,25 +148,30 @@ public class SpriteBase {
 
             if ((line = input.readLine()) != null) {
                 movingStart = true;
-                startPoints = new Point[Integer.parseInt(line)];
+                startPoints = new PointedValue[Integer.parseInt(line)];
                 int i = 0;
-                Point lastOne = null;
+                int n = 0;
+                PointedValue lastOne = null;
                 while ((line = input.readLine()) != null) {
                     data = line.split(";");
                     switch (data[0]) {
-                        case "r":
-                            int j;
-                            for (j = i; j < i + Integer.parseInt(data[1]); j++) {
-                                startPoints[j] = lastOne;
-                            }
-                            i = j - 1;
-                            break;
-                        case "s":
-                            startPoints[i] = startPoints[Integer.parseInt(data[1])];
+                        /*case "r":
+                         int j;
+                         for (j = i; j < i + Integer.parseInt(data[1]); j++) {
+                         startPoints[j] = lastOne;
+                         }
+                         i = j - 1;
+                         break;
+                         case "s":
+                         startPoints[i] = startPoints[Integer.parseInt(data[1])];
+                         break;*/
+                        case "n":
+                            startPoints[i] = null;
                             break;
                         default:
-                            lastOne = new Point(Integer.parseInt(data[0]), Integer.parseInt(data[1]));
+                            lastOne = new PointedValue(Integer.parseInt(data[0]), Integer.parseInt(data[1]), n);
                             startPoints[i] = lastOne;
+                            n++;
                             break;
                     }
                     i++;
