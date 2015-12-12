@@ -137,30 +137,31 @@ public class SpriteSheet extends Sprite {
     }
 
     public void returnFromTranslation(int frame) {
-        if (!isStartMoving || startingPoints[frame] == null) {
+        if (!isStartMoving) {
             if (xStart != 0 && yStart != 0) {
                 Drawer.translate(-xStart, -yStart);
             }
         } else {
-            Drawer.translate(-(xStart + startingPoints[frame].getX()),
-                    -(yStart + startingPoints[frame].getY()));
+            if (startingPoints[frame] != null) {
+                Drawer.translate(-xStart - startingPoints[frame].getX(), -yStart - startingPoints[frame].getY());
+            }
         }
     }
-    
+
     private int getFramesPosition(int frame) {
-        return isStartMoving ? 
-                (startingPoints[frame] != null ? 
-                    startingPoints[frame].getValue() 
-                    : -1) 
+        return isStartMoving
+                ? (startingPoints[frame] != null
+                        ? startingPoints[frame].getValue()
+                        : -1)
                 : frame;
     }
 
     public void renderPiece(int piece) {
+        frame = piece;
         piece = getFramesPosition(piece);
         if (isValidPiece(piece)) {
             int x = (int) (piece % xTiles);
             int y = (int) (piece / xTiles);
-            frame = piece;
             renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
         }
     }
@@ -180,11 +181,11 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderPieceHere(int piece) {
+        frame = piece;
         piece = getFramesPosition(piece);
         if (isValidPiece(piece)) {
             int x = (int) (piece % xTiles);
             int y = (int) (piece / xTiles);
-            frame = piece;
             renderSpritePieceHere((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
         }
     }
