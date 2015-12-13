@@ -85,6 +85,25 @@ public class Sprite implements Appearance {
         glEnd();
     }
 
+
+    public void renderRotate(float angle) {
+        bindCheck();
+        glTranslatef(width / 2, width / 2, 0);
+        glRotatef(angle, 0f, 0f, 1f);
+        glTranslatef(-width / 2, -width / 2, 0);
+        moveToStart();
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, 0);
+        glTexCoord2f(0, 1);
+        glVertex2f(0, height);
+        glTexCoord2f(1, 1);
+        glVertex2f(width, height);
+        glTexCoord2f(1, 0);
+        glVertex2f(width, 0);
+        glEnd();
+    }
+
     @Override
     public void renderMirrored() {
         bindCheck();
