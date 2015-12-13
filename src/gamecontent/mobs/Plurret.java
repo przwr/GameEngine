@@ -158,6 +158,8 @@ public class Plurret extends Mob {
         rest.terminate();
         state = idle;
         homePosition.set(getX(), getY());
+        secondaryDestination.set(-1, -1);
+        destination.set(-1, -1);
         setGravity(0.1);
         addPushInteraction();
     }

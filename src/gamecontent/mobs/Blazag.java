@@ -53,7 +53,7 @@ public class Blazag extends Mob {
     private Delay jumpDelay = Delay.createInMilliseconds(150);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay burstDelay = Delay.createInMilliseconds(500);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay changeDelay = Delay.createInMilliseconds(750);              //TODO - te wartości losowe i zależne od poziomu trudności
-    private boolean attacking = true, chasing, jumpOver, awake = true, can_attack, bursting = false;
+    private boolean attacking = true, chasing, jumpOver, awake = true, can_attack, bursting = false, letGo = false;
     private SpeedChanger jumper;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private Order order = new Order();
@@ -78,6 +78,7 @@ public class Blazag extends Mob {
                         }
                     } else {
                         state = attack;
+                        letGoDelay.start();
                         chasing = true;
                         setEnemyToAttack();
                     }
@@ -133,16 +134,22 @@ public class Blazag extends Mob {
                 if (animation.getDirectionalFrameIndex() < 26) {
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     if (!closeFriends.isEmpty()) {
-                        if (!getPathData().isTrue(OBSTACLE_BETWEEN)) {
-                            if (alpha) {
-                                setOrders();
-                            } else {
-                                getOrders();
-                            }
+                        if (alpha) {
+                            setOrders();
                         } else {
-                            chase();
+                            getOrders();
                         }
                     } else {
+                        if (letGoDelay.isOver()) {
+                            Agro agro = getAgresor(target);
+                            if (agro == null || agro.getHurtedByOwner() <= 5) {
+                                letGo();
+                            } else {
+                                for (Agro ag : getAgro()) {
+                                    ag.clearHurtedByOwner();
+                                }
+                            }
+                        }
                         setEnemyToAttack();
                         int distance = target != null ? Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) : sightRange2;
                         if (distance >= sightRange2 || target == null) {
@@ -251,6 +258,7 @@ public class Blazag extends Mob {
                 if (rest.isOver()) {
                     if (destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2
                             / 16) {
+                        letGo = false;
                         int sign = random.next(1) == 1 ? 1 : -1;
                         int shift = (sightRange + random.next(9)) * sign;
                         destination.setX(homePosition.getX() + shift);
@@ -278,12 +286,12 @@ public class Blazag extends Mob {
                     rest.start();
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                if (!closeEnemies.isEmpty()) {
+                if (!closeEnemies.isEmpty() && !letGo) {
                     state = idle;
                     destination.set(-1, -1);
                 } else {
                     short time = place.getTimeInMinutes();
-                    if (time >= current_sleep_start && time <= current_sleep_end) {
+                    if (!letGo && time >= current_sleep_start && time <= current_sleep_end) {
                         state = idle;
                         destination.set(-1, -1);
                     }
@@ -305,6 +313,7 @@ public class Blazag extends Mob {
         setHearRange(512);
         setCollision(Rectangle.create(54, 38, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
+        setDirection8way(random.randomInRange(0, 7));
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 44);
         appearance = animation;
         collision.setMobile(true);
@@ -319,13 +328,14 @@ public class Blazag extends Mob {
         stats.setProtection(3);
         stats.setProtectionSideModifier(1);
         stats.setProtectionBackModifier(1);
-        rest.start();
-        jumpDelay.start();
-        jumpRestDelay.start();
-        attackDelay.start();
-        changeDelay.start();
-        readyToAttackDelay.start();
-        burstDelay.start();
+        rest.terminate();
+        jumpDelay.terminate();
+        jumpRestDelay.terminate();
+        attackDelay.terminate();
+        changeDelay.terminate();
+        readyToAttackDelay.terminate();
+        burstDelay.terminate();
+        letGoDelay.terminate();
         state = idle;
         jumper = new SpeedChanger();
         homePosition.set(getX(), getY());
@@ -593,12 +603,12 @@ public class Blazag extends Mob {
                 currentAgro = 0;
                 Agro a = getAgresor(object);
                 if (a != null) {
-                    currentAgro = a.getValue();
+                    currentAgro = a.getHurtsOwner();
                 }
                 for (Mob mob : closeFriends) {
                     a = mob.getAgresor(object);
                     if (a != null) {
-                        currentAgro += a.getValue();
+                        currentAgro += a.getHurtsOwner();
                     }
                 }
                 if (currentAgro > 0 && currentDistance < sightRange2) {
@@ -612,12 +622,12 @@ public class Blazag extends Mob {
                 currentAgro = 0;
                 Agro a = getAgresor(object);
                 if (a != null) {
-                    currentAgro = a.getValue();
+                    currentAgro = a.getHurtsOwner();
                 }
                 for (Mob mob : closeFriends) {
                     a = mob.getAgresor(object);
                     if (a != null) {
-                        currentAgro += a.getValue();
+                        currentAgro += a.getHurtsOwner();
                     }
                 }
                 if (currentAgro > 0 && currentDistance < sightRange2) {
@@ -630,6 +640,16 @@ public class Blazag extends Mob {
                 }
             }
         }
+    }
+
+    private void letGo() {
+        state = wander;
+        letGo = true;
+        seconds = 0;
+        max = 15;
+        chasing = false;
+        destination.set(homePosition);
+        brake(2);
     }
 
     @Override
@@ -652,6 +672,39 @@ public class Blazag extends Mob {
     private void setAttackingAndFollowing() {
         Blazag friend;
         if (target != null) {
+            Agro enemy;
+            int currentDamage = 0;
+            if (letGoDelay.isOver()) {
+                for (Mob mob : closeFriends) {
+                    enemy = mob.getAgresor(target);
+                    if (enemy != null) {
+                        currentDamage += enemy.getHurtedByOwner();
+                    }
+                }
+                if (currentDamage <= 5) {
+                    letGo();
+                    for (Mob mob : closeFriends) {
+                        friend = (Blazag) mob;
+                        if (friend != null) {
+                            friend.order.target = null;
+                            friend.order.type = -1;
+                            friend.letGo();
+                        }
+                    }
+                } else {
+                    for (Agro a : getAgro()) {
+                        a.clearHurtedByOwner();
+                    }
+                    for (Mob mob : closeFriends) {
+                        friend = (Blazag) mob;
+                        if (friend != null) {
+                            for (Agro a : friend.getAgro()) {
+                                a.clearHurtedByOwner();
+                            }
+                        }
+                    }
+                }
+            }
             int attacks = 0;
             boolean close = false;
             for (GameObject object : closeEnemies) {
@@ -689,6 +742,14 @@ public class Blazag extends Mob {
                 loneAttack(Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()));
             } else {
                 walkAround(goes);
+            }
+        } else {
+            for (Mob mob : closeFriends) {
+                friend = (Blazag) mob;
+                if (friend != null) {
+                    friend.order.target = null;
+                    friend.order.type = -1;
+                }
             }
         }
     }
@@ -739,7 +800,7 @@ public class Blazag extends Mob {
             if (agresor) {
                 Agro a = getAgresor(object);
                 if (a != null) {
-                    currentAgro = a.getValue();
+                    currentAgro = a.getHurtsOwner();
                     if (currentAgro > agro) {
                         agro = currentAgro;
                         target = object;
@@ -749,7 +810,7 @@ public class Blazag extends Mob {
                 currentDistance = Methods.pointDistanceSimple2(getX(), getY(), object.getX(), object.getY());
                 Agro a = getAgresor(object);
                 if (a != null) {
-                    currentAgro = a.getValue();
+                    currentAgro = a.getHurtsOwner();
                     agresor = true;
                     agro = currentAgro;
                     target = object;

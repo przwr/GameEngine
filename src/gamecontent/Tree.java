@@ -82,7 +82,8 @@ public class Tree extends GameObject {
     private void drawTree() {
         glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
-        Drawer.setColor(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) / 10240f)));
+        Drawer.setColor(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) /
+                10240f)));
         drawRoots();
         drawTrunkAndBranches();
         drawLeafs();
@@ -173,7 +174,8 @@ public class Tree extends GameObject {
                 drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
                         * fraction / 3));
             } else {
-                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round(height * fraction / 3));
+                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round
+                        (height * fraction / 3));
             }
             left = !left;
         }
@@ -321,12 +323,12 @@ public class Tree extends GameObject {
 
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY) {
-        float change = 1.1f - Math.abs(points.get(i).getX() + x) / maxX;
-        change -= Math.abs(points.get(i).getY() + y) / maxY;
+//        float change = 1.1f - Math.abs(points.get(i).getX() + x) / maxX;
+        float change = Math.abs(points.get(i).getY() + y) / maxY;
 //        float change = 1.1f - Math.abs(x) / (0.27f * height);
-//        change -= Math.abs(y) / (0.27f * height);
-        Drawer.setColor(new Color(0.1f + 0.025f * change + random.randomInRange(-10, 10) / 400f, 0.4f + 0.1f * change + random.randomInRange(-10, 10) / 100f,
-                0.15f + 0.0375f * change + random.randomInRange(-10, 10) / 350f));
+//        float change = 1.1f - Math.abs(y) / (0.27f * height);
+        Drawer.setColor(new Color(0.1f + 0.05f * change + random.randomInRange(-10, 10) / 200f, 0.4f + 0.2f * change + random.randomInRange(-10, 10) / 100f,
+                0.15f + 0.075f * change + random.randomInRange(-10, 10) / 350f));
         float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
         Drawer.translate(points.get(i).getX() + x, points.get(i).getY() + y);
         glPushMatrix();
