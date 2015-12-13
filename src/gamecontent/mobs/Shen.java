@@ -288,6 +288,7 @@ public class Shen extends Mob {
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
         appearance = animation;
+        setDirection8way(random.randomInRange(0, 7));
         collision.setMobile(true);
         stats = new MobStats(this);
         stats.setStrength(10);
@@ -298,8 +299,9 @@ public class Shen extends Mob {
         stats.setProtection(10);
         stats.setProtectionSideModifier(4);
         stats.setProtectionBackModifier(1);
-        rest.start();
-        attack_delay.start();
+        rest.terminate();
+        attack_delay.terminate();
+        letGoDelay.terminate();
         state = idle;
         bouncer = new SpeedChanger();
         homePosition.set(getX(), getY());

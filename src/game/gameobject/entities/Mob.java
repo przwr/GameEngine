@@ -6,10 +6,7 @@
 package game.gameobject.entities;
 
 import collision.Figure;
-import engine.utilities.BlueArray;
-import engine.utilities.Drawer;
-import engine.utilities.Methods;
-import engine.utilities.Point;
+import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.place.Place;
 import net.jodk.lang.FastMath;
@@ -33,6 +30,7 @@ public abstract class Mob extends Entity {
     protected int currentPastDirection;
     protected BlueArray<Agro> agro = new BlueArray<>();
     protected ArrayList<String> neutral = new ArrayList<>();
+    protected Delay letGoDelay = Delay.createInSeconds(30);
 
 
     public Mob() {
@@ -342,14 +340,28 @@ public abstract class Mob extends Entity {
         ArrayList<Agro> toRemove = new ArrayList<>();
         for (Agro a : agro) {
             if (a != newAgro) {
-                a.addValue(diffrence);
-                if (a.value <= 0) {
+                a.addHurtsOwner(diffrence);
+                if (a.hurtsOwner <= 0 && a.hurtedByOwner <= 0) {
                     toRemove.add(a);
                 }
             }
         }
         for (Agro a : toRemove) {
             agro.remove(a);
+        }
+    }
+
+    public void updateCausedDamage(GameObject hurted, int hurt) {
+        Agro agro = getAgresor(hurted);
+        if (agro != null) {
+            agro.addHurtedByOwner(hurt);
+        } else {
+            agro = new Agro(hurted);
+            agro.addHurtedByOwner(hurt);
+            getAgro().add(agro);
+        }
+        if (hurt > 5) {
+            letGoDelay.start();
         }
     }
 
