@@ -14,6 +14,7 @@ import engine.utilities.Methods;
 import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
+import game.gameobject.entities.Agro;
 import game.gameobject.entities.Mob;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
@@ -37,7 +38,7 @@ public class Tongub extends Mob {
     private ActionState idle, run_away, hide, attack, wander;
     private Delay attack_delay = Delay.createInMilliseconds(1500);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(250);            //TODO - te wartości losowe i zależne od poziomu trudności
-    private boolean attacking, undig, side;
+    private boolean attacking, undig, side, letGo;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
 
     {
@@ -54,6 +55,7 @@ public class Tongub extends Mob {
                             state = attack;
                             target = closerEnemy;
                             attack_delay.start();
+                            letGoDelay.start();
                         }
                     } else {
                         calculateDestinationsForEscape();
@@ -124,6 +126,17 @@ public class Tongub extends Mob {
             @Override
             public void update() {
 //                System.out.println("ATTACK");
+                if (letGoDelay.isOver()) {
+                    Agro agro = getAgresor(target);
+                    if (agro == null || agro.getHurtedByOwner() <= 5) {
+                        letGo();
+                        return;
+                    } else {
+                        for (Agro ag : getAgro()) {
+                            ag.clearHurtedByOwner();
+                        }
+                    }
+                }
                 if (rest.isOver()) {
                     if (attack_delay.isOver()) {
                         if (attacking || side) {
@@ -187,6 +200,7 @@ public class Tongub extends Mob {
                     if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
                         closeRandomDestination(homePosition.getX(), homePosition.getY());
 //                        System.out.println(destination);
+                        letGo = false;
                     }
                     seconds++;
                     if (seconds > max) {
@@ -196,7 +210,7 @@ public class Tongub extends Mob {
                     rest.start();
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                if (!closeEnemies.isEmpty() || (!alpha && !closeFriends.isEmpty())) {
+                if (!letGo && !closeEnemies.isEmpty() || (!alpha && !closeFriends.isEmpty())) {
                     state = idle;
                     destination.set(-1, -1);
                 }
@@ -231,10 +245,12 @@ public class Tongub extends Mob {
         stats.setWeight(20);
         stats.setMaxHealth(100);
         stats.setHealth(100);
-        rest.start();
-        attack_delay.start();
+        rest.terminate();
+        attack_delay.terminate();
+        letGoDelay.terminate();
         state = idle;
         homePosition.set(getX(), getY());
+        neutral.add(Plurret.class.getName());
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 32, 0, 16, 16), Interactive
                 .STRENGTH_HURT, ATTACK_NORMAL, 0.5f));
         addPushInteraction();
@@ -272,6 +288,15 @@ public class Tongub extends Mob {
             }
         }
         return null;
+    }
+
+    private void letGo() {
+        state = wander;
+        letGo = true;
+        seconds = 0;
+        max = 15;
+        destination.set(homePosition);
+        brake(2);
     }
 
     @Override

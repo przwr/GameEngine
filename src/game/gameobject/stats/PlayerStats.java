@@ -42,9 +42,9 @@ public class PlayerStats extends Stats {
     @Override
     public void hurtReaction(InteractiveResponse response) {
         super.hurtReaction(response);
-        if (health <= 900) {
-            System.out.println("____________R.I.P.___________");
-        }
+//        if (health <= 900) {
+//            System.out.println("____________R.I.P.___________");
+//        }
         ((MyPlayer) player).getGUI().activateLifeIndicator();
     }
 

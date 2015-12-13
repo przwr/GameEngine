@@ -144,6 +144,7 @@ public class Blazag extends Mob {
                             Agro agro = getAgresor(target);
                             if (agro == null || agro.getHurtedByOwner() <= 5) {
                                 letGo();
+                                return;
                             } else {
                                 for (Agro ag : getAgro()) {
                                     ag.clearHurtedByOwner();
