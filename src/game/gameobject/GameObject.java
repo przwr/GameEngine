@@ -120,6 +120,9 @@ public abstract class GameObject {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
 
+    public void updateCausedDamage(GameObject hurted, int hurt) {
+    }
+
     public double getGravity() {
         return gravity;
     }

@@ -63,6 +63,7 @@ public class Stats {
                 died();
             } else if (hurt != 0) {
                 hurtReaction(response);
+                response.getAttacker().updateCausedDamage(owner, hurt);
             }
         }
     }
