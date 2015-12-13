@@ -28,7 +28,7 @@ public class MobStats extends Stats {
         }
         Agro agro = own.getAgresor(attacker);
         if (agro != null) {
-            agro.addHurtsOwner(hurt);
+            agro.addValue(hurt);
         } else {
             agro = new Agro(attacker, hurt);
             own.getAgro().add(agro);

@@ -30,7 +30,6 @@ public class Tree extends GameObject {
     boolean prerendered;
     Sprite bark;
     Sprite leaf;
-    private PointContainer points = new PointContainer(48);
     private Color branchColor;
     private Color leafColor;
     private BlueArray<Point> points = new BlueArray<>();
