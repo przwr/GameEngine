@@ -49,9 +49,9 @@ import static org.lwjgl.opengl.GL11.*;
  * @author przemek
  */
 public class MyPlayer extends Player {
-
+    
     private final boolean renderClothed = true;
-
+    
     private final int framesPerDir = 52;
     private final String characterName = "aria";
     private Cloth head = Cloth.nullCloth;
@@ -80,7 +80,7 @@ public class MyPlayer extends Player {
     //---------------------------------------//
     //---------<('.'<) TYMCZASOWE!-------------//
     private float jumpDelta = 22.6f;
-
+    
     public MyPlayer(boolean first, String name) {
         super(name);
         this.first = first;
@@ -90,7 +90,7 @@ public class MyPlayer extends Player {
             initializeController();
         }
     }
-
+    
     private void initializeAttacks() {
         actionSets.add(new InteractionSet(UNIVERSAL));
         actionSets.add(new InteractionSet(SWORD));
@@ -142,7 +142,7 @@ public class MyPlayer extends Player {
             }
             updateActionSets();
         }
-
+        
         for (InteractionSet set : actionSets) {
             for (Interactive interactive : set.getAllInteractives()) {
                 if (!interactiveObjects.contains(interactive)) {
@@ -150,9 +150,9 @@ public class MyPlayer extends Player {
                 }
             }
         }
-
+        
     }
-
+    
     public byte getFirstAttackType() {
         Interactive first = actionSets.get(activeActionSet).getFirstInteractive();
         if (first != null) {
@@ -161,7 +161,7 @@ public class MyPlayer extends Player {
             return -1;
         }
     }
-
+    
     public byte getSecondAttackType() {
         Interactive second = actionSets.get(activeActionSet).getSecondInteractive();
         if (second != null) {
@@ -170,11 +170,11 @@ public class MyPlayer extends Player {
             return -1;
         }
     }
-
+    
     public void setActionPair(int pair) {
         actionSets.get(activeActionSet).setActivePair(pair);
     }
-
+    
     public boolean changeWeapon() {
         if (activeWeapon == universal) {
             if (lastWeapon != null && lastWeapon != universal) {
@@ -195,7 +195,7 @@ public class MyPlayer extends Player {
         }
         return updateActionSets();
     }
-
+    
     public boolean hideWeapon() {
         if (activeWeapon != universal) {
             lastWeapon = activeWeapon;
@@ -203,7 +203,7 @@ public class MyPlayer extends Player {
         activeWeapon = universal;
         return updateActionSets();
     }
-
+    
     private boolean updateActionSets() {
         if (activeWeapon.getType() != actionSets.get(activeActionSet).getWeaponType()) {
             for (int i = 0; i < actionSets.size(); i++) {
@@ -218,7 +218,7 @@ public class MyPlayer extends Player {
         }
         return false;
     }
-
+    
     private void initializeControllerForFirst() {
         playerController = new MyController(this, gui);
         playerController.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
@@ -229,18 +229,18 @@ public class MyPlayer extends Player {
         playerController.inputs[5] = new InputKeyBoard(Keyboard.KEY_RIGHT);
         playerController.initialize();
     }
-
+    
     private void initializeController() {
         playerController = new MyController(this, gui);
         playerController.initialize();
     }
-
+    
     @Override
     public void initializeSetPosition(int width, int height, Place place, int x, int y) {
         initialize(width, height, place);
         initialize(name, x, y);
     }
-
+    
     @Override
     public void initialize(int width, int height, Place place) {
         this.place = place;
@@ -248,7 +248,7 @@ public class MyPlayer extends Player {
         emitter = true;
         emits = false;
         centralPoint = new Point(0, 0);
-
+        
         appearance = new ClothedAppearance(place, 200, characterName);
         loadClothes();
         //randomizeClothes();
@@ -278,7 +278,7 @@ public class MyPlayer extends Player {
         ((MyController) playerController).setPlayersGUI(gui);
         addPushInteraction();
     }
-
+    
     private void loadClothes() {
         cap = loadCloth("cap", Cloth.CLOTH_TYPE);
         shirt = loadCloth(/*"tshirt"*/"shirt", Cloth.CLOTH_TYPE);
@@ -286,16 +286,18 @@ public class MyPlayer extends Player {
         pants = loadCloth("dress", Cloth.CLOTH_TYPE);
         gloves = loadCloth("gloves", Cloth.CLOTH_TYPE);
         weapon = loadCloth("sword", Cloth.WEAPON_TYPE);
-
+        
         head = loadCloth("head", Cloth.BODY_TYPE);
         hair = loadCloth("hair", Cloth.BODY_TYPE);
         torso = loadCloth("torso", Cloth.BODY_TYPE);
         legs = loadCloth("leg", Cloth.BODY_TYPE);
         nudeTorso = loadCloth("nudetorso", Cloth.BODY_TYPE);
         nudeLegs = loadCloth("nudeleg", Cloth.BODY_TYPE);
-        ((ClothedAppearance) appearance).setClothes(head, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon);
+        ((ClothedAppearance) appearance).setClothes(head, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon,
+                loadCloth("bow", Cloth.WEAPON_TYPE),
+                loadCloth("shield", Cloth.WEAPON_TYPE));
     }
-
+    
     public void randomizeClothes() {
         RandomGenerator r = RandomGenerator.create();
         cap.setWearing(r.chance(50));
@@ -304,7 +306,7 @@ public class MyPlayer extends Player {
         pants.setWearing(r.chance(50));
         gloves.setWearing(r.chance(50));
     }
-
+    
     private Cloth loadCloth(String name, String type) {
         try {
             return new Cloth(name, type, characterName, place);
@@ -313,7 +315,7 @@ public class MyPlayer extends Player {
         }
         return Cloth.nullCloth;
     }
-
+    
     private Point[] calculateDimensions() {
         Point[] dims = Cloth.getMergedDimensions(
                 head, torso, legs, hair,
@@ -327,12 +329,12 @@ public class MyPlayer extends Player {
                 centralPoint.getY() - (dims[1].getY() - tempy / 2));
         return dims;
     }
-
+    
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
         return isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
-
+    
     @Override
     public void render(int xEffect, int yEffect) {
         if (appearance != null) {
@@ -351,32 +353,32 @@ public class MyPlayer extends Player {
                     interactive.render(xEffect, yEffect);
                 });
             }
-
+            
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
-            //Drawer.setCentralPoint();
-            appearance.render();
-            /*Drawer.returnToCentralPoint();
-            Drawer.setColor(Color.black);
-            Drawer.drawCircle(Place.tileSize * 2, 0, 6, 10);
             Drawer.setCentralPoint();
-            
-            Drawer.translate(-appearance.getXStart() - appearance.getXOffset(), -appearance.getYStart() - appearance.getYOffset());
             appearance.render();
-            
-            Drawer.refreshColor();
             Drawer.returnToCentralPoint();
-            Drawer.translate(-appearance.getXStart(), -appearance.getYStart());
-            appearance.render();*/
-
+            /*Drawer.setColor(Color.black);
+             Drawer.drawCircle(Place.tileSize * 2, 0, 6, 10);
+             Drawer.setCentralPoint();
+            
+             Drawer.translate(-appearance.getXStart() - appearance.getXOffset(), -appearance.getYStart() - appearance.getYOffset());
+             appearance.render();
+            
+             Drawer.refreshColor();*/
+            /*Drawer.returnToCentralPoint();
+            Drawer.translate(Place.tileSize * 2, 0);
+            appearance.renderPart(appearance.getWidth() / 2, appearance.getWidth());*/
+            
             appearance.updateFrame();
             glPopMatrix();
-
+            
         }
     }
-
+    
     public void preRenderGroundGUI() {
         gui.getFrameBufferObject().activate();
         glPushMatrix();
@@ -389,7 +391,7 @@ public class MyPlayer extends Player {
         glPopMatrix();
         gui.getFrameBufferObject().deactivate();
     }
-
+    
     private void renderLifeIndicator() {
         int halfLifeAngle = 90, startAngle, endAngle;
         int minimumLifePercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
@@ -402,7 +404,7 @@ public class MyPlayer extends Player {
             startAngle = 180 - lifePercentageAngle;
             endAngle = 180 + lifePercentageAngle;
         }
-
+        
         int precision = (12 * lifePercentageAngle * halfLifeAngle) / halfLifeAngle;
         if (precision == 0) {
             precision = 1;
@@ -411,7 +413,7 @@ public class MyPlayer extends Player {
         Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                 * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
     }
-
+    
     private void renderEnergyIndicator() {
         PlayerStats playerStats = (PlayerStats) stats;
         int halfEnergyAngle = 90, startAngle, endAngle;
@@ -425,7 +427,7 @@ public class MyPlayer extends Player {
             startAngle = 360 - energyPercentageAngle;
             endAngle = 360 + energyPercentageAngle;
         }
-
+        
         int precision = (12 * energyPercentageAngle * halfEnergyAngle) / halfEnergyAngle;
         if (precision == 0) {
             precision = 1;
@@ -434,15 +436,15 @@ public class MyPlayer extends Player {
         Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(
                 collision.getHeight() * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
     }
-
+    
     @Override
     public void renderClothedUpperBody(int frame) {
     }
-
+    
     @Override
     public void renderClothedLowerBody(int frame) {
     }
-
+    
     @Override
     public void update() {
         if (map == place.loadingMap) {
@@ -475,7 +477,7 @@ public class MyPlayer extends Player {
         updateWithGravity();
         updateEnergy();
     }
-
+    
     private void updateEnergy() {
         if (((MyController) playerController).isRunning() && getSpeed() > 0) {
             ((PlayerStats) stats).decreaseEnergy(0.5f);
@@ -483,7 +485,7 @@ public class MyPlayer extends Player {
             ((PlayerStats) stats).increaseEnergy(0.5f);
         }
     }
-
+    
     @Override
     public synchronized void sendUpdate() {
         if (jumping) {
@@ -515,7 +517,7 @@ public class MyPlayer extends Player {
         }
         hop = false;
     }
-
+    
     @Override
     public synchronized void updateRest(Update update) {
         try {
@@ -533,7 +535,7 @@ public class MyPlayer extends Player {
             ErrorHandler.logAndPrint(error);
         }
     }
-
+    
     @Override
     public synchronized void updateOnline() {
         try {
@@ -552,7 +554,7 @@ public class MyPlayer extends Player {
             ErrorHandler.logAndPrint(error);
         }
     }
-
+    
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
@@ -562,7 +564,7 @@ public class MyPlayer extends Player {
             glPopMatrix();
         }
     }
-
+    
     @Override
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
@@ -572,7 +574,7 @@ public class MyPlayer extends Player {
             glPopMatrix();
         }
     }
-
+    
     @Override
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
@@ -582,7 +584,7 @@ public class MyPlayer extends Player {
             glPopMatrix();
         }
     }
-
+    
     @Override
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
@@ -592,11 +594,11 @@ public class MyPlayer extends Player {
             glPopMatrix();
         }
     }
-
+    
     public TextController getTextController() {
         return textControl;
     }
-
+    
     public MyGUI getGUI() {
         return gui;
     }

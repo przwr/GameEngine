@@ -82,42 +82,12 @@ public class Cloth {
     public SpriteSheet getLastPart() {
         return hasLast ? list.get(list.size() - 1) : null;
     }
-    
-    public void renderSecondPart(int frame) {
-        if (wearing && hasSecond) {
-            list.get(1).renderPieceAndReturn(frame);
-        }
-    }
-
-    public void renderLastPart(int frame) {
-        if (wearing && hasLast) {
-            list.get(list.size() - 1).renderPieceAndReturn(frame);
-        }
-    }
-
-    public void renderFirstPart(int frame) {
-        if (wearing) {
-            list.get(0).renderPieceAndReturn(frame);
-        }
-    }
 
     public boolean isNull() {
         return false;
     }
 
     static class NullCloth extends Cloth {
-
-        @Override
-        public void renderSecondPart(int frame) {
-        }
-
-        @Override
-        public void renderLastPart(int frame) {
-        }
-
-        @Override
-        public void renderFirstPart(int frame) {
-        }
 
         @Override
         public boolean isNull() {

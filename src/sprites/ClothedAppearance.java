@@ -53,7 +53,7 @@ public class ClothedAppearance implements Appearance {
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
             Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
-            Cloth pants, Cloth boots, Cloth weapon) {
+            Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
         lowerRenderList = new SpriteSheet[]{
             legs.getFirstPart(),
             boots.getFirstPart(),
@@ -74,7 +74,9 @@ public class ClothedAppearance implements Appearance {
             torso.getLastPart(),
             gloves.getLastPart(),
             shirt.getLastPart(),
-            weapon.getFirstPart()
+            sword.getFirstPart(),
+            bow.getFirstPart(),
+            shield.getFirstPart()
         };
         calculateDimensions();
     }
@@ -229,20 +231,6 @@ public class ClothedAppearance implements Appearance {
         lowerBody.setFluctuating(fluctuate);
     }
 
-    private void renderClothedUpperBody() {
-        frame = upperBody.getCurrentFrameIndex();
-        for (byte i : upperQueue.get(frame)) {
-            upperRenderList[i].renderPieceAndReturn(frame);
-        }
-    }
-
-    private void renderClothedLowerBody() {
-        frame = lowerBody.getCurrentFrameIndex();
-        for (byte i : lowerQueue.get(frame)) {
-            lowerRenderList[i].renderPieceAndReturn(frame);
-        }
-    }
-
     public void setFPS(int fps) {
         upperBody.setFPS(fps);
         lowerBody.setFPS(fps);
@@ -261,8 +249,23 @@ public class ClothedAppearance implements Appearance {
     @Override
     public void render() {
         Drawer.translate(-xStart + xDelta, -yStart + yDelta);
-        renderClothedLowerBody();
-        renderClothedUpperBody();
+        int upperFrame = upperBody.getCurrentFrameIndex();
+        int lowerFrame = lowerBody.getCurrentFrameIndex();
+        for (byte i : upperQueue.get(upperFrame)) {
+            if (!isThisLowerPlacement(i)) {
+                upperRenderList[i].renderPiece(upperFrame);
+                upperRenderList[i].returnFromTranslation(upperFrame);
+            } else {
+                for (byte j : lowerQueue.get(lowerFrame)) {
+                    lowerRenderList[j].renderPiece(lowerFrame);
+                    lowerRenderList[j].returnFromTranslation(lowerFrame);
+                }
+            }
+        }
+    }
+
+    private boolean isThisLowerPlacement(byte i) {
+        return i == ('0' - 'A');
     }
 
     @Override
@@ -323,7 +326,16 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
-        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
+        frame = lowerBody.getCurrentFrameIndex();
+        for (byte i : lowerQueue.get(frame)) {
+            lowerRenderList[i].renderPiecePart(frame, partXStart, partXEnd);
+            lowerRenderList[i].returnFromTranslation(frame);
+        }
+        frame = upperBody.getCurrentFrameIndex();
+        for (byte i : upperQueue.get(frame)) {
+            upperRenderList[i].renderPiecePart(frame, partXStart, partXEnd);
+            upperRenderList[i].returnFromTranslation(frame);
+        }
     }
 
     @Override
