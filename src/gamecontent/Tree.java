@@ -51,7 +51,7 @@ public class Tree extends GameObject {
                 new RegularFrameBufferObject(fboWidth, fboHeight);
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
-        leafColor = new Color(0x388A4B);//new Color(0.1f, 0.4f, 0.15f);
+        leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
     }
 
     @Override
@@ -332,10 +332,11 @@ public class Tree extends GameObject {
         if (change < 0) {
             change = 0;
         }
-//        float change = 1.1f - Math.abs(x) / (0.27f * height);
-//        float change = 1.1f - Math.abs(y) / (0.27f * height);
-        Drawer.setColor(new Color(0.1f + 0.05f * change + random.randomInRange(-10, 10) / 400f, 0.4f + 0.2f * change + random.randomInRange(-10, 10) / 100f,
-                0.15f + 0.075f * change + random.randomInRange(-10, 10) / 350f));
+        int rand = random.randomInRange(-10, 10);
+//        Drawer.setColor(new Color(0.1f + 0.05f * change + rand / 200f, 0.4f + 0.2f * change + rand / 100f,
+//                0.15f + 0.075f * change + random.randomInRange(-10, 10) / 350f));
+        Drawer.setColor(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
+                leafColor.b * (1 + change / 2f + rand / 25f)));
         float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
         Drawer.translate(points.get(i).getX() + x, points.get(i).getY() + y);
         glPushMatrix();
