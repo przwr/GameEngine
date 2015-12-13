@@ -24,7 +24,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Tree extends GameObject {
 
-
     private static RandomGenerator random = RandomGenerator.create();
     int width, height;
     float spread;
@@ -33,6 +32,8 @@ public class Tree extends GameObject {
     Sprite bark;
     Sprite leaf;
     private PointContainer points = new PointContainer(48);
+    private Color branchColor;
+    private Color leafColor;
 
     public Tree(int x, int y, int width, int height, float spread) {
         initialize("Tree", x, y);
@@ -45,9 +46,11 @@ public class Tree extends GameObject {
         this.spread = spread;
         int fboWidth = Math.round(spread * 2.5f * height);
         int fboHeight = Math.round(height * 2.4f);
-        fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
-                new RegularFrameBufferObject(fboWidth, fboHeight);
+        fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight)
+                : new RegularFrameBufferObject(fboWidth, fboHeight);
         appearance = fbo;
+        branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
+        leafColor = new Color(0x388A4B);//new Color(0.1f, 0.4f, 0.15f);
     }
 
     @Override
@@ -75,11 +78,10 @@ public class Tree extends GameObject {
         glPopMatrix();
     }
 
-
     private void drawTree() {
         glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
-        Drawer.setColor(new Color(0.4f + (random.next(10) / 10240f), 0.3f + (random.next(10) / 10240f), 0.15f + (random.next(10) / 10240f)));
+        Drawer.setColor(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) / 10240f)));
         drawRoots();
         drawTrunkAndBranches();
         drawLeafs();
@@ -155,8 +157,8 @@ public class Tree extends GameObject {
             if (levels[i] > 3 * height / 5) {
                 i--;
                 if (left) {
-                    drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height *
-                            fraction / 3));
+                    drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
+                            * fraction / 3));
                 } else {
                     drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math
                             .round(height * fraction / 3));
@@ -167,11 +169,10 @@ public class Tree extends GameObject {
             sum += levels[i] - sum;
             shift = levels[i];
             if (left) {
-                drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height *
-                        fraction / 3));
+                drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
+                        * fraction / 3));
             } else {
-                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round
-                        (height * fraction / 3));
+                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round(height * fraction / 3));
             }
             left = !left;
         }
@@ -188,8 +189,8 @@ public class Tree extends GameObject {
                 -length / 2);
         // End of branch
         int change2 = -16 + random.next(5);
-        Drawer.drawTextureTriangle(x + deviation, -length, x + deviation + widthTop, -length, x + deviation + 2 * deviation / 3 + change2, -length - 2 *
-                length / 3);
+        Drawer.drawTextureTriangle(x + deviation, -length, x + deviation + widthTop, -length, x + deviation + 2 * deviation / 3 + change2, -length - 2
+                * length / 3);
         points.add(x + deviation + 2 * deviation / 3 + change2, -length - 2 * length / 3 + yShift);
         if (Math.abs(deviation) > 20) {
             // Small Branch
@@ -249,7 +250,6 @@ public class Tree extends GameObject {
             points.add(xA + Math.round(0.45f * xPosition), Math.round(-(1.2f + rand) * length) + yShift);
 //            points.add(xA + Math.round(0.45f * xPosition), -length - 2 * length / 3 + yShift);
 
-
         } else {
             // Small Branch
             xPosition = deviation + change;
@@ -308,15 +308,13 @@ public class Tree extends GameObject {
         }
     }
 
-
     private void randomLeaf(int i, int x, int y, int radius) {
-        Drawer.setColor(new Color(0.1f + (random.next(10) / 10240f), 0.4f + (random.next(10) / 10240f), 0.15f + (random.next(10) / 10240f)));
+        Drawer.setColor(new Color(leafColor.r + (random.next(10) / 10240f), leafColor.g + (random.next(10) / 10240f), leafColor.b + (random.next(10) / 10240f)));
         Drawer.translate(points.get(i).getX() + x + 24, points.get(i).getY() + y + 32);
         leaf.render();
 //        Drawer.drawEllipse(points.get(i).getX() + x, points.get(i).getY() + y, radius, radius, radius * 3);
         Drawer.returnToCentralPoint();
     }
-
 
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
@@ -362,18 +360,22 @@ public class Tree extends GameObject {
         }
     }
 
+    @Override
     public int getXSpriteBegin() {
         return getX() - (collision.getWidth() + fbo.getWidth()) / 2;
     }
 
+    @Override
     public int getYSpriteBegin() {
         return getY() + 20 - collision.getHeight() - fbo.getHeight() / 2;
     }
 
+    @Override
     public int getXSpriteEnd() {
         return getX() + (collision.getWidth() + fbo.getWidth()) / 2;
     }
 
+    @Override
     public int getYSpriteEnd() {
         return getY() + 20 + collision.getHeight() + fbo.getHeight() / 2;
     }
