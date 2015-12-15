@@ -8,9 +8,9 @@ package gamecontent.maps;
 import collision.Rectangle;
 import game.place.Place;
 import game.place.map.*;
+import gamecontent.Bush;
 import gamecontent.GrassClump;
 import gamecontent.SpawnPoint;
-import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
@@ -97,8 +97,8 @@ public class GladeMap extends Map {
         }
 
 
-        addObject(new Tree(400, 800, 24, 150, 1f));
-        addObject(new Tree(1000, 920, 36, 225, 0.8f));
+        addObject(new Bush(400, 800, 10, 50, 1f));
+        addObject(new Bush(640, 920, 12, 70, 0.8f));
 //        addObject(new Tree(650, 920, 32, 200));
 //        addObject(new Tree(370, 920, 28, 175));
 //        addObject(new Tree(150, 920, 24, 150));
