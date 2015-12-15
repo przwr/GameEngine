@@ -160,7 +160,7 @@ public class Blazag extends Mob {
                             maxSpeed = 5;
                             brake(2);
                         } else {
-                            if ((chasing && distance >= sightRange2 / 4) || getPathData().isTrue(OBSTACLE_BETWEEN)) {
+                            if ((chasing && distance >= sightRange2 / 4) || isObstacleBetween()) {
                                 chase();
                                 attackDelay.start();
                             } else {
@@ -409,6 +409,10 @@ public class Blazag extends Mob {
         updateAlpha();
     }
 
+    private boolean isObstacleBetween() {
+        return target != null && getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies);
+    }
+
     private void loneAttack(int distance) {
         if (target != null && jumpDelay.isOver() && jumper.isOver()) {
             if (attackCout > maxAttackCount) {
@@ -417,7 +421,7 @@ public class Blazag extends Mob {
             }
             if (!rest.isOver()) {
                 maxSpeed = 3;
-                if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
+                if (getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
                     chase();
                 } else {
                     charge();
@@ -441,7 +445,7 @@ public class Blazag extends Mob {
                         jumpRestDelay.start();
                         return;
                     } else if (animation.getDirectionalFrameIndex() < 19) {
-                        if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
+                        if (getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
                             chase();
                         } else {
                             charge();
@@ -484,7 +488,7 @@ public class Blazag extends Mob {
                     } else {
                         can_attack = false;
                         if (attackDelay.isOver() && animation.getDirectionalFrameIndex() < 19) {
-                            if (getPathData().isObstacleBetween(this, target.getX(), target.getY())) {
+                            if (getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
                                 chase();
                             } else {
                                 if (distance <= sightRange2 / 25) {
@@ -797,27 +801,43 @@ public class Blazag extends Mob {
         int currentDistance;
         int currentAgro;
         boolean agresor = false;
+        int TongubCount = 0;
         for (GameObject object : closeEnemies) {
-            if (agresor) {
-                Agro a = getAgresor(object);
-                if (a != null) {
-                    currentAgro = a.getHurtsOwner();
-                    if (currentAgro > agro) {
-                        agro = currentAgro;
-                        target = object;
-                    }
-                }
-            } else {
+            if (object instanceof Tongub) {
+                TongubCount++;
+            }
+        }
+        if (TongubCount * 2 >= closeEnemies.size()) {
+            for (GameObject object : closeEnemies) {
                 currentDistance = Methods.pointDistanceSimple2(getX(), getY(), object.getX(), object.getY());
-                Agro a = getAgresor(object);
-                if (a != null) {
-                    currentAgro = a.getHurtsOwner();
-                    agresor = true;
-                    agro = currentAgro;
-                    target = object;
-                } else if (currentDistance < distance) {
+                if (currentDistance < distance) {
                     target = object;
                     distance = currentDistance;
+                }
+            }
+        } else {
+            for (GameObject object : closeEnemies) {
+                if (agresor) {
+                    Agro a = getAgresor(object);
+                    if (a != null) {
+                        currentAgro = a.getHurtsOwner();
+                        if (currentAgro > agro) {
+                            agro = currentAgro;
+                            target = object;
+                        }
+                    }
+                } else {
+                    currentDistance = Methods.pointDistanceSimple2(getX(), getY(), object.getX(), object.getY());
+                    Agro a = getAgresor(object);
+                    if (a != null) {
+                        currentAgro = a.getHurtsOwner();
+                        agresor = true;
+                        agro = currentAgro;
+                        target = object;
+                    } else if (currentDistance < distance) {
+                        target = object;
+                        distance = currentDistance;
+                    }
                 }
             }
         }

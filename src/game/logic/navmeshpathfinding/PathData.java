@@ -114,9 +114,13 @@ public class PathData {
         return PathStrategyCore.anyFigureInAWay(poly, close) != null;
     }
 
-    public boolean isObstacleBetween(Entity owner, int xDest, int yDest) {
+    public boolean isObstacleBetween(Entity owner, int xDest, int yDest, List<GameObject> closeEnemies) {
         update(owner, xDest, yDest);
-        return isObstacleBetween();
+        if (close.isEmpty()) {
+            return false;
+        }
+        PathStrategyCore.setPolygonForTesting(this, finalDestination);
+        return PathStrategyCore.anyFigureInAWay(poly, close, closeEnemies) != null;
     }
 
     public void calculateSpeed(double maxSpeed) {

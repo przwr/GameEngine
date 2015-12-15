@@ -9,7 +9,9 @@ import collision.Rectangle;
 import game.place.Place;
 import game.place.map.*;
 import gamecontent.GrassClump;
+import gamecontent.SpawnPoint;
 import gamecontent.Tree;
+import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 import gamecontent.mobs.Tongub;
@@ -66,12 +68,12 @@ public class GladeMap extends Map {
 //      addObject(new BrainlessShen(356, 860, place, mobID++));
 //      addObject(new Blazag(768, 2048, place, mobID++));
 //      addObject(new Blazag(1200, 1024, place, mobID++));
-        addObject(new Tongub(1256, 768, place, mobID++));
-        addObject(new Tongub(1256, 820, place, mobID++));
-        addObject(new Tongub(1256, 900, place, mobID++));
-        addObject(new Tongub(1256, 964, place, mobID++));
-        addObject(new Tongub(1256, 1024, place, mobID++));
-        addObject(new Tongub(1256, 1100, place, mobID++));
+        addObject(new Tongub(1756, 2768, place, mobID++));
+        addObject(new Tongub(1756, 2820, place, mobID++));
+        addObject(new Tongub(1756, 2900, place, mobID++));
+        addObject(new Tongub(1756, 2964, place, mobID++));
+        addObject(new Tongub(1756, 3024, place, mobID++));
+        addObject(new Tongub(1756, 3100, place, mobID++));
 
 
         int xBladesCount = 7;
@@ -111,8 +113,9 @@ public class GladeMap extends Map {
         addObject(new Shen(512, 1500, place, mobID++));
         addObject(new Shen(648, 1400, place, mobID++));
         addObject(new Plurret(1156, 968, place, mobID++));
-//        addObject(new Blazag(1600, 2494, place, mobID++));
-//        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
+        addObject(new Blazag(1600, 2494, place, mobID++));
+        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
+        addObject(SpawnPoint.createInVisible(768, 3000, 54, 38, "Tongub spawn", Tongub.class, 10, 10));
 
 //        addObject(SpawnPoint.createVisible(place,2048, 2048, 64, 64, "Shen spawn", Shen.class, 30, 5, place.getSprite("rabbit", "")));
 //        addObject(new Shen(512, 1024, place, mobID++));

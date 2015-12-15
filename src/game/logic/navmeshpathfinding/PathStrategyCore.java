@@ -11,6 +11,7 @@ import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.PointContainer;
 import engine.utilities.PointedValue;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import net.jodk.lang.FastMath;
 
@@ -456,6 +457,21 @@ class PathStrategyCore {
             }
             if (poly.intersects(figure.getX(), figure.getY(), figure.getWidth(), figure.getHeight())) {
                 return figure;
+            }
+        }
+        return null;
+    }
+
+    //
+    public static Figure anyFigureInAWay(Polygon poly, List<Figure> close, List<GameObject> closeEnemies) {
+        for (Figure figure : close) {
+            if (!closeEnemies.contains(figure.getOwner())) {
+                if (poly.contains(figure.getXCentral(), figure.getYCentral())) {
+                    return figure;
+                }
+                if (poly.intersects(figure.getX(), figure.getY(), figure.getWidth(), figure.getHeight())) {
+                    return figure;
+                }
             }
         }
         return null;

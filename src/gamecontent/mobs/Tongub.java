@@ -56,22 +56,22 @@ public class Tongub extends Mob {
                             target = closerEnemy;
                             attack_delay.start();
                             letGoDelay.start();
+                            return;
                         }
+                    }
+                    calculateDestinationsForEscape();
+                    GameObject closerEnemy = getCloserEnemy();
+                    if (closerEnemy != null) {
+                        state = hide;
+                        destination.set(-1, -1);
+                        stats.setProtectionState(true);
+                    } else if (destination.getX() > 0) {
+                        state = run_away;
+                        destination.set(-1, -1);
                     } else {
-                        calculateDestinationsForEscape();
-                        GameObject closerEnemy = getCloserEnemy();
-                        if (closerEnemy != null) {
-                            state = hide;
-                            destination.set(-1, -1);
-                            stats.setProtectionState(true);
-                        } else if (destination.getX() > 0) {
-                            state = run_away;
-                            destination.set(-1, -1);
-                        } else {
-                            state = wander;
-                            destination.set(getX(), getY());
-                            seconds = 0;
-                        }
+                        state = wander;
+                        destination.set(getX(), getY());
+                        seconds = 0;
                     }
                 }
             }
@@ -251,33 +251,34 @@ public class Tongub extends Mob {
         state = idle;
         homePosition.set(getX(), getY());
         neutral.add(Plurret.class.getName());
+        neutral.add(Shen.class.getName());
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 32, 0, 16, 16), Interactive
                 .STRENGTH_HURT, ATTACK_NORMAL, 0.5f));
         addPushInteraction();
     }
 
     private boolean isObstacleBetween() {
-        return getPathData().isObstacleBetween(this, target.getX(), target.getY());
+        return getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies);
     }
 
     private void closeRandomDestination(int xD, int yD) {
         int sign = random.next(1) == 1 ? 1 : -1;
-        int shift = (sightRange + random.next(9)) * sign;
+        int shift = (sightRange / 2 + random.next(9)) * sign;
         destination.setX(xD + shift);
         sign = random.next(1) == 1 ? 1 : -1;
-        shift = (sightRange + random.next(9)) * sign;
+        shift = (sightRange / 2 + random.next(9)) * sign;
         destination.setY(yD + shift);
-        if (destination.getX() < sightRange / 2) {
-            destination.setX(sightRange / 2);
+        if (destination.getX() < sightRange / 4) {
+            destination.setX(sightRange / 4);
         }
         if (destination.getX() > map.getWidth()) {
-            destination.setX(map.getWidth() - sightRange / 2);
+            destination.setX(map.getWidth() - sightRange / 4);
         }
         if (destination.getY() < collision.getHeight()) {
-            destination.setY(sightRange / 2);
+            destination.setY(sightRange / 4);
         }
         if (destination.getY() > map.getHeight()) {
-            destination.setY(map.getHeight() - sightRange / 2);
+            destination.setY(map.getHeight() - sightRange / 4);
         }
     }
 
