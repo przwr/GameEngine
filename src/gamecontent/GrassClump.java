@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class GrassClump extends GameObject {
 
     Grass[] grasses;
-    int xBladesCount, yBladesCount, bladeWidth, bladeHeight, xRadius, yRadius, ySpacing, xCount, yCount, xCentering, grassWidth, curve;
+    int xBladesCount, yBladesCount, bladeWidth, bladeHeight, xRadius, yRadius, ySpacing, xCount, yCount, xCentering, grassWidth, curve, corner = -1;
     boolean updateGrass, prerendered;
     FrameBufferObject fbo;
 
@@ -65,6 +65,56 @@ public class GrassClump extends GameObject {
         }
     }
 
+    private GrassClump(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int curve, int corner) {
+        this.curve = curve;
+        this.corner = corner;
+        if (xBladesCount * 2 < yCount / curve) {
+            xBladesCount = yCount / curve / 2;
+        }
+        setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight);
+        int modXBladesCount, xCenter;
+        int xChange = (xCount * xBladesCount) / yCount;
+        for (int i = 0; i < yCount; i++) {
+            for (int j = 0; j < xCount; j++) {
+                modXBladesCount = xBladesCount;
+                xCenter = xCentering;
+                if ((corner == 0 || corner == 2)) {
+                    if (corner == 0) {
+                        modXBladesCount -= xChange * i - j * xBladesCount;
+                        if (modXBladesCount > xBladesCount) {
+                            modXBladesCount = xBladesCount;
+                        }
+                        xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    } else {
+                        modXBladesCount = xChange * (i + 1) - j * xBladesCount;
+                        if (modXBladesCount > xBladesCount) {
+                            modXBladesCount = xBladesCount;
+                        }
+                        xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    }
+                } else if ((corner == 1 || corner == 3)) {
+                    if (corner == 1) {
+                        modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
+                        if (modXBladesCount > xBladesCount) {
+                            modXBladesCount = xBladesCount;
+                        }
+                        xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    } else {
+                        modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
+                        if (modXBladesCount > xBladesCount) {
+                            modXBladesCount = xBladesCount;
+                        }
+                        xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    }
+                }
+                if (modXBladesCount > 0)
+                    grasses[i * xCount + j] = Grass.create(x + xCenter + j * grassWidth, y + (i + 1) * ySpacing, modXBladesCount, yBladesCount, bladeWidth,
+                            bladeHeight);
+            }
+        }
+    }
+
+
     public static GrassClump createRectangle(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight);
     }
@@ -72,6 +122,12 @@ public class GrassClump extends GameObject {
     public static GrassClump createRound(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1);
     }
+
+    public static GrassClump createCorner(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int
+            corner) {
+        return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1, corner);
+    }
+
 
     private void setUp(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
         initialize("GrassClump", x, y);
@@ -88,7 +144,7 @@ public class GrassClump extends GameObject {
         grasses = new Grass[xCount * yCount];
         ySpacing = 8;
         depth = 1;
-        xCentering = Math.round(xBladesCount * bladeWidth / 2f);
+        xCentering = Math.round(xBladesCount * (bladeWidth - 2) / 2f);
         int fboWidth = xRadius * 2 + 4 + (xCount - 1) * xCentering;
         int fboHeight = yRadius * 2 + bladeHeight + 8;
         fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
@@ -118,13 +174,18 @@ public class GrassClump extends GameObject {
         }
         if (updateGrass) {
             for (int i = 0; i < grasses.length; i++) {
-                grasses[i].update(map);
-                grasses[i].setVisible(true);
+                if (grasses[i] != null) {
+
+                    grasses[i].update(map);
+                    grasses[i].setVisible(true);
+                }
             }
         } else {
             for (int i = 0; i < grasses.length; i++) {
-                grasses[i].setVisible(false);
-                grasses[i].reset();
+                if (grasses[i] != null) {
+                    grasses[i].setVisible(false);
+                    grasses[i].reset();
+                }
             }
         }
         if (!prerendered) {
@@ -138,7 +199,9 @@ public class GrassClump extends GameObject {
         glClearColor(0, 0.7f, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
         glTranslatef(xRadius + 2, -2 * yRadius + ySpacing + Display.getHeight(), 0);
-        if (curve > 0) {
+        if (corner >= 0) {
+            preRenderCorner();
+        } else if (curve > 0) {
             preRenderRound();
         } else {
             preRenderRectangle();
@@ -146,13 +209,15 @@ public class GrassClump extends GameObject {
         glPopMatrix();
         fbo.deactivate();
         for (int i = 0; i < grasses.length; i++) {
-            map.addObject(grasses[i]);
+            if (grasses[i] != null) {
+                map.addObject(grasses[i]);
+            }
         }
         prerendered = true;
     }
 
     private void preRenderRound() {
-        int middle1 = yCount / 2, middle2 = yCount / 2, moduleWidth, xCenter;
+        int middle1 = yCount / 2, middle2 = yCount / 2, xCenter;
         if (yCount % 2 == 0) {
             middle1 -= 1;
         }
@@ -183,6 +248,73 @@ public class GrassClump extends GameObject {
             }
             glTranslatef(-grassWidth * (xCount), ySpacing, 0);
         }
+    }
+
+    private void preRenderCorner() {
+        int modXBladesCount, xCenter;
+        int xChange = (xCount * xBladesCount) / yCount;
+        glTranslatef(-xCentering, 0, 0);
+        for (int i = 0; i < yCount; i++) {
+            for (int j = 0; j < xCount; j++) {
+                modXBladesCount = xBladesCount;
+                xCenter = xCentering;
+                if ((corner == 0 || corner == 2)) {
+                    if (corner == 0) {
+                        modXBladesCount -= xChange * i - j * xBladesCount;
+                        if (modXBladesCount > xBladesCount) {
+                            modXBladesCount = xBladesCount;
+                        }
+                        xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    } else {
+                        modXBladesCount = xChange * (i + 1) - j * xBladesCount;
+                        if (modXBladesCount > xBladesCount) {
+                            modXBladesCount = xBladesCount;
+                        }
+                        xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    }
+                } else if ((corner == 1 || corner == 3)) {
+                    if (corner == 1) {
+                        modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
+                        if (modXBladesCount > xBladesCount) {
+                            modXBladesCount = xBladesCount;
+                        }
+                        xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    } else {
+                        modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
+                        if (modXBladesCount > xBladesCount) {
+                            modXBladesCount = xBladesCount;
+                        }
+                        xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    }
+                }
+                glTranslatef(xCenter, 0, 0);
+                if (modXBladesCount > 0) {
+                    grasses[i * xCount + j].renderStill();
+                }
+                glTranslatef(grassWidth - xCenter, 0, 0);
+            }
+            glTranslatef(-grassWidth * (xCount), ySpacing, 0);
+        }
+//
+//        for (int i = 0; i < yCount; i++) {
+//            for (int j = 0; j < xCount; j++) {
+//                xCenter = 0;
+//                if (curve > 0 && xCount > 1) {
+//                    if (j == 0) {
+//                        xCenter = xCentering - (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * bladeWidth / 2;
+//                        glTranslatef(xCenter, 0, 0);
+//                    } else if (j == xCount - 1) {
+//                        xCenter = (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * bladeWidth / 2 - xCentering;
+//                        glTranslatef(xCenter, 0, 0);
+//                    }
+//                }
+//                if (grasses[i * xCount + j] != null) {
+//                    grasses[i * xCount + j].renderStill();
+//                }
+//                glTranslatef(grassWidth - xCenter, 0, 0);
+//            }
+//            glTranslatef(-grassWidth * (xCount), ySpacing, 0);
+//        }
     }
 
     @Override

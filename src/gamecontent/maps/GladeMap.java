@@ -11,6 +11,7 @@ import game.place.map.*;
 import gamecontent.Bush;
 import gamecontent.GrassClump;
 import gamecontent.SpawnPoint;
+import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
@@ -25,8 +26,8 @@ public class GladeMap extends Map {
 
     public GladeMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Polana", place, width, height, tileSize);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
         Tile nullTile = new NullTile();
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
 //        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 2, 12);
 
         for (int y = 0; y < height / tileSize; y++) {
@@ -76,7 +77,7 @@ public class GladeMap extends Map {
         addObject(new Tongub(1756, 3100, place, mobID++));
 
 
-        int xBladesCount = 7;
+        int xBladesCount = 8;
         int yBladesCount = 2;
         int bladeWidth = 8;
         int bladeHeight = 32;
@@ -97,15 +98,21 @@ public class GladeMap extends Map {
         }
 
 
-        addObject(new Bush(400, 800, 10, 50, 1f));
-        addObject(new Bush(640, 920, 12, 70, 0.8f));
+        addObject(new Bush(800, 800, 10, 50, 1f));
+        addObject(new Bush(1024, 920, 12, 70, 0.8f));
 //        addObject(new Tree(650, 920, 32, 200));
 //        addObject(new Tree(370, 920, 28, 175));
 //        addObject(new Tree(150, 920, 24, 150));
-//        addObject(new Tree(250, 1024, 32, 200));
+        addObject(new Tree(250, 1524, 32, 200, 0.8f));
 //        addObject(new Tree(140, 1200, 32, 200));
-        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
-        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
+//        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
+//        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
+        addObject(GrassClump.createCorner(256, 512, 2, 8, 8, 2, 8, 32, 0));
+        addObject(GrassClump.createCorner(512, 512, 2, 8, 8, 2, 8, 32, 1));
+        addObject(GrassClump.createCorner(256, 640, 2, 8, 8, 2, 8, 32, 2));
+        addObject(GrassClump.createCorner(512, 640, 2, 8, 8, 2, 8, 32, 3));
+        addObject(GrassClump.createRectangle(512, 800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(256, 800, 2, 8, 8, 2, 8, 32));
 //
 //
         addObject(new Shen(512, 800, place, mobID++));

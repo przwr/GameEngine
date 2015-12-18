@@ -334,7 +334,7 @@ public class Bush extends GameObject {
 
     @Override
     public int getYSpriteBegin() {
-        return getY() + 20 - collision.getHeight() - fbo.getHeight() / 2;
+        return getY() + 20 - collision.getHeight() - fbo.getHeight();
     }
 
     @Override
@@ -344,6 +344,6 @@ public class Bush extends GameObject {
 
     @Override
     public int getYSpriteEnd() {
-        return getY() + 20 + collision.getHeight() + fbo.getHeight() / 2;
+        return getY() + 20 + collision.getHeight();
     }
 }
