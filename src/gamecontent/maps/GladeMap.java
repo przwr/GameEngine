@@ -8,8 +8,11 @@ package gamecontent.maps;
 import collision.Rectangle;
 import game.place.Place;
 import game.place.map.*;
+import gamecontent.Bush;
 import gamecontent.GrassClump;
+import gamecontent.SpawnPoint;
 import gamecontent.Tree;
+import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 import gamecontent.mobs.Tongub;
@@ -23,8 +26,8 @@ public class GladeMap extends Map {
 
     public GladeMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Polana", place, width, height, tileSize);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
         Tile nullTile = new NullTile();
+        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
 //        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 2, 12);
 
         for (int y = 0; y < height / tileSize; y++) {
@@ -68,15 +71,15 @@ public class GladeMap extends Map {
 //      addObject(new BrainlessShen(356, 860, place, mobID++));
 //      addObject(new Blazag(768, 2048, place, mobID++));
 //      addObject(new Blazag(1200, 1024, place, mobID++));
-        addObject(new Tongub(1256, 768, place, mobID++));
-        addObject(new Tongub(1256, 820, place, mobID++));
-        addObject(new Tongub(1256, 900, place, mobID++));
-        addObject(new Tongub(1256, 964, place, mobID++));
-        addObject(new Tongub(1256, 1024, place, mobID++));
-        addObject(new Tongub(1256, 1100, place, mobID++));
+        addObject(new Tongub(1756, 2768, place, mobID++));
+        addObject(new Tongub(1756, 2820, place, mobID++));
+        addObject(new Tongub(1756, 2900, place, mobID++));
+        addObject(new Tongub(1756, 2964, place, mobID++));
+        addObject(new Tongub(1756, 3024, place, mobID++));
+        addObject(new Tongub(1756, 3100, place, mobID++));
 
 
-        int xBladesCount = 7;
+        int xBladesCount = 8;
         int yBladesCount = 2;
         int bladeWidth = 8;
         int bladeHeight = 32;
@@ -97,15 +100,21 @@ public class GladeMap extends Map {
         }
 
 
-        addObject(new Tree(400, 800, 24, 150, 1f));
-        addObject(new Tree(1000, 920, 36, 225, 0.8f));
+        addObject(new Bush(800, 800, 10, 50, 1f));
+        addObject(new Bush(1024, 920, 12, 70, 0.8f));
 //        addObject(new Tree(650, 920, 32, 200));
 //        addObject(new Tree(370, 920, 28, 175));
 //        addObject(new Tree(150, 920, 24, 150));
-//        addObject(new Tree(250, 1024, 32, 200));
+        addObject(new Tree(250, 1524, 32, 200, 0.8f));
 //        addObject(new Tree(140, 1200, 32, 200));
-        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
-        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
+//        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
+//        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
+        addObject(GrassClump.createCorner(256, 512, 2, 8, 8, 2, 8, 32, 0));
+        addObject(GrassClump.createCorner(512, 512, 2, 8, 8, 2, 8, 32, 1));
+        addObject(GrassClump.createCorner(256, 640, 2, 8, 8, 2, 8, 32, 2));
+        addObject(GrassClump.createCorner(512, 640, 2, 8, 8, 2, 8, 32, 3));
+        addObject(GrassClump.createRectangle(512, 800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(256, 800, 2, 8, 8, 2, 8, 32));
 //
 //
         addObject(new Shen(512, 800, place, mobID++));
@@ -113,8 +122,9 @@ public class GladeMap extends Map {
         addObject(new Shen(512, 1500, place, mobID++));
         addObject(new Shen(648, 1400, place, mobID++));
         addObject(new Plurret(1156, 968, place, mobID++));
-//        addObject(new Blazag(1600, 2494, place, mobID++));
-//        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
+        addObject(new Blazag(1600, 2494, place, mobID++));
+        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
+        addObject(SpawnPoint.createInVisible(768, 3000, 54, 38, "Tongub spawn", Tongub.class, 10, 10));
 
 //        addObject(SpawnPoint.createVisible(place,2048, 2048, 64, 64, "Shen spawn", Shen.class, 30, 5, place.getSprite("rabbit", "")));
 //        addObject(new Shen(512, 1024, place, mobID++));

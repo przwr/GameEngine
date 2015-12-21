@@ -88,9 +88,9 @@ public class Sprite implements Appearance {
 
     public void renderRotate(float angle) {
         bindCheck();
-        glTranslatef(width / 2, width / 2, 0);
+        glTranslatef(width / 2, height / 2, 0);
         glRotatef(angle, 0f, 0f, 1f);
-        glTranslatef(-width / 2, -width / 2, 0);
+        glTranslatef(-width / 2, -height / 2, 0);
         moveToStart();
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);

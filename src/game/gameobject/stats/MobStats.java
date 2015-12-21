@@ -11,7 +11,7 @@ import game.gameobject.items.Arrow;
  */
 public class MobStats extends Stats {
 
-    private float agroModifier = 0.5f;
+    private float agroModifier = 0.25f;
 
     public MobStats(Mob owner) {
         super(owner);

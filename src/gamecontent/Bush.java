@@ -21,7 +21,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * Created by przemek on 30.11.15.
  */
-public class Tree extends GameObject {
+public class Bush extends GameObject {
 
     private static RandomGenerator random = RandomGenerator.create();
     int width, height;
@@ -36,17 +36,17 @@ public class Tree extends GameObject {
     private Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
 
 
-    public Tree(int x, int y, int width, int height, float spread) {
+    public Bush(int x, int y, int width, int height, float spread) {
         initialize("Tree", x, y);
-        setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.FULL_SHADOW, this));
+        setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
         setSimpleLighting(false);
         collision.setSmall(true);
         solid = true;
         this.width = width;
         this.height = height;
         this.spread = spread;
-        int fboWidth = Math.round(spread * 2.5f * height);
-        int fboHeight = Math.round(height * 2.5f);
+        int fboWidth = Math.round(spread * 5f * height);
+        int fboHeight = Math.round(height * 3f);
         fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
                 new RegularFrameBufferObject(fboWidth, fboHeight);
         appearance = fbo;
@@ -64,7 +64,7 @@ public class Tree extends GameObject {
             glClearColor(0.5f, 0.35f, 0.2f, 0);
             glClear(GL_COLOR_BUFFER_BIT);
             glTranslatef(fbo.getWidth() / 2, Display.getHeight() - 20, 0);
-            drawTree();
+            drawBush();
             glPopMatrix();
             fbo.deactivate();
             points = null;
@@ -79,13 +79,13 @@ public class Tree extends GameObject {
         glPopMatrix();
     }
 
-    private void drawTree() {
+    private void drawBush() {
         glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
         Drawer.setColor(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) /
                 10240f)));
         drawRoots();
-        drawTrunkAndBranches();
+        drawBranches();
         drawLeafs();
     }
 
@@ -105,86 +105,26 @@ public class Tree extends GameObject {
             Drawer.drawTextureQuad(width / 3, 0, 3 * width / 4, -5, 2 * width / 3 + change3 / 2, 4, 2 * width / 3 - change3 / 2, 6);
             Drawer.drawTextureTriangle(2 * width / 3 + change3 / 2, 4, 2 * width / 3 - change3 / 2, 6, width + 3, 12);
         }
+        points.add(new Point(0, -height / 2));
     }
 
-    private void drawTrunkAndBranches() {
-        // Trunk
-        int levelsCount = 1 + (2 * height / 3) / 50;
-        int[] levels = new int[levelsCount];
-        int[] changes = new int[levelsCount * 2];
-        float fraction = 1 / (float) levelsCount;
-        int lastChange;
-        int randHigh = Math.round(fraction * height / 5);
-        int randLow = -randHigh;
-        int randWidthHigh = Math.round(fraction * width / 2);
-        int randWidthLow = -randWidthHigh;
-        for (int i = 0; i < levelsCount; i++) {
-            levels[i] = Math.round(fraction * (i + 1) * height + (random.randomInRange(randLow, randHigh)));
-            changes[i * 2] = random.randomInRange(randWidthLow, randWidthHigh);
-            changes[i * 2 + 1] = random.randomInRange(randWidthLow, randWidthHigh);
-        }
-        levels[levelsCount - 1] = height;
-        lastChange = changes[levelsCount * 2 - 2];
-        changes[levelsCount * 2 - 1] = lastChange;
-        int lastX1 = 0;
-        int lastY = 0;
-        int lastX2 = width;
-        for (int i = 0; i < levelsCount; i++) {
-            Drawer.drawTextureQuad(lastX1, lastY, lastX2, lastY, width + changes[i + i], -levels[i], changes[i + i + 1], -levels[i]);
-            lastX1 = changes[i + i + 1];
-            lastY = -levels[i];
-            lastX2 = width + changes[i + i];
-            points.add(new Point(0, levels[i] - height));
-        }
-        // Branches
+    private void drawBranches() {
         int thick = 2 * width / 3;
-        float heightModifier = 0.9f;
         float spreadModifier = 0.6f;
-        glTranslatef(lastChange, -height, 0);
-        Drawer.setCentralPoint();
         drawBranch(width / 2 - thick / 2, height, 0, thick, thick / 2, 0);
         boolean left = random.nextBoolean();
         if (left) {
-            drawBranch(0, Math.round(height * heightModifier), -spread * spreadModifier, thick, thick / 2, 0);
-            Drawer.translate(0, Math.round(height * fraction / 4));
-            drawBranch(width - thick, Math.round(height * heightModifier), spread * spreadModifier, thick, thick / 2, Math.round(height * fraction / 3));
+            drawBranch(0, height, -spread * spreadModifier, thick, thick / 2, 0);
+            drawBranch(width - thick, height, spread * spreadModifier, thick, thick / 2, 0);
         } else {
-            drawBranch(width - thick, Math.round(height * heightModifier), spread * spreadModifier, thick, thick / 2, 0);
-            Drawer.translate(0, Math.round(height * fraction / 4));
-            drawBranch(0, Math.round(height * heightModifier), -spread * spreadModifier, thick, thick / 2, Math.round(height * fraction / 3));
+            drawBranch(width - thick, height, spread * spreadModifier, thick, thick / 2, 0);
+            drawBranch(0, height, -spread * spreadModifier, thick, thick / 2, 0);
         }
-        int sum = 0;
-        int shift = 0;
-        for (int i = 0; i < levelsCount - 1; i++) {
-            if (levels[i] > 3 * height / 5) {
-                i--;
-                if (left) {
-                    drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
-                            * fraction / 3));
-                } else {
-                    drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math
-                            .round(height * fraction / 3));
-                }
-                break;
-            }
-            Drawer.translate(0, levels[i] - sum);
-            sum += levels[i] - sum;
-            shift = levels[i];
-            if (left) {
-                drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
-                        * fraction / 3));
-            } else {
-                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round
-                        (height * fraction / 3));
-            }
-            left = !left;
-        }
-        Drawer.returnToCentralPoint();
     }
 
     private void drawBranch(int x, int height, float spread, int widthBase, int widthTop, int yShift) {
-        int length = height / 2 + random.randomInRange(0, height / 25);
-        int deviation = Math.round(spread * (height / 3 + random.randomInRange(0, height / 6)));
+        int length = height + random.randomInRange(0, height / 10);
+        int deviation = Math.round(spread * (height / 2 + random.randomInRange(0, height / 4)));
         int change = -8 + random.next(4);
         int xPosition = x + deviation / 2 + change;
         Drawer.drawTextureQuad(x, 0, xPosition, -length / 2, xPosition + (widthTop + widthBase) / 2, -length / 2, x + widthBase, 0);
@@ -293,9 +233,9 @@ public class Tree extends GameObject {
         points.sort(comparator);
         int rand1, rand2;
         Drawer.setCentralPoint();
-        int radius = height / 25;
+        int radius = Methods.roundDouble(leaf.getActualWidth() / 2 * Methods.SQRT_ROOT_OF_2);
         int dif = (radius + radius) / 3;
-        int dif2 = dif * dif * 100;
+        int dif2 = dif * dif * 18;
         int count = height * 2;
         int maxX = 0;
         int maxY = 0;
@@ -316,10 +256,10 @@ public class Tree extends GameObject {
             for (int j = 0; j < count; j++) {
                 randomLeaf(i, rand1, rand2, maxX, maxY, minY);
                 rand1 += random.randomInRange(-dif, dif);
-                rand2 += random.randomInRange(-dif, dif);
+                rand2 += random.randomInRange(-dif / 2, dif / 2);
                 if (rand1 * rand1 + rand2 * rand2 > dif2) {
                     rand1 = random.randomInRange(-dif, dif);
-                    rand2 = random.randomInRange(-dif, dif);
+                    rand2 = random.randomInRange(-dif / 2, dif / 2);
                 }
             }
         }
@@ -333,8 +273,6 @@ public class Tree extends GameObject {
             change = 0;
         }
         int rand = random.randomInRange(-10, 10);
-//        Drawer.setColor(new Color(0.1f + 0.05f * change + rand / 200f, 0.4f + 0.2f * change + rand / 100f,
-//                0.15f + 0.075f * change + random.randomInRange(-10, 10) / 350f));
         Drawer.setColor(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
                 leafColor.b * (1 + change / 2f + rand / 25f)));
         float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
