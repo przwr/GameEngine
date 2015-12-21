@@ -373,6 +373,10 @@ public abstract class Map {
                 .addAll(areas[area].getInteractiveObjects()));
     }
 
+    public void placePuzzle(int x, int y, PuzzleObject po) {
+        po.placePuzzle(x, y, this);
+    }
+    
     public void addForegroundTileAndReplace(GameObject tile) {
         addForegroundTileAndReplace(tile, tile.getX(), tile.getY(), tile.getPureDepth());
     }

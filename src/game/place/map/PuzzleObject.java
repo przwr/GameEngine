@@ -143,7 +143,7 @@ public class PuzzleObject {
             tmpSS = place.getSpriteSheet(lineTab[4], "backgrounds");
         }
         tmpFgt = new FGTileContainer(tmpSS, tileSize, Integer.parseInt(lineTab[8]), Integer.parseInt(lineTab[9]),
-                lineTab[5].equals("1"), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), Integer.parseInt(lineTab[3]) * tileSize);
+                lineTab[5].equals("1"), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), Integer.parseInt(lineTab[3]) * (tileSize / 2));
         tmpFgt.xBegin = Integer.parseInt(lineTab[1]) * tileSize;
         tmpFgt.yBegin = Integer.parseInt(lineTab[2]) * tileSize;
         index = 10;
