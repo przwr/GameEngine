@@ -105,7 +105,7 @@ public class SpriteBase {
         } catch (IOException e) {
             ErrorHandler.error("File " + folder + File.pathSeparator + "dims.txt not found!\n" + e.getMessage());
             return null;
-        }
+        } 
         return new Point[]{new Point(startX, startY), new Point(deltaX, deltaY)};
     }
 

@@ -8,6 +8,7 @@ package game.place.map;
 import engine.utilities.Drawer;
 import game.place.Place;
 import gamedesigner.ObjectPlace;
+import gamedesigner.ObjectPlayer;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -73,7 +74,11 @@ public class ObjectFGTile extends ForegroundTile {
                 fbo.render();
             }
             if (((ObjectPlace) map.place).getMode() == ObjectPlace.MODE_TILE) {
-                glColor4f(1f, 1f, 1f, 0.5f);
+                if (ObjectPlayer.currectDepth == depth) {
+                    glColor4f(1f, 0f, 0f, 0.5f);
+                } else {
+                    glColor4f(1f, 1f, 1f, 0.5f);
+                }
                 int tile = Place.tileSize;
                 Drawer.drawRectangle(tile / 2 - 1, tile, 2, depth - tile / 2);
                 Drawer.drawCircle(0, depth - tile / 2, (int) (tile * 0.3), 10);

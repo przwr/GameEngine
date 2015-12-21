@@ -33,6 +33,8 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class ObjectPlayer extends Player {
 
+    public static int currectDepth;
+    
     private final SimpleKeyboard key;
     private int maxTimer;
     private int ix, iy;
@@ -292,7 +294,8 @@ public class ObjectPlayer extends Player {
             } else if (tileHeight > 0 && key.keyPressed(KEY_NEXT)) {
                 tileHeight--;
             }
-            getCamera().setLookingPoint(0, -tileHeight * Place.tileSize);
+            currectDepth = tileHeight * tileSize / 2;
+            getCamera().setLookingPoint(0, -(tileHeight / 2) * tileSize);
             ui.setChange(key.key(KEY_LSHIFT));
             roundBlocksMode = false;
         } else {
@@ -315,9 +318,9 @@ public class ObjectPlayer extends Player {
 
     private void setTile() {
         int xBegin = Math.min(ix, xStop);
-        int yBegin = Math.min(iy, yStop) - tileHeight;
+        int yBegin = Math.min(iy, yStop) - tileHeight / 2;
         int xEnd = Math.max(ix, xStop);
-        int yEnd = Math.max(iy, yStop) - tileHeight;
+        int yEnd = Math.max(iy, yStop) - tileHeight / 2;
         for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
             for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
                 Point p = ui.getCoordinates();
@@ -355,9 +358,9 @@ public class ObjectPlayer extends Player {
     private void deleteTile() {
         objPlace.getUndoControl().setUpUndo();
         int xBegin = Math.min(ix, xStop);
-        int yBegin = Math.min(iy, yStop) - tileHeight;
+        int yBegin = Math.min(iy, yStop) - tileHeight / 2;
         int xEnd = Math.max(ix, xStop);
-        int yEnd = Math.max(iy, yStop) - tileHeight;
+        int yEnd = Math.max(iy, yStop) - tileHeight / 2;
         for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
             for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
                 if (tileHeight == 0) {
@@ -396,15 +399,15 @@ public class ObjectPlayer extends Player {
         Drawer.setCentralPoint();
         if (mode == ObjectPlace.MODE_TILE) {
             if (tileHeight > 0) {
-                Drawer.translate(0, -tileHeight * tileSize);
+                Drawer.translate(0, -(tileHeight / 2) * tileSize);
             }
             Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
             Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
             Drawer.drawRectangle(0, -yd, d, yd);
             Drawer.drawRectangle(xd + d, 0, d, yd);
             if (tileHeight > 0) {
-                Drawer.drawRectangle(-(d + xd) / 2, (d + yd) / 2, d, tileHeight * tileSize);
-                Drawer.drawCircle(0, tileHeight * tileSize, (int) (tileSize * 0.3), 10);
+                Drawer.drawRectangle(-(d + xd) / 2, (d + yd) / 2, d, tileHeight * tileSize / 2);
+                Drawer.drawCircle(0, tileHeight * tileSize / 2, (int) (tileSize * 0.3), 10);
             }
         }
         if (mode == ObjectPlace.MODE_BLOCK) {

@@ -41,6 +41,8 @@ public class GladeMap extends Map {
         test.placePuzzle(11, 26, this);
         test = new PuzzleObject("smukly", place);
         test.placePuzzle(-1, 0, this);
+        test = new PuzzleObject("tmpDomek", place);
+        test.placePuzzle(40, 30, this);
 //        test = new PuzzleObject("veryHighRound", place);
 //        test.placePuzzle(5, 5, this);
 //        test = new PuzzleObject("domek", place);

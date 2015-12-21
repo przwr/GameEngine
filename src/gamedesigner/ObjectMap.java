@@ -179,7 +179,7 @@ public class ObjectMap extends Map {
 
     public void addFGTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, int depth, boolean altMode) {
         ForegroundTile lowest = null;
-        depth *= tileSize;
+        depth *= tileSize / 2;
         x *= tileSize;
         y *= tileSize;
         ForegroundTile fg;
@@ -207,7 +207,7 @@ public class ObjectMap extends Map {
 
     public void deleteFGTile(int x, int y, int depth) {
         ForegroundTile lowest = null;
-        depth *= tileSize;
+        depth *= tileSize / 2;
         x *= tileSize;
         y *= tileSize;
         ForegroundTile fg;
@@ -226,7 +226,6 @@ public class ObjectMap extends Map {
             }
         }
         if (lowest != null) {
-            System.out.print(lowest);
             removeForegroundTile(lowest);
         }
     }

@@ -245,7 +245,7 @@ public class PuzzleObject {
             map.addBlock(tmpBlock);
             block.containedFGTs.stream().map((tile) -> tile.generateFGT(x * tileSize, y * tileSize)).map((fgt) -> {
                 if (!fgt.isSimpleLighting()) {
-                    map.addForegroundTileAndReplace(fgt);
+                    map.addForegroundTile(fgt);
                 } else {
                     map.addForegroundTile(fgt);
                 }
@@ -254,7 +254,7 @@ public class PuzzleObject {
         });
         objects.stream().forEach(map::addObject);
         fgTiles.stream().forEach((tile) -> {
-            map.addForegroundTileAndReplace(tile.generateFGT(x * tileSize, y * tileSize));
+            map.addForegroundTile(tile.generateFGT(x * tileSize, y * tileSize));
         });
     }
 
