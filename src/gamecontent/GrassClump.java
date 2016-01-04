@@ -72,40 +72,42 @@ public class GrassClump extends GameObject {
             xBladesCount = yCount / curve / 2;
         }
         setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight);
-        int modXBladesCount, xCenter;
+        int middle1 = yCount / 2, middle2 = yCount / 2, modXBladesCount, xCenter;
+        if (yCount % 2 == 0) {
+            middle1 -= 1;
+        }
         int xChange = (xCount * xBladesCount) / yCount;
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
                 modXBladesCount = xBladesCount;
-                xCenter = xCentering;
-                if ((corner == 0 || corner == 2)) {
-                    if (corner == 0) {
-                        modXBladesCount -= xChange * i - j * xBladesCount;
-                        if (modXBladesCount > xBladesCount) {
-                            modXBladesCount = xBladesCount;
-                        }
-                        xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                    } else {
-                        modXBladesCount = xChange * (i + 1) - j * xBladesCount;
-                        if (modXBladesCount > xBladesCount) {
-                            modXBladesCount = xBladesCount;
-                        }
-                        xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                if (corner == 0) {
+                    modXBladesCount -= xChange * i - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
                     }
-                } else if ((corner == 1 || corner == 3)) {
-                    if (corner == 1) {
-                        modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
-                        if (modXBladesCount > xBladesCount) {
-                            modXBladesCount = xBladesCount;
-                        }
-                        xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                    } else {
-                        modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
-                        if (modXBladesCount > xBladesCount) {
-                            modXBladesCount = xBladesCount;
-                        }
-                        xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                } else if (corner == 2) {
+                    modXBladesCount = xChange * (i + 1) - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
                     }
+                    xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                } else if (corner == 1) {
+                    modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
+                    }
+                    xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                } else {
+                    modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
+                    }
+                    xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
                 }
                 if (modXBladesCount > 0)
                     grasses[i * xCount + j] = Grass.create(x + xCenter + j * grassWidth, y + (i + 1) * ySpacing, modXBladesCount, yBladesCount, bladeWidth,
@@ -251,41 +253,43 @@ public class GrassClump extends GameObject {
     }
 
     private void preRenderCorner() {
-        int modXBladesCount, xCenter;
+        int middle1 = yCount / 2, middle2 = yCount / 2, modXBladesCount, xCenter;
+        if (yCount % 2 == 0) {
+            middle1 -= 1;
+        }
         int xChange = (xCount * xBladesCount) / yCount;
         glTranslatef(-xCentering, 0, 0);
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
                 modXBladesCount = xBladesCount;
-                xCenter = xCentering;
-                if ((corner == 0 || corner == 2)) {
-                    if (corner == 0) {
-                        modXBladesCount -= xChange * i - j * xBladesCount;
-                        if (modXBladesCount > xBladesCount) {
-                            modXBladesCount = xBladesCount;
-                        }
-                        xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                    } else {
-                        modXBladesCount = xChange * (i + 1) - j * xBladesCount;
-                        if (modXBladesCount > xBladesCount) {
-                            modXBladesCount = xBladesCount;
-                        }
-                        xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                if (corner == 0) {
+                    modXBladesCount -= xChange * i - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
                     }
-                } else if ((corner == 1 || corner == 3)) {
-                    if (corner == 1) {
-                        modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
-                        if (modXBladesCount > xBladesCount) {
-                            modXBladesCount = xBladesCount;
-                        }
-                        xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                    } else {
-                        modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
-                        if (modXBladesCount > xBladesCount) {
-                            modXBladesCount = xBladesCount;
-                        }
-                        xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                    xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                } else if (corner == 2) {
+                    modXBladesCount = xChange * (i + 1) - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
                     }
+                    xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                } else if (corner == 1) {
+                    modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
+                    }
+                    xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                } else {
+                    modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
+                    }
+                    xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
                 }
                 glTranslatef(xCenter, 0, 0);
                 if (modXBladesCount > 0) {
@@ -295,26 +299,6 @@ public class GrassClump extends GameObject {
             }
             glTranslatef(-grassWidth * (xCount), ySpacing, 0);
         }
-//
-//        for (int i = 0; i < yCount; i++) {
-//            for (int j = 0; j < xCount; j++) {
-//                xCenter = 0;
-//                if (curve > 0 && xCount > 1) {
-//                    if (j == 0) {
-//                        xCenter = xCentering - (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * bladeWidth / 2;
-//                        glTranslatef(xCenter, 0, 0);
-//                    } else if (j == xCount - 1) {
-//                        xCenter = (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * bladeWidth / 2 - xCentering;
-//                        glTranslatef(xCenter, 0, 0);
-//                    }
-//                }
-//                if (grasses[i * xCount + j] != null) {
-//                    grasses[i * xCount + j].renderStill();
-//                }
-//                glTranslatef(grassWidth - xCenter, 0, 0);
-//            }
-//            glTranslatef(-grassWidth * (xCount), ySpacing, 0);
-//        }
     }
 
     @Override

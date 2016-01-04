@@ -235,7 +235,7 @@ public class Bush extends GameObject {
         Drawer.setCentralPoint();
         int radius = Methods.roundDouble(leaf.getActualWidth() / 2 * Methods.SQRT_ROOT_OF_2);
         int dif = (radius + radius) / 3;
-        int dif2 = dif * dif * 18;
+        int dif2 = dif * dif * 9;
         int count = height * 2;
         int maxX = 0;
         int maxY = 0;
