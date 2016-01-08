@@ -473,7 +473,7 @@ public class MyPlayer extends Player {
             }
         }
         brakeOthers();
-        appearance.updateTexture(this);
+//        appearance.updateTexture(this);
         updateWithGravity();
         updateEnergy();
     }

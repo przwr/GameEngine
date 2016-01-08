@@ -46,7 +46,7 @@ public class ClothedAppearance implements Appearance {
         yDelta = renderPoints[1].getY();
         upperBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
         lowerBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
-        fbo = new RegularFrameBufferObject(218, 256);
+        fbo = new RegularFrameBufferObject(210, 256);
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
@@ -314,7 +314,7 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public int getYOffset() {
-        return yOffset;
+        return yOffset / 2;
     }
 
     @Override
