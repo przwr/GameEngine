@@ -38,7 +38,7 @@ public class Tongub extends Mob {
     private ActionState idle, run_away, hide, attack, wander;
     private Delay attack_delay = Delay.createInMilliseconds(1500);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(250);            //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay peakTime = Delay.createInSeconds(10);            //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay peakTime = Delay.createInSeconds(8);            //TODO - te wartości losowe i zależne od poziomu trudności
     private boolean attacking, undig, side, letGo;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
 
@@ -50,7 +50,7 @@ public class Tongub extends Mob {
                 if (rest.isOver()) {
                     brake(2);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                    if (closeEnemies.size() * 2 <= closeFriends.size()) {
+                    if (closeEnemies.size() * 1.5 <= closeFriends.size()) {
                         GameObject closerEnemy = getCloserEnemy();
                         if (closerEnemy != null && isInHalfHearingRange(closerEnemy)) {
                             state = attack;
@@ -109,12 +109,12 @@ public class Tongub extends Mob {
             public void update() {
 //                System.out.println("HIDE");
                 brake(2);
-                if (animation.getDirectionalFrameIndex() == 16) {
+                if (!undig && animation.getDirectionalFrameIndex() == 16) {
                     collision.setCollide(false);
                     collision.setHitable(false);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     GameObject closerEnemy = getCloserEnemy();
-                    if (closerEnemy == null || (peakTime.isOver() && !isCollided(0, 0))) {
+                    if (closerEnemy == null || closeEnemies.size() * 1.5 <= closeFriends.size() || (peakTime.isOver() && !isCollided())) {
                         peakTime.start();
                         stats.setProtectionState(false);
                         undig = true;
@@ -223,12 +223,20 @@ public class Tongub extends Mob {
         };
     }
 
+
     public Tongub() {
     }
 
     public Tongub(int x, int y, Place place, short ID) {
         super(x, y, 3, 768, "Tongub", place, "tongub", true, ID);
         setUp();
+    }
+
+    private boolean isCollided() {
+        collision.setCollide(true);
+        boolean collided = isCollided(0, 0);
+        collision.setCollide(false);
+        return collided;
     }
 
     @Override

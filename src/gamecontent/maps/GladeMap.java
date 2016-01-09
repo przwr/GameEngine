@@ -14,7 +14,6 @@ import gamecontent.SpawnPoint;
 import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
-import gamecontent.mobs.Shen;
 import gamecontent.mobs.Tongub;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
@@ -72,6 +71,12 @@ public class GladeMap extends Map {
         addObject(new Tongub(1756, 2964, place, mobID++));
         addObject(new Tongub(1756, 3024, place, mobID++));
         addObject(new Tongub(1756, 3100, place, mobID++));
+//        addObject(new Tongub(756, 768, place, mobID++));
+//        addObject(new Tongub(756, 820, place, mobID++));
+//        addObject(new Tongub(756, 900, place, mobID++));
+//        addObject(new Tongub(756, 964, place, mobID++));
+//        addObject(new Tongub(756, 1024, place, mobID++));
+//        addObject(new Tongub(756, 1100, place, mobID++));
 
 
         int xBladesCount = 8;
@@ -115,10 +120,10 @@ public class GladeMap extends Map {
         addObject(GrassClump.createRectangle(448, 800, 2, 8, 8, 2, 8, 32));
 //
 //
-        addObject(new Shen(512, 800, place, mobID++));
-        addObject(new Shen(768, 1280, place, mobID++));
-        addObject(new Shen(512, 1500, place, mobID++));
-        addObject(new Shen(648, 1400, place, mobID++));
+//        addObject(new Shen(512, 800, place, mobID++));
+//        addObject(new Shen(768, 1280, place, mobID++));
+//        addObject(new Shen(512, 1500, place, mobID++));
+//        addObject(new Shen(648, 1400, place, mobID++));
         addObject(new Plurret(1156, 968, place, mobID++));
         addObject(new Blazag(1600, 2494, place, mobID++));
         addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
