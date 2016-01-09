@@ -16,6 +16,7 @@ import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
 import net.jodk.lang.FastMath;
+import sprites.ClothedAppearance;
 
 import java.awt.*;
 import java.util.Collections;
@@ -67,8 +68,9 @@ public class ShadowRenderer {
 
     public static void preRenderLight(Map map, Light light) {
 //        long start = System.nanoTime();
-        prepareToPreRender(light);
+        prepareToFindShades(light);
         findShades(light, map);
+        prepareToPreRender(light);
         calculateShadows(light);
         renderShadows(light);
         endPreRender(light);
@@ -82,7 +84,7 @@ public class ShadowRenderer {
 //        }
     }
 
-    private static void prepareToPreRender(Light light) {
+    private static void prepareToFindShades(Light light) {
         int lightHeightHalf = light.getHeight() >> 1;
         lightYEnd = light.getY() + lightHeightHalf;
         lightYStart = light.getY() - lightHeightHalf;
@@ -91,6 +93,11 @@ public class ShadowRenderer {
         lightXStart = light.getX() - lightWidthHalf;
         lightXCentralShifted = light.getXCenterShift() - light.getX();
         lightYCentralShifted = light.getYCenterShift() - light.getY() + displayHeight - light.getHeight();
+        glEnable(GL_TEXTURE_2D);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private static void prepareToPreRender(Light light) {
         light.getFrameBufferObject().activate();
         clearScreen(1);
         glDisable(GL_TEXTURE_2D);
@@ -149,6 +156,9 @@ public class ShadowRenderer {
                     && object.getX() - tempShade.getActualWidth() / 2 <= lightXEnd
                     && object.getX() + tempShade.getActualWidth() / 2 >= lightXStart) {
                 shades.add(tempShade);
+                if (object.getAppearance() instanceof ClothedAppearance) {
+                    object.getAppearance().updateTexture(null);
+                }
             }
         }
     }
@@ -1249,7 +1259,7 @@ public class ShadowRenderer {
 //                    OBJECT_DEBUG("Object Left Light " + (XL1 - other.getXSpriteBegin()) + " XL2 " + XL2);
                     checked = true;
                 } else { //dodaj cień
-                    if (shadow3X > shadow2X || shadow3Y < shadow2Y) {
+                    if (shadow3X > shadow2X /*|| shadow3Y < shadow2Y*/) {
                         XL2 = other.getXSpriteOffsetWidth();
                     }
                     other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
@@ -1283,7 +1293,7 @@ public class ShadowRenderer {
 //                            .getXSpriteOffset());
                     checked = true;
                 } else { //dodaj cień
-                    if (shadow3X < shadow2X || shadow3Y > shadow2Y) {
+                    if (shadow3X < shadow2X /*|| shadow3Y > shadow2Y*/) {
                         XR2 = other.getXSpriteOffsetWidth();
                     }
                     other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);

@@ -104,12 +104,15 @@ public class GladeMap extends Map {
 //        addObject(new Tree(140, 1200, 32, 200));
 //        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
 //        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
-        addObject(GrassClump.createCorner(256, 512, 2, 8, 8, 2, 8, 32, 0));
-        addObject(GrassClump.createCorner(512, 512, 2, 8, 8, 2, 8, 32, 1));
-        addObject(GrassClump.createCorner(256, 640, 2, 8, 8, 2, 8, 32, 2));
-        addObject(GrassClump.createCorner(512, 640, 2, 8, 8, 2, 8, 32, 3));
-        addObject(GrassClump.createRectangle(512, 800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createCorner(256, 864, 2, 8, 8, 2, 8, 32, 0));
+        addObject(GrassClump.createCorner(256, 736, 2, 8, 8, 2, 8, 32, 1));
+        addObject(GrassClump.createCorner(448, 736, 2, 8, 8, 2, 8, 32, 2));
+        addObject(GrassClump.createCorner(448, 864, 2, 8, 8, 2, 8, 32, 3));
         addObject(GrassClump.createRectangle(256, 800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(352, 864, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(352, 736, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(352, 800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(448, 800, 2, 8, 8, 2, 8, 32));
 //
 //
         addObject(new Shen(512, 800, place, mobID++));

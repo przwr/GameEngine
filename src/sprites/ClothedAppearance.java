@@ -1,45 +1,42 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sprites;
 
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
-import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.entities.Player;
 import game.place.Place;
+import game.place.fbo.FrameBufferObject;
+import game.place.fbo.RegularFrameBufferObject;
 import gamecontent.equipment.Cloth;
+import org.lwjgl.opengl.Display;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- *
  * @author Wojtek
  */
 public class ClothedAppearance implements Appearance {
 
+    private final int xStart, yStart;
+    private final int xDelta, yDelta;
+    private final Animation upperBody, lowerBody;
     public int IDLE, WALK, RUN, SWORD, FISTS, ACROBATICS, BOW, SHIELD;
-
     private int framesPerDirection, frame;
     private int xOffset, yOffset;
     private int width, height;
-    private final int xStart, yStart;
-    private final int xDelta, yDelta;
-
-    private final Animation upperBody, lowerBody;
-
     private SpriteSheet[] upperRenderList;
     private SpriteSheet[] lowerRenderList;
     private ArrayList<byte[]> upperQueue;
     private ArrayList<byte[]> lowerQueue;
+    private FrameBufferObject fbo;
 
-    public ClothedAppearance(Place place, int delayTime, String characterName) {
+    public ClothedAppearance(Place place, int delayTime, String characterName, int width) {
         setClothParameters("characters/" + characterName);
         setRenderQueue("characters/" + characterName);
         Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
@@ -49,34 +46,35 @@ public class ClothedAppearance implements Appearance {
         yDelta = renderPoints[1].getY();
         upperBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
         lowerBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
+        fbo = new RegularFrameBufferObject(210, 256);
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
-            Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
-            Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
+                           Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
+                           Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
         lowerRenderList = new SpriteSheet[]{
-            legs.getFirstPart(),
-            boots.getFirstPart(),
-            legs.getLastPart(),
-            boots.getLastPart(),
-            pants.getFirstPart(),
-            pants.getLastPart()
+                legs.getFirstPart(),
+                boots.getFirstPart(),
+                legs.getLastPart(),
+                boots.getLastPart(),
+                pants.getFirstPart(),
+                pants.getLastPart()
         };
         upperRenderList = new SpriteSheet[]{
-            torso.getSecondPart(),
-            gloves.getFirstPart(),
-            shirt.getSecondPart(),
-            torso.getFirstPart(),
-            shirt.getFirstPart(),
-            head.getFirstPart(),
-            hair.getFirstPart(),
-            cap.getFirstPart(),
-            torso.getLastPart(),
-            gloves.getLastPart(),
-            shirt.getLastPart(),
-            sword.getFirstPart(),
-            bow.getFirstPart(),
-            shield.getFirstPart()
+                torso.getSecondPart(),
+                gloves.getFirstPart(),
+                shirt.getSecondPart(),
+                torso.getFirstPart(),
+                shirt.getFirstPart(),
+                head.getFirstPart(),
+                hair.getFirstPart(),
+                cap.getFirstPart(),
+                torso.getLastPart(),
+                gloves.getLastPart(),
+                shirt.getLastPart(),
+                sword.getFirstPart(),
+                bow.getFirstPart(),
+                shield.getFirstPart()
         };
         calculateDimensions();
     }
@@ -243,7 +241,7 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void bindCheck() {
-        //Nothing to do..... <('^'<)
+        fbo.bindCheck();
     }
 
     @Override
@@ -311,12 +309,12 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public int getXOffset() {
-        return xOffset;
+        return xOffset / 2;
     }
 
     @Override
     public int getYOffset() {
-        return yOffset;
+        return yOffset / 2;
     }
 
     @Override
@@ -326,16 +324,30 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
-        frame = lowerBody.getCurrentFrameIndex();
-        for (byte i : lowerQueue.get(frame)) {
-            lowerRenderList[i].renderPiecePart(frame, partXStart, partXEnd);
-            lowerRenderList[i].returnFromTranslation(frame);
+//        frame = lowerBody.getCurrentFrameIndex();
+//        for (byte i : lowerQueue.get(frame)) {
+//            lowerRenderList[i].renderPiecePart(frame, partXStart, partXEnd);
+//            lowerRenderList[i].returnFromTranslation(frame);
+//        }
+//        frame = upperBody.getCurrentFrameIndex();
+//        for (byte i : upperQueue.get(frame)) {
+//            upperRenderList[i].renderPiecePart(frame, partXStart, partXEnd);
+//            upperRenderList[i].returnFromTranslation(frame);
+//        }
+        glTranslatef(-fbo.getWidth() / 2, -fbo.getHeight() / 2, 0);
+        if (partXStart > partXEnd) {
+            int temp = partXEnd;
+            partXEnd = partXStart;
+            partXStart = temp;
         }
-        frame = upperBody.getCurrentFrameIndex();
-        for (byte i : upperQueue.get(frame)) {
-            upperRenderList[i].renderPiecePart(frame, partXStart, partXEnd);
-            upperRenderList[i].returnFromTranslation(frame);
+        int startDelta = partXStart;
+        int endDelta = fbo.getWidth() - partXEnd;
+        if (startDelta > endDelta) {
+            fbo.renderPart(partXStart - xOffset / 2, partXEnd - xOffset / 2);
+        } else {
+            fbo.renderPart(partXStart + xOffset / 2, partXEnd + xOffset / 2);
         }
+//        System.out.println(partXStart + " " + partXEnd + " " + width);
     }
 
     @Override
@@ -345,6 +357,12 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void updateTexture(Player owner) {
-        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
+        fbo.activate();
+        glPushMatrix();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glTranslatef(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight(), 0);
+        render();
+        glPopMatrix();
+        fbo.deactivate();
     }
 }
