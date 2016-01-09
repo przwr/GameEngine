@@ -347,6 +347,7 @@ public class MyPlayer extends Player {
             Drawer.refreshColor();
             Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
                     map.getLightColor());
+            Drawer.refreshColor();
             glPopMatrix();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {

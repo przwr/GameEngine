@@ -64,6 +64,7 @@ public class GUIHandler extends GUIObject {
         "",
         "SHIFT + ARROWS:", "Change tile",
         "T:", "Load spriteSheet",
+        "Q:", "Switch to light-based mode",
         "",
         "//BLOCK MODE (2)",
         "",
@@ -125,7 +126,7 @@ public class GUIHandler extends GUIObject {
         selected = 0;
         this.prettyOptions = new String[options.length * 2];
         for (int i = 0; i < options.length; i++) {
-            this.prettyOptions[2 * i] = prettyOptions[i];
+            this.prettyOptions[2 * i] = prettyOptions[i] + ": ";
             this.prettyOptions[2 * i + 1] = options[i] ? "ON" : "OFF";
         }
         visible = true;

@@ -168,8 +168,6 @@ public class ObjectMap extends Map {
             if (lowest != null) {
                 lowest.addTile(x, y, xSheet, ySheet, tex, altMode).getDepth();
                 setTile(x, y, getBackground());
-//                !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//                sortObjectsByDepth(foregroundTiles);
             } else if (areTilesVisible) {
                 Tile newTile = new Tile(tex, xSheet, ySheet);
                 setTile(x, y, newTile);
@@ -177,35 +175,40 @@ public class ObjectMap extends Map {
         }
     }
 
-    public void addFGTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, int depth, boolean altMode) {
+    public void addFGTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, int depth, boolean altMode, boolean isLightBased, boolean isShadow) {
         ForegroundTile lowest = null;
         depth *= tileSize / 2;
         x *= tileSize;
         y *= tileSize;
-        ForegroundTile fg;
-        if (areTilesVisible) {
-            for (Area area : areas) {
-                for (GameObject o : area.getForegroundTiles()) {
-                    fg = (ForegroundTile) o;
-                    if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y) {
-                        lowest = fg;
+        if (!isLightBased) {
+            ForegroundTile fg;
+            if (areTilesVisible) {
+                for (Area area : areas) {
+                    for (GameObject o : area.getForegroundTiles()) {
+                        fg = (ForegroundTile) o;
+                        if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y) {
+                            lowest = fg;
+                            break;
+                        }
+                    }
+                    if (lowest != null) {
                         break;
                     }
                 }
-                if (lowest != null) {
-                    break;
-                }
             }
-        }
-        if (lowest != null) {
-            lowest.addTileToStack(xSheet, ySheet);
+            if (lowest != null) {
+                lowest.addTileToStack(xSheet, ySheet);
+            } else {
+                ForegroundTile newTile = ObjectFGTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, depth + tileSize /*TODO SOMETHING!!!*/);
+                addForegroundTile(newTile, x, y, depth);
+            }
         } else {
-            ForegroundTile newTile = ObjectFGTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, depth + tileSize /*TODO SOMETHING!!!*/);
+            ForegroundTile newTile = ShadowLightTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, depth + tileSize, isShadow);
             addForegroundTile(newTile, x, y, depth);
         }
     }
 
-    public void deleteFGTile(int x, int y, int depth) {
+    public void deleteFGTile(int x, int y, int depth, boolean isLightBased, boolean isShadow) {
         ForegroundTile lowest = null;
         depth *= tileSize / 2;
         x *= tileSize;
@@ -215,7 +218,8 @@ public class ObjectMap extends Map {
             for (Area area : areas) {
                 for (GameObject o : area.getForegroundTiles()) {
                     fg = (ForegroundTile) o;
-                    if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y) {
+                    if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y
+                            && ((isLightBased && fg instanceof ShadowLightTile && isShadow == ((ShadowLightTile)fg).isShadow()) || !isLightBased)) {
                         lowest = fg;
                         break;
                     }

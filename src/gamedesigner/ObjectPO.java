@@ -56,7 +56,7 @@ public class ObjectPO extends PuzzleObject {
                         map);
             }
             map.addObject(tmp);
-            block.getForegroundTiles().stream().forEach((tile) -> tmp.addTile(tile.generateFGT(x * tileSize, y * tileSize)));
+            block.getForegroundTiles().stream().forEach((tile) -> tmp.addTile(tile.generateFGT(x * tileSize, y * tileSize, false)));
 
             if (block instanceof RoundBlockContainer) {
                 int[] corners = ((RoundBlockContainer) block).getCorners();
@@ -79,7 +79,7 @@ public class ObjectPO extends PuzzleObject {
             while ((p = tmp.popTileFromStackBack()) != null) {
                 objMap.addTile(xStart, yStart, p.getX(), p.getY(), tex, false);
             }*/
-            map.addForegroundTile(tile.generateOFGT(x * tileSize, y * tileSize));
+            map.addForegroundTile(tile.generateFGT(x * tileSize, y * tileSize, true));
         });
         links.stream().forEach((PointedValue pv) -> {
             PuzzleLink pl = new PuzzleLink(pv.getX() * tileSize, pv.getY() * tileSize, pv.getValue(), (ObjectPlace) map.place);
