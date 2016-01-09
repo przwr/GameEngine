@@ -27,6 +27,9 @@ public final class DayCycle {
     private long stoppedAt;
     private boolean stopped;
 
+    private float dayShadowAlpha;
+    private float nightLightAlpha;
+
     public DayCycle() {
         midnightTime = System.currentTimeMillis();
         setNormalDayColors();
@@ -125,6 +128,18 @@ public final class DayCycle {
             delta = (float) (timeInMinutes - TIME_END_DUSK) / (TIME_END_AFTERDUSK - TIME_END_DUSK);
             mixColors(lightColor, DARK_BLUE_SKY, NIGHT_SKY, delta);
         }
+        
+        delta = (float) (lightColor.r + lightColor.g + lightColor.b) / 3;
+        dayShadowAlpha = (delta - NIGHT) / (1 - NIGHT);
+        if (delta <= NIGHT * 2f) {
+            if (delta != NIGHT) {
+                nightLightAlpha = 1f - (delta - NIGHT) / (NIGHT);
+            } else {
+                nightLightAlpha = 1f;
+            }
+        } else {
+            nightLightAlpha = 0f;
+        }
     }
 
     private void mixColors(Color mix, Color from, Color to, float alpha) {
@@ -134,49 +149,6 @@ public final class DayCycle {
         mix.a = from.a + (to.a - from.a) * alpha;
     }
 
-//    private void updateLightColorOld() {
-//        float delta;
-//        if (timeInMinutes < TIME_BEGIN_PREDAWN || timeInMinutes > TIME_END_AFTERDUSK) {
-//            //NOC
-//            lightColor.r = lightColor.g = lightColor.b = NIGHT_LIGHT;
-//        } else if (timeInMinutes <= TIME_BEGIN_DAWN) {
-//            //PRZED-WSCHOD
-//            delta = (float) (timeInMinutes - TIME_BEGIN_PREDAWN) / (TIME_BEGIN_DAWN - TIME_BEGIN_PREDAWN);
-//            Methods.changeColorWithHSV(lightColor, 240, delta * SATURATION_LIMIT, NIGHT_LIGHT * (1 + delta));
-//        } else if (timeInMinutes <= TIME_END_DAWN) {
-//            //WSCHOD
-//            delta = (float) (timeInMinutes - TIME_BEGIN_DAWN) / (TIME_END_DAWN - TIME_BEGIN_DAWN);
-//            colorAngle = (float) ((240 + delta * 180) % 360);
-//            lightValue = NIGHT_LIGHT * 2 + delta * DELTA_LIGHT;
-//            Methods.changeColorWithHSV(lightColor, colorAngle, SATURATION_LIMIT, lightValue);
-//            lightColor.b /= 1 + delta / 2;
-//        } else if (timeInMinutes <= TIME_END_AFTERDAWN) {
-//            //PO-WSCHOD
-//            saturation = 1 - (float) (timeInMinutes - TIME_END_DAWN) / (TIME_END_AFTERDAWN - TIME_END_DAWN);
-//            Methods.changeColorWithHSV(lightColor, 60, saturation * SATURATION_LIMIT, 1f);
-//        } else if (timeInMinutes <= TIME_BEGIN_PREDUSK) {
-//            //DZIEN
-//            lightColor.r = lightColor.g = lightColor.b = 1f;
-//        } else if (timeInMinutes <= TIME_BEGIN_DUSK) {
-//            //PRZED-ZACHOD
-//            saturation = (float) (timeInMinutes - TIME_BEGIN_PREDUSK) / (TIME_BEGIN_DUSK - TIME_BEGIN_PREDUSK);
-//            Methods.changeColorWithHSV(lightColor, 60, saturation * SATURATION_LIMIT, 1f);
-//        } else if (timeInMinutes <= TIME_END_DUSK) {
-//            //ZACHOD
-//            delta = 1 - (float) (timeInMinutes - TIME_BEGIN_DUSK) / (TIME_END_DUSK - TIME_BEGIN_DUSK);
-//            colorAngle = (float) ((240 + delta * 180) % 360);
-//            lightValue = NIGHT_LIGHT * 2 + delta * DELTA_LIGHT;
-//            Methods.changeColorWithHSV(lightColor, colorAngle, SATURATION_LIMIT, lightValue);
-//            lightColor.b /= 1 + delta / 2;
-//        } else if (timeInMinutes <= TIME_END_AFTERDUSK) {
-//            //PO-ZACHOD
-//            delta = 1 - (float) (timeInMinutes - TIME_END_DUSK) / (TIME_END_AFTERDUSK - TIME_END_DUSK);
-//            Methods.changeColorWithHSV(lightColor, 240, delta * SATURATION_LIMIT, NIGHT_LIGHT * (1 + delta));
-//        }
-////        System.out.println((int) (lightColor.r * 1000) + " "
-////                + (int) (lightColor.g * 1000) + " "
-////                + (int) (lightColor.b * 1000));
-//    }
     public short getTime() {
         return timeInMinutes;
     }
@@ -203,6 +175,30 @@ public final class DayCycle {
 
     public Color getShade() {
         return lightColor;
+    }
+    
+    public float getDayShadowAlpha() {
+        return dayShadowAlpha;
+    }
+    
+    public float getNightLightAlpha() {
+        return nightLightAlpha;
+    }
+    
+    public boolean isNightNow() {
+        return timeInMinutes < TIME_BEGIN_PREDAWN || timeInMinutes > TIME_END_AFTERDUSK;
+    }
+    
+    public boolean isDawnNow() {
+        return timeInMinutes >= TIME_BEGIN_PREDAWN && timeInMinutes < TIME_END_AFTERDAWN;
+    }
+    
+    public boolean isDayNow() {
+        return timeInMinutes >= TIME_END_AFTERDAWN && timeInMinutes < TIME_BEGIN_PREDUSK;
+    }
+    
+    public boolean isDuskNow() {
+        return timeInMinutes >= TIME_BEGIN_PREDUSK && timeInMinutes <= TIME_END_AFTERDUSK;
     }
 
     @Override

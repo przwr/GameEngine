@@ -73,6 +73,10 @@ public class Drawer {
     public static void setColorAlpha(float alpha) {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, alpha);
     }
+    
+    public static Color getCurrentColor() {
+        return currentColor;
+    }
 
 
     public static Color setPercentToRGBColor(int percent, Color color) {

@@ -34,7 +34,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class ObjectPlayer extends Player {
 
     public static int currectDepth;
-    
+
     private final SimpleKeyboard key;
     private int maxTimer;
     private int ix, iy;
@@ -46,7 +46,7 @@ public class ObjectPlayer extends Player {
     private ObjectUI ui;
     private int blockHeight, tileHeight, radius, mode;
     private boolean roundBlocksMode, alreadyPlaced;
-    private boolean paused;
+    private boolean paused, shadow, nightLight;
 
     private RoundedTMPBlock rTmpBlock;
     private ArrayList<TemporaryBlock> movingBlock;
@@ -194,6 +194,20 @@ public class ObjectPlayer extends Player {
             if (key.keyPressed(KEY_Z)) {
                 camera.switchZoom();
             }
+
+            if (key.keyPressed(KEY_Q)) {
+                if (!shadow && !nightLight) {
+                    shadow = true;
+                    objPlace.printMessage("Shadow FGTiles mode");
+                } else if (shadow) {
+                    shadow = false;
+                    nightLight = true;
+                    objPlace.printMessage("Night-Light FGTiles mode");
+                } else {
+                    nightLight = false;
+                    objPlace.printMessage("Normal FGTiles mode");
+                }
+            }
         } else if (paused) {
             if (roundBlocksMode) {
                 if (key.keyPressed(KEY_UP)) {
@@ -324,10 +338,10 @@ public class ObjectPlayer extends Player {
         for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
             for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
                 Point p = ui.getCoordinates();
-                if (tileHeight == 0) {
+                if (tileHeight == 0 && !shadow && !nightLight) {
                     objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
                 } else {
-                    objMap.addFGTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), tileHeight, key.key(KEY_LMENU));
+                    objMap.addFGTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), tileHeight, key.key(KEY_LMENU), shadow || nightLight, shadow);
                 }
             }
         }
@@ -363,10 +377,10 @@ public class ObjectPlayer extends Player {
         int yEnd = Math.max(iy, yStop) - tileHeight / 2;
         for (int xTemp = xBegin; xTemp <= xEnd; xTemp++) {
             for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
-                if (tileHeight == 0) {
+                if (tileHeight == 0 && !shadow && !nightLight) {
                     objMap.deleteTile(xTemp, yTemp);
                 } else {
-                    objMap.deleteFGTile(xTemp, yTemp, tileHeight);
+                    objMap.deleteFGTile(xTemp, yTemp, tileHeight, shadow || nightLight, shadow);
                 }
             }
         }
@@ -395,7 +409,13 @@ public class ObjectPlayer extends Player {
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(Math.min(ix, xStop) * tileSize, Math.min(iy, yStop) * tileSize, 0);
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-        glColor4f(1f, 1f, 1f, 1f);
+        if (shadow) {
+            glColor4f(0.7f, 0.7f, 1f, 1f);
+        } else if (nightLight) {
+            glColor4f(1f, 0.7f, 0.7f, 1f);
+        } else {
+            glColor4f(1f, 1f, 1f, 1f);
+        }
         Drawer.setCentralPoint();
         if (mode == ObjectPlace.MODE_TILE) {
             if (tileHeight > 0) {

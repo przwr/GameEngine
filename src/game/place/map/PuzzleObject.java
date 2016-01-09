@@ -104,7 +104,11 @@ public class PuzzleObject {
                 break;
 
             case "ft":
-                decodeFGTile();
+                decodeFGTile(false);
+                break;
+
+            case "sft":
+                decodeFGTile(true);
                 break;
 
             case "b":
@@ -138,16 +142,19 @@ public class PuzzleObject {
         checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), 1, 1);
     }
 
-    private void decodeFGTile() {
+    private void decodeFGTile(boolean shadowLightBased) {
         if (!lineTab[4].equals("")) {
             tmpSS = place.getSpriteSheet(lineTab[4], "backgrounds");
         }
         tmpFgt = new FGTileContainer(tmpSS, tileSize, Integer.parseInt(lineTab[8]), Integer.parseInt(lineTab[9]),
                 lineTab[5].equals("1"), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), Integer.parseInt(lineTab[3]) * (tileSize / 2));
+        if (shadowLightBased) {
+            tmpFgt.setShadowLightBased(lineTab[lineTab.length - 1].equals("1"));
+        }
         tmpFgt.xBegin = Integer.parseInt(lineTab[1]) * tileSize;
         tmpFgt.yBegin = Integer.parseInt(lineTab[2]) * tileSize;
         index = 10;
-        while (index + 1 < lineTab.length) {
+        while (index + 1 < lineTab.length - (shadowLightBased ? 1 : 0)) {
             tmpFgt.additionalPlaces.add(new Point(Integer.parseInt(lineTab[index]), Integer.parseInt(lineTab[index + 1])));
             index += 2;
         }
@@ -176,14 +183,14 @@ public class PuzzleObject {
                 Integer.parseInt(lineTab[4]) * tileSize,
                 Integer.parseInt(lineTab[5]) * tileSize);
         ((RoundBlockContainer) tempBlock).setCorners(new int[]{
-                (lineTab[7].equals("") ? 0 : Integer.parseInt(lineTab[7])),
-                (lineTab[8].equals("") ? 0 : Integer.parseInt(lineTab[8])),
-                (lineTab[9].equals("") ? 0 : Integer.parseInt(lineTab[9])),
-                (lineTab[10].equals("") ? 0 : Integer.parseInt(lineTab[10])),
-                (lineTab[11].equals("") ? 0 : Integer.parseInt(lineTab[11])),
-                (lineTab[12].equals("") ? 0 : Integer.parseInt(lineTab[12])),
-                (lineTab[13].equals("") ? 0 : Integer.parseInt(lineTab[13])),
-                (lineTab[14].equals("") ? 0 : Integer.parseInt(lineTab[14]))});
+            (lineTab[7].equals("") ? 0 : Integer.parseInt(lineTab[7])),
+            (lineTab[8].equals("") ? 0 : Integer.parseInt(lineTab[8])),
+            (lineTab[9].equals("") ? 0 : Integer.parseInt(lineTab[9])),
+            (lineTab[10].equals("") ? 0 : Integer.parseInt(lineTab[10])),
+            (lineTab[11].equals("") ? 0 : Integer.parseInt(lineTab[11])),
+            (lineTab[12].equals("") ? 0 : Integer.parseInt(lineTab[12])),
+            (lineTab[13].equals("") ? 0 : Integer.parseInt(lineTab[13])),
+            (lineTab[14].equals("") ? 0 : Integer.parseInt(lineTab[14]))});
         blocks.add(tempBlock);
         checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), Integer.parseInt(lineTab[3]), Integer.parseInt(lineTab[4]));
     }
@@ -243,7 +250,7 @@ public class PuzzleObject {
         blocks.stream().forEach((block) -> {
             Block tmpBlock = block.generateBlock(x * tileSize, y * tileSize);
             map.addBlock(tmpBlock);
-            block.containedFGTs.stream().map((tile) -> tile.generateFGT(x * tileSize, y * tileSize)).map((fgt) -> {
+            block.containedFGTs.stream().map((tile) -> tile.generateFGT(x * tileSize, y * tileSize, false)).map((fgt) -> {
                 if (!fgt.isSimpleLighting()) {
                     map.addForegroundTile(fgt);
                 } else {
@@ -254,7 +261,7 @@ public class PuzzleObject {
         });
         objects.stream().forEach(map::addObject);
         fgTiles.stream().forEach((tile) -> {
-            map.addForegroundTile(tile.generateFGT(x * tileSize, y * tileSize));
+            map.addForegroundTile(tile.generateFGT(x * tileSize, y * tileSize, false));
         });
     }
 
@@ -303,6 +310,9 @@ public class PuzzleObject {
         final int[] values;
         final boolean wall;
         final boolean round;
+
+        boolean shadowLightBased;
+        boolean isShadow;
         int xBegin, yBegin;
 
         //0  1 2 3       4    5      6          7
@@ -312,6 +322,11 @@ public class PuzzleObject {
             values = new int[]{size, xSheet, ySheet, yStart, depth + (round ? 1 : 0)};
             this.wall = wall;
             this.round = round;
+        }
+
+        public void setShadowLightBased(boolean isShadow) {
+            shadowLightBased = true;
+            this.isShadow = isShadow;
         }
 
         public void setBeginning(int x, int y) {
@@ -343,16 +358,17 @@ public class PuzzleObject {
             return round;
         }
 
-        public ForegroundTile generateFGT(int x, int y) {
-            ForegroundTile fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], round);
-            fgt.setPosition(xBegin + x, yBegin + y);
-            fgt.setDepth(values[4]);
-            additionalPlaces.stream().forEach((p) -> fgt.addTileToStack(p.getX(), p.getY()));
-            return fgt;
-        }
-        
-        public ForegroundTile generateOFGT(int x, int y) {
-            ObjectFGTile fgt = new ObjectFGTile(texture, values[0], values[1], values[2], wall, values[3], round);
+        public ForegroundTile generateFGT(int x, int y, boolean objectFGT) {
+            ForegroundTile fgt;
+            if (!shadowLightBased) {
+                if (!objectFGT) {
+                    fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], round);
+                } else {
+                    fgt = new ObjectFGTile(texture, values[0], values[1], values[2], wall, values[3], round);
+                }
+            } else {
+                fgt = new ShadowLightTile(texture, values[0], values[1], values[2], wall, values[3], round, isShadow);
+            }
             fgt.setPosition(xBegin + x, yBegin + y);
             fgt.setDepth(values[4]);
             additionalPlaces.stream().forEach((p) -> fgt.addTileToStack(p.getX(), p.getY()));

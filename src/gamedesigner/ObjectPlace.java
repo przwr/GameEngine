@@ -66,7 +66,7 @@ public class ObjectPlace extends Place {
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
 
-        prettyOptions = new String[]{"Tiles: ", "Background: ", "Blocks: ", "Block Outlines: ", "FGTiles: "};
+        prettyOptions = new String[]{"Tiles", "Background", "Blocks", "Block Outlines", "FGTiles", "Day"};
         viewingOptions = new boolean[prettyOptions.length];
         for (int i = 0; i < viewingOptions.length; i++) {
             viewingOptions[i] = true;
@@ -191,6 +191,9 @@ public class ObjectPlace extends Place {
             setMode(MODE_OBJECT);
             printMessage("OBJECT MODE");
         }
+        if (key.key(Keyboard.KEY_Y)) {
+            dayCycle.addMinutes(1);
+        }
 
         if (key.keyPressed(Keyboard.KEY_S)) {
             if (key.key(Keyboard.KEY_LCONTROL) && !"".equals(lastName)) {
@@ -218,6 +221,13 @@ public class ObjectPlace extends Place {
                 break;
             case 4:
                 objMap.setFGTVisibility(viewingOptions[index]);
+                break;
+            case 5:
+                if (viewingOptions[index]) {
+                    dayCycle.setTime(12, 0);
+                } else {
+                    dayCycle.setTime(0, 0);
+                }
                 break;
         }
     }
