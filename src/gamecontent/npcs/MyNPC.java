@@ -29,7 +29,8 @@ public class MyNPC extends Mob {
     private boolean spinning;
 
     public MyNPC(int x, int y, Place place, short mobID) {
-        super(x, y, 3, 400, "NPC", place, "melodia", true, mobID);
+        super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
+        this.appearance = place.getSprite("melodia", "entities/npcs");
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
         if (appearance != null) {

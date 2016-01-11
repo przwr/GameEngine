@@ -9,6 +9,7 @@ import gamecontent.Bush;
 import gamecontent.GrassClump;
 import gamecontent.Tree;
 import gamecontent.mobs.Shen;
+import gamecontent.npcs.MyNPC;
 
 /**
  * Created by przemek on 21.11.15.
@@ -49,7 +50,7 @@ public class Test extends Map {
         addObject(new Bush(2050, 2430, 14, 80, 0.8f));
 
         for (int i = 0; i < 29; i++) {
-            addObject(Tree.createBranchless(1490 + i * 90 + random.next(5), 2610 + random.next(7), 32, 200, 0.8f));
+            addObject(Tree.create(1490 + i * 90 + random.next(5), 2610 + random.next(7), 32, 200, 0.8f));
 //            addObject(Tree.createBranchless(1490 + i * 90 + random.next(5), 2790 + random.next(7), 32, 200, 0.8f));
 //            addObject(Tree.createBranchless(1490 + i * 90 + random.next(5), 2970 + random.next(7), 32, 200, 0.8f));
 //            addObject(Tree.createBranchless(1490 + i * 90 + random.next(5), 3150 + random.next(7), 32, 200, 0.8f));
@@ -76,7 +77,7 @@ public class Test extends Map {
             }
         }
 
-        addObject(new Shen(3584, 2048, place, mobID++));
+        addObject(new Shen(5584, 2560, place, mobID++));
 
         addObject(GrassClump.createCorner(2560, 1864, 2, 8, 8, 2, 8, 32, 0));
         addObject(GrassClump.createCorner(2560, 1736, 2, 8, 8, 2, 8, 32, 1));
@@ -88,7 +89,11 @@ public class Test extends Map {
         addObject(GrassClump.createRectangle(2656, 1800, 2, 8, 8, 2, 8, 32));
         addObject(GrassClump.createRectangle(2752, 1800, 2, 8, 8, 2, 8, 32));
 
-        addObject(new Bush(3200, 2072, 12, 70, 0.8f));
+        addObject(new Bush(3200, 1872, 12, 70, 0.8f));
+        addObject(new Bush(3900, 2072, 12, 70, 0.8f));
+        addObject(new Bush(4500, 1972, 12, 70, 0.8f));
+
+        addObject(new MyNPC(5000, 2000, place, mobID++));
 
     }
 }

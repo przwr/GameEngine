@@ -42,6 +42,7 @@ public class Bush extends GameObject {
         setSimpleLighting(false);
         collision.setSmall(true);
         solid = true;
+        toUpdate = true;
         this.width = width;
         this.height = height;
         this.spread = spread;
@@ -54,8 +55,8 @@ public class Bush extends GameObject {
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
     }
 
-    @Override
-    public void render(int xEffect, int yEffect) {
+
+    public void update() {
         if (!prerendered) {
             bark = map.place.getSprite("bark", "");
             leaf = map.place.getSprite("leaf", "");
@@ -69,7 +70,12 @@ public class Bush extends GameObject {
             fbo.deactivate();
             points = null;
             prerendered = true;
+            toUpdate = false;
         }
+    }
+
+    @Override
+    public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);

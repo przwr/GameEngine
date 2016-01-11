@@ -43,6 +43,7 @@ public class Tree extends GameObject {
         } else {
             setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.TRANSPARENT, this));
         }
+        toUpdate = true;
         solid = !branchless;
         collision.setSmall(true);
         this.branchless = branchless;
@@ -66,8 +67,8 @@ public class Tree extends GameObject {
         return new Tree(x, y, width, height, spread, true);
     }
 
-    @Override
-    public void render(int xEffect, int yEffect) {
+
+    public void update() {
         if (!prerendered) {
             bark = map.place.getSprite("bark", "");
             leaf = map.place.getSprite("leaf", "");
@@ -81,7 +82,13 @@ public class Tree extends GameObject {
             fbo.deactivate();
             points = null;
             prerendered = true;
+            toUpdate = false;
         }
+    }
+
+
+    @Override
+    public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);

@@ -40,9 +40,13 @@ public abstract class Mob extends Entity {
         initialize(x, y, speed, hearRange, name, place, spriteName, solid, mobID);
     }
 
+    protected Mob(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID, boolean NPC) {
+        initialize(x, y, speed, hearRange, name, place, spriteName, solid, mobID, NPC);
+    }
+
     public abstract void initialize(int x, int y, Place place, short ID);
 
-    public void initialize(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID) {
+    public void initialize(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID, boolean... npc) {
         this.place = place;
         this.solid = solid;
         this.hearRange = hearRange;
@@ -51,7 +55,11 @@ public abstract class Mob extends Entity {
         this.sightRange2 = sightRange * sightRange;
         this.sightAngle = 180;
         this.setMaxSpeed(speed);
-        this.appearance = place.getSprite(spriteName, "entities/mobs");
+        if (npc.length > 0) {
+            this.appearance = place.getSprite(spriteName, "entities/npcs");
+        } else {
+            this.appearance = place.getSprite(spriteName, "entities/mobs");
+        }
         initialize(name, x, y);
         this.mobID = mobID;
     }
