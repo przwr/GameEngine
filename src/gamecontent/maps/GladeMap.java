@@ -15,6 +15,7 @@ import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Tongub;
+import gamecontent.npcs.MyNPC;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 
@@ -146,5 +147,9 @@ public class GladeMap extends Map {
 //        GameObject light = new LightSource(1784, 1296, 206, 64, "lamp", place, "lamp", false);
 //        light.setDepth(1024);
 //        addObject(light);
+
+
+        addObject(new MyNPC(2000, 2000, place, mobID++));
+
     }
 }

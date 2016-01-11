@@ -26,9 +26,8 @@ import java.util.logging.Logger;
  */
 public class SpriteBase {
 
-    private final ArrayList<Sprite> sprites = new ArrayList<>();
-
     private static final int GL_MODE = org.lwjgl.opengl.GL11.GL_NEAREST;
+    private final ArrayList<Sprite> sprites = new ArrayList<>();
 
     public SpriteBase() {
     }
@@ -45,6 +44,18 @@ public class SpriteBase {
         return path;
     }
 
+    public static String fullFolderPath(String folder) {
+        if (folder.isEmpty()) {
+            return "res/textures/";
+        } else {
+            if (folder.startsWith("res/textures")) {
+                return folder + (folder.endsWith("/") ? "" : "/");
+            } else {
+                return "res/textures/" + folder + (folder.endsWith("/") ? "" : "/");
+            }
+        }
+    }
+
     public Sprite getSprite(String textureKey, String folder) {
         for (Sprite sprite : sprites) {
             if (sprite.getKey().equals(textureKey)) {
@@ -56,18 +67,6 @@ public class SpriteBase {
             sprites.add(newSprite);
         }
         return newSprite;
-    }
-
-    public static String fullFolderPath(String folder) {
-        if (folder.isEmpty()) {
-            return "res/textures/";
-        } else {
-            if (folder.startsWith("res/textures/")) {
-                return folder + (folder.endsWith("/") ? "" : "/");
-            } else {
-                return "res/textures/" + folder + (folder.endsWith("/") ? "" : "/");
-            }
-        }
     }
 
     public SpriteSheet getSpriteSheet(String textureKey, String folder) {

@@ -1,6 +1,6 @@
 package game.gameobject.stats;
 
-import game.gameobject.entities.Mob;
+import game.gameobject.entities.Entity;
 import game.gameobject.interactive.InteractiveResponse;
 
 /**
@@ -9,7 +9,7 @@ import game.gameobject.interactive.InteractiveResponse;
 public class NPCStats extends Stats {
 
 
-    public NPCStats(Mob owner) {
+    public NPCStats(Entity owner) {
         super(owner);
     }
 
