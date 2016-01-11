@@ -17,6 +17,7 @@ import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Tongub;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import gamecontent.npcs.MyNPC;
 
 /**
  * @author Wojtek

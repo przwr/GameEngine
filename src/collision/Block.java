@@ -16,6 +16,7 @@ import java.util.List;
 
 import static collision.OpticProperties.FULL_SHADOW;
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import static collision.OpticProperties.TRANSPARENT;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -28,13 +29,15 @@ public class Block extends GameObject {
     private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
 
-    private Block(int x, int y, int width, int height, int shadowHeight, boolean round) {  //Point (x, y) should be in left top corner of Block
+    private Block(int x, int y, int width, int height, int shadowHeight, boolean round, boolean invisible) {  //Point (x, y) should be in left top corner of Block
         this.x = x;
         this.y = y;
         name = "area";
         solid = visible = true;
         if (round) {
             setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, FULL_SHADOW, shadowHeight, this));
+        } else if (invisible) {
+            setCollision(Rectangle.createShadowHeight(0, 0, width, height, TRANSPARENT, shadowHeight, this));
         } else {
             setCollision(Rectangle.createShadowHeight(0, 0, width, height, FULL_SHADOW, shadowHeight, this));
             top.add(Rectangle.createShadowHeight(0, 0, width, height, IN_SHADE_NO_SHADOW, shadowHeight + height, this));
@@ -43,11 +46,15 @@ public class Block extends GameObject {
     }
 
     public static Block create(int x, int y, int width, int height, int shadowHeight) {
-        return new Block(x, y, width, height, shadowHeight, false);
+        return new Block(x, y, width, height, shadowHeight, false, false);
+    }
+
+    public static Block createInvisible(int x, int y, int width, int height) {
+        return new Block(x, y, width, height, 0, false, true);
     }
 
     public static Block createRound(int x, int y, int width, int height, int shadowHeight) {
-        return new Block(x, y, width, height, shadowHeight, true);
+        return new Block(x, y, width, height, shadowHeight, true, false);
     }
 
     public void move(int dx, int dy) {
@@ -95,8 +102,8 @@ public class Block extends GameObject {
 //            return foregroundTile.getX() >= collision.getX() && foregroundTile.getX() < collision.getXEnd() && foregroundTile.getY() >= collision.getY() &&
 //                    foregroundTile.getY() < collision.getYEnd();
 //        } else {
-        return foregroundTile.getX() >= collision.getX() && foregroundTile.getX() < collision.getXEnd() && foregroundTile.getY() >= collision.getY() &&
-                foregroundTile.getY() < collision.getYEnd();
+        return foregroundTile.getX() >= collision.getX() && foregroundTile.getX() < collision.getXEnd() && foregroundTile.getY() >= collision.getY()
+                && foregroundTile.getY() < collision.getYEnd();
 //        }
     }
 
