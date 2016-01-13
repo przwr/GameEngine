@@ -13,6 +13,8 @@ import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
+import game.text.Statement;
+import game.text.TextController;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import sprites.Animation;
@@ -27,6 +29,7 @@ public class MyNPC extends Mob {
 
     private Animation animation;
     private boolean spinning;
+    private int talks;
 
     public MyNPC(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
@@ -52,15 +55,34 @@ public class MyNPC extends Mob {
             if (mpPrey.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
                     && d <= Place.tileSize * 1.5
                     && !mpPrey.getTextController().isStarted()) {
-                mpPrey.getTextController().lockEntity(mpPrey);
-                mpPrey.getTextController().startFromFile("drzewo");
+                TextController text = mpPrey.getTextController();
+                text.lockEntity(mpPrey);
+                text.startFromFile("drzewo");
                 Executive e = () -> {
                     spinning = !spinning;
                 };
-                mpPrey.getTextController().addExternalEvent(e, "0", false);
-                mpPrey.getTextController().addExternalEvent(e, "1", false);
-                mpPrey.getTextController().addExternalEvent(e, "2", false);
-                mpPrey.getTextController().addExternalEvent(e, "3", false);
+                text.addExternalEventOnBranch(e, "0", false);
+                text.addExternalEventOnBranch(e, "1", false);
+                text.addExternalEventOnBranch(e, "2", false);
+                text.addExternalEventOnBranch(e, "3", false);
+                text.addExternalStatement(new Statement("spr") {
+
+                    @Override
+                    public int check() {
+                        if (talks < 3) {
+                            talks++;
+                            return talks - 1;
+                        } else if (talks < 8) {
+                            talks++;
+                            return 2;
+                        } else {
+                            return 3;
+                        }
+                    }
+                });
+                text.addExternalEvent(() -> {
+                    moveWithSliding(0, 80);
+                }, "e");
             }
             if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                 target = null;

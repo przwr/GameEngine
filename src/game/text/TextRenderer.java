@@ -38,7 +38,7 @@ class TextRenderer extends TextEvent {
     }
 
     boolean isVisible(int index) {
-        return index >= start;
+        return index > start;
     }
 
     Color changeColor(Color base, int lineNum) {

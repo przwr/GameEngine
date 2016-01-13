@@ -45,7 +45,9 @@ public class TextController extends GUIObject {
     private final ArrayList<Portrait> portraits;
     private final ArrayList<String> jumpPlacements;
     private final ArrayList<Color> colors;
-    private Branch events;
+    private final ArrayList<Statement> statements;
+    private final ArrayList<Event> events;
+    private Branch branch;
     private float index, speed, change, realSpeed;
     private int time, rows, deltaLines, rowsInPlace, speaker, portrait, expression, answer, jumpTo;
     private boolean started, flushing, flushReady, stop, question, firstStep, action;
@@ -56,7 +58,7 @@ public class TextController extends GUIObject {
     public TextController(Place place) {
         super("TextController", place);
         branches = new ArrayList<>();
-        events = new Branch();
+        branch = new Branch();
         fonts = new FontHandler[3];
         fonts[0] = place.fonts.getFont("Amble-Regular", 0, 35);//PLAIN
         fonts[1] = place.fonts.changeStyle(fonts[0], 1);//BOLD
@@ -70,6 +72,8 @@ public class TextController extends GUIObject {
         portraits = new ArrayList<>(1);
         jumpPlacements = new ArrayList<>(1);
         colors = new ArrayList<>(1);
+        statements = new ArrayList<>();
+        events = new ArrayList<>();
         firstStep = true;
     }
 
@@ -108,8 +112,8 @@ public class TextController extends GUIObject {
                 float defSpeed = speed;
                 Color color = colors.get(0);
                 TextRow tmp;
-                branches.add(events);
-                Branch currentBranch = events;
+                branches.add(branch);
+                Branch currentBranch = branch;
                 jumpPlacements.add("0");
                 while ((line = read.readLine()) != null) {
                     if (line.length() > 1 && line.charAt(0) == '#') {
@@ -130,7 +134,7 @@ public class TextController extends GUIObject {
                         last = 0;
                         tmp = new TextRow(lineNum);
                         if (line.length() != 0) {
-                            for (lineIndex = 0; lineIndex < line.length(); ) {
+                            for (lineIndex = 0; lineIndex < line.length();) {
                                 if (line.charAt(lineIndex) == '$') {
                                     switch (line.substring(lineIndex + 1, lineIndex + 3).toLowerCase()) {
                                         case "ve":   //CHANGE SPEED
@@ -177,10 +181,19 @@ public class TextController extends GUIObject {
                                                 }
                                             }
                                             break;
-                                        case "ju":   //ATTACK
+                                        case "ju":   //JUMP TO BRANCH
                                             for (int j = lineIndex + 3; j < line.length(); j++) {
                                                 if (line.charAt(j) == '$') {
                                                     tmp.addEvent(new Jumper(currIndex + lineIndex - 1, line.substring(lineIndex + 3, j), this));
+                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                    break;
+                                                }
+                                            }
+                                            break;
+                                        case "ev":   //TRIGGER EVENT
+                                            for (int j = lineIndex + 3; j < line.length(); j++) {
+                                                if (line.charAt(j) == '$') {
+                                                    tmp.addEvent(new EventMaker(currIndex + lineIndex - 1, line.substring(lineIndex + 3, j), this));
                                                     line = line.substring(0, lineIndex) + line.substring(j + 1);
                                                     break;
                                                 }
@@ -197,6 +210,20 @@ public class TextController extends GUIObject {
                                                         jumps[i] = tab[2 * i + 1];
                                                     }
                                                     tmp.addEvent(new QuestionMaker(currIndex + lineIndex - 1, answers, jumps, this));
+                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                    break;
+                                                }
+                                            }
+                                            break;
+                                        case "if":   //CHECK EXTERNAL STATEMENT
+                                            for (int j = lineIndex + 3; j < line.length(); j++) {
+                                                if (line.charAt(j) == '$') {
+                                                    tab = line.substring(lineIndex + 3, j).split(":");
+                                                    String[] jumps = new String[tab.length - 1];
+                                                    for (int i = 0; i < jumps.length; i++) {
+                                                        jumps[i] = tab[i + 1];
+                                                    }
+                                                    tmp.addEvent(new CheckExpressiontMaker(currIndex + lineIndex - 1, tab[0], jumps, this));
                                                     line = line.substring(0, lineIndex) + line.substring(j + 1);
                                                     break;
                                                 }
@@ -321,6 +348,11 @@ public class TextController extends GUIObject {
         }
     }
 
+    public void startFromFile(String file, String startingBranch) {
+        startFromFile(file);
+        branch = branches.get(getJumpLocation(startingBranch));
+    }
+
     private void stopTextViewing() {
         started = false;
         index = 0;
@@ -333,9 +365,11 @@ public class TextController extends GUIObject {
         flushReady = false;
         stop = false;
         firstStep = true;
-        events.clear();
+        branch.clear();
         branches.clear();
         jumpPlacements.clear();
+        statements.clear();
+        events.clear();
         speakers.clear();
         speaker = 0;
         portraits.clear();
@@ -347,7 +381,7 @@ public class TextController extends GUIObject {
         }
     }
 
-    private int jumpLocation(String pointer) {
+    private int getJumpLocation(String pointer) {
         for (int i = 0; i < jumpPlacements.size(); i++) {
             if (jumpPlacements.get(i).equals(pointer)) {
                 return i;
@@ -356,14 +390,44 @@ public class TextController extends GUIObject {
         return 0;
     }
 
-    public void addExternalEvent(Executive event, String branch, boolean onStart) {
+    private Statement getStatement(String pointer) {
+        for (int i = 0; i < statements.size(); i++) {
+            if (statements.get(i).getName().equals(pointer)) {
+                return statements.get(i);
+            }
+        }
+        return null;
+    }
+
+    private Event getEvent(String pointer) {
+        for (int i = 0; i < events.size(); i++) {
+            if (events.get(i).name.equals(pointer)) {
+                return events.get(i);
+            }
+        }
+        return null;
+    }
+
+    public void addExternalEventOnBranch(Executive event, String branch, boolean onStart) {
         if (started) {
-            Branch b = branches.get(jumpLocation(branch));
+            Branch b = branches.get(getJumpLocation(branch));
             if (onStart) {
                 b.startEvent = event;
             } else {
                 b.endEvent = event;
             }
+        }
+    }
+
+    public void addExternalStatement(Statement statement) {
+        if (started) {
+            statements.add(statement);
+        }
+    }
+
+    public void addExternalEvent(Executive event, String name) {
+        if (started) {
+            events.add(new Event(event, name));
         }
     }
 
@@ -392,7 +456,6 @@ public class TextController extends GUIObject {
 
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
 
-
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
 
             glTranslatef(0, getCamera().getHeight() - 3.5f * tile, 0);
@@ -412,7 +475,7 @@ public class TextController extends GUIObject {
                     portraits.get(portrait).image.renderPiece(expression);
                 }
             } else {
-                events.startingEvent();
+                branch.startingEvent();
                 firstStep = false;
             }
 
@@ -441,13 +504,13 @@ public class TextController extends GUIObject {
                 handleFlushing();
             } else {
                 if (!flushReady) {
-                    if (index < events.length) {
+                    if (index < branch.length) {
                         index += realSpeed;
                         change = 1;
                     } else if (jumpTo >= 0) {
                         flushReady = true;
                     } else if (action) {
-                        events.endingEvent();
+                        branch.endingEvent();
                         stopTextViewing();
                     }
                 } else {
@@ -462,7 +525,7 @@ public class TextController extends GUIObject {
                     }
                 }
             }
-            events.stream().forEach(this::handleEvent);
+            branch.stream().forEach(this::handleEvent);
             Drawer.refreshForRegularDrawing();
             glPopMatrix();
         }
@@ -477,9 +540,9 @@ public class TextController extends GUIObject {
                 flushing = false;
                 change = 1;
                 if (jumpTo >= 0) {
-                    events.endingEvent();
-                    events = branches.get(jumpTo);
-                    events.startingEvent();
+                    branch.endingEvent();
+                    branch = branches.get(jumpTo);
+                    branch.startingEvent();
                     index = 0;
                     deltaLines = 0;
                     jumpTo = -1;
@@ -515,7 +578,7 @@ public class TextController extends GUIObject {
                 Drawer.translate(-Place.tileHalf, (int) (5 * Math.sin((float) time / 30 * Math.PI)));
                 frame.renderPiece(3, 0);
             }
-            if (index >= events.length && jumpTo < 0) {
+            if (index >= branch.length && jumpTo < 0) {
                 Drawer.translate(-Place.tileHalf, 0);
                 frame.renderPiece(3, 1);
             }
@@ -575,7 +638,7 @@ public class TextController extends GUIObject {
                 }
             }
             if (action) {
-                jumpTo = jumpLocation(answerJump[answer]);
+                jumpTo = getJumpLocation(answerJump[answer]);
                 question = false;
                 flushing = true;
                 flushReady = false;
@@ -669,7 +732,21 @@ public class TextController extends GUIObject {
     }
 
     void setJumpLocation(String location) {
-        jumpTo = jumpLocation(location);
+        jumpTo = getJumpLocation(location);
+    }
+
+    void triggerEvent(String event) {
+        getEvent(event).event.execute();
+    }
+    
+    void setCheckingExpression(String expression, String[] jumpLocations) {
+        Statement s = getStatement(expression);
+        String name = jumpLocations[s.check()];
+        if (!name.equals("-")) {
+            jumpTo = getJumpLocation(name);
+            flushReady = true;
+            rowsInPlace++;
+        }
     }
 
     void setQuestion(String[] answers, String[] jumpLocations) {
@@ -679,6 +756,17 @@ public class TextController extends GUIObject {
         answer = -1;
         flushReady = true;
         rowsInPlace++;
+    }
+
+    private class Event {
+
+        Executive event;
+        String name;
+
+        Event(Executive event, String name) {
+            this.event = event;
+            this.name = name;
+        }
     }
 
     private class Portrait {

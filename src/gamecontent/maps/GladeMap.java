@@ -150,7 +150,7 @@ public class GladeMap extends Map {
 //        addObject(light);
 
 
-        addObject(new MyNPC(2000, 2000, place, mobID++));
+        addObject(new MyNPC(200, 200, place, mobID++));
 
     }
 }
