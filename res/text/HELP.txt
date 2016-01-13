@@ -18,6 +18,7 @@ $po<int>$ - portret mówcy
 $ex<int>$ - numer klatki twarzy portretu
 
 $ju<string>$ - skok do bloku
+$ev<string>$ - wywo³ania executiva o nazwie...
 $qu<string>:<string>:(...)$ - pytanie (odpowiedz:nazwaBlokuDoSkoku:...)
 $if<string>:<string>:(...)$ - zapytanie zewnêtrzne (nazwa:nazwaBloku:nazwaBloku...) ("-" - brak skoku)
 $fl - zakoñcz obecny kawa³ek tekstu
