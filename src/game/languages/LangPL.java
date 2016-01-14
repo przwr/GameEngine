@@ -78,8 +78,8 @@ public class LangPL extends Language {
         menu.Actions[24] = "Podręczne menu";
         menu.Actions[25] = "Akcja 1";
         menu.Actions[26] = "Akcja 2";
-        menu.Actions[27] = "Światło";
-        menu.Actions[28] = "Przybliżenie/Oddalenie";
+        menu.Actions[27] = "Akcja 3";
+        menu.Actions[28] = "Akcja 4";
 
         menu.PushButton = "Naciśnij przycisk!";
         menu.Unchangeable = "niezmienny!";

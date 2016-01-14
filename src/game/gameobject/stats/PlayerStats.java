@@ -1,5 +1,6 @@
 package game.gameobject.stats;
 
+import engine.utilities.Point;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import game.place.cameras.Camera;
@@ -30,7 +31,8 @@ public class PlayerStats extends Stats {
     @Override
     public void died() {
         health = maxHealth / 2;
-        player.setPosition(128, 128);
+        Point position = player.getSpawnPosition();
+        player.setPosition(position.getX(), position.getY());
         Camera camera = player.getCamera();
         if (camera != null) {
             camera.updateStatic();

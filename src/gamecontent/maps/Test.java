@@ -9,7 +9,7 @@ import gamecontent.Bush;
 import gamecontent.GrassClump;
 import gamecontent.Tree;
 import gamecontent.mobs.Shen;
-import gamecontent.npcs.MyNPC;
+import gamecontent.npcs.Melodia;
 
 /**
  * Created by przemek on 21.11.15.
@@ -77,7 +77,20 @@ public class Test extends Map {
             }
         }
 
-        addObject(new Shen(5584, 2560, place, mobID++));
+        for (int i = 0; i < 19; i++) {
+            addObject(Tree.create(6240 + random.next(5), 1510 + i * 120 + random.next(7), 32, 200, 0.8f));
+        }
+        for (int i = 0; i < 10; i++) {
+            addObject(Tree.create(4050 + random.next(5), 2640 + i * 120 + random.next(7), 32, 200, 0.8f));
+        }
+        for (int i = 0; i < 12; i++) {
+            addObject(new Bush(4050 + i * 90 + random.next(4), 3840 + random.next(6), 14, 80, 0.8f));
+        }
+        for (int i = 0; i < 12; i++) {
+            addObject(new Bush(5250 + i * 90 + random.next(4), 3840 + random.next(6), 14, 80, 0.8f));
+        }
+
+        addObject(new Shen(5184, 2560, place, mobID++));
 
         addObject(GrassClump.createCorner(2560, 1864, 2, 8, 8, 2, 8, 32, 0));
         addObject(GrassClump.createCorner(2560, 1736, 2, 8, 8, 2, 8, 32, 1));
@@ -93,7 +106,7 @@ public class Test extends Map {
         addObject(new Bush(3900, 2072, 12, 70, 0.8f));
         addObject(new Bush(4500, 1972, 12, 70, 0.8f));
 
-        addObject(new MyNPC(5000, 2000, place, mobID++));
+        addObject(new Melodia(5000, 2000, place, mobID++));
 
     }
 }

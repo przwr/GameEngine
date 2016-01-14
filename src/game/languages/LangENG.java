@@ -77,8 +77,8 @@ public class LangENG extends Language {
         menu.Actions[24] = "Handy menu";
         menu.Actions[25] = "Action 1";
         menu.Actions[26] = "Action 2";
-        menu.Actions[27] = "Light";
-        menu.Actions[28] = "Zoom In/Out";
+        menu.Actions[27] = "Action 3";
+        menu.Actions[28] = "Action 4";
         menu.PushButton = "Push the button!";
         menu.Unchangeable = "unchangeable!";
         menu.VSync = "Vertical synchronization: ";

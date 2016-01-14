@@ -92,8 +92,8 @@ public class Blazag extends Mob {
             public void update() {
 //                System.out.println("SLEEP");
                 if (awake) {
-                    if (Methods.pointDistanceSimple2(getX(), getY(), homePosition.getX(), homePosition.getY()) > sightRange2 / 4) {
-                        goTo(homePosition);
+                    if (Methods.pointDistanceSimple2(getX(), getY(), spawnPosition.getX(), spawnPosition.getY()) > sightRange2 / 4) {
+                        goTo(spawnPosition);
                     } else {
                         brake(2);
                         float rand = random.next(6) / 64f;
@@ -262,10 +262,10 @@ public class Blazag extends Mob {
                         letGo = false;
                         int sign = random.next(1) == 1 ? 1 : -1;
                         int shift = (sightRange + random.next(9)) * sign;
-                        destination.setX(homePosition.getX() + shift);
+                        destination.setX(spawnPosition.getX() + shift);
                         sign = random.next(1) == 1 ? 1 : -1;
                         shift = (sightRange + random.next(9)) * sign;
-                        destination.setY(homePosition.getY() + shift);
+                        destination.setY(spawnPosition.getY() + shift);
                         if (destination.getX() < sightRange / 2) {
                             destination.setX(sightRange / 2);
                         }
@@ -339,7 +339,7 @@ public class Blazag extends Mob {
         letGoDelay.terminate();
         state = idle;
         jumper = new SpeedChanger();
-        homePosition.set(getX(), getY());
+        spawnPosition.set(getX(), getY());
         float rand = random.next(6) / 64f;
         current_sleep_end = (SLEEP_END + rand) * 60;
         rand = random.next(6) / 64f;
@@ -653,7 +653,7 @@ public class Blazag extends Mob {
         seconds = 0;
         max = 15;
         chasing = false;
-        destination.set(homePosition);
+        destination.set(spawnPosition);
         brake(2);
     }
 

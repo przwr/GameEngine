@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import engine.Main;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.Settings;
@@ -15,9 +16,9 @@ import game.gameobject.inputs.PlayerController;
 import game.gameobject.stats.PlayerStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.place.Place;
+import sprites.ClothedAppearance;
 
 import static game.gameobject.GameObject.*;
-import sprites.ClothedAppearance;
 
 /**
  * @author przemek
@@ -28,7 +29,7 @@ public class MyController extends PlayerController {
             INPUT_UP = 6, INPUT_DOWN = 7, INPUT_LEFT = 8, INPUT_RIGHT = 9, INPUT_ACTION = 10, INPUT_ATTACK = 11, INPUT_SECOND_ATTACK = 12, INPUT_BLOCK = 13,
             INPUT_RUN = 14, INPUT_REVERSE = 15, INPUT_DODGE = 16, INPUT_CHANGE_WEAPON = 17, INPUT_SNEAK = 18, INPUT_CHANGE_SET = 19,
             INPUT_SLOT_UP = 20, INPUT_SLOT_RIGHT = 21, INPUT_SLOT_DOWN = 22, INPUT_SLOT_LEFT = 23,
-            INPUT_HANDY_MENU = 24, INPUT_ACTION_1 = 25, INPUT_ACTION_2 = 26, INPUT_LIGHT = 27, INPUT_ZOOM = 28;
+            INPUT_HANDY_MENU = 24, INPUT_ACTION_1 = 25, INPUT_ACTION_2 = 26, INPUT_ACTION_3 = 27, INPUT_ACTION_4 = 28;
     public static final byte MENU_ACTIONS_COUNT = 6, ACTIONS_COUNT = 29, ATTACK_COUNT = 5;
     public static final byte CAMSPEED_NORMAL = 3, CAMSPEED_SCOPING = 40;
 
@@ -619,21 +620,20 @@ public class MyController extends PlayerController {
         if (actions[INPUT_CHANGE_WEAPON].isKeyPressed()) {
             inControl.setFloatHeight(inControl.getFloatHeight() - 1);
         }
-        if (actions[INPUT_LIGHT].isKeyPressed()) {
-            inControl.setFloatHeight(inControl.getFloatHeight() + 1);
-        }
+//        if (actions[INPUT_ACTION_3].isKeyPressed()) {
+//            inControl.setFloatHeight(inControl.getFloatHeight() + 1);
+//        }
         if (actions[INPUT_CHANGE_WEAPON].isKeyClicked()) {
             ((MyPlayer) inControl).randomizeClothes();
             if (((MyPlayer) inControl).changeWeapon()) {
                 updateAttackTypes();
-                gui.changeAttackIcon(firstAttackType, secondAttackType);
             }
+            gui.changeAttackIcon(firstAttackType, secondAttackType);
         } else if (actions[INPUT_CHANGE_SET].isKeyClicked()) {
             if (((MyPlayer) inControl).hideWeapon()) {
                 updateAttackTypes();
-
-                gui.changeAttackIcon(firstAttackType, secondAttackType);
             }
+            gui.changeAttackIcon(firstAttackType, secondAttackType);
         }
         if (actions[INPUT_SLOT_UP].isKeyClicked()) {
             ((MyPlayer) inControl).setActionPair(0);
@@ -661,12 +661,14 @@ public class MyController extends PlayerController {
         } else {
             inControl.setMaxSpeed(diagonal ? 7.777 : 11);
         }
-        if (actions[INPUT_LIGHT].isKeyClicked()) {
-            inControl.setEmits(!inControl.isEmits());
-        }
-        if (actions[INPUT_ZOOM].isKeyClicked()) {
-            if (inControl instanceof Player) {
-                inControl.getCamera().switchZoom();
+        if (!Main.TEST) {
+            if (actions[INPUT_ACTION_3].isKeyClicked()) {
+                inControl.setEmits(!inControl.isEmits());
+            }
+            if (actions[INPUT_ACTION_4].isKeyClicked()) {
+                if (inControl instanceof Player) {
+                    inControl.getCamera().switchZoom();
+                }
             }
         }
     }

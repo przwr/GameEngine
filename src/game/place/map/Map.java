@@ -113,6 +113,17 @@ public abstract class Map {
         return blocks;
     }
 
+    public Mob getSolidMobById(int id) {
+        for (int area = 0; area < areas.length; area++) {
+            for (Mob mob : areas[area].getSolidMobs()) {
+                if (mob.mobID == id) {
+                    return mob;
+                }
+            }
+        }
+        return null;
+    }
+
     private boolean isOnArea(Block block, int area) {
         Figure collision = block.getCollision();
         return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area
@@ -376,7 +387,7 @@ public abstract class Map {
     public void placePuzzle(int x, int y, PuzzleObject po) {
         po.placePuzzle(x, y, this);
     }
-    
+
     public void addForegroundTileAndReplace(GameObject tile) {
         addForegroundTileAndReplace(tile, tile.getX(), tile.getY(), tile.getPureDepth());
     }
@@ -409,8 +420,19 @@ public abstract class Map {
         visibleLights.clear();
     }
 
+    public Block getBlock(int x, int y) {
+        return areas[getAreaIndex(x, y)].getBlock(x, y);
+    }
+
     public void addBlock(Block block) {
         areas[getAreaIndex(block.getX(), block.getY())].addBlock(block);
+    }
+
+    public void deleteBlock(int x, int y) {
+        Block block = getBlock(x, y);
+        if (block != null) {
+            areas[getAreaIndex(x, y)].deleteBlock(block);
+        }
     }
 
     public void deleteBlock(Block block) {
@@ -553,14 +575,14 @@ public abstract class Map {
         foregroundTiles = areas[camera.getArea()].getNearForegroundTiles();
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
         int y = 0;
-        for (GameObject object : areas[camera.getArea()].getNearDepthObjects()) {
+        for (GameObject object : depthObjects) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
                 if (foregroundTiles.get(y).isVisible() && isObjectInSight(foregroundTiles.get(y))) {
                     foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
                 }
             }
             if (object.isVisible() && isObjectInSight(object)) {
-                if (isBehindForegroundTile(object)) {
+                if (isBehindSomething(object)) {
                     pointingArrows.add(object);
                 }
                 object.render(cameraXOffEffect, cameraYOffEffect);
@@ -573,7 +595,7 @@ public abstract class Map {
         }
     }
 
-    private boolean isBehindForegroundTile(GameObject object) {
+    private boolean isBehindSomething(GameObject object) {
         for (GameObject tile : foregroundTiles) {
             if (object.getAppearance() != null && tile.getDepth() > object.getDepth()
                     && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
@@ -581,6 +603,17 @@ public abstract class Map {
                     / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeightHalf() - object.getAppearance()
                     .getActualHeight() / 2) / tileSize))) {
                 return true;
+            }
+        }
+        for (GameObject other : depthObjects) {
+            if (other != object) {
+                if (object instanceof Entity && !(other instanceof Entity) && other.getAppearance() != null && other.getDepth() > object.getDepth()
+                        && object.getX() < other.getXSpriteEnd() && object.getX() > other.getXSpriteBegin()
+                        && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance()
+                        .getActualHeight() / 2 < other.getYSpriteEnd() && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance()
+                        .getActualHeight() / 2 > other.getYSpriteBegin()) {
+                    return true;
+                }
             }
         }
         return false;

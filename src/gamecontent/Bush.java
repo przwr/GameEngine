@@ -46,8 +46,8 @@ public class Bush extends GameObject {
         this.width = width;
         this.height = height;
         this.spread = spread;
-        int fboWidth = Math.round(spread * 5f * height);
-        int fboHeight = Math.round(height * 3f);
+        int fboWidth = Math.round(spread * 3f * height);
+        int fboHeight = Math.round(height * 2.5f);
         fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
                 new RegularFrameBufferObject(fboWidth, fboHeight);
         appearance = fbo;
@@ -335,7 +335,7 @@ public class Bush extends GameObject {
 
     @Override
     public int getXSpriteBegin() {
-        return getX() - (collision.getWidth() + fbo.getWidth()) / 2;
+        return getX() - fbo.getWidth() / 2;
     }
 
     @Override
@@ -345,7 +345,7 @@ public class Bush extends GameObject {
 
     @Override
     public int getXSpriteEnd() {
-        return getX() + (collision.getWidth() + fbo.getWidth()) / 2;
+        return getX() + fbo.getWidth() / 2;
     }
 
     @Override

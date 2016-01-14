@@ -132,7 +132,7 @@ public class Block extends GameObject {
 
     private Point getPushValueOfCorner(int corner) {
         if (collision instanceof RoundRectangle) {
-            return ((RoundRectangle) collision).getPushValueOfCorner(corner);
+            return collision.getPushValueOfCorner(corner);
         }
         return null;
     }
@@ -258,6 +258,13 @@ public class Block extends GameObject {
             string += ":0";
         }
         return string;
+    }
+
+    public List<ForegroundTile> getAllForegroundTiles() {
+        List<ForegroundTile> all = new ArrayList<>();
+        all.addAll(topForegroundTiles);
+        all.addAll(wallForegroundTiles);
+        return all;
     }
 
     public List<ForegroundTile> getTopForegroundTiles() {

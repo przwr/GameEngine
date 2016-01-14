@@ -202,7 +202,7 @@ public class Tongub extends Mob {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
                     if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
-                        closeRandomDestination(homePosition.getX(), homePosition.getY());
+                        closeRandomDestination(spawnPosition.getX(), spawnPosition.getY());
 //                        System.out.println(destination);
                         letGo = false;
                     }
@@ -262,7 +262,7 @@ public class Tongub extends Mob {
         letGoDelay.terminate();
         peakTime.terminate();
         state = idle;
-        homePosition.set(getX(), getY());
+        spawnPosition.set(getX(), getY());
         neutral.add(Plurret.class.getName());
         neutral.add(Shen.class.getName());
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 32, 0, 16, 16), Interactive
@@ -309,7 +309,7 @@ public class Tongub extends Mob {
         letGo = true;
         seconds = 0;
         max = 15;
-        destination.set(homePosition);
+        destination.set(spawnPosition);
         brake(2);
     }
 
