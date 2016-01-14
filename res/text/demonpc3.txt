@@ -1,0 +1,19 @@
+﻿
+sp:1
+co:000000
+co:FF0000
+co:FFFF00
+co:66FF33
+co:00FFFF
+co:0000FF
+co:FF00FF
+au:Melodia
+au:Aria
+po:melodiaPortret:1
+po:ariaPortret:0
+
+$AU0$$PO0$Dobra robota ze ślimakiem.$FL
+Masz za to ciastko.
+$AU1$$PO1$$EX2$Dzięki!$FL
+$AU1$$PO1$$EX1$Nom, nom, nom.
+
