@@ -8,6 +8,7 @@ import game.place.map.Tile;
 import gamecontent.Bush;
 import gamecontent.GrassClump;
 import gamecontent.Tree;
+import gamecontent.mobs.Dummy;
 import gamecontent.mobs.Shen;
 import gamecontent.npcs.Melodia;
 
@@ -106,6 +107,7 @@ public class Test extends Map {
         addObject(new Bush(3900, 2072, 12, 70, 0.8f));
         addObject(new Bush(4500, 1972, 12, 70, 0.8f));
 
+        addObject(new Dummy(4900, 1800, place, mobID++));
         addObject(new Melodia(5000, 2000, place, mobID++));
 
     }

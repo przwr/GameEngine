@@ -12,8 +12,8 @@ au:Aria
 po:melodiaPortret:1
 po:ariaPortret:0
 
-$AU0$$PO0$Dobra robota ze ślimakiem.$FL
-Masz za to ciastko.
+$AU0$$PO0$Dobra robota ze ślimakiem.
+Masz za to ciastko.$FL
 $AU1$$PO1$$EX2$Dzięki!$FL
 $AU1$$PO1$$EX1$Nom, nom, nom.
 

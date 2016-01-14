@@ -54,6 +54,10 @@ public abstract class TemporalChanger {
         return (int) left;
     }
     
+    public int getTimeLeft() {
+        return (int) (time - left);
+    }
+    
     public int getTimePart(int parts) {
         return (int) Math.min(parts - 1 - (parts * left) / time, parts - 1);
     }
