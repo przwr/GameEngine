@@ -29,6 +29,7 @@ public class Melodia extends Mob {
 
     private Animation animation;
     private String dialog = "demonpc";
+    private int talks;
 
     public Melodia(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
@@ -71,15 +72,36 @@ public class Melodia extends Mob {
                     map.deleteBlock(5120, 3712);
                 };
                 if (dialog == "demonpc") {
-                    player.getTextController().addExternalEvent(e, "0", true);
-                    player.getTextController().addExternalEvent(e1, "1", false);
-                    player.getTextController().addExternalEvent(e1, "2", false);
+                    player.getTextController().addExternalEventOnBranch(e, "0", true);
+                    player.getTextController().addExternalEventOnBranch(e1, "1", false);
+                    player.getTextController().addExternalEventOnBranch(e1, "2", false);
                 } else if (dialog == "demonpc3") {
-                    player.getTextController().addExternalEvent(e2, "0", false);
+                    player.getTextController().addExternalEventOnBranch(e2, "0", false);
                 }
                 if (dialog == "demonpc4") {
-                    player.getTextController().addExternalEvent(e3, "0", false);
+                    player.getTextController().addExternalEventOnBranch(e3, "0", false);
                 }
+
+//                text.addExternalStatement(new Statement("spr") {
+//
+//                    @Override
+//                    public int check() {
+//                        if (talks < 3) {
+//                            talks++;
+//                            return talks - 1;
+//                        } else if (talks < 8) {
+//                            talks++;
+//                            return 2;
+//                        } else {
+//                            return 3;
+//                        }
+//                    }
+//                });
+//                text.addExternalEvent(() -> {
+//                    moveWithSliding(0, 80);
+//                }, "e");
+
+
             }
             if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                 target = null;

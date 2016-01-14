@@ -4,6 +4,8 @@ import engine.utilities.ErrorHandler;
 import game.gameobject.entities.Entity;
 
 import static game.logic.navmeshpathfinding.PathData.PATH_REQUESTED;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
 
 public class PathFindingModule implements Runnable {
 
