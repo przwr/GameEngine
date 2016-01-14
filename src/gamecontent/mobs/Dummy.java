@@ -82,6 +82,7 @@ public class Dummy extends Mob {
         knockBack.start();
         power = knockBackPower;
         addChanger(knockBack);
+        stats.setHealth(10000);
     }
 
     private void updateGettingHurt() {

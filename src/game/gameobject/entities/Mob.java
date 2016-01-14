@@ -359,6 +359,7 @@ public abstract class Mob extends Entity {
         }
     }
 
+    @Override
     public void updateCausedDamage(GameObject hurted, int hurt) {
         Agro agro = getAgresor(hurted);
         if (agro != null) {
