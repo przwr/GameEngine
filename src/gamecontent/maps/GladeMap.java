@@ -15,7 +15,7 @@ import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Tongub;
-import gamecontent.npcs.MyNPC;
+import gamecontent.npcs.Melodia;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 
@@ -131,7 +131,7 @@ public class GladeMap extends Map {
 //        addObject(new Shen(768, 1280, place, mobID++));
 //        addObject(new Shen(512, 1500, place, mobID++));
 //        addObject(new Shen(648, 1400, place, mobID++));
-//        addObject(new MyNPC(384, 590, place, mobID++));
+//        addObject(new Melodia(384, 590, place, mobID++));
 //        for (int i = 0; i < 20; i += 2) {
 //            addObject(new Shen(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
 //            addObject(new Blazag(192 + 192 * (i % 50), 2048 + 192 * (i / 50), place, mobID++));
@@ -149,7 +149,7 @@ public class GladeMap extends Map {
 //        addObject(light);
 
 
-        addObject(new MyNPC(2000, 2000, place, mobID++));
+        addObject(new Melodia(2000, 2000, place, mobID++));
 
     }
 }

@@ -90,10 +90,10 @@ public class Plurret extends Mob {
                     if (seconds == 0) {
                         int sign = random.next(1) == 1 ? 1 : -1;
                         int shift = (sightRange + random.next(9)) * sign;
-                        destination.setX(homePosition.getX() + shift);
+                        destination.setX(spawnPosition.getX() + shift);
                         sign = random.next(1) == 1 ? 1 : -1;
                         shift = (sightRange + random.next(9)) * sign;
-                        destination.setY(homePosition.getY() + shift);
+                        destination.setY(spawnPosition.getY() + shift);
                         if (destination.getX() < sightRange / 2) {
                             destination.setX(sightRange / 2);
                         }
@@ -157,7 +157,7 @@ public class Plurret extends Mob {
         stats.setHealth(5);
         rest.terminate();
         state = idle;
-        homePosition.set(getX(), getY());
+        spawnPosition.set(getX(), getY());
         secondaryDestination.set(-1, -1);
         destination.set(-1, -1);
         setGravity(0.1);

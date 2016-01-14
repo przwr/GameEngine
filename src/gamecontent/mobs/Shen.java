@@ -236,10 +236,10 @@ public class Shen extends Mob {
                     if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
                         int sign = random.next(1) == 1 ? 1 : -1;
                         int shift = (sightRange + random.next(9)) * sign;
-                        destination.setX(homePosition.getX() + shift);
+                        destination.setX(spawnPosition.getX() + shift);
                         sign = random.next(1) == 1 ? 1 : -1;
                         shift = (sightRange + random.next(9)) * sign;
-                        destination.setY(homePosition.getY() + shift);
+                        destination.setY(spawnPosition.getY() + shift);
                         if (destination.getX() < sightRange / 2) {
                             destination.setX(sightRange / 2);
                         }
@@ -304,7 +304,7 @@ public class Shen extends Mob {
         letGoDelay.terminate();
         state = idle;
         bouncer = new SpeedChanger();
-        homePosition.set(getX(), getY());
+        spawnPosition.set(getX(), getY());
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,
                 ATTACK_NORMAL, 0.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,

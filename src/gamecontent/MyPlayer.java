@@ -98,9 +98,9 @@ public class MyPlayer extends Player {
         if (!Main.TEST) {
             Weapon sword = new Weapon("Sword", SWORD);
             sword.setModifier(1.2f);
+            firstWeapon = sword;
             Weapon bow = new Weapon("Bow", BOW);
             bow.setModifier(5f);
-            firstWeapon = sword;
             secondWeapon = bow;
         }
         activeWeapon = universal;
@@ -151,6 +151,25 @@ public class MyPlayer extends Player {
             }
         }
 
+    }
+
+    public void addWeapon(Weapon weapon) {
+        if (firstWeapon == null) {
+            firstWeapon = weapon;
+        } else if (secondWeapon == null) {
+            secondWeapon = weapon;
+        } else {
+//            TODO add to backpack
+        }
+    }
+
+
+    public Weapon getFirstWeapon() {
+        return firstWeapon;
+    }
+
+    public Weapon getSecondWeapon() {
+        return secondWeapon;
     }
 
     public byte getFirstAttackType() {
@@ -239,6 +258,7 @@ public class MyPlayer extends Player {
     public void initializeSetPosition(int width, int height, Place place, int x, int y) {
         initialize(width, height, place);
         initialize(name, x, y);
+        spawnPosition.set(getX(), getY());
     }
 
     @Override

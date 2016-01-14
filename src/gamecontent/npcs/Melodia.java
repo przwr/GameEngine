@@ -11,6 +11,7 @@ import engine.Main;
 import engine.utilities.Executive;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
+import game.gameobject.items.Weapon;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
 import gamecontent.MyController;
@@ -18,19 +19,19 @@ import gamecontent.MyPlayer;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import static game.gameobject.items.Weapon.SWORD;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author Wojtek
  */
-public class MyNPC extends Mob {
+public class Melodia extends Mob {
 
     private Animation animation;
-    private boolean spinning;
+    private String dialog = "demonpc";
 
-    public MyNPC(int x, int y, Place place, short mobID) {
+    public Melodia(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
-        this.appearance = place.getSprite("melodia", "entities/npcs");
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
         if (appearance != null) {
@@ -42,25 +43,43 @@ public class MyNPC extends Mob {
     @Override
     public void update() {
         if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
-            MyPlayer mpPrey = (MyPlayer) getTarget();
-            if (spinning) {
-                setDirection8way(getDirection8Way() + 1);
-            } else {
-                setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
-            }
+            MyPlayer player = (MyPlayer) getTarget();
+            setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-            if (mpPrey.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
-                    && d <= Place.tileSize * 1.5
-                    && !mpPrey.getTextController().isStarted()) {
-                mpPrey.getTextController().lockEntity(mpPrey);
-                mpPrey.getTextController().startFromFile("drzewo");
+            if (player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
+                    && d <= Place.tileSize * 1.5 && !player.getTextController().isStarted()) {
+                if (dialog == "demonpc2" && map.getSolidMobById(0) == null) {
+                    dialog = "demonpc3";
+                }
+                player.getTextController().lockEntity(player);
+                player.getTextController().startFromFile(dialog);
                 Executive e = () -> {
-                    spinning = !spinning;
+                    if (player.getFirstWeapon() == null) {
+                        Weapon sword = new Weapon("Sword", SWORD);
+                        sword.setModifier(1.2f);
+                        player.addWeapon(sword);
+                    }
                 };
-                mpPrey.getTextController().addExternalEvent(e, "0", false);
-                mpPrey.getTextController().addExternalEvent(e, "1", false);
-                mpPrey.getTextController().addExternalEvent(e, "2", false);
-                mpPrey.getTextController().addExternalEvent(e, "3", false);
+                Executive e1 = () -> {
+                    dialog = "demonpc2";
+                };
+                Executive e2 = () -> {
+                    player.getStats().setHealth(player.getStats().getMaxHealth());
+                    dialog = "demonpc4";
+                };
+                Executive e3 = () -> {
+                    map.deleteBlock(5120, 3712);
+                };
+                if (dialog == "demonpc") {
+                    player.getTextController().addExternalEvent(e, "0", true);
+                    player.getTextController().addExternalEvent(e1, "1", false);
+                    player.getTextController().addExternalEvent(e1, "2", false);
+                } else if (dialog == "demonpc3") {
+                    player.getTextController().addExternalEvent(e2, "0", false);
+                }
+                if (dialog == "demonpc4") {
+                    player.getTextController().addExternalEvent(e3, "0", false);
+                }
             }
             if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                 target = null;

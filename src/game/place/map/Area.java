@@ -146,7 +146,21 @@ public class Area {
         blocks.add(block);
     }
 
+    public Block getBlock(int x, int y) {
+        for (Block block : blocks) {
+            if (block.getX() == x && block.getY() == y) {
+                return block;
+            }
+        }
+        return null;
+    }
+
     public void deleteBlock(Block block) {
+        List<ForegroundTile> all = block.getAllForegroundTiles();
+        for (ForegroundTile tile : all) {
+            tile.setMapNotChange(null);
+        }
+        foregroundTiles.removeAll(all);
         block.setMapNotChange(null);
         blocks.remove(block);
     }

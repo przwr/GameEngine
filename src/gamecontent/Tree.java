@@ -441,7 +441,7 @@ public class Tree extends GameObject {
 
     @Override
     public int getXSpriteBegin() {
-        return getX() - (collision.getWidth() + fbo.getWidth()) / 2;
+        return getX() - fbo.getWidth() / 2;
     }
 
     @Override
@@ -451,7 +451,7 @@ public class Tree extends GameObject {
 
     @Override
     public int getXSpriteEnd() {
-        return getX() + (collision.getWidth() + fbo.getWidth()) / 2;
+        return getX() + fbo.getWidth() / 2;
     }
 
     @Override
