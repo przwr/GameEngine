@@ -1,0 +1,27 @@
+﻿
+sp:1
+co:000000
+co:FF0000
+co:FFFF00
+co:66FF33
+co:00FFFF
+co:0000FF
+co:FF00FF
+au:Melodia
+au:Aria
+po:melodiaPortret:1
+po:ariaPortret:0
+
+$AU0$$PO0$Witaj!$QUHej!:1:Witaj!:2$
+#B1
+$AU1$$PO1$$EX2$Hej!$FL
+$AU0$$PO0$$EX0$Jest taka sprawa...$FL
+$AU0$$PO0$$EX0$Masz tu miecz i ubij ślimaka.$FL
+Broń wyjmuje się $CO1$Q$CO0$.$FL
+Atakuje się $CO1$Ctrl$CO0$ i $CO1$Shift$CO0$.
+#B2
+$AU1$$PO1$$EX2$Witaj!$FL
+$AU0$$PO0$$EX0$Mam wielką prośbę...$FL
+$AU0$$PO0$$EX0$Oto miecz. Proszę zabij ślimaka.$FL
+Broń wyjmuje się $CO1$Q$CO0$.$FL
+Atakuje się $CO1$Ctrl$CO0$ i $CO1$Shift$CO0$.

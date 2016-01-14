@@ -13,7 +13,7 @@ au:???
 po:melodiaPortret:1
 po:ariaPortret:0
 
-$AU0$$PO0$Jak się nazywasz?$QUTĘCZOWKA!!:1:...:2$
+$AU0$$PO0$Jak się nazywasz?$IFspr:-:4:5:6$ $QUTĘCZOWKA!!:1:...:2$
 #B1
 $AU1$$PO1$$EX2$JAK $CO1$POBIJESZ$CN TO IMIĘ?!!!1$FL
 $AU0$$PO0$$EX0$$VE0.1$.....$VN
@@ -24,3 +24,14 @@ $AU0$$PO0$$EX0$yyyy....
 Nie wiesz jak masz na imię?$QUWiem!:3:Nie wiem...:3$
 #B3
 $AU0$$PO0$.....
+#B4
+$AU0$$PO0$Hej...
+Czy ja już cię o to nie pytałam?....
+#B5
+$AU0$$PO0$Hej!!!....
+ILE RAZY MOŻNA PYTAĆ O IMIĘ!$EVe$
+#B6
+$AU0$$PO0$Hmmm...?
+Jak ja TO robię....?$FL
+Heh....
+$ME~Tajemnica zakładu~$EVe$

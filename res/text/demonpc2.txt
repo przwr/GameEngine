@@ -1,0 +1,20 @@
+﻿
+sp:1
+co:000000
+co:FF0000
+co:FFFF00
+co:66FF33
+co:00FFFF
+co:0000FF
+co:FF00FF
+au:Melodia
+au:Aria
+po:melodiaPortret:1
+po:ariaPortret:0
+
+$AU0$$PO0$Broń wyjmuje się $CO1$Q$CO0$.$FL
+Atakuje się $CO1$Ctrl$CO0$ i $CO1$Shift$CO0$.$FL
+Broni się $CO1$C$CO0$.$FL
+Jak zabijesz ślimaka, to wróć do mnie.$FL
+Możesz najpierw poćwiczyć na tamtej kukle.
+
