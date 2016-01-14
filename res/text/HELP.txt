@@ -17,6 +17,8 @@ $au<int>$ - imie mówcy
 $po<int>$ - portret mówcy
 $ex<int>$ - numer klatki twarzy portretu
 
+$wr<string>$ - napisz tekst poprzez odwo³anie do Writera o nazwie 
+
 $ju<string>$ - skok do bloku
 $ev<string>$ - wywo³ania executiva o nazwie...
 $qu<string>:<string>:(...)$ - pytanie (odpowiedz:nazwaBlokuDoSkoku:...)

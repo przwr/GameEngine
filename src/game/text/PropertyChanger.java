@@ -15,7 +15,7 @@ class PropertyChanger extends TextEvent {
     static final int PROP_FLUSH = 2;
     static final int PROP_PORTRAIT = 3;
     static final int PROP_EXPRESSION = 4;
-    final TextController text;
+    final TextController controller;
     private final int type;
     private final float quality;
     boolean done;
@@ -24,7 +24,7 @@ class PropertyChanger extends TextEvent {
         super(start, 0);
         this.type = type;
         this.quality = Math.min(quality, 10);
-        text = tc;
+        controller = tc;
     }
 
     @Override
@@ -32,23 +32,23 @@ class PropertyChanger extends TextEvent {
         if (i >= start && !done) {
             switch (type) {
                 case PROP_SPEED:
-                    text.setSpeed(quality);
+                    controller.setSpeed(quality);
                     break;
                 case PROP_FLUSH:
-                    text.flushText();
+                    controller.flushText();
                     break;
                 case PROP_SPEAKER:
-                    text.setSpeaker((int) quality);
+                    controller.setSpeaker((int) quality);
                     break;
                 case PROP_PORTRAIT:
-                    text.setPortrait((int) quality);
+                    controller.setPortrait((int) quality);
                     break;
                 case PROP_EXPRESSION:
-                    text.setExpression((int) quality);
+                    controller.setExpression((int) quality);
                     break;
             }
             done = true;
-            text.setIndex(start);
+            controller.setIndex(start);
         }
     }
 

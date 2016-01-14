@@ -20,9 +20,9 @@ class QuestionMaker extends PropertyChanger {
     @Override
     void event(int i, int lineNum) {
         if (i >= start && !done) {
-            text.setQuestion(answers, jumps);
+            controller.setQuestion(answers, jumps);
             done = true;
-            text.setIndex(start);
+            controller.setIndex(start);
         }
     }
 

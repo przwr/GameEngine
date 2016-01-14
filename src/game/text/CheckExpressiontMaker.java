@@ -21,9 +21,9 @@ class CheckExpressiontMaker extends PropertyChanger {
     @Override
     void event(int i, int lineNum) {
         if (i >= start && !done) {
-            text.setCheckingExpression(expression, jumps);
+            controller.setCheckingExpression(expression, jumps);
             done = true;
-            text.setIndex(start);
+            controller.setIndex(start);
         }
     }
 

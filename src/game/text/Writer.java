@@ -20,5 +20,5 @@ public abstract class Writer {
         return name;
     }
     
-    public abstract String add();
+    public abstract String write();
 }

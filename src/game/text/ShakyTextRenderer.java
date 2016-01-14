@@ -15,8 +15,8 @@ class ShakyTextRenderer extends TextRenderer {
 
     private final RandomGenerator random;
 
-    ShakyTextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc) {
-        super(text, start, startX, lineNum, color, font, tc);
+    ShakyTextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc, boolean isAltered) {
+        super(text, start, startX, lineNum, color, font, tc, isAltered);
         random = RandomGenerator.create(start + startX * 3 + lineNum * 5);
     }
 

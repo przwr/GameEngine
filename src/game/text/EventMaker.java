@@ -19,9 +19,9 @@ class EventMaker extends PropertyChanger {
     @Override
     void event(int i, int lineNum) {
         if (i >= start && !done) {
-            text.triggerEvent(event);
+            controller.triggerEvent(event);
             done = true;
-            text.setIndex(start);
+            controller.setIndex(start);
         }
     }
 }

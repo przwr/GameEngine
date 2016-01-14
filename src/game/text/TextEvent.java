@@ -10,12 +10,17 @@ package game.text;
  */
 abstract class TextEvent {
 
-    final int start;
+    int start;
+    final int unalteredStart;
     private final int lineNum;
 
     TextEvent(int start, int lineNum) {
-        this.start = start;
+        unalteredStart = this.start = start;
         this.lineNum = lineNum;
+    }
+    
+    public void alterStart(int added) {
+        start = unalteredStart + added;
     }
 
     abstract void event(int index, int lineNum);

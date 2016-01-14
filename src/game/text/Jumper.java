@@ -19,9 +19,9 @@ class Jumper extends PropertyChanger {
     @Override
     void event(int i, int lineNum) {
         if (i >= start && !done) {
-            text.setJumpLocation(jumpLocation);
+            controller.setJumpLocation(jumpLocation);
             done = true;
-            text.setIndex(start);
+            controller.setIndex(start);
         }
     }
 }

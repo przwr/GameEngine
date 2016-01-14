@@ -12,8 +12,8 @@ import org.newdawn.slick.Color;
  */
 class MusicTextRenderer extends TextRenderer {
 
-    MusicTextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc) {
-        super(text, start, startX, lineNum, color, font, tc);
+    MusicTextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc, boolean isAltered) {
+        super(text, start, startX, lineNum, color, font, tc, isAltered);
     }
 
     @Override

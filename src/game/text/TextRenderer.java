@@ -14,16 +14,20 @@ class TextRenderer extends TextEvent {
 
     final int x;
     final int y;
-    final int end;
-    final String text;
+    int end;
+    String text;
+    String unaltered;
     final FontHandler font;
     final TextController control;
     final Color color;
     private final float height;
 
-    TextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc) {
+    TextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc, boolean isAltered) {
         super(start, lineNum);
         this.text = text;
+        if (isAltered) {
+            unaltered = text;
+        }
         this.font = font;
         x = startX;
         height = (float) (font.getHeight() * 1.2);
@@ -41,6 +45,12 @@ class TextRenderer extends TextEvent {
         return index > start;
     }
 
+    void alterText(int index, String added) {
+        int i = index - start + 1;
+        text = unaltered.substring(0, i) + added + unaltered.substring(i);
+        end = text.length();
+    }
+    
     Color changeColor(Color base, int lineNum) {
         base.a = (lineNum == control.getCurrentRow() && control.isFlushing() ? Math.max(0f, 1f - 3 * control.getChange()) : 1f);
         return base;
