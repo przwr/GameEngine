@@ -34,6 +34,7 @@ public class MultiSampleFrameBufferObject extends FrameBufferObject {
 
     @Override
     public void activate() {
+        used = true;
         type.activate((version == EXT) ? frameBufferObject : frameBufferObjectMultiSample);
     }
 

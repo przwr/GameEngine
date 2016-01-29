@@ -20,6 +20,7 @@ public abstract class FrameBufferObject implements Appearance {
     final int height;
     final int width;
     final int texture;
+    public boolean used;
     int frameBufferObject;
     int version;
 

@@ -287,6 +287,7 @@ public class MyPlayer extends Player {
             addLight(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
+//        collision.setCollide(false);
         initializeAttacks();
         stats = new PlayerStats(this);
 //        stats.setMaxHealth(1000);

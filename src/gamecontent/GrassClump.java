@@ -2,6 +2,7 @@ package gamecontent;
 
 import collision.Figure;
 import engine.utilities.Drawer;
+import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
@@ -12,6 +13,9 @@ import game.place.fbo.RegularFrameBufferObject;
 import game.place.map.Area;
 import org.lwjgl.opengl.Display;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -19,14 +23,19 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class GrassClump extends GameObject {
 
+    private static final Map<String, FrameBufferObject> fbos = new HashMap<>();
+    public static RandomGenerator random = RandomGenerator.create();
+
+
     Grass[] grasses;
     int xBladesCount, yBladesCount, bladeWidth, bladeHeight, xRadius, yRadius, ySpacing, xCount, yCount, xCentering, grassWidth, curve, corner = -1;
-    boolean updateGrass, prerendered;
+    boolean updateGrass, added;
+
     FrameBufferObject fbo;
 
 
     private GrassClump(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
-        setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight);
+        setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 0);
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
                 grasses[i * xCount + j] = Grass.create(x + xCentering + j * grassWidth, y + (i + 1) * ySpacing, xBladesCount, yBladesCount,
@@ -35,13 +44,12 @@ public class GrassClump extends GameObject {
         }
     }
 
-
     private GrassClump(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int curve) {
         this.curve = curve;
         if (xBladesCount * 2 < yCount / curve) {
             xBladesCount = yCount / curve / 2;
         }
-        setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight);
+        setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 100 + curve * 10);
         int middle1 = yCount / 2, middle2 = yCount / 2, modXBladesCount, xCenter;
         if (yCount % 2 == 0) {
             middle1 -= 1;
@@ -71,7 +79,7 @@ public class GrassClump extends GameObject {
         if (xBladesCount * 2 < yCount / curve) {
             xBladesCount = yCount / curve / 2;
         }
-        setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight);
+        setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 200 + curve * 10 + corner);
         int middle1 = yCount / 2, middle2 = yCount / 2, modXBladesCount, xCenter;
         if (yCount % 2 == 0) {
             middle1 -= 1;
@@ -131,7 +139,7 @@ public class GrassClump extends GameObject {
     }
 
 
-    private void setUp(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
+    private void setUp(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int type) {
         initialize("GrassClump", x, y);
         toUpdate = true;
         this.xCount = xCount;
@@ -149,8 +157,20 @@ public class GrassClump extends GameObject {
         xCentering = Math.round(xBladesCount * (bladeWidth - 2) / 2f);
         int fboWidth = xRadius * 2 + 4 + (xCount - 1) * xCentering;
         int fboHeight = yRadius * 2 + bladeHeight + 8;
-        fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
-                new RegularFrameBufferObject(fboWidth, fboHeight);
+        int ins = (int) (Math.random() * 10);
+        String grassClumpCode = xCount + "-" + yCount + "-" + xBladesCount + "-" + yBladesCount + "-" + bladeWidth + "-" + bladeHeight + "-" + type +
+                "-" + ins;
+        int seed = ins * 101653 + type * 104729 + 1121104729;
+        fbo = fbos.get(grassClumpCode);
+        if (fbo == null) {
+            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
+                    new RegularFrameBufferObject(fboWidth, fboHeight);
+            fbos.put(grassClumpCode, fbo);
+        }
+        if (Grass.random == null) {
+            Grass.random = RandomGenerator.create();
+        }
+        Grass.random.resetWithSeed(seed);
     }
 
     @Override
@@ -177,8 +197,7 @@ public class GrassClump extends GameObject {
         if (updateGrass) {
             for (int i = 0; i < grasses.length; i++) {
                 if (grasses[i] != null) {
-
-                    grasses[i].update(map);
+                    grasses[i].update();
                     grasses[i].setVisible(true);
                 }
             }
@@ -190,8 +209,16 @@ public class GrassClump extends GameObject {
                 }
             }
         }
-        if (!prerendered) {
-            preRender();
+        if (!added) {
+            if (!fbo.used) {
+                preRender();
+            }
+            for (int i = 0; i < grasses.length; i++) {
+                if (grasses[i] != null) {
+                    map.addObject(grasses[i]);
+                }
+            }
+            added = true;
         }
     }
 
@@ -210,12 +237,6 @@ public class GrassClump extends GameObject {
         }
         glPopMatrix();
         fbo.deactivate();
-        for (int i = 0; i < grasses.length; i++) {
-            if (grasses[i] != null) {
-                map.addObject(grasses[i]);
-            }
-        }
-        prerendered = true;
     }
 
     private void preRenderRound() {

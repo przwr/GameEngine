@@ -17,7 +17,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +28,7 @@ import java.util.logging.Logger;
 public class SpriteBase {
 
     private static final int GL_MODE = org.lwjgl.opengl.GL11.GL_NEAREST;
-    private final ArrayList<Sprite> sprites = new ArrayList<>();
+    private final Map<String, Sprite> sprites = new HashMap<>();
 
     public SpriteBase() {
     }
@@ -57,27 +58,25 @@ public class SpriteBase {
     }
 
     public Sprite getSprite(String textureKey, String folder) {
-        for (Sprite sprite : sprites) {
-            if (sprite.getKey().equals(textureKey)) {
-                return sprite;
-            }
+        Sprite sprite = sprites.get(folder + textureKey);
+        if (sprite != null) {
+            return sprite;
         }
         Sprite newSprite = loadSprite(textureKey, folder);
         if (newSprite != null) {
-            sprites.add(newSprite);
+            sprites.put(folder + textureKey, newSprite);
         }
         return newSprite;
     }
 
     public SpriteSheet getSpriteSheet(String textureKey, String folder) {
-        for (Sprite sprite : sprites) {
-            if (sprite.getKey().equals(textureKey)) {
-                return (SpriteSheet) sprite;
-            }
+        Sprite sprite = sprites.get(folder + textureKey);
+        if (sprite != null) {
+            return (SpriteSheet) sprite;
         }
         SpriteSheet temp = (SpriteSheet) loadSprite(textureKey, folder);
         if (temp != null) {
-            sprites.add(temp);
+            sprites.put(folder + textureKey, temp);
         }
         return temp;
     }
@@ -104,7 +103,7 @@ public class SpriteBase {
         } catch (IOException e) {
             ErrorHandler.error("File " + folder + File.pathSeparator + "dims.txt not found!\n" + e.getMessage());
             return null;
-        } 
+        }
         return new Point[]{new Point(startX, startY), new Point(deltaX, deltaY)};
     }
 
@@ -207,15 +206,17 @@ public class SpriteBase {
     }
 
     public Sprite getSpriteInSize(String textureKey, String folder, int width, int height) {
-        for (Sprite sprite : sprites) {
-            if (sprite.getKey().equals(textureKey)
-                    && (sprite.getWidth() == width)
+        Sprite sprite = sprites.get(folder + textureKey);
+        if (sprite != null) {
+            if (sprite.getWidth() == width
                     && sprite.getHeight() == height) {
                 return sprite;
             }
         }
         Sprite newSprite = loadSpriteInSize(textureKey, folder, width, height);
-        sprites.add(newSprite);
+        if (newSprite != null) {
+            sprites.put(folder + textureKey, newSprite);
+        }
         return newSprite;
     }
 
@@ -247,7 +248,8 @@ public class SpriteBase {
     }
 
     public SpriteSheet getSpriteSheetSetScale(String textureKey, String folder) {
-        for (Sprite sprite : sprites) {
+        Sprite sprite = sprites.get(folder + textureKey);
+        if (sprite != null) {
             if (sprite.getKey().equals(textureKey)
                     && (sprite.getWidth() == (int) (sprite.getWidthWhole() * Settings.nativeScale)
                     && sprite.getHeight() == (int) (sprite.getHeightWhole() * Settings.nativeScale))) {
@@ -255,7 +257,9 @@ public class SpriteBase {
             }
         }
         SpriteSheet temp = (SpriteSheet) loadSpriteSetScale(textureKey, folder);
-        sprites.add(temp);
+        if (temp != null) {
+            sprites.put(folder + textureKey, temp);
+        }
         return temp;
     }
 
