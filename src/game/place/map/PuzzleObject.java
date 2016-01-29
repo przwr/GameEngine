@@ -44,10 +44,12 @@ public class PuzzleObject {
     private int index;
     private SpriteSheet tmpSS = null;
     private String[] lineTab;
+    private boolean repeatTiles;
     /*----*/
 
-    public PuzzleObject(String file, Place place) {
+    public PuzzleObject(String file, Place place, boolean repeatTiles) {
         this.place = place;
+        this.repeatTiles = repeatTiles;
         try (BufferedReader input = new BufferedReader(new FileReader("res/objects/" + file + ".puz"))) {
             bgTiles = new ArrayList<>();
             objects = new ArrayList<>();
@@ -72,6 +74,10 @@ public class PuzzleObject {
         } catch (IOException e) {
             ErrorHandler.error("File " + file + " not found!\n" + e.getMessage());
         }
+    }
+    
+    public PuzzleObject(String file, Place place) {
+        this(file, place, false);
     }
 
     protected PuzzleObject(ArrayList<String> map, Place place) {
@@ -127,7 +133,7 @@ public class PuzzleObject {
                 ErrorHandler.error("The object \"" + lineTab[0] + "\" is undefined");
         }
     }
-
+    
     private void decodeTile() {
         if (!lineTab[3].equals("")) {
             tmpSS = place.getSpriteSheet(lineTab[3], "backgrounds");
@@ -214,10 +220,12 @@ public class PuzzleObject {
     }
 
     private void addTile(Tile tile, int x, int y) {
-        for (TileContainer tc : bgTiles) {
-            if (tc.tile.isTheSame(tile)) {
-                tc.places.add(new Point(x, y));
-                return;
+        if (!repeatTiles) {
+            for (TileContainer tc : bgTiles) {
+                if (tc.tile.isTheSame(tile)) {
+                    tc.places.add(new Point(x, y));
+                    return;
+                }
             }
         }
         TileContainer tmpContainer = new TileContainer();

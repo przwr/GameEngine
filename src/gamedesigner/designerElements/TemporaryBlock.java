@@ -199,7 +199,7 @@ public class TemporaryBlock extends GameObject {
         return fgt;
     }
 
-    void createBlock() {
+    public void createBlock() {
         block = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
         if (upHeight == 0) {
             block.getCollision().setOpticProperties(TRANSPARENT);
@@ -216,7 +216,6 @@ public class TemporaryBlock extends GameObject {
     }
 
     public void changeEnvironment() {
-        createBlock();
         if (upHeight > 0) {
             int xBegin = (int) (x / tile);
             int yBegin = (int) (y / tile) - upHeight;
@@ -236,7 +235,8 @@ public class TemporaryBlock extends GameObject {
                             while ((p = t.popTileFromStackBack()) != null) {
                                 fgt.addTileToStack(p.getX(), p.getY());
                             }
-                            map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, level * tile);
+                            System.out.println(Math.min(level, upHeight));
+                            map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, Math.min(level, upHeight) * tile);
                             tiles.add(fgt);
                             block.addForegroundTile(fgt);
                             objMap.deleteTile(ix, iy);
