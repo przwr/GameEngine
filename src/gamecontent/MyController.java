@@ -134,7 +134,8 @@ public class MyController extends PlayerController {
                 if (!charging) {
                     animation.setFPS(60);
                 } else {
-                    animation.setFPS((int) (inControl.getSpeed() * 3));
+                    animation.getUpperBody().setFPS(60);
+                    animation.getLowerBody().setFPS((int) (inControl.getSpeed() * 3));
                 }
             } else {
                 if (!running) {

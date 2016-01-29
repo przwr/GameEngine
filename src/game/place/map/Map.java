@@ -610,7 +610,8 @@ public abstract class Map {
             }
             for (GameObject other : depthObjects) {
                 if (other != object) {
-                    if (!(other instanceof Entity) && other.canCover() && other.getAppearance() != null && other.getDepth() > object.getDepth()
+                    if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
+                            && object.getCollision() != null && other.getDepth() > object.getDepth()
                             && object.getX() < other.getXSpriteEnd() && object.getX() > other.getXSpriteBegin()
                             && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 < other.getYSpriteEnd()
                             && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 > other.getYSpriteBegin()) {

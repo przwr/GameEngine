@@ -47,7 +47,7 @@ import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
  */
 public class Main {
 
-    public static final boolean TEST = true;
+    public static final boolean TEST = false;
     public static final boolean DEBUG = false;
     public static final boolean LOG = false;
     private static final Delay delay = Delay.createInMilliseconds(200);
