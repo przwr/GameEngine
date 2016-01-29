@@ -31,6 +31,8 @@ public class Test extends Map {
         puzzle.placePuzzle(32, 32, this);
         puzzle = new PuzzleObject("domekstart", place);
         puzzle.placePuzzle(82, 32, this);
+        puzzle = new PuzzleObject("second", place);
+        puzzle.placePuzzle(32, 68, this);
         generateNavigationMeshes();
     }
 
@@ -78,17 +80,26 @@ public class Test extends Map {
             }
         }
 
-        for (int i = 0; i < 19; i++) {
+        for (int i = 0; i < 47; i++) {
             addObject(Tree.create(6240 + random.next(5), 1510 + i * 120 + random.next(7), 32, 200, 0.8f));
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 32; i++) {
             addObject(Tree.create(4050 + random.next(5), 2640 + i * 120 + random.next(7), 32, 200, 0.8f));
         }
-        for (int i = 0; i < 12; i++) {
-            addObject(new Bush(4050 + i * 90 + random.next(4), 3840 + random.next(6), 14, 80, 0.8f));
+        for (int i = 0; i < 10; i++) {
+            addObject(new Bush(4230 + i * 90 + random.next(4), 3840 + random.next(6), 14, 80, 0.8f));
         }
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 10; i++) {
             addObject(new Bush(5250 + i * 90 + random.next(4), 3840 + random.next(6), 14, 80, 0.8f));
+        }
+        for (int i = 0; i < 23; i++) {
+            addObject(Tree.create(4140 + i * 90 + random.next(5), 7064 + random.next(7), 32, 200, 0.8f));
+        }
+        for (int i = 0; i < 4; i++) {
+            addObject(new Bush(4030 + random.next(4), 6284 + i * 90 + random.next(6), 14, 80, 0.8f));
+        }
+        for (int i = 0; i < 4; i++) {
+            addObject(new Bush(4030 + random.next(4), 6732 + i * 90 + random.next(6), 14, 80, 0.8f));
         }
 
         addObject(new Shen(5184, 2560, place, mobID++));
@@ -107,8 +118,8 @@ public class Test extends Map {
         addObject(new Bush(3900, 2072, 12, 70, 0.8f));
         addObject(new Bush(4500, 1972, 12, 70, 0.8f));
 
-        addObject(new Dummy(4900, 1800, place, mobID++));
-        addObject(new Melodia(5000, 2000, place, mobID++));
+        addObject(new Dummy(4860, 2000, place, mobID++));
+        addObject(new Melodia(5344, 2272, place, mobID++));
 
     }
 }

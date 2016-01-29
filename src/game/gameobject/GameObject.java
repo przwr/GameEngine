@@ -51,6 +51,7 @@ public abstract class GameObject {
     protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     protected int prevArea = -1;
     protected boolean toUpdate;
+    protected boolean canCover;
 
     public void update() {
     }
@@ -465,5 +466,13 @@ public abstract class GameObject {
 
     public void setToUpdate(boolean toUpdate) {
         this.toUpdate = toUpdate;
+    }
+
+    public void setCanCover(boolean canCover) {
+        this.canCover = canCover;
+    }
+
+    public boolean canCover() {
+        return canCover;
     }
 }
