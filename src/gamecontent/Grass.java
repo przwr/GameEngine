@@ -18,14 +18,16 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Grass extends GameObject {
 
-
-    public static RandomGenerator random = RandomGenerator.create();
+    public static RandomGenerator random;
     int distance = Integer.MAX_VALUE, factor, xBladesCount, yBladesCount, bladeWidth, bladeSpacing, bladeHeight, bladeHeightHalf, tempX, tempY,
             xCurrentDistance, yCurrentDistance, xRadius, yRadius;
     PointedValue object = new PointedValue();
     PointedValue[] blades;
     boolean masking;
 
+    {
+        random = random == null ? RandomGenerator.create() : random;
+    }
 
     private Grass(int x, int y, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, boolean masking) {
         initialize("Grass", x, y);

@@ -14,8 +14,8 @@ import java.util.Random;
  */
 public class RandomGenerator extends Random {
 
-    private static long[] state;
-    private static int index;
+    private long[] state;
+    private int index;
     private int seed;
 
     private RandomGenerator(int seed) {
@@ -109,5 +109,17 @@ public class RandomGenerator extends Random {
         for (int i = 0; i < 16; i++) {
             state[i] = (seed + 1) * ((seed + 1) << 2) * i;
         }
+    }
+
+    public void resetWithSeed(int seed) {
+        for (int i = 0; i < state.length; i++) {
+            state[i] = 0;
+        }
+        index = 0;
+        setSeed(seed);
+    }
+
+    public long[] getState() {
+        return state;
     }
 }

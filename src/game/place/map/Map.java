@@ -351,7 +351,11 @@ public abstract class Map {
 
     public void updateObjectsFromAreasToUpdate() {
         if (depthObjects != null) {
-            depthObjects.stream().filter((object) -> object.isToUpdate()).forEach(GameObject::update);
+            for (GameObject object : depthObjects) {
+                if (object.isToUpdate()) {
+                    object.update();
+                }
+            }
         }
     }
 
@@ -596,23 +600,25 @@ public abstract class Map {
     }
 
     private boolean isBehindSomething(GameObject object) {
-        for (GameObject tile : foregroundTiles) {
-            if (object.getAppearance() != null && tile.getDepth() > object.getDepth()
-                    && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
-                    && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2)
-                    / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeightHalf() - object.getAppearance()
-                    .getActualHeight() / 2) / tileSize))) {
-                return true;
-            }
-        }
-        for (GameObject other : depthObjects) {
-            if (other != object) {
-                if (object instanceof Entity && !(other instanceof Entity) && other.getAppearance() != null && other.getDepth() > object.getDepth()
-                        && object.getX() < other.getXSpriteEnd() && object.getX() > other.getXSpriteBegin()
-                        && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance()
-                        .getActualHeight() / 2 < other.getYSpriteEnd() && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance()
-                        .getActualHeight() / 2 > other.getYSpriteBegin()) {
+        if (object instanceof Entity) {
+            for (GameObject tile : foregroundTiles) {
+                if (object.getAppearance() != null && tile.getDepth() > object.getDepth()
+                        && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
+                        && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2)
+                        / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeightHalf() - object
+                        .getAppearance()
+                        .getActualHeight() / 2) / tileSize))) {
                     return true;
+                }
+            }
+            for (GameObject other : depthObjects) {
+                if (other != object) {
+                    if (!(other instanceof Entity) && other.canCover() && other.getAppearance() != null && other.getDepth() > object.getDepth()
+                            && object.getX() < other.getXSpriteEnd() && object.getX() > other.getXSpriteBegin()
+                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 < other.getYSpriteEnd()
+                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 > other.getYSpriteBegin()) {
+                        return true;
+                    }
                 }
             }
         }

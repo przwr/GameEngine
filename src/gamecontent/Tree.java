@@ -23,13 +23,14 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Tree extends GameObject {
 
+
+    static FrameBufferObject fbo;
+    static Sprite bark;
+    static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
     int width, height;
     float spread;
-    FrameBufferObject fbo;
     boolean prerendered, branchless;
-    Sprite bark;
-    Sprite leaf;
     private Color branchColor;
     private Color leafColor;
     private BlueArray<Point> points = new BlueArray<>();
@@ -43,6 +44,7 @@ public class Tree extends GameObject {
         } else {
             setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.TRANSPARENT, this));
         }
+        canCover = true;
         toUpdate = true;
         solid = !branchless;
         collision.setSmall(true);
@@ -50,10 +52,14 @@ public class Tree extends GameObject {
         this.width = width;
         this.height = height;
         this.spread = spread;
-        int fboWidth = Math.round(spread * 2.5f * height);
+        int fboWidth = Math.round(spread * 2.6f * height);
         int fboHeight = Math.round(height * 2.5f);
-        fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
-                new RegularFrameBufferObject(fboWidth, fboHeight);
+        if (fbo == null) {
+            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
+                    new RegularFrameBufferObject(fboWidth, fboHeight);
+        } else {
+            prerendered = true;
+        }
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);

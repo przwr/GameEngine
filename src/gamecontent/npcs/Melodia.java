@@ -11,6 +11,7 @@ import engine.Main;
 import engine.utilities.Executive;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
+import game.gameobject.entities.Player;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
@@ -39,26 +40,30 @@ public class Melodia extends Mob {
             appearance = animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 0);
         }
         addPushInteraction();
+        setDirection8way(DOWN);
     }
 
     @Override
     public void update() {
-        if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
-            MyPlayer player = (MyPlayer) getTarget();
-            setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
+        if (target != null && ((Player) getTarget()).isInGame()) {
+            MyPlayer player = (MyPlayer) target;
+//            setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
             if (player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
                     && d <= Place.tileSize * 1.5 && !player.getTextController().isStarted()) {
+                setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
+                player.getTextController().lockEntity(player);
+                player.getTextController().startFromFile(dialog);
                 if (dialog == "demonpc2" && map.getSolidMobById(0) == null) {
                     dialog = "demonpc3";
                 }
-                player.getTextController().lockEntity(player);
-                player.getTextController().startFromFile(dialog);
                 Executive e = () -> {
                     if (player.getFirstWeapon() == null) {
                         Weapon sword = new Weapon("Sword", SWORD);
                         sword.setModifier(1.2f);
                         player.addWeapon(sword);
+                        map.deleteBlock(5120, 3712); // Do usuniecia
+//                        map.deleteBlock(4096, 6592); // otworzenie 2 przejścia
                     }
                 };
                 Executive e1 = () -> {
@@ -81,7 +86,6 @@ public class Melodia extends Mob {
                 if (dialog == "demonpc4") {
                     player.getTextController().addExternalEventOnBranch(e3, "0", false);
                 }
-
 //                text.addExternalStatement(new Statement("spr") {
 //
 //                    @Override
@@ -101,9 +105,9 @@ public class Melodia extends Mob {
 //                    moveWithSliding(0, 80);
 //                }, "e");
 
-
             }
             if (d > hearRange * 1.5 || getTarget().getMap() != map) {
+                setDirection8way(DOWN);
                 target = null;
             }
         } else {

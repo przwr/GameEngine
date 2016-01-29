@@ -23,13 +23,13 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Bush extends GameObject {
 
+    static FrameBufferObject fbo;
+    static Sprite bark;
+    static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
     int width, height;
     float spread;
-    FrameBufferObject fbo;
     boolean prerendered;
-    Sprite bark;
-    Sprite leaf;
     private Color branchColor;
     private Color leafColor;
     private BlueArray<Point> points = new BlueArray<>();
@@ -42,14 +42,19 @@ public class Bush extends GameObject {
         setSimpleLighting(false);
         collision.setSmall(true);
         solid = true;
+        canCover = true;
         toUpdate = true;
         this.width = width;
         this.height = height;
         this.spread = spread;
         int fboWidth = Math.round(spread * 3f * height);
         int fboHeight = Math.round(height * 2.5f);
-        fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
-                new RegularFrameBufferObject(fboWidth, fboHeight);
+        if (fbo == null) {
+            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
+                    new RegularFrameBufferObject(fboWidth, fboHeight);
+        } else {
+            prerendered = true;
+        }
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
