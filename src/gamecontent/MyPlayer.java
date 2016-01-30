@@ -370,6 +370,7 @@ public class MyPlayer extends Player {
                     map.getLightColor());
             Drawer.refreshColor();
             glPopMatrix();
+
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
                     interactive.render(xEffect, yEffect);
@@ -382,22 +383,20 @@ public class MyPlayer extends Player {
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             Drawer.setCentralPoint();
             appearance.render();
-            Drawer.returnToCentralPoint();
+//            Drawer.returnToCentralPoint();
             /*Drawer.setColor(Color.black);
              Drawer.drawCircle(Place.tileSize * 2, 0, 6, 10);
              Drawer.setCentralPoint();
-            
+
              Drawer.translate(-appearance.getXStart() - appearance.getXOffset(), -appearance.getYStart() - appearance.getYOffset());
              appearance.render();
-            
+
              Drawer.refreshColor();*/
             /*Drawer.returnToCentralPoint();
             Drawer.translate(Place.tileSize * 2, 0);
             appearance.renderPart(appearance.getWidth() / 2, appearance.getWidth());*/
-
             appearance.updateFrame();
             glPopMatrix();
-
         }
     }
 
@@ -469,35 +468,37 @@ public class MyPlayer extends Player {
 
     @Override
     public void update() {
-        if (map == place.loadingMap) {
-            warp.warp(this);
-        }
-        if (jumping) {
-            hop = false;
-            floatHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
-            jumpDelta += Time.getDelta();
-            if ((int) jumpDelta >= 68) {
-                jumping = false;
-                jumpDelta = 22.6f;
+        if (((ClothedAppearance) appearance).isUpToDate()) {
+            if (map == place.loadingMap) {
+                warp.warp(this);
             }
-        }
-        updateChangers();
-        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
-        if (camera != null) {
-            camera.updateSmooth();
-        }
-        if (area != -1) {
-            for (WarpPoint wp : map.getArea(area).getNearWarps()) {
-                if (wp.getCollision() != null && wp.getCollision().isCollideSingle(wp.getX(), wp.getY(), collision)) {
-                    wp.warp(this);
-                    break;
+            if (jumping) {
+                hop = false;
+                floatHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 270));
+                jumpDelta += Time.getDelta();
+                if ((int) jumpDelta >= 68) {
+                    jumping = false;
+                    jumpDelta = 22.6f;
                 }
             }
+            updateChangers();
+            moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+            if (camera != null) {
+                camera.updateSmooth();
+            }
+            if (area != -1) {
+                for (WarpPoint wp : map.getArea(area).getNearWarps()) {
+                    if (wp.getCollision() != null && wp.getCollision().isCollideSingle(wp.getX(), wp.getY(), collision)) {
+                        wp.warp(this);
+                        break;
+                    }
+                }
+            }
+            brakeOthers();
+            appearance.updateTexture(this);
+            updateWithGravity();
+            updateEnergy();
         }
-        brakeOthers();
-//        appearance.updateTexture(this);
-        updateWithGravity();
-        updateEnergy();
     }
 
     private void updateEnergy() {

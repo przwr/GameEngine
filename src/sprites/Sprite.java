@@ -10,6 +10,7 @@ import engine.utilities.ErrorHandler;
 import game.gameobject.entities.Player;
 import org.newdawn.slick.opengl.Texture;
 
+import java.io.InputStream;
 import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -21,8 +22,10 @@ public class Sprite implements Appearance {
 
     final int xStart;
     final int yStart;
-    private final int texture;
     private final SpriteBase spriteBase;
+    public int texture;
+    public String path;
+    public InputStream stream;
     float widthWhole;
     float heightWhole;
     int width;
@@ -36,9 +39,13 @@ public class Sprite implements Appearance {
 
     private double begin;
     private double ending;
+    private long lastUsed = System.currentTimeMillis();
 
-    Sprite(int texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        this.texture = texture;
+    Sprite(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        this.widthWhole = 2048;
+        this.heightWhole = 2048;
+        this.path = path;
+        this.folder = folder;
         this.spriteBase = spriteBase;
         this.xStart = -xStart;
         this.yStart = -yStart;
@@ -46,28 +53,21 @@ public class Sprite implements Appearance {
         this.height = height;
     }
 
-    Sprite(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        this.widthWhole = texture.getImageWidth();
-        this.heightWhole = texture.getImageHeight();
-        this.texture = texture.getTextureID();
-        this.spriteBase = spriteBase;
-        this.xStart = -xStart;
-        this.yStart = -yStart;
-        this.width = width;
-        this.height = height;
-    }
-
-    public static Sprite create(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        return new Sprite(texture, folder, width, height, xStart, yStart, spriteBase);
+    public static Sprite create(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new Sprite(path, folder, width, height, xStart, yStart, spriteBase);
     }
 
     @Override
     public void bindCheck() {
-        if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
+        lastUsed = System.currentTimeMillis();
+        if (texture == 0) {
+            glBindTexture(GL_TEXTURE_2D, texture);
+            Drawer.setColorAlpha(0.25f);
+//            Main.backgroundLoader.requestSprite(this);
+        } else if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
             glBindTexture(GL_TEXTURE_2D, texture);
         }
     }
-
 
     @Override
     public void render() {
@@ -288,8 +288,18 @@ public class Sprite implements Appearance {
         return texture;
     }
 
+    public void setTexture(Texture texture) {
+        this.heightWhole = texture.getImageHeight();
+        this.widthWhole = texture.getImageWidth();
+        this.texture = texture.getTextureID();
+    }
+
     public SpriteBase getSpriteBase() {
         return spriteBase;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     @Override

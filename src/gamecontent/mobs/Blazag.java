@@ -845,18 +845,20 @@ public class Blazag extends Mob {
 
     @Override
     public void update() {
-        if (isHurt()) {
-            updateGettingHurt();
-            runTo();
-        } else {
-            state.update();
-            normalizeSpeed();
-            updateAnimation();
+        if (animation.isUpToDate()) {
+            if (isHurt()) {
+                updateGettingHurt();
+                runTo();
+            } else {
+                state.update();
+                normalizeSpeed();
+                updateAnimation();
+            }
+            updateChangers();
+            updateWithGravity();
+            moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+            brakeOthers();
         }
-        updateChangers();
-        updateWithGravity();
-        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
-        brakeOthers();
     }
 
     private void runTo() {
@@ -961,7 +963,6 @@ public class Blazag extends Mob {
     }
 
     private class Order {
-
         private final static byte ATTACK = 0, GO_TO = 1;
         private byte order;
         private byte type = -1;

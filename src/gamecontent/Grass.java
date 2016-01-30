@@ -74,27 +74,29 @@ public class Grass extends GameObject {
     public void update(Map map) {
         distance = Integer.MAX_VALUE;
         factor = 0;
-        Area area = map.getArea(getX(), getY());
-        for (int i = 0; i < map.place.getPlayersCount(); i++) {
-            GameObject player = map.place.players[i];
-            if (player.getFloatHeight() < bladeHeight) {
-                if ((xCurrentDistance = Math.abs(getX() - player.getX())) < xRadius + player.getCollision().getWidthHalf()) {
-                    if ((yCurrentDistance = Math.abs(getY() - player.getY())) < yRadius + player.getCollision().getHeightHalf()) {
-                        if (xCurrentDistance + yCurrentDistance < distance) {
-                            distance = xCurrentDistance + yCurrentDistance;
-                            object.set(player.getX(), player.getY());
+        if (map != null) {
+            Area area = map.getArea(getX(), getY());
+            for (int i = 0; i < map.place.getPlayersCount(); i++) {
+                GameObject player = map.place.players[i];
+                if (player.getFloatHeight() < bladeHeight) {
+                    if ((xCurrentDistance = Math.abs(getX() - player.getX())) < xRadius + player.getCollision().getWidthHalf()) {
+                        if ((yCurrentDistance = Math.abs(getY() - player.getY())) < yRadius + player.getCollision().getHeightHalf()) {
+                            if (xCurrentDistance + yCurrentDistance < distance) {
+                                distance = xCurrentDistance + yCurrentDistance;
+                                object.set(player.getX(), player.getY());
+                            }
                         }
                     }
                 }
             }
-        }
-        for (Mob mob : area.getNearSolidMobs()) {
-            if (mob.getFloatHeight() < bladeHeight) {
-                if ((xCurrentDistance = Math.abs(getX() - mob.getX())) < xRadius + mob.getCollision().getWidthHalf()) {
-                    if ((yCurrentDistance = Math.abs(getY() - mob.getY())) < yRadius + mob.getCollision().getHeightHalf()) {
-                        if (xCurrentDistance + yCurrentDistance < distance) {
-                            distance = xCurrentDistance + yCurrentDistance;
-                            object.set(mob.getX(), mob.getY());
+            for (Mob mob : area.getNearSolidMobs()) {
+                if (mob.getFloatHeight() < bladeHeight) {
+                    if ((xCurrentDistance = Math.abs(getX() - mob.getX())) < xRadius + mob.getCollision().getWidthHalf()) {
+                        if ((yCurrentDistance = Math.abs(getY() - mob.getY())) < yRadius + mob.getCollision().getHeightHalf()) {
+                            if (xCurrentDistance + yCurrentDistance < distance) {
+                                distance = xCurrentDistance + yCurrentDistance;
+                                object.set(mob.getX(), mob.getY());
+                            }
                         }
                     }
                 }

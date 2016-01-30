@@ -7,9 +7,7 @@ package sprites;
 
 import engine.utilities.Delay;
 import engine.utilities.Methods;
-import engine.utilities.Point;
 import game.gameobject.entities.Player;
-import game.place.fbo.FrameBufferedSpriteSheet;
 
 /**
  * @author przemek
@@ -18,11 +16,10 @@ public class Animation implements Appearance {
 
     private final SpriteSheet spriteSheet;
     private final Delay delay;
-    private final int finalEnd;
-    private FrameBufferedSpriteSheet fboSpriteSheet;
+    private int finalEnd;
     private int start, end, currentFrame, fps;
     private int framesPerDirection;
-    private boolean animate = true, stopAtEnd = false, reversed = false, fluctuate = false, fbo;
+    private boolean animate = true, stopAtEnd = false, reversed = false, fluctuate = false, upToDate;
 
     private Animation(SpriteSheet sprite, int delayTime, int framesPerDirection) {
         this.spriteSheet = sprite;
@@ -45,67 +42,57 @@ public class Animation implements Appearance {
         return new Animation(sprite, delayTime, framesPerDirection);
     }
 
-    public static Animation createFBOAnimation(SpriteSheet sprite, int delayTime, int framesPerDirection, Point dimensions, Point centralPoint, Point delta) {
-        Animation tmp = new Animation(sprite, delayTime, framesPerDirection);
-//        tmp.fbo = true;
-        //tmp.fboSpriteSheet = new FrameBufferedSpriteSheet(dimensions.getX(), dimensions.getY(),
-        //        framesPerDirection * 8, centralPoint.getX(), centralPoint.getY(), delta.getX(), delta.getY());
-        return tmp;
-    }
-
     protected void setCurrentFrame(int newFrame) {
         currentFrame = newFrame;
-        if (fboSpriteSheet != null) {
-            fboSpriteSheet.updateFrame(currentFrame);
-        }
     }
 
     @Override
     public void updateTexture(Player owner) {
-        if (fboSpriteSheet != null) {
-            fboSpriteSheet.updateTexture(owner);
-        }
     }
 
     @Override
     public void updateFrame() {
-        if (animate && delay.isOver()) {
-            delay.start();
-            if (!reversed) {    //NORMALNE
-                setCurrentFrame(currentFrame + 1);
-                if (currentFrame > end) {
-                    if (stopAtEnd) {
-                        animate = false;
-                        setCurrentFrame(end);
-                    } else {
-                        if (fluctuate) {
+        if (upToDate) {
+            if (animate && delay.isOver()) {
+                delay.start();
+                if (!reversed) {    //NORMALNE
+                    setCurrentFrame(currentFrame + 1);
+                    if (currentFrame > end) {
+                        if (stopAtEnd) {
+                            animate = false;
                             setCurrentFrame(end);
-                            reverseAnimation();
                         } else {
-                            setCurrentFrame(start);
+                            if (fluctuate) {
+                                setCurrentFrame(end);
+                                reverseAnimation();
+                            } else {
+                                setCurrentFrame(start);
+                            }
                         }
+                    } else if (currentFrame < start) {
+                        setCurrentFrame(start);
                     }
-                } else if (currentFrame < start) {
-                    setCurrentFrame(start);
-                }
-            } else {    //ODWROCONE
-                setCurrentFrame(currentFrame - 1);
-                if (currentFrame < end) {
-                    if (stopAtEnd) {
-                        animate = false;
-                        setCurrentFrame(end);
-                    } else {
-                        if (fluctuate) {
+                } else {    //ODWROCONE
+                    setCurrentFrame(currentFrame - 1);
+                    if (currentFrame < end) {
+                        if (stopAtEnd) {
+                            animate = false;
                             setCurrentFrame(end);
-                            reverseAnimation();
                         } else {
-                            setCurrentFrame(start);
+                            if (fluctuate) {
+                                setCurrentFrame(end);
+                                reverseAnimation();
+                            } else {
+                                setCurrentFrame(start);
+                            }
                         }
+                    } else if (currentFrame > start) {
+                        setCurrentFrame(start);
                     }
-                } else if (currentFrame > start) {
-                    setCurrentFrame(start);
                 }
             }
+        } else {
+            updateValues();
         }
     }
 
@@ -185,26 +172,17 @@ public class Animation implements Appearance {
 
     @Override
     public void bindCheck() {
-        if (fboSpriteSheet == null) {
-            spriteSheet.bindCheck();
-        }
+        spriteSheet.bindCheck();
     }
 
     @Override
     public void render() {
-        if (fboSpriteSheet != null) {
-            fboSpriteSheet.render();
-        } else {
-            spriteSheet.renderPiece(currentFrame);
-        }
+        spriteSheet.renderPiece(currentFrame);
     }
 
     public void renderWhole() {
-        if (fboSpriteSheet != null) {
-            fboSpriteSheet.renderWhole();
-        } else {
-            spriteSheet.renderPiece(currentFrame);
-        }
+        spriteSheet.renderPiece(currentFrame);
+
     }
 
     @Override
@@ -214,19 +192,8 @@ public class Animation implements Appearance {
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
-        if (fboSpriteSheet != null) {
-            fboSpriteSheet.renderPart(partXStart, partXEnd);
-        } else {
-            spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
-        }
-    }
+        spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
 
-    public boolean isUpToDate() {
-        return fboSpriteSheet.isUpToDate();
-    }
-
-    public void setUpToDate(boolean upToDate) {
-        fboSpriteSheet.setUpToDate(upToDate);
     }
 
     @Override
@@ -320,4 +287,18 @@ public class Animation implements Appearance {
     public int getYOffset() {
         return spriteSheet.getYOffset();
     }
+
+    public boolean isUpToDate() {
+        return upToDate;
+    }
+
+    public void updateValues() {
+        if (spriteSheet == null) {
+            upToDate = true;
+        } else if (spriteSheet.texture != 0) {
+            this.finalEnd = this.end = spriteSheet.getSize() - 1;
+            upToDate = true;
+        }
+    }
 }
+

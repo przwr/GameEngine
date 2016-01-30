@@ -15,6 +15,8 @@ import org.newdawn.slick.Color;
 import sprites.Sprite;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -23,10 +25,12 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Bush extends GameObject {
 
-    static FrameBufferObject fbo;
+
+    private static final Map<String, FrameBufferObject> fbos = new HashMap<>();
     static Sprite bark;
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
+    FrameBufferObject fbo;
     int width, height;
     float spread;
     boolean prerendered;
@@ -49,9 +53,12 @@ public class Bush extends GameObject {
         this.spread = spread;
         int fboWidth = Math.round(spread * 3f * height);
         int fboHeight = Math.round(height * 2.5f);
+        int ins = random.random(10);
+        String bushCode = width + "-" + height + "-" + spread + "-" + ins;
+        fbo = fbos.get(bushCode);
         if (fbo == null) {
-            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
-                    new RegularFrameBufferObject(fboWidth, fboHeight);
+            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) : new RegularFrameBufferObject(fboWidth, fboHeight);
+            fbos.put(bushCode, fbo);
         } else {
             prerendered = true;
         }
@@ -63,8 +70,8 @@ public class Bush extends GameObject {
 
     public void update() {
         if (!prerendered) {
-            bark = map.place.getSprite("bark", "");
-            leaf = map.place.getSprite("leaf", "");
+            bark = map.place.getSprite("bark", "", true);
+            leaf = map.place.getSprite("leaf", "", true);
             fbo.activate();
             glPushMatrix();
             glClearColor(0.5f, 0.35f, 0.2f, 0);
@@ -278,20 +285,23 @@ public class Bush extends GameObject {
 
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
-        float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
-        change -= Math.abs(points.get(i).getX() + x) / maxX / 4;
-        if (change < 0) {
-            change = 0;
+        if (Math.abs(points.get(i).getY() + y) < fbo.getHeight() - leaf.getWidth() - leaf.getHeight()
+                && Math.abs(points.get(i).getX() + x) < fbo.getWidth() / 2 - leaf.getWidth() - leaf.getHeight()) {
+            float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
+            change -= Math.abs(points.get(i).getX() + x) / maxX / 4;
+            if (change < 0) {
+                change = 0;
+            }
+            int rand = random.randomInRange(-10, 10);
+            Drawer.setColor(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
+                    leafColor.b * (1 + change / 2f + rand / 25f)));
+            float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
+            Drawer.translate(points.get(i).getX() + x, points.get(i).getY() + y);
+            glPushMatrix();
+            leaf.renderRotate(angle);
+            glPopMatrix();
+            Drawer.translate(-points.get(i).getX() - x, -points.get(i).getY() - y);
         }
-        int rand = random.randomInRange(-10, 10);
-        Drawer.setColor(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
-                leafColor.b * (1 + change / 2f + rand / 25f)));
-        float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
-        Drawer.translate(points.get(i).getX() + x, points.get(i).getY() + y);
-        glPushMatrix();
-        leaf.renderRotate(angle);
-        glPopMatrix();
-        Drawer.translate(-points.get(i).getX() - x, -points.get(i).getY() - y);
     }
 
     @Override

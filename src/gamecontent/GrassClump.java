@@ -33,13 +33,12 @@ public class GrassClump extends GameObject {
 
     FrameBufferObject fbo;
 
-
     private GrassClump(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
         setUp(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 0);
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
-                grasses[i * xCount + j] = Grass.create(x + xCentering + j * grassWidth, y + (i + 1) * ySpacing, xBladesCount, yBladesCount,
-                        bladeWidth, bladeHeight);
+                grasses[i * xCount + j] = Grass.create(x + xCentering + j * grassWidth, y + (i + 1) * ySpacing, xBladesCount, yBladesCount, bladeWidth,
+                        bladeHeight);
             }
         }
     }
@@ -157,7 +156,7 @@ public class GrassClump extends GameObject {
         xCentering = Math.round(xBladesCount * (bladeWidth - 2) / 2f);
         int fboWidth = xRadius * 2 + 4 + (xCount - 1) * xCentering;
         int fboHeight = yRadius * 2 + bladeHeight + 8;
-        int ins = (int) (Math.random() * 10);
+        int ins = random.random(8);
         String grassClumpCode = xCount + "-" + yCount + "-" + xBladesCount + "-" + yBladesCount + "-" + bladeWidth + "-" + bladeHeight + "-" + type +
                 "-" + ins;
         int seed = ins * 101653 + type * 104729 + 1121104729;
