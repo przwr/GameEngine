@@ -36,9 +36,12 @@ public class Arrow extends Entity {
     private boolean stopped;
     private final Color color;
     private final int lenght;
+    private final TailEffect tail;
 
     public Arrow(double speed, int direction, int height, GameObject owner) {
         this.floatHeight = height;
+//        speed /= 10;
+//        gravity /= 10;
         this.xSpeed = Methods.xRadius(direction, speed);
         this.ySpeed = -Methods.yRadius(direction, speed);
         this.owner = owner;
@@ -47,6 +50,7 @@ public class Arrow extends Entity {
         visible = true;
         lenght = (int) (Place.tileSize * 1.2);
         this.color = new Color(108, 59, 44);
+        tail = new TailEffect(6, (float) (lenght / 8));
         stats = new Stats(this);
         stats.setStrength(20);
         Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 2f);
@@ -90,13 +94,17 @@ public class Arrow extends Entity {
         int delta;
         if (!stopped) {
             moveIfPossibleWithoutSliding(xSpeed + xEnvironmentalSpeed, ySpeed + yEnvironmentalSpeed);
+            tail.updatePoint((int) x, (int) y, (int) floatHeight - lenght / 15, getDirection());
             if (floatHeight == 0) {
                 stopped = true;
             }
-        } else if ((delta = Methods.pointDifference(getX(), getY(), owner.getX(), owner.getY())) < Place.tileSize) {
-            setPosition(x + (owner.getX() - x) / 5, y + (owner.getY() - y) / 5);
-            if (delta < Place.tileHalf / 2) {
-                delete();
+        } else {
+            tail.updateStatic();
+            if ((delta = Methods.pointDifference(getX(), getY(), owner.getX(), owner.getY())) < Place.tileSize) {
+                setPosition(x + (owner.getX() - x) / 5, y + (owner.getY() - y) / 5);
+                if (delta < Place.tileHalf / 2) {
+                    delete();
+                }
             }
         }
         updateWithGravity();
@@ -104,6 +112,7 @@ public class Arrow extends Entity {
 
     @Override
     public void render(int xEffect, int yEffect) {
+        tail.render(xEffect, yEffect);
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
@@ -127,6 +136,26 @@ public class Arrow extends Entity {
         }
     }
 
+    @Override
+    public int getYSpriteBegin() {
+        return super.getYSpriteBegin() - lenght - tail.getHeight();
+    }
+
+    @Override
+    public int getYSpriteEnd() {
+        return super.getYSpriteEnd() + lenght + tail.getHeight();
+    }
+
+    @Override
+    public int getXSpriteBegin() {
+        return super.getXSpriteBegin() - lenght - tail.getWidth();
+    }
+
+    @Override
+    public int getXSpriteEnd() {
+        return super.getXSpriteEnd() + lenght + tail.getWidth();
+    }
+    
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
