@@ -365,4 +365,8 @@ public class ClothedAppearance implements Appearance {
         glPopMatrix();
         fbo.deactivate();
     }
+
+    public boolean isUpToDate() {
+        return upperBody.isUpToDate() && lowerBody.isUpToDate();
+    }
 }

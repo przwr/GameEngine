@@ -18,52 +18,41 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class SpriteSheet extends Sprite {
 
-    private final boolean isStartMoving;
+    private final boolean isStartMoving, scale;
     private float xTiles;
     private float yTiles;
     private int frame;
     private PointedValue[] startingPoints;
 
-    private SpriteSheet(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
-        super(texture, folder, width, height, xStart, yStart, spriteBase);
+    private SpriteSheet(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
+        super(path, folder, width, height, xStart, yStart, spriteBase);
         isStartMoving = false;
-        widthWhole = texture.getImageWidth();
-        heightWhole = texture.getImageHeight();
+        this.scale = scale;
         setTilesCount(scale);
     }
 
-    private SpriteSheet(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, PointedValue[] startingPoints) {
-        super(texture, folder, width, height, xStart, yStart, spriteBase);
+    private SpriteSheet(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, PointedValue[]
+            startingPoints) {
+        super(path, folder, width, height, xStart, yStart, spriteBase);
         this.startingPoints = startingPoints;
         isStartMoving = true;
-        widthWhole = texture.getImageWidth();
-        heightWhole = texture.getImageHeight();
+        this.scale = scale;
         setTilesCount(scale);
     }
 
-    private SpriteSheet(int texture, String folder, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        super(texture, folder, width, height, xStart, yStart, spriteBase);
-        isStartMoving = false;
-        this.widthWhole = widthWhole;
-        this.heightWhole = heightWhole;
-        setTilesCount(false);
+    public static SpriteSheet create(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new SpriteSheet(path, folder, width, height, xStart, yStart, spriteBase, false);
     }
 
-    public static SpriteSheet create(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        return new SpriteSheet(texture, folder, width, height, xStart, yStart, spriteBase, false);
+    public static SpriteSheet createWithMovingStart(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase,
+                                                    PointedValue[] stPoints) {
+        return new SpriteSheet(path, folder, width, height, xStart, yStart, spriteBase, false, stPoints);
     }
 
-    public static SpriteSheet createWithMovingStart(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, PointedValue[] stPoints) {
-        return new SpriteSheet(texture, folder, width, height, xStart, yStart, spriteBase, false, stPoints);
+    public static SpriteSheet createSetScale(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        return new SpriteSheet(path, folder, width, height, xStart, yStart, spriteBase, true);
     }
 
-    public static SpriteSheet createSetScale(Texture texture, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        return new SpriteSheet(texture, folder, width, height, xStart, yStart, spriteBase, true);
-    }
-
-    public static SpriteSheet createFrameBuffered(int texture, String folder, int widthWhole, int heightWhole, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
-        return new SpriteSheet(texture, folder, widthWhole, heightWhole, width, height, xStart, yStart, spriteBase);
-    }
 
     public static Point[] getMergedDimensions(SpriteSheet... list) {
         int xB = Integer.MAX_VALUE, yB = Integer.MAX_VALUE,
@@ -149,11 +138,7 @@ public class SpriteSheet extends Sprite {
     }
 
     private int getFramesPosition(int frame) {
-        return isStartMoving
-                ? (startingPoints[frame] != null
-                        ? startingPoints[frame].getValue()
-                        : -1)
-                : frame;
+        return isStartMoving ? (startingPoints[frame] != null ? startingPoints[frame].getValue() : -1) : frame;
     }
 
     public void renderPiece(int piece) {
@@ -266,5 +251,13 @@ public class SpriteSheet extends Sprite {
 
     public int getSize() {
         return (int) (xTiles * yTiles);
+    }
+
+    @Override
+    public void setTexture(Texture texture) {
+        this.heightWhole = texture.getImageHeight();
+        this.widthWhole = texture.getImageWidth();
+        setTilesCount(scale);
+        this.texture = texture.getTextureID();
     }
 }

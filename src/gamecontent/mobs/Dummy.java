@@ -14,9 +14,7 @@ import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.MobStats;
-import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.place.Place;
-import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
@@ -60,15 +58,17 @@ public class Dummy extends Mob {
 
     @Override
     public void update() {
-        if (isHurt()) {
-            updateGettingHurt();
-        } else {
-            updateAnimation();
+        if (animation.isUpToDate()) {
+            if (isHurt()) {
+                updateGettingHurt();
+            } else {
+                updateAnimation();
+            }
+            updateChangers();
+            updateWithGravity();
+            moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+            brakeOthers();
         }
-        updateChangers();
-        updateWithGravity();
-        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
-        brakeOthers();
     }
 
     @Override

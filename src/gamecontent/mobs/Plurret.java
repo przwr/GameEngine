@@ -212,17 +212,19 @@ public class Plurret extends Mob {
 
     @Override
     public void update() {
-        if (isHurt()) {
-            updateGettingHurt();
-        } else {
-            state.update();
-            lastPosition.set(getX(), getY());
-            updateAnimation();
+        if (animation.isUpToDate()) {
+            if (isHurt()) {
+                updateGettingHurt();
+            } else {
+                state.update();
+                lastPosition.set(getX(), getY());
+                updateAnimation();
+            }
+            updateChangers();
+            updateWithGravity();
+            moveIfPossibleWithoutSliding(xSpeed + xEnvironmentalSpeed, ySpeed + yEnvironmentalSpeed);
+            brakeOthers();
         }
-        updateChangers();
-        updateWithGravity();
-        moveIfPossibleWithoutSliding(xSpeed + xEnvironmentalSpeed, ySpeed + yEnvironmentalSpeed);
-        brakeOthers();
     }
 
     /*

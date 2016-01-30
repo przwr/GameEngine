@@ -45,47 +45,48 @@ public class Melodia extends Mob {
 
     @Override
     public void update() {
-        if (target != null && ((Player) getTarget()).isInGame()) {
-            MyPlayer player = (MyPlayer) target;
+        if (animation.isUpToDate()) {
+            if (target != null && ((Player) getTarget()).isInGame()) {
+                MyPlayer player = (MyPlayer) target;
 //            setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
-            int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-            if (player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
-                    && d <= Place.tileSize * 1.5 && !player.getTextController().isStarted()) {
-                setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
-                player.getTextController().lockEntity(player);
-                player.getTextController().startFromFile(dialog);
-                if (dialog == "demonpc2" && map.getSolidMobById(0) == null) {
-                    dialog = "demonpc3";
-                }
-                Executive e = () -> {
-                    if (player.getFirstWeapon() == null) {
-                        Weapon sword = new Weapon("Sword", SWORD);
-                        sword.setModifier(1.2f);
-                        player.addWeapon(sword);
-                        map.deleteBlock(5120, 3712); // Do usuniecia
-//                        map.deleteBlock(4096, 6592); // otworzenie 2 przejścia
+                int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
+                if (player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
+                        && d <= Place.tileSize * 1.5 && !player.getTextController().isStarted()) {
+                    setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
+                    player.getTextController().lockEntity(player);
+                    player.getTextController().startFromFile(dialog);
+                    if (dialog == "demonpc2" && map.getSolidMobById(0) == null) {
+                        dialog = "demonpc3";
                     }
-                };
-                Executive e1 = () -> {
-                    dialog = "demonpc2";
-                };
-                Executive e2 = () -> {
-                    player.getStats().setHealth(player.getStats().getMaxHealth());
-                    dialog = "demonpc4";
-                };
-                Executive e3 = () -> {
-                    map.deleteBlock(5120, 3712);
-                };
-                if (dialog == "demonpc") {
-                    player.getTextController().addExternalEventOnBranch(e, "0", true);
-                    player.getTextController().addExternalEventOnBranch(e1, "1", false);
-                    player.getTextController().addExternalEventOnBranch(e1, "2", false);
-                } else if (dialog == "demonpc3") {
-                    player.getTextController().addExternalEventOnBranch(e2, "0", false);
-                }
-                if (dialog == "demonpc4") {
-                    player.getTextController().addExternalEventOnBranch(e3, "0", false);
-                }
+                    Executive e = () -> {
+                        if (player.getFirstWeapon() == null) {
+                            Weapon sword = new Weapon("Sword", SWORD);
+                            sword.setModifier(1.2f);
+                            player.addWeapon(sword);
+                            map.deleteBlock(5120, 3712); // Do usuniecia
+//                        map.deleteBlock(4096, 6592); // otworzenie 2 przejścia
+                        }
+                    };
+                    Executive e1 = () -> {
+                        dialog = "demonpc2";
+                    };
+                    Executive e2 = () -> {
+                        player.getStats().setHealth(player.getStats().getMaxHealth());
+                        dialog = "demonpc4";
+                    };
+                    Executive e3 = () -> {
+                        map.deleteBlock(5120, 3712);
+                    };
+                    if (dialog == "demonpc") {
+                        player.getTextController().addExternalEventOnBranch(e, "0", true);
+                        player.getTextController().addExternalEventOnBranch(e1, "1", false);
+                        player.getTextController().addExternalEventOnBranch(e1, "2", false);
+                    } else if (dialog == "demonpc3") {
+                        player.getTextController().addExternalEventOnBranch(e2, "0", false);
+                    }
+                    if (dialog == "demonpc4") {
+                        player.getTextController().addExternalEventOnBranch(e3, "0", false);
+                    }
 //                text.addExternalStatement(new Statement("spr") {
 //
 //                    @Override
@@ -105,15 +106,16 @@ public class Melodia extends Mob {
 //                    moveWithSliding(0, 80);
 //                }, "e");
 
+                }
+                if (d > hearRange * 1.5 || getTarget().getMap() != map) {
+                    setDirection8way(DOWN);
+                    target = null;
+                }
+            } else {
+                lookForPlayers(place.players);
             }
-            if (d > hearRange * 1.5 || getTarget().getMap() != map) {
-                setDirection8way(DOWN);
-                target = null;
-            }
-        } else {
-            lookForPlayers(place.players);
+            animation.animateSingle(getDirection8Way());
         }
-        animation.animateSingle(getDirection8Way());
     }
 
     @Override
@@ -131,6 +133,7 @@ public class Melodia extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.render();
+            animation.updateFrame();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }

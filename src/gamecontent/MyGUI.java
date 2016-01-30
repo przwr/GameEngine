@@ -104,19 +104,27 @@ public class MyGUI extends GUIObject {
             glPushMatrix();
             glTranslatef((int) ((player.getX()) * Place.getCurrentScale() - frameBufferObject.getWidth() / 2 + xEffect),
                     (int) ((player.getY() - player.getFloatHeight()) * Place.getCurrentScale() + yEffect - frameBufferObject.getHeight() / 2), 0);
-
             renderGroundGUI();
+            glPopMatrix();
 
             if (on) {
-                glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+                glPushMatrix();
+//                Bez Translate Lewy Górny
+//                Prawy Górny:
+//                glTranslatef(Display.getWidth() - Math.round(Place.tileSize * Settings.nativeScale), 0, 0);
+//                Lewy Dolny:
+//                glTranslatef(Display.getWidth() - Math.round(Place.tileSize * Settings.nativeScale), Display.getHeight() - Math.round(2 * Place.tileSize *
+//                        Settings.nativeScale), 0);
+//                Prawy Dolny:
+//                glTranslatef(0, Display.getHeight() - Math.round(2 * Place.tileSize * Settings.nativeScale), 0);
+                glScaled(Settings.nativeScale, Settings.nativeScale, 1);
                 Drawer.setColor(color);
-                glTranslatef(-player.getCollision().getWidth() * 1.5f, -player.getCollision().getHeightHalf(), 0);
                 attackIcons.renderPiece(firstAttackType);
-                glTranslatef(0, -Place.tileSize, 0);
+                glTranslatef(0, Place.tileSize, 0);
                 attackIcons.renderPiece(secondAttackType);
+                glPopMatrix();
             }
             Drawer.refreshColor();
-            glPopMatrix();
         }
     }
 

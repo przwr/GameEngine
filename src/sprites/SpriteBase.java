@@ -5,6 +5,7 @@
  */
 package sprites;
 
+import engine.Main;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import engine.utilities.PointedValue;
@@ -19,8 +20,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
 
 /**
  * @author Wojtek
@@ -57,24 +58,24 @@ public class SpriteBase {
         }
     }
 
-    public Sprite getSprite(String textureKey, String folder) {
+    public Sprite getSprite(String textureKey, String folder, boolean... now) {
         Sprite sprite = sprites.get(folder + textureKey);
         if (sprite != null) {
             return sprite;
         }
-        Sprite newSprite = loadSprite(textureKey, folder);
+        Sprite newSprite = loadSprite(textureKey, folder, now);
         if (newSprite != null) {
             sprites.put(folder + textureKey, newSprite);
         }
         return newSprite;
     }
 
-    public SpriteSheet getSpriteSheet(String textureKey, String folder) {
+    public SpriteSheet getSpriteSheet(String textureKey, String folder, boolean... now) {
         Sprite sprite = sprites.get(folder + textureKey);
         if (sprite != null) {
             return (SpriteSheet) sprite;
         }
-        SpriteSheet temp = (SpriteSheet) loadSprite(textureKey, folder);
+        SpriteSheet temp = (SpriteSheet) loadSprite(textureKey, folder, now);
         if (temp != null) {
             sprites.put(folder + textureKey, temp);
         }
@@ -107,13 +108,12 @@ public class SpriteBase {
         return new Point[]{new Point(startX, startY), new Point(deltaX, deltaY)};
     }
 
-    private Sprite loadSprite(String name, String folder) {
+    private Sprite loadSprite(String name, String folder, boolean... now) {
         int width, height, startX, startY, pieceWidth, pieceHeight, xOffset, yOffset, actualWidth, actualHeight;
         boolean spriteSheet, movingStart = false;
         PointedValue[] startPoints = null;
-        String sprite, key;
-        Texture texture;
-        Sprite image;
+        String image, key, path;
+        Sprite sprite;
         folder = fullFolderPath(folder);
         try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
             String line = input.readLine();
@@ -121,10 +121,10 @@ public class SpriteBase {
             key = data[0];
             spriteSheet = data[1].equals("1");
             line = input.readLine();
-            sprite = line;
+            image = line;
 
-            sprite = sprite.replace("\\", File.separator);
-            sprite = sprite.replace("/", File.separator);
+            image = image.replace("\\", File.separator);
+            image = image.replace("/", File.separator);
 
             data = input.readLine().split(";");
             width = Integer.parseInt(data[0]);
@@ -180,32 +180,36 @@ public class SpriteBase {
             ErrorHandler.error("File " + folder + name + " not found!\n" + e.getMessage());
             return null;
         }
-        try {
-            texture = TextureLoader.getTexture("png",
-                    ResourceLoader.getResourceAsStream(folder + sprite), GL_MODE);
-        } catch (IOException ex) {
-            Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
+        path = folder + image;
         if (spriteSheet) {
-            if (!movingStart) {
-                image = SpriteSheet.create(texture, folder, pieceWidth, pieceHeight, startX, startY, this);
+            if (movingStart) {
+                sprite = SpriteSheet.createWithMovingStart(path, folder, pieceWidth, pieceHeight, startX, startY, this, startPoints);
             } else {
-                image = SpriteSheet.createWithMovingStart(texture, folder, pieceWidth, pieceHeight, startX, startY, this, startPoints);
+                sprite = SpriteSheet.create(path, folder, pieceWidth, pieceHeight, startX, startY, this);
             }
         } else {
-            image = Sprite.create(texture, folder, width, height, startX, startY, this);
+            sprite = Sprite.create(path, folder, width, height, startX, startY, this);
         }
-        image.setKey(key);
-        image.xOffset = xOffset;
-        image.yOffset = yOffset;
-        image.actualWidth = actualWidth;
-        image.actualHeight = actualHeight;
-
-        return image;
+        sprite.setKey(key);
+        sprite.xOffset = xOffset;
+        sprite.yOffset = yOffset;
+        sprite.actualWidth = actualWidth;
+        sprite.actualHeight = actualHeight;
+        if (now.length > 0 && now[0]) {
+            Texture tex = null;
+            try {
+                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(path), GL_NEAREST);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sprite.setTexture(tex);
+        } else {
+            Main.backgroundLoader.requestSprite(sprite);
+        }
+        return sprite;
     }
 
-    public Sprite getSpriteInSize(String textureKey, String folder, int width, int height) {
+    public Sprite getSpriteInSize(String textureKey, String folder, int width, int height, boolean... now) {
         Sprite sprite = sprites.get(folder + textureKey);
         if (sprite != null) {
             if (sprite.getWidth() == width
@@ -213,16 +217,15 @@ public class SpriteBase {
                 return sprite;
             }
         }
-        Sprite newSprite = loadSpriteInSize(textureKey, folder, width, height);
+        Sprite newSprite = loadSpriteInSize(textureKey, folder, width, height, now);
         if (newSprite != null) {
             sprites.put(folder + textureKey, newSprite);
         }
         return newSprite;
     }
 
-    private Sprite loadSpriteInSize(String name, String folder, int width, int height) {
-        String image, key;
-        Texture texture;
+    private Sprite loadSpriteInSize(String name, String folder, int width, int height, boolean... now) {
+        String image, key, path;
         Sprite sprite;
         folder = fullFolderPath(folder);
         try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
@@ -236,18 +239,24 @@ public class SpriteBase {
             ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
-        try {
-            texture = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(folder + image), GL_MODE);
-        } catch (IOException ex) {
-            Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-        sprite = Sprite.create(texture, folder, width, height, 0, 0, this);
+        path = folder + image;
+        sprite = Sprite.create(path, folder, width, height, 0, 0, this);
         sprite.setKey(key);
+        if (now.length > 0 && now[0]) {
+            Texture tex = null;
+            try {
+                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(path), GL_NEAREST);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sprite.setTexture(tex);
+        } else {
+            Main.backgroundLoader.requestSprite(sprite);
+        }
         return sprite;
     }
 
-    public SpriteSheet getSpriteSheetSetScale(String textureKey, String folder) {
+    public SpriteSheet getSpriteSheetSetScale(String textureKey, String folder, boolean... now) {
         Sprite sprite = sprites.get(folder + textureKey);
         if (sprite != null) {
             if (sprite.getKey().equals(textureKey)
@@ -256,19 +265,18 @@ public class SpriteBase {
                 return (SpriteSheet) sprite;
             }
         }
-        SpriteSheet temp = (SpriteSheet) loadSpriteSetScale(textureKey, folder);
+        SpriteSheet temp = (SpriteSheet) loadSpriteSetScale(textureKey, folder, now);
         if (temp != null) {
             sprites.put(folder + textureKey, temp);
         }
         return temp;
     }
 
-    private Sprite loadSpriteSetScale(String name, String folder) {
+    private Sprite loadSpriteSetScale(String name, String folder, boolean... now) {
         int width, height, startX, startY, pieceWidth, pieceHeight;
         boolean spriteSheet;
-        String sprite, key;
-        Texture texture;
-        Sprite image;
+        String image, key, path;
+        Sprite sprite;
         folder = fullFolderPath(folder);
         try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
             String line = input.readLine();
@@ -276,7 +284,7 @@ public class SpriteBase {
             key = data[0];
             spriteSheet = data[1].equals("1");
             line = input.readLine();
-            sprite = line;
+            image = line;
             data = input.readLine().split(";");
             width = (int) (Integer.parseInt(data[0]) * Settings.nativeScale);
             height = (int) (Integer.parseInt(data[1]) * Settings.nativeScale);
@@ -291,19 +299,24 @@ public class SpriteBase {
             ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
-        try {
-            texture = TextureLoader.getTexture("png",
-                    ResourceLoader.getResourceAsStream(folder + sprite), GL_MODE);
-        } catch (IOException ex) {
-            Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
+        path = folder + image;
         if (spriteSheet) {
-            image = SpriteSheet.createSetScale(texture, folder, pieceWidth, pieceHeight, startX, startY, this);
+            sprite = SpriteSheet.createSetScale(path, folder, pieceWidth, pieceHeight, startX, startY, this);
         } else {
-            image = Sprite.create(texture, folder, width, height, startX, startY, this);
+            sprite = Sprite.create(path, folder, width, height, startX, startY, this);
         }
-        image.setKey(key);
-        return image;
+        sprite.setKey(key);
+        if (now.length > 0 && now[0]) {
+            Texture tex = null;
+            try {
+                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(path), GL_NEAREST);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sprite.setTexture(tex);
+        } else {
+            Main.backgroundLoader.requestSprite(sprite);
+        }
+        return sprite;
     }
 }

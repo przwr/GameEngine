@@ -315,18 +315,20 @@ public class Tongub extends Mob {
 
     @Override
     public void update() {
-        if (isHurt()) {
-            updateGettingHurt();
-            runWhenHurt();
-        } else {
-            state.update();
-            normalizeSpeed();
-            updateAnimation();
+        if (animation.isUpToDate()) {
+            if (isHurt()) {
+                updateGettingHurt();
+                runWhenHurt();
+            } else {
+                state.update();
+                normalizeSpeed();
+                updateAnimation();
+            }
+            updateChangers();
+            updateWithGravity();
+            moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+            brakeOthers();
         }
-        updateChangers();
-        updateWithGravity();
-        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
-        brakeOthers();
     }
 
     @Override

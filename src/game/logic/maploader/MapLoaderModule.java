@@ -18,9 +18,7 @@ public class MapLoaderModule implements Runnable {
     private ArrayList<Map> maps = new ArrayList<>(); // TODO zamienić na wczytywanie z pliku
     private MapLoadContainer list1 = new MapLoadContainer();
     private MapLoadContainer list2 = new MapLoadContainer();
-    private MapLoadContainer resourcelist1 = new MapLoadContainer();
-    private MapLoadContainer resourcelist2 = new MapLoadContainer();
-    private boolean run, firstActive, pause, firstResourceActive;
+    private boolean run, firstActive, pause;
     private Game game;
 
     public MapLoaderModule(Game game) {
@@ -43,8 +41,6 @@ public class MapLoaderModule implements Runnable {
         while (run) {
             try {
                 loadMaps();
-                loadTextures();
-//                game.getPlace().getSprite("bark", "");
             } catch (Exception exception) {
                 ErrorHandler.swallowLogAndPrint(exception);
             }
@@ -56,7 +52,7 @@ public class MapLoaderModule implements Runnable {
             Place place = game.getPlace();
             if (place != null && !pause) {
                 MapLoadContainer workingList = firstActive ? list1 : list2;
-                if (workingList != null) {
+                if (!workingList.isEmpty() && workingList != null) {
                     for (int i = 0; i < workingList.size(); i++) {
                         MapLoad mapLoad = workingList.get(i);
                         Map placeMap = mapLoad.map;
@@ -70,33 +66,14 @@ public class MapLoaderModule implements Runnable {
                         }
                     }
                     workingList.clear();
+                } else {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
                 firstActive = !firstActive;
-            }
-        }
-    }
-
-    private void loadTextures() {
-        if (this.game != null) {
-            Place place = game.getPlace();
-            if (place != null && !pause) {
-//                MapLoadContainer workingList = firstActive ? list1 : list2;
-//                if (workingList != null) {
-//                    for (int i = 0; i < workingList.size(); i++) {
-//                        MapLoad mapLoad = workingList.get(i);
-//                        Map placeMap = mapLoad.map;
-//                        if (placeMap == null) {
-//                            placeMap = loadMap(mapLoad.name);   //TODO Informacja które areas wczytać z pliku!
-//                            loadAreas(mapLoad, placeMap);
-//                            ArrayList<Map> workingMap = (place.firstMapsToAddActive ? place.mapsToAdd2 : place.mapsToAdd1);
-//                            workingMap.add(placeMap);
-//                        } else {
-//                            loadAreas(mapLoad, placeMap);
-//                        }
-//                    }
-//                    workingList.clear();
-//                }
-//                firstActive = !firstActive;
             }
         }
     }

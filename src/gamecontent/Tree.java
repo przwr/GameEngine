@@ -15,6 +15,8 @@ import org.newdawn.slick.Color;
 import sprites.Sprite;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -23,6 +25,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Tree extends GameObject {
 
+    private static final Map<String, FrameBufferObject> fbos = new HashMap<>();
 
     static FrameBufferObject fbo;
     static Sprite bark;
@@ -52,11 +55,14 @@ public class Tree extends GameObject {
         this.width = width;
         this.height = height;
         this.spread = spread;
-        int fboWidth = Math.round(spread * 2.6f * height);
-        int fboHeight = Math.round(height * 2.5f);
+        int fboWidth = Math.round(spread * 2.5f * height);
+        int fboHeight = Math.round(height * 2.3f);
+        int ins = random.random(12);
+        String treeCode = width + "-" + height + "-" + spread + "-" + branchless + "-" + ins;
+        fbo = fbos.get(treeCode);
         if (fbo == null) {
-            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
-                    new RegularFrameBufferObject(fboWidth, fboHeight);
+            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) : new RegularFrameBufferObject(fboWidth, fboHeight);
+            fbos.put(treeCode, fbo);
         } else {
             prerendered = true;
         }
@@ -76,8 +82,8 @@ public class Tree extends GameObject {
 
     public void update() {
         if (!prerendered) {
-            bark = map.place.getSprite("bark", "");
-            leaf = map.place.getSprite("leaf", "");
+            bark = map.place.getSprite("bark", "", true);
+            leaf = map.place.getSprite("leaf", "", true);
             fbo.activate();
             glPushMatrix();
             glClearColor(0.5f, 0.35f, 0.2f, 0);
@@ -383,22 +389,23 @@ public class Tree extends GameObject {
 
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
-        float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
-        change -= Math.abs(points.get(i).getX() + x) / maxX / 4;
-        if (change < 0) {
-            change = 0;
+        if (Math.abs(points.get(i).getY() + y) < fbo.getHeight() / 2 - leaf.getWidth() - leaf.getHeight()
+                && Math.abs(points.get(i).getX() + x) < fbo.getWidth() / 2 - leaf.getWidth() - leaf.getHeight()) {
+            float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
+            change -= Math.abs(points.get(i).getX() + x) / maxX / 4;
+            if (change < 0) {
+                change = 0;
+            }
+            int rand = random.randomInRange(-10, 10);
+            Drawer.setColor(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
+                    leafColor.b * (1 + change / 2f + rand / 25f)));
+            float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
+            Drawer.translate(points.get(i).getX() + x, points.get(i).getY() + y);
+            glPushMatrix();
+            leaf.renderRotate(angle);
+            glPopMatrix();
+            Drawer.translate(-points.get(i).getX() - x, -points.get(i).getY() - y);
         }
-        int rand = random.randomInRange(-10, 10);
-//        Drawer.setColor(new Color(0.1f + 0.05f * change + rand / 200f, 0.4f + 0.2f * change + rand / 100f,
-//                0.15f + 0.075f * change + random.randomInRange(-10, 10) / 350f));
-        Drawer.setColor(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
-                leafColor.b * (1 + change / 2f + rand / 25f)));
-        float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
-        Drawer.translate(points.get(i).getX() + x, points.get(i).getY() + y);
-        glPushMatrix();
-        leaf.renderRotate(angle);
-        glPopMatrix();
-        Drawer.translate(-points.get(i).getX() - x, -points.get(i).getY() - y);
     }
 
     @Override

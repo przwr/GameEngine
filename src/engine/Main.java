@@ -22,10 +22,7 @@ import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL;
-import org.lwjgl.opengl.ContextAttribs;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.opengl.*;
 import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
@@ -42,6 +39,7 @@ import static game.Settings.calculateScale;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
+
 /**
  * @author przemek
  */
@@ -55,11 +53,11 @@ public class Main {
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
     public static boolean SHOW_INTERACTIVE_COLLISION;
     public static boolean pause, enter = true;
+    public static BackgroundLoader backgroundLoader;
     private static Game game;
     private static Popup pop;
     private static Controller[] controllers;
     private static boolean lastFrame;
-
     private static SimpleKeyboard key;
     private static Console console;
 
@@ -75,6 +73,11 @@ public class Main {
             ErrorHandler.logToFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
         }
         delay.start();
+        try {
+            backgroundLoader.start();
+        } catch (LWJGLException e) {
+            ErrorHandler.error("Failed to start background thread. " + e.getMessage());
+        }
         gameLoop();
         cleanUp();
     }
@@ -189,6 +192,13 @@ public class Main {
         glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
         glMatrixMode(GL_MODELVIEW);
         glClearColor(0, 0, 0, 0);
+        glLoadIdentity();
+        glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        backgroundLoader = new BackgroundLoader() {
+            Drawable getDrawable() throws LWJGLException {
+                return new Pbuffer(2, 2, new PixelFormat(8, 24, 0), Display.getDrawable());
+            }
+        };
     }
 
     private static void initializeGame() {
@@ -265,6 +275,7 @@ public class Main {
     }
 
     private static void render() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         try {
             game.render();
         } catch (Exception exception) {

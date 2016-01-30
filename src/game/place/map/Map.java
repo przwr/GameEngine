@@ -600,9 +600,9 @@ public abstract class Map {
     }
 
     private boolean isBehindSomething(GameObject object) {
-        if (object instanceof Entity) {
+        if (object instanceof Entity && object.getAppearance() != null) {
             for (GameObject tile : foregroundTiles) {
-                if (object.getAppearance() != null && tile.getDepth() > object.getDepth()
+                if (tile.getDepth() > object.getDepth()
                         && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
                         && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2)
                         / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeightHalf() - object
