@@ -169,7 +169,7 @@ public class MyGame extends Game {
     public void setDesignerMode(boolean designer) {
         this.designer = designer;
         if (designer) {
-            players[0] = new ObjectPlayer(true, "Mapper");
+            players[0] = new ObjectPlayer(true, "Mapper-Player");
             Settings.playersCount = 1;
             Settings.players[0] = players[0];
         } else if (!(place instanceof MyPlace)) {

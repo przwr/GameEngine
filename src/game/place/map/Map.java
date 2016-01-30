@@ -453,7 +453,7 @@ public abstract class Map {
             object.setArea(area);
             areas[area].addObject(object);
         } else {
-            System.out.println("Poza mapą - nie dodaję!");
+            System.out.println("Poza mapą - nie dodaję! " + object.getName());
         }
     }
 
@@ -477,9 +477,6 @@ public abstract class Map {
                 }
             }
             if (!removed) {
-                System.out.println("Nie mogę usunąć - LIPA, chyba, że było przejście między mapami z wczytywaniem. Jak nie dodał, to i nie usunie.");
-            }
-            if (!removed) {
                 for (int i = 0; i < areas.length; i++) {
                     if (areas[i] != null && areas[i].deleteObject(object)) {
 //                        System.out.println("Removed on third try");
@@ -489,12 +486,12 @@ public abstract class Map {
                 }
             }
             if (!removed) {
-                System.out.println("Nie mogę usunąć - LIPA, chyba, że było przejście między mapami z wczytywaniem. Jak nie dodał, to i nie usunie.");
+                System.out.println("Nie mogę usunąć - LIPA : " + object.getName());
             }
         }
         object.setMapNotChange(null);
         if (object instanceof WarpPoint) {
-            warps.remove(object);
+            warps.remove((WarpPoint)object);
         }
         object.setArea(-1);
     }
@@ -613,7 +610,8 @@ public abstract class Map {
             }
             for (GameObject other : depthObjects) {
                 if (other != object) {
-                    if (!(other instanceof Entity) && other.canCover() && other.getAppearance() != null && other.getDepth() > object.getDepth()
+                    if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
+                            && object.getCollision() != null && other.getDepth() > object.getDepth()
                             && object.getX() < other.getXSpriteEnd() && object.getX() > other.getXSpriteBegin()
                             && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 < other.getYSpriteEnd()
                             && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 > other.getYSpriteBegin()) {

@@ -142,33 +142,30 @@ public class ObjectMap extends Map {
     }
 
     public void addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altMode) {
-        Tile tile = getTile(x, y);
-        if (tile != null && tile.getPureDepth() != -1) {
-            tile = tile.copy();
-            setTile(x, y, tile);
-            if (areTilesVisible) {
-                tile.addTileToStack(xSheet, ySheet);
-            }
-        } else {
-            TemporaryBlock lowest = null;
-            int max = 0;
-            if (areBlocksVisible) {
-                for (Area area : areas) {
-                    for (GameObject tb : area.getTopObjects()) {
-                        if (tb instanceof TemporaryBlock) {
-                            TemporaryBlock tmp = (TemporaryBlock) tb;
-                            if (tmp.isNotBlocked() && tmp.checkIfContains(x, y) && tmp.getY() > max) {
-                                lowest = tmp;
-                                max = tmp.getY();
-                            }
+        TemporaryBlock lowest = null;
+        int max = 0;
+        if (areBlocksVisible) {
+            for (Area area : areas) {
+                for (GameObject tb : area.getTopObjects()) {
+                    if (tb instanceof TemporaryBlock) {
+                        TemporaryBlock tmp = (TemporaryBlock) tb;
+                        if (tmp.isNotBlocked() && tmp.checkIfContains(x, y) && tmp.getY() > max) {
+                            lowest = tmp;
+                            max = tmp.getY();
                         }
                     }
                 }
             }
-            if (lowest != null) {
-                lowest.addTile(x, y, xSheet, ySheet, tex, altMode).getDepth();
-                setTile(x, y, getBackground());
-            } else if (areTilesVisible) {
+        }
+        if (lowest != null) {
+            lowest.addTile(x, y, xSheet, ySheet, tex, altMode).getDepth();
+        } else if (areTilesVisible) {
+            Tile tile = getTile(x, y);
+            if (tile != null && tile.getPureDepth() != -1) {
+                tile = tile.copy();
+                setTile(x, y, tile);
+                tile.addTileToStack(xSheet, ySheet);
+            } else {
                 Tile newTile = new Tile(tex, xSheet, ySheet);
                 setTile(x, y, newTile);
             }
@@ -219,7 +216,7 @@ public class ObjectMap extends Map {
                 for (GameObject o : area.getForegroundTiles()) {
                     fg = (ForegroundTile) o;
                     if (fg.getPureDepth() == depth && fg.getX() == x && fg.getY() == y
-                            && ((isLightBased && fg instanceof ShadowLightTile && isShadow == ((ShadowLightTile)fg).isShadow()) || !isLightBased)) {
+                            && ((isLightBased && fg instanceof ShadowLightTile && isShadow == ((ShadowLightTile) fg).isShadow()) || !isLightBased)) {
                         lowest = fg;
                         break;
                     }
@@ -235,6 +232,29 @@ public class ObjectMap extends Map {
     }
 
     public void deleteTile(int x, int y) {
+        ForegroundTile fgt;
+        TemporaryBlock tmp;
+        TemporaryBlock max = null;
+        int maxDepth = 0;
+        for (Area area : areas) {
+            for (GameObject tb : area.getTopObjects()) {
+                if (tb instanceof TemporaryBlock) {
+                    tmp = (TemporaryBlock) tb;
+                    if (tmp.isNotBlocked() && tmp.getDepth() > maxDepth
+                            && tmp.checkIfContainsTile(x, y)) {
+                        max = tmp;
+                        maxDepth = tmp.getDepth();
+                    }
+                }
+            }
+        }
+        if (max != null) {
+            if ((fgt = max.removeTile(x, y)) != null) {
+                removeForegroundTile(fgt);
+                max.getBlock().removeForegroundTile(fgt);
+                return;
+            }
+        }
         Tile tile = getTile(x, y);
         if (tile != null && tile.getPureDepth() != -1) {
             Point p = tile.popTileFromStack();
@@ -243,30 +263,6 @@ public class ObjectMap extends Map {
                     setTile(x, y, getBackground());
                 }
                 return;
-            }
-        } else {
-            ForegroundTile fgt;
-            TemporaryBlock tmp;
-            TemporaryBlock max = null;
-            int maxDepth = 0;
-            for (Area area : areas) {
-                for (GameObject tb : area.getTopObjects()) {
-                    if (tb instanceof TemporaryBlock) {
-                        tmp = (TemporaryBlock) tb;
-                        if (tmp.isNotBlocked() && tmp.getDepth() > maxDepth
-                                && tmp.checkIfContainsTile(x, y)) {
-                            max = tmp;
-                            maxDepth = tmp.getDepth();
-                        }
-                    }
-                }
-            }
-            if (max != null) {
-                if ((fgt = max.removeTile(x, y)) != null) {
-                    removeForegroundTile(fgt);
-                    max.getBlock().removeForegroundTile(fgt);
-                    return;
-                }
             }
         }
         setTile(x, y, getBackground());
@@ -299,11 +295,11 @@ public class ObjectMap extends Map {
     }
 
     public void deleteBlocks(int x, int y, int width, int height) {
-        foregroundTiles.clear();
+        ArrayList<GameObject> list = new ArrayList<>();
         for (Area area : areas) {
-            foregroundTiles.addAll(area.getFlatObjects());
+            list.addAll(area.getFlatObjects());
         }
-        Object[] tmpTab = foregroundTiles.toArray();
+        Object[] tmpTab = list.toArray();
         for (Object go : tmpTab) {
             if (go instanceof TemporaryBlock) {
                 TemporaryBlock tb = (TemporaryBlock) go;
@@ -321,7 +317,8 @@ public class ObjectMap extends Map {
 
     public void addObject(GameObject object, boolean altMode) {
         if (object instanceof TemporaryBlock) {
-            if (!altMode) {
+            ((TemporaryBlock) object).createBlock();
+            if (altMode) {
                 ((TemporaryBlock) object).changeEnvironment();
             }
         }
@@ -426,9 +423,6 @@ public class ObjectMap extends Map {
                 setTile(x, y, bg);
             }
         }
-        for (Area area : areas) {
-            area.clear();
-        }
         GameObject object;
         for (Area area : areas) {
             for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext();) {
@@ -438,6 +432,9 @@ public class ObjectMap extends Map {
                     iterator.remove();
                 }
             }
+        }
+        for (Area area : areas) {
+            area.clear();
         }
         addObject(centralPoint);
     }

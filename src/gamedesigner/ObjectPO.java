@@ -25,7 +25,7 @@ public class ObjectPO extends PuzzleObject {
             -> firstObject.getY() - secondObject.getY();
 
     public ObjectPO(String file, Place place) {
-        super(file, place);
+        super(file, place, true);
     }
 
     public ObjectPO(ArrayList<String> map, Place place) {
