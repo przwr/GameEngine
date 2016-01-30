@@ -11,6 +11,7 @@ import collision.Rectangle;
 import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import engine.utilities.PointedValue;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
@@ -33,6 +34,8 @@ public class Arrow extends Entity {
 
     private final GameObject owner;
     private boolean stopped;
+    private final Color color;
+    private final int lenght;
 
     public Arrow(double speed, int direction, int height, GameObject owner) {
         this.floatHeight = height;
@@ -42,6 +45,8 @@ public class Arrow extends Entity {
         setDirection(direction);
         setCollision(Rectangle.create(24, 24, OpticProperties.NO_SHADOW, this));
         visible = true;
+        lenght = (int) (Place.tileSize * 1.2);
+        this.color = new Color(108, 59, 44);
         stats = new Stats(this);
         stats.setStrength(20);
         Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 2f);
@@ -103,10 +108,16 @@ public class Arrow extends Entity {
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX(), getY(), 0);
+        int ix = (int) (Methods.xRadius(getDirection(), lenght / 2));
+        int iy = (int) (-Methods.yRadius(getDirection(), lenght / 2));
         Drawer.setColor(JUMP_SHADOW_COLOR);
-        Drawer.drawEllipse(0, 0, collision.getWidthHalf(), collision.getHeightHalf(), 24);
-        Drawer.setColor(Color.black);
-        Drawer.drawEllipse(0, (int) -floatHeight - getActualHeight(), collision.getWidthHalf(), collision.getHeightHalf(), 24);
+        Drawer.setCentralPoint();
+        Drawer.drawLineWidth(-ix, -iy, ix, iy, lenght / 15);
+        Drawer.setColor(color);
+        Drawer.returnToCentralPoint();
+        Drawer.translate(0, (float) -floatHeight);
+        Drawer.drawLineWidth(-ix, -iy, ix, iy, lenght / 15);
+        Drawer.returnToCentralPoint();
         Drawer.refreshColor();
         glPopMatrix();
         if (Main.SHOW_INTERACTIVE_COLLISION) {
@@ -156,6 +167,7 @@ public class Arrow extends Entity {
         }
     }
 
+    @Override
     public int getActualHeight() {
         return Methods.roundDouble(collision.getHeight() * Methods.ONE_BY_SQRT_ROOT_OF_2);
     }
