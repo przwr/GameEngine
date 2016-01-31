@@ -12,7 +12,7 @@ import game.gameobject.entities.Player;
  */
 public interface Appearance {
 
-    void bindCheck();
+    boolean bindCheck();
 
     void render();
 

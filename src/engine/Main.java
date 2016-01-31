@@ -45,12 +45,12 @@ import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
  */
 public class Main {
 
-    public static final boolean TEST = false;
     public static final boolean DEBUG = false;
     public static final boolean LOG = false;
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
+    public static boolean TEST = true;
     public static boolean SHOW_INTERACTIVE_COLLISION;
     public static boolean pause, enter = true;
     public static BackgroundLoader backgroundLoader;
@@ -226,6 +226,10 @@ public class Main {
                         SHOW_INTERACTIVE_COLLISION = !SHOW_INTERACTIVE_COLLISION;
                         console.printMessage("SHOW/HIDE INTERACTIVE");
                     }
+                    if (key.keyPressed(Keyboard.KEY_F3)) {
+                        TEST = !TEST;
+                        console.printMessage("TEST ON/OFF");
+                    }
                     if (console.areStatsRendered()) {
                         console.clearStats();
                         console.printStats(info);
@@ -339,6 +343,7 @@ public class Main {
         if (game != null) {
             game.endGame();
         }
+        backgroundLoader.cleanup();
         AL.destroy();
         Keyboard.destroy();
         Mouse.destroy();

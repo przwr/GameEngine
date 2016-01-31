@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Bush extends GameObject {
 
 
-    private static final Map<String, FrameBufferObject> fbos = new HashMap<>();
+    public static final Map<String, FrameBufferObject> fbos = new HashMap<>();
     static Sprite bark;
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();

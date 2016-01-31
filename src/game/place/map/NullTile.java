@@ -1,21 +1,9 @@
 package game.place.map;
 
 import collision.Figure;
-import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
-import engine.utilities.Point;
-import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
-import game.place.Place;
-import game.place.fbo.FrameBufferObject;
-import game.place.fbo.RegularFrameBufferObject;
-import org.lwjgl.opengl.Display;
 import sprites.Appearance;
-import sprites.SpriteSheet;
-
-import java.util.ArrayList;
-
-import static org.lwjgl.opengl.GL11.*;
 
 public class NullTile extends Tile implements Appearance {
 
@@ -50,7 +38,8 @@ public class NullTile extends Tile implements Appearance {
     }
 
     @Override
-    public void bindCheck() {
+    public boolean bindCheck() {
+        return true;
     }
 
     @Override

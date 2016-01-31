@@ -240,8 +240,8 @@ public class ClothedAppearance implements Appearance {
     }
 
     @Override
-    public void bindCheck() {
-        fbo.bindCheck();
+    public boolean bindCheck() {
+        return fbo.bindCheck();
     }
 
     @Override

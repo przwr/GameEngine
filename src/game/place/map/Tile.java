@@ -199,8 +199,8 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void bindCheck() {
-        spriteSheet.bindCheck();
+    public boolean bindCheck() {
+        return spriteSheet.bindCheck();
     }
 
     @Override

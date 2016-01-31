@@ -37,7 +37,7 @@ public class MyGame extends Game {
 
     private final getInput[] inputs = new getInput[2];
     private final updateType[] ups = new updateType[2];
-
+    public boolean gameLoaded;
     private boolean designer = false;
 
     public MyGame(String title, Controller[] controllers) {
@@ -213,6 +213,7 @@ public class MyGame extends Game {
 
     @Override
     public void startGame() {
+        Main.backgroundLoader.resetFirstLoaded();
         int playersCount = Settings.playersCount;
         if (designer) {
             place = new ObjectPlace(this, 64);
@@ -418,6 +419,9 @@ public class MyGame extends Game {
         mapLoader.stop();
         mapThread = null;
         online.cleanUp();
+        Tree.fbos.clear();
+        Bush.fbos.clear();
+        GrassClump.fbos.clear();
         mode = 0;
     }
 

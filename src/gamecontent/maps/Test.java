@@ -122,5 +122,7 @@ public class Test extends Map {
         addObject(new Dummy(4860, 2000, place, mobID++));
         addObject(new Melodia(5344, 2272, place, mobID++));
         addObject(new Blazag(5344, 6494, place, mobID++));
+        addObject(new Blazag(4344, 5494, place, mobID++));
+        addObject(new Blazag(6344, 4494, place, mobID++));
     }
 }

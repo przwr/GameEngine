@@ -102,7 +102,7 @@ public class WarpPoint extends GameObject {
             object.setWarp(this);
         } else {
             Map map = place.getMapByName(stringDestination);
-            if (map != null) {
+            if (map != null && Main.backgroundLoader.allLoaded()) {
                 WarpPoint warp = map.findWarp(name);
                 object.changeMap(map, warp.getX(), warp.getY());
             }

@@ -101,7 +101,6 @@ public abstract class FrameBufferObject implements Appearance {
         glTranslatef(-xStart, -yStart, 0);
     }
 
-
     public int getTexture() {
         return texture;
     }
@@ -115,10 +114,11 @@ public abstract class FrameBufferObject implements Appearance {
     }
 
     @Override
-    public void bindCheck() {
+    public boolean bindCheck() {
         if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
             glBindTexture(GL_TEXTURE_2D, texture);
         }
+        return true;
     }
 
     @Override

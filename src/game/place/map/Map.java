@@ -491,7 +491,7 @@ public abstract class Map {
         }
         object.setMapNotChange(null);
         if (object instanceof WarpPoint) {
-            warps.remove((WarpPoint)object);
+            warps.remove(object);
         }
         object.setArea(-1);
     }
@@ -641,11 +641,10 @@ public abstract class Map {
         Drawer.setColor(pointingColor);
         Drawer.drawEllipseBow(0, 0, 5, 10, 5, -30, 210, 15);
 //        Drawer.drawEllipseBow(0, -32, 8, 64, 8, 45, 135, 4);
-        Drawer.setColorAlpha(0.7f);
+        Drawer.refreshColor();
         glScaled(0.5f, 0.5f, 1);
         glTranslatef(0, -object.getAppearance().getActualHeight() / 4 - 12, 0);
         object.getAppearance().render();
-        Drawer.refreshColor();
         glPopMatrix();
     }
 

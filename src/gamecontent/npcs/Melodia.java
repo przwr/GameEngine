@@ -15,6 +15,7 @@ import game.gameobject.entities.Player;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
+import game.text.Writer;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import sprites.Animation;
@@ -87,6 +88,30 @@ public class Melodia extends Mob {
                     if (dialog == "demonpc4") {
                         player.getTextController().addExternalEventOnBranch(e3, "0", false);
                     }
+                    player.getTextController().addExternalWriter(new Writer("wpn") {
+                        @Override
+                        public String write() {
+                            return "";// + player.getController().actions[MyController.INPUT_CHANGE_WEAPON].input.getLabel();
+                        }
+                    });
+                    player.getTextController().addExternalWriter(new Writer("atk1") {
+                        @Override
+                        public String write() {
+                            return "";// + player.getController().actions[MyController.INPUT_ATTACK].input.getLabel();
+                        }
+                    });
+                    player.getTextController().addExternalWriter(new Writer("atk2") {
+                        @Override
+                        public String write() {
+                            return "";// + player.getController().actions[MyController.INPUT_SECOND_ATTACK].input.getLabel();
+                        }
+                    });
+                    player.getTextController().addExternalWriter(new Writer("blck") {
+                        @Override
+                        public String write() {
+                            return "";// + player.getController().actions[MyController.INPUT_BLOCK].input.getLabel();
+                        }
+                    });
 //                text.addExternalStatement(new Statement("spr") {
 //
 //                    @Override

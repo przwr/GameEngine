@@ -12,9 +12,9 @@ au:Aria
 po:melodiaPortret:1
 po:ariaPortret:0
 
-$AU0$$PO0$Broń wyjmuje się $CO1$Q$CO0$.$FL
-Atakuje się $CO1$Ctrl$CO0$ i $CO1$Shift$CO0$.$FL
-Broni się $CO1$C$CO0$.$FL
+$AU0$$PO0$Broń wyjmuje się $CO1$$WRwpn$$CO0$.$FL
+Atakuje się $CO1$$WRatk1$$CO0$ i $CO1$$WRatk2$$CO0$.$FL
+Broni się $CO1$$WRblck$$CO0$.$FL
 Jak zabijesz ślimaka, to wróć do mnie.$FL
 Możesz najpierw poćwiczyć na tamtej kukle.
 

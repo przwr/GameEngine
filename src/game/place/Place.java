@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.Point;
 import engine.view.Renderer;
@@ -19,6 +20,8 @@ import game.logic.DayCycle;
 import game.place.cameras.Camera;
 import game.place.map.Map;
 import game.text.FontBase;
+import game.text.FontHandler;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sounds.SoundBase;
 import sprites.Sprite;
@@ -84,22 +87,31 @@ public abstract class Place extends ScreenPlace {
                         Drawer.setCurrentColor(map.getLightColor());
                         SplitScreen.setSplitScreen(this, playersCount, player);
                         if (player == 0 || !singleCamera) {
-                            glEnable(GL_SCISSOR_TEST);
-                            Renderer.preRenderShadowedLights(currentCamera);
-                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                            map.updateCamerasVariables(currentCamera);
-                            map.renderBackground(currentCamera);
-                            map.renderObjects(currentCamera);
-                            if (map.getVisibleLights().size() > 0) {
-                                Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                            if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
+                                glEnable(GL_SCISSOR_TEST);
+                                Renderer.preRenderShadowedLights(currentCamera);
+                                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                                map.updateCamerasVariables(currentCamera);
+                                map.renderBackground(currentCamera);
+                                map.renderObjects(currentCamera);
+                                if (map.getVisibleLights().size() > 0) {
+                                    Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd,
+                                            camYTEnd);
+                                }
+                                Drawer.setCurrentColor(Color.white);
+                                glPopMatrix();
+                                currentCamera.renderGUI();
+                                currentCamera.neutralizeEffect();
+                                console.setCamera(currentCamera);
+                                console.render(0, 0);
+                                glDisable(GL_SCISSOR_TEST);
+                            } else {
+                                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                                Drawer.setCurrentColor(Color.white);
+                                FontHandler font = Drawer.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
+                                Drawer.renderStringCentered(Settings.language.menu.Loading + " ...", Display.getWidth() / 2, Display.getHeight() / 2, font,
+                                        new Color(1f, 1f, 1f));
                             }
-                            Drawer.setCurrentColor(Color.white);
-                            glPopMatrix();
-                            currentCamera.renderGUI();
-                            currentCamera.neutralizeEffect();
-                            console.setCamera(currentCamera);
-                            console.render(0, 0);
-                            glDisable(GL_SCISSOR_TEST);
                         }
                     }
                 } catch (Exception e) { //BY WYJĄTEK PODCZAS RYSOWANIA NIE PSUŁ GRY :D

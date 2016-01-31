@@ -13,7 +13,7 @@ import gamecontent.GrassClump;
 import gamecontent.SpawnPoint;
 import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
-import gamecontent.npcs.Melodia;
+import gamecontent.npcs.MyNPC;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 
@@ -147,6 +147,6 @@ public class GladeMap extends Map {
 //        addObject(light);
 
 
-        addObject(new Melodia(200, 200, place, mobID++));
+        addObject(new MyNPC(200, 200, place, mobID++));
     }
 }

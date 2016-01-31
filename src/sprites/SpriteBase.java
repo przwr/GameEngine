@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL11.GL_NEAREST;
  */
 public class SpriteBase {
 
-    private static final int GL_MODE = org.lwjgl.opengl.GL11.GL_NEAREST;
+    //    private static final int GL_MODE = org.lwjgl.opengl.GL11.GL_NEAREST;
     private final Map<String, Sprite> sprites = new HashMap<>();
 
     public SpriteBase() {
@@ -61,6 +61,7 @@ public class SpriteBase {
     public Sprite getSprite(String textureKey, String folder, boolean... now) {
         Sprite sprite = sprites.get(folder + textureKey);
         if (sprite != null) {
+            loadTextureIfRequired(now, sprite);
             return sprite;
         }
         Sprite newSprite = loadSprite(textureKey, folder, now);
@@ -73,6 +74,7 @@ public class SpriteBase {
     public SpriteSheet getSpriteSheet(String textureKey, String folder, boolean... now) {
         Sprite sprite = sprites.get(folder + textureKey);
         if (sprite != null) {
+            loadTextureIfRequired(now, sprite);
             return (SpriteSheet) sprite;
         }
         SpriteSheet temp = (SpriteSheet) loadSprite(textureKey, folder, now);
@@ -196,13 +198,7 @@ public class SpriteBase {
         sprite.actualWidth = actualWidth;
         sprite.actualHeight = actualHeight;
         if (now.length > 0 && now[0]) {
-            Texture tex = null;
-            try {
-                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(path), GL_NEAREST);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            sprite.setTexture(tex);
+            loadTextureIfRequired(now, sprite);
         } else {
             Main.backgroundLoader.requestSprite(sprite);
         }
@@ -212,8 +208,8 @@ public class SpriteBase {
     public Sprite getSpriteInSize(String textureKey, String folder, int width, int height, boolean... now) {
         Sprite sprite = sprites.get(folder + textureKey);
         if (sprite != null) {
-            if (sprite.getWidth() == width
-                    && sprite.getHeight() == height) {
+            if (sprite.getWidth() == width && sprite.getHeight() == height) {
+                loadTextureIfRequired(now, sprite);
                 return sprite;
             }
         }
@@ -243,13 +239,7 @@ public class SpriteBase {
         sprite = Sprite.create(path, folder, width, height, 0, 0, this);
         sprite.setKey(key);
         if (now.length > 0 && now[0]) {
-            Texture tex = null;
-            try {
-                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(path), GL_NEAREST);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            sprite.setTexture(tex);
+            loadTextureIfRequired(now, sprite);
         } else {
             Main.backgroundLoader.requestSprite(sprite);
         }
@@ -262,6 +252,7 @@ public class SpriteBase {
             if (sprite.getKey().equals(textureKey)
                     && (sprite.getWidth() == (int) (sprite.getWidthWhole() * Settings.nativeScale)
                     && sprite.getHeight() == (int) (sprite.getHeightWhole() * Settings.nativeScale))) {
+                loadTextureIfRequired(now, sprite);
                 return (SpriteSheet) sprite;
             }
         }
@@ -307,16 +298,27 @@ public class SpriteBase {
         }
         sprite.setKey(key);
         if (now.length > 0 && now[0]) {
-            Texture tex = null;
-            try {
-                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(path), GL_NEAREST);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            sprite.setTexture(tex);
+            loadTextureIfRequired(now, sprite);
         } else {
             Main.backgroundLoader.requestSprite(sprite);
         }
         return sprite;
+    }
+
+    private void loadTextureIfRequired(boolean[] now, Sprite sprite) {
+        if (now.length > 0 && now[0] && sprite.textureID == 0) {
+            Texture tex = null;
+            try {
+                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite.getPath()), GL_NEAREST);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sprite.setTexture(tex);
+            Main.backgroundLoader.notifySprite(sprite);
+        }
+    }
+
+    public Map<String, Sprite> getSprites() {
+        return sprites;
     }
 }

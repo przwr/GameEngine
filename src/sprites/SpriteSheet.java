@@ -258,6 +258,6 @@ public class SpriteSheet extends Sprite {
         this.heightWhole = texture.getImageHeight();
         this.widthWhole = texture.getImageWidth();
         setTilesCount(scale);
-        this.texture = texture.getTextureID();
+        this.textureID = texture.getTextureID();
     }
 }
