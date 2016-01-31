@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL32.glFenceSync;
  */
 public abstract class BackgroundLoader {
 
-    private static final int seconds = 1000, secondsToUnload = 2;
+    private static final int seconds = 1000, secondsToUnload = 90;
     private final ReentrantLock lock = new ReentrantLock();
     private final Map<String, Sprite> sprites = new HashMap<>();
     List<Sprite> toClear = new ArrayList<>();
@@ -82,56 +82,21 @@ public abstract class BackgroundLoader {
                 if (workingList != null) {
                     for (int i = 0; i < workingList.size(); i++) {
                         Sprite sprite = workingList.get(i);
-                        if (sprite.textureID == 0) {
+                        if (sprite.getTextureID() == 0) {
                             InputStream stream = ResourceLoader.getResourceAsStream(sprite.getPath());
-                            lock.lock();
-                            Texture tex = null;
-                            try {
-                                tex = TextureLoader.getTexture("png", stream, GL_NEAREST);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            sprite.setTexture(tex);
-                            System.out.println("Texture loaded: " + sprite.path);
-                            if (useFences)
-                                fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-                            else
-                                glFlush();
-                            lock.unlock();
+                            lock();
+                            loadTexture(sprite, stream);
+                            unlock();
                             toClear.add(sprite);
                         } else {
                             toClear.add(sprite);
                         }
                     }
                     workingList.removeAll(toClear);
-                    while (stopSpritesUsing) {
-                    }
-                    usingSprites = true;
-                    for (Sprite sprite : toClear) {
-                        if (sprites.get(sprite.getPath()) == null) {
-                            sprites.put(sprite.getPath(), sprite);
-                        }
-                    }
-                    usingSprites = false;
-                    toClear.clear();
+                    addToSprites();
                 }
             } else if (list1.isEmpty() && list2.isEmpty()) {
-                usingSprites = true;
-                if (!stopSpritesUsing) {
-                    if (firstLoaded) {
-                        long now = System.currentTimeMillis();
-                        for (String key : sprites.keySet()) {
-                            Sprite sprite = sprites.get(key);
-                            if (stopSpritesUsing) {
-                                break;
-                            }
-                            if ((now - sprite.getLastUsed()) > secondsToUnload * seconds) {
-                                sprite.releaseTexture();
-                            }
-                        }
-                    }
-                }
-                usingSprites = false;
+                unloadTextures();
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -140,6 +105,65 @@ public abstract class BackgroundLoader {
             }
             firstActive = !firstActive;
         }
+    }
+
+    private void addToSprites() {
+        while (stopSpritesUsing) {
+        }
+        usingSprites = true;
+        for (Sprite sprite : toClear) {
+            if (sprites.get(sprite.getPath()) == null) {
+                sprites.put(sprite.getPath(), sprite);
+            }
+        }
+        usingSprites = false;
+        toClear.clear();
+    }
+
+    private void unloadTextures() {
+        usingSprites = true;
+        if (!stopSpritesUsing) {
+            if (firstLoaded) {
+                long now = System.currentTimeMillis();
+                for (String key : sprites.keySet()) {
+                    Sprite sprite = sprites.get(key);
+                    if (stopSpritesUsing) {
+                        break;
+                    }
+                    if ((now - sprite.getLastUsed()) > secondsToUnload * seconds) {
+                        if (sprite.getTextureID() != 0 || sprite.getTexture() != null) {
+                            lock();
+                            sprite.releaseTexture();
+                            unlock();
+                        }
+                    }
+                }
+            }
+        }
+        usingSprites = false;
+    }
+
+    private void loadTexture(Sprite sprite, InputStream stream) {
+        Texture tex = null;
+        try {
+            tex = TextureLoader.getTexture("png", stream, GL_NEAREST);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sprite.setTexture(tex);
+//        System.out.println("Texture loaded: " + sprite.path);
+    }
+
+    private void lock() {
+        lock.lock();
+    }
+
+    private void unlock() {
+        if (useFences)
+            fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+        else
+            glFlush();
+        lock.unlock();
     }
 
     public synchronized void requestSprite(Sprite sprite) {
