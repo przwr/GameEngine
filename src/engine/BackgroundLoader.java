@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.glFlush;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL32.GL_SYNC_GPU_COMMANDS_COMPLETE;
 import static org.lwjgl.opengl.GL32.glFenceSync;
 
@@ -45,10 +44,19 @@ public abstract class BackgroundLoader {
     abstract Drawable getDrawable() throws LWJGLException;
 
     public void cleanup() {
+        running = false;
         list1.clear();
         list2.clear();
         toClear.clear();
-        running = false;
+        for (String key : sprites.keySet()) {
+            Sprite sprite = sprites.get(key);
+            if (sprite.getTextureID() != 0 || sprite.getTexture() != null) {
+                lock();
+                sprite.releaseTexture();
+                unlock();
+            }
+        }
+        sprites.clear();
     }
 
     void start() throws LWJGLException {
@@ -146,7 +154,7 @@ public abstract class BackgroundLoader {
     private void loadTexture(Sprite sprite, InputStream stream) {
         Texture tex = null;
         try {
-            tex = TextureLoader.getTexture("png", stream, GL_NEAREST);
+            tex = TextureLoader.getTexture("png", stream, sprite.AA ? GL_LINEAR : GL_NEAREST);
         } catch (IOException e) {
             e.printStackTrace();
         }

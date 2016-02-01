@@ -58,8 +58,8 @@ public final class AnalyzerSettings {
                 final int w = Integer.parseInt(p[1]);
                 Settings.resolutionWidth = (w <= 0) ? Settings.modes[0].getWidth() : w;
                 for (int index = 0; index < Settings.modes.length; index++) {
-                    if (Settings.modes[index].getWidth() == Settings.resolutionWidth && Settings.modes[index].getHeight() == Settings.resolutionHeight
-                            && Settings.modes[index].getFrequency() == Settings.frequency) {
+                    if (Settings.modes[index] != null && Settings.modes[index].getWidth() == Settings.resolutionWidth && Settings.modes[index].getHeight() ==
+                            Settings.resolutionHeight && Settings.modes[index].getFrequency() == Settings.frequency) {
                         Settings.currentMode = index;
                     }
                 }
@@ -68,7 +68,8 @@ public final class AnalyzerSettings {
                 final int h = Integer.parseInt(p[1]);
                 Settings.resolutionHeight = (h <= 0) ? Settings.modes[0].getHeight() : h;
                 for (int i = 0; i < Settings.modes.length; i++) {
-                    if (Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings.resolutionHeight && Settings
+                    if (Settings.modes[i] != null && Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings
+                            .resolutionHeight && Settings
                             .modes[i].getFrequency() == Settings.frequency) {
                         Settings.currentMode = i;
                     }
@@ -78,7 +79,7 @@ public final class AnalyzerSettings {
                 final int f = Integer.parseInt(p[1]);
                 Settings.frequency = (f <= 0) ? Settings.modes[0].getFrequency() : f;
                 for (int i = 0; i < Settings.modes.length; i++) {
-                    if (Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings.resolutionHeight && Settings
+                    if (Settings.modes[i] != null && Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings.resolutionHeight && Settings
                             .modes[i].getFrequency() == Settings.frequency) {
                         Settings.currentMode = i;
                     }

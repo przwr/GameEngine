@@ -24,6 +24,7 @@ public class Sprite implements Appearance {
     final int xStart;
     final int yStart;
     private final SpriteBase spriteBase;
+    public boolean AA;
     public String path;
     public InputStream stream;
     float widthWhole;

@@ -18,6 +18,7 @@ public class MenuChoice {
     protected final ArrayList<MenuChoice> choices = new ArrayList<>(1);
     protected MenuChoice previous;
     protected int current;
+    protected boolean blockOnRun;
 
     public MenuChoice(String label, Menu menu) {
         this.label = label;
@@ -68,6 +69,17 @@ public class MenuChoice {
     }
 
     public void actionCurrent(int button) {
-        choices.get(current).action(button);
+        if (!choices.get(current).blockOnRun || !menu.game.started) {
+            choices.get(current).action(button);
+        }
+    }
+
+    public MenuChoice setBlockOnRun(boolean blockOnRun) {
+        this.blockOnRun = blockOnRun;
+        return this;
+    }
+
+    public boolean isBlocked() {
+        return blockOnRun && menu.game.started;
     }
 }

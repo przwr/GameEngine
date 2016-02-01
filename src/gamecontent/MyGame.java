@@ -426,6 +426,7 @@ public class MyGame extends Game {
         Tree.fbos.clear();
         Bush.fbos.clear();
         GrassClump.fbos.clear();
+        Place.currentCamera = null;
         mode = 0;
     }
 

@@ -33,8 +33,6 @@ public class Settings {
     private static final int MIN_HEIGHT = 768;
     private static final int MAX_WIDTH = 1920;
     private static final int MAX_HEIGHT = 1200;
-    private static final DisplayMode display = Display.getDesktopDisplayMode();
-    private static final int depth = display.getBitsPerPixel();
     public static DisplayMode[] modesTemp;
     public static DisplayMode[] modes;
     public static int currentMode;
@@ -59,16 +57,17 @@ public class Settings {
     public static int supportedFrameBufferObjectVersion;
     public static boolean multiSampleSupported;
     public static boolean shadowOff;
-    public static boolean scaled;
     public static double nativeScale;
     public static String serverIP = "127.0.0.1";
     public static float defaultGamma = 1.0f;
     public static float defaultBrightness = 0f;
     public static float gameGamma = 1.5f;
     public static float gameBrightness = 0f;
+    private static int depth = Display.getDesktopDisplayMode().getBitsPerPixel();
     private static int modesCount;
 
     public static void initialize() {
+        modesCount = 0;
         try {
             modesTemp = Display.getAvailableDisplayModes();
         } catch (LWJGLException ex) {
@@ -116,7 +115,6 @@ public class Settings {
 
     public static void calculateScale() {
         nativeScale = ((int) ((resolutionHeight / 1024d / 0.25)) * 0.25) >= 1 ? 1 : (int) ((resolutionHeight / 1024d / 0.25)) * 0.25;
-        scaled = true;
     }
 
     public static void update(int actionsCount, Player[] players, Controller[] controllers) {
@@ -124,7 +122,6 @@ public class Settings {
         Settings.players = players;
         Settings.controllers = controllers;
         detectFrameBuffers();
-
     }
 
     public static void detectFrameBuffers() {

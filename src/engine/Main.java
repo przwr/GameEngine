@@ -9,9 +9,12 @@ import engine.systemcommunication.AnalyzerSettings;
 import engine.systemcommunication.PlayerControllers;
 import engine.systemcommunication.Time;
 import engine.utilities.Delay;
+import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.SimpleKeyboard;
 import engine.view.Popup;
+import engine.view.Renderer;
+import engine.view.SplitScreen;
 import game.Game;
 import game.Settings;
 import game.place.Console;
@@ -203,6 +206,9 @@ public class Main {
     private static void initializeGame() {
         game = new MyGame("Crossroads (PROTOTYPE)", controllers);
         Display.setTitle(game.getTitle());
+        Renderer.setUpDisplay();
+        Drawer.setUpDisplay();
+        SplitScreen.setUpDisplay();
         pop = new Popup("Amble-Regular");
     }
 
@@ -316,7 +322,9 @@ public class Main {
 
     public static void resetGammaAndBrightness() {
         try {
-            Display.setDisplayConfiguration(Settings.defaultGamma, Settings.defaultBrightness, 1f);
+            if (Display.isCreated()) {
+                Display.setDisplayConfiguration(Settings.defaultGamma, Settings.defaultBrightness, 1f);
+            }
         } catch (LWJGLException exception) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
         }
@@ -345,6 +353,5 @@ public class Main {
         Controllers.destroy();
         resetGammaAndBrightness();
         Display.destroy();
-        System.exit(0);
     }
 }

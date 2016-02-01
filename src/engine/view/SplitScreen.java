@@ -27,14 +27,18 @@ public class SplitScreen {
     private static final setPlayerNumber[] players3h = new setPlayerNumber[3];
     private static final setPlayerNumber[] players3v = new setPlayerNumber[3];
     private static final setPlayerNumber[] players4 = new setPlayerNumber[4];
-    private static final int width3o4 = (Display.getWidth() * 3) >> 2;
-    private static final int height3o4 = (Display.getHeight() * 3) >> 2;
-    private static final int width2o3 = (Display.getWidth() << 1) / 3;
-    private static final int height2o3 = (Display.getHeight() << 1) / 3;
-    private static final int width1o2 = Display.getWidth() / 2;
-    private static final int height1o2 = Display.getHeight() / 2;
+    private static int width3o4, height3o4, width2o3, height2o3, width1o2, height1o2;
 
     private SplitScreen() {
+    }
+
+    public static void setUpDisplay() {
+        width3o4 = (Display.getWidth() * 3) >> 2;
+        height3o4 = (Display.getHeight() * 3) >> 2;
+        width2o3 = (Display.getWidth() << 1) / 3;
+        height2o3 = (Display.getHeight() << 1) / 3;
+        width1o2 = Display.getWidth() / 2;
+        height1o2 = Display.getHeight() / 2;
     }
 
     public static void setSplitScreen(Place place, int playersLength, int player) {
