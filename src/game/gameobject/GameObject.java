@@ -335,6 +335,9 @@ public abstract class GameObject {
         } else {
             floatHeight = 0;
         }
+        if (floatHeight < 0) {
+            floatHeight = 0;
+        }
     }
 
     public int getDirection() {
@@ -388,6 +391,22 @@ public abstract class GameObject {
         return null;
     }
 
+    public InteractiveActivator getAttackActivator(byte attackType, Object modifier) {
+        for (Interactive i : interactiveObjects) {
+            if (i.getAttackType() == attackType) {
+                i.setActionModifier(modifier);
+                return i.getActivator();
+            }
+        }
+        return null;
+    }
+
+    public InteractiveActivator getAttackActivator(Object modifier) {
+        Interactive ret = interactiveObjects.get(0);
+        ret.setActionModifier(modifier);
+        return ret.getActivator();
+    }
+    
     public InteractiveActivator getAttackActivator(byte attackType) {
         for (Interactive i : interactiveObjects) {
             if (i.getAttackType() == attackType) {

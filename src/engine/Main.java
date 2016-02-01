@@ -50,7 +50,7 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean TEST = true;
+    public static boolean TEST = false;
     public static boolean SHOW_INTERACTIVE_COLLISION;
     public static boolean pause, enter = true;
     public static BackgroundLoader backgroundLoader;

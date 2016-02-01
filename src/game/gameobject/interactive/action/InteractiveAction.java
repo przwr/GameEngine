@@ -12,7 +12,11 @@ import game.gameobject.interactive.InteractiveResponse;
 /**
  * @author przemek
  */
-public interface InteractiveAction {
+public abstract class InteractiveAction {
 
-    void act(GameObject object, Interactive activator, InteractiveResponse response);
+    public void act(GameObject object, Interactive activator, InteractiveResponse response) {
+        act(object, activator, response, null);
+    }
+    
+    abstract public void act(GameObject object, Interactive activator, InteractiveResponse response, Object modifier);
 }

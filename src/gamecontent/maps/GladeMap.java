@@ -16,6 +16,7 @@ import gamecontent.mobs.Blazag;
 import gamecontent.npcs.MyNPC;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import gamecontent.mobs.Dummy;
 import gamecontent.npcs.Melodia;
 
 /**
@@ -150,5 +151,6 @@ public class GladeMap extends Map {
 
         addObject(new MyNPC(200, 200, place, mobID++));
         addObject(new Melodia(200, 500, place, mobID++));
+        addObject(new Dummy(400, 800, place, mobID++));
     }
 }

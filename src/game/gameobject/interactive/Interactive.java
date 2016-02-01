@@ -49,6 +49,8 @@ public class Interactive {
     private byte attackType = -1;
     private boolean active, activated;
     private ArrayList<GameObject> exceptions;
+    
+    private Object actionModifier;
 
     private Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte
             attackType, float modifier) {
@@ -89,6 +91,10 @@ public class Interactive {
             exceptions.clear();
         }
     }
+    
+    public void setActionModifier(Object modifier) {
+        this.actionModifier = modifier;
+    }
 
     public void actIfActivated(GameObject[] players, List<Mob> mobs) {
         activated = false;
@@ -118,7 +124,7 @@ public class Interactive {
                         InteractiveResponse response = collision.collide(owner, mob, attackType);
                         if (response.getPixels() > 0) {
                             activated = true;
-                            action.act(mob, this, response);
+                            action.act(mob, this, response, actionModifier);
                         }
                     });
                 }
@@ -128,15 +134,16 @@ public class Interactive {
                             InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
                             if (response.getPixels() > 0) {
                                 activated = true;
-                                action.act(player, this, response);
+                                action.act(player, this, response, actionModifier);
                             }
                         }
                     }
                 }
             } else {
                 activated = true;
-                action.act(owner, this, InteractiveResponse.NO_RESPONSE);
+                action.act(owner, this, InteractiveResponse.NO_RESPONSE, actionModifier);
             }
+            actionModifier = null;
         }
     }
 

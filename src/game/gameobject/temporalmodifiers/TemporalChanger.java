@@ -75,6 +75,9 @@ public abstract class TemporalChanger {
             modifyEffect(en);
             if (left > 0) {
                 left -= Time.getDelta();
+                if (left < 0) {
+                    left = 0;
+                }
             }
         }
     }

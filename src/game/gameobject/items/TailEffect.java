@@ -5,10 +5,8 @@
  */
 package game.gameobject.items;
 
-import collision.Figure;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
-import game.gameobject.GameObject;
 import game.place.Place;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -23,20 +21,20 @@ import org.newdawn.slick.Color;
  *
  * @author Wojtek
  */
-public class TailEffect {
+public abstract class TailEffect {
 
-    private final Joint[] tail;
-    private final int length;
-    private final float width;
-    private int last;
-    private final Color color;
+    final Joint[] tail;
+    final int length;
+    final float width;
+    int last;
+    final Color color;
 
     public TailEffect(int length, float width) {
         this.tail = new Joint[length];
         this.length = Math.max(length, 2);
         this.width = width / 2;
         last = -1;
-        color = new Color(1, 1, 1, 0.7f);
+        color = new Color(1, 1, 1, 0.5f);
     }
 
     public void updatePoint(int x, int y, int height, int direction) {
@@ -62,60 +60,57 @@ public class TailEffect {
             }
         }
     }
-    
+
     public int getWidth() {
         if (isActive()) {
             return Math.abs(tail[0].x - tail[last].x);
-        } 
+        }
         return 0;
     }
-    
+
     public int getHeight() {
         if (isActive()) {
             return Math.abs(tail[0].y - tail[last].y);
-        } 
+        }
         return 0;
+    }
+
+    public double getDirection(int start, int end) {
+        if (tail[start] == null) {
+            start = 1;
+        }
+        if (tail[end] == null) {
+            end = 0;
+        }
+        return Methods.pointAngleCounterClockwise(tail[start].x, tail[start].y - tail[start].height, tail[end].x, tail[end].y - tail[end].height);
+    }
+
+    public double getDirection() {
+        return Methods.pointAngleCounterClockwise(tail[1].x, tail[1].y - tail[1].height, tail[0].x, tail[0].y - tail[0].height);
     }
 
     public boolean isActive() {
         return tail[0] != null && tail[1] != null;
     }
 
-    private float calcWidth(int i) {
+    public float calcWidth(int i) {
         return width - ((i - 1) * (float) (width / (last + 1)));
     }
+
+    public abstract void innerRender();
 
     public void render(int xEffect, int yEffect) {
         if (isActive()) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            Drawer.setColor(color);
-            glDisable(GL_TEXTURE_2D);
-            glBegin(GL_TRIANGLES);
-            glVertex2f(tail[0].x, tail[0].y - tail[0].height);
-            glVertex2f(tail[1].getX(width, true), tail[1].getY(width, true));
-            glVertex2f(tail[1].getX(width, false), tail[1].getY(width, false));
-            glEnd();
-            glBegin(GL_QUAD_STRIP);
-            int i;
-            for (i = 1; i < last; i++) {
-                glVertex2f(tail[i].getX(calcWidth(i), true), tail[i].getY(calcWidth(i), true));
-                glVertex2f(tail[i].getX(calcWidth(i), false), tail[i].getY(calcWidth(i), false));
-            }
-            glEnd();
-            glBegin(GL_TRIANGLES);
-            glVertex2f(tail[i - 1].getX(calcWidth(i - 1), true), tail[i - 1].getY(calcWidth(i - 1), true));
-            glVertex2f(tail[i - 1].getX(calcWidth(i - 1), false), tail[i - 1].getY(calcWidth(i - 1), false));
-            glVertex2f(tail[i].x, tail[i].y - tail[i].height);
-            glEnd();
-            glEnable(GL_TEXTURE_2D);
+            innerRender();
             Drawer.refreshColor();
             glPopMatrix();
         }
     }
 
-    private class Joint {
+    class Joint {
 
         int x, y, height, direction;
 

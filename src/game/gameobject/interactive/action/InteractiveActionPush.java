@@ -9,10 +9,10 @@ import net.jodk.lang.FastMath;
 /**
  * Created by przemek on 11.11.15.
  */
-public class InteractiveActionPush implements InteractiveAction {
+public class InteractiveActionPush extends InteractiveAction {
 
     @Override
-    public void act(GameObject object, Interactive activator, InteractiveResponse response) {
+    public void act(GameObject object, Interactive activator, InteractiveResponse response, Object modifier) {
         if (object instanceof Entity && activator.getOwner() instanceof Entity) {
             Entity owner = (Entity) activator.getOwner();
             if (object.getFloatHeight() == 0) {

@@ -13,18 +13,18 @@ import net.jodk.lang.FastMath;
 /**
  * @author przemek
  */
-public class InteractiveActionBowHurt implements InteractiveAction {
+public class InteractiveActionBowHurt extends InteractiveAction {
 
     @Override
-    public void act(GameObject object, Interactive activator, InteractiveResponse response) {
+    public void act(GameObject object, Interactive activator, InteractiveResponse response, Object modifier) {
         recalculateData(activator, response);
         object.getStats().decreaseHealth(response);
     }
 
     protected void recalculateData(Interactive activator, InteractiveResponse response) {
-        float strengthModifier = activator.getOwner().getStats().getStrength() / 2f;
+        float strengthModifier = activator.getOwner().getStats().getStrength();
         float weaponModifier = activator.getWeaponModifier();
-        strengthModifier = strengthModifier > weaponModifier ? weaponModifier : strengthModifier;
+        //strengthModifier = strengthModifier > weaponModifier ? weaponModifier : strengthModifier;
 
         response.setPixels((1 + (response.getPixels() / (response.getMaxPixels() * 5f) + (float) FastMath.random() / 10f)) * activator.getModifier() *
                 (strengthModifier + weaponModifier));

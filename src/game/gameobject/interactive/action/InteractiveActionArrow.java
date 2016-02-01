@@ -14,11 +14,11 @@ import game.place.Place;
 /**
  * @author przemek
  */
-public class InteractiveActionArrow implements InteractiveAction {
+public class InteractiveActionArrow extends InteractiveAction {
 
     @Override
-    public void act(GameObject object, Interactive activator, InteractiveResponse response) {
-        Arrow arrow = new Arrow(80, object.getDirection(), Place.tileSize, object);
+    public void act(GameObject object, Interactive activator, InteractiveResponse response, Object modifier) {
+        Arrow arrow = new Arrow(modifier != null ? (double) modifier : 80, object.getDirection(), Place.tileSize, object);
         arrow.setPositionWithoutAreaUpdate(object.getX(), object.getY());
         object.getMap().addObject(arrow);
     }

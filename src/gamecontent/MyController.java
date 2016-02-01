@@ -19,6 +19,7 @@ import game.place.Place;
 import sprites.ClothedAppearance;
 
 import static game.gameobject.GameObject.*;
+import game.gameobject.temporalmodifiers.Charger;
 
 /**
  * @author przemek
@@ -42,6 +43,7 @@ public class MyController extends PlayerController {
     private final Delay chargingDelay, attackDelay, preAttackDelay, afterAttackDelay;
     private final SpeedChanger jumpMaker;
     private final SpeedChanger attackMovement;
+    private final Charger chargeValue;
     private final boolean[] blockedInputs;
     private int tempDirection, sideDirection;
     private byte firstAttackType, secondAttackType, chargingType, lastAttackButton, lastAttackType;
@@ -70,6 +72,7 @@ public class MyController extends PlayerController {
         jumpMaker.setType(SpeedChanger.DECREASING);
         attackMovement = new SpeedChanger(4);
         attackMovement.setType(SpeedChanger.DECREASING);
+        chargeValue = new Charger();
         lastAttackButton = INPUT_ATTACK;
     }
 
@@ -134,7 +137,6 @@ public class MyController extends PlayerController {
                 if (!charging) {
                     animation.setFPS(60);
                 } else {
-                    animation.getUpperBody().setFPS(60);
                     animation.getLowerBody().setFPS((int) (inControl.getSpeed() * 3));
                 }
             } else {
@@ -300,6 +302,10 @@ public class MyController extends PlayerController {
             case ATTACK_NORMAL_ARROW_SHOT:
                 if (stats.getEnergy() >= 15) {
                     animation.animateIntervalInDirectionOnce(tempDirection, animation.BOW, 0, 2);
+                    animation.getUpperBody().setFPS(3);
+                    chargeValue.setType(60, 100, Charger.INCREASING, 4);
+                    chargeValue.start();
+                    inControl.addChanger(chargeValue);
                     attackMovement.stop();
                     stopInputLag();
                     charging = true;
@@ -333,7 +339,7 @@ public class MyController extends PlayerController {
                 case ATTACK_NORMAL_ARROW_SHOT:
                     if (stats.getEnergy() >= 15) {
                         animation.animateSingleInDirection(tempDirection, animation.BOW, 3);
-                        inControl.getAttackActivator(ATTACK_NORMAL_ARROW_SHOT).setActivated(true);
+                        inControl.getAttackActivator(ATTACK_NORMAL_ARROW_SHOT, chargeValue.getChargedValue() + 20).setActivated(true);
                         stats.decreaseEnergy(15);
                     }
                     break;

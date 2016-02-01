@@ -13,10 +13,10 @@ import net.jodk.lang.FastMath;
 /**
  * @author przemek
  */
-public class InteractiveActionStrengthHurt implements InteractiveAction {
+public class InteractiveActionStrengthHurt extends InteractiveAction {
 
     @Override
-    public void act(GameObject object, Interactive activator, InteractiveResponse response) {
+    public void act(GameObject object, Interactive activator, InteractiveResponse response, Object modifier) {
         recalculateData(activator, response);
         object.getStats().decreaseHealth(response);
     }

@@ -40,19 +40,17 @@ public class Arrow extends Entity {
 
     public Arrow(double speed, int direction, int height, GameObject owner) {
         this.floatHeight = height;
-//        speed /= 10;
-//        gravity /= 10;
         this.xSpeed = Methods.xRadius(direction, speed);
         this.ySpeed = -Methods.yRadius(direction, speed);
         this.owner = owner;
         setDirection(direction);
-        setCollision(Rectangle.create(24, 24, OpticProperties.NO_SHADOW, this));
-        visible = true;
         lenght = (int) (Place.tileSize * 1.2);
+        setCollision(Rectangle.create(lenght / 10, lenght / 10, OpticProperties.NO_SHADOW, this));
+        visible = true;
         this.color = new Color(108, 59, 44);
-        tail = new TailEffect(6, (float) (lenght / 8));
+        tail = new ArrowTail(6, (float) (lenght / 8), this);
         stats = new Stats(this);
-        stats.setStrength(20);
+        stats.setStrength((int) (speed / 3));
         Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 2f);
         attack.addException(owner);
         attack.setCollidesWithEnvironment(false);
@@ -92,9 +90,10 @@ public class Arrow extends Entity {
     @Override
     public void update() {
         int delta;
+        updateWithGravity();
         if (!stopped) {
             moveIfPossibleWithoutSliding(xSpeed + xEnvironmentalSpeed, ySpeed + yEnvironmentalSpeed);
-            tail.updatePoint((int) x, (int) y, (int) floatHeight - lenght / 15, getDirection());
+            tail.updatePoint((int) x, (int) y, (int) floatHeight, getDirection());
             if (floatHeight == 0) {
                 stopped = true;
             }
@@ -107,7 +106,6 @@ public class Arrow extends Entity {
                 }
             }
         }
-        updateWithGravity();
     }
 
     @Override
@@ -124,6 +122,10 @@ public class Arrow extends Entity {
         Drawer.drawLineWidth(-ix, -iy, ix, iy, lenght / 15);
         Drawer.setColor(color);
         Drawer.returnToCentralPoint();
+        if (tail.isActive()) {
+            ix = (int) (Methods.xRadius(tail.getDirection(), lenght / 2));
+            iy = (int) (-Methods.yRadius(tail.getDirection(), lenght / 2));
+        }
         Drawer.translate(0, (float) -floatHeight);
         Drawer.drawLineWidth(-ix, -iy, ix, iy, lenght / 15);
         Drawer.returnToCentralPoint();
@@ -155,7 +157,7 @@ public class Arrow extends Entity {
     public int getXSpriteEnd() {
         return super.getXSpriteEnd() + lenght + tail.getWidth();
     }
-    
+
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {

@@ -32,18 +32,21 @@ public class SpeedChanger extends TemporalChanger {
         this.ySpeed = ySpeed;
     }
 
-    public void setType(byte type) {
+    public SpeedChanger setType(byte type) {
         this.type = type;
+        return this;
     }
 
-    public void setSpeed(double xSpeed, double ySpeed) {
+    public SpeedChanger setSpeed(double xSpeed, double ySpeed) {
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
+        return this;
     }
 
-    public void setSpeedInDirection(int direction, double speed) {
+    public SpeedChanger setSpeedInDirection(int direction, double speed) {
         this.xSpeed = Methods.xRadius(direction, speed);
         this.ySpeed = -Methods.yRadius(direction, speed);
+        return this;
     }
 
     @Override
