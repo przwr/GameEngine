@@ -34,4 +34,5 @@ $pl - normalna czcionka
 
 $sh - dr¿¹cy tekst
 $me - falujacy tekst
+$ne - niepewny tekst
 $no - normalny tekst
