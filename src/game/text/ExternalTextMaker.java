@@ -11,10 +11,10 @@ package game.text;
 class ExternalTextMaker extends PropertyChanger {
     private final String name;
     private TextRenderer text;
-    private TextController.TextRow textrow;
+    private final TextController.TextRow textrow;
 
-    public ExternalTextMaker(int start, String event, TextController tc, TextController.TextRow tr) {
-        super(start, 0, 0, tc);
+    public ExternalTextMaker(TextEvent previous, String event, TextController tc, TextController.TextRow tr) {
+        super(previous, 0, 0, tc);
         this.name = event;
         textrow = tr;
     }
@@ -24,9 +24,9 @@ class ExternalTextMaker extends PropertyChanger {
     }
     
     @Override
-    void event(int i, int lineNum) {
+    void innerEvent(int i, int lineNum) {
         if (i >= start && !done) {
-            controller.alterText(textrow, text, controller.getWriter(name).write(), start);
+            //controller.alterText(textrow, text, controller.getWriter(name).write(), start);
             done = true;
             controller.setIndex(start);
         }

@@ -320,7 +320,7 @@ public class Sprite implements Appearance {
                 texture.release();
                 texture = null;
             }
-            System.out.println("Unloaded: " + path);
+            //System.out.println("Unloaded: " + path);
         }
     }
 

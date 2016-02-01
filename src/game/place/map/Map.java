@@ -520,7 +520,7 @@ public abstract class Map {
                 }
             }
             if (!removed) {
-                System.out.println("Nie mogę usunąć - LIPA, chyba, że było przejście między mapami z wczytywaniem. Jak nie dodał, to i nie usunie.");
+                System.out.println("Nie mogę usunąć - LIPA : " + object.getName());
             }
         }
         areas[area].addObject(object);

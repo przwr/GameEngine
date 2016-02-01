@@ -59,8 +59,8 @@ public class MyNPC extends Mob {
                         && !mpPrey.getTextController().isStarted()) {
                     TextController text = mpPrey.getTextController();
                     text.lockEntity(mpPrey);
-                    text.startFromFile("drzewo");
-                    Executive e = () -> {
+                    text.startFromFile("inwokacja");
+                    /*Executive e = () -> {
                         spinning = !spinning;
                     };
                     text.addExternalEventOnBranch(e, "0", false);
@@ -95,7 +95,7 @@ public class MyNPC extends Mob {
                         public String write() {
                             return "" + talks;
                         }
-                    });
+                    });*/
                 }
                 if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                     target = null;

@@ -11,13 +11,13 @@ package game.text;
 class EventMaker extends PropertyChanger {
     private final String event;
 
-    public EventMaker(int start, String event, TextController tc) {
-        super(start, 0, 0, tc);
+    public EventMaker(TextEvent previous, String event, TextController tc) {
+        super(previous, 0, 0, tc);
         this.event = event;
     }
 
     @Override
-    void event(int i, int lineNum) {
+    void innerEvent(int i, int lineNum) {
         if (i >= start && !done) {
             controller.triggerEvent(event);
             done = true;

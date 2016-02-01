@@ -92,7 +92,7 @@ public abstract class BackgroundLoader {
                                 e.printStackTrace();
                             }
                             sprite.setTexture(tex);
-                            System.out.println("Texture loaded: " + sprite.path);
+                            //System.out.println("Texture loaded: " + sprite.path);
                             if (useFences)
                                 fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
                             else

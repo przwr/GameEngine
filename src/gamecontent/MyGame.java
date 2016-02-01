@@ -125,6 +125,9 @@ public class MyGame extends Game {
                         menu.setDefaultRoot();
                     }
                     //---------------------------------------------------------------------------//
+                    if (Keyboard.isKeyDown(Keyboard.KEY_F2)) {
+                        Main.TEST = !Main.TEST;
+                    }
                     menu.update();
                 }
             }

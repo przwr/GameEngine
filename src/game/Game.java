@@ -72,6 +72,11 @@ public abstract class Game {
     public Place getPlace() {
         return place;
     }
+    
+    public String getPlayerCoordinates() {
+        Player p = (Player) place.players[0];
+        return "[" +  p.getX() + ", " + p.getY() + "]";
+    }
 
     protected void pause() {
         if (Keyboard.isKeyDown(Keyboard.KEY_PAUSE)) {

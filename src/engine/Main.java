@@ -195,6 +195,7 @@ public class Main {
         glLoadIdentity();
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
         backgroundLoader = new BackgroundLoader() {
+            @Override
             Drawable getDrawable() throws LWJGLException {
                 return new Pbuffer(2, 2, new PixelFormat(8, 24, 0), Display.getDrawable());
             }
@@ -226,13 +227,10 @@ public class Main {
                         SHOW_INTERACTIVE_COLLISION = !SHOW_INTERACTIVE_COLLISION;
                         console.printMessage("SHOW/HIDE INTERACTIVE");
                     }
-                    if (key.keyPressed(Keyboard.KEY_F3)) {
-                        TEST = !TEST;
-                        console.printMessage("TEST ON/OFF");
-                    }
                     if (console.areStatsRendered()) {
                         console.clearStats();
                         console.printStats(info);
+                        console.printStats("Player 1: " + game.getPlayerCoordinates());
                     }
                 } else {
                     info = " [" + frames + " fps]";

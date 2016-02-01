@@ -36,5 +36,6 @@ Jak ja TO robię....?$FL
 Heh....
 $ME~Tajemnica zakładu~$NO$EVe$
 #B7
-$AU0$$PO0$Zaczełaś rozmowę ze mną $WRnum$ razy!$FL
-Nie uważasz że to już przesada....?
+$AU0$$PO0$BLUM$FL
+Zaczełaś rozmowę ze mną $WRnum$ razy!$FL
+Nie $WRnum$ uważasz $WRnum$ że $WRnum$ to $WRnum$ już przesada....?

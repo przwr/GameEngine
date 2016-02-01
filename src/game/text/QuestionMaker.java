@@ -11,14 +11,14 @@ package game.text;
 class QuestionMaker extends PropertyChanger {
     private final String[] answers, jumps;
 
-    QuestionMaker(int start, String[] answers, String[] jumps, TextController tc) {
-        super(start, 0, 0, tc);
+    QuestionMaker(TextEvent previous, String[] answers, String[] jumps, TextController tc) {
+        super(previous, 0, 0, tc);
         this.answers = answers;
         this.jumps = jumps;
     }
 
     @Override
-    void event(int i, int lineNum) {
+    void innerEvent(int i, int lineNum) {
         if (i >= start && !done) {
             controller.setQuestion(answers, jumps);
             done = true;

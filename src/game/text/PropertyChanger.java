@@ -20,15 +20,15 @@ class PropertyChanger extends TextEvent {
     private final float quality;
     boolean done;
 
-    PropertyChanger(int start, int type, float quality, TextController tc) {
-        super(start, 0);
+    PropertyChanger(TextEvent previous, int type, float quality, TextController tc) {
+        super(previous, type == PROP_FLUSH ? 1 : 0);
         this.type = type;
         this.quality = Math.min(quality, 10);
         controller = tc;
     }
 
     @Override
-    void event(int i, int lineNum) {
+    void innerEvent(int i, int lineNum) {
         if (i >= start && !done) {
             switch (type) {
                 case PROP_SPEED:

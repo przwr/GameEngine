@@ -10,18 +10,49 @@ package game.text;
  */
 abstract class TextEvent {
 
+    TextEvent previous;
+    int length;
     int start;
-    final int unalteredStart;
-    private final int lineNum;
+    int end;
 
-    TextEvent(int start, int lineNum) {
-        unalteredStart = this.start = start;
-        this.lineNum = lineNum;
+    TextEvent(TextEvent previous, int length) {
+        this.previous = previous;
+        this.length = length;
+    }
+
+    public int getStart() {
+        if (previous == null) {
+            return 0;
+        } else {
+            return previous.getEnd();
+        }
     }
     
-    public void alterStart(int added) {
-        start = unalteredStart + added;
+    int getX(int y) {
+        if (previous == null) {
+            return 0;
+        } else {
+            return previous.getX(y);
+        }
     }
 
-    abstract void event(int index, int lineNum);
+    public int getEnd() {
+        return getStart() + length;
+    }
+    
+    public void setStart() {
+        start = getStart();
+    }
+    
+    public void setEnd() {
+        end = getEnd();
+    }
+
+    public void event(int index, int lineNum) {
+        setStart();
+        setEnd();
+        innerEvent(index, lineNum);
+    }
+    
+    abstract void innerEvent(int index, int lineNum);
 }

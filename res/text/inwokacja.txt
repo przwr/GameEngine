@@ -1,8 +1,8 @@
 ﻿sp:2.5
 
-$itLitwo, ojczyzno moja! Ty jesteś jak zdrowie.
+$itLitwo, ojczyzno moja! Ty jesteś jak zdrowie.$fl
 Ile trzeba cię cenić ten tylko się dowie kto cię stracił.$fl
-Dziś piękność twą w całej ozdobie,
+Dziś piękność twą w całej ozdobie,$fl
 widzę i opisuję, bo tęsknie po tobie.$fl
 Panno święta, co jasnej bronisz Częstochowy
 i w ostrej świecisz bramie! Ty, co gród zamkowy

@@ -12,29 +12,49 @@ import org.newdawn.slick.Color;
  */
 class TextRenderer extends TextEvent {
 
-    final int x;
+    int x;
     final int y;
-    int end;
     String text;
-    String unaltered;
     final FontHandler font;
     final TextController control;
     final Color color;
     private final float height;
 
-    TextRenderer(String text, int start, int startX, int lineNum, Color color, FontHandler font, TextController tc, boolean isAltered) {
-        super(start, lineNum);
+    private String alterer;
+
+    TextRenderer(String text, TextEvent previous, int lineNum, Color color, FontHandler font, TextController tc) {
+        super(previous, text.length());
         this.text = text;
-        if (isAltered) {
-            unaltered = text;
-        }
         this.font = font;
-        x = startX;
         height = (float) (font.getHeight() * 1.2);
         y = (int) (font.getHeight() * 1.2 * lineNum);
-        end = text.length();
         control = tc;
         this.color = color;
+    }
+
+    public void setAlterer(String alterer) {
+        this.alterer = alterer;
+    }
+
+    @Override
+    int getX(int y) {
+        if (this.y == y) {
+            if (previous == null) {
+                return font.getWidth(text);
+            } else {
+                return previous.getX(y) + font.getWidth(text);
+            }
+        } else {
+            return 0;
+        }
+    }
+    
+    void setX() {
+        if (previous == null) {
+            x = 0;
+        } else {
+            x = previous.getX(y);
+        }
     }
 
     int getWidth() {
@@ -42,25 +62,24 @@ class TextRenderer extends TextEvent {
     }
 
     boolean isVisible(int index) {
-        return index > start;
+        return index >= start;
     }
 
-    void alterText(int index, String added) {
-        int i = index - start + 1;
-        text = unaltered.substring(0, i) + added + unaltered.substring(i);
-        end = text.length();
-    }
-    
     Color changeColor(Color base, int lineNum) {
         base.a = (lineNum == control.getCurrentRow() && control.isFlushing() ? Math.max(0f, 1f - 3 * control.getChange()) : 1f);
         return base;
     }
 
     @Override
-    void event(int index, int lineNum) {
+    void innerEvent(int index, int lineNum) {
+        setX();
         if (isVisible(index)) {
-            int i = index - start + 1;
-            if (i < end) {
+            int i = index - start;
+            if (text.isEmpty()) {
+                text = control.getWriter(alterer).write();
+                length = text.length() + 20;
+            }
+            if (i < text.length()) {
                 font.drawLine(text.substring(0, i), x, y, changeColor(color, lineNum));
             } else {
                 font.drawLine(text, x, y, changeColor(color, lineNum));

@@ -11,13 +11,13 @@ package game.text;
 class Jumper extends PropertyChanger {
     private final String jumpLocation;
 
-    public Jumper(int start, String jumpLocation, TextController tc) {
-        super(start, 0, 0, tc);
+    public Jumper(TextEvent previous, String jumpLocation, TextController tc) {
+        super(previous, 0, 0, tc);
         this.jumpLocation = jumpLocation;
     }
 
     @Override
-    void event(int i, int lineNum) {
+    void innerEvent(int i, int lineNum) {
         if (i >= start && !done) {
             controller.setJumpLocation(jumpLocation);
             done = true;
