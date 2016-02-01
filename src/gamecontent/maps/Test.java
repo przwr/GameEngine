@@ -12,6 +12,7 @@ import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
 import gamecontent.mobs.Shen;
 import gamecontent.npcs.Melodia;
+import gamecontent.npcs.Nutka;
 
 /**
  * Created by przemek on 21.11.15.
@@ -131,8 +132,14 @@ public class Test extends Map {
 
         addObject(new Dummy(4860, 2000, place, mobID++));
         addObject(new Melodia(5344, 2272, place, mobID++));
-        addObject(new Blazag(5344, 6494, place, mobID++));
-        addObject(new Blazag(4344, 5494, place, mobID++));
-        addObject(new Blazag(5144, 4494, place, mobID++));
+        addObject(new Blazag(5744, 6494, place, mobID++));
+        addObject(new Blazag(5344, 5494, place, mobID++));
+        addObject(new Blazag(5144, 5994, place, mobID++));
+        addObject(new Nutka(4435, 4215, place, mobID++));
+
+        addObject(new Bush(4894, 4422, 12, 70, 0.8f));
+        addObject(new Bush(5423, 4210, 12, 70, 0.8f));
+
+
     }
 }
