@@ -70,12 +70,8 @@ public class Bush extends GameObject {
 
     public void update() {
         if (!prerendered) {
-            if (bark == null) {
-                bark = map.place.getSprite("bark", "", true);
-            }
-            if (leaf == null) {
-                leaf = map.place.getSprite("leaf", "", true);
-            }
+            bark = map.place.getSprite("bark", "", true);
+            leaf = map.place.getSprite("leaf", "", true);
             fbo.activate();
             glPushMatrix();
             glClearColor(0.5f, 0.35f, 0.2f, 0);

@@ -130,7 +130,7 @@ public abstract class BackgroundLoader {
                     if (stopSpritesUsing) {
                         break;
                     }
-                    if ((now - sprite.getLastUsed()) > secondsToUnload * seconds) {
+                    if (sprite.getLastUsed() > 0 && (now - sprite.getLastUsed()) > secondsToUnload * seconds) {
                         if (sprite.getTextureID() != 0 || sprite.getTexture() != null) {
                             lock();
                             sprite.releaseTexture();

@@ -150,6 +150,7 @@ public class Blazag extends Mob {
                                     ag.clearHurtedByOwner();
                                 }
                             }
+                            letGoDelay.start();
                         }
                         setEnemyToAttack();
                         int distance = target != null ? Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) : sightRange2;

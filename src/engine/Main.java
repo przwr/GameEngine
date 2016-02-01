@@ -50,9 +50,7 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean TEST = false;
-    public static boolean SHOW_INTERACTIVE_COLLISION;
-    public static boolean pause, enter = true;
+    public static boolean SHOW_INTERACTIVE_COLLISION, pause, enter = true, TEST = true;
     public static BackgroundLoader backgroundLoader;
     private static Game game;
     private static Popup pop;
@@ -73,11 +71,6 @@ public class Main {
             ErrorHandler.logToFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
         }
         delay.start();
-        try {
-            backgroundLoader.start();
-        } catch (LWJGLException e) {
-            ErrorHandler.error("Failed to start background thread. " + e.getMessage());
-        }
         gameLoop();
         cleanUp();
     }
@@ -200,6 +193,11 @@ public class Main {
                 return new Pbuffer(2, 2, new PixelFormat(8, 24, 0), Display.getDrawable());
             }
         };
+        try {
+            backgroundLoader.start();
+        } catch (LWJGLException e) {
+            ErrorHandler.error("Failed to start background thread. " + e.getMessage());
+        }
     }
 
     private static void initializeGame() {

@@ -39,7 +39,7 @@ public class Shen extends Mob {
     private Delay rest = Delay.createInMilliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
     private ActionState idle, run_away, hide, attack, wander, follow, bounce;
     private SpeedChanger bouncer;
-    private boolean attacking = true, unfold;
+    private boolean attacking = true, unfold, fold;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
 
     {
@@ -55,7 +55,7 @@ public class Shen extends Mob {
                     if (closerEnemy != null) {
                         state = hide;
                         destination.set(-1, -1);
-                        stats.setProtectionState(true);
+                        fold = true;
                     } else if (destination.getX() > 0) {
                         state = run_away;
                         destination.set(-1, -1);
@@ -96,7 +96,7 @@ public class Shen extends Mob {
                     state = hide;
                     destination.set(-1, -1);
                     secondaryDestination.set(-1, -1);
-                    stats.setProtectionState(true);
+                    fold = true;
                 } else if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination
                         .getX(), secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
                     state = idle;
@@ -110,11 +110,14 @@ public class Shen extends Mob {
             public void update() {
 //                System.out.println("HIDE");
                 brake(2);
-                if (animation.getDirectionalFrameIndex() == 12) {
+                if (!fold) {
+                    stats.setProtectionState(true);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     GameObject closerEnemy = getCloserEnemy();
-                    if (closerEnemy == null) {
+                    if (!unfold && animation.getDirectionalFrameIndex() == 7) {
+                        state = idle;
                         stats.setProtectionState(false);
+                    } else if (closerEnemy == null) {
                         unfold = true;
                     } else if (rest.isOver() && target == null && (stats.getHealth() < stats.getMaxHealth() || isAnyFriendHurt())
                             && isInHalfHearingRange(closerEnemy)) {
@@ -123,8 +126,6 @@ public class Shen extends Mob {
                         setPathStrategy(PathFindingModule.GET_TO, 0);
                         attack_delay.start();
                     }
-                } else if (!stats.isProtectionState() && animation.getDirectionalFrameIndex() == 7) {
-                    state = idle;
                 }
             }
         };
@@ -420,10 +421,13 @@ public class Shen extends Mob {
                 animation.animateIntervalInDirection(getDirection8Way(), 12, 14);
             }
         } else {
-            if (stats.isProtectionState()) {
+            if (fold || (stats.isProtectionState() && !unfold)) {
                 animation.setFPS(15);
                 animation.animateIntervalInDirection(getDirection8Way(), 7, 12);
                 animation.setStopAtEnd(true);
+                if (animation.getDirectionalFrameIndex() == 12) {
+                    fold = false;
+                }
             } else if (unfold) {
                 animation.setFPS(15);
                 animation.animateIntervalInDirection(getDirection8Way(), 12, 7);

@@ -118,6 +118,9 @@ public abstract class Figure implements Comparable<Figure> {
             if (area.getNearSolidObjects().stream().anyMatch((object) -> (checkCollision(x, y, object)))) {
                 return true;
             }
+//            if (area.getNearForegroundTiles().stream().anyMatch((object) -> (checkCollision(x, y, object)))) {
+//                return true;
+//            }
             tiles = map.getNearNullTiles(this);
             for (int i = 0; i < tiles.size(); i++) {
                 setTile(tiles.get(i));
@@ -192,7 +195,6 @@ public abstract class Figure implements Comparable<Figure> {
         }
         return null;
     }
-
 
     //TODO wyjątki, z którymi nie koliduje w innym miejscu? np w klasie bazowej
     public boolean checkCollision(int x, int y, GameObject object) {

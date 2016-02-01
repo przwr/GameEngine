@@ -80,6 +80,7 @@ public class MyGame extends Game {
                                     removePlayerOffline(i);
                                 } else {
                                     running = false;
+                                    Main.backgroundLoader.resetFirstLoaded();
                                     soundPause();
                                     Place.getDayCycle().stopTime();
                                 }
