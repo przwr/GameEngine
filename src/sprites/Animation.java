@@ -295,7 +295,7 @@ public class Animation implements Appearance {
     public void updateValues() {
         if (spriteSheet == null) {
             upToDate = true;
-        } else if (spriteSheet.textureID != 0) {
+        } else if (spriteSheet.getTextureID() != 0) {
             this.finalEnd = this.end = spriteSheet.getSize() - 1;
             upToDate = true;
         }

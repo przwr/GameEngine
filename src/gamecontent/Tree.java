@@ -26,11 +26,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class Tree extends GameObject {
 
     public static final Map<String, FrameBufferObject> fbos = new HashMap<>();
-
-    static FrameBufferObject fbo;
     static Sprite bark;
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
+    FrameBufferObject fbo;
     int width, height;
     float spread;
     boolean prerendered, branchless;
@@ -82,8 +81,12 @@ public class Tree extends GameObject {
 
     public void update() {
         if (!prerendered) {
-            bark = map.place.getSprite("bark", "", true);
-            leaf = map.place.getSprite("leaf", "", true);
+            if (bark == null) {
+                bark = map.place.getSprite("bark", "", true);
+            }
+            if (leaf == null) {
+                leaf = map.place.getSprite("leaf", "", true);
+            }
             fbo.activate();
             glPushMatrix();
             glClearColor(0.5f, 0.35f, 0.2f, 0);

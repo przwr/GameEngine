@@ -306,7 +306,7 @@ public class SpriteBase {
     }
 
     private void loadTextureIfRequired(boolean[] now, Sprite sprite) {
-        if (now.length > 0 && now[0] && sprite.textureID == 0) {
+        if (now.length > 0 && now[0] && sprite.getTextureID() == 0) {
             Texture tex = null;
             try {
                 tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite.getPath()), GL_NEAREST);

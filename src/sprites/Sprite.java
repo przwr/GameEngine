@@ -24,7 +24,6 @@ public class Sprite implements Appearance {
     final int xStart;
     final int yStart;
     private final SpriteBase spriteBase;
-    public int textureID;
     public String path;
     public InputStream stream;
     float widthWhole;
@@ -35,6 +34,7 @@ public class Sprite implements Appearance {
     int actualHeight;
     int xOffset;
     int yOffset;
+    private int textureID;
     private Texture texture;
     private String key;
     private String folder;
@@ -310,18 +310,16 @@ public class Sprite implements Appearance {
     }
 
     public synchronized void releaseTexture() {
-        if (textureID != 0 || texture != null) {
-            if (glGetInteger(GL_TEXTURE_BINDING_2D) == textureID) {
-                glBindTexture(GL_TEXTURE_2D, 0);
-            }
-            if (textureID != 0)
-                textureID = 0;
-            if (texture != null) {
-                texture.release();
-                texture = null;
-            }
-            //System.out.println("Unloaded: " + path);
+        if (glGetInteger(GL_TEXTURE_BINDING_2D) == textureID) {
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
+        if (textureID != 0)
+            textureID = 0;
+        if (texture != null) {
+            texture.release();
+            texture = null;
+        }
+//            System.out.println("Unloaded: " + path);
     }
 
     public SpriteBase getSpriteBase() {
@@ -401,6 +399,16 @@ public class Sprite implements Appearance {
 
     @Override
     protected void finalize() {
-        releaseTexture();
+        if (textureID != 0 || texture != null) {
+            releaseTexture();
+        }
+    }
+
+    public int getTextureID() {
+        return textureID;
+    }
+
+    public void setTextureID(int textureID) {
+        this.textureID = textureID;
     }
 }
