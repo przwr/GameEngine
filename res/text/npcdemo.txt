@@ -1,0 +1,41 @@
+﻿
+sp:1
+co:000000
+co:FF0000
+co:FFFF00
+co:66FF33
+co:00FFFF
+co:0000FF
+co:FF00FF
+au:Melodia
+au:Aria
+po:melodiaPortret:1
+po:ariaPortret:0
+
+$AU0$$PO0$Witaj!$QUHej!:11:Witaj!:12$
+#B11
+$AU1$$PO1$$EX2$Hej!$FL
+$AU0$$PO0$$EX0$$NEJest taka sprawa...$NO$FL
+$MEMasz tu miecz$NO i $SHubij ślimaka$NO.$FL
+Broń wyjmuje się $CO1$$WRwpn$$CO0$.$FL
+Atakuje się $CO1$$WRatk1$$CO0$ i $CO1$$WRatk2$$CO0$.
+#B12
+$AU1$$PO1$$EX2$Witaj!$FL
+$AU0$$PO0$$EX0$Mam wielką prośbę...$FL
+$AU0$$PO0$$EX0$Oto miecz. $MEProszę zabij ślimaka$NO.$FL
+Broń wyjmuje się $CO1$$WRwpn$$CO0$.$FL
+Atakuje się $CO1$$WRatk1$$CO0$ i $CO1$$WRatk2$$CO0$.
+#B2
+$AU0$$PO0$Broń wyjmuje się $CO1$$WRwpn$$CO0$.$FL
+Atakuje się $CO1$$WRatk1$$CO0$ i $CO1$$WRatk2$$CO0$.$FL
+Broni się $CO1$$WRblck$$CO0$.$FL
+Jak zabijesz ślimaka, to wróć do mnie.$FL
+Możesz najpierw poćwiczyć na tamtej kukle.
+#B3
+$AU0$$PO0$Dobra robota ze ślimakiem.
+Masz za to ciastko.$FL
+$AU1$$PO1$$EX2$Dzięki!$FL
+$AU1$$PO1$$EX1$Nom, nom, nom.
+#B4
+$AU0$$PO0$Teraz możesz iść dalej przez krzaki.$FL
+Kieruj się na południe.

@@ -58,7 +58,7 @@ public class Melodia extends Mob {
                         && d <= Place.tileSize * 1.5 && !player.getTextController().isStarted()) {
                     setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
                     player.getTextController().lockEntity(player);
-                    player.getTextController().startFromFile("demoNPC", dialog);
+                    player.getTextController().startFromFile("npcdemo", dialog);
                     player.getTextController().addEventOnBranchStart(() -> {
                         if (player.getFirstWeapon() == null) {
                             Weapon sword = new Weapon("Sword", SWORD);

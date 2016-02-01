@@ -229,8 +229,7 @@ public class Main {
                     }
                     if (console.areStatsRendered()) {
                         console.clearStats();
-                        console.printStats(info);
-                        console.printStats("Player 1: " + game.getPlayerCoordinates());
+                        console.printStats(info + " Player 1: " + game.getPlayerCoordinates());
                     }
                 } else {
                     info = " [" + frames + " fps]";
