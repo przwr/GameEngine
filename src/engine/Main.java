@@ -9,9 +9,12 @@ import engine.systemcommunication.AnalyzerSettings;
 import engine.systemcommunication.PlayerControllers;
 import engine.systemcommunication.Time;
 import engine.utilities.Delay;
+import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.SimpleKeyboard;
 import engine.view.Popup;
+import engine.view.Renderer;
+import engine.view.SplitScreen;
 import game.Game;
 import game.Settings;
 import game.place.Console;
@@ -50,9 +53,7 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean TEST = false;
-    public static boolean SHOW_INTERACTIVE_COLLISION;
-    public static boolean pause, enter = true;
+    public static boolean SHOW_INTERACTIVE_COLLISION, pause, enter = true, TEST = true;
     public static BackgroundLoader backgroundLoader;
     private static Game game;
     private static Popup pop;
@@ -73,11 +74,6 @@ public class Main {
             ErrorHandler.logToFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
         }
         delay.start();
-        try {
-            backgroundLoader.start();
-        } catch (LWJGLException e) {
-            ErrorHandler.error("Failed to start background thread. " + e.getMessage());
-        }
         gameLoop();
         cleanUp();
     }
@@ -200,11 +196,19 @@ public class Main {
                 return new Pbuffer(2, 2, new PixelFormat(8, 24, 0), Display.getDrawable());
             }
         };
+        try {
+            backgroundLoader.start();
+        } catch (LWJGLException e) {
+            ErrorHandler.error("Failed to start background thread. " + e.getMessage());
+        }
     }
 
     private static void initializeGame() {
         game = new MyGame("Crossroads (PROTOTYPE)", controllers);
         Display.setTitle(game.getTitle());
+        Renderer.setUpDisplay();
+        Drawer.setUpDisplay();
+        SplitScreen.setUpDisplay();
         pop = new Popup("Amble-Regular");
     }
 
@@ -318,7 +322,9 @@ public class Main {
 
     public static void resetGammaAndBrightness() {
         try {
-            Display.setDisplayConfiguration(Settings.defaultGamma, Settings.defaultBrightness, 1f);
+            if (Display.isCreated()) {
+                Display.setDisplayConfiguration(Settings.defaultGamma, Settings.defaultBrightness, 1f);
+            }
         } catch (LWJGLException exception) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
         }
@@ -347,6 +353,5 @@ public class Main {
         Controllers.destroy();
         resetGammaAndBrightness();
         Display.destroy();
-        System.exit(0);
     }
 }

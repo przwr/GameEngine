@@ -80,6 +80,7 @@ public class MyGame extends Game {
                                     removePlayerOffline(i);
                                 } else {
                                     running = false;
+                                    Main.backgroundLoader.resetFirstLoaded();
                                     soundPause();
                                     Place.getDayCycle().stopTime();
                                 }
@@ -425,6 +426,7 @@ public class MyGame extends Game {
         Tree.fbos.clear();
         Bush.fbos.clear();
         GrassClump.fbos.clear();
+        Place.currentCamera = null;
         mode = 0;
     }
 

@@ -30,6 +30,7 @@ public class MyMenu extends Menu {
     private final Color normalColor = new Color(1f, 1f, 1f);
     private final Color darkColor = new Color(0.5f, 0.5f, 0.5f);
     private final Color chosenColor = new Color(1f, 1f, 0.5f);
+    private final Color darkChosenColor = new Color(0.75f, 0.75f, 0.375f);
     //    private final Color gammaColor1 = new Color(0.32f, 0.32f, 0.32f);
 //    private final Color gammaColor2 = new Color(0.16f, 0.16f, 0.16f);
 //    private final Color gammaColor3 = new Color(0.08f, 0.08f, 0.08f);
@@ -84,18 +85,20 @@ public class MyMenu extends Menu {
         MenuChoice graphic = new MenuChoice(Settings.language.menu.Video, this);
         graphic.addChoice(new BrightnessChoice(Settings.language.menu.Brightness, this));
         graphic.addChoice(new GammaChoice(Settings.language.menu.Gamma, this));
-        graphic.addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this));
-        graphic.addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this));
-        graphic.addChoice(new VerticalSynchronizationChoice(Settings.language.menu.VSync, this));
         graphic.addChoice(new FramesNumberChoice(Settings.language.menu.FramesLimit, this));
+        graphic.addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this).setBlockOnRun(true));
+        graphic.addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this).setBlockOnRun(true));
+        graphic.addChoice(new VerticalSynchronizationChoice(Settings.language.menu.VSync, this).setBlockOnRun(true));
 //        graphic.addChoice(new ShadowsOffChoice(Settings.language.menu.ShadowOff, this));
-        graphic.addChoice(new SmoothShadowsChoice(Settings.language.menu.SmoothShadows, this));
+        graphic.addChoice(new SmoothShadowsChoice(Settings.language.menu.SmoothShadows, this).setBlockOnRun(true));
+        graphic.addChoice(new ApplyChoice(Settings.language.menu.Apply, this).setBlockOnRun(true));
         options.addChoice(graphic);
 
         MenuChoice language = new MenuChoice(Settings.language.menu.Language, this);
+        language.setBlockOnRun(true);
         language.addChoice(new LanguageChoice(Settings.language.menu.Text, this));
+        language.addChoice(new ApplyChoice(Settings.language.menu.Apply, this));
         options.addChoice(language);
-
 
         root.addChoice(options);
 
@@ -188,7 +191,13 @@ public class MyMenu extends Menu {
 
     private Color getColor(int choice) {
         if (choice == root.getCurrent()) {
-            return chosenColor;
+            if (root.getChoice(choice).isBlocked()) {
+                return darkChosenColor;
+            } else {
+                return chosenColor;
+            }
+        } else if (root.getChoice(choice).isBlocked()) {
+            return darkColor;
         } else {
             return normalColor;
         }

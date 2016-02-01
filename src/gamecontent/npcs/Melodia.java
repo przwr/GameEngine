@@ -8,7 +8,6 @@ package gamecontent.npcs;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Main;
-import engine.utilities.Executive;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
@@ -64,7 +63,6 @@ public class Melodia extends Mob {
                             Weapon sword = new Weapon("Sword", SWORD);
                             sword.setModifier(1.2f);
                             player.addWeapon(sword);
-                            map.deleteBlock(5120, 3712); // Do usuniecia
 //                        map.deleteBlock(4096, 6592); // otworzenie 2 przejścia
                         }
                     }, "0");
@@ -74,9 +72,10 @@ public class Melodia extends Mob {
                     player.getTextController().addEventOnBranchEnd(() -> {
                         player.getStats().setHealth(player.getStats().getMaxHealth());
                         dialog = "4";
-                    }, "3");
+                    }, "3", "24");
                     player.getTextController().addEventOnBranchEnd(() -> {
                         map.deleteBlock(5120, 3712);
+                        player.getSpawnPosition().set(5152, 3840);
                     }, "4");
                     player.getTextController().addExternalWriter(new Writer("wpn") {
                         @Override

@@ -26,15 +26,22 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Renderer {
 
-    private static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight(), halfDisplayWidth = (displayWidth / 2), halfDisplayHeight = (displayHeight / 2);
     private static final int[] xStart = new int[7], xEnd = new int[7], yStart = new int[7], yEnd = new int[7];
     private static final drawBorder[] borders = new drawBorder[5];
     private static final resetOrthogonal[] orthos = new resetOrthogonal[5];
+    private static int displayWidth, displayHeight, halfDisplayWidth, halfDisplayHeight;
     private static FrameBufferObject frame;
     private static boolean visible;
     private static Place place;
 
     private Renderer() {
+    }
+
+    public static void setUpDisplay() {
+        displayWidth = Display.getWidth();
+        displayHeight = Display.getHeight();
+        halfDisplayWidth = (displayWidth / 2);
+        halfDisplayHeight = (displayHeight / 2);
     }
 
     public static void findVisibleLights(Map map, int playersLength) {
@@ -44,8 +51,10 @@ public class Renderer {
             for (int i = 0; i < playersLength; i++) {
                 if (place.players[i].getMap() == map) {
                     if (place.singleCamera && playersLength > 1) {
-                        if (tempLight.isEmits() && yStart[2 + playersLength] <= tempLight.getY() + tempLight.getYBottomEdge() && yEnd[2 + playersLength] >= tempLight.getY() - tempLight.getYTopEdge()
-                                && xStart[2 + playersLength] <= tempLight.getX() + tempLight.getXRightEdge() && xEnd[2 + playersLength] >= tempLight.getX() - tempLight.getXLeftEdge()) {
+                        if (tempLight.isEmits() && yStart[2 + playersLength] <= tempLight.getY() + tempLight.getYBottomEdge() && yEnd[2 + playersLength] >=
+                                tempLight.getY() - tempLight.getYTopEdge()
+                                && xStart[2 + playersLength] <= tempLight.getX() + tempLight.getXRightEdge() && xEnd[2 + playersLength] >= tempLight.getX() -
+                                tempLight.getXLeftEdge()) {
                             visible = true;
                             if (!place.cameras[playersLength - 2].getVisibleLights().contains(tempLight)) {
                                 place.cameras[playersLength - 2].addVisibleLight(tempLight);
@@ -53,8 +62,10 @@ public class Renderer {
                         }
                     } else {
                         for (int j = 0; j < playersLength; j++) {
-                            if (place.players[j].getMap() == map && tempLight.isEmits() && yStart[j] <= tempLight.getY() + tempLight.getYBottomEdge() && yEnd[j] >= tempLight.getY() - (tempLight.getYTopEdge())
-                                    && xStart[j] <= tempLight.getX() + (tempLight.getXRightEdge()) && xEnd[j] >= tempLight.getX() - (tempLight.getXLeftEdge())) {
+                            if (place.players[j].getMap() == map && tempLight.isEmits() && yStart[j] <= tempLight.getY() + tempLight.getYBottomEdge() &&
+                                    yEnd[j] >= tempLight.getY() - (tempLight.getYTopEdge())
+                                    && xStart[j] <= tempLight.getX() + (tempLight.getXRightEdge()) && xEnd[j] >= tempLight.getX() - (tempLight.getXLeftEdge()
+                            )) {
                                 visible = true;
                                 if (!(((Player) place.players[j]).getCamera()).getVisibleLights().contains(tempLight)) {
                                     (((Player) place.players[j]).getCamera()).addVisibleLight(tempLight);
@@ -76,8 +87,10 @@ public class Renderer {
             if (place.players[i].getMap() == map) {
                 for (Light light : place.players[i].getLights()) {
                     if (place.singleCamera && playersLength > 1) {
-                        if (light.isEmits() && yStart[2 + playersLength] <= light.getY() + (light.getYBottomEdge()) && yEnd[2 + playersLength] >= light.getY() - (light.getYBottomEdge())
-                                && xStart[2 + playersLength] <= light.getX() + (light.getXLeftEdge()) && xEnd[2 + playersLength] >= light.getX() - (light.getXLeftEdge())) {
+                        if (light.isEmits() && yStart[2 + playersLength] <= light.getY() + (light.getYBottomEdge()) && yEnd[2 + playersLength] >= light.getY
+                                () - (light.getYBottomEdge())
+                                && xStart[2 + playersLength] <= light.getX() + (light.getXLeftEdge()) && xEnd[2 + playersLength] >= light.getX() - (light
+                                .getXLeftEdge())) {
                             visible = true;
                             if (!place.cameras[playersLength - 2].getVisibleLights().contains(light)) {
                                 place.cameras[playersLength - 2].addVisibleLight(light);
@@ -85,7 +98,8 @@ public class Renderer {
                         }
                     } else {
                         for (int j = 0; j < playersLength; j++) {
-                            if (place.players[j].getMap() == map && light.isEmits() && yStart[j] <= light.getY() + (light.getYBottomEdge()) && yEnd[j] >= light.getY() - (light.getYBottomEdge())
+                            if (place.players[j].getMap() == map && light.isEmits() && yStart[j] <= light.getY() + (light.getYBottomEdge()) && yEnd[j] >=
+                                    light.getY() - (light.getYBottomEdge())
                                     && xStart[j] <= light.getX() + (light.getXLeftEdge()) && xEnd[j] >= light.getX() - (light.getXLeftEdge())) {
                                 visible = true;
                                 if (!(((Player) place.players[j]).getCamera()).getVisibleLights().contains(light)) {

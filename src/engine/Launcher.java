@@ -14,12 +14,19 @@ import static engine.Main.cleanUp;
  */
 public class Launcher {
 
+    public static boolean restart = true;
+
     public static void main(String[] args) {
         try {
-            Main.run();
+            while (restart) {
+                restart = false;
+                Main.run();
+                System.gc();
+            }
         } catch (Exception exception) {
             ErrorHandler.javaException(exception);
         }
         cleanUp();
+        System.exit(0);
     }
 }

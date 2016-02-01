@@ -24,6 +24,7 @@ public class Sprite implements Appearance {
     final int xStart;
     final int yStart;
     private final SpriteBase spriteBase;
+    public boolean AA;
     public String path;
     public InputStream stream;
     float widthWhole;
@@ -41,9 +42,10 @@ public class Sprite implements Appearance {
 
     private double begin;
     private double ending;
-    private long lastUsed = System.currentTimeMillis();
+    private long lastUsed;
 
     Sprite(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
+        lastUsed = System.currentTimeMillis();
         this.widthWhole = 2048;
         this.heightWhole = 2048;
         this.path = path;
@@ -61,7 +63,9 @@ public class Sprite implements Appearance {
 
     @Override
     public boolean bindCheck() {
-        lastUsed = System.currentTimeMillis();
+        if (lastUsed != 0) {
+            lastUsed = System.currentTimeMillis();
+        }
         int tex = textureID;
         if (tex == 0) {
             glBindTexture(GL_TEXTURE_2D, tex);
@@ -410,5 +414,13 @@ public class Sprite implements Appearance {
 
     public void setTextureID(int textureID) {
         this.textureID = textureID;
+    }
+
+    public void setUnload(boolean unload) {
+        if (unload) {
+            lastUsed = System.currentTimeMillis();
+        } else {
+            lastUsed = 0;
+        }
     }
 }

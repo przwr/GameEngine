@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 
 /**
@@ -209,6 +210,7 @@ public class SpriteBase {
         Sprite sprite = sprites.get(folder + textureKey);
         if (sprite != null) {
             if (sprite.getWidth() == width && sprite.getHeight() == height) {
+                sprite.AA = true;
                 loadTextureIfRequired(now, sprite);
                 return sprite;
             }
@@ -238,6 +240,7 @@ public class SpriteBase {
         path = folder + image;
         sprite = Sprite.create(path, folder, width, height, 0, 0, this);
         sprite.setKey(key);
+        sprite.AA = true;
         if (now.length > 0 && now[0]) {
             loadTextureIfRequired(now, sprite);
         } else {
@@ -252,6 +255,7 @@ public class SpriteBase {
             if (sprite.getKey().equals(textureKey)
                     && (sprite.getWidth() == (int) (sprite.getWidthWhole() * Settings.nativeScale)
                     && sprite.getHeight() == (int) (sprite.getHeightWhole() * Settings.nativeScale))) {
+                sprite.AA = true;
                 loadTextureIfRequired(now, sprite);
                 return (SpriteSheet) sprite;
             }
@@ -297,6 +301,7 @@ public class SpriteBase {
             sprite = Sprite.create(path, folder, width, height, startX, startY, this);
         }
         sprite.setKey(key);
+        sprite.AA = true;
         if (now.length > 0 && now[0]) {
             loadTextureIfRequired(now, sprite);
         } else {
@@ -309,7 +314,7 @@ public class SpriteBase {
         if (now.length > 0 && now[0] && sprite.getTextureID() == 0) {
             Texture tex = null;
             try {
-                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite.getPath()), GL_NEAREST);
+                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite.getPath()), sprite.AA ? GL_LINEAR : GL_NEAREST);
             } catch (IOException e) {
                 e.printStackTrace();
             }

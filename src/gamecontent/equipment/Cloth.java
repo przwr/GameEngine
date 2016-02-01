@@ -31,7 +31,9 @@ public class Cloth {
         list = new ArrayList<>(2);
         int i = 0;
         while (new File("res/textures/characters/" + character + "/" + type + "/" + cloth + (i > 0 ? i : "") + ".spr").exists()) {
-            list.add(place.getSpriteSheet(cloth + (i > 0 ? i : ""), "characters/" + character + "/" + type));
+            SpriteSheet spriteSheet = place.getSpriteSheet(cloth + (i > 0 ? i : ""), "characters/" + character + "/" + type);
+            spriteSheet.setUnload(false);
+            list.add(spriteSheet);
             i++;
         }
         if (list.isEmpty()) {
@@ -74,11 +76,11 @@ public class Cloth {
     public SpriteSheet getFirstPart() {
         return list.get(0);
     }
-    
+
     public SpriteSheet getSecondPart() {
         return hasSecond ? list.get(1) : null;
     }
-    
+
     public SpriteSheet getLastPart() {
         return hasLast ? list.get(list.size() - 1) : null;
     }

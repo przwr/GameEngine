@@ -47,6 +47,7 @@ public class Language {
         public String On;
         public String Off;
         public String Resume;
+        public String Apply;
         public String EndGame;
         public String StartGame;
         public String Language;

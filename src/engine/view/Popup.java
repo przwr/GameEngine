@@ -19,8 +19,8 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Popup {
 
-    private static final int WIDTH_HALF = Display.getWidth() / 2, HEIGHT_HALF = Display.getHeight() / 2;
     private static final String[] messages = new String[100];
+    private static int WIDTH_HALF, HEIGHT_HALF;
     private final FontBase fonts;
     private final int middleOk;
     private final int border = 3;
@@ -35,6 +35,8 @@ public class Popup {
         fonts.add(font, (int) (Settings.nativeScale * 22));
         fonts.add(font, (int) (Settings.nativeScale * 28));
         middleOk = fonts.getFont(0).getWidth("[ENTER]");
+        WIDTH_HALF = Display.getWidth() / 2;
+        HEIGHT_HALF = Display.getHeight() / 2;
     }
 
     public String popMessage() {

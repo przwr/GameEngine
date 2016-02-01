@@ -41,8 +41,9 @@ public class Blazag extends Mob {
     private final static byte ATTACK_SLASH = 0, ATTACK_JUMP = 1;
     private final static Comparator<Mob> comparator = (Mob firstObject, Mob secondObject)
             -> ((Blazag) firstObject).targetDistance - ((Blazag) secondObject).targetDistance;
+    static RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private Animation animation;
-    private int seconds = 0, max = 5, targetDistance, attackDelayTime = 150, attackCout = 0, maxAttackCount = 6;
+    private int seconds = 0, max = 5, targetDistance, attackDelayTime = 150, attackCount = 0, maxAttackCount = 6;
     private float SLEEP_END = 17.5f, SLEEP_START = 7.5f;
     private float current_sleep_end, current_sleep_start;
     private ActionState idle, attack, wander, jump, jumpAttack, protect, sleep, run_to;
@@ -55,7 +56,6 @@ public class Blazag extends Mob {
     private Delay changeDelay = Delay.createInMilliseconds(750);              //TODO - te wartości losowe i zależne od poziomu trudności
     private boolean attacking = true, chasing, jumpOver, awake = true, can_attack, bursting = false, letGo = false;
     private SpeedChanger jumper;
-    private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private Order order = new Order();
 
     {
@@ -150,6 +150,7 @@ public class Blazag extends Mob {
                                     ag.clearHurtedByOwner();
                                 }
                             }
+                            letGoDelay.start();
                         }
                         setEnemyToAttack();
                         int distance = target != null ? Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) : sightRange2;
@@ -415,9 +416,9 @@ public class Blazag extends Mob {
 
     private void loneAttack(int distance) {
         if (target != null && jumpDelay.isOver() && jumper.isOver()) {
-            if (attackCout > maxAttackCount) {
+            if (attackCount > maxAttackCount) {
                 rest.start();
-                attackCout = 0;
+                attackCount = 0;
             }
             if (!rest.isOver()) {
                 maxSpeed = 3;
@@ -436,7 +437,7 @@ public class Blazag extends Mob {
                         if (distance <= sightRange2 / 9) {
                             state = jumpAttack;
                             jumpDelay.start();
-                            attackCout += 2;
+                            attackCount += 2;
                         } else {
                             state = jump;
                             jumpDelay.start();
@@ -472,7 +473,7 @@ public class Blazag extends Mob {
                                 jumpOver = true;
                                 state = protect;
                             } else {
-                                attackCout++;
+                                attackCount++;
                                 animation.setFPS(30);
                                 getAttackActivator(ATTACK_SLASH).setActivated(true);
                                 if (rand > 0.5 + lifePercent / 2) {
@@ -505,13 +506,13 @@ public class Blazag extends Mob {
                                                     animation.setFPS(30);
                                                     getAttackActivator(ATTACK_SLASH).setActivated(true);
                                                     attacking = true;
-                                                    attackCout++;
+                                                    attackCount++;
                                                     if (rand > 0.75) {
                                                         if (jumpRestDelay.isOver() && rand > 0.97) {
                                                             brake(2);
                                                             setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
                                                             animation.animateSingleInDirection(getDirection8Way(), 19);
-                                                            attackCout++;
+                                                            attackCount++;
                                                             state = jumpAttack;
                                                             jumpDelay.start();
                                                             jumpRestDelay.start();
@@ -523,7 +524,7 @@ public class Blazag extends Mob {
                                                             brake(2);
                                                             setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
                                                             animation.animateSingleInDirection(getDirection8Way(), 19);
-                                                            attackCout++;
+                                                            attackCount++;
                                                             state = jumpAttack;
                                                             jumpDelay.start();
                                                             jumpRestDelay.start();

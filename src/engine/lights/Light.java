@@ -46,6 +46,7 @@ public class Light {
         this.color = color;
         this.owner = owner;
         this.sprite = sprite;
+        this.sprite.setUnload(false);
         this.width = width;
         this.height = adjustHeightForWindow(height);
         this.giveShadows = giveShadows;
@@ -57,9 +58,9 @@ public class Light {
         this.color = color;
         this.owner = owner;
         this.spriteSheet = spriteSheet;
+        this.spriteSheet.setUnload(false);
         this.width = Methods.roundDouble(width / (1.75f - Settings.nativeScale));
         this.height = Methods.roundDouble(height / (1.75f - Settings.nativeScale));
-
         this.piece = piece;
         this.giveShadows = false;
         this.widthWholeLight = this.width * 2;

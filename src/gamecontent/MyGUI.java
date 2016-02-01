@@ -39,7 +39,7 @@ public class MyGUI extends GUIObject {
         emptySlot = 0;
         firstAttackType = emptySlot;
         secondAttackType = emptySlot;
-        attackIcons = place.getSpriteSheet("attackIcons", "");
+        attackIcons = Settings.nativeScale == 1 ? place.getSpriteSheet("attackIcons", "") : place.getSpriteSheetSetScale("attackIcons", "");
     }
 
     @Override
@@ -117,10 +117,9 @@ public class MyGUI extends GUIObject {
 //                        Settings.nativeScale), 0);
 //                Prawy Dolny:
 //                glTranslatef(0, Display.getHeight() - Math.round(2 * Place.tileSize * Settings.nativeScale), 0);
-                glScaled(Settings.nativeScale, Settings.nativeScale, 1);
                 Drawer.setColor(color);
                 attackIcons.renderPiece(firstAttackType);
-                glTranslatef(0, Place.tileSize, 0);
+                glTranslatef(0, (int) (Place.tileSize * Settings.nativeScale), 0);
                 attackIcons.renderPiece(secondAttackType);
                 glPopMatrix();
             }

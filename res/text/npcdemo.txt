@@ -30,7 +30,19 @@ $AU0$$PO0$Broń wyjmuje się $CO1$$WRwpn$$CO0$.$FL
 Atakuje się $CO1$$WRatk1$$CO0$ i $CO1$$WRatk2$$CO0$.$FL
 Broni się $CO1$$WRblck$$CO0$.$FL
 Jak zabijesz ślimaka, to wróć do mnie.$FL
-Możesz najpierw poćwiczyć na tamtej kukle.
+Możesz najpierw poćwiczyć na tamtej kukle.$QUOk!:21:Zabić?:22$
+#B21
+$AU1$$PO1$$EX2$Już idę.$FL
+$AU0$$PO0$$EX0$Powodzenia.
+#B22
+$AU1$$PO1$$EX1$Dlaczego mam zabić ślimaka?$FL
+$AU0$$PO0$$EX0$Bo ślimaki są $SHszkodnikami$NO.$QUW porządku.:23:Nie sądzę...:24$
+#B23
+$AU1$$PO1$$EX2$Zajmę się tym.$FL
+#B24
+$AU1$$PO1$$EX1$Myślę, że ślimaki są niegroźne.$FL
+$AU0$$PO0$$EX0$$NEDobrze, nie zabijaj ślimaka...$NO$FL
+Poćwicz chociaż na tamtej kukle.
 #B3
 $AU0$$PO0$Dobra robota ze ślimakiem.
 Masz za to ciastko.$FL

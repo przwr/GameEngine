@@ -43,6 +43,7 @@ public class LangPL extends Language {
         menu.On = "Wł.";
         menu.Off = "Wył.";
         menu.Resume = "Wznów";
+        menu.Apply = "Zastosuj";
         menu.EndGame = "Zakończ grę!";
         menu.StartGame = "Uruchom grę!";
         menu.Language = "Język";

@@ -42,6 +42,7 @@ public class LangENG extends Language {
         menu.On = "On";
         menu.Off = "Off";
         menu.Resume = "Resume";
+        menu.Apply = "Apply";
         menu.EndGame = "End game!";
         menu.StartGame = "Start game!";
         menu.Language = "Language";

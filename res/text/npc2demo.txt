@@ -1,0 +1,40 @@
+﻿
+sp:1
+co:000000
+co:FF0000
+co:FFFF00
+co:66FF33
+co:00FFFF
+co:0000FF
+co:FF00FF
+au:Nutka
+au:Aria
+po:melodiaPortret:1
+po:ariaPortret:0
+
+$AU0$$PO0$Cześć!$FL
+$AU1$$PO1$Cześć! Jesteś siostrą Melodii?$FL
+$AU0$$PO0$Jaka to Melodia?$FL
+$AU1$$PO1$No... $NENie wiem...$ME Zwykła?$NO$FL
+$AU0$$PO0$Nie ważne. Nie mam siostry.$FL
+$AU1$$PO0$Co tutaj robisz?$FL
+$AU0$$PO0$Ostrzegam innych przed fretkami.$FL
+To są drapieżne fretki, lepiej je omijać.$FL
+$AU1$$PO0$Dzięki!
+#B1
+$AU0$$PO0$Mogę Ci jakoś pomóc?$QUNie:11:Ciastko:12:Gdzie iść?:13:$
+#B11
+$AU1$$PO1$Dam sobie radę. Dzięki.$FL
+$AU0$$PO0$Jakby Ci czegoś było trzeba, to wiesz gdzie mnie szukać.$FL
+$AU1$$PO1$Ok.$FL
+#B12
+$AU1$$PO1$Masz może ciastko?$FL
+$AU0$$PO0$Proszę.$FL
+$AU1$$PO1$$EX2$Dziękuję.$FL
+$AU1$$PO1$$EX1$Nom, nom, nom.
+#B13
+$AU1$$PO1$Wiesz gdzie mam iść?$FL
+$AU0$$PO0$Nie wiem.$FL
+Może idź na południe trzymając się z dala od fretek.$FL
+Tam gdzieś powinno być przejście.$FL
+$AU1$$PO1$Poszukam, dzięki.$FL

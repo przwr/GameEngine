@@ -12,6 +12,7 @@ import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
 import gamecontent.mobs.Shen;
 import gamecontent.npcs.Melodia;
+import gamecontent.npcs.Nutka;
 
 /**
  * Created by przemek on 21.11.15.
@@ -115,14 +116,30 @@ public class Test extends Map {
         addObject(GrassClump.createRectangle(2656, 1800, 2, 8, 8, 2, 8, 32));
         addObject(GrassClump.createRectangle(2752, 1800, 2, 8, 8, 2, 8, 32));
 
+        addObject(GrassClump.createCorner(4560, 2864, 2, 8, 8, 2, 8, 32, 0));
+        addObject(GrassClump.createCorner(4560, 2736, 2, 8, 8, 2, 8, 32, 1));
+        addObject(GrassClump.createCorner(4752, 2736, 2, 8, 8, 2, 8, 32, 2));
+        addObject(GrassClump.createCorner(4752, 2864, 2, 8, 8, 2, 8, 32, 3));
+        addObject(GrassClump.createRectangle(4560, 2800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(4656, 2864, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(4656, 2736, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(4656, 2800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(4752, 2800, 2, 8, 8, 2, 8, 32));
+
         addObject(new Bush(3200, 1872, 12, 70, 0.8f));
         addObject(new Bush(3900, 2072, 12, 70, 0.8f));
         addObject(new Bush(4500, 1972, 12, 70, 0.8f));
 
         addObject(new Dummy(4860, 2000, place, mobID++));
         addObject(new Melodia(5344, 2272, place, mobID++));
-        addObject(new Blazag(5344, 6494, place, mobID++));
-        addObject(new Blazag(4344, 5494, place, mobID++));
-        addObject(new Blazag(6344, 4494, place, mobID++));
+        addObject(new Blazag(5744, 6494, place, mobID++));
+        addObject(new Blazag(5344, 5494, place, mobID++));
+        addObject(new Blazag(5144, 5994, place, mobID++));
+        addObject(new Nutka(4435, 4215, place, mobID++));
+
+        addObject(new Bush(4894, 4422, 12, 70, 0.8f));
+        addObject(new Bush(5423, 4210, 12, 70, 0.8f));
+
+
     }
 }

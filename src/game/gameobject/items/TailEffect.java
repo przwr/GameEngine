@@ -8,14 +8,9 @@ package game.gameobject.items;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.place.Place;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glVertex2f;
 import org.newdawn.slick.Color;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -26,15 +21,15 @@ public abstract class TailEffect {
     final Joint[] tail;
     final int length;
     final float width;
-    int last;
     final Color color;
+    int last;
 
     public TailEffect(int length, float width) {
         this.tail = new Joint[length];
         this.length = Math.max(length, 2);
         this.width = width / 2;
         last = -1;
-        color = new Color(1, 1, 1, 0.5f);
+        color = new Color(1, 1, 1, 0.3f);
     }
 
     public void updatePoint(int x, int y, int height, int direction) {
@@ -94,7 +89,7 @@ public abstract class TailEffect {
     }
 
     public float calcWidth(int i) {
-        return width - ((i - 1) * (float) (width / (last + 1)));
+        return width - ((i - 1) * width / (last + 1));
     }
 
     public abstract void innerRender();

@@ -29,8 +29,8 @@ import static org.lwjgl.opengl.GL15.GL_SRC1_RGB;
  */
 public class Drawer {
 
-    public static final int displayWidth = Display.getWidth(), displayHeight = Display.getHeight();
     private static final Texture font = loadFontTexture();
+    public static int displayWidth, displayHeight;
     public static Place place;
     private static float xCurrent, yCurrent;
     private static Color currentColor = Color.white;
@@ -43,6 +43,11 @@ public class Drawer {
             ErrorHandler.javaError(exception.getMessage());
         }
         return null;
+    }
+
+    public static void setUpDisplay() {
+        displayWidth = Display.getWidth();
+        displayHeight = Display.getHeight();
     }
 
     public static void bindFontTexture() {
@@ -73,11 +78,14 @@ public class Drawer {
     public static void setColorAlpha(float alpha) {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, alpha);
     }
-    
+
     public static Color getCurrentColor() {
         return currentColor;
     }
 
+    public static void setCurrentColor(Color color) {
+        Drawer.currentColor = color;
+    }
 
     public static Color setPercentToRGBColor(int percent, Color color) {
         if (percent == 100) {
@@ -124,7 +132,6 @@ public class Drawer {
         drawRectangle(xStart, yStart, width, height);
         glColor3f(1f, 1f, 1f);
     }
-
 
     public static void drawTextureTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
         glBegin(GL_TRIANGLES);
@@ -184,7 +191,6 @@ public class Drawer {
         glEnd();
     }
 
-
     public static void drawQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
@@ -213,7 +219,6 @@ public class Drawer {
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
-
 
     public static void drawCircleSector(int xStart, int yStart, int radius, int startAngle, int endAngle, int precision) {
         drawEllipseSector(xStart, yStart, radius, radius, startAngle, endAngle, precision);
@@ -370,10 +375,6 @@ public class Drawer {
 
     public static void setColor(Color color) {
         glColor4f(color.r, color.g, color.b, color.a);
-    }
-
-    public static void setCurrentColor(Color color) {
-        Drawer.currentColor = color;
     }
 
     public static FontHandler getFont(String name, int size) {
