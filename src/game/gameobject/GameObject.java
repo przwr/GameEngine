@@ -463,10 +463,6 @@ public abstract class GameObject {
         }
     }
 
-    public void setWarp(WarpPoint warp) {
-        this.warp = warp;
-    }
-
     public boolean isMakeNoise() {
         return makeNoise;
     }
@@ -493,5 +489,13 @@ public abstract class GameObject {
 
     public boolean canCover() {
         return canCover;
+    }
+
+    public WarpPoint getWarp() {
+        return warp;
+    }
+
+    public void setWarp(WarpPoint warp) {
+        this.warp = warp;
     }
 }

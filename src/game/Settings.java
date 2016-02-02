@@ -101,8 +101,10 @@ public class Settings {
         resolutionWidth = modes[0].getWidth();
         resolutionHeight = modes[0].getHeight();
         frequency = modes[0].getFrequency();
-        languages.add(new LangPL());
-        languages.add(new LangENG());
+        if (languages.size() == 0) {
+            languages.add(new LangPL());
+            languages.add(new LangENG());
+        }
         language = languages.get(0);
         languageName = language.lang;
     }

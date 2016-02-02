@@ -13,16 +13,13 @@ import org.newdawn.slick.Color;
  */
 public class LoadingMap extends Map {
 
-    Delay delay = Delay.createInMilliseconds(500);
-    int dotsCount = -1;
-
-    {
-        delay.start();
-    }
+    Delay delay = Delay.createInMilliseconds(200);
+    int progress = -1;
 
     public LoadingMap(Place place) {
         super((short) -1, "Empty", place, Place.tileSize, Place.tileSize, Place.tileSize);
         setColor(new Color(1f, 1f, 1f));
+        delay.terminate();
     }
 
     @Override
@@ -31,10 +28,10 @@ public class LoadingMap extends Map {
         String dots = "";
         if (delay.isOver()) {
             delay.start();
-            dotsCount++;
-            if (dotsCount > 3) dotsCount = 0;
+            progress++;
+            if (progress > 3) progress = 0;
         }
-        for (int i = 0; i < dotsCount; i++) {
+        for (int i = 0; i < progress; i++) {
             if (i == 0) {
                 dots = " .";
             } else {
