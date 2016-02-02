@@ -221,6 +221,7 @@ public abstract class Entity extends GameObject {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
+                tc.onStop();
                 iterator.remove();
                 break;
             }

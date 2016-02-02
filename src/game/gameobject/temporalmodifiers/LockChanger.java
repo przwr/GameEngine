@@ -15,14 +15,10 @@ public class LockChanger extends TemporalChanger {
     }
 
     @Override
-    public boolean isOver() {
-        boolean over = left <= 0;
-        if (over) {
-            if (entity != null) {
-                entity.setUnableToMove(false);
-            }
+    public void onStop() {
+        if (entity != null) {
+            entity.setUnableToMove(false);
         }
-        return over;
     }
 
     @Override

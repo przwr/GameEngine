@@ -88,4 +88,8 @@ public abstract class TemporalChanger {
     }
     
     abstract public void modifyEffect(Entity en);
+    
+    public void onStop() {
+        //TODO : EVERYTHING
+    }
 }
