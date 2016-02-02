@@ -225,16 +225,16 @@ public class MyGame extends Game {
             place = new MyPlace(this, 64);
         }
         Drawer.place = place;
-        showLoading();
         place.players = new GameObject[4];
         place.playersCount = playersCount;
+        Place.progress = 2;
+        loading(0);
         if (playersCount == 1) {
             if (Main.TEST) {
                 players[0].initializeSetPosition(56, 104, place, 2048, 2048);
             } else {
                 players[0].initializeSetPosition(56, 104, place, 256, 256);
 //                players[0].initializeSetPosition(56, 104, place, 1200, 1920);
-
             }
             players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
         } else if (playersCount == 2) {
@@ -271,6 +271,7 @@ public class MyGame extends Game {
             players[3].setCamera(new PlayersCamera(players[3], 4, 4, 3));
             Settings.joinSplitScreen = true;
         }
+        loading(1);
         for (int i = 0; i < 4; i++) {
             place.players[i] = players[i];
         }
@@ -291,12 +292,28 @@ public class MyGame extends Game {
         started = running = true;
     }
 
-    private void showLoading() {
+
+    private void loading(int progress) {
         Drawer.clearScreen(0);
-        FontHandler font = Drawer.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
-        Drawer.renderStringCentered(Settings.language.menu.Loading + " ...", Display.getWidth() / 2, Display.getHeight() / 2, font, new Color(1f, 1f, 1f));
+        showLoading(progress);
         Display.sync(60);
         Display.update();
+    }
+
+    @Override
+    public void showLoading(int progress) {
+        String loading = Settings.language.menu.Loading;
+        String dots = "";
+        FontHandler font = Drawer.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
+        for (int i = 0; i < progress; i++) {
+            if (i == 0) {
+                dots = " .";
+            } else {
+                dots = " " + dots + ".";
+            }
+        }
+        Drawer.renderStringCentered(loading, Display.getWidth() / 2, Display.getHeight() / 2, font, Color.white);
+        Drawer.renderStringCentered(dots, (Display.getWidth() + font.getWidth(loading)) / 2, Display.getHeight() / 2, font, Color.white);
     }
 
     private void addPlayerOffline(int i) {

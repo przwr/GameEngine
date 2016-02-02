@@ -68,7 +68,7 @@ public abstract class Entity extends GameObject {
 
     public Entity() {
         knockBack = new SpeedChanger();
-        changers = new ArrayList<>();
+        changers = new ArrayList<>(1);
         resistance = 1;
     }
 
@@ -217,18 +217,13 @@ public abstract class Entity extends GameObject {
 
     public void updateChangers() {
         TemporalChanger tc;
-        boolean isRemoved = false;
         for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
                 iterator.remove();
-                isRemoved = true;
                 break;
             }
-        }
-        if (isRemoved) {
-            changers.trimToSize();
         }
     }
 
