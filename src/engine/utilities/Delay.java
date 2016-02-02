@@ -38,7 +38,7 @@ public class Delay {
     public void setFrameLengthInSecondsAndMilliseconds(int seconds, int miliseconds) {
         this.length = seconds * 1000 + miliseconds;
     }
-    
+
     public void setFrameLengthInMinutesAndSeconds(int minutes, int seconds) {
         this.length = (minutes * 60 + seconds) * 1000;
     }
@@ -46,7 +46,7 @@ public class Delay {
     public void setFrameLengthInMilliseconds(int miliseconds) {
         this.length = miliseconds;
     }
-    
+
     public void setFrameLengthInSeconds(int seconds) {
         this.length = seconds * 1000;
     }
@@ -65,7 +65,7 @@ public class Delay {
     public boolean isOver() {
         return started && endTime <= System.currentTimeMillis();
     }
-    
+
     public boolean isWorking() {
         return started && endTime > System.currentTimeMillis();
     }
@@ -91,5 +91,13 @@ public class Delay {
     public void terminate() {
         started = true;
         endTime = 0;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public long getDifference() {
+        return endTime - System.currentTimeMillis();
     }
 }

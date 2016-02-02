@@ -178,18 +178,20 @@ public class Main {
     }
 
     private static void initializeOpenGL() {
-        glDisable(GL_DEPTH_TEST);
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_MULTISAMPLE);
-        glEnable(GL_BLEND);
-        glEnable(GL_SCISSOR_TEST);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glMatrixMode(GL_PROJECTION);
-        glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
-        glMatrixMode(GL_MODELVIEW);
-        glClearColor(0, 0, 0, 0);
-        glLoadIdentity();
-        glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        if (Display.isCreated()) {
+            glDisable(GL_DEPTH_TEST);
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_MULTISAMPLE);
+            glEnable(GL_BLEND);
+            glEnable(GL_SCISSOR_TEST);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glMatrixMode(GL_PROJECTION);
+            glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
+            glMatrixMode(GL_MODELVIEW);
+            glClearColor(0, 0, 0, 0);
+            glLoadIdentity();
+            glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        }
         backgroundLoader = new BackgroundLoader() {
             @Override
             Drawable getDrawable() throws LWJGLException {

@@ -52,6 +52,8 @@ public abstract class Game {
 
     public abstract void runServer();
 
+    public abstract void showLoading(int progress);
+
     public abstract void update();
 
     public abstract void render();
@@ -72,10 +74,10 @@ public abstract class Game {
     public Place getPlace() {
         return place;
     }
-    
+
     public String getPlayerCoordinates() {
         Player p = (Player) place.players[0];
-        return "[" +  p.getX() + ", " + p.getY() + "]";
+        return "[" + p.getX() + ", " + p.getY() + "]";
     }
 
     protected void pause() {

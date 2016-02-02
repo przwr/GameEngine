@@ -37,6 +37,7 @@ public abstract class Camera {
     int yDown;
     int yUp;
     int ownersCount;
+    private Delay fadeDelay = Delay.createInMilliseconds(0);
     private Map map;
     private double xMiddle;
     private double yMiddle;
@@ -55,6 +56,8 @@ public abstract class Camera {
     private double scale;
     private boolean shakeUp = true;
     private boolean zoomed = false;
+    private boolean faded = false;
+    private long fadingDifference;
 
     Camera(GameObject object) {
         owners.add(object);
@@ -71,8 +74,8 @@ public abstract class Camera {
                 updateLooking();
                 xTmpMiddle = xMiddle;
                 yTmpMiddle = yMiddle;
-                xMiddle = xTmpMiddle + (double) (getXMiddle() - xTmpMiddle) / tmpSpeed;
-                yMiddle = yTmpMiddle + (double) (getYMiddle() - yTmpMiddle) / tmpSpeed;
+                xMiddle = xTmpMiddle + (getXMiddle() - xTmpMiddle) / tmpSpeed;
+                yMiddle = yTmpMiddle + (getYMiddle() - yTmpMiddle) / tmpSpeed;
                 xOffset = Methods.interval(-map.getWidth() * scale + getWidth(), widthHalf - xMiddle * scale, 0);
                 yOffset = Methods.interval(-map.getHeight() * scale + getHeight(), heightHalf - yMiddle * scale, 0);
                 area = map.getAreaIndex((int) xMiddle, (int) yMiddle);
@@ -95,10 +98,10 @@ public abstract class Camera {
 
     private void updateLooking() {
         if (Math.abs(xTarget - xEye) > 1) {
-            xEye += (double) (xTarget - xEye) / 30;
+            xEye += (xTarget - xEye) / 30;
         }
         if (Math.abs(yTarget - yEye) > 1) {
-            yEye += (double) (yTarget - yEye) / 30;
+            yEye += (yTarget - yEye) / 30;
         }
         xEffect -= xEye;
         yEffect -= yEye;
@@ -244,12 +247,12 @@ public abstract class Camera {
         return yEffect;
     }
 
-    public void setCameraSpeed(int speed) {
-        this.cameraSpeed = speed;
-    }
-
     public int getCameraSpeed() {
         return cameraSpeed;
+    }
+
+    public void setCameraSpeed(int speed) {
+        this.cameraSpeed = speed;
     }
 
     public void setXOff(int xOffset) {
@@ -314,5 +317,28 @@ public abstract class Camera {
 
     public ArrayList<GameObject> getOwners() {
         return owners;
+    }
+
+    public void fade(int time) {
+        fadeDelay.setFrameLengthInMilliseconds(time);
+        fadeDelay.start();
+        faded = !faded;
+    }
+
+    public boolean isFading() {
+        fadingDifference = fadeDelay.getDifference();
+        return fadeDelay.isWorking();
+    }
+
+    public boolean isFaded() {
+        return faded;
+    }
+
+    public float getFadingValue() {
+        if (faded) {
+            return (fadingDifference / (float) fadeDelay.getLength());
+        } else {
+            return ((fadeDelay.getLength() - fadingDifference) / (float) fadeDelay.getLength());
+        }
     }
 }

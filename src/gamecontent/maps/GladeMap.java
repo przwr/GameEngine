@@ -13,11 +13,11 @@ import gamecontent.GrassClump;
 import gamecontent.SpawnPoint;
 import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
+import gamecontent.mobs.Dummy;
+import gamecontent.npcs.Melodia;
 import gamecontent.npcs.MyNPC;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import gamecontent.mobs.Dummy;
-import gamecontent.npcs.Melodia;
 
 /**
  * @author Wojtek
@@ -52,6 +52,8 @@ public class GladeMap extends Map {
         addObject(warp);
         addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
         placePuzzle(20, 20, new PuzzleObject("testMap/portal", place));
+        addObject(new WarpPoint("toPolana", 20 * tileSize + tileSize / 2, 19 * tileSize + tileSize / 2));
+        placePuzzle(20, 20, new PuzzleObject("portal", place));
 
         long start = System.nanoTime();
         generateNavigationMeshes();

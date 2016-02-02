@@ -7,9 +7,13 @@ package game.place.map;
 
 import collision.Figure;
 import engine.Main;
+import engine.utilities.Delay;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
+import game.gameobject.temporalmodifiers.LockChanger;
+import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.place.Place;
+import gamecontent.MyPlayer;
 
 /**
  * @author Wojtek
@@ -23,6 +27,9 @@ public class WarpPoint extends GameObject {
     private Place place;
     private Map destination;
     private String stringDestination = null;
+    private Delay delay = Delay.createInMilliseconds(250);
+    private Delay secondDelay = Delay.createInMilliseconds(125);
+    private boolean loading;
 
     public WarpPoint(String name, int x, int y, int toX, int toY, Map map) {
         this.name = name;
@@ -74,37 +81,70 @@ public class WarpPoint extends GameObject {
 
     public void warp(GameObject object) {
         if (isWarp) {
-            if (isStatic) {
-                if (destination != null) {
-                    object.changeMap(destination, xDestination, yDestination);
-                } else {
-                    loadMap(object);
-                }
+            if (object instanceof Player) {
+                loadMap(object);
             } else {
-                WarpPoint warp;
-                if (destination != null) {
-                    warp = destination.findWarp(name);
-                    object.changeMap(destination, warp.getX(), warp.getY());
+                if (isStatic) {
+                    if (destination != null) {
+                        object.changeMap(destination, xDestination, yDestination);
+                    } else {
+                        loadMap(object);
+                    }
                 } else {
-                    loadMap(object);
+                    WarpPoint warp;
+                    if (destination != null) {
+                        warp = destination.findWarp(name);
+                        object.changeMap(destination, warp.getX(), warp.getY());
+                    } else {
+                        loadMap(object);
+                    }
                 }
-            }
-            if (object instanceof Player && ((Player) object).getCamera() != null) {
-                ((Player) object).getCamera().updateStatic();
             }
         }
     }
 
     private void loadMap(GameObject object) {
         place.game.getMapLoader().requestMap(stringDestination, this);
-        if (object.getMap() != null && object.getMap() != place.loadingMap) {
-            object.changeMap(place.loadingMap, 0, 0);
+        if (object.getMap() != null && object.getWarp() != this) {
+            if (object instanceof Player) {
+                if (((Player) object).getCamera() != null) {
+                    ((Player) object).getCamera().fade(250);
+                }
+                loading = true;
+                delay.start();
+                ((Player) object).setUnableToMove(true);
+            }
             object.setWarp(this);
-        } else {
+        } else if (delay.isOver()) {
             Map map = place.getMapByName(stringDestination);
-            if (map != null && Main.backgroundLoader.allLoaded()) {
-                WarpPoint warp = map.findWarp(name);
-                object.changeMap(map, warp.getX(), warp.getY());
+            if (map != null) {
+                if (object instanceof Player) {
+                    if (Main.backgroundLoader.allLoaded()) {
+                        WarpPoint warp = map.findWarp(name);
+                        object.changeMap(map, warp.getX(), warp.getY());
+                        TemporalChanger lockChanger = new LockChanger(8);
+                        lockChanger.start();
+                        ((Player) object).addChanger(lockChanger);
+                        ((MyPlayer) object).getGUI().setVisible(true);
+                        if (((Player) object).getCamera() != null) {
+                            ((Player) object).getCamera().updateStatic();
+                            ((Player) object).getCamera().fade(250);
+                        }
+                    }
+                } else {
+                    WarpPoint warp = map.findWarp(name);
+                    object.changeMap(map, warp.getX(), warp.getY());
+                }
+            } else if (object instanceof MyPlayer) {
+                if (loading) {
+                    ((MyPlayer) object).getGUI().setVisible(false);
+                    secondDelay.start();
+                    loading = false;
+                } else if (secondDelay.isOver()) {
+                    object.changeMap(place.loadingMap, 0, 0);
+                }
+            } else {
+                object.changeMap(place.loadingMap, 0, 0);
             }
         }
     }
