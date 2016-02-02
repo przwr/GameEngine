@@ -5,6 +5,7 @@
  */
 package gamedesigner;
 
+import engine.systemcommunication.IO;
 import engine.utilities.SimpleKeyboard;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
@@ -33,8 +34,15 @@ public class GUIHandler extends GUIObject {
     private final ObjectPlace objPlace;
     private final SimpleKeyboard key;
     private final int DO_NOTHING = -1, NAMING = 0, CHOOSING = 1, HELPING = 2, QUESTIONING = 3, VIEWING = 4;
-    private final Comparator<File> nameComparator = (File firstObject, File secondObject)
-            -> firstObject.getName().compareTo(secondObject.getName());
+    private final Comparator<File> nameComparator = (File o1, File o2) -> {
+        if ((o1.isDirectory() && o2.isDirectory()) || (!o1.isDirectory() && !o2.isDirectory())) {
+            return o1.getName().compareTo(o2.getName());
+        } else if (o1.isDirectory()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    };
     private final String[] help = new String[]{
         "H:", "Help",
         "1 ... 4:", "Change mode",
@@ -53,7 +61,7 @@ public class GUIHandler extends GUIObject {
         "DELETE:", "Delete",
         "ALT:", "Create altered",
         "",
-        "Z:", "Zoom in/out",
+        "+:", "Zoom in/out",
         "V:", "Visibility options",
         "B:", "Lock Block",
         "M:", "Move Blocks",
@@ -76,10 +84,11 @@ public class GUIHandler extends GUIObject {
         "SHIFT + ARROWS:", "Change link radius"};
     private int mode, selected;
     private ArrayList<File> list;
-    private String text = "";
+    private String text = "", extension;
     private boolean firstLoop;
     private boolean[] options;
     private String[] prettyOptions;
+    private File previous;
 
     private int helpLength;
 
@@ -107,9 +116,11 @@ public class GUIHandler extends GUIObject {
         firstLoop = true;
     }
 
-    public void changeToChooser(ArrayList<File> list) {
+    public void changeToChooser(ArrayList<File> list, String extension) {
         mode = CHOOSING;
         this.list = list;
+        this.extension = extension;
+        previous = list.get(0).getParentFile();
         Collections.sort(list, nameComparator);
         selected = 0;
         visible = true;
@@ -178,9 +189,19 @@ public class GUIHandler extends GUIObject {
                 place.standardFont, new Color(1f, 1f, 1f));
 
         int delta;
+        String name;
+        File tmp;
         for (int i = 0; i < list.size(); i++) {
+            tmp = list.get(i);
             delta = (int) ((i - selected) * tile * 0.5);
-            Drawer.renderString(list.get(i).getName(), (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
+            if (tmp == previous) {
+                name = "../";
+            } else if (tmp.isDirectory()) {
+                name = "<" + tmp.getName() + ">";
+            } else {
+                name = tmp.getName();
+            }
+            Drawer.renderString(name, (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
                     place.standardFont, new Color(1f, 1f, 1f));
         }
 
@@ -197,8 +218,18 @@ public class GUIHandler extends GUIObject {
             }
         }
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
-            objPlace.getFile(list.get(selected));
-            stop();
+            if (list.get(selected).isDirectory()) {
+                previous = list.get(selected).getParentFile();
+                list = IO.getSpecificFilesList(list.get(selected), extension);
+                if (!previous.getName().equals("res")) {
+                    list.add(previous);
+                }
+                Collections.sort(list, nameComparator);
+                selected = 0;
+            } else {
+                objPlace.getFile(list.get(selected));
+                stop();
+            }
         }
         if (key.keyPressed(Keyboard.KEY_BACK)) {
             stop();
@@ -214,13 +245,13 @@ public class GUIHandler extends GUIObject {
 
         int delta;
         int index = 0;
-        for (int i = 0; i < help.length; i++ ,index++) {
+        for (int i = 0; i < help.length; i++, index++) {
             delta = (int) ((index - selected) * tile * 0.5);
             Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
                     place.standardFont, new Color(1f, 1f, 1f));
             if (!help[i].equals("") && help[i].charAt(help[i].length() - 1) == ':') {
                 Drawer.renderString(help[++i], helpLength + (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
-                    place.standardFont, new Color(1f, 1f, 1f));
+                        place.standardFont, new Color(1f, 1f, 1f));
             }
         }
         if (key.keyPressed(Keyboard.KEY_UP)) {

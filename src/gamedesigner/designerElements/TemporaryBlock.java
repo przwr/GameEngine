@@ -192,9 +192,12 @@ public class TemporaryBlock extends GameObject {
             map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel) * tile);
             fgt.setDepth(-1);
         } else {
-            map.addForegroundTileAndReplace(fgt, x * tile, y * tile, (maxLevel) * tile);
+            map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel) * tile);
         }
         tiles.add(fgt);
+        if (block == null) {
+            createBlock();
+        }
         block.addForegroundTile(fgt);
         return fgt;
     }
@@ -235,7 +238,6 @@ public class TemporaryBlock extends GameObject {
                             while ((p = t.popTileFromStackBack()) != null) {
                                 fgt.addTileToStack(p.getX(), p.getY());
                             }
-                            System.out.println(Math.min(level, upHeight));
                             map.addForegroundTileAndReplace(fgt, ix * tile, iy * tile, Math.min(level, upHeight) * tile);
                             tiles.add(fgt);
                             block.addForegroundTile(fgt);

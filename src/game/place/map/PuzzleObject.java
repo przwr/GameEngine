@@ -14,6 +14,7 @@ import game.place.Place;
 import sprites.SpriteSheet;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,10 +48,10 @@ public class PuzzleObject {
     private boolean repeatTiles;
     /*----*/
 
-    public PuzzleObject(String file, Place place, boolean repeatTiles) {
+    public PuzzleObject(File file, Place place, boolean repeatTiles) {
         this.place = place;
         this.repeatTiles = repeatTiles;
-        try (BufferedReader input = new BufferedReader(new FileReader("res/objects/" + file + ".puz"))) {
+        try (BufferedReader input = new BufferedReader(new FileReader(file))) {
             bgTiles = new ArrayList<>();
             objects = new ArrayList<>();
             fgTiles = new ArrayList<>();
@@ -78,6 +79,10 @@ public class PuzzleObject {
     
     public PuzzleObject(String file, Place place) {
         this(file, place, false);
+    }
+    
+    public PuzzleObject(String file, Place place, boolean repeatTiles) {
+        this(new File("res/objects/" + file + ".puz"), place, repeatTiles);
     }
 
     protected PuzzleObject(ArrayList<String> map, Place place) {

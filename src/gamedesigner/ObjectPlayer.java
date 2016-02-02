@@ -191,7 +191,7 @@ public class ObjectPlayer extends Player {
                 objPlace.setCentralPoint(ix, iy);
             }
 
-            if (key.keyPressed(KEY_Z)) {
+            if (key.keyPressed(KEY_ADD)) {
                 camera.switchZoom();
             }
 
@@ -222,7 +222,7 @@ public class ObjectPlayer extends Player {
                 if (key.keyPressed(KEY_RIGHT)) {
                     rTmpBlock.changeUpperState(-1);
                 }
-                if (key.keyPressed(KEY_RETURN) || key.keyPressed(KEY_SPACE)) {
+                if (key.keyPressed(KEY_RETURN)) {
                     paused = false;
                     rTmpBlock.applyStates();
                 }

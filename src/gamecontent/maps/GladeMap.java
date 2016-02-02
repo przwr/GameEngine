@@ -38,10 +38,10 @@ public class GladeMap extends Map {
 
 //        PuzzleObject test = new PuzzleObject("bloczek", place);
 //        test.placePuzzle(0, 0, this);
-        placePuzzle(5, 3, new PuzzleObject("zatoczka", place));
-        placePuzzle(11, 26, new PuzzleObject("test", place));
-        placePuzzle(-1, 0, new PuzzleObject("smukly", place));
-        placePuzzle(40, 30, new PuzzleObject("tmpDomek", place));
+        placePuzzle(5, 3, new PuzzleObject("testMap/zatoczka", place));
+        placePuzzle(11, 26, new PuzzleObject("testMap/test", place));
+        placePuzzle(-1, 0, new PuzzleObject("testMap/smukly", place));
+        placePuzzle(40, 30, new PuzzleObject("testMap/tmpDomek", place));
 //        test = new PuzzleObject("veryHighRound", place);
 //        test.placePuzzle(5, 5, this);
 //        test = new PuzzleObject("domek", place);
@@ -51,7 +51,7 @@ public class GladeMap extends Map {
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
         addObject(new WarpPoint("toPolana", 20 * tileSize, 19 * tileSize));
-        placePuzzle(20, 20, new PuzzleObject("portal", place));
+        placePuzzle(20, 20, new PuzzleObject("testMap/portal", place));
 
         long start = System.nanoTime();
         generateNavigationMeshes();

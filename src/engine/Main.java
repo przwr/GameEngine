@@ -53,13 +53,13 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean SHOW_INTERACTIVE_COLLISION, pause, enter = true, TEST = true;
+    public static boolean SHOW_INTERACTIVE_COLLISION, pause, enter = true, TEST = false;
     public static BackgroundLoader backgroundLoader;
     private static Game game;
     private static Popup pop;
     private static Controller[] controllers;
     private static boolean lastFrame;
-    private static SimpleKeyboard key;
+    public static SimpleKeyboard key = new SimpleKeyboard();
     private static Console console;
 
     public static void run() {
@@ -213,7 +213,6 @@ public class Main {
     }
 
     private static void gameLoop() {
-        key = new SimpleKeyboard();
         while (isRunning()) {
             key.keyboardStart();
             Time.update();

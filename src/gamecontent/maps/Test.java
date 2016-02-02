@@ -29,11 +29,11 @@ public class Test extends Map {
                 setTile(x, y, GRASS);
             }
         }
-        PuzzleObject puzzle = new PuzzleObject("start", place);
+        PuzzleObject puzzle = new PuzzleObject("demo/start", place);
         puzzle.placePuzzle(32, 32, this);
-        puzzle = new PuzzleObject("domekstart", place);
+        puzzle = new PuzzleObject("demo/domekstart", place);
         puzzle.placePuzzle(82, 32, this);
-        puzzle = new PuzzleObject("second", place);
+        puzzle = new PuzzleObject("demo/second", place);
         puzzle.placePuzzle(32, 68, this);
         generateNavigationMeshes();
     }

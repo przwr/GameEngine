@@ -126,8 +126,9 @@ public class MyGame extends Game {
                         menu.setDefaultRoot();
                     }
                     //---------------------------------------------------------------------------//
-                    if (Keyboard.isKeyDown(Keyboard.KEY_F2)) {
+                    if (Main.key.keyPressed(Keyboard.KEY_F2)) {
                         Main.TEST = !Main.TEST;
+                        System.out.println("Test is now " + (Main.TEST ? "on": "off"));
                     }
                     menu.update();
                 }

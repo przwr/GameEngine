@@ -26,7 +26,7 @@ $AU0$$PO0$Mogę Ci jakoś pomóc?$QUNie:11:Ciastko:12:Gdzie iść?:13:$
 #B11
 $AU1$$PO1$Dam sobie radę. Dzięki.$FL
 $AU0$$PO0$Jakby Ci czegoś było trzeba, to wiesz gdzie mnie szukać.$FL
-$AU1$$PO1$Ok.$FL
+$AU1$$PO1$Ok.
 #B12
 $AU1$$PO1$Masz może ciastko?$FL
 $AU0$$PO0$Proszę.$FL
@@ -37,4 +37,4 @@ $AU1$$PO1$Wiesz gdzie mam iść?$FL
 $AU0$$PO0$Nie wiem.$FL
 Może idź na południe trzymając się z dala od fretek.$FL
 Tam gdzieś powinno być przejście.$FL
-$AU1$$PO1$Poszukam, dzięki.$FL
+$AU1$$PO1$Poszukam, dzięki.

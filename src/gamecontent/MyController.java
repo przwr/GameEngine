@@ -113,7 +113,9 @@ public class MyController extends PlayerController {
                             updateAttackTypes();
                             if (actions[INPUT_BLOCK].isKeyPressed()) {
                                 updateBlock();
-                            } else if (attacking || actions[INPUT_ATTACK].isKeyPressed() || actions[INPUT_SECOND_ATTACK].isKeyPressed()) {
+                            } else if (attacking || 
+                                    (firstAttackType >= 0 && actions[INPUT_ATTACK].isKeyPressed()) || 
+                                    (secondAttackType >= 0 && actions[INPUT_SECOND_ATTACK].isKeyPressed())) {
                                 updateAttack();
                             } else {
                                 updateMovement();
@@ -334,7 +336,7 @@ public class MyController extends PlayerController {
     }
 
     private void updateCharging() {
-        if (actions[lastAttackButton].isKeyReleased()) {
+        if (charging && actions[lastAttackButton].isKeyReleased()) {
             switch (chargingType) {
                 case ATTACK_NORMAL_ARROW_SHOT:
                     if (stats.getEnergy() >= 15) {

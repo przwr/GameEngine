@@ -146,10 +146,10 @@ public class ObjectPlace extends Place {
             guiHandler.changeToHelpingScreen();
         }
         if (key.key(Keyboard.KEY_T)) {
-            guiHandler.changeToChooser(IO.getSpecificFilesList("res/textures", "spr"));
+            guiHandler.changeToChooser(IO.getSpecificFilesList("res/textures/backgrounds", "spr"), "spr");
         }
         if (key.key(Keyboard.KEY_L)) {
-            guiHandler.changeToChooser(IO.getSpecificFilesList("res/objects", "puz"));
+            guiHandler.changeToChooser(IO.getSpecificFilesList("res/objects", "puz"), "puz");
         }
         if (key.key(Keyboard.KEY_V)) {
             guiHandler.changeToViewingOptions(viewingOptions, prettyOptions);
@@ -298,16 +298,13 @@ public class ObjectPlace extends Place {
         String[] file = name.split("\\.");
         if (file[1].equals("spr")) {
             try {
-                System.out.println(f.getCanonicalPath() + " " + file[0]);
                 ui.setSpriteSheet(sprites.getSpriteSheet(file[0], SpriteBase.getSpritePath(f)));
                 printMessage("SpriteSheet \"" + name + "\" was loaded");
             } catch (java.lang.ClassCastException e) {
                 printMessage("\"" + name + "\" is not a SpriteSheet!");
-            } catch (IOException ex) {
-                Logger.getLogger(ObjectPlace.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            ObjectPO loaded = new ObjectPO(file[0], this);
+            ObjectPO loaded = new ObjectPO(f, this);
             //PuzzleObject loaded = new PuzzleObject(file[0], this);
             Point p = loaded.getStartingPoint();
             objMap.clear();

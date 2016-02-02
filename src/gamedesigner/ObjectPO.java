@@ -12,6 +12,7 @@ import game.place.map.PuzzleObject;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.RoundedTMPBlock;
 import gamedesigner.designerElements.TemporaryBlock;
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,7 +25,7 @@ public class ObjectPO extends PuzzleObject {
     protected final Comparator<BlockContainer> depthComparator = (BlockContainer firstObject, BlockContainer secondObject)
             -> firstObject.getY() - secondObject.getY();
 
-    public ObjectPO(String file, Place place) {
+    public ObjectPO(File file, Place place) {
         super(file, place, true);
     }
 
@@ -56,6 +57,7 @@ public class ObjectPO extends PuzzleObject {
                         map);
             }
             map.addObject(tmp);
+            tmp.createBlock();
             block.getForegroundTiles().stream().forEach((tile) -> tmp.addTile(tile.generateFGT(x * tileSize, y * tileSize, false)));
 
             if (block instanceof RoundBlockContainer) {

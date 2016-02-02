@@ -50,8 +50,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyPlayer extends Player {
 
-    private final boolean renderClothed = true;
-
     private final int framesPerDir = 52;
     private final String characterName = "aria";
     private Cloth head = Cloth.nullCloth;
@@ -73,12 +71,8 @@ public class MyPlayer extends Player {
     private ArrayList<InteractionSet> actionSets = new ArrayList<>();
     private int activeActionSet;
     private TextController textControl;
-    private Point centralPoint, deltaPoint;
+    private Point centralPoint;
     private MyGUI gui;
-    //private SpriteSheet test, testBody;    //NIE KASOWAĆ! <('o'<)
-    //float testIndex = 0;
-    //---------------------------------------//
-    //---------<('.'<) TYMCZASOWE!-------------//
     private float jumpDelta = 22.6f;
 
     public MyPlayer(boolean first, String name) {
@@ -162,7 +156,6 @@ public class MyPlayer extends Player {
 //            TODO add to backpack
         }
     }
-
 
     public Weapon getFirstWeapon() {
         return firstWeapon;
@@ -276,7 +269,6 @@ public class MyPlayer extends Player {
         Point[] dims = calculateDimensions();
         Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
         centralPoint = renderPoints[0];
-        deltaPoint = renderPoints[1];
 
         /*appearance = Animation.createFBOAnimation(place.getSpriteSheet("test", "characters/" + characterName), 200, framesPerDir, dims[0], dims[1],
          centralPoint);*/
@@ -393,8 +385,8 @@ public class MyPlayer extends Player {
 
              Drawer.refreshColor();*/
             /*Drawer.returnToCentralPoint();
-            Drawer.translate(Place.tileSize * 2, 0);
-            appearance.renderPart(appearance.getWidth() / 2, appearance.getWidth());*/
+             Drawer.translate(Place.tileSize * 2, 0);
+             appearance.renderPart(appearance.getWidth() / 2, appearance.getWidth());*/
             appearance.updateFrame();
             glPopMatrix();
         }

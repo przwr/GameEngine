@@ -46,7 +46,7 @@ public final class IO {
         }
     }
 
-    private static ArrayList<File> getSpecificFilesList(File folder, String extension) {
+    private static ArrayList<File> getAllSpecificFilesList(File folder, String extension) {
         ArrayList<File> list = new ArrayList<>();
         File[] files = folder.listFiles();
         for (File f : files) {
@@ -59,11 +59,29 @@ public final class IO {
         return list;
     }
 
+    public static ArrayList<File> getSpecificFilesList(File folder, String extension) {
+        ArrayList<File> list = new ArrayList<>();
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    list.add(f);
+                }
+            }
+            for (File f : files) {
+                if (f.getPath().endsWith(extension)) {
+                    list.add(f);
+                }
+            }
+        }
+        return list;
+    }
+
     public static ArrayList<File> getSpecificFilesList(String folder, String extension) {
         File f = new File(folder);
         return getSpecificFilesList(f, extension);
     }
-    
+
     public static String getFilePath(File f) {
         return f.getPath().replace(File.separatorChar + f.getName(), "");
     }

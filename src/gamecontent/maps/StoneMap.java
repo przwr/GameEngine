@@ -37,7 +37,7 @@ public class StoneMap extends Map {
             }
         }
 
-        PuzzleObject po = new PuzzleObject("piramida", place);
+        PuzzleObject po = new PuzzleObject("testMap/piramida", place);
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 po.placePuzzle(x * (po.getWidth()), y * (po.getHeight()), this);
@@ -48,7 +48,7 @@ public class StoneMap extends Map {
         warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
         addObject(new WarpPoint("toKamienna", 20 * tileSize, 19 * tileSize));
-        PuzzleObject portal = new PuzzleObject("portal", place);
+        PuzzleObject portal = new PuzzleObject("testMap/portal", place);
         portal.placePuzzle(20, 20, this);
 
         generateNavigationMeshes();
