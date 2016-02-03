@@ -46,7 +46,7 @@ public class ObjectPlace extends Place {
     private final boolean[] viewingOptions;
     private ObjectUI ui;
     private int mode;
-    private String lastName;
+    private File currentFile;
     private GUIHandler guiHandler;
     private ObjectPlayer editor;
     private boolean altMode, noBlocks, grid;
@@ -62,7 +62,7 @@ public class ObjectPlace extends Place {
         Place.xAreaInPixels = X_IN_TILES * tileSize;
         Place.yAreaInPixels = Y_IN_TILES * tileSize;
         dayCycle.setTime(12, 0);
-        lastName = "";
+        currentFile = null;
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
 
@@ -165,7 +165,7 @@ public class ObjectPlace extends Place {
         if (key.key(Keyboard.KEY_BACK) && key.keyPressed(Keyboard.KEY_LCONTROL)) {
             objMap.clear();
             objMap.addObject(editor);
-            lastName = "";
+            currentFile = null;
             printMessage("MAP CLEARED");
         }
         altMode = key.key(Keyboard.KEY_LMENU);
@@ -196,8 +196,8 @@ public class ObjectPlace extends Place {
         }
 
         if (key.keyPressed(Keyboard.KEY_S)) {
-            if (key.key(Keyboard.KEY_LCONTROL) && !"".equals(lastName)) {
-                saveObject(lastName);
+            if (key.key(Keyboard.KEY_LCONTROL) && !"".equals(currentFile)) {
+                saveObject(currentFile);
             } else {
                 guiHandler.changeToNamingConsole();
             }
@@ -266,17 +266,21 @@ public class ObjectPlace extends Place {
         return !guiHandler.isWorking();
     }
 
-    public void saveObject(String name) {
-        lastName = name;
+    public void saveObject(File file) {
+        currentFile = file;
         ArrayList<String> content = objMap.saveMap();
 
-        try (PrintWriter save = new PrintWriter("res/objects/" + name + ".puz")) {
+        try (PrintWriter save = new PrintWriter(file)) {
             content.stream().forEach(save::println);
-            printMessage("Object \"" + name + ".puz\" was saved.");
+            printMessage("Object \"" + file.getName() + "\" was saved.");
             save.close();
         } catch (FileNotFoundException e) {
             printMessage("A file cannot be created!");
         }
+    }
+
+    public void saveObject(String name) {
+        saveObject(new File("res/objects/" + name + ".puz"));
     }
 
     @Override
@@ -313,7 +317,7 @@ public class ObjectPlace extends Place {
             objMap.addObject(editor);
             printMessage("Object \"" + name + "\" was loaded");
             undo.removeMoves();
-            lastName = file[0];
+            currentFile = f;
             editor.changeMap(objMap, p.getX(), p.getY());
         }
     }

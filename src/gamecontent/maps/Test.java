@@ -1,16 +1,20 @@
 package gamecontent.maps;
 
+import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import collision.Rectangle;
 import engine.utilities.RandomGenerator;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
+import game.place.map.WarpPoint;
 import gamecontent.Bush;
 import gamecontent.GrassClump;
 import gamecontent.Tree;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
 import gamecontent.mobs.Shen;
+import gamecontent.npcs.Magician;
 import gamecontent.npcs.Melodia;
 import gamecontent.npcs.Nutka;
 
@@ -35,6 +39,11 @@ public class Test extends Map {
         puzzle.placePuzzle(82, 32, this);
         puzzle = new PuzzleObject("demo/second", place);
         puzzle.placePuzzle(32, 68, this);
+        
+        WarpPoint warp = new WarpPoint("toCaveLeft", 51 * tileSize, 102 * tileSize, "CaveTest");
+        warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
+        addObject(warp);
+        addObject(new WarpPoint("toTestLeft", 52 * tileSize + tileSize / 2, 103 * tileSize));
         generateNavigationMeshes();
     }
 
@@ -136,6 +145,7 @@ public class Test extends Map {
         addObject(new Blazag(5344, 5494, place, mobID++));
         addObject(new Blazag(5144, 5994, place, mobID++));
         addObject(new Nutka(4435, 4215, place, mobID++));
+        addObject(new Magician(2700, 1836, place, mobID++));
 
         addObject(new Bush(4894, 4422, 12, 70, 0.8f));
         addObject(new Bush(5423, 4210, 12, 70, 0.8f));

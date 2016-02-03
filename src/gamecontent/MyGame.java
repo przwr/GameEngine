@@ -128,7 +128,7 @@ public class MyGame extends Game {
                     //---------------------------------------------------------------------------//
                     if (Main.key.keyPressed(Keyboard.KEY_F2)) {
                         Main.TEST = !Main.TEST;
-                        System.out.println("Test is now " + (Main.TEST ? "on": "off"));
+                        System.out.println("Test is now " + (Main.TEST ? "on" : "off"));
                     }
                     menu.update();
                 }
@@ -292,7 +292,6 @@ public class MyGame extends Game {
         started = running = true;
     }
 
-
     private void loading(int progress) {
         Drawer.clearScreen(0);
         showLoading(progress);
@@ -318,7 +317,11 @@ public class MyGame extends Game {
 
     private void addPlayerOffline(int i) {
         if (i < 4 && place.playersCount < 4) {
-            players[i].initializeSetPosition(56, 104, place, i * 256, i * 265);
+            if (place instanceof ObjectPlace && i != 0) {
+                players[i].initializeSetPosition(56, 104, place, players[0].getX(), players[0].getY());
+            } else {
+                players[i].initializeSetPosition(56, 104, place, i * 256, i * 265);
+            }
             ((Player) place.players[i]).setCamera(new PlayersCamera(place.players[i], 2, 2, i));
             players[i].changeMap(players[0].getMap(), players[i].getX(), players[i].getY());
             players[i].updateAreaPlacement();

@@ -30,6 +30,7 @@ import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
+import gamecontent.maps.CaveTest;
 
 /**
  * @author przemek
@@ -83,6 +84,8 @@ public class MyPlace extends Place {
         if (Main.TEST) {
             Test test = new Test(mapIDCounter++, this, 8192, 8192, tileSize);
             maps.add(test);
+            CaveTest caveTest = new CaveTest(mapIDCounter++, this, 8192, 8192, tileSize);
+            maps.add(caveTest);
         } else {
             GladeMap polana = new GladeMap(mapIDCounter++, this, 4096, 8192, tileSize);
             maps.add(polana);
