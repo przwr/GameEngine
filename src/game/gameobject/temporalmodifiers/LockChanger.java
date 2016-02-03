@@ -18,11 +18,15 @@ public class LockChanger extends TemporalChanger {
     public void onStop() {
         if (entity != null) {
             entity.setUnableToMove(false);
+            entity.setVisible(true);
         }
     }
 
     @Override
     public void modifyEffect(Entity entity) {
         this.entity = entity;
+        if (getPercentDone() > 0.5) {
+            entity.setVisible(true);
+        }
     }
 }

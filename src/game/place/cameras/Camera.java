@@ -319,10 +319,10 @@ public abstract class Camera {
         return owners;
     }
 
-    public void fade(int time) {
+    public void fade(int time, boolean faded) {
         fadeDelay.setFrameLengthInMilliseconds(time);
         fadeDelay.start();
-        faded = !faded;
+        this.faded = faded;
     }
 
     public boolean isFading() {
@@ -332,6 +332,10 @@ public abstract class Camera {
 
     public boolean isFaded() {
         return faded;
+    }
+
+    public void setFaded(boolean faded) {
+        this.faded = faded;
     }
 
     public float getFadingValue() {

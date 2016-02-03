@@ -546,7 +546,7 @@ public abstract class Entity extends GameObject {
         this.yEnvironmentalSpeed += yEnvironmentalSpeed;
     }
 
-    protected Place getPlace() {
+    public Place getPlace() {
         return place;
     }
 

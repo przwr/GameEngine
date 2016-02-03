@@ -8,8 +8,11 @@ package game.place.map;
 import collision.Figure;
 import engine.Main;
 import engine.utilities.Delay;
+import game.Settings;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
+import game.gameobject.temporalmodifiers.CameraJoiner;
 import game.gameobject.temporalmodifiers.LockChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.place.Place;
@@ -29,7 +32,8 @@ public class WarpPoint extends GameObject {
     private String stringDestination = null;
     private Delay delay = Delay.createInMilliseconds(250);
     private Delay secondDelay = Delay.createInMilliseconds(125);
-    private boolean loading;
+    private boolean loading, joined;
+
 
     public WarpPoint(String name, int x, int y, int toX, int toY, Map map) {
         this.name = name;
@@ -106,9 +110,11 @@ public class WarpPoint extends GameObject {
     private void loadMap(GameObject object) {
         place.game.getMapLoader().requestMap(stringDestination, this);
         if (object.getMap() != null && object.getWarp() != this) {
+            object.setVisible(false);
             if (object instanceof Player) {
                 if (((Player) object).getCamera() != null) {
-                    ((Player) object).getCamera().fade(250);
+                    ((Player) object).getCamera().fade(250, true);
+                    joined = Settings.joinSplitScreen;
                 }
                 loading = true;
                 delay.start();
@@ -124,16 +130,28 @@ public class WarpPoint extends GameObject {
                         object.changeMap(map, warp.getX(), warp.getY());
                         TemporalChanger lockChanger = new LockChanger(8);
                         lockChanger.start();
+                        if (joined) {
+                            TemporalChanger joiner = new CameraJoiner(45);
+                            joiner.start();
+                            ((Player) object).addChanger(joiner);
+                        }
                         ((Player) object).addChanger(lockChanger);
                         ((MyPlayer) object).getGUI().setVisible(true);
                         if (((Player) object).getCamera() != null) {
                             ((Player) object).getCamera().updateStatic();
-                            ((Player) object).getCamera().fade(250);
+                            ((Player) object).getCamera().fade(250, false);
                         }
                     }
                 } else {
                     WarpPoint warp = map.findWarp(name);
                     object.changeMap(map, warp.getX(), warp.getY());
+                    if (object instanceof Entity) {
+                        TemporalChanger lockChanger = new LockChanger(8);
+                        lockChanger.start();
+                        ((Entity) object).addChanger(lockChanger);
+                    } else {
+                        object.setVisible(true);
+                    }
                 }
             } else if (object instanceof MyPlayer) {
                 if (loading) {

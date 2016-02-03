@@ -16,11 +16,13 @@ import game.ScreenPlace;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.logic.DayCycle;
 import game.place.cameras.Camera;
 import game.place.map.Map;
 import game.text.FontBase;
+import gamecontent.MyPlayer;
 import org.newdawn.slick.Color;
 import sounds.SoundBase;
 import sprites.Sprite;
@@ -53,7 +55,7 @@ public abstract class Place extends ScreenPlace {
     protected final SpriteBase sprites;
     private final SoundBase sounds;
     public Map loadingMap;
-    public boolean isSplit, changeSSMode, singleCamera, firstMapsToAddActive;
+    public boolean changeSSMode, singleCamera, firstMapsToAddActive;
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int splitScreenMode, playersCount;
     protected short mapIDCounter = 0;
@@ -95,15 +97,7 @@ public abstract class Place extends ScreenPlace {
                                 Renderer.preRenderShadowedLights(currentCamera);
                                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                                 map.updateCamerasVariables(currentCamera);
-                                if (currentCamera.isFading() || currentCamera.isFaded()) {
-                                    float fadingValue = currentCamera.getFadingValue();
-                                    Color c = map.getLightColor();
-                                    if (currentCamera.isFaded()) {
-                                        Drawer.setCurrentColor(new Color(c.r * fadingValue, c.r * fadingValue, c.b * fadingValue));
-                                    } else {
-                                        Drawer.setCurrentColor(new Color(c.r * fadingValue, c.r * fadingValue, c.b * fadingValue));
-                                    }
-                                }
+                                manageFading(map);
                                 map.renderBackground(currentCamera);
                                 map.renderObjects(currentCamera);
                                 if (map.getVisibleLights().size() > 0) {
@@ -154,15 +148,7 @@ public abstract class Place extends ScreenPlace {
                         Renderer.preRenderShadowedLights(currentCamera);
                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         map.updateCamerasVariables(currentCamera);
-                        if (currentCamera.isFading() || currentCamera.isFaded()) {
-                            float fadingValue = currentCamera.getFadingValue();
-                            Color c = map.getLightColor();
-                            if (currentCamera.isFaded()) {
-                                Drawer.setCurrentColor(new Color(c.r * fadingValue, c.r * fadingValue, c.b * fadingValue));
-                            } else {
-                                Drawer.setCurrentColor(new Color(c.r * fadingValue, c.r * fadingValue, c.b * fadingValue));
-                            }
-                        }
+                        manageFading(map);
                         map.renderBackground(currentCamera);
                         map.renderObjects(currentCamera);
                         if (map.getVisibleLights().size() > 0) {
@@ -218,6 +204,45 @@ public abstract class Place extends ScreenPlace {
 
     public static Color getLightColor() {
         return dayCycle.getShade();
+    }
+
+    private void manageFading(Map map) {
+        if (!singleCamera) {
+            if (currentCamera.isFading() || currentCamera.isFaded()) {
+                float fadingValue = currentCamera.getFadingValue();
+                if (fadingValue < 0) {
+                    // Hack, bo czasem coś się wali i nie wiem dlaczego
+                    if (fadingValue < -125) {
+                        currentCamera.setFaded(false);
+                        for (GameObject owner : currentCamera.getOwners()) {
+                            if (owner instanceof Entity) {
+                                ((Entity) owner).setUnableToMove(false);
+                                owner.setVisible(true);
+                            }
+                            if (owner instanceof MyPlayer) {
+                                ((MyPlayer) owner).getGUI().setVisible(true);
+                            }
+                        }
+                    }
+                    fadingValue = 0;
+                }
+                Color c = map.getLightColor();
+                if (currentCamera.isFaded()) {
+                    Drawer.setCurrentColor(new Color(c.r * fadingValue, c.r * fadingValue, c.b * fadingValue));
+                } else {
+                    Drawer.setCurrentColor(new Color(c.r * fadingValue, c.r * fadingValue, c.b * fadingValue));
+                }
+            }
+        }
+    }
+
+    private boolean isMergedCamera() {
+        for (int i = 0; i < cameras.length; i++) {
+            if (cameras[i] == currentCamera) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public abstract void generateAsGuest();
@@ -333,6 +358,10 @@ public abstract class Place extends ScreenPlace {
 
     public short getTimeInMinutes() {
         return dayCycle.getTime();
+    }
+
+    public Map getLoadingMap() {
+        return loadingMap;
     }
 
     private interface renderType {

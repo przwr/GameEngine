@@ -94,9 +94,11 @@ public class SplitScreen {
     private static boolean isFar(Place place) {
         if (!place.singleCamera) {
             for (int p = 0; p < place.playersCount; p++) {
-                if (place.players[0].getMap() != place.players[p].getMap() || place.players[p].getX() > place.cameras[place.playersCount - 2].getXEnd() ||
-                        place.players[p].getX() < place.cameras[place.playersCount - 2].getXStart() || place.players[p].getY() > place.cameras[place
-                        .playersCount - 2].getYEnd() || place.players[p].getY() < place.cameras[place.playersCount - 2].getYStart()) {
+                if (place.players[0].getMap() == place.getLoadingMap() || place.players[p].getMap() == place.getLoadingMap()
+                        || place.players[0].getMap() != place.players[p].getMap() || place.players[p].getX() > place.cameras[place.playersCount - 2].getXEnd()
+                        || place.players[p].getX() < place.cameras[place.playersCount - 2].getXStart() ||
+                        place.players[p].getY() > place.cameras[place.playersCount - 2].getYEnd() ||
+                        place.players[p].getY() < place.cameras[place.playersCount - 2].getYStart()) {
                     Settings.joinSplitScreen = false;
                     return true;
                 }
