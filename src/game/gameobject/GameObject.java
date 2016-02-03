@@ -72,7 +72,9 @@ public abstract class GameObject {
         this.y = y;
         depth = 0;
         visible = true;
+        updateAreaPlacement();
     }
+
 
     public void changeMap(Map map, int x, int y) {
         if (this.map != map) {
@@ -80,24 +82,22 @@ public abstract class GameObject {
                 this.map.deleteObject(this);
             }
             this.map = map;
-            this.setPosition(x, y);
+            this.setPositionWithoutAreaUpdate(x, y);
+            if (prevArea != -1 && prevMap != null) {
+                updateAreaPlacement();
+            }
             this.map.addObject(this);
         }
     }
 
     public void updateAreaPlacement() {
         if (map != null) {
-            if (area != -1 && prevArea != -1) {
-                prevArea = area;
-                area = map.getAreaIndex(getX(), getY());
-                if (area != prevArea && map == prevMap) {
-                    map.changeArea(area, prevArea, this);
-                }
-                prevMap = map;
-            } else {
-                area = map.getAreaIndex(getX(), getY());
-                prevArea = area;
+            prevArea = area;
+            area = map.getAreaIndex(getX(), getY());
+            if (area != prevArea && map == prevMap) {
+                map.changeArea(area, prevArea, this);
             }
+            prevMap = map;
         }
     }
 
@@ -310,6 +310,9 @@ public abstract class GameObject {
 
     public void setArea(int area) {
         this.area = area;
+        if (prevArea == -1) {
+            this.prevArea = area;
+        }
     }
 
     public double getFloatHeight() {
@@ -406,7 +409,7 @@ public abstract class GameObject {
         ret.setActionModifier(modifier);
         return ret.getActivator();
     }
-    
+
     public InteractiveActivator getAttackActivator(byte attackType) {
         for (Interactive i : interactiveObjects) {
             if (i.getAttackType() == attackType) {
@@ -451,6 +454,9 @@ public abstract class GameObject {
 
     public void setMapNotChange(Map map) {
         this.map = map;
+        if (prevMap == null) {
+            prevMap = map;
+        }
     }
 
     public Stats getStats() {

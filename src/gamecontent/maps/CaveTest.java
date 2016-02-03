@@ -23,7 +23,7 @@ public class CaveTest extends Map {
         warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
         addObject(new WarpPoint("toCaveLeft", 26 * tileSize + tileSize / 2, 18 * tileSize + tileSize / 2));
-//        generateNavigationMeshes();
+        generateNavigationMeshes();
     }
 
     @Override

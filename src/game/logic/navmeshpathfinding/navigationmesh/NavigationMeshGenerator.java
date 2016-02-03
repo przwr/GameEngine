@@ -41,7 +41,8 @@ public class NavigationMeshGenerator {
     private static final Map<Line, NeighbourTriangles> linesTriangles = new HashMap<>();
     private static final Point tempPoint = new Point();
     private final static float EPSILON = 0.001f;
-    private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart, leftTop, rightTop, leftBottom, rightBottom;
+    private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart,
+            leftTop, rightTop, leftBottom, rightBottom;
     private static double xd, yd;
     private static byte[] shiftDirections;
     private static Point start, end, xModded, yModded;
@@ -55,15 +56,17 @@ public class NavigationMeshGenerator {
     private static NavigationMesh navigationMesh;
 
     public static NavigationMesh generateNavigationMesh(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
-        findBoundsAndSetCollisionSpots(tiles, blocks, xArea, yArea);
-        createLinesFromSpots();
-        createAndAddDiagonalLines(blocks);
-        collectPointsFromLines();
-        connectPointsAndFindShiftingDirections();
-        solveLines();
-        createTriangles();
-        generateNavigationMesh();
-        return navigationMesh;
+        if (findBoundsAndSetCollisionSpots(tiles, blocks, xArea, yArea)) {
+            createLinesFromSpots();
+            createAndAddDiagonalLines(blocks);
+            collectPointsFromLines();
+            connectPointsAndFindShiftingDirections();
+            solveLines();
+            createTriangles();
+            generateNavigationMesh();
+            return navigationMesh;
+        }
+        return null;
     }
 
     public static void clear() {
@@ -79,13 +82,24 @@ public class NavigationMeshGenerator {
         spots.clear();
     }
 
-    private static void findBoundsAndSetCollisionSpots(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
+    private static boolean findBoundsAndSetCollisionSpots(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
         yStartBound = yEndBound = xStartBound = xEndBound = -1;
         lineXStart = lineYStart = 0;
         spots.clear();
+        boolean noTiles = true;
+        for (int i = 0; i < tiles.length; i++) {
+            if (tiles[i] != null) {
+                noTiles = false;
+                break;
+            }
+        }
+        if (noTiles) {
+            return false;
+        }
         findBoundsFromTiles(tiles);
         setCollisionSpotsFromTiles(tiles);
         findBoundsAndSetCollisionSpotsFromBlocks(blocks, xArea, yArea);
+        return true;
     }
 
     private static void findBoundsFromTiles(Tile[] tiles) {
@@ -725,7 +739,8 @@ public class NavigationMeshGenerator {
                     sharedPoints++;
                 }
                 if (sharedPoints == 0) {
-                    if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), line2.getStart().getX(), line2.getStart().getY(), line2.getEnd().getX(), line2.getEnd().getY())) {
+                    if (Line2D.linesIntersect(start.getX(), start.getY(), end.getX(), end.getY(), line2.getStart().getX(), line2.getStart().getY(), line2
+                            .getEnd().getX(), line2.getEnd().getY())) {
                         intersects = true;
                         break;
                     }
@@ -851,7 +866,8 @@ public class NavigationMeshGenerator {
 
     private static void createNavigationMeshWithFirstTriangle(Triangle firstTriangle) {
         if (firstTriangle != null) {
-            navigationMesh = new NavigationMesh(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2), new ArrayList<>(pointsToConnect), shiftDirections);
+            navigationMesh = new NavigationMesh(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2), new
+                    ArrayList<>(pointsToConnect), shiftDirections);
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(2), firstTriangle.getPointFromNode(0)));
