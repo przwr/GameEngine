@@ -276,10 +276,10 @@ public class Tongub extends Mob {
 
     private void closeRandomDestination(int xD, int yD) {
         int sign = random.next(1) == 1 ? 1 : -1;
-        int shift = (sightRange / 2 + random.next(9)) * sign;
+        int shift = (sightRange / 4 + random.next(9)) * sign;
         destination.setX(xD + shift);
         sign = random.next(1) == 1 ? 1 : -1;
-        shift = (sightRange / 2 + random.next(9)) * sign;
+        shift = (sightRange / 4 + random.next(9)) * sign;
         destination.setY(yD + shift);
         if (destination.getX() < sightRange / 4) {
             destination.setX(sightRange / 4);

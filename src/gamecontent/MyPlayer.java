@@ -474,6 +474,7 @@ public class MyPlayer extends Player {
                 }
             }
             updateChangers();
+            updateWithGravity();
             moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
             if (camera != null) {
                 camera.updateSmooth();
@@ -488,7 +489,6 @@ public class MyPlayer extends Player {
             }
             brakeOthers();
             appearance.updateTexture(this);
-            updateWithGravity();
             updateEnergy();
         }
     }

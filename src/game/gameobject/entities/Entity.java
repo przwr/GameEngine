@@ -100,8 +100,12 @@ public abstract class Entity extends GameObject {
     public void knockBack(int knockBackPower, double jumpPower, GameObject attacker) {
         knockBack.setFrames(30);
         knockBack.setAttackerDirection(attacker.getDirection());
-        int attackerX = attacker.getX() + (attacker instanceof Block ? attacker.getCollision().getWidthHalf() : 0);
-        int attackerY = attacker.getY() + (attacker instanceof Block ? attacker.getCollision().getHeightHalf() : 0);
+        Point closest = null;
+        if (attacker instanceof Block) {
+            closest = Methods.getClosestPointToRectangle(getX(), getY(), attacker.getCollision());
+        }
+        int attackerX = closest != null ? closest.getX() : attacker.getX();
+        int attackerY = closest != null ? closest.getY() : attacker.getY();
         int angle = (int) Methods.pointAngleCounterClockwise(attackerX, attackerY, x, y);
         knockBack.setSpeedInDirection(angle, Methods.interval(1, knockBackPower, 20));
         setJumpForce(jumpPower);
@@ -233,6 +237,39 @@ public abstract class Entity extends GameObject {
             changers.add(tc);
         }
     }
+
+    @Override
+    protected void updateWithGravity() {
+        if (floatHeight > 0 || jumpForce > 0) {
+            if (jumpForce == 0) {
+                jumpForce = -1;
+            }
+            int sign = (int) Math.signum(jumpForce);
+            double change, remainder = Math.abs(jumpForce - (int) jumpForce);
+            for (double i = jumpForce; sign > 0 ? i > -1 : i < 1; i -= sign) {
+                change = Math.abs(i) < 1 ? (Math.signum(i) == sign ? -i : i) : sign;
+                floatHeight += change;
+                if (isCollided(0, 0)) {
+                    floatHeight -= change;
+                    if (Math.abs(change) != remainder) {
+                        floatHeight -= sign * remainder;
+                        if (isCollided(0, 0)) {
+                            floatHeight += sign * remainder;
+                        }
+                    }
+                    break;
+                }
+            }
+            jumpForce -= gravity;
+        } else {
+            floatHeight = 0;
+            jumpForce = 0;
+        }
+        if (floatHeight < 0) {
+            floatHeight = 0;
+        }
+    }
+
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
         if (collision != null) {

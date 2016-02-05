@@ -388,6 +388,39 @@ public class Methods {
         }
     }
 
+
+    public static Point getClosestPointToRectangle(int x, int y, Figure figure) {
+        int xS = figure.getX();
+        int xE = figure.getXEnd();
+        int yS = figure.getY();
+        int yE = figure.getYEnd();
+        if (x > xE) {
+            if (y > yE) {
+                return new Point(xE, yE);
+            } else if (y > yS) {
+                return new Point(xE, y);
+            } else {
+                return new Point(xE, yS);
+            }
+        } else if (x > xS) {
+            if (y > yE) {
+                return new Point(x, yE);
+            } else if (y > yS) {   // shit case - point inside
+                return new Point(xS + figure.getWidthHalf(), yS + figure.getHeightHalf());
+            } else {
+                return new Point(x, yS);
+            }
+        } else {
+            if (y > yE) {
+                return new Point(xS, yE);
+            } else if (y > yS) {
+                return new Point(xS, y);
+            } else {
+                return new Point(xS, yS);
+            }
+        }
+    }
+
     public static boolean isPointOnTheLeftToLine(int xb, int yb, int xe, int ye, int xp, int yp) {
         return ((xe - xb) * (yp - yb) - (ye - yb) * (xp - xb)) >= 0;
     }
