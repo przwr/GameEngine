@@ -92,20 +92,18 @@ public class MyGame extends Game {
                             player.getInput();
                         }
                     }
+                } else if (place == null) {
+                    if (menuPlayer.isMenuOn()) {
+                        menu.back();
+                    } else {
+                        menuPlayer.getMenuInput();
+                    }
                 } else {
-                    if (place == null) {
-                        if (menuPlayer.isMenuOn()) {
+                    for (Player player : players) {
+                        if (!menu.isMapping && player.isMenuOn()) {
                             menu.back();
                         } else {
-                            menuPlayer.getMenuInput();
-                        }
-                    } else {
-                        for (Player player : players) {
-                            if (!menu.isMapping && player.isMenuOn()) {
-                                menu.back();
-                            } else {
-                                player.getMenuInput();
-                            }
+                            player.getMenuInput();
                         }
                     }
                 }
@@ -143,18 +141,16 @@ public class MyGame extends Game {
                 if (players[0].isInGame()) {
                     players[0].getInput();
                 }
-            } else {
-                if (place == null) {
-                    if (menuPlayer.isMenuOn()) {
-                        menu.back();
-                    } else {
-                        menuPlayer.getMenuInput();
-                    }
-                } else if (!menu.isMapping && players[0].isMenuOn()) {
+            } else if (place == null) {
+                if (menuPlayer.isMenuOn()) {
                     menu.back();
                 } else {
-                    players[0].getMenuInput();
+                    menuPlayer.getMenuInput();
                 }
+            } else if (!menu.isMapping && players[0].isMenuOn()) {
+                menu.back();
+            } else {
+                players[0].getMenuInput();
             }
         };
         ups[ONLINE] = () -> {
@@ -228,50 +224,57 @@ public class MyGame extends Game {
         Drawer.place = place;
         place.players = new GameObject[4];
         place.playersCount = playersCount;
-        Place.progress = 1;
-        loading(0);
-        if (playersCount == 1) {
-            if (Main.TEST) {
-                players[0].initializeSetPosition(56, 104, place, 2048, 2048);
-            } else {
-                players[0].initializeSetPosition(56, 104, place, 256, 256);
-            }
-            players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
-        } else if (playersCount == 2) {
-            players[0].initializeSetPosition(56, 104, place, 256, 256);
-            players[1].initializeSetPosition(56, 104, place, 512, 1024);
-            if (Settings.horizontalSplitScreen) {
-                players[0].setCamera(new PlayersCamera(players[0], 2, 4, 0));
-                players[1].setCamera(new PlayersCamera(players[1], 2, 4, 1));
-            } else {
-                players[0].setCamera(new PlayersCamera(players[0], 4, 2, 0));
-                players[1].setCamera(new PlayersCamera(players[1], 4, 2, 1));
-            }
-            Settings.joinSplitScreen = true;
-        } else if (playersCount == 3) {
-            players[0].initializeSetPosition(56, 104, place, 256, 256);
-            players[1].initializeSetPosition(56, 104, place, 512, 1024);
-            players[2].initializeSetPosition(56, 104, place, 1024, 512);
-            if (Settings.horizontalSplitScreen) {
-                players[0].setCamera(new PlayersCamera(players[0], 2, 4, 0));
-            } else {
-                players[0].setCamera(new PlayersCamera(players[0], 4, 2, 0));
-            }
-            players[1].setCamera(new PlayersCamera(players[1], 4, 4, 1));
-            players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
-            Settings.joinSplitScreen = true;
-        } else if (playersCount == 4) {
-            players[0].initializeSetPosition(56, 104, place, 256, 256);
-            players[1].initializeSetPosition(56, 104, place, 512, 1024);
-            players[2].initializeSetPosition(56, 104, place, 1024, 512);
-            players[3].initializeSetPosition(56, 104, place, 1024, 1024);
-            players[0].setCamera(new PlayersCamera(players[0], 4, 4, 0));
-            players[1].setCamera(new PlayersCamera(players[1], 4, 4, 1));
-            players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
-            players[3].setCamera(new PlayersCamera(players[3], 4, 4, 3));
-            Settings.joinSplitScreen = true;
-        }
+        Place.progress = 2;
         loading(1);
+        switch (playersCount) {
+            case 1:
+                if (Main.TEST) {
+                    players[0].initializeSetPosition(56, 104, place, 2048, 2048);
+                } else {
+                    players[0].initializeSetPosition(56, 104, place, 256, 256);
+                }
+                players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
+                break;
+            case 2:
+                players[0].initializeSetPosition(56, 104, place, 256, 256);
+                players[1].initializeSetPosition(56, 104, place, 512, 1024);
+                if (Settings.horizontalSplitScreen) {
+                    players[0].setCamera(new PlayersCamera(players[0], 2, 4, 0));
+                    players[1].setCamera(new PlayersCamera(players[1], 2, 4, 1));
+                } else {
+                    players[0].setCamera(new PlayersCamera(players[0], 4, 2, 0));
+                    players[1].setCamera(new PlayersCamera(players[1], 4, 2, 1));
+                }
+                Settings.joinSplitScreen = true;
+                break;
+            case 3:
+                players[0].initializeSetPosition(56, 104, place, 256, 256);
+                players[1].initializeSetPosition(56, 104, place, 512, 1024);
+                players[2].initializeSetPosition(56, 104, place, 1024, 512);
+                if (Settings.horizontalSplitScreen) {
+                    players[0].setCamera(new PlayersCamera(players[0], 2, 4, 0));
+                } else {
+                    players[0].setCamera(new PlayersCamera(players[0], 4, 2, 0));
+                }
+                players[1].setCamera(new PlayersCamera(players[1], 4, 4, 1));
+                players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
+                Settings.joinSplitScreen = true;
+                break;
+            case 4:
+                players[0].initializeSetPosition(56, 104, place, 256, 256);
+                players[1].initializeSetPosition(56, 104, place, 512, 1024);
+                players[2].initializeSetPosition(56, 104, place, 1024, 512);
+                players[3].initializeSetPosition(56, 104, place, 1024, 1024);
+                players[0].setCamera(new PlayersCamera(players[0], 4, 4, 0));
+                players[1].setCamera(new PlayersCamera(players[1], 4, 4, 1));
+                players[2].setCamera(new PlayersCamera(players[2], 4, 4, 2));
+                players[3].setCamera(new PlayersCamera(players[3], 4, 4, 3));
+                Settings.joinSplitScreen = true;
+                break;
+            default:
+                break;
+        }
+        loading(2);
         for (int i = 0; i < 4; i++) {
             place.players[i] = players[i];
         }
@@ -292,7 +295,7 @@ public class MyGame extends Game {
         started = running = true;
     }
 
-    private void loading(int progress) {
+    public void loading(int progress) {
         Drawer.clearScreen(0);
         showLoading(progress);
         Display.sync(60);
@@ -303,7 +306,7 @@ public class MyGame extends Game {
     public void showLoading(int progress) {
         String loading = Settings.language.menu.Loading;
         String dots = "";
-        FontHandler font = Drawer.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
+        FontHandler font = menu.fonts.getFont("Amble-Regular", 0, (int) (Settings.nativeScale * 48));
         for (int i = 0; i < progress; i++) {
             if (i == 0) {
                 dots = " .";
@@ -359,38 +362,43 @@ public class MyGame extends Game {
 
     private void updatePlayersCameras() {
         for (int nr = 0; nr < place.playersCount; nr++) {
-            if (place.playersCount == 1) {
-                ((PlayersCamera) ((Player) place.players[0]).getCamera()).reInitialize(2, 2, 0);
-            } else if (place.playersCount == 2) {
-                if (place.cameras[0] == null) {
-                    place.cameras[0] = new PlayersCamera(players[0], players[1]);
-                    place.cameras[0].setMap(players[0].getMap());
-                }
-                if (Settings.horizontalSplitScreen) {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4, 1);
-                } else {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2, 1);
-                }
-            } else if (place.playersCount == 3) {
-                if (place.cameras[1] == null) {
-                    place.cameras[1] = new PlayersCamera(players[0], players[1], players[2]);
-                    place.cameras[1].setMap(players[0].getMap());
-                }
-                if (nr == 0) {
-                    if (Settings.horizontalSplitScreen) {
-                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4, 2);
-                    } else {
-                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2, 2);
+            switch (place.playersCount) {
+                case 1:
+                    ((PlayersCamera) ((Player) place.players[0]).getCamera()).reInitialize(2, 2, 0);
+                    break;
+                case 2:
+                    if (place.cameras[0] == null) {
+                        place.cameras[0] = new PlayersCamera(players[0], players[1]);
+                        place.cameras[0].setMap(players[0].getMap());
                     }
-                } else {
-                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4, 2);
-                }
-            } else {
-                if (place.cameras[2] == null) {
-                    place.cameras[2] = new PlayersCamera(players[0], players[1], players[2], players[3]);
-                    place.cameras[2].setMap(players[0].getMap());
-                }
-                ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4, 3);
+                    if (Settings.horizontalSplitScreen) {
+                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4, 1);
+                    } else {
+                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2, 1);
+                    }
+                    break;
+                case 3:
+                    if (place.cameras[1] == null) {
+                        place.cameras[1] = new PlayersCamera(players[0], players[1], players[2]);
+                        place.cameras[1].setMap(players[0].getMap());
+                    }
+                    if (nr == 0) {
+                        if (Settings.horizontalSplitScreen) {
+                            ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4, 2);
+                        } else {
+                            ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 2, 2);
+                        }
+                    } else {
+                        ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4, 2);
+                    }
+                    break;
+                default:
+                    if (place.cameras[2] == null) {
+                        place.cameras[2] = new PlayersCamera(players[0], players[1], players[2], players[3]);
+                        place.cameras[2].setMap(players[0].getMap());
+                    }
+                    ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4, 3);
+                    break;
             }
         }
     }

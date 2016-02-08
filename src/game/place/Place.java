@@ -47,7 +47,7 @@ public abstract class Place extends ScreenPlace {
     public static int tileSize, tileSquared, tileHalf, tileDoubleSize, xAreaInPixels, yAreaInPixels, progress;
     public static Camera currentCamera;
     protected static DayCycle dayCycle;
-    private static Delay loading = Delay.createInMilliseconds(200);
+    private static Delay loading = Delay.createInMilliseconds(500);
     public final ArrayList<Map> maps = new ArrayList<>();
     public final ArrayList<Map> mapsToAdd1 = new ArrayList<>();
     public final ArrayList<Map> mapsToAdd2 = new ArrayList<>();
@@ -116,7 +116,9 @@ public abstract class Place extends ScreenPlace {
                                 if (loading.isOver()) {
                                     loading.start();
                                     progress++;
-                                    if (progress > 3) progress = 0;
+                                    if (progress > 3) {
+                                        progress = 0;
+                                    }
                                 }
                                 game.showLoading(progress);
                             }
@@ -165,7 +167,9 @@ public abstract class Place extends ScreenPlace {
                         if (loading.isOver()) {
                             loading.start();
                             progress++;
-                            if (progress > 3) progress = 0;
+                            if (progress > 3) {
+                                progress = 0;
+                            }
                         }
                         game.showLoading(progress);
                     }
@@ -336,7 +340,7 @@ public abstract class Place extends ScreenPlace {
     public synchronized void addMapsToAdd() {
         ArrayList<Map> mapsToAdd = firstMapsToAddActive ? mapsToAdd1 : mapsToAdd2;
         for (Map map : mapsToAdd) {
-            if (map != null && getMapByName(map.getName()) != map) {
+            if (map != null && getMapByName(map.getName()) == null) {
                 maps.add(map);
             }
         }

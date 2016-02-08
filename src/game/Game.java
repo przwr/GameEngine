@@ -105,4 +105,11 @@ public abstract class Game {
     public MapLoaderModule getMapLoader() {
         return mapLoader;
     }
+
+    /**
+     * @return the mapThread
+     */
+    public Thread getMapThread() {
+        return mapThread;
+    }
 }

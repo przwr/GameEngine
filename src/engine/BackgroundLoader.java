@@ -36,6 +36,7 @@ public abstract class BackgroundLoader {
     private boolean running, firstActive, pause, useFences, firstLoaded, usingSprites, stopSpritesUsing;
     private ArrayList<Sprite> list1 = new ArrayList<>();
     private ArrayList<Sprite> list2 = new ArrayList<>();
+    private Thread thread;
 
     public BackgroundLoader() {
         running = true;
@@ -61,7 +62,8 @@ public abstract class BackgroundLoader {
 
     void start() throws LWJGLException {
         drawable = getDrawable();
-        Thread thread = new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     drawable.makeCurrent();
@@ -106,9 +108,8 @@ public abstract class BackgroundLoader {
             } else if (list1.isEmpty() && list2.isEmpty()) {
                 unloadTextures();
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(3600000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
             firstActive = !firstActive;
@@ -178,6 +179,7 @@ public abstract class BackgroundLoader {
         pause = true;
         List<Sprite> workingList = firstActive ? list2 : list1;
         workingList.add(sprite);
+        thread.interrupt();
         pause = false;
     }
 

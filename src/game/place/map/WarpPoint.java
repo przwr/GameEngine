@@ -34,7 +34,6 @@ public class WarpPoint extends GameObject {
     private Delay secondDelay = Delay.createInMilliseconds(125);
     private boolean loading, joined;
 
-
     public WarpPoint(String name, int x, int y, int toX, int toY, Map map) {
         this.name = name;
         this.x = x;
@@ -87,21 +86,19 @@ public class WarpPoint extends GameObject {
         if (isWarp) {
             if (object instanceof Player) {
                 loadMap(object);
-            } else {
-                if (isStatic) {
-                    if (destination != null) {
-                        object.changeMap(destination, xDestination, yDestination);
-                    } else {
-                        loadMap(object);
-                    }
+            } else if (isStatic) {
+                if (destination != null) {
+                    object.changeMap(destination, xDestination, yDestination);
                 } else {
-                    WarpPoint warp;
-                    if (destination != null) {
-                        warp = destination.findWarp(name);
-                        object.changeMap(destination, warp.getX(), warp.getY());
-                    } else {
-                        loadMap(object);
-                    }
+                    loadMap(object);
+                }
+            } else {
+                WarpPoint warp;
+                if (destination != null) {
+                    warp = destination.findWarp(name);
+                    object.changeMap(destination, warp.getX(), warp.getY());
+                } else {
+                    loadMap(object);
                 }
             }
         }

@@ -1,6 +1,7 @@
 package game.logic.maploader;
 
 import game.place.map.Map;
+import java.util.ArrayList;
 
 /**
  * Created by przemek on 19.08.15.
@@ -65,6 +66,26 @@ public class MapLoadContainer {
         }
     }
 
+    public boolean contains(String name, Iterable<Integer> areas) {
+        boolean found;
+        if (areas != null) {
+            for (MapLoad load : requests) {
+                if (load.name == name) {
+                    found = true;
+                    for (int area : areas) {
+                        if (!load.areas.contains(area)) {
+                            found = false;
+                        }
+                    }
+                    if (found) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isEmpty() {
         return requestCount == 0;
     }
@@ -87,12 +108,12 @@ public class MapLoadContainer {
 
     public MapLoad getMapByName(String name) {
         for (int i = 0; i < requestCount; i++) {
-            if (requests[i].name == name)
+            if (requests[i].name == name) {
                 return requests[i];
+            }
         }
         return null;
     }
-
 
     @Override
     public String toString() {

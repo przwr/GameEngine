@@ -78,7 +78,7 @@ public class PathFindingModule implements Runnable {
         cleaning = false;
         if (requestedPaths.size() < 2) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

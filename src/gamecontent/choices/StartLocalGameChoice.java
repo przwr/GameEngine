@@ -24,6 +24,7 @@ public class StartLocalGameChoice extends MenuChoice {
     public void action(int button) {
         if (button == ACTION) {
             System.out.println(Settings.language.menu.Loading + " ...");
+            ((MyGame) menu.game).loading(0);
             ((MyGame) menu.game).setDesignerMode(false);
             menu.game.startGame();
             Main.refreshGammaAndBrightness();

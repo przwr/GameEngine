@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 public class MapLoaderModule implements Runnable {
 
     private ArrayList<Map> maps = new ArrayList<>(); // TODO zamienić na wczytywanie z pliku
-    private MapLoadContainer list1 = new MapLoadContainer();
-    private MapLoadContainer list2 = new MapLoadContainer();
+    private MapLoadContainer list1 = new MapLoadContainer(10);
+    private MapLoadContainer list2 = new MapLoadContainer(10);
     private boolean run, firstActive, pause;
     private Game game;
 
@@ -52,7 +52,7 @@ public class MapLoaderModule implements Runnable {
             Place place = game.getPlace();
             if (place != null && !pause) {
                 MapLoadContainer workingList = firstActive ? list1 : list2;
-                if (!workingList.isEmpty() && workingList != null) {
+                if (!workingList.isEmpty()) {
                     for (int i = 0; i < workingList.size(); i++) {
                         MapLoad mapLoad = workingList.get(i);
                         Map placeMap = mapLoad.map;
@@ -66,11 +66,10 @@ public class MapLoaderModule implements Runnable {
                         }
                     }
                     workingList.clear();
-                } else {
+                } else if (list1.isEmpty() && list2.isEmpty()) {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }
                 firstActive = !firstActive;
@@ -88,9 +87,11 @@ public class MapLoaderModule implements Runnable {
 
     public synchronized void requestMap(String name, WarpPoint warp) {
         pause = true;
-        Iterable<Integer> areas = new ArrayList<>(1);
+        Iterable<Integer> areas = null;
         MapLoadContainer workingList = firstActive ? list2 : list1;
-        workingList.add(name, areas);
+        if (!workingList.contains(name, areas)) {
+            workingList.add(name, new ArrayList<>(1));
+        }
         pause = false;
     }
 
@@ -98,11 +99,13 @@ public class MapLoaderModule implements Runnable {
         pause = true;
         MapLoadContainer workingList = firstActive ? list2 : list1;
         for (Map map : tempMaps) {
-            workingList.add(map.getName(), map.getAreasToUpdate(), map);
+            Iterable<Integer> areas = map.getAreasToUpdate();
+            if (!workingList.contains(map.getName(), areas)) {
+                workingList.add(map.getName(), areas, map);
+            }
         }
         pause = false;
     }
-
 
     public void stop() {
         list1.clear();

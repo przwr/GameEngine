@@ -16,8 +16,10 @@ import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,7 +85,7 @@ public class TextController extends GUIObject {
 
     public void startFromFile(String file) {
         if (!started) {
-            try (BufferedReader read = new BufferedReader(new FileReader("res/text/" + file + ".txt"))) {
+            try (BufferedReader read = new BufferedReader(new InputStreamReader(new FileInputStream("res/text/" + file + ".txt"), StandardCharsets.UTF_8))) {
                 String line;
                 String[] tab;
                 speed = 1;
@@ -598,28 +600,24 @@ public class TextController extends GUIObject {
 
             if (flushing) {
                 handleFlushing();
-            } else {
-                if (!flushReady) {
-                    if (index < branch.length) {
-                        index += realSpeed;
-                        change = 1;
-                    } else if (jumpTo >= 0) {
-                        flushReady = true;
-                    } else if (action) {
-                        branch.endingEvent();
-                        stopTextViewing();
-                    }
-                } else {
-                    if (!question) {
-                        if (action) {
-                            flushing = true;
-                            flushReady = false;
-                            change = 0;
-                        }
-                    } else {
-                        handleQuestion();
-                    }
+            } else if (!flushReady) {
+                if (index < branch.length) {
+                    index += realSpeed;
+                    change = 1;
+                } else if (jumpTo >= 0) {
+                    flushReady = true;
+                } else if (action) {
+                    branch.endingEvent();
+                    stopTextViewing();
                 }
+            } else if (!question) {
+                if (action) {
+                    flushing = true;
+                    flushReady = false;
+                    change = 0;
+                }
+            } else {
+                handleQuestion();
             }
             for (TextRow tr : branch) {
                 handleEvent(tr);
