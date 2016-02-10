@@ -6,6 +6,7 @@
 package gamedesigner;
 
 import collision.Figure;
+import engine.systemcommunication.Time;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
@@ -108,6 +109,7 @@ public class ObjectPlayer extends Player {
     protected void move(double xPos, double yPos) {
         int xdelta = (int) xPos;
         int ydelta = (int) yPos;
+        double realTimer = (double) maxTimer / Time.getDelta();
         boolean ctrl = key.key(KEY_LCONTROL);
         if (xdelta != 0 && xTimer == 0) {
             ix = Methods.interval(0, ix + xdelta, map.getWidthInTiles());
@@ -139,10 +141,10 @@ public class ObjectPlayer extends Player {
         ui.setCursorStatus(ix, iy, Math.abs(ix - xStop) + 1, Math.abs(iy - yStop) + 1);
         xTimer++;
         yTimer++;
-        if (xTimer >= maxTimer) {
+        if (xTimer >= realTimer) {
             xTimer = 0;
         }
-        if (yTimer >= maxTimer) {
+        if (yTimer >= realTimer) {
             yTimer = 0;
         }
     }

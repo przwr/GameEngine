@@ -57,12 +57,12 @@ public class SpawnPoint extends GameObject {
                 int mobs = 0;
                 Area area = map.getArea(getX(), getY());
                 for (Mob m : area.getNearSolidMobs()) {
-                    if (m.getClass().getName() == mob.getName()) {
+                    if (m.getClass().getName().equals(mob.getName()) && m.getSpawner() == this) {
                         mobs++;
                     }
                 }
                 if (mobs < maxMobs) {
-                    if (area.getNearSolidMobs().stream().anyMatch((object) -> (object.getClass().getName() == mob.getName() &&
+                    if (area.getNearSolidMobs().stream().anyMatch((object) -> (object.getClass().getName().equals(mob.getName()) &&
                             collision.checkCollision(getX(), getY(), object)))) {
                         return;
                     }

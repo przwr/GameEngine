@@ -9,6 +9,7 @@ import gamecontent.SpawnPoint;
 import gamecontent.mobs.Tongub;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import gamecontent.mobs.Blazag;
 
 /**
  * Created by przemek on 21.11.15.
@@ -30,11 +31,20 @@ public class CaveTest extends Map {
 
     @Override
     public void populate() {
-        addObject(new Tongub(600, 2560, place, mobID++));
-        addObject(new Tongub(640, 2720, place, mobID++));
-        addObject(new Tongub(900, 2600, place, mobID++));
-        addObject(SpawnPoint.createInVisible(768, 2600, 54, 38, "Tongub spawn", Tongub.class, 10, 10));
-        addObject(SpawnPoint.createInVisible(1400, 3440, 54, 38, "Tongub spawn", Tongub.class, 10, 10));
-
+        addObject(SpawnPoint.createInVisible(2176, 5120, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(2880, 4096, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(4352, 4864, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(3072, 5568, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(4288, 5568, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(3584, 6272, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(4544, 7168, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(5056, 7040, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(3648, 6912, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(4096, 8128, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(5504, 7936, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(5568, 6336, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
+        addObject(SpawnPoint.createInVisible(6818, 2662, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
+        addObject(SpawnPoint.createInVisible(7271, 2771, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
+        addObject(SpawnPoint.createInVisible(7126, 2445, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
     }
 }

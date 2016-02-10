@@ -53,8 +53,7 @@ public class Melodia extends Mob {
                 if ("2".equals(dialog) && map.getSolidMobById(0) == null) {
                     dialog = "3";
                 }
-                if (player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
-                        && d <= Place.tileSize * 1.5 && !player.getTextController().isStarted()) {
+                if (isPlayerTalkingToMe(player)) {
                     setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
                     player.getTextController().lockEntity(player);
                     player.getTextController().startFromFile("npcdemo", dialog);

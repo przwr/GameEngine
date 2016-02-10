@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * @author Wojtek
  */
 public class PuzzleObject {
-
+    
     private final Place place;
     private final int tileSize = Place.tileSize;
     protected ArrayList<TileContainer> bgTiles;
@@ -47,7 +47,7 @@ public class PuzzleObject {
     private String[] lineTab;
     private boolean repeatTiles;
     /*----*/
-
+    
     public PuzzleObject(File file, Place place, boolean repeatTiles) {
         this.place = place;
         this.repeatTiles = repeatTiles;
@@ -57,15 +57,15 @@ public class PuzzleObject {
             fgTiles = new ArrayList<>();
             blocks = new ArrayList<>();
             links = new ArrayList<>();
-
+            
             String line = input.readLine();
             lineTab = line.split(":");
             xDelta = Integer.parseInt(lineTab[0]);
             yDelta = Integer.parseInt(lineTab[1]);
-
+            
             xBegin = yBegin = Integer.MAX_VALUE;
             xEnd = yEnd = Integer.MIN_VALUE;
-
+            
             while ((line = input.readLine()) != null) {
                 readLine(line);
             }
@@ -84,7 +84,7 @@ public class PuzzleObject {
     public PuzzleObject(String file, Place place, boolean repeatTiles) {
         this(new File("res/objects/" + file + ".puz"), place, repeatTiles);
     }
-
+    
     protected PuzzleObject(ArrayList<String> map, Place place) {
         this.place = place;
         bgTiles = new ArrayList<>();
@@ -92,48 +92,48 @@ public class PuzzleObject {
         fgTiles = new ArrayList<>();
         blocks = new ArrayList<>();
         links = new ArrayList<>();
-
+        
         lineTab = map.get(0).split(":");
         xDelta = Integer.parseInt(lineTab[0]);
         yDelta = Integer.parseInt(lineTab[1]);
-
+        
         xBegin = yBegin = Integer.MAX_VALUE;
         xEnd = yEnd = Integer.MIN_VALUE;
-
+        
         for (int i = 1; i < map.size(); i++) {
             readLine(map.get(i));
         }
         width = Math.abs(xEnd - xBegin) + 1;
         height = Math.abs(yEnd - yBegin) + 1;
     }
-
+    
     private void readLine(String line) {
         lineTab = line.split(":");
         switch (lineTab[0]) {
             case "t":
                 decodeTile();
                 break;
-
+            
             case "ft":
                 decodeFGTile(false);
                 break;
-
+            
             case "sft":
                 decodeFGTile(true);
                 break;
-
+            
             case "b":
                 decodeBlock();
                 break;
-
+            
             case "rb":
                 decodeRoundedBlock();
                 break;
-
+            
             case "pl":
                 decodePortLinks();
                 break;
-
+            
             default:
                 ErrorHandler.error("The object \"" + lineTab[0] + "\" is undefined");
         }
@@ -152,7 +152,7 @@ public class PuzzleObject {
         addTile(tmpTile, Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]));
         checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), 1, 1);
     }
-
+    
     private void decodeFGTile(boolean shadowLightBased) {
         if (!lineTab[4].equals("")) {
             tmpSS = place.getSpriteSheet(lineTab[4], "backgrounds");
@@ -176,7 +176,7 @@ public class PuzzleObject {
         }
         checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), 1, 1);
     }
-
+    
     private void decodeBlock() {
         tempBlock = new BlockContainer(Integer.parseInt(lineTab[1]) * tileSize,
                 Integer.parseInt(lineTab[2]) * tileSize,
@@ -186,7 +186,7 @@ public class PuzzleObject {
         blocks.add(tempBlock);
         checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), Integer.parseInt(lineTab[3]), Integer.parseInt(lineTab[4]));
     }
-
+    
     private void decodeRoundedBlock() {
         tempBlock = new RoundBlockContainer(Integer.parseInt(lineTab[1]) * tileSize,
                 Integer.parseInt(lineTab[2]) * tileSize,
@@ -205,7 +205,7 @@ public class PuzzleObject {
         blocks.add(tempBlock);
         checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), Integer.parseInt(lineTab[3]), Integer.parseInt(lineTab[4]));
     }
-
+    
     private void decodePortLinks() {
         PointedValue pv;
         index = 1;
@@ -215,15 +215,15 @@ public class PuzzleObject {
             index += 3;
         }
     }
-
+    
     public boolean hasLinks() {
         return links.size() > 0;
     }
-
+    
     public ArrayList<PointedValue> getLinks() {
         return links;
     }
-
+    
     private void addTile(Tile tile, int x, int y) {
         if (!repeatTiles) {
             for (TileContainer tc : bgTiles) {
@@ -238,7 +238,7 @@ public class PuzzleObject {
         tmpContainer.places.add(new Point(x, y));
         bgTiles.add(tmpContainer);
     }
-
+    
     private void checkBoundaries(int x, int y, int width, int height) {
         if (x < xBegin) {
             xBegin = x;
@@ -253,11 +253,11 @@ public class PuzzleObject {
             yEnd = y + height;
         }
     }
-
+    
     public Point getStartingPoint() {
         return new Point(xDelta, yDelta);
     }
-
+    
     public void placePuzzle(int x, int y, Map map) {
         bgTiles.stream().forEach((TileContainer tc) -> tc.places.stream().forEach((p) -> map.setTile(p.getX() + x, p.getY() + y, tc.tile)));
         blocks.stream().forEach((block) -> {
@@ -277,53 +277,53 @@ public class PuzzleObject {
             map.addForegroundTile(tile.generateFGT(x * tileSize, y * tileSize, false));
         });
     }
-
+    
     public int getXBegin() {
         return xBegin;
     }
-
+    
     public int getYBegin() {
         return yBegin;
     }
-
+    
     public int getXEnd() {
         return xEnd;
     }
-
+    
     public int getYEnd() {
         return yEnd;
     }
-
+    
     public int getWidth() {
         return width;
     }
-
+    
     public int getHeight() {
         return height;
     }
-
+    
     protected class TileContainer {
-
+        
         final ArrayList<Point> places = new ArrayList<>();
         Tile tile;
-
+        
         public Tile getTile() {
             return tile;
         }
-
+        
         public ArrayList<Point> getPlaces() {
             return places;
         }
     }
-
+    
     protected class FGTileContainer {
-
+        
         final ArrayList<Point> additionalPlaces = new ArrayList<>();
         final SpriteSheet texture;
         final int[] values;
         final boolean wall;
         final boolean round;
-
+        
         boolean shadowLightBased;
         boolean isShadow;
         int xBegin, yBegin;
@@ -336,41 +336,41 @@ public class PuzzleObject {
             this.wall = wall;
             this.round = round;
         }
-
+        
         public void setShadowLightBased(boolean isShadow) {
             shadowLightBased = true;
             this.isShadow = isShadow;
         }
-
+        
         public void setBeginning(int x, int y) {
             xBegin = x;
             yBegin = y;
         }
-
+        
         public int getXBegin() {
             return xBegin;
         }
-
+        
         public int getYBegin() {
             return yBegin;
         }
-
+        
         public void addPlace(Point p) {
             additionalPlaces.add(p);
         }
-
+        
         public int[] getValues() {
             return values;
         }
-
+        
         public SpriteSheet getTexture() {
             return texture;
         }
-
+        
         public boolean getRound() {
             return round;
         }
-
+        
         public ForegroundTile generateFGT(int x, int y, boolean objectFGT) {
             ForegroundTile fgt;
             if (!shadowLightBased) {
@@ -388,49 +388,53 @@ public class PuzzleObject {
             return fgt;
         }
     }
-
+    
     protected class BlockContainer {
-
+        
         final int[] values;
         final ArrayList<FGTileContainer> containedFGTs = new ArrayList<>();
-
+        
         public BlockContainer(int x, int y, int width, int height, int shadowHeight) {
             values = new int[]{x, y, width, height, shadowHeight};
         }
-
+        
         public Block generateBlock(int x, int y) {
-            return Block.create(values[0] + x, values[1] + y, values[2], values[3], values[4]);
+            Block b = Block.create(values[0] + x, values[1] + y, values[2], values[3], values[4]);
+            if (values[3] == 0) {
+                b.getCollision().setOpticProperties(collision.OpticProperties.TRANSPARENT);
+            }
+            return b;
         }
-
+        
         public ArrayList<FGTileContainer> getForegroundTiles() {
             return containedFGTs;
         }
-
+        
         public int[] getValues() {
             return values;
         }
-
+        
         public int getY() {
             return values[1];
         }
     }
-
+    
     protected class RoundBlockContainer extends BlockContainer {
-
+        
         int[] corners;
-
+        
         public RoundBlockContainer(int x, int y, int width, int height, int shadowHeight) {
             super(x, y, width, height, shadowHeight);
         }
-
+        
         public int[] getCorners() {
             return corners;
         }
-
+        
         public void setCorners(int[] corners) {
             this.corners = corners;
         }
-
+        
         @Override
         public Block generateBlock(int x, int y) {
             Block b = Block.createRound(values[0] + x, values[1] + y, values[2], values[3], values[4]);

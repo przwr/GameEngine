@@ -34,7 +34,6 @@ import java.util.Iterator;
  */
 public abstract class Entity extends GameObject {
 
-
     protected static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 0.2f);
     protected static final byte PUSH = -1;
     public final Update[] updates = new Update[4];
@@ -125,8 +124,6 @@ public abstract class Entity extends GameObject {
     public SpeedChanger getKnockBack() {
         return knockBack;
     }
-
-    public abstract void update();
 
     public synchronized void updateSoft() {
         try {
@@ -221,7 +218,7 @@ public abstract class Entity extends GameObject {
 
     public void updateChangers() {
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
@@ -269,7 +266,6 @@ public abstract class Entity extends GameObject {
             floatHeight = 0;
         }
     }
-
 
     protected void moveWithSliding(double xMagnitude, double yMagnitude) {
         if (collision != null) {
@@ -650,5 +646,13 @@ public abstract class Entity extends GameObject {
 
     public Point getSpawnPosition() {
         return spawnPosition;
+    }
+
+    public void setSpawnPosition(int x, int y) {
+        spawnPosition.set(x, y);
+    }
+
+    public void setCurrentLoactionAsSpawnPosition() {
+        spawnPosition.set((int) x, (int) y);
     }
 }

@@ -113,9 +113,9 @@ public class MyController extends PlayerController {
                             updateAttackTypes();
                             if (actions[INPUT_BLOCK].isKeyPressed()) {
                                 updateBlock();
-                            } else if (attacking || 
-                                    (firstAttackType >= 0 && actions[INPUT_ATTACK].isKeyPressed()) || 
-                                    (secondAttackType >= 0 && actions[INPUT_SECOND_ATTACK].isKeyPressed())) {
+                            } else if (attacking
+                                    || (firstAttackType >= 0 && actions[INPUT_ATTACK].isKeyPressed())
+                                    || (secondAttackType >= 0 && actions[INPUT_SECOND_ATTACK].isKeyPressed())) {
                                 updateAttack();
                             } else {
                                 updateMovement();
@@ -670,14 +670,12 @@ public class MyController extends PlayerController {
         } else {
             inControl.setMaxSpeed(diagonal ? 7.777 : 11);
         }
-        if (!Main.TEST) {
-            if (actions[INPUT_ACTION_3].isKeyClicked()) {
-                inControl.setEmits(!inControl.isEmits());
-            }
-            if (actions[INPUT_ACTION_4].isKeyClicked()) {
-                if (inControl instanceof Player) {
-                    inControl.getCamera().switchZoom();
-                }
+        if (actions[INPUT_ACTION_3].isKeyClicked()) {
+            inControl.setEmits(!inControl.isEmits());
+        }
+        if (actions[INPUT_ACTION_4].isKeyClicked()) {
+            if (inControl instanceof Player) {
+                inControl.getCamera().switchZoom();
             }
         }
     }

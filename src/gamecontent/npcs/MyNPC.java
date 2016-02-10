@@ -54,9 +54,7 @@ public class MyNPC extends Mob {
                     setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
                 }
                 int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-                if (mpPrey.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
-                        && d <= Place.tileSize * 1.5
-                        && !mpPrey.getTextController().isStarted()) {
+                if (isPlayerTalkingToMe(mpPrey)) {
                     TextController text = mpPrey.getTextController();
                     text.lockEntity(mpPrey);
                     text.startFromFile("inwokacja");

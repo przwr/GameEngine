@@ -109,7 +109,7 @@ public class Tongub extends Mob {
             public void update() {
 //                System.out.println("HIDE");
                 brake(2);
-                if (!undig && animation.getDirectionalFrameIndex() == 16) {
+                if (!undig && animation.getDirectionalFrameIndex() == 17) {
                     collision.setCollide(false);
                     collision.setHitable(false);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
@@ -121,7 +121,7 @@ public class Tongub extends Mob {
                         collision.setCollide(true);
                         collision.setHitable(true);
                     }
-                } else if (!stats.isProtectionState() && animation.getDirectionalFrameIndex() == 22) {
+                } else if (!stats.isProtectionState() && animation.getDirectionalFrameIndex() == 23) {
                     state = idle;
                 }
             }
@@ -247,7 +247,7 @@ public class Tongub extends Mob {
 
     private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 23);
+        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 24);
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
         appearance = animation;
         collision.setMobile(true);
@@ -387,13 +387,13 @@ public class Tongub extends Mob {
         } else {
             if (stats.isProtectionState()) {
                 animation.setFPS(15);
-                animation.animateIntervalInDirection(getDirection8Way(), 11, 16);
+                animation.animateIntervalInDirection(getDirection8Way(), 11, 17);
                 animation.setStopAtEnd(true);
             } else if (undig) {
                 animation.setFPS(15);
-                animation.animateIntervalInDirection(getDirection8Way(), 17, 22);
+                animation.animateIntervalInDirection(getDirection8Way(), 18, 23);
                 animation.setStopAtEnd(true);
-                if (animation.getDirectionalFrameIndex() == 22) {
+                if (animation.getDirectionalFrameIndex() == 23) {
                     undig = false;
                 }
             } else {

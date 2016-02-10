@@ -42,8 +42,7 @@ public class Magician extends Mob {
                 MyPlayer player = (MyPlayer) target;
                 int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
                 setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
-                if (player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
-                        && d <= Place.tileSize * 1.5 && !player.getTextController().isStarted()) {
+                if (isPlayerTalkingToMe(player)) {
                     player.getTextController().lockEntity(player);
                     player.getTextController().startFromFile("npcCzary");
                     player.getTextController().addExternalEvent(new Executive() {
@@ -54,11 +53,13 @@ public class Magician extends Mob {
                                 setPosition(3850, 6610);
                                 player.setPosition(3750, 6610);
                                 player.getCamera().updateStatic();
+                                player.setCurrentLoactionAsSpawnPosition();
                                 upperSide = false;
                             } else {
                                 setPosition(2700, 1836);
                                 player.setPosition(2600, 1836);
                                 player.getCamera().updateStatic();
+                                player.setCurrentLoactionAsSpawnPosition();
                                 upperSide = true;
                             }
                         }

@@ -9,6 +9,9 @@ import collision.Figure;
 import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.place.Place;
+import gamecontent.MyController;
+import gamecontent.MyPlayer;
+import gamecontent.SpawnPoint;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 
@@ -31,7 +34,7 @@ public abstract class Mob extends Entity {
     protected BlueArray<Agro> agro = new BlueArray<>();
     protected ArrayList<String> neutral = new ArrayList<>();
     protected Delay letGoDelay = Delay.createInSeconds(30);
-
+    private SpawnPoint spawner;
 
     public Mob() {
     }
@@ -62,6 +65,7 @@ public abstract class Mob extends Entity {
         }
         initialize(name, x, y);
         this.mobID = mobID;
+        spawner = null;
     }
 
     protected synchronized void lookForPlayers(GameObject[] players) {
@@ -86,7 +90,7 @@ public abstract class Mob extends Entity {
             }
         }
         for (Mob mob : mobs) {
-            if (mob.getClass().getName() == this.getClass().getName()) {
+            if (mob.getClass().getName().equals(this.getClass().getName())) {
                 if (this != mob && mob.getMap() == map && isInRange(mob)) {
                     closeFriends.add(mob);
                 }
@@ -116,7 +120,7 @@ public abstract class Mob extends Entity {
             return false;
         }
         for (String className : neutral) {
-            if (className == mob.getClass().getName()) {
+            if (className.equals(mob.getClass().getName())) {
                 return true;
             }
         }
@@ -134,7 +138,7 @@ public abstract class Mob extends Entity {
             }
         }
         for (Mob mob : mobs) {
-            if (mob.getClass().getName() == this.getClass().getName()) {
+            if (mob.getClass().getName().equals(this.getClass().getName())) {
                 if (this != mob && mob.getMap() == map && isInRange(mob)) {
                     closeFriends.add(mob);
                 }
@@ -157,6 +161,14 @@ public abstract class Mob extends Entity {
         }
     }
 
+    public void setSpawner(SpawnPoint spawn) {
+        spawner = spawn;
+    }
+
+    public SpawnPoint getSpawner() {
+        return spawner;
+    }
+
     protected synchronized void charge() {
         if (target != null) {
             double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
@@ -168,7 +180,6 @@ public abstract class Mob extends Entity {
         double angle = Methods.pointAngleClockwise(x, y, destination.getX(), destination.getY());
         changeSpeed(Methods.xRadius(angle, maxSpeed), Methods.yRadius(angle, maxSpeed));
     }
-
 
     protected synchronized void goTo(Point destination) {
         goTo(destination.getX(), destination.getY());
@@ -276,15 +287,14 @@ public abstract class Mob extends Entity {
 
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
-        return collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map) ||
-                collision.isCollidePlayer((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), getPlace());
+        return collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map)
+                || collision.isCollidePlayer((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), getPlace());
     }
 
     @Override
     public Player getCollided(double xMagnitude, double yMagnitude) {
         return collision.firstPlayerCollide((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), getPlace());
     }
-
 
     @Override
     public void render(int xEffect, int yEffect) {
@@ -296,10 +306,11 @@ public abstract class Mob extends Entity {
             appearance.render();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
         }
-        if (map != null)
+        if (map != null) {
             Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
                     (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont,
                     map.getLightColor());
+        }
         glPopMatrix();
     }
 
@@ -342,7 +353,6 @@ public abstract class Mob extends Entity {
             glPopMatrix();
         }
     }
-
 
     public void updateAgro(Agro newAgro, int diffrence) {
         ArrayList<Agro> toRemove = new ArrayList<>();
@@ -403,7 +413,6 @@ public abstract class Mob extends Entity {
         return false;
     }
 
-
     public Agro getAgresor(GameObject attacker) {
         for (Agro a : agro) {
             if (a.agresor == attacker) {
@@ -411,5 +420,13 @@ public abstract class Mob extends Entity {
             }
         }
         return null;
+    }
+
+    public boolean isPlayerTalkingToMe(MyPlayer player) {
+        return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
+                && !player.getTextController().isStarted()
+                && Methods.pointDistanceSimple(getX(), getY(),
+                        player.getX(), player.getY()) <= Place.tileSize * 1.5
+                && player.getDirection8Way() == Methods.pointAngle8Directions(player.getX(), player.getY(), x, y);
     }
 }

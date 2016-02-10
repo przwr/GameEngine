@@ -123,20 +123,22 @@ public class WarpPoint extends GameObject {
             if (map != null) {
                 if (object instanceof Player) {
                     if (Main.backgroundLoader.allLoaded()) {
+                        MyPlayer player = (MyPlayer) object;
                         WarpPoint warp = map.findWarp(name);
-                        object.changeMap(map, warp.getX(), warp.getY());
+                        player.changeMap(map, warp.getX(), warp.getY());
+                        player.setCurrentLoactionAsSpawnPosition();
                         TemporalChanger lockChanger = new LockChanger(8);
                         lockChanger.start();
                         if (joined) {
                             TemporalChanger joiner = new CameraJoiner(45);
                             joiner.start();
-                            ((Player) object).addChanger(joiner);
+                            player.addChanger(joiner);
                         }
-                        ((Player) object).addChanger(lockChanger);
-                        ((MyPlayer) object).getGUI().setVisible(true);
-                        if (((Player) object).getCamera() != null) {
-                            ((Player) object).getCamera().updateStatic();
-                            ((Player) object).getCamera().fade(250, false);
+                        player.addChanger(lockChanger);
+                        player.getGUI().setVisible(true);
+                        if (player.getCamera() != null) {
+                            player.getCamera().updateStatic();
+                            player.getCamera().fade(250, false);
                         }
                     }
                 } else {

@@ -77,7 +77,8 @@ public abstract class Game {
 
     public String getPlayerCoordinates() {
         Player p = (Player) place.players[0];
-        return "[" + p.getX() + ", " + p.getY() + "]";
+        return "[" + p.getX() + ", " + p.getY() + "] : "
+                + "{" + (int) p.getX() / Place.tileSize + ", " + (int) p.getY() / Place.tileSize + "}";
     }
 
     protected void pause() {
