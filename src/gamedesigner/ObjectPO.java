@@ -6,6 +6,7 @@
 package gamedesigner;
 
 import engine.utilities.PointedValue;
+import engine.utilities.RandomGenerator;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.PuzzleObject;
@@ -36,6 +37,7 @@ public class ObjectPO extends PuzzleObject {
     @Override
     public void placePuzzle(int x, int y, Map map) {
         int tileSize = map.getTileSize();
+        RandomGenerator rand = RandomGenerator.create();
         ObjectMap objMap = (ObjectMap) map;
         objMap.setCentralPoint(xDelta, yDelta);
         bgTiles.stream().forEach((TileContainer tc) -> tc.getPlaces().stream().forEach((p) -> map.setTile(p.getX() + x, p.getY() + y, tc.getTile())));
@@ -71,7 +73,6 @@ public class ObjectPO extends PuzzleObject {
                 }
             }
         });
-        objects.stream().forEach(map::addObject);
         fgTiles.stream().forEach((FGTileContainer tile) -> {
             /*ForegroundTile tmp = tile.generateFGT(x * tileSize, y * tileSize);
             SpriteSheet tex = tmp.getSpriteSheet();
@@ -87,6 +88,8 @@ public class ObjectPO extends PuzzleObject {
             PuzzleLink pl = new PuzzleLink(pv.getX() * tileSize, pv.getY() * tileSize, pv.getValue(), (ObjectPlace) map.place);
             objMap.addObject(pl, false);
         });
-
+        mapObjects.stream().forEach((moc) -> {
+            objMap.addMapObject(moc.generateObject(x * tileSize, y * tileSize, rand));
+        });
     }
 }

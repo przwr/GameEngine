@@ -10,6 +10,7 @@ import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.*;
+import gamecontent.Tree;
 import gamedesigner.designerElements.CentralPoint;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.TemporaryBlock;
@@ -26,6 +27,7 @@ public class ObjectMap extends Map {
     private final CentralPoint centralPoint;
     private final ObjectPlace objPlace;
     private final ArrayList<PuzzleLink> links;
+    private final ArrayList<GameObject> mapObjects;
     private Tile background;
     private boolean isBackground, areTilesVisible, areBlocksVisible;
 
@@ -33,6 +35,7 @@ public class ObjectMap extends Map {
         super(id, "ObjectMap", place, width, height, tileSize);
         objPlace = (ObjectPlace) place;
         links = new ArrayList<>();
+        mapObjects = new ArrayList<>();
 
         background = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
         background.setDepth(-1);
@@ -123,6 +126,25 @@ public class ObjectMap extends Map {
                     setTile(x, y, background);
                 }
             }
+        }
+    }
+
+    public void addMapObject(GameObject object) {
+        mapObjects.add(object);
+        addObject(object);
+    }
+
+    public void deleteMapObject(int x, int y) {
+        GameObject del = null;
+        for (GameObject go : mapObjects) {
+            if ((go.getX() / tileSize) == x && (go.getY() / tileSize) == y) {
+                del = go;
+                break;
+            }
+        }
+        if (del != null) {
+            mapObjects.remove(del);
+            deleteObject(del);
         }
     }
 
@@ -407,11 +429,18 @@ public class ObjectMap extends Map {
             }
         }
 
-        String linking = "pl";
-        for (PuzzleLink pl : links) {
-            linking += ":" + pl.saveToString(xActBegin, yActBegin);
+        for (GameObject go : mapObjects) {
+            map.add("o:" + go.getName() + ":" + ((go.getX() - xActBegin) / tileSize)
+                    + ":" + ((go.getY() - yActBegin) / tileSize));
         }
-        map.add(linking);
+
+        if (!links.isEmpty()) {
+            String linking = "pl";
+            for (PuzzleLink pl : links) {
+                linking += ":" + pl.saveToString(xActBegin, yActBegin);
+            }
+            map.add(linking);
+        }
         return map;
     }
 
@@ -447,7 +476,7 @@ public class ObjectMap extends Map {
         areas[0] = new Area(place, this, width, height, widthInTiles * heightInTiles);
         placement = new Placement(this);
     }
-    
+
     @Override
     protected void renderArea(int i) {
         for (int yTiles = 0; yTiles < heightInTiles; yTiles++) {

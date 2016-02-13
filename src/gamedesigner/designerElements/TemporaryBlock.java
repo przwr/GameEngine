@@ -285,6 +285,21 @@ public class TemporaryBlock extends GameObject {
     }
 
     @Override
+    public int getYSpriteBegin() {
+        return super.getYSpriteBegin() - upHeight * tile;
+    }
+
+    @Override
+    public int getYSpriteEnd() {
+        return super.getYSpriteEnd() + yTiles * tile;
+    }
+
+    @Override
+    public int getXSpriteEnd() {
+        return super.getXSpriteEnd() + xTiles * tile;
+    }
+    
+    @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
     }
 

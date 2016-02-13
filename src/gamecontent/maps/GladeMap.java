@@ -104,9 +104,9 @@ public class GladeMap extends Map {
         }
 
 
-        addObject(new Bush(800, 800, 10, 50, 1f));
-        addObject(new Bush(1024, 920, 12, 70, 0.8f));
-        addObject(Tree.create(250, 1524, 32, 200, 0.8f));
+//        addObject(new Bush(800, 800, 10, 50, 1f));
+//        addObject(new Bush(1024, 920, 12, 70, 0.8f));
+//        addObject(Tree.create(250, 1524, 32, 200, 0.8f));
 //        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
 //        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
         addObject(GrassClump.createCorner(256, 864, 2, 8, 8, 2, 8, 32, 0));

@@ -22,11 +22,8 @@ import sprites.SpriteBase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
@@ -52,8 +49,8 @@ public class ObjectPlace extends Place {
     private boolean altMode, noBlocks, grid;
     private ObjectMap objMap;
     private UndoControl undo;
-    private short xWorkingAreaInTiles = 160;
-    private short yWorkingAreaInTiles = 160;
+    private final short xWorkingAreaInTiles = 160;
+    private final short yWorkingAreaInTiles = 160;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
@@ -196,7 +193,7 @@ public class ObjectPlace extends Place {
         }
 
         if (key.keyPressed(Keyboard.KEY_S)) {
-            if (key.key(Keyboard.KEY_LCONTROL) && !"".equals(currentFile)) {
+            if (key.key(Keyboard.KEY_LCONTROL) && currentFile != null) {
                 saveObject(currentFile);
             } else {
                 guiHandler.changeToNamingConsole();

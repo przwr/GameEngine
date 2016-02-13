@@ -10,13 +10,18 @@ import engine.systemcommunication.Time;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
+import engine.utilities.RandomGenerator;
 import engine.utilities.SimpleKeyboard;
 import game.gameobject.GUIObject;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.place.Place;
 import game.place.map.Map;
+import game.place.map.MapObjectContainer;
+import gamecontent.Bush;
 import gamecontent.MyController;
+import gamecontent.Tree;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.RoundedTMPBlock;
 import gamedesigner.designerElements.TemporaryBlock;
@@ -45,12 +50,15 @@ public class ObjectPlayer extends Player {
     private ObjectMap objMap;
     private ObjectPlace objPlace;
     private ObjectUI ui;
-    private int blockHeight, tileHeight, radius, mode;
+    private byte objectMode;
+    private int blockHeight, tileHeight, mode;
     private boolean roundBlocksMode, alreadyPlaced;
     private boolean paused, shadow, nightLight;
 
     private RoundedTMPBlock rTmpBlock;
     private ArrayList<TemporaryBlock> movingBlock;
+    
+    private RandomGenerator rand;
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
@@ -58,8 +66,8 @@ public class ObjectPlayer extends Player {
         maxTimer = 7;
         xTimer = 0;
         yTimer = 0;
-        radius = 1;
         key = new SimpleKeyboard();
+        rand = RandomGenerator.create();
         initializeController();
     }
 
@@ -291,12 +299,6 @@ public class ObjectPlayer extends Player {
                     xTimer = 1;
                     yTimer = 1;
                 }
-            } else if (mode == ObjectPlace.MODE_OBJECT && key.key(KEY_LSHIFT)) {
-                if (xTimer == 0 && yTimer == 0) {
-                    radius = Methods.interval(1, radius - yPos, 20);
-                    xTimer = 1;
-                    yTimer = 1;
-                }
             } else {
                 move(xPos, yPos);
             }
@@ -366,8 +368,10 @@ public class ObjectPlayer extends Player {
                 }
             }
         } else if (mode == ObjectPlace.MODE_OBJECT) {
-            PuzzleLink pl = new PuzzleLink(ix * tileSize, iy * tileSize, radius, objPlace);
-            objMap.addObject(pl, false);
+            GameObject obj = MapObjectContainer.generate(ix * tileSize, iy * tileSize, rand, objectMode);
+            if (obj != null) {
+                objMap.addMapObject(obj);
+            }
         }
     }
 
@@ -397,7 +401,7 @@ public class ObjectPlayer extends Player {
             int yd = (Math.abs(iy - yStop) + 1);
             objMap.deleteBlocks(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize);
         } else if (mode == ObjectPlace.MODE_OBJECT) {
-            objMap.deleteLink(ix * tileSize, iy * tileSize);
+            objMap.deleteMapObject(ix, iy);
         }
     }
 
@@ -458,12 +462,7 @@ public class ObjectPlayer extends Player {
         }
         if (mode == ObjectPlace.MODE_OBJECT) {
             Drawer.drawRing(tileSize / 2, tileSize / 2, tileSize / 4, d, 10);
-            int complex = radius * 2 + 10;
-            if (radius % 2 == 1) {
-                Drawer.drawRing(0, 0, radius * tileSize / 2, d, complex);
-            } else {
-                Drawer.drawRing(-tileSize / 2, -tileSize / 2, radius * tileSize / 2, d, complex);
-            }
+            Drawer.drawRing(0, 0, tileSize / 2, d, 10);
         }
 
         Drawer.refreshForRegularDrawing();

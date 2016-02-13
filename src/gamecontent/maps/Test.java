@@ -23,14 +23,22 @@ import gamecontent.npcs.Nutka;
  */
 public class Test extends Map {
 
-
     public Test(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Test", place, width, height, tileSize);
-        Tile GRASS = new Tile(place.getSpriteSheet("tlo", "backgrounds"), 1, 8);
+        Tile GRASS = new Tile(place.getSpriteSheet("grassland", "backgrounds"), 1, 1);
+        Tile[] flowers = new Tile[7];
+        for (int i = 0; i < flowers.length; i++) {
+            flowers[i] = new Tile(place.getSpriteSheet("grassland", "backgrounds"), i, 10);
+        }
+        RandomGenerator rand = RandomGenerator.create();
 
         for (int y = 0; y < height / tileSize; y++) {
             for (int x = 0; x < width / tileSize; x++) {
-                setTile(x, y, GRASS);
+                if (!rand.chance(5)) {
+                    setTile(x, y, GRASS);
+                } else {
+                    setTile(x, y, flowers[rand.random(flowers.length - 1)]);
+                }
             }
         }
         PuzzleObject puzzle = new PuzzleObject("demo/start", place);
@@ -39,7 +47,7 @@ public class Test extends Map {
         puzzle.placePuzzle(82, 32, this);
         puzzle = new PuzzleObject("demo/second", place);
         puzzle.placePuzzle(32, 68, this);
-        
+
         WarpPoint warp = new WarpPoint("toCaveLeft", 51 * tileSize, 102 * tileSize, "CaveTest");
         warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
@@ -79,7 +87,6 @@ public class Test extends Map {
         }
 
 //        Background Trees
-
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 14; y++) {
 //                addObject(Tree.createBranchless(300 + x * 120 + random.next(5), 1150 + 180 * y + random.next(6), 32, 200, 0.8f));
@@ -149,7 +156,6 @@ public class Test extends Map {
 
         addObject(new Bush(4894, 4422, 12, 70, 0.8f));
         addObject(new Bush(5423, 4210, 12, 70, 0.8f));
-
 
     }
 }

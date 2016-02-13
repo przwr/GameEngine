@@ -39,9 +39,12 @@ public class Bush extends GameObject {
     private BlueArray<Point> points = new BlueArray<>();
     private Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
 
+    public Bush(int x, int y) {
+        this(x, y, 14, 80, 0.8f);
+    }
 
     public Bush(int x, int y, int width, int height, float spread) {
-        initialize("Tree", x, y);
+        initialize("Bush", x, y);
         setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
         setSimpleLighting(false);
         collision.setSmall(true);

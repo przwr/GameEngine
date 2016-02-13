@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import static engine.utilities.Drawer.clearScreen;
 import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
+import game.place.map.PuzzleObject;
 import static gamecontent.MyController.*;
 import static org.lwjgl.opengl.GL11.*;
 

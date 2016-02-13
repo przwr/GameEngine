@@ -74,11 +74,15 @@ public class Tree extends GameObject {
         return new Tree(x, y, width, height, spread, false);
     }
 
+    public static Tree create(int x, int y) {
+        return new Tree(x, y, 32, 200, 0.8f, false);
+    }
+    
     public static Tree createBranchless(int x, int y, int width, int height, float spread) {
         return new Tree(x, y, width, height, spread, true);
     }
 
-
+    @Override
     public void update() {
         if (!prerendered) {
             bark = map.place.getSprite("bark", "", true);
