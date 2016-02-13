@@ -14,6 +14,7 @@ import gamecontent.MyPlayer;
 import gamecontent.SpawnPoint;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
+import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,12 +162,12 @@ public abstract class Mob extends Entity {
         }
     }
 
-    public void setSpawner(SpawnPoint spawn) {
-        spawner = spawn;
-    }
-
     public SpawnPoint getSpawner() {
         return spawner;
+    }
+
+    public void setSpawner(SpawnPoint spawn) {
+        spawner = spawn;
     }
 
     protected synchronized void charge() {
@@ -211,6 +212,7 @@ public abstract class Mob extends Entity {
             x /= closeEnemies.size();
             y /= closeEnemies.size();
             calculateDestinationForEscapeFromPoint(x, y);
+            destination.set(getRandomPointInDistance(sightRange / 8, destination.getX(), destination.getY()));
         }
     }
 
@@ -426,7 +428,26 @@ public abstract class Mob extends Entity {
         return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
                 && !player.getTextController().isStarted()
                 && Methods.pointDistanceSimple(getX(), getY(),
-                        player.getX(), player.getY()) <= Place.tileSize * 1.5
+                player.getX(), player.getY()) <= Place.tileSize * 1.5
                 && player.getDirection8Way() == Methods.pointAngle8Directions(player.getX(), player.getY(), x, y);
+    }
+
+    protected void renderPathPoints(int xEffect, int yEffect) {
+        PointContainer path = pathData.getPath();
+        int current = pathData.getCurrentPointIndex();
+        Drawer.setColor(new Color(0.5f, 0.1f, 0.1f));
+        glPushMatrix();
+        glTranslatef(xEffect, yEffect, 0);
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+        if (path != null) {
+            for (int i = current; i < path.size(); i++) {
+                Drawer.drawRectangle(path.get(i).getX(), path.get(i).getY(), 10, 10);
+            }
+        }
+        if (destination.getX() > 0) {
+            Drawer.drawRectangle(destination.getX(), destination.getY(), 10, 10);
+        }
+        Drawer.refreshColor();
+        glPopMatrix();
     }
 }

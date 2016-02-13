@@ -19,6 +19,7 @@ import game.place.Place;
 import game.place.map.Area;
 import game.place.map.LoadingMap;
 import game.place.map.Map;
+import gamecontent.maps.CaveTest;
 import gamecontent.maps.GladeMap;
 import gamecontent.maps.StoneMap;
 import gamecontent.maps.Test;
@@ -30,7 +31,6 @@ import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
-import gamecontent.maps.CaveTest;
 
 /**
  * @author przemek
@@ -124,11 +124,11 @@ public class MyPlace extends Place {
                 unloadedMaps.add(map);
             }
         }
-        if (game.getMapLoader().isRunning()) { // TODO Wywalić, jak będzie wczytywane z pliku
-            for (Map map : unloadedMaps) {
-                maps.remove(map);
-            }
-        }
+//        if (game.getMapLoader().isRunning()) { // TODO Wywalić, jak będzie wczytywane z pliku
+//            for (Map map : unloadedMaps) {        // TODO Trzeba sprawdzić z aktualnie wczytywanymi mapami, żeby nie wywalać tych, co się właśnie wczytało.
+//                maps.remove(map);
+//            }
+//        }
         addMapsToAdd();
         for (Map mapToUpdate : tempMaps) {
             mapToUpdate.updateAreasToUpdate();

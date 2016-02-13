@@ -97,8 +97,8 @@ public class Tree extends GameObject {
             fbo.deactivate();
             points = null;
             prerendered = true;
-            toUpdate = false;
         }
+        toUpdate = false;
     }
 
 

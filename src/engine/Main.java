@@ -53,7 +53,7 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean SHOW_INTERACTIVE_COLLISION, pause, enter = true, TEST = true;
+    public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREA_BOUNDS, pause, enter = true, TEST = true;
     public static BackgroundLoader backgroundLoader;
     public static SimpleKeyboard key = new SimpleKeyboard();
     private static Game game;
@@ -223,15 +223,9 @@ public class Main {
                 String info;
                 int frames = (int) (60 / Time.getDelta());
                 if (game != null && game.getPlace() != null) {
-                    info = " [" + frames + " fps] " + game.getPlace().getTime();
                     console = game.getPlace().getConsole();
-                    if (key.keyPressed(Keyboard.KEY_F1)) {
-                        console.setStatsRendered(!console.areStatsRendered());
-                    }
-                    if (key.keyPressed(Keyboard.KEY_F2)) {
-                        SHOW_INTERACTIVE_COLLISION = !SHOW_INTERACTIVE_COLLISION;
-                        console.printMessage("SHOW/HIDE INTERACTIVE");
-                    }
+                    info = " [" + frames + " fps] " + game.getPlace().getTime();
+                    fInput();
                     if (console.areStatsRendered()) {
                         console.clearStats();
                         console.printStats(info + " Player 1: " + game.getPlayerCoordinates());
@@ -253,6 +247,21 @@ public class Main {
             key.keyboardEnd();
         }
     }
+
+    private static void fInput() {
+        if (key.keyPressed(Keyboard.KEY_F1)) {
+            console.setStatsRendered(!console.areStatsRendered());
+        }
+        if (key.keyPressed(Keyboard.KEY_F2)) {
+            SHOW_INTERACTIVE_COLLISION = !SHOW_INTERACTIVE_COLLISION;
+            console.printMessage("SHOW/HIDE INTERACTIVE");
+        }
+        if (key.keyPressed(Keyboard.KEY_F3)) {
+            SHOW_AREA_BOUNDS = !SHOW_AREA_BOUNDS;
+            console.printMessage("SHOW/HIDE AREA BOUNDS");
+        }
+    }
+
 
     private static boolean isRunning() {
         return !Display.isCloseRequested() && !game.exitFlag;

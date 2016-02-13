@@ -26,7 +26,7 @@ public class Methods {
 
     private static final Point point = new Point(0, 0);
     public static double SQRT_ROOT_OF_2 = Math.sqrt(2);
-    public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / Math.sqrt(2);
+    public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / SQRT_ROOT_OF_2;
     private static short[] fibonacci = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610};
     private static double A, B, AB, delta, X1, Y1, X2, Y2, xDDelta, yDDelta;
 

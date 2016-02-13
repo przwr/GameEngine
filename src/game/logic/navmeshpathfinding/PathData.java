@@ -11,6 +11,8 @@ import engine.utilities.*;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
+import game.logic.navmeshpathfinding.navigationmesh.NavigationMesh;
+import game.place.Place;
 
 import java.awt.*;
 import java.util.BitSet;
@@ -81,7 +83,7 @@ public class PathData {
         finalDestination.set(xDest, yDest);
         Figure.updateWhatClose(owner, x, y, (owner.getHearRange() >> 2), x, y, owner.getMap(), close);
         close.sort((Figure f1, Figure f2) -> f1.getLightDistance() - f2.getLightDistance());
-        flags.set(OBSTACLE_BETWEEN, isObstacleBetween());
+        flags.set(OBSTACLE_BETWEEN, isObjectObstacleBetween());
         updateStuck();
     }
 
@@ -106,7 +108,7 @@ public class PathData {
         flags.clear(STUCK);
     }
 
-    private boolean isObstacleBetween() {
+    private boolean isObjectObstacleBetween() {
         if (close.isEmpty()) {
             return false;
         }
@@ -114,11 +116,19 @@ public class PathData {
         return PathStrategyCore.anyFigureInAWay(poly, close) != null;
     }
 
-    public boolean isObstacleBetween(Entity owner, int xDest, int yDest, List<GameObject> closeEnemies) {
-        update(owner, xDest, yDest);
+    public boolean isAnyObstacleBetween(Entity owner, int xDest, int yDest, List<GameObject> closeEnemies) {
+        NavigationMesh mesh = owner.getMap().getArea(owner.getArea()).getNavigationMesh();
+        int xDelta = xDest - owner.getX();
+        int yDelta = yDest - owner.getY();
+        int xNorm = owner.getX() % Place.xAreaInPixels;
+        int yNorm = owner.getY() % Place.yAreaInPixels;
+        if (mesh != null && mesh.lineIntersectsMeshBounds(xNorm, yNorm, xNorm + xDelta, yNorm + yDelta)) {
+            return true;
+        }
         if (close.isEmpty()) {
             return false;
         }
+        update(owner, xDest, yDest);
         PathStrategyCore.setPolygonForTesting(this, finalDestination);
         return PathStrategyCore.anyFigureInAWay(poly, close, closeEnemies) != null;
     }

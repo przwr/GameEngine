@@ -118,9 +118,6 @@ public abstract class Figure implements Comparable<Figure> {
             if (area.getNearSolidObjects().stream().anyMatch((object) -> (checkCollision(x, y, object)))) {
                 return true;
             }
-//            if (area.getNearForegroundTiles().stream().anyMatch((object) -> (checkCollision(x, y, object)))) {
-//                return true;
-//            }
             tiles = map.getNearNullTiles(this);
             for (int i = 0; i < tiles.size(); i++) {
                 setTile(tiles.get(i));

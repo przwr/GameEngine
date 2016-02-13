@@ -7,6 +7,7 @@ package game.place.map;
 
 import collision.Block;
 import collision.Figure;
+import engine.Main;
 import engine.lights.Light;
 import engine.utilities.*;
 import game.gameobject.GameObject;
@@ -542,7 +543,23 @@ public abstract class Map {
         for (int i : placement.getNearAreas(camera.getArea())) {
             if (i >= 0 && i < areas.length) {
                 renderArea(i);
+                renderAreaBounds(i);
             }
+        }
+    }
+
+    private void renderAreaBounds(int i) {
+        if (Main.SHOW_AREA_BOUNDS) {
+            int yTemp = (i / xAreas) * Y_IN_TILES;
+            int xTemp = (i % xAreas) * X_IN_TILES;
+            glPushMatrix();
+            glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+            glTranslatef(xTemp * Place.tileSize, yTemp * Place.tileSize, 0);
+            Drawer.setColor(Color.cyan);
+            Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
+            Drawer.refreshColor();
+            glPopMatrix();
         }
     }
 
@@ -709,7 +726,7 @@ public abstract class Map {
         if (lightColor != null) {
             return lightColor;
         } else {
-            return place.getLightColor();
+            return Place.getLightColor();
         }
     }
 

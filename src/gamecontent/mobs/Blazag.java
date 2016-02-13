@@ -261,24 +261,7 @@ public class Blazag extends Mob {
                     if (destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2
                             / 16) {
                         letGo = false;
-                        int sign = random.next(1) == 1 ? 1 : -1;
-                        int shift = (sightRange + random.next(9)) * sign;
-                        destination.setX(spawnPosition.getX() + shift);
-                        sign = random.next(1) == 1 ? 1 : -1;
-                        shift = (sightRange + random.next(9)) * sign;
-                        destination.setY(spawnPosition.getY() + shift);
-                        if (destination.getX() < sightRange / 2) {
-                            destination.setX(sightRange / 2);
-                        }
-                        if (destination.getX() > map.getWidth()) {
-                            destination.setX(map.getWidth() - sightRange / 2);
-                        }
-                        if (destination.getY() < collision.getHeight()) {
-                            destination.setY(sightRange / 2);
-                        }
-                        if (destination.getY() > map.getHeight()) {
-                            destination.setY(map.getHeight() - sightRange / 2);
-                        }
+                        destination.set(getRandomPointInDistance((int) (sightRange * 1.5), spawnPosition.getX(), spawnPosition.getY()));
                     }
                     seconds++;
                     if (seconds > max) {
@@ -411,7 +394,7 @@ public class Blazag extends Mob {
     }
 
     private boolean isObstacleBetween() {
-        return target != null && getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies);
+        return target != null && getPathData().isAnyObstacleBetween(this, target.getX(), target.getY(), closeEnemies);
     }
 
     private void loneAttack(int distance) {
@@ -422,7 +405,7 @@ public class Blazag extends Mob {
             }
             if (!rest.isOver()) {
                 maxSpeed = 3;
-                if (getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
+                if (getPathData().isAnyObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
                     chase();
                 } else {
                     charge();
@@ -446,7 +429,7 @@ public class Blazag extends Mob {
                         jumpRestDelay.start();
                         return;
                     } else if (animation.getDirectionalFrameIndex() < 19) {
-                        if (getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
+                        if (getPathData().isAnyObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
                             chase();
                         } else {
                             charge();
@@ -489,7 +472,7 @@ public class Blazag extends Mob {
                     } else {
                         can_attack = false;
                         if (attackDelay.isOver() && animation.getDirectionalFrameIndex() < 19) {
-                            if (getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
+                            if (getPathData().isAnyObstacleBetween(this, target.getX(), target.getY(), closeEnemies)) {
                                 chase();
                             } else {
                                 if (distance <= sightRange2 / 25) {

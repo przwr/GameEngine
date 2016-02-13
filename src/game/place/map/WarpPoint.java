@@ -126,7 +126,7 @@ public class WarpPoint extends GameObject {
                         MyPlayer player = (MyPlayer) object;
                         WarpPoint warp = map.findWarp(name);
                         player.changeMap(map, warp.getX(), warp.getY());
-                        player.setCurrentLoactionAsSpawnPosition();
+                        player.setCurrentLocationAsSpawnPosition();
                         TemporalChanger lockChanger = new LockChanger(8);
                         lockChanger.start();
                         if (joined) {

@@ -9,7 +9,6 @@ import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
-import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import sprites.Animation;
 import sprites.SpriteSheet;
@@ -53,13 +52,13 @@ public class Magician extends Mob {
                                 setPosition(3850, 6610);
                                 player.setPosition(3750, 6610);
                                 player.getCamera().updateStatic();
-                                player.setCurrentLoactionAsSpawnPosition();
+                                player.setCurrentLocationAsSpawnPosition();
                                 upperSide = false;
                             } else {
                                 setPosition(2700, 1836);
                                 player.setPosition(2600, 1836);
                                 player.getCamera().updateStatic();
-                                player.setCurrentLoactionAsSpawnPosition();
+                                player.setCurrentLocationAsSpawnPosition();
                                 upperSide = true;
                             }
                         }

@@ -61,7 +61,7 @@ public class Tongub extends Mob {
                         }
                     }
                     calculateDestinationsForEscape();
-                    GameObject closerEnemy = getCloserEnemy();
+                    GameObject closerEnemy = getReallyCloseEnemy();
                     if (closerEnemy != null && peakTime.isOver()) {
                         peakTime.start();
                         state = hide;
@@ -87,21 +87,29 @@ public class Tongub extends Mob {
                     secondaryDestination.set(destination.getX(), destination.getY());
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                calculateDestinationsForEscape();
-                goTo(destination.getX() > 0 ? destination : secondaryDestination);
-                GameObject closerEnemy = getCloserEnemy();
-                if (closerEnemy != null && peakTime.isOver()) {
-                    peakTime.start();
-                    state = hide;
-                    destination.set(-1, -1);
-                    secondaryDestination.set(-1, -1);
-                    stats.setProtectionState(true);
-                } else if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination
-                        .getX(), secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
+                if (closeEnemies.size() * 1.5 <= closeFriends.size()) {
                     state = idle;
                     secondaryDestination.set(-1, -1);
                     destination.set(-1, -1);
+                } else {
+                    calculateDestinationsForEscape();
+                    GameObject closerEnemy = getReallyCloseEnemy();
+                    if (closerEnemy != null && peakTime.isOver()) {
+                        peakTime.start();
+                        state = hide;
+                        destination.set(-1, -1);
+                        secondaryDestination.set(-1, -1);
+                        stats.setProtectionState(true);
+                    } else if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination
+                            .getX(), secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
+                        state = idle;
+                        secondaryDestination.set(-1, -1);
+                        destination.set(-1, -1);
+                    } else {
+                        goTo(destination.getX() > 0 ? destination : secondaryDestination);
+                    }
                 }
+
             }
         };
         hide = new ActionState() {
@@ -113,8 +121,8 @@ public class Tongub extends Mob {
                     collision.setCollide(false);
                     collision.setHitable(false);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                    GameObject closerEnemy = getCloserEnemy();
-                    if (closerEnemy == null || closeEnemies.size() * 1.5 <= closeFriends.size() || (peakTime.isOver() && !isCollided())) {
+                    GameObject closerEnemy = getReallyCloseEnemy();
+                    if (!isCollided() && (closerEnemy == null || closeEnemies.size() * 1.5 <= closeFriends.size() || peakTime.isOver())) {
                         peakTime.start();
                         stats.setProtectionState(false);
                         undig = true;
@@ -178,7 +186,7 @@ public class Tongub extends Mob {
                                 brake(2);
                             } else {
                                 maxSpeed = 5;
-                                if (Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) < hearRange2 / 36) {
+                                if (Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) < hearRange2 / 72) {
                                     getAttackActivator(ATTACK_NORMAL).setActivated(true);
                                 }
                             }
@@ -203,6 +211,7 @@ public class Tongub extends Mob {
                 if (rest.isOver()) {
                     if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
                         closeRandomDestination(spawnPosition.getX(), spawnPosition.getY());
+                        destination.set(getRandomPointInDistance((int) (sightRange * 1.5), spawnPosition.getX(), spawnPosition.getY()));
 //                        System.out.println(destination);
                         letGo = false;
                     }
@@ -271,28 +280,29 @@ public class Tongub extends Mob {
     }
 
     private boolean isObstacleBetween() {
-        return getPathData().isObstacleBetween(this, target.getX(), target.getY(), closeEnemies);
+        return getPathData().isAnyObstacleBetween(this, target.getX(), target.getY(), closeEnemies);
     }
 
     private void closeRandomDestination(int xD, int yD) {
-        int sign = random.next(1) == 1 ? 1 : -1;
-        int shift = (sightRange / 4 + random.next(9)) * sign;
-        destination.setX(xD + shift);
-        sign = random.next(1) == 1 ? 1 : -1;
-        shift = (sightRange / 4 + random.next(9)) * sign;
-        destination.setY(yD + shift);
-        if (destination.getX() < sightRange / 4) {
-            destination.setX(sightRange / 4);
-        }
-        if (destination.getX() > map.getWidth()) {
-            destination.setX(map.getWidth() - sightRange / 4);
-        }
-        if (destination.getY() < collision.getHeight()) {
-            destination.setY(sightRange / 4);
-        }
-        if (destination.getY() > map.getHeight()) {
-            destination.setY(map.getHeight() - sightRange / 4);
-        }
+        destination.set(getRandomPointInDistance((int) (sightRange * 0.375), xD, yD));
+//        int sign = random.next(1) == 1 ? 1 : -1;
+//        int shift = (sightRange / 4 + random.next(9)) * sign;
+//        destination.setX(xD + shift);
+//        sign = random.next(1) == 1 ? 1 : -1;
+//        shift = (sightRange / 4 + random.next(9)) * sign;
+//        destination.setY(yD + shift);
+//        if (destination.getX() < sightRange / 4) {
+//            destination.setX(sightRange / 4);
+//        }
+//        if (destination.getX() > map.getWidth()) {
+//            destination.setX(map.getWidth() - sightRange / 4);
+//        }
+//        if (destination.getY() < collision.getHeight()) {
+//            destination.setY(sightRange / 4);
+//        }
+//        if (destination.getY() > map.getHeight()) {
+//            destination.setY(map.getHeight() - sightRange / 4);
+//        }
     }
 
     private GameObject getCloserEnemy() {
@@ -303,6 +313,16 @@ public class Tongub extends Mob {
         }
         return null;
     }
+
+    private GameObject getReallyCloseEnemy() {
+        for (GameObject object : closeEnemies) {
+            if (Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < (hearRange2 / 16)) {
+                return object;
+            }
+        }
+        return null;
+    }
+
 
     private void letGo() {
         state = wander;
@@ -429,6 +449,7 @@ public class Tongub extends Mob {
             appearance.updateFrame();
             Drawer.refreshColor();
             glPopMatrix();
+//            renderPathPoints(xEffect, yEffect);
         }
     }
 }

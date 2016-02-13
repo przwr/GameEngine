@@ -85,8 +85,8 @@ public class Bush extends GameObject {
             fbo.deactivate();
             points = null;
             prerendered = true;
-            toUpdate = false;
         }
+        toUpdate = false;
     }
 
     @Override

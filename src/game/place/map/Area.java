@@ -405,4 +405,8 @@ public class Area {
     public BlueArray<WarpPoint> getNearWarps() {
         return nearWarps;
     }
+
+    public Tile[] getTiles() {
+        return tiles;
+    }
 }

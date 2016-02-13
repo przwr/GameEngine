@@ -8,7 +8,10 @@ package gamecontent.mobs;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Main;
-import engine.utilities.*;
+import engine.utilities.Delay;
+import engine.utilities.Drawer;
+import engine.utilities.Methods;
+import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
 import game.gameobject.entities.Mob;
@@ -235,24 +238,7 @@ public class Shen extends Mob {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
                     if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
-                        int sign = random.next(1) == 1 ? 1 : -1;
-                        int shift = (sightRange + random.next(9)) * sign;
-                        destination.setX(spawnPosition.getX() + shift);
-                        sign = random.next(1) == 1 ? 1 : -1;
-                        shift = (sightRange + random.next(9)) * sign;
-                        destination.setY(spawnPosition.getY() + shift);
-                        if (destination.getX() < sightRange / 2) {
-                            destination.setX(sightRange / 2);
-                        }
-                        if (destination.getX() > map.getWidth()) {
-                            destination.setX(map.getWidth() - sightRange / 2);
-                        }
-                        if (destination.getY() < collision.getHeight()) {
-                            destination.setY(sightRange / 2);
-                        }
-                        if (destination.getY() > map.getHeight()) {
-                            destination.setY(map.getHeight() - sightRange / 2);
-                        }
+                        destination.set(getRandomPointInDistance((int) (sightRange * 1.5), spawnPosition.getX(), spawnPosition.getY()));
 //                        System.out.println(destination);
                     }
                     seconds++;
@@ -477,22 +463,4 @@ public class Shen extends Mob {
         state = bounce;
     }
 
-    private void renderPathPoints(int xEffect, int yEffect) {
-        PointContainer path = pathData.getPath();
-        int current = pathData.getCurrentPointIndex();
-        Drawer.setColor(new Color(0.5f, 0.1f, 0.1f));
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        if (path != null) {
-            for (int i = current; i < path.size(); i++) {
-                Drawer.drawRectangle(path.get(i).getX(), path.get(i).getY(), 10, 10);
-            }
-        }
-        if (destination.getX() > 0) {
-            Drawer.drawRectangle(destination.getX(), destination.getY(), 10, 10);
-        }
-        Drawer.refreshColor();
-        glPopMatrix();
-    }
 }

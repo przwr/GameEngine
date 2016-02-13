@@ -42,7 +42,7 @@ class PathStrategyCore {
     }
 
     public static void followPath(Entity requester, PathData data, int xDest, int yDest) {
-        updatePath(data);
+        updatePath(requester, data);
 //        if (WINDOW_SHOWED) {
 //            Area area = requester.getMap().getArea(requester.getArea());
 //            pathWindow.addVariables(area.getNavigationMesh(), new Point(xDest, yDest),
@@ -56,12 +56,17 @@ class PathStrategyCore {
         data.rememberPast();
     }
 
-    private static void updatePath(PathData data) {
+    private static void updatePath(Entity requester, PathData data) {
         if (data.newPath != null) {
             if (data.newPath.size() > 1) {
                 DEBUG("NEW PATH");
                 copyPath(data.newPath, data);
-                data.currentPoint = 1;
+                if (Methods.pointDistance(data.x, data.y, data.getCurrentPoint().getX(), data.getCurrentPoint().getY())
+                        < requester.getCollision().getWidth() / 2) {
+                    data.currentPoint = 1;
+                } else {
+                    data.currentPoint = 0;
+                }
                 correctDestinationPointIfNeeded(data.path, data);
             }
             data.flags.clear(PATH_REQUESTED);
@@ -136,7 +141,8 @@ class PathStrategyCore {
         if (!data.delay.isOver()) {
             if (!data.path.isEmpty()) {
                 data.destination = data.getCurrentPoint();
-                if (Methods.pointDistance(data.x, data.y, data.getCurrentPoint().getX(), data.getCurrentPoint().getY()) < requester.getMaxSpeed()) {
+                if (Methods.pointDistance(data.x, data.y, data.getCurrentPoint().getX(), data.getCurrentPoint().getY()) < requester.getMaxSpeed() * Methods
+                        .SQRT_ROOT_OF_2) {
                     if (data.currentPoint < data.path.size() - 2) {
                         data.currentPoint++;
                     } else {

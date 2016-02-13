@@ -8,10 +8,7 @@ package game.gameobject.entities;
 import collision.Block;
 import collision.Figure;
 import engine.systemcommunication.Time;
-import engine.utilities.BlueArray;
-import engine.utilities.ErrorHandler;
-import engine.utilities.Methods;
-import engine.utilities.Point;
+import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
@@ -36,6 +33,7 @@ public abstract class Entity extends GameObject {
 
     protected static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 0.2f);
     protected static final byte PUSH = -1;
+    protected static final RandomGenerator random = RandomGenerator.create();
     public final Update[] updates = new Update[4];
     public int lastAdded;
     protected int hearRange;
@@ -218,7 +216,7 @@ public abstract class Entity extends GameObject {
 
     public void updateChangers() {
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
@@ -652,7 +650,67 @@ public abstract class Entity extends GameObject {
         spawnPosition.set(x, y);
     }
 
-    public void setCurrentLoactionAsSpawnPosition() {
+    public void setCurrentLocationAsSpawnPosition() {
         spawnPosition.set((int) x, (int) y);
     }
+
+    public Point getRandomPointInDistance(int distance, int xP, int yP) {
+        Point point = getRandomPointInRange(distance, xP, yP);
+        if (point != null) {
+            return point;
+//        } else {
+//            distance *= 2;
+//            point = getRandomPointInRange(distance, xP, yP);
+//            if (point != null) {
+//                return point;
+//            } else {
+//                distance *= 2;
+//                point = getRandomPointInRange(distance, xP, yP);
+//                if (point != null) {
+//                    return point;
+//                } else {
+//                    distance *= 2;
+//                    point = getRandomPointInRange(distance, xP, yP);
+//                    if (point != null) {
+//                        return point;
+//                    } else {
+//                        distance *= 2;
+//                        point = getRandomPointInRange(distance, xP, yP);
+//                        if (point != null) {
+//                            return point;
+//                        } else {
+//                            distance *= 2;
+//                            point = getRandomPointInRange(distance, xP, yP);
+//                            if (point != null) {
+//                                return point;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+        }
+        return new Point(xP, yP);
+    }
+
+    public Point getRandomPointInRange(int distance, int xP, int yP) {
+        ArrayList<Point> tiles = new ArrayList<>(512);
+        int xs = ((xP - distance) / Place.tileSize) - 1;
+        int ys = ((yP - distance) / Place.tileSize) - 1;
+        int xe = ((xP + distance) / Place.tileSize) + 1;
+        int ye = ((yP + distance) / Place.tileSize) + 1;
+        for (int x = xs; x <= xe; x++) {
+            for (int y = ys; y <= ye; y++) {
+                if (map.getTile(x, y) != null) {
+                    tiles.add(new Point(x * Place.tileSize, y * Place.tileSize));
+                }
+            }
+        }
+        if (tiles.size() > 0) {
+            Point chosen = tiles.get(random.random(tiles.size() - 1));
+            chosen.add(Place.tileHalf, Place.tileHalf);
+            return chosen;
+        }
+        return null;
+    }
+
 }

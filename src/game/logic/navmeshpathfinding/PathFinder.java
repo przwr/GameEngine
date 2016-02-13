@@ -250,7 +250,7 @@ public class PathFinder {
     }
 
     private static PointContainer printSolution(Node destination, NavigationMesh mesh) {
-        shifted = new PointContainer(16);
+        shifted = new PointContainer(24);
         shifted.clear();
         Point point;
         Node currentNode = destination;
