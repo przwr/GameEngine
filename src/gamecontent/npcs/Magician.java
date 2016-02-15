@@ -45,8 +45,8 @@ public class Magician extends Mob {
                     player.getTextController().startFromFile("npcCzary");
                     player.getTextController().addExternalEvent(() -> {
                         if (upperSide) {
-                            setPosition(3850, 6610);
-                            player.setPosition(3750, 6610);
+                            setPosition(2567, 4346);
+                            player.setPosition(2467, 4346);
                             player.getCamera().updateStatic();
                             player.setCurrentLocationAsSpawnPosition();
                             upperSide = false;

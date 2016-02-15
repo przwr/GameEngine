@@ -1,4 +1,4 @@
-﻿
+﻿{
 sp:1
 co:000000
 co:FF0000
@@ -12,7 +12,7 @@ au:Aria
 au:???
 po:melodiaPortret:1
 po:ariaPortret:0
-
+}
 $AU0$$PO0$Jak się nazywasz?$IFspr:-:4:5:6:7$ $QUTĘCZOWKA!!:1:...:2$
 #B1
 $AU1$$PO1$$EX2$JAK $CO1$POBIJESZ$CN TO IMIĘ?!!!1$FL

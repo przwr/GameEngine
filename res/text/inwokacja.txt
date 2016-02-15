@@ -1,5 +1,6 @@
-﻿sp:2.5
-
+﻿{
+sp:2.5
+}
 $itLitwo, ojczyzno moja! Ty jesteś jak zdrowie.$fl
 Ile trzeba cię cenić ten tylko się dowie kto cię stracił.$fl
 Dziś piękność twą w całej ozdobie,$fl

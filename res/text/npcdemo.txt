@@ -1,4 +1,4 @@
-﻿
+﻿{
 sp:1
 co:000000
 co:FF0000
@@ -11,7 +11,7 @@ au:Melodia
 au:Aria
 po:melodiaPortret:1
 po:ariaPortret:0
-
+}
 $AU0$$PO0$Witaj!$QUHej!:11:Witaj!:12$
 #B11
 $AU1$$PO1$$EX2$Hej!$FL

@@ -1,10 +1,10 @@
-﻿
+﻿{
 sp:1
 au:Nieznana nieznajoma
 au:Aria
 po:melodiaPortret:1
 po:ariaPortret:0
-
+}
 $AU0$$PO0$$MEWitaj$NO dziewczynko....$FL
 Pokazać ci $MEsztuczkę~$NO...?$QUPEWNIE!:1:....:2$
 #B1

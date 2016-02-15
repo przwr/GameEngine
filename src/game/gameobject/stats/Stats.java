@@ -105,6 +105,11 @@ public class Stats {
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
     }
+    
+    public void setStartHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+        this.health = maxHealth;
+    }
 
     public int getStrength() {
         return strength;

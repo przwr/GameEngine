@@ -428,7 +428,8 @@ public abstract class Mob extends Entity {
         return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
                 && !player.getTextController().isStarted()
                 && Methods.pointDistanceSimple(getX(), getY(),
-                player.getX(), player.getY()) <= Place.tileSize * 1.5
+                player.getX(), player.getY()) <= Place.tileSize * 1.5 + 
+                    Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
                 && player.getDirection8Way() == Methods.pointAngle8Directions(player.getX(), player.getY(), x, y);
     }
 

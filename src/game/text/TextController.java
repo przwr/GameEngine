@@ -87,9 +87,35 @@ public class TextController extends GUIObject {
         if (!started) {
             try (BufferedReader read = new BufferedReader(new InputStreamReader(new FileInputStream("res/text/" + file + ".txt"), StandardCharsets.UTF_8))) {
                 String line;
-                String[] tab;
-                speed = 1;
-                while ((line = read.readLine()).length() > 0) {
+                ArrayList<String> tmplist = new ArrayList<>();
+                while ((line = read.readLine()) != null) {
+                    tmplist.add(line);
+                }
+                String[] list = new String[tmplist.size()];
+                for (int i = 0; i < tmplist.size(); i++) {
+                    list[i] = tmplist.get(i);
+                }
+                startFromText(list);
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    public void startFromFile(String file, String startingBranch) {
+        if (!started) {
+            startFromFile(file);
+            branch = branches.get(getJumpLocation(startingBranch));
+        }
+    }
+
+    public void startFromText(String[] text) {
+        if (!started) {
+            String line;
+            String[] tab;
+            speed = 1;
+            int num = 0;
+            if (text[0].substring(1).equals("{")) {
+                while (!(line = text[num++]).equals("}")) {
                     tab = line.split(":");
                     switch (tab[0]) {
                         case "sp":
@@ -106,321 +132,315 @@ public class TextController extends GUIObject {
                             break;
                     }
                 }
-                if (speakers.isEmpty()) {
-                    speakers.add("???");
-                }
-                if (colors.isEmpty()) {
-                    colors.add(Color.black);
-                }
-                int lineNum = 0, lineIndex, last;
-                TextEvent lastEvent = null;
-                int type = TYPE_NORMAL;
-                FontHandler font = fonts[STYLE_NORMAL];
-                float defSpeed = speed;
-                Color color = colors.get(0);
-                TextRow tmp;
-                branches.add(branch);
-                Branch currentBranch = branch;
-                jumpPlacements.add("0");
-                ArrayList<ExternalTextMaker> textMakers = new ArrayList<>();
-                while ((line = read.readLine()) != null) {
-                    if (line.length() > 1 && line.charAt(0) == '#') {
-                        switch (line.charAt(1)) {
-                            case '#':   //COMMENT
-                                break;
-                            case 'B':   //NEW DIALOG BRANCH
-                                lineNum = 0;
-                                Branch b = new Branch();
-                                currentBranch = b;
-                                lastEvent = null;
-                                branches.add(b);
-                                jumpPlacements.add(line.substring(2));
-                                break;
-                        }
-                    } else {
-                        last = 0;
-                        tmp = new TextRow(lineNum);
-                        if (line.length() != 0) {
-                            for (lineIndex = 0; lineIndex < line.length();) {
-                                if (line.charAt(lineIndex) == '$') {
-                                    String symbol = line.substring(lineIndex + 1, lineIndex + 3).toLowerCase();
-                                    switch (symbol) {
-                                        case "ve":   //CHANGE SPEED
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    if (last != lineIndex) {
-                                                        lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                                lineNum, color, font, textMakers);
-                                                        tmp.addEvent(lastEvent);
-                                                    }
-                                                    lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEED,
-                                                            Float.parseFloat(line.substring(lineIndex + 3, j)), this);
-                                                    tmp.addEvent(lastEvent);
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "vn":   //NORMALIZE SPEED
-                                            if (last != lineIndex) {
-                                                lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                        lineNum, color, font, textMakers);
-                                                tmp.addEvent(lastEvent);
-                                            }
-                                            lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEED, defSpeed, this);
-                                            tmp.addEvent(lastEvent);
-                                            line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
-                                            break;
-                                        case "au":   //SPEAKER'S NAME
-                                        case "po":   //PORTRAIT
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    if (last != lineIndex) {
-                                                        lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                                lineNum, color, font, textMakers);
-                                                        tmp.addEvent(lastEvent);
-                                                    }
-                                                    switch (symbol) {
-                                                        case "au":
-                                                            lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEAKER,
-                                                                    Integer.parseInt(line.substring(lineIndex + 3, j)), this);
-                                                            break;
-                                                        case "po":
-                                                            lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_PORTRAIT,
-                                                                    Integer.parseInt(line.substring(lineIndex + 3, j)), this);
-                                                            break;
-                                                    }
-                                                    tmp.addEvent(lastEvent);
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "ex":   //EXPRESSION
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    if (last != lineIndex) {
-                                                        lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                                lineNum, color, font, textMakers);
-                                                        tmp.addEvent(lastEvent);
-                                                    }
-                                                    lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_EXPRESSION,
-                                                            Integer.parseInt(line.substring(lineIndex + 3, j)), this);
-                                                    tmp.addEvent(lastEvent);
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "ju":   //JUMP TO BRANCH
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    if (last != lineIndex) {
-                                                        lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                                lineNum, color, font, textMakers);
-                                                        tmp.addEvent(lastEvent);
-                                                    }
-                                                    lastEvent = new Jumper(lastEvent, line.substring(lineIndex + 3, j), this);
-                                                    tmp.addEvent(lastEvent);
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "ev":   //TRIGGER EVENT
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    if (last != lineIndex) {
-                                                        lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                                lineNum, color, font, textMakers);
-                                                        tmp.addEvent(lastEvent);
-                                                    }
-                                                    lastEvent = new EventMaker(lastEvent, line.substring(lineIndex + 3, j), this);
-                                                    tmp.addEvent(lastEvent);
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "wr":   //WRITE EXTERNAL DATA
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    if (last != lineIndex) {
-                                                        lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                                lineNum, color, font, textMakers);
-                                                        tmp.addEvent(lastEvent);
-                                                    }
-                                                    lastEvent = generateEvent(type, "", lastEvent,
+            }
+            if (speakers.isEmpty()) {
+                speakers.add("");
+            }
+            if (colors.isEmpty()) {
+                colors.add(Color.black);
+            }
+            int lineNum = 0, lineIndex, last;
+            TextEvent lastEvent = null;
+            int type = TYPE_NORMAL;
+            FontHandler font = fonts[STYLE_NORMAL];
+            float defSpeed = speed;
+            Color color = colors.get(0);
+            TextRow tmp;
+            branches.add(branch);
+            Branch currentBranch = branch;
+            jumpPlacements.add("0");
+            ArrayList<ExternalTextMaker> textMakers = new ArrayList<>();
+            for (; num < text.length; num++) {
+                line = text[num];
+                if (line.length() > 1 && line.charAt(0) == '#') {
+                    switch (line.charAt(1)) {
+                        case '#':   //COMMENT
+                            break;
+                        case 'B':   //NEW DIALOG BRANCH
+                            lineNum = 0;
+                            Branch b = new Branch();
+                            currentBranch = b;
+                            lastEvent = null;
+                            branches.add(b);
+                            jumpPlacements.add(line.substring(2));
+                            break;
+                    }
+                } else {
+                    last = 0;
+                    tmp = new TextRow(lineNum);
+                    if (line.length() != 0) {
+                        for (lineIndex = 0; lineIndex < line.length();) {
+                            if (line.charAt(lineIndex) == '$') {
+                                String symbol = line.substring(lineIndex + 1, lineIndex + 3).toLowerCase();
+                                switch (symbol) {
+                                    case "ve":   //CHANGE SPEED
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                if (last != lineIndex) {
+                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
                                                             lineNum, color, font, textMakers);
-                                                    ((TextRenderer) lastEvent).setAlterer(line.substring(lineIndex + 3, j));
                                                     tmp.addEvent(lastEvent);
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    break;
                                                 }
-                                            }
-                                            last = lineIndex;
-                                            break;
-                                        case "qu":   //QUESTION
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    if (last != lineIndex) {
-                                                        lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                                lineNum, color, font, textMakers);
-                                                        tmp.addEvent(lastEvent);
-                                                    }
-                                                    tab = line.substring(lineIndex + 3, j).split(":");
-                                                    String[] answers = new String[tab.length / 2];
-                                                    String[] jumps = new String[answers.length];
-                                                    for (int i = 0; i < answers.length; i++) {
-                                                        answers[i] = tab[2 * i];
-                                                        jumps[i] = tab[2 * i + 1];
-                                                    }
-                                                    lastEvent = new QuestionMaker(lastEvent, answers, jumps, this);
-                                                    tmp.addEvent(lastEvent);
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "if":   //CHECK EXTERNAL STATEMENT
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    if (last != lineIndex) {
-                                                        lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                                lineNum, color, font, textMakers);
-                                                        tmp.addEvent(lastEvent);
-                                                    }
-                                                    tab = line.substring(lineIndex + 3, j).split(":");
-                                                    String[] jumps = new String[tab.length - 1];
-                                                    for (int i = 0; i < jumps.length; i++) {
-                                                        jumps[i] = tab[i + 1];
-                                                    }
-                                                    lastEvent = new CheckExpressiontMaker(lastEvent, tab[0], jumps, this);
-                                                    tmp.addEvent(lastEvent);
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "fl":   //FLUSH LINES
-                                            if (last != lineIndex) {
-                                                lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                        lineNum, color, font, textMakers);
+                                                lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEED,
+                                                        Float.parseFloat(line.substring(lineIndex + 3, j)), this);
                                                 tmp.addEvent(lastEvent);
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                break;
                                             }
-                                            lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_FLUSH, 0, this);
+                                        }
+                                        break;
+                                    case "vn":   //NORMALIZE SPEED
+                                        if (last != lineIndex) {
+                                            lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                    lineNum, color, font, textMakers);
                                             tmp.addEvent(lastEvent);
-                                            line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
-                                            last = lineIndex;
-                                            break;
-                                        case "co":   //CHANGE COLOR
-                                            if (last != lineIndex) {
-                                                lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                        lineNum, color, font, textMakers);
-                                                tmp.addEvent(lastEvent);
-                                            }
-                                            for (int j = lineIndex + 3; j < line.length(); j++) {
-                                                if (line.charAt(j) == '$') {
-                                                    color = colors.get(Integer.parseInt(line.substring(lineIndex + 3, j), 16));
-                                                    line = line.substring(0, lineIndex) + line.substring(j + 1);
-                                                    last = lineIndex;
-                                                    break;
+                                        }
+                                        lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEED, defSpeed, this);
+                                        tmp.addEvent(lastEvent);
+                                        line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
+                                        break;
+                                    case "au":   //SPEAKER'S NAME
+                                    case "po":   //PORTRAIT
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                if (last != lineIndex) {
+                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                            lineNum, color, font, textMakers);
+                                                    tmp.addEvent(lastEvent);
                                                 }
+                                                switch (symbol) {
+                                                    case "au":
+                                                        lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEAKER,
+                                                                Integer.parseInt(line.substring(lineIndex + 3, j)), this);
+                                                        break;
+                                                    case "po":
+                                                        lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_PORTRAIT,
+                                                                Integer.parseInt(line.substring(lineIndex + 3, j)), this);
+                                                        break;
+                                                }
+                                                tmp.addEvent(lastEvent);
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                break;
                                             }
-                                            break;
-                                        case "cn":   //PLAIN TEXT
-                                            if (last != lineIndex) {
-                                                lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                        }
+                                        break;
+                                    case "ex":   //EXPRESSION
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                if (last != lineIndex) {
+                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                            lineNum, color, font, textMakers);
+                                                    tmp.addEvent(lastEvent);
+                                                }
+                                                lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_EXPRESSION,
+                                                        Integer.parseInt(line.substring(lineIndex + 3, j)), this);
+                                                tmp.addEvent(lastEvent);
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case "ju":   //JUMP TO BRANCH
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                if (last != lineIndex) {
+                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                            lineNum, color, font, textMakers);
+                                                    tmp.addEvent(lastEvent);
+                                                }
+                                                lastEvent = new Jumper(lastEvent, line.substring(lineIndex + 3, j), this);
+                                                tmp.addEvent(lastEvent);
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case "ev":   //TRIGGER EVENT
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                if (last != lineIndex) {
+                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                            lineNum, color, font, textMakers);
+                                                    tmp.addEvent(lastEvent);
+                                                }
+                                                lastEvent = new EventMaker(lastEvent, line.substring(lineIndex + 3, j), this);
+                                                tmp.addEvent(lastEvent);
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case "wr":   //WRITE EXTERNAL DATA
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                if (last != lineIndex) {
+                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                            lineNum, color, font, textMakers);
+                                                    tmp.addEvent(lastEvent);
+                                                }
+                                                lastEvent = generateEvent(type, "", lastEvent,
                                                         lineNum, color, font, textMakers);
+                                                ((TextRenderer) lastEvent).setAlterer(line.substring(lineIndex + 3, j));
                                                 tmp.addEvent(lastEvent);
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                break;
                                             }
-                                            color = colors.get(0);
-                                            line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
-                                            last = lineIndex;
-                                            break;
-                                        case "pl":   //PLAIN TEXT
-                                        case "bo":   //BOLD TEXT
-                                        case "it":   //ITALIC TEXT
-                                            if (last != lineIndex) {
-                                                lastEvent = generateEvent(type, line.substring(last, lineIndex),
-                                                        lastEvent, lineNum, color, font, textMakers);
+                                        }
+                                        last = lineIndex;
+                                        break;
+                                    case "qu":   //QUESTION
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                if (last != lineIndex) {
+                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                            lineNum, color, font, textMakers);
+                                                    tmp.addEvent(lastEvent);
+                                                }
+                                                tab = line.substring(lineIndex + 3, j).split(":");
+                                                String[] answers = new String[tab.length / 2];
+                                                String[] jumps = new String[answers.length];
+                                                for (int i = 0; i < answers.length; i++) {
+                                                    answers[i] = tab[2 * i];
+                                                    jumps[i] = tab[2 * i + 1];
+                                                }
+                                                lastEvent = new QuestionMaker(lastEvent, answers, jumps, this);
                                                 tmp.addEvent(lastEvent);
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                break;
                                             }
-                                            switch (symbol) {
-                                                case "pl":
-                                                    font = fonts[STYLE_NORMAL];
-                                                    break;
-                                                case "bo":
-                                                    font = fonts[STYLE_BOLD];
-                                                    break;
-                                                case "it":
-                                                    font = fonts[STYLE_ITALIC];
-                                                    break;
-                                            }
-                                            line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
-                                            last = lineIndex;
-                                            break;
-                                        case "no":   //NORMAL TEXT
-                                        case "sh":   //SHAKY TEXT
-                                        case "ne":   //NERVOUS TEXT
-                                        case "me":   //MELODIC TEXT
-                                            if (last != lineIndex) {
-                                                lastEvent = generateEvent(type, line.substring(last, lineIndex),
-                                                        lastEvent, lineNum, color, font, textMakers);
+                                        }
+                                        break;
+                                    case "if":   //CHECK EXTERNAL STATEMENT
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                if (last != lineIndex) {
+                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                            lineNum, color, font, textMakers);
+                                                    tmp.addEvent(lastEvent);
+                                                }
+                                                tab = line.substring(lineIndex + 3, j).split(":");
+                                                String[] jumps = new String[tab.length - 1];
+                                                for (int i = 0; i < jumps.length; i++) {
+                                                    jumps[i] = tab[i + 1];
+                                                }
+                                                lastEvent = new CheckExpressiontMaker(lastEvent, tab[0], jumps, this);
                                                 tmp.addEvent(lastEvent);
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                break;
                                             }
-                                            switch (symbol) {
-                                                case "no":
-                                                    type = TYPE_NORMAL;
-                                                    break;
-                                                case "sh":
-                                                    type = TYPE_SHAKY;
-                                                    break;
-                                                case "ne":
-                                                    type = TYPE_NERVOUS;
-                                                    break;
-                                                case "me":
-                                                    type = TYPE_MUSIC;
-                                                    break;
+                                        }
+                                        break;
+                                    case "fl":   //FLUSH LINES
+                                        if (last != lineIndex) {
+                                            lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                    lineNum, color, font, textMakers);
+                                            tmp.addEvent(lastEvent);
+                                        }
+                                        lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_FLUSH, 0, this);
+                                        tmp.addEvent(lastEvent);
+                                        line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
+                                        last = lineIndex;
+                                        break;
+                                    case "co":   //CHANGE COLOR
+                                        if (last != lineIndex) {
+                                            lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                    lineNum, color, font, textMakers);
+                                            tmp.addEvent(lastEvent);
+                                        }
+                                        for (int j = lineIndex + 3; j < line.length(); j++) {
+                                            if (line.charAt(j) == '$') {
+                                                color = colors.get(Integer.parseInt(line.substring(lineIndex + 3, j), 16));
+                                                line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                last = lineIndex;
+                                                break;
                                             }
-                                            line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
-                                            last = lineIndex;
-                                            break;
-                                        default:
-                                            throw new IOException("UNKNOWN SYMBOL \"" + line.charAt(lineIndex + 1) + "\"!\nLine : " + line + "");
-                                    }
-                                } else {
-                                    lineIndex++;
+                                        }
+                                        break;
+                                    case "cn":   //PLAIN TEXT
+                                        if (last != lineIndex) {
+                                            lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                    lineNum, color, font, textMakers);
+                                            tmp.addEvent(lastEvent);
+                                        }
+                                        color = colors.get(0);
+                                        line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
+                                        last = lineIndex;
+                                        break;
+                                    case "pl":   //PLAIN TEXT
+                                    case "bo":   //BOLD TEXT
+                                    case "it":   //ITALIC TEXT
+                                        if (last != lineIndex) {
+                                            lastEvent = generateEvent(type, line.substring(last, lineIndex),
+                                                    lastEvent, lineNum, color, font, textMakers);
+                                            tmp.addEvent(lastEvent);
+                                        }
+                                        switch (symbol) {
+                                            case "pl":
+                                                font = fonts[STYLE_NORMAL];
+                                                break;
+                                            case "bo":
+                                                font = fonts[STYLE_BOLD];
+                                                break;
+                                            case "it":
+                                                font = fonts[STYLE_ITALIC];
+                                                break;
+                                        }
+                                        line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
+                                        last = lineIndex;
+                                        break;
+                                    case "no":   //NORMAL TEXT
+                                    case "sh":   //SHAKY TEXT
+                                    case "ne":   //NERVOUS TEXT
+                                    case "me":   //MELODIC TEXT
+                                        if (last != lineIndex) {
+                                            lastEvent = generateEvent(type, line.substring(last, lineIndex),
+                                                    lastEvent, lineNum, color, font, textMakers);
+                                            tmp.addEvent(lastEvent);
+                                        }
+                                        switch (symbol) {
+                                            case "no":
+                                                type = TYPE_NORMAL;
+                                                break;
+                                            case "sh":
+                                                type = TYPE_SHAKY;
+                                                break;
+                                            case "ne":
+                                                type = TYPE_NERVOUS;
+                                                break;
+                                            case "me":
+                                                type = TYPE_MUSIC;
+                                                break;
+                                        }
+                                        line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
+                                        last = lineIndex;
+                                        break;
+                                    default:
+                                        throw new RuntimeException("UNKNOWN SYMBOL \"" + line.charAt(lineIndex + 1) + "\"!\nLine : " + line + "");
                                 }
+                            } else {
+                                lineIndex++;
                             }
-                            if (last != lineIndex) {
-                                lastEvent = generateEvent(type, line.substring(last, lineIndex),
-                                        lastEvent, lineNum, color, font, textMakers);
-                                tmp.addEvent(lastEvent);
-                            }
-                            textMakers.clear();
-                        } else {
-                            lastEvent = new TextRenderer(" ", lastEvent, lineNum, color, font, this);
+                        }
+                        if (last != lineIndex) {
+                            lastEvent = generateEvent(type, line.substring(last, lineIndex),
+                                    lastEvent, lineNum, color, font, textMakers);
                             tmp.addEvent(lastEvent);
                         }
-                        lineNum++;
-                        currentBranch.add(tmp);
+                        textMakers.clear();
+                    } else {
+                        lastEvent = new TextRenderer(" ", lastEvent, lineNum, color, font, this);
+                        tmp.addEvent(lastEvent);
                     }
+                    lineNum++;
+                    currentBranch.add(tmp);
                 }
-                started = true;
-                index = 0;
-                change = 100;
-                rowsInPlace = 0;
-                jumpTo = -1;
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
+            started = true;
+            index = 0;
+            change = 100;
+            rowsInPlace = 0;
+            jumpTo = -1;
         }
-    }
-
-    public void startFromFile(String file, String startingBranch) {
-        startFromFile(file);
-        branch = branches.get(getJumpLocation(startingBranch));
     }
 
     private void stopTextViewing() {
@@ -587,7 +607,9 @@ public class TextController extends GUIObject {
 
             Drawer.bindFontTexture();
 
-            littleFont.drawLine(speakers.get(speaker) + ":", Place.tileHalf, tile / 5, Color.gray);
+            if (!speakers.get(speaker).isEmpty()) {
+                littleFont.drawLine(speakers.get(speaker) + ":", Place.tileHalf, tile / 5, Color.gray);
+            }
 
             Drawer.translate(Place.tileHalf, 2 * tile / 3
                     - (int) (Math.max((deltaLines + (flushing ? change : 0)) * fonts[0].getHeight() * 1.2, 0)));

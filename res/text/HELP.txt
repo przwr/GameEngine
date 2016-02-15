@@ -1,10 +1,10 @@
 NAG£ÓWEK
-
+{
 sp:<double> - prêdkoœæ domyœlna (domyœlnie 1)
 au:<string> - nazwa mówcy
 po:<string> - adres pliku portretów (bex res/textures/ i .spr)
 co:<FFFFFF> - kolor 16x
-
+}
 TREŒÆ
 
 # - Komentarz

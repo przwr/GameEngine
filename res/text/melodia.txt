@@ -1,11 +1,11 @@
-﻿
+﻿{
 sp:1
 au:Aria
 au:Melodia
 au:???
 po:ariaPortret:0
 po:melodiaPortret:1
-
+}
 $AU0$$PO0$$EX0$$MEWitaj!
 Jak się nazywasz?
 $NOJa jestem Aria ($ITname not final$NO)$FL

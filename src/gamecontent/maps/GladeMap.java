@@ -19,6 +19,7 @@ import gamecontent.npcs.MyNPC;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import gamecontent.mobs.Plurret;
+import gamecontent.mobs.Rock;
 import gamecontent.mobs.Shen;
 import gamecontent.mobs.Tongub;
 
@@ -153,7 +154,7 @@ public class GladeMap extends Map {
 
 
 //        addObject(new MyNPC(200, 200, place, mobID++));
-        addObject(new Melodia(200, 500, place, mobID++));
+        addObject(new Melodia(200, 500, place, mobID++, new Shen(), new Rock(0, 0, place, mobID)));
         addObject(new Dummy(400, 800, place, mobID++));
     }
 }

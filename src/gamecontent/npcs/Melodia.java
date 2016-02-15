@@ -21,6 +21,8 @@ import sprites.Animation;
 import sprites.SpriteSheet;
 
 import static game.gameobject.items.Weapon.SWORD;
+import gamecontent.mobs.Rock;
+import gamecontent.mobs.Shen;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -30,9 +32,11 @@ public class Melodia extends Mob {
 
     private Animation animation;
     private String dialog = "0";
-    private int talks;
+    
+    private final Shen shen;
+    private final Rock rock;
 
-    public Melodia(int x, int y, Place place, short mobID) {
+    public Melodia(int x, int y, Place place, short mobID, Shen shen, Rock rock) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
@@ -41,6 +45,8 @@ public class Melodia extends Mob {
         }
         addPushInteraction();
         setDirection8way(DOWN);
+        this.shen = shen;
+        this.rock = rock;
     }
 
     @Override
@@ -48,9 +54,8 @@ public class Melodia extends Mob {
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
                 MyPlayer player = (MyPlayer) target;
-//            setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
                 int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-                if ("2".equals(dialog) && map.getSolidMobById(0) == null) {
+                if ("2".equals(dialog) && shen.getMap() == null) {
                     dialog = "3";
                 }
                 if (isPlayerTalkingToMe(player)) {
@@ -73,8 +78,8 @@ public class Melodia extends Mob {
                         dialog = "4";
                     }, "3", "24");
                     player.getTextController().addEventOnBranchEnd(() -> {
-                        map.deleteBlock(5120, 3712);
-                        player.getSpawnPosition().set(5152, 3840);
+                        player.getSpawnPosition().set(rock.getX(), rock.getY());
+                        rock.delete();
                     }, "4");
                     player.getTextController().addExternalWriter(new Writer("wpn") {
                         @Override
@@ -100,25 +105,6 @@ public class Melodia extends Mob {
                             return "[" + player.getController().actions[MyController.INPUT_BLOCK].input.getLabel() + "]";
                         }
                     });
-//                text.addExternalStatement(new Statement("spr") {
-//
-//                    @Override
-//                    public int check() {
-//                        if (talks < 3) {
-//                            talks++;
-//                            return talks - 1;
-//                        } else if (talks < 8) {
-//                            talks++;
-//                            return 2;
-//                        } else {
-//                            return 3;
-//                        }
-//                    }
-//                });
-//                text.addExternalEvent(() -> {
-//                    moveWithSliding(0, 80);
-//                }, "e");
-
                 }
                 if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                     setDirection8way(DOWN);
