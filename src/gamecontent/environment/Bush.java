@@ -1,4 +1,4 @@
-package gamecontent;
+package gamecontent.environment;
 
 import collision.Figure;
 import collision.OpticProperties;

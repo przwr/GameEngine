@@ -10,7 +10,7 @@ import game.gameobject.stats.NPCStats;
 import game.place.Place;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
-import gamecontent.mobs.Rock;
+import gamecontent.environment.Rock;
 import sprites.Animation;
 import sprites.SpriteSheet;
 

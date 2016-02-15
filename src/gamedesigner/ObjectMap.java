@@ -10,7 +10,7 @@ import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.*;
-import gamecontent.Tree;
+import gamecontent.environment.Tree;
 import gamedesigner.designerElements.CentralPoint;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.TemporaryBlock;

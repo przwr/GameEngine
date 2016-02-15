@@ -21,7 +21,7 @@ import sprites.Animation;
 import sprites.SpriteSheet;
 
 import static game.gameobject.items.Weapon.SWORD;
-import gamecontent.mobs.Rock;
+import gamecontent.environment.Rock;
 import gamecontent.mobs.Shen;
 import static org.lwjgl.opengl.GL11.*;
 

@@ -8,8 +8,8 @@ package game.place.map;
 import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.place.Place;
-import gamecontent.Bush;
-import gamecontent.Tree;
+import gamecontent.environment.Bush;
+import gamecontent.environment.Tree;
 
 /**
  *

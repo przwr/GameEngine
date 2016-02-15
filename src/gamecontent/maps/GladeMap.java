@@ -8,10 +8,10 @@ package gamecontent.maps;
 import collision.Rectangle;
 import game.place.Place;
 import game.place.map.*;
-import gamecontent.Bush;
-import gamecontent.GrassClump;
+import gamecontent.environment.Bush;
+import gamecontent.environment.GrassClump;
 import gamecontent.SpawnPoint;
-import gamecontent.Tree;
+import gamecontent.environment.Tree;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
 import gamecontent.npcs.Melodia;
@@ -19,7 +19,7 @@ import gamecontent.npcs.MyNPC;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import gamecontent.mobs.Plurret;
-import gamecontent.mobs.Rock;
+import gamecontent.environment.Rock;
 import gamecontent.mobs.Shen;
 import gamecontent.mobs.Tongub;
 

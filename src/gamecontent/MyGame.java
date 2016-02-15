@@ -5,6 +5,9 @@
  */
 package gamecontent;
 
+import gamecontent.environment.Tree;
+import gamecontent.environment.Bush;
+import gamecontent.environment.GrassClump;
 import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
