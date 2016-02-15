@@ -38,10 +38,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static engine.systemcommunication.IO.setSettingsFromFile;
+import engine.utilities.Methods;
 import static game.Settings.calculateScale;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
-
 
 /**
  * @author przemek
@@ -169,8 +172,8 @@ public class Main {
     private static void setIcon() {
         try {
             Display.setIcon(new ByteBuffer[]{
-                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
-                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
+                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
+                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
             });
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
@@ -260,8 +263,11 @@ public class Main {
             SHOW_AREA_BOUNDS = !SHOW_AREA_BOUNDS;
             console.printMessage("SHOW/HIDE AREA BOUNDS");
         }
+        if (key.keyPressed(Keyboard.KEY_F12)) {
+            Methods.pasteToClipBoard(game.getSimplePlayerCoordinates());
+            console.printMessage("PLAYER COORDINATES PASTED TO CLIPBOARD");
+        }
     }
-
 
     private static boolean isRunning() {
         return !Display.isCloseRequested() && !game.exitFlag;

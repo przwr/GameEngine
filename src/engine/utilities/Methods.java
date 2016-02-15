@@ -4,6 +4,9 @@ import collision.Figure;
 import collision.Rectangle;
 import collision.RoundRectangle;
 import game.place.Place;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import net.jodk.lang.FastMath;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
@@ -18,7 +21,6 @@ import java.util.List;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  * @author Wojtek
  */
@@ -139,6 +141,10 @@ public class Methods {
         double B = FastMath.sqrt((xOB * xOB) + (yOB * yOB));
         double AB = FastMath.sqrt((xBA * xBA) + (yBA * yBA));
         return FastMath.acos(((B * B) + (A * A) - (AB * AB)) / (2 * B * A));
+    }
+
+    public static int makeDivisibleBy(int value, int divider) {
+        return (value / divider) * divider;
     }
 
     public static int roundUpToBinaryNumber(int num) {
@@ -388,7 +394,6 @@ public class Methods {
         }
     }
 
-
     public static Point getClosestPointToRectangle(int x, int y, Figure figure) {
         int xS = figure.getX();
         int xE = figure.getXEnd();
@@ -600,6 +605,11 @@ public class Methods {
             character = character.toLowerCase();
         }
         return text + character;
+    }
+
+    public static void pasteToClipBoard(String text) {
+        StringSelection selection = new StringSelection(text);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
 
 }

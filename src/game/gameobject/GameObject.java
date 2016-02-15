@@ -94,7 +94,7 @@ public abstract class GameObject {
         if (map != null) {
             prevArea = area;
             area = map.getAreaIndex(getX(), getY());
-            if (area != prevArea && map == prevMap) {
+            if (area != prevArea && map == prevMap && prevArea != -1) {
                 map.changeArea(area, prevArea, this);
             }
             prevMap = map;

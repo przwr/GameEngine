@@ -21,9 +21,9 @@ import gamecontent.npcs.Nutka;
 /**
  * Created by przemek on 21.11.15.
  */
-public class Test extends Map {
+public class TestMap extends Map {
 
-    public Test(short ID, Place place, int width, int height, int tileSize) {
+    public TestMap(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "Test", place, width, height, tileSize);
         Tile GRASS = new Tile(place.getSpriteSheet("grassland", "backgrounds"), 1, 1);
         Tile[] flowers = new Tile[7];
@@ -41,12 +41,13 @@ public class Test extends Map {
                 }
             }
         }
-        PuzzleObject puzzle = new PuzzleObject("demo/start", place);
+        placePuzzle(0, 0, new PuzzleObject("demo/testMap", place));
+        /*PuzzleObject puzzle = new PuzzleObject("demo/start", place);
         puzzle.placePuzzle(32, 32, this);
         puzzle = new PuzzleObject("demo/domekstart", place);
         puzzle.placePuzzle(82, 32, this);
         puzzle = new PuzzleObject("demo/second", place);
-        puzzle.placePuzzle(32, 68, this);
+        puzzle.placePuzzle(32, 68, this);*/
 
         WarpPoint warp = new WarpPoint("toCaveLeft", 51 * tileSize, 102 * tileSize, "CaveTest");
         warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
@@ -58,7 +59,7 @@ public class Test extends Map {
     @Override
     public void populate() {
         RandomGenerator random = RandomGenerator.create();
-        addObject(Tree.create(1580, 1650, 32, 200, 0.8f));
+        /*addObject(Tree.create(1580, 1650, 32, 200, 0.8f));
         addObject(Tree.create(1650, 1800, 32, 200, 0.8f));
         addObject(Tree.create(1600, 1950, 32, 200, 0.8f));
         addObject(Tree.create(1690, 2100, 32, 200, 0.8f));
@@ -118,11 +119,11 @@ public class Test extends Map {
         }
         for (int i = 0; i < 4; i++) {
             addObject(new Bush(4030 + random.next(4), 6732 + i * 90 + random.next(6), 14, 80, 0.8f));
-        }
+        }*/
 
-        addObject(new Shen(5184, 2560, place, mobID++));
+        addObject(new Shen(3010, 1226, place, mobID++));
 
-        addObject(GrassClump.createCorner(2560, 1864, 2, 8, 8, 2, 8, 32, 0));
+        /*addObject(GrassClump.createCorner(2560, 1864, 2, 8, 8, 2, 8, 32, 0));
         addObject(GrassClump.createCorner(2560, 1736, 2, 8, 8, 2, 8, 32, 1));
         addObject(GrassClump.createCorner(2752, 1736, 2, 8, 8, 2, 8, 32, 2));
         addObject(GrassClump.createCorner(2752, 1864, 2, 8, 8, 2, 8, 32, 3));
@@ -140,22 +141,18 @@ public class Test extends Map {
         addObject(GrassClump.createRectangle(4656, 2864, 2, 8, 8, 2, 8, 32));
         addObject(GrassClump.createRectangle(4656, 2736, 2, 8, 8, 2, 8, 32));
         addObject(GrassClump.createRectangle(4656, 2800, 2, 8, 8, 2, 8, 32));
-        addObject(GrassClump.createRectangle(4752, 2800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(4752, 2800, 2, 8, 8, 2, 8, 32));*/
 
-        addObject(new Bush(3200, 1872, 12, 70, 0.8f));
+        /*addObject(new Bush(3200, 1872, 12, 70, 0.8f));
         addObject(new Bush(3900, 2072, 12, 70, 0.8f));
-        addObject(new Bush(4500, 1972, 12, 70, 0.8f));
+        addObject(new Bush(4500, 1972, 12, 70, 0.8f));*/
 
-        addObject(new Dummy(4860, 2000, place, mobID++));
-        addObject(new Melodia(5344, 2272, place, mobID++));
+        addObject(new Dummy(4643, 1793, place, mobID++));
+        addObject(new Melodia(4034, 1811, place, mobID++));
         addObject(new Blazag(5744, 6494, place, mobID++));
         addObject(new Blazag(5344, 5494, place, mobID++));
         addObject(new Blazag(5144, 5994, place, mobID++));
         addObject(new Nutka(4435, 4215, place, mobID++));
-        addObject(new Magician(2700, 1836, place, mobID++));
-
-        addObject(new Bush(4894, 4422, 12, 70, 0.8f));
-        addObject(new Bush(5423, 4210, 12, 70, 0.8f));
-
+        addObject(new Magician(2906, 763, place, mobID++));
     }
 }

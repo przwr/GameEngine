@@ -229,7 +229,7 @@ public class MyGame extends Game {
         switch (playersCount) {
             case 1:
                 if (Main.TEST) {
-                    players[0].initializeSetPosition(56, 104, place, 2048, 2048);
+                    players[0].initializeSetPosition(56, 104, place, 1676, 1197);
                 } else {
                     players[0].initializeSetPosition(56, 104, place, 256, 256);
                 }

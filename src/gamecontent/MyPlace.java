@@ -22,7 +22,7 @@ import game.place.map.Map;
 import gamecontent.maps.CaveTest;
 import gamecontent.maps.GladeMap;
 import gamecontent.maps.StoneMap;
-import gamecontent.maps.Test;
+import gamecontent.maps.TestMap;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class MyPlace extends Place {
     @Override
     public void generateAsGuest() {
         if (Main.TEST) {
-            Test test = new Test(mapIDCounter++, this, 8192, 8192, tileSize);
+            TestMap test = new TestMap(mapIDCounter++, this, 8192, 8192, tileSize);
             maps.add(test);
             CaveTest caveTest = new CaveTest(mapIDCounter++, this, 8192, 8192, tileSize);
             maps.add(caveTest);

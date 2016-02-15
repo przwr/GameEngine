@@ -14,6 +14,7 @@ import gamecontent.Tree;
 import gamedesigner.designerElements.CentralPoint;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.TemporaryBlock;
+import gamedesigner.designerElements.TemporaryObject;
 import sprites.SpriteSheet;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class ObjectMap extends Map {
     private final CentralPoint centralPoint;
     private final ObjectPlace objPlace;
     private final ArrayList<PuzzleLink> links;
-    private final ArrayList<GameObject> mapObjects;
+    private final ArrayList<TemporaryObject> mapObjects;
     private Tile background;
     private boolean isBackground, areTilesVisible, areBlocksVisible;
 
@@ -100,6 +101,12 @@ public class ObjectMap extends Map {
         }
     }
 
+    public void setMapObjectVisibility(boolean visible) {
+        for (TemporaryObject to : mapObjects) {
+            to.getCovered().setVisible(visible);
+        }
+    }
+    
     public void setFGTVisibility(boolean visible) {
         for (Area area : areas) {
             area.getForegroundTiles().stream().forEach((foregroundTile) -> foregroundTile.setVisible(visible));
@@ -130,14 +137,18 @@ public class ObjectMap extends Map {
     }
 
     public void addMapObject(GameObject object) {
-        mapObjects.add(object);
+        TemporaryObject to = new TemporaryObject(object, objPlace);
+        mapObjects.add(to);
+        addObject(to);
         addObject(object);
     }
 
     public void deleteMapObject(int x, int y) {
-        GameObject del = null;
-        for (GameObject go : mapObjects) {
-            if ((go.getX() / tileSize) == x && (go.getY() / tileSize) == y) {
+        TemporaryObject del = null;
+        GameObject tmp;
+        for (TemporaryObject go : mapObjects) {
+            tmp = go.getCovered();
+            if ((tmp.getX() / tileSize) == x && (tmp.getY() / tileSize) == y) {
                 del = go;
                 break;
             }
@@ -145,6 +156,7 @@ public class ObjectMap extends Map {
         if (del != null) {
             mapObjects.remove(del);
             deleteObject(del);
+            deleteObject(del.getCovered());
         }
     }
 
@@ -429,9 +441,11 @@ public class ObjectMap extends Map {
             }
         }
 
-        for (GameObject go : mapObjects) {
-            map.add("o:" + go.getName() + ":" + ((go.getX() - xActBegin) / tileSize)
-                    + ":" + ((go.getY() - yActBegin) / tileSize));
+        GameObject tmp;
+        for (TemporaryObject go : mapObjects) {
+            tmp = go.getCovered();
+            map.add("o:" + tmp.getName() + ":" + ((tmp.getX() - xActBegin) / tileSize)
+                    + ":" + ((tmp.getY() - yActBegin) / tileSize));
         }
 
         if (!links.isEmpty()) {

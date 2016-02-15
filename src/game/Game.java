@@ -80,6 +80,11 @@ public abstract class Game {
         return "[" + p.getX() + ", " + p.getY() + "] : "
                 + "{" + (int) p.getX() / Place.tileSize + ", " + (int) p.getY() / Place.tileSize + "}";
     }
+    
+    public String getSimplePlayerCoordinates() {
+        Player p = (Player) place.players[0];
+        return p.getX() + ", " + p.getY();
+    }
 
     protected void pause() {
         if (Keyboard.isKeyDown(Keyboard.KEY_PAUSE)) {

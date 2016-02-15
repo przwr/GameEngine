@@ -63,7 +63,7 @@ public class ObjectPlace extends Place {
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
 
-        prettyOptions = new String[]{"Tiles", "Background", "Blocks", "Block Outlines", "FGTiles", "Day"};
+        prettyOptions = new String[]{"Tiles", "Background", "Blocks", "Block Outlines", "FGTiles", "Day", "Objects"};
         viewingOptions = new boolean[prettyOptions.length];
         for (int i = 0; i < viewingOptions.length; i++) {
             viewingOptions[i] = true;
@@ -74,7 +74,7 @@ public class ObjectPlace extends Place {
     @Override
     public void generateAsGuest() {
         objMap = new ObjectMap(mapIDCounter++, this, xWorkingAreaInTiles * tileSize, yWorkingAreaInTiles * tileSize, Place.tileSize);
-        ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo", "backgrounds"), this);
+        ui = new ObjectUI(Place.tileSize, sprites.getSpriteSheet("tlo", "backgrounds"), this, objMap);
         guiHandler = new GUIHandler(this);
         maps.add(objMap);
         editor = ((ObjectPlayer) players[0]);
@@ -226,6 +226,9 @@ public class ObjectPlace extends Place {
                 } else {
                     dayCycle.setTime(0, 0);
                 }
+                break;
+            case 6:
+                objMap.setMapObjectVisibility(viewingOptions[index]);
                 break;
         }
     }

@@ -16,36 +16,47 @@ import gamecontent.Tree;
  * @author Wojtek
  */
 public class MapObjectContainer {
+
     private int x, y;
     private String[] data;
     private byte type;
-    
+
     public static final byte TREE = 0, BUSH = 1;
+
+    private static final String[] names = new String[]{"Tree", "Bush"};
 
     public MapObjectContainer(String[] data) {
         if (data[0].equals("o")) {
             this.data = data;
             x = Integer.parseInt(data[2]) * Place.tileSize;
             y = Integer.parseInt(data[3]) * Place.tileSize;
-            switch (data[1]) {
-                case "Tree":
-                    type = TREE;
+            type = -1;
+            for (int i = 0; i < names.length; i++) {
+                if (data[1].equals(names[i])) {
+                    type = (byte) i;
                     break;
-                case "Bush":
-                    type = BUSH;
-                    break;
-                default:
-                    throw new RuntimeException("Unknown object: " + data[1]);
+                }
+            }
+            if (type == -1) {
+                throw new RuntimeException("Unknown object: " + data[1]);
             }
         }
     }
-    
+
+    public static String[] getNames() {
+        return names;
+    }
+
     public GameObject generateObject(int x, int y, RandomGenerator rand) {
         return generate(this.x + x, this.y + y, rand, type);
     }
-    
+
     public static GameObject generate(int x, int y, RandomGenerator rand, byte type) {
-        int dx = rand.random(Place.tileSize - 1), dy = rand.random(Place.tileSize - 1);
+        int dx = 0, dy = 0;
+        if (rand != null) {
+            dx = rand.random(Place.tileSize - 1);
+            dy = rand.random(Place.tileSize - 1);
+        }
         switch (type) {
             case TREE:
                 return Tree.create(x + dx, y + dy);

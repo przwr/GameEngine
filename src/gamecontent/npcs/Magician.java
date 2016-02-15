@@ -3,7 +3,6 @@ package gamecontent.npcs;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Main;
-import engine.utilities.Executive;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
@@ -44,23 +43,19 @@ public class Magician extends Mob {
                 if (isPlayerTalkingToMe(player)) {
                     player.getTextController().lockEntity(player);
                     player.getTextController().startFromFile("npcCzary");
-                    player.getTextController().addExternalEvent(new Executive() {
-
-                        @Override
-                        public void execute() {
-                            if (upperSide) {
-                                setPosition(3850, 6610);
-                                player.setPosition(3750, 6610);
-                                player.getCamera().updateStatic();
-                                player.setCurrentLocationAsSpawnPosition();
-                                upperSide = false;
-                            } else {
-                                setPosition(2700, 1836);
-                                player.setPosition(2600, 1836);
-                                player.getCamera().updateStatic();
-                                player.setCurrentLocationAsSpawnPosition();
-                                upperSide = true;
-                            }
+                    player.getTextController().addExternalEvent(() -> {
+                        if (upperSide) {
+                            setPosition(3850, 6610);
+                            player.setPosition(3750, 6610);
+                            player.getCamera().updateStatic();
+                            player.setCurrentLocationAsSpawnPosition();
+                            upperSide = false;
+                        } else {
+                            setPosition(2906, 763);
+                            player.setPosition(2806, 763);
+                            player.getCamera().updateStatic();
+                            player.setCurrentLocationAsSpawnPosition();
+                            upperSide = true;
                         }
                     }, "tele");
                 }

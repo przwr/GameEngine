@@ -19,10 +19,7 @@ import game.gameobject.inputs.InputKeyBoard;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.MapObjectContainer;
-import gamecontent.Bush;
 import gamecontent.MyController;
-import gamecontent.Tree;
-import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.RoundedTMPBlock;
 import gamedesigner.designerElements.TemporaryBlock;
 import net.jodk.lang.FastMath;
@@ -50,14 +47,13 @@ public class ObjectPlayer extends Player {
     private ObjectMap objMap;
     private ObjectPlace objPlace;
     private ObjectUI ui;
-    private byte objectMode;
     private int blockHeight, tileHeight, mode;
     private boolean roundBlocksMode, alreadyPlaced;
     private boolean paused, shadow, nightLight;
 
     private RoundedTMPBlock rTmpBlock;
     private ArrayList<TemporaryBlock> movingBlock;
-    
+        
     private RandomGenerator rand;
 
     public ObjectPlayer(boolean first, String name) {
@@ -92,7 +88,7 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void initializeSetPosition(int width, int height, Place place, int x, int y) {
-        initialize(name, x, y);
+        initialize(name, 0, 0);
         initialize(width, height, place);
     }
 
@@ -331,6 +327,7 @@ public class ObjectPlayer extends Player {
         }
         if (mode == ObjectPlace.MODE_OBJECT) {
             roundBlocksMode = false;
+            ui.setChange(key.key(KEY_LSHIFT));
         }
     }
 
@@ -368,7 +365,8 @@ public class ObjectPlayer extends Player {
                 }
             }
         } else if (mode == ObjectPlace.MODE_OBJECT) {
-            GameObject obj = MapObjectContainer.generate(ix * tileSize, iy * tileSize, rand, objectMode);
+            GameObject obj = MapObjectContainer.generate(ix * tileSize, iy * tileSize, 
+                    rand, (byte) ui.getChosenObject());
             if (obj != null) {
                 objMap.addMapObject(obj);
             }
@@ -467,6 +465,13 @@ public class ObjectPlayer extends Player {
 
         Drawer.refreshForRegularDrawing();
         glPopMatrix();
+        if (mode == ObjectPlace.MODE_OBJECT) {
+            Drawer.setColorAlpha(0.5f);
+            ui.renderChosenObject(Math.min(ix, xStop) * tileSize + tileSize / 2, 
+                    Math.min(iy, yStop) * tileSize + tileSize / 2, 
+                    xEffect, yEffect);
+            Drawer.refreshColor();
+        }
     }
 
     @Override
