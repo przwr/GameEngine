@@ -30,6 +30,7 @@ public class Rock extends Mob {
         stats.setDefence(15);
         setResistance(50);
         addPushInteraction();
+        setTargetable(false);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class Rock extends Mob {
                 player.getTextController().lockEntity(player);
                 player.getTextController().startFromText(new String[] {
                     "To jest kamień$FL",
-                    "Jego położenie jest doprawdy specyficzne"
+                    "Jego położenie jest doprawdy specyficzne."
                 });
             }
             if (d > hearRange * 1.5 || getTarget().getMap() != map) {

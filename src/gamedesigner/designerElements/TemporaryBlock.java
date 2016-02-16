@@ -170,6 +170,10 @@ public class TemporaryBlock extends GameObject {
         block.addForegroundTile(fgt);
     }
 
+    public boolean isInvisible() {
+        return upHeight == 0;
+    }
+    
     public ForegroundTile addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altMode) {
         int yBegin = (int) (this.y / tile) - upHeight;
         int yEnd = yBegin + yTiles + upHeight - 1;

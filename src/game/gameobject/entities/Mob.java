@@ -37,6 +37,8 @@ public abstract class Mob extends Entity {
     protected Delay letGoDelay = Delay.createInSeconds(30);
     private SpawnPoint spawner;
 
+    private boolean targetable = true;
+
     public Mob() {
     }
 
@@ -46,6 +48,22 @@ public abstract class Mob extends Entity {
 
     protected Mob(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID, boolean NPC) {
         initialize(x, y, speed, hearRange, name, place, spriteName, solid, mobID, NPC);
+    }
+
+    @Override
+    public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
+        super.getHurt(knockBackPower, jumpPower, attacker);
+        if (letGoDelay.isWorking() && attacker instanceof Player) {
+            letGoDelay.start();
+        }
+    }
+    
+    @Override
+    public void reactToAttack(byte attackType, GameObject attacked) {
+        super.reactToAttack(attackType, attacked);
+        if (letGoDelay.isWorking() && attacked instanceof Player) {
+            letGoDelay.start();
+        }
     }
 
     public abstract void initialize(int x, int y, Place place, short ID);
@@ -61,6 +79,7 @@ public abstract class Mob extends Entity {
         this.setMaxSpeed(speed);
         if (npc.length > 0) {
             this.appearance = place.getSprite(spriteName, "entities/npcs");
+            setTargetable(false);
         } else {
             this.appearance = place.getSprite(spriteName, "entities/mobs");
         }
@@ -116,13 +135,20 @@ public abstract class Mob extends Entity {
         }
     }
 
+    public void setTargetable(boolean targetable) {
+        this.targetable = targetable;
+    }
+
+    public boolean isTargetable() {
+        return targetable;
+    }
+
     protected boolean isNeutral(Mob mob) {
-        if (isAgresor(mob)) {
-            return false;
-        }
-        for (String className : neutral) {
-            if (className.equals(mob.getClass().getName())) {
-                return true;
+        if (mob.targetable && !isAgresor(mob)) {
+            for (String className : neutral) {
+                if (className.equals(mob.getClass().getName())) {
+                    return true;
+                }
             }
         }
         return false;
@@ -428,8 +454,8 @@ public abstract class Mob extends Entity {
         return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
                 && !player.getTextController().isStarted()
                 && Methods.pointDistanceSimple(getX(), getY(),
-                player.getX(), player.getY()) <= Place.tileSize * 1.5 + 
-                    Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
+                        player.getX(), player.getY()) <= Place.tileSize * 1.5
+                + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
                 && player.getDirection8Way() == Methods.pointAngle8Directions(player.getX(), player.getY(), x, y);
     }
 

@@ -10,6 +10,8 @@ import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Tongub;
 
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import game.logic.DayCycle;
+import org.newdawn.slick.Color;
 
 /**
  * Created by przemek on 21.11.15.
@@ -19,6 +21,8 @@ public class CaveTest extends Map {
 
     public CaveTest(short ID, Place place, int width, int height, int tileSize) {
         super(ID, "CaveTest", place, width, height, tileSize);
+        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT / 1.5f));
+        
         PuzzleObject puzzle = new PuzzleObject("demo/cave", place);
         puzzle.placePuzzle(0, 0, this);
 

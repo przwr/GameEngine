@@ -183,7 +183,8 @@ public class ObjectMap extends Map {
                 for (GameObject tb : area.getTopObjects()) {
                     if (tb instanceof TemporaryBlock) {
                         TemporaryBlock tmp = (TemporaryBlock) tb;
-                        if (tmp.isNotBlocked() && tmp.checkIfContains(x, y) && tmp.getY() > max) {
+                        if (tmp.isNotBlocked() && tmp.checkIfContains(x, y) 
+                                && tmp.getY() > max && !tmp.isInvisible()) {
                             lowest = tmp;
                             max = tmp.getY();
                         }

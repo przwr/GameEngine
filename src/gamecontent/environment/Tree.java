@@ -36,7 +36,7 @@ public class Tree extends GameObject {
     private Color branchColor;
     private Color leafColor;
     private BlueArray<Point> points = new BlueArray<>();
-    private Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
+    private final Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
 
     private Tree(int x, int y, int width, int height, float spread, boolean branchless) {
         initialize("Tree", x, y);
