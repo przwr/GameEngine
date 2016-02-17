@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import static engine.utilities.Drawer.clearScreen;
 import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
-import game.place.map.PuzzleObject;
 import static gamecontent.MyController.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -283,8 +282,8 @@ public class MyPlayer extends Player {
 //        collision.setCollide(false);
         initializeAttacks();
         stats = new PlayerStats(this);
-//        stats.setMaxHealth(1000);
-//        stats.setHealth(1000);
+        stats.setMaxHealth(1000);
+        stats.setHealth(1000);
         textControl = new TextController(place);
         addGui(textControl);
         gui = new MyGUI("Player " + name + "'s GUI", place);

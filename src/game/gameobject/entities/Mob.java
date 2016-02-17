@@ -37,6 +37,7 @@ public abstract class Mob extends Entity {
     protected Delay letGoDelay = Delay.createInSeconds(30);
     private SpawnPoint spawner;
 
+
     private boolean targetable = true;
 
     public Mob() {
@@ -57,7 +58,7 @@ public abstract class Mob extends Entity {
             letGoDelay.start();
         }
     }
-    
+
     @Override
     public void reactToAttack(byte attackType, GameObject attacked) {
         super.reactToAttack(attackType, attacked);
@@ -135,16 +136,19 @@ public abstract class Mob extends Entity {
         }
     }
 
-    public void setTargetable(boolean targetable) {
-        this.targetable = targetable;
-    }
-
     public boolean isTargetable() {
         return targetable;
     }
 
+    public void setTargetable(boolean targetable) {
+        this.targetable = targetable;
+    }
+
     protected boolean isNeutral(Mob mob) {
-        if (mob.targetable && !isAgresor(mob)) {
+        if (!mob.targetable) {
+            return true;
+        }
+        if (!isAgresor(mob)) {
             for (String className : neutral) {
                 if (className.equals(mob.getClass().getName())) {
                     return true;
@@ -454,7 +458,7 @@ public abstract class Mob extends Entity {
         return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
                 && !player.getTextController().isStarted()
                 && Methods.pointDistanceSimple(getX(), getY(),
-                        player.getX(), player.getY()) <= Place.tileSize * 1.5
+                player.getX(), player.getY()) <= Place.tileSize * 1.5
                 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
                 && player.getDirection8Way() == Methods.pointAngle8Directions(player.getX(), player.getY(), x, y);
     }
@@ -462,17 +466,17 @@ public abstract class Mob extends Entity {
     protected void renderPathPoints(int xEffect, int yEffect) {
         PointContainer path = pathData.getPath();
         int current = pathData.getCurrentPointIndex();
-        Drawer.setColor(new Color(0.5f, 0.1f, 0.1f));
+        Drawer.setColor(Color.green);
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         if (path != null) {
             for (int i = current; i < path.size(); i++) {
-                Drawer.drawRectangle(path.get(i).getX(), path.get(i).getY(), 10, 10);
+                Drawer.drawRectangle(path.get(i).getX() - 5, path.get(i).getY() - 5, 10, 10);
             }
         }
         if (destination.getX() > 0) {
-            Drawer.drawRectangle(destination.getX(), destination.getY(), 10, 10);
+            Drawer.drawRectangle(destination.getX() - 5, destination.getY() - 5, 10, 10);
         }
         Drawer.refreshColor();
         glPopMatrix();

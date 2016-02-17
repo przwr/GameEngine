@@ -106,7 +106,7 @@ public class ShadowRenderer {
 
     private static void findShades(Light light, Map map) {
         shades.clear();
-        area = map.getArea(light.getCurrentArea());
+        area = map.getArea(map.getAreaIndex(light.getX(), light.getY()));
         searchBlocks(light);
         searchForegroundTiles();
         searchObjects();
@@ -1065,8 +1065,7 @@ public class ShadowRenderer {
                 XR1 = Methods.roundDouble((other.getYEnd() - br) / ar); // liczenie przecięcia linii
                 if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX())
                         || (XR1 > other.getX() && XR1 < other.getXEnd())) {
-                    tempPoint = Methods.getXIntersection(ar, br, shadow1X, shadow1Y, shadow3X, shadowPoints[3].getY
-                            (), other);
+                    tempPoint = Methods.getXIntersection(ar, br, shadow1X, shadow1Y, shadow3X, shadow3Y, other);
                     if (tempPoint != null && other.getYEnd() <= current.getYEnd() && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY()
                             <= other.getYEnd()) {
                         XR1 = tempPoint.getX();
@@ -1157,8 +1156,7 @@ public class ShadowRenderer {
             XL1 = Methods.roundDouble((other.getYEnd() - bl) / al); // liczenie przecięcia linii
             if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX()) || (XL1 > other
                     .getX() && XL1 < other.getXEnd())) {
-                tempPoint = Methods.getXIntersectionFromTop(al, bl, shadow0X, shadow0Y, shadow2X, shadowPoints[2]
-                        .getY(), other);
+                tempPoint = Methods.getXIntersectionFromTop(al, bl, shadow0X, shadow0Y, shadow2X, shadow2Y, other);
                 if (tempPoint != null && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
                     XL1 = tempPoint.getX();
                 } else {
@@ -1205,8 +1203,7 @@ public class ShadowRenderer {
             XR1 = Methods.roundDouble((other.getYEnd() - br) / ar); // liczenie przecięcia linii
             if ((other.isRightBottomRound() && other.getX() < current.getX()) || (other.isLeftBottomRound() && other.getX() > current.getX()) || (XR1 > other
                     .getX() && XR1 < other.getXEnd())) {
-                tempPoint = Methods.getXIntersectionFromTop(ar, br, shadow1X, shadow1Y, shadow3X, shadowPoints[3]
-                        .getY(), other);
+                tempPoint = Methods.getXIntersectionFromTop(ar, br, shadow1X, shadow1Y, shadow3X, shadow3Y, other);
                 if (tempPoint != null && tempPoint.getY() >= other.getYEnd() - Place.tileSize && tempPoint.getY() <= other.getYEnd()) {
                     XR1 = tempPoint.getX();
                 } else {

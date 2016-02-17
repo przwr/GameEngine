@@ -92,7 +92,7 @@ public abstract class Figure implements Comparable<Figure> {
                 int objectTop = objectBottom + figure.getOwner().getActualHeight();
                 int bottom = (int) owner.getFloatHeight();
                 int top = bottom + owner.getActualHeight();
-                if (objectTop >= bottom && objectBottom <= top) {
+                if ((objectTop >= bottom && objectBottom <= top) || figure.opticProperties.getType() == OpticProperties.TRANSPARENT) {
                     return isCollideSingleImplementation(x, y, figure);
                 }
             } else {
