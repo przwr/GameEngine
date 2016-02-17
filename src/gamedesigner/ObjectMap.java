@@ -480,6 +480,7 @@ public class ObjectMap extends Map {
         for (Area area : areas) {
             area.clear();
         }
+        mapObjects.clear();
         addObject(centralPoint);
     }
 
