@@ -36,11 +36,11 @@ public abstract class Map {
     protected static Tile tempTile;
     public final Place place;
     protected final int tileSize;
-    protected final int widthInTiles, heightInTiles;
+    protected int widthInTiles, heightInTiles;
     protected final BlueArray<GameObject> pointingArrows = new BlueArray<>();
     protected final String name;
-    protected final int width;
-    protected final int height;
+    protected int width;
+    protected int height;
     protected final short mapID;
     protected final PointContainer tempTilePositions = new PointContainer();
     protected final Set<Block> tempBlocks = new HashSet<>();
@@ -73,6 +73,22 @@ public abstract class Map {
         this.tileSize = tileSize;
         widthInTiles = width / tileSize;
         heightInTiles = height / tileSize;
+        createAreas();
+    }
+    
+    protected Map(short mapID, String name, Place place, int tileSize) {
+        this.place = place;
+        this.name = name;
+        this.mapID = mapID;
+        this.tileSize = tileSize;
+    }
+    
+    protected void initializeAreas(int width, int height) {
+        this.width = width;
+        this.height = height;
+        widthInTiles = width / tileSize;
+        heightInTiles = height / tileSize;
+        System.out.println(width + " " + height);
         createAreas();
     }
 

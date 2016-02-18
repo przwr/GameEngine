@@ -53,8 +53,10 @@ public class ObjectPlayer extends Player {
 
     private RoundedTMPBlock rTmpBlock;
     private ArrayList<TemporaryBlock> movingBlock;
-        
-    private RandomGenerator rand;
+
+    private final RandomGenerator rand;
+
+    private Point lastRTMPBState = new Point(0, 0);
 
     public ObjectPlayer(boolean first, String name) {
         super(name);
@@ -172,20 +174,32 @@ public class ObjectPlayer extends Player {
                 alreadyPlaced = false;
             }
 
-            if (!alreadyPlaced && (key.key(KEY_SPACE) || key.key(KEY_LMENU))) {
-                alreadyPlaced = true;
-                if (mode == ObjectPlace.MODE_TILE) {
-                    setTile();
-                } else {
-                    setInstance();
+            if (!alreadyPlaced) {
+                if (key.key(KEY_C) && mode == ObjectPlace.MODE_BLOCK && roundBlocksMode) {
+                    alreadyPlaced = true;
+                    GameObject g = setInstance();
+                    if (g != null) {
+                        paused = false;
+                        RoundedTMPBlock tmp = (RoundedTMPBlock) g;
+                        tmp.loadStates(lastRTMPBState);
+                        tmp.applyStates();
+                    }
                 }
-            }
-            if (!alreadyPlaced && key.key(KEY_DELETE)) {
-                alreadyPlaced = true;
-                if (mode == ObjectPlace.MODE_TILE) {
-                    deleteTile();
-                } else {
-                    deleteInstance();
+                if (key.key(KEY_SPACE) || key.key(KEY_LMENU)) {
+                    alreadyPlaced = true;
+                    if (mode == ObjectPlace.MODE_TILE) {
+                        setTile();
+                    } else {
+                        setInstance();
+                    }
+                }
+                if (key.key(KEY_DELETE)) {
+                    alreadyPlaced = true;
+                    if (mode == ObjectPlace.MODE_TILE) {
+                        deleteTile();
+                    } else {
+                        deleteInstance();
+                    }
                 }
             }
 
@@ -230,6 +244,7 @@ public class ObjectPlayer extends Player {
                 }
                 if (key.keyPressed(KEY_RETURN)) {
                     paused = false;
+                    lastRTMPBState = rTmpBlock.saveStates();
                     rTmpBlock.applyStates();
                 }
             }
@@ -348,7 +363,7 @@ public class ObjectPlayer extends Player {
         }
     }
 
-    private void setInstance() {
+    private GameObject setInstance() {
         objPlace.getUndoControl().setUpUndo();
         int xBegin = Math.min(ix, xStop);
         int yBegin = Math.min(iy, yStop);
@@ -360,17 +375,19 @@ public class ObjectPlayer extends Player {
                     rTmpBlock = new RoundedTMPBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, yd, map);
                     objMap.addObject(rTmpBlock, key.key(KEY_LMENU));
                     paused = true;
+                    return rTmpBlock;
                 } else {
                     objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map), key.key(KEY_LMENU));
                 }
             }
         } else if (mode == ObjectPlace.MODE_OBJECT) {
-            GameObject obj = MapObjectContainer.generate(ix * tileSize, iy * tileSize, 
+            GameObject obj = MapObjectContainer.generate(ix * tileSize, iy * tileSize,
                     rand, (byte) ui.getChosenObject());
             if (obj != null) {
                 objMap.addMapObject(obj);
             }
         }
+        return null;
     }
 
     private void deleteTile() {
@@ -467,8 +484,8 @@ public class ObjectPlayer extends Player {
         glPopMatrix();
         if (mode == ObjectPlace.MODE_OBJECT) {
             Drawer.setColorAlpha(0.5f);
-            ui.renderChosenObject(Math.min(ix, xStop) * tileSize + tileSize / 2, 
-                    Math.min(iy, yStop) * tileSize + tileSize / 2, 
+            ui.renderChosenObject(Math.min(ix, xStop) * tileSize + tileSize / 2,
+                    Math.min(iy, yStop) * tileSize + tileSize / 2,
                     xEffect, yEffect);
             Drawer.refreshColor();
         }

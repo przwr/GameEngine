@@ -106,7 +106,7 @@ public class ObjectMap extends Map {
             to.getCovered().setVisible(visible);
         }
     }
-    
+
     public void setFGTVisibility(boolean visible) {
         for (Area area : areas) {
             area.getForegroundTiles().stream().forEach((foregroundTile) -> foregroundTile.setVisible(visible));
@@ -183,7 +183,7 @@ public class ObjectMap extends Map {
                 for (GameObject tb : area.getTopObjects()) {
                     if (tb instanceof TemporaryBlock) {
                         TemporaryBlock tmp = (TemporaryBlock) tb;
-                        if (tmp.isNotBlocked() && tmp.checkIfContains(x, y) 
+                        if (tmp.isNotBlocked() && tmp.checkIfContains(x, y)
                                 && tmp.getY() > max && !tmp.isInvisible()) {
                             lowest = tmp;
                             max = tmp.getY();
@@ -262,7 +262,10 @@ public class ObjectMap extends Map {
             }
         }
         if (lowest != null) {
-            removeForegroundTile(lowest);
+            Point p = lowest.popTileFromStack();
+            if (p != null && lowest.tileStackSize() == 0) {
+                removeForegroundTile(lowest);
+            }
         }
     }
 

@@ -84,7 +84,7 @@ public class MyPlace extends Place {
         if (Main.TEST) {
             TestMap test = new TestMap(mapIDCounter++, this, 8192, 8192, tileSize);
             maps.add(test);
-            CaveTest caveTest = new CaveTest(mapIDCounter++, this, 8192, 8192, tileSize);
+            CaveTest caveTest = new CaveTest(mapIDCounter++, this, tileSize);
             maps.add(caveTest);
         } else {
             GladeMap polana = new GladeMap(mapIDCounter++, this, 4096, 8192, tileSize);

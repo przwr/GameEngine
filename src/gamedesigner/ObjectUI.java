@@ -114,9 +114,6 @@ public class ObjectUI extends GUIObject {
 
     public void setMode(int mode) {
         this.mode = mode;
-        if (mode != ObjectPlace.MODE_OBJECT) {
-            coordinates.set(0, 0);
-        }
     }
 
     @Override

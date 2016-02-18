@@ -8,6 +8,7 @@ package gamedesigner.designerElements;
 import collision.Block;
 import collision.RoundRectangle;
 import engine.utilities.Drawer;
+import engine.utilities.Point;
 import game.place.Place;
 import game.place.map.ForegroundTile;
 import game.place.map.Map;
@@ -83,6 +84,15 @@ public class RoundedTMPBlock extends TemporaryBlock {
         }
     }
 
+    public Point saveStates() {
+        return new Point(upperState, lowerState);
+    }
+    
+    public void loadStates(Point states) {
+        changeUpperState(states.getFirst());
+        changeLowerState(states.getSecond());
+    }
+    
     public void setStates(int corner, int xChange, int yChange) {
         int sum = xChange + yChange;
         switch (corner) {

@@ -78,6 +78,7 @@ public class GUIHandler extends GUIObject {
         "",
         "SHIFT + ARROWS:", "Change block height",
         "R:", "Rounded blocks mode",
+        "C:", "Place rounded block with last settings",
         "",
         "//OBJECT MODE (4)",
         "",

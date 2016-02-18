@@ -19,12 +19,14 @@ import org.newdawn.slick.Color;
 public class CaveTest extends Map {
 
 
-    public CaveTest(short ID, Place place, int width, int height, int tileSize) {
-        super(ID, "CaveTest", place, width, height, tileSize);
-        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT / 1.5f));
+    public CaveTest(short ID, Place place, int tileSize) {
+        super(ID, "CaveTest", place, tileSize);
         
         PuzzleObject puzzle = new PuzzleObject("demo/cave", place);
-        puzzle.placePuzzle(0, 0, this);
+        initializeAreas((puzzle.getWidth() + 20) * tileSize, (puzzle.getHeight() + 20) * tileSize);
+        
+        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT));        
+        placePuzzle(0, 0, puzzle);
 
         WarpPoint warp = new WarpPoint("toTestLeft", 27 * tileSize, 17 * tileSize, "Test");
         warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
