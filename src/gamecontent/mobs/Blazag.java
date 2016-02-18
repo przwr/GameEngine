@@ -942,7 +942,7 @@ public class Blazag extends Mob {
             appearance.updateFrame();
             Drawer.refreshColor();
             glPopMatrix();
-//          renderPathPoints(xEffect, yEffect);
+            renderPathPoints(xEffect, yEffect);
         }
     }
 

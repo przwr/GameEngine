@@ -18,7 +18,6 @@ import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteSheet;
 
-import static game.place.map.Placement.CENTER;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -33,7 +32,6 @@ public class Light {
     private final GameObject owner;
     private final boolean giveShadows;
     private final int width, height;
-    private final int nearAreas[] = new int[9];
     private Color color;
     private SpriteSheet spriteSheet;
     private int xCenterShift, yCenterShift;
@@ -92,10 +90,6 @@ public class Light {
             frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(width, height)
                     : new RegularFrameBufferObject(width, height);
         }
-    }
-
-    public void updateNearAreas(int[] nearAreas) {
-        System.arraycopy(nearAreas, 0, this.nearAreas, 0, nearAreas.length);
     }
 
     public void render(int x, int y, Camera camera) {
@@ -281,13 +275,5 @@ public class Light {
         } else {
             return heightWholeLight;
         }
-    }
-
-    public int[] getNearAreas() {
-        return nearAreas;
-    }
-
-    public int getCurrentArea() {
-        return nearAreas[CENTER];
     }
 }

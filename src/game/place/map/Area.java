@@ -103,6 +103,11 @@ public class Area {
         return PathFinder.findPath(navigationMesh, xStart, yStart, xDestination, yDestination, collision);
     }
 
+    public boolean pathExists(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+        return PathFinder.pathExists(navigationMesh, xStart, yStart, xDestination, yDestination, collision);
+    }
+
+
     public void addForegroundTileAndReplace(GameObject tile) {
         addForegroundTileAndReplace(tile, tile.getX(), tile.getY(), tile.getPureDepth());
     }

@@ -14,13 +14,18 @@ import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.interactive.Interactive;
+import game.logic.betweenareapathfinding.AreaConnection;
+import game.logic.betweenareapathfinding.AreaConnector;
+import game.logic.betweenareapathfinding.AreaConnectorsGenerator;
+import game.logic.betweenareapathfinding.AreaNode;
 import game.place.Place;
 import game.place.cameras.Camera;
 import org.newdawn.slick.Color;
 
 import java.util.*;
 
-import static game.place.Place.*;
+import static game.place.Place.xAreaInPixels;
+import static game.place.Place.yAreaInPixels;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
 import static org.lwjgl.opengl.GL11.*;
@@ -55,6 +60,7 @@ public abstract class Map {
     protected final Set<Integer> areasToUpdate = new HashSet<>(36);
     public Area[] areas;
     public Area[] areasCopies; //Tylko do testów - powinno być wywalone - a areas wczytywane z pliku
+    protected AreaConnector[] areaConnectors;
     protected Placement placement;
     protected int xAreas;
     protected int yAreas;
@@ -118,6 +124,7 @@ public abstract class Map {
             area.generateNavigationMesh(tempBlocks);
             areaIndex++;
         }
+        this.areaConnectors = AreaConnectorsGenerator.generateAreaConnectors(this);
     }
 
     private List<Block> getBlocks(int area) {
@@ -153,7 +160,8 @@ public abstract class Map {
         int x = areas[area].getXInPixels();
         int y = areas[area].getYInPixels();
         if (area != getAreaIndex(xDestination, yDestination)) {
-            return findInDifferentAreas(area, x, y, xStart, yStart, xDestination, yDestination, collision);
+            return NO_SOLUTION;
+//            return findInDifferentAreas(area, x, y, xStart, yStart, xDestination, yDestination, collision);
         }
         PointContainer solution = areas[area].findPath(xStart - x, yStart - y, xDestination - x, yDestination - y, collision);
         if (solution != null) {
@@ -164,70 +172,177 @@ public abstract class Map {
     }
 
     private PointContainer findInDifferentAreas(int area, int x, int y, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
-        if (xStart < x + tileSize || xStart > x + xAreaInPixels - tileSize
-                || yStart < y + tileSize || yStart > y + yAreaInPixels - tileSize) {
-            return NO_SOLUTION;
-        } else {
-            Point intersection = null;
-            if (xDestination > x + xAreaInPixels - tileHalf) {
-                if (yDestination > y + yAreaInPixels - tileHalf) {
-                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                            x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
-                    if (intersection == null) {
-                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                                x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
-                    }
-                } else if (yDestination < y + tileHalf) {
-                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
-                    if (intersection == null) {
-                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                                x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
-                    }
-                } else {
-                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
-                }
-            } else if (xDestination < x + tileHalf) {
-                if (yDestination > y + yAreaInPixels - tileHalf) {
-                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
-                    if (intersection == null) {
-                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                                x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
-                    }
-                } else if (yDestination < y + tileHalf) {
-                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
-                    if (intersection == null) {
-                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                                x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
-                    }
-                } else {
-                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
-                }
-            } else {
-                if (yDestination > y + yAreaInPixels - tileHalf) {
-                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                            x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
-                } else if (yDestination < y + tileHalf) {
-                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
-                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
-                }
+        int endArea = getAreaIndex(xDestination, yDestination);
+        Set<AreaNode> closedList = new HashSet<>();
+        PriorityQueue<AreaNode> openList = new PriorityQueue<>(24, (AreaNode n1, AreaNode n2) -> n1.getFCost() - n2.getFCost());
+        AreaNode currentNode = null;
+
+        AreaNode beginning = new AreaNode(area);
+        beginning.setGHCosts(0, countH(area, endArea));
+        closedList.add(beginning);
+        for (AreaConnection connection : areaConnectors[beginning.getAreaIndex()].getConnections()) {
+//          TODO sprawdzić czy pasuje, czy jest przejście itp;
+            AreaNode node = new AreaNode(connection.getFirstAreaIndex() == area ? connection.getSecondAreaIndex() : connection.getFirstAreaIndex(), beginning);
+            node.setGHCosts(countG(node.getAreaIndex(), area), countH(node.getAreaIndex(), endArea));
+            openList.add(node);
+
+        }
+        while (!openList.isEmpty()) {
+            currentNode = openList.poll();
+            closedList.add(currentNode);
+            if (currentNode.getAreaIndex() == endArea) {
+                break;
             }
-            if (intersection != null) {
-                PointContainer solution = areas[area].findPath(xStart - x, yStart - y, intersection.getX() - x, intersection.getY() - y, collision);
-                if (solution != null) {
-                    return solution;
+            for (AreaConnection connection : areaConnectors[currentNode.getAreaIndex()].getConnections()) {
+                int index = connection.getFirstAreaIndex() == currentNode.getAreaIndex() ? connection.getSecondAreaIndex() : connection.getFirstAreaIndex();
+                AreaNode next = closedListContains(closedList, index);
+                if (next.getFCost() != Integer.MAX_VALUE) { // już istniał
+                    int temp = countG(index, currentNode.getAreaIndex());
+                    if (temp + currentNode.getGCost() < next.getGCost()) {
+                        next.setParent(currentNode);
+                        next.setGCost(temp);
+                    }
                 } else {
-                    return NO_SOLUTION;
+//                  TODO sprawdzić czy pasuje, czy jest przejście itp;
+                    next.setParent(currentNode);
+                    next.setGHCosts(countG(next.getAreaIndex(), currentNode.getAreaIndex()), countH(next.getAreaIndex(), endArea));
+                    openList.add(next);
                 }
-            } else {
-                return NO_SOLUTION;
             }
         }
+
+
+        AreaNode prev = currentNode;
+        while (currentNode.getParent() != null) {
+            prev = currentNode;
+            currentNode = currentNode.getParent();
+        }
+        return NO_SOLUTION;
     }
+
+
+    private AreaNode closedListContains(Set<AreaNode> closedList, int index) {
+        Iterator<AreaNode> iterator = closedList.iterator();
+        AreaNode node;
+        while (iterator.hasNext()) {
+            node = iterator.next();
+            if (node.getAreaIndex() == index) {
+                return node;
+            }
+        }
+        return new AreaNode(index);
+    }
+
+    private int countG(int areaIndex, int parentAreaIndex) {
+        Area area = areas[areaIndex];
+        Area endArea = areas[parentAreaIndex];
+        int x = endArea.getXInPixels() - area.getXInPixels();
+        int y = endArea.getYInPixels() - area.getYInPixels();
+        return (x * x + y * y);
+    }
+
+    private int countH(int areaIndex, int endAreaIndex) {
+        Area area = areas[areaIndex];
+        Area endArea = areas[endAreaIndex];
+        int x = endArea.getXInPixels() - area.getXInPixels();
+        int y = endArea.getYInPixels() - area.getYInPixels();
+        return (x * x + y * y);
+    }
+
+    private PointContainer getConnectedPoints(int area, int nextArea, int x, int y, int xStart, int yStart, AreaConnection connection, Figure collision) {
+        List<Point> currentAreaPoints = connection.getConnectionPointsForArea(area);
+        List<Point> destinationAreaPoints = connection.getConnectionPointsForArea(nextArea);
+        List<Point> tempPoints = new ArrayList<>(currentAreaPoints);
+        tempPoints.sort((o1, o2) -> Methods.pointDistanceSimple2(o1.getX(), o1.getY(), xStart, yStart) - Methods.pointDistanceSimple2(o2.getX(), o2.getY(),
+                xStart, yStart));
+        if (currentAreaPoints != null && destinationAreaPoints != null) {
+            for (Point currentPoint : tempPoints) {
+                if (areas[area].pathExists(xStart - x, yStart - y, currentPoint.getX() - x, currentPoint.getY() - y, collision)) {
+                    Point destinationPoint = null;
+                    int currentDistance, smallestDistance = Integer.MAX_VALUE;
+                    for (Point point : destinationAreaPoints) {
+                        currentDistance = Methods.pointDistanceSimple2(currentPoint.getX(), currentPoint.getY(), point.getX(), point.getY());
+                        if (currentDistance < smallestDistance) {
+                            smallestDistance = currentDistance;
+                            destinationPoint = point;
+                        }
+                    }
+                    PointContainer solution = new PointContainer(2);
+                    solution.add(currentPoint);
+                    solution.add(destinationPoint);
+                    return solution;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void old() {
+//        if (xStart < x + tileSize || xStart > x + xAreaInPixels - tileSize
+//                || yStart < y + tileSize || yStart > y + yAreaInPixels - tileSize) {
+//            return NO_SOLUTION;
+//        } else {
+//            Point intersection = null;
+//            if (xDestination > x + xAreaInPixels - tileHalf) {
+//                if (yDestination > y + yAreaInPixels - tileHalf) {
+//                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                            x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
+//                    if (intersection == null) {
+//                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                                x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+//                    }
+//                } else if (yDestination < y + tileHalf) {
+//                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+//                    if (intersection == null) {
+//                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                                x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
+//                    }
+//                } else {
+//                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+//                }
+//            } else if (xDestination < x + tileHalf) {
+//                if (yDestination > y + yAreaInPixels - tileHalf) {
+//                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
+//                    if (intersection == null) {
+//                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                                x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
+//                    }
+//                } else if (yDestination < y + tileHalf) {
+//                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
+//                    if (intersection == null) {
+//                        intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                                x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+//                    }
+//                } else {
+//                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                            x + tileHalf, y + tileHalf, x + tileHalf, y + yAreaInPixels - tileHalf);
+//                }
+//            } else {
+//                if (yDestination > y + yAreaInPixels - tileHalf) {
+//                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                            x + tileHalf, y + yAreaInPixels - tileHalf, x + xAreaInPixels - tileHalf, y + yAreaInPixels - tileHalf);
+//                } else if (yDestination < y + tileHalf) {
+//                    intersection = Methods.getTwoLinesIntersection(xStart, yStart, xDestination, yDestination,
+//                            x + tileHalf, y + tileHalf, x + xAreaInPixels - tileHalf, y + tileHalf);
+//                }
+//            }
+//            if (intersection != null) {
+//                PointContainer solution = areas[area].findPath(xStart - x, yStart - y, intersection.getX() - x, intersection.getY() - y, collision);
+//                if (solution != null) {
+//                    return solution;
+//                } else {
+//                    return NO_SOLUTION;
+//                }
+//            } else {
+//                return NO_SOLUTION;
+//            }
+//        }
+    }
+
 
     public void addAreasToUpdate(int[] newAreas) {
         for (int area : newAreas) {
@@ -565,7 +680,7 @@ public abstract class Map {
     }
 
     private void renderAreaBounds(int i) {
-        if (Main.SHOW_AREA_BOUNDS) {
+        if (Main.SHOW_AREAS) {
             int yTemp = (i / xAreas) * Y_IN_TILES;
             int xTemp = (i % xAreas) * X_IN_TILES;
             glPushMatrix();
@@ -573,9 +688,32 @@ public abstract class Map {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(xTemp * Place.tileSize, yTemp * Place.tileSize, 0);
             Drawer.setColor(Color.cyan);
+            Drawer.setCentralPoint();
             Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
-            Drawer.refreshColor();
+            Drawer.returnToCentralPoint();
+            Drawer.renderStringCentered(String.valueOf(i), Place.tileSize, Place.tileSize,
+                    Drawer.getFont("Amble-Regular", (int) (Place.getCurrentScale() * 32)), Color.cyan);
             glPopMatrix();
+
+            glPushMatrix();
+            glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
+            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+            Drawer.setColor(Color.red);
+            Drawer.setCentralPoint();
+            if (areaConnectors[i] != null) {
+                for (AreaConnection connection : areaConnectors[i].getConnections()) {
+                    for (Point point : connection.getFirstConnectionPoints()) {
+                        Drawer.drawRectangle(point.getX() - 5, point.getY() - 5, 10, 10);
+                        Drawer.returnToCentralPoint();
+                    }
+                    for (Point point : connection.getSecondConnectionPoints()) {
+                        Drawer.drawRectangle(point.getX() - 5, point.getY() - 5, 10, 10);
+                        Drawer.returnToCentralPoint();
+                    }
+                }
+            }
+            glPopMatrix();
+            Drawer.refreshColor();
         }
     }
 

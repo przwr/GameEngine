@@ -28,7 +28,6 @@ import static game.place.map.Area.Y_IN_TILES;
  */
 public class NavigationMeshGenerator {
 
-    private static final BitSet spots = new BitSet();
     private static final byte[] diagonals = new byte[X_IN_TILES * Y_IN_TILES];
     private static final Set<Line> newLines = new HashSet<>();
     private static final PriorityQueue<Line> sortedLines = new PriorityQueue<>();
@@ -44,6 +43,7 @@ public class NavigationMeshGenerator {
     private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart,
             leftTop, rightTop, leftBottom, rightBottom;
     private static double xd, yd;
+    private static BitSet spots;
     private static byte[] shiftDirections;
     private static Point start, end, xModded, yModded;
     private static Line tempLine1, tempLine2, tempLine3, currentLine;
@@ -79,13 +79,12 @@ public class NavigationMeshGenerator {
         pointsToConnect.clear();
         triangles.clear();
         linesTriangles.clear();
-        spots.clear();
     }
 
     private static boolean findBoundsAndSetCollisionSpots(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
         yStartBound = yEndBound = xStartBound = xEndBound = -1;
         lineXStart = lineYStart = 0;
-        spots.clear();
+        spots = new BitSet();
         boolean noTiles = true;
         for (int i = 0; i < tiles.length; i++) {
             if (tiles[i] != null) {
@@ -128,24 +127,22 @@ public class NavigationMeshGenerator {
     }
 
     private static void findXStartBound(Tile[] tiles) {
-        XStart:
         for (x = 0; x < X_IN_TILES; x++) {
             for (y = 0; y < Y_IN_TILES; y++) {
                 if (getTile(x, y, tiles) != null) {
                     xStartBound = x;
-                    break XStart;
+                    return;
                 }
             }
         }
     }
 
     private static void findXEndBound(Tile[] tiles) {
-        XEnd:
         for (x = X_IN_TILES - 1; x >= 0; x--) {
             for (y = 0; y < Y_IN_TILES; y++) {
                 if (getTile(x, y, tiles) != null) {
                     xEndBound = x;
-                    break XEnd;
+                    return;
                 }
             }
         }
@@ -153,8 +150,8 @@ public class NavigationMeshGenerator {
 
     private static void setCollisionSpotsFromTiles(Tile[] tiles) {
         if (yStartBound != -1) {
-            for (x = xStartBound; x <= xEndBound; x++) {
-                for (y = yStartBound; y <= yEndBound; y++) {
+            for (x = 0; x < X_IN_TILES; x++) {
+                for (y = 0; y < Y_IN_TILES; y++) {
                     if (getTile(x, y, tiles) == null) {
                         spots.set(getIndex(x, y));
                     }
@@ -867,7 +864,7 @@ public class NavigationMeshGenerator {
     private static void createNavigationMeshWithFirstTriangle(Triangle firstTriangle) {
         if (firstTriangle != null) {
             navigationMesh = new NavigationMesh(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2), new
-                    ArrayList<>(pointsToConnect), shiftDirections);
+                    ArrayList<>(pointsToConnect), shiftDirections, spots);
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(2), firstTriangle.getPointFromNode(0)));
@@ -914,7 +911,7 @@ public class NavigationMeshGenerator {
         return line;
     }
 
-    private static int getIndex(int x, int y) {
+    public static int getIndex(int x, int y) {
         return x + y * X_IN_TILES;
     }
 

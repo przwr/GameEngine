@@ -13,6 +13,7 @@ import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.logic.navmeshpathfinding.navigationmesh.NavigationMesh;
 import game.place.Place;
+import game.place.map.Map;
 
 import java.awt.*;
 import java.util.BitSet;
@@ -87,12 +88,17 @@ public class PathData {
         updateStuck();
     }
 
-    public void updateRef(GameObject owner) {
-        int area = owner.getMap().getAreaIndex(x, y);
-        if (area != -1) {
-            xRef = owner.getMap().areas[area].getXInPixels();
-            yRef = owner.getMap().areas[area].getYInPixels();
+    public boolean updateRef(GameObject owner) {
+        Map map = owner.getMap();
+        if (map != null) {
+            int area = map.getAreaIndex(x, y);
+            if (area != -1) {
+                xRef = owner.getMap().areas[area].getXInPixels();
+                yRef = owner.getMap().areas[area].getYInPixels();
+            }
+            return true;
         }
+        return false;
     }
 
     private void updateStuck() {

@@ -10,10 +10,7 @@ import engine.utilities.Point;
 import net.jodk.lang.FastMath;
 
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author WROBELP1
@@ -22,20 +19,22 @@ public class NavigationMesh {
 
     final ArrayList<Bound> bounds = new ArrayList<>();
     private final Set<Triangle> mesh = new HashSet<>();
-    private final int NOT_SHARED = 2;
     private final Node[] sharedNodes = new Node[2];
     private final int tempNodeIndexes[] = new int[5], sharedNodesIndexes[] = new int[12];
     private final Triangle[] connectedTriangles = new Triangle[3];
     private final List<Point> collisionPoints;
     private final byte[] shiftDirections;
+    private final BitSet spots;
+    private final int NOT_SHARED = 2;
 
     private final BlueArray<Node> toRemove = new BlueArray<>();
     private int sharedNodeNumber, sharedNodesNumber, connectionsNumber;
 
-    public NavigationMesh(Point firstPoint, Point secondPoint, Point thirdPoint, List<Point> collisionPoints, byte[] shiftDirections) {
+    public NavigationMesh(Point firstPoint, Point secondPoint, Point thirdPoint, List<Point> collisionPoints, byte[] shiftDirections, BitSet spots) {
         mesh.add(Triangle.createAndConnectNeighbours(firstPoint, secondPoint, thirdPoint));
         this.collisionPoints = collisionPoints;
         this.shiftDirections = shiftDirections;
+        this.spots = spots;
     }
 
     public void addTriangle(Triangle triangleToAdd) {
@@ -331,5 +330,9 @@ public class NavigationMesh {
 
     public ArrayList<Bound> getBounds() {
         return bounds;
+    }
+
+    public BitSet getSpots() {
+        return spots;
     }
 }

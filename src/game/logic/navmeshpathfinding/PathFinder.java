@@ -50,10 +50,18 @@ public class PathFinder {
     private static Triangle[] pathBase = new Triangle[2];
 
     public static PointContainer findPath(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+        if (Methods.pointDistance(xStart, yStart, xDestination, yDestination) <= Place.tileSize) {
+            return new PointContainer();
+        }
         if (mesh == null) {
             System.out.println("Brak siatki nawigacji - znalezienie ścieżki niemożliwe");
             return null;
         }
+        firstStage(mesh, xStart, yStart, xDestination, yDestination, collision);
+        return produceResult(destination, mesh);
+    }
+
+    private static void firstStage(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         startPoint = new Point(xStart, yStart);
         destinationPoint = new Point(xDestination, yDestination);
         widthHalf = collision.getWidthHalf();
@@ -63,10 +71,23 @@ public class PathFinder {
         pathBase = mesh.getPathBase(destinationPoint, startPoint, pathBase);
         startTriangle = pathBase[START];
         endTriangle = pathBase[END];
-        return findSolution(mesh);
+        findSolution(mesh);
     }
 
-    private static PointContainer findSolution(NavigationMesh mesh) {
+
+    public static boolean pathExists(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+        if (Methods.pointDistance(xStart, yStart, xDestination, yDestination) <= Place.tileSize) {
+            return true;
+        }
+        if (mesh == null) {
+            System.out.println("Brak siatki nawigacji - znalezienie ścieżki niemożliwe");
+            return false;
+        }
+        firstStage(mesh, xStart, yStart, xDestination, yDestination, collision);
+        return destination != null;
+    }
+
+    private static void findSolution(NavigationMesh mesh) {
         destination = null;
         if (startTriangle != null && endTriangle != null) {
             if (startTriangle == endTriangle) {
@@ -75,7 +96,6 @@ public class PathFinder {
                 destination = aStar(mesh);
             }
         }
-        return produceResult(destination, mesh);
     }
 
     private static Node inOneTriangle() {

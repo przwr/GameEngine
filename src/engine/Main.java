@@ -8,10 +8,7 @@ package engine;
 import engine.systemcommunication.AnalyzerSettings;
 import engine.systemcommunication.PlayerControllers;
 import engine.systemcommunication.Time;
-import engine.utilities.Delay;
-import engine.utilities.Drawer;
-import engine.utilities.ErrorHandler;
-import engine.utilities.SimpleKeyboard;
+import engine.utilities.*;
 import engine.view.Popup;
 import engine.view.Renderer;
 import engine.view.SplitScreen;
@@ -38,11 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static engine.systemcommunication.IO.setSettingsFromFile;
-import engine.utilities.Methods;
 import static game.Settings.calculateScale;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
@@ -56,7 +49,7 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREA_BOUNDS, pause, enter = true, TEST = true;
+    public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREAS, pause, enter = true, TEST = true;
     public static BackgroundLoader backgroundLoader;
     public static SimpleKeyboard key = new SimpleKeyboard();
     private static Game game;
@@ -260,8 +253,8 @@ public class Main {
             console.printMessage("SHOW/HIDE INTERACTIVE");
         }
         if (key.keyPressed(Keyboard.KEY_F3)) {
-            SHOW_AREA_BOUNDS = !SHOW_AREA_BOUNDS;
-            console.printMessage("SHOW/HIDE AREA BOUNDS");
+            SHOW_AREAS = !SHOW_AREAS;
+            console.printMessage("SHOW/HIDE AREAS");
         }
         if (key.keyPressed(Keyboard.KEY_F12)) {
             Methods.pasteToClipBoard(game.getSimplePlayerCoordinates());

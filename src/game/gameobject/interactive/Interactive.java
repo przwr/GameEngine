@@ -49,7 +49,7 @@ public class Interactive {
     private byte attackType = -1;
     private boolean active, activated;
     private ArrayList<GameObject> exceptions;
-    
+
     private Object actionModifier;
 
     private Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte
@@ -91,7 +91,7 @@ public class Interactive {
             exceptions.clear();
         }
     }
-    
+
     public void setActionModifier(Object modifier) {
         this.actionModifier = modifier;
     }

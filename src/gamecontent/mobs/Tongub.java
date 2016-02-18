@@ -38,7 +38,8 @@ public class Tongub extends Mob {
     private ActionState idle, run_away, hide, attack, wander;
     private Delay attack_delay = Delay.createInMilliseconds(1500);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(250);            //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay peakTime = Delay.createInSeconds(8);            //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay peakTime = Delay.createInSeconds(2500);            //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay hideTime = Delay.createInSeconds(7500);            //TODO - te wartości losowe i zależne od poziomu trudności
     private boolean attacking, undig, side, letGo;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
 
@@ -63,7 +64,8 @@ public class Tongub extends Mob {
                     calculateDestinationsForEscape();
                     GameObject closerEnemy = getReallyCloseEnemy();
                     if (closerEnemy != null && peakTime.isOver()) {
-                        peakTime.start();
+                        hideTime.setFrameLengthInMilliseconds(7000 + random.next(10));
+                        hideTime.start();
                         state = hide;
                         destination.set(-1, -1);
                         stats.setProtectionState(true);
@@ -95,8 +97,9 @@ public class Tongub extends Mob {
                     calculateDestinationsForEscape();
                     GameObject closerEnemy = getReallyCloseEnemy();
                     if (closerEnemy != null && peakTime.isOver()) {
-                        peakTime.start();
                         state = hide;
+                        hideTime.setFrameLengthInMilliseconds(7000 + random.next(10));
+                        hideTime.start();
                         destination.set(-1, -1);
                         secondaryDestination.set(-1, -1);
                         stats.setProtectionState(true);
@@ -122,7 +125,8 @@ public class Tongub extends Mob {
                     collision.setHitable(false);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     GameObject closerEnemy = getReallyCloseEnemy();
-                    if (!isCollided() && (closerEnemy == null || closeEnemies.size() * 1.5 <= closeFriends.size() || peakTime.isOver())) {
+                    if (!isCollided() && (closerEnemy == null || closeEnemies.size() * 1.5 <= closeFriends.size() || hideTime.isOver())) {
+                        peakTime.setFrameLengthInMilliseconds(3000 + random.random(10));
                         peakTime.start();
                         stats.setProtectionState(false);
                         undig = true;
@@ -197,6 +201,7 @@ public class Tongub extends Mob {
                     if (!attacking && (!isInRange(target) || target.getMap() != map || closeFriends.size() < 2)) {
                         state = idle;
                         target = null;
+                        maxSpeed = 3;
                         brake(2);
                     }
                 } else {
@@ -329,6 +334,7 @@ public class Tongub extends Mob {
         letGo = true;
         seconds = 0;
         max = 15;
+        maxSpeed = 3;
         destination.set(spawnPosition);
         brake(2);
     }

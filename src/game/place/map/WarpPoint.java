@@ -122,24 +122,22 @@ public class WarpPoint extends GameObject {
             Map map = place.getMapByName(stringDestination);
             if (map != null) {
                 if (object instanceof Player) {
-                    if (Main.backgroundLoader.allLoaded()) {
-                        MyPlayer player = (MyPlayer) object;
-                        WarpPoint warp = map.findWarp(name);
-                        player.changeMap(map, warp.getX(), warp.getY());
-                        player.setCurrentLocationAsSpawnPosition();
-                        TemporalChanger lockChanger = new LockChanger(8);
-                        lockChanger.start();
-                        if (joined) {
-                            TemporalChanger joiner = new CameraJoiner(45);
-                            joiner.start();
-                            player.addChanger(joiner);
-                        }
-                        player.addChanger(lockChanger);
-                        player.getGUI().setVisible(true);
-                        if (player.getCamera() != null) {
-                            player.getCamera().updateStatic();
-                            player.getCamera().fade(250, false);
-                        }
+                    MyPlayer player = (MyPlayer) object;
+                    WarpPoint warp = map.findWarp(name);
+                    player.changeMap(map, warp.getX(), warp.getY());
+                    player.setCurrentLocationAsSpawnPosition();
+                    TemporalChanger lockChanger = new LockChanger(8);
+                    lockChanger.start();
+                    if (joined) {
+                        TemporalChanger joiner = new CameraJoiner(45);
+                        joiner.start();
+                        player.addChanger(joiner);
+                    }
+                    player.addChanger(lockChanger);
+                    player.getGUI().setVisible(true);
+                    if (player.getCamera() != null) {
+                        player.getCamera().updateStatic();
+                        player.getCamera().fade(250, false);
                     }
                 } else {
                     WarpPoint warp = map.findWarp(name);
