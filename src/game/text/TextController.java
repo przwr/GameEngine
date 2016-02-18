@@ -85,7 +85,8 @@ public class TextController extends GUIObject {
 
     public void startFromFile(String file) {
         if (!started) {
-            try (BufferedReader read = new BufferedReader(new InputStreamReader(new FileInputStream("res/text/" + file + ".txt"), StandardCharsets.UTF_8))) {
+            try (BufferedReader read = new BufferedReader(
+                    new InputStreamReader(new FileInputStream("res/text/" + file + ".dia"), StandardCharsets.UTF_8))) {
                 String line;
                 ArrayList<String> tmplist = new ArrayList<>();
                 while ((line = read.readLine()) != null) {
