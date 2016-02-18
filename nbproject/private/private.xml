@@ -3,11 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/game/gameobject/LightSource.java</file>
-            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/gamecontent/Rabbit.java</file>
-            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/game/place/Tile.java</file>
-            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/gamecontent/MyNPC.java</file>
-            <file>file:/media/kreacja/Gra%20-%20Projekt/GameEngine/src/game/gameobject/Mob.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamedesigner/ObjectPlace.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamecontent/maps/CaveTest.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamedesigner/ObjectMap.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamedesigner/ObjectUI.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamedesigner/GUIHandler.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/game/place/map/Map.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamedesigner/designerElements/RoundedTMPBlock.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/game/place/map/PuzzleObject.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamedesigner/ObjectPlayer.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamecontent/MyPlace.java</file>
+            <file>file:/C:/Users/Wojtek/Desktop/Pomoce/Java/GE/GameEngine/src/gamedesigner/ObjectPO.java</file>
         </group>
     </open-files>
 </project-private>
