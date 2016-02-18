@@ -86,6 +86,10 @@ public class Tile extends GameObject implements Appearance {
         }
         return null;
     }
+    
+    public Point getPointFormStack(int i) {
+        return i >= tileStack.size() ? null : tileStack.get(i);
+    }
 
     public void renderSpecific(int xEffect, int yEffect, int x, int y) {
         glPushMatrix();

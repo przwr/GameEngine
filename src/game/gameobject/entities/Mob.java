@@ -51,22 +51,6 @@ public abstract class Mob extends Entity {
         initialize(x, y, speed, hearRange, name, place, spriteName, solid, mobID, NPC);
     }
 
-    @Override
-    public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
-        super.getHurt(knockBackPower, jumpPower, attacker);
-        if (letGoDelay.isWorking() && attacker instanceof Player) {
-            letGoDelay.start();
-        }
-    }
-
-    @Override
-    public void reactToAttack(byte attackType, GameObject attacked) {
-        super.reactToAttack(attackType, attacked);
-        if (letGoDelay.isWorking() && attacked instanceof Player) {
-            letGoDelay.start();
-        }
-    }
-
     public abstract void initialize(int x, int y, Place place, short ID);
 
     public void initialize(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID, boolean... npc) {

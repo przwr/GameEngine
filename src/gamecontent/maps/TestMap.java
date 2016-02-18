@@ -39,8 +39,11 @@ public class TestMap extends Map {
                 }
             }
         }
-        placePuzzle(0, 0, new PuzzleObject("demo/testMap", place));
-        
+        PuzzleObject puzzle = new PuzzleObject("demo/testMap", place);
+        puzzle.addTileChanger("grassland", 10, 1, 4,
+                7, 10,   8, 10,    9, 10,  10, 10,    11, 10,    12, 10,    13, 10);
+        placePuzzle(0, 0, puzzle);
+
         WarpPoint warp = new WarpPoint("toCaveLeft", 35 * tileSize, 67 * tileSize, "CaveTest");
         warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
@@ -64,6 +67,6 @@ public class TestMap extends Map {
         rock = new Rock(2770, 4361, place, mobID++);
         addObject(rock);
         addObject(new Nutka(3663, 3084, place, mobID++, rock));
-        addObject(new Magician(2906, 763, place, mobID++));        
+        addObject(new Magician(2906, 763, place, mobID++));
     }
 }

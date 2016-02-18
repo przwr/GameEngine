@@ -25,7 +25,9 @@ public class CaveTest extends Map {
         PuzzleObject puzzle = new PuzzleObject("demo/cave", place);
         initializeAreas((puzzle.getWidth() + 20) * tileSize, (puzzle.getHeight() + 20) * tileSize);
         
-        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT));        
+        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT));    
+        puzzle.addTileChanger("grassland", 10, 1, 4,
+                7, 10,   8, 10,    9, 10,  10, 10,    11, 10,    12, 10,    13, 10);
         placePuzzle(0, 0, puzzle);
 
         WarpPoint warp = new WarpPoint("toTestLeft", 27 * tileSize, 17 * tileSize, "Test");

@@ -5,9 +5,11 @@
  */
 package gamedesigner;
 
+import collision.OpticProperties;
 import engine.utilities.PointedValue;
 import engine.utilities.RandomGenerator;
 import game.place.Place;
+import game.place.map.ForegroundTile;
 import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import gamedesigner.designerElements.PuzzleLink;
@@ -82,7 +84,10 @@ public class ObjectPO extends PuzzleObject {
             while ((p = tmp.popTileFromStackBack()) != null) {
                 objMap.addTile(xStart, yStart, p.getX(), p.getY(), tex, false);
             }*/
-            map.addForegroundTile(tile.generateFGT(x * tileSize, y * tileSize, true));
+            ForegroundTile fgt = tile.generateFGT(x * tileSize, y * tileSize, true);
+            /*fgt.getCollision().setOpticProperties(OpticProperties.FULL_SHADOW);
+            fgt.setSimpleLighting(false);*/
+            map.addForegroundTile(fgt);
         });
         links.stream().forEach((PointedValue pv) -> {
             PuzzleLink pl = new PuzzleLink(pv.getX() * tileSize, pv.getY() * tileSize, pv.getValue(), (ObjectPlace) map.place);

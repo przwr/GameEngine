@@ -6,7 +6,9 @@
 package game.place.map;
 
 import collision.Block;
+import collision.OpticProperties;
 import engine.utilities.ErrorHandler;
+import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.PointedValue;
 import engine.utilities.RandomGenerator;
@@ -32,6 +34,7 @@ public class PuzzleObject {
     protected ArrayList<BlockContainer> blocks;
     protected ArrayList<PointedValue> links;
     protected ArrayList<MapObjectContainer> mapObjects;
+    private ArrayList<TileChanger> changers;
     protected int xDelta, yDelta;
     private int xBegin;
     private int yBegin;
@@ -48,16 +51,21 @@ public class PuzzleObject {
     private String[] lineTab;
     private boolean repeatTiles;
     /*----*/
+    private RandomGenerator rand;
+
+    int lineNum = 2;
 
     public PuzzleObject(File file, Place place, boolean repeatTiles) {
         this.place = place;
         this.repeatTiles = repeatTiles;
         try (BufferedReader input = new BufferedReader(new FileReader(file))) {
+            lineNum = 2;
             bgTiles = new ArrayList<>();
             fgTiles = new ArrayList<>();
             blocks = new ArrayList<>();
             links = new ArrayList<>();
             mapObjects = new ArrayList<>();
+            changers = new ArrayList<>();
 
             String line = input.readLine();
             lineTab = line.split(":");
@@ -87,11 +95,14 @@ public class PuzzleObject {
     }
 
     protected PuzzleObject(ArrayList<String> map, Place place) {
+        lineNum = 2;
         this.place = place;
         bgTiles = new ArrayList<>();
         fgTiles = new ArrayList<>();
         blocks = new ArrayList<>();
         links = new ArrayList<>();
+        changers = new ArrayList<>();
+        mapObjects = new ArrayList<>();
 
         lineTab = map.get(0).split(":");
         xDelta = Integer.parseInt(lineTab[0]);
@@ -99,7 +110,7 @@ public class PuzzleObject {
 
         xBegin = yBegin = Integer.MAX_VALUE;
         xEnd = yEnd = Integer.MIN_VALUE;
-        
+
         for (int i = 1; i < map.size(); i++) {
             readLine(map.get(i));
         }
@@ -108,31 +119,36 @@ public class PuzzleObject {
     }
 
     private void readLine(String line) {
-        lineTab = line.split(":");
-        switch (lineTab[0]) {
-            case "t":
-                decodeTile();
-                break;
-            case "ft":
-                decodeFGTile(false);
-                break;
-            case "sft":
-                decodeFGTile(true);
-                break;
-            case "b":
-                decodeBlock();
-                break;
-            case "rb":
-                decodeRoundedBlock();
-                break;
-            case "pl":
-                decodePortLinks();
-                break;
-            case "o":
-                mapObjects.add(new MapObjectContainer(lineTab));
-                break;
-            default:
-                ErrorHandler.error("The object \"" + lineTab[0] + "\" is undefined");
+        try {
+            lineTab = line.split(":");
+            switch (lineTab[0]) {
+                case "t":
+                    decodeTile();
+                    break;
+                case "ft":
+                    decodeFGTile(false);
+                    break;
+                case "sft":
+                    decodeFGTile(true);
+                    break;
+                case "b":
+                    decodeBlock();
+                    break;
+                case "rb":
+                    decodeRoundedBlock();
+                    break;
+                case "pl":
+                    decodePortLinks();
+                    break;
+                case "o":
+                    mapObjects.add(new MapObjectContainer(lineTab));
+                    break;
+                default:
+                    ErrorHandler.error("The object \"" + lineTab[0] + "\" is undefined");
+            }
+            lineNum++;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage() + " at line " + lineNum);
         }
     }
 
@@ -213,6 +229,35 @@ public class PuzzleObject {
         }
     }
 
+    public void addTileChanger(String sprite, int chance, int fromX, int fromY, int... to) {
+        if (to.length % 2 == 0) {
+            Point from = new Point(fromX, fromY);
+            Point[] tab = new Point[to.length / 2];
+            for (int i = 0; i < tab.length; i++) {
+                tab[i] = new Point(to[2 * i], to[2 * i + 1]);
+            }
+            SpriteSheet s = null;
+            for (FGTileContainer fgt : fgTiles) {
+                if (fgt.texture.getKey().equals(sprite)) {
+                    s = fgt.texture;
+                }
+            }
+            if (s == null) {
+                throw new RuntimeException("This puzzle does not use texture '" + sprite + "'");
+            }
+            changers.add(new TileChanger(s, from, tab, chance));
+        } else {
+            throw new RuntimeException("Argument 'to' has to have an even number of integers!");
+        }
+    }
+
+    private Point changeTile(SpriteSheet s, Point p) {
+        for (TileChanger tc : changers) {
+            return tc.change(s, p);
+        }
+        return p;
+    }
+
     public boolean hasLinks() {
         return links.size() > 0;
     }
@@ -256,8 +301,25 @@ public class PuzzleObject {
     }
 
     public void placePuzzle(int x, int y, Map map) {
-        RandomGenerator rand = RandomGenerator.create();
-        bgTiles.stream().forEach((TileContainer tc) -> tc.places.stream().forEach((p) -> map.setTile(p.getX() + x, p.getY() + y, tc.tile)));
+        rand = RandomGenerator.create();
+        placePuzzle(x, y, map, rand);
+    }
+
+    public void placePuzzle(int x, int y, Map map, RandomGenerator rand) {
+        this.rand = rand;
+        bgTiles.stream().forEach((tc) -> {
+            tc.places.stream().forEach((p) -> {
+                Point point = changeTile(tc.tile.spriteSheet, tc.tile.getPointFormStack(0));
+                Tile tmp = new Tile(tc.tile.spriteSheet, point.getX(), point.getY());
+                int i = 1;
+                while ((point = tc.tile.getPointFormStack(i)) != null) {
+                    point = changeTile(tc.tile.spriteSheet, point);
+                    tmp.addTileToStack(point.getX(), point.getY());
+                    i++;
+                }
+                map.setTile(p.getX() + x, p.getY() + y, tmp);
+            });
+        });
         blocks.stream().forEach((block) -> {
             Block tmpBlock = block.generateBlock(x * tileSize, y * tileSize);
             map.addBlock(tmpBlock);
@@ -271,7 +333,10 @@ public class PuzzleObject {
             }).forEach(tmpBlock::addForegroundTile);
         });
         fgTiles.stream().forEach((tile) -> {
-            map.addForegroundTile(tile.generateFGT(x * tileSize, y * tileSize, false));
+            ForegroundTile fgt = tile.generateFGT(x * tileSize, y * tileSize, false);
+            /*fgt.getCollision().setOpticProperties(OpticProperties.FULL_SHADOW);
+             fgt.setSimpleLighting(false);*/
+            map.addForegroundTile(fgt);
         });
         mapObjects.stream().forEach((moc) -> {
             map.addObject(moc.generateObject(x * tileSize, y * tileSize, rand));
@@ -373,18 +438,22 @@ public class PuzzleObject {
 
         public ForegroundTile generateFGT(int x, int y, boolean objectFGT) {
             ForegroundTile fgt;
+            Point firstTile = changeTile(texture, new Point(values[1], values[2]));
             if (!shadowLightBased) {
                 if (!objectFGT) {
-                    fgt = new ForegroundTile(texture, values[0], values[1], values[2], wall, values[3], round);
+                    fgt = new ForegroundTile(texture, values[0], firstTile.getX(), firstTile.getY(), wall, values[3], round);
                 } else {
-                    fgt = new ObjectFGTile(texture, values[0], values[1], values[2], wall, values[3], round);
+                    fgt = new ObjectFGTile(texture, values[0], firstTile.getX(), firstTile.getY(), wall, values[3], round);
                 }
             } else {
-                fgt = new ShadowLightTile(texture, values[0], values[1], values[2], wall, values[3], round, isShadow);
+                fgt = new ShadowLightTile(texture, values[0], firstTile.getX(), firstTile.getY(), wall, values[3], round, isShadow);
             }
             fgt.setPosition(xBegin + x, yBegin + y);
             fgt.setDepth(values[4]);
-            additionalPlaces.stream().forEach((p) -> fgt.addTileToStack(p.getX(), p.getY()));
+            additionalPlaces.stream().forEach((p) -> {
+                p = changeTile(texture, p);
+                fgt.addTileToStack(p.getX(), p.getY());
+            });
             return fgt;
         }
     }
@@ -444,6 +513,29 @@ public class PuzzleObject {
                 }
             }
             return b;
+        }
+    }
+
+    private class TileChanger {
+
+        SpriteSheet texture;
+        Point from;
+        Point[] to;
+        int chance;
+
+        public TileChanger(SpriteSheet texture, Point from, Point[] to, int chance) {
+            this.texture = texture;
+            this.from = from;
+            this.to = to;
+            this.chance = chance;
+        }
+
+        public Point change(SpriteSheet tex, Point p) {
+            if (tex == texture && p.equals(from) && rand.chance(chance)) {
+                int i = rand.random(to.length - 1);
+                return new Point(to[i].getX(), to[i].getY());
+            }
+            return p;
         }
     }
 }

@@ -611,5 +611,13 @@ public class Methods {
         StringSelection selection = new StringSelection(text);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
+    
+    public static void printObjects(Object... list) {
+        String print = "";
+        for (Object o : list) {
+            print += o.toString() + " ";
+        }
+        System.out.println(print);
+    }
 
 }

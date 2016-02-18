@@ -10,7 +10,6 @@ import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.*;
-import gamecontent.environment.Tree;
 import gamedesigner.designerElements.CentralPoint;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.TemporaryBlock;
@@ -263,7 +262,7 @@ public class ObjectMap extends Map {
         }
         if (lowest != null) {
             Point p = lowest.popTileFromStack();
-            if (p != null && lowest.tileStackSize() == 0) {
+            if (p == null || lowest.tileStackSize() == 0) {
                 removeForegroundTile(lowest);
             }
         }

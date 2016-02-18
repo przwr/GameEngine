@@ -5,6 +5,7 @@
  */
 package game.place.map;
 
+import collision.OpticProperties;
 import collision.Rectangle;
 import engine.utilities.Point;
 import game.place.Place;
@@ -63,6 +64,12 @@ public class ForegroundTile extends Tile {
         return new ForegroundTile(spriteSheet, size, xSheet, ySheet, true, 0, true);
     }
 
+    public static ForegroundTile createShadowTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
+        ForegroundTile f = new ForegroundTile(spriteSheet, size, xSheet, ySheet, true, 0, true);
+        f.getCollision().setOpticProperties(OpticProperties.FULL_SHADOW);
+        return f;
+    }
+    
     @Override
     public ForegroundTile copy() {
         Point first = tileStack.get(0);

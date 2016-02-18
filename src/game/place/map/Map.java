@@ -94,7 +94,6 @@ public abstract class Map {
         this.height = height;
         widthInTiles = width / tileSize;
         heightInTiles = height / tileSize;
-        System.out.println(width + " " + height);
         createAreas();
     }
 
