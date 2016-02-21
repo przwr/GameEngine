@@ -61,8 +61,8 @@ class PathStrategyCore {
             if (data.newPath.size() > 1) {
                 DEBUG("NEW PATH");
                 copyPath(data.newPath, data);
-                if (Methods.pointDistance(data.x, data.y, data.getCurrentPoint().getX(), data.getCurrentPoint().getY())
-                        < requester.getCollision().getWidth() / 2) {
+                if (Methods.pointDistance(requester.getX(), requester.getY(), data.path.get(0).getX(), data.path.get(0).getY())
+                        < requester.getCollision().getWidth() * 2) {
                     data.currentPoint = 1;
                 } else {
                     data.currentPoint = 0;

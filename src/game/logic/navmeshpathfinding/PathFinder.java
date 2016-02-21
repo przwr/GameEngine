@@ -51,7 +51,9 @@ public class PathFinder {
 
     public static PointContainer findPath(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         if (Methods.pointDistance(xStart, yStart, xDestination, yDestination) <= Place.tileSize) {
-            return new PointContainer();
+            PointContainer solution = new PointContainer();
+            solution.add(xDestination, yDestination);
+            return solution;
         }
         if (mesh == null) {
             System.out.println("Brak siatki nawigacji - znalezienie ścieżki niemożliwe");
@@ -59,6 +61,21 @@ public class PathFinder {
         }
         firstStage(mesh, xStart, yStart, xDestination, yDestination, collision);
         return produceResult(destination, mesh);
+    }
+
+    public static boolean pathExists(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
+        if (xDestination == 3872 && yDestination == 2560) {
+            System.out.println("WTF");
+        }
+        if (Methods.pointDistance(xStart, yStart, xDestination, yDestination) <= Place.tileSize) {
+            return true;
+        }
+        if (mesh == null) {
+            System.out.println("Brak siatki nawigacji - znalezienie ścieżki niemożliwe");
+            return false;
+        }
+        firstStage(mesh, xStart, yStart, xDestination, yDestination, collision);
+        return destination != null;
     }
 
     private static void firstStage(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
@@ -74,18 +91,6 @@ public class PathFinder {
         findSolution(mesh);
     }
 
-
-    public static boolean pathExists(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
-        if (Methods.pointDistance(xStart, yStart, xDestination, yDestination) <= Place.tileSize) {
-            return true;
-        }
-        if (mesh == null) {
-            System.out.println("Brak siatki nawigacji - znalezienie ścieżki niemożliwe");
-            return false;
-        }
-        firstStage(mesh, xStart, yStart, xDestination, yDestination, collision);
-        return destination != null;
-    }
 
     private static void findSolution(NavigationMesh mesh) {
         destination = null;
@@ -224,9 +229,11 @@ public class PathFinder {
         for (int i = 0; i < 3; i++) {
             Node node = endTriangle.getNode(i);
             if (currentNode.getPoint().equals(node.getPoint())) {
-                destination = new Node(startPoint);
-                calculateAndAddToOpenListIfFits(destination, currentNode, mesh);
-                isFound = true;
+                if (isFittingPoint(startPoint, currentNode.getPoint(), mesh)) {
+                    destination = new Node(startPoint);
+                    calculateAndAddToOpenList(destination, currentNode);
+                    isFound = true;
+                }
             }
         }
         return isFound;
@@ -235,16 +242,16 @@ public class PathFinder {
     private static void keepLooking(Node currentNode, NavigationMesh mesh) {
         currentNode.getNeighbours().stream().filter((node) -> (!closedList.contains(node))).forEach((node) -> {
             if (openList.contains(node)) {
-                changeIfBetterPath(node, currentNode);
+                changeIfBetterPath(node, currentNode, mesh);
             } else {
                 calculateAndAddToOpenListIfFits(node, currentNode, mesh);
             }
         });
     }
 
-    private static void changeIfBetterPath(Node node, Node currentNode) {
+    private static void changeIfBetterPath(Node node, Node currentNode, NavigationMesh mesh) {
         int temp = countG(node.getPoint(), currentNode.getPoint());
-        if (temp + currentNode.getGCost() < node.getGCost()) {
+        if (temp + currentNode.getGCost() < node.getGCost() && isFittingPoint(node.getPoint(), currentNode.getPoint(), mesh)) {
             node.setParentMakeChild(currentNode);
             node.setGCost(temp);
         }

@@ -2,26 +2,30 @@ package game.logic.betweenareapathfinding;
 
 import engine.utilities.Point;
 
-import java.util.ArrayList;
-
 /**
  * Created by przemek on 15.02.16.
  */
 public class AreaNode {
 
-
-    private int area;
     private AreaNode parent;
-    private ArrayList<Point> connection;
+    private AreaConnection connection;
     private int hCost = Integer.MAX_VALUE >> 1, gCost = Integer.MAX_VALUE >> 1, fCost = Integer.MAX_VALUE;
 
-    public AreaNode(int area) {
-        this.area = area;
+    public AreaNode(AreaConnection connection) {
+        this.connection = connection;
     }
 
-    public AreaNode(int area, AreaNode parent) {
-        this.area = area;
+    public AreaNode(AreaConnection connection, AreaNode parent) {
+        this.connection = connection;
         this.parent = parent;
+    }
+
+    public int getConnectedAreaIndex(int areaIndex) {
+        return connection.getFirstAreaIndex() == areaIndex ? connection.getSecondAreaIndex() : connection.getFirstAreaIndex();
+    }
+
+    public Point getCentralPoint() {
+        return connection.getCentralPoint();
     }
 
     public AreaNode getParent() {
@@ -64,17 +68,21 @@ public class AreaNode {
         fCost = gCost + hCost;
     }
 
-    public int getAreaIndex() {
-        return area;
+    public boolean connectsWithArea(int area) {
+        return connection.getFirstAreaIndex() == area || connection.getSecondAreaIndex() == area ;
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof AreaNode && area == ((AreaNode) o).area;
+        return o instanceof AreaNode && connection == ((AreaNode) o).connection;
     }
 
     @Override
     public int hashCode() {
-        return area;
+        return connection.hashCode();
+    }
+
+    public AreaConnection getConnection() {
+        return connection;
     }
 }

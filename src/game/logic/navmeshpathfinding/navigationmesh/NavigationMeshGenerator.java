@@ -10,6 +10,7 @@ import collision.Figure;
 import collision.RoundRectangle;
 import engine.utilities.BlueArray;
 import engine.utilities.Point;
+import game.logic.navmeshpathfinding.Window;
 import game.place.Place;
 import game.place.map.Tile;
 
@@ -40,6 +41,7 @@ public class NavigationMeshGenerator {
     private static final Map<Line, NeighbourTriangles> linesTriangles = new HashMap<>();
     private static final Point tempPoint = new Point();
     private final static float EPSILON = 0.001f;
+    public static Window meshWindow;
     private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart,
             leftTop, rightTop, leftBottom, rightBottom;
     private static double xd, yd;
@@ -55,7 +57,9 @@ public class NavigationMeshGenerator {
     private static int sharedPoints;
     private static NavigationMesh navigationMesh;
 
+
     public static NavigationMesh generateNavigationMesh(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
+
         if (findBoundsAndSetCollisionSpots(tiles, blocks, xArea, yArea)) {
             createLinesFromSpots();
             createAndAddDiagonalLines(blocks);
@@ -66,6 +70,7 @@ public class NavigationMeshGenerator {
             generateNavigationMesh();
             return navigationMesh;
         }
+
         return null;
     }
 
@@ -234,10 +239,10 @@ public class NavigationMeshGenerator {
         if (yStartTemp < 0) {
             yStartTemp = 0;
         }
-        if (xETemp > X_IN_TILES - 1) {
+        if (xETemp >= X_IN_TILES) {
             xETemp = X_IN_TILES - 1;
         }
-        if (yETemp > Y_IN_TILES - 1) {
+        if (yETemp >= Y_IN_TILES) {
             yETemp = Y_IN_TILES - 1;
         }
     }
@@ -850,15 +855,22 @@ public class NavigationMeshGenerator {
     private static void generateNavigationMesh() {
         linesToCheck.clear();
         navigationMesh = null;
-        createNavigationMeshWithFirstTriangle(getFirstTriangle());
+        createNavigationMeshWithFirstTriangle(pollFirstTriangle());
         addConnectedTriangles();
+        while (triangles.size() > 1) {
+            addLooseTriangle(pollFirstTriangle());
+            addConnectedTriangles();
+        }
     }
 
-    private static Triangle getFirstTriangle() {
-        for (Triangle triangle : triangles) {
-            return triangle;
+    private static Triangle pollFirstTriangle() {
+        Triangle triangle = null;
+        for (Triangle t : triangles) {
+            triangle = t;
+            break;
         }
-        return null;
+        triangles.remove(triangle);
+        return triangle;
     }
 
     private static void createNavigationMeshWithFirstTriangle(Triangle firstTriangle) {
@@ -869,6 +881,13 @@ public class NavigationMeshGenerator {
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(2), firstTriangle.getPointFromNode(0)));
         }
+    }
+
+    private static void addLooseTriangle(Triangle triangle) {
+        navigationMesh.addLooseTriangle(triangle);
+        linesToCheck.add(new Line(triangle.getPointFromNode(0), triangle.getPointFromNode(1)));
+        linesToCheck.add(new Line(triangle.getPointFromNode(1), triangle.getPointFromNode(2)));
+        linesToCheck.add(new Line(triangle.getPointFromNode(2), triangle.getPointFromNode(0)));
     }
 
     private static void addConnectedTriangles() {
@@ -882,6 +901,7 @@ public class NavigationMeshGenerator {
                         currentTriangle = neighbours.getTriangle(i);
                         if (currentTriangle != null) {
                             navigationMesh.addTriangle(currentTriangle);
+                            triangles.remove(currentTriangle);
                             tempLine1 = new Line(currentTriangle.getPointFromNode(0), currentTriangle.getPointFromNode(1));
                             tempLine2 = new Line(currentTriangle.getPointFromNode(1), currentTriangle.getPointFromNode(2));
                             tempLine3 = new Line(currentTriangle.getPointFromNode(2), currentTriangle.getPointFromNode(0));

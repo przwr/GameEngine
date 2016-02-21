@@ -339,7 +339,7 @@ public class ShadowRenderer {
         } else {
             shaded.addShadow(DARKEN, xc, Place.tileSize);
         }
-//        DEBUG("SelfShadow Left From Bottom");
+        DEBUG("SelfShadow Left From Bottom");
     }
 
     private static void calculateConcaveLeftFromTopSelfShadow(Light emitter, Figure shaded) {
@@ -357,7 +357,7 @@ public class ShadowRenderer {
         } else {
             shaded.addShadow(DARKEN, 0, xc);
         }
-//        DEBUG("SelfShadow Left From Top");
+        DEBUG("SelfShadow Left From Top");
     }
 
     private static void calculateConcaveRightFromBottomSelfShadow(Light light, Figure shaded) {
@@ -374,7 +374,7 @@ public class ShadowRenderer {
         } else {
             shaded.addShadow(DARKEN, 0, xc);
         }
-//        DEBUG("SelfShadow Right From Bottom");
+        DEBUG("SelfShadow Right From Bottom");
     }
 
     private static void calculateConcaveRightFromTopSelfShadow(Light light, Figure shaded) {
@@ -392,7 +392,7 @@ public class ShadowRenderer {
         } else {
             shaded.addShadow(DARKEN, xc, Place.tileSize);
         }
-//        DEBUG("SelfShadow Right From Top");
+        DEBUG("SelfShadow Right From Top");
     }
 
     private static void calculateConvexSelfShadow(Light light, Figure shaded) {
@@ -768,7 +768,7 @@ public class ShadowRenderer {
     private static void calculateLeftBlock(Figure other, Figure current, Light source) {
         if (other != null && other.getYEnd() < source.getY() && shadow0Y > other.getYEnd()
                 && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
-            setLeftRoundVariables(other, source);
+            setLeftBlockVariables(other, source);
             if (XL1 >= other.getX() && XL1 <= other.getXEnd()) {
                 if (shouldAddLightLeftBlock(other, current, source)) {
                     addLightLeftBlock(other, current, source);
@@ -782,7 +782,7 @@ public class ShadowRenderer {
         }
     }
 
-    private static void setLeftRoundVariables(Figure other, Light source) {
+    private static void setLeftBlockVariables(Figure other, Light source) {
         if (shadow0X == shadow2X) {
             XL1 = shadow0X;
             XL2 = other.getXEnd();
@@ -812,7 +812,7 @@ public class ShadowRenderer {
             }
             addDarkenLeft(other);
         }
-//        DEBUG("Left Light");
+        DEBUG("Left Light");
     }
 
     private static void addShadowLeftBlock(Figure other, Figure current) {
@@ -828,7 +828,7 @@ public class ShadowRenderer {
             XL2 = XR1;
         }
         addDarkenLeft(other);
-//        DEBUG("Left Shade " + al + " XL1 " + XL1 + " figure.X " + current.getX());
+        DEBUG("Left Shade " + al + " XL1 " + XL1 + " figure.X " + current.getX());
     }
 
     private static void addDarkenLeftBlock(Figure other, Figure current, Light source) {
@@ -839,11 +839,11 @@ public class ShadowRenderer {
                 || (YOL2 > other.getY() - other.getShadowHeight() && YOL2 < other.getYEnd()))) {
             if (XL1 < current.getX()) {
                 other.addShadowType(BRIGHT);
-//                DEBUG("Left Lightness - first");
+                DEBUG("Left Lightness - first");
 
             } else {
                 other.addShadowType(DARK);
-//                DEBUG("Left Darkness - first");
+                DEBUG("Left Darkness - first");
             }
         }
     }
@@ -911,7 +911,7 @@ public class ShadowRenderer {
             }
             addDarkenRight(other);
         }
-//        DEBUG("Right Light XR1 " + XR1);
+        DEBUG("Right Light XR1 " + XR1);
     }
 
     private static void addShadowRightBlock(Figure other, Figure current) {
@@ -927,7 +927,7 @@ public class ShadowRenderer {
             XR2 = XL1;
         }
         addDarkenRight(other);
-//        DEBUG("Right Shade " + ar + " XR1 " + XR1 + " figure.X " + current.getX());
+        DEBUG("Right Shade " + ar + " XR1 " + XR1 + " figure.X " + current.getX());
     }
 
     private static void addDarkenRightBlock(Figure other, Figure current, Light source) {
@@ -938,13 +938,12 @@ public class ShadowRenderer {
                 || (YOR2 > other.getY() - other.getShadowHeight() && YOR2 < other.getYEnd()))) {
             if (XR1 > current.getXEnd()) { // check this shitty condition
                 other.addShadowType(BRIGHT);
-//                DEBUG("Right Lightness - first");
+                DEBUG("Right Lightness - first");
             } else {
                 other.addShadowType(DARK);
-//                DEBUG("Right Darkness - first");
+                DEBUG("Right Darkness - first");
             }
         }
-
     }
 
     private static void addBrightenRight(Figure other) {
@@ -1012,12 +1011,12 @@ public class ShadowRenderer {
                     other.addShadowWithCaster(BRIGHTEN, XL1 - other.getX(), XL2 - other.getX(), current);
                     addDarkenLeftRoundBlockIfNeeded(other, current);
                     checked = true;
-//                    DEBUG("Left Round Light XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
+                    DEBUG("Left Round Light XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
                 } else if (shadow0Y >= other.getYEnd() && ((source.getX() >= current.getX() && current.getXEnd() >= other.getX())
                         || (source.getX() <= current.getXEnd() && current.getX() <= other.getXEnd()))) { //dodaj cień
                     other.addShadow(DARKEN, XL1 - other.getX(), XL2 - other.getX());
                     checked = true;
-//                    DEBUG("Left Round Shade XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
+                    DEBUG("Left Round Shade XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
                 }
             } else if (XL1 != current.getX() && XL1 != other.getX() && XL1 != other.getXEnd() && shadow0X != shadow2X) { // rysuj
                 // zaciemniony
@@ -1051,7 +1050,7 @@ public class ShadowRenderer {
                 || (YOL2 > other.getY() - other.getShadowHeight() && YOL2 < other.getYEnd()))) {
             if (XL1 < current.getX()) {
                 other.addShadowType(BRIGHT);
-//                DEBUG("Left Round Lightness - second");
+                DEBUG("Left Round Lightness - second");
             }
         }
     }
@@ -1105,12 +1104,12 @@ public class ShadowRenderer {
                     other.addShadowWithCaster(BRIGHTEN, XR1 - other.getX(), XR2 - other.getX(), current);
                     addDarkenRightRoundBlockIfNeeded(other, current);
                     checked = true;
-//                    DEBUG("Right Round Light XR1 " + (XR1) + " XR2 " + (XR2));
+                    DEBUG("Right Round Light XR1 " + (XR1) + " XR2 " + (XR2));
                 } else if (shadow1Y >= other.getYEnd() && ((source.getX() >= current.getX() && current.getXEnd() >= other.getX())
                         || (source.getX() <= current.getXEnd() && current.getX() <= other.getXEnd()))) { //dodaj cień
                     other.addShadow(DARKEN, XR1 - other.getX(), XR2 - other.getX());
                     checked = true;
-//                    DEBUG("Right Round Shade XR1 " + (XR1 - other.getX()) + " XR2 " + (XR2 - other.getX()));
+                    DEBUG("Right Round Shade XR1 " + (XR1 - other.getX()) + " XR2 " + (XR2 - other.getX()));
                 }
             } else if (XR1 != current.getXEnd() && XR1 != other.getX() && XR1 != other.getXEnd() && shadow1X != shadow3X) {
                 addLightnessRightRoundBlock(other, current, source);
@@ -1145,7 +1144,7 @@ public class ShadowRenderer {
                 || (YOR2 > other.getY() - other.getShadowHeight() && YOR2 < other.getYEnd() - Place.tileSize))) {
             if (XR1 > current.getXEnd()) {
                 other.addShadowType(BRIGHT);
-//                DEBUG("Right Round Lightness - first");
+                DEBUG("Right Round Lightness - first");
             }
         }
     }
@@ -1167,7 +1166,7 @@ public class ShadowRenderer {
                             || (other.isLeftBottomRound() && other.getX() > current.getX() && shadow3X > current.getYEnd() && YOL >= other
                             .getYEnd() - Place.tileSize && YOL <= other.getYEnd()))) {
                         other.addShadowType(DARK);
-//                        DEBUG("Left Round Top Darkness");
+                        DEBUG("Left Round Top Darkness");
                         checked = true;
                     } else {
                         findRoundDarknessFromTop(other, current, source);
@@ -1183,11 +1182,11 @@ public class ShadowRenderer {
         if (XL1 > other.getX() && XL1 < other.getXEnd()) {
             if (((shadow2Y > current.getYEnd() && shadow3Y > current.getYEnd()))) { // dodaj światło
                 other.addShadow(DARKEN, XL1 - other.getX(), XL1 < current.getX() ? 0 : Place.tileSize);
-//                DEBUG("Left Round Top Light XL1: " + (XL1 - other.getX()));
+                DEBUG("Left Round Top Light XL1: " + (XL1 - other.getX()));
                 checked = true;
             } else if (shadow2Y > current.getYEnd()) { //dodaj cień
                 other.addShadow(DARKEN, XL1 - other.getX(), XL1 > current.getX() ? 0 : Place.tileSize);
-//                DEBUG("Left Round Top Shade XL1: " + (XL1 - other.getX()));
+                DEBUG("Left Round Top Shade XL1: " + (XL1 - other.getX()));
                 checked = true;
             } else {
                 findRoundDarknessFromTop(other, current, source);
@@ -1214,7 +1213,7 @@ public class ShadowRenderer {
                             || (other.isLeftBottomRound() && other.getX() > current.getX() && shadow3X > current.getYEnd() && YOR >= other
                             .getYEnd() - Place.tileSize && YOR <= other.getYEnd()))) {
                         other.addShadowType(DARK);
-//                        DEBUG("Right Round Top Darkness");
+                        DEBUG("Right Round Top Darkness");
                         checked = true;
                     } else {
                         findRoundDarknessFromTop(other, current, source);
@@ -1230,11 +1229,11 @@ public class ShadowRenderer {
         if (XR1 > other.getX() && XR1 < other.getXEnd()) {
             if (((shadow2Y > current.getYEnd() && shadow3Y > current.getYEnd()))) { // dodaj światło
                 other.addShadow(DARKEN, XR1 - other.getX(), XR1 > current.getXEnd() ? Place.tileSize : 0);
-//                DEBUG("Right Round Top Light");
+                DEBUG("Right Round Top Light");
                 checked = true;
             } else if (shadow3Y > current.getYEnd()) { //dodaj cień
                 other.addShadow(DARKEN, XR1 - other.getX(), XR1 < current.getXEnd() ? Place.tileSize : 0);
-//                DEBUG("Right Round Top Shade");
+                DEBUG("Right Round Top Shade");
                 checked = true;
             } else {
                 findRoundDarknessFromTop(other, current, source);
@@ -1317,7 +1316,7 @@ public class ShadowRenderer {
                 if (current.getY() == other.getYEnd() && ((current.getX() == other.getXEnd() && source.getX() > current.getXEnd()) || (current.getXEnd() ==
                         other.getX() && source.getX() < current.getX())) && source.getY() < current.getYEnd()) {
                     other.addShadowType(DARK);
-//                    DEBUG("Darkness Special Case...");
+                    DEBUG("Darkness Special Case...");
                 } else {
                     int points = 0;
                     if (polygon.contains(other.getX() + 1, other.getYEnd() - 1)) {
@@ -1328,7 +1327,7 @@ public class ShadowRenderer {
                     }
                     if (points == 2) {
                         other.addShadowType(DARK);
-//                        DEBUG("Darkness...");
+                        DEBUG("Darkness...");
                         return;
                     }
                 }
@@ -1338,7 +1337,7 @@ public class ShadowRenderer {
                     && shadow0Y <= source.getY() + 2) || (shadow1Y == other.getYEnd()
                     && shadow1Y >= source.getY() - 2 && shadow1Y <= source.getY() + 2))) {
                 other.addShadowType(DARK);
-//                DEBUG("Darkness other...");
+                DEBUG("Darkness other...");
             }
         }
     }
@@ -1350,21 +1349,21 @@ public class ShadowRenderer {
                     (other.getX() != current.getXEnd() && other.getX() + Place.tileSize != current.getX()) || (current instanceof RoundRectangle && ((current
                     .getX() < other.getX() && other.isLeftBottomRound()) || (current.getX() > other.getX() && other.isRightBottomRound())))) {
                 int points = 0;
-                if (polygon.contains(other.getX() + 2, other.getYEnd() - Place.tileSize + 1)) {
+                if (polygon.contains(other.getX() + 1, other.getYEnd() - Place.tileSize + 1)) {
                     points++;
-                } else if (polygon.contains(other.getXEnd() - 2, other.getYEnd() - Place.tileSize + 1)) {
+                } else if (polygon.contains(other.getXEnd() - 1, other.getYEnd() - Place.tileSize + 1)) {
                     points++;
                 }
                 if (other.isLeftBottomRound()) {
-                    if (polygon.contains(other.getXEnd() - 1, other.getYEnd() - 2)) {
+                    if (polygon.contains(other.getXEnd() - 1, other.getYEnd() - 1)) {
                         points++;
                     }
-                } else if (polygon.contains(other.getX() + 1, other.getYEnd() - 2)) {
+                } else if (polygon.contains(other.getX() + 1, other.getYEnd() - 1)) {
                     points++;
                 }
                 if (points == 2) {
                     other.addShadowType(DARK);
-//                    DEBUG("Round Darkness...");
+                    DEBUG("Round Darkness...");
                 }
             }
             checked = true;
@@ -1392,14 +1391,14 @@ public class ShadowRenderer {
                             || polygon.contains(other.getX() + other.getPushValueOfCorner(LEFT_BOTTOM).getX() - 1,
                             other.getYEnd() - other.getPushValueOfCorner(LEFT_BOTTOM).getY() + 1)) {
                         other.addShadowType(DARK);
-//                        DEBUG("LeftRounded Top Darkness...");
+                        DEBUG("LeftRounded Top Darkness...");
                     }
                 } else if (polygon.contains(other.getX() + Place.tileSize - other.getPushValueOfCorner(RIGHT_BOTTOM).getX() - 1,
                         other.getYEnd() - other.getPushValueOfCorner(RIGHT_BOTTOM).getY() - 1)
                         || polygon.contains(other.getX() + Place.tileSize - other.getPushValueOfCorner(RIGHT_BOTTOM).getX() + 1,
                         other.getYEnd() - other.getPushValueOfCorner(RIGHT_BOTTOM).getY() + 1)) {
                     other.addShadowType(DARK);
-//                    DEBUG("RightRound Top Darkness...");
+                    DEBUG("RightRound Top Darkness...");
                 }
             }
             checked = true;
