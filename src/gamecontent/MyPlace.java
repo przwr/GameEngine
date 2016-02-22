@@ -207,26 +207,26 @@ public class MyPlace extends Place {
 //            sounds.getSound("MumboMountain").addGainModifier(-0.05f);
 //        }
         if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
-            sounds.getSound("MumboMountain").resume();
+            sounds.getSound("forest").resume();
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
-            sounds.getSound("MumboMountain").pause();
+            sounds.getSound("forest").pause();
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
-            sounds.getSound("MumboMountain").resume();
-            sounds.getSound("MumboMountain").smoothStart(0.5);
+            sounds.getSound("forest").resume();
+            sounds.getSound("forest").smoothStart(0.5);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
-            sounds.getSound("MumboMountain").addPitch(0.05f);
+            sounds.getSound("forest").addPitch(0.05f);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
-            sounds.getSound("MumboMountain").addPitch(-0.05f);
+            sounds.getSound("forest").addPitch(-0.05f);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
-            sounds.getSound("MumboMountain").fade(0.5, true);
+            sounds.getSound("forest").fade(0.5, true);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-            sounds.getSound("MumboMountain").fade(0.5, false);
+            sounds.getSound("forest").fade(0.5, false);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
             if (delay.isOver()) {
