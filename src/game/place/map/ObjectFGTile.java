@@ -5,6 +5,9 @@
  */
 package game.place.map;
 
+import static collision.OpticProperties.FULL_SHADOW;
+import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import collision.Rectangle;
 import engine.utilities.Drawer;
 import game.place.Place;
 import gamedesigner.ObjectPlace;
@@ -22,40 +25,44 @@ import sprites.SpriteSheet;
  */
 public class ObjectFGTile extends ForegroundTile {
 
-    ObjectFGTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round) {
-        super(spriteSheet, size, xSheet, ySheet, wall, yStart, round);
+    ObjectFGTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int type, int yStart, boolean round, boolean solid) {
+        super(spriteSheet, size, xSheet, ySheet, type, yStart, round, solid);
     }
 
     public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, false, yStart, false);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, IN_SHADE_NO_SHADOW, yStart, false, false);
     }
 
     public static ForegroundTile createOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, false, 0, false);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, IN_SHADE_NO_SHADOW, 0, false, false);
     }
 
     public static ForegroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, true, yStart, false);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, yStart, false, true);
     }
 
     public static ForegroundTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, true, 0, false);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, 0, false, true);
     }
 
     public static ForegroundTile createRoundOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, false, yStart, true);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, IN_SHADE_NO_SHADOW, yStart, true, false);
     }
 
     public static ForegroundTile createRoundOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, false, 0, true);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, IN_SHADE_NO_SHADOW, 0, true, false);
     }
 
     public static ForegroundTile createRoundWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, true, yStart, true);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, yStart, true, true);
     }
 
     public static ForegroundTile createRoundWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, true, 0, true);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, 0, true, true);
+    }
+
+    public static ForegroundTile createShadowTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, Integer.MAX_VALUE, true, false);
     }
 
     @Override

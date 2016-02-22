@@ -8,21 +8,28 @@ import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
+import gamecontent.SpawnPoint;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
 import gamecontent.environment.Rock;
+import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 import gamecontent.npcs.Magician;
 import gamecontent.npcs.Melodia;
 import gamecontent.npcs.Nutka;
+import gamecontent.npcs.Tercja;
 
 /**
  * Created by przemek on 21.11.15.
  */
 public class TestMap extends Map {
 
-    public TestMap(short ID, Place place, int width, int height, int tileSize) {
-        super(ID, "Test", place, width, height, tileSize);
+    public TestMap(short ID, Place place, int tileSize) {
+        super(ID, "Test", place, tileSize);
+        
+        PuzzleObject puzzle = new PuzzleObject("demo/testMap", place);
+        initializeAreas((puzzle.getWidth() + 20) * tileSize, (puzzle.getHeight() + 20) * tileSize);
+        
         Tile GRASS = new Tile(place.getSpriteSheet("grassland", "backgrounds"), 1, 1);
         Tile[] flowers = new Tile[7];
         for (int i = 0; i < flowers.length; i++) {
@@ -39,7 +46,6 @@ public class TestMap extends Map {
                 }
             }
         }
-        PuzzleObject puzzle = new PuzzleObject("demo/testMap", place);
         puzzle.addTileChanger("grassland", 10, 1, 4,
                 7, 10,   8, 10,    9, 10,  10, 10,    11, 10,    12, 10,    13, 10);
         placePuzzle(0, 0, puzzle);
@@ -48,6 +54,11 @@ public class TestMap extends Map {
         warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
         addObject(new WarpPoint("toTestLeft", 36 * tileSize + tileSize / 2, 68 * tileSize));
+        
+        warp = new WarpPoint("toCaveRight", 89 * tileSize, 64 * tileSize, "CaveTest");
+        warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
+        addObject(warp);
+        addObject(new WarpPoint("toTestRight", 90 * tileSize + tileSize / 2, 65 * tileSize));
         generateNavigationMeshes();
     }
 
@@ -68,5 +79,9 @@ public class TestMap extends Map {
         addObject(rock);
         addObject(new Nutka(3663, 3084, place, mobID++, rock));
         addObject(new Magician(2906, 763, place, mobID++));
+        addObject(new Plurret(7043, 4034, place, mobID++));
+        addObject(new Tercja(7104, 3667, place, mobID++));
+        
+        addObject(SpawnPoint.createInVisible(7416, 4306, 54, 38, "Shen spawn", Shen.class, 7, 3));
     }
 }

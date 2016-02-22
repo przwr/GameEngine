@@ -34,6 +34,11 @@ public class CaveTest extends Map {
         warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
         addObject(warp);
         addObject(new WarpPoint("toCaveLeft", 26 * tileSize + tileSize / 2, 18 * tileSize + tileSize / 2));
+
+        warp = new WarpPoint("toTestRight", 82 * tileSize, 23 * tileSize, "Test");
+        warp.setCollision(Rectangle.create(0, 0, tileSize, 3 * tileSize, IN_SHADE_NO_SHADOW, warp));
+        addObject(warp);
+        addObject(new WarpPoint("toCaveRight", 81 * tileSize + tileSize / 2, 24 * tileSize + tileSize / 2));
         long start = System.nanoTime();
         generateNavigationMeshes();
         long end = System.nanoTime();

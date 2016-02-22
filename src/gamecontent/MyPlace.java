@@ -82,7 +82,7 @@ public class MyPlace extends Place {
     @Override
     public void generateAsGuest() {
         if (Main.TEST) {
-            TestMap test = new TestMap(mapIDCounter++, this, 8192, 8192, tileSize);
+            TestMap test = new TestMap(mapIDCounter++, this, tileSize);
             maps.add(test);
             CaveTest caveTest = new CaveTest(mapIDCounter++, this, tileSize);
             maps.add(caveTest);

@@ -1,0 +1,51 @@
+﻿{
+sp:1
+co:000000
+co:FF0000
+au:Tercja
+au:Aria
+po:melodiaPortret:1
+po:ariaPortret:0
+}
+$AU0$$PO0$Dzień dobry, $MEmłoda panno$NO!$FL
+$AU1$$PO1$Dzień dobry! 
+Czy może ty jesteś siostrą Melodii?$FL
+$AU0$$PO0$....eee......
+...nie?$FL
+$AU1$$PO1$$EX1$(Skąd tu tyle klonów?!)$NO$FL
+$EX0$Co tutaj robisz?$FL
+$AU0$$PO0$Sprzedaję łuki po $MEpromocyjnej cenie$NO!$FL
+$AU1$$PO1$$EX3$Po ile?$FL
+$AU0$$PO0$$EX0$Za darmo.......$FL
+$AU1$$PO1$$EX3$...$FL
+$AU0$$PO0$$EX0$...$FL
+$AU1$$PO1$$EX2$Poproszę jeden!$FL
+$AU0$$PO0$$EX0$A proszę!
+#B1
+$AU0$$PO0$Mogę Ci jakoś pomóc?$QUNie:11:CZYM U LICHA JEST ŁUK!?:10:Ciastko:12:Gdzie iść?:13:$
+#B10
+$AU0$$PO0$Łuk jest bronią na duże odległości.
+Możesz go wybrać przyciskiem $CO1$$WRatk$$CO0$.$FL
+Im dłużej naciągasz strzałę, tym silniej uderzy.
+W czasie ataku możesz się poruszać....$Fl
+Tyle?...$FL
+$AU1$$PO1$Dziękuję.
+#B11
+$AU1$$PO1$Dam sobie radę. Dzięki.$FL
+$AU0$$PO0$Jakby Ci czegoś było trzeba, to wiesz gdzie mnie szukać.$FL
+$AU1$$PO1$Ok.
+#B12
+$AU1$$PO1$Masz może ciastko?$FL
+$AU0$$PO0$Nie.$FL
+$AU1$$PO1$$EX2$Dzięku.........$EX3$.........
+#B13
+$AU1$$PO1$Wiesz gdzie mam iść?$FL
+$AU0$$PO0$Cóż....
+Wygląda na to że zwiedziłaś już całą okolicę...$FL
+Jeżeli ci się nudzi, możesz spróbować ubić tego
+$SHzawszonego dziadyga$NO co mi lata koło domu! $QUDobrze:21:Po co?:22$$FL
+#B21
+$AU1$$PO1$......ok
+#B22
+$AU0$$PO0$Zeżarł mi $SHłajdak$NO wszystkie czekoladki!$Fl
+$AU1$$PO1$......ok

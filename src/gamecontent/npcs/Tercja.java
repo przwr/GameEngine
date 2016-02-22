@@ -6,8 +6,11 @@ import engine.Main;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
+import game.gameobject.items.Weapon;
+import static game.gameobject.items.Weapon.SWORD;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
+import game.text.Writer;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import gamecontent.environment.Rock;
@@ -19,13 +22,12 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * Created by przemek on 01.02.16.
  */
-public class Nutka extends Mob {
+public class Tercja extends Mob {
 
     private Animation animation;
     private String dialog = "0";
-    private Rock rock;
 
-    public Nutka(int x, int y, Place place, short mobID, Rock rock) {
+    public Tercja(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
@@ -34,7 +36,6 @@ public class Nutka extends Mob {
         }
         addPushInteraction();
         setDirection8way(RIGHT);
-        this.rock = rock;
     }
 
     @Override
@@ -46,16 +47,21 @@ public class Nutka extends Mob {
                 if (isPlayerTalkingToMe(player)) {
                     setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
                     player.getTextController().lockEntity(player);
-                    player.getTextController().startFromFile("npc2demo", dialog);
-                    player.getTextController().addEventOnBranchEnd(() -> {
+                    player.getTextController().startFromFile("npc3demo", dialog);
+                    player.getTextController().addEventOnBranchStart(() -> {
+                        if (player.getSecondWeapon() == null) {
+                            Weapon bow = new Weapon("Bow", Weapon.BOW);
+                            bow.setModifier(1f);
+                            player.addWeapon(bow);
+                        }
                         dialog = "1";
                     }, "0");
-                    player.getTextController().addEventOnBranchEnd(() -> {
-                        rock.delete();
-                    }, "13");
-                    player.getTextController().addEventOnBranchEnd(() -> {
-                        player.getStats().setHealth(player.getStats().getMaxHealth());
-                    }, "12");
+                    player.getTextController().addExternalWriter(new Writer("atk") {
+                        @Override
+                        public String write() {
+                            return "[" + player.getController().actions[MyController.INPUT_CHANGE_WEAPON].input.getLabel() + "]";
+                        }
+                    });
                 }
                 if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                     setDirection8way(RIGHT);

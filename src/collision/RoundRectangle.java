@@ -31,6 +31,10 @@ public class RoundRectangle extends Figure {
     private Corner[] corners = new Corner[4];
     private boolean concave, triangular, bottomRounded;
 
+    public static boolean isTopCorner(byte corner) {
+        return corner == LEFT_TOP || corner == RIGHT_TOP;
+    }
+    
     {
         changers[LEFT_TOP] = new changer() {
             @Override

@@ -68,7 +68,7 @@ public class ObjectPO extends PuzzleObject {
                 int[] corners = ((RoundBlockContainer) block).getCorners();
                 RoundedTMPBlock roundedTmp = (RoundedTMPBlock) tmp;
                 for (int i = 0; i < 4; i++) {
-                    if (corners[2 * i] + corners[2 * i + 1] != 0) {
+                    if (corners[2 * i] + corners[2 * i + 1] != 0 && roundedTmp.isCornerPossible((byte) i)) {
                         roundedTmp.pushCorner(i, corners[2 * i], corners[2 * i + 1]);
                         roundedTmp.setStates(i, corners[2 * i], corners[2 * i + 1]);
                     }

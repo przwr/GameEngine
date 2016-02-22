@@ -170,14 +170,14 @@ public class PuzzleObject {
         if (!lineTab[4].equals("")) {
             tmpSS = place.getSpriteSheet(lineTab[4], "backgrounds");
         }
-        tmpFgt = new FGTileContainer(tmpSS, tileSize, Integer.parseInt(lineTab[8]), Integer.parseInt(lineTab[9]),
-                lineTab[5].equals("1"), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), Integer.parseInt(lineTab[3]) * (tileSize / 2));
+        tmpFgt = new FGTileContainer(tmpSS, tileSize, Integer.parseInt(lineTab[9]), Integer.parseInt(lineTab[10]),
+                Integer.parseInt(lineTab[5]), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), lineTab[8].equals("1"), Integer.parseInt(lineTab[3]) * (tileSize / 2));
         if (shadowLightBased) {
             tmpFgt.setShadowLightBased(lineTab[lineTab.length - 1].equals("1"));
         }
         tmpFgt.xBegin = Integer.parseInt(lineTab[1]) * tileSize;
         tmpFgt.yBegin = Integer.parseInt(lineTab[2]) * tileSize;
-        index = 10;
+        index = 11;
         while (index + 1 < lineTab.length - (shadowLightBased ? 1 : 0)) {
             tmpFgt.additionalPlaces.add(new Point(Integer.parseInt(lineTab[index]), Integer.parseInt(lineTab[index + 1])));
             index += 2;
@@ -386,8 +386,9 @@ public class PuzzleObject {
         final ArrayList<Point> additionalPlaces = new ArrayList<>();
         final SpriteSheet texture;
         final int[] values;
-        final boolean wall;
+        final int type;
         final boolean round;
+        final boolean solid;
 
         boolean shadowLightBased;
         boolean isShadow;
@@ -395,11 +396,12 @@ public class PuzzleObject {
 
         //0  1 2 3       4    5      6          7
         //ft:x:y:texture:wall:yStart:TileXSheet:TileYSheet...
-        public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean wall, int yStart, boolean round, int depth) {
+        public FGTileContainer(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int type, int yStart, boolean round, boolean solid, int depth) {
             texture = spriteSheet;
-            values = new int[]{size, xSheet, ySheet, yStart, depth + (round ? 1 : 0)};
-            this.wall = wall;
+            values = new int[]{size, xSheet, ySheet, yStart, depth};
+            this.type = type;
             this.round = round;
+            this.solid = solid;
         }
 
         public void setShadowLightBased(boolean isShadow) {
@@ -441,12 +443,12 @@ public class PuzzleObject {
             Point firstTile = changeTile(texture, new Point(values[1], values[2]));
             if (!shadowLightBased) {
                 if (!objectFGT) {
-                    fgt = new ForegroundTile(texture, values[0], firstTile.getX(), firstTile.getY(), wall, values[3], round);
+                    fgt = new ForegroundTile(texture, values[0], firstTile.getX(), firstTile.getY(), type, values[3], round, solid);
                 } else {
-                    fgt = new ObjectFGTile(texture, values[0], firstTile.getX(), firstTile.getY(), wall, values[3], round);
+                    fgt = new ObjectFGTile(texture, values[0], firstTile.getX(), firstTile.getY(), type, values[3], round, solid);
                 }
             } else {
-                fgt = new ShadowLightTile(texture, values[0], firstTile.getX(), firstTile.getY(), wall, values[3], round, isShadow);
+                fgt = new ShadowLightTile(texture, values[0], firstTile.getX(), firstTile.getY(), type, values[3], round, solid, isShadow);
             }
             fgt.setPosition(xBegin + x, yBegin + y);
             fgt.setDepth(values[4]);

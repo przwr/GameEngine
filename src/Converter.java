@@ -1,4 +1,5 @@
 
+import collision.OpticProperties;
 import engine.Main;
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,20 +25,28 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
 
     private static final String folder = "res/objects";
     private static final String extension = ".puz";
+    private static final boolean openFolders = true;
     private static final boolean isThisOkayMommy = false;   //Trzeba uważać :D
 
     public static void main(String[] argv) {
         if (isThisOkayMommy) {
-            File[] files = new File(folder).listFiles();
-            for (File f : files) {
-                if (f.getName().endsWith(extension)) {
-                    System.out.println("Reading " + f.getName());
-                    save(read(f), f);
-                    System.out.println(f.getName() + " saved");
-                }
-            }
+            readFolder(new File(folder));
         } else {
             throw new RuntimeException("This is not OKEY!");
+        }
+    }
+
+    private static void readFolder(File dict) {
+        System.out.println("Reading folder: " + dict.getName());
+        File[] files = dict.listFiles();
+        for (File f : files) {
+            if (f.getName().endsWith(extension)) {
+                System.out.println("  Reading " + f.getName());
+                save(read(f), f);
+                System.out.println("  " + f.getName() + " saved");
+            } else if (openFolders && f.isDirectory()) {
+                readFolder(f);
+            }
         }
     }
 
@@ -47,14 +56,14 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
             String line;
             String placer;
             String[] data;
-            int num;
             while ((line = read.readLine()) != null) {
                 if (line.startsWith("ft")) {
                     data = line.split(":");
-                    num = Integer.parseInt(data[3]) * 2;
-                    placer = "ft";
-                    for (int i = 1; i < data.length; i++) {
-                        placer += ":" + (i != 3 ? data[i] : num);
+                    placer = "ft:" + data[1] + ":" + data[2] + ":" + data[3] + ":" + data[4]
+                            + ":" + (data[5].equals("1") ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW)
+                            + ":" + data[6] + ":" + data[7] + ":" + data[5];
+                    for (int i = 8; i < data.length; i++) {
+                        placer += ":" + data[i];
                     }
                     buffer.add(placer);
                 } else {

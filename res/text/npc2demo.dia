@@ -17,10 +17,10 @@ $AU1$$PO1$Cześć! Jesteś siostrą Melodii?$FL
 $AU0$$PO0$Jaka to Melodia?$FL
 $AU1$$PO1$No... $NENie wiem...$ME Zwykła?$NO$FL
 $AU0$$PO0$Nie ważne. Nie mam siostry.$FL
-$AU1$$PO0$Co tutaj robisz?$FL
+$AU1$$PO1$Co tutaj robisz?$FL
 $AU0$$PO0$Ostrzegam innych przed fretkami.$FL
 To są drapieżne fretki, lepiej je omijać.$FL
-$AU1$$PO0$Dzięki!
+$AU1$$PO1$Dzięki!
 #B1
 $AU0$$PO0$Mogę Ci jakoś pomóc?$QUNie:11:Ciastko:12:Gdzie iść?:13:$
 #B11

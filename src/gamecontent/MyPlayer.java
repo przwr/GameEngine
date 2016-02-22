@@ -345,7 +345,8 @@ public class MyPlayer extends Player {
 
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
-        return isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
+        return !Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW
+                && isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override

@@ -137,7 +137,7 @@ public class TemporaryBlock extends GameObject {
         }
         if (tmp != null) {
             Point p = tmp.popTileFromStack();
-            if (p != null && tmp.tileStackSize() != 0) {
+            if (tmp.tileStackSize() != 0) {
                 return null;
             }
             tiles.remove(tmp);

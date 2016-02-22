@@ -150,7 +150,6 @@ public class TextController extends GUIObject {
             branches.add(branch);
             Branch currentBranch = branch;
             jumpPlacements.add("0");
-            ArrayList<ExternalTextMaker> textMakers = new ArrayList<>();
             for (; num < text.length; num++) {
                 line = text[num];
                 if (line.length() > 1 && line.charAt(0) == '#') {
@@ -179,7 +178,7 @@ public class TextController extends GUIObject {
                                             if (line.charAt(j) == '$') {
                                                 if (last != lineIndex) {
                                                     lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font, textMakers);
+                                                            lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
                                                 }
                                                 lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEED,
@@ -193,7 +192,7 @@ public class TextController extends GUIObject {
                                     case "vn":   //NORMALIZE SPEED
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                    lineNum, color, font, textMakers);
+                                                    lineNum, color, font);
                                             tmp.addEvent(lastEvent);
                                         }
                                         lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEED, defSpeed, this);
@@ -206,7 +205,7 @@ public class TextController extends GUIObject {
                                             if (line.charAt(j) == '$') {
                                                 if (last != lineIndex) {
                                                     lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font, textMakers);
+                                                            lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
                                                 }
                                                 switch (symbol) {
@@ -228,11 +227,11 @@ public class TextController extends GUIObject {
                                     case "ex":   //EXPRESSION
                                         for (int j = lineIndex + 3; j < line.length(); j++) {
                                             if (line.charAt(j) == '$') {
-                                                if (last != lineIndex) {
+                                                /*if (last != lineIndex) {
                                                     lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font, textMakers);
+                                                            lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
-                                                }
+                                                }*/
                                                 lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_EXPRESSION,
                                                         Integer.parseInt(line.substring(lineIndex + 3, j)), this);
                                                 tmp.addEvent(lastEvent);
@@ -246,7 +245,7 @@ public class TextController extends GUIObject {
                                             if (line.charAt(j) == '$') {
                                                 if (last != lineIndex) {
                                                     lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font, textMakers);
+                                                            lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
                                                 }
                                                 lastEvent = new Jumper(lastEvent, line.substring(lineIndex + 3, j), this);
@@ -261,7 +260,7 @@ public class TextController extends GUIObject {
                                             if (line.charAt(j) == '$') {
                                                 if (last != lineIndex) {
                                                     lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font, textMakers);
+                                                            lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
                                                 }
                                                 lastEvent = new EventMaker(lastEvent, line.substring(lineIndex + 3, j), this);
@@ -276,11 +275,11 @@ public class TextController extends GUIObject {
                                             if (line.charAt(j) == '$') {
                                                 if (last != lineIndex) {
                                                     lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font, textMakers);
+                                                            lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
                                                 }
                                                 lastEvent = generateEvent(type, "", lastEvent,
-                                                        lineNum, color, font, textMakers);
+                                                        lineNum, color, font);
                                                 ((TextRenderer) lastEvent).setAlterer(line.substring(lineIndex + 3, j));
                                                 tmp.addEvent(lastEvent);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
@@ -294,7 +293,7 @@ public class TextController extends GUIObject {
                                             if (line.charAt(j) == '$') {
                                                 if (last != lineIndex) {
                                                     lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font, textMakers);
+                                                            lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
                                                 }
                                                 tab = line.substring(lineIndex + 3, j).split(":");
@@ -316,7 +315,7 @@ public class TextController extends GUIObject {
                                             if (line.charAt(j) == '$') {
                                                 if (last != lineIndex) {
                                                     lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font, textMakers);
+                                                            lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
                                                 }
                                                 tab = line.substring(lineIndex + 3, j).split(":");
@@ -334,7 +333,7 @@ public class TextController extends GUIObject {
                                     case "fl":   //FLUSH LINES
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                    lineNum, color, font, textMakers);
+                                                    lineNum, color, font);
                                             tmp.addEvent(lastEvent);
                                         }
                                         lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_FLUSH, 0, this);
@@ -345,7 +344,7 @@ public class TextController extends GUIObject {
                                     case "co":   //CHANGE COLOR
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                    lineNum, color, font, textMakers);
+                                                    lineNum, color, font);
                                             tmp.addEvent(lastEvent);
                                         }
                                         for (int j = lineIndex + 3; j < line.length(); j++) {
@@ -360,7 +359,7 @@ public class TextController extends GUIObject {
                                     case "cn":   //PLAIN TEXT
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                    lineNum, color, font, textMakers);
+                                                    lineNum, color, font);
                                             tmp.addEvent(lastEvent);
                                         }
                                         color = colors.get(0);
@@ -372,7 +371,7 @@ public class TextController extends GUIObject {
                                     case "it":   //ITALIC TEXT
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex),
-                                                    lastEvent, lineNum, color, font, textMakers);
+                                                    lastEvent, lineNum, color, font);
                                             tmp.addEvent(lastEvent);
                                         }
                                         switch (symbol) {
@@ -395,7 +394,7 @@ public class TextController extends GUIObject {
                                     case "me":   //MELODIC TEXT
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex),
-                                                    lastEvent, lineNum, color, font, textMakers);
+                                                    lastEvent, lineNum, color, font);
                                             tmp.addEvent(lastEvent);
                                         }
                                         switch (symbol) {
@@ -424,10 +423,9 @@ public class TextController extends GUIObject {
                         }
                         if (last != lineIndex) {
                             lastEvent = generateEvent(type, line.substring(last, lineIndex),
-                                    lastEvent, lineNum, color, font, textMakers);
+                                    lastEvent, lineNum, color, font);
                             tmp.addEvent(lastEvent);
                         }
-                        textMakers.clear();
                     } else {
                         lastEvent = new TextRenderer(" ", lastEvent, lineNum, color, font, this);
                         tmp.addEvent(lastEvent);
@@ -545,7 +543,7 @@ public class TextController extends GUIObject {
         }
     }
 
-    private TextEvent generateEvent(int type, String text, TextEvent previous, int lineNum, Color color, FontHandler font, ArrayList<ExternalTextMaker> textMakers) {
+    private TextEvent generateEvent(int type, String text, TextEvent previous, int lineNum, Color color, FontHandler font) {
         TextEvent ret = null;
         switch (type) {
             case TYPE_NORMAL:

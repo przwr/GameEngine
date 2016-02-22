@@ -6,6 +6,7 @@
 package gamedesigner;
 
 import collision.Block;
+import collision.OpticProperties;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.place.Place;
@@ -231,6 +232,10 @@ public class ObjectMap extends Map {
                 lowest.addTileToStack(xSheet, ySheet);
             } else {
                 ForegroundTile newTile = ObjectFGTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, depth + tileSize /*TODO SOMETHING!!!*/);
+                if (altMode) {
+                    newTile.getCollision().setOpticProperties(OpticProperties.FULL_SHADOW);
+                    newTile.setSimpleLighting(false);
+                }
                 addForegroundTile(newTile, x, y, depth);
             }
         } else {
@@ -262,7 +267,7 @@ public class ObjectMap extends Map {
         }
         if (lowest != null) {
             Point p = lowest.popTileFromStack();
-            if (p == null || lowest.tileStackSize() == 0) {
+            if (lowest.tileStackSize() == 0) {
                 removeForegroundTile(lowest);
             }
         }
@@ -286,7 +291,8 @@ public class ObjectMap extends Map {
             }
         }
         if (max != null) {
-            if ((fgt = max.removeTile(x, y)) != null) {
+            fgt = max.removeTile(x, y);
+            if (fgt != null) {
                 removeForegroundTile(fgt);
                 max.getBlock().removeForegroundTile(fgt);
                 return;

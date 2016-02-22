@@ -55,6 +55,10 @@ public class RoundedTMPBlock extends TemporaryBlock {
         return fgt;
     }
 
+    public boolean isCornerPossible(byte corner) {
+        return !RoundRectangle.isTopCorner(corner) || height > tile;
+    }
+    
     @Override
     public void createBlock() {
         block = Block.createRound(getX(), getY(), width, height, (upHeight - yTiles) * tile);
@@ -87,12 +91,12 @@ public class RoundedTMPBlock extends TemporaryBlock {
     public Point saveStates() {
         return new Point(upperState, lowerState);
     }
-    
+
     public void loadStates(Point states) {
         changeUpperState(states.getFirst());
         changeLowerState(states.getSecond());
     }
-    
+
     public void setStates(int corner, int xChange, int yChange) {
         int sum = xChange + yChange;
         switch (corner) {
@@ -144,25 +148,27 @@ public class RoundedTMPBlock extends TemporaryBlock {
     }
 
     public void applyStates() {
-        switch (upperState) {
-            case 1:
-                block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.292), (int) (tile * 0.3));
-                break;
-            case 2:
-                block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.5), (int) (tile * 0.5));
-                break;
-            case 3:
-                block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.707), (int) (tile * 0.707));
-                break;
-            case 4:
-                block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.292), (int) (tile * 0.3));
-                break;
-            case 5:
-                block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.5), (int) (tile * 0.5));
-                break;
-            case 6:
-                block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.707), (int) (tile * 0.707));
-                break;
+        if (height > tile) {
+            switch (upperState) {
+                case 1:
+                    block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.292), (int) (tile * 0.3));
+                    break;
+                case 2:
+                    block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.5), (int) (tile * 0.5));
+                    break;
+                case 3:
+                    block.pushCorner(RoundRectangle.RIGHT_TOP, (int) (tile * 0.707), (int) (tile * 0.707));
+                    break;
+                case 4:
+                    block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.292), (int) (tile * 0.3));
+                    break;
+                case 5:
+                    block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.5), (int) (tile * 0.5));
+                    break;
+                case 6:
+                    block.pushCorner(RoundRectangle.LEFT_TOP, (int) (tile * 0.707), (int) (tile * 0.707));
+                    break;
+            }
         }
         switch (lowerState) {
             case 1:
