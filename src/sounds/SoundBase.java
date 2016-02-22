@@ -14,16 +14,18 @@ import org.newdawn.slick.util.ResourceLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Wojtek
  */
 public class SoundBase {
 
-    private final ArrayList<Sound> sounds;
+    private final HashMap<String, Sound> sounds;
 
     public SoundBase() {
-        sounds = new ArrayList<>();
+        sounds = new HashMap<>();
     }
 
     public void initialize(String folder) {
@@ -34,7 +36,7 @@ public class SoundBase {
             try {
                 Audio sound = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
                 //System.out.println(temp[0]);
-                sounds.add(new Sound(temp[0], sound));
+                sounds.put(temp[0], new Sound(temp[0], sound));
             } catch (IOException e) {
                 ErrorHandler.error(e.toString());
             }
@@ -43,13 +45,7 @@ public class SoundBase {
     }
 
     public Sound getSound(String name) {
-        for (Sound sound : sounds) {
-            //System.out.println(tex.podajNazwe());
-            if (sound.getName().equals(name)) {
-                return sound;
-            }
-        }
-        return null;
+        return sounds.get(name);
     }
 
     private void search(File folder, ArrayList<File> fileList) {
@@ -65,7 +61,7 @@ public class SoundBase {
         }
     }
 
-    public ArrayList<Sound> getSoundsList() {
+    public Map<String, Sound> getSoundsMap() {
         return sounds;
     }
 }

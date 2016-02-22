@@ -5,7 +5,6 @@
  */
 package gamecontent;
 
-import engine.Main;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.Settings;
@@ -14,12 +13,12 @@ import game.gameobject.inputs.Action;
 import game.gameobject.inputs.AnyInput;
 import game.gameobject.inputs.PlayerController;
 import game.gameobject.stats.PlayerStats;
+import game.gameobject.temporalmodifiers.Charger;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.place.Place;
 import sprites.ClothedAppearance;
 
 import static game.gameobject.GameObject.*;
-import game.gameobject.temporalmodifiers.Charger;
 
 /**
  * @author przemek
@@ -59,13 +58,13 @@ public class MyController extends PlayerController {
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
         blockedInputs = new boolean[ACTIONS_COUNT];
-        attackDelay = Delay.createInMilliseconds(30);
-        preAttackDelay = Delay.createInMilliseconds(30);
-        afterAttackDelay = Delay.createInMilliseconds(160);
-        lagDelay = Delay.createInMilliseconds(250);
-        sideDelay = Delay.createInMilliseconds(25);
-        jumpDelay = Delay.createInMilliseconds(400);
-        chargingDelay = Delay.createInMilliseconds(300);
+        attackDelay = Delay.createInMilliseconds(30, true);
+        preAttackDelay = Delay.createInMilliseconds(30, true);
+        afterAttackDelay = Delay.createInMilliseconds(160, true);
+        lagDelay = Delay.createInMilliseconds(250, true);
+        sideDelay = Delay.createInMilliseconds(25, true);
+        jumpDelay = Delay.createInMilliseconds(400, true);
+        chargingDelay = Delay.createInMilliseconds(300, true);
         chargingDelay.terminate();
         attackFrames = new int[]{22, 27, 31, 38, 40, 123};
         jumpMaker = new SpeedChanger(8);

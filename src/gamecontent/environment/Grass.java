@@ -112,14 +112,14 @@ public class Grass extends GameObject {
         glTranslatef(getX(), (int) (getY() - floatHeight), 0);
         if (masking) {
             tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
-            Drawer.setColor(new Color(0, 0.7f * Place.getLightColor().g, 0));
+            Drawer.setColor(new Color(0, 0.7f * Drawer.getCurrentColor().g, 0));
             Drawer.setCentralPoint();
             Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
             Drawer.returnToCentralPoint();
         }
         for (int i = 0; i < blades.length; i += 3) {
             calculateFactor(blades[i].getX(), blades[i + 1].getY());
-            Drawer.setColor(new Color(0, (int) (blades[i].getValue() * Place.getLightColor().g), 0));
+            Drawer.setColor(new Color(0, (int) (blades[i].getValue() * Drawer.getCurrentColor().g), 0));
             if (factor == 0) {
                 Drawer.drawTriangle(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY());
             } else {

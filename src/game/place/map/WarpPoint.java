@@ -84,6 +84,9 @@ public class WarpPoint extends GameObject {
 
     public void warp(GameObject object) {
         if (isWarp) {
+            if (object.getWarp() != this && object instanceof Entity && !(((Entity) object).getChangers().isEmpty())) {
+                return;
+            }
             if (object instanceof Player) {
                 loadMap(object);
             } else if (isStatic) {
@@ -107,7 +110,6 @@ public class WarpPoint extends GameObject {
     private void loadMap(GameObject object) {
         place.game.getMapLoader().requestMap(stringDestination, this);
         if (object.getMap() != null && object.getWarp() != this) {
-            object.setVisible(false);
             if (object instanceof Player) {
                 if (((Player) object).getCamera() != null) {
                     ((Player) object).getCamera().fade(250, true);
@@ -119,6 +121,9 @@ public class WarpPoint extends GameObject {
             }
             object.setWarp(this);
         } else if (delay.isOver()) {
+            if (object.isVisible()) {
+                object.setVisible(false);
+            }
             Map map = place.getMapByName(stringDestination);
             if (map != null) {
                 if (object instanceof Player) {
@@ -150,6 +155,7 @@ public class WarpPoint extends GameObject {
                         object.setVisible(true);
                     }
                 }
+                object.setWarp(null);
             } else if (object instanceof MyPlayer) {
                 if (loading) {
                     ((MyPlayer) object).getGUI().setVisible(false);

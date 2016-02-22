@@ -47,7 +47,7 @@ public class MyMenu extends Menu {
         int bigFontSize = Methods.roundDouble(Settings.nativeScale * 64);
         smallFont = fonts.add("Amble-Regular", normalFontSize);
         bigFont = fonts.add("Amble-Regular", bigFontSize);
-        delay = Delay.createInMilliseconds(25);
+        delay = Delay.createInMilliseconds(25, true);
         delay.start();
         maxPositions = calculateMaxPositions(normalFontSize, bigFontSize);
         generate();

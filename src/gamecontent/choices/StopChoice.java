@@ -10,6 +10,8 @@ import game.menu.Menu;
 import game.menu.MenuChoice;
 import sounds.Sound;
 
+import java.util.Iterator;
+
 /**
  * @author przemek
  */
@@ -24,7 +26,12 @@ public class StopChoice extends MenuChoice {
         if (button == ACTION) {
             if (menu.game.getPlace() != null) {
                 if (Settings.sounds != null) {
-                    Settings.sounds.getSoundsList().forEach(Sound::stop);
+                    Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
+                    while (it.hasNext()) {
+                        java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
+                        pair.getValue().stop();
+                        it.remove();
+                    }
                 }
                 menu.game.endGame();
             }

@@ -44,16 +44,16 @@ public class Blazag extends Mob {
     static RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private Animation animation;
     private int seconds = 0, max = 5, targetDistance, attackDelayTime = 150, attackCount = 0, maxAttackCount = 6;
-    private float SLEEP_END = 17.5f, SLEEP_START = 7.5f;
-    private float current_sleep_end, current_sleep_start;
+    private float SLEEP_VALUE = 0.5f;
+    private float current_sleep_value;
     private ActionState idle, attack, wander, jump, jumpAttack, protect, sleep, run_to;
-    private Delay attackDelay = Delay.createInMilliseconds(700);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay readyToAttackDelay = Delay.createInMilliseconds(attackDelayTime);           //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay rest = Delay.createInSeconds(2);                  //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay attackDelay = Delay.createInMilliseconds(700);        //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay readyToAttackDelay = Delay.createInMilliseconds(attackDelayTime); //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createInSeconds(2);                      //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpRestDelay = Delay.createInSeconds(5);             //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay jumpDelay = Delay.createInMilliseconds(150);             //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay burstDelay = Delay.createInMilliseconds(500);             //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay changeDelay = Delay.createInMilliseconds(750);              //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay jumpDelay = Delay.createInMilliseconds(300);          //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay burstDelay = Delay.createInMilliseconds(500);         //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay changeDelay = Delay.createInMilliseconds(750);        //TODO - te wartości losowe i zależne od poziomu trudności
     private boolean attacking = true, chasing, jumpOver, awake = true, can_attack, bursting = false, letGo = false;
     private SpeedChanger jumper;
     private Order order = new Order();
@@ -63,18 +63,21 @@ public class Blazag extends Mob {
             @Override
             public void update() {
 //                System.out.println("IDLE");
-                if (rest.isOver()) {
+                if (!awake) {
+                    state = sleep;
+                    alpha = false;
+                    target = null;
+                } else if (rest.isOver()) {
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     if (closeEnemies.isEmpty()) {
-                        short time = place.getTimeInMinutes();
-                        if (time >= current_sleep_start && time <= current_sleep_end) {
+                        if (map.getDarkness() > current_sleep_value) {
                             state = sleep;
-                            if (alpha) {
-                                alpha = false;
-                            }
+                            alpha = false;
+                            target = null;
                         } else {
                             state = wander;
                             seconds = 0;
+                            target = null;
                         }
                     } else {
                         state = attack;
@@ -96,18 +99,16 @@ public class Blazag extends Mob {
                         goTo(spawnPosition);
                     } else {
                         brake(2);
-                        float rand = random.next(6) / 64f;
-                        current_sleep_end = (SLEEP_END + rand) * 60;
-                        rand = random.next(6) / 64f;
-                        current_sleep_start = (SLEEP_START + rand) * 60;
+                        current_sleep_value = SLEEP_VALUE + random.next(10) / 10240f;
                         awake = false;
                         order.order = 0;
                     }
                 } else {
                     lookForCloseEntitiesWhileSleep(place.players, map.getArea(area).getNearSolidMobs());
-                    short time = place.getTimeInMinutes();
-                    getOrders();
-                    if (!closeEnemies.isEmpty() || time <= current_sleep_start || time >= current_sleep_end) {
+                    if (closeFriends.size() > 0) {
+                        getOrders();
+                    }
+                    if (!closeEnemies.isEmpty() || map.getDarkness() <= current_sleep_value || order.type != -1) {
                         state = idle;
                         awake = true;
                     }
@@ -119,12 +120,18 @@ public class Blazag extends Mob {
             @Override
             public void update() {
 //                System.out.println("RUN_TO");
-                lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                if (!closeEnemies.isEmpty() || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) < hearRange2 / 9) {
-                    state = idle;
-                    destination.set(-1, -1);
+                if (!awake) {
+                    state = sleep;
+                    target = null;
+                    alpha = false;
+                } else {
+                    lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
+                    if (!closeEnemies.isEmpty() || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) < hearRange2 / 9) {
+                        state = idle;
+                        destination.set(-1, -1);
+                    }
+                    goTo(destination);
                 }
-                goTo(destination);
             }
         };
         attack = new ActionState() {
@@ -132,45 +139,51 @@ public class Blazag extends Mob {
             public void update() {
                 maxSpeed = 5;
                 if (animation.getDirectionalFrameIndex() < 26) {
-                    lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                    if (!closeFriends.isEmpty()) {
-                        if (alpha) {
-                            setOrders();
-                        } else {
-                            getOrders();
-                        }
+                    if (!awake) {
+                        state = sleep;
+                        target = null;
+                        alpha = false;
                     } else {
-                        if (letGoDelay.isOver()) {
-                            Agro agro = getAgresor(target);
-                            if (agro == null || agro.getHurtedByOwner() <= 5) {
-                                letGo();
-                                return;
+                        lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
+                        if (!closeFriends.isEmpty()) {
+                            if (alpha) {
+                                setOrders();
                             } else {
-                                for (Agro ag : getAgro()) {
-                                    ag.clearHurtedByOwner();
-                                }
+                                getOrders();
                             }
-                            letGoDelay.start();
-                        }
-                        setEnemyToAttack();
-                        int distance = target != null ? Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) : sightRange2;
-                        if (distance >= sightRange2 || target == null) {
-                            target = null;
-                            state = idle;
-                            chasing = false;
-                            maxSpeed = 5;
-                            brake(2);
                         } else {
-                            if ((chasing && distance >= sightRange2 / 4) || isObstacleBetween()) {
-                                chase();
-                                attackDelay.start();
-                            } else {
-                                if (attackDelay.isOver()) {
-                                    loneAttack(distance);
+                            if (letGoDelay.isOver()) {
+                                Agro agro = getAgresor(target);
+                                if (agro == null || agro.getHurtedByOwner() <= 5) {
+                                    letGo();
+                                    return;
                                 } else {
-                                    brake(2);
+                                    for (Agro ag : getAgro()) {
+                                        ag.clearHurtedByOwner();
+                                    }
                                 }
-                                chasing = distance >= sightRange2 / 8;
+                                letGoDelay.start();
+                            }
+                            setEnemyToAttack();
+                            int distance = target != null ? Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) : sightRange2;
+                            if (distance >= sightRange2 || target == null) {
+                                target = null;
+                                state = idle;
+                                chasing = false;
+                                maxSpeed = 5;
+                                brake(2);
+                            } else {
+                                if ((chasing && distance >= sightRange2 / 4) || isObstacleBetween()) {
+                                    chase();
+                                    attackDelay.start();
+                                } else {
+                                    if (attackDelay.isOver()) {
+                                        loneAttack(distance);
+                                    } else {
+                                        brake(2);
+                                    }
+                                    chasing = distance >= sightRange2 / 8;
+                                }
                             }
                         }
                     }
@@ -206,7 +219,7 @@ public class Blazag extends Mob {
                         } else if (readyToAttackDelay.isOver()) {
                             jumper.setFrames(30);
                             double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
-                            jumper.setSpeed(Methods.xRadius(angle, 4.5 * maxSpeed), Methods.yRadius(angle, 4.5 * maxSpeed));
+                            jumper.setSpeed(Methods.xRadius(angle, 6 * maxSpeed), Methods.yRadius(angle, 6 * maxSpeed));
                             jumper.setType(SpeedChanger.DECREASING);
                             jumper.start();
                             jumpOver = true;
@@ -257,31 +270,36 @@ public class Blazag extends Mob {
             @Override
             public void update() {
 //                System.out.println("WANDER");
-                if (rest.isOver()) {
-                    if (destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2
-                            / 16) {
-                        letGo = false;
-                        destination.set(getRandomPointInDistance((int) (sightRange * 1.5), spawnPosition.getX(), spawnPosition.getY()));
-                    }
-                    seconds++;
-                    if (seconds > max) {
-                        seconds = 0;
-                        max = random.next(4);
-                    }
-                    rest.start();
-                }
-                lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                if (!closeEnemies.isEmpty() && !letGo) {
-                    state = idle;
-                    destination.set(-1, -1);
+                if (!awake) {
+                    state = sleep;
+                    target = null;
+                    alpha = false;
                 } else {
-                    short time = place.getTimeInMinutes();
-                    if (!letGo && time >= current_sleep_start && time <= current_sleep_end) {
+                    if (rest.isOver()) {
+                        if (destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2
+                                / 16) {
+                            letGo = false;
+                            destination.set(getRandomPointInDistance((int) (sightRange * 1.5), spawnPosition.getX(), spawnPosition.getY()));
+                        }
+                        seconds++;
+                        if (seconds > max) {
+                            seconds = 0;
+                            max = random.next(4);
+                        }
+                        rest.start();
+                    }
+                    lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
+                    if (!closeEnemies.isEmpty() && !letGo) {
                         state = idle;
                         destination.set(-1, -1);
+                    } else {
+                        if (!letGo && map.getDarkness() > current_sleep_value) {
+                            state = idle;
+                            destination.set(-1, -1);
+                        }
                     }
+                    goTo(destination);
                 }
-                goTo(destination);
             }
         };
     }
@@ -324,12 +342,9 @@ public class Blazag extends Mob {
         state = idle;
         jumper = new SpeedChanger();
         spawnPosition.set(getX(), getY());
-        float rand = random.next(6) / 64f;
-        current_sleep_end = (SLEEP_END + rand) * 60;
-        rand = random.next(6) / 64f;
+        current_sleep_value = SLEEP_VALUE + random.next(10) / 10240f;
         neutral.add(Shen.class.getName());
         neutral.add(Plurret.class.getName());
-        current_sleep_start = (SLEEP_START + rand) * 60;
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CurveInteractiveCollision(48, 32, 0, 38, 180),
                 Interactive.STRENGTH_HURT, ATTACK_SLASH, 1.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 128, 0, 24, 24),
@@ -356,12 +371,12 @@ public class Blazag extends Mob {
         }
         for (Mob mob : mobs) {
             if (mob.getClass().getName() == this.getClass().getName()) {
-                if (this != mob && mob.getMap() == map && isInRange(mob)) {
+                if (this != mob && mob.getMap() == map && isInHalfHearingRange(mob)) {
                     if (((Blazag) mob).awake) {
                         closeFriends.add(mob);
                     }
                 }
-            } else if (!isNeutral(mob) && mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
+            } else if (mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
                 closeEnemies.add(mob);
             }
         }
@@ -380,17 +395,11 @@ public class Blazag extends Mob {
             }
         }
         for (Mob mob : mobs) {
-            if (mob.getClass().getName() == this.getClass().getName()) {
-                if (this != mob && mob.getMap() == map && isInRange(mob)) {
-                    if (((Blazag) mob).awake) {
-                        closeFriends.add(mob);
-                    }
-                }
-            } else if (!isNeutral(mob) && mob.getMap() == map && (isHeardWhileSleep(mob))) {
+            if (mob.getClass().getName() != this.getClass().getName() && !isNeutral(mob) && mob.getMap() == map && (isHeardWhileSleep(mob))) {
                 closeEnemies.add(mob);
             }
         }
-        updateAlpha();
+        alpha = false;
     }
 
     private boolean isObstacleBetween() {
@@ -738,8 +747,11 @@ public class Blazag extends Mob {
                 if (friend != null) {
                     friend.order.target = null;
                     friend.order.type = -1;
+                    friend.letGo();
                 }
             }
+            alpha = false;
+            letGo();
         }
     }
 
@@ -773,6 +785,7 @@ public class Blazag extends Mob {
                 destination.set(target.getX() + getPlusMinusRandom(8), target.getY() - sightRange / 2 + getPlusMinusRandom(8));
                 break;
         }
+        destination.set(getRandomPointInDistance(sightRange / 3, destination.getX(), destination.getY()));
     }
 
     private int getPlusMinusRandom(int bits) {
@@ -942,7 +955,7 @@ public class Blazag extends Mob {
             appearance.updateFrame();
             Drawer.refreshColor();
             glPopMatrix();
-            renderPathPoints(xEffect, yEffect);
+//            renderPathPoints(xEffect, yEffect);
         }
     }
 

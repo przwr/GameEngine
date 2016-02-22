@@ -5,9 +5,6 @@
  */
 package gamecontent;
 
-import gamecontent.environment.Tree;
-import gamecontent.environment.Bush;
-import gamecontent.environment.GrassClump;
 import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
@@ -22,14 +19,19 @@ import game.place.Place;
 import game.place.cameras.PlayersCamera;
 import game.place.map.Map;
 import game.text.FontHandler;
+import gamecontent.environment.Bush;
+import gamecontent.environment.GrassClump;
+import gamecontent.environment.Tree;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
+import sounds.Sound;
 
 import java.io.File;
+import java.util.Iterator;
 
 import static engine.systemcommunication.IO.loadInputFromFile;
 
@@ -458,13 +460,18 @@ public class MyGame extends Game {
         Bush.fbos.clear();
         GrassClump.fbos.clear();
         Place.currentCamera = null;
+        Settings.sounds = null;
         mode = 0;
     }
 
     private void soundPause() {
         if (Settings.sounds != null) {
-            Settings.sounds.getSoundsList().stream().forEach((sound) -> {
-                if (sound.isPlaying()) {
+            Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
+            Sound sound;
+            while (it.hasNext()) {
+                java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
+                sound = pair.getValue();
+                if (pair.getValue().isPlaying()) {
                     if (sound.isPaused()) {
                         sound.setStopped(true);
                     } else {
@@ -473,20 +480,26 @@ public class MyGame extends Game {
                 } else {
                     sound.setStopped(true);
                 }
-            });
+                it.remove();
+            }
         }
     }
 
     private void soundResume() {
         if (Settings.sounds != null) {
-            Settings.sounds.getSoundsList().stream().forEach((sound) -> {
+            Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
+            Sound sound;
+            while (it.hasNext()) {
+                java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
+                sound = pair.getValue();
                 if (sound.isStopped()) {
                     sound.setStopped(false);
                 } else {
                     sound.resume();
                     sound.smoothStart(0.5);
                 }
-            });
+                it.remove();
+            }
         }
     }
 

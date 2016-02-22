@@ -99,7 +99,7 @@ public abstract class Mob extends Entity {
                 if (this != mob && mob.getMap() == map && isInRange(mob)) {
                     closeFriends.add(mob);
                 }
-            } else if (!isNeutral(mob) && mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
+            } else if (mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map && (isHeard(mob) || isSeen(mob))) {
                 closeEnemies.add(mob);
             }
         }
@@ -325,7 +325,7 @@ public abstract class Mob extends Entity {
         if (map != null) {
             Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
                     (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont,
-                    map.getLightColor());
+                    Drawer.getCurrentColor());
         }
         glPopMatrix();
     }
