@@ -18,6 +18,7 @@ import game.logic.betweenareapathfinding.AreaConnection;
 import game.logic.betweenareapathfinding.AreaConnector;
 import game.logic.betweenareapathfinding.AreaConnectorsGenerator;
 import game.logic.betweenareapathfinding.AreaNode;
+import game.logic.navmeshpathfinding.navigationmesh.NavigationMeshGenerator;
 import game.place.Place;
 import game.place.cameras.Camera;
 import org.newdawn.slick.Color;
@@ -41,11 +42,8 @@ public abstract class Map {
     protected static Tile tempTile;
     public final Place place;
     protected final int tileSize;
-    protected int widthInTiles, heightInTiles;
     protected final BlueArray<GameObject> pointingArrows = new BlueArray<>();
     protected final String name;
-    protected int width;
-    protected int height;
     protected final short mapID;
     protected final PointContainer tempTilePositions = new PointContainer();
     protected final Set<Block> tempBlocks = new HashSet<>();
@@ -60,6 +58,9 @@ public abstract class Map {
     protected final Set<Integer> areasToUpdate = new HashSet<>(36);
     public Area[] areas;
     public Area[] areasCopies; //Tylko do testów - powinno być wywalone - a areas wczytywane z pliku
+    protected int widthInTiles, heightInTiles;
+    protected int width;
+    protected int height;
     protected AreaConnector[] areaConnectors;
     protected Placement placement;
     protected int xAreas;
@@ -69,6 +70,7 @@ public abstract class Map {
     protected List<GameObject> depthObjects, foregroundTiles;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
     protected Color pointingColor = new Color(0f, 0f, 0f, 0.7f);
+    private Color[] colors = {Color.red, Color.magenta};
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
@@ -81,14 +83,14 @@ public abstract class Map {
         heightInTiles = height / tileSize;
         createAreas();
     }
-    
+
     protected Map(short mapID, String name, Place place, int tileSize) {
         this.place = place;
         this.name = name;
         this.mapID = mapID;
         this.tileSize = tileSize;
     }
-    
+
     protected void initializeAreas(int width, int height) {
         this.width = width;
         this.height = height;
@@ -113,17 +115,24 @@ public abstract class Map {
 
     protected void generateNavigationMeshes() {     // call after adding All blocks and tiles
         int areaIndex = 0;
+        Set<Block> allBlocks = new HashSet<>();
         for (Area area : areas) {
             tempBlocks.clear();
             for (Block block : getBlocks(areaIndex)) {
                 if (isOnArea(block, areaIndex)) {
                     tempBlocks.add(block);
                 }
+                allBlocks.add(block);
             }
             area.generateNavigationMesh(tempBlocks);
             areaIndex++;
         }
         this.areaConnectors = AreaConnectorsGenerator.generateAreaConnectors(this);
+        for (Block block : allBlocks) {
+            if (block.isForNavigationMesh()) {
+                deleteBlock(block);
+            }
+        }
     }
 
     private List<Block> getBlocks(int area) {
@@ -158,12 +167,17 @@ public abstract class Map {
         int area = getAreaIndex(xStart, yStart);
         int x = areas[area].getXInPixels();
         int y = areas[area].getYInPixels();
+        PointContainer solution;
         if (area != getAreaIndex(xDestination, yDestination)) {
-            return NO_SOLUTION;
-//            return findInDifferentAreas(area, x, y, xStart, yStart, xDestination, yDestination, collision);
+            solution = findInDifferentAreas(area, x, y, xStart, yStart, xDestination, yDestination, collision);
+        } else {
+            solution = areas[area].findPath(xStart - x, yStart - y, xDestination - x, yDestination - y, collision);
         }
-        PointContainer solution = areas[area].findPath(xStart - x, yStart - y, xDestination - x, yDestination - y, collision);
         if (solution != null) {
+            if (Main.SHOW_MESH && NavigationMeshGenerator.meshWindow != null && solution.size() > 0) {
+                NavigationMeshGenerator.meshWindow.addVariables(areas[area].getNavigationMesh(), solution.get(solution.size() - 1), solution.get(0), solution);
+                NavigationMeshGenerator.meshWindow.repaint();
+            }
             return solution;
         } else {
             return NO_SOLUTION;
@@ -176,101 +190,155 @@ public abstract class Map {
         PriorityQueue<AreaNode> openList = new PriorityQueue<>(24, (AreaNode n1, AreaNode n2) -> n1.getFCost() - n2.getFCost());
         AreaNode currentNode = null;
 
-        AreaNode beginning = new AreaNode(area);
-        beginning.setGHCosts(0, countH(area, endArea));
-        closedList.add(beginning);
-        for (AreaConnection connection : areaConnectors[beginning.getAreaIndex()].getConnections()) {
-//          TODO sprawdzić czy pasuje, czy jest przejście itp;
-            AreaNode node = new AreaNode(connection.getFirstAreaIndex() == area ? connection.getSecondAreaIndex() : connection.getFirstAreaIndex(), beginning);
-            node.setGHCosts(countG(node.getAreaIndex(), area), countH(node.getAreaIndex(), endArea));
-            openList.add(node);
+        AreaConnection start = new AreaConnection(area, area);
+        start.addPoint(new Point(xStart, yStart));
+        AreaNode beginning = new AreaNode(start);
 
+        AreaConnection end = new AreaConnection(endArea, endArea);
+        end.addPoint(new Point(xDestination, yDestination));
+        AreaNode ending = new AreaNode(end);
+
+        beginning.setGHCosts(0, countHCost(beginning, ending));
+        closedList.add(beginning);
+        for (AreaConnection connection : areaConnectors[area].getConnections()) {
+            if (beginning.getConnection() != connection && existsConnection(area, beginning, connection, collision)) {
+                AreaNode node = new AreaNode(connection, beginning);
+                node.setGHCosts(countGCost(node, beginning), countHCost(node, ending));
+                openList.add(node);
+            }
         }
+        int currentArea = area;
         while (!openList.isEmpty()) {
             currentNode = openList.poll();
             closedList.add(currentNode);
-            if (currentNode.getAreaIndex() == endArea) {
+            if (currentNode.connectsWithArea(endArea) && existsConnection(endArea, currentNode, end, collision)) {
                 break;
             }
-            for (AreaConnection connection : areaConnectors[currentNode.getAreaIndex()].getConnections()) {
-                int index = connection.getFirstAreaIndex() == currentNode.getAreaIndex() ? connection.getSecondAreaIndex() : connection.getFirstAreaIndex();
-                AreaNode next = closedListContains(closedList, index);
-                if (next.getFCost() != Integer.MAX_VALUE) { // już istniał
-                    int temp = countG(index, currentNode.getAreaIndex());
-                    if (temp + currentNode.getGCost() < next.getGCost()) {
+            currentArea = currentNode.getConnectedAreaIndex(currentArea);
+            for (AreaConnection connection : areaConnectors[currentArea].getConnections()) {
+                AreaNode next = closedListContains(closedList, connection);
+                if (currentNode.getConnection() != connection) {
+                    if (next.getFCost() != Integer.MAX_VALUE) { // już istniał
+                        int temp = countGCost(next, currentNode);
+                        if (temp + currentNode.getGCost() < next.getGCost() && existsConnection(currentArea, currentNode, next.getConnection(), collision)) {
+                            next.setParent(currentNode);
+                            next.setGCost(temp);
+                        }
+                    } else if (existsConnection(currentArea, currentNode, next.getConnection(), collision)) {
                         next.setParent(currentNode);
-                        next.setGCost(temp);
+                        next.setGHCosts(countGCost(next, currentNode), countHCost(next, ending));
+                        openList.add(next);
                     }
-                } else {
-//                  TODO sprawdzić czy pasuje, czy jest przejście itp;
-                    next.setParent(currentNode);
-                    next.setGHCosts(countG(next.getAreaIndex(), currentNode.getAreaIndex()), countH(next.getAreaIndex(), endArea));
-                    openList.add(next);
                 }
             }
         }
 
 
-        AreaNode prev = currentNode;
-        while (currentNode.getParent() != null) {
-            prev = currentNode;
-            currentNode = currentNode.getParent();
+        if (currentNode != null) {
+            AreaNode prev = currentNode;
+            while (currentNode.getParent() != null) {
+                prev = currentNode;
+                currentNode = currentNode.getParent();
+            }
+//            System.out.println(prev.getConnectedAreaIndex(currentNode.getConnection().getFirstAreaIndex())
+//                    + " -> " + currentNode.getConnection().getFirstAreaIndex());
+            PointContainer solution = getBetweenAreaSolution(area, x, y, xStart, yStart, prev.getConnection(), collision);
+
+            if (solution != null) {
+//            if (!solution.contains(xDestination, yDestination)) {
+//                solution.add();
+//            }
+                return solution;
+            }
         }
+
         return NO_SOLUTION;
     }
 
+    private boolean existsConnection(int area, AreaNode start, AreaConnection end, Figure collision) {
+        Area a = areas[area];
+        int x = a.getXInPixels();
+        int y = a.getYInPixels();
+        Point first = start.getCentralPoint();
+        Point second = end.getCentralPoint();
+        int firstTestX = first.getX() - x;
+        int firstTestY = first.getY() - y;
+        if (first.getX() % (X_IN_TILES * 64) == 0) {
+            firstTestX += first.getX() > x ? -collision.getWidthHalf() : collision.getWidthHalf();
+        }
+        if (first.getY() % (Y_IN_TILES * 64) == 0) {
+            firstTestY += first.getY() > y ? -collision.getWidthHalf() : collision.getWidthHalf();
+        }
+        int secondTestX = second.getX() - x;
+        int secondTestY = second.getY() - y;
+        if (second.getX() % (X_IN_TILES * 64) == 0) {
+            secondTestX += second.getX() > x ? -collision.getWidthHalf() : collision.getWidthHalf();
+        }
+        if (second.getY() % (Y_IN_TILES * 64) == 0) {
+            secondTestY += second.getY() > y ? -collision.getWidthHalf() : collision.getWidthHalf();
+        }
+        return areas[area].pathExists(firstTestX, firstTestY, secondTestX, secondTestY, collision);
+    }
 
-    private AreaNode closedListContains(Set<AreaNode> closedList, int index) {
+    private AreaNode closedListContains(Set<AreaNode> closedList, AreaConnection connection) {
         Iterator<AreaNode> iterator = closedList.iterator();
         AreaNode node;
         while (iterator.hasNext()) {
             node = iterator.next();
-            if (node.getAreaIndex() == index) {
+            if (node.getConnection() == connection) {
                 return node;
             }
         }
-        return new AreaNode(index);
+        return new AreaNode(connection);
     }
 
-    private int countG(int areaIndex, int parentAreaIndex) {
-        Area area = areas[areaIndex];
-        Area endArea = areas[parentAreaIndex];
-        int x = endArea.getXInPixels() - area.getXInPixels();
-        int y = endArea.getYInPixels() - area.getYInPixels();
+    private int countGCost(AreaNode currentNode, AreaNode parentNode) {
+        Point current = currentNode.getCentralPoint();
+        Point parent = parentNode.getCentralPoint();
+        int x = parent.getX() - current.getX();
+        int y = parent.getY() - current.getY();
+        return 2686976;
+    }
+
+    private int countHCost(AreaNode currentNode, AreaNode endNode) {
+        Point current = currentNode.getCentralPoint();
+        Point parent = endNode.getCentralPoint();
+        int x = parent.getX() - current.getX();
+        int y = parent.getY() - current.getY();
         return (x * x + y * y);
     }
 
-    private int countH(int areaIndex, int endAreaIndex) {
-        Area area = areas[areaIndex];
-        Area endArea = areas[endAreaIndex];
-        int x = endArea.getXInPixels() - area.getXInPixels();
-        int y = endArea.getYInPixels() - area.getYInPixels();
-        return (x * x + y * y);
+    private int calculateValueOfPoint(Point point, int xStart, int yStart, Point central) {
+        return Methods.pointDistanceSimple2(point.getX(), point.getY(), xStart, yStart);
     }
 
-    private PointContainer getConnectedPoints(int area, int nextArea, int x, int y, int xStart, int yStart, AreaConnection connection, Figure collision) {
-        List<Point> currentAreaPoints = connection.getConnectionPointsForArea(area);
-        List<Point> destinationAreaPoints = connection.getConnectionPointsForArea(nextArea);
+    private PointContainer getBetweenAreaSolution(int area, int x, int y, int xStart, int yStart, AreaConnection connection, Figure collision) {
+        List<Point> currentAreaPoints = connection.getConnectionPoints();
         List<Point> tempPoints = new ArrayList<>(currentAreaPoints);
-        tempPoints.sort((o1, o2) -> Methods.pointDistanceSimple2(o1.getX(), o1.getY(), xStart, yStart) - Methods.pointDistanceSimple2(o2.getX(), o2.getY(),
-                xStart, yStart));
-        if (currentAreaPoints != null && destinationAreaPoints != null) {
-            for (Point currentPoint : tempPoints) {
-                if (areas[area].pathExists(xStart - x, yStart - y, currentPoint.getX() - x, currentPoint.getY() - y, collision)) {
-                    Point destinationPoint = null;
-                    int currentDistance, smallestDistance = Integer.MAX_VALUE;
-                    for (Point point : destinationAreaPoints) {
-                        currentDistance = Methods.pointDistanceSimple2(currentPoint.getX(), currentPoint.getY(), point.getX(), point.getY());
-                        if (currentDistance < smallestDistance) {
-                            smallestDistance = currentDistance;
-                            destinationPoint = point;
-                        }
-                    }
-                    PointContainer solution = new PointContainer(2);
-                    solution.add(currentPoint);
-                    solution.add(destinationPoint);
-                    return solution;
+        Point central = connection.getCentralPoint();
+        tempPoints.sort((o1, o2) -> calculateValueOfPoint(o1, xStart, yStart, central) - calculateValueOfPoint(o2, xStart, yStart, central));
+        PointContainer solution;
+        for (Point currentPoint : tempPoints) {
+            int testX = currentPoint.getX() - x;
+            int testY = currentPoint.getY() - y;
+            if (currentPoint.getX() % (X_IN_TILES * 64) == 0) {
+                testX += currentPoint.getX() > x ? -collision.getWidthHalf() : collision.getWidthHalf();
+            }
+            if (currentPoint.getY() % (Y_IN_TILES * 64) == 0) {
+                testY += currentPoint.getY() > y ? -collision.getWidthHalf() : collision.getWidthHalf();
+            }
+            solution = areas[area].findPath(xStart - x, yStart - y, testX, testY, collision);
+            if (solution != null) {
+                int changeX = currentPoint.getX() - x;
+                int changeY = currentPoint.getY() - y;
+                if (currentPoint.getX() % (X_IN_TILES * 64) == 0) {
+                    changeX += currentPoint.getX() > x ? collision.getWidthHalf() : -collision.getWidthHalf();
                 }
+                if (currentPoint.getY() % (Y_IN_TILES * 64) == 0) {
+                    changeY += currentPoint.getY() > y ? collision.getWidthHalf() : -collision.getWidthHalf();
+                }
+                solution.add(new Point(changeX, changeY));
+                return solution;
             }
         }
         return null;
@@ -341,7 +409,6 @@ public abstract class Map {
 //            }
 //        }
     }
-
 
     public void addAreasToUpdate(int[] newAreas) {
         for (int area : newAreas) {
@@ -697,18 +764,16 @@ public abstract class Map {
             glPushMatrix();
             glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            Drawer.setColor(Color.red);
             Drawer.setCentralPoint();
-            if (areaConnectors[i] != null) {
+            if (areaConnectors != null && areaConnectors[i] != null) {
+                int c = 0;
                 for (AreaConnection connection : areaConnectors[i].getConnections()) {
-                    for (Point point : connection.getFirstConnectionPoints()) {
+                    Drawer.setColor(colors[c % colors.length]);
+                    for (Point point : connection.getConnectionPoints()) {
                         Drawer.drawRectangle(point.getX() - 5, point.getY() - 5, 10, 10);
                         Drawer.returnToCentralPoint();
                     }
-                    for (Point point : connection.getSecondConnectionPoints()) {
-                        Drawer.drawRectangle(point.getX() - 5, point.getY() - 5, 10, 10);
-                        Drawer.returnToCentralPoint();
-                    }
+                    c++;
                 }
             }
             glPopMatrix();

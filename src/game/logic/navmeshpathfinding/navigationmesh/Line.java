@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * @author przemek
  */
-class Line implements Comparable<Object> {
+public class Line implements Comparable<Object> {
 
     private final Set<Line> joined = new HashSet<>();
     private Point start, end;

@@ -37,6 +37,10 @@ public class NavigationMesh {
         this.spots = spots;
     }
 
+    public void addLooseTriangle(Triangle triangle) {
+        mesh.add(Triangle.createAndConnectNeighbours(triangle.getPointFromNode(0), triangle.getPointFromNode(1), triangle.getPointFromNode(2)));
+    }
+
     public void addTriangle(Triangle triangleToAdd) {
         connectionsNumber = 0;
         connectedTriangles[0] = connectedTriangles[1] = connectedTriangles[2] = null;

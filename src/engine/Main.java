@@ -14,7 +14,10 @@ import engine.view.Renderer;
 import engine.view.SplitScreen;
 import game.Game;
 import game.Settings;
+import game.logic.navmeshpathfinding.Window;
+import game.logic.navmeshpathfinding.navigationmesh.NavigationMeshGenerator;
 import game.place.Console;
+import game.place.map.Area;
 import gamecontent.MyGame;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
@@ -36,6 +39,7 @@ import java.util.logging.Logger;
 
 import static engine.systemcommunication.IO.setSettingsFromFile;
 import static game.Settings.calculateScale;
+import static game.Settings.players;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
@@ -49,7 +53,7 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(200);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREAS, pause, enter = true, TEST = true;
+    public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREAS, SHOW_MESH, pause, enter = true, TEST = true;
     public static BackgroundLoader backgroundLoader;
     public static SimpleKeyboard key = new SimpleKeyboard();
     private static Game game;
@@ -165,8 +169,8 @@ public class Main {
     private static void setIcon() {
         try {
             Display.setIcon(new ByteBuffer[]{
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon32.png")), false, false, null),
+                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/textures/icon16.png")), false, false, null)
             });
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
@@ -255,6 +259,24 @@ public class Main {
         if (key.keyPressed(Keyboard.KEY_F3)) {
             SHOW_AREAS = !SHOW_AREAS;
             console.printMessage("SHOW/HIDE AREAS");
+        }
+        if (key.keyPressed(Keyboard.KEY_F4)) {
+            SHOW_MESH = !SHOW_MESH;
+            if (SHOW_MESH) {
+                if (NavigationMeshGenerator.meshWindow == null) {
+                    NavigationMeshGenerator.meshWindow = new Window();
+                    if (players[0].getMap() != null) {
+                        Area area = players[0].getMap().getArea(players[0].getArea());
+                        NavigationMeshGenerator.meshWindow.addVariables(area.getNavigationMesh(), null, null, null);
+                        NavigationMeshGenerator.meshWindow.repaint();
+                    }
+                }
+                NavigationMeshGenerator.meshWindow.setVisible(true);
+            } else {
+                if (NavigationMeshGenerator.meshWindow != null) {
+                    NavigationMeshGenerator.meshWindow.setVisible(false);
+                }
+            }
         }
         if (key.keyPressed(Keyboard.KEY_F12)) {
             Methods.pasteToClipBoard(game.getSimplePlayerCoordinates());

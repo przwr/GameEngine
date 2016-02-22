@@ -14,9 +14,7 @@ import game.place.map.ForegroundTile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static collision.OpticProperties.FULL_SHADOW;
-import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import static collision.OpticProperties.TRANSPARENT;
+import static collision.OpticProperties.*;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -28,6 +26,7 @@ public class Block extends GameObject {
     private final ArrayList<Figure> top = new ArrayList<>(1);
     private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
+    private boolean forNavigationMesh;
 
     private Block(int x, int y, int width, int height, int shadowHeight, boolean round, boolean invisible) {  //Point (x, y) should be in left top corner of Block
         this.x = x;
@@ -287,5 +286,13 @@ public class Block extends GameObject {
 
     public List<Point> getPoints() {
         return collision.getPoints();
+    }
+
+    public boolean isForNavigationMesh() {
+        return forNavigationMesh;
+    }
+
+    public void setForNavigationMesh(boolean forNavigationMesh) {
+        this.forNavigationMesh = forNavigationMesh;
     }
 }

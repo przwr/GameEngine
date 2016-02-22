@@ -12,46 +12,35 @@ public class AreaConnection {
 
     private int firstAreaIndex;
     private int secondAreaIndex;
-    private int maxConnectionSize;
-    private ArrayList<Point> firstConnectionPoints;
-    private ArrayList<Point> secondConnectionPoints;
+    private ArrayList<Point> connectionPoints;
 
 
     public AreaConnection(int firstAreaIndex, int secondAreaIndex) {
-        firstConnectionPoints = new ArrayList<>(9);
-        secondConnectionPoints = new ArrayList<>(9);
+        connectionPoints = new ArrayList<>(9);
         this.firstAreaIndex = firstAreaIndex;
         this.secondAreaIndex = secondAreaIndex;
     }
 
-    public void setMaxConnectionSize(int maxConnectionSize) {
-        this.maxConnectionSize = maxConnectionSize;
-    }
-
     public void trim() {
-        if (firstConnectionPoints != null)
-            firstConnectionPoints.trimToSize();
-        if (secondConnectionPoints != null)
-            secondConnectionPoints.trimToSize();
+        if (connectionPoints != null)
+            connectionPoints.trimToSize();
     }
 
-    public void addPoints(Point firstAreaPoint, Point secondAreaPoint) {
-        firstConnectionPoints.add(firstAreaPoint);
-        secondConnectionPoints.add(secondAreaPoint);
+    public void addPoint(Point firstAreaPoint) {
+        connectionPoints.add(firstAreaPoint);
     }
 
-    public List<Point> getConnectionPointsForArea(int area) {
-        return firstAreaIndex == area ? firstConnectionPoints : (secondAreaIndex == area ? secondConnectionPoints : null);
+    public List<Point> getConnectionPoints() {
+        return connectionPoints;
     }
 
-
-    public List<Point> getFirstConnectionPoints() {
-        return firstConnectionPoints;
+    public Point getCentralPoint() {
+        if (connectionPoints.size() == 0) {
+            System.out.println();
+        }
+        return connectionPoints.get((connectionPoints.size() - 1) / 2);
     }
 
-    public List<Point> getSecondConnectionPoints() {
-        return secondConnectionPoints;
-    }
 
     public int getFirstAreaIndex() {
         return firstAreaIndex;
@@ -59,5 +48,9 @@ public class AreaConnection {
 
     public int getSecondAreaIndex() {
         return secondAreaIndex;
+    }
+
+    public int getConnectedAreaIndex(int areaIndex) {
+        return firstAreaIndex == areaIndex ? secondAreaIndex : firstAreaIndex;
     }
 }
