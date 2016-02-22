@@ -11,6 +11,8 @@ import game.menu.Menu;
 import game.menu.MenuChoice;
 import sounds.Sound;
 
+import java.util.Iterator;
+
 /**
  * @author przemek
  */
@@ -34,7 +36,12 @@ public class VolumeChoice extends MenuChoice {
             }
         }
         if (Settings.sounds != null) {
-            Settings.sounds.getSoundsList().forEach(Sound::updateGain);
+            Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
+            while (it.hasNext()) {
+                java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
+                pair.getValue().updateGain();
+                it.remove();
+            }
         }
         AnalyzerSettings.update();
     }

@@ -15,7 +15,6 @@ import engine.view.SplitScreen;
 import game.Game;
 import game.Settings;
 import game.logic.navmeshpathfinding.Window;
-import game.logic.navmeshpathfinding.navigationmesh.NavigationMeshGenerator;
 import game.place.Console;
 import game.place.map.Area;
 import gamecontent.MyGame;
@@ -50,10 +49,11 @@ public class Main {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG = false;
-    private static final Delay delay = Delay.createInMilliseconds(200);
+    private static final Delay delay = Delay.createInMilliseconds(200, true);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREAS, SHOW_MESH, pause, enter = true, TEST = true;
+    public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREAS, SHOW_MESH, pause, enter = true, TEST = false;
+    public static Window meshWindow;
     public static BackgroundLoader backgroundLoader;
     public static SimpleKeyboard key = new SimpleKeyboard();
     private static Game game;
@@ -207,6 +207,7 @@ public class Main {
 
     private static void initializeGame() {
         game = new MyGame("Crossroads (PROTOTYPE)", controllers);
+        backgroundLoader.setGame(game);
         Display.setTitle(game.getTitle());
         Renderer.setUpDisplay();
         Drawer.setUpDisplay();
@@ -263,18 +264,18 @@ public class Main {
         if (key.keyPressed(Keyboard.KEY_F4)) {
             SHOW_MESH = !SHOW_MESH;
             if (SHOW_MESH) {
-                if (NavigationMeshGenerator.meshWindow == null) {
-                    NavigationMeshGenerator.meshWindow = new Window();
+                if (Main.meshWindow == null) {
+                    Main.meshWindow = new Window();
                     if (players[0].getMap() != null) {
                         Area area = players[0].getMap().getArea(players[0].getArea());
-                        NavigationMeshGenerator.meshWindow.addVariables(area.getNavigationMesh(), null, null, null);
-                        NavigationMeshGenerator.meshWindow.repaint();
+                        Main.meshWindow.addVariables(area.getNavigationMesh(), null, null, null);
+                        Main.meshWindow.repaint();
                     }
                 }
-                NavigationMeshGenerator.meshWindow.setVisible(true);
+                Main.meshWindow.setVisible(true);
             } else {
-                if (NavigationMeshGenerator.meshWindow != null) {
-                    NavigationMeshGenerator.meshWindow.setVisible(false);
+                if (Main.meshWindow != null) {
+                    Main.meshWindow.setVisible(false);
                 }
             }
         }

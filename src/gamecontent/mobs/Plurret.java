@@ -202,8 +202,8 @@ public class Plurret extends Mob {
                 if (this != mob && mob.getMap() == map && isInRange(mob)) {
                     closeFriends.add(mob);
                 }
-            } else if (!isNeutral(mob) && mob.getMap() == map && mob.getFloatHeight() + mob.getActualHeight() > floatHeight && (isHeard(mob) || isSeen
-                    (mob))) {
+            } else if (mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map && mob.getFloatHeight() + mob.getActualHeight() > floatHeight &&
+                    (isHeard(mob) || isSeen(mob))) {
                 closeEnemies.add(mob);
             }
         }

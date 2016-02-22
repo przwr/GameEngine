@@ -471,7 +471,6 @@ class PathStrategyCore {
         return null;
     }
 
-    //
     public static Figure anyFigureInAWay(Polygon poly, List<Figure> close, List<GameObject> closeEnemies) {
         for (Figure figure : close) {
             if (!closeEnemies.contains(figure.getOwner())) {

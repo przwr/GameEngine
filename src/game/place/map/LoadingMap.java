@@ -39,8 +39,8 @@ public class LoadingMap extends Map {
             }
         }
         FontHandler font = Drawer.getFont("Amble-Regular", (int) (camera.getScale() * 48));
-        Drawer.renderStringCentered(loading, camera.getWidth() / 2, camera.getHeight() / 2, font, getLightColor());
-        Drawer.renderStringCentered(dots, (camera.getWidth() + font.getWidth(loading)) / 2, camera.getHeight() / 2, font, getLightColor());
+        Drawer.renderStringCentered(loading, camera.getWidth() / 2, camera.getHeight() / 2, font, Color.white);
+        Drawer.renderStringCentered(dots, (camera.getWidth() + font.getWidth(loading)) / 2, camera.getHeight() / 2, font, Color.white);
     }
 
     @Override

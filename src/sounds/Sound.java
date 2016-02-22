@@ -91,7 +91,7 @@ public class Sound {
         }
     }
 
-    private void pause() {
+    public void pause() {
         if (soundEffect.isPlaying()) {
             position = soundEffect.getPosition();
             soundEffect.stop();

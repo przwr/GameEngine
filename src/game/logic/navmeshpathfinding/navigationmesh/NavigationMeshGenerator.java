@@ -10,7 +10,6 @@ import collision.Figure;
 import collision.RoundRectangle;
 import engine.utilities.BlueArray;
 import engine.utilities.Point;
-import game.logic.navmeshpathfinding.Window;
 import game.place.Place;
 import game.place.map.Tile;
 
@@ -41,7 +40,6 @@ public class NavigationMeshGenerator {
     private static final Map<Line, NeighbourTriangles> linesTriangles = new HashMap<>();
     private static final Point tempPoint = new Point();
     private final static float EPSILON = 0.001f;
-    public static Window meshWindow;
     private static int x, y, xMod, yMod, yStartBound, yEndBound, xStartBound, xEndBound, xStartTemp, yStartTemp, xETemp, yETemp, lineXStart, lineYStart,
             leftTop, rightTop, leftBottom, rightBottom;
     private static double xd, yd;

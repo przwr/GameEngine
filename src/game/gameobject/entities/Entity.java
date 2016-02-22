@@ -227,6 +227,15 @@ public abstract class Entity extends GameObject {
         }
     }
 
+    public void endChangers() {
+        TemporalChanger tc;
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
+            tc = iterator.next();
+            tc.onStop();
+            iterator.remove();
+        }
+    }
+
     public void addChanger(TemporalChanger tc) {
         if (!changers.contains(tc)) {
             changers.add(tc);
@@ -658,36 +667,6 @@ public abstract class Entity extends GameObject {
         Point point = getRandomPointInRange(distance, xP, yP);
         if (point != null) {
             return point;
-//        } else {
-//            distance *= 2;
-//            point = getRandomPointInRange(distance, xP, yP);
-//            if (point != null) {
-//                return point;
-//            } else {
-//                distance *= 2;
-//                point = getRandomPointInRange(distance, xP, yP);
-//                if (point != null) {
-//                    return point;
-//                } else {
-//                    distance *= 2;
-//                    point = getRandomPointInRange(distance, xP, yP);
-//                    if (point != null) {
-//                        return point;
-//                    } else {
-//                        distance *= 2;
-//                        point = getRandomPointInRange(distance, xP, yP);
-//                        if (point != null) {
-//                            return point;
-//                        } else {
-//                            distance *= 2;
-//                            point = getRandomPointInRange(distance, xP, yP);
-//                            if (point != null) {
-//                                return point;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
         }
         return new Point(xP, yP);
     }

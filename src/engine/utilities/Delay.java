@@ -5,34 +5,38 @@
  */
 package engine.utilities;
 
+import game.place.Place;
+
 /**
  * @author przemek
  */
 public class Delay {
 
+    private final boolean realTime;
     private int length;
     private long endTime;
     private boolean started;
 
-    private Delay(int length) {
+    private Delay(int length, boolean realTime) {
         this.length = length;
+        this.realTime = realTime;
         started = false;
     }
 
-    public static Delay createInMinutesAndSeconds(int minutes, int seconds) {
-        return new Delay((seconds + minutes * 60) * 1000);
+    public static Delay createInMinutesAndSeconds(int minutes, int seconds, boolean... realTime) {
+        return new Delay((seconds + minutes * 60) * 1000, realTime.length > 0 && realTime[0]);
     }
 
-    public static Delay createInSecondsAndMilliseconds(int seconds, int miliseconds) {
-        return new Delay(miliseconds + seconds * 1000);
+    public static Delay createInSecondsAndMilliseconds(int seconds, int miliseconds, boolean... realTime) {
+        return new Delay(miliseconds + seconds * 1000, realTime.length > 0 && realTime[0]);
     }
 
-    public static Delay createInSeconds(int seconds) {
-        return new Delay(seconds * 1000);
+    public static Delay createInSeconds(int seconds, boolean... realTime) {
+        return new Delay(seconds * 1000, realTime.length > 0 && realTime[0]);
     }
 
-    public static Delay createInMilliseconds(int miliseconds) {
-        return new Delay(miliseconds);
+    public static Delay createInMilliseconds(int miliseconds, boolean... realTime) {
+        return new Delay(miliseconds, realTime.length > 0 && realTime[0]);
     }
 
     public void setFrameLengthInSecondsAndMilliseconds(int seconds, int miliseconds) {
@@ -63,11 +67,11 @@ public class Delay {
     }
 
     public boolean isOver() {
-        return started && endTime <= System.currentTimeMillis();
+        return started && endTime <= getCurrentMiliSeconds();
     }
 
     public boolean isWorking() {
-        return started && endTime > System.currentTimeMillis();
+        return started && endTime > getCurrentMiliSeconds();
     }
 
     public boolean isActive() {
@@ -76,12 +80,12 @@ public class Delay {
 
     public void start() {
         started = true;
-        endTime = length + System.currentTimeMillis();
+        endTime = length + getCurrentMiliSeconds();
     }
 
     public void startAt(int start) {
         started = true;
-        endTime = start + System.currentTimeMillis();
+        endTime = start + getCurrentMiliSeconds();
     }
 
     public void stop() {
@@ -98,6 +102,11 @@ public class Delay {
     }
 
     public long getDifference() {
-        return endTime - System.currentTimeMillis();
+        return endTime - getCurrentMiliSeconds();
+    }
+
+
+    private long getCurrentMiliSeconds() {
+        return realTime ? System.currentTimeMillis() : Place.getDayCycle().getCurrentTimeInMiliSeconds();
     }
 }

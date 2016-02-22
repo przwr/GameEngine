@@ -359,7 +359,7 @@ public class MyPlayer extends Player {
             glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
             Drawer.refreshColor();
             Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
-                    map.getLightColor());
+                    Drawer.getCurrentColor());
             Drawer.refreshColor();
             glPopMatrix();
 
@@ -461,7 +461,7 @@ public class MyPlayer extends Player {
     @Override
     public void update() {
         if (((ClothedAppearance) appearance).isUpToDate()) {
-            if (map == place.loadingMap) {
+            if (warp != null) {
                 warp.warp(this);
             }
             if (jumping) {

@@ -47,13 +47,13 @@ public abstract class Place extends ScreenPlace {
     public static int tileSize, tileSquared, tileHalf, tileDoubleSize, xAreaInPixels, yAreaInPixels, progress;
     public static Camera currentCamera;
     protected static DayCycle dayCycle;
-    private static Delay loading = Delay.createInMilliseconds(500);
+    private static Delay loading = Delay.createInMilliseconds(500, true);
     public final ArrayList<Map> maps = new ArrayList<>();
     public final ArrayList<Map> mapsToAdd1 = new ArrayList<>();
     public final ArrayList<Map> mapsToAdd2 = new ArrayList<>();
     public final Camera[] cameras = new Camera[3];
     protected final SpriteBase sprites;
-    private final SoundBase sounds;
+    protected final SoundBase sounds;
     public Map loadingMap;
     public boolean changeSSMode, singleCamera, firstMapsToAddActive;
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;

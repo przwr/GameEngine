@@ -40,7 +40,7 @@ public class MyPlace extends Place {
     private final Action changeSplitScreenMode;
     private final Action changeSplitScreenJoin;
     private final updater[] updates = new updater[2];
-    private final Delay delay = Delay.createInMilliseconds(100);
+    private final Delay delay = Delay.createInMilliseconds(100, true);
     private ArrayList<Map> unloadedMaps = new ArrayList<>();
     private Map map;
 
@@ -92,10 +92,9 @@ public class MyPlace extends Place {
             StoneMap kamienna = new StoneMap(mapIDCounter++, this, 10240, 10240, tileSize);
             maps.add(kamienna);
         }
-//        sounds.initialize("res");
-//        SoundStore.get().poll(0);
         NavigationMeshGenerator.clear();
     }
+
 
     @Override
     public void generateAsHost() {
@@ -198,38 +197,38 @@ public class MyPlace extends Place {
     }
 
     private void updateInputs() {
-//            if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
-//                sounds.getSound("MumboMountain").resume();
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-//                sounds.getSound("MumboMountain").pause();
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
-//                sounds.getSound("MumboMountain").stop();
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
-//                sounds.getSound("MumboMountain").addPitch(0.05f);
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
-//                sounds.getSound("MumboMountain").addPitch(-0.05f);
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
-//                sounds.getSound("MumboMountain").addGainModifier(0.05f);
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
-//                sounds.getSound("MumboMountain").addGainModifier(-0.05f);
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
-//                sounds.getSound("MumboMountain").resume();
-//                sounds.getSound("MumboMountain").smoothStart(0.5);
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
-//                sounds.getSound("MumboMountain").fade(0.5, true);
-//            }
-//            if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
-//                sounds.getSound("MumboMountain").fade(0.5, false);
-//            }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+//            sounds.getSound("MumboMountain").stop();
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+//            sounds.getSound("MumboMountain").addGainModifier(0.05f);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+//            sounds.getSound("MumboMountain").addGainModifier(-0.05f);
+//        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+            sounds.getSound("MumboMountain").resume();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+            sounds.getSound("MumboMountain").pause();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
+            sounds.getSound("MumboMountain").resume();
+            sounds.getSound("MumboMountain").smoothStart(0.5);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
+            sounds.getSound("MumboMountain").addPitch(0.05f);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
+            sounds.getSound("MumboMountain").addPitch(-0.05f);
+        }
         if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
+            sounds.getSound("MumboMountain").fade(0.5, true);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
+            sounds.getSound("MumboMountain").fade(0.5, false);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
             if (delay.isOver()) {
                 delay.start();
                 Settings.framesLimit = Settings.framesLimit == 30 ? 60 : 30;
@@ -242,7 +241,6 @@ public class MyPlace extends Place {
                 dayCycle.addMinutes(5);
             }
         }
-
         if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
             if (delay.isOver()) {
                 delay.start();
@@ -255,7 +253,6 @@ public class MyPlace extends Place {
                 dayCycle.resumeTime();
             }
         }
-
         if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
             if (delay.isOver()) {
                 delay.start();

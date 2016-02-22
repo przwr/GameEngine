@@ -1,10 +1,13 @@
 package engine;
 
 import engine.utilities.ErrorHandler;
+import game.Game;
+import game.Settings;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.GLSync;
+import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
@@ -37,6 +40,7 @@ public abstract class BackgroundLoader {
     private ArrayList<Sprite> list1 = new ArrayList<>();
     private ArrayList<Sprite> list2 = new ArrayList<>();
     private Thread thread;
+    private Game game;
 
     public BackgroundLoader() {
         running = true;
@@ -60,7 +64,7 @@ public abstract class BackgroundLoader {
         sprites.clear();
     }
 
-    void start() throws LWJGLException {
+    public void start() throws LWJGLException {
         drawable = getDrawable();
         thread = new Thread(new Runnable() {
             @Override
@@ -74,6 +78,7 @@ public abstract class BackgroundLoader {
                 while (running) {
                     try {
                         loadTexture();
+                        loadSounds();
                     } catch (Exception exception) {
                         ErrorHandler.swallowLogAndPrint(exception);
                     }
@@ -105,7 +110,7 @@ public abstract class BackgroundLoader {
                     workingList.removeAll(toClear);
                     addToSprites();
                 }
-            } else if (list1.isEmpty() && list2.isEmpty()) {
+            } else if (list1.isEmpty() && list2.isEmpty() && Settings.sounds != null) {
                 unloadTextures();
                 try {
                     Thread.sleep(3600000);
@@ -183,6 +188,13 @@ public abstract class BackgroundLoader {
         pause = false;
     }
 
+    private void loadSounds() {
+        if (Settings.sounds == null && list1.isEmpty() && list2.isEmpty() && game != null && game.getPlace() != null) {
+            game.getPlace().getSounds().initialize("res");
+            SoundStore.get().poll(0);
+        }
+    }
+
     public boolean allLoaded() {
         boolean allLoaded = list1.isEmpty() && list2.isEmpty();
         if (!firstLoaded && allLoaded) {
@@ -207,5 +219,9 @@ public abstract class BackgroundLoader {
             sprites.put(sprite.getPath(), sprite);
         }
         stopSpritesUsing = false;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

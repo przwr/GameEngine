@@ -16,10 +16,8 @@ public final class DayCycle {
     private static final short REAL_MINUTES_IN_HOUR = 6;
     private final short TIME_BEGIN_PREDAWN = 5 * 60, TIME_BEGIN_DAWN = 6 * 60, TIME_END_DAWN = 8 * 60, TIME_END_AFTERDAWN = 9 * 60;
     private final short TIME_BEGIN_PREDUSK = 17 * 60, TIME_BEGIN_DUSK = 18 * 60, TIME_END_DUSK = 20 * 60, TIME_END_AFTERDUSK = 21 * 60;
-
-    private Color NIGHT_SKY, DARK_BLUE_SKY, RED_SKY, ORANGE_SKY, YELLOW_SKY, DAY_SKY;
-
     private final Color lightColor = new Color(0.2f, 0.2f, 0.2f);
+    private Color NIGHT_SKY, DARK_BLUE_SKY, RED_SKY, ORANGE_SKY, YELLOW_SKY, DAY_SKY;
     private short timeInMinutes = 0;
     private long midnightTime;
     private long currentTime;
@@ -128,8 +126,8 @@ public final class DayCycle {
             delta = (float) (timeInMinutes - TIME_END_DUSK) / (TIME_END_AFTERDUSK - TIME_END_DUSK);
             mixColors(lightColor, DARK_BLUE_SKY, NIGHT_SKY, delta);
         }
-        
-        delta = (float) (lightColor.r + lightColor.g + lightColor.b) / 3;
+
+        delta = (lightColor.r + lightColor.g + lightColor.b) / 3;
         dayShadowAlpha = (delta - NIGHT) / (1 - NIGHT);
         if (delta <= NIGHT * 2f) {
             if (delta != NIGHT) {
@@ -173,30 +171,34 @@ public final class DayCycle {
         updateTime();
     }
 
+    public long getCurrentTimeInMiliSeconds() {
+        return currentTime;
+    }
+
     public Color getShade() {
         return lightColor;
     }
-    
+
     public float getDayShadowAlpha() {
         return dayShadowAlpha;
     }
-    
+
     public float getNightLightAlpha() {
         return nightLightAlpha;
     }
-    
+
     public boolean isNightNow() {
         return timeInMinutes < TIME_BEGIN_PREDAWN || timeInMinutes > TIME_END_AFTERDUSK;
     }
-    
+
     public boolean isDawnNow() {
         return timeInMinutes >= TIME_BEGIN_PREDAWN && timeInMinutes < TIME_END_AFTERDAWN;
     }
-    
+
     public boolean isDayNow() {
         return timeInMinutes >= TIME_END_AFTERDAWN && timeInMinutes < TIME_BEGIN_PREDUSK;
     }
-    
+
     public boolean isDuskNow() {
         return timeInMinutes >= TIME_BEGIN_PREDUSK && timeInMinutes <= TIME_END_AFTERDUSK;
     }

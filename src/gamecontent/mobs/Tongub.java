@@ -22,6 +22,7 @@ import game.gameobject.interactive.collision.LineInteractiveCollision;
 import game.gameobject.stats.MobStats;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
+import net.jodk.lang.FastMath;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
@@ -157,10 +158,13 @@ public class Tongub extends Mob {
                     if (attack_delay.isOver()) {
                         if (attacking || side) {
                             rest.start();
+                            if (attacking && Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) < FastMath.pow2(target.getCollision()
+                                    .getWidth() + collision.getWidth() + collision.getHeight())) {
+                                getAttackActivator(ATTACK_NORMAL).setActivated(false);
+                            }
                             attacking = false;
                             side = false;
                             brake(2);
-                            getAttackActivator(ATTACK_NORMAL).setActivated(false);
                         } else {
                             attack_delay.setFrameLengthInMilliseconds(1000 + random.next(9));
                             attack_delay.start();
