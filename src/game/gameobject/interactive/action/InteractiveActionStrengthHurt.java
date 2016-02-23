@@ -22,7 +22,8 @@ public class InteractiveActionStrengthHurt extends InteractiveAction {
     }
 
     protected void recalculateData(Interactive activator, InteractiveResponse response) {
-        response.setPixels((1 + (response.getPixels() / (response.getMaxPixels() * 5f) + (float) FastMath.random() / 10f)) * activator.getModifier() *
+        response.setPixels((1 + (response.getPixels() / (response.getMaxPixels() * 5f) + (float) FastMath.random() / 10f)) * activator.getStrenght() *
                 activator.getOwner().getStats().getStrength() * activator.getWeaponModifier());
+        response.setKnockBack(activator.getKnockback() + activator.getWeaponKnockback());
     }
 }

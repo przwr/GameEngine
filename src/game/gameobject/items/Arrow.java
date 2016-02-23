@@ -51,7 +51,7 @@ public class Arrow extends Entity {
         tail = new ArrowTail(6, (float) (lenght / 8), this);
         stats = new Stats(this);
         stats.setStrength((int) (speed / 3));
-        Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 2f);
+        Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 2f, 1f);
         attack.addException(owner);
         attack.setCollidesWithEnvironment(false);
         addInteractive(attack);

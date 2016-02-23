@@ -44,7 +44,7 @@ public class Interactive {
     private boolean collidesPlayers = true;
     private boolean collidesFriends = false;
     private boolean collidesWithEnvironment = true;
-    private float modifier;
+    private float strenght, knockback;
     private byte weaponType = -1;
     private byte attackType = -1;
     private boolean active, activated;
@@ -53,30 +53,31 @@ public class Interactive {
     private Object actionModifier;
 
     private Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte
-            attackType, float modifier) {
+            attackType, float strenght, float knockback) {
         this.owner = owner;
         this.activator = activator;
         this.collision = collision;
         this.action = action;
         this.weaponType = weaponType;
         this.attackType = attackType;
-        this.modifier = modifier;
+        this.strenght = strenght;
+        this.knockback = knockback;
         this.environmentCollision = Rectangle.createTileRectangle(0, 0);
         this.environmentCollision.setOwner(owner);
     }
 
     public static Interactive create(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
-                                     byte weaponType, byte attackType, float modifier) {
-        return new Interactive(owner, activator, collision, action, weaponType, attackType, modifier);
+                                     byte weaponType, byte attackType, float strenght, float knockback) {
+        return new Interactive(owner, activator, collision, action, weaponType, attackType, strenght, knockback);
     }
 
     public static Interactive createNotWeapon(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
-                                              byte attackType, float modifier) {
-        return new Interactive(owner, activator, collision, action, (byte) -1, attackType, modifier);
+                                              byte attackType, float strenght, float knockback) {
+        return new Interactive(owner, activator, collision, action, (byte) -1, attackType, strenght, knockback);
     }
 
     public static Interactive createSpawner(GameObject owner, InteractiveActivator activator, InteractiveAction action, byte weaponType, byte attackType) {
-        return new Interactive(owner, activator, null, action, weaponType, attackType, 0);
+        return new Interactive(owner, activator, null, action, weaponType, attackType, 0, 0);
     }
 
     public void addException(GameObject exception) {
@@ -205,12 +206,20 @@ public class Interactive {
         return activated;
     }
 
-    public float getModifier() {
-        return modifier;
+    public float getStrenght() {
+        return strenght;
     }
 
-    public void setModifier(float modifier) {
-        this.modifier = modifier;
+    public void setStrenght(float strenght) {
+        this.strenght = strenght;
+    }
+    
+    public float getKnockback() {
+        return knockback;
+    }
+
+    public void setKnockback(float knockback) {
+        this.knockback = knockback;
     }
 
     public byte getWeaponType() {
@@ -238,11 +247,21 @@ public class Interactive {
     }
 
     public float getWeaponModifier() {
+        Weapon ret = getOwnersWeapon();
+        return ret != null ? ret.getModifier() : 1;
+    }
+    
+    public float getWeaponKnockback() {
+        Weapon ret = getOwnersWeapon();
+        return ret != null ? ret.getKnockback() : 1;
+    }
+    
+    public Weapon getOwnersWeapon() {
         if (owner instanceof Player) {
             Weapon weapon = ((Player) owner).getWeapon();
             if (weapon != null) {
                 if (weapon.getType() == weaponType) {
-                    return weapon.getModifier();
+                    return weapon;
                 }
             }
         }
@@ -252,12 +271,12 @@ public class Interactive {
                 Weapon weapon = ((Player) ow).getWeapon();
                 if (weapon != null) {
                     if (weapon.getType() == weaponType) {
-                        return weapon.getModifier();
+                        return weapon;
                     }
                 }
             }
         }
-        return 1;
+        return null;
     }
 
     public boolean isCollidesSelf() {

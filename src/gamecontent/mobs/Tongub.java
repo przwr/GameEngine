@@ -284,7 +284,7 @@ public class Tongub extends Mob {
         neutral.add(Plurret.class.getName());
         neutral.add(Shen.class.getName());
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 32, 0, 16, 16), Interactive
-                .STRENGTH_HURT, ATTACK_NORMAL, 0.5f));
+                .STRENGTH_HURT, ATTACK_NORMAL, 0.5f, 1f));
         addPushInteraction();
     }
 

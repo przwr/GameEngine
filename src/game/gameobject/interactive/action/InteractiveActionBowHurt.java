@@ -8,6 +8,7 @@ package game.gameobject.interactive.action;
 import game.gameobject.GameObject;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.InteractiveResponse;
+import game.gameobject.items.Weapon;
 import net.jodk.lang.FastMath;
 
 /**
@@ -23,10 +24,10 @@ public class InteractiveActionBowHurt extends InteractiveAction {
 
     protected void recalculateData(Interactive activator, InteractiveResponse response) {
         float strengthModifier = activator.getOwner().getStats().getStrength();
-        float weaponModifier = activator.getWeaponModifier();
-        //strengthModifier = strengthModifier > weaponModifier ? weaponModifier : strengthModifier;
+        Weapon weapon = activator.getOwnersWeapon();
 
-        response.setPixels((1 + (response.getPixels() / (response.getMaxPixels() * 5f) + (float) FastMath.random() / 10f)) * activator.getModifier() *
-                (strengthModifier + weaponModifier));
+        response.setPixels((1 + (response.getPixels() / (response.getMaxPixels() * 5f) + (float) FastMath.random() / 10f)) * activator.getStrenght() *
+                (strengthModifier + weapon.getModifier()));
+        response.setKnockBack(activator.getKnockback() + weapon.getKnockback());
     }
 }

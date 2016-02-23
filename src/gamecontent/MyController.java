@@ -92,7 +92,6 @@ public class MyController extends PlayerController {
             animation.setAnimate(true);
             diagonal = true;
             tempDirection = inControl.getDirection8Way();
-            stats.setProtectionState(false);
             if ((running && stats.getEnergy() > 0) || stats.getEnergy() > 30) {
                 running = actions[INPUT_RUN].isKeyPressed();
             } else {
@@ -105,17 +104,18 @@ public class MyController extends PlayerController {
                     sneaking = !sneaking;
                 }
             }
-            if (!inControl.isHurt()) {
+            if (!inControl.isHurt() || stats.isProtectionState()) {
+                stats.setProtectionState(false);
                 if (inControl.isAbleToMove()) {
                     if (!charging && chargingDelay.isOver()) {
                         if (jumpLag == 0) {
                             updateAttackTypes();
-                            if (actions[INPUT_BLOCK].isKeyPressed()) {
-                                updateBlock();
-                            } else if (attacking
+                            if (attacking
                                     || (firstAttackType >= 0 && actions[INPUT_ATTACK].isKeyPressed())
                                     || (secondAttackType >= 0 && actions[INPUT_SECOND_ATTACK].isKeyPressed())) {
                                 updateAttack();
+                            } else if (actions[INPUT_BLOCK].isKeyPressed()) {
+                                updateBlock();
                             } else {
                                 updateMovement();
                             }
@@ -236,7 +236,9 @@ public class MyController extends PlayerController {
         } else if (attacked) {
             if (preAttackDelay.isWorking()) {
                 int tmpDir = tempDirection;
-                updateDirection();
+                if (!actions[INPUT_BLOCK].isKeyPressed()) {
+                    updateDirection();
+                }
                 if (tmpDir != tempDirection) {
                     animation.changeDirection(tempDirection);
                 }

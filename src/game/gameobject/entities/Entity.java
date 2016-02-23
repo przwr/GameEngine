@@ -62,16 +62,18 @@ public abstract class Entity extends GameObject {
 
     protected ArrayList<TemporalChanger> changers;
     protected SpeedChanger knockBack;
+    protected Delay invicibleTime;
 
     public Entity() {
         knockBack = new SpeedChanger();
+        invicibleTime = Delay.createInSeconds(depth);
         changers = new ArrayList<>(1);
         resistance = 1;
     }
 
     protected void addPushInteraction() {
         Interactive push = Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, appearance.getActualHeight(),
-                -collision.getWidth(), collision.getWidthHalf()), Interactive.PUSH, PUSH, 1f);
+                -collision.getWidth(), collision.getWidthHalf()), Interactive.PUSH, PUSH, 1f, 1f);
         push.setCollidesFriends(true);
         addInteractive(push);
     }
@@ -96,6 +98,7 @@ public abstract class Entity extends GameObject {
 
     public void knockBack(int knockBackPower, double jumpPower, GameObject attacker) {
         knockBack.setFrames(30);
+        invicibleTime.setFrameLengthInMilliseconds(950);
         knockBack.setAttackerDirection(attacker.getDirection());
         Point closest = null;
         if (attacker instanceof Block) {
@@ -108,6 +111,7 @@ public abstract class Entity extends GameObject {
         setJumpForce(jumpPower);
         knockBack.setType(SpeedChanger.DECREASING);
         knockBack.start();
+        invicibleTime.start();
         addChanger(knockBack);
     }
 
@@ -119,6 +123,10 @@ public abstract class Entity extends GameObject {
         }
     }
 
+    public boolean isInvicibleState() {
+        return invicibleTime.isWorking();
+    }
+    
     public SpeedChanger getKnockBack() {
         return knockBack;
     }

@@ -33,7 +33,7 @@ public class Stats {
     }
 
     public void decreaseHealth(InteractiveResponse response) {
-        if (health > 0 && owner.getKnockBack().isOver()) {
+        if (health > 0 && owner.getKnockBack().isOver() && !isInvicibleState()) {
             hurt = 0;
             switch (response.getDirection()) {
                 case FRONT:
@@ -77,8 +77,8 @@ public class Stats {
     }
 
     public void hurtReaction(InteractiveResponse response) {
-        double hurtPower = 4 * FastMath.logQuick(hurt * ((float) (100 - weight) / 100) + 1);
-        owner.getHurt((int) hurtPower, hurtPower / 3, response.getAttacker());
+        double hurtPower = response.getKnockBack() * FastMath.logQuick(20 * ((float) (100 - weight) / 100) + 1);
+        owner.getHurt((int) hurtPower, hurtPower / 6, response.getAttacker());
         response.getAttacker().reactToAttack(FRONT, owner);
     }
 
@@ -137,6 +137,10 @@ public class Stats {
 
     public boolean isUnhurtableState() {
         return unhurtableState;
+    }
+    
+    public boolean isInvicibleState() {
+        return owner.isInvicibleState();
     }
 
     public void setUnhurtableState(boolean unhurtableState) {

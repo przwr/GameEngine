@@ -78,7 +78,6 @@ public class BrainlessShen extends Mob {
         super.getHurt(knockBackPower, jumpPower, attacker);
         colorHue += knockBackPower + 1;
         Methods.changeColorWithHSV(color, colorHue, 1, 1);
-        getAttackActivator((byte) -1).setActivated(true);
     }
 
     private void updateGettingHurt() {

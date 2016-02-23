@@ -20,6 +20,7 @@ import gamecontent.npcs.MyNPC;
 import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import gamecontent.mobs.Plurret;
 import gamecontent.environment.Rock;
+import gamecontent.mobs.BrainlessShen;
 import gamecontent.mobs.Shen;
 import gamecontent.mobs.Tongub;
 
@@ -68,7 +69,7 @@ public class GladeMap extends Map {
 //      addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
 //      addObject(new BrainlessShen(356, 768, place, mobID++));
 //      addObject(new BrainlessShen(356, 860, place, mobID++));
-      addObject(new Blazag(768, 2048, place, mobID++));
+      addObject(new BrainlessShen(768, 2048, place, mobID++));
       addObject(new Blazag(1200, 1024, place, mobID++));
         addObject(new Tongub(1756, 2768, place, mobID++));
         addObject(new Tongub(1756, 2820, place, mobID++));

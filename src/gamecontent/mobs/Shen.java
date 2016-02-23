@@ -293,9 +293,9 @@ public class Shen extends Mob {
         bouncer = new SpeedChanger();
         spawnPosition.set(getX(), getY());
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,
-                ATTACK_NORMAL, 0.5f));
+                ATTACK_NORMAL, 0.5f, 2.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,
-                ATTACK_CRITICAL, 2f));
+                ATTACK_CRITICAL, 2f, 2.5f));
         addPushInteraction();
     }
 

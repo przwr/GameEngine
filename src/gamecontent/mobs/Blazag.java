@@ -346,9 +346,9 @@ public class Blazag extends Mob {
         neutral.add(Shen.class.getName());
         neutral.add(Plurret.class.getName());
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CurveInteractiveCollision(48, 32, 0, 38, 180),
-                Interactive.STRENGTH_HURT, ATTACK_SLASH, 1.5f));
+                Interactive.STRENGTH_HURT, ATTACK_SLASH, 1.5f, 1.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new LineInteractiveCollision(0, 128, 0, 24, 24),
-                Interactive.STRENGTH_HURT, ATTACK_JUMP, 3f));
+                Interactive.STRENGTH_HURT, ATTACK_JUMP, 3f, 6f));
         addPushInteraction();
     }
 
@@ -452,8 +452,7 @@ public class Blazag extends Mob {
                         if (!can_attack) {
                             can_attack = true;
                             if (stats.getHealth() != stats.getMaxHealth()) {
-                                readyToAttackDelay.setFrameLengthInMilliseconds(Math.round(attackDelayTime * (stats.getHealth() / (float) stats.getMaxHealth
-                                        ())));
+                                readyToAttackDelay.setFrameLengthInMilliseconds(Math.round(attackDelayTime * (stats.getHealth() / (float) stats.getMaxHealth())));
                             }
                             readyToAttackDelay.start();
                         } else if (readyToAttackDelay.isOver()) {
@@ -870,9 +869,9 @@ public class Blazag extends Mob {
 
     @Override
     public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
-        if (stats.getHealth() * 2 > stats.getMaxHealth()) {
-            super.getHurt(knockBackPower, jumpPower, attacker);
-        }
+        //if (stats.getHealth() * 2 > stats.getMaxHealth()) {
+        super.getHurt(knockBackPower, jumpPower, attacker);
+        //}
     }
 
     private void updateGettingHurt() {
@@ -960,6 +959,7 @@ public class Blazag extends Mob {
     }
 
     private class Order {
+
         private final static byte ATTACK = 0, GO_TO = 1;
         private byte order;
         private byte type = -1;

@@ -7,9 +7,10 @@ public class Weapon {
 
     public static byte UNIVERSAL = 0, SWORD = 1, BOW = 2;
 
-    private byte type;
+    private final byte type;
     private String name;
     private float modifier = 1;
+    private float knockback = 1;
 
 
     public Weapon(String name, byte type) {
@@ -35,6 +36,14 @@ public class Weapon {
 
     public void setModifier(float modifier) {
         this.modifier = modifier;
+    }
+    
+    public float getKnockback() {
+        return knockback;
+    }
+
+    public void setKnockback(float knockback) {
+        this.knockback = knockback;
     }
 
     //TODO wygląd broni i statystyki
