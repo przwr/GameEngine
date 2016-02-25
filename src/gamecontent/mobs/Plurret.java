@@ -34,6 +34,7 @@ public class Plurret extends Mob {
     private boolean rising = true;
     private int aboveAllHeight = 250;
     private Point lastPosition = new Point(0, 0);
+    private Delay collided = Delay.createInMilliseconds(250);
 
     {
         idle = new ActionState() {
@@ -69,7 +70,7 @@ public class Plurret extends Mob {
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForEscape();
-                if (floatHeight > aboveAllHeight && (lastPosition.getX() != getX() || lastPosition.getY() != getY())) {
+                if (collided.isOver() && floatHeight > aboveAllHeight && (lastPosition.getX() != getX() || lastPosition.getY() != getY())) {
                     chargeToPoint(destination.getX() > 0 ? destination : secondaryDestination);
                 } else {
                     goTo(destination.getX() > 0 ? destination : secondaryDestination);
@@ -89,10 +90,10 @@ public class Plurret extends Mob {
                 if (rest.isOver()) {
                     if (seconds == 0) {
                         int sign = random.next(1) == 1 ? 1 : -1;
-                        int shift = (sightRange + random.next(9)) * sign;
+                        int shift = (sightRange + random.next(7)) * sign;
                         destination.setX(spawnPosition.getX() + shift);
                         sign = random.next(1) == 1 ? 1 : -1;
-                        shift = (sightRange + random.next(9)) * sign;
+                        shift = (sightRange + random.next(7)) * sign;
                         destination.setY(spawnPosition.getY() + shift);
                         if (destination.getX() < sightRange / 2) {
                             destination.setX(sightRange / 2);
@@ -111,7 +112,7 @@ public class Plurret extends Mob {
                     seconds++;
                     if (seconds > max) {
                         seconds = 0;
-                        max = random.next(2);
+                        max = 1 + random.next(1);
                     }
                     rest.start();
                 }
@@ -193,7 +194,8 @@ public class Plurret extends Mob {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
-            if (object.getMap() == map && object.getFloatHeight() + object.getActualHeight() > floatHeight && (isHeard(object) || isSeen(object))) {
+            if (object.getMap() == map && object.getCollision().isHitable() && object.getFloatHeight() + object.getActualHeight() > floatHeight && (isHeard
+                    (object) || isSeen(object))) {
                 closeEnemies.add(object);
             }
         }

@@ -248,7 +248,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getXSpriteBegin() {  //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
+    public int getXSpriteBegin(boolean... forCover) {  //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
             return (int) x + appearance.getXOffset() + appearance.getXStart();
         } else {
@@ -256,7 +256,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getYSpriteBegin() {  //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
+    public int getYSpriteBegin(boolean... forCover) {  //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
             return (int) y + appearance.getYOffset() + appearance.getYStart();
         } else {
@@ -264,7 +264,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getXSpriteEnd() {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
+    public int getXSpriteEnd(boolean... forCover) {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
             return (int) x + appearance.getXOffset() + appearance.getXStart() + appearance.getActualWidth();
         } else {
@@ -272,7 +272,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getYSpriteEnd() {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
+    public int getYSpriteEnd(boolean... forCover) {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
             return (int) y + appearance.getYOffset() + appearance.getYStart() + appearance.getActualHeight();
         } else {

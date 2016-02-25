@@ -20,7 +20,7 @@ import sprites.SpriteSheet;
 
 import java.util.ArrayList;
 
-import static collision.OpticProperties.TRANSPARENT;
+import static collision.OpticProperties.NO_SHADOW;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -209,7 +209,7 @@ public class TemporaryBlock extends GameObject {
     public void createBlock() {
         block = Block.create((int) x, (int) y, width, height, (upHeight - yTiles) * tile);
         if (upHeight == 0) {
-            block.getCollision().setOpticProperties(TRANSPARENT);
+            block.getCollision().setOpticProperties(NO_SHADOW);
         }
         map.addBlock(block);
     }
@@ -289,17 +289,17 @@ public class TemporaryBlock extends GameObject {
     }
 
     @Override
-    public int getYSpriteBegin() {
+    public int getYSpriteBegin(boolean... forCover) {
         return super.getYSpriteBegin() - upHeight * tile;
     }
 
     @Override
-    public int getYSpriteEnd() {
+    public int getYSpriteEnd(boolean... forCover) {
         return super.getYSpriteEnd() + yTiles * tile;
     }
 
     @Override
-    public int getXSpriteEnd() {
+    public int getXSpriteEnd(boolean... forCover) {
         return super.getXSpriteEnd() + xTiles * tile;
     }
     

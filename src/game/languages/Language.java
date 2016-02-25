@@ -71,5 +71,6 @@ public class Language {
         public String Gameplay;
         public String Text;
         public String FramesLimit;
+        public String Sound;
     }
 }

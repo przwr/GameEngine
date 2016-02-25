@@ -131,7 +131,7 @@ public class WarpPoint extends GameObject {
                     WarpPoint warp = map.findWarp(name);
                     player.changeMap(map, warp.getX(), warp.getY());
                     player.setCurrentLocationAsSpawnPosition();
-                    TemporalChanger lockChanger = new LockChanger(8);
+                    TemporalChanger lockChanger = new LockChanger(8, (Entity) object);
                     lockChanger.start();
                     if (joined) {
                         TemporalChanger joiner = new CameraJoiner(45);
@@ -148,7 +148,7 @@ public class WarpPoint extends GameObject {
                     WarpPoint warp = map.findWarp(name);
                     object.changeMap(map, warp.getX(), warp.getY());
                     if (object instanceof Entity) {
-                        TemporalChanger lockChanger = new LockChanger(8);
+                        TemporalChanger lockChanger = new LockChanger(8, (Entity) object);
                         lockChanger.start();
                         ((Entity) object).addChanger(lockChanger);
                     } else {

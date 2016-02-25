@@ -9,8 +9,9 @@ public class LockChanger extends TemporalChanger {
 
     private Entity entity;
 
-    public LockChanger(int time) {
+    public LockChanger(int time, Entity entity) {
         super();
+        this.entity = entity;
         this.time = time;
     }
 
@@ -24,7 +25,6 @@ public class LockChanger extends TemporalChanger {
 
     @Override
     public void modifyEffect(Entity entity) {
-        this.entity = entity;
         if (getPercentDone() > 0.5) {
             entity.setVisible(true);
         }

@@ -95,5 +95,6 @@ public class LangENG extends Language {
         menu.Gameplay = "Gameplay";
         menu.Text = "Text: ";
         menu.FramesLimit = "Frames limit: ";
+        menu.Sound = "Sound";
     }
 }

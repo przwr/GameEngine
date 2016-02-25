@@ -480,7 +480,6 @@ public class MyGame extends Game {
                 } else {
                     sound.setStopped(true);
                 }
-                it.remove();
             }
         }
     }
@@ -498,7 +497,6 @@ public class MyGame extends Game {
                     sound.resume();
                     sound.smoothStart(0.5);
                 }
-                it.remove();
             }
         }
     }
