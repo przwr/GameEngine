@@ -12,12 +12,14 @@ import gamecontent.mobs.Tongub;
 import org.newdawn.slick.Color;
 
 import static collision.OpticProperties.TRANSPARENT;
+import sounds.Sound;
 
 /**
  * Created by przemek on 21.11.15.
  */
 public class CaveTest extends Map {
 
+    private Sound envSounds;
 
     public CaveTest(short ID, Place place, int tileSize) {
         super(ID, "CaveTest", place, tileSize);
@@ -62,5 +64,20 @@ public class CaveTest extends Map {
         addObject(SpawnPoint.createInVisible(6818, 2662, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
         addObject(SpawnPoint.createInVisible(7271, 2771, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
         addObject(SpawnPoint.createInVisible(7126, 2445, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
+    }
+
+    //TYMCZASOWE
+    @Override
+    public void updateEntitesFromAreasToUpdate() {
+        super.updateEntitesFromAreasToUpdate();
+        if (envSounds != null) {
+            if (place.players[0].getMap() == this) {
+                envSounds.resume();
+            } else {
+                envSounds.fade(1000, false);
+            }
+        } else {
+            envSounds = place.getSounds().getSound("env_cave");
+        }
     }
 }

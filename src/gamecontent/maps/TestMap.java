@@ -1,5 +1,6 @@
 package gamecontent.maps;
 
+import static collision.OpticProperties.TRANSPARENT;
 import collision.Rectangle;
 import engine.utilities.RandomGenerator;
 import game.Settings;
@@ -85,7 +86,7 @@ public class TestMap extends Map {
         addObject(new Magician(2906, 763, place, mobID++));
         addObject(new Plurret(7043, 4034, place, mobID++));
         addObject(new Plurret(8618, 3609, place, mobID++));
-        addObject(new Plurret(8618, 3609, place, mobID++));
+        addObject(new Plurret(8281, 4084, place, mobID++));
         addObject(new Tercja(7104, 3667, place, mobID++));
 
         addObject(SpawnPoint.createInVisible(8780, 3871, 54, 38, "Shen spawn", Shen.class, 7, 3));
@@ -102,7 +103,7 @@ public class TestMap extends Map {
                 envSounds.fade(1000, false);
             }
         } else {
-            envSounds = place.getSounds().getSound("Wind");
+            envSounds = place.getSounds().getSound("env_forest");
         }
     }
 }
