@@ -118,12 +118,12 @@ public class ObjectPlayer extends Player {
         double realTimer = (double) maxTimer / Time.getDelta();
         boolean ctrl = key.key(KEY_LCONTROL);
         if (xdelta != 0 && xTimer == 0) {
-            ix = Methods.interval(0, ix + xdelta, map.getWidthInTiles());
+            ix = Methods.interval(0, ix + xdelta, map.getWidthInTiles() - 1);
             setX(ix * tileSize);
             alreadyPlaced = false;
         }
         if (ydelta != 0 && yTimer == 0) {
-            iy = Methods.interval(0, iy + ydelta, map.getHeightInTiles());
+            iy = Methods.interval(0, iy + ydelta, map.getHeightInTiles() - 1);
             setY(iy * tileSize);
             alreadyPlaced = false;
         }

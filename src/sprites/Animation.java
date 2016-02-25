@@ -301,4 +301,3 @@ public class Animation implements Appearance {
         }
     }
 }
-

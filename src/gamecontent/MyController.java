@@ -44,6 +44,7 @@ public class MyController extends PlayerController {
     private final SpeedChanger attackMovement;
     private final Charger chargeValue;
     private final boolean[] blockedInputs;
+    private final byte[] changedButtonState;
     private int tempDirection, sideDirection;
     private byte firstAttackType, secondAttackType, chargingType, lastAttackButton, lastAttackType;
     private boolean running, sneaking, diagonal, inputLag, charging, attacking, attacked, scoping;
@@ -73,6 +74,7 @@ public class MyController extends PlayerController {
         attackMovement.setType(SpeedChanger.DECREASING);
         chargeValue = new Charger();
         lastAttackButton = INPUT_ATTACK;
+        changedButtonState = new byte[2];
     }
 
     @Override
@@ -211,7 +213,33 @@ public class MyController extends PlayerController {
                     actions[i].updateActiveState();
                 }
             }
+            updateInputNuances();
         }
+    }
+
+    private void updateInputAxisChanges(byte inputA, byte inputB, int type) {
+        if (actions[inputA].isKeyPressed() && actions[inputB].isKeyPressed()) {
+            if (changedButtonState[type] == 0) {
+                if (actions[inputA].isKeyClicked()) {
+                    changedButtonState[type] = 1;
+                } else if (actions[inputB].isKeyClicked()) {
+                    changedButtonState[type] = 2;
+                }
+            } else {
+                if (changedButtonState[type] == 1) {
+                    actions[inputB].setState(KEY_NO_INPUT);
+                } else {
+                    actions[inputA].setState(KEY_NO_INPUT);
+                }
+            }
+        } else {
+            changedButtonState[type] = 0;
+        }
+    }
+
+    private void updateInputNuances() {
+        updateInputAxisChanges(INPUT_LEFT, INPUT_RIGHT, 0);
+        updateInputAxisChanges(INPUT_UP, INPUT_DOWN, 1);
     }
 
     private void updateAttackTypes() {

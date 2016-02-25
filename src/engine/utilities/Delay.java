@@ -23,6 +23,10 @@ public class Delay {
         started = false;
     }
 
+    public static Delay createEmpty(boolean... realTime) {
+        return new Delay(0, realTime.length > 0 && realTime[0]);
+    }
+    
     public static Delay createInMinutesAndSeconds(int minutes, int seconds, boolean... realTime) {
         return new Delay((seconds + minutes * 60) * 1000, realTime.length > 0 && realTime[0]);
     }

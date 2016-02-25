@@ -73,6 +73,10 @@ public class Action {
         return state;
     }
     
+    public void setState(byte state) {
+        this.state = state;
+    }
+    
     public void setInterrupted() {
         interrupted = true;
     }
