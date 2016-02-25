@@ -612,7 +612,7 @@ public class Methods {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
     
-    public static void printObjects(Object... list) {
+    public static void print(Object... list) {
         String print = "";
         for (Object o : list) {
             print += o.toString() + " ";

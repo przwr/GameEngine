@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/**¬B
  * @author Wojtek
  */
 public class SoundBase {

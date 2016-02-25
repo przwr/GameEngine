@@ -82,6 +82,6 @@ public class TestMap extends Map {
         addObject(new Plurret(7043, 4034, place, mobID++));
         addObject(new Tercja(7104, 3667, place, mobID++));
         
-        addObject(SpawnPoint.createInVisible(7416, 4306, 54, 38, "Shen spawn", Shen.class, 7, 3));
+        addObject(SpawnPoint.createInVisible(8780, 3871, 54, 38, "Shen spawn", Shen.class, 7, 3));
     }
 }

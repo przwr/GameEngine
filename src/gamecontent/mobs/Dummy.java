@@ -48,6 +48,7 @@ public class Dummy extends Mob {
         stats.setDefence(1);
         stats.setMaxHealth(10000);
         stats.setHealth(10000);
+        setTargetable(false);
     }
 
     @Override
