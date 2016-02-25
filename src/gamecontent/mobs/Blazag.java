@@ -365,7 +365,7 @@ public class Blazag extends Mob {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
-            if (object.getMap() == map && (isHeard(object) || isSeen(object))) {
+            if (object.getMap() == map && object.getCollision().isHitable() && (isHeard(object) || isSeen(object))) {
                 closeEnemies.add(object);
             }
         }
@@ -390,12 +390,13 @@ public class Blazag extends Mob {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
-            if (object.getMap() == map && (isHeardWhileSleep(object))) {
+            if (object.getMap() == map && object.getCollision().isHitable() && (isHeardWhileSleep(object))) {
                 closeEnemies.add(object);
             }
         }
         for (Mob mob : mobs) {
-            if (mob.getClass().getName() != this.getClass().getName() && !isNeutral(mob) && mob.getMap() == map && (isHeardWhileSleep(mob))) {
+            if (mob.getClass().getName() != this.getClass().getName() && mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map &&
+                    (isHeardWhileSleep(mob))) {
                 closeEnemies.add(mob);
             }
         }
@@ -452,7 +453,8 @@ public class Blazag extends Mob {
                         if (!can_attack) {
                             can_attack = true;
                             if (stats.getHealth() != stats.getMaxHealth()) {
-                                readyToAttackDelay.setFrameLengthInMilliseconds(Math.round(attackDelayTime * (stats.getHealth() / (float) stats.getMaxHealth())));
+                                readyToAttackDelay.setFrameLengthInMilliseconds(Math.round(attackDelayTime * (stats.getHealth() / (float) stats.getMaxHealth
+                                        ())));
                             }
                             readyToAttackDelay.start();
                         } else if (readyToAttackDelay.isOver()) {
@@ -798,6 +800,7 @@ public class Blazag extends Mob {
         int currentAgro;
         boolean agresor = false;
         int TongubCount = 0;
+        target = null;
         for (GameObject object : closeEnemies) {
             if (object instanceof Tongub) {
                 TongubCount++;

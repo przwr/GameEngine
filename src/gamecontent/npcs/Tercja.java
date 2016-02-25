@@ -7,13 +7,11 @@ import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.items.Weapon;
-import static game.gameobject.items.Weapon.SWORD;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
 import game.text.Writer;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
-import gamecontent.environment.Rock;
 import sprites.Animation;
 import sprites.SpriteSheet;
 

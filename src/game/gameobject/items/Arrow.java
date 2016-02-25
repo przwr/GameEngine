@@ -11,7 +11,6 @@ import collision.Rectangle;
 import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
-import engine.utilities.PointedValue;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
@@ -33,10 +32,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class Arrow extends Entity {
 
     private final GameObject owner;
-    private boolean stopped;
     private final Color color;
     private final int lenght;
     private final TailEffect tail;
+    private boolean stopped;
 
     public Arrow(double speed, int direction, int height, GameObject owner) {
         this.floatHeight = height;
@@ -139,22 +138,22 @@ public class Arrow extends Entity {
     }
 
     @Override
-    public int getYSpriteBegin() {
+    public int getYSpriteBegin(boolean... forCover) {
         return super.getYSpriteBegin() - lenght - tail.getHeight();
     }
 
     @Override
-    public int getYSpriteEnd() {
+    public int getYSpriteEnd(boolean... forCover) {
         return super.getYSpriteEnd() + lenght + tail.getHeight();
     }
 
     @Override
-    public int getXSpriteBegin() {
+    public int getXSpriteBegin(boolean... forCover) {
         return super.getXSpriteBegin() - lenght - tail.getWidth();
     }
 
     @Override
-    public int getXSpriteEnd() {
+    public int getXSpriteEnd(boolean... forCover) {
         return super.getXSpriteEnd() + lenght + tail.getWidth();
     }
 

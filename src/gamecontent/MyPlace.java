@@ -197,37 +197,38 @@ public class MyPlace extends Place {
     }
 
     private void updateInputs() {
+//        String soundName = "Wind";
 //        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
-//            sounds.getSound("MumboMountain").stop();
+//            sounds.getSound(soundName).stop();
 //        }
 //        if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-//            sounds.getSound("MumboMountain").addGainModifier(0.05f);
+//            sounds.getSound(soundName).addGainModifier(0.05f);
 //        }
 //        if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
-//            sounds.getSound("MumboMountain").addGainModifier(-0.05f);
+//            sounds.getSound(soundName).addGainModifier(-0.05f);
 //        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
-            sounds.getSound("forest").resume();
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
-            sounds.getSound("forest").pause();
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
-            sounds.getSound("forest").resume();
-            sounds.getSound("forest").smoothStart(0.5);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
-            sounds.getSound("forest").addPitch(0.05f);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
-            sounds.getSound("forest").addPitch(-0.05f);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
-            sounds.getSound("forest").fade(0.5, true);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-            sounds.getSound("forest").fade(0.5, false);
-        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+//            sounds.getSound(soundName).resume();
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+//            sounds.getSound(soundName).pause();
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
+//            sounds.getSound(soundName).resume();
+//            sounds.getSound(soundName).smoothStart(0.5);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
+//            sounds.getSound(soundName).addPitch(0.05f);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
+//            sounds.getSound(soundName).addPitch(-0.05f);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
+//            sounds.getSound(soundName).fade(0.5, true);
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
+//            sounds.getSound(soundName).fade(0.5, false);
+//        }
         if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
             if (delay.isOver()) {
                 delay.start();

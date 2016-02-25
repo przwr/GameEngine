@@ -59,6 +59,7 @@ public abstract class Entity extends GameObject {
     protected Update currentUpdate;
     protected int currentUpdateID, deltasCount, xDestination, yDestination;
     protected Player collided;
+    protected float colorAlpha = 1f;
 
     protected ArrayList<TemporalChanger> changers;
     protected SpeedChanger knockBack;
@@ -126,7 +127,7 @@ public abstract class Entity extends GameObject {
     public boolean isInvicibleState() {
         return invicibleTime.isWorking();
     }
-    
+
     public SpeedChanger getKnockBack() {
         return knockBack;
     }
@@ -700,4 +701,11 @@ public abstract class Entity extends GameObject {
         return null;
     }
 
+    public float getColorAlpha() {
+        return colorAlpha;
+    }
+
+    public void setColorAlpha(float colorAlpha) {
+        this.colorAlpha = colorAlpha;
+    }
 }

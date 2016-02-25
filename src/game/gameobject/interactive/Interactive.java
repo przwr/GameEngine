@@ -17,6 +17,7 @@ import game.gameobject.interactive.action.InteractiveActionStrengthHurt;
 import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.interactive.activator.InteractiveActivatorAlways;
 import game.gameobject.interactive.collision.InteractiveCollision;
+import game.gameobject.interactive.collision.LineInteractiveCollision;
 import game.gameobject.items.Arrow;
 import game.gameobject.items.Weapon;
 import game.place.map.Area;
@@ -47,7 +48,7 @@ public class Interactive {
     private float strenght, knockback;
     private byte weaponType = -1;
     private byte attackType = -1;
-    private boolean active, activated;
+    private boolean active, activated, halfEnvironmentalCollision;
     private ArrayList<GameObject> exceptions;
 
     private Object actionModifier;
@@ -102,7 +103,7 @@ public class Interactive {
         if (owner != null) {
             if (collisionActivates()) {
                 if (collidesWithEnvironment) {
-                    collision.setEnvironmentCollision(environmentCollision);
+                    collision.setEnvironmentCollision(environmentCollision, owner, halfEnvironmentalCollision);
                     if (owner.getMap() != null) {
                         Area area = owner.getMap().getArea(owner.getArea());
                         for (Block block : area.getNearBlocks()) {
@@ -178,7 +179,9 @@ public class Interactive {
         active = activator.checkActivation(owner);
         if (active) {
             if (collision != null) {
-                collision.updatePosition(owner);
+                if (!(collision instanceof LineInteractiveCollision) || !halfEnvironmentalCollision || !collidesWithEnvironment) {
+                    collision.updatePosition(owner);
+                }
             }
             activator.setActivated(false);
         }
@@ -213,7 +216,7 @@ public class Interactive {
     public void setStrenght(float strenght) {
         this.strenght = strenght;
     }
-    
+
     public float getKnockback() {
         return knockback;
     }
@@ -250,12 +253,12 @@ public class Interactive {
         Weapon ret = getOwnersWeapon();
         return ret != null ? ret.getModifier() : 1;
     }
-    
+
     public float getWeaponKnockback() {
         Weapon ret = getOwnersWeapon();
         return ret != null ? ret.getKnockback() : 1;
     }
-    
+
     public Weapon getOwnersWeapon() {
         if (owner instanceof Player) {
             Weapon weapon = ((Player) owner).getWeapon();
@@ -318,5 +321,13 @@ public class Interactive {
 
     public void setCollidesWithEnvironment(boolean collidesWithEnvironment) {
         this.collidesWithEnvironment = collidesWithEnvironment;
+    }
+
+    public boolean isHalfEnvironmentalCollision() {
+        return halfEnvironmentalCollision;
+    }
+
+    public void setHalfEnvironmentalCollision(boolean halfEnvironmentalCollision) {
+        this.halfEnvironmentalCollision = halfEnvironmentalCollision;
     }
 }

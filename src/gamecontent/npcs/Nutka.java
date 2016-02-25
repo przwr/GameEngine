@@ -8,7 +8,6 @@ import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
-import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import gamecontent.environment.Rock;
 import sprites.Animation;

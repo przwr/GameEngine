@@ -192,6 +192,7 @@ public abstract class BackgroundLoader {
         if (Settings.sounds == null && list1.isEmpty() && list2.isEmpty() && game != null && game.getPlace() != null) {
             game.getPlace().getSounds().initialize("res");
             SoundStore.get().poll(0);
+            game.getPlace().getSounds().getSound("Reverie").resume();
         }
     }
 

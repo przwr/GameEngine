@@ -66,7 +66,7 @@ public abstract class InteractiveCollision {
 
     protected abstract InteractiveResponse collideImplementation(GameObject owner, Player player, byte attackType);
 
-    public abstract void setEnvironmentCollision(Rectangle environmentCollision);
+    public abstract void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half);
 
     public InteractiveResponse collide(GameObject owner, GameObject object, byte attackType) {
         if (owner.getCollision().isCollide() && object.getCollision().isHitable()) {

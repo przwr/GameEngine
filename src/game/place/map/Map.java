@@ -39,6 +39,7 @@ public abstract class Map {
     protected static final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) ->
             firstObject.getDepth() - secondObject.getDepth();
     protected static Tile tempTile;
+    private static int POINTING_ARROW_HEIGHT = 128;
     public final Place place;
     protected final int tileSize;
     protected final BlueArray<GameObject> pointingArrows = new BlueArray<>();
@@ -772,8 +773,7 @@ public abstract class Map {
                         && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
                         && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2)
                         / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeightHalf() - object
-                        .getAppearance()
-                        .getActualHeight() / 2) / tileSize))) {
+                        .getAppearance().getActualHeight() / 2) / tileSize))) {
                     return true;
                 }
             }
@@ -781,9 +781,10 @@ public abstract class Map {
                 if (other != object) {
                     if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
                             && object.getCollision() != null && other.getDepth() > object.getDepth()
-                            && object.getX() < other.getXSpriteEnd() && object.getX() > other.getXSpriteBegin()
-                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 < other.getYSpriteEnd()
-                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 > other.getYSpriteBegin()) {
+                            && object.getX() < other.getXSpriteEnd(true) && object.getX() > other.getXSpriteBegin(true)
+                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 < other.getYSpriteEnd(true)
+                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 > other.getYSpriteBegin
+                            (true)) {
                         return true;
                     }
                 }
@@ -806,13 +807,13 @@ public abstract class Map {
         glPushMatrix();
         glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(object.getX(), object.getY() - object.getAppearance().getActualHeight() + object.getCollision().getHeightHalf(), 0);
+        glTranslatef(object.getX(), object.getY() - POINTING_ARROW_HEIGHT - (int) (object.getFloatHeight()), 0);
         Drawer.setColor(pointingColor);
         Drawer.drawEllipseBow(0, 0, 5, 10, 5, -30, 210, 15);
 //        Drawer.drawEllipseBow(0, -32, 8, 64, 8, 45, 135, 4);
         Drawer.refreshColor();
         glScaled(0.5f, 0.5f, 1);
-        glTranslatef(0, -object.getAppearance().getActualHeight() / 4 - 12, 0);
+        glTranslatef(0, -POINTING_ARROW_HEIGHT / 4, 0);
         object.getAppearance().render();
         glPopMatrix();
     }

@@ -13,7 +13,7 @@ import engine.lights.ShadowContainer;
  */
 public class OpticProperties {
 
-    public static final byte FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, TRANSPARENT = 3;
+    public static final byte FULL_SHADOW = 0, NO_SHADOW = 1, IN_SHADE_NO_SHADOW = 2, IN_SHADE_SHADOW = 3;
     private static final boolean[] LITABLE = {true, true, false, false};
     private static final boolean[] GIVE_SHADOW = {true, false, false, true};
     private int type;

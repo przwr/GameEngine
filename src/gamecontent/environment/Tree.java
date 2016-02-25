@@ -29,6 +29,7 @@ public class Tree extends GameObject {
     static Sprite bark;
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
+    private final Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
     FrameBufferObject fbo;
     int width, height;
     float spread;
@@ -36,7 +37,6 @@ public class Tree extends GameObject {
     private Color branchColor;
     private Color leafColor;
     private BlueArray<Point> points = new BlueArray<>();
-    private final Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
 
     private Tree(int x, int y, int width, int height, float spread, boolean branchless) {
         initialize("Tree", x, y);
@@ -44,7 +44,7 @@ public class Tree extends GameObject {
             setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.FULL_SHADOW, this));
             setSimpleLighting(false);
         } else {
-            setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.TRANSPARENT, this));
+            setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
         }
         canCover = true;
         toUpdate = true;
@@ -77,7 +77,7 @@ public class Tree extends GameObject {
     public static Tree create(int x, int y) {
         return new Tree(x, y, 32, 200, 0.8f, false);
     }
-    
+
     public static Tree createBranchless(int x, int y, int width, int height, float spread) {
         return new Tree(x, y, width, height, spread, true);
     }
@@ -456,22 +456,34 @@ public class Tree extends GameObject {
     }
 
     @Override
-    public int getXSpriteBegin() {
-        return getX() - fbo.getWidth() / 2;
+    public int getXSpriteBegin(boolean... forCover) {
+        if (forCover.length > 0 && forCover[0]) {
+            return getX() - Math.round(fbo.getActualWidth() * 0.4f);
+        }
+        return getX() - fbo.getActualWidth() / 2;
     }
 
     @Override
-    public int getYSpriteBegin() {
-        return getY() + 20 - collision.getHeight() - fbo.getHeight();
+    public int getYSpriteBegin(boolean... forCover) {
+        if (forCover.length > 0 && forCover[0]) {
+            return getY() + 20 - collision.getHeight() - Math.round(fbo.getActualHeight() * 0.8f);
+        }
+        return getY() + 20 - collision.getHeight() - fbo.getActualHeight();
     }
 
     @Override
-    public int getXSpriteEnd() {
-        return getX() + fbo.getWidth() / 2;
+    public int getXSpriteEnd(boolean... forCover) {
+        if (forCover.length > 0 && forCover[0]) {
+            return getX() + Math.round(fbo.getActualWidth() * 0.4f);
+        }
+        return getX() + fbo.getActualWidth() / 2;
     }
 
     @Override
-    public int getYSpriteEnd() {
+    public int getYSpriteEnd(boolean... forCover) {
+        if (forCover.length > 0 && forCover[0]) {
+            return getY() - (fbo.getActualHeight() / 2) + 20 + collision.getHeight();
+        }
         return getY() + 20 + collision.getHeight();
     }
 }
