@@ -8,21 +8,13 @@ package gamecontent.maps;
 import collision.Rectangle;
 import game.place.Place;
 import game.place.map.*;
-import gamecontent.environment.Bush;
-import gamecontent.environment.GrassClump;
 import gamecontent.SpawnPoint;
-import gamecontent.environment.Tree;
-import gamecontent.mobs.Blazag;
-import gamecontent.mobs.Dummy;
-import gamecontent.npcs.Melodia;
-import gamecontent.npcs.MyNPC;
-
-import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import gamecontent.mobs.Plurret;
+import gamecontent.environment.GrassClump;
 import gamecontent.environment.Rock;
-import gamecontent.mobs.BrainlessShen;
-import gamecontent.mobs.Shen;
-import gamecontent.mobs.Tongub;
+import gamecontent.mobs.*;
+import gamecontent.npcs.Melodia;
+
+import static collision.OpticProperties.TRANSPARENT;
 
 /**
  * @author Wojtek
@@ -53,7 +45,7 @@ public class GladeMap extends Map {
 //        test.placePuzzle(7, 18, this);
 
         WarpPoint warp = new WarpPoint("toKamienna", 20 * tileSize, 20 * tileSize, "Kamienna");
-        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
+        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, TRANSPARENT, warp));
         addObject(warp);
         addObject(new WarpPoint("toPolana", 20 * tileSize + tileSize / 2, 19 * tileSize + tileSize / 2));
         placePuzzle(20, 20, new PuzzleObject("testMap/portal", place));

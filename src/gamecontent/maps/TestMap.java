@@ -1,6 +1,5 @@
 package gamecontent.maps;
 
-import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
 import collision.Rectangle;
 import engine.utilities.RandomGenerator;
 import game.Settings;
@@ -11,9 +10,9 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
+import gamecontent.environment.Rock;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
-import gamecontent.environment.Rock;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
 import gamecontent.npcs.Magician;
@@ -56,12 +55,12 @@ public class TestMap extends Map {
         placePuzzle(0, 0, puzzle);
 
         WarpPoint warp = new WarpPoint("toCaveLeft", 35 * tileSize, 67 * tileSize, "CaveTest");
-        warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
+        warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, TRANSPARENT, warp));
         addObject(warp);
         addObject(new WarpPoint("toTestLeft", 36 * tileSize + tileSize / 2, 68 * tileSize));
 
         warp = new WarpPoint("toCaveRight", 89 * tileSize, 64 * tileSize, "CaveTest");
-        warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
+        warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, TRANSPARENT, warp));
         addObject(warp);
         addObject(new WarpPoint("toTestRight", 90 * tileSize + tileSize / 2, 65 * tileSize));
         generateNavigationMeshes();

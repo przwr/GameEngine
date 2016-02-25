@@ -5,13 +5,13 @@
  */
 package game.place.map;
 
-import static collision.OpticProperties.FULL_SHADOW;
-import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import collision.Rectangle;
 import engine.utilities.Drawer;
 import game.place.Place;
 import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
+
+import static collision.OpticProperties.FULL_SHADOW;
+import static collision.OpticProperties.TRANSPARENT;
 
 /**
  *
@@ -30,11 +30,11 @@ public class ShadowLightTile extends ForegroundTile {
     }
 
     public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, IN_SHADE_NO_SHADOW, yStart, false, false, isShadow);
+        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, yStart, false, false, isShadow);
     }
 
     public static ForegroundTile createOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, IN_SHADE_NO_SHADOW, 0, false, false, isShadow);
+        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, 0, false, false, isShadow);
     }
 
     public static ForegroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {
@@ -46,11 +46,11 @@ public class ShadowLightTile extends ForegroundTile {
     }
 
     public static ForegroundTile createRoundOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, IN_SHADE_NO_SHADOW, yStart, true, false, isShadow);
+        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, yStart, true, false, isShadow);
     }
 
     public static ForegroundTile createRoundOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, IN_SHADE_NO_SHADOW, 0, true, false, isShadow);
+        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, 0, true, false, isShadow);
     }
 
     public static ForegroundTile createRoundWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {

@@ -7,6 +7,7 @@ package engine.lights;
 
 import collision.Block;
 import collision.Figure;
+import collision.OpticProperties;
 import collision.RoundRectangle;
 import engine.utilities.BlueArray;
 import engine.utilities.Methods;
@@ -136,7 +137,8 @@ public class ShadowRenderer {
         for (GameObject fgTile : area.getNearForegroundTiles()) {
             if (!fgTile.isInBlock()) {
                 tempShade = fgTile.getCollision();
-                if (tempShade != null && (tempShade.isLitable() || tempShade.isGiveShadow()) && tempShade.getOwner().getAppearance() != null
+                if (tempShade != null && (tempShade.isLitable() || tempShade.getType() == OpticProperties.IN_SHADE_NO_SHADOW) && tempShade.getOwner()
+                        .getAppearance() != null
                         && fgTile.getY() - tempShade.getActualHeight() + tempShade.getHeightHalf() <= lightYEnd
                         && fgTile.getY() + tempShade.getActualHeight() - tempShade.getHeightHalf() >= lightYStart
                         && fgTile.getX() - tempShade.getActualWidth() / 2 <= lightXEnd

@@ -14,7 +14,7 @@ import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import org.newdawn.slick.Color;
 
-import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
+import static collision.OpticProperties.TRANSPARENT;
 
 /**
  * @author Wojtek
@@ -45,7 +45,7 @@ public class StoneMap extends Map {
         }
 
         WarpPoint warp = new WarpPoint("toPolana", 20 * tileSize, 20 * tileSize, "Polana");
-        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, IN_SHADE_NO_SHADOW, warp));
+        warp.setCollision(Rectangle.create(0, 0, tileSize, tileSize, TRANSPARENT, warp));
         addObject(warp);
         addObject(new WarpPoint("toKamienna", 20 * tileSize, 19 * tileSize));
         PuzzleObject portal = new PuzzleObject("testMap/portal", place);
