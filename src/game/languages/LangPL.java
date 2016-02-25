@@ -96,5 +96,6 @@ public class LangPL extends Language {
         menu.Video = "Wideo";
         menu.Gameplay = "Rozgrywka";
         menu.FramesLimit = "Limit klatek: ";
+        menu.Sound = "Dźwięk";
     }
 }

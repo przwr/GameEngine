@@ -40,7 +40,6 @@ public class VolumeChoice extends MenuChoice {
             while (it.hasNext()) {
                 java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
                 pair.getValue().updateGain();
-                it.remove();
             }
         }
         AnalyzerSettings.update();

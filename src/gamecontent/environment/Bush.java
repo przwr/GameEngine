@@ -352,22 +352,31 @@ public class Bush extends GameObject {
     }
 
     @Override
-    public int getXSpriteBegin() {
-        return getX() - fbo.getWidth() / 2;
+    public int getXSpriteBegin(boolean... forCover) {
+        if (forCover.length > 0 && forCover[0]) {
+            return getX() - Math.round(fbo.getActualWidth() * 0.4f);
+        }
+        return getX() - fbo.getActualWidth() / 2;
     }
 
     @Override
-    public int getYSpriteBegin() {
-        return getY() + 20 - collision.getHeight() - fbo.getHeight();
+    public int getYSpriteBegin(boolean... forCover) {
+        if (forCover.length > 0 && forCover[0]) {
+            return getY() + 20 - collision.getHeight() - Math.round(fbo.getActualHeight() * 0.9f);
+        }
+        return getY() + 20 - collision.getHeight() - fbo.getActualHeight();
     }
 
     @Override
-    public int getXSpriteEnd() {
-        return getX() + fbo.getWidth() / 2;
+    public int getXSpriteEnd(boolean... forCover) {
+        if (forCover.length > 0 && forCover[0]) {
+            return getX() + Math.round(fbo.getActualWidth() * 0.4f);
+        }
+        return getX() + fbo.getActualWidth() / 2;
     }
 
     @Override
-    public int getYSpriteEnd() {
+    public int getYSpriteEnd(boolean... forCover) {
         return getY() + 20 + collision.getHeight();
     }
 }

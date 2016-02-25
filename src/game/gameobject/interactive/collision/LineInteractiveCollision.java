@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class LineInteractiveCollision extends InteractiveCollision {
 
     private int length, width;
+    private int originalLength;
     private Point end = new Point();
 
     public LineInteractiveCollision(int fromBottom, int height, int shift, int length, int width) {
@@ -165,7 +166,12 @@ public class LineInteractiveCollision extends InteractiveCollision {
         glPopMatrix();
     }
 
-    public void setEnvironmentCollision(Rectangle environmentCollision) {
+    public void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half) {
+        if (half) {
+            originalLength = length;
+            length /= 2;
+            updatePosition(owner);
+        }
         int sqrt2WidthOver2 = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * width / 2);
         if (position.getX() > end.getX()) {
             environmentCollision.setXStart(end.getX() - width / 2);
@@ -180,6 +186,10 @@ public class LineInteractiveCollision extends InteractiveCollision {
         } else {
             environmentCollision.setYStart(position.getY() - sqrt2WidthOver2);
             environmentCollision.setHeight(end.getY() - position.getY() + sqrt2WidthOver2);
+        }
+        if (half) {
+            length = originalLength;
+            updatePosition(owner);
         }
     }
 }

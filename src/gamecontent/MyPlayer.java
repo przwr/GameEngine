@@ -75,6 +75,7 @@ public class MyPlayer extends Player {
     private MyGUI gui;
     private float jumpDelta = 22.6f;
 
+
     public MyPlayer(boolean first, String name) {
         super(name);
         this.first = first;
@@ -135,6 +136,16 @@ public class MyPlayer extends Player {
                     break;
             }
             updateActionSets();
+            for (InteractionSet a : actionSets) {
+                Interactive i = a.getFirstInteractive();
+                if (i != null) {
+                    i.setHalfEnvironmentalCollision(true);
+                }
+                i = a.getSecondInteractive();
+                if (i != null) {
+                    i.setHalfEnvironmentalCollision(true);
+                }
+            }
         }
 
         for (InteractionSet set : actionSets) {
@@ -282,8 +293,8 @@ public class MyPlayer extends Player {
 //        collision.setCollide(false);
         initializeAttacks();
         stats = new PlayerStats(this);
-        stats.setMaxHealth(1000);
-        stats.setHealth(1000);
+//        stats.setMaxHealth(1000);
+//        stats.setHealth(1000);
         textControl = new TextController(place);
         addGui(textControl);
         gui = new MyGUI("Player " + name + "'s GUI", place);
@@ -375,7 +386,13 @@ public class MyPlayer extends Player {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             Drawer.setCentralPoint();
+            if (colorAlpha < 1f) {
+                Drawer.setColorAlpha(colorAlpha);
+            }
             appearance.render();
+            if (colorAlpha < 1f) {
+                Drawer.refreshColor();
+            }
 //            Drawer.returnToCentralPoint();
             /*Drawer.setColor(Color.black);
              Drawer.drawCircle(Place.tileSize * 2, 0, 6, 10);

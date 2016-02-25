@@ -35,7 +35,6 @@ public class SoundBase {
             String[] temp = file.getName().split("\\.");
             try {
                 Audio sound = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
-                //System.out.println(temp[0]);
                 sounds.put(temp[0], new Sound(temp[0], sound));
             } catch (IOException e) {
                 ErrorHandler.error(e.toString());

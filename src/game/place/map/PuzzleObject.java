@@ -6,13 +6,10 @@
 package game.place.map;
 
 import collision.Block;
-import collision.OpticProperties;
 import engine.utilities.ErrorHandler;
-import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.PointedValue;
 import engine.utilities.RandomGenerator;
-import game.gameobject.GameObject;
 import game.place.Place;
 import sprites.SpriteSheet;
 
@@ -34,8 +31,9 @@ public class PuzzleObject {
     protected ArrayList<BlockContainer> blocks;
     protected ArrayList<PointedValue> links;
     protected ArrayList<MapObjectContainer> mapObjects;
-    private ArrayList<TileChanger> changers;
     protected int xDelta, yDelta;
+    int lineNum = 2;
+    private ArrayList<TileChanger> changers;
     private int xBegin;
     private int yBegin;
     private int xEnd;
@@ -52,8 +50,6 @@ public class PuzzleObject {
     private boolean repeatTiles;
     /*----*/
     private RandomGenerator rand;
-
-    int lineNum = 2;
 
     public PuzzleObject(File file, Place place, boolean repeatTiles) {
         this.place = place;
@@ -472,7 +468,7 @@ public class PuzzleObject {
         public Block generateBlock(int x, int y) {
             Block b = Block.create(values[0] + x, values[1] + y, values[2], values[3], values[4]);
             if ((values[4] + values[3]) / tileSize == 0) {
-                b.getCollision().setOpticProperties(collision.OpticProperties.TRANSPARENT);
+                b.getCollision().setOpticProperties(collision.OpticProperties.NO_SHADOW);
             }
             return b;
         }

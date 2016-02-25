@@ -138,59 +138,59 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
 
-    public void setEnvironmentCollision(Rectangle environmentCollision) {
-        int sqrt2Radius = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * radius);
+    public void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half) {
+        int r = half ? radius / 2 : radius;
+        int sqrt2Radius = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * r);
         switch (environmentCollision.getOwner().getDirection8Way()) {
             case RIGHT:
                 environmentCollision.setXStart(position.getX());
                 environmentCollision.setYStart(position.getY() - sqrt2Radius);
-                environmentCollision.setWidth(radius);
+                environmentCollision.setWidth(r);
                 environmentCollision.setHeight(sqrt2Radius * 2);
                 break;
             case UP:
-                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setXStart(position.getX() - r);
                 environmentCollision.setYStart(position.getY() - sqrt2Radius);
-                environmentCollision.setWidth(radius * 2);
+                environmentCollision.setWidth(radius);
                 environmentCollision.setHeight(sqrt2Radius);
                 break;
             case LEFT:
-                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setXStart(position.getX() - r);
                 environmentCollision.setYStart(position.getY() - sqrt2Radius);
-                environmentCollision.setWidth(radius);
+                environmentCollision.setWidth(r);
                 environmentCollision.setHeight(sqrt2Radius * 2);
                 break;
             case DOWN:
-                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setXStart(position.getX() - r);
                 environmentCollision.setYStart(position.getY());
-                environmentCollision.setWidth(radius * 2);
+                environmentCollision.setWidth(radius);
                 environmentCollision.setHeight(sqrt2Radius);
                 break;
             case UP_RIGHT:
                 environmentCollision.setXStart(position.getX() - sqrt2Radius);
                 environmentCollision.setYStart(position.getY() - sqrt2Radius);
-                environmentCollision.setWidth(sqrt2Radius + radius);
-                environmentCollision.setHeight(sqrt2Radius + radius / 2);
+                environmentCollision.setWidth(sqrt2Radius + r);
+                environmentCollision.setHeight(sqrt2Radius + r / 2);
                 break;
             case UP_LEFT:
-                environmentCollision.setXStart(position.getX() - radius);
+                environmentCollision.setXStart(position.getX() - r);
                 environmentCollision.setYStart(position.getY() - sqrt2Radius);
-                environmentCollision.setWidth(sqrt2Radius + radius);
-                environmentCollision.setHeight(sqrt2Radius + radius / 2);
+                environmentCollision.setWidth(sqrt2Radius + r);
+                environmentCollision.setHeight(sqrt2Radius + r / 2);
                 break;
             case DOWN_LEFT:
-                environmentCollision.setXStart(position.getX() - radius);
-                environmentCollision.setYStart(position.getY() - radius / 2);
-                environmentCollision.setWidth(sqrt2Radius + radius);
-                environmentCollision.setHeight(sqrt2Radius + radius / 2);
+                environmentCollision.setXStart(position.getX() - r);
+                environmentCollision.setYStart(position.getY() - r / 2);
+                environmentCollision.setWidth(sqrt2Radius + r);
+                environmentCollision.setHeight(sqrt2Radius + r / 2);
                 break;
             case DOWN_RIGHT:
                 environmentCollision.setXStart(position.getX() - sqrt2Radius);
-                environmentCollision.setYStart(position.getY() - radius / 2);
-                environmentCollision.setWidth(sqrt2Radius + radius);
-                environmentCollision.setHeight(sqrt2Radius + radius / 2);
+                environmentCollision.setYStart(position.getY() - r / 2);
+                environmentCollision.setWidth(sqrt2Radius + r);
+                environmentCollision.setHeight(sqrt2Radius + r / 2);
                 break;
         }
-
 
     }
 }

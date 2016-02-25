@@ -1,9 +1,10 @@
 package game.gameobject.stats;
 
-import engine.utilities.Point;
+import collision.OpticProperties;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
-import game.place.cameras.Camera;
+import game.gameobject.temporalmodifiers.DeathChanger;
+import game.gameobject.temporalmodifiers.TemporalChanger;
 import gamecontent.MyPlayer;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
@@ -30,13 +31,15 @@ public class PlayerStats extends Stats {
 
     @Override
     public void died() {
-        health = maxHealth / 2;
-        Point position = player.getSpawnPosition();
-        player.setPosition(position.getX(), position.getY());
-        Camera camera = player.getCamera();
-        if (camera != null) {
-            camera.updateStatic();
-        }
+//        player.getCollision().setCollide(false);
+        player.getCollision().setHitable(false);
+        setUnhurtableState(true);
+//        player.setUnableToMove(true);
+        player.getCollision().setOpticProperties(OpticProperties.NO_SHADOW);
+        player.setColorAlpha(0.5f);
+        TemporalChanger death = new DeathChanger(180, player);
+        player.addChanger(death);
+        death.start();
         ((MyPlayer) player).getGUI().deactivate();
         System.out.println(player.getName() + " zginał.");
     }

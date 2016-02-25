@@ -90,7 +90,7 @@ public abstract class Mob extends Entity {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
-            if (object.getMap() == map && (isHeard(object) || isSeen(object))) {
+            if (object.getMap() == map && object.getCollision().isHitable() && (isHeard(object) || isSeen(object))) {
                 closeEnemies.add(object);
             }
         }

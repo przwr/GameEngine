@@ -21,7 +21,7 @@ import sprites.ClothedAppearance;
 import java.awt.*;
 import java.util.Collections;
 
-import static collision.OpticProperties.TRANSPARENT;
+import static collision.OpticProperties.NO_SHADOW;
 import static collision.RoundRectangle.LEFT_BOTTOM;
 import static collision.RoundRectangle.RIGHT_BOTTOM;
 import static engine.lights.Shadow.*;
@@ -116,7 +116,7 @@ public class ShadowRenderer {
     private static void searchBlocks(Light light) {
         for (Block block : area.getNearBlocks()) {
             tempShade = block.getCollision();
-            if (tempShade != null && tempShade.getType() != TRANSPARENT) {
+            if (tempShade != null && tempShade.getType() != NO_SHADOW) {
                 if (tempShade.getX() <= lightXEnd && tempShade.getXEnd() >= lightXStart
                         && tempShade.getY() - FastMath.abs(tempShade.getShadowHeight()) - Place.tileSize <= lightYEnd && tempShade.getYEnd() >= lightYStart) {
                     tempShade.setLightDistance(FastMath.abs(tempShade.getXCentral() - light.getX()));
@@ -136,7 +136,7 @@ public class ShadowRenderer {
         for (GameObject fgTile : area.getNearForegroundTiles()) {
             if (!fgTile.isInBlock()) {
                 tempShade = fgTile.getCollision();
-                if (tempShade != null && tempShade.isLitable() && tempShade.getOwner().getAppearance() != null
+                if (tempShade != null && (tempShade.isLitable() || tempShade.isGiveShadow()) && tempShade.getOwner().getAppearance() != null
                         && fgTile.getY() - tempShade.getActualHeight() + tempShade.getHeightHalf() <= lightYEnd
                         && fgTile.getY() + tempShade.getActualHeight() - tempShade.getHeightHalf() >= lightYStart
                         && fgTile.getX() - tempShade.getActualWidth() / 2 <= lightXEnd
@@ -837,10 +837,9 @@ public class ShadowRenderer {
         if (((source.getX() != current.getXEnd() && source.getX() != current.getX())
                 || (YOL > other.getY() - other.getShadowHeight() && YOL < other.getYEnd())
                 || (YOL2 > other.getY() - other.getShadowHeight() && YOL2 < other.getYEnd()))) {
-            if (XL1 < current.getX()) {
+            if (XL1 < current.getXEnd()) {
                 other.addShadowType(BRIGHT);
                 DEBUG("Left Lightness - first");
-
             } else {
                 other.addShadowType(DARK);
                 DEBUG("Left Darkness - first");
@@ -936,7 +935,7 @@ public class ShadowRenderer {
         if (((source.getX() != current.getXEnd() && source.getX() != current.getX())
                 || (YOR > other.getY() - other.getShadowHeight() && YOR < other.getYEnd())
                 || (YOR2 > other.getY() - other.getShadowHeight() && YOR2 < other.getYEnd()))) {
-            if (XR1 > current.getXEnd()) { // check this shitty condition
+            if (XR1 > current.getX()) { // check this shitty condition
                 other.addShadowType(BRIGHT);
                 DEBUG("Right Lightness - first");
             } else {
@@ -1252,14 +1251,14 @@ public class ShadowRenderer {
                     other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
                     XL2 = current.getX() <= XL1 ? other.getXSpriteOffset() : other.getXSpriteOffsetWidth();
                     other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
-//                    OBJECT_DEBUG("Object Left Light " + (XL1 - other.getXSpriteBegin()) + " XL2 " + XL2);
+                    OBJECT_DEBUG("Object Left Light " + (XL1 - other.getXSpriteBegin()) + " XL2 " + XL2);
                     checked = true;
                 } else { //dodaj cień
                     if (shadow3X > shadow2X /*|| shadow3Y < shadow2Y*/) {
                         XL2 = other.getXSpriteOffsetWidth();
                     }
                     other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
-//                    OBJECT_DEBUG("Object Left Shade " + (XL1 - other.getXSpriteBegin()) + " XL2 " + XL2);
+                    OBJECT_DEBUG("Object Left Shade " + (XL1 - other.getXSpriteBegin()) + " XL2 " + XL2);
                     checked = true;
                 }
             }
@@ -1285,15 +1284,15 @@ public class ShadowRenderer {
                     other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
                     XR2 = XR1 > current.getXEnd() ? other.getXSpriteOffset() : other.getXSpriteOffsetWidth();
                     other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
-//                    OBJECT_DEBUG("Object Right Light XR1 " + (XR1 - other.getXSpriteBegin()) + " XR2 " + XR2 + other.getActualWidth() + " " + other
-//                            .getXSpriteOffset());
+                    OBJECT_DEBUG("Object Right Light XR1 " + (XR1 - other.getXSpriteBegin()) + " XR2 " + XR2 + other.getActualWidth() + " " + other
+                            .getXSpriteOffset());
                     checked = true;
                 } else { //dodaj cień
                     if (shadow3X < shadow2X /*|| shadow3Y > shadow2Y*/) {
                         XR2 = other.getXSpriteOffsetWidth();
                     }
                     other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
-//                    OBJECT_DEBUG("Object Right Shade XR1 " + (XR1 - other.getXSpriteBegin()) + " XR2 " + XR2);
+                    OBJECT_DEBUG("Object Right Shade XR1 " + (XR1 - other.getXSpriteBegin()) + " XR2 " + XR2);
                     checked = true;
                 }
             }
@@ -1375,7 +1374,7 @@ public class ShadowRenderer {
             if (other.getY() <= source.getY() && (other.getY() <= current.getY() || other.getYEnd() <= current.getYEnd())) {
                 if (polygon.contains(other.getX() + 1, other.getYEnd() - 1) && polygon.contains(other.getXEnd() - 1, other.getYEnd() - 1)) {
                     other.addShadowType(DARK);
-//                    OBJECT_DEBUG("Object Darkness...");
+                    OBJECT_DEBUG("Object Darkness...");
                 }
             }
             checked = true;

@@ -116,11 +116,12 @@ public class CircleInteractiveCollision extends InteractiveCollision {
     }
 
 
-    public void setEnvironmentCollision(Rectangle environmentCollision) {
-        int sqrt2Radius = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * radius);
-        environmentCollision.setXStart(position.getX() - radius);
+    public void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half) {
+        int r = half ? radius / 2 : radius;
+        int sqrt2Radius = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * r);
+        environmentCollision.setXStart(position.getX() - r);
         environmentCollision.setYStart(position.getY() - sqrt2Radius);
-        environmentCollision.setWidth(2 * radius);
+        environmentCollision.setWidth(2 * r);
         environmentCollision.setHeight(sqrt2Radius * 2);
     }
 
