@@ -83,7 +83,7 @@ public class Area {
         this.xInPixels = xArea * xAreaInPixels;
         this.yInPixels = yArea * yAreaInPixels;
     }
-
+    
     public void generateNavigationMesh(Set<Block> blocksForMesh) {
         navigationMesh = NavigationMeshGenerator.generateNavigationMesh(tiles, blocksForMesh, xArea, yArea);
     }

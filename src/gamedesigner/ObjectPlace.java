@@ -49,8 +49,8 @@ public class ObjectPlace extends Place {
     private boolean altMode, noBlocks, grid;
     private ObjectMap objMap;
     private UndoControl undo;
-    private final short xWorkingAreaInTiles = 160;
-    private final short yWorkingAreaInTiles = 160;
+    private final short xWorkingAreaInTiles = 320;
+    private final short yWorkingAreaInTiles = 320;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);

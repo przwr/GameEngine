@@ -233,7 +233,7 @@ public class ObjectMap extends Map {
             } else {
                 ForegroundTile newTile = ObjectFGTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, depth + tileSize /*TODO SOMETHING!!!*/);
                 if (altMode) {
-                    newTile.getCollision().setOpticProperties(OpticProperties.FULL_SHADOW);
+                    newTile.getCollision().setOpticProperties(OpticProperties.IN_SHADE_NO_SHADOW);
                     newTile.setSimpleLighting(false);
                 }
                 addForegroundTile(newTile, x, y, depth);
