@@ -31,7 +31,7 @@ public class PlayerStats extends Stats {
 
     @Override
     public void died() {
-        player.getCollision().setCollide(false);
+//        player.getCollision().setCollide(false);
         player.getCollision().setHitable(false);
         setUnhurtableState(true);
 //        player.setUnableToMove(true);

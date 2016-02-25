@@ -1,12 +1,7 @@
-
 import collision.OpticProperties;
 import engine.Main;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -60,7 +55,7 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
                 if (line.startsWith("ft")) {
                     data = line.split(":");
                     placer = "ft:" + data[1] + ":" + data[2] + ":" + data[3] + ":" + data[4]
-                            + ":" + (data[5].equals("1") ? OpticProperties.FULL_SHADOW : OpticProperties.IN_SHADE_NO_SHADOW)
+                            + ":" + (data[5].equals("1") ? OpticProperties.FULL_SHADOW : OpticProperties.TRANSPARENT)
                             + ":" + data[6] + ":" + data[7] + ":" + data[5];
                     for (int i = 8; i < data.length; i++) {
                         placer += ":" + data[i];

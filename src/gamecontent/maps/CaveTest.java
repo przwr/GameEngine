@@ -1,6 +1,7 @@
 package gamecontent.maps;
 
 import collision.Rectangle;
+import game.logic.DayCycle;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.PuzzleObject;
@@ -8,10 +9,9 @@ import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Tongub;
-
-import static collision.OpticProperties.IN_SHADE_NO_SHADOW;
-import game.logic.DayCycle;
 import org.newdawn.slick.Color;
+
+import static collision.OpticProperties.TRANSPARENT;
 
 /**
  * Created by przemek on 21.11.15.
@@ -31,12 +31,12 @@ public class CaveTest extends Map {
         placePuzzle(0, 0, puzzle);
 
         WarpPoint warp = new WarpPoint("toTestLeft", 27 * tileSize, 17 * tileSize, "Test");
-        warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, IN_SHADE_NO_SHADOW, warp));
+        warp.setCollision(Rectangle.create(0, 0, tileSize, 2 * tileSize, TRANSPARENT, warp));
         addObject(warp);
         addObject(new WarpPoint("toCaveLeft", 26 * tileSize + tileSize / 2, 18 * tileSize + tileSize / 2));
 
         warp = new WarpPoint("toTestRight", 82 * tileSize, 23 * tileSize, "Test");
-        warp.setCollision(Rectangle.create(0, 0, tileSize, 3 * tileSize, IN_SHADE_NO_SHADOW, warp));
+        warp.setCollision(Rectangle.create(0, 0, tileSize, 3 * tileSize, TRANSPARENT, warp));
         addObject(warp);
         addObject(new WarpPoint("toCaveRight", 81 * tileSize + tileSize / 2, 24 * tileSize + tileSize / 2));
         long start = System.nanoTime();

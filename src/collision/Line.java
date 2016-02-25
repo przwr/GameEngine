@@ -21,7 +21,7 @@ public class Line extends Figure {
     private final int yVector;
 
     private Line(int xStart, int yStart, int xVector, int yVector, GameObject owner) {
-        super(xStart, yStart, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
+        super(xStart, yStart, owner, OpticProperties.create(OpticProperties.TRANSPARENT));     /// do poprawy
         this.xVector = xVector;
         this.yVector = yVector;
         points.add(new Point(getX(), getY()));
@@ -31,7 +31,7 @@ public class Line extends Figure {
     }
 
     public Line(int xVector, int yVector, GameObject owner) {
-        super(0, 0, owner, OpticProperties.create(OpticProperties.IN_SHADE_NO_SHADOW));     /// do poprawy
+        super(0, 0, owner, OpticProperties.create(OpticProperties.TRANSPARENT));     /// do poprawy
         this.xVector = xVector;
         this.yVector = yVector;
         centralize();

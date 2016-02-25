@@ -136,6 +136,16 @@ public class MyPlayer extends Player {
                     break;
             }
             updateActionSets();
+            for (InteractionSet a : actionSets) {
+                Interactive i = a.getFirstInteractive();
+                if (i != null) {
+                    i.setHalfEnvironmentalCollision(true);
+                }
+                i = a.getSecondInteractive();
+                if (i != null) {
+                    i.setHalfEnvironmentalCollision(true);
+                }
+            }
         }
 
         for (InteractionSet set : actionSets) {
