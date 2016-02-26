@@ -16,7 +16,7 @@ public final class DayCycle {
     private static final short REAL_MINUTES_IN_HOUR = 6;
     private final short TIME_BEGIN_PREDAWN = 5 * 60, TIME_BEGIN_DAWN = 6 * 60, TIME_END_DAWN = 8 * 60, TIME_END_AFTERDAWN = 9 * 60;
     private final short TIME_BEGIN_PREDUSK = 17 * 60, TIME_BEGIN_DUSK = 18 * 60, TIME_END_DUSK = 20 * 60, TIME_END_AFTERDUSK = 21 * 60;
-    private final Color lightColor = new Color(0.2f, 0.2f, 0.2f);
+    private final Color lightColor = new Color(0.2f, 0.2f, 0.2f), shadowColor = new Color(0, 0, 0, 0.2f);
     private Color NIGHT_SKY, DARK_BLUE_SKY, RED_SKY, ORANGE_SKY, YELLOW_SKY, DAY_SKY;
     private short timeInMinutes = 0;
     private long midnightTime;
@@ -179,6 +179,11 @@ public final class DayCycle {
         return lightColor;
     }
 
+    public Color getDayShadowColor() {
+        shadowColor.a = dayShadowAlpha * 0.2f;
+        return shadowColor;
+    }
+    
     public float getDayShadowAlpha() {
         return dayShadowAlpha;
     }

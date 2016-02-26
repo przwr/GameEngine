@@ -101,7 +101,6 @@ public class Tree extends GameObject {
         toUpdate = false;
     }
 
-
     @Override
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
@@ -116,8 +115,8 @@ public class Tree extends GameObject {
     private void drawTree() {
         glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
-        Drawer.setColor(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) /
-                10240f)));
+        Drawer.setColor(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10)
+                / 10240f)));
         if (!branchless) {
             drawRoots();
         }
@@ -212,8 +211,7 @@ public class Tree extends GameObject {
                 drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
                         * fraction / 3));
             } else {
-                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round
-                        (height * fraction / 3));
+                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round(height * fraction / 3));
             }
             left = !left;
         }
@@ -234,8 +232,8 @@ public class Tree extends GameObject {
         // End of branch
         int change2 = -16 + random.next(5);
         if (!branchless) {
-            Drawer.drawTextureTriangle(x + deviation, -length, x + deviation + widthTop, -length, x + deviation + 2 * deviation / 3 + change2, -length - 2 *
-                    length / 3);
+            Drawer.drawTextureTriangle(x + deviation, -length, x + deviation + widthTop, -length, x + deviation + 2 * deviation / 3 + change2, -length - 2
+                    * length / 3);
         }
         points.add(new Point(x + deviation + 2 * deviation / 3 + change2, -length - 2 * length / 3 + yShift));
         if (Math.abs(deviation) > 20) {
@@ -389,7 +387,6 @@ public class Tree extends GameObject {
             }
         }
     }
-
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
         if (Math.abs(points.get(i).getY() + y) < fbo.getHeight() / 2 - leaf.getWidth() - leaf.getHeight()

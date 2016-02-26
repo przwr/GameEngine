@@ -382,7 +382,7 @@ public class PuzzleObject {
         final ArrayList<Point> additionalPlaces = new ArrayList<>();
         final SpriteSheet texture;
         final int[] values;
-        final int type;
+        int type;
         final boolean round;
         final boolean solid;
 
@@ -432,6 +432,14 @@ public class PuzzleObject {
 
         public boolean getRound() {
             return round;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public int getType() {
+            return type;
         }
 
         public ForegroundTile generateFGT(int x, int y, boolean objectFGT) {

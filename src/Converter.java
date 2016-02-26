@@ -1,3 +1,4 @@
+
 import collision.OpticProperties;
 import engine.Main;
 
@@ -18,14 +19,21 @@ import java.util.logging.Logger;
  */
 public class Converter {    //Jakby ktoś chciał na szybko przekonwertować duże ilości plików <(^.^<)
 
-    private static final String folder = "res/objects";
+    private static final String folder = "res/objects/demo/testMap.puz";
     private static final String extension = ".puz";
     private static final boolean openFolders = true;
-    private static final boolean isThisOkayMommy = false;   //Trzeba uważać :D
+    private static final boolean isThisOkayMommy = true;   //Trzeba uważać :D
 
     public static void main(String[] argv) {
         if (isThisOkayMommy) {
-            readFolder(new File(folder));
+            File open = new File(folder);
+            if (open.isDirectory()) {
+                readFolder(open);
+            } else {
+                System.out.println("Reading " + open.getName());
+                save(read(open), open);
+                System.out.println(open.getName() + " saved");
+            }
         } else {
             throw new RuntimeException("This is not OKEY!");
         }
@@ -54,11 +62,13 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
             while ((line = read.readLine()) != null) {
                 if (line.startsWith("ft")) {
                     data = line.split(":");
-                    placer = "ft:" + data[1] + ":" + data[2] + ":" + data[3] + ":" + data[4]
-                            + ":" + (data[5].equals("1") ? OpticProperties.FULL_SHADOW : OpticProperties.TRANSPARENT)
-                            + ":" + data[6] + ":" + data[7] + ":" + data[5];
-                    for (int i = 8; i < data.length; i++) {
-                        placer += ":" + data[i];
+                    placer = "ft";
+                    for (int i = 1; i < data.length; i++) {
+                        if (i == 5) {
+                            placer += ":" + (data[5].equals("2") ? OpticProperties.IN_SHADE_NO_SHADOW : data[5]);
+                        } else {
+                            placer += ":" + data[i];
+                        }
                     }
                     buffer.add(placer);
                 } else {
