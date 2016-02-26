@@ -146,6 +146,7 @@ public class MyPlayer extends Player {
                     i.setHalfEnvironmentalCollision(true);
                 }
             }
+            gui.changeAttackIcon(getFirstAttackType(), getSecondAttackType());
         }
 
         for (InteractionSet set : actionSets) {
@@ -295,7 +296,6 @@ public class MyPlayer extends Player {
         }
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
 //        collision.setCollide(false);
-        initializeAttacks();
         stats = new PlayerStats(this);
 //        stats.setMaxHealth(1000);
 //        stats.setHealth(1000);
@@ -304,6 +304,7 @@ public class MyPlayer extends Player {
         gui = new MyGUI("Player " + name + "'s GUI", place);
         addGui(gui);
         ((MyController) playerController).setPlayersGUI(gui);
+        initializeAttacks();
         addPushInteraction();
     }
 
