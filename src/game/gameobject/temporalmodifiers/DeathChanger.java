@@ -30,12 +30,12 @@ public class DeathChanger extends TemporalChanger {
                     camera.updateStatic();
                 }
             }
-//            entity.getCollision().setCollide(true);
+            entity.getCollision().setCollide(true);
             entity.getCollision().setHitable(true);
             entity.getStats().setUnhurtableState(false);
             entity.getCollision().setOpticProperties(OpticProperties.NO_SHADOW);
             entity.setColorAlpha(1f);
-//            entity.setUnableToMove(false);
+            entity.setUnableToMove(false);
         }
     }
 

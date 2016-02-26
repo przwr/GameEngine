@@ -146,6 +146,7 @@ public class MyPlayer extends Player {
                     i.setHalfEnvironmentalCollision(true);
                 }
             }
+            gui.changeAttackIcon(getFirstAttackType(), getSecondAttackType());
         }
 
         for (InteractionSet set : actionSets) {
@@ -196,6 +197,10 @@ public class MyPlayer extends Player {
 
     public void setActionPair(int pair) {
         actionSets.get(activeActionSet).setActivePair(pair);
+    }
+
+    public int getActiveActionPairID() {
+        return actionSets.get(activeActionSet).getActivePair();
     }
 
     public boolean changeWeapon() {
@@ -291,7 +296,6 @@ public class MyPlayer extends Player {
         }
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
 //        collision.setCollide(false);
-        initializeAttacks();
         stats = new PlayerStats(this);
 //        stats.setMaxHealth(1000);
 //        stats.setHealth(1000);
@@ -300,6 +304,7 @@ public class MyPlayer extends Player {
         gui = new MyGUI("Player " + name + "'s GUI", place);
         addGui(gui);
         ((MyController) playerController).setPlayersGUI(gui);
+        initializeAttacks();
         addPushInteraction();
     }
 
@@ -389,22 +394,13 @@ public class MyPlayer extends Player {
             if (colorAlpha < 1f) {
                 Drawer.setColorAlpha(colorAlpha);
             }
-            appearance.render();
+            if (((ClothedAppearance) appearance).isUpToDate()) {
+                appearance.render();
+            }
             if (colorAlpha < 1f) {
                 Drawer.refreshColor();
             }
-//            Drawer.returnToCentralPoint();
-            /*Drawer.setColor(Color.black);
-             Drawer.drawCircle(Place.tileSize * 2, 0, 6, 10);
-             Drawer.setCentralPoint();
 
-             Drawer.translate(-appearance.getXStart() - appearance.getXOffset(), -appearance.getYStart() - appearance.getYOffset());
-             appearance.render();
-
-             Drawer.refreshColor();*/
-            /*Drawer.returnToCentralPoint();
-             Drawer.translate(Place.tileSize * 2, 0);
-             appearance.renderPart(appearance.getWidth() / 2, appearance.getWidth());*/
             appearance.updateFrame();
             glPopMatrix();
         }
@@ -424,19 +420,15 @@ public class MyPlayer extends Player {
     }
 
     private void renderLifeIndicator() {
-        int halfLifeAngle = 90, startAngle, endAngle;
+        int halfLifeAngle = 180, startAngle, endAngle;
         int minimumLifePercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
         int lifePercentageAngle = Methods.roundDouble(stats.getHealth() * halfLifeAngle / (float) stats.getMaxHealth());
         if (lifePercentageAngle < minimumLifePercentage && stats.getHealth() != 0) {
             lifePercentageAngle = minimumLifePercentage;
-            startAngle = 180;
-            endAngle = 180 + lifePercentageAngle;
-        } else {
-            startAngle = 180 - lifePercentageAngle;
-            endAngle = 180 + lifePercentageAngle;
         }
-
-        int precision = (12 * lifePercentageAngle * halfLifeAngle) / halfLifeAngle;
+        startAngle = 90;
+        endAngle = lifePercentageAngle + 90;
+        int precision = (12 * lifePercentageAngle) / halfLifeAngle;
         if (precision == 0) {
             precision = 1;
         }
@@ -447,19 +439,15 @@ public class MyPlayer extends Player {
 
     private void renderEnergyIndicator() {
         PlayerStats playerStats = (PlayerStats) stats;
-        int halfEnergyAngle = 90, startAngle, endAngle;
+        int halfEnergyAngle = 180, startAngle, endAngle;
         int minimumEnergyPercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
         int energyPercentageAngle = Methods.roundDouble(playerStats.getEnergy() * halfEnergyAngle / playerStats.getMaxEnergy());
         if (energyPercentageAngle < minimumEnergyPercentage && playerStats.getEnergy() != 0) {
             energyPercentageAngle = minimumEnergyPercentage;
-            startAngle = 360;
-            endAngle = 360 + energyPercentageAngle;
-        } else {
-            startAngle = 360 - energyPercentageAngle;
-            endAngle = 360 + energyPercentageAngle;
         }
-
-        int precision = (12 * energyPercentageAngle * halfEnergyAngle) / halfEnergyAngle;
+        startAngle = 450 - energyPercentageAngle;
+        endAngle = 450;
+        int precision = (12 * energyPercentageAngle) / halfEnergyAngle;
         if (precision == 0) {
             precision = 1;
         }
