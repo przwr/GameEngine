@@ -7,7 +7,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.GLSync;
-import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
@@ -175,8 +174,9 @@ public abstract class BackgroundLoader {
     private void unlock() {
         if (useFences)
             fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-        else
+        else {
             glFlush();
+        }
         lock.unlock();
     }
 
@@ -190,8 +190,8 @@ public abstract class BackgroundLoader {
 
     private void loadSounds() {
         if (Settings.sounds == null && list1.isEmpty() && list2.isEmpty() && game != null && game.getPlace() != null) {
-            game.getPlace().getSounds().initialize("res");
-            SoundStore.get().poll(0);
+//            game.getPlace().getSounds().initialize("res");
+//            SoundStore.get().poll(0);
         }
     }
 

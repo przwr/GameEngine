@@ -2,7 +2,6 @@ package sprites;
 
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
-import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.entities.Player;
 import game.place.Place;
@@ -36,6 +35,7 @@ public class ClothedAppearance implements Appearance {
     private ArrayList<byte[]> upperQueue;
     private ArrayList<byte[]> lowerQueue;
     private FrameBufferObject fbo;
+    private boolean upToDate;
 
     public ClothedAppearance(Place place, int delayTime, String characterName, int width) {
         setClothParameters("characters/" + characterName);
@@ -51,31 +51,31 @@ public class ClothedAppearance implements Appearance {
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
-            Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
-            Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
+                           Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
+                           Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
         lowerRenderList = new SpriteSheet[]{
-            legs.getFirstPart(),
-            boots.getFirstPart(),
-            legs.getLastPart(),
-            boots.getLastPart(),
-            pants.getFirstPart(),
-            pants.getLastPart()
+                legs.getFirstPart(),
+                boots.getFirstPart(),
+                legs.getLastPart(),
+                boots.getLastPart(),
+                pants.getFirstPart(),
+                pants.getLastPart()
         };
         upperRenderList = new SpriteSheet[]{
-            torso.getSecondPart(),
-            gloves.getFirstPart(),
-            shirt.getSecondPart(),
-            torso.getFirstPart(),
-            shirt.getFirstPart(),
-            head.getFirstPart(),
-            hair.getFirstPart(),
-            cap.getFirstPart(),
-            torso.getLastPart(),
-            gloves.getLastPart(),
-            shirt.getLastPart(),
-            sword.getFirstPart(),
-            bow.getFirstPart(),
-            shield.getFirstPart()
+                torso.getSecondPart(),
+                gloves.getFirstPart(),
+                shirt.getSecondPart(),
+                torso.getFirstPart(),
+                shirt.getFirstPart(),
+                head.getFirstPart(),
+                hair.getFirstPart(),
+                cap.getFirstPart(),
+                torso.getLastPart(),
+                gloves.getLastPart(),
+                shirt.getLastPart(),
+                sword.getFirstPart(),
+                bow.getFirstPart(),
+                shield.getFirstPart()
         };
         calculateDimensions();
     }
@@ -380,6 +380,25 @@ public class ClothedAppearance implements Appearance {
     }
 
     public boolean isUpToDate() {
-        return upperBody.isUpToDate() && lowerBody.isUpToDate();
+        if (!upToDate) {
+            for (int i = 0; i < upperRenderList.length; i++) {
+                if (upperRenderList[i].getTextureID() == 0) {
+                    return false;
+                }
+            }
+            for (int i = 0; i < lowerRenderList.length; i++) {
+                if (lowerRenderList[i].getTextureID() == 0) {
+                    return false;
+                }
+            }
+            if (upperBody.isUpToDate() && lowerBody.isUpToDate()) {
+                upToDate = true;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 }

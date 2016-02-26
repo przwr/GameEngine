@@ -165,7 +165,7 @@ public class Shen extends Mob {
                             stats.setUnhurtableState(false);
                             brake(2);
                         }
-                        if (!attacking && !isInRange(target) || target.getMap() != map) {
+                        if (!attacking && !isInRange(target) || target.getMap() != map || !target.getCollision().isHitable()) {
                             state = idle;
                             target = null;
                             stats.setUnhurtableState(false);

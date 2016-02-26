@@ -198,6 +198,10 @@ public class MyPlayer extends Player {
         actionSets.get(activeActionSet).setActivePair(pair);
     }
 
+    public int getActiveActionPairID() {
+        return actionSets.get(activeActionSet).getActivePair();
+    }
+
     public boolean changeWeapon() {
         if (activeWeapon == universal) {
             if (lastWeapon != null && lastWeapon != universal) {
@@ -389,22 +393,13 @@ public class MyPlayer extends Player {
             if (colorAlpha < 1f) {
                 Drawer.setColorAlpha(colorAlpha);
             }
-            appearance.render();
+            if (((ClothedAppearance) appearance).isUpToDate()) {
+                appearance.render();
+            }
             if (colorAlpha < 1f) {
                 Drawer.refreshColor();
             }
-//            Drawer.returnToCentralPoint();
-            /*Drawer.setColor(Color.black);
-             Drawer.drawCircle(Place.tileSize * 2, 0, 6, 10);
-             Drawer.setCentralPoint();
 
-             Drawer.translate(-appearance.getXStart() - appearance.getXOffset(), -appearance.getYStart() - appearance.getYOffset());
-             appearance.render();
-
-             Drawer.refreshColor();*/
-            /*Drawer.returnToCentralPoint();
-             Drawer.translate(Place.tileSize * 2, 0);
-             appearance.renderPart(appearance.getWidth() / 2, appearance.getWidth());*/
             appearance.updateFrame();
             glPopMatrix();
         }
@@ -424,19 +419,15 @@ public class MyPlayer extends Player {
     }
 
     private void renderLifeIndicator() {
-        int halfLifeAngle = 90, startAngle, endAngle;
+        int halfLifeAngle = 180, startAngle, endAngle;
         int minimumLifePercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
         int lifePercentageAngle = Methods.roundDouble(stats.getHealth() * halfLifeAngle / (float) stats.getMaxHealth());
         if (lifePercentageAngle < minimumLifePercentage && stats.getHealth() != 0) {
             lifePercentageAngle = minimumLifePercentage;
-            startAngle = 180;
-            endAngle = 180 + lifePercentageAngle;
-        } else {
-            startAngle = 180 - lifePercentageAngle;
-            endAngle = 180 + lifePercentageAngle;
         }
-
-        int precision = (12 * lifePercentageAngle * halfLifeAngle) / halfLifeAngle;
+        startAngle = 90;
+        endAngle = lifePercentageAngle + 90;
+        int precision = (12 * lifePercentageAngle) / halfLifeAngle;
         if (precision == 0) {
             precision = 1;
         }
@@ -447,19 +438,15 @@ public class MyPlayer extends Player {
 
     private void renderEnergyIndicator() {
         PlayerStats playerStats = (PlayerStats) stats;
-        int halfEnergyAngle = 90, startAngle, endAngle;
+        int halfEnergyAngle = 180, startAngle, endAngle;
         int minimumEnergyPercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
         int energyPercentageAngle = Methods.roundDouble(playerStats.getEnergy() * halfEnergyAngle / playerStats.getMaxEnergy());
         if (energyPercentageAngle < minimumEnergyPercentage && playerStats.getEnergy() != 0) {
             energyPercentageAngle = minimumEnergyPercentage;
-            startAngle = 360;
-            endAngle = 360 + energyPercentageAngle;
-        } else {
-            startAngle = 360 - energyPercentageAngle;
-            endAngle = 360 + energyPercentageAngle;
         }
-
-        int precision = (12 * energyPercentageAngle * halfEnergyAngle) / halfEnergyAngle;
+        startAngle = 450 - energyPercentageAngle;
+        endAngle = 450;
+        int precision = (12 * energyPercentageAngle) / halfEnergyAngle;
         if (precision == 0) {
             precision = 1;
         }

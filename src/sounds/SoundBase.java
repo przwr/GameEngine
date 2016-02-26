@@ -9,15 +9,19 @@ import engine.utilities.ErrorHandler;
 import game.Settings;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
+import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.util.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-/**¬B
+/**
+ * ¬B
+ *
  * @author Wojtek
  */
 public class SoundBase {
@@ -62,5 +66,16 @@ public class SoundBase {
 
     public Map<String, Sound> getSoundsMap() {
         return sounds;
+    }
+
+    public void cleanUp() {
+        Iterator it = sounds.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            Sound sound = (Sound) pair.getValue();
+            sound.stop();
+        }
+        sounds.clear();
+        SoundStore.get().clear();
     }
 }
