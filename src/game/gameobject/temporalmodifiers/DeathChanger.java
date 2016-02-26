@@ -41,6 +41,6 @@ public class DeathChanger extends TemporalChanger {
 
     @Override
     public void modifyEffect(Entity entity) {
-        entity.setColorAlpha(0.5f * (float) getPercentLeft());
+        entity.setColorAlpha(Math.max(0.5f - (float) getPercentDone(), 0));
     }
 }

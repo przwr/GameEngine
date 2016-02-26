@@ -1,6 +1,7 @@
 package game.gameobject.stats;
 
 import collision.OpticProperties;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.temporalmodifiers.DeathChanger;
@@ -30,15 +31,16 @@ public class PlayerStats extends Stats {
     }
 
     @Override
-    public void died() {
+    public void died(GameObject attacker) {
         player.getCollision().setCollide(false);
         player.getCollision().setHitable(false);
         setUnhurtableState(true);
         player.setUnableToMove(true);
         player.getCollision().setOpticProperties(OpticProperties.NO_SHADOW);
         player.setColorAlpha(0.5f);
-        TemporalChanger death = new DeathChanger(180, player);
+        TemporalChanger death = new DeathChanger(100, player);
         player.addChanger(death);
+        player.knockBack(20, 8, attacker);
         death.start();
         ((MyPlayer) player).getGUI().deactivate();
         System.out.println(player.getName() + " zginał.");

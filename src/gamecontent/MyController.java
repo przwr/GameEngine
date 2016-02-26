@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import engine.systemcommunication.Time;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.Settings;
@@ -52,6 +53,8 @@ public class MyController extends PlayerController {
     private PlayerStats stats;
     private MyGUI gui;
     private int jumpLag;
+
+    private float blockingTime;
 
     public MyController(Player inControl, MyGUI playersGUI) {
         super(inControl);
@@ -120,6 +123,7 @@ public class MyController extends PlayerController {
                                 updateBlock();
                             } else {
                                 updateMovement();
+                                blockingTime = 0;
                             }
                         } else {
                             inControl.brake(2);
@@ -156,9 +160,15 @@ public class MyController extends PlayerController {
         if (actions[INPUT_BLOCK].isKeyClicked()) {
             //PERFEKCYJNY BLOK (pierwsza klatka obrony)
         }
-        animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
+        if (stats.getEnergy() > 10) {
+            animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
+            stats.setProtectionState(true);
+        } else {
+            animation.getUpperBody().animateSingleInDirection(tempDirection, animation.IDLE);
+        }
         updateChargingMovement();
-        stats.setProtectionState(true);
+        stats.decreaseEnergy(blockingTime);
+        blockingTime += Time.getDelta() / 20;
         //RESZTA BLOKOWANIA
     }
 

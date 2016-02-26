@@ -110,6 +110,7 @@ public abstract class Entity extends GameObject {
         int angle = (int) Methods.pointAngleCounterClockwise(attackerX, attackerY, x, y);
         knockBack.setSpeedInDirection(angle, Methods.interval(1, knockBackPower, 20));
         setJumpForce(jumpPower);
+        setDirection(angle + 180);
         knockBack.setType(SpeedChanger.DECREASING);
         knockBack.start();
         invicibleTime.start();

@@ -1,5 +1,6 @@
 package game.gameobject.stats;
 
+import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.interactive.InteractiveResponse;
 import game.place.Place;
@@ -60,7 +61,7 @@ public class Stats {
                     Place.tileSize, owner.getMap().place);
             owner.getMap().addObject(damage);
             if (health == 0) {
-                died();
+                died(response.getAttacker());
             } else if (hurt != 0) {
                 hurtReaction(response);
                 response.getAttacker().updateCausedDamage(owner, hurt);
@@ -71,7 +72,7 @@ public class Stats {
     public void reactionWhileProtect(InteractiveResponse response) {
     }
 
-    public void died() {
+    public void died(GameObject attacker) {
         owner.delete();
         System.out.println(owner.getName() + " zginał.");
     }
