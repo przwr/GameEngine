@@ -6,9 +6,11 @@
 package gamecontent;
 
 import engine.utilities.Drawer;
+import engine.utilities.Methods;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Player;
+import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.fbo.FrameBufferObject;
 import game.place.fbo.MultiSampleFrameBufferObject;
@@ -30,7 +32,7 @@ public class MyGUI extends GUIObject {
     private int emptySlot;
     private FrameBufferObject frameBufferObject;
     private Color lifeColor = new Color(0f, 0f, 0f), energyColor = new Color(0f, 0f, 1f);
-    private boolean lowHealth, riseLifeAlpha, on;
+    private boolean lowHealth, riseLifeAlpha, on = true;
 
     public MyGUI(String name, Place place) {
         super(name, place);
@@ -73,7 +75,6 @@ public class MyGUI extends GUIObject {
         if (!lowHealth) {
             lifeAlpha = 3f;
         }
-        on = true;
     }
 
     public void deactivate() {
@@ -82,7 +83,6 @@ public class MyGUI extends GUIObject {
         if (!lowHealth) {
             lifeAlpha = 0f;
         }
-        on = false;
     }
 
     public void activateLifeIndicator() {
@@ -90,7 +90,6 @@ public class MyGUI extends GUIObject {
             lifeAlpha = 3f;
         }
     }
-
 
     public void activateEnergyIndicator() {
         energyAlpha = 3f;
@@ -108,7 +107,17 @@ public class MyGUI extends GUIObject {
             glPopMatrix();
 
             if (on) {
-                glPushMatrix();
+                renderRegularGUI();
+            }
+            Drawer.refreshColor();
+        }
+    }
+
+    private void renderRegularGUI() {
+        int size = (int) (Place.tileSize * Settings.nativeScale);
+        int border = (int) (12 * Settings.nativeScale);
+        int innerSize = 2 + 2 * border / 3;
+        glPushMatrix();
 //                Bez Translate Lewy Górny
 //                Prawy Górny:
 //                glTranslatef(Display.getWidth() - Math.round(Place.tileSize * Settings.nativeScale), 0, 0);
@@ -117,24 +126,102 @@ public class MyGUI extends GUIObject {
 //                        Settings.nativeScale), 0);
 //                Prawy Dolny:
 //                glTranslatef(0, Display.getHeight() - Math.round(2 * Place.tileSize * Settings.nativeScale), 0);
-                Drawer.setColor(color);
-                attackIcons.renderPiece(firstAttackType);
-                glTranslatef(0, (int) (Place.tileSize * Settings.nativeScale), 0);
-                attackIcons.renderPiece(secondAttackType);
-                glPopMatrix();
-            }
-            Drawer.refreshColor();
+
+        glTranslatef(border / 2, border / 2, 0);
+        Drawer.setCentralPoint();
+        renderLife(size, border, innerSize);
+        Drawer.returnToCentralPoint();
+        renderEnergy(size, border, innerSize);
+        Drawer.returnToCentralPoint();
+
+        Drawer.setColor(new Color(0, 0, 0));
+        Drawer.drawRing(size + border, size + border, size + border, border / 3, size);
+        Drawer.returnToCentralPoint();
+        Drawer.drawRing(size + border, size + border, size, border / 3, size);
+        Drawer.returnToCentralPoint();
+
+        Drawer.setColor(color);
+        glTranslatef(size / 2 + border, border, 0);
+        attackIcons.renderPiece(firstAttackType);
+        glTranslatef(0, size, 0);
+        attackIcons.renderPiece(secondAttackType);
+
+
+        Drawer.returnToCentralPoint();
+        renderPairArrow(size, border);
+
+        glPopMatrix();
+    }
+
+    private void renderLife(int size, int border, int innerSize) {
+        int halfLifeAngle = 180, startAngle, endAngle;
+        int minimumLifePercentage = Methods.roundDouble(45f / (Place.tileSize * Settings.nativeScale / 2f));
+        int lifePercentageAngle = Methods.roundDouble(player.getStats().getHealth() * halfLifeAngle / (float) player.getStats().getMaxHealth());
+        if (lifePercentageAngle < minimumLifePercentage && player.getStats().getHealth() != 0) {
+            lifePercentageAngle = minimumLifePercentage;
+        }
+        startAngle = 90;
+        endAngle = lifePercentageAngle + 90;
+        int precision = (size * lifePercentageAngle) / halfLifeAngle;
+        if (precision == 0) {
+            precision = 1;
+        }
+        Color c = new Color(0, 0, 0);
+        Drawer.setPercentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, c);
+        if (lowHealth) {
+            c.a = lifeColor.a;
+        }
+        Drawer.setColor(c);
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, precision);
+    }
+
+    private void renderEnergy(int size, int border, int innerSize) {
+        int halfEnergyAngle = 180, startAngle, endAngle;
+        int minimumEnergyPercentage = Methods.roundDouble(45f / (Place.tileSize * Settings.nativeScale * Place.getCurrentScale() / 2f));
+        int energyPercentageAngle = Methods.roundDouble(((PlayerStats) player.getStats()).getEnergy()
+                * halfEnergyAngle / ((PlayerStats) player.getStats()).getMaxEnergy());
+        if (energyPercentageAngle < minimumEnergyPercentage && ((PlayerStats) player.getStats()).getEnergy() != 0) {
+            energyPercentageAngle = minimumEnergyPercentage;
+        }
+        startAngle = 450 - energyPercentageAngle;
+        endAngle = 450;
+        int precision = (size * energyPercentageAngle) / halfEnergyAngle;
+        if (precision == 0) {
+            precision = 1;
+        }
+        Drawer.setColor(new Color(0.25f, 0.25f, 1f));
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, precision);
+    }
+
+    private void renderPairArrow(int size, int border) {
+        Drawer.setColor(Color.white);
+        int pair = ((MyPlayer) player).getActiveActionPairID();
+        int base = border / 2;
+        glTranslatef(-base + size / 2, -base, 0);
+        switch (pair) {
+            case 0:
+                Drawer.drawTriangle(base, 0, 2 * base, 2 * base, 0, 2 * base);
+                break;
+            case 1:
+                Drawer.drawTriangle(0, 0, 2 * base, base, 0, 2 * base);
+                break;
+            case 2:
+                Drawer.drawTriangle(0, 0, 2 * base, 0, base, 2 * base);
+                break;
+            case 3:
+                Drawer.drawTriangle(2 * base, 0, 2 * base, 2 * base, 0, base);
+                break;
+            default:
         }
     }
 
     private void updateAlpha() {
-        color.a = alpha;
-        if (alpha > 0) {
-            alpha -= 0.02f;
-        } else {
-            on = false;
-            alpha = 0;
-        }
+//        color.a = alpha;
+//        if (alpha > 0) {
+//            alpha -= 0.02f;
+//        } else {
+//            alpha = 0;
+//        }
         if (!lowHealth) {
             if (lifeAlpha > 0) {
                 lifeAlpha -= 0.02f;
@@ -202,7 +289,11 @@ public class MyGUI extends GUIObject {
     }
 
     public boolean isOn() {
-        return on || lifeAlpha > 0 || energyAlpha > 0 || lowHealth || on;
+        return lifeAlpha > 0 || energyAlpha > 0 || lowHealth || on;
+    }
+
+    public void setOn(boolean on) {
+        this.on = on;
     }
 
     public FrameBufferObject getFrameBufferObject() {

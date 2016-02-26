@@ -26,6 +26,8 @@ import net.jodk.lang.FastMath;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -41,7 +43,7 @@ public class Tongub extends Mob {
     private Delay rest = Delay.createInMilliseconds(250);            //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay peakTime = Delay.createInSeconds(2500);            //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay hideTime = Delay.createInSeconds(7500);            //TODO - te wartości losowe i zależne od poziomu trudności
-    private boolean attacking, undig, side, letGo;
+    private boolean attacking, dig, undig, side, letGo;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
 
     {
@@ -69,7 +71,7 @@ public class Tongub extends Mob {
                         hideTime.start();
                         state = hide;
                         destination.set(-1, -1);
-                        stats.setProtectionState(true);
+                        dig = true;
                     } else if (destination.getX() > 0) {
                         state = run_away;
                         destination.set(-1, -1);
@@ -103,7 +105,7 @@ public class Tongub extends Mob {
                         hideTime.start();
                         destination.set(-1, -1);
                         secondaryDestination.set(-1, -1);
-                        stats.setProtectionState(true);
+                        dig = true;
                     } else if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination
                             .getX(), secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
                         state = idle;
@@ -121,7 +123,8 @@ public class Tongub extends Mob {
             public void update() {
 //                System.out.println("HIDE");
                 brake(2);
-                if (!undig && animation.getDirectionalFrameIndex() == 17) {
+                if (!undig && !dig) {
+                    stats.setProtectionState(true);
                     collision.setCollide(false);
                     collision.setHitable(false);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
@@ -131,6 +134,7 @@ public class Tongub extends Mob {
                         peakTime.start();
                         stats.setProtectionState(false);
                         undig = true;
+                        hideTime.terminate();
                         collision.setCollide(true);
                         collision.setHitable(true);
                     }
@@ -202,10 +206,12 @@ public class Tongub extends Mob {
 
                     }
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                    if (!attacking && (!isInRange(target) || target.getMap() != map || closeFriends.size() < 2)) {
+                    if (!attacking && (!target.getCollision().isHitable() || !isInHalfHearingRange(target)
+                            || target.getMap() != map || closeFriends.isEmpty())) {
                         state = idle;
                         target = null;
                         maxSpeed = 3;
+                        rest.terminate();
                         brake(2);
                     }
                 } else {
@@ -232,9 +238,10 @@ public class Tongub extends Mob {
                     rest.start();
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                if (!letGo && !closeEnemies.isEmpty() || (!alpha && !closeFriends.isEmpty())) {
+                if (!letGo && !closeEnemies.isEmpty()) {
                     state = idle;
                     destination.set(-1, -1);
+                    rest.terminate();
                 }
                 goTo(destination);
             }
@@ -292,26 +299,32 @@ public class Tongub extends Mob {
         return getPathData().isAnyObstacleBetween(this, target.getX(), target.getY(), closeEnemies);
     }
 
+    @Override
+    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+        closeEnemies.clear();
+        closeFriends.clear();
+        GameObject object;
+        for (int i = 0; i < getPlace().playersCount; i++) {
+            object = players[i];
+            if (object.getMap() == map && object.getCollision().isHitable() && isInHalfHearingRange(object)) {
+                closeEnemies.add(object);
+            }
+        }
+        for (Mob mob : mobs) {
+            if (mob.getClass().getName().equals(this.getClass().getName())) {
+                if (this != mob && mob.getMap() == map && isInRange(mob)) {
+                    closeFriends.add(mob);
+                }
+            } else if (mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map && isInHalfHearingRange(mob)) {
+                closeEnemies.add(mob);
+            }
+        }
+        updateAlpha();
+    }
+
+
     private void closeRandomDestination(int xD, int yD) {
         destination.set(getRandomPointInDistance((int) (sightRange * 0.375), xD, yD));
-//        int sign = random.next(1) == 1 ? 1 : -1;
-//        int shift = (sightRange / 4 + random.next(9)) * sign;
-//        destination.setX(xD + shift);
-//        sign = random.next(1) == 1 ? 1 : -1;
-//        shift = (sightRange / 4 + random.next(9)) * sign;
-//        destination.setY(yD + shift);
-//        if (destination.getX() < sightRange / 4) {
-//            destination.setX(sightRange / 4);
-//        }
-//        if (destination.getX() > map.getWidth()) {
-//            destination.setX(map.getWidth() - sightRange / 4);
-//        }
-//        if (destination.getY() < collision.getHeight()) {
-//            destination.setY(sightRange / 4);
-//        }
-//        if (destination.getY() > map.getHeight()) {
-//            destination.setY(map.getHeight() - sightRange / 4);
-//        }
     }
 
     private GameObject getCloserEnemy() {
@@ -415,10 +428,13 @@ public class Tongub extends Mob {
                 animation.animateIntervalInDirection(getDirection8Way(), 2, 6);
             }
         } else {
-            if (stats.isProtectionState()) {
+            if (dig || stats.isProtectionState()) {
                 animation.setFPS(15);
                 animation.animateIntervalInDirection(getDirection8Way(), 11, 17);
                 animation.setStopAtEnd(true);
+                if (animation.getDirectionalFrameIndex() == 17) {
+                    dig = false;
+                }
             } else if (undig) {
                 animation.setFPS(15);
                 animation.animateIntervalInDirection(getDirection8Way(), 18, 23);

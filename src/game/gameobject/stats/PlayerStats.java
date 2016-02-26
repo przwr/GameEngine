@@ -31,10 +31,10 @@ public class PlayerStats extends Stats {
 
     @Override
     public void died() {
-//        player.getCollision().setCollide(false);
+        player.getCollision().setCollide(false);
         player.getCollision().setHitable(false);
         setUnhurtableState(true);
-//        player.setUnableToMove(true);
+        player.setUnableToMove(true);
         player.getCollision().setOpticProperties(OpticProperties.NO_SHADOW);
         player.setColorAlpha(0.5f);
         TemporalChanger death = new DeathChanger(180, player);

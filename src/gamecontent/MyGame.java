@@ -446,7 +446,8 @@ public class MyGame extends Game {
     @Override
     public void endGame() {
         running = started = false;
-        place = null;
+        if (Settings.sounds != null)
+            Settings.sounds.cleanUp();
         Settings.sounds = null;
         for (Player player : players) {
             player.setNotInGame();
@@ -460,7 +461,7 @@ public class MyGame extends Game {
         Bush.fbos.clear();
         GrassClump.fbos.clear();
         Place.currentCamera = null;
-        Settings.sounds = null;
+        place = null;
         mode = 0;
     }
 
