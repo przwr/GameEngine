@@ -23,6 +23,12 @@ $AU1$$PO1$$EX2$Poproszę jeden!$FL
 $AU0$$PO0$$EX0$A proszę!
 #B1
 $AU0$$PO0$Mogę Ci jakoś pomóc?$QUNie:11:CZYM U LICHA JEST ŁUK!?:10:Ciastko:12:Gdzie iść?:13:$
+#B1a
+$AU0$$PO0$Mogę Ci jakoś pomóc?$QUNie:11:CZYM U LICHA JEST ŁUK!?:10:Ciastko:12a:Zawszone dziadygi:3:$
+#B1b
+$AU0$$PO0$Mogę Ci jakoś pomóc?$QUNie:11:CZYM U LICHA JEST ŁUK!?:10:Ciastko:12a:Zawszone dziadygi:3a:$
+#B1c
+$AU0$$PO0$Mogę Ci jakoś pomóc?$QUNie:11:CZYM U LICHA JEST ŁUK!?:10:Ciastko:12b:$
 #B10
 $AU0$$PO0$Łuk jest bronią na duże odległości.
 Możesz go wybrać przyciskiem $CO1$$WRatk$$CO0$.$FL
@@ -37,15 +43,42 @@ $AU1$$PO1$Ok.
 #B12
 $AU1$$PO1$Masz może ciastko?$FL
 $AU0$$PO0$Nie.$FL
-$AU1$$PO1$$EX2$Dzięku.........$EX3$.........
+$AU1$$PO1$$EX2$Dzięku$VE0.2$.........$EX3$.........
+#B12a
+$AU1$$PO1$Czy może teraz masz ciastko?$FL
+$AU0$$PO0$Nie.$FL
+$AU1$$PO1$$EX3$..................
+#B12b
+$AU1$$PO1$Ciastko?$FL
+$AU0$$PO0$Masz.....$FL
+$AU1$$PO1$$EX2$JEJ!$FL
+$EX1$Om nom nom nom....
 #B13
 $AU1$$PO1$Wiesz gdzie mam iść?$FL
 $AU0$$PO0$Cóż....
 Wygląda na to że zwiedziłaś już całą okolicę...$FL
-Jeżeli ci się nudzi, możesz spróbować ubić tego
-$SHzawszonego dziadyga$NO co mi lata koło domu! $QUDobrze:21:Po co?:22$$FL
+Jeżeli ci się nudzi, możesz spróbować ubić tege
+$SHzawszone dziadygi$NO co mi latają koło domu! $QUDobrze:21:Po co?:22$$FL
 #B21
 $AU1$$PO1$......ok
 #B22
-$AU0$$PO0$Zeżarł mi $SHłajdak$NO wszystkie czekoladki!$Fl
+$AU0$$PO0$Zeżarły mi $SHłajdacy$NO wszystkie czekoladki!$Fl
 $AU1$$PO1$......ok
+#B3
+$AU0$$PO0$Jeżeli chcesz dostać nagrodę
+to musisz zabić wszystkie 3 $SHbydlaki$NO.$FL
+Został$WRleft$.
+#B3a
+$AU0$$PO0$Mimo trudności udało ci się zgładzić te
+wszystkie $SHsmrody$NO!$FL
+Z całego serca, dziękuję ci!
+.......$FL
+$AU1$$PO1$.....$FL
+$AU0$$PO0$.....$FL
+$AU1$$PO1$.....$FL
+$AU0$$PO0$.....$FL
+Rozumiem że oczekujesz czegoś w zamian...?$FL
+.....
+Masz ciastko....$FL
+$AU1$$PO1$$EX2$JEJ!$FL
+$EX1$Om nom nom nom....

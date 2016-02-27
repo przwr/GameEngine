@@ -48,7 +48,7 @@ class TextRenderer extends TextEvent {
             return 0;
         }
     }
-    
+
     void setX() {
         if (previous == null) {
             x = 0;
@@ -77,7 +77,7 @@ class TextRenderer extends TextEvent {
             int i = index - start;
             if (text.isEmpty()) {
                 text = control.getWriter(alterer).write();
-                length = text.length() + 20;
+                length = text.length();
             }
             if (i < text.length()) {
                 font.drawLine(text.substring(0, i), x, y, changeColor(color, lineNum));

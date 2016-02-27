@@ -167,8 +167,8 @@ public class MyController extends PlayerController {
             animation.getUpperBody().animateSingleInDirection(tempDirection, animation.IDLE);
         }
         updateChargingMovement();
-        stats.decreaseEnergy(blockingTime);
-        blockingTime += Time.getDelta() / 20;
+        stats.decreaseEnergy(blockingTime * Time.getDelta());
+        blockingTime += 0.05;
         //RESZTA BLOKOWANIA
     }
 

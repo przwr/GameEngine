@@ -12,6 +12,7 @@ import game.place.Place;
 import game.text.Writer;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
+import gamecontent.mobs.Plurret;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
@@ -24,11 +25,14 @@ public class Tercja extends Mob {
 
     private Animation animation;
     private String dialog = "0";
+    private final Plurret[] plurrets;
+    private int left;
 
-    public Tercja(int x, int y, Place place, short mobID) {
+    public Tercja(int x, int y, Place place, short mobID, Plurret[] plurrets) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
+        this.plurrets = plurrets;
         if (appearance != null) {
             appearance = animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 0);
         }
@@ -43,9 +47,21 @@ public class Tercja extends Mob {
                 MyPlayer player = (MyPlayer) target;
                 int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
                 if (isPlayerTalkingToMe(player)) {
+                    left = 0;
+                    if (dialog.equals("1a")) {
+                        for (Plurret p : plurrets) {
+                            if (p.getMap() != null) {
+                                left++;
+                            }
+                        }
+                        if (left == 0) {
+                            dialog = "1b";
+                        }
+                    }
                     setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
                     player.getTextController().lockEntity(player);
                     player.getTextController().startFromFile("npc3demo", dialog);
+
                     player.getTextController().addEventOnBranchStart(() -> {
                         if (player.getSecondWeapon() == null) {
                             Weapon bow = new Weapon("Bow", Weapon.BOW);
@@ -54,10 +70,29 @@ public class Tercja extends Mob {
                         }
                         dialog = "1";
                     }, "0");
+                    player.getTextController().addEventOnBranchStart(() -> {
+                        dialog = "1a";
+                    }, "13");
+                    player.getTextController().addEventOnBranchEnd(() -> {
+                        player.getStats().setHealth(player.getStats().getMaxHealth());
+                    }, "12b", "3a");
+                    player.getTextController().addEventOnBranchEnd(() -> {
+                        dialog = "1c";
+                    }, "3a");
                     player.getTextController().addExternalWriter(new Writer("atk") {
                         @Override
                         public String write() {
                             return "[" + player.getController().actions[MyController.INPUT_CHANGE_WEAPON].input.getLabel() + "]";
+                        }
+                    });
+                    player.getTextController().addExternalWriter(new Writer("left") {
+                        @Override
+                        public String write() {
+                            if (left == 1) {
+                                return " jeszcze jeden";
+                            } else {
+                                return "y jeszcze " + left;
+                            }
                         }
                     });
                 }

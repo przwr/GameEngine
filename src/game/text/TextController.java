@@ -6,6 +6,7 @@
 package game.text;
 
 import engine.Main;
+import engine.systemcommunication.Time;
 import engine.utilities.Drawer;
 import engine.utilities.Executive;
 import game.gameobject.GUIObject;
@@ -49,8 +50,8 @@ public class TextController extends GUIObject {
     private final ArrayList<String> jumpPlacements;
     private final ArrayList<Color> colors;
     private Branch branch;
-    private float index, speed, change, realSpeed;
-    private int time, rows, deltaLines, rowsInPlace, speaker, portrait, expression, answer, jumpTo;
+    private float index, speed, change, realSpeed, time;
+    private int rows, deltaLines, rowsInPlace, speaker, portrait, expression, answer, jumpTo;
     private boolean started, flushing, flushReady, stop, question, firstStep, action;
     private Entity[] locked;
     private String[] answerText;
@@ -59,6 +60,8 @@ public class TextController extends GUIObject {
     private final ArrayList<Statement> statements;
     private final ArrayList<Event> events;
     private final ArrayList<Writer> writers;
+
+    private final int optimalWidth, optimalHeight;
 
     public TextController(Place place) {
         super("TextController", place);
@@ -81,6 +84,9 @@ public class TextController extends GUIObject {
         events = new ArrayList<>();
         writers = new ArrayList<>();
         firstStep = true;
+
+        optimalWidth = 1024;
+        optimalHeight = 768;
     }
 
     public void startFromFile(String file) {
@@ -185,6 +191,7 @@ public class TextController extends GUIObject {
                                                         Float.parseFloat(line.substring(lineIndex + 3, j)), this);
                                                 tmp.addEvent(lastEvent);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                last = lineIndex;
                                                 break;
                                             }
                                         }
@@ -198,6 +205,7 @@ public class TextController extends GUIObject {
                                         lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_SPEED, defSpeed, this);
                                         tmp.addEvent(lastEvent);
                                         line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
+                                        last = lineIndex;
                                         break;
                                     case "au":   //SPEAKER'S NAME
                                     case "po":   //PORTRAIT
@@ -220,6 +228,7 @@ public class TextController extends GUIObject {
                                                 }
                                                 tmp.addEvent(lastEvent);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                last = lineIndex;
                                                 break;
                                             }
                                         }
@@ -228,14 +237,15 @@ public class TextController extends GUIObject {
                                         for (int j = lineIndex + 3; j < line.length(); j++) {
                                             if (line.charAt(j) == '$') {
                                                 /*if (last != lineIndex) {
-                                                    lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
-                                                            lineNum, color, font);
-                                                    tmp.addEvent(lastEvent);
-                                                }*/
+                                                 lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                 lineNum, color, font);
+                                                 tmp.addEvent(lastEvent);
+                                                 }*/
                                                 lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_EXPRESSION,
                                                         Integer.parseInt(line.substring(lineIndex + 3, j)), this);
                                                 tmp.addEvent(lastEvent);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                last = lineIndex;
                                                 break;
                                             }
                                         }
@@ -251,6 +261,7 @@ public class TextController extends GUIObject {
                                                 lastEvent = new Jumper(lastEvent, line.substring(lineIndex + 3, j), this);
                                                 tmp.addEvent(lastEvent);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                last = lineIndex;
                                                 break;
                                             }
                                         }
@@ -266,6 +277,7 @@ public class TextController extends GUIObject {
                                                 lastEvent = new EventMaker(lastEvent, line.substring(lineIndex + 3, j), this);
                                                 tmp.addEvent(lastEvent);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                last = lineIndex;
                                                 break;
                                             }
                                         }
@@ -283,6 +295,7 @@ public class TextController extends GUIObject {
                                                 ((TextRenderer) lastEvent).setAlterer(line.substring(lineIndex + 3, j));
                                                 tmp.addEvent(lastEvent);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                last = lineIndex;
                                                 break;
                                             }
                                         }
@@ -326,6 +339,7 @@ public class TextController extends GUIObject {
                                                 lastEvent = new CheckExpressiontMaker(lastEvent, tab[0], jumps, this);
                                                 tmp.addEvent(lastEvent);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
+                                                last = lineIndex;
                                                 break;
                                             }
                                         }
@@ -573,7 +587,7 @@ public class TextController extends GUIObject {
 
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
 
-            glTranslatef(0, getCamera().getHeight() - 3.5f * tile, 0);
+            glTranslatef((getCamera().getWidth() - optimalWidth) / 2, (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - 3.5f * tile, 0);
 
             Drawer.setCentralPoint();
 
@@ -584,7 +598,7 @@ public class TextController extends GUIObject {
             if (!firstStep) {
                 if (portraits.size() > 0) {
                     if (portraits.get(portrait).onRight) {
-                        Drawer.translate(getCamera().getWidth() - 3 * tile, 0);
+                        Drawer.translate(optimalWidth - 3 * tile, 0);
                         portraits.get(portrait).image.renderPieceMirrored(expression);
                     } else {
                         Drawer.translate(3 * tile, 0);
@@ -613,11 +627,11 @@ public class TextController extends GUIObject {
             Drawer.translate(Place.tileHalf, 2 * tile / 3
                     - (int) (Math.max((deltaLines + (flushing ? change : 0)) * fonts[0].getHeight() * 1.2, 0)));
 
-            time++;
-            if (time == 60) {
+            time += Time.getDelta();
+            if (time >= 60) {
                 time = 0;
             }
-            realSpeed = speed * (playerController.getAction(MyController.INPUT_BLOCK).isKeyPressed() ? 2f : 1f);
+            realSpeed = speed * (playerController.getAction(MyController.INPUT_BLOCK).isKeyPressed() ? 2f : 1f) * Time.getDelta();
 
             if (flushing) {
                 handleFlushing();
@@ -680,12 +694,12 @@ public class TextController extends GUIObject {
         Drawer.translate(0, tile * 1.5f);
         frame.renderPiece(0, 2);
         Drawer.translate(tile, -2.5f * tile);
-        frame.renderPieceResized(1, 0, getCamera().getWidth() - 2 * tile, tile);
+        frame.renderPieceResized(1, 0, optimalWidth - 2 * tile, tile);
         Drawer.translate(0, tile);
-        frame.renderPieceResized(1, 1, getCamera().getWidth() - 2 * tile, tile * 1.5f);
+        frame.renderPieceResized(1, 1, optimalWidth - 2 * tile, tile * 1.5f);
         Drawer.translate(0, tile * 1.5f);
-        frame.renderPieceResized(1, 2, getCamera().getWidth() - 2 * tile, tile);
-        Drawer.translate(getCamera().getWidth() - 2 * tile, -2.5f * tile);
+        frame.renderPieceResized(1, 2, optimalWidth - 2 * tile, tile);
+        Drawer.translate(optimalWidth - 2 * tile, -2.5f * tile);
         frame.renderPiece(2, 0);
         Drawer.translate(0, tile);
         frame.renderPieceResized(2, 1, tile, tile * 1.5f);
@@ -714,7 +728,7 @@ public class TextController extends GUIObject {
             }
         }
         maxL = Math.max(maxL + tile, 3 * tile);
-        Drawer.translate(getCamera().getWidth() - maxL - Place.tileHalf, 0);
+        Drawer.translate(optimalWidth - maxL - Place.tileHalf, 0);
         for (i = answerText.length - 1; i >= 0; i--) {
             Drawer.translate(0, -tile - 2);
             if (answer == i) {
@@ -774,8 +788,8 @@ public class TextController extends GUIObject {
     }
 
     private void handleEvent(TextRow te) {
-        te.changers((int) index);
         if (te.rowNum >= deltaLines && te.rowNum <= deltaLines + rows) {
+            te.changers((int) index);
             te.event((int) index);
         }
         te.setEnd();
@@ -824,7 +838,7 @@ public class TextController extends GUIObject {
     }
 
     int getTime() {
-        return time;
+        return (int) time;
     }
 
     boolean isFlushing() {
@@ -957,11 +971,11 @@ public class TextController extends GUIObject {
         }
 
         public void addEvent(TextEvent te) {
-            if (te instanceof PropertyChanger) {
+            /*if (te instanceof PropertyChanger) {
                 changers.add(te);
-            } else {
+            } else {*/
                 list.add(te);
-            }
+            /*}*/
         }
 
         public boolean isEnding(int i) {

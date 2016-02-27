@@ -501,9 +501,9 @@ public class MyPlayer extends Player {
 
     private void updateEnergy() {
         if (((MyController) playerController).isRunning() && getSpeed() > 0) {
-            ((PlayerStats) stats).decreaseEnergy(0.5f);
+            ((PlayerStats) stats).decreaseEnergy(0.5f * Time.getDelta());
         } else {
-            ((PlayerStats) stats).increaseEnergy(0.5f);
+            ((PlayerStats) stats).increaseEnergy(0.5f * Time.getDelta());
         }
     }
 

@@ -84,10 +84,15 @@ public class TestMap extends Map {
         addObject(rock);
         addObject(new Nutka(3663, 3084, place, mobID++, rock));
         addObject(new Magician(2906, 763, place, mobID++));
-        addObject(new Plurret(7043, 4034, place, mobID++));
-        addObject(new Plurret(8618, 3609, place, mobID++));
-        addObject(new Plurret(8281, 4084, place, mobID++));
-        addObject(new Tercja(7104, 3667, place, mobID++));
+        Plurret[] plurrets = new Plurret[] {
+            new Plurret(7043, 4034, place, mobID++),
+            new Plurret(8618, 3609, place, mobID++),
+            new Plurret(8281, 4084, place, mobID++)
+        };
+        addObject(plurrets[0]);
+        addObject(plurrets[1]);
+        addObject(plurrets[2]);
+        addObject(new Tercja(7104, 3667, place, mobID++, plurrets));
 
         addObject(SpawnPoint.createInVisible(8780, 3871, 54, 38, "Shen spawn", Shen.class, 7, 3));
     }
