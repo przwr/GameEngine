@@ -37,7 +37,6 @@ public class Shen extends Mob {
     private final static byte ATTACK_NORMAL = 0, ATTACK_CRITICAL = 1;
     private Animation animation;
     private int seconds = 0, max = 5;
-    private Color skinColor;
     private Delay attack_delay = Delay.createInMilliseconds(1250);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
     private ActionState idle, run_away, hide, attack, wander, follow, bounce;
@@ -432,7 +431,7 @@ public class Shen extends Mob {
         if (appearance != null) {
             glPushMatrix();
             glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
-            Drawer.setColor(JUMP_SHADOW_COLOR);
+            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                     * Place.getCurrentScale() / 2f), 24);
             glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);

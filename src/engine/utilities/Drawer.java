@@ -373,8 +373,12 @@ public class Drawer {
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void setColor(Color color) {
+    public static void setColorStatic(Color color) {
         glColor4f(color.r, color.g, color.b, color.a);
+    }
+    
+    public static void setColorBlended(Color color) {
+        glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
     }
 
     public static FontHandler getFont(String name, int size) {

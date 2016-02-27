@@ -688,7 +688,7 @@ public abstract class Map {
             glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(xTemp * Place.tileSize, yTemp * Place.tileSize, 0);
-            Drawer.setColor(Color.cyan);
+            Drawer.setColorStatic(Color.cyan);
             Drawer.setCentralPoint();
             Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
             Drawer.returnToCentralPoint();
@@ -703,7 +703,7 @@ public abstract class Map {
             if (areaConnectors != null && areaConnectors[i] != null) {
                 int c = 0;
                 for (AreaConnection connection : areaConnectors[i].getConnections()) {
-                    Drawer.setColor(colors[c % colors.length]);
+                    Drawer.setColorStatic(colors[c % colors.length]);
                     for (Point point : connection.getConnectionPoints()) {
                         Drawer.drawRectangle(point.getX() - 5, point.getY() - 5, 10, 10);
                         Drawer.returnToCentralPoint();
@@ -808,7 +808,7 @@ public abstract class Map {
         glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(object.getX(), object.getY() - POINTING_ARROW_HEIGHT - (int) (object.getFloatHeight()), 0);
-        Drawer.setColor(pointingColor);
+        Drawer.setColorStatic(pointingColor);
         Drawer.drawEllipseBow(0, 0, 5, 10, 5, -30, 210, 15);
 //        Drawer.drawEllipseBow(0, -32, 8, 64, 8, 45, 135, 4);
         Drawer.refreshColor();

@@ -66,6 +66,13 @@ public final class DayCycle {
             updateLightColor();
         }
     }
+    
+    public void updateOnlyTime() {
+        if (!stopped) {
+            updateDifference();
+            calculateMinutes(difference / 1000);
+        }
+    }
 
     private void updateDifference() {
         currentTime = System.currentTimeMillis();

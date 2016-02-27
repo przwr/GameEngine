@@ -126,7 +126,7 @@ public class LineInteractiveCollision extends InteractiveCollision {
 
     @Override
     public void render(GameObject owner, int xEffect, int yEffect) {
-        Drawer.setColor(new Color(0.9f, 0.1f, 0.1f));
+        Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
         int tempWidth = (int) (Methods.ONE_BY_SQRT_ROOT_OF_2 * width);
         boolean ellipse = true;
         switch (owner.getDirection8Way()) {

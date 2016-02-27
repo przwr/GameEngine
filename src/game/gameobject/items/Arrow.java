@@ -116,10 +116,10 @@ public class Arrow extends Entity {
         glTranslatef(getX(), getY(), 0);
         int ix = (int) (Methods.xRadius(getDirection(), lenght / 2));
         int iy = (int) (-Methods.yRadius(getDirection(), lenght / 2));
-        Drawer.setColor(JUMP_SHADOW_COLOR);
+        Drawer.setColorStatic(JUMP_SHADOW_COLOR);
         Drawer.setCentralPoint();
         Drawer.drawLineWidth(-ix, -iy, ix, iy, lenght / 15);
-        Drawer.setColor(color);
+        Drawer.setColorBlended(color);
         Drawer.returnToCentralPoint();
         if (tail.isActive()) {
             ix = (int) (Methods.xRadius(tail.getDirection(), lenght / 2));

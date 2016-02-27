@@ -31,7 +31,7 @@ public class ArrowTail extends TailEffect {
 
     @Override
     public void innerRender() {
-        Drawer.setColor(color);
+        Drawer.setColorStatic(color);
         glDisable(GL_TEXTURE_2D);
         if (length >= 3 && tail[2] != null) {
             glBegin(GL_TRIANGLES);

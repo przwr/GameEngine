@@ -103,7 +103,7 @@ public class Dummy extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.updateFrame();
-            Drawer.setColor(JUMP_SHADOW_COLOR);
+            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision.getHeightHalf()), 15);
             Drawer.refreshColor();
             glTranslatef(0, (int) -floatHeight, 0);

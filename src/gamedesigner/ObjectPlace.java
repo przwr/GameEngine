@@ -97,6 +97,7 @@ public class ObjectPlace extends Place {
     @Override
     public void update() {
         updates[game.mode].update();
+        dayCycle.updateOnlyTime();
     }
 
     private void initializeMethods() {

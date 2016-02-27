@@ -450,7 +450,7 @@ public abstract class Mob extends Entity {
     protected void renderPathPoints(int xEffect, int yEffect) {
         PointContainer path = pathData.getPath();
         int current = pathData.getCurrentPointIndex();
-        Drawer.setColor(Color.green);
+        Drawer.setColorStatic(Color.green);
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);

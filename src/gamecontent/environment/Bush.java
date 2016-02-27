@@ -103,7 +103,7 @@ public class Bush extends GameObject {
     private void drawBush() {
         glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
-        Drawer.setColor(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) /
+        Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) /
                 10240f)));
         drawRoots();
         drawBranches();
@@ -296,7 +296,7 @@ public class Bush extends GameObject {
                 change = 0;
             }
             int rand = random.randomInRange(-10, 10);
-            Drawer.setColor(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
+            Drawer.setColorStatic(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
                     leafColor.b * (1 + change / 2f + rand / 25f)));
             float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
             Drawer.translate(points.get(i).getX() + x, points.get(i).getY() + y);

@@ -126,7 +126,7 @@ public class CurveInteractiveCollision extends InteractiveCollision {
 
     @Override
     public void render(GameObject owner, int xEffect, int yEffect) {
-        Drawer.setColor(new Color(0.9f, 0.1f, 0.1f));
+        Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);

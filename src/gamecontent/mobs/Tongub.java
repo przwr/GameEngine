@@ -453,7 +453,7 @@ public class Tongub extends Mob {
         if (appearance != null) {
             glPushMatrix();
             glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
-            Drawer.setColor(JUMP_SHADOW_COLOR);
+            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                     * Place.getCurrentScale() / 2f), 24);
             glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);

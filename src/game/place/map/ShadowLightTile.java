@@ -73,7 +73,7 @@ public class ShadowLightTile extends ForegroundTile {
             alteredColor.r = alteredColor.g = alteredColor.b = 0.5f;
             alteredColor.a = Place.getDayCycle().getNightLightAlpha();
         }
-        Drawer.setColor(alteredColor);
+        Drawer.setColorStatic(alteredColor);
         super.render(xEffect, yEffect);
         Drawer.refreshColor();
     }

@@ -134,13 +134,13 @@ public class MyGUI extends GUIObject {
         renderEnergy(size, border, innerSize);
         Drawer.returnToCentralPoint();
 
-        Drawer.setColor(new Color(0, 0, 0));
+        Drawer.setColorStatic(new Color(0, 0, 0));
         Drawer.drawRing(size + border, size + border, size + border, border / 3, size);
         Drawer.returnToCentralPoint();
         Drawer.drawRing(size + border, size + border, size, border / 3, size);
         Drawer.returnToCentralPoint();
 
-        Drawer.setColor(color);
+        Drawer.setColorStatic(color);
         glTranslatef(size / 2 + border, border, 0);
         attackIcons.renderPiece(firstAttackType);
         glTranslatef(0, size, 0);
@@ -171,7 +171,7 @@ public class MyGUI extends GUIObject {
         if (lowHealth) {
             c.a = lifeColor.a;
         }
-        Drawer.setColor(c);
+        Drawer.setColorStatic(c);
         Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, precision);
     }
 
@@ -189,12 +189,12 @@ public class MyGUI extends GUIObject {
         if (precision == 0) {
             precision = 1;
         }
-        Drawer.setColor(new Color(0.25f, 0.25f, 1f));
+        Drawer.setColorStatic(new Color(0.25f, 0.25f, 1f));
         Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, precision);
     }
 
     private void renderPairArrow(int size, int border) {
-        Drawer.setColor(Color.white);
+        Drawer.setColorStatic(Color.white);
         int pair = ((MyPlayer) player).getActiveActionPairID();
         int base = border / 2;
         glTranslatef(-base + size / 2, -base, 0);
@@ -240,12 +240,12 @@ public class MyGUI extends GUIObject {
         glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_COLOR);
         calculateLifeAlpha();
         if (lifeAlpha > 0) {
-            Drawer.setColor(lifeColor);
+            Drawer.setColorStatic(lifeColor);
             frameBufferObject.renderPiece(0, 0, 0, 0, frameBufferObject.getWidth() / 2, frameBufferObject.getHeight());
         }
         if (energyAlpha > 0) {
             energyColor.a = energyAlpha;
-            Drawer.setColor(energyColor);
+            Drawer.setColorStatic(energyColor);
             frameBufferObject.renderPiece(0, 0, frameBufferObject.getWidth() / 2, 0, frameBufferObject.getWidth(), frameBufferObject.getHeight());
         }
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

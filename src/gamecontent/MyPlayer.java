@@ -370,7 +370,7 @@ public class MyPlayer extends Player {
         if (appearance != null) {
             glPushMatrix();
             glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
-            Drawer.setColor(JUMP_SHADOW_COLOR);
+            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                     * Place.getCurrentScale() / 2f), 24);
             glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
@@ -432,7 +432,7 @@ public class MyPlayer extends Player {
         if (precision == 0) {
             precision = 1;
         }
-        Drawer.setColor(Drawer.setPercentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, gui.getLifeColor()));
+        Drawer.setColorStatic(Drawer.setPercentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, gui.getLifeColor()));
         Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                 * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
     }
@@ -451,7 +451,7 @@ public class MyPlayer extends Player {
         if (precision == 0) {
             precision = 1;
         }
-        Drawer.setColor(gui.getEnergyColor());
+        Drawer.setColorStatic(gui.getEnergyColor());
         Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(
                 collision.getHeight() * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
     }

@@ -735,7 +735,7 @@ public class TextController extends GUIObject {
         }
         if (answer < 0) {
             Drawer.translate(-tile * 0.7f, Place.tileHalf);
-            Drawer.setColor(Color.gray);
+            Drawer.setColorStatic(Color.gray);
             frame.renderPiece(0, 3);
             Drawer.refreshColor();
             Drawer.translate(tile * 0.7f, -Place.tileHalf);
