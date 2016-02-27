@@ -15,6 +15,7 @@ class PropertyChanger extends TextEvent {
     static final int PROP_FLUSH = 2;
     static final int PROP_PORTRAIT = 3;
     static final int PROP_EXPRESSION = 4;
+    static final int PROP_END = 5;
     final TextController controller;
     private final int type;
     private final float quality;
@@ -45,6 +46,9 @@ class PropertyChanger extends TextEvent {
                     break;
                 case PROP_EXPRESSION:
                     controller.setExpression((int) quality);
+                    break;
+                case PROP_END:
+                    controller.terminateDialog();
                     break;
             }
             done = true;

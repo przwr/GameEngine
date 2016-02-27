@@ -12,6 +12,9 @@ import gamecontent.mobs.Tongub;
 import org.newdawn.slick.Color;
 
 import static collision.OpticProperties.TRANSPARENT;
+import gamecontent.environment.MoneyBag;
+import gamecontent.npcs.Sonata;
+import gamecontent.npcs.Zuocieyka;
 import sounds.Sound;
 
 /**
@@ -49,6 +52,11 @@ public class CaveTest extends Map {
 
     @Override
     public void populate() {
+        MoneyBag mb = new MoneyBag(4350, 7461, place, mobID++);
+        addObject(mb);
+        Zuocieyka zuo = new Zuocieyka(2216, 3117, place, mobID++, mb);
+        addObject(zuo);
+        addObject(new Sonata(1165, 1297, place, mobID++, zuo, mb));
         addObject(SpawnPoint.createInVisible(2176, 5120, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
         addObject(SpawnPoint.createInVisible(2880, 4096, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
         addObject(SpawnPoint.createInVisible(4352, 4864, 54, 38, "Tongub spawn", Tongub.class, 2, 10));

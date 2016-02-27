@@ -5,11 +5,9 @@
  */
 package game.text;
 
-import engine.Main;
 import engine.systemcommunication.Time;
 import engine.utilities.Drawer;
 import engine.utilities.Executive;
-import engine.utilities.Methods;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Entity;
 import game.place.Place;
@@ -23,8 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -53,7 +49,7 @@ public class TextController extends GUIObject {
     private Branch branch;
     private float index, speed, change, realSpeed, time;
     private int rows, deltaLines, rowsInPlace, speaker, portrait, expression, answer, jumpTo;
-    private boolean started, flushing, flushReady, stop, question, firstStep, action;
+    private boolean started, flushing, flushReady, stop, question, firstStep, action, terminate;
     private Entity[] locked;
     private String[] answerText;
     private String[] answerJump;
@@ -154,6 +150,7 @@ public class TextController extends GUIObject {
             float defSpeed = speed;
             Color color = colors.get(0);
             TextRow tmp;
+            branch.length = 1000;
             branches.add(branch);
             Branch currentBranch = branch;
             jumpPlacements.add("0");
@@ -357,6 +354,17 @@ public class TextController extends GUIObject {
                                         line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
                                         last = lineIndex;
                                         break;
+                                    case "en":   //TERMINATE DIALOG
+                                        if (last != lineIndex) {
+                                            lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
+                                                    lineNum, color, font);
+                                            tmp.addEvent(lastEvent);
+                                        }
+                                        lastEvent = new PropertyChanger(lastEvent, PropertyChanger.PROP_END, 0, this);
+                                        tmp.addEvent(lastEvent);
+                                        line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
+                                        last = lineIndex;
+                                        break;
                                     case "co":   //CHANGE COLOR
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
@@ -482,6 +490,7 @@ public class TextController extends GUIObject {
         speaker = 0;
         portraits.clear();
         expression = 0;
+        terminate = false;
         if (locked != null) {
             for (Entity e : locked) {
                 e.setUnableToMove(false);
@@ -585,6 +594,13 @@ public class TextController extends GUIObject {
         if (started) {
             int tile = Place.tileSize;
             action = playerController.getAction(MyController.INPUT_ACTION).isKeyClicked();
+
+            if (terminate) {
+                branch.endingEvent();
+                stopTextViewing();
+                return;
+            }
+
             glPushMatrix();
 
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
@@ -893,6 +909,10 @@ public class TextController extends GUIObject {
         answer = -1;
         flushReady = true;
         rowsInPlace++;
+    }
+
+    void terminateDialog() {
+        terminate = true;
     }
 
     private class Event {

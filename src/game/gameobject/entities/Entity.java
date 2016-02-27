@@ -69,6 +69,7 @@ public abstract class Entity extends GameObject {
         knockBack = new SpeedChanger();
         invicibleTime = Delay.createEmpty();
         changers = new ArrayList<>(1);
+        interactiveObjects = new ArrayList<>();
         resistance = 1;
     }
 

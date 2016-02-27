@@ -35,6 +35,10 @@ import java.io.File;
 import java.util.Iterator;
 
 import static engine.systemcommunication.IO.loadInputFromFile;
+import game.place.fbo.FrameBufferObject;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author przemek
@@ -443,7 +447,7 @@ public class MyGame extends Game {
         pathThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
     }
-
+    
     @Override
     public void endGame() {
         running = started = false;
@@ -459,11 +463,17 @@ public class MyGame extends Game {
         mapThread = null;
         online.cleanUp();
         Tree.instances.clear();
+        Tree.instances = new ArrayList<>();
         Tree.fbos.clear();
+        Tree.fbos = new HashMap<>();
         Bush.instances.clear();
+        Bush.instances = new ArrayList<>();
         Bush.fbos.clear();
+        Bush.fbos = new HashMap<>();
         GrassClump.instances.clear();
+        GrassClump.instances = new ArrayList<>();
         GrassClump.fbos.clear();
+        GrassClump.fbos = new HashMap<>();
         if (place != null)
             place.cleanUp();
         place = null;
@@ -473,6 +483,7 @@ public class MyGame extends Game {
             array.clearReally();
         }
         BlueArray.instances.clear();
+        BlueArray.instances = new ArrayList<>();
         System.gc();
     }
 

@@ -25,8 +25,8 @@ import java.util.List;
 public abstract class GameObject {
 
     public final static byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
-    protected final ArrayList<Light> lights = new ArrayList<>(1);
-    protected final ArrayList<Interactive> interactiveObjects = new ArrayList<>(1);
+    protected ArrayList<Light> lights;
+    protected ArrayList<Interactive> interactiveObjects;
     protected double x, y;
     protected int depth;
     protected boolean solid;
@@ -177,7 +177,7 @@ public abstract class GameObject {
     }
 
     public boolean isInteractive() {
-        return !interactiveObjects.isEmpty();
+        return interactiveObjects != null && !interactiveObjects.isEmpty();
     }
 
     public int getX() {

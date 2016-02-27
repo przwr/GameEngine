@@ -289,6 +289,9 @@ public class MyPlayer extends Player {
         visible = true;
         depth = 0;
         setResistance(2);
+        if (lights == null) {
+            lights = new ArrayList<>(1);
+        }
         if (lights.isEmpty()) {
             addLight(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }

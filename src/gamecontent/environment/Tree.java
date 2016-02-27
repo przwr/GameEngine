@@ -23,7 +23,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Tree extends GameObject {
 
-    public static final Map<String, FrameBufferObject> fbos = new HashMap<>();
+    public static Map<String, FrameBufferObject> fbos = new HashMap<>();
     public static List<Tree> instances = new ArrayList();
     static Sprite bark;
     static Sprite leaf;

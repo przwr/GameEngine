@@ -34,6 +34,7 @@ public abstract class Player extends Entity {
     private Menu menu;
 
     protected Player(String name) {
+        super();
         this.name = name;
     }
 

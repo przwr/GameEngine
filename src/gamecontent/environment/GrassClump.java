@@ -22,7 +22,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class GrassClump extends GameObject {
 
-    public static final Map<String, FrameBufferObject> fbos = new HashMap<>();
+    public static Map<String, FrameBufferObject> fbos = new HashMap<>();
     public static List<GrassClump> instances = new ArrayList();
 
     public static RandomGenerator random = RandomGenerator.create();

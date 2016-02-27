@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Bush extends GameObject {
 
 
-    public static final Map<String, FrameBufferObject> fbos = new HashMap<>();
+    public static Map<String, FrameBufferObject> fbos = new HashMap<>();
     public static List<Bush> instances = new ArrayList();
     static Sprite bark;
     static Sprite leaf;

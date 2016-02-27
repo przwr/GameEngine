@@ -11,6 +11,7 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
+import gamecontent.environment.MoneyBag;
 import gamecontent.environment.Rock;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;

@@ -1,0 +1,77 @@
+﻿{
+sp:1
+co:000000
+co:FF0000
+au:Sonata
+au:Aria
+po:melodiaPortret:1
+po:ariaPortret:0
+}
+$AU0$$PO0$Witaj!$FL
+$AU1$$PO1$Dzień dobry!$FL
+$AU0$$PO0$Podróżniczko!
+Ta jaskinia jest niezwykle niebezpieczna$FL
+Nie radzę to wchodzić bez źródła światła!$QUMam świeczkę!:11:yyy...:12$
+#B11
+Może być...$FL
+Jeżeli byś nie wiedziała, rozpala się ją
+używając przycisku $CO1$$WRbut$$CN.$JU2$
+#B12
+....
+Jak to?$FL
+Widzę, że masz świeczkę przy sobie!
+Używasz jej przyciskiem $CO1$$WRbut$$CN.$JU2$
+#B2
+$AU0$$PO0$Hmmmmmmmm$FL
+$AU1$$PO1$$EX3$?$FL
+$AU0$$PO0$$EX0$Hmmmmmmmm$FL
+Widzę również, że posiadasz miecz!$FL
+$NETonguby mające gniazdo w tej jaskini
+ukradły mi moją sakiewkę....$NO$Fl
+$SHPomóż mi!$NO
+Nie mam pieniędzy na $SHciasteczka$NO!$QUDobrze:21:Nie mogę:22$.
+#B21
+$AU1$$PO1$$EX2$Spróbuję!$Fl
+$AU0$$PO0$$EX0$$SHDziękuję$NO!!
+Odwdzięczę się!
+#B22
+$AU0$$PO0$......
+#B3
+$AU0$$PO0$Tak?$QUNic..:31:Świeczka?:32:Tonguby?:33$
+#B3a
+$AU0$$PO0$Tak?$QUNic..:31:Świeczka?:32:Tonguby?:33:Sakiewka:4$
+#B3a2
+$AU0$$PO0$Tak?$QUNic..:31:Świeczka?:32:Tonguby?:33:Ciastko?:5$
+#B3b
+$AU0$$PO0$Tak?$QUNic..:31:Świeczka?:32:Tonguby?:33:Sakiewka:4a$
+#B31
+$AU0$$PO0$No cóż...
+#B32
+$AU0$$PO0$Zapomniałaś jak się zapala świeczkę?$Fl
+Proste.
+Klikasz guzik $CO1$$WRbut$$CN.$FL
+Tyle...?$Fl
+$AU1$$PO1$$EX2$$MEDziękuję$NO!
+#B33
+$AU0$$PO0$Tonguby to jakiś rodzaj podziemnych owadów
+W pojedynkę nic ci nie zrobią, lecz strzeż się dużych grup....$FL
+Ich gniazdo znajduje się wewnątrz południowej części jakini....$FL
+$NEPowodzenia....$NO
+#B4
+$AU1$$PO1$$EX2$Znalazłam twoją sakiewkę!
+$MEProszę$NO!$FL
+$AU0$$PO0$$EX0$$SHDziękuję$NO!
+$NEJak ja ci się odwdzięczę....?$NO
+#B4a
+$AU0$$PO0$Znalazłaś sakiewkę....?$FL
+$AU1$$PO1$$EX3$$VE0.4$........nie$VN$FL
+$AU0$$PO0$$EX0$Dziękuję że się starasz....
+...lecz mam wrażenie, że już jej nie znajdę....$FL
+$AU1$$PO1$$EX3$$SH........$NO
+#B5
+$AU1$$PO1$$EX0$$MECzy masz już ciastka?$NO$FL
+$AU0$$PO0$Oczywiście!
+Teraz już tak!
+$MEProszę$NO$FL
+$AU1$$PO1$$EX2$JEJ!$FL
+$EX1$Om nom nom nom....
