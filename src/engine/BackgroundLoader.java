@@ -14,13 +14,11 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Sprite;
+import sprites.SpriteBase;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -33,6 +31,7 @@ import static org.lwjgl.opengl.GL32.glFenceSync;
 public abstract class BackgroundLoader {
 
     private static final int seconds = 1000, secondsToUnload = 90;
+    public static SpriteBase base;
     private final ReentrantLock lock = new ReentrantLock();
     private final Map<String, Sprite> sprites = new HashMap<>();
     List<Sprite> toClear = new ArrayList<>();
@@ -46,6 +45,10 @@ public abstract class BackgroundLoader {
 
     public BackgroundLoader() {
         running = true;
+    }
+
+    public List<Sprite> getToClear() {
+        return toClear;
     }
 
     abstract Drawable getDrawable() throws LWJGLException;
@@ -114,9 +117,13 @@ public abstract class BackgroundLoader {
                 }
             } else if (list1.isEmpty() && list2.isEmpty() && Settings.sounds != null) {
                 unloadTextures();
-                try {
-                    Thread.sleep(3600000);
-                } catch (InterruptedException e) {
+                if (base == null) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                    }
+                } else {
+                    unloadAllTextures();
                 }
             }
             firstActive = !firstActive;
@@ -158,6 +165,28 @@ public abstract class BackgroundLoader {
         }
         usingSprites = false;
     }
+
+    public void unloadAllTextures() {
+        usingSprites = true;
+        if (!stopSpritesUsing) {
+            Iterator it = base.getSprites().entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+                Sprite sprite = (Sprite) pair.getValue();
+                if (sprite.getTextureID() != 0 || sprite.getTexture() != null) {
+                    lock();
+                    sprite.releaseTexture();
+                    unlock();
+                }
+                it.remove();
+            }
+
+        }
+        base.getSprites().clear();
+        base = null;
+        usingSprites = false;
+    }
+
 
     private void loadTexture(Sprite sprite, InputStream stream) {
         Texture tex = null;

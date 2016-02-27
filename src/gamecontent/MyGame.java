@@ -464,13 +464,16 @@ public class MyGame extends Game {
         Bush.fbos.clear();
         GrassClump.instances.clear();
         GrassClump.fbos.clear();
-        Place.currentCamera = null;
+        if (place != null)
+            place.cleanUp();
         place = null;
         mode = 0;
+        Place.currentCamera = null;
         for (BlueArray array : BlueArray.instances) {
             array.clearReally();
         }
         BlueArray.instances.clear();
+        System.gc();
     }
 
     private void soundPause() {

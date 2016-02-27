@@ -12,18 +12,15 @@ import gamecontent.environment.Bush;
 import gamecontent.environment.Tree;
 
 /**
- *
  * @author Wojtek
  */
 public class MapObjectContainer {
 
+    public static final byte TREE = 0, BUSH = 1;
+    private static final String[] names = new String[]{"Tree", "Bush"};
     private int x, y;
     private String[] data;
     private byte type;
-
-    public static final byte TREE = 0, BUSH = 1;
-
-    private static final String[] names = new String[]{"Tree", "Bush"};
 
     public MapObjectContainer(String[] data) {
         if (data[0].equals("o")) {
@@ -47,10 +44,6 @@ public class MapObjectContainer {
         return names;
     }
 
-    public GameObject generateObject(int x, int y, RandomGenerator rand) {
-        return generate(this.x + x, this.y + y, rand, type);
-    }
-
     public static GameObject generate(int x, int y, RandomGenerator rand, byte type) {
         int dx = 0, dy = 0;
         if (rand != null) {
@@ -64,5 +57,9 @@ public class MapObjectContainer {
                 return new Bush(x + dx, y + dy);
         }
         return null;
+    }
+
+    public GameObject generateObject(int x, int y, RandomGenerator rand) {
+        return generate(this.x + x, this.y + y, rand, type);
     }
 }

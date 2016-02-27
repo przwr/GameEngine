@@ -1,7 +1,6 @@
 package game.logic.maploader;
 
 import game.place.map.Map;
-import java.util.ArrayList;
 
 /**
  * Created by przemek on 19.08.15.
@@ -92,6 +91,13 @@ public class MapLoadContainer {
 
     public void clear() {
         requestCount = 0;
+    }
+
+
+    public void clearReally() {
+        for (int i = 0; i < requests.length; i++) {
+            requests[i] = null;
+        }
     }
 
     public void setSize(int size) {

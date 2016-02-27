@@ -841,13 +841,19 @@ public abstract class Map {
         for (Area area : areas) {
             area.clear();
         }
-        visibleLights.clear();
-        topObjects.clear();
-        foregroundTiles.clear();
+        visibleLights.clearReally();
+        topObjects.clearReally();
         warps.clear();
-        lights.clear();
-        blocks.clear();
-        tempMobs.clear();
+        lights.clearReally();
+        blocks.clearReally();
+        tempMobs.clearReally();
+        pointingArrows.clearReally();
+        tempBlocks.clear();
+        tempTilePositions.clearReally();
+        tempDepthObjects.clear();
+        tempEntities.clearReally();
+        tempInteractiveObjects.clearReally();
+        areasToUpdate.clear();
     }
 
     public int getWidthInTiles() {

@@ -33,8 +33,8 @@ public class PathFindingModule implements Runnable {
     }
 
     public static void stop() {
-        requestedPaths.clear();
         run = false;
+        requestedPaths.clear();
     }
 
     @Override

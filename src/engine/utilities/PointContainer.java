@@ -89,6 +89,13 @@ public class PointContainer {
         pointCount = 0;
     }
 
+
+    public void clearReally() {
+        for (int i = 0; i < points.length; i++) {
+            points[i] = null;
+        }
+    }
+
     public int size() {
         return pointCount;
     }

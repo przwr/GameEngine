@@ -5,6 +5,7 @@
  */
 package game.place;
 
+import engine.BackgroundLoader;
 import engine.Main;
 import engine.utilities.Delay;
 import engine.utilities.Drawer;
@@ -369,8 +370,21 @@ public abstract class Place extends ScreenPlace {
         return loadingMap;
     }
 
-    private interface renderType {
+    public void cleanUp() {
+        for (Map map : maps) {
+            map.clear();
+        }
+        maps.clear();
+        mapsToAdd1.clear();
+        mapsToAdd2.clear();
+        tempMaps.clear();
+        sounds.cleanUp();
+        BackgroundLoader.base = sprites;
+        Main.backgroundLoader.unloadAllTextures();
+    }
 
+    private interface renderType {
         void render();
     }
+
 }
