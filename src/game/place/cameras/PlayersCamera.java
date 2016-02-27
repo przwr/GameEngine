@@ -7,10 +7,7 @@ package game.place.cameras;
 
 import game.Settings;
 import game.gameobject.GameObject;
-import gamecontent.MyPlayer;
 import org.lwjgl.opengl.Display;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author przemek
@@ -134,12 +131,12 @@ public class PlayersCamera extends Camera {
 
     @Override
     public void preRenderGUI() {
-        for (GameObject owner : owners) {
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            if (owner instanceof MyPlayer) {
-                ((MyPlayer) owner).preRenderGroundGUI();
-            }
-        }
+//        for (GameObject owner : owners) {
+//            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//            if (owner instanceof MyPlayer) {
+//                ((MyPlayer) owner).preRenderGroundGUI();
+//            }
+//        }
     }
 
     private interface initializer {

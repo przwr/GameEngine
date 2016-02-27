@@ -75,15 +75,15 @@ public abstract class Place extends ScreenPlace {
                         Renderer.preRenderLights(map);
                     }
                 });
-                if (!singleCamera) {
-                    currentCamera = (((Player) players[p]).getCamera());
-                    currentCamera.preRenderGUI();
-                }
+//                if (!singleCamera) {
+//                    currentCamera = (((Player) players[p]).getCamera());
+//                    currentCamera.preRenderGUI();
+//                }
             }
-            if (singleCamera) {
-                currentCamera = cameras[playersCount - 2];
-                cameras[playersCount - 2].preRenderGUI();
-            }
+//            if (singleCamera) {
+//                currentCamera = cameras[playersCount - 2];
+//                cameras[playersCount - 2].preRenderGUI();
+//            }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
                 Map map = players[player].getMap();
@@ -112,6 +112,7 @@ public abstract class Place extends ScreenPlace {
                                 console.render(0, 0);
                                 glDisable(GL_SCISSOR_TEST);
                             } else {
+                                Drawer.clearScreen(0);
                                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                                 if (loading.isOver()) {
                                     loading.start();
@@ -144,7 +145,7 @@ public abstract class Place extends ScreenPlace {
                     }
                     currentCamera = (((Player) players[0]).getCamera());
                     SplitScreen.setSplitScreen(this, 1, 0);
-                    currentCamera.preRenderGUI();
+//                    currentCamera.preRenderGUI();
                     if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
                         glEnable(GL_SCISSOR_TEST);
                         Renderer.preRenderShadowedLights(currentCamera);

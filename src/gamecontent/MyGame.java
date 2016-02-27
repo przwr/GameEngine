@@ -457,8 +457,11 @@ public class MyGame extends Game {
         mapLoader.stop();
         mapThread = null;
         online.cleanUp();
+        Tree.instances.clear();
         Tree.fbos.clear();
+        Bush.instances.clear();
         Bush.fbos.clear();
+        GrassClump.instances.clear();
         GrassClump.fbos.clear();
         Place.currentCamera = null;
         place = null;

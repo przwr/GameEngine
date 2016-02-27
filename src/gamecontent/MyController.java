@@ -5,7 +5,6 @@
  */
 package gamecontent;
 
-import engine.systemcommunication.Time;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.Settings;
@@ -160,15 +159,15 @@ public class MyController extends PlayerController {
         if (actions[INPUT_BLOCK].isKeyClicked()) {
             //PERFEKCYJNY BLOK (pierwsza klatka obrony)
         }
-        if (stats.getEnergy() > 10) {
-            animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
-            stats.setProtectionState(true);
-        } else {
-            animation.getUpperBody().animateSingleInDirection(tempDirection, animation.IDLE);
-        }
+//        if (stats.getEnergy() > 10) {
+        animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
+        stats.setProtectionState(true);
+//        } else {
+//            animation.getUpperBody().animateSingleInDirection(tempDirection, animation.IDLE);
+//        }
         updateChargingMovement();
-        stats.decreaseEnergy(blockingTime * Time.getDelta());
-        blockingTime += 0.05;
+//        stats.decreaseEnergy(blockingTime * Time.getDelta());
+//        blockingTime += 0.05;
         //RESZTA BLOKOWANIA
     }
 

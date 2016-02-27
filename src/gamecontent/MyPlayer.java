@@ -32,14 +32,12 @@ import net.jodk.lang.FastMath;
 import net.packets.MultiPlayerUpdate;
 import net.packets.Update;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.ClothedAppearance;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import static engine.utilities.Drawer.clearScreen;
 import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
@@ -74,7 +72,7 @@ public class MyPlayer extends Player {
     private Point centralPoint;
     private MyGUI gui;
     private float jumpDelta = 22.6f;
-
+    private long lastEnergyUp = 0;
 
     public MyPlayer(boolean first, String name) {
         super(name);
@@ -407,53 +405,53 @@ public class MyPlayer extends Player {
     }
 
     public void preRenderGroundGUI() {
-        gui.getFrameBufferObject().activate();
-        glPushMatrix();
-        clearScreen(0);
-        glTranslatef(gui.getFrameBufferObject().getWidth() / 2, -gui.getFrameBufferObject().getHeight() / 2 + Display.getHeight() - 1, 0);
-        renderLifeIndicator();
-        renderEnergyIndicator();
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        Drawer.drawShapeInShade(appearance, 0);
-        glPopMatrix();
-        gui.getFrameBufferObject().deactivate();
+//        gui.getFrameBufferObject().activate();
+//        glPushMatrix();
+//        clearScreen(0);
+//        glTranslatef(gui.getFrameBufferObject().getWidth() / 2, -gui.getFrameBufferObject().getHeight() / 2 + Display.getHeight() - 1, 0);
+//        renderLifeIndicator();
+//        renderEnergyIndicator();
+//        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+//        Drawer.drawShapeInShade(appearance, 0);
+//        glPopMatrix();
+//        gui.getFrameBufferObject().deactivate();
     }
 
     private void renderLifeIndicator() {
-        int halfLifeAngle = 180, startAngle, endAngle;
-        int minimumLifePercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
-        int lifePercentageAngle = Methods.roundDouble(stats.getHealth() * halfLifeAngle / (float) stats.getMaxHealth());
-        if (lifePercentageAngle < minimumLifePercentage && stats.getHealth() != 0) {
-            lifePercentageAngle = minimumLifePercentage;
-        }
-        startAngle = 90;
-        endAngle = lifePercentageAngle + 90;
-        int precision = (12 * lifePercentageAngle) / halfLifeAngle;
-        if (precision == 0) {
-            precision = 1;
-        }
-        Drawer.setColorStatic(Drawer.setPercentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, gui.getLifeColor()));
-        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
-                * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
+//        int halfLifeAngle = 180, startAngle, endAngle;
+//        int minimumLifePercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
+//        int lifePercentageAngle = Methods.roundDouble(stats.getHealth() * halfLifeAngle / (float) stats.getMaxHealth());
+//        if (lifePercentageAngle < minimumLifePercentage && stats.getHealth() != 0) {
+//            lifePercentageAngle = minimumLifePercentage;
+//        }
+//        startAngle = 90;
+//        endAngle = lifePercentageAngle + 90;
+//        int precision = (12 * lifePercentageAngle) / halfLifeAngle;
+//        if (precision == 0) {
+//            precision = 1;
+//        }
+//        Drawer.setColor(Drawer.setPercentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, gui.getLifeColor()));
+//        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
+//                * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
     }
 
     private void renderEnergyIndicator() {
-        PlayerStats playerStats = (PlayerStats) stats;
-        int halfEnergyAngle = 180, startAngle, endAngle;
-        int minimumEnergyPercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
-        int energyPercentageAngle = Methods.roundDouble(playerStats.getEnergy() * halfEnergyAngle / playerStats.getMaxEnergy());
-        if (energyPercentageAngle < minimumEnergyPercentage && playerStats.getEnergy() != 0) {
-            energyPercentageAngle = minimumEnergyPercentage;
-        }
-        startAngle = 450 - energyPercentageAngle;
-        endAngle = 450;
-        int precision = (12 * energyPercentageAngle) / halfEnergyAngle;
-        if (precision == 0) {
-            precision = 1;
-        }
-        Drawer.setColorStatic(gui.getEnergyColor());
-        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(
-                collision.getHeight() * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
+//        PlayerStats playerStats = (PlayerStats) stats;
+//        int halfEnergyAngle = 180, startAngle, endAngle;
+//        int minimumEnergyPercentage = Methods.roundDouble(45f / (collision.getHeight() * Place.getCurrentScale() / 2f));
+//        int energyPercentageAngle = Methods.roundDouble(playerStats.getEnergy() * halfEnergyAngle / playerStats.getMaxEnergy());
+//        if (energyPercentageAngle < minimumEnergyPercentage && playerStats.getEnergy() != 0) {
+//            energyPercentageAngle = minimumEnergyPercentage;
+//        }
+//        startAngle = 450 - energyPercentageAngle;
+//        endAngle = 450;
+//        int precision = (12 * energyPercentageAngle) / halfEnergyAngle;
+//        if (precision == 0) {
+//            precision = 1;
+//        }
+//        Drawer.setColorStatic(gui.getEnergyColor());
+//        Drawer.drawEllipseBow(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(
+//                collision.getHeight() * Place.getCurrentScale() / 2f), Methods.roundDouble(4 * Place.getCurrentScale()), startAngle, endAngle, precision);
     }
 
     @Override
@@ -500,10 +498,22 @@ public class MyPlayer extends Player {
     }
 
     private void updateEnergy() {
-        if (((MyController) playerController).isRunning() && getSpeed() > 0) {
-            ((PlayerStats) stats).decreaseEnergy(0.5f * Time.getDelta());
+        float energyGain = 0.009f;
+        if (lastEnergyUp > 0) {
+            long current = Place.getDayCycle().getCurrentTimeInMiliSeconds();
+            long difference = current - lastEnergyUp;
+            if (((MyController) playerController).isRunning() && getSpeed() > 0 && isAbleToMove()) {
+                float decrease = 0.4f - energyGain * difference;
+                if (decrease < 0) {
+                    decrease = 0;
+                }
+                ((PlayerStats) stats).decreaseEnergy(decrease);
+            } else if (!stats.isProtectionState()) {
+                ((PlayerStats) stats).increaseEnergy(energyGain * difference);
+            }
+            lastEnergyUp = current;
         } else {
-            ((PlayerStats) stats).increaseEnergy(0.5f * Time.getDelta());
+            lastEnergyUp = Place.getDayCycle().getCurrentTimeInMiliSeconds();
         }
     }
 

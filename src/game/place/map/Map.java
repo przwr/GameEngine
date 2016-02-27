@@ -51,6 +51,7 @@ public abstract class Map {
     protected final BlueArray<Entity> tempEntities = new BlueArray<>();
     protected final BlueArray<Interactive> tempInteractiveObjects = new BlueArray<>();
     protected final BlueArray<GameObject> topObjects = new BlueArray<>();
+    protected final HashSet<GameObject> tempDepthObjects = new HashSet<>();
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
     protected final BlueArray<Light> lights = new BlueArray<>();
     protected final BlueArray<Block> blocks = new BlueArray<>();
@@ -483,11 +484,13 @@ public abstract class Map {
     }
 
     public void updateObjectsFromAreasToUpdate() {
-        if (depthObjects != null) {
-            for (GameObject object : depthObjects) {
-                if (object.isToUpdate()) {
-                    object.update();
-                }
+        tempDepthObjects.clear();
+        getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> {
+            tempDepthObjects.addAll(areas[area].getDepthObjects());
+        });
+        for (GameObject object : tempDepthObjects) {
+            if (object.isToUpdate()) {
+                object.update();
             }
         }
     }

@@ -106,7 +106,7 @@ public class Stats {
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
     }
-    
+
     public void setStartHealth(int maxHealth) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
@@ -139,13 +139,13 @@ public class Stats {
     public boolean isUnhurtableState() {
         return unhurtableState;
     }
-    
-    public boolean isInvicibleState() {
-        return owner.isInvicibleState();
-    }
 
     public void setUnhurtableState(boolean unhurtableState) {
         this.unhurtableState = unhurtableState;
+    }
+
+    public boolean isInvicibleState() {
+        return owner.isInvicibleState();
     }
 
     public float getSideDefenceModifier() {

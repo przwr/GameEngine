@@ -14,9 +14,7 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -26,6 +24,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Tree extends GameObject {
 
     public static final Map<String, FrameBufferObject> fbos = new HashMap<>();
+    public static List<Tree> instances = new ArrayList();
     static Sprite bark;
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
@@ -68,6 +67,7 @@ public class Tree extends GameObject {
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
+        instances.add(this);
     }
 
     public static Tree create(int x, int y, int width, int height, float spread) {
@@ -82,21 +82,37 @@ public class Tree extends GameObject {
         return new Tree(x, y, width, height, spread, true);
     }
 
+    public static boolean allGenerated() {
+        for (Tree tree : instances) {
+            tree.update();
+        }
+        Iterator it = fbos.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            if (!((FrameBufferObject) pair.getValue()).generated) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public void update() {
         if (!prerendered) {
-            bark = map.place.getSprite("bark", "", true);
-            leaf = map.place.getSprite("leaf", "", true);
-            fbo.activate();
-            glPushMatrix();
-            glClearColor(0.5f, 0.35f, 0.2f, 0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glTranslatef(fbo.getWidth() / 2, Display.getHeight() - 20, 0);
-            drawTree();
-            glPopMatrix();
-            fbo.deactivate();
-            points = null;
-            prerendered = true;
+            if (map != null) {
+                bark = map.place.getSprite("bark", "", true);
+                leaf = map.place.getSprite("leaf", "", true);
+                fbo.activate();
+                glPushMatrix();
+                glClearColor(0.5f, 0.35f, 0.2f, 0);
+                glClear(GL_COLOR_BUFFER_BIT);
+                glTranslatef(fbo.getWidth() / 2, Display.getHeight() - 20, 0);
+                drawTree();
+                glPopMatrix();
+                fbo.deactivate();
+                points = null;
+                prerendered = true;
+            }
         }
         toUpdate = false;
     }
@@ -211,7 +227,8 @@ public class Tree extends GameObject {
                 drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
                         * fraction / 3));
             } else {
-                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round(height * fraction / 3));
+                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round
+                        (height * fraction / 3));
             }
             left = !left;
         }

@@ -207,9 +207,9 @@ public class MyPlace extends Place {
 //        if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
 //            sounds.getSound(soundName).addGainModifier(-0.05f);
 //        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
-            sounds.getSound(soundName).resume();
-        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+//            sounds.getSound(soundName).resume();
+//        }
 //        if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
 //            sounds.getSound(soundName).pause();
 //        }

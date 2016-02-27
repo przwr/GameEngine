@@ -19,9 +19,9 @@ public class Console extends GUIObject {
 
     private final String[] messages;
     private final int tile;
+    private final String[] stat;
     private float alpha;
     private Camera camera;
-    private final String[] stat;
     private int statNumber;
     private boolean stats;
 
@@ -32,7 +32,7 @@ public class Console extends GUIObject {
         this.stat = new String[30];
         statNumber = 0;
         tile = Place.tileSize;
-        stats = true;
+//        stats = true;
     }
 
     public void printMessage(String message) {

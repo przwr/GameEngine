@@ -14,9 +14,7 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -27,6 +25,7 @@ public class Bush extends GameObject {
 
 
     public static final Map<String, FrameBufferObject> fbos = new HashMap<>();
+    public static List<Bush> instances = new ArrayList();
     static Sprite bark;
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
@@ -68,23 +67,39 @@ public class Bush extends GameObject {
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
+        instances.add(this);
     }
 
+    public static boolean allGenerated() {
+        for (Bush bush : instances) {
+            bush.update();
+        }
+        Iterator it = fbos.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            if (!((FrameBufferObject) pair.getValue()).generated) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public void update() {
         if (!prerendered) {
-            bark = map.place.getSprite("bark", "", true);
-            leaf = map.place.getSprite("leaf", "", true);
-            fbo.activate();
-            glPushMatrix();
-            glClearColor(0.5f, 0.35f, 0.2f, 0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glTranslatef(fbo.getWidth() / 2, Display.getHeight() - 20, 0);
-            drawBush();
-            glPopMatrix();
-            fbo.deactivate();
-            points = null;
-            prerendered = true;
+            if (map != null) {
+                bark = map.place.getSprite("bark", "", true);
+                leaf = map.place.getSprite("leaf", "", true);
+                fbo.activate();
+                glPushMatrix();
+                glClearColor(0.5f, 0.35f, 0.2f, 0);
+                glClear(GL_COLOR_BUFFER_BIT);
+                glTranslatef(fbo.getWidth() / 2, Display.getHeight() - 20, 0);
+                drawBush();
+                glPopMatrix();
+                fbo.deactivate();
+                points = null;
+                prerendered = true;
+            }
         }
         toUpdate = false;
     }
@@ -103,7 +118,8 @@ public class Bush extends GameObject {
     private void drawBush() {
         glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
-        Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) /
+        Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next
+                (10) /
                 10240f)));
         drawRoots();
         drawBranches();
@@ -285,7 +301,6 @@ public class Bush extends GameObject {
             }
         }
     }
-
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
         if (Math.abs(points.get(i).getY() + y) < fbo.getHeight() - leaf.getWidth() - leaf.getHeight()
