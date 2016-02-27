@@ -96,7 +96,7 @@ public class MapLoadContainer {
 
     public void clearReally() {
         for (int i = 0; i < requests.length; i++) {
-            requests[i] = null;
+            requests[i].clear();
         }
     }
 

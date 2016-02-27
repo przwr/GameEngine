@@ -108,8 +108,8 @@ public class MapLoaderModule implements Runnable {
     }
 
     public void stop() {
-        list1.clear();
-        list2.clear();
+        list1.clearReally();
+        list2.clearReally();
         maps.clear();
         run = false;
     }

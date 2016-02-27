@@ -32,6 +32,8 @@ public class StopChoice extends MenuChoice {
                         pair.getValue().stop();
                     }
                 }
+//                Launcher.restart = true;
+//                menu.game.exit();
                 menu.game.endGame();
             }
         }

@@ -36,4 +36,10 @@ public class MapLoad {
         }
     }
 
+    public void clear() {
+        map = null;
+        name = null;
+        areas.clear();
+    }
+
 }
