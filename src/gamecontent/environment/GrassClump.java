@@ -13,8 +13,7 @@ import game.place.fbo.RegularFrameBufferObject;
 import game.place.map.Area;
 import org.lwjgl.opengl.Display;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -24,8 +23,9 @@ import static org.lwjgl.opengl.GL11.*;
 public class GrassClump extends GameObject {
 
     public static final Map<String, FrameBufferObject> fbos = new HashMap<>();
-    public static RandomGenerator random = RandomGenerator.create();
+    public static List<GrassClump> instances = new ArrayList();
 
+    public static RandomGenerator random = RandomGenerator.create();
 
     Grass[] grasses;
     int xBladesCount, yBladesCount, bladeWidth, bladeHeight, xRadius, yRadius, ySpacing, xCount, yCount, xCentering, grassWidth, curve, corner = -1;
@@ -41,6 +41,7 @@ public class GrassClump extends GameObject {
                         bladeHeight);
             }
         }
+        instances.add(this);
     }
 
     private GrassClump(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int curve) {
@@ -70,6 +71,7 @@ public class GrassClump extends GameObject {
                         bladeHeight);
             }
         }
+        instances.add(this);
     }
 
     private GrassClump(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int curve, int corner) {
@@ -121,6 +123,7 @@ public class GrassClump extends GameObject {
                             bladeHeight);
             }
         }
+        instances.add(this);
     }
 
 
@@ -137,6 +140,19 @@ public class GrassClump extends GameObject {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1, corner);
     }
 
+    public static boolean allGenerated() {
+        for (GrassClump clump : instances) {
+            clump.update();
+        }
+        Iterator it = fbos.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            if (!((FrameBufferObject) pair.getValue()).generated) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private void setUp(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int type) {
         initialize("GrassClump", x, y);
@@ -174,50 +190,52 @@ public class GrassClump extends GameObject {
 
     @Override
     public void update() {
-        updateGrass = false;
-        Area area = map.getArea(this.area);
-        for (int i = 0; i < this.map.place.getPlayersCount(); i++) {
-            GameObject player = map.place.players[i];
-            if (player.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - player.getX()) < xRadius + player.getCollision().getWidthHalf()
-                    && Math.abs(getY() + yRadius - player.getY()) < yRadius + player.getCollision().getHeightHalf()) {
-                updateGrass = true;
-                break;
-            }
-        }
-        if (!updateGrass) {
-            for (Mob mob : area.getNearSolidMobs()) {
-                if (mob.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidthHalf()
-                        && Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeightHalf()) {
+        if (map != null) {
+            updateGrass = false;
+            Area area = map.getArea(this.area);
+            for (int i = 0; i < this.map.place.getPlayersCount(); i++) {
+                GameObject player = map.place.players[i];
+                if (player.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - player.getX()) < xRadius + player.getCollision().getWidthHalf()
+                        && Math.abs(getY() + yRadius - player.getY()) < yRadius + player.getCollision().getHeightHalf()) {
                     updateGrass = true;
                     break;
                 }
             }
-        }
-        if (updateGrass) {
-            for (int i = 0; i < grasses.length; i++) {
-                if (grasses[i] != null) {
-                    grasses[i].update();
-                    grasses[i].setVisible(true);
+            if (!updateGrass) {
+                for (Mob mob : area.getNearSolidMobs()) {
+                    if (mob.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidthHalf()
+                            && Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeightHalf()) {
+                        updateGrass = true;
+                        break;
+                    }
                 }
             }
-        } else {
-            for (int i = 0; i < grasses.length; i++) {
-                if (grasses[i] != null) {
-                    grasses[i].setVisible(false);
-                    grasses[i].reset();
+            if (updateGrass) {
+                for (int i = 0; i < grasses.length; i++) {
+                    if (grasses[i] != null) {
+                        grasses[i].update();
+                        grasses[i].setVisible(true);
+                    }
+                }
+            } else {
+                for (int i = 0; i < grasses.length; i++) {
+                    if (grasses[i] != null) {
+                        grasses[i].setVisible(false);
+                        grasses[i].reset();
+                    }
                 }
             }
-        }
-        if (!added) {
-            if (!fbo.used) {
-                preRender();
-            }
-            for (int i = 0; i < grasses.length; i++) {
-                if (grasses[i] != null) {
-                    map.addObject(grasses[i]);
+            if (!added) {
+                if (!fbo.generated) {
+                    preRender();
                 }
+                for (int i = 0; i < grasses.length; i++) {
+                    if (grasses[i] != null) {
+                        map.addObject(grasses[i]);
+                    }
+                }
+                added = true;
             }
-            added = true;
         }
     }
 
@@ -333,7 +351,6 @@ public class GrassClump extends GameObject {
         }
     }
 
-
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
@@ -389,5 +406,4 @@ public class GrassClump extends GameObject {
     public int getYSpriteEnd() {
         return getY() + yRadius * 2;
     }
-
 }

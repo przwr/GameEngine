@@ -16,12 +16,12 @@ public class RegularFrameBufferObject extends FrameBufferObject {
 
     @Override
     public void activate() {
-        used = true;
         type.activate(frameBufferObject);
     }
 
     @Override
     public void deactivate() {
+        generated = true;
         type.deactivate();
     }
 

@@ -6,6 +6,7 @@
 package gamecontent;
 
 import engine.Main;
+import engine.utilities.BlueArray;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.view.SplitScreen;
@@ -457,12 +458,19 @@ public class MyGame extends Game {
         mapLoader.stop();
         mapThread = null;
         online.cleanUp();
+        Tree.instances.clear();
         Tree.fbos.clear();
+        Bush.instances.clear();
         Bush.fbos.clear();
+        GrassClump.instances.clear();
         GrassClump.fbos.clear();
         Place.currentCamera = null;
         place = null;
         mode = 0;
+        for (BlueArray array : BlueArray.instances) {
+            array.clearReally();
+        }
+        BlueArray.instances.clear();
     }
 
     private void soundPause() {

@@ -6,7 +6,6 @@ import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.temporalmodifiers.DeathChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
-import gamecontent.MyPlayer;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
 
@@ -42,7 +41,7 @@ public class PlayerStats extends Stats {
         player.addChanger(death);
         player.knockBack(20, 8, attacker);
         death.start();
-        ((MyPlayer) player).getGUI().deactivate();
+//        ((MyPlayer) player).getGUI().deactivate();
         System.out.println(player.getName() + " zginał.");
     }
 
@@ -52,28 +51,32 @@ public class PlayerStats extends Stats {
 //        if (health <= 900) {
 //            System.out.println("____________R.I.P.___________");
 //        }
-        ((MyPlayer) player).getGUI().activateLifeIndicator();
+//        ((MyPlayer) player).getGUI().activateLifeIndicator();
     }
 
     @Override
     public void reactionWhileProtect(InteractiveResponse response) {
-        if (energy < 20) {
-            int normalHurt = 0;
-            switch (response.getDirection()) {
-                case FRONT:
-                    normalHurt = Math.round(response.getPixels() / defence);
-                    break;
-                case BACK:
-                    normalHurt = Math.round(response.getPixels() / (defence * backDefenceModifier));
-                    break;
-                case SIDE:
-                    normalHurt = Math.round(response.getPixels() / (defence * sideDefenceModifier));
-                    break;
-            }
-            float percent = energy / 20f;
-            hurt = Math.round((percent * hurt + (1 - percent) * normalHurt));
+        int normalHurt = 0;
+        switch (response.getDirection()) {
+            case FRONT:
+                normalHurt = Math.round(response.getPixels() / defence);
+                break;
+            case BACK:
+                normalHurt = Math.round(response.getPixels() / (defence * backDefenceModifier));
+                break;
+            case SIDE:
+                normalHurt = Math.round(response.getPixels() / (defence * sideDefenceModifier));
+                break;
         }
-        decreaseEnergy(20);
+        float energyToLife = 3f;
+        decreaseEnergy(energyToLife * normalHurt);
+        if (energy < energyToLife * normalHurt) {
+            float percent = energy / (energyToLife * normalHurt);
+            hurt = Math.round((percent * hurt + (1 - percent) * normalHurt));
+            if (hurt > normalHurt) {
+                hurt = normalHurt;
+            }
+        }
     }
 
     public void decreaseEnergy(float amount) {
@@ -81,7 +84,7 @@ public class PlayerStats extends Stats {
         if (energy <= 0) {
             energy = 0;
         }
-        ((MyPlayer) player).getGUI().activateEnergyIndicator();
+//        ((MyPlayer) player).getGUI().activateEnergyIndicator();
     }
 
     public void increaseEnergy(float amount) {
@@ -89,7 +92,7 @@ public class PlayerStats extends Stats {
             energy += amount;
             if (energy >= maxEnergy) {
                 energy = maxEnergy;
-                ((MyPlayer) player).getGUI().activateEnergyIndicator();
+//                ((MyPlayer) player).getGUI().activateEnergyIndicator();
             }
         }
     }

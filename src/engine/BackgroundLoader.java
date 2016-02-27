@@ -3,6 +3,9 @@ package engine;
 import engine.utilities.ErrorHandler;
 import game.Game;
 import game.Settings;
+import gamecontent.environment.Bush;
+import gamecontent.environment.GrassClump;
+import gamecontent.environment.Tree;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.GLContext;
@@ -196,7 +199,7 @@ public abstract class BackgroundLoader {
     }
 
     public boolean allLoaded() {
-        boolean allLoaded = list1.isEmpty() && list2.isEmpty();
+        boolean allLoaded = list1.isEmpty() && list2.isEmpty() && Tree.allGenerated() && Bush.allGenerated() && GrassClump.allGenerated();
         if (!firstLoaded && allLoaded) {
             firstLoaded = true;
         }
