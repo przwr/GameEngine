@@ -117,13 +117,9 @@ public abstract class BackgroundLoader {
                 }
             } else if (list1.isEmpty() && list2.isEmpty() && Settings.sounds != null) {
                 unloadTextures();
-                if (base == null) {
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                    }
-                } else {
-                    unloadAllTextures();
+                try {
+                    Thread.sleep(3600000);
+                } catch (InterruptedException e) {
                 }
             }
             firstActive = !firstActive;

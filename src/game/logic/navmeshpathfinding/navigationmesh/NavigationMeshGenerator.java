@@ -49,11 +49,8 @@ public class NavigationMeshGenerator {
     private static Line tempLine1, tempLine2, tempLine3, currentLine;
     private static Triangle currentTriangle;
     private static NeighbourTriangles neighbours;
-    private static Figure figure;
-    private static RoundRectangle round;
     private static boolean intersects, inline, changed, previous, next, linePrevious, lineNext;
     private static int sharedPoints;
-    private static NavigationMesh navigationMesh;
 
 
     public static NavigationMesh generateNavigationMesh(Tile[] tiles, Set<Block> blocks, int xArea, int yArea) {
@@ -65,8 +62,7 @@ public class NavigationMeshGenerator {
             connectPointsAndFindShiftingDirections();
             solveLines();
             createTriangles();
-            generateNavigationMesh();
-            return navigationMesh;
+            return generateNavigationMesh();
         }
 
         return null;
@@ -167,18 +163,18 @@ public class NavigationMeshGenerator {
         int xA = xArea * X_IN_TILES;
         int yA = yArea * Y_IN_TILES;
         blocks.stream().forEach((block) -> {
-            figure = block.getCollision();
-            setXSTemp(xA);
-            setYSTemp(yA);
-            setXETemp(xA);
-            setYETemp(yA);
+            Figure figure = block.getCollision();
+            setXSTemp(figure, xA);
+            setYSTemp(figure, yA);
+            setXETemp(figure, xA);
+            setYETemp(figure, yA);
             setCollisionSpotsFromBlocks();
             checkBoundsRange();
             findBoundsFromBlocks();
         });
     }
 
-    private static void setXSTemp(int xA) {
+    private static void setXSTemp(Figure figure, int xA) {
         xStartTemp = (figure.getX() / Place.tileSize);
         if (xStartTemp < xA) {
             xStartTemp = 0;
@@ -189,7 +185,7 @@ public class NavigationMeshGenerator {
         }
     }
 
-    private static void setYSTemp(int yA) {
+    private static void setYSTemp(Figure figure, int yA) {
         yStartTemp = (figure.getY() / Place.tileSize);
         if (yStartTemp < yA) {
             yStartTemp = 0;
@@ -200,7 +196,7 @@ public class NavigationMeshGenerator {
         }
     }
 
-    private static void setXETemp(int xA) {
+    private static void setXETemp(Figure figure, int xA) {
         xETemp = (figure.getXEnd() / Place.tileSize);
         if (xETemp < xA) {
             xETemp = 0;
@@ -211,7 +207,7 @@ public class NavigationMeshGenerator {
         }
     }
 
-    private static void setYETemp(int yA) {
+    private static void setYETemp(Figure figure, int yA) {
         yETemp = (figure.getYEnd() / Place.tileSize);
         if (yETemp < yA) {
             yETemp = 0;
@@ -336,7 +332,7 @@ public class NavigationMeshGenerator {
         clearDiagonal();
         blocks.stream().forEach((block) -> {
             if (block.getCollision() instanceof RoundRectangle) {
-                round = (RoundRectangle) block.getCollision();
+                RoundRectangle round = (RoundRectangle) block.getCollision();
                 for (int i = 0; i < 4; i++) {
                     if (round.isCornerPushed(i) && (round.isCornerTriangular(i) || round.isCornerConcave(i))) {
                         if (shouldCorrect(i, round)) {
@@ -850,15 +846,15 @@ public class NavigationMeshGenerator {
         return -EPSILON <= number && number <= 1 + EPSILON;
     }
 
-    private static void generateNavigationMesh() {
+    private static NavigationMesh generateNavigationMesh() {
         linesToCheck.clear();
-        navigationMesh = null;
-        createNavigationMeshWithFirstTriangle(pollFirstTriangle());
-        addConnectedTriangles();
+        NavigationMesh navigationMesh = createNavigationMeshWithFirstTriangle(pollFirstTriangle());
+        addConnectedTriangles(navigationMesh);
         while (triangles.size() > 1) {
-            addLooseTriangle(pollFirstTriangle());
-            addConnectedTriangles();
+            addLooseTriangle(navigationMesh, pollFirstTriangle());
+            addConnectedTriangles(navigationMesh);
         }
+        return navigationMesh;
     }
 
     private static Triangle pollFirstTriangle() {
@@ -871,24 +867,26 @@ public class NavigationMeshGenerator {
         return triangle;
     }
 
-    private static void createNavigationMeshWithFirstTriangle(Triangle firstTriangle) {
+    private static NavigationMesh createNavigationMeshWithFirstTriangle(Triangle firstTriangle) {
+        NavigationMesh navigationMesh = null;
         if (firstTriangle != null) {
-            navigationMesh = new NavigationMesh(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2), new
-                    ArrayList<>(pointsToConnect), shiftDirections, spots);
+            navigationMesh = new NavigationMesh(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1),
+                    firstTriangle.getPointFromNode(2), new ArrayList<>(pointsToConnect), shiftDirections, spots);
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(0), firstTriangle.getPointFromNode(1)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(1), firstTriangle.getPointFromNode(2)));
             linesToCheck.add(new Line(firstTriangle.getPointFromNode(2), firstTriangle.getPointFromNode(0)));
         }
+        return navigationMesh;
     }
 
-    private static void addLooseTriangle(Triangle triangle) {
+    private static void addLooseTriangle(NavigationMesh navigationMesh, Triangle triangle) {
         navigationMesh.addLooseTriangle(triangle);
         linesToCheck.add(new Line(triangle.getPointFromNode(0), triangle.getPointFromNode(1)));
         linesToCheck.add(new Line(triangle.getPointFromNode(1), triangle.getPointFromNode(2)));
         linesToCheck.add(new Line(triangle.getPointFromNode(2), triangle.getPointFromNode(0)));
     }
 
-    private static void addConnectedTriangles() {
+    private static void addConnectedTriangles(NavigationMesh navigationMesh) {
         if (navigationMesh != null) {
             while (!linesToCheck.isEmpty()) {
                 currentLine = poll(linesToCheck);

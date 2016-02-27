@@ -5,12 +5,16 @@
  */
 package engine.utilities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author przemek
  */
 public class PointContainer {
 
     private static final byte INITIAL_POINT_COUNT = 8;
+    public static List<PointContainer> instances = new ArrayList<>();
     private static int caps, maxSize;
     private Point[] points;
     private int pointCount;
@@ -20,6 +24,7 @@ public class PointContainer {
         for (int i = 0; i < INITIAL_POINT_COUNT; i++) {
             points[i] = new Point();
         }
+        instances.add(this);
     }
 
     public PointContainer(int pointCount) {
@@ -27,6 +32,14 @@ public class PointContainer {
         for (int i = 0; i < pointCount; i++) {
             points[i] = new Point();
         }
+        instances.add(this);
+    }
+
+    public static void cleanUp() {
+        for (PointContainer pc : instances) {
+            pc.clearReally();
+        }
+        instances.clear();
     }
 
     public void add(int x, int y) {
@@ -89,7 +102,6 @@ public class PointContainer {
         pointCount = 0;
     }
 
-
     public void clearReally() {
         for (int i = 0; i < points.length; i++) {
             points[i] = null;
@@ -112,4 +124,5 @@ public class PointContainer {
         string += "]";
         return string;
     }
+
 }

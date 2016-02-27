@@ -4,16 +4,16 @@ import collision.Figure;
 import collision.Rectangle;
 import collision.RoundRectangle;
 import game.place.Place;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import net.jodk.lang.FastMath;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.awt.geom.Line2D;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /*
@@ -21,6 +21,7 @@ import java.util.List;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
  * @author Wojtek
  */
@@ -611,7 +612,7 @@ public class Methods {
         StringSelection selection = new StringSelection(text);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
-    
+
     public static void print(Object... list) {
         String print = "";
         for (Object o : list) {
@@ -620,4 +621,13 @@ public class Methods {
         System.out.println(print);
     }
 
+
+    public static void gc() {
+        Object obj = new Object();
+        WeakReference ref = new WeakReference<Object>(obj);
+        obj = null;
+        while (ref.get() != null) {
+            System.gc();
+        }
+    }
 }

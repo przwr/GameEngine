@@ -29,10 +29,10 @@ public class Renderer {
     private static final int[] xStart = new int[7], xEnd = new int[7], yStart = new int[7], yEnd = new int[7];
     private static final drawBorder[] borders = new drawBorder[5];
     private static final resetOrthogonal[] orthos = new resetOrthogonal[5];
+    public static Place place;
     private static int displayWidth, displayHeight, halfDisplayWidth, halfDisplayHeight;
     private static FrameBufferObject frame;
     private static boolean visible;
-    private static Place place;
 
     private Renderer() {
     }

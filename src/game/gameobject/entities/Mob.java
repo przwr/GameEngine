@@ -169,9 +169,11 @@ public abstract class Mob extends Entity {
             pathStrategy.findPath(this, pathData, target.getX(), target.getY());
             if (this.getMaxSpeed() > 4) {
                 changeSpeed(pathData.getXSpeed(), pathData.getYSpeed());
-            } else {
+            } else if (pathData.getXSpeed() != 0 && pathData.getYSpeed() != 0) {
                 xSpeed = pathData.getXSpeed();
                 ySpeed = pathData.getYSpeed();
+            } else {
+                charge();
             }
         }
     }

@@ -231,7 +231,6 @@ public class MyGame extends Game {
         } else {
             place = new MyPlace(this, 64);
         }
-        Drawer.place = place;
         place.players = new GameObject[4];
         place.playersCount = playersCount;
         Place.progress = 2;

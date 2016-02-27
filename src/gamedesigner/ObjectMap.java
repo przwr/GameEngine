@@ -507,7 +507,7 @@ public class ObjectMap extends Map {
             if (cameraYStart < (yTiles + 1) * tileSize && cameraYEnd > yTiles * tileSize) {
                 for (int xTiles = 0; xTiles < widthInTiles; xTiles++) {
                     if (cameraXStart < (xTiles + 1) * tileSize && cameraXEnd > xTiles * tileSize) {
-                        tempTile = areas[i].getTile(xTiles, yTiles);
+                        Tile tempTile = areas[i].getTile(xTiles, yTiles);
                         if (tempTile != null && tempTile.isVisible()) {
                             tempTile.renderSpecific(cameraXOffEffect, cameraYOffEffect, xTiles * tileSize, yTiles * tileSize);
                         }

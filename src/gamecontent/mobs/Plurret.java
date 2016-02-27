@@ -28,7 +28,7 @@ public class Plurret extends Mob {
 
     private Animation animation;
     private int seconds = 0, max = 5, highLevel = 350, lowLevel = 334;
-    private Delay rest = Delay.createInSeconds(4);          //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createInSeconds(3);          //TODO - te wartości losowe i zależne od poziomu trudności
     private ActionState idle, run_away, wander;
     private RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
     private boolean rising = true;
@@ -76,7 +76,7 @@ public class Plurret extends Mob {
                     goTo(destination.getX() > 0 ? destination : secondaryDestination);
                 }
                 if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(),
-                        secondaryDestination.getY()) < hearRange2 / 4)) {
+                        secondaryDestination.getY()) < hearRange2 / 4 || closeEnemies.isEmpty())) {
                     state = idle;
                     secondaryDestination.set(-1, -1);
                     destination.set(-1, -1);
