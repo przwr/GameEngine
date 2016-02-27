@@ -15,6 +15,7 @@ import game.place.Place;
 import game.place.fbo.FrameBufferObject;
 import game.place.fbo.MultiSampleFrameBufferObject;
 import game.place.fbo.RegularFrameBufferObject;
+import gamedesigner.ObjectPlace;
 import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
@@ -127,7 +128,11 @@ public class MyGUI extends GUIObject {
 //                Prawy Dolny:
 //                glTranslatef(0, Display.getHeight() - Math.round(2 * Place.tileSize * Settings.nativeScale), 0);
 
-        glTranslatef(border / 2, border / 2, 0);
+        if (place instanceof ObjectPlace) {
+            glTranslatef(border / 2 + 5 * Place.tileSize, border / 2, 0);
+        } else {
+            glTranslatef(border / 2, border / 2, 0);
+        }
         Drawer.setCentralPoint();
         renderLife(size, border, innerSize);
         Drawer.returnToCentralPoint();
@@ -145,7 +150,6 @@ public class MyGUI extends GUIObject {
         attackIcons.renderPiece(firstAttackType);
         glTranslatef(0, size, 0);
         attackIcons.renderPiece(secondAttackType);
-
 
         Drawer.returnToCentralPoint();
         renderPairArrow(size, border);

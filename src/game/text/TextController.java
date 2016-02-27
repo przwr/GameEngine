@@ -9,6 +9,7 @@ import engine.Main;
 import engine.systemcommunication.Time;
 import engine.utilities.Drawer;
 import engine.utilities.Executive;
+import engine.utilities.Methods;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Entity;
 import game.place.Place;
@@ -290,6 +291,7 @@ public class TextController extends GUIObject {
                                                             lineNum, color, font);
                                                     tmp.addEvent(lastEvent);
                                                 }
+                                                //Methods.print(color.r, color.g, color.b);
                                                 lastEvent = generateEvent(type, "", lastEvent,
                                                         lineNum, color, font);
                                                 ((TextRenderer) lastEvent).setAlterer(line.substring(lineIndex + 3, j));
@@ -363,7 +365,9 @@ public class TextController extends GUIObject {
                                         }
                                         for (int j = lineIndex + 3; j < line.length(); j++) {
                                             if (line.charAt(j) == '$') {
+                                                //Methods.print("zmiana z", color.r, color.g, color.b);
                                                 color = colors.get(Integer.parseInt(line.substring(lineIndex + 3, j), 16));
+                                                //Methods.print("na", color.r, color.g, color.b);
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
                                                 last = lineIndex;
                                                 break;
@@ -789,7 +793,6 @@ public class TextController extends GUIObject {
 
     private void handleEvent(TextRow te) {
         if (te.rowNum >= deltaLines && te.rowNum <= deltaLines + rows) {
-            te.changers((int) index);
             te.event((int) index);
         }
         te.setEnd();
@@ -948,34 +951,29 @@ public class TextController extends GUIObject {
 
         private final int rowNum;
         private final ArrayList<TextEvent> list;
-        private final ArrayList<TextEvent> changers;
         private int end;
         private boolean ending;
 
         public TextRow(int rowNum) {
             this.rowNum = rowNum;
             list = new ArrayList<>();
-            changers = new ArrayList<>();
             end = -1;
         }
 
         public void initialize() {
-            changers.stream().forEach((te) -> {
-                ((PropertyChanger) te).done = false;
+            list.stream().forEach((te) -> {
+                if (te instanceof PropertyChanger) {
+                    ((PropertyChanger) te).done = false;
+                }
             });
         }
 
         public void setEnd() {
-            this.end = Math.max((list.size() > 0 ? list.get(list.size() - 1).getEnd() : 0),
-                    (changers.size() > 0 ? changers.get(changers.size() - 1).getEnd() : 0));
+            this.end = list.size() > 0 ? list.get(list.size() - 1).getEnd() : 0;
         }
 
         public void addEvent(TextEvent te) {
-            /*if (te instanceof PropertyChanger) {
-                changers.add(te);
-            } else {*/
-                list.add(te);
-            /*}*/
+            list.add(te);
         }
 
         public boolean isEnding(int i) {
@@ -993,12 +991,6 @@ public class TextController extends GUIObject {
 
         public void event(int start) {
             for (TextEvent te : list) {
-                te.event(start, rowNum);
-            }
-        }
-
-        public void changers(int start) {
-            for (TextEvent te : changers) {
                 te.event(start, rowNum);
             }
         }

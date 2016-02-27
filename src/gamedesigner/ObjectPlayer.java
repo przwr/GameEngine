@@ -161,6 +161,7 @@ public class ObjectPlayer extends Player {
         if (objPlace.areKeysUsable() && !paused) {
             updateMovement();
 
+            Place.currentCamera.setCameraSpeed(20);
             if (camera != null) {
                 camera.setCameraSpeed(20);
                 camera.updateSmooth();
