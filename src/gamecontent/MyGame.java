@@ -19,6 +19,7 @@ import game.logic.maploader.MapLoaderModule;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
 import game.place.cameras.PlayersCamera;
+import game.place.fbo.FrameBufferObject;
 import game.place.map.Map;
 import game.text.FontHandler;
 import gamecontent.environment.Bush;
@@ -307,6 +308,7 @@ public class MyGame extends Game {
         Display.sync(60);
         Display.update();
     }
+
     @Override
     public void showLoading(int progress) {
         String loading = Settings.language.menu.Loading;
@@ -471,6 +473,7 @@ public class MyGame extends Game {
         Place.currentCamera = null;
         Renderer.place = null;
         Main.restartBackGroundLoader();
+        FrameBufferObject.cleanUp();
         Methods.gc();
     }
 

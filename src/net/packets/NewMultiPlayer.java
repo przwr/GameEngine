@@ -34,28 +34,28 @@ public class NewMultiPlayer {
         this.y = pl.getY();
     }
 
-    public short getMapId() {
+    public synchronized short getMapId() {
         return mapId;
     }
 
-    public byte getId() {
+    public synchronized byte getId() {
         return id;
     }
 
-    public String getName() {
+    public synchronized String getName() {
         return name;
     }
 
-    public void setPosition(int x, int y) {
+    public synchronized void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return x;
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return y;
     }
 }

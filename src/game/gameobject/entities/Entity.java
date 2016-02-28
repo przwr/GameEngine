@@ -134,7 +134,7 @@ public abstract class Entity extends GameObject {
         return knockBack;
     }
 
-    public void updateSoft() {
+    public synchronized void updateSoft() {
         try {
             if (canUpdate()) {
                 if (inSameUpdate()) {
@@ -181,7 +181,7 @@ public abstract class Entity extends GameObject {
         }
     }
 
-    public void updateHard() {
+    public synchronized void updateHard() {
         try {
             if (canUpdate()) {
                 if (inSameUpdate()) {

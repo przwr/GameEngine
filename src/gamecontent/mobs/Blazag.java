@@ -359,7 +359,7 @@ public class Blazag extends Mob {
     }
 
     @Override
-    protected void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;
@@ -384,7 +384,7 @@ public class Blazag extends Mob {
     }
 
     @Override
-    protected void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
+    protected synchronized void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;

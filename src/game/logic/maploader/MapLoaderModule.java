@@ -85,7 +85,7 @@ public class MapLoaderModule implements Runnable {
         }
     }
 
-    public void requestMap(String name, WarpPoint warp) {
+    public synchronized void requestMap(String name, WarpPoint warp) {
         pause = true;
         Iterable<Integer> areas = null;
         MapLoadContainer workingList = firstActive ? list2 : list1;
@@ -95,7 +95,7 @@ public class MapLoaderModule implements Runnable {
         pause = false;
     }
 
-    public void updateList(Set<Map> tempMaps) {
+    public synchronized void updateList(Set<Map> tempMaps) {
         pause = true;
         MapLoadContainer workingList = firstActive ? list2 : list1;
         for (Map map : tempMaps) {

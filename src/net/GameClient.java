@@ -126,12 +126,12 @@ public class GameClient {
         }
     }
 
-    public void Close() {
+    public synchronized void Close() {
         client.stop();
         client.close();
     }
 
-    private void cleanUp() {
+    private synchronized void cleanUp() {
         isConnected = false;
         Close();
         game.game.endGame();
@@ -144,7 +144,7 @@ public class GameClient {
         ErrorHandler.exception(e);
     }
 
-    private void cleanUp(String msg) {
+    private synchronized void cleanUp(String msg) {
         isConnected = false;
         Close();
         game.game.endGame();

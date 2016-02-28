@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.Settings;
@@ -13,7 +14,6 @@ import game.gameobject.entities.Player;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.cameras.Camera;
-import game.place.fbo.FrameBufferObject;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
@@ -26,36 +26,31 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyGUI extends GUIObject {
 
-    private final Color color;
     private SpriteSheet attackIcons, itemIcons;
     private int firstAttackType, secondAttackType;
-    private float alpha, lifeAlpha, energyAlpha;
+    private float lifeAlpha;
     private int emptySlot;
-    private FrameBufferObject frameBufferObject;
-    private Color lifeColor = new Color(0f, 0f, 0f), energyColor = new Color(0f, 0f, 1f);
-    private boolean lowHealth, riseLifeAlpha, on = true;
+    private float lastLife, lastEnergy, energyNeeded;
+    private boolean riseLifeAlpha, on = true;
+    private Delay lifeDelay = Delay.createInSeconds(1), energyDelay = Delay.createInSeconds(1), energyLowDelay = Delay.createInMilliseconds(250);
 
     public MyGUI(String name, Place place) {
         super(name, place);
-        color = new Color(Color.white);
-        alpha = 0f;
         emptySlot = 0;
         firstAttackType = emptySlot;
         secondAttackType = emptySlot;
         attackIcons = place.getSpriteSheetSetScale("attackIcons", "");
         itemIcons = place.getSpriteSheetSetScale("itemIcons", "");
+        lifeDelay.terminate();
+        energyDelay.terminate();
+        energyLowDelay.terminate();
     }
 
     @Override
     public void setPlayer(Player player) {
         super.setPlayer(player);
-//        setFrameBuffer();
     }
 
-    private void setFrameBuffer() {
-//        frameBufferObject = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(player.getCollision().getWidth(),
-//                player.getCollision().getHeight()) : new RegularFrameBufferObject(player.getCollision().getWidth(), player.getCollision().getHeight());
-    }
 
     public void changeAttackIcon(int first, int second) {
         if (first < 0) {
@@ -68,50 +63,14 @@ public class MyGUI extends GUIObject {
         } else {
             secondAttackType = second + 1;
         }
-//        activate();
     }
 
-//    public void activate() {
-//        alpha = 3f;
-//        energyAlpha = 3f;
-//        if (!lowHealth) {
-//            lifeAlpha = 3f;
-//        }
-//    }
-
-//    public void deactivate() {
-//        alpha = 0f;
-//        energyAlpha = 0f;
-//        if (!lowHealth) {
-//            lifeAlpha = 0f;
-//        }
-//    }
-
-//    public void activateLifeIndicator() {
-//        if (!lowHealth) {
-//            lifeAlpha = 3f;
-//        }
-//    }
-
-    public void activateEnergyIndicator() {
-        energyAlpha = 3f;
-    }
 
     @Override
     public void render(int xEffect, int yEffect) {
         if (on) {
-            lowHealth = player.getStats().getHealth() <= player.getStats().getMaxHealth() * 0.4f;
-//            updateAlpha();
             calculateLifeAlpha();
-//            glPushMatrix();
-//            glTranslatef((int) ((player.getX()) * Place.getCurrentScale() - frameBufferObject.getWidth() / 2 + xEffect),
-//                    (int) ((player.getY() - player.getFloatHeight()) * Place.getCurrentScale() + yEffect - frameBufferObject.getHeight() / 2), 0);
-//            renderGroundGUI();
-//            glPopMatrix();
-
-//            if (on) {
             renderRegularGUI();
-//            }
             Drawer.refreshColor();
         }
     }
@@ -121,7 +80,6 @@ public class MyGUI extends GUIObject {
         Camera cam = Place.currentCamera;
         if (change == 1 && (cam.getWidth() < Display.getWidth() || cam.getHeight() < Display.getHeight())) {
             change = 0.75f;
-//            attackIcons = place.getSpriteSheetSetScale("attackIcons", "", 0.75);
         }
         int size = (int) (Place.tileSize * change);
         int border = (int) (12 * change);
@@ -130,7 +88,6 @@ public class MyGUI extends GUIObject {
         if (player.isNotFirst()) {
             glTranslatef(0, cam.getHeight() - size * 2 - border * 3, 0);
         }
-
 //        Bez Translate Lewy Górny
 //        Prawy Górny:
 //        glTranslatef(Display.getWidth() - size * 2 - border * 3, 0, 0);
@@ -142,18 +99,40 @@ public class MyGUI extends GUIObject {
         Drawer.setCentralPoint();
         renderLife(size, border, innerSize);
         renderEnergy(size, border, innerSize);
-//        Drawer.translate(size / 2 - border - border / 6, size / 2 - border - border / 6);
-//        Drawer.setColorStatic(Color.white);
-//        itemIcons.renderPiece(0);
-//        Drawer.translate(size - border - border/6, 0);
-//        itemIcons.renderPiece(0);
-//        Drawer.translate(-size + border + border/6, size - border - border/6);
-//        itemIcons.renderPiece(1);
-//        Drawer.translate(size - border - border/6, 0);
-//        itemIcons.renderPiece(0);
+        renderIcons(size, border, change);
+        renderPairArrow(size, border);
+        glPopMatrix();
+    }
+
+    private void renderIcons(int size, int border, float change) {
+        Drawer.setColorStatic(Color.white);
+        Drawer.translate(size / 2 + border, 2 * border / 3);
+        if (change != Settings.nativeScale)
+            glScalef(change, change, change);
+        itemIcons.renderPiece(0);
+        if (change != Settings.nativeScale)
+            glScalef(1 / change, 1 / change, 1 / change);
+        Drawer.translate(size / 2 + border / 3, size / 2 + border / 3);
+        if (change != Settings.nativeScale)
+            glScalef(change, change, change);
+        itemIcons.renderPiece(0);
+        if (change != Settings.nativeScale)
+            glScalef(1 / change, 1 / change, 1 / change);
+        Drawer.translate(-size / 2 - border / 3, size / 2 + border / 3);
+        if (change != Settings.nativeScale)
+            glScalef(change, change, change);
+        itemIcons.renderPiece(1);
+        if (change != Settings.nativeScale)
+            glScalef(1 / change, 1 / change, 1 / change);
+        Drawer.translate(-size / 2 - border / 3, -size / 2 - border / 3);
+        if (change != Settings.nativeScale)
+            glScalef(change, change, change);
+        itemIcons.renderPiece(0);
+        if (change != Settings.nativeScale)
+            glScalef(1 / change, 1 / change, 1 / change);
         Drawer.returnToCentralPoint();
 
-        int r = size / 2 - border / 3;
+        int r = size / 2 - border / 3 - border / 6;
         Drawer.setColorStatic(Color.black);
         Drawer.drawRing(size + border, size / 2 + border - border / 3, r, border / 3, size);
         Drawer.returnToCentralPoint();
@@ -164,7 +143,6 @@ public class MyGUI extends GUIObject {
         Drawer.drawRing(size + size / 2 + border + border / 3, size + border, r, border / 3, size);
         Drawer.returnToCentralPoint();
 
-//
         Drawer.setColorStatic(Color.black);
         Drawer.drawRing(size + border, size + border, size + border, border / 3, size);
         Drawer.returnToCentralPoint();
@@ -173,10 +151,8 @@ public class MyGUI extends GUIObject {
 
 //        Jeśli Prawy
 //        glTranslatef(-size * 3 - border * 2, 0, 0);
-
 //        Jeśli Lewy
         glTranslatef(size / 2, 0, 0);
-
 
         glTranslatef(2 * (size + border), border, 0);
         Drawer.setColorStatic(Color.white);
@@ -193,7 +169,6 @@ public class MyGUI extends GUIObject {
 //        Jeśli Prawy
         glTranslatef(-size / 2, 0, 0);
 
-
         Drawer.setColorStatic(Color.white);
         if (change != Settings.nativeScale)
             glScalef(change, change, change);
@@ -203,17 +178,6 @@ public class MyGUI extends GUIObject {
         Drawer.setColorStatic(Color.black);
         Drawer.drawRing(size / 2, size / 2, size / 2 - border / 3, border / 3, size);
         Drawer.returnToCentralPoint();
-
-
-        renderPairArrow(size, border);
-//        glTranslatef(size / 2 + border, border, 0);
-
-
-        glPopMatrix();
-    }
-
-    private void renderAttacks(int size, int border, int innerSize) {
-
     }
 
     private void renderLife(int size, int border, int innerSize) {
@@ -225,24 +189,21 @@ public class MyGUI extends GUIObject {
         }
         startAngle = 90;
         endAngle = lifePercentageAngle + 90;
-        int precision = (size * lifePercentageAngle) / halfLifeAngle;
-        if (precision == 0) {
-            precision = 1;
-        }
         Color c = new Color(0, 0, 0);
-        Drawer.setPercentToRGBColor((halfLifeAngle - lifePercentageAngle) * 100 / halfLifeAngle, c);
-        c.a = 0.75f;
+        c.a = 1f;
         float blink = (float) FastMath.sqrt(lifeAlpha);
-        if (blink < 1) {
-            c.r *= blink;
-            c.g *= blink;
-            c.b *= blink;
-        }
-        Drawer.setColorStatic(new Color(0.5f * blink, 0.1f * blink, 0.1f * blink, 0.75f));
-        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 90, 270, size);
+        Drawer.setColorStatic(new Color(1f * blink, 0.9f * blink, 0.9f * blink, 0.75f));
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 90, 270, size / 2);
         Drawer.returnToCentralPoint();
-        Drawer.setColorStatic(c);
-        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, precision);
+        if (!lifeDelay.isOver()) {
+            float alpha = (lifeDelay.getDifference() / (float) lifeDelay.getLength());
+            Drawer.setColorStatic(new Color(1f * blink, 0.4f * blink, 0.4f * blink, alpha));
+            int last = Methods.roundDouble(lastLife * halfLifeAngle / ((PlayerStats) player.getStats()).getMaxEnergy()) + 90;
+            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, last, size / 2);
+            Drawer.returnToCentralPoint();
+        }
+        Drawer.setColorStatic(new Color(0.6f * blink, 0.1f * blink, 0.1f * blink));
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, size / 2);
         Drawer.returnToCentralPoint();
     }
 
@@ -256,15 +217,27 @@ public class MyGUI extends GUIObject {
         }
         startAngle = 450 - energyPercentageAngle;
         endAngle = 450;
-        int precision = (size * energyPercentageAngle) / halfEnergyAngle;
-        if (precision == 0) {
-            precision = 1;
+        Drawer.setColorStatic(new Color(0.8f, 0.8f, 1f, 0.75f));
+        if (energyDelay.isOver() && !energyLowDelay.isOver()) {
+            Drawer.setColorStatic(new Color(0.9f, 0.8f, 0.2f));
         }
-        Drawer.setColorStatic(new Color(0.3f, 0.6f, 1f, 0.75f));
-        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 270, 450, size);
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 270, 450, size / 2);
         Drawer.returnToCentralPoint();
-        Drawer.setColorStatic(new Color(0.1f, 0.2f, 0.8f, 0.75f));
-        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, precision);
+        if (energyDelay.isOver() && !energyLowDelay.isOver()) {
+            Drawer.setColorStatic(new Color(0.45f, 0.4f, 0.1f));
+            int last = 450 - Methods.roundDouble(energyNeeded * halfEnergyAngle / ((PlayerStats) player.getStats()).getMaxEnergy());
+            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, last, endAngle, size / 2);
+            Drawer.returnToCentralPoint();
+        }
+        if (!energyDelay.isOver()) {
+            float alpha = (energyDelay.getDifference() / (float) energyDelay.getLength());
+            Drawer.setColorStatic(new Color(0.4f, 0.4f, 1f, alpha));
+            int last = 450 - Methods.roundDouble(lastEnergy * halfEnergyAngle / ((PlayerStats) player.getStats()).getMaxEnergy());
+            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, last, endAngle, size / 2);
+            Drawer.returnToCentralPoint();
+        }
+        Drawer.setColorStatic(new Color(0.1f, 0.2f, 0.8f));
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, size / 2);
         Drawer.returnToCentralPoint();
     }
 
@@ -291,41 +264,6 @@ public class MyGUI extends GUIObject {
         Drawer.returnToCentralPoint();
     }
 
-    private void updateAlpha() {
-//        color.a = alpha;
-//        if (alpha > 0) {
-//            alpha -= 0.02f;
-//        } else {
-//            alpha = 0;
-//        }
-//        if (!lowHealth) {
-//            if (lifeAlpha > 0) {
-//                lifeAlpha -= 0.02f;
-//            } else {
-//                lifeAlpha = 0;
-//            }
-//    }
-//        if (energyAlpha > 0) {
-//            energyAlpha -= 0.02f;
-//        } else {
-//            energyAlpha = 0;
-//        }
-    }
-
-    private void renderGroundGUI() {
-        glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_COLOR);
-        calculateLifeAlpha();
-        if (lifeAlpha > 0) {
-            Drawer.setColorStatic(lifeColor);
-            frameBufferObject.renderPiece(0, 0, 0, 0, frameBufferObject.getWidth() / 2, frameBufferObject.getHeight());
-        }
-        if (energyAlpha > 0) {
-            energyColor.a = energyAlpha;
-            Drawer.setColorStatic(energyColor);
-            frameBufferObject.renderPiece(0, 0, frameBufferObject.getWidth() / 2, 0, frameBufferObject.getWidth(), frameBufferObject.getHeight());
-        }
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
 
     private void calculateLifeAlpha() {
         if (player.getStats().getHealth() <= player.getStats().getMaxHealth() * 0.2f) {
@@ -340,24 +278,10 @@ public class MyGUI extends GUIObject {
                     riseLifeAlpha = true;
                 }
             }
-//                lifeColor.a = lifeAlpha;
         } else {
-//                lifeColor.a = 1f;
             lifeAlpha = 1f;
         }
     }
-
-//    public float getAlpha() {
-//        return alpha;
-//    }
-//
-//    public Color getLifeColor() {
-//        return lifeColor;
-//    }
-//
-//    public Color getEnergyColor() {
-//        return energyColor;
-//    }
 
     public boolean isOn() {
         return on;
@@ -367,7 +291,19 @@ public class MyGUI extends GUIObject {
         this.on = on;
     }
 
-//    public FrameBufferObject getFrameBufferObject() {
-//        return frameBufferObject;
-//    }
+    public void activateEnergyHistory(float last) {
+        lastEnergy = last;
+        energyDelay.start();
+    }
+
+    public void activateLifeHistory(float last) {
+        lastLife = last;
+        lifeDelay.start();
+    }
+
+    public void activateLowEnergy(float need) {
+        energyNeeded = need;
+        energyLowDelay.start();
+    }
+
 }
