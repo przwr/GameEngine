@@ -14,6 +14,7 @@ import org.newdawn.slick.util.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,8 +39,10 @@ public class SoundBase {
         fileList.stream().forEach((file) -> {
             String[] temp = file.getName().split("\\.");
             try {
-                Audio sound = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(file.getPath()));
+                InputStream stream = ResourceLoader.getResourceAsStream(file.getPath());
+                Audio sound = AudioLoader.getAudio("OGG", stream);
                 sounds.put(temp[0], new Sound(temp[0], sound));
+                stream.close();
             } catch (IOException e) {
                 ErrorHandler.error(e.toString());
             }

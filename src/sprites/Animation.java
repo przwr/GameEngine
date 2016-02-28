@@ -300,4 +300,15 @@ public class Animation implements Appearance {
             upToDate = true;
         }
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Animation && spriteSheet == ((Animation) o).spriteSheet;
+    }
+
+    @Override
+    public int hashCode() {
+        return 13 * spriteSheet.hashCode();
+    }
 }

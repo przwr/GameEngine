@@ -46,6 +46,10 @@ public class TextController extends GUIObject {
     private final ArrayList<Portrait> portraits;
     private final ArrayList<String> jumpPlacements;
     private final ArrayList<Color> colors;
+    private final ArrayList<Statement> statements;
+    private final ArrayList<Event> events;
+    private final ArrayList<Writer> writers;
+    private final int optimalWidth, optimalHeight;
     private Branch branch;
     private float index, speed, change, realSpeed, time;
     private int rows, deltaLines, rowsInPlace, speaker, portrait, expression, answer, jumpTo;
@@ -53,12 +57,6 @@ public class TextController extends GUIObject {
     private Entity[] locked;
     private String[] answerText;
     private String[] answerJump;
-
-    private final ArrayList<Statement> statements;
-    private final ArrayList<Event> events;
-    private final ArrayList<Writer> writers;
-
-    private final int optimalWidth, optimalHeight;
 
     public TextController(Place place) {
         super("TextController", place);
@@ -88,8 +86,10 @@ public class TextController extends GUIObject {
 
     public void startFromFile(String file) {
         if (!started) {
-            try (BufferedReader read = new BufferedReader(
-                    new InputStreamReader(new FileInputStream("res/text/" + file + ".dia"), StandardCharsets.UTF_8))) {
+            try {
+                FileInputStream stream = new FileInputStream("res/text/" + file + ".dia");
+                InputStreamReader sr = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                BufferedReader read = new BufferedReader(sr);
                 String line;
                 ArrayList<String> tmplist = new ArrayList<>();
                 while ((line = read.readLine()) != null) {
@@ -100,6 +100,9 @@ public class TextController extends GUIObject {
                     list[i] = tmplist.get(i);
                 }
                 startFromText(list);
+                read.close();
+                sr.close();
+                stream.close();
             } catch (IOException e) {
             }
         }
@@ -173,7 +176,7 @@ public class TextController extends GUIObject {
                     last = 0;
                     tmp = new TextRow(lineNum);
                     if (line.length() != 0) {
-                        for (lineIndex = 0; lineIndex < line.length();) {
+                        for (lineIndex = 0; lineIndex < line.length(); ) {
                             if (line.charAt(lineIndex) == '$') {
                                 String symbol = line.substring(lineIndex + 1, lineIndex + 3).toLowerCase();
                                 switch (symbol) {
@@ -728,7 +731,7 @@ public class TextController extends GUIObject {
 
         if (!question) {
             if (flushReady) {
-                Drawer.translate(-Place.tileHalf, (int) (5 * Math.sin((float) time / 30 * Math.PI)));
+                Drawer.translate(-Place.tileHalf, (int) (5 * Math.sin(time / 30 * Math.PI)));
                 frame.renderPiece(3, 0);
             }
             if (index >= branch.length && jumpTo < 0) {

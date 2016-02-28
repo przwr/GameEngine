@@ -60,7 +60,7 @@ public class PointedValue {
     public boolean equals(Object test) {
         if (test instanceof PointedValue) {
             PointedValue point = (PointedValue) test;
-            if (x == point.x && y == point.y) {
+            if (x == point.x && y == point.y && value == point.value) {
                 return true;
             }
         }
@@ -72,6 +72,7 @@ public class PointedValue {
         int hash = 7;
         hash = 79 * hash + this.x;
         hash = 79 * hash + this.y;
+        hash = 79 * hash + this.value;
         return hash;
     }
 

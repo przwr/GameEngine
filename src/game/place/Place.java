@@ -53,12 +53,12 @@ public abstract class Place extends ScreenPlace {
     public final ArrayList<Map> mapsToAdd1 = new ArrayList<>();
     public final ArrayList<Map> mapsToAdd2 = new ArrayList<>();
     public final Camera[] cameras = new Camera[3];
-    protected final SpriteBase sprites;
-    protected final SoundBase sounds;
     public Map loadingMap;
     public boolean changeSSMode, singleCamera, firstMapsToAddActive;
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int splitScreenMode, playersCount;
+    protected SpriteBase sprites;
+    protected SoundBase sounds;
     protected short mapIDCounter = 0;
     private Console console;
 
@@ -378,8 +378,11 @@ public abstract class Place extends ScreenPlace {
         mapsToAdd1.clear();
         mapsToAdd2.clear();
         tempMaps.clear();
-        sounds.cleanUp();
+        if (sounds != null)
+            sounds.cleanUp();
+        sounds = null;
         BackgroundLoader.base = sprites;
+        sprites = null;
         Main.backgroundLoader.unloadAllTextures();
     }
 

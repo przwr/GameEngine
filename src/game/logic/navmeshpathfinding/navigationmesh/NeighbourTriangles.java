@@ -33,4 +33,18 @@ class NeighbourTriangles {
         return size;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof NeighbourTriangles && triangles == ((NeighbourTriangles) o).triangles;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 83;
+        for (Triangle triangle : triangles) {
+            hash *= triangle.hashCode();
+        }
+        return hash;
+    }
 }

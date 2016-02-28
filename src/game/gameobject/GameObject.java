@@ -504,4 +504,19 @@ public abstract class GameObject {
     public void setWarp(WarpPoint warp) {
         this.warp = warp;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof GameObject && x == ((GameObject) o).x && y == ((GameObject) o).y && appearance == ((GameObject) o).appearance;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = Methods.roundDouble(83 * x + 17 * y);
+        if (appearance != null) {
+            hash += 13 * appearance.hashCode();
+        }
+        return hash;
+    }
 }

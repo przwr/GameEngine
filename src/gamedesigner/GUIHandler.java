@@ -6,10 +6,9 @@
 package gamedesigner;
 
 import engine.systemcommunication.IO;
-import engine.utilities.SimpleKeyboard;
 import engine.utilities.Drawer;
-import engine.utilities.ErrorHandler;
 import engine.utilities.Methods;
+import engine.utilities.SimpleKeyboard;
 import game.gameobject.GUIObject;
 import game.place.Place;
 import org.lwjgl.input.Keyboard;
@@ -44,45 +43,45 @@ public class GUIHandler extends GUIObject {
         }
     };
     private final String[] help = new String[]{
-        "H:", "Help",
-        "1 ... 4:", "Change mode",
-        "S:", "Save as",
-        "CTRL + S:", "QuickSave",
-        "L:", "Load object",
-        "CTRL + BACKSPACE:", "Clear map",
-        "",
-        "CTRL + ARROWS:", "Change selection",
-        "CTRL + Z:", "Reset selection",
-        "A:", "Run mode",
-        "BACKSPACE:", "Cancel",
-        "U:", "Undo",
-        "",
-        "SPACE:", "Create",
-        "DELETE:", "Delete",
-        "ALT:", "Create altered",
-        "",
-        "+:", "Zoom in/out",
-        "V:", "Visibility options",
-        "B:", "Lock Block",
-        "M:", "Move Blocks",
-        "HOME:", "Set starting point",
-        "PAGE UP/DOWN:", "Raise/Lower elevation",
-        "",
-        "//TILE MODE (1)",
-        "",
-        "SHIFT + ARROWS:", "Change tile",
-        "T:", "Load spriteSheet",
-        "Q:", "Switch to light-based mode",
-        "",
-        "//BLOCK MODE (2)",
-        "",
-        "SHIFT + ARROWS:", "Change block height",
-        "R:", "Rounded blocks mode",
-        "C:", "Place rounded block with last settings",
-        "",
-        "//OBJECT MODE (4)",
-        "",
-        "SHIFT + ARROWS:", "Change link radius"};
+            "H:", "Help",
+            "1 ... 4:", "Change mode",
+            "S:", "Save as",
+            "CTRL + S:", "QuickSave",
+            "L:", "Load object",
+            "CTRL + BACKSPACE:", "Clear map",
+            "",
+            "CTRL + ARROWS:", "Change selection",
+            "CTRL + Z:", "Reset selection",
+            "A:", "Run mode",
+            "BACKSPACE:", "Cancel",
+            "U:", "Undo",
+            "",
+            "SPACE:", "Create",
+            "DELETE:", "Delete",
+            "ALT:", "Create altered",
+            "",
+            "+:", "Zoom in/out",
+            "V:", "Visibility options",
+            "B:", "Lock Block",
+            "M:", "Move Blocks",
+            "HOME:", "Set starting point",
+            "PAGE UP/DOWN:", "Raise/Lower elevation",
+            "",
+            "//TILE MODE (1)",
+            "",
+            "SHIFT + ARROWS:", "Change tile",
+            "T:", "Load spriteSheet",
+            "Q:", "Switch to light-based mode",
+            "",
+            "//BLOCK MODE (2)",
+            "",
+            "SHIFT + ARROWS:", "Change block height",
+            "R:", "Rounded blocks mode",
+            "C:", "Place rounded block with last settings",
+            "",
+            "//OBJECT MODE (4)",
+            "",
+            "SHIFT + ARROWS:", "Change link radius"};
     private int mode, selected;
     private ArrayList<File> list;
     private String text = "", extension;
@@ -169,9 +168,12 @@ public class GUIHandler extends GUIObject {
 
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
             if (text.length() > 0) {
-                try (BufferedReader load = new BufferedReader(new FileReader("res/objects/" + text + ".puz"))) {
+                try {
+                    FileReader fl = new FileReader("res/objects/" + text + ".puz");
+                    BufferedReader load = new BufferedReader(fl);
                     mode = QUESTIONING;
                     load.close();
+                    fl.close();
                     return;
                 } catch (IOException e) {
                 }
@@ -251,7 +253,8 @@ public class GUIHandler extends GUIObject {
             Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
                     place.standardFont, new Color(1f, 1f, 1f));
             if (!help[i].equals("") && help[i].charAt(help[i].length() - 1) == ':') {
-                Drawer.renderString(help[++i], helpLength + (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
+                Drawer.renderString(help[++i], helpLength + (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place
+                                .getCurrentScale()),
                         place.standardFont, new Color(1f, 1f, 1f));
             }
         }
@@ -282,7 +285,8 @@ public class GUIHandler extends GUIObject {
         int delta;
         for (int i = 0; i < options.length; i++) {
             delta = (int) ((i - selected) * tile * 0.5);
-            Drawer.renderString(prettyOptions[2 * i] + prettyOptions[2 * i + 1], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
+            Drawer.renderString(prettyOptions[2 * i] + prettyOptions[2 * i + 1], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart +
+                            delta) * Place.getCurrentScale()),
                     place.standardFont, new Color(1f, 1f, 1f));
         }
 

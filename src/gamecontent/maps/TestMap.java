@@ -1,17 +1,13 @@
 package gamecontent.maps;
 
-import static collision.OpticProperties.TRANSPARENT;
 import collision.Rectangle;
 import engine.utilities.RandomGenerator;
-import game.Settings;
-import game.gameobject.entities.Entity;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
-import gamecontent.environment.MoneyBag;
 import gamecontent.environment.Rock;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
@@ -22,6 +18,8 @@ import gamecontent.npcs.Melodia;
 import gamecontent.npcs.Nutka;
 import gamecontent.npcs.Tercja;
 import sounds.Sound;
+
+import static collision.OpticProperties.TRANSPARENT;
 
 /**
  * Created by przemek on 21.11.15.
@@ -73,6 +71,8 @@ public class TestMap extends Map {
         Shen shen = new Shen(3010, 1226, place, mobID++);
         addObject(shen);
 
+//        GrassClump grass = GrassClump.createRound(3020, 1320, 2, 8, 7, 2, 8, 32);
+//        addObject(grass);
         Rock rock;
         addObject(new Dummy(4643, 1793, place, mobID++));
         rock = new Rock(4060, 2976, place, mobID++);
@@ -85,10 +85,10 @@ public class TestMap extends Map {
         addObject(rock);
         addObject(new Nutka(3663, 3084, place, mobID++, rock));
         addObject(new Magician(2906, 763, place, mobID++));
-        Plurret[] plurrets = new Plurret[] {
-            new Plurret(7043, 4034, place, mobID++),
-            new Plurret(8618, 3609, place, mobID++),
-            new Plurret(8281, 4084, place, mobID++)
+        Plurret[] plurrets = new Plurret[]{
+                new Plurret(7043, 4034, place, mobID++),
+                new Plurret(8618, 3609, place, mobID++),
+                new Plurret(8281, 4084, place, mobID++)
         };
         addObject(plurrets[0]);
         addObject(plurrets[1]);

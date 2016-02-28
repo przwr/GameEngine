@@ -44,5 +44,4 @@ public interface Appearance {
 
     int getYOffset();
 
-
 }

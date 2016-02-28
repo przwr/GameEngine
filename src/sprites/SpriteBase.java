@@ -14,10 +14,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,9 +85,10 @@ public class SpriteBase {
     public Point[] getStartPointFromFile(String folder) { //[startingPoint, deltaPoint]
         int startX, startY;
         int deltaX, deltaY;
-        try (BufferedReader input = new BufferedReader(
-                new FileReader(fullFolderPath(folder) + "dims.txt"))) {
 
+        try {
+            FileReader fl = new FileReader(fullFolderPath(folder) + "dims.txt");
+            BufferedReader input = new BufferedReader(fl);
             String[] data = input.readLine().split(";");
             int wholeX = Integer.parseInt(data[0]);
             int wholeY = Integer.parseInt(data[1]);
@@ -118,7 +116,9 @@ public class SpriteBase {
         String image, key, path;
         Sprite sprite;
         folder = fullFolderPath(folder);
-        try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
+        try {
+            FileReader fl = new FileReader(folder + name + ".spr");
+            BufferedReader input = new BufferedReader(fl);
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];
@@ -179,6 +179,7 @@ public class SpriteBase {
                 }
             }
             input.close();
+            fl.close();
         } catch (IOException e) {
             ErrorHandler.error("File " + folder + name + " not found!\n" + e.getMessage());
             return null;
@@ -226,13 +227,16 @@ public class SpriteBase {
         String image, key, path;
         Sprite sprite;
         folder = fullFolderPath(folder);
-        try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
+        try {
+            FileReader fl = new FileReader(folder + name + ".spr");
+            BufferedReader input = new BufferedReader(fl);
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];
             line = input.readLine();
             image = line;
             input.close();
+            fl.close();
         } catch (IOException e) {
             ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
@@ -273,7 +277,9 @@ public class SpriteBase {
         String image, key, path;
         Sprite sprite;
         folder = fullFolderPath(folder);
-        try (BufferedReader input = new BufferedReader(new FileReader(folder + name + ".spr"))) {
+        try {
+            FileReader fl = new FileReader(folder + name + ".spr");
+            BufferedReader input = new BufferedReader(fl);
             String line = input.readLine();
             String[] data = line.split(";");
             key = data[0];
@@ -290,6 +296,7 @@ public class SpriteBase {
             pieceWidth = (int) (Integer.parseInt(data[0]) * Settings.nativeScale);
             pieceHeight = (int) (Integer.parseInt(data[1]) * Settings.nativeScale);
             input.close();
+            fl.close();
         } catch (IOException e) {
             ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
@@ -314,7 +321,9 @@ public class SpriteBase {
         if (now.length > 0 && now[0] && sprite.getTextureID() == 0) {
             Texture tex = null;
             try {
-                tex = TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream(sprite.getPath()), sprite.AA ? GL_LINEAR : GL_NEAREST);
+                InputStream stream = ResourceLoader.getResourceAsStream(sprite.getPath());
+                tex = TextureLoader.getTexture("png", stream, sprite.AA ? GL_LINEAR : GL_NEAREST);
+                stream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
