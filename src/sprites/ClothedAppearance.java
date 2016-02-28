@@ -404,14 +404,4 @@ public class ClothedAppearance implements Appearance {
             return true;
         }
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof ClothedAppearance && fbo == ((ClothedAppearance) o).fbo;
-    }
-
-    @Override
-    public int hashCode() {
-        return 13 * fbo.hashCode();
-    }
 }

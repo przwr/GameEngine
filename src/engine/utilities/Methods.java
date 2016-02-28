@@ -27,11 +27,8 @@ import java.util.List;
  */
 public class Methods {
 
-    private static final Point point = new Point(0, 0);
     public static double SQRT_ROOT_OF_2 = Math.sqrt(2);
     public static double ONE_BY_SQRT_ROOT_OF_2 = 1 / SQRT_ROOT_OF_2;
-    private static short[] fibonacci = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610};
-    private static double A, B, AB, delta, X1, Y1, X2, Y2, xDDelta, yDDelta;
 
     public static double xRadius(double angle, double rad) {
         return FastMath.cos(FastMath.toRadians(angle)) * rad;
@@ -192,8 +189,7 @@ public class Methods {
             if (z == 0 || z == 1) {
                 return null; // intersection at end point!
             }
-            point.set(Math.round(x1 + z * rx), Math.round(y1 + z * ry));
-            return point;
+            return new Point(Math.round(x1 + z * rx), Math.round(y1 + z * ry));
         }
     }
 
@@ -213,93 +209,92 @@ public class Methods {
             if (z == 0 || z == 1) {
                 return null; // intersection at end point!
             }
-            point.set(Math.round(x1 + z * rx), Math.round(y1 + z * ry));
-            return point;
+            return new Point(Math.round(x1 + z * rx), Math.round(y1 + z * ry));
         }
     }
 
     // only for 64 diameter
     private static Point getTopCircleLineIntersection(double a, double b, double xc, double yc) {
-        calculateDelta(a, b, xc, yc);
+        double A = 1 + a * a;
+        double AB = yc + b;
+        double B = 2 * ((a * AB) - xc);
+        double delta = (B * B) - 4 * A * ((xc * xc) - Place.tileSquared + (AB * AB));
         if (delta < 0) {
             return null;
         }
         delta = FastMath.sqrt(delta);
         A += A;
-        X1 = ((-B - delta) / A);
-        Y1 = (a * X1 + b);
-        X2 = ((-B + delta) / A);
-        Y2 = (a * X2 + b);
+        double X1 = ((-B - delta) / A);
+        double Y1 = (a * X1 + b);
+        double X2 = ((-B + delta) / A);
+        double Y2 = (a * X2 + b);
         if (Y2 < Y1) {
-            point.set(roundDouble(X1), -roundDouble(Y1));
+            return new Point(roundDouble(X1), -roundDouble(Y1));
         } else {
-            point.set(roundDouble(X2), -roundDouble(Y2));
+            return new Point(roundDouble(X2), -roundDouble(Y2));
         }
-        return point;
     }
 
     // only for 64 diameter
     private static Point getBottomCircleLineIntersection(double a, double b, double xc, double yc) {
-        calculateDelta(a, b, xc, yc);
+        double A = 1 + a * a;
+        double AB = yc + b;
+        double B = 2 * ((a * AB) - xc);
+        double delta = (B * B) - 4 * A * ((xc * xc) - Place.tileSquared + (AB * AB));
         if (delta < 0) {
             return null;
         }
         delta = FastMath.sqrt(delta);
         A += A;
-        X1 = ((-B - delta) / A);
-        Y1 = (a * X1 + b);
-        X2 = ((-B + delta) / A);
-        Y2 = (a * X2 + b);
+        double X1 = ((-B - delta) / A);
+        double Y1 = (a * X1 + b);
+        double X2 = ((-B + delta) / A);
+        double Y2 = (a * X2 + b);
         if (Y2 > Y1) {
-            point.set(roundDouble(X1), -roundDouble(Y1));
+            return new Point(roundDouble(X1), -roundDouble(Y1));
         } else {
-            point.set(roundDouble(X2), -roundDouble(Y2));
+            return new Point(roundDouble(X2), -roundDouble(Y2));
         }
-        return point;
     }
 
     // only for 64 diameter
     public static Point getLeftCircleLineIntersection(double a, double b, double xc, double yc) {
-        calculateDelta(a, b, xc, yc);
+        double A = 1 + a * a;
+        double AB = yc + b;
+        double B = 2 * ((a * AB) - xc);
+        double delta = (B * B) - 4 * A * ((xc * xc) - Place.tileSquared + (AB * AB));
         if (delta < 0) {
             return null;
         }
         delta = FastMath.sqrt(delta);
         A += A;
-        X1 = ((-B - delta) / A);
-        X2 = ((-B + delta) / A);
+        double X1 = ((-B - delta) / A);
+        double X2 = ((-B + delta) / A);
         if (X1 < X2) {
-            point.set(roundDouble(X1), -roundDouble(a * X1 + b));
+            return new Point(roundDouble(X1), -roundDouble(a * X1 + b));
         } else {
-            point.set(roundDouble(X2), -roundDouble(a * X2 + b));
+            return new Point(roundDouble(X2), -roundDouble(a * X2 + b));
         }
-        return point;
     }
 
     // only for 64 diameter
     public static Point getRightCircleLineIntersection(double a, double b, double xc, double yc) {
-        calculateDelta(a, b, xc, yc);
+        double A = 1 + a * a;
+        double AB = yc + b;
+        double B = 2 * ((a * AB) - xc);
+        double delta = (B * B) - 4 * A * ((xc * xc) - Place.tileSquared + (AB * AB));
         if (delta < 0) {
             return null;
         }
         delta = FastMath.sqrt(delta);
         A += A;
-        X1 = ((-B - delta) / A);
-        X2 = ((-B + delta) / A);
+        double X1 = ((-B - delta) / A);
+        double X2 = ((-B + delta) / A);
         if (X1 > X2) {
-            point.set(roundDouble(X1), -roundDouble(a * X1 + b));
+            return new Point(roundDouble(X1), -roundDouble(a * X1 + b));
         } else {
-            point.set(roundDouble(X2), -roundDouble(a * X2 + b));
+            return new Point(roundDouble(X2), -roundDouble(a * X2 + b));
         }
-        return point;
-    }
-
-    // Place.tileArea is radius squared
-    private static void calculateDelta(double a, double b, double xc, double yc) {
-        A = 1 + a * a;
-        AB = yc + b;
-        B = 2 * ((a * AB) - xc);
-        delta = (B * B) - 4 * A * ((xc * xc) - Place.tileSquared + (AB * AB));
     }
 
     public static void getCastingPointsIndexes(int x, int y, Figure figure, Point result) {
@@ -489,10 +484,6 @@ public class Methods {
                 }
             }
         }
-    }
-
-    public static int fibonacci(int i) {
-        return fibonacci[i];
     }
 
     public static int sizeInBytes(Object obj) throws java.io.IOException {

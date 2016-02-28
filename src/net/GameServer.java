@@ -50,12 +50,12 @@ public class GameServer {
             KryoUtil.registerServerClasses(server);
             server.addListener(new Listener() {
                 @Override
-                public void connected(Connection connection) {
+                public synchronized void connected(Connection connection) {
                     System.out.println("Received a connection from " + connection.getRemoteAddressTCP().getHostString() + " (" + connection.getID() + ")");
                 }
 
                 @Override
-                public void disconnected(Connection connection) {
+                public synchronized void disconnected(Connection connection) {
                     int i;
                     String name = "Client";
                     byte id = -1;
@@ -88,7 +88,7 @@ public class GameServer {
                 }
 
                 @Override
-                public void received(Connection connection, Object obj) {
+                public synchronized void received(Connection connection, Object obj) {
                     if (obj instanceof PacketMultiPlayerUpdate) {
                         PacketMultiPlayerUpdate pmPu = (PacketMultiPlayerUpdate) obj;
                         game.playerUpdate(pmPu);
@@ -141,7 +141,7 @@ public class GameServer {
         }
     }
 
-    public void Start() {
+    public synchronized void Start() {
         Thread thread = new Thread(server, "Server");
         try {
             thread.start();
@@ -150,12 +150,12 @@ public class GameServer {
         }
     }
 
-    public void Close() {
+    public synchronized void Close() {
         server.stop();
         server.close();
     }
 
-    public void sendUpdate(short mapId, int x, int y, boolean isEmits, boolean isHop) {
+    public synchronized void sendUpdate(short mapId, int x, int y, boolean isEmits, boolean isHop) {
         try {
             MultiPlayers[0].update(mapId, x, y);
             int mobX, mobY;
@@ -191,7 +191,7 @@ public class GameServer {
         }
     }
 
-    public MultiPlayer findPlayer(byte playerID) {
+    public synchronized MultiPlayer findPlayer(byte playerID) {
         for (int i = 1; i < nrPlayers; i++) {
             if (MultiPlayers[i] != null && MultiPlayers[i].getId() == playerID) {
                 return MultiPlayers[i];
@@ -200,14 +200,14 @@ public class GameServer {
         return null;
     }
 
-    private void cleanUp(Exception exception) {
+    private synchronized void cleanUp(Exception exception) {
         isRunning = false;
         Close();
         game.game.endGame();
         ErrorHandler.exception(exception);
     }
 
-    private void makeSureIdIsUnique() {
+    private synchronized void makeSureIdIsUnique() {
         for (int j = 0; j < nrPlayers; j++) {
             for (int i = 0; i < nrPlayers; i++) {
                 if (id == MultiPlayers[i].getId()) {
@@ -217,7 +217,7 @@ public class GameServer {
         }
     }
 
-    private NewMultiPlayer addNewPlayer(short mapId, String name, Connection connection) {
+    private synchronized NewMultiPlayer addNewPlayer(short mapId, String name, Connection connection) {
         MultiPlayers[nrPlayers] = new MultiPlayer(mapId, id, name, connection);
         MultiPlayers[nrPlayers].setPosition(128 + id * 128, 256);
         NewMultiPlayer nmp = new NewMultiPlayer(MultiPlayers[nrPlayers]);
@@ -225,13 +225,13 @@ public class GameServer {
         return nmp;
     }
 
-    private void sendToAll(NewMultiPlayer nmp) {
+    private synchronized void sendToAll(NewMultiPlayer nmp) {
         for (int i = 1; i < nrPlayers; i++) {   // send NewPlayer to All
             MultiPlayers[i].getConnection().sendTCP(new PacketAddMultiPlayer(nmp));
         }
     }
 
-    private void sendToNew(Connection connection) {
+    private synchronized void sendToNew(Connection connection) {
         for (int i = 0; i < nrPlayers; i++) {   // send Players to NewPlayer
             connection.sendTCP(new PacketAddMultiPlayer(new NewMultiPlayer(MultiPlayers[i])));
         }

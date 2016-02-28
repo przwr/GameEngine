@@ -94,7 +94,6 @@ public class Tree extends GameObject {
                 return false;
             }
         }
-        instances.clear();
         return true;
     }
 

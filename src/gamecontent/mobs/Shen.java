@@ -57,10 +57,10 @@ public class Shen extends Mob {
                         state = hide;
                         destination.set(-1, -1);
                         fold = true;
-                    } else if (destination.getX() > 0) {
+                    } /*else if (destination.getX() > 0) { TYMCZASOWO
                         state = run_away;
                         destination.set(-1, -1);
-                    } else {
+                    }*/ else {
                         calculateDestinationsForCloseFriends();
                         if (alpha) {
                             state = wander;
@@ -263,7 +263,7 @@ public class Shen extends Mob {
 
 
     public Shen(int x, int y, Place place, short ID) {
-        super(x, y, 1, 384, "Shen", place, "shen", true, ID);
+        super(x, y, 1, 512, "Shen", place, "shen", true, ID);
         setUp();
     }
 

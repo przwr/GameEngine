@@ -262,20 +262,6 @@ public class Sprite implements Appearance {
         }
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof Sprite) {
-            Sprite s = (Sprite) object;
-            return s.textureID == textureID;
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return 97 * textureID;
-    }
-
     public float getWidthWhole() {
         return widthWhole;
     }
@@ -303,9 +289,13 @@ public class Sprite implements Appearance {
         this.textureID = texture.getTextureID();
     }
 
-    public void releaseTexture() {
+    public synchronized void releaseTexture() {
         if (glGetInteger(GL_TEXTURE_BINDING_2D) == textureID) {
             glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        if (textureID != 0) {
+            glDeleteTextures(textureID);
+            textureID = 0;
         }
         if (texture != null) {
             texture.release();

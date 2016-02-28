@@ -94,7 +94,7 @@ public class MyController extends PlayerController {
             animation.setAnimate(true);
             diagonal = true;
             tempDirection = inControl.getDirection8Way();
-            if ((running && stats.getEnergy() > 0) || stats.getEnergy() > 30) {
+            if ((running && stats.getEnergy() > 0) || stats.getEnergy() >= 30) {
                 running = actions[INPUT_RUN].isKeyPressed();
             } else {
                 running = false;
@@ -298,6 +298,8 @@ public class MyController extends PlayerController {
                     animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 2, 6);
                     stats.decreaseEnergy(20);
                     attacked = true;
+                } else {
+                    ((MyPlayer) inControl).getGUI().activateLowEnergy(20);
                 }
                 break;
             case ATTACK_THRUST:
@@ -305,6 +307,8 @@ public class MyController extends PlayerController {
                     animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 7, 9);
                     stats.decreaseEnergy(24);
                     attacked = true;
+                } else {
+                    ((MyPlayer) inControl).getGUI().activateLowEnergy(24);
                 }
                 break;
             case ATTACK_UPPER_SLASH:
@@ -312,6 +316,8 @@ public class MyController extends PlayerController {
                     animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 10, 17);
                     stats.decreaseEnergy(20);
                     attacked = true;
+                } else {
+                    ((MyPlayer) inControl).getGUI().activateLowEnergy(20);
                 }
                 break;
             case ATTACK_WEAK_PUNCH:
@@ -320,6 +326,8 @@ public class MyController extends PlayerController {
                     stats.decreaseEnergy(5);
                     attacked = true;
 
+                } else {
+                    ((MyPlayer) inControl).getGUI().activateLowEnergy(5);
                 }
                 break;
             case ATTACK_STRONG_PUNCH:
@@ -328,6 +336,8 @@ public class MyController extends PlayerController {
                     stats.decreaseEnergy(7);
                     attacked = true;
 
+                } else {
+                    ((MyPlayer) inControl).getGUI().activateLowEnergy(7);
                 }
                 break;
             case ATTACK_NORMAL_ARROW_SHOT:
@@ -343,6 +353,8 @@ public class MyController extends PlayerController {
                     chargingType = ATTACK_NORMAL_ARROW_SHOT;
                     attacked = true;
                     scoping = true;
+                } else {
+                    ((MyPlayer) inControl).getGUI().activateLowEnergy(15);
                 }
                 break;
         }
@@ -372,6 +384,8 @@ public class MyController extends PlayerController {
                         animation.animateSingleInDirection(tempDirection, animation.BOW, 3);
                         inControl.getAttackActivator(ATTACK_NORMAL_ARROW_SHOT, chargeValue.getChargedValue() + 20).setActivated(true);
                         stats.decreaseEnergy(15);
+                    } else {
+                        ((MyPlayer) inControl).getGUI().activateLowEnergy(15);
                     }
                     break;
             }
@@ -563,12 +577,16 @@ public class MyController extends PlayerController {
         if (jumpMaker.isOver()) {
             if (jumpLag == 0) {
                 int jumpSpeed = 40;
-                if (stats.getEnergy() >= 25 && actions[INPUT_DODGE].isKeyPressed()) {
-                    checkOneButtonDodge(jumpSpeed);
-                }/* else {
+                if (actions[INPUT_DODGE].isKeyPressed()) {
+                    if (stats.getEnergy() >= 25) {
+                        checkOneButtonDodge(jumpSpeed);
+                    } else {
+                        ((MyPlayer) inControl).getGUI().activateLowEnergy(24);
+                    }
+                }
+                 /* else {
                  checkDoubleClickDodge(jumpSpeed);
                  }*/
-
             } else {
                 jumpLag--;
                 animation.animateSingleInDirection(tempDirection, animation.ACROBATICS, 3);

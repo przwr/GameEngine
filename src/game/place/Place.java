@@ -341,7 +341,7 @@ public abstract class Place extends ScreenPlace {
         return null;
     }
 
-    public void addMapsToAdd() {
+    public synchronized void addMapsToAdd() {
         ArrayList<Map> mapsToAdd = firstMapsToAddActive ? mapsToAdd1 : mapsToAdd2;
         for (Map map : mapsToAdd) {
             if (map != null && getMapByName(map.getName()) == null) {

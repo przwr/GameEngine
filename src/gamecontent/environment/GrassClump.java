@@ -153,7 +153,6 @@ public class GrassClump extends GameObject {
                 return false;
             }
         }
-        instances.clear();
         return true;
     }
 
