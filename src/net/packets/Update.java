@@ -17,19 +17,19 @@ public abstract class Update {
     int x;
     int y;
 
-    public synchronized int getX() {
+    public int getX() {
         return x;
     }
 
-    public synchronized int getY() {
+    public int getY() {
         return y;
     }
 
-    public synchronized ArrayList<Short> getXDeltas() {
+    public ArrayList<Short> getXDeltas() {
         return xDeltas;
     }
 
-    public synchronized ArrayList<Short> getYDeltas() {
+    public ArrayList<Short> getYDeltas() {
         return yDeltas;
     }
 }

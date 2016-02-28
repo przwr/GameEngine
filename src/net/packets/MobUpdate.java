@@ -23,7 +23,7 @@ public class MobUpdate extends Update {
         this.y = y;
     }
 
-    public synchronized void Update(int x, int y) {
+    public void Update(int x, int y) {
         int deltaX = this.x - x;
         int deltaY = this.y - y;
         if (FastMath.abs(deltaX) <= Short.MAX_VALUE && FastMath.abs(deltaY) <= Short.MAX_VALUE) {
@@ -32,16 +32,16 @@ public class MobUpdate extends Update {
         }
     }
 
-    public synchronized void setPosition(int x, int y) {
+    public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public synchronized short getId() {
+    public short getId() {
         return id;
     }
 
-    public synchronized void Trim() {
+    public void Trim() {
         xDeltas.trimToSize();
         yDeltas.trimToSize();
     }

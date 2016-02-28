@@ -4,6 +4,8 @@ import game.Settings;
 import game.gameobject.entities.Player;
 import sprites.Appearance;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.*;
 
 public abstract class FrameBufferObject implements Appearance {
@@ -15,6 +17,8 @@ public abstract class FrameBufferObject implements Appearance {
     private static final FrameBufferType MULTI_SAMPLE_NATIVE = new MultiSampleNative();
     private static final FrameBufferType MULTI_SAMPLE_ARB = new MultiSampleARB();
     private static final FrameBufferType MULTI_SAMPLE_EXT = new MultiSampleEXT();
+
+    private static List<FrameBufferObject> instances;
 
     final FrameBufferType type;
     final int height;

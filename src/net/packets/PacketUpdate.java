@@ -30,7 +30,7 @@ public class PacketUpdate implements Serializable {
         mobs = new ArrayList<>(8);
     }
 
-    public synchronized void playerUpdate(MultiPlayer mpl, boolean isEmits, boolean isHop) {
+    public void playerUpdate(MultiPlayer mpl, boolean isEmits, boolean isHop) {
         MultiPlayerUpdate mp = getPlayer(mpl.getId());
         if (mp == null || mp.getMapId() != mpl.getMapId()) {
             mp = new MultiPlayerUpdate(mpl.getMapId(), mpl.getId(), mpl.getX(), mpl.getY(), isEmits, isHop);
@@ -40,11 +40,11 @@ public class PacketUpdate implements Serializable {
         }
     }
 
-    public synchronized void PlayerUpdate(MultiPlayerUpdate mpu) {
+    public void PlayerUpdate(MultiPlayerUpdate mpu) {
         players.add(mpu);
     }
 
-    public synchronized void MobUpdate(short id, int x, int y) {
+    public void MobUpdate(short id, int x, int y) {
         MobUpdate mp = getMob(id);
         if (mp != null) {
             mp.Update(x, y);
@@ -54,7 +54,7 @@ public class PacketUpdate implements Serializable {
         }
     }
 
-    private synchronized MultiPlayerUpdate getPlayer(byte id) {
+    private MultiPlayerUpdate getPlayer(byte id) {
         for (MultiPlayerUpdate mpu : players) {
             if (mpu.getId() == id) {
                 return mpu;
@@ -63,7 +63,7 @@ public class PacketUpdate implements Serializable {
         return null;
     }
 
-    private synchronized MobUpdate getMob(short id) {
+    private MobUpdate getMob(short id) {
         for (MobUpdate mu : mobs) {
             if (mu.getId() == id) {
                 return mu;
@@ -72,27 +72,27 @@ public class PacketUpdate implements Serializable {
         return null;
     }
 
-    public synchronized short getMapId() {
+    public short getMapId() {
         return mapId;
     }
 
-    public synchronized void Trim() {
+    public void Trim() {
         players.trimToSize();
         mobs.trimToSize();
         players.forEach(MultiPlayerUpdate::Trim);
         mobs.forEach(net.packets.MobUpdate::Trim);
     }
 
-    public synchronized void Reset() {
+    public void Reset() {
         players.clear();
         mobs.clear();
     }
 
-    public synchronized ArrayList<MultiPlayerUpdate> players() {
+    public ArrayList<MultiPlayerUpdate> players() {
         return players;
     }
 
-    public synchronized ArrayList<MobUpdate> mobs() {
+    public ArrayList<MobUpdate> mobs() {
         return mobs;
     }
 }

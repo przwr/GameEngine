@@ -67,18 +67,18 @@ public class MapLoadContainer {
 
     public boolean contains(String name, Iterable<Integer> areas) {
         boolean found;
-        if (areas != null) {
-            for (MapLoad load : requests) {
-                if (load.name == name) {
-                    found = true;
+        for (MapLoad load : requests) {
+            if (load.name == name) {
+                found = true;
+                if (areas != null) {
                     for (int area : areas) {
-                        if (!load.areas.contains(area)) {
-                            found = false;
+                        if (area != -1 && !load.areas.contains(area)) {
+                            load.areas.add(area);
                         }
                     }
-                    if (found) {
-                        return true;
-                    }
+                }
+                if (found) {
+                    return true;
                 }
             }
         }
