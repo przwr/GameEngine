@@ -3,7 +3,6 @@ package game.place.map;
 import collision.Figure;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
-import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
@@ -288,15 +287,5 @@ public class Tile extends GameObject implements Appearance {
     public int getYOffset() {
         ErrorHandler.warring("Incorrect method use", this);
         return 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Tile && spriteSheet == ((Tile) o).spriteSheet && fbo == ((Tile) o).fbo;
-    }
-
-    @Override
-    public int hashCode() {
-        return Methods.roundDouble(83 * spriteSheet.hashCode() + 17 * fbo.hashCode());
     }
 }

@@ -6,6 +6,9 @@ import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.temporalmodifiers.DeathChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
+import game.place.Place;
+import gamecontent.MyPlayer;
+import gamecontent.effects.DamageNumber;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
 
@@ -27,6 +30,44 @@ public class PlayerStats extends Stats {
         protection = 10;
         protectionSideModifier = 0.8f;
         protectionBackModifier = 0.1f;
+    }
+
+    @Override
+    public void decreaseHealth(InteractiveResponse response) {
+        if (health > 0 && owner.getKnockBack().isOver() && !isInvicibleState()) {
+            hurt = 0;
+            switch (response.getDirection()) {
+                case FRONT:
+                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection : 1)));
+                    break;
+                case BACK:
+                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionBackModifier :
+                            backDefenceModifier)));
+                    break;
+                case SIDE:
+                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionSideModifier :
+                            sideDefenceModifier)));
+                    break;
+            }
+            if (protectionState) {
+                reactionWhileProtect(response);
+            }
+            ((MyPlayer) player).getGUI().activateLifeHistory(health);
+            health -= hurt;
+            if (health < 0) {
+                health = 0;
+            }
+            System.out.println(owner.getName() + " dostał za " + hurt + " Życie: " + health + "/" + maxHealth);
+            DamageNumber damage = new DamageNumber(hurt, owner.getX(), owner.getY(),
+                    Place.tileSize, owner.getMap().place);
+            owner.getMap().addObject(damage);
+            if (health == 0) {
+                died(response.getAttacker());
+            } else if (hurt != 0) {
+                hurtReaction(response);
+                response.getAttacker().updateCausedDamage(owner, hurt);
+            }
+        }
     }
 
     @Override
@@ -79,12 +120,15 @@ public class PlayerStats extends Stats {
         }
     }
 
+
     public void decreaseEnergy(float amount) {
+        if (amount > maxEnergy * 0.01f) {
+            ((MyPlayer) player).getGUI().activateEnergyHistory(energy);
+        }
         energy -= amount;
         if (energy <= 0) {
             energy = 0;
         }
-//        ((MyPlayer) player).getGUI().activateEnergyIndicator();
     }
 
     public void increaseEnergy(float amount) {

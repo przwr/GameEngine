@@ -2,8 +2,12 @@ package game.place.fbo;
 
 import game.Settings;
 import game.gameobject.entities.Player;
+import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.EXTFramebufferObject;
+import org.lwjgl.opengl.GL30;
 import sprites.Appearance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -18,7 +22,7 @@ public abstract class FrameBufferObject implements Appearance {
     private static final FrameBufferType MULTI_SAMPLE_ARB = new MultiSampleARB();
     private static final FrameBufferType MULTI_SAMPLE_EXT = new MultiSampleEXT();
 
-    private static List<FrameBufferObject> instances;
+    private static List<FrameBufferObject> instances = new ArrayList<>();
 
     final FrameBufferType type;
     final int height;
@@ -52,6 +56,25 @@ public abstract class FrameBufferObject implements Appearance {
                 version = EXT;
             }
         }
+        instances.add(this);
+    }
+
+    public static void cleanUp() {
+        for (FrameBufferObject fbo : instances) {
+            for (int texture : fbo.getTextures()) {
+                glDeleteTextures(texture);
+            }
+            for (int buffer : fbo.getBuffers()) {
+                if (fbo.version == NATIVE) {
+                    GL30.glDeleteFramebuffers(buffer);
+                } else if (fbo.version == ARB) {
+                    ARBFramebufferObject.glDeleteFramebuffers(fbo.frameBufferObject);
+                } else {
+                    EXTFramebufferObject.glDeleteFramebuffersEXT(fbo.frameBufferObject);
+                }
+            }
+        }
+        instances.clear();
     }
 
     public abstract void activate();
@@ -191,14 +214,13 @@ public abstract class FrameBufferObject implements Appearance {
         return 0;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof FrameBufferObject && texture == ((FrameBufferObject) o).texture;
+    protected int[] getBuffers() {
+        int[] buffers = {frameBufferObject};
+        return buffers;
     }
 
-    @Override
-    public int hashCode() {
-        return texture;
+    protected int[] getTextures() {
+        int[] textures = {texture};
+        return textures;
     }
-
 }

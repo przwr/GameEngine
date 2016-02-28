@@ -521,7 +521,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void sendUpdate() {
+    public synchronized void sendUpdate() {
         if (jumping) {
             floatHeight = FastMath.abs(Methods.xRadius(jumpDelta * 4, 70));
             jumpDelta += Time.getDelta();
@@ -553,7 +553,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void updateRest(Update update) {
+    public synchronized void updateRest(Update update) {
         try {
             Map currentMap = getPlace().getMapById(((MultiPlayerUpdate) update).getMapId());
             if (currentMap != null && this.map != currentMap) {
@@ -571,7 +571,7 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void updateOnline() {
+    public synchronized void updateOnline() {
         try {
             if (jumping) {
                 hop = false;

@@ -225,7 +225,7 @@ public abstract class BackgroundLoader {
         lock.unlock();
     }
 
-    public void requestSprite(Sprite sprite) {
+    public synchronized void requestSprite(Sprite sprite) {
         pause = true;
         List<Sprite> workingList = firstActive ? list2 : list1;
         workingList.add(sprite);
@@ -256,7 +256,7 @@ public abstract class BackgroundLoader {
         firstLoaded = false;
     }
 
-    public void notifySprite(Sprite sprite) {
+    public synchronized void notifySprite(Sprite sprite) {
         while (usingSprites) {
         }
         stopSpritesUsing = true;

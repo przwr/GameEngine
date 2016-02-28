@@ -190,16 +190,6 @@ public class Sound {
         return soundEffect.getBufferID();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Sound && soundEffect == ((Sound) o).soundEffect;
-    }
-
-    @Override
-    public int hashCode() {
-        return 83 * soundEffect.getBufferID();
-    }
-
     private class Fade implements Runnable {
 
         private final double time;

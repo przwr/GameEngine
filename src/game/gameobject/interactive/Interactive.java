@@ -330,14 +330,4 @@ public class Interactive {
     public void setHalfEnvironmentalCollision(boolean halfEnvironmentalCollision) {
         this.halfEnvironmentalCollision = halfEnvironmentalCollision;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Interactive && owner == ((Interactive) o).owner && activator == ((Interactive) o).activator;
-    }
-
-    @Override
-    public int hashCode() {
-        return 13 * owner.hashCode() * activator.hashCode();
-    }
 }

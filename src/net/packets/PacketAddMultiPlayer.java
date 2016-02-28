@@ -19,7 +19,7 @@ public class PacketAddMultiPlayer {
         this.pl = pl;
     }
 
-    public NewMultiPlayer getPlayer() {
+    public synchronized NewMultiPlayer getPlayer() {
         return pl;
     }
 }

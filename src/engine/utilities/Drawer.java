@@ -276,6 +276,9 @@ public class Drawer {
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUAD_STRIP);
         int step = (endAngle - startAngle) / precision;
+        if (step < 1) {
+            step = 1;
+        }
         for (int i = startAngle; i < endAngle; i += step) {
             glVertex2f((float) Methods.xRadius(i, radius), (float) Methods.yRadius(i, radius));
             glVertex2f((float) Methods.xRadius(i, radius - width), (float) Methods.yRadius(i, radius - width));
@@ -291,6 +294,9 @@ public class Drawer {
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_QUAD_STRIP);
         int step = 360 / precision;
+        if (step < 1) {
+            step = 1;
+        }
         for (int i = 0; i < 360; i += step) {
             glVertex2f((float) Methods.xRadius(i, radius), (float) Methods.yRadius(i, radius));
             glVertex2f((float) Methods.xRadius(i, radius - width), (float) Methods.yRadius(i, radius - width));
