@@ -14,6 +14,7 @@ import game.place.map.Area;
 import org.lwjgl.opengl.Display;
 
 import java.util.*;
+import static org.lwjgl.opengl.ARBFramebufferObject.glDeleteFramebuffers;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -153,7 +154,7 @@ public class GrassClump extends GameObject {
         }
         return true;
     }
-
+    
     private void setUp(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int type) {
         initialize("GrassClump", x, y);
         toUpdate = true;

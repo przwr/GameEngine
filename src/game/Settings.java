@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static game.place.fbo.FrameBufferObject.*;
+import game.text.FontBase;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 
@@ -65,6 +66,7 @@ public class Settings {
     public static float gameBrightness = 0f;
     private static int depth = Display.getDesktopDisplayMode().getBitsPerPixel();
     private static int modesCount;
+    public static FontBase fonts;
 
     public static void initialize() {
         modesCount = 0;
@@ -107,6 +109,7 @@ public class Settings {
         }
         language = languages.get(0);
         languageName = language.lang;
+        fonts = new FontBase(20);
     }
 
     private static boolean isBigger(DisplayMode checked, DisplayMode temp) {

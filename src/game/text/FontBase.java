@@ -5,6 +5,7 @@
  */
 package game.text;
 
+import engine.utilities.Methods;
 import java.util.ArrayList;
 
 /**
@@ -18,13 +19,8 @@ public class FontBase {
         fonts = new ArrayList<>(size);
     }
 
-    private FontHandler add(String name, int type, int size) {
-        FontHandler temp = new FontHandler(name, type, size);
-        fonts.add(temp);
-        return temp;
-    }
-
     public FontHandler add(String name, int size) {
+        System.out.println("Adding font '" + name + "' " + size);
         FontHandler temp = new FontHandler(name, size);
         fonts.add(temp);
         return temp;
@@ -34,10 +30,14 @@ public class FontBase {
         return fonts.get(i);
     }
 
-    public FontHandler getFont(String name, int style, int size) {
+    public int size() {
+        return fonts.size();
+    }
+
+    public FontHandler getFont(String name, int size) {
         FontHandler firstOcc = null;
         for (FontHandler fontHandler : fonts) {
-            if (fontHandler.getName().equals(name) && fontHandler.getStyle() == style) {
+            if (fontHandler.getName().equals(name)) {
                 if (fontHandler.getSize() == size) {
                     return fontHandler;
                 }
@@ -50,7 +50,29 @@ public class FontBase {
             firstOcc = firstOcc.getFontWithSize(size);
             fonts.add(firstOcc);
         } else {
-            firstOcc = add(name, style, size);
+            firstOcc = add(name, size);
+        }
+        return firstOcc;
+    }
+
+    public FontHandler getFont(String name, int style, int size) {
+        FontHandler firstOcc = null;
+        for (FontHandler fontHandler : fonts) {
+            if (fontHandler.getName().equals(name)) {
+                if (fontHandler.getSize() == size) {
+                    return fontHandler;
+                }
+                if (firstOcc == null) {
+                    firstOcc = fontHandler;
+                }
+            }
+        }
+        if (firstOcc != null) {
+            firstOcc = firstOcc.getFontWithSize(size);
+            fonts.add(firstOcc);
+        } else {
+            firstOcc = add(name, size);
+            firstOcc = firstOcc.getFontWithStyle(style);
         }
         return firstOcc;
     }

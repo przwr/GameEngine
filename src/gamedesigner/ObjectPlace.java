@@ -82,9 +82,7 @@ public class ObjectPlace extends Place {
         editor.addGui(guiHandler);
         undo = new UndoControl(objMap, 20);
         //sounds.init("res");
-        fonts = new FontBase(20);
-        fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
-        standardFont = fonts.getFont(0);
+        standardFont = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 24));
         SoundStore.get().poll(0);
         initializeMethods();
     }

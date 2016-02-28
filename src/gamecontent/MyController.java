@@ -53,8 +53,6 @@ public class MyController extends PlayerController {
     private MyGUI gui;
     private int jumpLag;
 
-    private float blockingTime;
-
     public MyController(Player inControl, MyGUI playersGUI) {
         super(inControl);
         gui = playersGUI;
@@ -122,7 +120,6 @@ public class MyController extends PlayerController {
                                 updateBlock();
                             } else {
                                 updateMovement();
-                                blockingTime = 0;
                             }
                         } else {
                             inControl.brake(2);
@@ -159,15 +156,9 @@ public class MyController extends PlayerController {
         if (actions[INPUT_BLOCK].isKeyClicked()) {
             //PERFEKCYJNY BLOK (pierwsza klatka obrony)
         }
-//        if (stats.getEnergy() > 10) {
         animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
         stats.setProtectionState(true);
-//        } else {
-//            animation.getUpperBody().animateSingleInDirection(tempDirection, animation.IDLE);
-//        }
         updateChargingMovement();
-//        stats.decreaseEnergy(blockingTime * Time.getDelta());
-//        blockingTime += 0.05;
         //RESZTA BLOKOWANIA
     }
 

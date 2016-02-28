@@ -31,7 +31,7 @@ public class Popup {
     private int shift;
 
     public Popup(String font) {
-        fonts = new FontBase(2);
+        fonts = Settings.fonts;
         fonts.add(font, (int) (Settings.nativeScale * 22));
         fonts.add(font, (int) (Settings.nativeScale * 28));
         middleOk = fonts.getFont(0).getWidth("[ENTER]");

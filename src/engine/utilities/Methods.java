@@ -90,6 +90,10 @@ public class Methods {
     public static int angleDifference(int angleA, int angleB) {
         return (angleA = angleB - angleA) > 180 ? angleA - 360 : (angleA < -180 ? angleA + 360 : angleA);
     }
+    
+    public static int angleDifference8Directions(int angleA, int angleB) {
+        return (angleA = angleB - angleA) > 4 ? angleA - 8 : (angleA < -4 ? angleA + 8 : angleA);
+    }
 
     public static int pointDistance(int x, int y, int xa, int ya) {
         int xDDelta = xa - x;
@@ -624,7 +628,7 @@ public class Methods {
 
     public static void gc() {
         Object obj = new Object();
-        WeakReference ref = new WeakReference<Object>(obj);
+        WeakReference ref = new WeakReference<>(obj);
         obj = null;
         while (ref.get() != null) {
             System.gc();

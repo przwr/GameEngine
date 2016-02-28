@@ -35,6 +35,7 @@ import java.io.File;
 import java.util.Iterator;
 
 import static engine.systemcommunication.IO.loadInputFromFile;
+import game.place.fbo.FrameBufferObject;
 
 /**
  * @author przemek
@@ -311,7 +312,7 @@ public class MyGame extends Game {
     public void showLoading(int progress) {
         String loading = Settings.language.menu.Loading;
         String dots = "";
-        FontHandler font = menu.fonts.getFont("Amble-Regular", 0, (int) (Settings.nativeScale * 48));
+        FontHandler font = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
         for (int i = 0; i < progress; i++) {
             if (i == 0) {
                 dots = " .";

@@ -10,6 +10,7 @@ import collision.Figure;
 import engine.Main;
 import engine.lights.Light;
 import engine.utilities.*;
+import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
@@ -695,7 +696,7 @@ public abstract class Map {
             Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
             Drawer.returnToCentralPoint();
             Drawer.renderStringCentered(String.valueOf(i), Place.tileSize, Place.tileSize,
-                    place.fonts.getFont("Amble-Regular", 0, (int) (Place.getCurrentScale() * 32)), Color.cyan);
+                    Settings.fonts.getFont("Amble-Regular", (int) (Place.getCurrentScale() * 32)), Color.cyan);
             glPopMatrix();
 
             glPushMatrix();

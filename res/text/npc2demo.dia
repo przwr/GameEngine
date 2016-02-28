@@ -1,12 +1,5 @@
 ﻿{
 sp:1
-co:000000
-co:FF0000
-co:FFFF00
-co:66FF33
-co:00FFFF
-co:0000FF
-co:FF00FF
 au:Nutka
 au:Aria
 po:melodiaPortret:1
@@ -35,6 +28,8 @@ $AU1$$PO1$$EX1$Nom, nom, nom.
 #B13
 $AU1$$PO1$Wiesz gdzie mam iść?$FL
 $AU0$$PO0$Nie wiem.$FL
-Może idź na południe trzymając się z dala od fretek.$FL
-Tam gdzieś powinno być przejście.$FL
-$AU1$$PO1$Poszukam, dzięki.
+W okolicy jest dość dużo
+ukrytych jaskiń.....$Fl
+Możesz spróbować jednej z nich.
+Uważaj tylko na fretki!$FL
+$AU1$$PO1$Będę ostrożna, dzięki.

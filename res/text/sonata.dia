@@ -1,6 +1,5 @@
 ﻿{
 sp:1
-co:000000
 co:FF0000
 au:Sonata
 au:Aria
@@ -54,8 +53,10 @@ Tyle...?$Fl
 $AU1$$PO1$$EX2$$MEDziękuję$NO!
 #B33
 $AU0$$PO0$Tonguby to jakiś rodzaj podziemnych owadów
-W pojedynkę nic ci nie zrobią, lecz strzeż się dużych grup....$FL
-Ich gniazdo znajduje się wewnątrz południowej części jakini....$FL
+W pojedynkę nic ci nie zrobią, 
+lecz strzeż się dużych grup....$FL
+Ich gniazdo znajduje się wewnątrz południowej 
+części jaskini....$FL
 $NEPowodzenia....$NO
 #B4
 $AU1$$PO1$$EX2$Znalazłam twoją sakiewkę!

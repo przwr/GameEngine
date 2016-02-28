@@ -448,7 +448,9 @@ public abstract class Mob extends Entity {
                 && Methods.pointDistanceSimple(getX(), getY(),
                 player.getX(), player.getY()) <= Place.tileSize * 1.5
                 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
-                && player.getDirection8Way() == Methods.pointAngle8Directions(player.getX(), player.getY(), x, y);
+                && Math.abs(Methods.angleDifference(
+                        (int) player.getDirection(), 
+                        (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
     }
 
     protected void renderPathPoints(int xEffect, int yEffect) {

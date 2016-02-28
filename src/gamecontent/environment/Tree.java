@@ -15,6 +15,7 @@ import org.newdawn.slick.Color;
 import sprites.Sprite;
 
 import java.util.*;
+import static org.lwjgl.opengl.GL30.*;
 
 import static org.lwjgl.opengl.GL11.*;
 

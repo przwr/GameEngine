@@ -193,8 +193,7 @@ public abstract class Place extends ScreenPlace {
         sprites = new SpriteBase();
         console = new Console(this);
         dayCycle = new DayCycle();
-        fonts = new FontBase(20);
-        standardFont = fonts.add("Amble-Regular", (int) (Settings.nativeScale * 24));
+        standardFont = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 24));
     }
 
     public static double getCurrentScale() {

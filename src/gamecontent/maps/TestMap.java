@@ -21,6 +21,7 @@ import gamecontent.npcs.Tercja;
 import sounds.Sound;
 
 import static collision.OpticProperties.TRANSPARENT;
+import gamecontent.environment.MoneyBag;
 
 /**
  * Created by przemek on 21.11.15.
@@ -83,9 +84,7 @@ public class TestMap extends Map {
         addObject(new Blazag(5473, 3783, place, mobID++));
         addObject(new Blazag(5722, 3797, place, mobID++));
         addObject(new Blazag(5311, 3761, place, mobID++));
-        rock = new Rock(2770, 4361, place, mobID++);
-        addObject(rock);
-        addObject(new Nutka(3663, 3084, place, mobID++, rock));
+        addObject(new Nutka(3663, 3084, place, mobID++));
         addObject(new Magician(2906, 763, place, mobID++));
         Plurret[] plurrets = new Plurret[]{
                 new Plurret(7043, 4034, place, mobID++),
