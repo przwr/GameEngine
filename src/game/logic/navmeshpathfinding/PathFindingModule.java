@@ -16,14 +16,14 @@ public class PathFindingModule implements Runnable {
     private static PathRequest request;
     private static int actualPath = 0;
 
-    private synchronized static void returnPath(PathRequest request) {
+    private static void returnPath(PathRequest request) {
         Entity requesterCopy = request.requester;
         if (requesterCopy != null) {
             PathStrategyCore.findPath(requesterCopy, requesterCopy.getPathData(), request.xDest, request.yDest);
         }
     }
 
-    public synchronized static void requestPath(Entity requester, int xDest, int yDest) {
+    public static void requestPath(Entity requester, int xDest, int yDest) {
         if (requestedPaths.isSufficientCapacity()) {
             requestedPaths.add(requester, xDest, yDest);
             requester.getPathData().flags.set(PATH_REQUESTED);

@@ -303,7 +303,7 @@ public class Sprite implements Appearance {
         this.textureID = texture.getTextureID();
     }
 
-    public synchronized void releaseTexture() {
+    public void releaseTexture() {
         if (glGetInteger(GL_TEXTURE_BINDING_2D) == textureID) {
             glBindTexture(GL_TEXTURE_2D, 0);
         }

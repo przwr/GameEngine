@@ -34,7 +34,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void runServer() {
+    public void runServer() {
         server = new GameServer(game.players[0], this);
         server.Start();
         if (!server.isRunning) {
@@ -47,7 +47,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void joinServer() {
+    public void joinServer() {
         try {
             client = new GameClient(game.players[0], this, Settings.serverIP);
             if (client.isConnected) {
@@ -67,7 +67,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void addPlayer(NewMultiPlayer player) {
+    public void addPlayer(NewMultiPlayer player) {
         try {
             if (newPlayers[0] == null) {
                 newPlayers[0] = player;
@@ -84,7 +84,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void removePlayer(byte playerID) {
+    public void removePlayer(byte playerID) {
         try {
             if (removeIDs[0] == 0) {
                 removeIDs[0] = playerID;
@@ -101,7 +101,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void update(PacketUpdate update) {
+    public void update(PacketUpdate update) {
         try {
             if (game.getPlace() != null) {
                 UpdateMobs(update.mobs(), update.getMapId());
@@ -113,7 +113,7 @@ public class MyGameOnline extends GameOnline {
         }
     }
 
-    private synchronized void UpdatePlayers(ArrayList<MultiPlayerUpdate> players) {
+    private void UpdatePlayers(ArrayList<MultiPlayerUpdate> players) {
         try {
             tempPlace = game.getPlace();
             if (tempPlace != null) {
@@ -139,7 +139,7 @@ public class MyGameOnline extends GameOnline {
         }
     }
 
-    private synchronized void UpdateMobs(ArrayList<MobUpdate> mobs, short mapId) {
+    private void UpdateMobs(ArrayList<MobUpdate> mobs, short mapId) {
         try {
             if (!activeFirstMobsUpdates) {
                 firstMobsUpdates = mobs;
@@ -158,7 +158,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void playerUpdate(PacketMultiPlayerUpdate p) {
+    public void playerUpdate(PacketMultiPlayerUpdate p) {
         try {
             tempPlace = game.getPlace();
             if (tempPlace != null) {
@@ -183,7 +183,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void initializeChanges() {
+    public void initializeChanges() {
         changes[ADD_PLAYER] = () -> {
             try {
                 tempPlace = game.getPlace();
@@ -304,7 +304,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void update() {
+    public void update() {
         tempPlace = game.getPlace();
         if (tempPlace != null) {
             for (int i = 0; i < isChanged.length; i++) {
@@ -317,7 +317,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized Player getPlayerByID(byte playerID) {
+    public Player getPlayerByID(byte playerID) {
         for (Player player : game.players) {
             if (player.playerID == playerID) {
                 return player;
@@ -327,7 +327,7 @@ public class MyGameOnline extends GameOnline {
     }
 
     @Override
-    public synchronized void cleanUp() {
+    public void cleanUp() {
         if (server != null) {
             server.Close();
             server = null;

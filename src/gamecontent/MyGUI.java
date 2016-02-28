@@ -138,30 +138,30 @@ public class MyGUI extends GUIObject {
 //        glTranslatef(Display.getWidth() - size * 2 - border * 3, Display.getHeight() - size * 2 - border * 3, 0);
 //        Lewy Dolny:
 
-        glTranslatef(border / 2, border / 2, 0);
+        glTranslatef(2 * border / 3, 2 * border / 3, 0);
         Drawer.setCentralPoint();
         renderLife(size, border, innerSize);
         renderEnergy(size, border, innerSize);
-        Drawer.translate(size / 2 - border - 1, size / 2 - border - 1);
-        Drawer.setColorStatic(Color.white);
-        itemIcons.renderPiece(0);
-        Drawer.translate(size - border - 1, 0);
-        itemIcons.renderPiece(0);
-        Drawer.translate(-size + border + 1, size - border - 1);
-        itemIcons.renderPiece(1);
-        Drawer.translate(size - border - 1, 0);
-        itemIcons.renderPiece(0);
+//        Drawer.translate(size / 2 - border - border / 6, size / 2 - border - border / 6);
+//        Drawer.setColorStatic(Color.white);
+//        itemIcons.renderPiece(0);
+//        Drawer.translate(size - border - border/6, 0);
+//        itemIcons.renderPiece(0);
+//        Drawer.translate(-size + border + border/6, size - border - border/6);
+//        itemIcons.renderPiece(1);
+//        Drawer.translate(size - border - border/6, 0);
+//        itemIcons.renderPiece(0);
         Drawer.returnToCentralPoint();
 
-        int r = size / 2 - border / 3 - 2;
+        int r = size / 2 - border / 3;
         Drawer.setColorStatic(Color.black);
-        Drawer.drawRing(size + border - r, size + border - r, r + 1, border / 3, size);
+        Drawer.drawRing(size + border, size / 2 + border - border / 3, r, border / 3, size);
         Drawer.returnToCentralPoint();
-        Drawer.drawRing(size + border + r, size + border - r, r + 1, border / 3, size);
+        Drawer.drawRing(size + border, size + size / 2 + border + border / 3, r, border / 3, size);
         Drawer.returnToCentralPoint();
-        Drawer.drawRing(size + border + r, size + border + r, r + 1, border / 3, size);
+        Drawer.drawRing(size / 2 + border - border / 3, size + border, r, border / 3, size);
         Drawer.returnToCentralPoint();
-        Drawer.drawRing(size + border - r, size + border + r, r + 1, border / 3, size);
+        Drawer.drawRing(size + size / 2 + border + border / 3, size + border, r, border / 3, size);
         Drawer.returnToCentralPoint();
 
 //

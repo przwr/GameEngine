@@ -22,11 +22,11 @@ public class PacketInput {
         System.arraycopy(inputs, 0, this.inputs, 0, inputs.length);
     }
 
-    public synchronized byte getId() {
+    public byte getId() {
         return id;
     }
 
-    public synchronized boolean[] getInputs() {
+    public boolean[] getInputs() {
         return inputs;
     }
 }

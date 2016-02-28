@@ -18,7 +18,6 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
     private static final Object[] EMPTY_ELEMENT_DATA = {};
     private static final Object[] DEFAULT_CAPACITY_EMPTY_ELEMENT_DATA = {};
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
-    public static List<BlueArray> instances = new ArrayList<>();
     private transient Object[] elementData;
     private int size;
 
@@ -52,13 +51,6 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
             throw new OutOfMemoryError();
         }
         return (minCapacity > MAX_ARRAY_SIZE) ? Integer.MAX_VALUE : MAX_ARRAY_SIZE;
-    }
-
-    public static void cleanUp() {
-        for (BlueArray ba : instances) {
-            ba.clearReally();
-        }
-        instances.clear();
     }
 
     public void trimToSize() {

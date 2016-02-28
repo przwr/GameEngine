@@ -6,7 +6,9 @@
 package gamecontent;
 
 import engine.Main;
-import engine.utilities.*;
+import engine.utilities.Drawer;
+import engine.utilities.ErrorHandler;
+import engine.utilities.Methods;
 import engine.view.Renderer;
 import engine.view.SplitScreen;
 import game.Game;
@@ -15,7 +17,6 @@ import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.logic.maploader.MapLoaderModule;
 import game.logic.navmeshpathfinding.PathFindingModule;
-import game.logic.navmeshpathfinding.navigationmesh.NavigationMesh;
 import game.place.Place;
 import game.place.cameras.PlayersCamera;
 import game.place.map.Map;
@@ -307,7 +308,6 @@ public class MyGame extends Game {
         Display.sync(60);
         Display.update();
     }
-
     @Override
     public void showLoading(int progress) {
         String loading = Settings.language.menu.Loading;
@@ -470,13 +470,8 @@ public class MyGame extends Game {
         place = null;
         mode = 0;
         Place.currentCamera = null;
-        for (BlueArray array : BlueArray.instances) {
-            array.clearReally();
-        }
-        BlueArray.cleanUp();
-        PointContainer.cleanUp();
-        NavigationMesh.cleanUp();
         Renderer.place = null;
+        Main.restartBackGroundLoader();
         Methods.gc();
     }
 

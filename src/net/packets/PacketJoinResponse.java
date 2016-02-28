@@ -24,19 +24,19 @@ public class PacketJoinResponse {
         pl = new MultiPlayerUpdate((short) -1, id);
     }
 
-    public synchronized short getMapId() {
+    public short getMapId() {
         return pl.getMapId();
     }
 
-    public synchronized byte getId() {
+    public byte getId() {
         return pl.getId();
     }
 
-    public synchronized int getX() {
+    public int getX() {
         return pl.getX();
     }
 
-    public synchronized int getY() {
+    public int getY() {
         return pl.getY();
     }
 

@@ -22,7 +22,7 @@ public class PacketMultiPlayerUpdate implements Serializable {
         mpu.Trim();
     }
 
-    public synchronized void update(short mapID, byte id, int x, int y, boolean isEmits, boolean isHop) {
+    public void update(short mapID, byte id, int x, int y, boolean isEmits, boolean isHop) {
         if (mpu == null || mpu.getMapId() != mapID) {
             mpu = new MultiPlayerUpdate(mapID, id, x, y, isEmits, isHop);
         } else {
@@ -31,11 +31,11 @@ public class PacketMultiPlayerUpdate implements Serializable {
         mpu.Trim();
     }
 
-    public synchronized void reset() {
+    public void reset() {
         mpu = null;
     }
 
-    public synchronized MultiPlayerUpdate up() {
+    public MultiPlayerUpdate up() {
         return mpu;
     }
 }

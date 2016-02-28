@@ -192,6 +192,14 @@ public class Main {
             glLoadIdentity();
             glViewport(0, 0, Display.getWidth(), Display.getHeight());
         }
+        restartBackGroundLoader();
+    }
+
+    public static void restartBackGroundLoader() {
+        if (backgroundLoader != null) {
+            backgroundLoader.cleanup();
+            backgroundLoader = null;
+        }
         backgroundLoader = new BackgroundLoader() {
             @Override
             Drawable getDrawable() throws LWJGLException {

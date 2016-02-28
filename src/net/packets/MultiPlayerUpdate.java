@@ -35,7 +35,7 @@ public class MultiPlayerUpdate extends Update implements Serializable {
         this.isHop = isHop;
     }
 
-    public synchronized void Update(int x, int y) {
+    public void Update(int x, int y) {
         int deltaX = this.x - x;
         int deltaY = this.y - y;
         if (FastMath.abs(deltaX) <= 32767 && FastMath.abs(deltaY) <= 32767) {
@@ -44,33 +44,33 @@ public class MultiPlayerUpdate extends Update implements Serializable {
         }
     }
 
-    public synchronized void setPosition(int x, int y) {
+    public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public synchronized void setBooleans(boolean isEmits, boolean isHop) {
+    public void setBooleans(boolean isEmits, boolean isHop) {
         this.isEmits = isEmits;
         this.isHop = isHop;
     }
 
-    public synchronized short getMapId() {
+    public short getMapId() {
         return mapId;
     }
 
-    public synchronized byte getId() {
+    public byte getId() {
         return id;
     }
 
-    public synchronized boolean isEmits() {
+    public boolean isEmits() {
         return isEmits;
     }
 
-    public synchronized boolean isHop() {
+    public boolean isHop() {
         return isHop;
     }
 
-    public synchronized void Trim() {
+    public void Trim() {
         xDeltas.trimToSize();
         yDeltas.trimToSize();
     }

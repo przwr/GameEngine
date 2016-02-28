@@ -188,7 +188,7 @@ public class Plurret extends Mob {
     }
 
     @Override
-    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+    protected void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;

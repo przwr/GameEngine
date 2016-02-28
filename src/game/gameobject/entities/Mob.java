@@ -73,7 +73,7 @@ public abstract class Mob extends Entity {
         spawner = null;
     }
 
-    protected synchronized void lookForPlayers(GameObject[] players) {
+    protected void lookForPlayers(GameObject[] players) {
         GameObject object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
@@ -84,7 +84,7 @@ public abstract class Mob extends Entity {
         }
     }
 
-    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+    protected void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;
@@ -142,7 +142,7 @@ public abstract class Mob extends Entity {
         return false;
     }
 
-    protected synchronized void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
+    protected void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;
@@ -164,7 +164,7 @@ public abstract class Mob extends Entity {
         updateAlpha();
     }
 
-    protected synchronized void chase() {
+    protected void chase() {
         if (target != null && pathStrategy != null) {
             pathStrategy.findPath(this, pathData, target.getX(), target.getY());
             if (pathData.getXSpeed() != 0 && pathData.getYSpeed() != 0) {
@@ -188,23 +188,23 @@ public abstract class Mob extends Entity {
         spawner = spawn;
     }
 
-    protected synchronized void charge() {
+    protected void charge() {
         if (target != null) {
             double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
             changeSpeed(Methods.xRadius(angle, maxSpeed), Methods.yRadius(angle, maxSpeed));
         }
     }
 
-    protected synchronized void chargeToPoint(Point destination) {
+    protected void chargeToPoint(Point destination) {
         double angle = Methods.pointAngleClockwise(x, y, destination.getX(), destination.getY());
         changeSpeed(Methods.xRadius(angle, maxSpeed), Methods.yRadius(angle, maxSpeed));
     }
 
-    protected synchronized void goTo(Point destination) {
+    protected void goTo(Point destination) {
         goTo(destination.getX(), destination.getY());
     }
 
-    protected synchronized void goTo(int xD, int yD) {
+    protected void goTo(int xD, int yD) {
         if (xD > 0) {
             pathStrategy.findPath(this, pathData, xD, yD);
             if (this.getMaxSpeed() > 4) {
@@ -218,7 +218,7 @@ public abstract class Mob extends Entity {
         }
     }
 
-    protected synchronized void calculateDestinationsForEscape() {
+    protected void calculateDestinationsForEscape() {
         if (closeEnemies.isEmpty()) {
             destination.set(-1, -1);
         } else {
@@ -257,7 +257,7 @@ public abstract class Mob extends Entity {
         destination.set(x, y);
     }
 
-    protected synchronized void calculateDestinationsForCloseFriends() {
+    protected void calculateDestinationsForCloseFriends() {
         if (!closeFriends.isEmpty()) {
             if (closeFriends.size() == 1) {
                 secondaryDestination.set(closeFriends.get(0).getX(), closeFriends.get(0).getY());

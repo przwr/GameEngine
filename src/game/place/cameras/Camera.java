@@ -67,7 +67,7 @@ public abstract class Camera {
         cameraSpeed = 3;
     }
 
-    public synchronized void updateSmooth() {
+    public void updateSmooth() {
         if (map != null) {
             double tmpSpeed = cameraSpeed / Time.getDelta();
             if (tmpSpeed > 1) {
@@ -85,7 +85,7 @@ public abstract class Camera {
         }
     }
 
-    public synchronized void updateStatic() {
+    public void updateStatic() {
         if (map != null) {
             updateLooking();
             xMiddle = getXMiddle();
@@ -131,7 +131,7 @@ public abstract class Camera {
         this.yEffect += yEffect;
     }
 
-    public synchronized void shake() {
+    public void shake() {
         if (shakeDelay.isOver()) {
             if (shakeUp) {
                 xEffect += shakeAmplitude;
