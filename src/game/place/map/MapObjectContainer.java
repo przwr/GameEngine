@@ -9,6 +9,7 @@ import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.place.Place;
 import gamecontent.environment.Bush;
+import gamecontent.environment.GrassClump;
 import gamecontent.environment.Tree;
 
 /**
@@ -16,8 +17,8 @@ import gamecontent.environment.Tree;
  */
 public class MapObjectContainer {
 
-    public static final byte TREE = 0, BUSH = 1;
-    private static final String[] names = new String[]{"Tree", "Bush"};
+    public static final byte TREE = 0, BUSH = 1, GRASS = 2;
+    private static final String[] names = new String[]{"Tree", "Bush", "Grass"};
     private int x, y;
     private String[] data;
     private byte type;
@@ -37,6 +38,13 @@ public class MapObjectContainer {
             if (type == -1) {
                 throw new RuntimeException("Unknown object: " + data[1]);
             }
+            if (data.length > 4) {
+                String[] tmp = new String[data.length - 4];
+                System.arraycopy(data, 5, tmp, 0, tmp.length);
+                data = tmp;
+            } else {
+                data = null;
+            }
         }
     }
 
@@ -44,22 +52,43 @@ public class MapObjectContainer {
         return names;
     }
 
-    public static GameObject generate(int x, int y, RandomGenerator rand, byte type) {
+    public static GameObject generate(int x, int y, RandomGenerator rand, byte type, String... data) {
         int dx = 0, dy = 0;
         if (rand != null) {
             dx = rand.random(Place.tileSize - 1);
             dy = rand.random(Place.tileSize - 1);
         }
+        GameObject ret = null;
         switch (type) {
             case TREE:
-                return Tree.create(x + dx, y + dy);
+                ret = Tree.create(x + dx, y + dy);
+                break;
             case BUSH:
-                return new Bush(x + dx, y + dy);
+                ret = new Bush(x + dx, y + dy);
+                break;
+            case GRASS:
+                if (data != null && data.length != 0) {
+                    int subtype = Integer.parseInt(data[0]);
+                    if (subtype <= 3) {
+                        System.out.println("Corner " + subtype);
+                        ret = GrassClump.createCorner(x, y, 1, 6, 9, 4, 9, 32, subtype);
+                    } else {
+                        System.out.println("Round");
+                        ret = GrassClump.createRound(x, y, 1, 6, 9, 4, 9, 32);
+                    }
+                } else {
+                    System.out.println("Rect");
+                    ret = GrassClump.createRectangle(x, y, 1, 6, 9, 4, 9, 32);
+                }
+                break;
         }
-        return null;
+        if (ret != null) {
+            ret.setName(names[type]);
+        }
+        return ret;
     }
 
     public GameObject generateObject(int x, int y, RandomGenerator rand) {
-        return generate(this.x + x, this.y + y, rand, type);
+        return generate(this.x + x, this.y + y, rand, type, data);
     }
 }

@@ -655,9 +655,9 @@ public class MyController extends PlayerController {
     }
 
     private void updateRest() {
-        if (actions[INPUT_CHANGE_WEAPON].isKeyPressed()) {
-            inControl.setFloatHeight(inControl.getFloatHeight() - 1);
-        }
+//        if (actions[INPUT_CHANGE_WEAPON].isKeyPressed()) {
+//            inControl.setFloatHeight(inControl.getFloatHeight() - 1);
+//        }
 //        if (actions[INPUT_ACTION_3].isKeyPressed()) {
 //            inControl.setFloatHeight(inControl.getFloatHeight() + 1);
 //        }
@@ -699,6 +699,7 @@ public class MyController extends PlayerController {
         } else {
             inControl.setMaxSpeed(diagonal ? 7.777 : 11);
         }
+        /*DEMO
         if (actions[INPUT_ACTION_3].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());
         }
@@ -706,7 +707,7 @@ public class MyController extends PlayerController {
             if (inControl instanceof Player) {
                 inControl.getCamera().switchZoom();
             }
-        }
+        }*/
     }
 
     private void animateMoving(int direction) {

@@ -10,6 +10,7 @@ import game.logic.maploader.MapLoaderModule;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.menu.Menu;
 import game.place.Place;
+import game.text.FontHandler;
 import net.GameOnline;
 import org.lwjgl.input.Keyboard;
 
@@ -52,7 +53,7 @@ public abstract class Game {
 
     public abstract void runServer();
 
-    public abstract void showLoading(int progress);
+    public abstract void showLoading(int progress, FontHandler font);
 
     public abstract void update();
 

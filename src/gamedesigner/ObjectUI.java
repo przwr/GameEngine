@@ -33,6 +33,10 @@ public class ObjectUI extends GUIObject {
     private int mode;
     private final String[] mapObjectsNames;
     private GameObject[] mapObjects;
+    private Map map;
+
+    private int lastX, lastY;
+    private String[] data;
 
     public ObjectUI(int tile, SpriteSheet tex, Place p, Map m) {
         super("OUI", p);
@@ -46,6 +50,7 @@ public class ObjectUI extends GUIObject {
             mapObjects[i].setMapNotChange(m);
             mapObjects[i].update();
         }
+        map = m;
     }
 
     public void changeCoordinates(int x, int y) {
@@ -94,7 +99,7 @@ public class ObjectUI extends GUIObject {
     public Point getCoordinates() {
         return coordinates;
     }
-    
+
     public int getChosenObject() {
         return choosenObject;
     }
@@ -104,6 +109,40 @@ public class ObjectUI extends GUIObject {
         mapObjects[choosenObject].render(xEffect, yEffect);
     }
     
+    public String[] getData() {
+        return data;
+    }
+
+    public void changeChosenObject(int x, int y) {
+        if (lastX != x || lastY != y) {
+            switch (choosenObject) {
+                case MapObjectContainer.GRASS:
+                    String ret = "";
+                    if (x != 0) {
+                        if (y != 0) {
+                            ret = "4";
+                        } else {
+                            ret = x < 0 ? "0" : "2";
+                        }
+                    } else if (y != 0) {
+                        ret = y > 0 ? "3" : "1";
+                    }
+                    if (!ret.isEmpty()) {
+                        mapObjects[choosenObject] = MapObjectContainer.generate(0, 0, null, (byte) choosenObject, ret);
+                        data = new String[]{ret};
+                    } else {
+                        mapObjects[choosenObject] = MapObjectContainer.generate(0, 0, null, (byte) choosenObject);
+                        data = null;
+                    }
+                    mapObjects[choosenObject].setMapNotChange(map);
+                    mapObjects[choosenObject].update();
+                    break;
+            }
+        }
+        lastX = x;
+        lastY = y;
+    }
+
     public void setChange(boolean ch) {
         change = ch;
     }

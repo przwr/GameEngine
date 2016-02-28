@@ -1,6 +1,7 @@
 package engine;
 
 import engine.utilities.ErrorHandler;
+import engine.utilities.Methods;
 import game.Game;
 import game.Settings;
 import gamecontent.environment.Bush;
@@ -18,6 +19,7 @@ import sprites.SpriteBase;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -200,7 +202,6 @@ public abstract class BackgroundLoader {
         usingSprites = false;
     }
 
-
     private void loadTexture(Sprite sprite, InputStream stream) {
         Texture tex = null;
         try {
@@ -217,9 +218,9 @@ public abstract class BackgroundLoader {
     }
 
     private void unlock() {
-        if (useFences)
+        if (useFences) {
             fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-        else {
+        } else {
             glFlush();
         }
         lock.unlock();

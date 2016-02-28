@@ -48,7 +48,7 @@ public class ObjectPlayer extends Player {
     private ObjectPlace objPlace;
     private ObjectUI ui;
     private int blockHeight, tileHeight, mode;
-    private boolean roundBlocksMode, alreadyPlaced;
+    private boolean roundBlocksMode, alreadyPlaced, alreadyChangedObject;
     private boolean paused, shadow, nightLight;
 
     private RoundedTMPBlock rTmpBlock;
@@ -67,6 +67,7 @@ public class ObjectPlayer extends Player {
         key = new SimpleKeyboard();
         rand = RandomGenerator.create();
         initializeController();
+        lights = new ArrayList<>();
     }
 
     private void initializeController() {
@@ -117,6 +118,7 @@ public class ObjectPlayer extends Player {
         int ydelta = (int) yPos;
         double realTimer = (double) maxTimer / Time.getDelta();
         boolean ctrl = key.key(KEY_LCONTROL);
+        boolean ctrlOne = key.keyPressed(KEY_LCONTROL);
         if (xdelta != 0 && xTimer == 0) {
             ix = Methods.interval(0, ix + xdelta, map.getWidthInTiles() - 1);
             setX(ix * tileSize);
@@ -298,22 +300,34 @@ public class ObjectPlayer extends Player {
             xTimer = 0;
         }
 
-        if (xPos != 0 || yPos != 0) {
-            if (ui.isChanged()) {
-                if (xTimer == 0 && yTimer == 0) {
-                    ui.changeCoordinates(xPos, yPos);
-                    xTimer = 1;
-                    yTimer = 1;
-                }
-            } else if (mode == ObjectPlace.MODE_BLOCK && key.key(KEY_LSHIFT)) {
-                if (xTimer == 0 && yTimer == 0) {
-                    blockHeight = FastMath.max(0, -yPos + blockHeight);
-                    xTimer = 1;
-                    yTimer = 1;
-                }
-            } else {
-                move(xPos, yPos);
+        if (mode == ObjectPlace.MODE_OBJECT && key.key(KEY_LCONTROL)) {
+            if (!alreadyChangedObject) {
+                ui.changeChosenObject(xPos, yPos);
             }
+            if (xPos != 0 || yPos != 0) {
+                ui.changeChosenObject(xPos, yPos);
+                alreadyChangedObject = true;
+            }
+
+        } else {
+            if (xPos != 0 || yPos != 0) {
+                if (ui.isChanged()) {
+                    if (xTimer == 0 && yTimer == 0) {
+                        ui.changeCoordinates(xPos, yPos);
+                        xTimer = 1;
+                        yTimer = 1;
+                    }
+                } else if (mode == ObjectPlace.MODE_BLOCK && key.key(KEY_LSHIFT)) {
+                    if (xTimer == 0 && yTimer == 0) {
+                        blockHeight = FastMath.max(0, -yPos + blockHeight);
+                        xTimer = 1;
+                        yTimer = 1;
+                    }
+                } else {
+                    move(xPos, yPos);
+                }
+            }
+            alreadyChangedObject = false;
         }
     }
 
@@ -383,7 +397,7 @@ public class ObjectPlayer extends Player {
             }
         } else if (mode == ObjectPlace.MODE_OBJECT) {
             GameObject obj = MapObjectContainer.generate(ix * tileSize, iy * tileSize,
-                    rand, (byte) ui.getChosenObject());
+                    rand, (byte) ui.getChosenObject(), ui.getData());
             if (obj != null) {
                 objMap.addMapObject(obj);
             }

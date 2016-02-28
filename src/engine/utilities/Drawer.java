@@ -382,6 +382,14 @@ public class Drawer {
     public static void setColorBlended(Color color) {
         glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
     }
+    
+    public static void setColorStatic(float r, float g, float b, float a) {
+        glColor4f(r, g, b, a);
+    }
+
+    public static void setColorBlended(float r, float g, float b, float a) {
+        glColor4f(r * currentColor.r, g * currentColor.g, b * currentColor.b, a);
+    }
 
     public static void renderStringCentered(String message, double x, double y, FontHandler font, Color color) {
         Drawer.bindFontTexture();

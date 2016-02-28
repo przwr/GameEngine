@@ -73,8 +73,11 @@ public class TestMap extends Map {
         Shen shen = new Shen(3010, 1226, place, mobID++);
         addObject(shen);
 
-        GrassClump grass = GrassClump.createRound(2750, 1320, 2, 5, 7, 2, 8, 32);
-        addObject(grass);
+        /*addObject(GrassClump.createRectangle(2650, 1320, 1, 5, 8, 2, 8, 32));
+        addObject(GrassClump.createCorner(2750, 1320, 2, 5, 7, 2, 8, 32, 0));
+        addObject(GrassClump.createCorner(2850, 1320, 2, 5, 7, 2, 8, 32, 1));
+        addObject(GrassClump.createCorner(2950, 1320, 2, 5, 7, 2, 8, 32, 2));
+        addObject(GrassClump.createCorner(3050, 1320, 2, 5, 7, 2, 8, 32, 3));*/
 
         Rock rock;
         addObject(new Dummy(4643, 1793, place, mobID++));
@@ -85,7 +88,7 @@ public class TestMap extends Map {
         addObject(new Blazag(5722, 3797, place, mobID++));
         addObject(new Blazag(5311, 3761, place, mobID++));
         addObject(new Nutka(3663, 3084, place, mobID++));
-        addObject(new Magician(2906, 763, place, mobID++));
+        //addObject(new Magician(2906, 763, place, mobID++));
         Plurret[] plurrets = new Plurret[]{
                 new Plurret(7043, 4034, place, mobID++),
                 new Plurret(8618, 3609, place, mobID++),

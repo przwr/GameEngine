@@ -392,7 +392,7 @@ public class TextController extends GUIObject {
                                             }
                                         }
                                         break;
-                                    case "cn":   //PLAIN TEXT
+                                    case "cn":   //BLACK
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
                                                     lineNum, color, font);

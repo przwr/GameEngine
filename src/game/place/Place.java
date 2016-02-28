@@ -36,6 +36,7 @@ import java.util.Set;
 
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
+import game.text.FontHandler;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -61,6 +62,7 @@ public abstract class Place extends ScreenPlace {
     protected SoundBase sounds;
     protected short mapIDCounter = 0;
     private Console console;
+    private FontHandler loadingFont = null;
 
     {
         loading.terminate();
@@ -122,7 +124,7 @@ public abstract class Place extends ScreenPlace {
                                         progress = 0;
                                     }
                                 }
-                                game.showLoading(progress);
+                                game.showLoading(progress, loadingFont);
                             }
                         }
                     }
@@ -173,7 +175,7 @@ public abstract class Place extends ScreenPlace {
                                 progress = 0;
                             }
                         }
-                        game.showLoading(progress);
+                        game.showLoading(progress, loadingFont);
                     }
                 }
             } catch (Exception e) {
@@ -194,6 +196,7 @@ public abstract class Place extends ScreenPlace {
         console = new Console(this);
         dayCycle = new DayCycle();
         standardFont = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 24));
+        loadingFont = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
     }
 
     public static double getCurrentScale() {
