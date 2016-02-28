@@ -22,25 +22,31 @@ import java.util.logging.Logger;
 public final class IO {
 
     public static void setSettingsFromFile(File file) {
-        try (BufferedReader read = new BufferedReader(new FileReader(file))) {
+        try {
+            FileReader fl = new FileReader(file);
+            BufferedReader read = new BufferedReader(fl);
             Settings.initialize();
             String line;
             while ((line = read.readLine()) != null) {
                 AnalyzerSettings.analyzeSetting(line);
             }
             read.close();
+            fl.close();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public static void loadInputFromFile(File file) {
-        try (BufferedReader read = new BufferedReader(new FileReader(file))) {
+        try {
+            FileReader fl = new FileReader(file);
+            BufferedReader read = new BufferedReader(fl);
             String line;
             while ((line = read.readLine()) != null) {
                 AnalyzerInput.AnaliseInput(line);
             }
             read.close();
+            fl.close();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

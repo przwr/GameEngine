@@ -15,6 +15,7 @@ import org.newdawn.slick.util.ResourceLoader;
 import sprites.Appearance;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +36,10 @@ public class Drawer {
 
     private static Texture loadFontTexture() {
         try {
-            return TextureLoader.getTexture("png", ResourceLoader.getResourceAsStream("/res/textures/white.png"), GL_LINEAR);
+            InputStream stream = ResourceLoader.getResourceAsStream("/res/textures/white.png");
+            Texture t = TextureLoader.getTexture("png", stream, GL_LINEAR);
+            stream.close();
+            return t;
         } catch (IOException exception) {
             Logger.getLogger(ScreenPlace.class.getName()).log(Level.SEVERE, null, exception);
             ErrorHandler.javaError(exception.getMessage());
@@ -374,7 +378,7 @@ public class Drawer {
     public static void setColorStatic(Color color) {
         glColor4f(color.r, color.g, color.b, color.a);
     }
-    
+
     public static void setColorBlended(Color color) {
         glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
     }

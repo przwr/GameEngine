@@ -30,6 +30,7 @@ public class FontHandler {
             font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
             font = font.deriveFont((float) size);
             trueFont = new TrueTypeFont(font, true, chars);
+            inputStream.close();
         } catch (FontFormatException | IOException ex) {
             Logger.getLogger(FontBase.class.getName()).log(Level.SEVERE, null, ex);
         }

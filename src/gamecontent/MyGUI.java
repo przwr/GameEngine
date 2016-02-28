@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class MyGUI extends GUIObject {
 
     private final Color color;
-    private SpriteSheet attackIcons;
+    private SpriteSheet attackIcons, itemIcons;
     private int firstAttackType, secondAttackType;
     private float alpha, lifeAlpha, energyAlpha;
     private int emptySlot;
@@ -43,6 +43,7 @@ public class MyGUI extends GUIObject {
         firstAttackType = emptySlot;
         secondAttackType = emptySlot;
         attackIcons = place.getSpriteSheetSetScale("attackIcons", "");
+        itemIcons = place.getSpriteSheetSetScale("itemIcons", "");
     }
 
     @Override
@@ -141,7 +142,16 @@ public class MyGUI extends GUIObject {
         Drawer.setCentralPoint();
         renderLife(size, border, innerSize);
         renderEnergy(size, border, innerSize);
-
+        Drawer.translate(size / 2 - border - 1, size / 2 - border - 1);
+        Drawer.setColorStatic(Color.white);
+        itemIcons.renderPiece(1);
+        Drawer.translate(size - border - 1, 0);
+        itemIcons.renderPiece(0);
+        Drawer.translate(0, size - border - 1);
+        itemIcons.renderPiece(0);
+        Drawer.translate(-size + border + 1, 0);
+        itemIcons.renderPiece(0);
+        Drawer.returnToCentralPoint();
 
         int r = size / 2 - border / 3 - 2;
         Drawer.setColorStatic(Color.black);

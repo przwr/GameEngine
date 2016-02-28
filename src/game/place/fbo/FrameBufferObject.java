@@ -186,4 +186,15 @@ public abstract class FrameBufferObject implements Appearance {
     public int getYOffset() {
         return 0;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof FrameBufferObject && texture == ((FrameBufferObject) o).texture;
+    }
+
+    @Override
+    public int hashCode() {
+        return texture;
+    }
+
 }

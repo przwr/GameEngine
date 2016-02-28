@@ -67,6 +67,7 @@ public abstract class BackgroundLoader {
             }
         }
         sprites.clear();
+        base = null;
     }
 
     public void start() throws LWJGLException {
@@ -106,6 +107,10 @@ public abstract class BackgroundLoader {
                             InputStream stream = ResourceLoader.getResourceAsStream(sprite.getPath());
                             lock();
                             loadTexture(sprite, stream);
+                            try {
+                                stream.close();
+                            } catch (IOException e) {
+                            }
                             unlock();
                             toClear.add(sprite);
                         } else {
@@ -165,21 +170,33 @@ public abstract class BackgroundLoader {
     public void unloadAllTextures() {
         usingSprites = true;
         if (!stopSpritesUsing) {
-            Iterator it = base.getSprites().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
-                Sprite sprite = (Sprite) pair.getValue();
+            if (base != null) {
+                Iterator it = base.getSprites().entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
+                    Sprite sprite = (Sprite) pair.getValue();
+                    if (sprite.getTextureID() != 0 || sprite.getTexture() != null) {
+                        lock();
+                        sprite.releaseTexture();
+                        unlock();
+                    }
+                }
+                base.getSprites().clear();
+            }
+            list1.clear();
+            list2.clear();
+            toClear.clear();
+            for (String key : sprites.keySet()) {
+                Sprite sprite = sprites.get(key);
                 if (sprite.getTextureID() != 0 || sprite.getTexture() != null) {
                     lock();
                     sprite.releaseTexture();
                     unlock();
                 }
-                it.remove();
             }
-
+            sprites.clear();
+            base = null;
         }
-        base.getSprites().clear();
-        base = null;
         usingSprites = false;
     }
 

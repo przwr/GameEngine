@@ -129,4 +129,17 @@ public class Node {
     public List<Node> getNeighbours() {
         return neighbours;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Node && point.getX() == ((Node) o).point.getX() && point.getY() == ((Node) o).point.getY()
+                && neighbours.size() == ((Node) o).neighbours.size() && fCost == ((Node) o).fCost;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 83 * point.hashCode();
+        hash += neighbours.size() * 11 + 7 * fCost;
+        return hash;
+    }
 }

@@ -50,4 +50,18 @@ public class AreaConnection {
     public int getConnectedAreaIndex(int areaIndex) {
         return firstAreaIndex == areaIndex ? secondAreaIndex : firstAreaIndex;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof AreaConnection && connectionPoints == ((AreaConnection) o).connectionPoints;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 83;
+        for (Point point : connectionPoints) {
+            hash *= point.hashCode();
+        }
+        return hash;
+    }
 }

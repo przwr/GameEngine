@@ -95,6 +95,8 @@ public class InteractionSet {
     public byte getWeaponType() {
         return weaponType;
     }
+
+
 }
 
 

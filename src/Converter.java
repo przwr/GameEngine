@@ -13,8 +13,8 @@ import java.util.logging.Logger;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
- *
  * @author Wojtek
  */
 public class Converter {    //Jakby ktoś chciał na szybko przekonwertować duże ilości plików <(^.^<)
@@ -55,7 +55,9 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
 
     private static Collection<String> read(File file) {
         ArrayList<String> buffer = new ArrayList<>();
-        try (BufferedReader read = new BufferedReader(new FileReader(file))) {
+        try {
+            FileReader fl = new FileReader(file);
+            BufferedReader read = new BufferedReader(fl);
             String line;
             String placer;
             String[] data;
@@ -76,6 +78,7 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
                 }
             }
             read.close();
+            fl.close();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

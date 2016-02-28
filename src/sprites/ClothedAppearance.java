@@ -89,8 +89,9 @@ public class ClothedAppearance implements Appearance {
     }
 
     private void setRenderQueue(String folder) {
-        try (BufferedReader input = new BufferedReader(
-                new FileReader(SpriteBase.fullFolderPath(folder) + "parts.txt"))) {
+        try {
+            FileReader fl = new FileReader(SpriteBase.fullFolderPath(folder) + "parts.txt");
+            BufferedReader input = new BufferedReader(fl);
             String line;
             String[] data;
             char[] chars;
@@ -115,14 +116,16 @@ public class ClothedAppearance implements Appearance {
                 lowerQueue.add(lower);
             }
             input.close();
+            fl.close();
         } catch (IOException e) {
             ErrorHandler.error("File " + folder + File.pathSeparator + "parts.txt not found!\n" + e.getMessage());
         }
     }
 
     private void setClothParameters(String folder) {
-        try (BufferedReader input = new BufferedReader(
-                new FileReader(SpriteBase.fullFolderPath(folder) + "intervals.txt"))) {
+        try {
+            FileReader fl = new FileReader(SpriteBase.fullFolderPath(folder) + "intervals.txt");
+            BufferedReader input = new BufferedReader(fl);
             String line;
             String[] data;
             while ((line = input.readLine()) != null) {
@@ -156,8 +159,8 @@ public class ClothedAppearance implements Appearance {
                         framesPerDirection = Integer.parseInt(data[0]);
                 }
             }
-
             input.close();
+            fl.close();
         } catch (IOException e) {
             ErrorHandler.error("File " + folder + File.pathSeparator + "intervals.txt not found!\n" + e.getMessage());
         }
@@ -400,5 +403,15 @@ public class ClothedAppearance implements Appearance {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof ClothedAppearance && fbo == ((ClothedAppearance) o).fbo;
+    }
+
+    @Override
+    public int hashCode() {
+        return 13 * fbo.hashCode();
     }
 }

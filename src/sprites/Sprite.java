@@ -11,9 +11,6 @@ import engine.utilities.ErrorHandler;
 import game.gameobject.entities.Player;
 import org.newdawn.slick.opengl.Texture;
 
-import java.io.InputStream;
-import java.util.Objects;
-
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -23,10 +20,8 @@ public class Sprite implements Appearance {
 
     final int xStart;
     final int yStart;
-    private final SpriteBase spriteBase;
     public boolean AA;
     public String path;
-    public InputStream stream;
     float widthWhole;
     float heightWhole;
     int width;
@@ -50,7 +45,6 @@ public class Sprite implements Appearance {
         this.heightWhole = 2048;
         this.path = path;
         this.folder = folder;
-        this.spriteBase = spriteBase;
         this.xStart = -xStart;
         this.yStart = -yStart;
         this.width = width;
@@ -281,9 +275,7 @@ public class Sprite implements Appearance {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(textureID);
-        return hash;
+        return 97 * textureID;
     }
 
     public float getWidthWhole() {
@@ -324,10 +316,6 @@ public class Sprite implements Appearance {
             texture = null;
         }
 //            System.out.println("Unloaded: " + path);
-    }
-
-    public SpriteBase getSpriteBase() {
-        return spriteBase;
     }
 
     public String getPath() {

@@ -974,4 +974,16 @@ public abstract class Map {
     public short getNextMobID() {
         return mobID++;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Map && name == ((Map) o).name && mapID == ((Map) o).mapID && mobID == ((Map) o).mobID;
+    }
+
+    @Override
+    public int hashCode() {
+        return 83 * name.hashCode() + 17 * mapID + 13 * mobID;
+    }
 }
+

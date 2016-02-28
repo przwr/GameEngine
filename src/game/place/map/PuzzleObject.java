@@ -54,7 +54,9 @@ public class PuzzleObject {
     public PuzzleObject(File file, Place place, boolean repeatTiles) {
         this.place = place;
         this.repeatTiles = repeatTiles;
-        try (BufferedReader input = new BufferedReader(new FileReader(file))) {
+        try {
+            FileReader fl = new FileReader(file);
+            BufferedReader input = new BufferedReader(fl);
             lineNum = 2;
             bgTiles = new ArrayList<>();
             fgTiles = new ArrayList<>();
@@ -77,6 +79,7 @@ public class PuzzleObject {
             width = Math.abs(xEnd - xBegin) + 1;
             height = Math.abs(yEnd - yBegin) + 1;
             input.close();
+            fl.close();
         } catch (IOException e) {
             ErrorHandler.error("File " + file + " not found!\n" + e.getMessage());
         }
@@ -167,7 +170,8 @@ public class PuzzleObject {
             tmpSS = place.getSpriteSheet(lineTab[4], "backgrounds");
         }
         tmpFgt = new FGTileContainer(tmpSS, tileSize, Integer.parseInt(lineTab[9]), Integer.parseInt(lineTab[10]),
-                Integer.parseInt(lineTab[5]), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), lineTab[8].equals("1"), Integer.parseInt(lineTab[3]) * (tileSize / 2));
+                Integer.parseInt(lineTab[5]), Integer.parseInt(lineTab[6]) * tileSize, lineTab[7].equals("1"), lineTab[8].equals("1"), Integer.parseInt
+                (lineTab[3]) * (tileSize / 2));
         if (shadowLightBased) {
             tmpFgt.setShadowLightBased(lineTab[lineTab.length - 1].equals("1"));
         }
@@ -203,14 +207,14 @@ public class PuzzleObject {
                 Integer.parseInt(lineTab[4]) * tileSize,
                 Integer.parseInt(lineTab[5]) * tileSize);
         ((RoundBlockContainer) tempBlock).setCorners(new int[]{
-            (lineTab[7].equals("") ? 0 : Integer.parseInt(lineTab[7])),
-            (lineTab[8].equals("") ? 0 : Integer.parseInt(lineTab[8])),
-            (lineTab[9].equals("") ? 0 : Integer.parseInt(lineTab[9])),
-            (lineTab[10].equals("") ? 0 : Integer.parseInt(lineTab[10])),
-            (lineTab[11].equals("") ? 0 : Integer.parseInt(lineTab[11])),
-            (lineTab[12].equals("") ? 0 : Integer.parseInt(lineTab[12])),
-            (lineTab[13].equals("") ? 0 : Integer.parseInt(lineTab[13])),
-            (lineTab[14].equals("") ? 0 : Integer.parseInt(lineTab[14]))});
+                (lineTab[7].equals("") ? 0 : Integer.parseInt(lineTab[7])),
+                (lineTab[8].equals("") ? 0 : Integer.parseInt(lineTab[8])),
+                (lineTab[9].equals("") ? 0 : Integer.parseInt(lineTab[9])),
+                (lineTab[10].equals("") ? 0 : Integer.parseInt(lineTab[10])),
+                (lineTab[11].equals("") ? 0 : Integer.parseInt(lineTab[11])),
+                (lineTab[12].equals("") ? 0 : Integer.parseInt(lineTab[12])),
+                (lineTab[13].equals("") ? 0 : Integer.parseInt(lineTab[13])),
+                (lineTab[14].equals("") ? 0 : Integer.parseInt(lineTab[14]))});
         blocks.add(tempBlock);
         checkBoundaries(Integer.parseInt(lineTab[1]), Integer.parseInt(lineTab[2]), Integer.parseInt(lineTab[3]), Integer.parseInt(lineTab[4]));
     }
@@ -382,10 +386,9 @@ public class PuzzleObject {
         final ArrayList<Point> additionalPlaces = new ArrayList<>();
         final SpriteSheet texture;
         final int[] values;
-        int type;
         final boolean round;
         final boolean solid;
-
+        int type;
         boolean shadowLightBased;
         boolean isShadow;
         int xBegin, yBegin;
@@ -434,12 +437,12 @@ public class PuzzleObject {
             return round;
         }
 
-        public void setType(int type) {
-            this.type = type;
-        }
-
         public int getType() {
             return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
         }
 
         public ForegroundTile generateFGT(int x, int y, boolean objectFGT) {
