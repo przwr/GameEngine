@@ -213,19 +213,23 @@ public class Grass extends GameObject {
         distance = Integer.MAX_VALUE;
     }
 
-    public int getXSpriteBegin() {
+    @Override
+    public int getXSpriteBegin(boolean... forCover) {
         return getX() - xRadius;
     }
 
-    public int getYSpriteBegin() {
+    @Override
+    public int getYSpriteBegin(boolean... forCover) {
         return getY() - yRadius;
     }
 
-    public int getXSpriteEnd() {
+    @Override
+    public int getXSpriteEnd(boolean... forCover) {
         return getX() + xRadius;
     }
 
-    public int getYSpriteEnd() {
+    @Override
+    public int getYSpriteEnd(boolean... forCover) {
         return getY() + yRadius;
     }
 }

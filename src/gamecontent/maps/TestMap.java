@@ -8,6 +8,7 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
+import gamecontent.environment.GrassClump;
 import gamecontent.environment.Rock;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
@@ -71,16 +72,17 @@ public class TestMap extends Map {
         Shen shen = new Shen(3010, 1226, place, mobID++);
         addObject(shen);
 
-//        GrassClump grass = GrassClump.createRound(3020, 1320, 2, 8, 7, 2, 8, 32);
-//        addObject(grass);
+        GrassClump grass = GrassClump.createRound(2750, 1320, 2, 5, 7, 2, 8, 32);
+        addObject(grass);
+
         Rock rock;
         addObject(new Dummy(4643, 1793, place, mobID++));
         rock = new Rock(4060, 2976, place, mobID++);
         addObject(rock);
         addObject(new Melodia(4034, 1811, place, mobID++, shen, rock));
-        addObject(new Blazag(3808, 4010, place, mobID++));
-        addObject(new Blazag(4522, 4122, place, mobID++));
-        addObject(new Blazag(3352, 4337, place, mobID++));
+        addObject(new Blazag(5473, 3783, place, mobID++));
+        addObject(new Blazag(5722, 3797, place, mobID++));
+        addObject(new Blazag(5311, 3761, place, mobID++));
         rock = new Rock(2770, 4361, place, mobID++);
         addObject(rock);
         addObject(new Nutka(3663, 3084, place, mobID++, rock));

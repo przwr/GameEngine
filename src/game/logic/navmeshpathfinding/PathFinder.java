@@ -64,9 +64,6 @@ public class PathFinder {
     }
 
     public static boolean pathExists(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
-        if (xDestination == 3872 && yDestination == 2560) {
-            System.out.println("WTF");
-        }
         if (Methods.pointDistance(xStart, yStart, xDestination, yDestination) <= Place.tileSize) {
             return true;
         }

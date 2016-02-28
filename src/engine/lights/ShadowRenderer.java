@@ -9,7 +9,6 @@ import collision.Block;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.RoundRectangle;
-import engine.utilities.BlueArray;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
@@ -20,6 +19,7 @@ import net.jodk.lang.FastMath;
 import sprites.ClothedAppearance;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static collision.OpticProperties.NO_SHADOW;
@@ -37,7 +37,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class ShadowRenderer {
 
     private static final boolean DEBUG = false, OBJECT_DEBUG = false;
-    private static final BlueArray<Figure> shades = new BlueArray<>(512);
+    private static final ArrayList<Figure> shades = new ArrayList<>(512);
     private static final Point[] shadowPoints = {new Point(), new Point(), new Point(), new Point()};
     private static final Polygon polygon = new Polygon();
     private static final ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();

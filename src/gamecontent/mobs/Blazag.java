@@ -315,7 +315,7 @@ public class Blazag extends Mob {
     private void setUp() {
         setHearRange(512);
         setCollision(Rectangle.create(54, 38, OpticProperties.NO_SHADOW, this));
-        setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
+        setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 8);
         setDirection8way(random.randomInRange(0, 7));
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 44);
         appearance = animation;

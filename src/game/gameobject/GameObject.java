@@ -266,7 +266,7 @@ public abstract class GameObject {
 
     public int getXSpriteEnd(boolean... forCover) {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
-            return (int) x + appearance.getXOffset() + appearance.getXStart() + appearance.getActualWidth();
+            return (int) x + appearance.getXOffset() + appearance.getActualWidth();
         } else {
             return (int) x;
         }
@@ -274,7 +274,7 @@ public abstract class GameObject {
 
     public int getYSpriteEnd(boolean... forCover) {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
         if (appearance != null) {
-            return (int) y + appearance.getYOffset() + appearance.getYStart() + appearance.getActualHeight();
+            return (int) y + appearance.getYOffset() + appearance.getActualHeight();
         } else {
             return (int) y;
         }

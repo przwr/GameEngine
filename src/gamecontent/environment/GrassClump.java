@@ -61,13 +61,13 @@ public class GrassClump extends GameObject {
                 if (xCount > 1) {
                     if (j == 0) {
                         modXBladesCount -= (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve;
-                        xCenter = xCentering * 2 - modXBladesCount * bladeWidth / 2;
+                        xCenter = xCentering * 2 - modXBladesCount * Math.round((bladeWidth - 2) / 2f);
                     } else if (j == xCount - 1) {
                         modXBladesCount -= (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve;
-                        xCenter = modXBladesCount * bladeWidth / 2;
+                        xCenter = modXBladesCount * Math.round((bladeWidth - 2) / 2f);
                     }
                 }
-                grasses[i * xCount + j] = Grass.create(x + xCenter + j * grassWidth, y + (i + 1) * ySpacing, modXBladesCount, yBladesCount, bladeWidth,
+                grasses[i * xCount + j] = Grass.create(x + xCenter + j * (grassWidth), y + (i + 1) * ySpacing, modXBladesCount, yBladesCount, bladeWidth,
                         bladeHeight);
             }
         }
@@ -266,10 +266,10 @@ public class GrassClump extends GameObject {
                 xCenter = 0;
                 if (curve > 0 && xCount > 1) {
                     if (j == 0) {
-                        xCenter = xCentering - (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * bladeWidth / 2;
+                        xCenter = xCentering - (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * Math.round((bladeWidth - 2) / 2f);
                         glTranslatef(xCenter, 0, 0);
                     } else if (j == xCount - 1) {
-                        xCenter = (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * bladeWidth / 2 - xCentering;
+                        xCenter = (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * Math.round((bladeWidth - 2) / 2f) - xCentering;
                         glTranslatef(xCenter, 0, 0);
                     }
                 }
@@ -391,19 +391,22 @@ public class GrassClump extends GameObject {
         }
     }
 
-    public int getXSpriteBegin() {
+    @Override
+    public int getXSpriteBegin(boolean... forCover) {
         return getX();
     }
 
-    public int getYSpriteBegin() {
-        return getY();
+    @Override
+    public int getYSpriteBegin(boolean... forCover) {
+        return getY() - bladeHeight;
     }
 
-    public int getXSpriteEnd() {
-        return getX() + xRadius * 2;
+    public int getXSpriteEnd(boolean... forCover) {
+        return getX() + fbo.getWidth();
     }
 
-    public int getYSpriteEnd() {
-        return getY() + yRadius * 2;
+    public int getYSpriteEnd(boolean... forCover) {
+        return getY() + fbo.getHeight();
     }
+
 }

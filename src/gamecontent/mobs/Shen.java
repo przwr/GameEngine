@@ -23,7 +23,6 @@ import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
 import net.jodk.lang.FastMath;
-import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
@@ -252,6 +251,7 @@ public class Shen extends Mob {
                     state = idle;
                     destination.set(-1, -1);
                     maxSpeed = 1;
+                    rest.terminate();
                 }
                 goTo(destination);
             }

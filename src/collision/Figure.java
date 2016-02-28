@@ -344,6 +344,7 @@ public abstract class Figure implements Comparable<Figure> {
         return owner.getY() + yStart + height;
     }
 
+
     public int getYSpriteBegin() {
         return owner.getYSpriteBegin();
     }

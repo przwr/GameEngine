@@ -68,7 +68,7 @@ public class MapLoaderModule implements Runnable {
                     workingList.clear();
                 } else if (list1.isEmpty() && list2.isEmpty()) {
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                     }
                 }

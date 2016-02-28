@@ -6,9 +6,8 @@
 package gamecontent;
 
 import engine.Main;
-import engine.utilities.BlueArray;
-import engine.utilities.Drawer;
-import engine.utilities.ErrorHandler;
+import engine.utilities.*;
+import engine.view.Renderer;
 import engine.view.SplitScreen;
 import game.Game;
 import game.Settings;
@@ -16,6 +15,7 @@ import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.logic.maploader.MapLoaderModule;
 import game.logic.navmeshpathfinding.PathFindingModule;
+import game.logic.navmeshpathfinding.navigationmesh.NavigationMesh;
 import game.place.Place;
 import game.place.cameras.PlayersCamera;
 import game.place.map.Map;
@@ -35,10 +35,6 @@ import java.io.File;
 import java.util.Iterator;
 
 import static engine.systemcommunication.IO.loadInputFromFile;
-import game.place.fbo.FrameBufferObject;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @author przemek
@@ -446,7 +442,7 @@ public class MyGame extends Game {
         pathThread.setPriority(Thread.MIN_PRIORITY);
         started = running = true;
     }
-    
+
     @Override
     public void endGame() {
         running = started = false;
@@ -462,28 +458,25 @@ public class MyGame extends Game {
         mapThread = null;
         online.cleanUp();
         Tree.instances.clear();
-        Tree.instances = new ArrayList<>();
         Tree.fbos.clear();
-        Tree.fbos = new HashMap<>();
         Bush.instances.clear();
-        Bush.instances = new ArrayList<>();
         Bush.fbos.clear();
-        Bush.fbos = new HashMap<>();
         GrassClump.instances.clear();
-        GrassClump.instances = new ArrayList<>();
         GrassClump.fbos.clear();
-        GrassClump.fbos = new HashMap<>();
-        if (place != null)
+        if (place != null) {
             place.cleanUp();
+        }
         place = null;
         mode = 0;
         Place.currentCamera = null;
         for (BlueArray array : BlueArray.instances) {
             array.clearReally();
         }
-        BlueArray.instances.clear();
-        BlueArray.instances = new ArrayList<>();
-        System.gc();
+        BlueArray.cleanUp();
+        PointContainer.cleanUp();
+        NavigationMesh.cleanUp();
+        Renderer.place = null;
+        Methods.gc();
     }
 
     private void soundPause() {

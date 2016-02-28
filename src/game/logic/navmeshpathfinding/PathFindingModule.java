@@ -10,7 +10,7 @@ public class PathFindingModule implements Runnable {
     public static final PathStrategy GET_CLOSE = new GetClosePathStrategy();
     public static final PathStrategy WONDER_AROUND = new WonderAroundPathStrategy();
     public static final PathStrategy GET_TO = new GetToPathStrategy();
-    private static final PathRequestContainer requestedPaths = new PathRequestContainer(512);
+    private static final PathRequestContainer requestedPaths = new PathRequestContainer(256);
     private static boolean run;
     private static boolean cleaning;
     private static PathRequest request;
@@ -76,13 +76,6 @@ public class PathFindingModule implements Runnable {
         }
         actualPath = 0;
         cleaning = false;
-        if (requestedPaths.size() < 2) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void findPaths() {
@@ -92,6 +85,13 @@ public class PathFindingModule implements Runnable {
             request.requester = null;
         }
         incrementPath();
+        if (requestedPaths.size() < 2 || requestedPaths.size() == actualPath + 1) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void incrementPath() {
