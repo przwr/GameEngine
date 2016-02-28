@@ -717,10 +717,10 @@ public class MyController extends PlayerController {
         } else {
             inControl.setMaxSpeed(diagonal ? 7.777 : 11);
         }
-        /*DEMO
         if (actions[INPUT_ACTION_3].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());
         }
+        /*DEMO
         if (actions[INPUT_ACTION_4].isKeyClicked()) {
             if (inControl instanceof Player) {
                 inControl.getCamera().switchZoom();
