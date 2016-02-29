@@ -99,14 +99,14 @@ public class GrassClump extends GameObject {
                         modXBladesCount = xBladesCount;
                     }
                     xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                } else if (corner == CORNER_UP_LEFT) {
+                } else if (corner == CORNER_UP_RIGHT) {
                     modXBladesCount = xChange * (i + 1) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
                         modXBladesCount = xBladesCount;
                     }
                     xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                } else if (corner == CORNER_UP_RIGHT) {
+                } else if (corner == CORNER_UP_LEFT) {
                     modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
@@ -305,27 +305,27 @@ public class GrassClump extends GameObject {
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
                 modXBladesCount = xBladesCount;
-                if (corner == 0) {
+                if (corner == CORNER_DOWN_LEFT) {
                     modXBladesCount -= xChange * i - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
                         modXBladesCount = xBladesCount;
                     }
                     xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                } else if (corner == 2) {
-                    modXBladesCount = xChange * (i + 1) - j * xBladesCount;
-                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
-                    if (modXBladesCount > xBladesCount) {
-                        modXBladesCount = xBladesCount;
-                    }
-                    xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                } else if (corner == 1) {
+                } else if (corner == CORNER_UP_RIGHT) {
                     modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
                         modXBladesCount = xBladesCount;
                     }
                     xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                } else if (corner == CORNER_UP_LEFT) {
+                    modXBladesCount = xChange * (i + 1) - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
+                    }
+                    xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
                 } else {
                     modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;

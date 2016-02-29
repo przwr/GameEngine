@@ -118,7 +118,7 @@ public class PuzzleObject {
     }
 
     private void readLine(String line) {
-        try {
+        //try {
             lineTab = line.split(":");
             switch (lineTab[0]) {
                 case "t":
@@ -146,9 +146,9 @@ public class PuzzleObject {
                     ErrorHandler.error("The object \"" + lineTab[0] + "\" is undefined");
             }
             lineNum++;
-        } catch (Exception e) {
+        /*} catch (Exception e) {
             throw new RuntimeException(e.getMessage() + " at line " + lineNum);
-        }
+        }*/
     }
 
     private void decodeTile() {

@@ -13,6 +13,7 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.MapObjectContainer;
+import gamecontent.environment.GrassClump;
 import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
@@ -122,10 +123,10 @@ public class ObjectUI extends GUIObject {
                         if (y != 0) {
                             ret = "4";
                         } else {
-                            ret = x < 0 ? "0" : "2";
+                            ret = "" + (x < 0 ? GrassClump.CORNER_DOWN_LEFT : GrassClump.CORNER_UP_RIGHT);
                         }
                     } else if (y != 0) {
-                        ret = y > 0 ? "3" : "1";
+                        ret = "" + (y > 0 ? GrassClump.CORNER_UP_LEFT : GrassClump.CORNER_DOWN_RIGHT);
                     }
                     if (!ret.isEmpty()) {
                         mapObjects[choosenObject] = MapObjectContainer.generate(0, 0, null, (byte) choosenObject, ret);

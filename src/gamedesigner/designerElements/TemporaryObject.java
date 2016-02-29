@@ -28,15 +28,15 @@ public class TemporaryObject extends GameObject {
 
     private final GameObject covered;
     private final ObjectPlace objPlace;
-    private final Object[] data;
+    private final String[] data;
 
-    public TemporaryObject(GameObject covered, ObjectPlace place, Object... data) {
+    public TemporaryObject(GameObject covered, ObjectPlace place, String... data) {
         this.initialize("tmpBlock", Methods.makeDivisibleBy(covered.getX(), Place.tileSize), 
                 Methods.makeDivisibleBy(covered.getY(), Place.tileSize));
         this.covered = covered;
         this.onTop = true;
         objPlace = place;
-        if (data.length != 0) {
+        if (data != null && data.length != 0) {
             this.data = data;
         } else {
             this.data = null;
@@ -47,7 +47,7 @@ public class TemporaryObject extends GameObject {
         return covered;
     }
     
-    public Object[] getAdditionalData() {
+    public String[] getAdditionalData() {
         return data;
     }
     

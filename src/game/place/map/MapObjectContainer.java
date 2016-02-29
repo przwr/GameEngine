@@ -11,6 +11,7 @@ import game.place.Place;
 import gamecontent.environment.Bush;
 import gamecontent.environment.GrassClump;
 import gamecontent.environment.Tree;
+import java.util.Arrays;
 
 /**
  * @author Wojtek
@@ -25,7 +26,6 @@ public class MapObjectContainer {
 
     public MapObjectContainer(String[] data) {
         if (data[0].equals("o")) {
-            this.data = data;
             x = Integer.parseInt(data[2]) * Place.tileSize;
             y = Integer.parseInt(data[3]) * Place.tileSize;
             type = -1;
@@ -40,10 +40,10 @@ public class MapObjectContainer {
             }
             if (data.length > 4) {
                 String[] tmp = new String[data.length - 4];
-                System.arraycopy(data, 5, tmp, 0, tmp.length);
-                data = tmp;
+                System.arraycopy(data, 4, tmp, 0, tmp.length);
+                this.data = tmp;
             } else {
-                data = null;
+                this.data = null;
             }
         }
     }
@@ -70,14 +70,11 @@ public class MapObjectContainer {
                 if (data != null && data.length != 0) {
                     int subtype = Integer.parseInt(data[0]);
                     if (subtype <= 3) {
-                        System.out.println("Corner " + subtype);
                         ret = GrassClump.createCorner(x, y, 1, 6, 9, 4, 9, 32, subtype);
                     } else {
-                        System.out.println("Round");
                         ret = GrassClump.createRound(x, y, 1, 6, 9, 4, 9, 32);
                     }
                 } else {
-                    System.out.println("Rect");
                     ret = GrassClump.createRectangle(x, y, 1, 6, 9, 4, 9, 32);
                 }
                 break;
