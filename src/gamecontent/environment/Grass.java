@@ -6,6 +6,7 @@ import engine.utilities.PointedValue;
 import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
+import game.gameobject.entities.Player;
 import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
@@ -52,7 +53,7 @@ public class Grass extends GameObject {
                 int placeR = (-2 + random.next(2));
                 int widthR = (-4 + random.next(3));
                 int heightR = (-8 + random.next(4));
-                int color = random.next(5);
+                int color = random.random(48);
                 blades[idx] = new PointedValue(placeR + widthR + Math.round((xCentralized + c) * bladeSpacing) + bladeWidth / 2, -bladeHeight + heightR
                         + (yCentralized + i) * bladeWidth, color);
                 blades[idx + 1] = new PointedValue(placeR + Math.round((xCentralized + c + 1) * bladeSpacing), (yCentralized + i) * bladeWidth, 0);
@@ -84,6 +85,9 @@ public class Grass extends GameObject {
                 if (!(player instanceof ObjectPlayer) && player.getFloatHeight() < bladeHeight) {
                     if ((xCurrentDistance = Math.abs(getX() - player.getX())) < xRadius + player.getCollision().getWidthHalf()) {
                         if ((yCurrentDistance = Math.abs(getY() - player.getY())) < yRadius + player.getCollision().getHeightHalf()) {
+                            if (xCurrentDistance + yCurrentDistance < player.getCollision().getWidthHalf()) {
+                                ((Player) player).setShadowVisibility(false);
+                            }
                             if (xCurrentDistance + yCurrentDistance < distance) {
                                 distance = xCurrentDistance + yCurrentDistance;
                                 object.set(player.getX(), player.getY());

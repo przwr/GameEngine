@@ -242,8 +242,7 @@ public class Tree extends GameObject {
         int change = -8 + random.next(4);
         int xPosition = x + deviation / 2 + change;
         if (!branchless) {
-
-            Drawer.drawTextureQuad(x, 0, xPosition, -length / 2, xPosition + (widthTop + widthBase) / 2, -length / 2, x + widthBase, 0);
+            Drawer.drawTextureQuad(x, 0, x + widthBase, 0, xPosition + (widthTop + widthBase) / 2, -length / 2, xPosition, -length / 2);
             Drawer.drawTextureQuad(xPosition, -length / 2, x + deviation, -length, x + deviation + widthTop, -length, xPosition + (widthTop + widthBase) / 2,
                     -length / 2);
         }

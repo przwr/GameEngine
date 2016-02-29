@@ -361,24 +361,28 @@ public class MyPlayer extends Player {
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
         return /*!Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
-                && */isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
+                 && */ isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override
     public void render(int xEffect, int yEffect) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
-                    * Place.getCurrentScale() / 2f), 24);
-            /*DEMO
-            glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
+            if (visibleShadow) {
+                glPushMatrix();
+                glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
+                Drawer.setColorStatic(JUMP_SHADOW_COLOR);
+                Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
+                        * Place.getCurrentScale() / 2f), 24);
+                /*DEMO
+                 glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
+                 Drawer.refreshColor();
+                 Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
+                 Drawer.getCurrentColor());*/
+                glPopMatrix();
+            } else {
+                visibleShadow = true;
+            }
             Drawer.refreshColor();
-            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
-                    Drawer.getCurrentColor());*/
-            Drawer.refreshColor();
-            glPopMatrix();
 
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
@@ -405,7 +409,6 @@ public class MyPlayer extends Player {
             glPopMatrix();
         }
     }
-
 
     @Override
     public void renderClothedUpperBody(int frame) {

@@ -31,6 +31,7 @@ public abstract class Player extends Entity {
     protected Camera camera;
     protected GameOnline online;
     protected boolean first, stopped;
+    protected boolean visibleShadow = true;
     private Menu menu;
 
     protected Player(String name) {
@@ -85,6 +86,10 @@ public abstract class Player extends Entity {
         }
     }
 
+    public void setShadowVisibility(boolean shadow) {
+        visibleShadow = shadow;
+    } 
+    
     @Override
     public void changeMap(Map map, int x, int y) {
         super.changeMap(map, x, y);
