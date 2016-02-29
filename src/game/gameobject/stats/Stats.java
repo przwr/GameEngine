@@ -57,7 +57,7 @@ public class Stats {
                 health = 0;
             }
             System.out.println(owner.getName() + " dostał za " + hurt + " Życie: " + health + "/" + maxHealth);
-            DamageNumber damage = new DamageNumber(hurt, owner.getX(), owner.getY(),
+            DamageNumber damage = new DamageNumber(hurt, maxHealth, owner.getX(), owner.getY(),
                     Place.tileSize, owner.getMap().place);
             owner.getMap().addObject(damage);
             if (health == 0) {

@@ -45,9 +45,8 @@ public class Dummy extends Mob {
         rand = RandomGenerator.create();
         stats = new MobStats(this);
         stats.setStrength(10);
-        stats.setDefence(1);
-        stats.setMaxHealth(10000);
-        stats.setHealth(10000);
+        stats.setDefence(2);
+        stats.setStartHealth(1000);
         setTargetable(false);
     }
 

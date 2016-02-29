@@ -27,7 +27,7 @@ public class Rock extends Mob {
         setCollision(Rectangle.create(appearance.getActualWidth(), appearance.getActualWidth() / 2, OpticProperties.NO_SHADOW, this));
         stats = new MobStats(this);
         stats.setStartHealth(1000);
-        stats.setDefence(15);
+        stats.setDefence(20);
         setResistance(50);
         addPushInteraction();
         setTargetable(false);

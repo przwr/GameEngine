@@ -5,6 +5,7 @@
  */
 package gamecontent;
 
+import engine.systemcommunication.Time;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.Settings;
@@ -53,6 +54,7 @@ public class MyController extends PlayerController {
     private MyGUI gui;
     private int jumpLag;
     private long lastEnergyUp = 0;
+    private double runMomentum = 0;
 
     public MyController(Player inControl, MyGUI playersGUI) {
         super(inControl);
@@ -358,7 +360,6 @@ public class MyController extends PlayerController {
                     animation.animateIntervalInDirectionOnce(tempDirection, animation.FISTS, 3, 4);
                     stats.decreaseEnergy(7);
                     attacked = true;
-
                 } else {
                     ((MyPlayer) inControl).getGUI().activateLowEnergy(7);
                 }
@@ -772,12 +773,18 @@ public class MyController extends PlayerController {
         }
         if (!running) {
             if (sneaking || charging || actions[INPUT_BLOCK].isKeyPressed()) {
-                inControl.setMaxSpeed(diagonal ? 2.121 : 3);
+                inControl.setMaxSpeed(getNumberSquared(3, diagonal));
             } else {
-                inControl.setMaxSpeed(diagonal ? 4.949 : 7);
+                inControl.setMaxSpeed(getNumberSquared(7, diagonal));
             }
+            /*runMomentum = 0;*/
         } else {
-            inControl.setMaxSpeed(diagonal ? 7.777 : 11);
+            inControl.setMaxSpeed(getNumberSquared(10/* + runMomentum * Time.getDelta()*/, diagonal));
+            /*if (runMomentum < 4) {
+                runMomentum += 0.05;
+            } else {
+                runMomentum = 4;
+            }*/
         }
         if (actions[INPUT_ACTION_3].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());
@@ -788,6 +795,10 @@ public class MyController extends PlayerController {
          inControl.getCamera().switchZoom();
          }
          }*/
+    }
+
+    private double getNumberSquared(double num, boolean diagonal) {
+        return diagonal ? num * Methods.ONE_BY_SQRT_ROOT_OF_2 : num;
     }
 
     private void animateMoving(int direction) {

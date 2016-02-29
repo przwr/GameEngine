@@ -28,7 +28,7 @@ public class DamageNumber extends Entity {
     private final int damage;
     private final Delay time;
 
-    public DamageNumber(int damage, int x, int y, int height, Place place) {
+    public DamageNumber(int damage, int health, int x, int y, int height, Place place) {
         initialize("damage", x, y);
         this.place = place;
         this.floatHeight = height;
@@ -44,15 +44,17 @@ public class DamageNumber extends Entity {
         time.start();
         onTop = true;
         setDirection(direction);
-        if (damage <= 5) {
+        float percent = (float) damage / health * 100;
+        System.out.println(percent);
+        if (percent <= 1) {
             color = Color.lightGray;
-        } else if (damage <= 10) {
+        } else if (percent <= 3) {
             color = Color.white;
-        } else if (damage <= 25) {
+        } else if (percent <= 10) {
             color = Color.yellow;
-        } else if (damage <= 55) {
+        } else if (percent <= 21) {
             color = Color.orange;
-        } else if (damage <= 85) {
+        } else if (percent <= 50) {
             color = Color.red;
         } else {
             color = Color.black;
