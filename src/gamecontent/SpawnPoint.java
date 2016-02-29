@@ -23,8 +23,7 @@ public class SpawnPoint extends GameObject {
 
     Delay delay;
     Class<? extends Mob> mob;
-    int maxMobs, width, height;
-
+    int maxMobs, width, height, currentMaxMobs;
 
     private SpawnPoint(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance appearance) {
         initialize(name, x, y);
@@ -34,19 +33,24 @@ public class SpawnPoint extends GameObject {
         this.height = height;
         this.mob = mob;
         this.appearance = appearance;
-        this.maxMobs = maxMobs;
+        this.currentMaxMobs = this.maxMobs = maxMobs;
         this.toUpdate = true;
         delay = Delay.createInSeconds(seconds);
         delay.start();
     }
 
-    public static SpawnPoint createVisible(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance
-            appearance) {
+    public static SpawnPoint createVisible(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance appearance) {
         return new SpawnPoint(x, y, width, height, name, mob, seconds, maxMobs, appearance);
     }
 
     public static SpawnPoint createInVisible(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs) {
         return new SpawnPoint(x, y, width, height, name, mob, seconds, maxMobs, null);
+    }
+
+    public void lowerSpawning() {
+        if (currentMaxMobs > 0) {
+            currentMaxMobs--;
+        }
     }
 
     @Override
@@ -61,14 +65,15 @@ public class SpawnPoint extends GameObject {
                         mobs++;
                     }
                 }
-                if (mobs < maxMobs) {
-                    if (area.getNearSolidMobs().stream().anyMatch((object) -> (object.getClass().getName().equals(mob.getName()) &&
-                            collision.checkCollision(getX(), getY(), object)))) {
+                if (mobs < currentMaxMobs) {
+                    if (area.getNearSolidMobs().stream().anyMatch((object) -> (object.getClass().getName().equals(mob.getName())
+                            && collision.checkCollision(getX(), getY(), object)))) {
                         return;
                     }
                     try {
                         Mob m = mob.newInstance();
                         m.initialize(getX(), getY(), map.place, map.getNextMobID());
+                        m.setSpawner(this);
                         map.addObject(m);
                         System.out.println("Adding " + m.getName());
                     } catch (InstantiationException | IllegalAccessException e) {
@@ -95,11 +100,9 @@ public class SpawnPoint extends GameObject {
         return true;
     }
 
-
     public Class getType() {
         return mob;
     }
-
 
     @Override
     public void render(int xEffect, int yEffect) {

@@ -72,7 +72,6 @@ public class MyPlayer extends Player {
     private Point centralPoint;
     private MyGUI gui;
     private float jumpDelta = 22.6f;
-    private long lastEnergyUp = 0;
 
     public MyPlayer(boolean first, String name) {
         super(name);
@@ -108,11 +107,11 @@ public class MyPlayer extends Player {
             switch (attack) {
                 case ATTACK_SLASH:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new CurveInteractiveCollision(42, 32, 0, 70, 150), STRENGTH_HURT, SWORD, (byte) attack, 2f, 2.5f));
+                            new CurveInteractiveCollision(42, 32, 0, 75, 150), STRENGTH_HURT, SWORD, (byte) attack, 2f, 2.5f));
                     break;
                 case ATTACK_THRUST:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(52, 10, 6, 60, 24), STRENGTH_HURT, SWORD, (byte) attack, 2.5f, 1.5f));
+                            new LineInteractiveCollision(52, 10, 6, 65, 24), STRENGTH_HURT, SWORD, (byte) attack, 2.5f, 1.5f));
                     break;
                 case ATTACK_WEAK_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
@@ -126,7 +125,7 @@ public class MyPlayer extends Player {
                     break;
                 case ATTACK_UPPER_SLASH:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(0, 128, 10, 55, 40), STRENGTH_HURT, SWORD, (byte) attack, 2f, 5f));
+                            new LineInteractiveCollision(0, 128, 10, 65, 40), STRENGTH_HURT, SWORD, (byte) attack, 2f, 5f));
                     break;
                 case ATTACK_NORMAL_ARROW_SHOT:
                     InteractiveAction arrow = new InteractiveActionArrow();
@@ -324,6 +323,8 @@ public class MyPlayer extends Player {
         ((ClothedAppearance) appearance).setClothes(head, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon,
                 loadCloth("bow", Cloth.WEAPON_TYPE),
                 loadCloth("shield", Cloth.WEAPON_TYPE));
+        cap.setWearing(false);
+        boots.setWearing(false);
     }
 
     public void randomizeClothes() {
@@ -360,8 +361,8 @@ public class MyPlayer extends Player {
 
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
-        return /*!Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
-                 && */ isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
+        return !Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
+                 &&  isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override
@@ -449,27 +450,6 @@ public class MyPlayer extends Player {
             }
             brakeOthers();
             appearance.updateTexture(this);
-            updateEnergy();
-        }
-    }
-
-    private void updateEnergy() {
-        float energyGain = 0.009f;
-        if (lastEnergyUp > 0) {
-            long current = Place.getDayCycle().getCurrentTimeInMiliSeconds();
-            long difference = current - lastEnergyUp;
-            if (((MyController) playerController).isRunning() && getSpeed() > 0 && isAbleToMove()) {
-                float decrease = 0.4f - energyGain * difference;
-                if (decrease < 0) {
-                    decrease = 0;
-                }
-                ((PlayerStats) stats).decreaseEnergy(decrease);
-            } else if (!stats.isProtectionState() && !((MyController) playerController).isScoping()) {
-                ((PlayerStats) stats).increaseEnergy(energyGain * difference);
-            }
-            lastEnergyUp = current;
-        } else {
-            lastEnergyUp = Place.getDayCycle().getCurrentTimeInMiliSeconds();
         }
     }
 

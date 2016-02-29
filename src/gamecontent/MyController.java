@@ -52,6 +52,7 @@ public class MyController extends PlayerController {
     private PlayerStats stats;
     private MyGUI gui;
     private int jumpLag;
+    private long lastEnergyUp = 0;
 
     public MyController(Player inControl, MyGUI playersGUI) {
         super(inControl);
@@ -59,8 +60,8 @@ public class MyController extends PlayerController {
         inputs = new AnyInput[ACTIONS_COUNT];
         actions = new Action[ACTIONS_COUNT];
         blockedInputs = new boolean[ACTIONS_COUNT];
-        attackDelay = Delay.createInMilliseconds(30, true);
-        preAttackDelay = Delay.createInMilliseconds(30, true);
+        attackDelay = Delay.createInMilliseconds(5, true);
+        preAttackDelay = Delay.createInMilliseconds(40, true);
         afterAttackDelay = Delay.createInMilliseconds(160, true);
         lagDelay = Delay.createInMilliseconds(250, true);
         sideDelay = Delay.createInMilliseconds(25, true);
@@ -106,6 +107,7 @@ public class MyController extends PlayerController {
                     sneaking = !sneaking;
                 }
             }
+            updateEnergy();
             if (!inControl.isHurt() || stats.isProtectionState()) {
                 stats.setProtectionState(false);
                 if (inControl.isAbleToMove()) {
@@ -152,6 +154,26 @@ public class MyController extends PlayerController {
         }
     }
 
+    private void updateEnergy() {
+        float energyGain = 0.015f;
+        if (lastEnergyUp > 0) {
+            long current = Place.getDayCycle().getCurrentTimeInMiliSeconds();
+            long difference = current - lastEnergyUp;
+            if (running && inControl.getSpeed() > 0 && inControl.isAbleToMove()) {
+                float decrease = 0.8f - energyGain * difference;
+                if (decrease < 0) {
+                    decrease = 0;
+                }
+                stats.decreaseEnergy(decrease);
+            } else if (!stats.isProtectionState() && !scoping) {
+                stats.increaseEnergy(energyGain * difference);
+            }
+            lastEnergyUp = current;
+        } else {
+            lastEnergyUp = Place.getDayCycle().getCurrentTimeInMiliSeconds();
+        }
+    }
+
     private void updateBlock() {
         if (actions[INPUT_BLOCK].isKeyClicked()) {
             //PERFEKCYJNY BLOK (pierwsza klatka obrony)
@@ -159,10 +181,11 @@ public class MyController extends PlayerController {
         animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
         stats.setProtectionState(true);
         updateChargingMovement();
+        updateDirectionWithSlotInput();
         //RESZTA BLOKOWANIA
     }
 
-    private void stopAttack() {
+    public void stopAttack() {
         charging = false;
         if (scoping) {
             inControl.getCamera().clearLookingPoint();
@@ -294,27 +317,27 @@ public class MyController extends PlayerController {
     private void startAttack(byte attack) {
         switch (attack) {
             case ATTACK_SLASH:
-                if (stats.getEnergy() >= 20) {
+                if (stats.getEnergy() >= 14) {
                     animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 2, 6);
-                    stats.decreaseEnergy(20);
+                    stats.decreaseEnergy(14);
                     attacked = true;
                 } else {
                     ((MyPlayer) inControl).getGUI().activateLowEnergy(20);
                 }
                 break;
             case ATTACK_THRUST:
-                if (stats.getEnergy() >= 24) {
+                if (stats.getEnergy() >= 19) {
                     animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 7, 9);
-                    stats.decreaseEnergy(24);
+                    stats.decreaseEnergy(19);
                     attacked = true;
                 } else {
                     ((MyPlayer) inControl).getGUI().activateLowEnergy(24);
                 }
                 break;
             case ATTACK_UPPER_SLASH:
-                if (stats.getEnergy() >= 20) {
+                if (stats.getEnergy() >= 15) {
                     animation.animateIntervalInDirectionOnce(tempDirection, animation.SWORD, 10, 17);
-                    stats.decreaseEnergy(20);
+                    stats.decreaseEnergy(15);
                     attacked = true;
                 } else {
                     ((MyPlayer) inControl).getGUI().activateLowEnergy(20);
@@ -364,8 +387,8 @@ public class MyController extends PlayerController {
                     -(int) Methods.yRadius8Directions(tempDirection, 5 * Place.tileSize));
         }
         if (attacked) {
-            preAttackDelay.setFrameLengthInMilliseconds(30);
-            attackDelay.setFrameLengthInMilliseconds(30);
+            preAttackDelay.setFrameLengthInMilliseconds(1);
+            attackDelay.setFrameLengthInMilliseconds(40);
             afterAttackDelay.setFrameLengthInMilliseconds(160);
             lastAttackType = attack;
             attackMovement.setSpeedInDirection(tempDirection * 45, 10);
@@ -394,6 +417,12 @@ public class MyController extends PlayerController {
         }
         if (chargingDelay.isOver()) {
             updateChargingMovement();
+            if (updateDirectionWithSlotInput()) {
+                animation.getUpperBody().changeDirection(tempDirection);
+                inControl.getCamera().setLookingPoint(
+                        (int) Methods.xRadius8Directions(tempDirection, 5 * Place.tileSize),
+                        -(int) Methods.yRadius8Directions(tempDirection, 5 * Place.tileSize));
+            }
         } else {
             inControl.brake(2);
         }
@@ -442,6 +471,37 @@ public class MyController extends PlayerController {
             diagonal = false;
             inControl.brake(0);
         }
+    }
+
+    private boolean updateDirectionWithSlotInput() {
+        if (actions[INPUT_SLOT_UP].isKeyPressed()) {
+            if (actions[INPUT_SLOT_LEFT].isKeyPressed()) {
+                inControl.setDirection8way(3);
+            } else if (actions[INPUT_SLOT_RIGHT].isKeyPressed()) {
+                inControl.setDirection8way(1);
+            } else {
+                inControl.setDirection8way(2);
+            }
+        } else if (actions[INPUT_SLOT_DOWN].isKeyPressed()) {
+            if (actions[INPUT_SLOT_LEFT].isKeyPressed()) {
+                inControl.setDirection8way(5);
+            } else if (actions[INPUT_SLOT_RIGHT].isKeyPressed()) {
+                inControl.setDirection8way(7);
+            } else {
+                inControl.setDirection8way(6);
+            }
+        } else {
+            if (actions[INPUT_SLOT_RIGHT].isKeyPressed()) {
+                inControl.setDirection8way(0);
+            } else if (actions[INPUT_SLOT_LEFT].isKeyPressed()) {
+                inControl.setDirection8way(4);
+            }
+        }
+        if (tempDirection != inControl.getDirection8Way()) {
+            tempDirection = inControl.getDirection8Way();
+            return true;
+        }
+        return false;
     }
 
     private void updateDirection() {
@@ -584,7 +644,7 @@ public class MyController extends PlayerController {
                         ((MyPlayer) inControl).getGUI().activateLowEnergy(24);
                     }
                 }
-                 /* else {
+                /* else {
                  checkDoubleClickDodge(jumpSpeed);
                  }*/
             } else {
@@ -691,22 +751,24 @@ public class MyController extends PlayerController {
             }
             gui.changeAttackIcon(firstAttackType, secondAttackType);
         }
-        if (actions[INPUT_SLOT_UP].isKeyClicked()) {
-            ((MyPlayer) inControl).setActionPair(0);
-            updateAttackTypes();
-            gui.changeAttackIcon(firstAttackType, secondAttackType);
-        } else if (actions[INPUT_SLOT_RIGHT].isKeyClicked()) {
-            ((MyPlayer) inControl).setActionPair(1);
-            updateAttackTypes();
-            gui.changeAttackIcon(firstAttackType, secondAttackType);
-        } else if (actions[INPUT_SLOT_DOWN].isKeyClicked()) {
-            ((MyPlayer) inControl).setActionPair(2);
-            updateAttackTypes();
-            gui.changeAttackIcon(firstAttackType, secondAttackType);
-        } else if (actions[INPUT_SLOT_LEFT].isKeyClicked()) {
-            ((MyPlayer) inControl).setActionPair(3);
-            updateAttackTypes();
-            gui.changeAttackIcon(firstAttackType, secondAttackType);
+        if (!charging && !actions[INPUT_BLOCK].isKeyPressed()) {
+            if (actions[INPUT_SLOT_UP].isKeyClicked()) {
+                ((MyPlayer) inControl).setActionPair(0);
+                updateAttackTypes();
+                gui.changeAttackIcon(firstAttackType, secondAttackType);
+            } else if (actions[INPUT_SLOT_RIGHT].isKeyClicked()) {
+                ((MyPlayer) inControl).setActionPair(1);
+                updateAttackTypes();
+                gui.changeAttackIcon(firstAttackType, secondAttackType);
+            } else if (actions[INPUT_SLOT_DOWN].isKeyClicked()) {
+                ((MyPlayer) inControl).setActionPair(2);
+                updateAttackTypes();
+                gui.changeAttackIcon(firstAttackType, secondAttackType);
+            } else if (actions[INPUT_SLOT_LEFT].isKeyClicked()) {
+                ((MyPlayer) inControl).setActionPair(3);
+                updateAttackTypes();
+                gui.changeAttackIcon(firstAttackType, secondAttackType);
+            }
         }
         if (!running) {
             if (sneaking || charging || actions[INPUT_BLOCK].isKeyPressed()) {
@@ -721,11 +783,11 @@ public class MyController extends PlayerController {
             inControl.setEmits(!inControl.isEmits());
         }
         /*DEMO
-        if (actions[INPUT_ACTION_4].isKeyClicked()) {
-            if (inControl instanceof Player) {
-                inControl.getCamera().switchZoom();
-            }
-        }*/
+         if (actions[INPUT_ACTION_4].isKeyClicked()) {
+         if (inControl instanceof Player) {
+         inControl.getCamera().switchZoom();
+         }
+         }*/
     }
 
     private void animateMoving(int direction) {

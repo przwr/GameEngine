@@ -5,6 +5,7 @@ import game.gameobject.entities.Agro;
 import game.gameobject.entities.Mob;
 import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.items.Arrow;
+import gamecontent.SpawnPoint;
 
 /**
  * Created by przemek on 10.08.15.
@@ -15,6 +16,15 @@ public class MobStats extends Stats {
 
     public MobStats(Mob owner) {
         super(owner);
+    }
+
+    @Override
+    public void died(GameObject attacker) {
+        SpawnPoint spawn = ((Mob) owner).getSpawner();
+        if (spawn != null) {
+            spawn.lowerSpawning();
+        }
+        super.died(attacker);
     }
 
     @Override

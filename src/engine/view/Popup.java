@@ -8,7 +8,7 @@ package engine.view;
 import engine.Main;
 import engine.utilities.Methods;
 import game.Settings;
-import game.text.FontBase;
+import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 
@@ -21,7 +21,8 @@ public class Popup {
 
     private static final String[] messages = new String[100];
     private static int WIDTH_HALF, HEIGHT_HALF;
-    private final FontBase fonts;
+    private final FontHandler smallFont;
+    private final FontHandler bigFont;
     private final int middleOk;
     private final int border = 3;
     private int messagesPointer = -1;
@@ -31,10 +32,9 @@ public class Popup {
     private int shift;
 
     public Popup(String font) {
-        fonts = Settings.fonts;
-        fonts.add(font, (int) (Settings.nativeScale * 22));
-        fonts.add(font, (int) (Settings.nativeScale * 28));
-        middleOk = fonts.getFont(0).getWidth("[ENTER]");
+        smallFont = Settings.fonts.getFont(font, (int) (Settings.nativeScale * 22));
+        bigFont =  Settings.fonts.getFont(font, (int) (Settings.nativeScale * 28));
+        middleOk = smallFont.getWidth("[ENTER]");
         WIDTH_HALF = Display.getWidth() / 2;
         HEIGHT_HALF = Display.getHeight() / 2;
     }
@@ -63,17 +63,17 @@ public class Popup {
 
     private void renderMessage(int id) {
         String[] lines = messages[id].split("\\r?\\n");
-        shift = fonts.getFont(0).getHeight();
-        space = fonts.getFont(1).getHeight();
-        int biggest = fonts.getFont(1).getWidth(Main.getTitle());
+        shift = smallFont.getHeight();
+        space = bigFont.getHeight();
+        int biggest = bigFont.getWidth(Main.getTitle());
         for (String line : lines) {
-            biggest = fonts.getFont(0).getWidth(line) > biggest ? fonts.getFont(0).getWidth(line) : biggest;
+            biggest = smallFont.getWidth(line) > biggest ? smallFont.getWidth(line) : biggest;
         }
         width = Methods.interval(WIDTH_HALF >> 2, biggest + shift, (WIDTH_HALF << 1) - (border << 1));
         height = Methods.interval(0, space + shift + shift * (lines.length + 1) + 2 * border, (HEIGHT_HALF << 1) - (border << 1));
         renderBackground();
         for (int i = 0; i < lines.length; i++) {
-            renderLine(0, WIDTH_HALF, HEIGHT_HALF - height / 2 + space + shift / 2 + shift * (i + 1) + border, lines[i], Color.black);
+            renderLine(smallFont, WIDTH_HALF, HEIGHT_HALF - height / 2 + space + shift / 2 + shift * (i + 1) + border, lines[i], Color.black);
         }
         glDisable(GL_BLEND);
         glBegin(GL_QUADS);
@@ -82,8 +82,8 @@ public class Popup {
         renderBorders();
         glEnd();
         glEnable(GL_BLEND);
-        renderLine(0, WIDTH_HALF, HEIGHT_HALF + height / 2, "[ENTER]", Color.black);
-        renderLine(1, WIDTH_HALF, HEIGHT_HALF - height / 2 + space, Main.getTitle(), Color.black);
+        renderLine(smallFont, WIDTH_HALF, HEIGHT_HALF + height / 2, "[ENTER]", Color.black);
+        renderLine(bigFont, WIDTH_HALF, HEIGHT_HALF - height / 2 + space, Main.getTitle(), Color.black);
         glEnable(GL_TEXTURE_2D);
     }
 
@@ -172,8 +172,8 @@ public class Popup {
         glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2);
     }
 
-    private void renderLine(int font, int x, int y, String message, Color color) {
-        fonts.getFont(font).drawLine(message, x - fonts.getFont(font).getWidth(message) / 2, y - fonts.getFont(font).getHeight(), color);
+    private void renderLine(FontHandler font, int x, int y, String message, Color color) {
+        font.drawLine(message, x - font.getWidth(message) / 2, y - font.getHeight(), color);
     }
 
     public int getId() {

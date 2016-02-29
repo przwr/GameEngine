@@ -24,6 +24,7 @@ public class FontHandler {
     private TrueTypeFont trueFont;
     private Font font;
     private String name = "";
+    private int size = 0;
 
     public FontHandler(String name, int size) {
         try {
@@ -32,13 +33,16 @@ public class FontHandler {
             font = font.deriveFont((float) size);
             trueFont = new TrueTypeFont(font, true, chars);
             this.name = name;
+            this.size = size;
             inputStream.close();
         } catch (FontFormatException | IOException ex) {
             Logger.getLogger(FontBase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private FontHandler(TrueTypeFont trueFont, Font font) {
+    private FontHandler(TrueTypeFont trueFont, Font font, String name, int size) {
+        this.name = name;
+        this.size = size;
         this.font = font;
         this.trueFont = trueFont;
     }
@@ -56,16 +60,16 @@ public class FontHandler {
 
     public FontHandler getFontWithSize(int size) {
         Font tmp = font.deriveFont(font.getStyle(), size);
-        return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp);
+        return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp, name, size);
     }
 
     public FontHandler getFontWithStyle(int style) {
         Font tmp = font.deriveFont(style);
-        return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp);
+        return new FontHandler(new TrueTypeFont(tmp, true, chars), tmp, name, size);
     }
 
     public int getSize() {
-        return font.getSize();
+        return size;
     }
 
     public String getName() {

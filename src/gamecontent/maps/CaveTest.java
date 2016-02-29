@@ -57,21 +57,22 @@ public class CaveTest extends Map {
         Zuocieyka zuo = new Zuocieyka(2216, 3117, place, mobID++, mb);
         addObject(zuo);
         addObject(new Sonata(1165, 1297, place, mobID++, zuo, mb));
-        addObject(SpawnPoint.createInVisible(2176, 5120, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(2880, 4096, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(4352, 4864, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(3072, 5568, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(4288, 5568, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(3584, 6272, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(4544, 7168, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(5056, 7040, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(3648, 6912, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(4096, 8128, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(5504, 7936, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(5568, 6336, 54, 38, "Tongub spawn", Tongub.class, 2, 10));
-        addObject(SpawnPoint.createInVisible(6818, 2662, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
-        addObject(SpawnPoint.createInVisible(7271, 2771, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
-        addObject(SpawnPoint.createInVisible(7126, 2445, 54, 38, "Blazag spawn", Blazag.class, 5, 10));
+        int max = 6;
+        addObject(SpawnPoint.createInVisible(2176, 5120, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(2880, 4096, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(4352, 4864, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(3072, 5568, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(4288, 5568, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(3584, 6272, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(4544, 7168, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(5056, 7040, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(3648, 6912, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(4096, 8128, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(5504, 7936, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(5568, 6336, 54, 38, "Tongub spawn", Tongub.class, 2, max));
+        addObject(SpawnPoint.createInVisible(6818, 2662, 54, 38, "Blazag spawn", Blazag.class, 5, max));
+        addObject(SpawnPoint.createInVisible(7271, 2771, 54, 38, "Blazag spawn", Blazag.class, 5, max));
+        addObject(SpawnPoint.createInVisible(7126, 2445, 54, 38, "Blazag spawn", Blazag.class, 5, max));
     }
 
     //TYMCZASOWE

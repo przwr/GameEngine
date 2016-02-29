@@ -11,6 +11,7 @@ import gamecontent.MyPlayer;
 import gamecontent.effects.DamageNumber;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
+import gamecontent.MyController;
 
 /**
  * Created by przemek on 10.08.15.
@@ -41,12 +42,12 @@ public class PlayerStats extends Stats {
                     hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection : 1)));
                     break;
                 case BACK:
-                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionBackModifier :
-                            backDefenceModifier)));
+                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionBackModifier
+                            : backDefenceModifier)));
                     break;
                 case SIDE:
-                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionSideModifier :
-                            sideDefenceModifier)));
+                    hurt = Math.round(response.getPixels() / (defence * (protectionState ? protection * protectionSideModifier
+                            : sideDefenceModifier)));
                     break;
             }
             if (protectionState) {
@@ -73,6 +74,7 @@ public class PlayerStats extends Stats {
     @Override
     public void died(GameObject attacker) {
 //        player.getCollision().setCollide(false);
+        ((MyController) player.getController()).stopAttack();
         player.getCollision().setHitable(false);
         setUnhurtableState(true);
         player.setUnableToMove(true);
@@ -119,7 +121,6 @@ public class PlayerStats extends Stats {
             }
         }
     }
-
 
     public void decreaseEnergy(float amount) {
         if (amount > maxEnergy * 0.01f) {

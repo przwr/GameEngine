@@ -202,7 +202,7 @@ public class MyGUI extends GUIObject {
             Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, last, size / 2);
             Drawer.returnToCentralPoint();
         }
-        Drawer.setColorStatic(new Color(0.6f * blink, 0.1f * blink, 0.1f * blink));
+        Drawer.setColorStatic(new Color(0.8f * blink, 0.1f * blink, 0.1f * blink));
         Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, size / 2);
         Drawer.returnToCentralPoint();
     }
