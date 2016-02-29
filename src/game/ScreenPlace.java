@@ -15,7 +15,6 @@ import game.text.FontHandler;
 public abstract class ScreenPlace {
 
     public final Game game;
-    public FontBase fonts;
     public GameObject[] players;
     public FontHandler standardFont;
 

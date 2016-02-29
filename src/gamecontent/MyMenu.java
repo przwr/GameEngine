@@ -42,11 +42,10 @@ public class MyMenu extends Menu {
     public MyMenu(Game game) {
         super(game);
         setFirstRoot(new MenuChoice(Settings.language.menu.Menu, this));
-        fonts = new FontBase(20);
         int normalFontSize = Methods.roundDouble(Settings.nativeScale * 38);
         int bigFontSize = Methods.roundDouble(Settings.nativeScale * 64);
-        smallFont = fonts.add("Amble-Regular", normalFontSize);
-        bigFont = fonts.add("Amble-Regular", bigFontSize);
+        smallFont = Settings.fonts.getFont("Amble-Regular", normalFontSize);
+        bigFont = Settings.fonts.getFont("Amble-Regular", bigFontSize);
         delay = Delay.createInMilliseconds(25, true);
         delay.start();
         maxPositions = calculateMaxPositions(normalFontSize, bigFontSize);
@@ -156,11 +155,11 @@ public class MyMenu extends Menu {
             }
         }
         Drawer.renderStringCentered(root.getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1))
-                        * fonts.getFont(0).getHeight() * 0.7),
+                        * smallFont.getHeight() * 0.7),
                 bigFont, normalColor);
         line--;
         if (shift > 0) {
-            Drawer.renderStringCentered("/|\\", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * fonts.getFont(0).getHeight() * 0.7),
+            Drawer.renderStringCentered("/|\\", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * smallFont.getHeight() * 0.7),
                     smallFont, darkColor);
         }
         line--;
@@ -169,25 +168,25 @@ public class MyMenu extends Menu {
                 renderGammaHelper(line, i + shift);
             }
             Drawer.renderStringCentered(root.getChoice(i + shift).getLabel(), widthHalf / 2,
-                    heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * fonts.getFont(0).getHeight() * 0.7),
+                    heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * smallFont.getHeight() * 0.7),
                     smallFont, getColor(i + shift));
             line--;
         }
         if (root.getSize() > maxPositions && positions + shift <= root.getSize() - 1) {
-            Drawer.renderStringCentered("\\|/", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * fonts.getFont(0).getHeight() * 0.7),
+            Drawer.renderStringCentered("\\|/", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * smallFont.getHeight() * 0.7),
                     smallFont, darkColor);
         }
     }
 
     private void renderGammaHelper(int position, int i) {
-        Drawer.renderStringCentered("#", (widthHalf + fonts.getFont(0).getWidth(root.getChoice(i).getLabel() + "##")) / 2,
-                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * fonts.getFont(0).getHeight() * 0.7),
+        Drawer.renderStringCentered("#", (widthHalf + smallFont.getWidth(root.getChoice(i).getLabel() + "##")) / 2,
+                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * smallFont.getHeight() * 0.7),
                 smallFont, gammaColor1);
-        Drawer.renderStringCentered("#", (widthHalf + fonts.getFont(0).getWidth(root.getChoice(i).getLabel() + "####")) / 2,
-                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * fonts.getFont(0).getHeight() * 0.7),
+        Drawer.renderStringCentered("#", (widthHalf + smallFont.getWidth(root.getChoice(i).getLabel() + "####")) / 2,
+                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * smallFont.getHeight() * 0.7),
                 smallFont, gammaColor2);
-        Drawer.renderStringCentered("#", (widthHalf + fonts.getFont(0).getWidth(root.getChoice(i).getLabel() + "######")) / 2,
-                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * fonts.getFont(0).getHeight() * 0.7),
+        Drawer.renderStringCentered("#", (widthHalf + smallFont.getWidth(root.getChoice(i).getLabel() + "######")) / 2,
+                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * smallFont.getHeight() * 0.7),
                 smallFont, gammaColor3);
     }
 

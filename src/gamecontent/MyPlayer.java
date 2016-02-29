@@ -360,8 +360,8 @@ public class MyPlayer extends Player {
 
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
-        return !Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW
-                && isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
+        return /*!Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
+                && */isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override
@@ -372,10 +372,11 @@ public class MyPlayer extends Player {
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                     * Place.getCurrentScale() / 2f), 24);
+            /*DEMO
             glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
             Drawer.refreshColor();
-//            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
-//                    Drawer.getCurrentColor());
+            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
+                    Drawer.getCurrentColor());*/
             Drawer.refreshColor();
             glPopMatrix();
 

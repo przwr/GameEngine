@@ -9,7 +9,6 @@ import game.gameobject.entities.Player;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
 import gamecontent.MyPlayer;
-import gamecontent.environment.Rock;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
@@ -22,9 +21,8 @@ public class Nutka extends Mob {
 
     private Animation animation;
     private String dialog = "0";
-    private Rock rock;
 
-    public Nutka(int x, int y, Place place, short mobID, Rock rock) {
+    public Nutka(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
@@ -33,7 +31,6 @@ public class Nutka extends Mob {
         }
         addPushInteraction();
         setDirection8way(RIGHT);
-        this.rock = rock;
     }
 
     @Override
@@ -49,9 +46,6 @@ public class Nutka extends Mob {
                     player.getTextController().addEventOnBranchEnd(() -> {
                         dialog = "1";
                     }, "0");
-                    player.getTextController().addEventOnBranchEnd(() -> {
-                        rock.delete();
-                    }, "13");
                     player.getTextController().addEventOnBranchEnd(() -> {
                         player.getStats().setHealth(player.getStats().getMaxHealth());
                     }, "12");

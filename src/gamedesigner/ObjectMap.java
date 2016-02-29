@@ -453,8 +453,15 @@ public class ObjectMap extends Map {
         GameObject tmp;
         for (TemporaryObject go : mapObjects) {
             tmp = go.getCovered();
-            map.add("o:" + tmp.getName() + ":" + ((tmp.getX() - xActBegin) / tileSize)
-                    + ":" + ((tmp.getY() - yActBegin) / tileSize));
+            String added = "o:" + tmp.getName() + ":" + ((tmp.getX() - xActBegin) / tileSize)
+                    + ":" + ((tmp.getY() - yActBegin) / tileSize);
+            Object[] data = go.getAdditionalData();
+            if (data != null) {
+                for (Object s : data) {
+                    added += ":" + s;
+                }
+            }
+            map.add(added);
         }
 
         if (!links.isEmpty()) {

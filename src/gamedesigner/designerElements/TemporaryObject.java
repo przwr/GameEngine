@@ -11,11 +11,9 @@ import engine.utilities.Methods;
 import game.gameobject.GameObject;
 import game.place.Place;
 import gamedesigner.ObjectPlace;
-import static org.lwjgl.input.Keyboard.KEY_LMENU;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_COLOR;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -30,17 +28,27 @@ public class TemporaryObject extends GameObject {
 
     private final GameObject covered;
     private final ObjectPlace objPlace;
+    private final Object[] data;
 
-    public TemporaryObject(GameObject covered, ObjectPlace place) {
+    public TemporaryObject(GameObject covered, ObjectPlace place, Object... data) {
         this.initialize("tmpBlock", Methods.makeDivisibleBy(covered.getX(), Place.tileSize), 
                 Methods.makeDivisibleBy(covered.getY(), Place.tileSize));
         this.covered = covered;
         this.onTop = true;
         objPlace = place;
+        if (data.length != 0) {
+            this.data = data;
+        } else {
+            this.data = null;
+        }
     }
 
     public GameObject getCovered() {
         return covered;
+    }
+    
+    public Object[] getAdditionalData() {
+        return data;
     }
     
     @Override

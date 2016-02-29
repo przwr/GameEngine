@@ -8,6 +8,7 @@ package game.text;
 import engine.systemcommunication.Time;
 import engine.utilities.Drawer;
 import engine.utilities.Executive;
+import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Entity;
 import game.place.Place;
@@ -63,10 +64,10 @@ public class TextController extends GUIObject {
         branches = new ArrayList<>();
         branch = new Branch();
         fonts = new FontHandler[3];
-        fonts[0] = place.fonts.getFont("Amble-Regular", 0, 35);//PLAIN
-        fonts[1] = place.fonts.changeStyle(fonts[0], 1);//BOLD
-        fonts[2] = place.fonts.changeStyle(fonts[0], 2);//ITALIC
-        littleFont = place.fonts.getFont("Amble-Regular", 0, 20);
+        fonts[0] = Settings.fonts.getFont("Amble-Regular", 35);//PLAIN
+        fonts[1] = Settings.fonts.changeStyle(fonts[0], 1);//BOLD
+        fonts[2] = Settings.fonts.changeStyle(fonts[0], 2);//ITALIC
+        littleFont = Settings.fonts.getFont("Amble-Regular", 20);
         started = false;
         priority = 1;
         frame = place.getSpriteSheet("messageFrame", "");
@@ -121,6 +122,9 @@ public class TextController extends GUIObject {
             String[] tab;
             speed = 1;
             int num = 0;
+            if (colors.isEmpty()) {
+                colors.add(new Color(Color.black));
+            }
             if (text[0].substring(1).equals("{")) {
                 while (!(line = text[num++]).equals("}")) {
                     tab = line.split(":");
@@ -142,9 +146,6 @@ public class TextController extends GUIObject {
             }
             if (speakers.isEmpty()) {
                 speakers.add("");
-            }
-            if (colors.isEmpty()) {
-                colors.add(Color.black);
             }
             int lineNum = 0, lineIndex, last;
             TextEvent lastEvent = null;
@@ -176,7 +177,7 @@ public class TextController extends GUIObject {
                     last = 0;
                     tmp = new TextRow(lineNum);
                     if (line.length() != 0) {
-                        for (lineIndex = 0; lineIndex < line.length(); ) {
+                        for (lineIndex = 0; lineIndex < line.length();) {
                             if (line.charAt(lineIndex) == '$') {
                                 String symbol = line.substring(lineIndex + 1, lineIndex + 3).toLowerCase();
                                 switch (symbol) {
@@ -369,6 +370,7 @@ public class TextController extends GUIObject {
                                         last = lineIndex;
                                         break;
                                     case "co":   //CHANGE COLOR
+                                    case "cf":
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
                                                     lineNum, color, font);
@@ -376,16 +378,21 @@ public class TextController extends GUIObject {
                                         }
                                         for (int j = lineIndex + 3; j < line.length(); j++) {
                                             if (line.charAt(j) == '$') {
-                                                //Methods.print("zmiana z", color.r, color.g, color.b);
-                                                color = colors.get(Integer.parseInt(line.substring(lineIndex + 3, j), 16));
-                                                //Methods.print("na", color.r, color.g, color.b);
+                                                switch (symbol) {
+                                                    case "co":
+                                                        color = colors.get(Integer.parseInt(line.substring(lineIndex + 3, j), 16));
+                                                        break;
+                                                    case "cf":
+                                                        color = new Color(Integer.parseInt(line.substring(lineIndex + 3, j), 16));
+                                                        break;
+                                                }
                                                 line = line.substring(0, lineIndex) + line.substring(j + 1);
                                                 last = lineIndex;
                                                 break;
                                             }
                                         }
                                         break;
-                                    case "cn":   //PLAIN TEXT
+                                    case "cn":   //BLACK
                                         if (last != lineIndex) {
                                             lastEvent = generateEvent(type, line.substring(last, lineIndex), lastEvent,
                                                     lineNum, color, font);

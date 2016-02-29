@@ -328,6 +328,7 @@ public class SpriteBase {
                 e.printStackTrace();
             }
             sprite.setTexture(tex);
+            //System.out.println("Zaladowano " + sprite.getKey());
             Main.backgroundLoader.notifySprite(sprite);
         }
     }

@@ -37,6 +37,7 @@ import java.io.File;
 import java.util.Iterator;
 
 import static engine.systemcommunication.IO.loadInputFromFile;
+import game.place.fbo.FrameBufferObject;
 
 /**
  * @author przemek
@@ -232,7 +233,8 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersCount = playersCount;
         Place.progress = 2;
-        loading(1);
+        FontHandler font = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
+        loading(1, font);
         switch (playersCount) {
             case 1:
                 if (Main.TEST) {
@@ -281,7 +283,7 @@ public class MyGame extends Game {
             default:
                 break;
         }
-        loading(2);
+        loading(2, font);
         for (int i = 0; i < 4; i++) {
             place.players[i] = players[i];
         }
@@ -302,18 +304,17 @@ public class MyGame extends Game {
         started = running = true;
     }
 
-    public void loading(int progress) {
+    public void loading(int progress, FontHandler font) {
         Drawer.clearScreen(0);
-        showLoading(progress);
+        showLoading(progress, font);
         Display.sync(60);
         Display.update();
     }
 
     @Override
-    public void showLoading(int progress) {
+    public void showLoading(int progress, FontHandler font) {
         String loading = Settings.language.menu.Loading;
         String dots = "";
-        FontHandler font = menu.fonts.getFont("Amble-Regular", 0, (int) (Settings.nativeScale * 48));
         for (int i = 0; i < progress; i++) {
             if (i == 0) {
                 dots = " .";

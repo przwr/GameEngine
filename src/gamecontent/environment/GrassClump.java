@@ -11,6 +11,7 @@ import game.place.fbo.FrameBufferObject;
 import game.place.fbo.MultiSampleFrameBufferObject;
 import game.place.fbo.RegularFrameBufferObject;
 import game.place.map.Area;
+import gamedesigner.ObjectPlace;
 import org.lwjgl.opengl.Display;
 
 import java.util.*;
@@ -22,6 +23,8 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class GrassClump extends GameObject {
 
+    public final static byte CORNER_DOWN_LEFT = 0, CORNER_UP_LEFT = 1, CORNER_UP_RIGHT = 2, CORNER_DOWN_RIGHT = 3;
+    
     public static Map<String, FrameBufferObject> fbos = new HashMap<>();
     public static List<GrassClump> instances = new ArrayList();
 
@@ -89,28 +92,28 @@ public class GrassClump extends GameObject {
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
                 modXBladesCount = xBladesCount;
-                if (corner == 0) {
+                if (corner == CORNER_DOWN_LEFT) {
                     modXBladesCount -= xChange * i - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
                         modXBladesCount = xBladesCount;
                     }
                     xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                } else if (corner == 2) {
+                } else if (corner == CORNER_UP_LEFT) {
                     modXBladesCount = xChange * (i + 1) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
                         modXBladesCount = xBladesCount;
                     }
                     xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                } else if (corner == 1) {
+                } else if (corner == CORNER_UP_RIGHT) {
                     modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
                         modXBladesCount = xBladesCount;
                     }
                     xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                } else {
+                } else {    // down right
                     modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
@@ -118,14 +121,14 @@ public class GrassClump extends GameObject {
                     }
                     xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
                 }
-                if (modXBladesCount > 0)
+                if (modXBladesCount > 0) {
                     grasses[i * xCount + j] = Grass.create(x + xCenter + j * grassWidth, y + (i + 1) * ySpacing, modXBladesCount, yBladesCount, bladeWidth,
                             bladeHeight);
+                }
             }
         }
         instances.add(this);
     }
-
 
     public static GrassClump createRectangle(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight) {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight);
@@ -135,8 +138,7 @@ public class GrassClump extends GameObject {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1);
     }
 
-    public static GrassClump createCorner(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int
-            corner) {
+    public static GrassClump createCorner(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int corner) {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1, corner);
     }
 
@@ -173,13 +175,13 @@ public class GrassClump extends GameObject {
         int fboWidth = xRadius * 2 + 4 + (xCount - 1) * xCentering;
         int fboHeight = yRadius * 2 + bladeHeight + 8;
         int ins = random.random(8);
-        String grassClumpCode = xCount + "-" + yCount + "-" + xBladesCount + "-" + yBladesCount + "-" + bladeWidth + "-" + bladeHeight + "-" + type +
-                "-" + ins;
+        String grassClumpCode = xCount + "-" + yCount + "-" + xBladesCount + "-" + yBladesCount + "-" + bladeWidth + "-" + bladeHeight + "-" + type
+                + "-" + ins;
         int seed = ins * 101653 + type * 104729 + 1121104729;
         fbo = fbos.get(grassClumpCode);
         if (fbo == null) {
-            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) :
-                    new RegularFrameBufferObject(fboWidth, fboHeight);
+            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight)
+                    : new RegularFrameBufferObject(fboWidth, fboHeight);
             fbos.put(grassClumpCode, fbo);
         }
         if (Grass.random == null) {
@@ -191,9 +193,9 @@ public class GrassClump extends GameObject {
     @Override
     public void update() {
         if (map != null) {
+            boolean objectMode = map.place instanceof ObjectPlace;
             updateGrass = false;
-            Area area = map.getArea(this.area);
-            for (int i = 0; i < this.map.place.getPlayersCount(); i++) {
+            for (int i = objectMode ? 1 : 0; i < this.map.place.getPlayersCount(); i++) {
                 GameObject player = map.place.players[i];
                 if (player.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - player.getX()) < xRadius + player.getCollision().getWidthHalf()
                         && Math.abs(getY() + yRadius - player.getY()) < yRadius + player.getCollision().getHeightHalf()) {
@@ -201,12 +203,15 @@ public class GrassClump extends GameObject {
                     break;
                 }
             }
-            if (!updateGrass) {
-                for (Mob mob : area.getNearSolidMobs()) {
-                    if (mob.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidthHalf()
-                            && Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeightHalf()) {
-                        updateGrass = true;
-                        break;
+            if (!objectMode) {
+                Area area = map.getArea(this.area);
+                if (!updateGrass) {
+                    for (Mob mob : area.getNearSolidMobs()) {
+                        if (mob.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidthHalf()
+                                && Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeightHalf()) {
+                            updateGrass = true;
+                            break;
+                        }
                     }
                 }
             }

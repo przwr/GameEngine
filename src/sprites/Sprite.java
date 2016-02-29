@@ -87,7 +87,6 @@ public class Sprite implements Appearance {
         }
     }
 
-
     public void renderRotate(float angle) {
         if (bindCheck()) {
             glTranslatef(width / 2, height / 2, 0);
@@ -157,7 +156,6 @@ public class Sprite implements Appearance {
             glEnd();
         }
     }
-
 
     public void renderSpritePiece(float xBegin, float xEnd, float yBegin, float yEnd) {
         if (bindCheck()) {
@@ -303,7 +301,10 @@ public class Sprite implements Appearance {
             texture.release();
             texture = null;
         }
-//            System.out.println("Unloaded: " + path);
+        if (textureID != 0) {
+            textureID = 0;
+        }
+        //System.out.println("Unloaded: " + path);
     }
 
     public String getPath() {

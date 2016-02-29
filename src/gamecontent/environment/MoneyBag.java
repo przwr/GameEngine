@@ -28,6 +28,7 @@ public class MoneyBag extends Mob {
     public MoneyBag(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "moneyBag", place, "money", true, mobID);
         setCollision(Rectangle.create(appearance.getActualWidth() / 2, appearance.getActualWidth() / 2, OpticProperties.NO_SHADOW, this));
+        solid = false;
         stats = new NPCStats(this);
         addPushInteraction();
         setTargetable(false);
@@ -42,14 +43,9 @@ public class MoneyBag extends Mob {
                 TextController text = player.getTextController();
                 text.lockEntity(player);
                 text.startFromText(new String[] {
-                    "To jest sakiewka z pieniędzmi.",
-                    "Wziąść?$QUTak:1:Nie:2$",
-                    "#B1",
-                    "Aria włożyła sakiewkę do kieszeni.",
-                    "#B2",
-                    "$EN"
+                    "Aria włożyła $cfFF0000$sakiewkę z pieniędzmi$CN do kieszeni."
                 });
-                text.addEventOnBranchEnd(this::delete, "1");
+                text.addEventOnBranchEnd(this::delete, "0");
             }
             if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                 target = null;

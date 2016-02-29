@@ -15,6 +15,7 @@ import org.newdawn.slick.Color;
 import sprites.Sprite;
 
 import java.util.*;
+import static org.lwjgl.opengl.ARBFramebufferObject.glDeleteFramebuffers;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -83,7 +84,7 @@ public class Bush extends GameObject {
         }
         return true;
     }
-
+    
     public void update() {
         if (!prerendered) {
             if (map != null) {

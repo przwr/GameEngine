@@ -23,6 +23,7 @@ public class FontHandler {
     private final char[] chars = {'ą', 'ę', 'ć', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź', 'Ą', 'Ę', 'Ć', 'Ł', 'Ń', 'Ó', 'Ś', 'Ż', 'Ź'};
     private TrueTypeFont trueFont;
     private Font font;
+    private String name = "";
 
     public FontHandler(String name, int size) {
         try {
@@ -30,15 +31,11 @@ public class FontHandler {
             font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
             font = font.deriveFont((float) size);
             trueFont = new TrueTypeFont(font, true, chars);
+            this.name = name;
             inputStream.close();
         } catch (FontFormatException | IOException ex) {
             Logger.getLogger(FontBase.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public FontHandler(String name, int type, int size) {
-        font = new Font(name, type, size);
-        trueFont = new TrueTypeFont(font, true, chars);
     }
 
     private FontHandler(TrueTypeFont trueFont, Font font) {
@@ -72,7 +69,7 @@ public class FontHandler {
     }
 
     public String getName() {
-        return font.getName();
+        return name;
     }
 
     public int getStyle() {

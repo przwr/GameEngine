@@ -48,11 +48,11 @@ public class DamageNumber extends Entity {
             color = Color.lightGray;
         } else if (damage <= 10) {
             color = Color.white;
-        } else if (damage <= 20) {
+        } else if (damage <= 25) {
             color = Color.yellow;
-        } else if (damage <= 35) {
-            color = Color.orange;
         } else if (damage <= 55) {
+            color = Color.orange;
+        } else if (damage <= 85) {
             color = Color.red;
         } else {
             color = Color.black;
