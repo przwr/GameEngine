@@ -9,7 +9,6 @@ import engine.lights.Light;
 import engine.lights.Shadow;
 import engine.lights.ShadowContainer;
 import engine.lights.ShadowRenderer;
-import engine.utilities.BlueArray;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.PointContainer;
@@ -22,6 +21,7 @@ import game.place.map.ForegroundTile;
 import game.place.map.Map;
 import gamecontent.SpawnPoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static engine.lights.Shadow.BRIGHT;
@@ -35,7 +35,7 @@ public abstract class Figure implements Comparable<Figure> {
     private static Rectangle tempTile = Rectangle.createTileRectangle();
     private static Rectangle scope = Rectangle.createTileRectangle();
     private static PointContainer tiles;
-    final BlueArray<Point> points;
+    final ArrayList<Point> points;
     private final OpticProperties opticProperties;
     private final DoublePoint slideSpeed;
     protected int xStart, yStart, width, height, xCenter, yCenter, heightHalf, widthHalf;
@@ -47,7 +47,7 @@ public abstract class Figure implements Comparable<Figure> {
         this.yStart = yStart;
         this.owner = owner;
         this.opticProperties = opticProperties;
-        this.points = new BlueArray<>(4);
+        this.points = new ArrayList<>(4);
         slideSpeed = new DoublePoint();
     }
 

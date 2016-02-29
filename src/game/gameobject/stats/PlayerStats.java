@@ -7,11 +7,11 @@ import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.temporalmodifiers.DeathChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.place.Place;
+import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import gamecontent.effects.DamageNumber;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
-import gamecontent.MyController;
 
 /**
  * Created by przemek on 10.08.15.
@@ -26,11 +26,11 @@ public class PlayerStats extends Stats {
         super(owner);
         this.player = owner;
         strength = 20;
-        sideDefenceModifier = 0.8f;
-        backDefenceModifier = 0.5f;
+        sideDefenceModifier = 0.9f;
+        backDefenceModifier = 0.75f;
         protection = 10;
         protectionSideModifier = 0.8f;
-        protectionBackModifier = 0.1f;
+        protectionBackModifier = 0.2f;
     }
 
     @Override

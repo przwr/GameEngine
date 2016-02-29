@@ -3,7 +3,10 @@ package gamecontent.environment;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
-import engine.utilities.*;
+import engine.utilities.Drawer;
+import engine.utilities.Methods;
+import engine.utilities.Point;
+import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.place.Place;
@@ -15,7 +18,6 @@ import org.newdawn.slick.Color;
 import sprites.Sprite;
 
 import java.util.*;
-import static org.lwjgl.opengl.ARBFramebufferObject.glDeleteFramebuffers;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -36,7 +38,7 @@ public class Bush extends GameObject {
     boolean prerendered;
     private Color branchColor;
     private Color leafColor;
-    private BlueArray<Point> points = new BlueArray<>();
+    private ArrayList<Point> points = new ArrayList<>();
     private Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
 
     public Bush(int x, int y) {
@@ -82,9 +84,10 @@ public class Bush extends GameObject {
                 return false;
             }
         }
+        instances.clear();
         return true;
     }
-    
+
     public void update() {
         if (!prerendered) {
             if (map != null) {
@@ -98,6 +101,7 @@ public class Bush extends GameObject {
                 drawBush();
                 glPopMatrix();
                 fbo.deactivate();
+                points.clear();
                 points = null;
                 prerendered = true;
             }

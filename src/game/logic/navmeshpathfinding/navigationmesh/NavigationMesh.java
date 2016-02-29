@@ -5,7 +5,6 @@
  */
 package game.logic.navmeshpathfinding.navigationmesh;
 
-import engine.utilities.BlueArray;
 import engine.utilities.Point;
 import net.jodk.lang.FastMath;
 
@@ -17,7 +16,6 @@ import java.util.*;
  */
 public class NavigationMesh {
 
-    public static List<NavigationMesh> instances = new ArrayList<>();
     final ArrayList<Bound> bounds = new ArrayList<>();
     private final Set<Triangle> mesh = new HashSet<>();
     private final Node[] sharedNodes = new Node[2];
@@ -28,7 +26,7 @@ public class NavigationMesh {
     private final BitSet spots;
     private final int NOT_SHARED = 2;
 
-    private final BlueArray<Node> toRemove = new BlueArray<>();
+    private final ArrayList<Node> toRemove = new ArrayList<>();
     private int sharedNodeNumber, sharedNodesNumber, connectionsNumber;
 
     public NavigationMesh(Point firstPoint, Point secondPoint, Point thirdPoint, List<Point> collisionPoints, byte[] shiftDirections, BitSet spots) {
@@ -36,17 +34,6 @@ public class NavigationMesh {
         this.collisionPoints = collisionPoints;
         this.shiftDirections = shiftDirections;
         this.spots = spots;
-        instances.add(this);
-    }
-
-    public static void cleanUp() {
-        for (NavigationMesh mesh : instances) {
-            mesh.bounds.clear();
-            mesh.mesh.clear();
-            mesh.collisionPoints.clear();
-            mesh.spots.clear();
-        }
-        instances.clear();
     }
 
     public void addLooseTriangle(Triangle triangle) {
@@ -231,11 +218,11 @@ public class NavigationMesh {
     public Triangle[] getPathBase(Point startPoint, Point destinationPoint, Triangle[] pathBase) {
         boolean start = true, end = true;
         for (Triangle triangle : mesh) {
-            if (start && triangle.isPointInTriangle(startPoint)) {
+            if (start && triangle.isPointInTriangle(startPoint.getX(), startPoint.getY())) {
                 pathBase[0] = triangle;
                 start = false;
             }
-            if (end && triangle.isPointInTriangle(destinationPoint)) {
+            if (end && triangle.isPointInTriangle(destinationPoint.getX(), destinationPoint.getY())) {
                 pathBase[1] = triangle;
                 end = false;
             }
@@ -270,9 +257,9 @@ public class NavigationMesh {
         }
     }
 
-    private Triangle getTriangleForPoint(Point point) {
+    private Triangle getTriangleForPoint(int x, int y) {
         for (Triangle triangle : mesh) {
-            if (triangle.isPointInTriangle(point)) {
+            if (triangle.isPointInTriangle(x, y)) {
                 return triangle;
             }
         }
@@ -300,7 +287,7 @@ public class NavigationMesh {
     private boolean lineIntersectsPointsNotLies(Bound bound, int xStart, int yStart, int xEnd, int yEnd) {
         if (lineIntersects(bound, xStart, yStart, xEnd, yEnd)) {
             if (pointOnLine(bound, xStart, yStart) || pointOnLine(bound, xEnd, yEnd)) {
-                if (getTriangleForPoint(new Point((xStart + xEnd) >> 1, (yStart + yEnd) >> 1)) == null) {
+                if (getTriangleForPoint((xStart + xEnd) >> 1, (yStart + yEnd) >> 1) == null) {
                     return true;
                 }
             } else {

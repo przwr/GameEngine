@@ -15,7 +15,6 @@ import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
-import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
@@ -39,8 +38,8 @@ public class MyGUI extends GUIObject {
         emptySlot = 0;
         firstAttackType = emptySlot;
         secondAttackType = emptySlot;
-        attackIcons = place.getSpriteSheetSetScale("attackIcons", "");
-        itemIcons = place.getSpriteSheetSetScale("itemIcons", "");
+        attackIcons = place.getSpriteSheet("attackIcons", "");
+        itemIcons = place.getSpriteSheet("itemIcons", "");
         lifeDelay.terminate();
         energyDelay.terminate();
         energyLowDelay.terminate();
@@ -76,11 +75,12 @@ public class MyGUI extends GUIObject {
     }
 
     private void renderRegularGUI() {
-        float change = (float) Settings.nativeScale;
+//        float change = (float) Settings.nativeScale;
+        float change = 1f;
         Camera cam = Place.currentCamera;
-        if (change == 1 && (cam.getWidth() < Display.getWidth() || cam.getHeight() < Display.getHeight())) {
-            change = 0.75f;
-        }
+//        if (change == 1 && (cam.getWidth() < Display.getWidth() || cam.getHeight() < Display.getHeight())) {
+//            change = 0.75f;
+//        }
         int size = (int) (Place.tileSize * change);
         int border = (int) (12 * change);
         int innerSize = 2 + 2 * border / 3;

@@ -8,7 +8,6 @@ package game.logic.navmeshpathfinding.navigationmesh;
 import collision.Block;
 import collision.Figure;
 import collision.RoundRectangle;
-import engine.utilities.BlueArray;
 import engine.utilities.Point;
 import game.place.Place;
 import game.place.map.Tile;
@@ -31,9 +30,9 @@ public class NavigationMeshGenerator {
     private static final byte[] diagonals = new byte[X_IN_TILES * Y_IN_TILES];
     private static final Set<Line> newLines = new HashSet<>();
     private static final PriorityQueue<Line> sortedLines = new PriorityQueue<>();
-    private static final BlueArray<Line> linesToRemove = new BlueArray<>();
-    private static final BlueArray<Line> linesToAdd = new BlueArray<>();
-    private static final BlueArray<Line> sureLines = new BlueArray<>();
+    private static final ArrayList<Line> linesToRemove = new ArrayList<>();
+    private static final ArrayList<Line> linesToAdd = new ArrayList<>();
+    private static final ArrayList<Line> sureLines = new ArrayList<>();
     private static final Set<Line> linesToCheck = new HashSet<>();
     private static final Set<Point> pointsToConnect = new HashSet<>();
     private static final Set<Triangle> triangles = new HashSet<>();
@@ -71,9 +70,9 @@ public class NavigationMeshGenerator {
     public static void clear() {
         newLines.clear();
         sortedLines.clear();
-        linesToRemove.clearReally();
-        linesToAdd.clearReally();
-        sureLines.clearReally();
+        linesToRemove.clear();
+        linesToAdd.clear();
+        sureLines.clear();
         linesToCheck.clear();
         pointsToConnect.clear();
         triangles.clear();

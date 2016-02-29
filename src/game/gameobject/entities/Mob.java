@@ -28,11 +28,11 @@ public abstract class Mob extends Entity {
 
     public short mobID;
     protected ActionState state;
-    protected BlueArray<Mob> closeFriends = new BlueArray<>();
+    protected ArrayList<Mob> closeFriends = new ArrayList<>();
     protected boolean alpha;
     protected int pastDirections[] = new int[2];
     protected int currentPastDirection;
-    protected BlueArray<Agro> agro = new BlueArray<>();
+    protected ArrayList<Agro> agro = new ArrayList<>();
     protected ArrayList<String> neutral = new ArrayList<>();
     protected Delay letGoDelay = Delay.createInSeconds(30);
     private SpawnPoint spawner;
@@ -420,7 +420,7 @@ public abstract class Mob extends Entity {
         this.alpha = alpha;
     }
 
-    public BlueArray<Agro> getAgro() {
+    public ArrayList<Agro> getAgro() {
         return agro;
     }
 
@@ -449,7 +449,7 @@ public abstract class Mob extends Entity {
                 player.getX(), player.getY()) <= Place.tileSize * 1.5
                 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
                 && Math.abs(Methods.angleDifference(
-                        (int) player.getDirection(), 
+                player.getDirection(),
                         (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
     }
 

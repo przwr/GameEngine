@@ -145,8 +145,7 @@ public class BetweenAreaPathFinder {
     }
 
     private static PointContainer getBetweenAreaSolution(Map map, int area, int endArea, int x, int y, int xStart, int yStart, int xDestination, int
-            yDestination,
-                                                         AreaConnection connection, Figure collision) {
+            yDestination, AreaConnection connection, Figure collision) {
         List<Point> currentAreaPoints = connection.getConnectionPoints();
         List<Point> tempPoints = new ArrayList<>(currentAreaPoints);
         if (connection.getConnectedAreaIndex(area) == endArea) {

@@ -1,7 +1,8 @@
 package game.logic.maploader;
 
-import engine.utilities.BlueArray;
 import game.place.map.Map;
+
+import java.util.ArrayList;
 
 /**
  * Created by przemek on 18.08.15.
@@ -10,7 +11,7 @@ public class MapLoad {
 
     String name;
     Map map;
-    BlueArray<Integer> areas = new BlueArray<>(9);
+    ArrayList<Integer> areas = new ArrayList<>(9);
 
     public MapLoad() {
     }

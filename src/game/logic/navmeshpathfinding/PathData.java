@@ -16,6 +16,7 @@ import game.place.Place;
 import game.place.map.Map;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class PathData {
     final Point[] castingDestination = {new Point(), new Point()};
     final PointContainer path = new PointContainer(16);
     final PointedValueContainer correctionPoints = new PointedValueContainer(4);
-    final List<Figure> close = new BlueArray<>();
+    final List<Figure> close = new ArrayList<>();
     final Polygon poly = new Polygon();
     final Delay delay = Delay.createInMilliseconds(250);
     int x, y, xS, xE, yS, yE, xRef, yRef, passedCount, alternateCount, min, temp, xDS, xDE, yDS, yDE,
@@ -131,10 +132,10 @@ public class PathData {
         if (mesh != null && mesh.lineIntersectsMeshBounds(xNorm, yNorm, xNorm + xDelta, yNorm + yDelta)) {
             return true;
         }
+        update(owner, xDest, yDest);
         if (close.isEmpty()) {
             return false;
         }
-        update(owner, xDest, yDest);
         PathStrategyCore.setPolygonForTesting(this, finalDestination);
         return PathStrategyCore.anyFigureInAWay(poly, close, closeEnemies) != null;
     }

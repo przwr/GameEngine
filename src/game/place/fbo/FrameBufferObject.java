@@ -57,6 +57,7 @@ public abstract class FrameBufferObject implements Appearance {
             }
         }
         instances.add(this);
+        System.out.println("NEW FBO");
     }
 
     public static void cleanUp() {

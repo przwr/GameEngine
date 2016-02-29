@@ -43,7 +43,7 @@ public abstract class Entity extends GameObject {
     protected int sightAngle;
     protected GameObject target;
     protected Point destination = new Point(), secondaryDestination = new Point(), spawnPosition = new Point();
-    protected BlueArray<GameObject> closeEnemies = new BlueArray<>();
+    protected ArrayList<GameObject> closeEnemies = new ArrayList<>();
     protected PathData pathData;
     protected double xEnvironmentalSpeed, yEnvironmentalSpeed;
     protected double xSpeed;
@@ -658,7 +658,7 @@ public abstract class Entity extends GameObject {
         return changers;
     }
 
-    public BlueArray<GameObject> getCloseEnemies() {
+    public ArrayList<GameObject> getCloseEnemies() {
         return closeEnemies;
     }
 

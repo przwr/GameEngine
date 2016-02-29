@@ -51,7 +51,7 @@ public class PathFinder {
 
     public static PointContainer findPath(NavigationMesh mesh, int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
         if (Methods.pointDistance(xStart, yStart, xDestination, yDestination) <= Place.tileSize) {
-            PointContainer solution = new PointContainer();
+            PointContainer solution = new PointContainer(2);
             solution.add(xDestination, yDestination);
             return solution;
         }
@@ -275,7 +275,6 @@ public class PathFinder {
 
     private static PointContainer printSolution(Node destination, NavigationMesh mesh) {
         shifted = new PointContainer(24);
-        shifted.clear();
         Point point;
         Node currentNode = destination;
         while (currentNode != null) {

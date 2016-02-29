@@ -9,7 +9,10 @@ import collision.Block;
 import collision.Figure;
 import engine.Main;
 import engine.lights.Light;
-import engine.utilities.*;
+import engine.utilities.Drawer;
+import engine.utilities.Methods;
+import engine.utilities.Point;
+import engine.utilities.PointContainer;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
@@ -39,23 +42,22 @@ public abstract class Map {
     public static final PointContainer NO_SOLUTION = new PointContainer(0);
     protected static final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) ->
             firstObject.getDepth() - secondObject.getDepth();
-    private static int POINTING_ARROW_HEIGHT = 128;
     public final Place place;
     protected final int tileSize;
-    protected final BlueArray<GameObject> pointingArrows = new BlueArray<>();
+    protected final ArrayList<GameObject> pointingArrows = new ArrayList<>();
     protected final String name;
     protected final short mapID;
     protected final PointContainer tempTilePositions = new PointContainer();
     protected final Set<Block> tempBlocks = new HashSet<>();
-    protected final BlueArray<Mob> tempMobs = new BlueArray<>();
-    protected final BlueArray<Entity> tempEntities = new BlueArray<>();
-    protected final BlueArray<Interactive> tempInteractiveObjects = new BlueArray<>();
-    protected final BlueArray<GameObject> topObjects = new BlueArray<>();
+    protected final ArrayList<Mob> tempMobs = new ArrayList<>();
+    protected final ArrayList<Entity> tempEntities = new ArrayList<>();
+    protected final ArrayList<Interactive> tempInteractiveObjects = new ArrayList<>();
+    protected final ArrayList<GameObject> topObjects = new ArrayList<>();
     protected final HashSet<GameObject> tempDepthObjects = new HashSet<>();
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
-    protected final BlueArray<Light> lights = new BlueArray<>();
-    protected final BlueArray<Block> blocks = new BlueArray<>();
-    protected final BlueArray<Light> visibleLights = new BlueArray<>();
+    protected final ArrayList<Light> lights = new ArrayList<>();
+    protected final ArrayList<Block> blocks = new ArrayList<>();
+    protected final ArrayList<Light> visibleLights = new ArrayList<>();
     protected final Set<Integer> areasToUpdate = new HashSet<>(36);
     public Area[] areas;
     public Area[] areasCopies; //Tylko do testów - powinno być wywalone - a areas wczytywane z pliku
@@ -646,16 +648,17 @@ public abstract class Map {
     }
 
     private void renderPointingArrow(GameObject object) {
+        int arrowSize = (int) (Settings.nativeScale * 32);
         glPushMatrix();
         glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(object.getX(), object.getY() - POINTING_ARROW_HEIGHT - (int) (object.getFloatHeight()), 0);
+        glTranslatef(object.getX(), object.getY() - arrowSize / 2 - (int) (object.getFloatHeight()), 0);
         Drawer.setColorStatic(pointingColor);
-        Drawer.drawEllipseBow(0, 0, 5, 10, 5, -30, 210, 15);
+        Drawer.drawEllipseBow(0, 0, arrowSize / 6, arrowSize / 3, arrowSize / 6, -arrowSize, 210, 15);
 //        Drawer.drawEllipseBow(0, -32, 8, 64, 8, 45, 135, 4);
         Drawer.refreshColor();
         glScaled(0.5f, 0.5f, 1);
-        glTranslatef(0, -POINTING_ARROW_HEIGHT / 4, 0);
+        glTranslatef(0, -arrowSize - object.getAppearance().getActualHeight(), 0);
         object.getAppearance().render();
         glPopMatrix();
     }
@@ -680,18 +683,18 @@ public abstract class Map {
         for (Area area : areas) {
             area.clear();
         }
-        visibleLights.clearReally();
-        topObjects.clearReally();
+        visibleLights.clear();
+        topObjects.clear();
         warps.clear();
-        lights.clearReally();
-        blocks.clearReally();
-        tempMobs.clearReally();
-        pointingArrows.clearReally();
+        lights.clear();
+        blocks.clear();
+        tempMobs.clear();
+        pointingArrows.clear();
         tempBlocks.clear();
-        tempTilePositions.clearReally();
+        tempTilePositions.clear();
         tempDepthObjects.clear();
-        tempEntities.clearReally();
-        tempInteractiveObjects.clearReally();
+        tempEntities.clear();
+        tempInteractiveObjects.clear();
         areasToUpdate.clear();
     }
 

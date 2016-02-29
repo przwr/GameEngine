@@ -6,7 +6,6 @@
 package game.place.cameras;
 
 import engine.lights.Light;
-import engine.utilities.BlueArray;
 import game.gameobject.GUIObject;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 public class NearObjects {
 
     protected final ArrayList<GUIObject> gui = new ArrayList<>();
-    private final BlueArray<Light> visibleLights = new BlueArray<>();
+    private final ArrayList<Light> visibleLights = new ArrayList<>();
 
 
     public void addVisibleLight(Light light) {

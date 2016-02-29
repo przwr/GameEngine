@@ -76,23 +76,23 @@ public class Triangle {
         connections[connectionsNumber++] = connection;
     }
 
-    public boolean isPointInTriangle(Point point) {
-        return !isOutOfBoundsToEpsilon(point) && barycentricPointInTriangle(point);
+    public boolean isPointInTriangle(int x, int y) {
+        return !isOutOfBoundsToEpsilon(x, y) && barycentricPointInTriangle(x, y);
     }
 
-    private boolean isOutOfBoundsToEpsilon(Point point) {
-        return (point.getX() < bounds[MIN].getX() - EPSILON)
-                || (point.getX() - EPSILON > bounds[MAX].getX())
-                || (point.getY() < bounds[MIN].getY() - EPSILON)
-                || (point.getY() - EPSILON > bounds[MAX].getY());
+    private boolean isOutOfBoundsToEpsilon(int x, int y) {
+        return (x < bounds[MIN].getX() - EPSILON)
+                || (x - EPSILON > bounds[MAX].getX())
+                || (y < bounds[MIN].getY() - EPSILON)
+                || (y - EPSILON > bounds[MAX].getY());
     }
 
-    private boolean barycentricPointInTriangle(Point point) {
+    private boolean barycentricPointInTriangle(int x, int y) {
         float denominator = getDenominator();
-        float a = ((nodes[1].getY() - nodes[2].getY()) * (point.getX() - nodes[2].getX())
-                + ((nodes[2].getX() - nodes[1].getX()) * (point.getY() - nodes[2].getY()))) / denominator;
-        float b = ((nodes[2].getY() - nodes[0].getY()) * (point.getX() - nodes[2].getX())
-                + ((nodes[0].getX() - nodes[2].getX()) * (point.getY() - nodes[2].getY()))) / denominator;
+        float a = ((nodes[1].getY() - nodes[2].getY()) * (x - nodes[2].getX())
+                + ((nodes[2].getX() - nodes[1].getX()) * (y - nodes[2].getY()))) / denominator;
+        float b = ((nodes[2].getY() - nodes[0].getY()) * (x - nodes[2].getX())
+                + ((nodes[0].getX() - nodes[2].getX()) * (y - nodes[2].getY()))) / denominator;
         float c = 1 - a - b;
         return isInZeroOneRangeToEpsilon(a) && isInZeroOneRangeToEpsilon(b) && isInZeroOneRangeToEpsilon(c);
     }

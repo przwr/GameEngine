@@ -70,6 +70,7 @@ class PathStrategyCore {
                 correctDestinationPointIfNeeded(data.path, data);
             }
             data.flags.clear(PATH_REQUESTED);
+            data.newPath.clearReally();
             data.newPath = null;
         } else if (data.flags.get(STUCK)) {
             data.path.clear();
@@ -184,6 +185,9 @@ class PathStrategyCore {
         if (data.updateRef(requester)) {
             data.newPath = requester.getMap().findPath(data.x, data.y, xDest, yDest, requester.getCollision());
         } else {
+            if (data.newPath != null) {
+                data.newPath.clearReally();
+            }
             data.newPath = null;
         }
     }

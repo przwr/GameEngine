@@ -8,7 +8,6 @@ package game.place.map;
 import collision.Block;
 import collision.Figure;
 import engine.lights.Light;
-import engine.utilities.BlueArray;
 import engine.utilities.PointContainer;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
@@ -53,14 +52,14 @@ public class Area {
     private final ArrayList<Light> lights = new ArrayList<>();
     private final ArrayList<Interactive> interactiveObjects = new ArrayList<>();
 
-    private final BlueArray<Block> nearBlocks = new BlueArray<>();
-    private final BlueArray<Mob> nearSolidMobs = new BlueArray<>();
-    private final BlueArray<Mob> nearFlatMobs = new BlueArray<>();
-    private final BlueArray<GameObject> nearSolidObjects = new BlueArray<>();
-    private final BlueArray<GameObject> nearFlatObjects = new BlueArray<>();
-    private final BlueArray<WarpPoint> nearWarps = new BlueArray<>();
-    private final BlueArray<GameObject> nearDepthObjects = new BlueArray<>();
-    private final BlueArray<GameObject> nearForegroundTiles = new BlueArray<>();
+    private final ArrayList<Block> nearBlocks = new ArrayList<>();
+    private final ArrayList<Mob> nearSolidMobs = new ArrayList<>();
+    private final ArrayList<Mob> nearFlatMobs = new ArrayList<>();
+    private final ArrayList<GameObject> nearSolidObjects = new ArrayList<>();
+    private final ArrayList<GameObject> nearFlatObjects = new ArrayList<>();
+    private final ArrayList<WarpPoint> nearWarps = new ArrayList<>();
+    private final ArrayList<GameObject> nearDepthObjects = new ArrayList<>();
+    private final ArrayList<GameObject> nearForegroundTiles = new ArrayList<>();
 
     private NavigationMesh navigationMesh;
 
@@ -285,14 +284,14 @@ public class Area {
         depthObjects.clear();
         foregroundTiles.clear();
         topObjects.clear();
-        nearBlocks.clearReally();
-        nearSolidMobs.clearReally();
-        nearFlatMobs.clearReally();
-        nearSolidObjects.clearReally();
-        nearFlatObjects.clearReally();
-        nearWarps.clearReally();
-        nearDepthObjects.clearReally();
-        nearForegroundTiles.clearReally();
+        nearBlocks.clear();
+        nearSolidMobs.clear();
+        nearFlatMobs.clear();
+        nearSolidObjects.clear();
+        nearFlatObjects.clear();
+        nearWarps.clear();
+        nearDepthObjects.clear();
+        nearForegroundTiles.clear();
     }
 
     public Tile getTile(int x, int y) {
@@ -407,7 +406,7 @@ public class Area {
         return nearForegroundTiles;
     }
 
-    public BlueArray<WarpPoint> getNearWarps() {
+    public ArrayList<WarpPoint> getNearWarps() {
         return nearWarps;
     }
 

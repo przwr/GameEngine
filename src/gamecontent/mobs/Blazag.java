@@ -54,7 +54,8 @@ public class Blazag extends Mob {
     private Delay jumpDelay = Delay.createInMilliseconds(300);          //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay burstDelay = Delay.createInMilliseconds(500);         //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay changeDelay = Delay.createInMilliseconds(750);        //TODO - te wartości losowe i zależne od poziomu trudności
-    private boolean attacking = true, chasing, jumpOver, awake = true, can_attack, bursting = false, letGo = false;
+    private boolean attacking = true, chasing, jumpOver, awake = true, can_attack, bursting = false, letGo = false, jumpReady, slashR, slashL,
+            jumpAnimation, jumpAttackAnimation;
     private SpeedChanger jumper;
     private Order order = new Order();
 
@@ -197,7 +198,6 @@ public class Blazag extends Mob {
             public void update() {
                 brake(2);
                 setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
-                animation.animateSingleInDirection(getDirection8Way(), 3);
                 if (attackDelay.isOver()) {
                     jumpOver = false;
                     stats.setProtectionState(false);
@@ -211,7 +211,6 @@ public class Blazag extends Mob {
                 if (jumper.isOver()) {
                     if (jumpDelay.isOver()) {
                         if (jumpOver) {
-                            animation.animateSingleInDirection(getDirection8Way(), 22);
                             stats.setUnhurtableState(false);
                             jumpOver = false;
                             state = attack;
@@ -228,8 +227,6 @@ public class Blazag extends Mob {
                             setJumpForce(maxSpeed);
                         }
                     }
-                } else {
-                    animation.animateSingleInDirection(getDirection8Way(), jumper.getPercentDone() > 0.5 ? 21 : 20);
                 }
             }
         };
@@ -239,7 +236,6 @@ public class Blazag extends Mob {
                 if (jumper.isOver()) {
                     if (jumpDelay.isOver()) {
                         if (jumpOver) {
-                            animation.animateSingleInDirection(getDirection8Way(), 25);
                             stats.setUnhurtableState(false);
                             jumpOver = false;
                             state = attack;
@@ -259,9 +255,6 @@ public class Blazag extends Mob {
                 } else {
                     if (jumper.getPercentDone() > 0.5) {
                         getAttackActivator(ATTACK_JUMP).setActivated(true);
-                        animation.animateSingleInDirection(getDirection8Way(), 24);
-                    } else {
-                        animation.animateSingleInDirection(getDirection8Way(), 23);
                     }
                 }
             }
@@ -359,7 +352,7 @@ public class Blazag extends Mob {
     }
 
     @Override
-    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+    protected void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;
@@ -384,7 +377,7 @@ public class Blazag extends Mob {
     }
 
     @Override
-    protected synchronized void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
+    protected void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
         GameObject object;
@@ -426,7 +419,8 @@ public class Blazag extends Mob {
                     if (jumpRestDelay.isOver()) {
                         brake(2);
                         setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
-                        animation.animateSingleInDirection(getDirection8Way(), 19);
+                        jumpReady = true;
+                        jumpAttackAnimation = true;
                         if (distance <= sightRange2 / 9) {
                             state = jumpAttack;
                             jumpDelay.start();
@@ -467,12 +461,11 @@ public class Blazag extends Mob {
                                 state = protect;
                             } else {
                                 attackCount++;
-                                animation.setFPS(30);
                                 getAttackActivator(ATTACK_SLASH).setActivated(true);
                                 if (rand > 0.5 + lifePercent / 2) {
-                                    animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
+                                    slashR = true;
                                 } else {
-                                    animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+                                    slashL = true;
                                 }
                             }
                             attacking = true;
@@ -497,32 +490,38 @@ public class Blazag extends Mob {
                                                 if (rand > 0.5) {
                                                     attackDelay.start();
                                                     animation.setFPS(30);
-                                                    getAttackActivator(ATTACK_SLASH).setActivated(true);
                                                     attacking = true;
                                                     attackCount++;
                                                     if (rand > 0.75) {
                                                         if (jumpRestDelay.isOver() && rand > 0.97) {
                                                             brake(2);
                                                             setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
-                                                            animation.animateSingleInDirection(getDirection8Way(), 19);
+                                                            jumpReady = true;
+                                                            jumpAttackAnimation = true;
+
                                                             attackCount++;
                                                             state = jumpAttack;
+                                                            jumpAnimation = true;
                                                             jumpDelay.start();
                                                             jumpRestDelay.start();
                                                         } else {
-                                                            animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
+                                                            getAttackActivator(ATTACK_SLASH).setActivated(true);
+                                                            slashR = true;
                                                         }
                                                     } else {
                                                         if (jumpRestDelay.isOver() && rand > 0.72) {
                                                             brake(2);
                                                             setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
-                                                            animation.animateSingleInDirection(getDirection8Way(), 19);
+                                                            jumpReady = true;
+                                                            jumpAttackAnimation = true;
                                                             attackCount++;
                                                             state = jumpAttack;
+                                                            jumpAttackAnimation = true;
                                                             jumpDelay.start();
                                                             jumpRestDelay.start();
                                                         } else {
-                                                            animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+                                                            getAttackActivator(ATTACK_SLASH).setActivated(true);
+                                                            slashL = true;
                                                         }
                                                     }
                                                     return;
@@ -907,7 +906,38 @@ public class Blazag extends Mob {
      */
     private void updateAnimation() {
         int frame = animation.getDirectionalFrameIndex();
-        if ((!jumpOver || !jumpDelay.isOver()) && (frame < 19 || frame == 34 || frame == 43 || frame == 22 || frame == 25)) {
+        if (jumpReady) {
+            jumpReady = false;
+            animation.animateSingleInDirection(getDirection8Way(), 19);
+        } else if (stats.isProtectionState()) {
+            animation.animateSingleInDirection(getDirection8Way(), 3);
+        } else if (jumpAnimation) {
+            if (jumper.isOver()) {
+                if (jumpDelay.isOver()) {
+                    animation.animateSingleInDirection(getDirection8Way(), 22);
+                    jumpAnimation = false;
+                }
+            } else {
+                animation.animateSingleInDirection(getDirection8Way(), jumper.getPercentDone() > 0.5 ? 21 : 20);
+            }
+        } else if (jumpAttackAnimation) {
+            if (jumper.isOver()) {
+                if (jumpDelay.isOver()) {
+                    animation.animateSingleInDirection(getDirection8Way(), 25);
+                    jumpAttackAnimation = false;
+                }
+            } else {
+                animation.animateSingleInDirection(getDirection8Way(), jumper.getPercentDone() > 0.5 ? 24 : 23);
+            }
+        } else if (slashR) {
+            animation.setFPS(30);
+            animation.animateIntervalInDirectionOnce(getDirection8Way(), 26, 34);
+            slashR = false;
+        } else if (slashL) {
+            animation.setFPS(30);
+            animation.animateIntervalInDirectionOnce(getDirection8Way(), 35, 43);
+            slashL = false;
+        } else if ((frame < 19 || frame == 34 || frame == 43 || frame == 22 || frame == 25)) {
             if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
                 pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
                 if (currentPastDirection > 1) {
