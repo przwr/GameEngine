@@ -70,12 +70,12 @@ public class MapObjectContainer {
                 if (data != null && data.length != 0) {
                     int subtype = Integer.parseInt(data[0]);
                     if (subtype <= 3) {
-                        ret = GrassClump.createCorner(x, y, 1, 6, 9, 4, 9, 32, subtype);
+                        ret = GrassClump.createCorner(x, y, 1, 8, 11, 2, 8, 32, subtype);
                     } else {
-                        ret = GrassClump.createRound(x, y, 1, 6, 9, 4, 9, 32);
+                        ret = GrassClump.createRound(x, y, 1, 8, 11, 2, 8, 32);
                     }
                 } else {
-                    ret = GrassClump.createRectangle(x, y, 1, 6, 9, 4, 9, 32);
+                    ret = GrassClump.createRectangle(x, y, 1, 8, 11, 2, 8, 32);
                 }
                 break;
         }

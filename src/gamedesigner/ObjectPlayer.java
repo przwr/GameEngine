@@ -397,7 +397,6 @@ public class ObjectPlayer extends Player {
                 }
             }
         } else if (mode == ObjectPlace.MODE_OBJECT) {
-            System.out.println(Arrays.toString(ui.getData()));
             GameObject obj = MapObjectContainer.generate(ix * tileSize, iy * tileSize,
                     rand, (byte) ui.getChosenObject(), ui.getData());
             if (obj != null) {
