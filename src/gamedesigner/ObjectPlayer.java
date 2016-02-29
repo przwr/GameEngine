@@ -27,6 +27,7 @@ import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.lwjgl.input.Keyboard.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -396,10 +397,11 @@ public class ObjectPlayer extends Player {
                 }
             }
         } else if (mode == ObjectPlace.MODE_OBJECT) {
+            System.out.println(Arrays.toString(ui.getData()));
             GameObject obj = MapObjectContainer.generate(ix * tileSize, iy * tileSize,
                     rand, (byte) ui.getChosenObject(), ui.getData());
             if (obj != null) {
-                objMap.addMapObject(obj);
+                objMap.addMapObject(obj, ui.getData());
             }
         }
         return null;

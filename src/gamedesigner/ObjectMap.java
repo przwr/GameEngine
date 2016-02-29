@@ -136,8 +136,8 @@ public class ObjectMap extends Map {
         }
     }
 
-    public void addMapObject(GameObject object) {
-        TemporaryObject to = new TemporaryObject(object, objPlace);
+    public void addMapObject(GameObject object, String... data) {
+        TemporaryObject to = new TemporaryObject(object, objPlace, data);
         mapObjects.add(to);
         addObject(to);
         addObject(object);
@@ -455,9 +455,9 @@ public class ObjectMap extends Map {
             tmp = go.getCovered();
             String added = "o:" + tmp.getName() + ":" + ((tmp.getX() - xActBegin) / tileSize)
                     + ":" + ((tmp.getY() - yActBegin) / tileSize);
-            Object[] data = go.getAdditionalData();
+            String[] data = go.getAdditionalData();
             if (data != null) {
-                for (Object s : data) {
+                for (String s : data) {
                     added += ":" + s;
                 }
             }
