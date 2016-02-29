@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class GrassClump extends GameObject {
 
     public final static byte CORNER_DOWN_LEFT = 0, CORNER_UP_LEFT = 1, CORNER_UP_RIGHT = 2, CORNER_DOWN_RIGHT = 3;
-    
+
     public static Map<String, FrameBufferObject> fbos = new HashMap<>();
     public static List<GrassClump> instances = new ArrayList();
 
@@ -313,19 +313,19 @@ public class GrassClump extends GameObject {
                     }
                     xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
                 } else if (corner == CORNER_UP_RIGHT) {
-                    modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
-                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
-                    if (modXBladesCount > xBladesCount) {
-                        modXBladesCount = xBladesCount;
-                    }
-                    xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
-                } else if (corner == CORNER_UP_LEFT) {
                     modXBladesCount = xChange * (i + 1) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
                     if (modXBladesCount > xBladesCount) {
                         modXBladesCount = xBladesCount;
                     }
                     xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
+                } else if (corner == CORNER_UP_LEFT) {
+                    modXBladesCount -= xChange * (yCount - i - 1) - j * xBladesCount;
+                    modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;
+                    if (modXBladesCount > xBladesCount) {
+                        modXBladesCount = xBladesCount;
+                    }
+                    xCenter = xCentering + Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
                 } else {
                     modXBladesCount = xChange * (yCount - i) - j * xBladesCount;
                     modXBladesCount += (yCount / 2 - (i <= middle1 ? (middle1 - i) : (i - middle2))) * curve;

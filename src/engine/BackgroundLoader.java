@@ -1,7 +1,6 @@
 package engine;
 
 import engine.utilities.ErrorHandler;
-import engine.utilities.Methods;
 import game.Game;
 import game.Settings;
 import gamecontent.environment.Bush;
@@ -19,7 +18,6 @@ import sprites.SpriteBase;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -170,6 +168,9 @@ public abstract class BackgroundLoader {
     }
 
     public void unloadAllTextures() {
+        while (usingSprites) {
+
+        }
         usingSprites = true;
         if (!stopSpritesUsing) {
             if (base != null) {

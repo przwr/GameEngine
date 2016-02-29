@@ -218,18 +218,18 @@ public class MyGUI extends GUIObject {
         startAngle = 450 - energyPercentageAngle;
         endAngle = 450;
         Drawer.setColorStatic(new Color(0.8f, 0.8f, 1f, 0.75f));
-        if (energyDelay.isOver() && !energyLowDelay.isOver()) {
+        if (!energyLowDelay.isOver()) {
             Drawer.setColorStatic(new Color(0.9f, 0.8f, 0.2f));
         }
         Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 270, 450, size / 2);
         Drawer.returnToCentralPoint();
-        if (energyDelay.isOver() && !energyLowDelay.isOver()) {
+        if (!energyLowDelay.isOver()) {
             Drawer.setColorStatic(new Color(0.45f, 0.4f, 0.1f));
             int last = 450 - Methods.roundDouble(energyNeeded * halfEnergyAngle / ((PlayerStats) player.getStats()).getMaxEnergy());
             Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, last, endAngle, size / 2);
             Drawer.returnToCentralPoint();
         }
-        if (!energyDelay.isOver()) {
+        if (energyLowDelay.isOver() && !energyDelay.isOver()) {
             float alpha = (energyDelay.getDifference() / (float) energyDelay.getLength());
             Drawer.setColorStatic(new Color(0.4f, 0.4f, 1f, alpha));
             int last = 450 - Methods.roundDouble(lastEnergy * halfEnergyAngle / ((PlayerStats) player.getStats()).getMaxEnergy());
