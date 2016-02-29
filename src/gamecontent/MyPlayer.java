@@ -320,11 +320,11 @@ public class MyPlayer extends Player {
         legs = loadCloth("leg", Cloth.BODY_TYPE);
         nudeTorso = loadCloth("nudetorso", Cloth.BODY_TYPE);
         nudeLegs = loadCloth("nudeleg", Cloth.BODY_TYPE);
+        cap.setWearing(false);
+        boots.setWearing(false);
         ((ClothedAppearance) appearance).setClothes(head, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon,
                 loadCloth("bow", Cloth.WEAPON_TYPE),
                 loadCloth("shield", Cloth.WEAPON_TYPE));
-        cap.setWearing(false);
-        boots.setWearing(false);
     }
 
     public void randomizeClothes() {

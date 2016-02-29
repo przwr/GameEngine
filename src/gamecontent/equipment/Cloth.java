@@ -84,6 +84,22 @@ public class Cloth {
     public SpriteSheet getLastPart() {
         return hasLast ? list.get(list.size() - 1) : null;
     }
+    
+    public SpriteSheet getPart(int i) {
+        return list.get(i);
+    }
+    
+    public int getFirstPartNumber() {
+        return 0;
+    }
+
+    public int getSecondPartNumber() {
+        return hasSecond ? 1 : -1;
+    }
+
+    public int getLastPartNumber() {
+        return hasLast ? list.size() - 1 : -1;
+    }
 
     public boolean isNull() {
         return false;
