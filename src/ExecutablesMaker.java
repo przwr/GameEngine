@@ -21,7 +21,7 @@ public class ExecutablesMaker {
         String[] natives = new String[0];
         String output = "Gra.";
         String mainClass = "engine.Launcher";
-        String vmArgs = "";
+        String vmArgs = "-XX:+UseCompressedOops -Xmx1024M";
 
         try {
             shellScriptSplicer.createFatJar(jars, natives, output + "sh", mainClass, vmArgs);

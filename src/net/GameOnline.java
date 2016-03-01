@@ -18,14 +18,14 @@ import java.util.ArrayList;
  */
 public abstract class GameOnline {
 
-    public final Point[] pastPositions = new Point[2048];
-    public final Game game;
     protected final OnlineChange[] changes;
     protected final boolean[] isChanged;
     protected final NewMultiPlayer[] newPlayers;
     protected final byte removeIDs[];
     protected final MobUpdate[] newMobs;
     protected final short[] mapIDsForUpdate = new short[2];
+    public Point[] pastPositions = new Point[2048];
+    public Game game;
     public int pastPositionsNumber;
     public GameServer server;
     public GameClient client;
