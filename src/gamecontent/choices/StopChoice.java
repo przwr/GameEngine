@@ -5,6 +5,7 @@
  */
 package gamecontent.choices;
 
+import engine.Launcher;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;
@@ -32,9 +33,9 @@ public class StopChoice extends MenuChoice {
                         pair.getValue().stop();
                     }
                 }
-//                Launcher.restart = true;
-//                menu.game.exit();
                 menu.game.endGame();
+                Launcher.restart = true;
+                menu.game.exit();
             }
         }
     }

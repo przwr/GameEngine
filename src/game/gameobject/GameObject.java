@@ -101,6 +101,15 @@ public abstract class GameObject {
         }
     }
 
+    public void clearLights() {
+        if (lights != null) {
+            for (Light light : lights) {
+                light.getFrameBufferObject().clear();
+                light.getFrameBufferObject().delete();
+            }
+        }
+    }
+
     protected void addLight(Light light) {
         lights.add(light);
     }
@@ -465,6 +474,7 @@ public abstract class GameObject {
 
     public void delete() {
         if (map != null) {
+            clearLights();
             map.deleteObject(this);
         }
     }

@@ -57,25 +57,32 @@ public abstract class FrameBufferObject implements Appearance {
             }
         }
         instances.add(this);
-        //System.out.println("NEW FBO");
     }
 
     public static void cleanUp() {
         for (FrameBufferObject fbo : instances) {
-            for (int texture : fbo.getTextures()) {
-                glDeleteTextures(texture);
-            }
-            for (int buffer : fbo.getBuffers()) {
-                if (fbo.version == NATIVE) {
-                    GL30.glDeleteFramebuffers(buffer);
-                } else if (fbo.version == ARB) {
-                    ARBFramebufferObject.glDeleteFramebuffers(fbo.frameBufferObject);
-                } else {
-                    EXTFramebufferObject.glDeleteFramebuffersEXT(fbo.frameBufferObject);
-                }
-            }
+            fbo.clear();
         }
         instances.clear();
+    }
+
+    public void clear() {
+        for (int texture : getTextures()) {
+            glDeleteTextures(texture);
+        }
+        for (int buffer : getBuffers()) {
+            if (version == NATIVE) {
+                GL30.glDeleteFramebuffers(buffer);
+            } else if (version == ARB) {
+                ARBFramebufferObject.glDeleteFramebuffers(frameBufferObject);
+            } else {
+                EXTFramebufferObject.glDeleteFramebuffersEXT(frameBufferObject);
+            }
+        }
+    }
+
+    public void delete() {
+        instances.remove(this);
     }
 
     public abstract void activate();
