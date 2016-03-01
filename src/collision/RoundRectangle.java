@@ -266,7 +266,7 @@ public class RoundRectangle extends Figure {
         if (isMobile()) {
             updatePoints();
         }
-        return points;
+        return this.points;
     }
 
     @Override
@@ -286,11 +286,11 @@ public class RoundRectangle extends Figure {
     }
 
     private void updatePointsFromCorners() {
-        points.clear();
+        this.points.clear();
         for (Corner corner : corners) {
-            corner.getPoints().stream().filter((point) -> (!points.contains(point))).forEach(points::add);
+            corner.getPoints().stream().filter((point) -> (!this.points.contains(point))).forEach(this.points::add);
         }
-        points.trimToSize();
+        this.points.trimToSize();
     }
 
 

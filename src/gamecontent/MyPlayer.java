@@ -308,7 +308,7 @@ public class MyPlayer extends Player {
 
     private void loadClothes() {
         cap = loadCloth("cap", Cloth.CLOTH_TYPE);
-        shirt = loadCloth(/*"tshirt"*/"shirt", Cloth.CLOTH_TYPE);
+        shirt = loadCloth("shirt", Cloth.CLOTH_TYPE);
         boots = loadCloth("boots", Cloth.CLOTH_TYPE);
         pants = loadCloth("dress", Cloth.CLOTH_TYPE);
         gloves = loadCloth("gloves", Cloth.CLOTH_TYPE);
@@ -320,9 +320,7 @@ public class MyPlayer extends Player {
         legs = loadCloth("leg", Cloth.BODY_TYPE);
         nudeTorso = loadCloth("nudetorso", Cloth.BODY_TYPE);
         nudeLegs = loadCloth("nudeleg", Cloth.BODY_TYPE);
-        cap.setWearing(false);
-        boots.setWearing(false);
-        ((ClothedAppearance) appearance).setClothes(head, nudeTorso, nudeLegs, cap, hair, shirt, gloves, pants, boots, weapon,
+        ((ClothedAppearance) appearance).setClothes(head, torso, legs, cap, hair, shirt, gloves, pants, boots, weapon,
                 loadCloth("bow", Cloth.WEAPON_TYPE),
                 loadCloth("shield", Cloth.WEAPON_TYPE));
     }
@@ -441,7 +439,7 @@ public class MyPlayer extends Player {
                 camera.updateSmooth();
             }
             if (area != -1) {
-                for (WarpPoint wp : map.getArea(area).getNearWarps()) {
+                for (WarpPoint wp : this.map.getArea(area).getNearWarps()) {
                     if (wp.getCollision() != null && wp.getCollision().isCollideSingle(wp.getX(), wp.getY(), collision)) {
                         wp.warp(this);
                         break;
@@ -464,7 +462,7 @@ public class MyPlayer extends Player {
             }
         }
         moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
-        for (WarpPoint wp : map.getArea(area).getNearWarps()) {
+        for (WarpPoint wp : this.map.getArea(area).getNearWarps()) {
             if (wp.getCollision() != null && wp.getCollision().isCollideSingle(wp.getX(), wp.getY(), collision)) {
                 wp.warp(this);
                 break;
@@ -472,9 +470,9 @@ public class MyPlayer extends Player {
         }
         brakeOthers();
         if (online.server != null) {
-            online.server.sendUpdate(map.getID(), getX(), getY(), isEmits(), isHop());
+            online.server.sendUpdate(this.map.getID(), getX(), getY(), isEmits(), isHop());
         } else if (online.client != null) {
-            online.client.sendPlayerUpdate(map.getID(), playerID, getX(), getY(), isEmits(), isHop());
+            online.client.sendPlayerUpdate(this.map.getID(), playerID, getX(), getY(), isEmits(), isHop());
             online.pastPositions[online.pastPositionsNumber++].set(getX(), getY());
             if (online.pastPositionsNumber >= online.pastPositions.length) {
                 online.pastPositionsNumber = 0;

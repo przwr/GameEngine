@@ -61,19 +61,19 @@ public class MapLoadContainer {
     public void remove(int index) {
         if (index < requestCount && index >= 0) {
             requestCount--;
-            requests[index].set(requests[requestCount].name, requests[requestCount].areas);
+            requests[index].set(requests[requestCount].getName(), requests[requestCount].getAreas());
         }
     }
 
     public boolean contains(String name, Iterable<Integer> areas) {
         boolean found;
         for (MapLoad load : requests) {
-            if (load.name == name) {
+            if (load.getName() == name) {
                 found = true;
                 if (areas != null) {
                     for (int area : areas) {
-                        if (area != -1 && !load.areas.contains(area)) {
-                            load.areas.add(area);
+                        if (area != -1 && !load.getAreas().contains(area)) {
+                            load.getAreas().add(area);
                         }
                     }
                 }
@@ -114,7 +114,7 @@ public class MapLoadContainer {
 
     public MapLoad getMapByName(String name) {
         for (int i = 0; i < requestCount; i++) {
-            if (requests[i].name == name) {
+            if (requests[i].getName() == name) {
                 return requests[i];
             }
         }
@@ -125,7 +125,7 @@ public class MapLoadContainer {
     public String toString() {
         String string = requestCount + ": ";
         for (int i = 0; i < requestCount; i++) {
-            string += " " + requests[i].name + " - " + requests[i].areas.toString() + ";";
+            string += " " + requests[i].getName() + " - " + requests[i].getAreas().toString() + ";";
         }
         return string;
     }

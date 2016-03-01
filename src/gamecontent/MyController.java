@@ -741,7 +741,7 @@ public class MyController extends PlayerController {
 //            inControl.setFloatHeight(inControl.getFloatHeight() + 1);
 //        }
         if (actions[INPUT_CHANGE_WEAPON].isKeyClicked()) {
-            ((MyPlayer) inControl).randomizeClothes();
+            //((MyPlayer) inControl).randomizeClothes();
             if (((MyPlayer) inControl).changeWeapon()) {
                 updateAttackTypes();
             }

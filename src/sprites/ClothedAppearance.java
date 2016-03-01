@@ -30,8 +30,8 @@ public class ClothedAppearance implements Appearance {
     private int framesPerDirection;
     private int xOffset, yOffset;
     private int width, height;
-    private SpriteSheet[] upperRenderList;
-    private SpriteSheet[] lowerRenderList;
+    private ClothCombo[] upperRenderList;
+    private ClothCombo[] lowerRenderList;
     private ArrayList<byte[]> upperQueue;
     private ArrayList<byte[]> lowerQueue;
     private FrameBufferObject fbo;
@@ -51,37 +51,41 @@ public class ClothedAppearance implements Appearance {
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
-                           Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
-                           Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
-        lowerRenderList = new SpriteSheet[]{
-                legs.getFirstPart(),
-                boots.getFirstPart(),
-                legs.getLastPart(),
-                boots.getLastPart(),
-                pants.getFirstPart(),
-                pants.getLastPart()
+            Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
+            Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
+        lowerRenderList = new ClothCombo[]{
+            new ClothCombo(legs.getLastPartNumber(), legs),
+            new ClothCombo(boots.getFirstPartNumber(), boots),
+            new ClothCombo(legs.getFirstPartNumber(), legs),
+            new ClothCombo(boots.getLastPartNumber(), boots),
+            new ClothCombo(pants.getFirstPartNumber(), pants),
+            new ClothCombo(pants.getLastPartNumber(), pants)
         };
-        upperRenderList = new SpriteSheet[]{
-                torso.getSecondPart(),
-                gloves.getFirstPart(),
-                shirt.getSecondPart(),
-                torso.getFirstPart(),
-                shirt.getFirstPart(),
-                head.getFirstPart(),
-                hair.getFirstPart(),
-                cap.getFirstPart(),
-                torso.getLastPart(),
-                gloves.getLastPart(),
-                shirt.getLastPart(),
-                sword.getFirstPart(),
-                bow.getFirstPart(),
-                shield.getFirstPart()
+        upperRenderList = new ClothCombo[]{
+            new ClothCombo(torso.getSecondPartNumber(), torso),
+            new ClothCombo(gloves.getFirstPartNumber(), gloves),
+            new ClothCombo(shirt.getSecondPartNumber(), shirt),
+            new ClothCombo(torso.getFirstPartNumber(), torso),
+            new ClothCombo(shirt.getFirstPartNumber(), shirt),
+            new ClothCombo(head.getFirstPartNumber(), head),
+            new ClothCombo(hair.getFirstPartNumber(), hair),
+            new ClothCombo(cap.getFirstPartNumber(), cap),
+            new ClothCombo(torso.getLastPartNumber(), torso),
+            new ClothCombo(gloves.getLastPartNumber(), gloves),
+            new ClothCombo(shirt.getLastPartNumber(), shirt),
+            new ClothCombo(sword.getFirstPartNumber(), sword),
+            new ClothCombo(bow.getFirstPartNumber(), bow),
+            new ClothCombo(shield.getFirstPartNumber(), shield)
         };
         calculateDimensions();
     }
 
     private void calculateDimensions() {
-        Point[] dims = SpriteSheet.getMergedDimensions(upperRenderList);
+        SpriteSheet[] ret = new SpriteSheet[upperRenderList.length];
+        for (int i = 0; i < upperRenderList.length; i++) {
+            ret[i] = upperRenderList[i].getSprite();
+        }
+        Point[] dims = SpriteSheet.getMergedDimensions(ret);
         width = dims[0].getX();
         height = dims[0].getY();
         xOffset = dims[1].getX();
@@ -263,12 +267,16 @@ public class ClothedAppearance implements Appearance {
         int lowerFrame = lowerBody.getCurrentFrameIndex();
         for (byte i : upperQueue.get(upperFrame)) {
             if (!isThisLowerPlacement(i)) {
-                upperRenderList[i].renderPiece(upperFrame);
-                upperRenderList[i].returnFromTranslation(upperFrame);
+                if (upperRenderList[i].cloth.isWearing() && upperRenderList[i].getSprite() != null) {
+                    upperRenderList[i].getSprite().renderPiece(upperFrame);
+                    upperRenderList[i].getSprite().returnFromTranslation(upperFrame);
+                }
             } else {
                 for (byte j : lowerQueue.get(lowerFrame)) {
-                    lowerRenderList[j].renderPiece(lowerFrame);
-                    lowerRenderList[j].returnFromTranslation(lowerFrame);
+                    if (lowerRenderList[j].cloth.isWearing() && lowerRenderList[j].getSprite() != null) {
+                        lowerRenderList[j].getSprite().renderPiece(lowerFrame);
+                        lowerRenderList[j].getSprite().returnFromTranslation(lowerFrame);
+                    }
                 }
             }
         }
@@ -385,12 +393,12 @@ public class ClothedAppearance implements Appearance {
     public boolean isUpToDate() {
         if (!upToDate) {
             for (int i = 0; i < upperRenderList.length; i++) {
-                if (upperRenderList[i].getTextureID() == 0) {
+                if (upperRenderList[i].getSprite() != null && upperRenderList[i].getSprite().getTextureID() == 0) {
                     return false;
                 }
             }
             for (int i = 0; i < lowerRenderList.length; i++) {
-                if (lowerRenderList[i].getTextureID() == 0) {
+                if (lowerRenderList[i].getSprite() != null && lowerRenderList[i].getSprite().getTextureID() == 0) {
                     return false;
                 }
             }
@@ -404,8 +412,20 @@ public class ClothedAppearance implements Appearance {
             return true;
         }
     }
-    
-    /*private class ClothCombo() {
-        int 
-    }*/
+
+    private class ClothCombo {
+
+        int which;
+        Cloth cloth;
+
+        public ClothCombo(int which, Cloth cloth) {
+            this.which = which;
+            this.cloth = cloth;
+        }
+
+        SpriteSheet getSprite() {
+            return which >= 0 ? cloth.getPart(which) : null;
+        }
+
+    }
 }

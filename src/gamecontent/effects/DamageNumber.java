@@ -45,7 +45,6 @@ public class DamageNumber extends Entity {
         onTop = true;
         setDirection(direction);
         float percent = (float) damage / health * 100;
-        System.out.println(percent);
         if (percent <= 1) {
             color = Color.lightGray;
         } else if (percent <= 3) {

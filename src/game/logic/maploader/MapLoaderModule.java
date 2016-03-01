@@ -55,9 +55,9 @@ public class MapLoaderModule implements Runnable {
                 if (!workingList.isEmpty()) {
                     for (int i = 0; i < workingList.size(); i++) {
                         MapLoad mapLoad = workingList.get(i);
-                        Map placeMap = mapLoad.map;
+                        Map placeMap = mapLoad.getMap();
                         if (placeMap == null) {
-                            placeMap = loadMap(mapLoad.name);   //TODO Informacja które areas wczytać z pliku!
+                            placeMap = loadMap(mapLoad.getName());   //TODO Informacja które areas wczytać z pliku!
                             loadAreas(mapLoad, placeMap);
                             ArrayList<Map> workingMap = (place.firstMapsToAddActive ? place.mapsToAdd2 : place.mapsToAdd1);
                             workingMap.add(placeMap);
@@ -78,7 +78,7 @@ public class MapLoaderModule implements Runnable {
     }
 
     private void loadAreas(MapLoad mapLoad, Map placeMap) {
-        for (int area : mapLoad.areas) {            // TODO przerobić na wczytywanie z pliku
+        for (int area : mapLoad.getAreas()) {            // TODO przerobić na wczytywanie z pliku
             if (placeMap != null && placeMap.areas[area] == null) {
                 placeMap.areas[area] = placeMap.areasCopies[area];
             }

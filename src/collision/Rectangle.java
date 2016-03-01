@@ -34,10 +34,10 @@ public class Rectangle extends Figure {
         this.height = height;
         this.heightHalf = height / 2;
         if (owner != null) {
-            points.add(new Point(super.getX(), super.getY()));
-            points.add(new Point(super.getX(), super.getY() + height));
-            points.add(new Point(super.getX() + width, super.getY() + height));
-            points.add(new Point(super.getX() + width, super.getY()));
+            this.points.add(new Point(super.getX(), super.getY()));
+            this.points.add(new Point(super.getX(), super.getY() + height));
+            this.points.add(new Point(super.getX() + width, super.getY() + height));
+            this.points.add(new Point(super.getX() + width, super.getY()));
         }
         centralize();
     }
@@ -49,10 +49,10 @@ public class Rectangle extends Figure {
         this.widthHalf = width / 2;
         this.height = height;
         this.heightHalf = height / 2;
-        points.add(new Point(xStart, yStart));
-        points.add(new Point(xStart, yStart + height));
-        points.add(new Point(xStart + width, yStart + height));
-        points.add(new Point(xStart + width, yStart));
+        this.points.add(new Point(xStart, yStart));
+        this.points.add(new Point(xStart, yStart + height));
+        this.points.add(new Point(xStart + width, yStart + height));
+        this.points.add(new Point(xStart + width, yStart));
         centralize();
     }
 
@@ -101,10 +101,9 @@ public class Rectangle extends Figure {
 
     private boolean rectangleCollision(int x, int y, Figure figure) {
         Rectangle rectangle = (Rectangle) figure;
-        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX
-                (x) < width))
-                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY() -
-                getY(y) < height));
+        return ((getX(x) > rectangle.getX() && getX(x) - rectangle.getX() < rectangle.getWidth()) || (getX(x) <= rectangle.getX() && rectangle.getX() - getX(x) < width))
+                && ((getY(y) > rectangle.getY() && getY(y) - rectangle.getY() < rectangle.getHeight()) || (getY(y) <= rectangle.getY() && rectangle.getY()
+                - getY(y) < height));
     }
 
     private boolean roundRectangle(int x, int y, Figure figure) {
@@ -399,11 +398,11 @@ public class Rectangle extends Figure {
         return (Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_TOP].getX(), list[LEFT_TOP].getY(),
                 list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY())
                 || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(),
-                list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
+                        list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
                 || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[LEFT_TOP].getX(), list[LEFT_TOP].getY(),
-                list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
+                        list[RIGHT_TOP].getX(), list[RIGHT_TOP].getY())
                 || Line2D.linesIntersect(linePoints[0], linePoints[1], linePoints[2], linePoints[3], list[RIGHT_BOTTOM].getX(), list[RIGHT_BOTTOM].getY(),
-                list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY()));
+                        list[LEFT_BOTTOM].getX(), list[LEFT_BOTTOM].getY()));
     }
 
     @Override
