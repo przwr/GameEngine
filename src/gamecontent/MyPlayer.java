@@ -412,14 +412,6 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void renderClothedUpperBody(int frame) {
-    }
-
-    @Override
-    public void renderClothedLowerBody(int frame) {
-    }
-
-    @Override
     public void update() {
         if (((ClothedAppearance) appearance).isUpToDate()) {
             if (warp != null) {

@@ -69,7 +69,7 @@ public class FrameBufferedSpriteSheet {
                 frames:
                 for (int j = 0; j < yFrames; j++) {
                     for (int k = 0; k < xFrames; k++) {
-                        owner.renderClothedUpperBody(frame);
+                        //owner.renderClothedUpperBody(frame);
 //                        owner.renderShadow(0,0, null);
                         glTranslatef(frameWidth, 0, 0);
                         frame++;

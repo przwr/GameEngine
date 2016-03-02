@@ -45,10 +45,6 @@ public abstract class Player extends Entity {
 
     public abstract void sendUpdate();
 
-    public abstract void renderClothedUpperBody(int frame);
-    
-    public abstract void renderClothedLowerBody(int frame);
-
     public void addGui(GUIObject gui) {
         guiList.add(gui);
         sortGUI();

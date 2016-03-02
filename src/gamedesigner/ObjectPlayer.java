@@ -27,7 +27,6 @@ import net.packets.Update;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.lwjgl.input.Keyboard.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -542,13 +541,5 @@ public class ObjectPlayer extends Player {
 
     @Override
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
-    }
-
-    @Override
-    public void renderClothedUpperBody(int frame) {
-    }
-
-    @Override
-    public void renderClothedLowerBody(int frame) {
     }
 }
