@@ -12,7 +12,6 @@ import game.Game;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;
-import game.text.FontBase;
 import game.text.FontHandler;
 import gamecontent.choices.*;
 import org.lwjgl.opengl.Display;
@@ -74,7 +73,7 @@ public class MyMenu extends Menu {
         MenuChoice gameplay = new MenuChoice(Settings.language.menu.Gameplay, this);
         gameplay.addChoice(new SplitScreenChoice(Settings.language.menu.SplitScreen, this));
         gameplay.addChoice(new JoinSplitScreenChoice(Settings.language.menu.JoinSS, this));
-        options.addChoice(gameplay);
+//        options.addChoice(gameplay);
 
 
         MenuChoice controls = new MenuChoice(Settings.language.menu.Controls, this);
@@ -82,7 +81,7 @@ public class MyMenu extends Menu {
         options.addChoice(controls);
         MenuChoice sound = new MenuChoice(Settings.language.menu.Sound, this);
         sound.addChoice(new VolumeChoice(Settings.language.menu.Volume, this));
-        options.addChoice(sound);
+//        options.addChoice(sound);
         MenuChoice graphic = new MenuChoice(Settings.language.menu.Video, this);
         graphic.addChoice(new BrightnessChoice(Settings.language.menu.Brightness, this));
         graphic.addChoice(new GammaChoice(Settings.language.menu.Gamma, this));
@@ -99,7 +98,7 @@ public class MyMenu extends Menu {
         language.setBlockOnRun(true);
         language.addChoice(new LanguageChoice(Settings.language.menu.Text, this));
         language.addChoice(new ApplyChoice(Settings.language.menu.Apply, this));
-        options.addChoice(language);
+//        options.addChoice(language);
 
         root.addChoice(options);
 
@@ -128,9 +127,9 @@ public class MyMenu extends Menu {
             player4.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 3, i));
         }
         controls.addChoice(player1);
-        controls.addChoice(player2);
-        controls.addChoice(player3);
-        controls.addChoice(player4);
+//        controls.addChoice(player2);
+//        controls.addChoice(player3);
+//        controls.addChoice(player4);
     }
 
     @Override
@@ -164,7 +163,7 @@ public class MyMenu extends Menu {
         }
         line--;
         for (int i = 0; i < positions; i++) {
-            if (root.getChoice(i + shift) instanceof GammaChoice) {
+            if (root.getChoice(i + shift) instanceof GammaChoice || root.getChoice(i + shift) instanceof BrightnessChoice) {
                 renderGammaHelper(line, i + shift);
             }
             Drawer.renderStringCentered(root.getChoice(i + shift).getLabel(), widthHalf / 2,

@@ -34,9 +34,9 @@ public class LangENG extends Language {
         menu.SplitScreen = "SplitScreen: ";
         menu.Vertical = "Vertical";
         menu.Horizontal = "Horizontal";
-        menu.Brightness = "Brightness: ";
+        menu.Brightness = "Brightness (3rd # invisible): ";
         menu.Volume = "Volume: ";
-        menu.Gamma = "Gamma (3rd # invisible): ";
+        menu.Gamma = "Gamma (2nd # invisible): ";
         menu.Resolution = "Resolution: ";
         menu.FullScreen = "FullScreen: ";
         menu.On = "On";

@@ -77,8 +77,8 @@ public class MyGUI extends GUIObject {
 
     private void renderRegularGUI() {
         Color light = player.getMap().getLightColor();
-        float value = 1f - Math.max(Math.max(light.r, light.g), light.b);
-        color.r = color.g = color.b = value * 1.5f;
+        float value = 1f - Math.min(Math.min(light.r, light.g), light.b);
+        color.r = color.g = color.b = value * 0.5f;
         float change = 1f;
         Camera cam = Place.currentCamera;
 //        if (change == 1 && (cam.getWidth() < Display.getWidth() || cam.getHeight() < Display.getHeight())) {

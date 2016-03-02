@@ -665,7 +665,7 @@ public abstract class Map {
         glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         if (object instanceof Entity) {
-            Drawer.setColorAlpha(((Entity) object).getColorAlpha() * 0.5f);
+            Drawer.setColorAlpha(((Entity) object).getColorAlpha() * 0.3f);
         } else {
             Drawer.setColorAlpha(0.5f);
         }

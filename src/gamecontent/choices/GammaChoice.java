@@ -35,6 +35,6 @@ public class GammaChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + Settings.gameGamma;
+        return label + Settings.gameGamma + (((int) (Settings.gameGamma * 100) % 10 == 0) ? "0" : "");
     }
 }
