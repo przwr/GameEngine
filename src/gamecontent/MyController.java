@@ -5,7 +5,6 @@
  */
 package gamecontent;
 
-import engine.systemcommunication.Time;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.Settings;
@@ -481,6 +480,14 @@ public class MyController extends PlayerController {
             } else if (actions[INPUT_SLOT_RIGHT].isKeyPressed()) {
                 inControl.setDirection8way(1);
             } else {
+                if (actions[INPUT_SLOT_LEFT].isKeyReleased()) {
+                    sideDirection = 3;
+                    sideDelay.start();
+                }
+                if (actions[INPUT_SLOT_RIGHT].isKeyReleased()) {
+                    sideDirection = 1;
+                    sideDelay.start();
+                }
                 inControl.setDirection8way(2);
             }
         } else if (actions[INPUT_SLOT_DOWN].isKeyPressed()) {
@@ -489,14 +496,48 @@ public class MyController extends PlayerController {
             } else if (actions[INPUT_SLOT_RIGHT].isKeyPressed()) {
                 inControl.setDirection8way(7);
             } else {
+                if (actions[INPUT_SLOT_LEFT].isKeyReleased()) {
+                    sideDirection = 5;
+                    sideDelay.start();
+                }
+                if (actions[INPUT_SLOT_RIGHT].isKeyReleased()) {
+                    sideDirection = 7;
+                    sideDelay.start();
+                }
                 inControl.setDirection8way(6);
             }
         } else {
             if (actions[INPUT_SLOT_RIGHT].isKeyPressed()) {
+                if (actions[INPUT_SLOT_UP].isKeyReleased()) {
+                    sideDirection = 1;
+                    sideDelay.start();
+                }
+                if (actions[INPUT_SLOT_DOWN].isKeyReleased()) {
+                    sideDirection = 7;
+                    sideDelay.start();
+                }
                 inControl.setDirection8way(0);
             } else if (actions[INPUT_SLOT_LEFT].isKeyPressed()) {
+                if (actions[INPUT_SLOT_UP].isKeyReleased()) {
+                    sideDirection = 3;
+                    sideDelay.start();
+                }
+                if (actions[INPUT_SLOT_DOWN].isKeyReleased()) {
+                    sideDirection = 5;
+                    sideDelay.start();
+                }
                 inControl.setDirection8way(4);
             }
+        }
+        if (sideDelay.isActive()) {
+            inControl.setDirection8way(sideDirection);
+        }
+        if (sideDelay.isOver()) {
+            if (!actions[INPUT_SLOT_UP].isKeyPressed() && !actions[INPUT_SLOT_DOWN].isKeyPressed()
+                    && !actions[INPUT_SLOT_LEFT].isKeyPressed() && !actions[INPUT_SLOT_RIGHT].isKeyPressed()) {
+                inControl.setDirection8way(sideDirection);
+            }
+            sideDelay.stop();
         }
         if (tempDirection != inControl.getDirection8Way()) {
             tempDirection = inControl.getDirection8Way();
@@ -781,10 +822,10 @@ public class MyController extends PlayerController {
         } else {
             inControl.setMaxSpeed(getNumberSquared(10/* + runMomentum * Time.getDelta()*/, diagonal));
             /*if (runMomentum < 4) {
-                runMomentum += 0.05;
-            } else {
-                runMomentum = 4;
-            }*/
+             runMomentum += 0.05;
+             } else {
+             runMomentum = 4;
+             }*/
         }
         if (actions[INPUT_ACTION_3].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());

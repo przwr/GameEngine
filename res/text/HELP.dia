@@ -26,7 +26,8 @@ $if<string>:<string>:(...)$ - zapytanie zewnêtrzne (nazwa:nazwaBloku:nazwaBloku.
 $fl - zakoñcz obecny kawa³ek tekstu
 
 $co<int>$ - zmiana koloru (ze zdefiniowanych)
-$cn - kolor domyœlny - pierwszy
+$cf<FFFFFF>$ - zmiana koloru (dowolny w formacie 16x)
+$cn - kolor domyœlny (czarny)
 
 $bo - gruba czcionka
 $it - zakrzywiona czcionka

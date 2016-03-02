@@ -266,6 +266,9 @@ public class Main {
             console.printMessage("SHOW/HIDE INTERACTIVE");
         }
         if (key.keyPressed(Keyboard.KEY_F3)) {
+            console.printMessage("You've just clicked the F3 button. Why did you do that?");
+        }
+        /*if (key.keyPressed(Keyboard.KEY_F3)) { DEMO
             SHOW_AREAS = !SHOW_AREAS;
             console.printMessage("SHOW/HIDE AREAS");
         }
@@ -286,7 +289,7 @@ public class Main {
                     Main.meshWindow.setVisible(false);
                 }
             }
-        }
+        }*/
         if (key.keyPressed(Keyboard.KEY_F12)) {
             Methods.pasteToClipBoard(game.getSimplePlayerCoordinates());
             console.printMessage("PLAYER COORDINATES PASTED TO CLIPBOARD");

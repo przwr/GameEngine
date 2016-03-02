@@ -157,6 +157,7 @@ public class MyPlayer extends Player {
     }
 
     public void addWeapon(Weapon weapon) {
+        this.weapon.setWearing(true);
         if (firstWeapon == null) {
             firstWeapon = weapon;
         } else if (secondWeapon == null) {
@@ -320,6 +321,7 @@ public class MyPlayer extends Player {
         legs = loadCloth("leg", Cloth.BODY_TYPE);
         nudeTorso = loadCloth("nudetorso", Cloth.BODY_TYPE);
         nudeLegs = loadCloth("nudeleg", Cloth.BODY_TYPE);
+        weapon.setWearing(false);
         ((ClothedAppearance) appearance).setClothes(head, torso, legs, cap, hair, shirt, gloves, pants, boots, weapon,
                 loadCloth("bow", Cloth.WEAPON_TYPE),
                 loadCloth("shield", Cloth.WEAPON_TYPE));
@@ -328,10 +330,10 @@ public class MyPlayer extends Player {
     public void randomizeClothes() {
         RandomGenerator r = RandomGenerator.create();
         cap.setWearing(r.chance(50));
-        shirt.setWearing(r.chance(50));
+        /*shirt.setWearing(r.chance(50));
         boots.setWearing(r.chance(50));
         pants.setWearing(r.chance(50));
-        gloves.setWearing(r.chance(50));
+        gloves.setWearing(r.chance(50));*/
     }
 
     private Cloth loadCloth(String name, String type) {
@@ -359,8 +361,8 @@ public class MyPlayer extends Player {
 
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
-        return !Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
-                 &&  isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
+        return /*!Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
+                 &&  */isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override

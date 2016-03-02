@@ -548,7 +548,10 @@ public class TextController extends GUIObject {
         for (String br : branchList) {
             if (started) {
                 Branch b = branches.get(getJumpLocation(br));
-                b.startEvent = event;
+                if (b.startEvent == null) {
+                    b.startEvent = new ArrayList<>();
+                }
+                b.startEvent.add(event);
             }
         }
     }
@@ -557,7 +560,10 @@ public class TextController extends GUIObject {
         for (String br : branchList) {
             if (started) {
                 Branch b = branches.get(getJumpLocation(br));
-                b.endEvent = event;
+                if (b.endEvent == null) {
+                    b.endEvent = new ArrayList<>();
+                }
+                b.endEvent.add(event);
             }
         }
     }
@@ -694,7 +700,7 @@ public class TextController extends GUIObject {
     }
 
     private void handleFlushing() {
-        change += (0.75 + realSpeed / 4) / 15;
+        change += (0.75 + realSpeed / 4) / 10;
         if (change >= 1) {
             deltaLines++;
             rowsInPlace--;
@@ -950,7 +956,7 @@ public class TextController extends GUIObject {
     class Branch extends ArrayList<TextRow> {
 
         int length = Integer.MAX_VALUE;
-        Executive startEvent, endEvent;
+        ArrayList<Executive> startEvent, endEvent;
 
         public void setLength() {
             if (size() > 0) {
@@ -966,13 +972,17 @@ public class TextController extends GUIObject {
 
         public void startingEvent() {
             if (startEvent != null) {
-                startEvent.execute();
+                for (Executive e : startEvent) {
+                    e.execute();
+                }
             }
         }
 
         public void endingEvent() {
             if (endEvent != null) {
-                endEvent.execute();
+                for (Executive e : endEvent) {
+                    e.execute();
+                }
             }
         }
     }

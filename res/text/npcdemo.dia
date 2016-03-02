@@ -20,11 +20,14 @@ $AU0$$PO0$$EX0$Oto miecz. $MEProszę zabij ślimaka$NO.$FL
 Broń wyjmuje się $CO1$$WRwpn$$CO0$.$FL
 Atakuje się $CO1$$WRatk1$$CO0$ i $CO1$$WRatk2$$CO0$.
 #B2
-$AU0$$PO0$Broń wyjmuje się $CO1$$WRwpn$$CO0$.$FL
+Jak zabijesz ślimaka, to wróć do mnie.
+Możesz najpierw poćwiczyć na tamtej kukle.$QUOk!:21:Sterowanie?:23:Zabić?:22$
+#B2a
+Jak nie chcesz zabijać to nie musisz.$QUOk!:21:Sterowanie?:23:Gdzie iść?:4$
+#B23
+$AU0$$PO0$Broń wyjmuje się $CO1$$WRwpn$$CO0$.
 Atakuje się $CO1$$WRatk1$$CO0$ i $CO1$$WRatk2$$CO0$.$FL
-Broni się $CO1$$WRblck$$CO0$.$FL
-Jak zabijesz ślimaka, to wróć do mnie.$FL
-Możesz najpierw poćwiczyć na tamtej kukle.$QUOk!:21:Zabić?:22$
+Broni się $CO1$$WRblck$$CO0$.
 #B21
 $AU1$$PO1$$EX2$Już idę.$FL
 $AU0$$PO0$$EX0$Powodzenia.

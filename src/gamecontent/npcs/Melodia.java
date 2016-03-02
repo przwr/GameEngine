@@ -62,25 +62,23 @@ public class Melodia extends Mob {
                     setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
                     player.getTextController().lockEntity(player);
                     player.getTextController().startFromFile("npcdemo", dialog);
-                    player.getTextController().addEventOnBranchStart(() -> {
+                    player.getTextController().addEventOnBranchEnd(() -> {
                         if (player.getFirstWeapon() == null) {
                             Weapon sword = new Weapon("Sword", SWORD);
                             sword.setModifier(1.2f);
                             player.addWeapon(sword);
 //                        map.deleteBlock(4096, 6592); // otworzenie 2 przejścia
                         }
-                    }, "0");
-                    player.getTextController().addEventOnBranchEnd(() -> {
                         dialog = "2";
                     }, "11", "12");
                     player.getTextController().addEventOnBranchEnd(() -> {
                         player.getStats().setHealth(player.getStats().getMaxHealth());
-                        dialog = "4";
-                    }, "3", "24");
+                    }, "3");
                     player.getTextController().addEventOnBranchEnd(() -> {
                         player.getSpawnPosition().set(rock.getX(), rock.getY());
                         rock.delete();
-                    }, "4");
+                        dialog = "2a";
+                    }, "3", "24");
                     player.getTextController().addExternalWriter(new Writer("wpn") {
                         @Override
                         public String write() {

@@ -33,12 +33,17 @@ $AU0$$PO0$Łuk jest bronią na duże odległości.
 Możesz go wybrać przyciskiem $CO1$$WRatk$$CO0$.$FL
 Im dłużej naciągasz strzałę, tym silniej uderzy.
 W czasie ataku możesz się poruszać....$Fl
-Tyle?...$FL
+Co jeszcze...?$QUWięcej:101:To wszystko:102$
+#B101
+$AU0$$PO0$... używając przycisków umiejętności,
+możesz zmienić kierunek w trakcie
+celowania...
+...Tyle?
+#B102
 $AU1$$PO1$Dziękuję.
 #B11
-$AU1$$PO1$Dam sobie radę. Dzięki.$FL
-$AU0$$PO0$Jakby Ci czegoś było trzeba, to wiesz gdzie mnie szukać.$FL
-$AU1$$PO1$Ok.
+$AU1$$PO1$Nic nie trzeba$FL
+$AU0$$PO0$To w porządku.
 #B12
 $AU1$$PO1$Masz może ciastko?$FL
 $AU0$$PO0$Nie.$FL
