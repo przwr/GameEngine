@@ -31,6 +31,7 @@ public class MyGUI extends GUIObject {
     private int emptySlot;
     private float lastLife, lastEnergy, energyNeeded;
     private boolean riseLifeAlpha, on = true;
+    private Color color = new Color(0, 0, 0);
     private Delay lifeDelay = Delay.createInSeconds(1), energyDelay = Delay.createInSeconds(1), energyLowDelay = Delay.createInMilliseconds(250);
 
     public MyGUI(String name, Place place) {
@@ -75,7 +76,9 @@ public class MyGUI extends GUIObject {
     }
 
     private void renderRegularGUI() {
-//        float change = (float) Settings.nativeScale;
+        Color light = player.getMap().getLightColor();
+        float value = 1f - Math.max(Math.max(light.r, light.g), light.b);
+        color.r = color.g = color.b = value * 1.5f;
         float change = 1f;
         Camera cam = Place.currentCamera;
 //        if (change == 1 && (cam.getWidth() < Display.getWidth() || cam.getHeight() < Display.getHeight())) {
@@ -133,7 +136,7 @@ public class MyGUI extends GUIObject {
         Drawer.returnToCentralPoint();
 
         int r = size / 2 - border / 3 - border / 6;
-        Drawer.setColorStatic(Color.black);
+        Drawer.setColorStatic(color);
         Drawer.drawRing(size + border, size / 2 + border - border / 3, r, border / 3, size);
         Drawer.returnToCentralPoint();
         Drawer.drawRing(size + border, size + size / 2 + border + border / 3, r, border / 3, size);
@@ -143,7 +146,7 @@ public class MyGUI extends GUIObject {
         Drawer.drawRing(size + size / 2 + border + border / 3, size + border, r, border / 3, size);
         Drawer.returnToCentralPoint();
 
-        Drawer.setColorStatic(Color.black);
+        Drawer.setColorStatic(color);
         Drawer.drawRing(size + border, size + border, size + border, border / 3, size);
         Drawer.returnToCentralPoint();
         Drawer.drawRing(size + border, size + border, size, border / 3, size);
@@ -152,30 +155,26 @@ public class MyGUI extends GUIObject {
 //        Jeśli Prawy
 //        glTranslatef(-size * 3 - border * 2, 0, 0);
 //        Jeśli Lewy
-        glTranslatef(size / 2, 0, 0);
 
-        glTranslatef(2 * (size + border), border, 0);
+        Drawer.translate(2 * (size + border), border);
         Drawer.setColorStatic(Color.white);
         if (change != Settings.nativeScale)
             glScalef(change, change, change);
         attackIcons.renderPiece(firstAttackType);
         if (change != Settings.nativeScale)
             glScalef(1 / change, 1 / change, 1 / change);
-        Drawer.setColorStatic(Color.black);
+        Drawer.setColorStatic(color);
         Drawer.drawRing(size / 2, size / 2, size / 2 - border / 3, border / 3, size);
         Drawer.returnToCentralPoint();
-        glTranslatef(0, size, 0);
 
-//        Jeśli Prawy
-        glTranslatef(-size / 2, 0, 0);
-
+        Drawer.translate(3 * size + 3 * border, border);
         Drawer.setColorStatic(Color.white);
         if (change != Settings.nativeScale)
             glScalef(change, change, change);
         attackIcons.renderPiece(secondAttackType);
         if (change != Settings.nativeScale)
             glScalef(1 / change, 1 / change, 1 / change);
-        Drawer.setColorStatic(Color.black);
+        Drawer.setColorStatic(color);
         Drawer.drawRing(size / 2, size / 2, size / 2 - border / 3, border / 3, size);
         Drawer.returnToCentralPoint();
     }
@@ -242,10 +241,12 @@ public class MyGUI extends GUIObject {
     }
 
     private void renderPairArrow(int size, int border) {
-        Drawer.setColorStatic(Color.white);
+        Drawer.setColorStatic(color);
         int pair = ((MyPlayer) player).getActiveActionPairID();
         int base = 2 * border / 3;
-        glTranslatef(-base + size / 2 + size / 4, -base, 0);
+        Drawer.translate(3 * size + 2 * border - base + border / 2, border + base + size / 4);
+//        glTranslatef(size / 2 + size / 4, 2 * (size + border), 0);
+//        glTranslatef(-base + size / 2 + size / 4, -base, 0);
         switch (pair) {
             case 0:
                 Drawer.drawTriangle(base, 0, 2 * base, 2 * base, 0, 2 * base);
@@ -262,6 +263,25 @@ public class MyGUI extends GUIObject {
             default:
         }
         Drawer.returnToCentralPoint();
+//        Drawer.setColorStatic(Color.white);
+//        base = border / 3;
+//        Drawer.translate(3 * size + 2 * border - base + border / 2, 2 * border + size / 4);
+//        switch (pair) {
+//            case 0:
+//                Drawer.drawTriangle(base, 0, 2 * base, 2 * base, 0, 2 * base);
+//                break;
+//            case 1:
+//                Drawer.drawTriangle(0, 0, 2 * base, base, 0, 2 * base);
+//                break;
+//            case 2:
+//                Drawer.drawTriangle(0, 0, 2 * base, 0, base, 2 * base);
+//                break;
+//            case 3:
+//                Drawer.drawTriangle(2 * base, 0, 2 * base, 2 * base, 0, base);
+//                break;
+//            default:
+//        }
+//        Drawer.returnToCentralPoint();
     }
 
 

@@ -49,7 +49,7 @@ public class Blazag extends Mob {
     private ActionState idle, attack, wander, jump, jumpAttack, protect, sleep, run_to;
     private Delay attackDelay = Delay.createInMilliseconds(700);        //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay readyToAttackDelay = Delay.createInMilliseconds(attackDelayTime); //TODO - te wartości losowe i zależne od poziomu trudności
-    private Delay rest = Delay.createInSeconds(2);                      //TODO - te wartości losowe i zależne od poziomu trudności
+    private Delay rest = Delay.createInSeconds(1);                      //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpRestDelay = Delay.createInSeconds(5);             //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay jumpDelay = Delay.createInMilliseconds(300);          //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay burstDelay = Delay.createInMilliseconds(500);         //TODO - te wartości losowe i zależne od poziomu trudności
@@ -331,6 +331,7 @@ public class Blazag extends Mob {
         changeDelay.terminate();
         readyToAttackDelay.terminate();
         burstDelay.terminate();
+        letGoDelay.setFrameLengthInSeconds(60);
         letGoDelay.terminate();
         state = idle;
         jumper = new SpeedChanger();

@@ -41,8 +41,8 @@ public class MultiSampleFrameBufferObject extends FrameBufferObject {
 
     @Override
     public void deactivate() {
-        generated = true;
         type.deactivate(frameBufferObjectMultiSample, frameBufferObject, width, height);
+        generated = true;
     }
 
     protected int[] getBuffers() {

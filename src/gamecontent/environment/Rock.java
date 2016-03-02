@@ -15,6 +15,7 @@ import game.gameobject.entities.Player;
 import game.gameobject.stats.MobStats;
 import game.place.Place;
 import gamecontent.MyPlayer;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -28,6 +29,7 @@ public class Rock extends Mob {
         stats = new MobStats(this);
         stats.setStartHealth(1000);
         stats.setDefence(20);
+        canBeCovered = false;
         setResistance(50);
         addPushInteraction();
         setTargetable(false);
@@ -40,9 +42,9 @@ public class Rock extends Mob {
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
             if (isPlayerTalkingToMe(player)) {
                 player.getTextController().lockEntity(player);
-                player.getTextController().startFromText(new String[] {
-                    "To jest kamień$FL",
-                    "Jego położenie jest doprawdy specyficzne."
+                player.getTextController().startFromText(new String[]{
+                        "To jest kamień$FL",
+                        "Jego położenie jest doprawdy specyficzne."
                 });
             }
             if (d > hearRange * 1.5 || getTarget().getMap() != map) {

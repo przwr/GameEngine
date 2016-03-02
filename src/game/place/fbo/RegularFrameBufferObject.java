@@ -21,8 +21,8 @@ public class RegularFrameBufferObject extends FrameBufferObject {
 
     @Override
     public void deactivate() {
-        generated = true;
         type.deactivate();
+        generated = true;
     }
 
     private void createFrameBufferObjects() {

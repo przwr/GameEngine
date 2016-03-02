@@ -5,7 +5,6 @@ import engine.utilities.Drawer;
 import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.gameobject.entities.Mob;
 import game.place.Place;
 import game.place.fbo.FrameBufferObject;
 import game.place.fbo.MultiSampleFrameBufferObject;
@@ -138,7 +137,8 @@ public class GrassClump extends GameObject {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1);
     }
 
-    public static GrassClump createCorner(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int corner) {
+    public static GrassClump createCorner(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int
+            corner) {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1, corner);
     }
 
@@ -171,7 +171,6 @@ public class GrassClump extends GameObject {
         yRadius = 4 * yCount;
         grasses = new Grass[xCount * yCount];
         ySpacing = 8;
-        depth = 1;
         xCentering = Math.round(xBladesCount * (bladeWidth - 2) / 2f);
         int fboWidth = xRadius * 2 + 4 + (xCount - 1) * xCentering;
         int fboHeight = yRadius * 2 + bladeHeight + 8;
@@ -189,6 +188,7 @@ public class GrassClump extends GameObject {
             Grass.random = RandomGenerator.create();
         }
         Grass.random.resetWithSeed(seed);
+        depth = yCount * yBladesCount;
     }
 
     @Override
@@ -207,9 +207,10 @@ public class GrassClump extends GameObject {
             if (!objectMode) {
                 Area area = map.getArea(this.area);
                 if (!updateGrass) {
-                    for (Mob mob : area.getNearSolidMobs()) {
-                        if (mob.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - mob.getX()) < xRadius + mob.getCollision().getWidthHalf()
-                                && Math.abs(getY() + yRadius - mob.getY()) < yRadius + mob.getCollision().getHeightHalf()) {
+                    for (GameObject object : area.getNearDepthObjects()) {
+                        if (object.getCollision() != null && object.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - object.getX()) < xRadius +
+                                object.getCollision().getWidthHalf() && Math.abs(getY() + yRadius - object.getY()) < yRadius + object.getCollision()
+                                .getHeightHalf()) {
                             updateGrass = true;
                             break;
                         }

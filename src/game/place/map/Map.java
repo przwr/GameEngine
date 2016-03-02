@@ -25,6 +25,7 @@ import game.logic.betweenareapathfinding.BetweenAreaPathFinder;
 import game.place.Place;
 import game.place.cameras.Camera;
 import org.newdawn.slick.Color;
+import sprites.ClothedAppearance;
 
 import java.util.*;
 
@@ -611,7 +612,7 @@ public abstract class Map {
     }
 
     private boolean isBehindSomething(GameObject object) {
-        if (object instanceof Entity && object.getAppearance() != null) {
+        if (object instanceof Entity && object.getAppearance() != null && object.canBeCovered()) {
             for (GameObject tile : foregroundTiles) {
                 if (tile.getDepth() > object.getDepth()
                         && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
@@ -622,13 +623,24 @@ public abstract class Map {
                 }
             }
             for (GameObject other : depthObjects) {
+//                if (other != object) {
+//                    if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
+//                            && object.getCollision() != null && other.getDepth() > object.getDepth()
+//                            && object.getX() < other.getXSpriteEnd(true) && object.getX() > other.getXSpriteBegin(true)
+//                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 < other.getYSpriteEnd
+// (true)
+//                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 > other.getYSpriteBegin
+//                            (true)) {
+//                        return true;
+//                    }
+//                }
                 if (other != object) {
                     if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
                             && object.getCollision() != null && other.getDepth() > object.getDepth()
-                            && object.getX() < other.getXSpriteEnd(true) && object.getX() > other.getXSpriteBegin(true)
-                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 < other.getYSpriteEnd(true)
-                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 > other.getYSpriteBegin
-                            (true)) {
+                            && object.getX() - object.getAppearance().getActualHeight() / 2 < other.getXSpriteEnd(true)
+                            && object.getX() + object.getAppearance().getActualHeight() / 2 > other.getXSpriteBegin(true)
+                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() < other.getYSpriteEnd(true)
+                            && object.getY() + object.getCollision().getHeightHalf() > other.getYSpriteBegin(true)) {
                         return true;
                     }
                 }
@@ -652,14 +664,25 @@ public abstract class Map {
         glPushMatrix();
         glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(object.getX(), object.getY() - arrowSize / 2 - (int) (object.getFloatHeight()), 0);
-        Drawer.setColorStatic(pointingColor);
-        Drawer.drawEllipseBow(0, 0, arrowSize / 6, arrowSize / 3, arrowSize / 6, -arrowSize, 210, 15);
-//        Drawer.drawEllipseBow(0, -32, 8, 64, 8, 45, 135, 4);
+        if (object instanceof Entity) {
+            Drawer.setColorAlpha(((Entity) object).getColorAlpha() * 0.5f);
+        } else {
+            Drawer.setColorAlpha(0.5f);
+        }
+        glTranslatef(object.getX(), object.getY() - (int) (object.getFloatHeight()), 0);
+//        glTranslatef(object.getX(), object.getY() - arrowSize / 2 - (int) (object.getFloatHeight()), 0);
+//        Drawer.setColorStatic(pointingColor);
+//        Drawer.drawEllipseBow(0, 0, arrowSize / 6, arrowSize / 3, arrowSize / 6, -arrowSize, 210, 15);
+//        Drawer.refreshColor();
+//        glScaled(0.5f, 0.5f, 1);
+//        glTranslatef(0, -arrowSize - object.getAppearance().getActualHeight(), 0);
+
+        if (object.getAppearance() instanceof ClothedAppearance) {
+            object.getAppearance().renderPart(0, object.getAppearance().getWidth());
+        } else {
+            object.getAppearance().render();
+        }
         Drawer.refreshColor();
-        glScaled(0.5f, 0.5f, 1);
-        glTranslatef(0, -arrowSize - object.getAppearance().getActualHeight(), 0);
-        object.getAppearance().render();
         glPopMatrix();
     }
 

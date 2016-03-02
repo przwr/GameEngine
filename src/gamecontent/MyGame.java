@@ -37,7 +37,6 @@ import java.io.File;
 import java.util.Iterator;
 
 import static engine.systemcommunication.IO.loadInputFromFile;
-import game.place.fbo.FrameBufferObject;
 
 /**
  * @author przemek
@@ -353,6 +352,7 @@ public class MyGame extends Game {
     private void removePlayerOffline(int i) {
         if (place.playersCount > 1 && players[i].isNotFirst()) {
             ((Player) place.players[i]).setNotInGame();
+            place.players[i].clearLights();
             place.players[i].getMap().deleteObject(place.players[i]);
             if (i != place.playersCount - 1) {
                 Player tempPlayer = players[place.playersCount - 1];
@@ -452,27 +452,40 @@ public class MyGame extends Game {
         if (Settings.sounds != null)
             Settings.sounds.cleanUp();
         Settings.sounds = null;
-        for (Player player : players) {
-            player.setNotInGame();
-        }
         PathFindingModule.stop();
         pathThread = null;
         mapLoader.stop();
         mapThread = null;
         online.cleanUp();
+        online = null;
+        online = new MyGameOnline(this, 3, 4);
+        online.initializeChanges();
         Tree.instances.clear();
         Tree.fbos.clear();
         Bush.instances.clear();
         Bush.fbos.clear();
         GrassClump.instances.clear();
         GrassClump.fbos.clear();
+        Place.currentCamera = null;
+        Renderer.place = null;
+        for (int i = 0; i < players.length; i++) {
+            if (players[i] != null) {
+                players[i].clearLights();
+            }
+        }
+        players[0] = new MyPlayer(true, "Player 1");
+        players[1] = new MyPlayer(false, "Player 2");
+        players[2] = new MyPlayer(false, "Player 3");
+        players[3] = new MyPlayer(false, "Player 4");
+        players[0].setMenu(menu);
+        players[1].setMenu(menu);
+        players[2].setMenu(menu);
+        players[3].setMenu(menu);
         if (place != null) {
             place.cleanUp();
         }
         place = null;
         mode = 0;
-        Place.currentCamera = null;
-        Renderer.place = null;
         Main.restartBackGroundLoader();
         FrameBufferObject.cleanUp();
         Methods.gc();
