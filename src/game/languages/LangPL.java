@@ -34,9 +34,9 @@ public class LangPL extends Language {
         menu.SplitScreen = "Dzielenie ekranu: ";
         menu.Vertical = "Pionowo";
         menu.Horizontal = "Poziomo";
-        menu.Brightness = "Jasność: ";
+        menu.Brightness = "Jasność (3ci # niewidoczny): ";
         menu.Volume = "Głośność: ";
-        menu.Gamma = "Gamma (3ci # niewidoczny): ";
+        menu.Gamma = "Gamma (2gi # niewidoczny): ";
         menu.Resolution = "Rozdzielczość: ";
         menu.FullScreen = "Pełny ekran: ";
         menu.Text = "Tekst: ";
