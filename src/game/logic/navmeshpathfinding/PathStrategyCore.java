@@ -481,7 +481,8 @@ class PathStrategyCore {
                 if (poly.contains(figure.getXCentral(), figure.getYCentral())) {
                     return figure;
                 }
-                if (poly.intersects(figure.getX(), figure.getY(), figure.getWidth(), figure.getHeight())) {
+                if (poly.intersects(figure.getX() + figure.getWidth() / 4, figure.getY() + figure.getHeight() / 4, figure.getWidthHalf(), figure
+                        .getHeightHalf())) {
                     return figure;
                 }
             }

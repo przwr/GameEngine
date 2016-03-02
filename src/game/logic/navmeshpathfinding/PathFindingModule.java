@@ -85,7 +85,7 @@ public class PathFindingModule implements Runnable {
             request.requester = null;
         }
         incrementPath();
-        if (requestedPaths.size() < 2 || requestedPaths.size() == actualPath + 1) {
+        if (requestedPaths.size() == actualPath + 1 || requestedPaths.size() < 2) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {

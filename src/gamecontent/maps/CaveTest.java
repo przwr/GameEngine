@@ -7,15 +7,15 @@ import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
+import gamecontent.environment.MoneyBag;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Tongub;
-import org.newdawn.slick.Color;
-
-import static collision.OpticProperties.TRANSPARENT;
-import gamecontent.environment.MoneyBag;
 import gamecontent.npcs.Sonata;
 import gamecontent.npcs.Zuocieyka;
+import org.newdawn.slick.Color;
 import sounds.Sound;
+
+import static collision.OpticProperties.TRANSPARENT;
 
 /**
  * Created by przemek on 21.11.15.
@@ -71,8 +71,8 @@ public class CaveTest extends Map {
         addObject(SpawnPoint.createInVisible(5504, 7936, 54, 38, "Tongub spawn", Tongub.class, 2, max));
         addObject(SpawnPoint.createInVisible(5568, 6336, 54, 38, "Tongub spawn", Tongub.class, 2, max));
         addObject(SpawnPoint.createInVisible(6818, 2662, 54, 38, "Blazag spawn", Blazag.class, 5, max));
-        addObject(SpawnPoint.createInVisible(7271, 2771, 54, 38, "Blazag spawn", Blazag.class, 5, max));
-        addObject(SpawnPoint.createInVisible(7126, 2445, 54, 38, "Blazag spawn", Blazag.class, 5, max));
+//        addObject(SpawnPoint.createInVisible(7271, 2771, 54, 38, "Blazag spawn", Blazag.class, 5, max));
+//        addObject(SpawnPoint.createInVisible(7126, 2445, 54, 38, "Blazag spawn", Blazag.class, 5, max));
     }
 
     //TYMCZASOWE

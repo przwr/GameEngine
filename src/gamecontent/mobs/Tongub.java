@@ -170,6 +170,12 @@ public class Tongub extends Mob {
                             side = false;
                             brake(2);
                         } else {
+                            if (closeFriends.isEmpty()) {
+                                state = idle;
+                                target = null;
+                                maxSpeed = 3;
+                                brake(2);
+                            }
                             attack_delay.setFrameLengthInMilliseconds(1000 + random.next(9));
                             attack_delay.start();
                             attacking = true;
@@ -203,15 +209,12 @@ public class Tongub extends Mob {
                                 }
                             }
                         }
-
                     }
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                    if (!attacking && (!target.getCollision().isHitable() || !isInHalfHearingRange(target)
-                            || target.getMap() != map || closeFriends.isEmpty())) {
+                    if (!attacking && (!target.getCollision().isHitable() || !isInHalfHearingRange(target) || target.getMap() != map)) {
                         state = idle;
                         target = null;
                         maxSpeed = 3;
-                        rest.terminate();
                         brake(2);
                     }
                 } else {
@@ -412,7 +415,21 @@ public class Tongub extends Mob {
      animation.animateIntervalInDirection(getDirection8Way(), 17, 22); - wykopanie
      */
     private void updateAnimation() {
-        if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
+        if (dig || stats.isProtectionState()) {
+            animation.setFPS(15);
+            animation.animateIntervalInDirection(getDirection8Way(), 11, 17);
+            animation.setStopAtEnd(true);
+            if (animation.getDirectionalFrameIndex() == 17) {
+                dig = false;
+            }
+        } else if (undig) {
+            animation.setFPS(15);
+            animation.animateIntervalInDirection(getDirection8Way(), 18, 23);
+            animation.setStopAtEnd(true);
+            if (animation.getDirectionalFrameIndex() == 23) {
+                undig = false;
+            }
+        } else if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
             pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
             if (currentPastDirection > 1) {
                 currentPastDirection = 0;
@@ -428,23 +445,7 @@ public class Tongub extends Mob {
                 animation.animateIntervalInDirection(getDirection8Way(), 2, 6);
             }
         } else {
-            if (dig || stats.isProtectionState()) {
-                animation.setFPS(15);
-                animation.animateIntervalInDirection(getDirection8Way(), 11, 17);
-                animation.setStopAtEnd(true);
-                if (animation.getDirectionalFrameIndex() == 17) {
-                    dig = false;
-                }
-            } else if (undig) {
-                animation.setFPS(15);
-                animation.animateIntervalInDirection(getDirection8Way(), 18, 23);
-                animation.setStopAtEnd(true);
-                if (animation.getDirectionalFrameIndex() == 23) {
-                    undig = false;
-                }
-            } else {
-                animation.animateSingleInDirection(getDirection8Way(), 0);
-            }
+            animation.animateSingleInDirection(getDirection8Way(), 0);
         }
     }
 

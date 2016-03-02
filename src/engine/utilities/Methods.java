@@ -123,12 +123,12 @@ public class Methods {
     }
 
     public static double pointAngleCounterClockwise(double xSt, double ySt, double xEn, double yEn) {    //0 <=> PRAWO; 90 <=> GÓRA; 180 <=> LEWO; 270 <=> DÓŁ;
-        double det = -FastMath.atan2(yEn - ySt, xEn - xSt) * 180 / FastMath.PI;
+        double det = -FastMath.atan2(yEn - ySt, xEn - xSt) * 180.0 / FastMath.PI;
         return det >= 0 ? det : det + 360;
     }
 
     public static double pointAngleClockwise(double xSt, double ySt, double xEn, double yEn) {     //0 <=> PRAWO; 90 <=> DÓŁ; 180 <=> LEWO; 270 <=> GÓRA; czy
-        double det = FastMath.atan2(yEn - ySt, xEn - xSt) * 180 / FastMath.PI;
+        double det = FastMath.atan2(yEn - ySt, xEn - xSt) * 180.0 / FastMath.PI;
         return det >= 0 ? det : det + 360;
     }
 

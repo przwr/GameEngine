@@ -8,20 +8,17 @@ import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
-import gamecontent.environment.GrassClump;
 import gamecontent.environment.Rock;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
 import gamecontent.mobs.Plurret;
 import gamecontent.mobs.Shen;
-import gamecontent.npcs.Magician;
 import gamecontent.npcs.Melodia;
 import gamecontent.npcs.Nutka;
 import gamecontent.npcs.Tercja;
 import sounds.Sound;
 
 import static collision.OpticProperties.TRANSPARENT;
-import gamecontent.environment.MoneyBag;
 
 /**
  * Created by przemek on 21.11.15.
