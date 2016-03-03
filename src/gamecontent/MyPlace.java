@@ -6,7 +6,6 @@
 package gamecontent;
 
 import engine.Main;
-import engine.systemcommunication.AnalyzerSettings;
 import engine.utilities.Delay;
 import game.Game;
 import game.Settings;
@@ -197,7 +196,7 @@ public class MyPlace extends Place {
     }
 
     private void updateInputs() {
-        String soundName = "cricket";
+//        String soundName = "cricket";
 //        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
 //            sounds.getSound(soundName).stop();
 //        }
@@ -229,42 +228,42 @@ public class MyPlace extends Place {
 //        if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
 //            sounds.getSound(soundName).fade(0.5, false);
 //        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
-            if (delay.isOver()) {
-                delay.start();
-                Settings.framesLimit = Settings.framesLimit == 30 ? 60 : 30;
-                AnalyzerSettings.update();
-            }
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
-            if (delay.isOver()) {
-                delay.start();
-                dayCycle.addMinutes(5);
-            }
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
-            if (delay.isOver()) {
-                delay.start();
-                dayCycle.stopTime();
-            }
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_V)) {
-            if (delay.isOver()) {
-                delay.start();
-                dayCycle.resumeTime();
-            }
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
-            if (delay.isOver()) {
-                delay.start();
-                Settings.gameGamma += 0.1f;
-                if (Settings.gameGamma > 3.05f) {
-                    Settings.gameGamma = 1f;
-                }
-                Settings.gameGamma = (Math.round(Settings.gameGamma * 10)) / 10f;
-                Main.refreshGammaAndBrightness();
-            }
-        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
+//            if (delay.isOver()) {
+//                delay.start();
+//                Settings.framesLimit = Settings.framesLimit == 30 ? 60 : 30;
+//                AnalyzerSettings.update();
+//            }
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
+//            if (delay.isOver()) {
+//                delay.start();
+//                dayCycle.addMinutes(5);
+//            }
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
+//            if (delay.isOver()) {
+//                delay.start();
+//                dayCycle.stopTime();
+//            }
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_V)) {
+//            if (delay.isOver()) {
+//                delay.start();
+//                dayCycle.resumeTime();
+//            }
+//        }
+//        if (Keyboard.isKeyDown(Keyboard.KEY_PRIOR)) {
+//            if (delay.isOver()) {
+//                delay.start();
+//                Settings.gameGamma += 0.1f;
+//                if (Settings.gameGamma > 3.05f) {
+//                    Settings.gameGamma = 1f;
+//                }
+//                Settings.gameGamma = (Math.round(Settings.gameGamma * 10)) / 10f;
+//                Main.refreshGammaAndBrightness();
+//            }
+//        }
     }
 
     @Override
