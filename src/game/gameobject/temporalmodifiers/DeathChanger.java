@@ -1,6 +1,7 @@
 package game.gameobject.temporalmodifiers;
 
 import collision.OpticProperties;
+import engine.utilities.Methods;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.place.cameras.Camera;

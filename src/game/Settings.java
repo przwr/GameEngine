@@ -64,7 +64,7 @@ public class Settings {
     public static float defaultBrightness = 0f;
     public static float gameGamma = 1.5f;
     public static float gameBrightness = 0f;
-    private static int depth = Display.getDesktopDisplayMode().getBitsPerPixel();
+    private static final int depth = Display.getDesktopDisplayMode().getBitsPerPixel();
     private static int modesCount;
     public static FontBase fonts;
 

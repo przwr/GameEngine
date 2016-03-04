@@ -985,6 +985,17 @@ public class TextController extends GUIObject {
                 }
             }
         }
+        
+        @Override
+        public void clear() {
+            super.clear();
+            if (startEvent != null) {
+                startEvent.clear();
+            }
+            if (endEvent != null) {
+                endEvent.clear();
+            }
+        }
     }
 
     class TextRow {
