@@ -198,5 +198,4 @@ public abstract class Player extends Entity {
     public Weapon getWeapon() {
         return activeWeapon;
     }
-
 }
