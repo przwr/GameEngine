@@ -111,7 +111,8 @@ public class PlayerStats extends Stats {
                 normalHurt = Math.round(response.getPixels() / (defence * sideDefenceModifier));
                 break;
         }
-        float energyToLife = 3f;
+        float energyToLifeModifier = (250f - 2.5f * strength) / 100f;
+        float energyToLife = 0.5f + energyToLifeModifier > 0 ? energyToLifeModifier : 0;
         decreaseEnergy(energyToLife * normalHurt);
         if (energy < energyToLife * normalHurt) {
             float percent = energy / (energyToLife * normalHurt);

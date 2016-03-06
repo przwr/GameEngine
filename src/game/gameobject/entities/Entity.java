@@ -510,7 +510,7 @@ public abstract class Entity extends GameObject {
         }
         for (GameObject obj : map.getArea(area).getNearDepthObjects()) {
             collision = obj.getCollision();
-            if (collision != null && !collision.isMobile() && !collision.isSmall() && collision.getWidth() < object.getCollision().getWidth()) {
+            if (collision != null && !collision.isMobile() && collision.getWidth() < object.getCollision().getWidth()) {
                 if (Line2D.linesIntersect(xS, yS, xE, yE, collision.getX(), collision.getY(), collision.getXEnd(), collision.getYEnd())
                         || Line2D.linesIntersect(xS, yS, xE, yE, collision.getXEnd(), collision.getY(), collision.getX(), collision.getYEnd())) {
                     return false;

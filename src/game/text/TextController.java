@@ -667,7 +667,7 @@ public class TextController extends GUIObject {
             if (time >= 60) {
                 time = 0;
             }
-            realSpeed = speed * (playerController.getAction(MyController.INPUT_BLOCK).isKeyPressed() ? 2f : 1f) * Time.getDelta();
+            realSpeed = speed * (playerController.getAction(MyController.INPUT_RUN).isKeyPressed() ? 2f : 1f) * Time.getDelta();
 
             if (flushing) {
                 handleFlushing();

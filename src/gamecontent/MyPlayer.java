@@ -398,17 +398,17 @@ public class MyPlayer extends Player {
             Drawer.setCentralPoint();
             if (colorAlpha < 1f) {
                 Drawer.setColorAlpha(colorAlpha);
-            }
-            if (((ClothedAppearance) appearance).isUpToDate()) {
+                appearance.renderPart(0, appearance.getWidth());
+            } else if (((ClothedAppearance) appearance).isUpToDate()) {
                 appearance.render();
             }
             if (colorAlpha < 1f) {
                 Drawer.refreshColor();
             }
-
-            appearance.updateFrame();
             glPopMatrix();
+            appearance.updateFrame();
         }
+
     }
 
     @Override

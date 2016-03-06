@@ -40,7 +40,7 @@ public abstract class Figure implements Comparable<Figure> {
     private final DoublePoint slideSpeed;
     protected int xStart, yStart, width, height, xCenter, yCenter, heightHalf, widthHalf;
     private GameObject owner;
-    private boolean mobile = false, small = false, collide = true, hitable = true;
+    private boolean mobile = false, collide = true, hitable = true;
 
     public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
         this.xStart = xStart;
@@ -306,14 +306,6 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setMobile(boolean mobile) {
         this.mobile = mobile;
-    }
-
-    public boolean isSmall() {
-        return small;
-    }
-
-    public void setSmall(boolean small) {
-        this.small = small;
     }
 
     public boolean isConcave() {
