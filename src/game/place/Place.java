@@ -22,7 +22,7 @@ import game.gameobject.entities.Player;
 import game.logic.DayCycle;
 import game.place.cameras.Camera;
 import game.place.map.Map;
-import game.text.FontBase;
+import game.text.FontHandler;
 import gamecontent.MyPlayer;
 import org.newdawn.slick.Color;
 import sounds.SoundBase;
@@ -36,7 +36,6 @@ import java.util.Set;
 
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
-import game.text.FontHandler;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -78,15 +77,7 @@ public abstract class Place extends ScreenPlace {
                         Renderer.preRenderLights(map);
                     }
                 });
-//                if (!singleCamera) {
-//                    currentCamera = (((Player) players[p]).getCamera());
-//                    currentCamera.preRenderGUI();
-//                }
             }
-//            if (singleCamera) {
-//                currentCamera = cameras[playersCount - 2];
-//                cameras[playersCount - 2].preRenderGUI();
-//            }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
                 Map map = players[player].getMap();
@@ -148,7 +139,6 @@ public abstract class Place extends ScreenPlace {
                     }
                     currentCamera = (((Player) players[0]).getCamera());
                     SplitScreen.setSplitScreen(this, 1, 0);
-//                    currentCamera.preRenderGUI();
                     if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
                         glEnable(GL_SCISSOR_TEST);
                         Renderer.preRenderShadowedLights(currentCamera);

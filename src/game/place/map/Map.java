@@ -45,7 +45,7 @@ public abstract class Map {
             firstObject.getDepth() - secondObject.getDepth();
     public final Place place;
     protected final int tileSize;
-    protected final ArrayList<GameObject> pointingArrows = new ArrayList<>();
+    protected final ArrayList<GameObject> seeThroughs = new ArrayList<>();
     protected final String name;
     protected final short mapID;
     protected final PointContainer tempTilePositions = new PointContainer();
@@ -511,7 +511,7 @@ public abstract class Map {
         cameraYEnd = camera.getYEnd();
         cameraXOffEffect = camera.getXOffsetEffect();
         cameraYOffEffect = camera.getYOffsetEffect();
-        pointingArrows.clear();
+        seeThroughs.clear();
     }
 
     public void renderBackground(Camera camera) {
@@ -599,7 +599,7 @@ public abstract class Map {
             }
             if (object.isVisible() && isObjectInSight(object)) {
                 if (isBehindSomething(object)) {
-                    pointingArrows.add(object);
+                    seeThroughs.add(object);
                 }
                 object.render(cameraXOffEffect, cameraYOffEffect);
             }
@@ -623,17 +623,6 @@ public abstract class Map {
                 }
             }
             for (GameObject other : depthObjects) {
-//                if (other != object) {
-//                    if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
-//                            && object.getCollision() != null && other.getDepth() > object.getDepth()
-//                            && object.getX() < other.getXSpriteEnd(true) && object.getX() > other.getXSpriteBegin(true)
-//                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 < other.getYSpriteEnd
-// (true)
-//                            && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() / 2 > other.getYSpriteBegin
-//                            (true)) {
-//                        return true;
-//                    }
-//                }
                 if (other != object) {
                     if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
                             && object.getCollision() != null && other.getDepth() > object.getDepth()
@@ -653,30 +642,23 @@ public abstract class Map {
         updateNearTopObjects(camera.getArea());
         topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render(cameraXOffEffect,
                 cameraYOffEffect));
-        for (GameObject pointer : pointingArrows) {
-            renderPointingArrow(pointer);
+        for (GameObject see : seeThroughs) {
+            renderSeeThroughs(see);
         }
-
     }
 
-    private void renderPointingArrow(GameObject object) {
-        int arrowSize = (int) (Settings.nativeScale * 32);
+    private void renderSeeThroughs(GameObject object) {
         glPushMatrix();
         glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+        Color c = Drawer.getCurrentColor();
+        float val = Math.min(Math.min(c.r, c.g), c.b);
         if (object instanceof Entity) {
-            Drawer.setColorAlpha(((Entity) object).getColorAlpha() * 0.3f);
+            Drawer.setColorAlpha(((Entity) object).getColorAlpha() * 0.3f * val);
         } else {
             Drawer.setColorAlpha(0.5f);
         }
         glTranslatef(object.getX(), object.getY() - (int) (object.getFloatHeight()), 0);
-//        glTranslatef(object.getX(), object.getY() - arrowSize / 2 - (int) (object.getFloatHeight()), 0);
-//        Drawer.setColorStatic(pointingColor);
-//        Drawer.drawEllipseBow(0, 0, arrowSize / 6, arrowSize / 3, arrowSize / 6, -arrowSize, 210, 15);
-//        Drawer.refreshColor();
-//        glScaled(0.5f, 0.5f, 1);
-//        glTranslatef(0, -arrowSize - object.getAppearance().getActualHeight(), 0);
-
         if (object.getAppearance() instanceof ClothedAppearance) {
             object.getAppearance().renderPart(0, object.getAppearance().getWidth());
         } else {
@@ -712,7 +694,7 @@ public abstract class Map {
         lights.clear();
         blocks.clear();
         tempMobs.clear();
-        pointingArrows.clear();
+        seeThroughs.clear();
         tempBlocks.clear();
         tempTilePositions.clear();
         tempDepthObjects.clear();

@@ -358,7 +358,7 @@ public class MyPlayer extends Player {
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
         return !Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
-                 &&  isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
+                && isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override
@@ -382,9 +382,9 @@ public class MyPlayer extends Player {
             Drawer.refreshColor();
 
             if (Main.SHOW_INTERACTIVE_COLLISION) {
-                interactiveObjects.stream().forEach((interactive) -> {
+                for (Interactive interactive : interactiveObjects) {
                     interactive.render(xEffect, yEffect);
-                });
+                }
             }
 
             glPushMatrix();
@@ -395,16 +395,14 @@ public class MyPlayer extends Player {
             if (colorAlpha < 1f) {
                 Drawer.setColorAlpha(colorAlpha);
                 appearance.renderPart(0, appearance.getWidth());
+                Drawer.refreshColor();
             } else if (((ClothedAppearance) appearance).isUpToDate()) {
                 appearance.render();
             }
-            if (colorAlpha < 1f) {
-                Drawer.refreshColor();
-            }
             glPopMatrix();
             appearance.updateFrame();
+            appearance.updateTexture(this);
         }
-
     }
 
     @Override
@@ -437,7 +435,6 @@ public class MyPlayer extends Player {
                 }
             }
             brakeOthers();
-            appearance.updateTexture(this);
         }
     }
 

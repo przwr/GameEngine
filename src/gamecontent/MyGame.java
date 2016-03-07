@@ -321,6 +321,7 @@ public class MyGame extends Game {
                 dots = " " + dots + ".";
             }
         }
+        Drawer.clearScreen(0);
         Drawer.renderStringCentered(loading, Display.getWidth() / 2, Display.getHeight() / 2, font, Color.white);
         Drawer.renderStringCentered(dots, (Display.getWidth() + font.getWidth(loading)) / 2, Display.getHeight() / 2, font, Color.white);
     }

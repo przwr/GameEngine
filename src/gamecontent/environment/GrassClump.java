@@ -144,7 +144,7 @@ public class GrassClump extends GameObject {
 
     public static boolean allGenerated() {
         for (GrassClump clump : instances) {
-            clump.update();
+            clump.preRender();
         }
         Iterator it = fbos.entrySet().iterator();
         while (it.hasNext()) {
@@ -233,9 +233,6 @@ public class GrassClump extends GameObject {
                 }
             }
             if (!added) {
-                if (!fbo.generated) {
-                    preRender();
-                }
                 for (int i = 0; i < grasses.length; i++) {
                     if (grasses[i] != null) {
                         map.addObject(grasses[i]);
@@ -247,20 +244,22 @@ public class GrassClump extends GameObject {
     }
 
     private void preRender() {
-        fbo.activate();
-        glPushMatrix();
-        glClearColor(0, 0.7f, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glTranslatef(xRadius + 2, -2 * yRadius + ySpacing + Display.getHeight(), 0);
-        if (corner >= 0) {
-            preRenderCorner();
-        } else if (curve > 0) {
-            preRenderRound();
-        } else {
-            preRenderRectangle();
+        if (!fbo.generated) {
+            fbo.activate();
+            glPushMatrix();
+            glClearColor(0, 0.7f, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glTranslatef(xRadius + 2, -2 * yRadius + ySpacing + Display.getHeight(), 0);
+            if (corner >= 0) {
+                preRenderCorner();
+            } else if (curve > 0) {
+                preRenderRound();
+            } else {
+                preRenderRectangle();
+            }
+            glPopMatrix();
+            fbo.deactivate();
         }
-        glPopMatrix();
-        fbo.deactivate();
     }
 
     private void preRenderRound() {
@@ -349,6 +348,7 @@ public class GrassClump extends GameObject {
     @Override
     public void render(int xEffect, int yEffect) {
         if (!updateGrass) {
+            preRender();
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
