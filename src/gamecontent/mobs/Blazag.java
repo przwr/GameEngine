@@ -374,7 +374,7 @@ public class Blazag extends Mob {
                 closeEnemies.add(mob);
             }
         }
-        updateAlpha();
+        updateLeadership();
     }
 
     @Override
@@ -652,7 +652,7 @@ public class Blazag extends Mob {
     }
 
     @Override
-    protected void updateAlpha() {
+    protected void updateLeadership() {
         if (closeFriends.isEmpty()) {
             leader = false;
         } else {

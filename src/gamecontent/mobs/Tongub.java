@@ -322,7 +322,7 @@ public class Tongub extends Mob {
                 closeEnemies.add(mob);
             }
         }
-        updateAlpha();
+        updateLeadership();
     }
 
 

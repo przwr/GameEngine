@@ -101,10 +101,10 @@ public abstract class Mob extends Entity {
                 closeEnemies.add(mob);
             }
         }
-        updateAlpha();
+        updateLeadership();
     }
 
-    protected void updateAlpha() {
+    protected void updateLeadership() {
         if (closeFriends.isEmpty()) {
             leader = false;
         } else {
@@ -159,7 +159,7 @@ public abstract class Mob extends Entity {
                 closeEnemies.add(mob);
             }
         }
-        updateAlpha();
+        updateLeadership();
     }
 
     protected synchronized void chase() {
