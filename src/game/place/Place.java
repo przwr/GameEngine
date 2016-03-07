@@ -224,7 +224,7 @@ public abstract class Place extends ScreenPlace {
                         currentCamera.setFaded(false);
                         for (GameObject owner : currentCamera.getOwners()) {
                             if (owner instanceof Entity) {
-                                ((Entity) owner).setUnableToMove(false);
+                                ((Entity) owner).setAbleToMove(true);
                                 owner.setVisible(true);
                             }
                             if (owner instanceof MyPlayer) {

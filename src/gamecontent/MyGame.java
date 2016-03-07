@@ -125,7 +125,7 @@ public class MyGame extends Game {
                     place.update();
                 } else {
                     //---------------------- <('.'<) OBJECT DESIGNER ----------------------------//
-                    /*if (Keyboard.isKeyDown(Keyboard.KEY_F1)) { DEMO
+                    if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
                         endGame();
                         setDesignerMode(true);
                         startGame();
@@ -135,7 +135,7 @@ public class MyGame extends Game {
                     if (Main.key.keyPressed(Keyboard.KEY_F2)) {
                         Main.TEST = !Main.TEST;
                         System.out.println("Test is now " + (Main.TEST ? "on" : "off"));
-                    }*/
+                    }
                     menu.update();
                 }
             }

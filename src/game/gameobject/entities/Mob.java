@@ -27,18 +27,16 @@ import static org.lwjgl.opengl.GL11.*;
 public abstract class Mob extends Entity {
 
     public short mobID;
+    private SpawnPoint spawner;
+    protected boolean leader;
+    private boolean targetable = true;
     protected ActionState state;
-    protected ArrayList<Mob> closeFriends = new ArrayList<>();
-    protected boolean alpha;
+    protected Delay letGoDelay = Delay.createInSeconds(30);
     protected int pastDirections[] = new int[2];
     protected int currentPastDirection;
+    protected ArrayList<Mob> closeFriends = new ArrayList<>();
     protected ArrayList<Agro> agro = new ArrayList<>();
     protected ArrayList<String> neutral = new ArrayList<>();
-    protected Delay letGoDelay = Delay.createInSeconds(30);
-    private SpawnPoint spawner;
-
-
-    private boolean targetable = true;
 
     public Mob() {
     }
@@ -108,12 +106,12 @@ public abstract class Mob extends Entity {
 
     protected void updateAlpha() {
         if (closeFriends.isEmpty()) {
-            alpha = false;
+            leader = false;
         } else {
-            alpha = true;
+            leader = true;
             for (Mob mob : closeFriends) {
-                if (mob.alpha) {
-                    alpha = false;
+                if (mob.leader) {
+                    leader = false;
                     break;
                 }
             }
@@ -265,7 +263,7 @@ public abstract class Mob extends Entity {
                 int x = 0, y = 0;
                 Mob leader = this;
                 for (Mob mob : closeFriends) {
-                    if (!mob.isAlpha()) {
+                    if (!mob.isLeader()) {
                         x += mob.getX();
                         y += mob.getY();
                     } else {
@@ -390,7 +388,7 @@ public abstract class Mob extends Entity {
     }
 
     @Override
-    public void updateCausedDamage(GameObject hurted, int hurt) {
+    public void reactToAttack(byte attackType, GameObject hurted, int hurt) {
         Agro agro = getAgresor(hurted);
         if (agro != null) {
             agro.addHurtedByOwner(hurt);
@@ -412,12 +410,12 @@ public abstract class Mob extends Entity {
     public void updateOnline() {
     }
 
-    public boolean isAlpha() {
-        return alpha;
+    public boolean isLeader() {
+        return leader;
     }
 
-    public void setAlpha(boolean alpha) {
-        this.alpha = alpha;
+    public void setLeader(boolean leader) {
+        this.leader = leader;
     }
 
     public ArrayList<Agro> getAgro() {
@@ -440,17 +438,6 @@ public abstract class Mob extends Entity {
             }
         }
         return null;
-    }
-
-    public boolean isPlayerTalkingToMe(MyPlayer player) {
-        return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
-                && !player.getTextController().isStarted()
-                && Methods.pointDistanceSimple(getX(), getY(),
-                player.getX(), player.getY()) <= Place.tileSize * 1.5
-                + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
-                && Math.abs(Methods.angleDifference(
-                player.getDirection(),
-                        (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
     }
 
     protected void renderPathPoints(int xEffect, int yEffect) {

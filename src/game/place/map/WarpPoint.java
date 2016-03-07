@@ -117,7 +117,7 @@ public class WarpPoint extends GameObject {
                 }
                 loading = true;
                 delay.start();
-                ((Player) object).setUnableToMove(true);
+                ((Player) object).setAbleToMove(false);
             }
             object.setWarp(this);
         } else if (delay.isOver()) {

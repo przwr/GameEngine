@@ -96,11 +96,6 @@ public class ForegroundTile extends Tile {
         return collision.isGiveShadow();
     }
 
-    @Override
-    public boolean isInCollidingPosition() {
-        return inCollidingPosition;
-    }
-
     public void setInCollidingPosition(boolean inCollidingPosition) {
         this.inCollidingPosition = inCollidingPosition;
     }

@@ -35,7 +35,6 @@ public class MyController extends PlayerController {
 
     public static final byte ATTACK_SLASH = 0, ATTACK_THRUST = 1, ATTACK_UPPER_SLASH = 2,
             ATTACK_WEAK_PUNCH = 3, ATTACK_STRONG_PUNCH = 4, ATTACK_NORMAL_ARROW_SHOT = 5;
-    private final int[] attackFrames;
     private final Delay lagDelay;
     private final Delay sideDelay;
     private final Delay jumpDelay;
@@ -53,7 +52,6 @@ public class MyController extends PlayerController {
     private MyGUI gui;
     private int jumpLag;
     private long lastEnergyUp = 0;
-    private double runMomentum = 0;
 
     public MyController(Player inControl, MyGUI playersGUI) {
         super(inControl);
@@ -69,7 +67,6 @@ public class MyController extends PlayerController {
         jumpDelay = Delay.createInMilliseconds(400, true);
         chargingDelay = Delay.createInMilliseconds(300, true);
         chargingDelay.terminate();
-        attackFrames = new int[]{22, 27, 31, 38, 40, 123};
         jumpMaker = new SpeedChanger(8);
         jumpMaker.setType(SpeedChanger.DECREASING);
         attackMovement = new SpeedChanger(4);
@@ -818,24 +815,17 @@ public class MyController extends PlayerController {
             } else {
                 inControl.setMaxSpeed(getNumberSquared(7, diagonal));
             }
-            /*runMomentum = 0;*/
         } else {
-            inControl.setMaxSpeed(getNumberSquared(10/* + runMomentum * Time.getDelta()*/, diagonal));
-            /*if (runMomentum < 4) {
-             runMomentum += 0.05;
-             } else {
-             runMomentum = 4;
-             }*/
+            inControl.setMaxSpeed(getNumberSquared(10, diagonal));
         }
         if (actions[INPUT_ACTION_3].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());
         }
-        /*DEMO
-         if (actions[INPUT_ACTION_4].isKeyClicked()) {
-         if (inControl instanceof Player) {
-         inControl.getCamera().switchZoom();
-         }
-         }*/
+        if (actions[INPUT_ACTION_4].isKeyClicked()) {
+            if (inControl instanceof Player) {
+                inControl.getCamera().switchZoom();
+            }
+        }
     }
 
     private double getNumberSquared(double num, boolean diagonal) {
@@ -892,10 +882,6 @@ public class MyController extends PlayerController {
     @Override
     public int getActionsCount() {
         return ACTIONS_COUNT;
-    }
-
-    public int[] getAttackFrames() {
-        return attackFrames;
     }
 
     private void setInputLag(int time) {

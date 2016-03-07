@@ -73,7 +73,6 @@ public class Dummy extends Mob {
 
     @Override
     public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
-        knockBack.setFrames(30);
         knockBack.setAttackerDirection(attacker.getDirection());
         int attackerX = attacker.getX() + (attacker instanceof Block ? attacker.getCollision().getWidthHalf() : 0);
         int attackerY = attacker.getY() + (attacker instanceof Block ? attacker.getCollision().getHeightHalf() : 0);

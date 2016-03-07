@@ -77,7 +77,7 @@ public class Arrow extends Entity {
     }
 
     @Override
-    public void reactToAttack(byte attackType, GameObject attacked) {
+    public void reactToAttack(byte attackType, GameObject attacked, int hurt) {
         delete();
     }
 
