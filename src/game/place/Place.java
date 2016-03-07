@@ -17,13 +17,11 @@ import game.ScreenPlace;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
-import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.logic.DayCycle;
 import game.place.cameras.Camera;
 import game.place.map.Map;
-import game.text.FontBase;
-import gamecontent.MyPlayer;
+import game.text.FontHandler;
 import org.newdawn.slick.Color;
 import sounds.SoundBase;
 import sprites.Sprite;
@@ -36,7 +34,6 @@ import java.util.Set;
 
 import static game.Game.OFFLINE;
 import static game.Game.ONLINE;
-import game.text.FontHandler;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -78,15 +75,7 @@ public abstract class Place extends ScreenPlace {
                         Renderer.preRenderLights(map);
                     }
                 });
-//                if (!singleCamera) {
-//                    currentCamera = (((Player) players[p]).getCamera());
-//                    currentCamera.preRenderGUI();
-//                }
             }
-//            if (singleCamera) {
-//                currentCamera = cameras[playersCount - 2];
-//                cameras[playersCount - 2].preRenderGUI();
-//            }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
                 Map map = players[player].getMap();
@@ -148,7 +137,6 @@ public abstract class Place extends ScreenPlace {
                     }
                     currentCamera = (((Player) players[0]).getCamera());
                     SplitScreen.setSplitScreen(this, 1, 0);
-//                    currentCamera.preRenderGUI();
                     if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
                         glEnable(GL_SCISSOR_TEST);
                         Renderer.preRenderShadowedLights(currentCamera);
@@ -220,18 +208,18 @@ public abstract class Place extends ScreenPlace {
                 float fadingValue = currentCamera.getFadingValue();
                 if (fadingValue < 0) {
                     // Hack, bo czasem coś się wali i nie wiem dlaczego
-                    if (fadingValue < -125) {
-                        currentCamera.setFaded(false);
-                        for (GameObject owner : currentCamera.getOwners()) {
-                            if (owner instanceof Entity) {
-                                ((Entity) owner).setUnableToMove(false);
-                                owner.setVisible(true);
-                            }
-                            if (owner instanceof MyPlayer) {
-                                ((MyPlayer) owner).getGUI().setVisible(true);
-                            }
-                        }
-                    }
+//                    if (fadingValue < -125) {
+//                        currentCamera.setFaded(false);
+//                        for (GameObject owner : currentCamera.getOwners()) {
+//                            if (owner instanceof Entity) {
+//                                ((Entity) owner).setUnableToMove(false);
+//                                owner.setVisible(true);
+//                            }
+//                            if (owner instanceof MyPlayer) {
+//                                ((MyPlayer) owner).getGUI().setVisible(true);
+//                            }
+//                        }
+//                    }
                     fadingValue = 0;
                 }
                 Color c = map.getLightColor();

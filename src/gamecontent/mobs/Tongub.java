@@ -180,7 +180,11 @@ public class Tongub extends Mob {
                             attack_delay.start();
                             attacking = true;
                             side = false;
-                            getAttackActivator(ATTACK_NORMAL).setActivated(true);
+                            if (Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY())
+                                    <= Methods.pointDistanceSimple2(getX(), getY(), getX() + collision.getWidthHalf() + target.getCollision().getWidthHalf(),
+                                    getY() + collision.getHeightHalf() + target.getCollision().getHeightHalf())) {
+                                getAttackActivator(ATTACK_NORMAL).setActivated(true);
+                            }
                         }
                     } else {
                         if (side) {
@@ -204,7 +208,10 @@ public class Tongub extends Mob {
                                 brake(2);
                             } else {
                                 maxSpeed = 5;
-                                if (Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) < hearRange2 / 72) {
+                                if (Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY())
+                                        <= Methods.pointDistanceSimple2(getX(), getY(), getX() + collision.getWidthHalf() + target.getCollision()
+                                                .getWidthHalf(),
+                                        getY() + collision.getHeightHalf() + target.getCollision().getHeightHalf())) {
                                     getAttackActivator(ATTACK_NORMAL).setActivated(true);
                                 }
                             }

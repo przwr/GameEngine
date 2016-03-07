@@ -399,16 +399,14 @@ public class MyPlayer extends Player {
             if (colorAlpha < 1f) {
                 Drawer.setColorAlpha(colorAlpha);
                 appearance.renderPart(0, appearance.getWidth());
+                Drawer.refreshColor();
             } else if (((ClothedAppearance) appearance).isUpToDate()) {
                 appearance.render();
             }
-            if (colorAlpha < 1f) {
-                Drawer.refreshColor();
-            }
             glPopMatrix();
             appearance.updateFrame();
+            appearance.updateTexture(this);
         }
-
     }
 
     @Override
@@ -441,7 +439,6 @@ public class MyPlayer extends Player {
                 }
             }
             brakeOthers();
-            appearance.updateTexture(this);
         }
     }
 

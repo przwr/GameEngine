@@ -35,7 +35,6 @@ public class Bush extends GameObject {
     FrameBufferObject fbo;
     int width, height;
     float spread;
-    boolean prerendered;
     private Color branchColor;
     private Color leafColor;
     private ArrayList<Point> points = new ArrayList<>();
@@ -51,7 +50,6 @@ public class Bush extends GameObject {
         setSimpleLighting(false);
         solid = true;
         canCover = true;
-        toUpdate = true;
         this.width = width;
         this.height = height;
         this.spread = spread;
@@ -63,8 +61,6 @@ public class Bush extends GameObject {
         if (fbo == null) {
             fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) : new RegularFrameBufferObject(fboWidth, fboHeight);
             fbos.put(bushCode, fbo);
-        } else {
-            prerendered = true;
         }
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
@@ -74,7 +70,7 @@ public class Bush extends GameObject {
 
     public static boolean allGenerated() {
         for (Bush bush : instances) {
-            bush.update();
+            bush.preRender();
         }
         Iterator it = fbos.entrySet().iterator();
         while (it.hasNext()) {
@@ -87,8 +83,8 @@ public class Bush extends GameObject {
         return true;
     }
 
-    public void update() {
-        if (!prerendered) {
+    private void preRender() {
+        if (!fbo.generated) {
             if (map != null) {
                 bark = map.place.getSprite("bark", "", true);
                 leaf = map.place.getSprite("leaf", "", true);
@@ -102,14 +98,13 @@ public class Bush extends GameObject {
                 fbo.deactivate();
                 points.clear();
                 points = null;
-                prerendered = true;
             }
         }
-        toUpdate = false;
     }
 
     @Override
     public void render(int xEffect, int yEffect) {
+        preRender();
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
@@ -123,8 +118,7 @@ public class Bush extends GameObject {
         glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
         Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next
-                (10) /
-                10240f)));
+                (10) / 10240f)));
         drawRoots();
         drawBranches();
         drawLeafs();

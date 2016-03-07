@@ -28,7 +28,6 @@ import gamecontent.environment.Tree;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
 import org.lwjgl.input.Controller;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sounds.Sound;
@@ -321,6 +320,7 @@ public class MyGame extends Game {
                 dots = " " + dots + ".";
             }
         }
+        Drawer.clearScreen(0);
         Drawer.renderStringCentered(loading, Display.getWidth() / 2, Display.getHeight() / 2, font, Color.white);
         Drawer.renderStringCentered(dots, (Display.getWidth() + font.getWidth(loading)) / 2, Display.getHeight() / 2, font, Color.white);
     }
