@@ -51,7 +51,6 @@ public class Tree extends GameObject {
         canCover = true;
         toUpdate = true;
         solid = !branchless;
-        collision.setSmall(true);
         this.branchless = branchless;
         this.width = width;
         this.height = height;
@@ -172,7 +171,7 @@ public class Tree extends GameObject {
         int lastChange;
         int randHigh = Math.round(fraction * height / 5);
         int randLow = -randHigh;
-        int randWidthHigh = Math.round(fraction * width / 2);
+        int randWidthHigh = Math.round(fraction * width / 3);
         int randWidthLow = -randWidthHigh;
         for (int i = 0; i < levelsCount; i++) {
             levels[i] = Math.round(fraction * (i + 1) * height + (random.randomInRange(randLow, randHigh)));
@@ -212,22 +211,23 @@ public class Tree extends GameObject {
             drawBranch(0, Math.round(height * heightModifier), -spread * spreadModifier, thick, thick / 2, Math.round(height * fraction / 3));
         }
         int sum = 0;
-        int shift = 0;
         for (int i = 0; i < levelsCount - 1; i++) {
             if (levels[i] > 3 * height / 5) {
+                int change = random.randomInRange(Math.round(height * fraction / 4), Math.round(height * fraction / 2));
+                Drawer.translate(0, change);
                 i--;
                 if (left) {
                     drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
-                            * fraction / 3));
+                            * fraction / 3) + change);
                 } else {
                     drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math
-                            .round(height * fraction / 3));
+                            .round(height * fraction / 3) + change);
                 }
+                Drawer.translate(0, -change);
                 break;
             }
             Drawer.translate(0, levels[i] - sum);
             sum += levels[i] - sum;
-            shift = levels[i];
             if (left) {
                 drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
                         * fraction / 3));

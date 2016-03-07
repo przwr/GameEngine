@@ -764,10 +764,9 @@ public class Blazag extends Mob {
         int distance = Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY());
         if ((chasing && distance >= sightRange2 / 8) || getPathData().isTrue(OBSTACLE_BETWEEN)) {
             goTo(destination);
-        } else {
+        } else if (target != null) {
             setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
             brake(2);
-            chasing = distance >= sightRange2 / 16;
         }
     }
 
