@@ -71,7 +71,7 @@ public class MyPlayer extends Player {
     private TextController textControl;
     private Point centralPoint;
     private MyGUI gui;
-    private float jumpDelta = 22.6f;
+    private float jumpDelta = 22.6f; //Potrzebne?
 
     public MyPlayer(boolean first, String name) {
         super(name);
@@ -98,12 +98,8 @@ public class MyPlayer extends Player {
         activeWeapon = universal;
 
         // TODO Interactives powinny być raz stworzone w Skillach!
-        int[] attacks = ((MyController) playerController).getAttackFrames();
-        for (int attack = 0; attack < attacks.length; attack++) {
-            int[] frames = new int[8];
-            for (int i = 0; i < frames.length; i++) {
-                frames[i] = i * framesPerDir + attacks[attack];
-            }
+        boolean done = false;
+        for (int attack = 0; attack >= 0; attack++) {
             switch (attack) {
                 case ATTACK_SLASH:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
@@ -131,6 +127,12 @@ public class MyPlayer extends Player {
                     InteractiveAction arrow = new InteractiveActionArrow();
                     actionSets.get(2).addInteractionToNextFree(Interactive.createSpawner(this, new UpdateBasedActivator(), arrow, BOW, (byte) attack));
                     break;
+                default:
+                    done = true;
+                    break;
+            }
+            if (done) {
+                break;
             }
             updateActionSets();
             for (InteractionSet a : actionSets) {
@@ -176,9 +178,9 @@ public class MyPlayer extends Player {
     }
 
     public byte getFirstAttackType() {
-        Interactive first = actionSets.get(activeActionSet).getFirstInteractive();
-        if (first != null) {
-            return first.getAttackType();
+        Interactive attack = actionSets.get(activeActionSet).getFirstInteractive();
+        if (attack != null) {
+            return attack.getAttackType();
         } else {
             return -1;
         }
@@ -278,9 +280,6 @@ public class MyPlayer extends Player {
 
         appearance = new ClothedAppearance(place, 200, characterName, width);
         loadClothes();
-        //randomizeClothes();
-
-        Point[] dims = calculateDimensions();
         Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
         centralPoint = renderPoints[0];
 
@@ -294,10 +293,7 @@ public class MyPlayer extends Player {
             addLight(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         }
         setCollision(Rectangle.create(width, (int) (width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
-//        collision.setCollide(false);
         stats = new PlayerStats(this);
-//        stats.setMaxHealth(1000);
-//        stats.setHealth(1000);
         textControl = new TextController(place);
         addGui(textControl);
         gui = new MyGUI("Player " + name + "'s GUI", place);
@@ -361,8 +357,8 @@ public class MyPlayer extends Player {
 
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
-        return /*!Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
-                 &&  */isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
+        return !Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
+                && isInGame() && collision.isCollideSolid((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), map);
     }
 
     @Override
@@ -386,9 +382,9 @@ public class MyPlayer extends Player {
             Drawer.refreshColor();
 
             if (Main.SHOW_INTERACTIVE_COLLISION) {
-                interactiveObjects.stream().forEach((interactive) -> {
+                for (Interactive interactive : interactiveObjects) {
                     interactive.render(xEffect, yEffect);
-                });
+                }
             }
 
             glPushMatrix();

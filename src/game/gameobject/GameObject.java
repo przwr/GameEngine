@@ -8,15 +8,17 @@ package game.gameobject;
 /**
  * @author przemek
  */
-
 import collision.Figure;
 import engine.lights.Light;
 import engine.utilities.Methods;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.stats.Stats;
+import game.place.Place;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
+import gamecontent.MyController;
+import gamecontent.MyPlayer;
 import sprites.Appearance;
 
 import java.util.ArrayList;
@@ -25,33 +27,28 @@ import java.util.List;
 public abstract class GameObject {
 
     public final static byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
-    protected ArrayList<Light> lights;
-    protected ArrayList<Interactive> interactiveObjects;
-    protected double x, y;
-    protected int depth;
-    protected boolean solid;
-    protected boolean emitter;
-    protected boolean emits;
-    protected boolean onTop;
-    protected boolean simpleLighting;
-    protected boolean visible;
-    protected boolean makeNoise;
-    protected double floatHeight;
-    protected double jumpForce;
-    protected Appearance appearance;
-    protected Stats stats;
     protected String name;
+    protected double x, y;
+    protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
+    protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
+    protected int depth;
+    protected boolean solid, emitter, emits, onTop, simpleLighting, visible, makeNoise;
+    protected Appearance appearance;
+    protected Figure collision;
+    protected Stats stats;
+    protected Place place;
     protected Map map;
     protected Map prevMap;
     protected int area = -1;
-    protected Figure collision;
-    protected WarpPoint warp;
-    protected double gravity = 0.6;
-    protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
-    protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     protected int prevArea = -1;
+    protected WarpPoint warp;
     protected boolean toUpdate;
     protected boolean canCover, canBeCovered = true;
+    protected double jumpForce;
+    protected double floatHeight;
+    protected double gravity = 0.6;
+    protected ArrayList<Light> lights;
+    protected ArrayList<Interactive> interactiveObjects;
 
     public void update() {
     }
@@ -74,7 +71,6 @@ public abstract class GameObject {
         visible = true;
         updateAreaPlacement();
     }
-
 
     public void changeMap(Map map, int x, int y) {
         if (this.map != map) {
@@ -126,13 +122,21 @@ public abstract class GameObject {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
 
-    public void reactToAttack(byte attackType, GameObject attacked) {
+    public void reactToAttack(byte attackType, GameObject attacked, int hurt) {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
 
-    public void updateCausedDamage(GameObject hurted, int hurt) {
+    public boolean isPlayerTalkingToMe(MyPlayer player) {
+        return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
+                && !player.getTextController().isStarted()
+                && Methods.pointDistanceSimple(getX(), getY(),
+                player.getX(), player.getY()) <= Place.tileSize * 1.5
+                + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
+                && Math.abs(Methods.angleDifference(
+                player.getDirection(),
+                        (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
     }
-
+    
     public double getGravity() {
         return gravity;
     }
@@ -225,22 +229,6 @@ public abstract class GameObject {
         return depth;
     }
 
-    public int getXEnd() {
-        return (int) x + collision.getWidth();
-    }
-
-    public int getYEnd() {
-        return (int) y + collision.getHeight();
-    }
-
-    public int getEndOfX() {
-        return (int) x + collision.getWidthHalf();
-    }
-
-    public int getEndOfY() {
-        return (int) y + collision.getHeightHalf();
-    }
-
     public int getXSpriteTextureCorner() {
         if (appearance != null) {
             return (int) x + appearance.getXOffset();
@@ -257,7 +245,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getXSpriteBegin(boolean... forCover) {  //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
+    public int getXSpriteBegin(boolean... forCover) {
         if (appearance != null) {
             return (int) x + appearance.getXOffset() + appearance.getXStart();
         } else {
@@ -265,7 +253,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getYSpriteBegin(boolean... forCover) {  //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
+    public int getYSpriteBegin(boolean... forCover) {
         if (appearance != null) {
             return (int) y + appearance.getYOffset() + appearance.getYStart();
         } else {
@@ -273,7 +261,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getXSpriteEnd(boolean... forCover) {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
+    public int getXSpriteEnd(boolean... forCover) {
         if (appearance != null) {
             return (int) x + appearance.getXOffset() + appearance.getActualWidth();
         } else {
@@ -281,7 +269,7 @@ public abstract class GameObject {
         }
     }
 
-    public int getYSpriteEnd(boolean... forCover) {    //TODO Źle działa dla animacji jeśli jest użyty FrameBufferedSpriteSheet :(
+    public int getYSpriteEnd(boolean... forCover) {
         if (appearance != null) {
             return (int) y + appearance.getYOffset() + appearance.getActualHeight();
         } else {
@@ -444,10 +432,6 @@ public abstract class GameObject {
             return Methods.roundDouble(collision.getHeight() * Methods.ONE_BY_SQRT_ROOT_OF_2);
         }
         return 0;
-    }
-
-    public boolean isInCollidingPosition() {
-        return collision != null;
     }
 
     public void setPositionWithoutAreaUpdate(double x, double y) {

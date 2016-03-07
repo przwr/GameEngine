@@ -36,7 +36,7 @@ public class DeathChanger extends TemporalChanger {
             entity.getStats().setUnhurtableState(false);
             entity.getCollision().setOpticProperties(OpticProperties.NO_SHADOW);
             entity.setColorAlpha(1f);
-            entity.setUnableToMove(false);
+            entity.setAbleToMove(true);
         }
     }
 

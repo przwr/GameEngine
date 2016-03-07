@@ -18,7 +18,7 @@ public class LockChanger extends TemporalChanger {
     @Override
     public void onStop() {
         if (entity != null) {
-            entity.setUnableToMove(false);
+            entity.setAbleToMove(true);
             entity.setVisible(true);
         }
     }

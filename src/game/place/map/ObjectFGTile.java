@@ -6,6 +6,7 @@
 package game.place.map;
 
 import engine.utilities.Drawer;
+import engine.utilities.Point;
 import game.place.Place;
 import gamedesigner.ObjectPlace;
 import gamedesigner.ObjectPlayer;
@@ -16,7 +17,6 @@ import static collision.OpticProperties.TRANSPARENT;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author Wojtek
  */
 public class ObjectFGTile extends ForegroundTile {
@@ -72,7 +72,10 @@ public class ObjectFGTile extends ForegroundTile {
             glTranslatef(getX(), getY(), 0);
 
             if (tileStack.size() <= 1 || fbo == null) {
-                tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
+                for (Point piece : tileStack) {
+                    spriteSheet.renderPiece(piece.getX(), piece.getY());
+
+                }
             } else {
                 fbo.render();
             }

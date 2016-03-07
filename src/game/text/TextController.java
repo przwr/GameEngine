@@ -503,7 +503,7 @@ public class TextController extends GUIObject {
         terminate = false;
         if (locked != null) {
             for (Entity e : locked) {
-                e.setUnableToMove(false);
+                e.setAbleToMove(true);
             }
         }
     }
@@ -851,7 +851,7 @@ public class TextController extends GUIObject {
     private void lockEntities(Entity[] locked) {
         this.locked = locked;
         for (Entity e : locked) {
-            e.setUnableToMove(true);
+            e.setAbleToMove(false);
         }
     }
 

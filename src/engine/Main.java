@@ -37,6 +37,8 @@ import java.util.logging.Logger;
 
 import static engine.systemcommunication.IO.setSettingsFromFile;
 import static game.Settings.calculateScale;
+import static game.Settings.players;
+import game.place.map.Area;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
@@ -266,7 +268,7 @@ public class Main {
         if (key.keyPressed(Keyboard.KEY_F3)) {
             console.printMessage("You've just clicked the F3 button. Why did you do that?");
         }
-        /*if (key.keyPressed(Keyboard.KEY_F3)) { DEMO
+        if (key.keyPressed(Keyboard.KEY_F3)) { 
             SHOW_AREAS = !SHOW_AREAS;
             console.printMessage("SHOW/HIDE AREAS");
         }
@@ -287,7 +289,7 @@ public class Main {
                     Main.meshWindow.setVisible(false);
                 }
             }
-        }*/
+        }
         if (key.keyPressed(Keyboard.KEY_F12)) {
             Methods.pasteToClipBoard(game.getSimplePlayerCoordinates());
             console.printMessage("PLAYER COORDINATES PASTED TO CLIPBOARD");

@@ -32,48 +32,47 @@ import java.util.Iterator;
 public abstract class Entity extends GameObject {
 
     protected static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 0.2f);
-    protected static final byte PUSH = -1;
     protected static final RandomGenerator random = RandomGenerator.create();
-    public final Update[] updates = new Update[4];
-    public int lastAdded;
-    protected int hearRange;
-    protected int hearRange2;
-    protected int sightRange;
-    protected int sightRange2;
-    protected int sightAngle;
-    protected GameObject target;
-    protected Point destination = new Point(), secondaryDestination = new Point(), spawnPosition = new Point();
-    protected ArrayList<GameObject> closeEnemies = new ArrayList<>();
-    protected PathData pathData;
+    protected double xSpeed, ySpeed;
     protected double xEnvironmentalSpeed, yEnvironmentalSpeed;
-    protected double xSpeed;
-    protected double ySpeed;
-    protected boolean jumping;
-    protected boolean hop;
-    protected Place place;
-    protected PathStrategy pathStrategy;
     protected double maxSpeed;
     protected double xPosition, yPosition, xDelta, yDelta, xChange, yChange;
-    protected double resistance;
-    protected boolean unableToMove;
-    protected Update currentUpdate;
-    protected int currentUpdateID, deltasCount, xDestination, yDestination;
-    protected Player collided;
+    protected int hearRange, hearRange2;
+    protected int sightRange, sightRange2;
+    protected int sightAngle;
+    protected double resistance;    // 1 nic się nie dzieje, > 1 - opóźnianie
+    protected boolean ableToMove = true;
     protected float colorAlpha = 1f;
+    protected GameObject target;
+    protected ArrayList<GameObject> closeEnemies = new ArrayList<>();
+    protected Point destination = new Point(), secondaryDestination = new Point(),
+            spawnPosition = new Point();
+    protected PathData pathData;
+    protected PathStrategy pathStrategy;
+    protected Update currentUpdate;
 
     protected ArrayList<TemporalChanger> changers;
     protected SpeedChanger knockBack;
     protected Delay invicibleTime;
+    
+    //ONLINE
+    protected boolean jumping;
+    protected boolean hop;
+    public final Update[] updates = new Update[4];
+    protected Player collided;
+    public int lastAdded;
+    protected int currentUpdateID, deltasCount, xDestination, yDestination;
 
     public Entity() {
-        knockBack = new SpeedChanger();
-        invicibleTime = Delay.createEmpty();
+        knockBack = new SpeedChanger(30);
+        invicibleTime = Delay.createInMilliseconds(950);
         changers = new ArrayList<>(1);
         interactiveObjects = new ArrayList<>();
         resistance = 1;
     }
 
     protected void addPushInteraction() {
+        byte PUSH = -1;
         Interactive push = Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, appearance.getActualHeight(),
                 -collision.getWidth(), collision.getWidthHalf()), Interactive.PUSH, PUSH, 1f, 1f);
         push.setCollidesFriends(true);
@@ -99,8 +98,6 @@ public abstract class Entity extends GameObject {
     }
 
     public void knockBack(int knockBackPower, double jumpPower, GameObject attacker) {
-        knockBack.setFrames(30);
-        invicibleTime.setFrameLengthInMilliseconds(950);
         knockBack.setAttackerDirection(attacker.getDirection());
         Point closest = null;
         if (attacker instanceof Block) {
@@ -227,7 +224,7 @@ public abstract class Entity extends GameObject {
 
     public void updateChangers() {
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
@@ -240,7 +237,7 @@ public abstract class Entity extends GameObject {
 
     public void endChangers() {
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
             tc = iterator.next();
             tc.onStop();
             iterator.remove();
@@ -520,16 +517,12 @@ public abstract class Entity extends GameObject {
         return true;
     }
 
-    public boolean isUnableToMove() {
-        return unableToMove;
-    }
-
-    public void setUnableToMove(boolean unableToMove) {
-        this.unableToMove = unableToMove;
+    public void setAbleToMove(boolean ableToMove) {
+        this.ableToMove = ableToMove;
     }
 
     public boolean isAbleToMove() {
-        return !unableToMove;
+        return ableToMove;
     }
 
     public boolean isJumping() {

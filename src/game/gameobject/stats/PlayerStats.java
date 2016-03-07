@@ -19,8 +19,8 @@ import static game.gameobject.interactive.InteractiveResponse.*;
 public class PlayerStats extends Stats {
 
     private float energy = 100;
-    private float maxEnergy = 100;
-    private Player player;
+    private final float maxEnergy = 100;
+    private final Player player;
 
     public PlayerStats(Player owner) {
         super(owner);
@@ -66,7 +66,7 @@ public class PlayerStats extends Stats {
                 died(response.getAttacker());
             } else if (hurt != 0) {
                 hurtReaction(response);
-                response.getAttacker().updateCausedDamage(owner, hurt);
+                //response.getAttacker().updateCausedDamage(owner, hurt);
             }
         }
     }
@@ -77,7 +77,7 @@ public class PlayerStats extends Stats {
         ((MyController) player.getController()).stopAttack();
         player.getCollision().setHitable(false);
         setUnhurtableState(true);
-        player.setUnableToMove(true);
+        player.setAbleToMove(false);
         player.getCollision().setOpticProperties(OpticProperties.NO_SHADOW);
         player.setColorAlpha(0.5f);
         TemporalChanger death = new DeathChanger(100, player);
@@ -86,15 +86,6 @@ public class PlayerStats extends Stats {
         death.start();
 //        ((MyPlayer) player).getGUI().deactivate();
         System.out.println(player.getName() + " zginał.");
-    }
-
-    @Override
-    public void hurtReaction(InteractiveResponse response) {
-        super.hurtReaction(response);
-//        if (health <= 900) {
-//            System.out.println("____________R.I.P.___________");
-//        }
-//        ((MyPlayer) player).getGUI().activateLifeIndicator();
     }
 
     @Override

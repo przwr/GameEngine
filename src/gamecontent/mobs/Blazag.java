@@ -66,14 +66,14 @@ public class Blazag extends Mob {
 //                System.out.println("IDLE");
                 if (!awake) {
                     state = sleep;
-                    alpha = false;
+                    leader = false;
                     target = null;
                 } else if (rest.isOver()) {
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     if (closeEnemies.isEmpty()) {
                         if (map.getDarkness() > current_sleep_value) {
                             state = sleep;
-                            alpha = false;
+                            leader = false;
                             target = null;
                         } else {
                             state = wander;
@@ -124,7 +124,7 @@ public class Blazag extends Mob {
                 if (!awake) {
                     state = sleep;
                     target = null;
-                    alpha = false;
+                    leader = false;
                 } else {
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     if (!closeEnemies.isEmpty() || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) < hearRange2 / 9) {
@@ -143,11 +143,11 @@ public class Blazag extends Mob {
                     if (!awake) {
                         state = sleep;
                         target = null;
-                        alpha = false;
+                        leader = false;
                     } else {
                         lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                         if (!closeFriends.isEmpty()) {
-                            if (alpha) {
+                            if (leader) {
                                 setOrders();
                             } else {
                                 getOrders();
@@ -266,7 +266,7 @@ public class Blazag extends Mob {
                 if (!awake) {
                     state = sleep;
                     target = null;
-                    alpha = false;
+                    leader = false;
                 } else {
                     if (rest.isOver()) {
                         if (destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2
@@ -394,7 +394,7 @@ public class Blazag extends Mob {
                 closeEnemies.add(mob);
             }
         }
-        alpha = false;
+        leader = false;
     }
 
     private boolean isObstacleBetween() {
@@ -654,13 +654,13 @@ public class Blazag extends Mob {
     @Override
     protected void updateAlpha() {
         if (closeFriends.isEmpty()) {
-            alpha = false;
+            leader = false;
         } else {
             if (awake) {
-                alpha = true;
+                leader = true;
                 for (Mob mob : closeFriends) {
-                    if (mob.isAlpha()) {
-                        alpha = false;
+                    if (mob.isLeader()) {
+                        leader = false;
                         break;
                     }
                 }
@@ -751,7 +751,7 @@ public class Blazag extends Mob {
                     friend.letGo();
                 }
             }
-            alpha = false;
+            leader = false;
             letGo();
         }
     }

@@ -17,11 +17,13 @@ import game.ScreenPlace;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.logic.DayCycle;
 import game.place.cameras.Camera;
 import game.place.map.Map;
 import game.text.FontHandler;
+import gamecontent.MyPlayer;
 import org.newdawn.slick.Color;
 import sounds.SoundBase;
 import sprites.Sprite;
@@ -208,18 +210,18 @@ public abstract class Place extends ScreenPlace {
                 float fadingValue = currentCamera.getFadingValue();
                 if (fadingValue < 0) {
                     // Hack, bo czasem coś się wali i nie wiem dlaczego
-//                    if (fadingValue < -125) {
-//                        currentCamera.setFaded(false);
-//                        for (GameObject owner : currentCamera.getOwners()) {
-//                            if (owner instanceof Entity) {
-//                                ((Entity) owner).setUnableToMove(false);
-//                                owner.setVisible(true);
-//                            }
-//                            if (owner instanceof MyPlayer) {
-//                                ((MyPlayer) owner).getGUI().setVisible(true);
-//                            }
-//                        }
-//                    }
+                    if (fadingValue < -125) {
+                        currentCamera.setFaded(false);
+                        for (GameObject owner : currentCamera.getOwners()) {
+                            if (owner instanceof Entity) {
+                                ((Entity) owner).setAbleToMove(true);
+                                owner.setVisible(true);
+                            }
+                            if (owner instanceof MyPlayer) {
+                                ((MyPlayer) owner).getGUI().setVisible(true);
+                            }
+                        }
+                    }
                     fadingValue = 0;
                 }
                 Color c = map.getLightColor();

@@ -64,7 +64,7 @@ public class Stats {
                 died(response.getAttacker());
             } else if (hurt != 0) {
                 hurtReaction(response);
-                response.getAttacker().updateCausedDamage(owner, hurt);
+                //response.getAttacker().updateCausedDamage(owner, hurt);
             }
         }
     }
@@ -80,7 +80,7 @@ public class Stats {
     public void hurtReaction(InteractiveResponse response) {
         double hurtPower = response.getKnockBack() * FastMath.logQuick(20 * ((float) (100 - weight) / 100) + 1);
         owner.getHurt((int) hurtPower, hurtPower / 6, response.getAttacker());
-        response.getAttacker().reactToAttack(FRONT, owner);
+        response.getAttacker().reactToAttack(response.getAttackType(), owner, hurt);
     }
 
     public int getWeight() {

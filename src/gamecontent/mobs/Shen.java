@@ -62,7 +62,7 @@ public class Shen extends Mob {
                         destination.set(-1, -1);
                     } else {
                         calculateDestinationsForCloseFriends();
-                        if (alpha) {
+                        if (leader) {
                             state = wander;
                             maxSpeed = 0.8;
                             destination.set(getX(), getY());
@@ -247,7 +247,7 @@ public class Shen extends Mob {
                     rest.start();
                 }
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                if (!closeEnemies.isEmpty() || (!alpha && !closeFriends.isEmpty())) {
+                if (!closeEnemies.isEmpty() || (!leader && !closeFriends.isEmpty())) {
                     state = idle;
                     destination.set(-1, -1);
                     maxSpeed = 1;
@@ -325,7 +325,7 @@ public class Shen extends Mob {
 
     private void alignment() {
         if (!closeFriends.isEmpty()) {
-            closeFriends.stream().filter(mob -> mob.isAlpha()).forEach(mob -> {
+            closeFriends.stream().filter(mob -> mob.isLeader()).forEach(mob -> {
                 xSpeed += mob.getXSpeed() / 2;
                 ySpeed += mob.getYSpeed() / 2;
             });
@@ -458,7 +458,8 @@ public class Shen extends Mob {
     }
 
     @Override
-    public void reactToAttack(byte attackType, GameObject attacked) {
+    public void reactToAttack(byte attackType, GameObject attacked, int hurt) {
+        super.reactToAttack(attackType, attacked, hurt);
         state = bounce;
     }
 

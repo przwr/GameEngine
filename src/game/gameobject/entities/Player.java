@@ -26,13 +26,13 @@ public abstract class Player extends Entity {
     private final ArrayList<GUIObject> guiList = new ArrayList<>();
     public byte playerID;
     protected PlayerController playerController;
-    protected Map empty;
-    protected Weapon activeWeapon;
     protected Camera camera;
-    protected GameOnline online;
     protected boolean first, stopped;
     protected boolean visibleShadow = true;
+    protected Weapon activeWeapon;
     private Menu menu;
+    protected Map empty;
+    protected GameOnline online;
 
     protected Player(String name) {
         super();
@@ -99,15 +99,6 @@ public abstract class Player extends Entity {
         return null;
     }
 
-
-    @Override
-    public void setPositionWithoutAreaUpdate(double xPosition, double yPosition) {
-        super.setPositionWithoutAreaUpdate(xPosition, yPosition);
-        /*if (camera != null) {
-            camera.updateSmooth();
-        }*/
-    }
-
     public void setToLastNotCollided() {
         for (int i = online.pastPositionsNumber - 1; i >= 0; i--) {
             if (setToLastNotCollidedToEnd(i)) {
@@ -130,7 +121,6 @@ public abstract class Player extends Entity {
             } else {
                 setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
             }
-            /*camera.updateSmooth();*/
             return true;
         }
         return false;
@@ -145,7 +135,6 @@ public abstract class Player extends Entity {
             } else {
                 setPosition(online.pastPositions[i].getX(), online.pastPositions[i].getY());
             }
-            /*camera.updateSmooth();*/
             return true;
         }
         return false;
