@@ -71,13 +71,19 @@ public abstract class Place extends ScreenPlace {
     {
         renders[OFFLINE] = () -> {
             SplitScreen.setSingleCamera(this);
-            for (int p = 0; p < playersCount; p++) {
-                tempMaps.stream().forEach((map) -> {
-                    Renderer.findVisibleLights(map, playersCount);
-                    if (!Settings.shadowOff) {
-                        Renderer.preRenderLights(map);
-                    }
-                });
+            if (renderCount == 0) {
+                for (int p = 0; p < playersCount; p++) {
+                    tempMaps.stream().forEach((map) -> {
+                        Renderer.findVisibleLights(map, playersCount);
+                        if (!Settings.shadowOff) {
+                            Renderer.preRenderLights(map);
+                        }
+                    });
+                }
+            }
+            renderCount++;
+            if (renderCount > 1) {
+                renderCount = 0;
             }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
@@ -134,9 +140,15 @@ public abstract class Place extends ScreenPlace {
             try {
                 if (map != null) {
                     Drawer.setCurrentColor(map.getLightColor());
-                    Renderer.findVisibleLights(map, 1);
-                    if (!Settings.shadowOff) {
-                        Renderer.preRenderLights(map);
+                    if (renderCount == 0) {
+                        Renderer.findVisibleLights(map, 1);
+                        if (!Settings.shadowOff) {
+                            Renderer.preRenderLights(map);
+                        }
+                    }
+                    renderCount++;
+                    if (renderCount > 1) {
+                        renderCount = 0;
                     }
                     currentCamera = (((Player) players[0]).getCamera());
                     SplitScreen.setSplitScreen(this, 1, 0);
