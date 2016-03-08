@@ -32,10 +32,10 @@ public class Tree extends GameObject {
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
     private final Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
-    FrameBufferObject fbo;
     int width, height;
     float spread;
     boolean branchless;
+    private FrameBufferObject fbo;
     private Color branchColor;
     private Color leafColor;
     private ArrayList<Point> points = new ArrayList<>();

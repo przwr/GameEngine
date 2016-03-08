@@ -62,6 +62,7 @@ public abstract class Place extends ScreenPlace {
     protected short mapIDCounter = 0;
     private Console console;
     private FontHandler loadingFont = null;
+    private int renderCount = 0;
 
     {
         loading.terminate();
@@ -174,6 +175,7 @@ public abstract class Place extends ScreenPlace {
             }
         };
     }
+
 
     protected Place(Game game, int tileSize) {
         super(game);

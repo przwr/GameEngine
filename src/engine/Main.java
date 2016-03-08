@@ -16,6 +16,7 @@ import game.Game;
 import game.Settings;
 import game.logic.navmeshpathfinding.Window;
 import game.place.Console;
+import game.place.map.Area;
 import gamecontent.MyGame;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
@@ -38,7 +39,6 @@ import java.util.logging.Logger;
 import static engine.systemcommunication.IO.setSettingsFromFile;
 import static game.Settings.calculateScale;
 import static game.Settings.players;
-import game.place.map.Area;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
@@ -334,8 +334,8 @@ public class Main {
         renderMessageIfNeeded();
         resolveGamma();
         lastFrame = Display.isActive();
-        Display.update();
         Display.sync(Settings.framesLimit);
+        Display.update();
     }
 
     private static void renderMessageIfNeeded() {

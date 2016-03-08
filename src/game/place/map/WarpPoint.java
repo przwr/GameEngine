@@ -125,7 +125,7 @@ public class WarpPoint extends GameObject {
                 object.setVisible(false);
             }
             Map map = place.getMapByName(stringDestination);
-            if (map != null) {
+            if (map != null && Main.backgroundLoader.allLoaded()) {
                 if (object instanceof Player) {
                     MyPlayer player = (MyPlayer) object;
                     WarpPoint warp = map.findWarp(name);

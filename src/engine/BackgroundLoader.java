@@ -34,12 +34,13 @@ public abstract class BackgroundLoader {
     public static SpriteBase base;
     private final ReentrantLock lock = new ReentrantLock();
     private final Map<String, Sprite> sprites = new HashMap<>();
-    List<Sprite> toClear = new ArrayList<>();
     private GLSync fence;
     private Drawable drawable;
-    private boolean running, firstActive, pause, useFences, firstLoaded, usingSprites, stopSpritesUsing;
-    private ArrayList<Sprite> list1 = new ArrayList<>();
-    private ArrayList<Sprite> list2 = new ArrayList<>();
+    private boolean running, pause, useFences, firstLoaded;
+    private boolean firstSpriteActive, usingSprites, stopSpritesUsing;
+    private ArrayList<Sprite> spritesList1 = new ArrayList<>();
+    private ArrayList<Sprite> spritesList2 = new ArrayList<>();
+    private ArrayList<Sprite> spritesToClear = new ArrayList<>();
     private Thread thread;
     private Game game;
 
@@ -47,17 +48,17 @@ public abstract class BackgroundLoader {
         running = true;
     }
 
-    public List<Sprite> getToClear() {
-        return toClear;
+    public List<Sprite> getSpritesToClear() {
+        return spritesToClear;
     }
 
     abstract Drawable getDrawable() throws LWJGLException;
 
     public void cleanup() {
         running = false;
-        list1.clear();
-        list2.clear();
-        toClear.clear();
+        spritesList1.clear();
+        spritesList2.clear();
+        spritesToClear.clear();
         for (String key : sprites.keySet()) {
             Sprite sprite = sprites.get(key);
             if (sprite.getTextureID() != 0 || sprite.getTexture() != null) {
@@ -83,8 +84,14 @@ public abstract class BackgroundLoader {
                 useFences = GLContext.getCapabilities().OpenGL32;
                 while (running) {
                     try {
-                        loadTexture();
+                        loadTextures();
                         loadSounds();
+                        if (spritesList1.isEmpty() && spritesList2.isEmpty() && Settings.sounds != null) {
+                            try {
+                                Thread.sleep(3600000);
+                            } catch (InterruptedException e) {
+                            }
+                        }
                     } catch (Exception exception) {
                         ErrorHandler.swallowLogAndPrint(exception);
                     }
@@ -96,9 +103,9 @@ public abstract class BackgroundLoader {
         thread.start();
     }
 
-    private void loadTexture() {
+    private void loadTextures() {
         if (!pause) {
-            List<Sprite> workingList = firstActive ? list1 : list2;
+            List<Sprite> workingList = firstSpriteActive ? spritesList1 : spritesList2;
             if (!workingList.isEmpty()) {
                 if (workingList != null) {
                     for (int i = 0; i < workingList.size(); i++) {
@@ -112,22 +119,16 @@ public abstract class BackgroundLoader {
                             } catch (IOException e) {
                             }
                             unlock();
-                            toClear.add(sprite);
-                        } else {
-                            toClear.add(sprite);
                         }
+                        spritesToClear.add(sprite);
                     }
-                    workingList.removeAll(toClear);
+                    workingList.removeAll(spritesToClear);
                     addToSprites();
                 }
-            } else if (list1.isEmpty() && list2.isEmpty() && Settings.sounds != null) {
+            } else if (spritesList1.isEmpty() && spritesList2.isEmpty() && Settings.sounds != null) {
                 unloadTextures();
-                try {
-                    Thread.sleep(3600000);
-                } catch (InterruptedException e) {
-                }
             }
-            firstActive = !firstActive;
+            firstSpriteActive = !firstSpriteActive;
         }
     }
 
@@ -135,13 +136,13 @@ public abstract class BackgroundLoader {
         while (stopSpritesUsing) {
         }
         usingSprites = true;
-        for (Sprite sprite : toClear) {
+        for (Sprite sprite : spritesToClear) {
             if (sprites.get(sprite.getPath()) == null) {
                 sprites.put(sprite.getPath(), sprite);
             }
         }
         usingSprites = false;
-        toClear.clear();
+        spritesToClear.clear();
     }
 
     private void unloadTextures() {
@@ -169,7 +170,6 @@ public abstract class BackgroundLoader {
 
     public void unloadAllTextures() {
         while (usingSprites) {
-
         }
         usingSprites = true;
         if (!stopSpritesUsing) {
@@ -186,9 +186,9 @@ public abstract class BackgroundLoader {
                 }
                 base.getSprites().clear();
             }
-            list1.clear();
-            list2.clear();
-            toClear.clear();
+            spritesList1.clear();
+            spritesList2.clear();
+            spritesToClear.clear();
             for (String key : sprites.keySet()) {
                 Sprite sprite = sprites.get(key);
                 if (sprite.getTextureID() != 0 || sprite.getTexture() != null) {
@@ -229,21 +229,21 @@ public abstract class BackgroundLoader {
 
     public synchronized void requestSprite(Sprite sprite) {
         pause = true;
-        List<Sprite> workingList = firstActive ? list2 : list1;
+        List<Sprite> workingList = firstSpriteActive ? spritesList2 : spritesList1;
         workingList.add(sprite);
         thread.interrupt();
         pause = false;
     }
 
     private void loadSounds() {
-        if (Settings.sounds == null && list1.isEmpty() && list2.isEmpty() && game != null && game.getPlace() != null) {
+        if (Settings.sounds == null && spritesList1.isEmpty() && spritesList2.isEmpty() && game != null && game.getPlace() != null) {
 //            game.getPlace().getSounds().initialize("res");
 //            SoundStore.get().poll(0);
         }
     }
 
     public boolean allLoaded() {
-        boolean allLoaded = list1.isEmpty() && list2.isEmpty() && Tree.allGenerated() && Bush.allGenerated() && GrassClump.allGenerated();
+        boolean allLoaded = spritesList1.isEmpty() && spritesList2.isEmpty() && Tree.allGenerated() && Bush.allGenerated() && GrassClump.allGenerated();
         if (!firstLoaded && allLoaded) {
             firstLoaded = true;
         }
