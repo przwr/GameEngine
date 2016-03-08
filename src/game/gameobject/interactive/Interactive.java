@@ -121,14 +121,16 @@ public class Interactive {
                     }
                 }
                 if (collidesMobs) {
-                    mobs.stream().filter((mob) -> (!isException(mob) && (collidesSelf || mob != owner) && (collidesFriends
-                            || mob.getClass().getName() != owner.getClass().getName()))).forEach((mob) -> {
-                        InteractiveResponse response = collision.collide(owner, mob, attackType);
-                        if (response.getPixels() > 0) {
-                            activated = true;
-                            action.act(mob, this, response, actionModifier);
+                    for (Mob mob : mobs) {
+                        if (!isException(mob) && (collidesSelf || mob != owner) && (collidesFriends
+                                || mob.getClass().getName() != owner.getClass().getName())) {
+                            InteractiveResponse response = collision.collide(owner, mob, attackType);
+                            if (response.getPixels() > 0) {
+                                activated = true;
+                                action.act(mob, this, response, actionModifier);
+                            }
                         }
-                    });
+                    }
                 }
                 if (collidesPlayers) {
                     for (GameObject player : players) {
@@ -207,6 +209,10 @@ public class Interactive {
 
     public boolean isActivated() {
         return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
     public float getStrenght() {
