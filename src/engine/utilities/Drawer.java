@@ -125,12 +125,20 @@ public class Drawer {
 
     public static void drawRectangleInShade(int xStart, int yStart, int width, int height, float color) {
         glColor3f(color, color, color);
+        if (width < 0) {
+            width = -width;
+            xStart -= width;
+        }
         drawRectangle(xStart, yStart, width, height);
         glColor3f(1f, 1f, 1f);
     }
 
     public static void drawRectangleInBlack(int xStart, int yStart, int width, int height) {
         glColor3f(0f, 0f, 0f);
+        if (width < 0) {
+            width = -width;
+            xStart -= width;
+        }
         drawRectangle(xStart, yStart, width, height);
         glColor3f(1f, 1f, 1f);
     }
@@ -156,14 +164,23 @@ public class Drawer {
         glEnable(GL_TEXTURE_2D);
     }
 
+    public static void drawTriangleInRow(int xA, int yA, int xB, int yB, int xC, int yC) {
+        glVertex2f(xA, yA);
+        glVertex2f(xB, yB);
+        glVertex2f(xC, yC);
+    }
+
     public static void drawRectangle(int xStart, int yStart, int width, int height) {
         translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
-        glBegin(GL_QUADS);
+        glBegin(GL_TRIANGLES);
         glVertex2f(0, 0);
         glVertex2f(0, height);
         glVertex2f(width, height);
+
+        glVertex2f(width, height);
         glVertex2f(width, 0);
+        glVertex2f(0, 0);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
@@ -181,25 +198,33 @@ public class Drawer {
     }
 
     public static void drawTextureQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
-        glBegin(GL_QUADS);
+        glBegin(GL_TRIANGLES);
         glTexCoord2f(1, 0);
         glVertex2f(xA, yA);
         glTexCoord2f(0, 0);
         glVertex2f(xB, yB);
         glTexCoord2f(0, 1);
         glVertex2f(xC, yC);
+
+        glTexCoord2f(0, 1);
+        glVertex2f(xC, yC);
         glTexCoord2f(1, 1);
         glVertex2f(xD, yD);
+        glTexCoord2f(1, 0);
+        glVertex2f(xA, yA);
         glEnd();
     }
 
     public static void drawQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
         glDisable(GL_TEXTURE_2D);
-        glBegin(GL_QUADS);
+        glBegin(GL_TRIANGLES);
         glVertex2f(xA, yA);
         glVertex2f(xB, yB);
         glVertex2f(xC, yC);
+
+        glVertex2f(xC, yC);
         glVertex2f(xD, yD);
+        glVertex2f(xA, yA);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
@@ -214,7 +239,10 @@ public class Drawer {
         glBegin(GL_TRIANGLE_FAN);
         glVertex2f(0, 0);
         int step = 360 / precision;
-        for (int i = 0; i <= 360; i += step) {
+        if (step <= 0) {
+            step = 1;
+        }
+        for (int i = 360; i > 0; i -= step) {
             glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
         }
         glVertex2f(xRadius, 0);
@@ -236,6 +264,9 @@ public class Drawer {
         glBegin(GL_TRIANGLE_FAN);
         glVertex2f(0, 0);
         int step = (endAngle - startAngle) / precision;
+        if (step <= 0) {
+            step = 1;
+        }
         for (int i = startAngle; i <= endAngle; i += step) {
             glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
         }
@@ -310,14 +341,17 @@ public class Drawer {
     public static void drawLineWidth(int xStart, int yStart, int xDelta, int yDelta, int width) {
         translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
-        glBegin(GL_QUADS);
+        glBegin(GL_TRIANGLES);
         int angle = (int) Methods.pointAngleClockwise(xStart, yStart, xStart + xDelta, yStart + yDelta) + 90;
         int xWidth = (int) Methods.xRadius(angle, width / 2);
         int yWidth = (int) Methods.yRadius(angle, width / 2);
         glVertex2f(xWidth, yWidth);
         glVertex2f(-xWidth, -yWidth);
         glVertex2f(xDelta - xWidth, yDelta - yWidth);
+
+        glVertex2f(xDelta - xWidth, yDelta - yWidth);
         glVertex2f(xDelta + xWidth, yDelta + yWidth);
+        glVertex2f(xWidth, yWidth);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
@@ -388,7 +422,7 @@ public class Drawer {
     public static void setColorBlended(Color color) {
         glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
     }
-    
+
     public static void setColorStatic(float r, float g, float b, float a) {
         glColor4f(r, g, b, a);
     }

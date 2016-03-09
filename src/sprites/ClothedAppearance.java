@@ -371,7 +371,6 @@ public class ClothedAppearance implements Appearance {
         } else {
             fbo.renderPart(partXStart + xOffset / 2, partXEnd + xOffset / 2);
         }
-//        System.out.println(partXStart + " " + partXEnd + " " + width);
     }
 
     @Override
@@ -384,6 +383,8 @@ public class ClothedAppearance implements Appearance {
         fbo.activate();
         glPushMatrix();
         glClear(GL_COLOR_BUFFER_BIT);
+        glColor3f(1, 1, 1);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glTranslatef(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight(), 0);
         render();
         glPopMatrix();

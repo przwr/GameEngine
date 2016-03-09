@@ -119,6 +119,10 @@ public class Bush extends GameObject {
         bark.bindCheck();
         Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next
                 (10) / 10240f)));
+//        TODO liczyć gdzie są prawdziwe granice tekstury
+//        Drawer.setCentralPoint();
+//        Drawer.drawRectangle(-Math.round(fbo.getWidth() * 0.4f), -fbo.getHeight() + 20, Math.round(fbo.getWidth() * 0.8f), fbo.getHeight());
+//        Drawer.returnToCentralPoint();
         drawRoots();
         drawBranches();
         drawLeafs();
@@ -128,16 +132,16 @@ public class Bush extends GameObject {
         int change1 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
         int change2 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
         int change3 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
-        Drawer.drawTextureQuad(width / 2, 0, width, -12, width + change1, -6, width + change1, 2);
+        Drawer.drawTextureQuad(width + change1, 2, width + change1, -6, width, -12, width / 2, 0);
         Drawer.drawTextureTriangle(width + change1, -6, width + change1, 2, (width - change1) * 2, change2 < 6 ? change2 : 6);
         Drawer.drawTextureQuad(width / 2, 0, 0, -12, -change2, -6, -change2, 2);
-        Drawer.drawTextureTriangle(-change2, -6, -change2, 2, -width + change1 * 2, change1 < 6 ? change1 : 6);
+        Drawer.drawTextureTriangle(-width + change1 * 2, change1 < 6 ? change1 : 6, -change2, 2, -change2, -6);
         boolean left = random.nextBoolean();
         if (left) {
             Drawer.drawTextureQuad(2 * width / 3, 0, width / 4, -5, width / 3 - change3 / 2, 4, width / 3 + change3 / 2, 6);
-            Drawer.drawTextureTriangle(width / 3 - change3 / 2, 4, width / 3 + change3 / 2, 6, -3, 12);
+            Drawer.drawTextureTriangle(-3, 12, width / 3 + change3 / 2, 6, width / 3 - change3 / 2, 4);
         } else {
-            Drawer.drawTextureQuad(width / 3, 0, 3 * width / 4, -5, 2 * width / 3 + change3 / 2, 4, 2 * width / 3 - change3 / 2, 6);
+            Drawer.drawTextureQuad(2 * width / 3 - change3 / 2, 6, 2 * width / 3 + change3 / 2, 4, 3 * width / 4, -5, width / 3, 0);
             Drawer.drawTextureTriangle(2 * width / 3 + change3 / 2, 4, 2 * width / 3 - change3 / 2, 6, width + 3, 12);
         }
         points.add(new Point(0, -height / 2));
@@ -162,13 +166,13 @@ public class Bush extends GameObject {
         int deviation = Math.round(spread * (height / 2 + random.randomInRange(0, height / 4)));
         int change = -8 + random.next(4);
         int xPosition = x + deviation / 2 + change;
-        Drawer.drawTextureQuad(x, 0, xPosition, -length / 2, xPosition + (widthTop + widthBase) / 2, -length / 2, x + widthBase, 0);
-        Drawer.drawTextureQuad(xPosition, -length / 2, x + deviation, -length, x + deviation + widthTop, -length, xPosition + (widthTop + widthBase) / 2,
-                -length / 2);
+        Drawer.drawTextureQuad(x, 0, x + widthBase, 0, xPosition + (widthTop + widthBase) / 2, -length / 2, xPosition, -length / 2);
+        Drawer.drawTextureQuad(xPosition, -length / 2, xPosition + (widthTop + widthBase) / 2, -length / 2, x + deviation + widthTop, -length, x + deviation,
+                -length);
         // End of branch
         int change2 = -16 + random.next(5);
-        Drawer.drawTextureTriangle(x + deviation, -length, x + deviation + widthTop, -length, x + deviation + 2 * deviation / 3 + change2, -length - 2 *
-                length / 3);
+        Drawer.drawTextureTriangle(x + deviation, -length, x + deviation + widthTop, -length, x + deviation + 2 * deviation / 3 + change2, -length - 2
+                * length / 3);
         points.add(new Point(x + deviation + 2 * deviation / 3 + change2, -length - 2 * length / 3 + yShift));
         if (Math.abs(deviation) > 20) {
             // Small Branch
@@ -182,19 +186,41 @@ public class Bush extends GameObject {
                 yA -= Math.round(length * 0.1f);
             }
             int change1 = Math.round(length * (random.next(10) / 4096f));
-            Drawer.drawTextureQuad(xA, yA, xB, yB,
-                    x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop),
-                    x + Math.round(1.3f * xPosition), Math.round(-1f * length));
+            if (deviation > 0) {
+                Drawer.drawTextureQuad(x + Math.round(1.3f * xPosition), Math.round(-1f * length), x + Math.round(1.3f * xPosition), Math.round(-1f *
+                        length) + Math.round(-0.5f * widthTop), xB, yB, xA, yA);
+            } else {
+                Drawer.drawTextureQuad(xA, yA, xB, yB,
+                        x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop),
+                        x + Math.round(1.3f * xPosition), Math.round(-1f * length));
+            }
             points.add(new Point(x + Math.round(1.3f * xPosition), Math.round(-1f * length) + yShift));
-            Drawer.drawTextureQuad(x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop),
-                    x + Math.round(1.3f * xPosition), Math.round(-1f * length),
-                    x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
-                    x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 + Math.round(-0.4f * widthTop));
+            if (deviation > 0) {
+                Drawer.drawTextureQuad(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
+                        x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 + Math.round(-0.4f
+                                * widthTop),
+                        x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop),
+                        x + Math.round(1.3f * xPosition), Math.round(-1f * length));
+            } else {
+                Drawer.drawTextureQuad(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 +
+                                Math.round(-0.4f * widthTop),
+                        x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
+                        x + Math.round(1.3f * xPosition), Math.round(-1f * length),
+                        x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop));
+            }
             points.add(new Point(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1 + yShift));
-            Drawer.drawTextureTriangle(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
-                    x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1 + Math.round(-0.4f * widthTop),
-                    x + Math.round(1.6f * xPosition), Math.round(-1.2f * length));
-            points.add(new Point(x + Math.round(1.6f * xPosition), Math.round(-1.2f * length) + yShift));
+            if (deviation > 0) {
+                Drawer.drawTextureTriangle(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 + Math
+                                .round(-0.4f * widthTop),
+                        x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
+                        x + Math.round(1.7f * xPosition), Math.round(-1.3f * length));
+            } else {
+                Drawer.drawTextureTriangle(x + Math.round(1.7f * xPosition), Math.round(-1.3f * length),
+                        x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
+                        x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 + Math.round(-0.4f *
+                                widthTop));
+            }
+            points.add(new Point(x + Math.round(1.7f * xPosition), Math.round(-1.3f * length) + yShift));
             // Small Branch
             xPosition = deviation + change;
             xA = x + Math.round(xPosition * 0.35f) + widthTop / 2;
@@ -206,28 +232,52 @@ public class Bush extends GameObject {
                 yA -= Math.round(length * 0.1f);
             }
             float rand = random.next(10) / 3072f;
-            Drawer.drawTextureQuad(xA, yA, xB, yB,
-                    x + Math.round(0.9f * xPosition), Math.round(-0.6f * length) + Math.round(-0.5f * widthTop),
-                    x + Math.round(0.9f * xPosition), Math.round(-0.6f * length));
+            if (deviation > 0) {
+                Drawer.drawTextureQuad(x + Math.round(0.9f * xPosition), Math.round(-0.6f * length),
+                        x + Math.round(0.9f * xPosition), Math.round(-0.6f * length) + Math.round(-0.5f * widthTop),
+                        xB, yB, xA, yA);
+            } else {
+                Drawer.drawTextureQuad(xA, yA, xB, yB,
+                        x + Math.round(0.9f * xPosition), Math.round(-0.6f * length) + Math.round(-0.5f * widthTop),
+                        x + Math.round(0.9f * xPosition), Math.round(-0.6f * length));
+            }
             points.add(new Point(x + Math.round(0.9f * xPosition), Math.round(-0.6f * length) + yShift));
-            Drawer.drawTextureTriangle(x + Math.round(0.9f * xPosition), Math.round(-0.6f * length) + Math.round(-0.5f * widthTop),
-                    x + Math.round(0.9f * xPosition), Math.round(-0.6f * length),
-                    x + Math.round(1.8f * xPosition), Math.round(-(0.75f + rand) * length));
+            if (deviation > 0) {
+                Drawer.drawTextureTriangle(x + Math.round(0.9f * xPosition), Math.round(-0.6f * length) + Math.round(-0.5f * widthTop),
+                        x + Math.round(0.9f * xPosition), Math.round(-0.6f * length),
+                        x + Math.round(1.8f * xPosition), Math.round(-(0.75f + rand) * length));
+            } else {
+                Drawer.drawTextureTriangle(x + Math.round(1.8f * xPosition), Math.round(-(0.75f + rand) * length),
+                        x + Math.round(0.9f * xPosition), Math.round(-0.6f * length),
+                        x + Math.round(0.9f * xPosition), Math.round(-0.6f * length) + Math.round(-0.5f * widthTop));
+            }
             points.add(new Point(x + Math.round(1.8f * xPosition), Math.round(-(0.75f + rand) * length) + yShift));
 //            points.add(x + Math.round(1.8f * xPosition), -length - 2 * length / 3 + yShift);
 
             // Small Branch
             rand = random.next(10) / 3072f;
-            Drawer.drawTextureQuad(xA, yA, xA + Math.round(0.125f * xPosition), yA - Math.round(length * 0.1f),
-                    xA + Math.round(0.35f * xPosition), Math.round(-1.0f * length),
-                    xA + Math.round(0.3f * xPosition), Math.round(-1.0f * length) + Math.round(-0.4f * widthTop));
+            if (deviation > 0) {
+                Drawer.drawTextureQuad(xA, yA, xA + Math.round(0.125f * xPosition), yA - Math.round(length * 0.1f),
+                        xA + Math.round(0.35f * xPosition), Math.round(-1.0f * length),
+                        xA + Math.round(0.3f * xPosition), Math.round(-1.0f * length) + Math.round(-0.4f * widthTop));
+            } else {
+                Drawer.drawTextureQuad(xA + Math.round(0.3f * xPosition), Math.round(-1.0f * length) + Math.round(-0.4f * widthTop),
+                        xA + Math.round(0.35f * xPosition), Math.round(-1.0f * length),
+                        xA + Math.round(0.125f * xPosition), yA - Math.round(length * 0.1f),
+                        xA, yA);
+            }
             points.add(new Point(xA + Math.round(0.3f * xPosition), Math.round(-1.0f * length) + Math.round(-0.4f * widthTop) + yShift));
-            Drawer.drawTextureTriangle(xA + Math.round(0.35f * xPosition), Math.round(-1.0f * length),
-                    xA + Math.round(0.3f * xPosition), Math.round(-1.0f * length) + Math.round(-0.4f * widthTop),
-                    xA + Math.round(0.45f * xPosition), Math.round(-(1.2f + rand) * length));
+            if (deviation > 0) {
+                Drawer.drawTextureTriangle(xA + Math.round(0.45f * xPosition), Math.round(-(1.2f + rand) * length),
+                        xA + Math.round(0.3f * xPosition), Math.round(-1.0f * length) + Math.round(-0.4f * widthTop),
+                        xA + Math.round(0.35f * xPosition), Math.round(-1.0f * length));
+            } else {
+                Drawer.drawTextureTriangle(xA + Math.round(0.35f * xPosition), Math.round(-1.0f * length),
+                        xA + Math.round(0.3f * xPosition), Math.round(-1.0f * length) + Math.round(-0.4f * widthTop),
+                        xA + Math.round(0.45f * xPosition), Math.round(-(1.2f + rand) * length));
+            }
             points.add(new Point(xA + Math.round(0.45f * xPosition), Math.round(-(1.2f + rand) * length) + yShift));
 //            points.add(xA + Math.round(0.45f * xPosition), -length - 2 * length / 3 + yShift);
-
         } else {
             // Small Branch
             xPosition = deviation + change;
@@ -244,17 +294,18 @@ public class Bush extends GameObject {
                     xA + Math.round(Math.signum(xPosition) * length * 0.2f), Math.round(-0.9f * length) + Math.round(-0.5f * widthTop),
                     xA + Math.round(Math.signum(xPosition) * length * 0.2f) + Math.round(-0.4f * widthTop), Math.round(-0.9f * length));
             points.add(new Point(xA + Math.round(Math.signum(xPosition) * length * 0.2f) + Math.round(-0.4f * widthTop), Math.round(-0.9f * length) + yShift));
-            Drawer.drawTextureTriangle(xA + Math.round(Math.signum(xPosition) * length * 0.2f), Math.round(-0.9f * length) + Math.round(-0.5f * widthTop),
+            Drawer.drawTextureTriangle(xA + Math.round(Math.signum(xPosition) * length * 0.3f) + Math.round(-0.4f * widthTop),
+                    Math.round(-(1.1f + rand) * length),
                     xA + Math.round(Math.signum(xPosition) * length * 0.2f) + Math.round(-0.4f * widthTop), Math.round(-0.9f * length),
-                    xA + Math.round(Math.signum(xPosition) * length * 0.3f) + Math.round(-0.4f * widthTop), Math.round(-(1.1f + rand) * length));
+                    xA + Math.round(Math.signum(xPosition) * length * 0.2f), Math.round(-0.9f * length) + Math.round(-0.5f * widthTop));
             points.add(new Point(xA + Math.round(Math.signum(xPosition) * length * 0.3f) + Math.round(-0.4f * widthTop), Math.round(-(1.1f + rand) * length)
                     + yShift));
 
             // Small Branch
             rand = random.next(10) / 3072f;
-            Drawer.drawTextureQuad(xA, yA, xB, yB,
+            Drawer.drawTextureQuad(xA - Math.round(Math.signum(xPosition) * length * 0.2f) - Math.round(-0.4f * widthTop), Math.round(-0.9f * length),
                     xA - Math.round(Math.signum(xPosition) * length * 0.2f), Math.round(-0.9f * length) + Math.round(-0.5f * widthTop),
-                    xA - Math.round(Math.signum(xPosition) * length * 0.2f) - Math.round(-0.4f * widthTop), Math.round(-0.9f * length));
+                    xB, yB, xA, yA);
             points.add(new Point(xA - Math.round(Math.signum(xPosition) * length * 0.2f), Math.round(-0.9f * length) + Math.round(-0.5f * widthTop) + yShift));
             Drawer.drawTextureTriangle(xA - Math.round(Math.signum(xPosition) * length * 0.2f), Math.round(-0.9f * length) + Math.round(-0.5f * widthTop),
                     xA - Math.round(Math.signum(xPosition) * length * 0.2f) - Math.round(-0.4f * widthTop), Math.round(-0.9f * length),

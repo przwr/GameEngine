@@ -62,7 +62,6 @@ public abstract class Place extends ScreenPlace {
     protected short mapIDCounter = 0;
     private Console console;
     private FontHandler loadingFont = null;
-    private int renderCount = 0;
 
     {
         loading.terminate();
@@ -71,19 +70,13 @@ public abstract class Place extends ScreenPlace {
     {
         renders[OFFLINE] = () -> {
             SplitScreen.setSingleCamera(this);
-            if (renderCount == 0) {
-                for (int p = 0; p < playersCount; p++) {
-                    tempMaps.stream().forEach((map) -> {
-                        Renderer.findVisibleLights(map, playersCount);
-                        if (!Settings.shadowOff) {
-                            Renderer.preRenderLights(map);
-                        }
-                    });
-                }
-            }
-            renderCount++;
-            if (renderCount > 1) {
-                renderCount = 0;
+            for (int p = 0; p < playersCount; p++) {
+                tempMaps.stream().forEach((map) -> {
+                    Renderer.findVisibleLights(map, playersCount);
+                    if (!Settings.shadowOff) {
+                        Renderer.preRenderLights(map);
+                    }
+                });
             }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
@@ -140,15 +133,9 @@ public abstract class Place extends ScreenPlace {
             try {
                 if (map != null) {
                     Drawer.setCurrentColor(map.getLightColor());
-                    if (renderCount == 0) {
-                        Renderer.findVisibleLights(map, 1);
-                        if (!Settings.shadowOff) {
-                            Renderer.preRenderLights(map);
-                        }
-                    }
-                    renderCount++;
-                    if (renderCount > 1) {
-                        renderCount = 0;
+                    Renderer.findVisibleLights(map, 1);
+                    if (!Settings.shadowOff) {
+                        Renderer.preRenderLights(map);
                     }
                     currentCamera = (((Player) players[0]).getCamera());
                     SplitScreen.setSplitScreen(this, 1, 0);

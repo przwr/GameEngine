@@ -112,11 +112,25 @@ public class ShadowDrawer {
 
     public static void drawShadow(Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
-        glBegin(GL_QUADS);
-        glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
-        glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
-        glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
-        glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+        glBegin(GL_TRIANGLES);
+        if (((shadowPoints[1].getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
+                - ((shadowPoints[1].getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
+            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
+            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+
+            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
+        } else {
+            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+
+            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
+            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+        }
         endDrawingShadow();
     }
 
@@ -132,11 +146,14 @@ public class ShadowDrawer {
         int firstShadowPoint = shade.getYEnd();
         int secondShadowPoint = shade.getY() - shade.getShadowHeight();
         startDrawingShadow(color, lightXCentralShifted, lightYCentralShifted);
-        glBegin(GL_QUADS);
+        glBegin(GL_TRIANGLES);
         glVertex2f(xS, firstShadowPoint);
         glVertex2f(xS, secondShadowPoint);
         glVertex2f(xE, secondShadowPoint);
+
+        glVertex2f(xE, secondShadowPoint);
         glVertex2f(xE, firstShadowPoint);
+        glVertex2f(xS, firstShadowPoint);
         endDrawingShadow();
     }
 

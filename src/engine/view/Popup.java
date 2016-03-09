@@ -33,7 +33,7 @@ public class Popup {
 
     public Popup(String font) {
         smallFont = Settings.fonts.getFont(font, (int) (Settings.nativeScale * 22));
-        bigFont =  Settings.fonts.getFont(font, (int) (Settings.nativeScale * 28));
+        bigFont = Settings.fonts.getFont(font, (int) (Settings.nativeScale * 28));
         middleOk = smallFont.getWidth("[ENTER]");
         WIDTH_HALF = Display.getWidth() / 2;
         HEIGHT_HALF = Display.getHeight() / 2;
@@ -76,7 +76,7 @@ public class Popup {
             renderLine(smallFont, WIDTH_HALF, HEIGHT_HALF - height / 2 + space + shift / 2 + shift * (i + 1) + border, lines[i], Color.black);
         }
         glDisable(GL_BLEND);
-        glBegin(GL_QUADS);
+        glBegin(GL_TRIANGLES);
         renderButtonArea();
         renderTitleAndButtonBackground();
         renderBorders();
@@ -90,12 +90,15 @@ public class Popup {
     private void renderBackground() {
         glDisable(GL_BLEND);
         glDisable(GL_TEXTURE_2D);
-        glBegin(GL_QUADS);
+        glBegin(GL_TRIANGLES);
         glColor3f(1f, 1f, 1f);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 - space);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space);
+
+        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
+        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space);
         glEnd();
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -106,7 +109,10 @@ public class Popup {
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 - space);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2);
+
+        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2);
+        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space);
     }
 
     private void renderTitleAndButtonBackground() {
@@ -114,12 +120,18 @@ public class Popup {
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2);
+
+        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2);
+        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
 
         glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift);
         glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2 - shift);
         glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2);
+
+        glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2);
         glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2);
+        glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift);
     }
 
     private void renderBorders() {
@@ -132,44 +144,69 @@ public class Popup {
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border);
+
+        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border);
+        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2);
+
 
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border);
+
+        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 + border);
+        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2);
 
         glVertex2f(WIDTH_HALF - width / 2 - border, HEIGHT_HALF + height / 2 + border);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 + border);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border);
+
+        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border);
         glVertex2f(WIDTH_HALF - width / 2 - border, HEIGHT_HALF - height / 2 - border);
+        glVertex2f(WIDTH_HALF - width / 2 - border, HEIGHT_HALF + height / 2 + border);
 
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border);
         glVertex2f(WIDTH_HALF + width / 2 + border, HEIGHT_HALF + height / 2 + border);
         glVertex2f(WIDTH_HALF + width / 2 + border, HEIGHT_HALF - height / 2 - border);
+
+        glVertex2f(WIDTH_HALF + width / 2 + border, HEIGHT_HALF - height / 2 - border);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border);
+        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border);
     }
 
     private void renderInnerBorders() {
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space);
         glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space + border);
+
+        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space + border);
         glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space + border);
+        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
 
         glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift);
         glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift);
         glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2);
+
+        glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2);
         glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2);
+        glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift);
 
         glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift - border);
         glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift - border);
         glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift);
+
+        glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift);
         glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift);
+        glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift - border);
 
         glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift);
         glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2 - shift);
         glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2);
+
+        glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2);
         glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2);
+        glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift);
     }
 
     private void renderLine(FontHandler font, int x, int y, String message, Color color) {

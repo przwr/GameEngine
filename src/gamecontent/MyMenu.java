@@ -127,7 +127,7 @@ public class MyMenu extends Menu {
             player4.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 3, i));
         }
         controls.addChoice(player1);
-//        controls.addChoice(player2);
+        controls.addChoice(player2);
 //        controls.addChoice(player3);
 //        controls.addChoice(player4);
     }
