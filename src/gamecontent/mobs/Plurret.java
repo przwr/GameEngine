@@ -209,7 +209,7 @@ public class Plurret extends Mob {
                 closeEnemies.add(mob);
             }
         }
-        updateAlpha();
+        updateLeadership();
     }
 
     @Override
