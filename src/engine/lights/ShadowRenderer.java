@@ -16,7 +16,6 @@ import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
 import net.jodk.lang.FastMath;
-import sprites.ClothedAppearance;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -42,8 +41,8 @@ public class ShadowRenderer {
     private static final Polygon polygon = new Polygon();
     private static final ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
     private static final Point casting = new Point();
-    static long sum = 0;
-    static int count = 0;
+    //    static long sum = 0;
+//    static int count = 0;
     private static boolean checked;
     private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightYEnd, lightYStart, lightXEnd, lightXStart, centerX, centerY,
             lightXCentralShifted, lightYCentralShifted, shadow0X, shadow0Y, shadow1X, shadow1Y, shadow2X, shadow2Y, shadow3X, shadow3Y;
@@ -66,21 +65,21 @@ public class ShadowRenderer {
     }
 
     public static void preRenderLight(Map map, Light light) {
-        long start = System.nanoTime();
+//        long start = System.nanoTime();
         prepareToFindShades(light);
         findShades(light, map);
         prepareToPreRender(light);
         calculateShadows(light);
         renderShadows(light);
         endPreRender(light);
-        long end = System.nanoTime();
-        sum += (end - start);
-        count++;
-        if (count == 200) {
+//        long end = System.nanoTime();
+//        sum += (end - start);
+//        count++;
+//        if (count == 200) {
 //            System.out.println("Time: " + (sum / 200000f));
-            count = 0;
-            sum = 0;
-        }
+//            count = 0;
+//            sum = 0;
+//        }
     }
 
     private static void prepareToFindShades(Light light) {
@@ -157,9 +156,6 @@ public class ShadowRenderer {
                     && object.getX() - tempShade.getActualWidth() / 2 <= lightXEnd
                     && object.getX() + tempShade.getActualWidth() / 2 >= lightXStart) {
                 shades.add(tempShade);
-                if (object.getAppearance() instanceof ClothedAppearance) {
-                    object.getAppearance().updateTexture(null);
-                }
             }
         }
     }
@@ -741,14 +737,14 @@ public class ShadowRenderer {
             XOL = shadow0X;
         } else {
             XOL = ((other.getYEnd() - bl) / al);
-            YOL = (al * other.getXSpriteBegin() + bl);
-            YOL2 = (al * other.getXSpriteEnd() + bl);
+            YOL = (al * other.getXSpriteBegin(false) + bl);
+            YOL2 = (al * other.getXSpriteEnd(false) + bl);
         }
         return (shadow0Y > shadow2Y && shadow0Y > other.getY())
                 && ((shadow0X != shadow2X &&
-                ((XOL >= other.getXSpriteBegin() && XOL <= other.getXSpriteEnd()) ||
-                        (YOL > other.getYSpriteBegin() && YOL < other.getYEnd()) || (YOL2 > other.getYSpriteBegin() && YOL2 < other.getYEnd())))
-                || (shadow0X == shadow2X && XOL >= other.getXSpriteBegin() && XOL <= other.getXSpriteEnd()));
+                ((XOL >= other.getXSpriteBegin(false) && XOL <= other.getXSpriteEnd(false)) ||
+                        (YOL > other.getYSpriteBegin(false) && YOL < other.getYEnd()) || (YOL2 > other.getYSpriteBegin(false) && YOL2 < other.getYEnd())))
+                || (shadow0X == shadow2X && XOL >= other.getXSpriteBegin(false) && XOL <= other.getXSpriteEnd(false)));
     }
 
     private static boolean shouldCalculateRightObject(Figure other) {
@@ -756,14 +752,14 @@ public class ShadowRenderer {
             XOR = shadow1X;
         } else {
             XOR = ((other.getYEnd() - br) / ar);
-            YOR = (ar * other.getXSpriteBegin() + br);
-            YOR2 = (ar * other.getXSpriteEnd() + br);
+            YOR = (ar * other.getXSpriteBegin(false) + br);
+            YOR2 = (ar * other.getXSpriteEnd(false) + br);
         }
         return (shadow1Y > shadow3Y && shadow1Y > other.getY())
                 && ((shadow1X != shadow3X &&
-                ((XOR >= other.getXSpriteBegin() && XOR <= other.getXSpriteEnd())
-                        || (YOR > other.getYSpriteBegin() && YOR < other.getYEnd()) || (YOR2 > other.getYSpriteBegin() && YOR2 < other.getYEnd())))
-                || (shadow1X == shadow3X && XOR >= other.getXSpriteBegin() && XOR <= other.getXSpriteEnd()));
+                ((XOR >= other.getXSpriteBegin(false) && XOR <= other.getXSpriteEnd(false))
+                        || (YOR > other.getYSpriteBegin(false) && YOR < other.getYEnd()) || (YOR2 > other.getYSpriteBegin(false) && YOR2 < other.getYEnd())))
+                || (shadow1X == shadow3X && XOR >= other.getXSpriteBegin(false) && XOR <= other.getXSpriteEnd(false)));
     }
 
     private static void calculateLeftBlock(Figure other, Figure current, Light source) {
@@ -852,7 +848,7 @@ public class ShadowRenderer {
         if (other.getOwner() instanceof Block) {
             other.addShadow(BRIGHTEN, XL1, XL2);
         } else {
-            other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
+            other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXSpriteBegin(false), XL2);
         }
     }
 
@@ -860,7 +856,7 @@ public class ShadowRenderer {
         if (other.getOwner() instanceof Block) {
             other.addShadow(DARKEN, XL1, XL2);
         } else {
-            other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
+            other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(false), XL2);
         }
     }
 
@@ -950,7 +946,7 @@ public class ShadowRenderer {
         if (other.getOwner() instanceof Block) {
             other.addShadow(BRIGHTEN, XR1, XR2);
         } else {
-            other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
+            other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXSpriteBegin(false), XR2);
         }
     }
 
@@ -958,7 +954,7 @@ public class ShadowRenderer {
         if (other.getOwner() instanceof Block) {
             other.addShadow(DARKEN, XR1, XR2);
         } else {
-            other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
+            other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(false), XR2);
         }
     }
 
@@ -1247,19 +1243,19 @@ public class ShadowRenderer {
         if (((other.getXEnd() > current.getX() && current.getX() > source.getX()) || (other.getX() < current.getX() && current.getX() < source.getX()))
                 && other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
             setLeftObjectVariables(other, current);
-            if (XL1 >= other.getXSpriteBegin() && XL1 < other.getXSpriteEnd()) {
+            if (XL1 >= other.getXSpriteBegin(false) && XL1 < other.getXSpriteEnd(false)) {
                 if (XL1 < current.getX()) { //dodaj światło
-                    other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
+                    other.addShadow(BRIGHTEN_OBJECT, XL1 - other.getXSpriteBegin(false), XL2);
                     XL2 = current.getX() <= XL1 ? other.getXSpriteOffset() : other.getXSpriteOffsetWidth();
-                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
-                    OBJECT_DEBUG("Object Left Light " + (XL1 - other.getXSpriteBegin()) + " XL2 " + XL2);
+                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(false), XL2);
+                    OBJECT_DEBUG("Object Left Light " + (XL1 - other.getXSpriteBegin(false)) + " XL2 " + XL2);
                     checked = true;
                 } else { //dodaj cień
                     if (shadow3X > shadow2X /*|| shadow3Y < shadow2Y*/) {
                         XL2 = other.getXSpriteOffsetWidth();
                     }
-                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(), XL2);
-                    OBJECT_DEBUG("Object Left Shade " + (XL1 - other.getXSpriteBegin()) + " XL2 " + XL2);
+                    other.addShadow(DARKEN_OBJECT, XL1 - other.getXSpriteBegin(false), XL2);
+                    OBJECT_DEBUG("Object Left Shade " + (XL1 - other.getXSpriteBegin(false)) + " XL2 " + XL2);
                     checked = true;
                 }
             }
@@ -1280,20 +1276,20 @@ public class ShadowRenderer {
         if (((other.getXEnd() > current.getXEnd() && current.getXEnd() > source.getX()) || (other.getX() < current.getXEnd() && current.getXEnd() < source
                 .getX())) && other.getYEnd() < source.getY() && (other.getY() < current.getY() || other.getYEnd() < current.getYEnd())) {
             setRightObjectVariables(other, current);
-            if (XR1 >= other.getXSpriteBegin() && XR1 <= other.getXSpriteEnd()) {
+            if (XR1 >= other.getXSpriteBegin(false) && XR1 <= other.getXSpriteEnd(false)) {
                 if (XR1 > current.getXEnd()) { // dodaj światło
-                    other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
+                    other.addShadow(BRIGHTEN_OBJECT, XR1 - other.getXSpriteBegin(false), XR2);
                     XR2 = XR1 > current.getXEnd() ? other.getXSpriteOffset() : other.getXSpriteOffsetWidth();
-                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
-                    OBJECT_DEBUG("Object Right Light XR1 " + (XR1 - other.getXSpriteBegin()) + " XR2 " + XR2 + other.getActualWidth() + " " + other
+                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(false), XR2);
+                    OBJECT_DEBUG("Object Right Light XR1 " + (XR1 - other.getXSpriteBegin(false)) + " XR2 " + XR2 + other.getActualWidth() + " " + other
                             .getXSpriteOffset());
                     checked = true;
                 } else { //dodaj cień
                     if (shadow3X < shadow2X /*|| shadow3Y > shadow2Y*/) {
                         XR2 = other.getXSpriteOffsetWidth();
                     }
-                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(), XR2);
-                    OBJECT_DEBUG("Object Right Shade XR1 " + (XR1 - other.getXSpriteBegin()) + " XR2 " + XR2);
+                    other.addShadow(DARKEN_OBJECT, XR1 - other.getXSpriteBegin(false), XR2);
+                    OBJECT_DEBUG("Object Right Shade XR1 " + (XR1 - other.getXSpriteBegin(false)) + " XR2 " + XR2);
                     checked = true;
                 }
             }

@@ -138,10 +138,10 @@ public class Bush extends GameObject {
         Drawer.drawTextureTriangle(-width + change1 * 2, change1 < 6 ? change1 : 6, -change2, 2, -change2, -6);
         boolean left = random.nextBoolean();
         if (left) {
-            Drawer.drawTextureQuad(2 * width / 3, 0, width / 4, -5, width / 3 - change3 / 2, 4, width / 3 + change3 / 2, 6);
+            Drawer.drawTextureQuad(2 * width / 3, 0, width / 5, -5, width / 3 - change3 / 2, 4, width / 3 + change3 / 2, 6);
             Drawer.drawTextureTriangle(-3, 12, width / 3 + change3 / 2, 6, width / 3 - change3 / 2, 4);
         } else {
-            Drawer.drawTextureQuad(2 * width / 3 - change3 / 2, 6, 2 * width / 3 + change3 / 2, 4, 3 * width / 4, -5, width / 3, 0);
+            Drawer.drawTextureQuad(2 * width / 3 - change3 / 2, 6, 2 * width / 3 + change3 / 2, 4, 4 * width / 5, -5, width / 3, 0);
             Drawer.drawTextureTriangle(2 * width / 3 + change3 / 2, 4, 2 * width / 3 - change3 / 2, 6, width + 3, 12);
         }
         points.add(new Point(0, -height / 2));

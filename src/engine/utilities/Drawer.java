@@ -6,6 +6,7 @@
 package engine.utilities;
 
 import game.ScreenPlace;
+import game.place.fbo.FrameBufferObject;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
@@ -368,6 +369,24 @@ public class Drawer {
         cleanAfterDrawingShape();
     }
 
+
+    public static void drawShapeTopInShade(FrameBufferObject appearance, float color, float h) {
+        prepareDrawingShape(color);
+        appearance.bindCheck();
+        changeShapeToColor();
+        appearance.renderTop(h);
+        cleanAfterDrawingShape();
+    }
+
+
+    public static void drawShapeBottomInShade(FrameBufferObject appearance, float color, float h) {
+        prepareDrawingShape(color);
+        appearance.bindCheck();
+        changeShapeToColor();
+        appearance.renderBottom(h);
+        cleanAfterDrawingShape();
+    }
+
     public static void drawShapePartInShade(Appearance appearance, float color, int partXStart, int partXEnd) {
         prepareDrawingShape(color);
         appearance.bindCheck();
@@ -376,18 +395,64 @@ public class Drawer {
         cleanAfterDrawingShape();
     }
 
+    public static void drawShapeTopPartInShade(FrameBufferObject appearance, float color, int partXStart, int partXEnd, float h) {
+        prepareDrawingShape(color);
+        appearance.bindCheck();
+        changeShapeToColor();
+        appearance.renderTopPart(partXStart, partXEnd, h);
+        cleanAfterDrawingShape();
+    }
+
+    public static void drawShapeBottomPartInShade(FrameBufferObject appearance, float color, int partXStart, int partXEnd, float h) {
+        prepareDrawingShape(color);
+        appearance.bindCheck();
+        changeShapeToColor();
+        appearance.renderBottomPart(partXStart, partXEnd, h);
+        cleanAfterDrawingShape();
+    }
+
     public static void drawShapeInBlack(Appearance appearance) {
         appearance.bindCheck();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         appearance.render();
-        setBlendAttributesForShadows();
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
+
+    public static void drawShapeTopInBlack(FrameBufferObject appearance, float h) {
+        appearance.bindCheck();
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderTop(h);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    public static void drawShapeBottomInBlack(FrameBufferObject appearance, float h) {
+        appearance.bindCheck();
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderBottom(h);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
 
     public static void drawShapePartInBlack(Appearance appearance, int partXStart, int partXEnd) {
         appearance.bindCheck();
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderPart(partXStart, partXEnd);
-        setBlendAttributesForShadows();
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+
+    }
+
+    public static void drawShapeTopPartInBlack(FrameBufferObject appearance, int partXStart, int partXEnd, float h) {
+        appearance.bindCheck();
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderTopPart(partXStart, partXEnd, h);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    public static void drawShapeBottomPartInBlack(FrameBufferObject appearance, int partXStart, int partXEnd, float h) {
+        appearance.bindCheck();
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderBottomPart(partXStart, partXEnd, h);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     private static void prepareDrawingShape(float color) {
@@ -398,7 +463,7 @@ public class Drawer {
 
     private static void cleanAfterDrawingShape() {
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        setBlendAttributesForShadows();
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         glColor3f(1, 1, 1);
     }
 
@@ -409,10 +474,6 @@ public class Drawer {
         glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
         glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
         glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-    }
-
-    private static void setBlendAttributesForShadows() {
-        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public static void setColorStatic(Color color) {

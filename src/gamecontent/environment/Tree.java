@@ -39,6 +39,7 @@ public class Tree extends GameObject {
     private Color branchColor;
     private Color leafColor;
     private ArrayList<Point> points = new ArrayList<>();
+    private int woodHeight, leafHeight;
 
     private Tree(int x, int y, int width, int height, float spread, boolean branchless) {
         initialize("Tree", x, y);
@@ -55,7 +56,7 @@ public class Tree extends GameObject {
         this.height = height;
         this.spread = spread;
         int fboWidth = Math.round(spread * 2.5f * height);
-        int fboHeight = Math.round(height * 2.3f);
+        int fboHeight = Math.round(height * 3.8f);
         int ins = random.random(12);
         String treeCode = width + "-" + height + "-" + spread + "-" + branchless + "-" + ins;
         fbo = fbos.get(treeCode);
@@ -63,6 +64,8 @@ public class Tree extends GameObject {
             fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) : new RegularFrameBufferObject(fboWidth, fboHeight);
             fbos.put(treeCode, fbo);
         }
+        woodHeight = height * 2 + 20;
+        leafHeight = Math.round(height * 1.6f);
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
@@ -121,8 +124,10 @@ public class Tree extends GameObject {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-        fbo.render();
+        Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
+        fbo.renderBottom(woodHeight);
+        Drawer.translate(0, -fbo.getHeight() + leafHeight);
+        fbo.renderTop(woodHeight);
         Drawer.refreshColor();
         glPopMatrix();
     }
@@ -140,23 +145,24 @@ public class Tree extends GameObject {
             drawRoots();
         }
         drawTrunkAndBranches();
+        glTranslatef(0, -leafHeight, 0);
         drawLeafs();
     }
 
     private void drawRoots() {
-        int change1 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
-        int change2 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
+        int change1 = -2 + random.next(4) + Math.round(width * 0.2f + width * random.next(10) / 10240f);
+        int change2 = -2 + random.next(4) + Math.round(width * 0.2f + width * random.next(10) / 10240f);
         int change3 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
         Drawer.drawTextureQuad(width + change1, 2, width + change1, -6, width, -12, width / 2, 0);
-        Drawer.drawTextureTriangle(width + change1, -6, width + change1, 2, (width - change1) * 2, change2 < 6 ? change2 : 6);
+        Drawer.drawTextureTriangle(width + change1, -6, width + change1, 2, width + change1 * 2, change2 < 6 ? change2 : 6);
         Drawer.drawTextureQuad(width / 2, 0, 0, -12, -change2, -6, -change2, 2);
-        Drawer.drawTextureTriangle(-width + change1 * 2, change1 < 6 ? change1 : 6, -change2, 2, -change2, -6);
+        Drawer.drawTextureTriangle(-change1 - width / 2, change1 < 6 ? change1 : 6, -change2, 2, -change2, -6);
         boolean left = random.nextBoolean();
         if (left) {
-            Drawer.drawTextureQuad(2 * width / 3, 0, width / 4, -5, width / 3 - change3 / 2, 4, width / 3 + change3 / 2, 6);
+            Drawer.drawTextureQuad(2 * width / 3, 0, width / 5, -5, width / 3 - change3 / 2, 4, width / 3 + change3 / 2, 6);
             Drawer.drawTextureTriangle(-3, 12, width / 3 + change3 / 2, 6, width / 3 - change3 / 2, 4);
         } else {
-            Drawer.drawTextureQuad(2 * width / 3 - change3 / 2, 6, 2 * width / 3 + change3 / 2, 4, 3 * width / 4, -5, width / 3, 0);
+            Drawer.drawTextureQuad(2 * width / 3 - change3 / 2, 6, 2 * width / 3 + change3 / 2, 4, 4 * width / 5, -5, width / 3, 0);
             Drawer.drawTextureTriangle(2 * width / 3 + change3 / 2, 4, 2 * width / 3 - change3 / 2, 6, width + 3, 12);
         }
     }
@@ -463,7 +469,7 @@ public class Tree extends GameObject {
     }
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
-        if (Math.abs(points.get(i).getY() + y) < fbo.getHeight() / 2 - leaf.getWidth() - leaf.getHeight()
+        if (Math.abs(points.get(i).getY() + y) < leafHeight - leaf.getWidth() - leaf.getHeight()
                 && Math.abs(points.get(i).getX() + x) < fbo.getWidth() / 2 - leaf.getWidth() - leaf.getHeight()) {
             float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
             change -= Math.abs(points.get(i).getX() + x) / maxX / 4;
@@ -486,9 +492,10 @@ public class Tree extends GameObject {
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-            Drawer.drawShapeInShade(appearance, 1);
+            Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.drawShapeBottomInShade(fbo, 1, woodHeight);
+            Drawer.translate(0, -fbo.getHeight() + leafHeight);
+            Drawer.drawShapeTopInBlack(fbo, woodHeight);
             glPopMatrix();
         }
     }
@@ -497,9 +504,10 @@ public class Tree extends GameObject {
     public void renderShadow(int xEffect, int yEffect, Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-            Drawer.drawShapeInBlack(appearance);
+            Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.drawShapeBottomInBlack(fbo, woodHeight);
+            Drawer.translate(0, -fbo.getHeight() + leafHeight);
+            Drawer.drawShapeTopInBlack(fbo, woodHeight);
             glPopMatrix();
         }
     }
@@ -508,9 +516,11 @@ public class Tree extends GameObject {
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-            Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
+            Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.drawShapeBottomPartInShade(fbo, 1, fbo.getWidth() / 2 - collision.getWidth() + xStart, fbo.getWidth() / 2 - collision.getWidth() + xEnd,
+                    woodHeight);
+            Drawer.translate(0, -fbo.getHeight() + leafHeight);
+            Drawer.drawShapeTopInBlack(fbo, woodHeight);
             glPopMatrix();
         }
     }
@@ -519,33 +529,47 @@ public class Tree extends GameObject {
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-            Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
+            Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.drawShapeBottomPartInBlack(fbo, fbo.getWidth() / 2 - collision.getWidth() + xStart, fbo.getWidth() / 2 - collision.getWidth() + xEnd,
+                    woodHeight);
+            Drawer.translate(0, -fbo.getHeight() + leafHeight);
+            Drawer.drawShapeTopInBlack(fbo, woodHeight);
             glPopMatrix();
         }
     }
 
     @Override
     public int getXSpriteBegin(boolean... forCover) {
-        if (forCover.length > 0 && forCover[0]) {
-            return getX() - Math.round(fbo.getActualWidth() * 0.4f);
+        if (forCover.length > 0) {
+            if (forCover[0]) {
+                return getX() - fbo.getActualWidth() / 2;
+            } else {
+                return getX() - collision.getWidth();
+            }
         }
         return getX() - fbo.getActualWidth() / 2;
     }
 
     @Override
     public int getYSpriteBegin(boolean... forCover) {
-        if (forCover.length > 0 && forCover[0]) {
-            return getY() + 20 - collision.getHeight() - Math.round(fbo.getActualHeight() * 0.8f);
+        if (forCover.length > 0) {
+            if (forCover[0]) {
+                return getY() + 20 + collision.getHeightHalf() - height * 2;
+            } else {
+                return getY() - collision.getHeight() - height;
+            }
         }
-        return getY() + 20 - collision.getHeight() - fbo.getActualHeight();
+        return getY() + 20 + collision.getHeightHalf() - (fbo.getHeight() - leafHeight);
     }
 
     @Override
     public int getXSpriteEnd(boolean... forCover) {
-        if (forCover.length > 0 && forCover[0]) {
-            return getX() + Math.round(fbo.getActualWidth() * 0.4f);
+        if (forCover.length > 0) {
+            if (forCover[0]) {
+                return getX() + fbo.getActualWidth() / 2;
+            } else {
+                return getX() + collision.getWidth();
+            }
         }
         return getX() + fbo.getActualWidth() / 2;
     }
@@ -553,8 +577,8 @@ public class Tree extends GameObject {
     @Override
     public int getYSpriteEnd(boolean... forCover) {
         if (forCover.length > 0 && forCover[0]) {
-            return getY() - (fbo.getActualHeight() / 2) + 20 + collision.getHeight();
+            return getY() + 20 + collision.getHeightHalf() - (fbo.getHeight() - leafHeight * 2);
         }
-        return getY() + 20 + collision.getHeight();
+        return getY() + 20 + collision.getHeightHalf();
     }
 }

@@ -154,7 +154,7 @@ public class Grass extends GameObject {
     public void renderStill() {
         if (masking) {
             tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
-            Drawer.setColorBlended(color);
+            Drawer.setColorStatic(color);
             Drawer.setCentralPoint();
             Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
             Drawer.returnToCentralPoint();
@@ -164,12 +164,20 @@ public class Grass extends GameObject {
         for (int i = 0; i < blades.length; i += 3) {
             tempX = (blades[i].getX() + (blades[i + 1].getX() + blades[i + 2].getX())) / 3;
             tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
-            drawTriangle(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY(),
+            drawTriangleStill(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY(),
                     blades[i].getValue());
         }
         glEnd();
         glEnable(GL_TEXTURE_2D);
         Drawer.refreshColor();
+    }
+
+    private void drawTriangleStill(int xA, int yA, int xB, int yB, int xC, int yC, int colorValue) {
+        Drawer.setColorStatic(color);
+        glVertex2f(xC, yC);
+        glVertex2f(xB, yB);
+        Drawer.setColorStatic(color.r, color.g + ((float) colorValue / 256), color.b, color.a);
+        glVertex2f(xA, yA);
     }
 
     private void drawTriangle(int xA, int yA, int xB, int yB, int xC, int yC, int colorValue) {

@@ -8,11 +8,7 @@ package gamecontent.maps;
 import collision.Rectangle;
 import game.place.Place;
 import game.place.map.*;
-import gamecontent.SpawnPoint;
-import gamecontent.environment.GrassClump;
-import gamecontent.environment.Rock;
-import gamecontent.mobs.*;
-import gamecontent.npcs.Melodia;
+import gamecontent.environment.Tree;
 
 import static collision.OpticProperties.TRANSPARENT;
 
@@ -61,14 +57,14 @@ public class GladeMap extends Map {
 //      addObject(new Rabbit(256, 2500, 128, 28, 6, 1024, "Rabbit", place, true, mobID++));
 //      addObject(new BrainlessShen(356, 768, place, mobID++));
 //      addObject(new BrainlessShen(356, 860, place, mobID++));
-      addObject(new BrainlessShen(768, 2048, place, mobID++));
-      addObject(new Blazag(1200, 1024, place, mobID++));
-        addObject(new Tongub(1756, 2768, place, mobID++));
-        addObject(new Tongub(1756, 2820, place, mobID++));
-        addObject(new Tongub(1756, 2900, place, mobID++));
-        addObject(new Tongub(1756, 2964, place, mobID++));
-        addObject(new Tongub(1756, 3024, place, mobID++));
-        addObject(new Tongub(1756, 3100, place, mobID++));
+//      addObject(new BrainlessShen(768, 2048, place, mobID++));
+//      addObject(new Blazag(1200, 1024, place, mobID++));
+//        addObject(new Tongub(1756, 2768, place, mobID++));
+//        addObject(new Tongub(1756, 2820, place, mobID++));
+//        addObject(new Tongub(1756, 2900, place, mobID++));
+//        addObject(new Tongub(1756, 2964, place, mobID++));
+//        addObject(new Tongub(1756, 3024, place, mobID++));
+//        addObject(new Tongub(1756, 3100, place, mobID++));
 //        addObject(new Tongub(756, 768, place, mobID++));
 //        addObject(new Tongub(756, 820, place, mobID++));
 //        addObject(new Tongub(756, 900, place, mobID++));
@@ -93,35 +89,37 @@ public class GladeMap extends Map {
         int yStart = 2304;
         for (int x = xStart; x < xStart + 2048; x += xSpace) {
             for (int y = yStart; y < yStart + 2048; y += ySpace) {
-                addObject(GrassClump.createRectangle(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight));
+//                addObject(GrassClump.createRectangle(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight));
             }
         }
 
 
 //        addObject(new Bush(800, 800, 10, 50, 1f));
 //        addObject(new Bush(1024, 920, 12, 70, 0.8f));
-//        addObject(Tree.create(250, 1524, 32, 200, 0.8f));
-        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
+        addObject(Tree.create(350, 924, 32, 200, 0.8f));
+        addObject(Tree.create(450, 874, 32, 200, 0.8f));
+//        addObject(new Bush(350, 1474, 12, 70, 0.8f));
+//        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
 //        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
-        addObject(GrassClump.createCorner(256, 864, 2, 8, 8, 2, 8, 32, 0));
-        addObject(GrassClump.createCorner(256, 736, 2, 8, 8, 2, 8, 32, 1));
-        addObject(GrassClump.createCorner(448, 736, 2, 8, 8, 2, 8, 32, 2));
-        addObject(GrassClump.createCorner(448, 864, 2, 8, 8, 2, 8, 32, 3));
-        addObject(GrassClump.createRectangle(256, 800, 2, 8, 8, 2, 8, 32));
-        addObject(GrassClump.createRectangle(352, 864, 2, 8, 8, 2, 8, 32));
-        addObject(GrassClump.createRectangle(352, 736, 2, 8, 8, 2, 8, 32));
-        addObject(GrassClump.createRectangle(352, 800, 2, 8, 8, 2, 8, 32));
-        addObject(GrassClump.createRectangle(448, 800, 2, 8, 8, 2, 8, 32));
+//        addObject(GrassClump.createCorner(256, 864, 2, 8, 8, 2, 8, 32, 0));
+//        addObject(GrassClump.createCorner(256, 736, 2, 8, 8, 2, 8, 32, 1));
+//        addObject(GrassClump.createCorner(448, 736, 2, 8, 8, 2, 8, 32, 2));
+//        addObject(GrassClump.createCorner(448, 864, 2, 8, 8, 2, 8, 32, 3));
+//        addObject(GrassClump.createRectangle(256, 800, 2, 8, 8, 2, 8, 32));
+//        addObject(GrassClump.createRectangle(352, 864, 2, 8, 8, 2, 8, 32));
+//        addObject(GrassClump.createRectangle(352, 736, 2, 8, 8, 2, 8, 32));
+//        addObject(GrassClump.createRectangle(352, 800, 2, 8, 8, 2, 8, 32));
+//        addObject(GrassClump.createRectangle(448, 800, 2, 8, 8, 2, 8, 32));
 //
 //
-        addObject(new Shen(512, 800, place, mobID++));
-        addObject(new Shen(768, 1280, place, mobID++));
-        addObject(new Shen(512, 1500, place, mobID++));
-        addObject(new Shen(648, 1400, place, mobID++));
-        addObject(new Plurret(1156, 968, place, mobID++));
-        addObject(new Blazag(1600, 2494, place, mobID++));
-        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
-        addObject(SpawnPoint.createInVisible(768, 3000, 54, 38, "Tongub spawn", Tongub.class, 10, 10));
+//        addObject(new Shen(512, 800, place, mobID++));
+//        addObject(new Shen(768, 1280, place, mobID++));
+//        addObject(new Shen(512, 1500, place, mobID++));
+//        addObject(new Shen(648, 1400, place, mobID++));
+//        addObject(new Plurret(1156, 968, place, mobID++));
+//        addObject(new Blazag(1600, 2494, place, mobID++));
+//        addObject(SpawnPoint.createInVisible(1536, 2560, 54, 38, "Blazag spawn", Blazag.class, 15, 5));
+//        addObject(SpawnPoint.createInVisible(768, 3000, 54, 38, "Tongub spawn", Tongub.class, 10, 10));
 
 //        addObject(SpawnPoint.createVisible(place,2048, 2048, 64, 64, "Shen spawn", Shen.class, 30, 5, place.getSprite("rabbit", "")));
 //        addObject(new Shen(512, 1024, place, mobID++));
@@ -147,7 +145,7 @@ public class GladeMap extends Map {
 
 
 //        addObject(new MyNPC(200, 200, place, mobID++));
-        addObject(new Melodia(200, 500, place, mobID++, new Shen(), new Rock(0, 0, place, mobID)));
-        addObject(new Dummy(400, 800, place, mobID++));
+//        addObject(new Melodia(200, 500, place, mobID++, new Shen(), new Rock(0, 0, place, mobID)));
+//        addObject(new Dummy(400, 800, place, mobID++));
     }
 }

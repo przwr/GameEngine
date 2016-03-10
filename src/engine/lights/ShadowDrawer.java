@@ -55,9 +55,9 @@ public class ShadowDrawer {
     public static void drawLeftConcaveBottom(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         glBegin(GL_TRIANGLES);
-        glVertex2f(shaded.getX() + Place.tileSize, shaded.getYEnd());
-        glVertex2f(x, y);
         glVertex2f(shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize);
+        glVertex2f(x, y);
+        glVertex2f(shaded.getX() + Place.tileSize, shaded.getYEnd());
         endDrawingShadow();
     }
 
@@ -96,17 +96,38 @@ public class ShadowDrawer {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         corner.set(shaded.getX() + (shaded.isLeftBottomRound() ? Place.tileSize : 0), shaded.getY());
         glBegin(GL_TRIANGLES);
-        glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
-        glVertex2f(corner.getX(), corner.getY());
-        glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
-
-        glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
-        glVertex2f(corner.getX(), corner.getY());
-        glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
-
-        glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
-        glVertex2f(corner.getX(), corner.getY());
-        glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+        boolean a = false, b = false;
+        if (((corner.getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
+                - ((corner.getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
+            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+            glVertex2f(corner.getX(), corner.getY());
+            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
+            a = true;
+        } else {
+            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
+            glVertex2f(corner.getX(), corner.getY());
+            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+        }
+        if (((corner.getX() - shadowPoints[3].getX()) * (shadowPoints[1].getY() - shadowPoints[3].getY()))
+                - ((corner.getY() - shadowPoints[3].getY()) * (shadowPoints[1].getX() - shadowPoints[3].getX())) > 0) {
+            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+            glVertex2f(corner.getX(), corner.getY());
+            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+            b = true;
+        } else {
+            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+            glVertex2f(corner.getX(), corner.getY());
+            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+        }
+        if (a || b) {
+            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+            glVertex2f(corner.getX(), corner.getY());
+            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+        } else {
+            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+            glVertex2f(corner.getX(), corner.getY());
+            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+        }
         endDrawingShadow();
     }
 

@@ -108,6 +108,45 @@ public abstract class FrameBufferObject implements Appearance {
         glEnd();
     }
 
+    public void renderBottom(float h) {
+        bindCheck();
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, h);
+        glTexCoord2f(1, 0);
+        glVertex2f(width, h);
+        glTexCoord2f(1, h / height);
+        glVertex2f(width, 0);
+
+        glTexCoord2f(1, h / height);
+        glVertex2f(width, 0);
+        glTexCoord2f(0, h / height);
+        glVertex2f(0, 0);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, h);
+        glEnd();
+    }
+
+    public void renderTop(float h) {
+        bindCheck();
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(0, h / height);
+        glVertex2f(0, height);
+        glTexCoord2f(1, h / height);
+        glVertex2f(width, height);
+        glTexCoord2f(1, 1);
+        glVertex2f(width, h);
+
+        glTexCoord2f(1, 1);
+        glVertex2f(width, h);
+        glTexCoord2f(0, 1);
+        glVertex2f(0, h);
+        glTexCoord2f(0, h / height);
+        glVertex2f(0, height);
+        glEnd();
+    }
+
+
     public void renderScreenPart(float displayWidth, float displayHeight, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart,
                                  float xTEnd, float yTEnd) {
         glPushMatrix();
@@ -178,22 +217,77 @@ public abstract class FrameBufferObject implements Appearance {
     @Override
     public void renderPart(int partXStart, int partXEnd) {
         bindCheck();
+        if (partXStart > partXEnd) {
+            int temp = partXEnd;
+            partXEnd = partXStart;
+            partXStart = temp;
+        }
         glBegin(GL_TRIANGLES);
-        glTexCoord2f(partXEnd / (float) width, 0);
-        glVertex2f(partXEnd, height);
-        glTexCoord2f(partXEnd / (float) width, 1);
-        glVertex2f(partXEnd, 0);
-        glTexCoord2f(partXStart / (float) width, 1);
-        glVertex2f(partXStart, 0);
-
-        glTexCoord2f(partXStart / (float) width, 1);
-        glVertex2f(partXStart, 0);
         glTexCoord2f(partXStart / (float) width, 0);
         glVertex2f(partXStart, height);
         glTexCoord2f(partXEnd / (float) width, 0);
         glVertex2f(partXEnd, height);
+        glTexCoord2f(partXEnd / (float) width, 1);
+        glVertex2f(partXEnd, 0);
+
+        glTexCoord2f(partXEnd / (float) width, 1);
+        glVertex2f(partXEnd, 0);
+        glTexCoord2f(partXStart / (float) width, 1);
+        glVertex2f(partXStart, 0);
+        glTexCoord2f(partXStart / (float) width, 0);
+        glVertex2f(partXStart, height);
         glEnd();
     }
+
+
+    public void renderBottomPart(int partXStart, int partXEnd, float h) {
+        bindCheck();
+        if (partXStart > partXEnd) {
+            int temp = partXEnd;
+            partXEnd = partXStart;
+            partXStart = temp;
+        }
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(partXStart / (float) width, 0);
+        glVertex2f(partXStart, h);
+        glTexCoord2f(partXEnd / (float) width, 0);
+        glVertex2f(partXEnd, h);
+        glTexCoord2f(partXEnd / (float) width, h / height);
+        glVertex2f(partXEnd, 0);
+
+        glTexCoord2f(partXEnd / (float) width, h / height);
+        glVertex2f(partXEnd, 0);
+        glTexCoord2f(partXStart / (float) width, h / height);
+        glVertex2f(partXStart, 0);
+        glTexCoord2f(partXStart / (float) width, 0);
+        glVertex2f(partXStart, h);
+        glEnd();
+    }
+
+    public void renderTopPart(int partXStart, int partXEnd, float h) {
+        bindCheck();
+        if (partXStart > partXEnd) {
+            int temp = partXEnd;
+            partXEnd = partXStart;
+            partXStart = temp;
+        }
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(partXStart / (float) width, h / height);
+        glVertex2f(partXStart, height);
+        glTexCoord2f(partXEnd / (float) width, h / height);
+        glVertex2f(partXEnd, height);
+        glTexCoord2f(partXEnd / (float) width, 1);
+        glVertex2f(partXEnd, h);
+
+        glTexCoord2f(partXEnd / (float) width, 1);
+        glVertex2f(partXEnd, h);
+        glTexCoord2f(partXStart / (float) width, 1);
+        glVertex2f(partXStart, h);
+        glTexCoord2f(partXStart / (float) width, h / height);
+        glVertex2f(partXStart, height);
+        glEnd();
+    }
+
 
     @Override
     public void renderPartMirrored(int partXStart, int partXEnd) {

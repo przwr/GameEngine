@@ -10,7 +10,6 @@ import collision.Figure;
 import engine.Main;
 import engine.lights.Light;
 import engine.utilities.Drawer;
-import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.PointContainer;
 import game.Settings;
@@ -615,10 +614,10 @@ public abstract class Map {
         if (object instanceof Entity && object.getAppearance() != null && object.canBeCovered()) {
             for (GameObject tile : foregroundTiles) {
                 if (tile.getDepth() > object.getDepth()
-                        && (tile.getX() / tileSize == object.getX() / tileSize || tile.getX() / tileSize == Methods.roundDouble(object.getX() / tileSize))
-                        && (tile.getY() / tileSize == (object.getY() + (object.getCollision().getHeight() - object.getAppearance().getActualHeight()) / 2)
-                        / tileSize || tile.getY() / tileSize == Methods.roundDouble((object.getY() + object.getCollision().getHeightHalf() - object
-                        .getAppearance().getActualHeight() / 2) / tileSize))) {
+                        && (tile.getX() + tileSize > object.getX() - object.getAppearance().getActualWidth()
+                        && tile.getX() < object.getX() + object.getAppearance().getActualWidth())
+                        && (tile.getY() + tileSize > object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight()
+                        && tile.getY() < object.getY() + object.getCollision().getHeightHalf())) {
                     return true;
                 }
             }
@@ -626,8 +625,8 @@ public abstract class Map {
                 if (other != object) {
                     if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
                             && object.getCollision() != null && other.getDepth() > object.getDepth()
-                            && object.getX() - object.getAppearance().getActualHeight() / 2 < other.getXSpriteEnd(true)
-                            && object.getX() + object.getAppearance().getActualHeight() / 2 > other.getXSpriteBegin(true)
+                            && object.getX() - object.getAppearance().getActualWidth() / 2 < other.getXSpriteEnd(true)
+                            && object.getX() + object.getAppearance().getActualWidth() / 2 > other.getXSpriteBegin(true)
                             && object.getY() + object.getCollision().getHeightHalf() - object.getAppearance().getActualHeight() < other.getYSpriteEnd(true)
                             && object.getY() + object.getCollision().getHeightHalf() > other.getYSpriteBegin(true)) {
                         return true;

@@ -337,20 +337,20 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
 
-    public int getYSpriteBegin() {
-        return owner.getYSpriteBegin();
+    public int getYSpriteBegin(boolean... forCover) {
+        return owner.getYSpriteBegin(forCover);
     }
 
-    public int getYSpriteEnd() {
-        return owner.getYSpriteEnd();
+    public int getYSpriteEnd(boolean... forCover) {
+        return owner.getYSpriteEnd(forCover);
     }
 
-    public int getXSpriteBegin() {
-        return owner.getXSpriteBegin();
+    public int getXSpriteBegin(boolean... forCover) {
+        return owner.getXSpriteBegin(forCover);
     }
 
-    public int getXSpriteEnd() {
-        return owner.getXSpriteEnd();
+    public int getXSpriteEnd(boolean... forCover) {
+        return owner.getXSpriteEnd(forCover);
     }
 
     public int getX(int x) {
