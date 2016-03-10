@@ -112,6 +112,7 @@ public class Blazag extends Mob {
                     if (!closeEnemies.isEmpty() || map.getDarkness() <= current_sleep_value || order.type != -1) {
                         state = idle;
                         awake = true;
+                        letGo = false;
                     }
                     brake(2);
                 }
@@ -162,8 +163,8 @@ public class Blazag extends Mob {
                                     for (Agro ag : getAgro()) {
                                         ag.clearHurtedByOwner();
                                     }
+                                    letGoDelay.start();
                                 }
-                                letGoDelay.start();
                             }
                             setEnemyToAttack();
                             int distance = target != null ? Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY()) : sightRange2;
@@ -278,6 +279,7 @@ public class Blazag extends Mob {
                         if (seconds > max) {
                             seconds = 0;
                             max = random.next(4);
+                            letGo = false;
                         }
                         rest.start();
                     }
@@ -421,12 +423,13 @@ public class Blazag extends Mob {
                         brake(2);
                         setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
                         jumpReady = true;
-                        jumpAttackAnimation = true;
                         if (distance <= sightRange2 / 9) {
+                            jumpAttackAnimation = true;
                             state = jumpAttack;
                             jumpDelay.start();
                             attackCount += 2;
                         } else {
+                            jumpAnimation = true;
                             state = jump;
                             jumpDelay.start();
                         }
@@ -499,10 +502,8 @@ public class Blazag extends Mob {
                                                             setDirection((int) Methods.pointAngleCounterClockwise(x, y, target.getX(), target.getY()));
                                                             jumpReady = true;
                                                             jumpAttackAnimation = true;
-
                                                             attackCount++;
                                                             state = jumpAttack;
-                                                            jumpAnimation = true;
                                                             jumpDelay.start();
                                                             jumpRestDelay.start();
                                                         } else {
@@ -517,7 +518,6 @@ public class Blazag extends Mob {
                                                             jumpAttackAnimation = true;
                                                             attackCount++;
                                                             state = jumpAttack;
-                                                            jumpAttackAnimation = true;
                                                             jumpDelay.start();
                                                             jumpRestDelay.start();
                                                         } else {
@@ -644,8 +644,9 @@ public class Blazag extends Mob {
     private void letGo() {
         state = wander;
         letGo = true;
+        target = null;
         seconds = 0;
-        max = 15;
+        max = 5;
         chasing = false;
         destination.set(spawnPosition);
         brake(2);

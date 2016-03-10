@@ -198,19 +198,25 @@ public class Renderer {
     public static void initializeVariables() {
         frame = new RegularFrameBufferObject(displayWidth, displayHeight);
         borders[0] = () -> {
-            glBegin(GL_QUADS);
+            glBegin(GL_TRIANGLES);
             glVertex2f(0, halfDisplayHeight - 1);
             glVertex2f(0, halfDisplayHeight + 1);
             glVertex2f(displayWidth, halfDisplayHeight + 1);
+
+            glVertex2f(displayWidth, halfDisplayHeight + 1);
             glVertex2f(displayWidth, halfDisplayHeight - 1);
+            glVertex2f(0, halfDisplayHeight - 1);
             glEnd();
         };
         borders[1] = () -> {
-            glBegin(GL_QUADS);
+            glBegin(GL_TRIANGLES);
             glVertex2f(halfDisplayWidth - 1, 0);
             glVertex2f(halfDisplayWidth - 1, displayHeight);
             glVertex2f(halfDisplayWidth + 1, displayHeight);
+
+            glVertex2f(halfDisplayWidth + 1, displayHeight);
             glVertex2f(halfDisplayWidth + 1, 0);
+            glVertex2f(halfDisplayWidth - 1, 0);
             glEnd();
         };
         initializeBorders();
@@ -218,45 +224,60 @@ public class Renderer {
 
     private static void initializeBorders() {
         borders[2] = () -> {
-            glBegin(GL_QUADS);
+            glBegin(GL_TRIANGLES);
             glVertex2f(0, halfDisplayHeight - 1);
             glVertex2f(0, halfDisplayHeight + 1);
             glVertex2f(displayWidth, halfDisplayHeight + 1);
+
+            glVertex2f(displayWidth, halfDisplayHeight + 1);
             glVertex2f(displayWidth, halfDisplayHeight - 1);
-            glEnd();
-            glBegin(GL_QUADS);
+            glVertex2f(0, halfDisplayHeight - 1);
+
             glVertex2f(halfDisplayWidth - 1, halfDisplayHeight);
             glVertex2f(halfDisplayWidth - 1, displayHeight);
             glVertex2f(halfDisplayWidth + 1, displayHeight);
+
+            glVertex2f(halfDisplayWidth + 1, displayHeight);
             glVertex2f(halfDisplayWidth + 1, halfDisplayHeight);
+            glVertex2f(halfDisplayWidth - 1, halfDisplayHeight);
             glEnd();
         };
         borders[3] = () -> {
-            glBegin(GL_QUADS);
+            glBegin(GL_TRIANGLES);
             glVertex2f(halfDisplayWidth, halfDisplayHeight - 1);
             glVertex2f(halfDisplayWidth, halfDisplayHeight + 1);
             glVertex2f(displayWidth, halfDisplayHeight + 1);
+
+            glVertex2f(displayWidth, halfDisplayHeight + 1);
             glVertex2f(displayWidth, halfDisplayHeight - 1);
-            glEnd();
-            glBegin(GL_QUADS);
+            glVertex2f(halfDisplayWidth, halfDisplayHeight - 1);
+
             glVertex2f(halfDisplayWidth - 1, 0);
             glVertex2f(halfDisplayWidth - 1, displayHeight);
             glVertex2f(halfDisplayWidth + 1, displayHeight);
+
+            glVertex2f(halfDisplayWidth + 1, displayHeight);
             glVertex2f(halfDisplayWidth + 1, 0);
+            glVertex2f(halfDisplayWidth - 1, 0);
             glEnd();
         };
         borders[4] = () -> {
-            glBegin(GL_QUADS);
+            glBegin(GL_TRIANGLES);
             glVertex2f(0, halfDisplayHeight - 1);
             glVertex2f(0, halfDisplayHeight + 1);
             glVertex2f(displayWidth, halfDisplayHeight + 1);
+
+            glVertex2f(displayWidth, halfDisplayHeight + 1);
             glVertex2f(displayWidth, halfDisplayHeight - 1);
-            glEnd();
-            glBegin(GL_QUADS);
+            glVertex2f(0, halfDisplayHeight - 1);
+
             glVertex2f(halfDisplayWidth - 1, 0);
             glVertex2f(halfDisplayWidth - 1, displayHeight);
             glVertex2f(halfDisplayWidth + 1, displayHeight);
+
+            glVertex2f(halfDisplayWidth + 1, displayHeight);
             glVertex2f(halfDisplayWidth + 1, 0);
+            glVertex2f(halfDisplayWidth - 1, 0);
             glEnd();
         };
 

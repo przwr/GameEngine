@@ -42,6 +42,8 @@ public class ShadowRenderer {
     private static final Polygon polygon = new Polygon();
     private static final ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
     private static final Point casting = new Point();
+    static long sum = 0;
+    static int count = 0;
     private static boolean checked;
     private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightYEnd, lightYStart, lightXEnd, lightXStart, centerX, centerY,
             lightXCentralShifted, lightYCentralShifted, shadow0X, shadow0Y, shadow1X, shadow1Y, shadow2X, shadow2Y, shadow3X, shadow3Y;
@@ -63,25 +65,22 @@ public class ShadowRenderer {
         }
     }
 
-//    static long sum = 0;
-//    static int count = 0;
-
     public static void preRenderLight(Map map, Light light) {
-//        long start = System.nanoTime();
+        long start = System.nanoTime();
         prepareToFindShades(light);
         findShades(light, map);
         prepareToPreRender(light);
         calculateShadows(light);
         renderShadows(light);
         endPreRender(light);
-//        long end = System.nanoTime();
-//        sum += (end - start);
-//        count++;
-//        if (count == 200) {
+        long end = System.nanoTime();
+        sum += (end - start);
+        count++;
+        if (count == 200) {
 //            System.out.println("Time: " + (sum / 200000f));
-//            count = 0;
-//            sum = 0;
-//        }
+            count = 0;
+            sum = 0;
+        }
     }
 
     private static void prepareToFindShades(Light light) {

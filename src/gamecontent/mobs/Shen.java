@@ -325,10 +325,12 @@ public class Shen extends Mob {
 
     private void alignment() {
         if (!closeFriends.isEmpty()) {
-            closeFriends.stream().filter(mob -> mob.isLeader()).forEach(mob -> {
-                xSpeed += mob.getXSpeed() / 2;
-                ySpeed += mob.getYSpeed() / 2;
-            });
+            for (Mob mob : closeFriends) {
+                if (mob.isLeader()) {
+                    xSpeed += mob.getXSpeed() / 2;
+                    ySpeed += mob.getYSpeed() / 2;
+                }
+            }
         }
     }
 

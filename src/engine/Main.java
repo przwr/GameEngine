@@ -16,6 +16,7 @@ import game.Game;
 import game.Settings;
 import game.logic.navmeshpathfinding.Window;
 import game.place.Console;
+import game.place.map.Area;
 import gamecontent.MyGame;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
@@ -38,7 +39,6 @@ import java.util.logging.Logger;
 import static engine.systemcommunication.IO.setSettingsFromFile;
 import static game.Settings.calculateScale;
 import static game.Settings.players;
-import game.place.map.Area;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
@@ -184,6 +184,8 @@ public class Main {
             glEnable(GL_MULTISAMPLE);
             glEnable(GL_BLEND);
             glEnable(GL_SCISSOR_TEST);
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glMatrixMode(GL_PROJECTION);
             glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
@@ -268,7 +270,7 @@ public class Main {
         if (key.keyPressed(Keyboard.KEY_F3)) {
             console.printMessage("You've just clicked the F3 button. Why did you do that?");
         }
-        if (key.keyPressed(Keyboard.KEY_F3)) { 
+        if (key.keyPressed(Keyboard.KEY_F3)) {
             SHOW_AREAS = !SHOW_AREAS;
             console.printMessage("SHOW/HIDE AREAS");
         }
@@ -334,8 +336,8 @@ public class Main {
         renderMessageIfNeeded();
         resolveGamma();
         lastFrame = Display.isActive();
-        Display.update();
         Display.sync(Settings.framesLimit);
+        Display.update();
     }
 
     private static void renderMessageIfNeeded() {

@@ -400,13 +400,13 @@ public class MyPlayer extends Player {
                 appearance.render();
             }
             glPopMatrix();
-            appearance.updateFrame();
-            appearance.updateTexture(this);
         }
     }
 
     @Override
     public void update() {
+        appearance.updateFrame();
+        appearance.updateTexture(this);
         if (((ClothedAppearance) appearance).isUpToDate()) {
             if (warp != null) {
                 warp.warp(this);

@@ -91,13 +91,18 @@ public abstract class FrameBufferObject implements Appearance {
 
     public void render() {
         bindCheck();
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);
-        glVertex2f(0, 0);
-        glTexCoord2f(1, 1);
-        glVertex2f(width, 0);
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, height);
         glTexCoord2f(1, 0);
         glVertex2f(width, height);
+        glTexCoord2f(1, 1);
+        glVertex2f(width, 0);
+
+        glTexCoord2f(1, 1);
+        glVertex2f(width, 0);
+        glTexCoord2f(0, 1);
+        glVertex2f(0, 0);
         glTexCoord2f(0, 0);
         glVertex2f(0, height);
         glEnd();
@@ -107,13 +112,18 @@ public abstract class FrameBufferObject implements Appearance {
                                  float xTEnd, float yTEnd) {
         glPushMatrix();
         bindCheck();
-        glBegin(GL_QUADS);
-        glTexCoord2f(xTStart, yTEnd);
-        glVertex2f(xStart * displayWidth, yStart * displayHeight);
-        glTexCoord2f(xTEnd, yTEnd);
-        glVertex2f(xEnd * displayWidth, yStart * displayHeight);
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(xTStart, yTStart);
+        glVertex2f(xStart * displayWidth, yEnd * displayHeight);
         glTexCoord2f(xTEnd, yTStart);
         glVertex2f(xEnd * displayWidth, yEnd * displayHeight);
+        glTexCoord2f(xTEnd, yTEnd);
+        glVertex2f(xEnd * displayWidth, yStart * displayHeight);
+
+        glTexCoord2f(xTEnd, yTEnd);
+        glVertex2f(xEnd * displayWidth, yStart * displayHeight);
+        glTexCoord2f(xTStart, yTEnd);
+        glVertex2f(xStart * displayWidth, yStart * displayHeight);
         glTexCoord2f(xTStart, yTStart);
         glVertex2f(xStart * displayWidth, yEnd * displayHeight);
         glEnd();
@@ -123,13 +133,18 @@ public abstract class FrameBufferObject implements Appearance {
     public void renderPiece(int xStart, int yStart, float xBeg, float yBeg, float xEnd, float yEnd) {
         bindCheck();
         glTranslatef(xStart, yStart, 0);
-        glBegin(GL_QUADS);
-        glTexCoord2f(xBeg / width, yBeg / height);
-        glVertex2f(xBeg, yEnd);
-        glTexCoord2f(xBeg / width, yEnd / height);
-        glVertex2f(xBeg, yBeg);
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(xEnd / width, yBeg / height);
+        glVertex2f(xEnd, yEnd);
         glTexCoord2f(xEnd / width, yEnd / height);
         glVertex2f(xEnd, yBeg);
+        glTexCoord2f(xBeg / width, yEnd / height);
+        glVertex2f(xBeg, yBeg);
+
+        glTexCoord2f(xBeg / width, yEnd / height);
+        glVertex2f(xBeg, yBeg);
+        glTexCoord2f(xBeg / width, yBeg / height);
+        glVertex2f(xBeg, yEnd);
         glTexCoord2f(xEnd / width, yBeg / height);
         glVertex2f(xEnd, yEnd);
         glEnd();
@@ -163,13 +178,18 @@ public abstract class FrameBufferObject implements Appearance {
     @Override
     public void renderPart(int partXStart, int partXEnd) {
         bindCheck();
-        glBegin(GL_QUADS);
-        glTexCoord2f(partXStart / (float) width, 0);
-        glVertex2f(partXStart, height);
-        glTexCoord2f(partXStart / (float) width, 1);
-        glVertex2f(partXStart, 0);
+        glBegin(GL_TRIANGLES);
+        glTexCoord2f(partXEnd / (float) width, 0);
+        glVertex2f(partXEnd, height);
         glTexCoord2f(partXEnd / (float) width, 1);
         glVertex2f(partXEnd, 0);
+        glTexCoord2f(partXStart / (float) width, 1);
+        glVertex2f(partXStart, 0);
+
+        glTexCoord2f(partXStart / (float) width, 1);
+        glVertex2f(partXStart, 0);
+        glTexCoord2f(partXStart / (float) width, 0);
+        glVertex2f(partXStart, height);
         glTexCoord2f(partXEnd / (float) width, 0);
         glVertex2f(partXEnd, height);
         glEnd();

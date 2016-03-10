@@ -108,15 +108,20 @@ public class SpriteSheet extends Sprite {
     public void render() {  //Rysuje CAŁY spriteSheet
         bindCheck();
         glTranslatef(xStart, yStart, 0);
-        glBegin(GL_QUADS);
+        glBegin(GL_TRIANGLES);
         glTexCoord2f(0, 0);
         glVertex2f(0, 0);
         glTexCoord2f(0, 1);
         glVertex2f(0, heightWhole);
         glTexCoord2f(1, 1);
         glVertex2f(widthWhole, heightWhole);
+
+        glTexCoord2f(1, 1);
+        glVertex2f(widthWhole, heightWhole);
         glTexCoord2f(1, 0);
         glVertex2f(widthWhole, 0);
+        glTexCoord2f(0, 0);
+        glVertex2f(0, 0);
         glEnd();
     }
 
@@ -183,17 +188,28 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderPiecePart(int id, int xStart, int xEnd) {
+
         id = getFramesPosition(id);
         int x = (int) (id % xTiles);
         int y = (int) (id / xTiles);
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
             frame = (int) (x + y * xTiles);
+            if (xStart > xEnd) {
+                int temp = xStart;
+                xStart = xEnd;
+                xEnd = temp;
+            }
             renderSpritePiecePart((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }
 
     public void renderPiecePart(int x, int y, int xStart, int xEnd) {
         if (areValidCoordinates(x, y)) {
+            if (xStart > xEnd) {
+                int temp = xStart;
+                xStart = xEnd;
+                xEnd = temp;
+            }
             frame = (int) (x + y * xTiles);
             renderSpritePiecePart((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
@@ -220,8 +236,14 @@ public class SpriteSheet extends Sprite {
         id = getFramesPosition(id);
         int x = (int) (id % xTiles);
         int y = (int) (id / xTiles);
+
         if (isValidPiece(id) && areValidCoordinates(x, y)) {
             frame = id;
+            if (xStart > xEnd) {
+                int temp = xStart;
+                xStart = xEnd;
+                xEnd = temp;
+            }
             renderSpritePiecePartMirrored((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }
@@ -229,6 +251,11 @@ public class SpriteSheet extends Sprite {
     public void renderPiecePartMirrored(int x, int y, int xStart, int xEnd) {
         if (areValidCoordinates(x, y)) {
             frame = (int) (x + y * xTiles);
+            if (xStart > xEnd) {
+                int temp = xStart;
+                xStart = xEnd;
+                xEnd = temp;
+            }
             renderSpritePiecePartMirrored((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
         }
     }

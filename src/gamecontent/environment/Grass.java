@@ -21,12 +21,12 @@ import static org.lwjgl.opengl.GL11.*;
 public class Grass extends GameObject {
 
     public static RandomGenerator random;
+    private final Color color = new Color(0x28A705);
     int distance = Integer.MAX_VALUE, factor, xBladesCount, yBladesCount, bladeWidth, bladeSpacing, bladeHeight, bladeHeightHalf, tempX, tempY,
             xCurrentDistance, yCurrentDistance, xRadius, yRadius;
     PointedValue object = new PointedValue();
     PointedValue[] blades;
     boolean masking;
-    private final Color color = new Color(0x28A705);
 
     {
         random = random == null ? RandomGenerator.create() : random;
@@ -124,22 +124,29 @@ public class Grass extends GameObject {
             Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
             Drawer.returnToCentralPoint();
         }
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_TRIANGLES);
         for (int i = 0; i < blades.length; i += 3) {
             calculateFactor(blades[i].getX(), blades[i + 1].getY());
             if (factor == 0) {
-                drawTriangle(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY(), blades[i].getValue());
+                drawTriangle(blades[i].getX(), blades[i].getY(),
+                        blades[i + 1].getX(), blades[i + 1].getY(),
+                        blades[i + 2].getX(), blades[i + 2].getY(),
+                        blades[i].getValue());
             } else {
                 tempX = (blades[i].getX() + factor + (blades[i + 1].getX() + blades[i + 2].getX())) / 3;
                 tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
                 drawTriangle(tempX, tempY, blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY(), blades[i].getValue());
                 Drawer.setColorBlended(color.r, color.g + ((float) blades[i].getValue() / 256), color.b, color.a);
                 if (factor > 0) {
-                    Drawer.drawTriangle(blades[i].getX() + factor, blades[i].getY(), tempX, tempY, blades[i + 2].getX(), blades[i + 2].getY());
+                    Drawer.drawTriangleInRow(blades[i].getX() + factor, blades[i].getY(), tempX, tempY, blades[i + 2].getX(), blades[i + 2].getY());
                 } else {
-                    Drawer.drawTriangle(blades[i].getX() + factor, blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), tempX, tempY);
+                    Drawer.drawTriangleInRow(blades[i].getX() + factor, blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), tempX, tempY);
                 }
             }
         }
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
         Drawer.refreshColor();
         glPopMatrix();
     }
@@ -152,24 +159,25 @@ public class Grass extends GameObject {
             Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
             Drawer.returnToCentralPoint();
         }
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_TRIANGLES);
         for (int i = 0; i < blades.length; i += 3) {
             tempX = (blades[i].getX() + (blades[i + 1].getX() + blades[i + 2].getX())) / 3;
             tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
-            drawTriangle(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY(), blades[i].getValue());
+            drawTriangle(blades[i].getX(), blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), blades[i + 2].getX(), blades[i + 2].getY(),
+                    blades[i].getValue());
         }
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
         Drawer.refreshColor();
     }
 
     private void drawTriangle(int xA, int yA, int xB, int yB, int xC, int yC, int colorValue) {
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLES);
+        Drawer.setColorBlended(color);
+        glVertex2f(xC, yC);
+        glVertex2f(xB, yB);
         Drawer.setColorBlended(color.r, color.g + ((float) colorValue / 256), color.b, color.a);
         glVertex2f(xA, yA);
-        Drawer.setColorBlended(color);
-        glVertex2f(xB, yB);
-        glVertex2f(xC, yC);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
     }
 
     private void calculateFactor(int x, int y) {

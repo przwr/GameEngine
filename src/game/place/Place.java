@@ -175,6 +175,7 @@ public abstract class Place extends ScreenPlace {
         };
     }
 
+
     protected Place(Game game, int tileSize) {
         super(game);
         Place.tileSize = tileSize;

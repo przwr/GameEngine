@@ -235,13 +235,14 @@ public class MyPlace extends Place {
 //                AnalyzerSettings.update();
 //            }
 //        }
-//        if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
-//            if (delay.isOver()) {
-//                delay.start();
-//                dayCycle.addMinutes(5);
-//            }
-//        }
-//        if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
+            if (delay.isOver()) {
+                delay.start();
+                dayCycle.addMinutes(5);
+            }
+        }
+//
+// if (Keyboard.isKeyDown(Keyboard.KEY_B)) {
 //            if (delay.isOver()) {
 //                delay.start();
 //                dayCycle.stopTime();

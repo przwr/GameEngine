@@ -9,8 +9,6 @@ import collision.Figure;
 import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.place.Place;
-import gamecontent.MyController;
-import gamecontent.MyPlayer;
 import gamecontent.SpawnPoint;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
@@ -27,9 +25,7 @@ import static org.lwjgl.opengl.GL11.*;
 public abstract class Mob extends Entity {
 
     public short mobID;
-    private SpawnPoint spawner;
     protected boolean leader;
-    private boolean targetable = true;
     protected ActionState state;
     protected Delay letGoDelay = Delay.createInSeconds(30);
     protected int pastDirections[] = new int[2];
@@ -37,6 +33,8 @@ public abstract class Mob extends Entity {
     protected ArrayList<Mob> closeFriends = new ArrayList<>();
     protected ArrayList<Agro> agro = new ArrayList<>();
     protected ArrayList<String> neutral = new ArrayList<>();
+    private SpawnPoint spawner;
+    private boolean targetable = true;
 
     public Mob() {
     }
@@ -397,7 +395,7 @@ public abstract class Mob extends Entity {
             agro.addHurtedByOwner(hurt);
             getAgro().add(agro);
         }
-        if (hurt > 5) {
+        if (hurt > 2) {
             letGoDelay.start();
         }
     }
