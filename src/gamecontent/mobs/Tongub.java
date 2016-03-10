@@ -180,7 +180,7 @@ public class Tongub extends Mob {
                             attack_delay.start();
                             attacking = true;
                             side = false;
-                            if (Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY())
+                            if (target != null && Methods.pointDistanceSimple2(getX(), getY(), target.getX(), target.getY())
                                     <= Methods.pointDistanceSimple2(getX(), getY(), getX() + collision.getWidthHalf() + target.getCollision().getWidthHalf(),
                                     getY() + collision.getHeightHalf() + target.getCollision().getHeightHalf())) {
                                 getAttackActivator(ATTACK_NORMAL).setActivated(true);
