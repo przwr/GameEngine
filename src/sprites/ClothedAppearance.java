@@ -5,10 +5,10 @@ import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import game.gameobject.entities.Player;
 import game.place.Place;
-import game.place.fbo.FrameBufferObject;
-import game.place.fbo.RegularFrameBufferObject;
 import gamecontent.equipment.Cloth;
 import org.lwjgl.opengl.Display;
+import sprites.fbo.FrameBufferObject;
+import sprites.fbo.RegularFrameBufferObject;
 
 import java.io.BufferedReader;
 import java.io.File;

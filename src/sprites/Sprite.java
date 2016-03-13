@@ -195,21 +195,36 @@ public class Sprite implements Appearance {
 
     public void renderSpritePiece(float xBegin, float xEnd, float yBegin, float yEnd) {
         if (bindCheck()) {
-            moveToStart();
+//            moveToStart();
+//            glBegin(GL_TRIANGLES);
+//            glTexCoord2f(xBegin, yBegin);
+//            glVertex2f(0, 0);
+//            glTexCoord2f(xBegin, yEnd);
+//            glVertex2f(0, height);
+//            glTexCoord2f(xEnd, yEnd);
+//            glVertex2f(width, height);
+//
+//            glTexCoord2f(xBegin, yBegin);
+//            glVertex2f(0, 0);
+//            glTexCoord2f(xEnd, yEnd);
+//            glVertex2f(width, height);
+//            glTexCoord2f(xEnd, yBegin);
+//            glVertex2f(width, 0);
+//            glEnd();
             glBegin(GL_TRIANGLES);
             glTexCoord2f(xBegin, yBegin);
-            glVertex2f(0, 0);
+            glVertex2f(xStart, yStart);
             glTexCoord2f(xBegin, yEnd);
-            glVertex2f(0, height);
+            glVertex2f(xStart, yStart + height);
             glTexCoord2f(xEnd, yEnd);
-            glVertex2f(width, height);
+            glVertex2f(xStart + width, yStart + height);
 
             glTexCoord2f(xBegin, yBegin);
-            glVertex2f(0, 0);
+            glVertex2f(xStart, yStart);
             glTexCoord2f(xEnd, yEnd);
-            glVertex2f(width, height);
+            glVertex2f(xStart + width, yStart + height);
             glTexCoord2f(xEnd, yBegin);
-            glVertex2f(width, 0);
+            glVertex2f(xStart + width, yStart);
             glEnd();
         }
     }

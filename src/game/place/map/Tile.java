@@ -7,11 +7,11 @@ import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.place.Place;
-import game.place.fbo.FrameBufferObject;
-import game.place.fbo.RegularFrameBufferObject;
 import org.lwjgl.opengl.Display;
 import sprites.Appearance;
 import sprites.SpriteSheet;
+import sprites.fbo.FrameBufferObject;
+import sprites.fbo.RegularFrameBufferObject;
 
 import java.util.ArrayList;
 

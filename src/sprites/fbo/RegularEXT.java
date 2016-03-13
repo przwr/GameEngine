@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place.fbo;
+package sprites.fbo;
 
 import static org.lwjgl.BufferUtils.createByteBuffer;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * @author Domi
  */
-public class MultiSampleEXT implements FrameBufferType {
+public class RegularEXT implements FrameBufferType {
 
     @Override
     public void activate(int frameBufferObject) {
@@ -26,7 +26,6 @@ public class MultiSampleEXT implements FrameBufferType {
 
     @Override
     public void deactivate(int frameBufferObjectMultiSample, int frameBufferObject, int width, int height) {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
     @Override

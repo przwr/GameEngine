@@ -12,12 +12,12 @@ import game.Settings;
 import game.gameobject.entities.Player;
 import game.place.Place;
 import game.place.cameras.Camera;
-import game.place.fbo.FrameBufferObject;
-import game.place.fbo.RegularFrameBufferObject;
 import game.place.map.Map;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
+import sprites.fbo.FrameBufferObject;
+import sprites.fbo.RegularFrameBufferObject;
 
 import static org.lwjgl.opengl.GL11.*;
 

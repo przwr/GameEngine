@@ -10,13 +10,13 @@ import engine.utilities.Methods;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.place.cameras.Camera;
-import game.place.fbo.FrameBufferObject;
-import game.place.fbo.MultiSampleFrameBufferObject;
-import game.place.fbo.RegularFrameBufferObject;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.SpriteSheet;
+import sprites.fbo.FrameBufferObject;
+import sprites.fbo.MultiSampleFrameBufferObject;
+import sprites.fbo.RegularFrameBufferObject;
 
 import static org.lwjgl.opengl.GL11.*;
 
