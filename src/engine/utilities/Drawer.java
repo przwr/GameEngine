@@ -6,7 +6,6 @@
 package engine.utilities;
 
 import game.ScreenPlace;
-import game.place.fbo.FrameBufferObject;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
@@ -14,6 +13,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Appearance;
+import sprites.fbo.FrameBufferObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -172,28 +172,26 @@ public class Drawer {
     }
 
     public static void drawRectangle(int xStart, int yStart, int width, int height) {
-        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLES);
-        glVertex2f(0, 0);
-        glVertex2f(0, height);
-        glVertex2f(width, height);
+        glVertex2f(xStart, yStart);
+        glVertex2f(xStart, yStart + height);
+        glVertex2f(xStart + width, yStart + height);
 
-        glVertex2f(width, height);
-        glVertex2f(width, 0);
-        glVertex2f(0, 0);
+        glVertex2f(xStart + width, yStart + height);
+        glVertex2f(xStart + width, yStart);
+        glVertex2f(xStart, yStart);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
 
     public static void drawRectangleBorder(int xStart, int yStart, int width, int height) {
-        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_LINE_LOOP);
-        glVertex2f(0, 0);
-        glVertex2f(0, height);
-        glVertex2f(width, height);
-        glVertex2f(width, 0);
+        glVertex2f(xStart, yStart);
+        glVertex2f(xStart, yStart + height);
+        glVertex2f(xStart + width, yStart + height);
+        glVertex2f(xStart + width, yStart);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
@@ -235,18 +233,17 @@ public class Drawer {
     }
 
     public static void drawEllipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {  //Zbyt mała precyzja tworzy figury foremne
-        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLE_FAN);
-        glVertex2f(0, 0);
+        glVertex2f(xStart, yStart);
         int step = 360 / precision;
         if (step <= 0) {
             step = 1;
         }
         for (int i = 360; i > 0; i -= step) {
-            glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
+            glVertex2f(xStart + (float) Methods.xRadius(i, xRadius), yStart + (float) Methods.yRadius(i, yRadius));
         }
-        glVertex2f(xRadius, 0);
+        glVertex2f(xStart + xRadius, yStart);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
@@ -260,16 +257,15 @@ public class Drawer {
         if (endAngle < startAngle) {
             endAngle += 360;
         }
-        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLE_FAN);
-        glVertex2f(0, 0);
+        glVertex2f(xStart, yStart);
         int step = (endAngle - startAngle) / precision;
         if (step <= 0) {
             step = 1;
         }
         for (int i = startAngle; i <= endAngle; i += step) {
-            glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
+            glVertex2f(xStart + (float) Methods.xRadius(i, xRadius), yStart + (float) Methods.yRadius(i, yRadius));
         }
         glEnd();
         glEnable(GL_TEXTURE_2D);
@@ -281,19 +277,18 @@ public class Drawer {
             startAngle = endAngle;
             endAngle = tmp;
         }
-        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
-        glBegin(GL_QUAD_STRIP);
+        glBegin(GL_TRIANGLE_STRIP);
         int step = (endAngle - startAngle) / precision;
         if (step <= 0) {
             step = 1;
         }
         for (int i = startAngle; i < endAngle; i += step) {
-            glVertex2f((float) Methods.xRadius(i, xRadius), (float) Methods.yRadius(i, yRadius));
-            glVertex2f((float) Methods.xRadius(i, xRadius - width), (float) Methods.yRadius(i, yRadius - width));
+            glVertex2f(xStart + (float) Methods.xRadius(i, xRadius), yStart + (float) Methods.yRadius(i, yRadius));
+            glVertex2f(xStart + (float) Methods.xRadius(i, xRadius - width), yStart + (float) Methods.yRadius(i, yRadius - width));
         }
-        glVertex2f((float) Methods.xRadius(endAngle, xRadius), (float) Methods.yRadius(endAngle, yRadius));
-        glVertex2f((float) Methods.xRadius(endAngle, xRadius - width), (float) Methods.yRadius(endAngle, yRadius - width));
+        glVertex2f(xStart + (float) Methods.xRadius(endAngle, xRadius), yStart + (float) Methods.yRadius(endAngle, yRadius));
+        glVertex2f(xStart + (float) Methods.xRadius(endAngle, xRadius - width), yStart + (float) Methods.yRadius(endAngle, yRadius - width));
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
@@ -304,55 +299,74 @@ public class Drawer {
             startAngle = endAngle;
             endAngle = tmp;
         }
-        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
-        glBegin(GL_QUAD_STRIP);
+        glBegin(GL_TRIANGLE_STRIP);
         int step = (endAngle - startAngle) / precision;
         if (step < 1) {
             step = 1;
         }
         for (int i = startAngle; i < endAngle; i += step) {
-            glVertex2f((float) Methods.xRadius(i, radius), (float) Methods.yRadius(i, radius));
-            glVertex2f((float) Methods.xRadius(i, radius - width), (float) Methods.yRadius(i, radius - width));
+            glVertex2f(xStart + (float) Methods.xRadius(i, radius), yStart + (float) Methods.yRadius(i, radius));
+            glVertex2f(xStart + (float) Methods.xRadius(i, radius - width), yStart + (float) Methods.yRadius(i, radius - width));
         }
-        glVertex2f((float) Methods.xRadius(endAngle, radius), (float) Methods.yRadius(endAngle, radius));
-        glVertex2f((float) Methods.xRadius(endAngle, radius - width), (float) Methods.yRadius(endAngle, radius - width));
+        glVertex2f(xStart + (float) Methods.xRadius(endAngle, radius), yStart + (float) Methods.yRadius(endAngle, radius));
+        glVertex2f(xStart + (float) Methods.xRadius(endAngle, radius - width), yStart + (float) Methods.yRadius(endAngle, radius - width));
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
 
     public static void drawRing(int xStart, int yStart, int radius, int width, int precision) {
-        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
-        glBegin(GL_QUAD_STRIP);
+        glBegin(GL_TRIANGLE_STRIP);
         int step = 360 / precision;
         if (step < 1) {
             step = 1;
         }
         for (int i = 0; i < 360; i += step) {
-            glVertex2f((float) Methods.xRadius(i, radius), (float) Methods.yRadius(i, radius));
-            glVertex2f((float) Methods.xRadius(i, radius - width), (float) Methods.yRadius(i, radius - width));
+            glVertex2f(xStart + (float) Methods.xRadius(i, radius), yStart + (float) Methods.yRadius(i, radius));
+            glVertex2f(xStart + (float) Methods.xRadius(i, radius - width), yStart + (float) Methods.yRadius(i, radius - width));
         }
-        glVertex2f((float) Methods.xRadius(360, radius), (float) Methods.yRadius(360, radius));
-        glVertex2f((float) Methods.xRadius(360, radius - width), (float) Methods.yRadius(360, radius - width));
+        glVertex2f(xStart + (float) Methods.xRadius(360, radius), yStart + (float) Methods.yRadius(360, radius));
+        glVertex2f(xStart + (float) Methods.xRadius(360, radius - width), yStart + (float) Methods.yRadius(360, radius - width));
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }
 
+
+    public static float[] getRingVertices(int xStart, int yStart, int radius, int width, int precision) {
+        int step = 360 / precision;
+        if (step < 1) {
+            step = 1;
+        }
+        float[] vertices = new float[(360 / step) * 4 + 4 + (360 % step == 0 ? 0 : 4)];
+        int j = 0;
+        for (int i = 0; i < 360; i += step) {
+            vertices[j * 4] = xStart + (float) Methods.xRadius(i, radius);
+            vertices[j * 4 + 1] = yStart + (float) Methods.yRadius(i, radius);
+            vertices[j * 4 + 2] = xStart + (float) Methods.xRadius(i, radius - width);
+            vertices[j * 4 + 3] = yStart + (float) Methods.yRadius(i, radius - width);
+            j++;
+        }
+        vertices[j * 4] = xStart + (float) Methods.xRadius(360, radius);
+        vertices[j * 4 + 1] = yStart + (float) Methods.yRadius(360, radius);
+        vertices[j * 4 + 2] = xStart + (float) Methods.xRadius(360, radius - width);
+        vertices[j * 4 + 3] = yStart + (float) Methods.yRadius(360, radius - width);
+        return vertices;
+    }
+
     public static void drawLineWidth(int xStart, int yStart, int xDelta, int yDelta, int width) {
-        translate(xStart, yStart);
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLES);
         int angle = (int) Methods.pointAngleClockwise(xStart, yStart, xStart + xDelta, yStart + yDelta) + 90;
         int xWidth = (int) Methods.xRadius(angle, width / 2);
         int yWidth = (int) Methods.yRadius(angle, width / 2);
-        glVertex2f(xWidth, yWidth);
-        glVertex2f(-xWidth, -yWidth);
-        glVertex2f(xDelta - xWidth, yDelta - yWidth);
+        glVertex2f(xStart + xWidth, yStart + yWidth);
+        glVertex2f(xStart + -xWidth, yStart + -yWidth);
+        glVertex2f(xStart + xDelta - xWidth, yStart + yDelta - yWidth);
 
-        glVertex2f(xDelta - xWidth, yDelta - yWidth);
-        glVertex2f(xDelta + xWidth, yDelta + yWidth);
-        glVertex2f(xWidth, yWidth);
+        glVertex2f(xStart + xDelta - xWidth, yStart + yDelta - yWidth);
+        glVertex2f(xStart + xDelta + xWidth, yStart + yDelta + yWidth);
+        glVertex2f(xStart + xWidth, yStart + yWidth);
         glEnd();
         glEnable(GL_TEXTURE_2D);
     }

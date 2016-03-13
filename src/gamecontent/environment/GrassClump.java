@@ -6,12 +6,12 @@ import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.place.Place;
-import game.place.fbo.FrameBufferObject;
-import game.place.fbo.MultiSampleFrameBufferObject;
-import game.place.fbo.RegularFrameBufferObject;
 import game.place.map.Area;
 import gamedesigner.ObjectPlace;
 import org.lwjgl.opengl.Display;
+import sprites.fbo.FrameBufferObject;
+import sprites.fbo.MultiSampleFrameBufferObject;
+import sprites.fbo.RegularFrameBufferObject;
 
 import java.util.*;
 

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game.place.fbo;
+package sprites.fbo;
 
 import engine.utilities.Drawer;
 import game.gameobject.entities.Player;

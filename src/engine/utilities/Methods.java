@@ -14,6 +14,7 @@ import java.awt.geom.Line2D;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -87,7 +88,7 @@ public class Methods {
     public static int angleDifference(int angleA, int angleB) {
         return (angleA = angleB - angleA) > 180 ? angleA - 360 : (angleA < -180 ? angleA + 360 : angleA);
     }
-    
+
     public static int angleDifference8Directions(int angleA, int angleB) {
         return (angleA = angleB - angleA) > 4 ? angleA - 8 : (angleA < -4 ? angleA + 8 : angleA);
     }
@@ -616,6 +617,19 @@ public class Methods {
         System.out.println(print);
     }
 
+    public static float[] concatAll(float[] first, float[]... rest) {
+        int totalLength = first.length;
+        for (float[] array : rest) {
+            totalLength += array.length;
+        }
+        float[] result = Arrays.copyOf(first, totalLength);
+        int offset = first.length;
+        for (float[] array : rest) {
+            System.arraycopy(array, 0, result, offset, array.length);
+            offset += array.length;
+        }
+        return result;
+    }
 
     public static void gc() {
         Object obj = new Object();
