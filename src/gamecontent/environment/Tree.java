@@ -10,12 +10,12 @@ import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.place.Place;
-import game.place.fbo.FrameBufferObject;
-import game.place.fbo.MultiSampleFrameBufferObject;
-import game.place.fbo.RegularFrameBufferObject;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
+import sprites.fbo.FrameBufferObject;
+import sprites.fbo.MultiSampleFrameBufferObject;
+import sprites.fbo.RegularFrameBufferObject;
 
 import java.util.*;
 
@@ -469,7 +469,8 @@ public class Tree extends GameObject {
     }
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
-        if (Math.abs(points.get(i).getY() + y) < leafHeight - leaf.getWidth() - leaf.getHeight()
+        if (Math.abs(points.get(i).getY() + y) < leafHeight * 0.7f
+                && (points.get(i).getY() + y < 0 || points.get(i).getY() + y < leafHeight * 0.3)
                 && Math.abs(points.get(i).getX() + x) < fbo.getWidth() / 2 - leaf.getWidth() - leaf.getHeight()) {
             float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
             change -= Math.abs(points.get(i).getX() + x) / maxX / 4;

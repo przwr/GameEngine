@@ -10,6 +10,7 @@ import game.gameobject.entities.Player;
 import game.languages.LangENG;
 import game.languages.LangPL;
 import game.languages.Language;
+import game.text.FontBase;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.*;
@@ -19,10 +20,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static game.place.fbo.FrameBufferObject.*;
-import game.text.FontBase;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.glGetInteger;
+import static sprites.fbo.FrameBufferObject.*;
 
 /**
  * @author przemek
@@ -34,6 +34,7 @@ public class Settings {
     private static final int MIN_HEIGHT = 768;
     private static final int MAX_WIDTH = 1920;
     private static final int MAX_HEIGHT = 1200;
+    private static final int depth = Display.getDesktopDisplayMode().getBitsPerPixel();
     public static DisplayMode[] modesTemp;
     public static DisplayMode[] modes;
     public static int currentMode;
@@ -64,9 +65,8 @@ public class Settings {
     public static float defaultBrightness = 0f;
     public static float gameGamma = 1.5f;
     public static float gameBrightness = 0f;
-    private static final int depth = Display.getDesktopDisplayMode().getBitsPerPixel();
-    private static int modesCount;
     public static FontBase fonts;
+    private static int modesCount;
 
     public static void initialize() {
         modesCount = 0;

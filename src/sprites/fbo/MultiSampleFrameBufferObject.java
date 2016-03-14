@@ -1,4 +1,4 @@
-package game.place.fbo;
+package sprites.fbo;
 
 import game.Settings;
 import org.lwjgl.opengl.ARBFramebufferObject;

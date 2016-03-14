@@ -10,12 +10,12 @@ import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
 import game.place.Place;
-import game.place.fbo.FrameBufferObject;
-import game.place.fbo.MultiSampleFrameBufferObject;
-import game.place.fbo.RegularFrameBufferObject;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
+import sprites.fbo.FrameBufferObject;
+import sprites.fbo.MultiSampleFrameBufferObject;
+import sprites.fbo.RegularFrameBufferObject;
 
 import java.util.*;
 

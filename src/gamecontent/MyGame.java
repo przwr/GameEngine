@@ -19,7 +19,6 @@ import game.logic.maploader.MapLoaderModule;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
 import game.place.cameras.PlayersCamera;
-import game.place.fbo.FrameBufferObject;
 import game.place.map.Map;
 import game.text.FontHandler;
 import gamecontent.environment.Bush;
@@ -32,6 +31,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sounds.Sound;
+import sprites.fbo.FrameBufferObject;
 
 import java.io.File;
 import java.util.Iterator;
