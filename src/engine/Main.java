@@ -48,7 +48,7 @@ import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 public class Main {
 
     public static final boolean DEBUG = true;
-    public static final boolean LOG = true;
+    public static final boolean LOG = false;
     private static final Delay delay = Delay.createInMilliseconds(200, true);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
@@ -184,8 +184,8 @@ public class Main {
             glEnable(GL_MULTISAMPLE);
             glEnable(GL_BLEND);
             glEnable(GL_SCISSOR_TEST);
-            glEnable(GL_CULL_FACE);
-            glCullFace(GL_BACK);
+//            glEnable(GL_CULL_FACE);
+//            glCullFace(GL_BACK);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glMatrixMode(GL_PROJECTION);
             glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);

@@ -23,6 +23,7 @@ public class SpriteSheet extends Sprite {
     private float yTiles;
     private int frame;
     private PointedValue[] startingPoints;
+    private int tmpXStart, tmpYStart;
 
     private SpriteSheet(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale) {
         super(path, folder, width, height, xStart, yStart, spriteBase);
@@ -31,8 +32,7 @@ public class SpriteSheet extends Sprite {
         setTilesCount(scale);
     }
 
-    private SpriteSheet(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, PointedValue[]
-            startingPoints) {
+    private SpriteSheet(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, PointedValue[] startingPoints) {
         super(path, folder, width, height, xStart, yStart, spriteBase);
         this.startingPoints = startingPoints;
         isStartMoving = true;
@@ -45,14 +45,13 @@ public class SpriteSheet extends Sprite {
     }
 
     public static SpriteSheet createWithMovingStart(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase,
-                                                    PointedValue[] stPoints) {
+            PointedValue[] stPoints) {
         return new SpriteSheet(path, folder, width, height, xStart, yStart, spriteBase, false, stPoints);
     }
 
     public static SpriteSheet createSetScale(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
         return new SpriteSheet(path, folder, width, height, xStart, yStart, spriteBase, true);
     }
-
 
     public static Point[] getMergedDimensions(SpriteSheet... list) {
         int xB = Integer.MAX_VALUE, yB = Integer.MAX_VALUE,
@@ -93,13 +92,25 @@ public class SpriteSheet extends Sprite {
     @Override
     protected void moveToStart() {
         if (!isStartMoving) {
-            if (xStart != 0 && yStart != 0) {
-                Drawer.translate(xStart, yStart);
+            if (getXStart() != 0 && getYStart() != 0) {
+                Drawer.translate(getXStart(), getYStart());
             }
         } else {
             frame = Math.min(frame, startingPoints.length - 1);
             if (startingPoints[frame] != null) {
-                Drawer.translate(xStart + startingPoints[frame].getX(), yStart + startingPoints[frame].getY());
+                Drawer.translate(getXStart() + startingPoints[frame].getX(), getYStart() + startingPoints[frame].getY());
+            }
+        }
+    }
+
+    public void returnFromTranslation(int frame) {
+        if (!isStartMoving) {
+            if (getXStart() != 0 && getYStart() != 0) {
+                Drawer.translate(-getXStart(), -getYStart());
+            }
+        } else {
+            if (startingPoints[frame] != null) {
+                Drawer.translate(-getXStart() - startingPoints[frame].getX(), -getYStart() - startingPoints[frame].getY());
             }
         }
     }
@@ -107,39 +118,26 @@ public class SpriteSheet extends Sprite {
     @Override
     public void render() {  //Rysuje CAŁY spriteSheet
         bindCheck();
-        glTranslatef(xStart, yStart, 0);
         glBegin(GL_TRIANGLES);
         glTexCoord2f(0, 0);
-        glVertex2f(0, 0);
+        glVertex2f(xStart, yStart);
         glTexCoord2f(0, 1);
-        glVertex2f(0, heightWhole);
+        glVertex2f(xStart, yStart + heightWhole);
         glTexCoord2f(1, 1);
-        glVertex2f(widthWhole, heightWhole);
+        glVertex2f(xStart + widthWhole, yStart + heightWhole);
 
         glTexCoord2f(1, 1);
-        glVertex2f(widthWhole, heightWhole);
+        glVertex2f(xStart + widthWhole, yStart + heightWhole);
         glTexCoord2f(1, 0);
-        glVertex2f(widthWhole, 0);
+        glVertex2f(xStart + widthWhole, yStart);
         glTexCoord2f(0, 0);
-        glVertex2f(0, 0);
+        glVertex2f(xStart, yStart);
         glEnd();
     }
 
     @Override
     public int getCurrentFrameIndex() {
         return 0;
-    }
-
-    public void returnFromTranslation(int frame) {
-        if (!isStartMoving) {
-            if (xStart != 0 && yStart != 0) {
-                Drawer.translate(-xStart, -yStart);
-            }
-        } else {
-            if (startingPoints[frame] != null) {
-                Drawer.translate(-xStart - startingPoints[frame].getX(), -yStart - startingPoints[frame].getY());
-            }
-        }
     }
 
     private int getFramesPosition(int frame) {
@@ -278,6 +276,28 @@ public class SpriteSheet extends Sprite {
 
     public int getSize() {
         return (int) (xTiles * yTiles);
+    }
+
+    @Override
+    public int getXStart() {
+        if (isStartMoving) {
+            frame = Math.min(frame, startingPoints.length - 1);
+            if (startingPoints[frame] != null) {
+                return xStart + startingPoints[frame].getX();
+            }
+        }
+        return xStart;
+    }
+
+    @Override
+    public int getYStart() {
+        if (isStartMoving) {
+            frame = Math.min(frame, startingPoints.length - 1);
+            if (startingPoints[frame] != null) {
+                return yStart + startingPoints[frame].getY();
+            }
+        }
+        return yStart;
     }
 
     @Override

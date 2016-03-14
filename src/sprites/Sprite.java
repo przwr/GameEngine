@@ -18,8 +18,8 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Sprite implements Appearance {
 
-    final int xStart;
-    final int yStart;
+    protected final int xStart;
+    protected final int yStart;
     public boolean AA;
     public String path;
     float widthWhole;
@@ -73,21 +73,21 @@ public class Sprite implements Appearance {
     @Override
     public void render() {
         if (bindCheck()) {
-            moveToStart();
+//            moveToStart();
             glBegin(GL_TRIANGLES);
             glTexCoord2f(0, 0);
-            glVertex2f(0, 0);
+            glVertex2f(getXStart(), getYStart());
             glTexCoord2f(0, 1);
-            glVertex2f(0, height);
+            glVertex2f(getXStart(), getYStart() + height);
             glTexCoord2f(1, 1);
-            glVertex2f(width, height);
+            glVertex2f(getXStart() + width, getYStart() + height);
 
             glTexCoord2f(1, 1);
-            glVertex2f(width, height);
+            glVertex2f(getXStart() + width, getYStart() + height);
             glTexCoord2f(1, 0);
-            glVertex2f(width, 0);
+            glVertex2f(getXStart() + width, getYStart());
             glTexCoord2f(0, 0);
-            glVertex2f(0, 0);
+            glVertex2f(getXStart(), getYStart());
             glEnd();
         }
     }
@@ -97,47 +97,24 @@ public class Sprite implements Appearance {
             glTranslatef(width / 2, height / 2, 0);
             glRotatef(angle, 0f, 0f, 1f);
             glTranslatef(-width / 2, -height / 2, 0);
-            moveToStart();
             glBegin(GL_TRIANGLES);
             glTexCoord2f(0, 0);
-            glVertex2f(0, 0);
+            glVertex2f(getXStart(), getYStart());
             glTexCoord2f(0, 1);
-            glVertex2f(0, height);
+            glVertex2f(getXStart(), getYStart() + height);
             glTexCoord2f(1, 1);
-            glVertex2f(width, height);
+            glVertex2f(getXStart() + width, getYStart() + height);
 
             glTexCoord2f(1, 1);
-            glVertex2f(width, height);
+            glVertex2f(getXStart() + width, getYStart() + height);
             glTexCoord2f(1, 0);
-            glVertex2f(width, 0);
+            glVertex2f(getXStart() + width, getYStart());
             glTexCoord2f(0, 0);
-            glVertex2f(0, 0);
-            glEnd();
+            glVertex2f(getXStart(), getYStart());
             glEnd();
         }
     }
 
-    @Override
-    public void renderMirrored() {
-        if (bindCheck()) {
-            moveToStart();
-            glBegin(GL_TRIANGLES);
-            glTexCoord2f(1, 0);
-            glVertex2f(0, 0);
-            glTexCoord2f(0, 0);
-            glVertex2f(width, 0);
-            glTexCoord2f(0, 1);
-            glVertex2f(width, height);
-
-            glTexCoord2f(0, 1);
-            glVertex2f(width, height);
-            glTexCoord2f(1, 1);
-            glVertex2f(0, height);
-            glTexCoord2f(1, 0);
-            glVertex2f(0, 0);
-            glEnd();
-        }
-    }
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
@@ -166,33 +143,6 @@ public class Sprite implements Appearance {
         }
     }
 
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
-        if (bindCheck()) {
-            if (partXStart > partXEnd) {
-                int temp = partXStart;
-                partXStart = partXEnd;
-                partXEnd = temp;
-            }
-            moveToStart();
-            glBegin(GL_TRIANGLES);
-            glTexCoord2d(((double) partXEnd / (double) width), 0);
-            glVertex2f(partXStart, 0);
-            glTexCoord2d(((double) partXStart / (double) width), 0);
-            glVertex2f(partXEnd, 0);
-            glTexCoord2d(((double) partXStart / (double) width), 1);
-            glVertex2f(partXEnd, height);
-
-            glTexCoord2d(((double) partXStart / (double) width), 1);
-            glVertex2f(partXEnd, height);
-            glTexCoord2d(((double) partXEnd / (double) width), 1);
-            glVertex2f(partXStart, height);
-            glTexCoord2d(((double) partXEnd / (double) width), 0);
-            glVertex2f(partXStart, 0);
-            glEnd();
-        }
-    }
-
     public void renderSpritePiece(float xBegin, float xEnd, float yBegin, float yEnd) {
         if (bindCheck()) {
 //            moveToStart();
@@ -213,18 +163,18 @@ public class Sprite implements Appearance {
 //            glEnd();
             glBegin(GL_TRIANGLES);
             glTexCoord2f(xBegin, yBegin);
-            glVertex2f(xStart, yStart);
+            glVertex2f(getXStart(), getYStart());
             glTexCoord2f(xBegin, yEnd);
-            glVertex2f(xStart, yStart + height);
+            glVertex2f(getXStart(), getYStart() + height);
             glTexCoord2f(xEnd, yEnd);
-            glVertex2f(xStart + width, yStart + height);
+            glVertex2f(getXStart() + width, getYStart() + height);
 
             glTexCoord2f(xBegin, yBegin);
-            glVertex2f(xStart, yStart);
+            glVertex2f(getXStart(), getYStart());
             glTexCoord2f(xEnd, yEnd);
-            glVertex2f(xStart + width, yStart + height);
+            glVertex2f(getXStart() + width, getYStart() + height);
             glTexCoord2f(xEnd, yBegin);
-            glVertex2f(xStart + width, yStart);
+            glVertex2f(getXStart() + width, getYStart());
             glEnd();
         }
     }
@@ -348,8 +298,8 @@ public class Sprite implements Appearance {
     }
 
     void moveToStart() {
-        if (xStart != 0 && yStart != 0) {
-            Drawer.translate(xStart, yStart);
+        if (getXStart() != 0 && getYStart() != 0) {
+            Drawer.translate(getXStart(), getYStart());
         }
     }
 

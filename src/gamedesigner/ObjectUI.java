@@ -109,7 +109,7 @@ public class ObjectUI extends GUIObject {
         mapObjects[choosenObject].setPositionWithoutAreaUpdate(x, y);
         mapObjects[choosenObject].render(xEffect, yEffect);
     }
-    
+
     public String[] getData() {
         return data;
     }
@@ -186,9 +186,9 @@ public class ObjectUI extends GUIObject {
 
                 glColor4f(0f, 0f, 0f, 1f);
                 Drawer.drawRectangle(-d, -d, wTex + 2 * d, d - 1);
-                Drawer.drawRectangle(0, hTex + d + 1, wTex + 2 * d, d - 1);
-                Drawer.drawRectangle(0, -hTex - 2, d - 1, hTex + 2);
-                Drawer.drawRectangle(wTex + d + 1, 0, d - 1, hTex + 2);
+                Drawer.drawRectangle(-d, hTex + 1, wTex + 2 * d, d - 1);
+                Drawer.drawRectangle(-d, -1, d - 1, hTex + 2);
+                Drawer.drawRectangle(wTex + 1, -1, d - 1, hTex + 2);
             } else if (mode == ObjectPlace.MODE_OBJECT) {
                 Drawer.translate(0, tile);
                 glScaled(1 / Settings.nativeScale, 1 / Settings.nativeScale, 1);

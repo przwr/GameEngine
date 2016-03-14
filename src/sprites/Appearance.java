@@ -16,11 +16,7 @@ public interface Appearance {
 
     void render();
 
-    void renderMirrored();
-
     void renderPart(int partXStart, int partXEnd);
-
-    void renderPartMirrored(int partXStart, int partXEnd);
 
     void updateTexture(Player owner); //Potrzebne tutaj?
 

@@ -35,7 +35,7 @@ public class MyGUI extends GUIObject {
     private Color color = new Color(0, 0, 0);
     private Delay lifeDelay = Delay.createInSeconds(1), energyDelay = Delay.createInSeconds(1), energyLowDelay = Delay.createInMilliseconds(250);
     private VertexBufferObject arrows, rings;
-    private int[] sizes = new int[2 * 8];
+    private int[] placement = new int[2 * 3];
     private int corner = LEFT_TOP;
     private int size, base, border, innerSize;
     private float scale;
@@ -80,8 +80,8 @@ public class MyGUI extends GUIObject {
     }
 
     private void addSize(int i, int count) {
-        sizes[i * 2] = i == 0 ? 0 : sizes[i * 2 - 2] + sizes[i * 2 - 1];
-        sizes[i * 2 + 1] = count / 2;
+        placement[i * 2] = i == 0 ? 0 : placement[i * 2 - 2] + placement[i * 2 - 1];
+        placement[i * 2 + 1] = count / 2;
     }
 
     @Override
@@ -212,15 +212,15 @@ public class MyGUI extends GUIObject {
     private void renderIconRing() {
         Drawer.setColorStatic(color);
         glDisable(GL_TEXTURE_2D);
-        rings.renderTriangleStrip(sizes[0], sizes[1]);
+        rings.renderTriangleStrip(placement[0], placement[1]);
         glEnable(GL_TEXTURE_2D);
     }
 
     private void renderLifeEnergyRings() {
         Drawer.setColorStatic(color);
         glDisable(GL_TEXTURE_2D);
-        rings.renderTriangleStrip(sizes[2], sizes[3]);
-        rings.renderTriangleStrip(sizes[4], sizes[5]);
+        rings.renderTriangleStrip(placement[2], placement[3]);
+        rings.renderTriangleStrip(placement[4], placement[5]);
         glEnable(GL_TEXTURE_2D);
     }
 

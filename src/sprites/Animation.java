@@ -186,11 +186,6 @@ public class Animation implements Appearance {
     }
 
     @Override
-    public void renderMirrored() {
-        spriteSheet.renderPieceMirrored(currentFrame);
-    }
-
-    @Override
     public void renderPart(int partXStart, int partXEnd) {
         spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
 
@@ -241,11 +236,6 @@ public class Animation implements Appearance {
 
     public void setFramesPerDirection(int frames) {
         framesPerDirection = frames;
-    }
-
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
-        spriteSheet.renderPiecePartMirrored(currentFrame, partXStart, partXEnd);
     }
 
     @Override

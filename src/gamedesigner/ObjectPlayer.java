@@ -458,12 +458,12 @@ public class ObjectPlayer extends Player {
                 Drawer.translate(0, -(tileHeight / 2) * tileSize);
             }
             Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
-            Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
-            Drawer.drawRectangle(0, -yd, d, yd);
-            Drawer.drawRectangle(xd + d, 0, d, yd);
+            Drawer.drawRectangle(-d, yd, xd + 2 * d, d);
+            Drawer.drawRectangle(-d, 0, d, yd);
+            Drawer.drawRectangle(xd, 0, d, yd);
             if (tileHeight > 0) {
-                Drawer.drawRectangle(-(d + xd) / 2, (d + yd) / 2, d, tileHeight * tileSize / 2);
-                Drawer.drawCircle(0, tileHeight * tileSize / 2, (int) (tileSize * 0.3), 10);
+                Drawer.drawRectangle(xd / 2, yd / 2, d, tileHeight * tileSize / 2);
+                Drawer.drawCircle(xd / 2, yd / 2 + tileHeight * tileSize / 2, (int) (tileSize * 0.3), 10);
             }
         }
         if (mode == ObjectPlace.MODE_BLOCK) {
@@ -475,24 +475,23 @@ public class ObjectPlayer extends Player {
             int tmpH = blockHeight * tileSize;
             if (blockHeight == 0) {
                 Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
-                Drawer.drawRectangle(0, yd + d, xd + 2 * d, d);
-                Drawer.drawRectangle(0, -yd, d, yd);
-                Drawer.drawRectangle(xd + d, 0, d, yd);
+                Drawer.drawRectangle(-d, yd, xd + 2 * d, d);
+                Drawer.drawRectangle(-d, 0, d, yd);
+                Drawer.drawRectangle(xd, 0, d, yd);
             } else {
                 Drawer.drawRectangle(-d, -d - tmpH, xd + 2 * d, d);
-                Drawer.drawRectangle(d, yd + d, xd, d);
-                Drawer.drawRectangle(0, tmpH, xd, d);
-                Drawer.drawRectangle(-d, d, d, -tmpH - yd - d);
-                Drawer.drawRectangle(xd + d, 0, d, -tmpH - yd - d);
+                Drawer.drawRectangle(0, yd - tmpH, xd, d);
+                Drawer.drawRectangle(0, yd, xd, d);
+                Drawer.drawRectangle(-d, yd + d, d, -tmpH - yd - d);
+                Drawer.drawRectangle(xd, yd + d, d, -tmpH - yd - d);
             }
         }
         if (key.key(KEY_LMENU) && mode <= ObjectPlace.MODE_BLOCK) {
-            Drawer.returnToCentralPoint();
             Drawer.drawRing(-tileSize / 3, -tileSize / 3, tileSize / 5, d, 10);
         }
         if (mode == ObjectPlace.MODE_OBJECT) {
             Drawer.drawRing(tileSize / 2, tileSize / 2, tileSize / 4, d, 10);
-            Drawer.drawRing(0, 0, tileSize / 2, d, 10);
+            Drawer.drawRing(tileSize / 2, tileSize / 2, tileSize / 2, d, 10);
         }
 
         Drawer.refreshForRegularDrawing();

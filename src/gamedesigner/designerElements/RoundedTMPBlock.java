@@ -58,7 +58,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
     public boolean isCornerPossible(byte corner) {
         return !RoundRectangle.isTopCorner(corner) || height > tile;
     }
-    
+
     @Override
     public void createBlock() {
         block = Block.createRound(getX(), getY(), width, height, (upHeight - yTiles) * tile);
@@ -205,39 +205,38 @@ public class RoundedTMPBlock extends TemporaryBlock {
             Drawer.refreshColor();
             int tmpH = upHeight * tile;
             if (!blocked) {
+                glTranslatef(0, -tmpH, 0);
                 if (mode == 1) {
-                    Drawer.drawRectangle(0, -tmpH, width, height);
-                } else {
-                    glTranslatef(0, -tmpH, 0);
+                    Drawer.drawRectangle(0, 0, width, height);
                 }
                 if (upHeight == 0) {
                     glColor3f(0f, 0f, 1f);
                     Drawer.drawRectangle(0, 0, width, d);
                     Drawer.drawRectangle(0, height - d, width, d);
-                    Drawer.drawRectangle(0, -height + d, d, height);
+                    Drawer.drawRectangle(0, 0, d, height);
                     Drawer.drawRectangle(width - d, 0, d, height);
                 } else {
                     if (mode == 1) {
                         glColor3f(0.9f, 0.9f, 0.9f);
                         Drawer.drawRectangle(0, height, width, tmpH);
-                        glTranslatef(0, -height, 0);
                     }
                     glColor3f(0f, 0f, 1f);
                     Drawer.drawRectangle(0, 0, width, d);
                     Drawer.drawRectangle(0, height - d, width, d);
-                    Drawer.drawRectangle(0, tmpH, width, d);
-                    Drawer.drawRectangle(0, 0, d, -tmpH - height + d);
-                    Drawer.drawRectangle(width - d, 0, d, -tmpH - height + d);
+                    Drawer.drawRectangle(0, height - d + tmpH, width, d);
+                    Drawer.drawRectangle(0, height - d + tmpH, d, -tmpH - height + d);
+                    Drawer.drawRectangle(width - d, height - d + tmpH, d, -tmpH - height + d);
 
                     Drawer.setCentralPoint();
+                    Drawer.translate(width - d, height - d + tmpH);
                     switch (lowerState) {
                         case 1:
                             Drawer.drawBow(-tile + d, -tile + d, tile - 1, d + 1, 0, 90, 10);
-                            Drawer.drawBow(0, -tmpH, tile - 1, d + 1, 0, 90, 10);
+                            Drawer.drawBow(-tile + d, -tile + d - tmpH, tile - 1, d + 1, 0, 90, 10);
                             break;
                         case 2:
                             Drawer.drawLineWidth(-tile + d, d / 2, tile, -tile, 2 * d);
-                            Drawer.drawLineWidth(0, -tmpH, tile, -tile, 2 * d);
+                            Drawer.drawLineWidth(-tile + d, d / 2 - tmpH, tile, -tile, 2 * d);
                             break;
                         case 3:
                             Drawer.drawBow(0, 0, tile - 1, d + 1, 180, 270, 10);
@@ -245,18 +244,18 @@ public class RoundedTMPBlock extends TemporaryBlock {
                             break;
                         case 4:
                             Drawer.drawBow(0, -tile + d, tile - 1, d + 1, 90, 180, 10);
-                            Drawer.drawBow(0, -tmpH, tile - 1, d + 1, 90, 180, 10);
+                            Drawer.drawBow(0, -tile + d - tmpH, tile - 1, d + 1, 90, 180, 10);
                             break;
                         case 5:
                             Drawer.drawLineWidth(0, d / 2, -tile, -tile, 2 * d);
-                            Drawer.drawLineWidth(0, -tmpH, -tile, -tile, 2 * d);
+                            Drawer.drawLineWidth(0, d / 2 - tmpH, -tile, -tile, 2 * d);
                             break;
                         case 6:
                             Drawer.drawBow(-tile + d, 0, tile - 1, d + 1, 270, 360, 10);
-                            Drawer.drawBow(0, -tmpH, tile - 1, d + 1, 270, 360, 10);
+                            Drawer.drawBow(-tile + d, -tmpH, tile - 1, d + 1, 270, 360, 10);
                             break;
                     }
-                    Drawer.returnToCentralPoint();
+                    //Drawer.returnToCentralPoint();
                     if (yTiles > 1) {
                         switch (upperState) {
                             case 1:
@@ -281,25 +280,21 @@ public class RoundedTMPBlock extends TemporaryBlock {
                     }
                     if (!complete) {
                         glColor3f(1f, 1f, 1f);
-                        Drawer.returnToCentralPoint();
                         Drawer.drawLineWidth(-tile / 2 + d, -height - tmpH - tile / 2 - d, tile / 3, tile / 3, 2 * d);
-                        Drawer.drawLineWidth(0, 0, -tile / 3, tile / 3, 2 * d);
-                        Drawer.returnToCentralPoint();
+                        Drawer.drawLineWidth(-tile / 2 + d, -height - tmpH - tile / 2 - d, -tile / 3, tile / 3, 2 * d);
                         Drawer.drawLineWidth(-tile / 2 + d, tile / 2 + d, tile / 3, -tile / 3, 2 * d);
-                        Drawer.drawLineWidth(0, 0, -tile / 3, -tile / 3, 2 * d);
-                        Drawer.returnToCentralPoint();
+                        Drawer.drawLineWidth(-tile / 2 + d, tile / 2 + d, -tile / 3, -tile / 3, 2 * d);
                         Drawer.drawLineWidth(-tile * 3 / 2 + d, -height - tmpH + tile / 2 - d, tile / 3, tile / 3, 2 * d);
-                        Drawer.drawLineWidth(0, 0, tile / 3, -tile / 3, 2 * d);
-                        Drawer.returnToCentralPoint();
+                        Drawer.drawLineWidth(-tile * 3 / 2 + d, -height - tmpH + tile / 2 - d, tile / 3, -tile / 3, 2 * d);
                         Drawer.drawLineWidth(tile / 2, -height - tmpH + tile / 2 - d, -tile / 3, tile / 3, 2 * d);
-                        Drawer.drawLineWidth(0, 0, -tile / 3, -tile / 3, 2 * d);
+                        Drawer.drawLineWidth(tile / 2, -height - tmpH + tile / 2 - d, -tile / 3, -tile / 3, 2 * d);
                     }
                 }
             } else {
                 glColor3f(0.5f, 0.5f, 1f);
                 Drawer.drawRectangle(0, 0, width, d);
                 Drawer.drawRectangle(0, height - d, width, d);
-                Drawer.drawRectangle(0, -height + d, d, height);
+                Drawer.drawRectangle(0, 0, d, height);
                 Drawer.drawRectangle(width - d, 0, d, height);
             }
         }

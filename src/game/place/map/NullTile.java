@@ -47,15 +47,7 @@ public class NullTile extends Tile implements Appearance {
     }
 
     @Override
-    public void renderMirrored() {
-    }
-
-    @Override
     public void renderPart(int partXStart, int partXEnd) {
-    }
-
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
     }
 
     @Override

@@ -269,13 +269,13 @@ public class ClothedAppearance implements Appearance {
             if (!isThisLowerPlacement(i)) {
                 if (upperRenderList[i].cloth.isWearing() && upperRenderList[i].getSprite() != null) {
                     upperRenderList[i].getSprite().renderPiece(upperFrame);
-                    upperRenderList[i].getSprite().returnFromTranslation(upperFrame);
+                    //upperRenderList[i].getSprite().returnFromTranslation(upperFrame);
                 }
             } else {
                 for (byte j : lowerQueue.get(lowerFrame)) {
                     if (lowerRenderList[j].cloth.isWearing() && lowerRenderList[j].getSprite() != null) {
                         lowerRenderList[j].getSprite().renderPiece(lowerFrame);
-                        lowerRenderList[j].getSprite().returnFromTranslation(lowerFrame);
+                        //lowerRenderList[j].getSprite().returnFromTranslation(lowerFrame);
                     }
                 }
             }
@@ -342,11 +342,6 @@ public class ClothedAppearance implements Appearance {
     }
 
     @Override
-    public void renderMirrored() {
-        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
-    }
-
-    @Override
     public void renderPart(int partXStart, int partXEnd) {
 //        frame = lowerBody.getCurrentFrameIndex();
 //        for (byte i : lowerQueue.get(frame)) {
@@ -371,11 +366,6 @@ public class ClothedAppearance implements Appearance {
         } else {
             fbo.renderPart(partXStart + xOffset / 2, partXEnd + xOffset / 2);
         }
-    }
-
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
-        throw new UnsupportedOperationException("You have no idea WAT U DOOIN'");
     }
 
     @Override

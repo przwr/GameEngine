@@ -69,35 +69,33 @@ public class TemporaryBlock extends GameObject {
             Drawer.refreshColor();
             int tmpH = upHeight * tile;
             if (!blocked) {
+                glTranslatef(0, -tmpH, 0);
                 if (mode == 1) {
-                    Drawer.drawRectangle(0, -tmpH, width, height);
-                } else {
-                    glTranslatef(0, -tmpH, 0);
+                    Drawer.drawRectangle(0, 0, width, height);
                 }
                 if (upHeight == 0) {
                     glColor3f(1f, 0f, 0f);
                     Drawer.drawRectangle(0, 0, width, d);
                     Drawer.drawRectangle(0, height - d, width, d);
-                    Drawer.drawRectangle(0, -height + d, d, height);
+                    Drawer.drawRectangle(0, 0, d, height);
                     Drawer.drawRectangle(width - d, 0, d, height);
                 } else {
                     if (mode == 1) {
                         glColor3f(0.9f, 0.9f, 0.9f);
                         Drawer.drawRectangle(0, height, width, tmpH);
-                        glTranslatef(0, -height, 0);
                     }
                     glColor3f(1f, 0f, 0f);
                     Drawer.drawRectangle(0, 0, width, d);
                     Drawer.drawRectangle(0, height - d, width, d);
-                    Drawer.drawRectangle(0, tmpH, width, d);
-                    Drawer.drawRectangle(0, 0, d, -tmpH - height + d);
-                    Drawer.drawRectangle(width - d, 0, d, -tmpH - height + d);
+                    Drawer.drawRectangle(0, height - d + tmpH, width, d);
+                    Drawer.drawRectangle(0, height - d + tmpH, d, -tmpH - height + d);
+                    Drawer.drawRectangle(width - d, height - d + tmpH, d, -tmpH - height + d);
                 }
             } else {
                 glColor3f(1f, 0.5f, 0.5f);
                 Drawer.drawRectangle(0, 0, width, d);
                 Drawer.drawRectangle(0, height - d, width, d);
-                Drawer.drawRectangle(0, -height + d, d, height);
+                Drawer.drawRectangle(0, 0, d, height);
                 Drawer.drawRectangle(width - d, 0, d, height);
             }
         }
@@ -173,7 +171,7 @@ public class TemporaryBlock extends GameObject {
     public boolean isInvisible() {
         return upHeight == 0;
     }
-    
+
     public ForegroundTile addTile(int x, int y, int xSheet, int ySheet, SpriteSheet tex, boolean altMode) {
         int yBegin = (int) (this.y / tile) - upHeight;
         int yEnd = yBegin + yTiles + upHeight - 1;
@@ -302,7 +300,7 @@ public class TemporaryBlock extends GameObject {
     public int getXSpriteEnd(boolean... forCover) {
         return super.getXSpriteEnd() + xTiles * tile;
     }
-    
+
     @Override
     public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
     }

@@ -213,18 +213,8 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void renderMirrored() {
-        tileStack.stream().forEach((piece) -> spriteSheet.renderPieceMirrored(piece.getX(), piece.getY()));
-    }
-
-    @Override
     public void renderPart(int partXStart, int partXEnd) {
         tileStack.stream().forEach((piece) -> spriteSheet.renderPiecePart(piece.getX(), piece.getY(), partXStart, partXEnd));
-    }
-
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
-        tileStack.stream().forEach((piece) -> spriteSheet.renderPiecePartMirrored(piece.getX(), piece.getY(), partXStart, partXEnd));
     }
 
     @Override

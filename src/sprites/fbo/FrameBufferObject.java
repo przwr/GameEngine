@@ -146,9 +146,8 @@ public abstract class FrameBufferObject implements Appearance {
         glEnd();
     }
 
-
     public void renderScreenPart(float displayWidth, float displayHeight, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart,
-                                 float xTEnd, float yTEnd) {
+            float xTEnd, float yTEnd) {
         glPushMatrix();
         bindCheck();
         glBegin(GL_TRIANGLES);
@@ -171,23 +170,21 @@ public abstract class FrameBufferObject implements Appearance {
 
     public void renderPiece(int xStart, int yStart, float xBeg, float yBeg, float xEnd, float yEnd) {
         bindCheck();
-        glTranslatef(xStart, yStart, 0);
         glBegin(GL_TRIANGLES);
         glTexCoord2f(xEnd / width, yBeg / height);
-        glVertex2f(xEnd, yEnd);
+        glVertex2f(xStart + xEnd, yStart + yEnd);
         glTexCoord2f(xEnd / width, yEnd / height);
-        glVertex2f(xEnd, yBeg);
+        glVertex2f(xStart + xEnd, yStart + yBeg);
         glTexCoord2f(xBeg / width, yEnd / height);
-        glVertex2f(xBeg, yBeg);
+        glVertex2f(xStart + xBeg, yStart + yBeg);
 
         glTexCoord2f(xBeg / width, yEnd / height);
-        glVertex2f(xBeg, yBeg);
+        glVertex2f(xStart + xBeg, yStart + yBeg);
         glTexCoord2f(xBeg / width, yBeg / height);
-        glVertex2f(xBeg, yEnd);
+        glVertex2f(xStart + xBeg, yStart + yEnd);
         glTexCoord2f(xEnd / width, yBeg / height);
-        glVertex2f(xEnd, yEnd);
+        glVertex2f(xStart + xEnd, yStart + yEnd);
         glEnd();
-        glTranslatef(-xStart, -yStart, 0);
     }
 
     public int getTexture() {
@@ -208,10 +205,6 @@ public abstract class FrameBufferObject implements Appearance {
             glBindTexture(GL_TEXTURE_2D, texture);
         }
         return true;
-    }
-
-    @Override
-    public void renderMirrored() {
     }
 
     @Override
@@ -238,7 +231,6 @@ public abstract class FrameBufferObject implements Appearance {
         glVertex2f(partXStart, height);
         glEnd();
     }
-
 
     public void renderBottomPart(int partXStart, int partXEnd, float h) {
         bindCheck();
@@ -286,11 +278,6 @@ public abstract class FrameBufferObject implements Appearance {
         glTexCoord2f(partXStart / (float) width, h / height);
         glVertex2f(partXStart, height);
         glEnd();
-    }
-
-
-    @Override
-    public void renderPartMirrored(int partXStart, int partXEnd) {
     }
 
     @Override
