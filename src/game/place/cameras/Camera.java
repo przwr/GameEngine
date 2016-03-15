@@ -24,7 +24,8 @@ import java.util.List;
  */
 public abstract class Camera {
 
-    private static final double[] scales = {0.75, 0.5, 0.5, 0.375, 0.375, 0.25, 1, 0.75, 0.75, 0.5, 0.5, 0.375};
+    //    private static final double[] scales = {0.75, 0.5, 0.5, 0.375, 0.375, 0.25, 1, 0.75, 0.75, 0.5, 0.5, 0.375};
+    private static final double[] scales = {0.75, 0.5, 0.375, 0.5, 0.375, 0.25, 0.375, 0.25, 0.125, 1, 0.75, 0.5, 0.75, 0.5, 0.375, 0.5, 0.375, 0.25};
     //    private static final short O7FULL = 0, O7FULL_ZOOMED = 1, O7HALF = 2, O7HALF_ZOOMED = 3, O7QUARTER = 4, O7QUARTER_ZOOMED = 5,
 //            FULL = 6, FULL_ZOOMED = 7, HALF = 8, HALF_ZOOMED = 9, QUARTER = 10, QUARTER_ZOOMED = 11;
     final ArrayList<GameObject> owners = new ArrayList<>();
@@ -55,7 +56,7 @@ public abstract class Camera {
     private double yOffset;
     private double scale;
     private boolean shakeUp = true;
-    private boolean zoomed = false;
+    private int zoom = 0;
     private boolean faded = false;
     private long fadingDifference;
 
@@ -158,7 +159,10 @@ public abstract class Camera {
     }
 
     public void switchZoom() {
-        zoomed = !zoomed;
+        zoom++;
+        if (zoom > 2) {
+            zoom = 0;
+        }
         setScale(Display.getWidth() / widthHalf, Display.getHeight() / heightHalf, ownersCount);
         updateStatic();
     }
@@ -166,14 +170,14 @@ public abstract class Camera {
     void setScale(int ssX, int ssY, int ownersCount) {
         switch (ownersCount) {
             case 0:
-                scale = scales[((int) (Settings.nativeScale) * 6) + (zoomed ? 1 : 0)];
+                scale = scales[((int) (Settings.nativeScale) * 9) + zoom];
                 break;
             case 1:
             case 3:
-                scale = scales[(int) (Settings.nativeScale) * 6 + (ownersCount + 1) + (zoomed ? 1 : 0)];
+                scale = scales[(int) (Settings.nativeScale) * 9 + (ownersCount == 1 ? 1 : 2) + zoom];
                 break;
             case 2:
-                scale = scales[(int) (Settings.nativeScale) * 6 + (ssX == ssY ? 4 : 2) + (zoomed ? 1 : 0)];
+                scale = scales[(int) (Settings.nativeScale) * 9 + (ssX == ssY ? 6 : 3) + zoom];
                 break;
         }
     }
@@ -344,5 +348,9 @@ public abstract class Camera {
         } else {
             return ((fadeDelay.getLength() - fadingDifference) / (float) fadeDelay.getLength());
         }
+    }
+
+    public void removeOwner(GameObject owner) {
+        owners.remove(owner);
     }
 }

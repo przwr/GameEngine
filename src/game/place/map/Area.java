@@ -32,7 +32,7 @@ import static game.place.Place.yAreaInPixels;
  */
 public class Area {
 
-    public static short X_IN_TILES = 32, Y_IN_TILES = 20;
+    public static short X_IN_TILES = 32, Y_IN_TILES = 24; // Należy również zmienić w MyPlace
 
     private final Place place;
     private final Map map;
@@ -82,7 +82,7 @@ public class Area {
         this.xInPixels = xArea * xAreaInPixels;
         this.yInPixels = yArea * yAreaInPixels;
     }
-    
+
     public void generateNavigationMesh(Set<Block> blocksForMesh) {
         navigationMesh = NavigationMeshGenerator.generateNavigationMesh(tiles, blocksForMesh, xArea, yArea);
     }

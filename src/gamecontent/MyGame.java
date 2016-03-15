@@ -355,6 +355,11 @@ public class MyGame extends Game {
             ((Player) place.players[i]).setNotInGame();
             place.players[i].clearLights();
             place.players[i].getMap().deleteObject(place.players[i]);
+            for (int c = 0; c < place.cameras.length; c++) {
+                if (place.cameras[c] != null) {
+                    place.cameras[c].removeOwner(place.players[i]);
+                }
+            }
             if (i != place.playersCount - 1) {
                 Player tempPlayer = players[place.playersCount - 1];
                 GameObject tempP = place.players[place.playersCount - 1];

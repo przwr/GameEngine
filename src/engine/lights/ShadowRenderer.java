@@ -41,8 +41,7 @@ public class ShadowRenderer {
     private static final Polygon polygon = new Polygon();
     private static final ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
     private static final Point casting = new Point();
-    //    static long sum = 0;
-//    static int count = 0;
+
     private static boolean checked;
     private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightYEnd, lightYStart, lightXEnd, lightXStart, centerX, centerY,
             lightXCentralShifted, lightYCentralShifted, shadow0X, shadow0Y, shadow1X, shadow1Y, shadow2X, shadow2Y, shadow3X, shadow3Y;
@@ -64,6 +63,8 @@ public class ShadowRenderer {
         }
     }
 
+    //    static long sum = 0;
+//    static int count = 0;
     public static void preRenderLight(Map map, Light light) {
 //        long start = System.nanoTime();
         prepareToFindShades(light);
@@ -632,7 +633,7 @@ public class ShadowRenderer {
         if (shouldCalculateRightRoundBlock(other)) {
             calculateRightRoundBlock(other, current, source);
         }
-        findRoundDarkness(other, current);
+        findRoundDarkness(source, other, current);
     }
 
     private static boolean shouldCalculateLeftRoundBlock(Figure other) {
@@ -653,27 +654,29 @@ public class ShadowRenderer {
 
     private static void calculateRoundBlockFromTopVertical(Figure other, Figure current, Light source) {
         calculateIntersectionBounds(other);
-        if (shouldCalculateLeftRoundBlockFromTop(other)) {
+        if (shouldCalculateLeftRoundBlockFromTop(other, current)) {
             calculateLeftRoundBlockFromTop(other, current, source);
         }
-        if (shouldCalculateRightRoundBlockFromTop(other)) {
+        if (shouldCalculateRightRoundBlockFromTop(other, current)) {
             calculateRightRoundBlockFromTop(other, current, source);
         }
         findRoundDarknessFromTop(other, current, source);
     }
 
-    private static boolean shouldCalculateLeftRoundBlockFromTop(Figure other) {
+    private static boolean shouldCalculateLeftRoundBlockFromTop(Figure other, Figure current) {
         return (shadow0Y < shadow2Y && shadow0Y < other.getYEnd())
                 && ((shadow0X != shadow2X && ((XOL >= other.getX() && XOL <= other.getXEnd())
                 || (YOL >= other.getY() - other.getShadowHeight() && YOL <= other.getYEnd())
-                || (YOL2 >= other.getY() - other.getShadowHeight() && YOL2 <= other.getYEnd()))));
+                || (YOL2 >= other.getY() - other.getShadowHeight() && YOL2 <= other.getYEnd()))))
+                && !(current.getX() < other.getX() && current.getYEnd() + Place.tileSize == other.getYEnd());
     }
 
-    private static boolean shouldCalculateRightRoundBlockFromTop(Figure other) {
+    private static boolean shouldCalculateRightRoundBlockFromTop(Figure other, Figure current) {
         return (shadow1Y < shadow3Y && shadow1Y < other.getYEnd())
                 && ((shadow1X != shadow3X && ((XOR >= other.getX() && XOR <= other.getXEnd())
                 || (YOR >= other.getY() - other.getShadowHeight() && YOR <= other.getYEnd())
-                || (YOR2 >= other.getY() - other.getShadowHeight() && YOR2 <= other.getYEnd()))));
+                || (YOR2 >= other.getY() - other.getShadowHeight() && YOR2 <= other.getYEnd()))))
+                && !(current.getX() > other.getX() && current.getYEnd() + Place.tileSize == other.getYEnd());
     }
 
     private static void calculateRegularBlockVertical(Figure other, Figure current, Light source) {
@@ -972,7 +975,7 @@ public class ShadowRenderer {
                             <= other.getYEnd()) {
                         XL1 = tempPoint.getX();
                     } else {
-                        findRoundDarkness(other, current);
+                        findRoundDarkness(source, other, current);
                         return;
                     }
                 }
@@ -1065,7 +1068,7 @@ public class ShadowRenderer {
                             <= other.getYEnd()) {
                         XR1 = tempPoint.getX();
                     } else {
-                        findRoundDarkness(other, current);
+                        findRoundDarkness(source, other, current);
                         return;
                     }
                 }
@@ -1338,7 +1341,7 @@ public class ShadowRenderer {
         }
     }
 
-    private static void findRoundDarkness(Figure other, Figure current) {
+    private static void findRoundDarkness(Light source, Figure other, Figure current) {
         if (!checked) {
             if ((current.getYEnd() != other.getYEnd()) || (!current.isBottomRounded() && current.getYEnd() - Place.tileSize != other.getYEnd() && ((other
                     .isLeftBottomRound() && other.getX() == current.getXEnd()) || (other.isRightBottomRound() && other.getXEnd() == current.getX()))) ||
@@ -1360,6 +1363,11 @@ public class ShadowRenderer {
                 if (points == 2) {
                     other.addShadowType(DARK);
                     DEBUG("Round Darkness...");
+                } else if (source.getY() > other.getYEnd() && current.getY() == other.getYEnd() &&
+                        ((source.getX() < current.getX() && current.getXEnd() == other.getX())
+                                || (source.getX() > current.getXEnd() && current.getX() == other.getXEnd()))) {
+                    other.addShadowType(DARK);
+                    DEBUG("Round Darkness... - corner case");
                 }
             }
             checked = true;

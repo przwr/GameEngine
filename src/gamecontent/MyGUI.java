@@ -8,7 +8,9 @@ package gamecontent;
 import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import engine.view.SplitScreen;
 import game.gameobject.GUIObject;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
@@ -18,6 +20,8 @@ import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 import sprites.vbo.VertexBufferObject;
 
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -25,7 +29,10 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyGUI extends GUIObject {
 
+
     private final static int LEFT_TOP = 0, RIGHT_TOP = 1, LEFT_BOTTOM = 2, RIGHT_BOTTOM = 3;
+    private static ArrayList<Integer> occupiedCorners = new ArrayList<>(4);
+    private static ArrayList<GameObject> occupiedPlayers = new ArrayList<>(4);
     private SpriteSheet attackIcons, itemIcons;
     private int firstAttackType, secondAttackType;
     private float lifeAlpha;
@@ -112,33 +119,74 @@ public class MyGUI extends GUIObject {
     }
 
     private void renderGUI() {
-        Color light = player.getMap().getLightColor();
-        Camera cam = Place.currentCamera;
-        color.r = color.g = color.b = (1f - Math.min(Math.min(light.r, light.g), light.b)) * 0.5f;
-        glPushMatrix();
-        if (player.isNotFirst()) {
-            corner = LEFT_BOTTOM;
+        if (player.isInGame()) {
+            Color light = player.getMap().getLightColor();
+            Camera cam = Place.currentCamera;
+            color.r = color.g = color.b = (1f - Math.min(Math.min(light.r, light.g), light.b)) * 0.5f;
+            glPushMatrix();
+            if (place.playersCount == 1 || !place.singleCamera) {
+                corner = SplitScreen.corner;
+            } else {
+                if (occupiedCorners.size() == place.playersCount) {
+                    occupiedCorners.clear();
+                    occupiedPlayers.clear();
+                }
+                for (int i = 0; i < 4; i++) {
+                    if (!occupiedCorners.contains(i)) {
+                        int minDistance = Integer.MAX_VALUE, currentDistance = Integer.MAX_VALUE, bestPlayer = -1;
+                        for (int p = 0; p < place.playersCount; p++) {
+                            GameObject pl = place.players[p];
+                            if (!occupiedCorners.contains(pl)) {
+                                switch (i) {
+                                    case LEFT_TOP:
+                                        currentDistance = Methods.pointDistanceSimple2(pl.getX(), pl.getY(), cam.getXStart(), cam.getYStart());
+                                        break;
+                                    case RIGHT_TOP:
+                                        currentDistance = Methods.pointDistanceSimple2(pl.getX(), pl.getY(), cam.getXEnd(), cam.getYStart());
+                                        break;
+                                    case LEFT_BOTTOM:
+                                        currentDistance = Methods.pointDistanceSimple2(pl.getX(), pl.getY(), cam.getXStart(), cam.getYEnd());
+                                        break;
+                                    case RIGHT_BOTTOM:
+                                        currentDistance = Methods.pointDistanceSimple2(pl.getX(), pl.getY(), cam.getXEnd(), cam.getYEnd());
+                                        break;
+                                }
+                                if (currentDistance < minDistance) {
+                                    bestPlayer = p;
+                                    minDistance = currentDistance;
+                                }
+                            }
+                        }
+                        if (bestPlayer != -1 && place.players[bestPlayer] == player) {
+                            corner = i;
+                            occupiedCorners.add(corner);
+                            occupiedPlayers.add(player);
+                            break;
+                        }
+                    }
+                }
+            }
+            switch (corner) {
+                case LEFT_TOP:
+                    glTranslatef(2 * border / 3, 2 * border / 3, 0);
+                    break;
+                case RIGHT_TOP:
+                    glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, 2 * border / 3, 0);
+                    break;
+                case LEFT_BOTTOM:
+                    glTranslatef(2 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
+                    break;
+                case RIGHT_BOTTOM:
+                    glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
+                    break;
+            }
+            Drawer.setCentralPoint();
+            renderLife();
+            renderEnergy();
+            renderPairArrow();
+            renderIcons();
+            glPopMatrix();
         }
-        switch (corner) {
-            case LEFT_TOP:
-                glTranslatef(2 * border / 3, 2 * border / 3, 0);
-                break;
-            case RIGHT_TOP:
-                glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, 2 * border / 3, 0);
-                break;
-            case LEFT_BOTTOM:
-                glTranslatef(2 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
-                break;
-            case RIGHT_BOTTOM:
-                glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
-                break;
-        }
-        Drawer.setCentralPoint();
-        renderLife();
-        renderEnergy();
-        renderPairArrow();
-        renderIcons();
-        glPopMatrix();
     }
 
     private void renderIcons() {

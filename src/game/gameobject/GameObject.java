@@ -8,6 +8,7 @@ package game.gameobject;
 /**
  * @author przemek
  */
+
 import collision.Figure;
 import engine.lights.Light;
 import engine.utilities.Methods;
@@ -103,6 +104,7 @@ public abstract class GameObject {
                 light.getFrameBufferObject().clear();
                 light.getFrameBufferObject().delete();
             }
+            lights.clear();
         }
     }
 
@@ -134,9 +136,9 @@ public abstract class GameObject {
                 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
                 && Math.abs(Methods.angleDifference(
                 player.getDirection(),
-                        (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
+                (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
     }
-    
+
     public double getGravity() {
         return gravity;
     }
