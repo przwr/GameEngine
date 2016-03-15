@@ -267,9 +267,9 @@ public class Main {
             SHOW_INTERACTIVE_COLLISION = !SHOW_INTERACTIVE_COLLISION;
             console.printMessage("SHOW/HIDE INTERACTIVE");
         }
-        if (key.keyPressed(Keyboard.KEY_F3)) {
-            console.printMessage("You've just clicked the F3 button. Why did you do that?");
-        }
+//        if (key.keyPressed(Keyboard.KEY_F3)) {
+//            console.printMessage("You've just clicked the F3 button. Why did you do that?");
+//        }
         if (key.keyPressed(Keyboard.KEY_F3)) {
             SHOW_AREAS = !SHOW_AREAS;
             console.printMessage("SHOW/HIDE AREAS");

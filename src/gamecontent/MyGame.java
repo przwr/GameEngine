@@ -379,6 +379,8 @@ public class MyGame extends Game {
                     if (place.cameras[0] == null) {
                         place.cameras[0] = new PlayersCamera(players[0], players[1]);
                         place.cameras[0].setMap(players[0].getMap());
+                    } else {
+                        place.cameras[0].refreshOwners(players, place.playersCount);
                     }
                     if (Settings.horizontalSplitScreen) {
                         ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(2, 4, 1);
@@ -390,6 +392,8 @@ public class MyGame extends Game {
                     if (place.cameras[1] == null) {
                         place.cameras[1] = new PlayersCamera(players[0], players[1], players[2]);
                         place.cameras[1].setMap(players[0].getMap());
+                    } else {
+                        place.cameras[1].refreshOwners(players, place.playersCount);
                     }
                     if (nr == 0) {
                         if (Settings.horizontalSplitScreen) {
@@ -405,6 +409,8 @@ public class MyGame extends Game {
                     if (place.cameras[2] == null) {
                         place.cameras[2] = new PlayersCamera(players[0], players[1], players[2], players[3]);
                         place.cameras[2].setMap(players[0].getMap());
+                    } else {
+                        place.cameras[2].refreshOwners(players, place.playersCount);
                     }
                     ((PlayersCamera) ((Player) place.players[nr]).getCamera()).reInitialize(4, 4, 3);
                     break;

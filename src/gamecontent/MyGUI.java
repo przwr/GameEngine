@@ -8,6 +8,7 @@ package gamecontent;
 import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import engine.view.SplitScreen;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.PlayerStats;
@@ -24,6 +25,7 @@ import static org.lwjgl.opengl.GL11.*;
  * @author Wojtek
  */
 public class MyGUI extends GUIObject {
+
 
     private final static int LEFT_TOP = 0, RIGHT_TOP = 1, LEFT_BOTTOM = 2, RIGHT_BOTTOM = 3;
     private SpriteSheet attackIcons, itemIcons;
@@ -112,33 +114,44 @@ public class MyGUI extends GUIObject {
     }
 
     private void renderGUI() {
-        Color light = player.getMap().getLightColor();
-        Camera cam = Place.currentCamera;
-        color.r = color.g = color.b = (1f - Math.min(Math.min(light.r, light.g), light.b)) * 0.5f;
-        glPushMatrix();
-        if (player.isNotFirst()) {
-            corner = LEFT_BOTTOM;
+        if (player.isInGame()) {
+            Color light = player.getMap().getLightColor();
+            Camera cam = Place.currentCamera;
+            color.r = color.g = color.b = (1f - Math.min(Math.min(light.r, light.g), light.b)) * 0.5f;
+            glPushMatrix();
+            if (place.playersCount == 1 || !place.singleCamera) {
+                corner = SplitScreen.corner;
+            } else {
+                int i;
+                for (i = 0; i < place.playersCount; i++) {
+                    if (place.players[i] == player) {
+                        break;
+                    }
+                }
+                corner = i;
+//                System.out.println(player.getName() + ": " + corner);
+            }
+            switch (corner) {
+                case LEFT_TOP:
+                    glTranslatef(2 * border / 3, 2 * border / 3, 0);
+                    break;
+                case RIGHT_TOP:
+                    glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, 2 * border / 3, 0);
+                    break;
+                case LEFT_BOTTOM:
+                    glTranslatef(2 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
+                    break;
+                case RIGHT_BOTTOM:
+                    glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
+                    break;
+            }
+            Drawer.setCentralPoint();
+            renderLife();
+            renderEnergy();
+            renderPairArrow();
+            renderIcons();
+            glPopMatrix();
         }
-        switch (corner) {
-            case LEFT_TOP:
-                glTranslatef(2 * border / 3, 2 * border / 3, 0);
-                break;
-            case RIGHT_TOP:
-                glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, 2 * border / 3, 0);
-                break;
-            case LEFT_BOTTOM:
-                glTranslatef(2 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
-                break;
-            case RIGHT_BOTTOM:
-                glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
-                break;
-        }
-        Drawer.setCentralPoint();
-        renderLife();
-        renderEnergy();
-        renderPairArrow();
-        renderIcons();
-        glPopMatrix();
     }
 
     private void renderIcons() {

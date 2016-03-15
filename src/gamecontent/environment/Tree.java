@@ -554,7 +554,7 @@ public class Tree extends GameObject {
     public int getYSpriteBegin(boolean... forCover) {
         if (forCover.length > 0) {
             if (forCover[0]) {
-                return getY() + 20 + collision.getHeightHalf() - height * 2;
+                return getY() + 20 + collision.getHeightHalf() - (fbo.getHeight() - leafHeight);
             } else {
                 return getY() - collision.getHeight() - height;
             }

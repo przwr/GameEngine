@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class SplitScreen {
 
+    private final static int LEFT_TOP = 0, RIGHT_TOP = 1, LEFT_BOTTOM = 2, RIGHT_BOTTOM = 3;
     private static final setSplitType[] splits = new setSplitType[4];
     private static final setOrientType[] orients2 = new setOrientType[2];
     private static final setOrientType[] orients3 = new setOrientType[2];
@@ -27,6 +28,7 @@ public class SplitScreen {
     private static final setPlayerNumber[] players3h = new setPlayerNumber[3];
     private static final setPlayerNumber[] players3v = new setPlayerNumber[3];
     private static final setPlayerNumber[] players4 = new setPlayerNumber[4];
+    public static int corner;
     private static int width3o4, height3o4, width2o3, height2o3, width1o2, height1o2;
 
     private SplitScreen() {
@@ -52,6 +54,7 @@ public class SplitScreen {
         } else {
             place.singleCamera = Settings.joinSplitScreen && !isFar(place);
         }
+        corner = LEFT_TOP;
     }
 
     public static boolean isClose(Place place) {
@@ -140,6 +143,13 @@ public class SplitScreen {
     }
 
     public static void initialise() {
+        initialize1();
+        initialize2();
+        initialize3();
+    }
+
+
+    private static void initialize1() {
         players2h[0] = (Place place) -> {
             glViewport(0, height1o2, Display.getWidth(), height1o2);
             glScissor(0, height1o2, Display.getWidth(), height1o2);
@@ -148,6 +158,7 @@ public class SplitScreen {
             place.camYStart = place.camYTStart = -0.5f;
             place.camXEnd = place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = 0.5f;
+            corner = LEFT_TOP;
         };
         players2h[1] = (Place place) -> {
             glViewport(0, 0, Display.getWidth(), height1o2);
@@ -155,6 +166,7 @@ public class SplitScreen {
             place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
             place.camXEnd = place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = 0.5f;
+            corner = LEFT_BOTTOM;
         };
         players2v[0] = (Place place) -> {
             glViewport(0, 0, width1o2, Display.getHeight());
@@ -163,6 +175,7 @@ public class SplitScreen {
             place.camXStart = place.camXTStart = place.camYStart = place.camYTStart = 0f;
             place.camXEnd = place.camXTEnd = 0.5f;
             place.camYEnd = place.camYTEnd = 1f;
+            corner = LEFT_TOP;
         };
         players2v[1] = (Place place) -> {
             glViewport(width1o2, 0, width1o2, Display.getHeight());
@@ -170,6 +183,7 @@ public class SplitScreen {
             place.camXTStart = place.camXEnd = 0.5f;
             place.camXTEnd = place.camYTEnd = place.camYEnd = 1f;
             place.camXStart = place.camYStart = place.camYTStart = 0f;
+            corner = RIGHT_TOP;
         };
         orients2[0] = (Place place, int player) -> {
             place.splitScreenMode = 1;
@@ -198,8 +212,6 @@ public class SplitScreen {
                 place.singleCamera = true;
             }
         };
-        initialize2();
-        initialize3();
     }
 
     private static void initialize2() {
@@ -211,6 +223,7 @@ public class SplitScreen {
             place.camYStart = place.camYTStart = -0.5f;
             place.camXEnd = place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = 0.5f;
+            corner = LEFT_TOP;
         };
         players3h[1] = (Place place) -> {
             glViewport(0, 0, width1o2, height1o2);
@@ -218,6 +231,7 @@ public class SplitScreen {
             glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
             place.camYStart = place.camYTStart = place.camXStart = place.camXTStart = 0f;
             place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
+            corner = LEFT_BOTTOM;
         };
         players3h[2] = (Place place) -> {
             glViewport(width1o2, 0, width1o2, height1o2);
@@ -225,6 +239,7 @@ public class SplitScreen {
             place.camXStart = place.camYStart = place.camYTStart = 0f;
             place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;
+            corner = RIGHT_BOTTOM;
         };
         players3v[0] = (Place place) -> {
             glViewport(0, 0, width1o2, Display.getHeight());
@@ -233,6 +248,7 @@ public class SplitScreen {
             place.camXStart = place.camXTStart = place.camYStart = place.camYTStart = 0f;
             place.camXEnd = place.camXTEnd = 0.5f;
             place.camYEnd = place.camYTEnd = 1f;
+            corner = LEFT_TOP;
         };
         players3v[1] = (Place place) -> {
             glViewport(width1o2, height1o2, width1o2, height1o2);
@@ -241,6 +257,7 @@ public class SplitScreen {
             place.camXTStart = place.camXEnd = place.camYTStart = place.camYEnd = 0.5f;
             place.camXTEnd = place.camYTEnd = 1f;
             place.camXStart = place.camYStart = 0f;
+            corner = RIGHT_TOP;
         };
         players3v[2] = (Place place) -> {
             glViewport(width1o2, 0, width1o2, height1o2);
@@ -248,6 +265,7 @@ public class SplitScreen {
             place.camXStart = place.camYStart = place.camYTStart = 0f;
             place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;
+            corner = RIGHT_BOTTOM;
         };
         orients3[0] = (Place place, int player) -> {
             place.splitScreenMode = 3;
@@ -280,6 +298,7 @@ public class SplitScreen {
             place.camXStart = place.camXTStart = 0f;
             place.camYStart = place.camYTStart = -0.5f;
             place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
+            corner = LEFT_TOP;
         };
         players4[1] = (Place place) -> {
             glViewport(width1o2, height1o2, width1o2, height1o2);
@@ -287,12 +306,14 @@ public class SplitScreen {
             place.camXTStart = place.camXEnd = place.camYTStart = place.camYEnd = 0.5f;
             place.camXTEnd = place.camYTEnd = 1f;
             place.camXStart = place.camYStart = 0f;
+            corner = RIGHT_TOP;
         };
         players4[2] = (Place place) -> {
             glViewport(0, 0, width1o2, height1o2);
             glScissor(0, 0, width1o2, height1o2);
             place.camYStart = place.camYTStart = place.camXStart = place.camXTStart = 0f;
             place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
+            corner = LEFT_BOTTOM;
         };
         players4[3] = (Place place) -> {
             glViewport(width1o2, 0, width1o2, height1o2);
@@ -300,6 +321,7 @@ public class SplitScreen {
             place.camXStart = place.camYStart = place.camYTStart = 0f;
             place.camXTEnd = 1f;
             place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;
+            corner = RIGHT_BOTTOM;
         };
         splits[3] = (Place place, int player) -> {
             if (!Settings.joinSplitScreen || isFar(place)) {

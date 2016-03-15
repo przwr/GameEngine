@@ -128,8 +128,8 @@ public class MyMenu extends Menu {
         }
         controls.addChoice(player1);
         controls.addChoice(player2);
-//        controls.addChoice(player3);
-//        controls.addChoice(player4);
+        controls.addChoice(player3);
+        controls.addChoice(player4);
     }
 
     @Override

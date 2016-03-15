@@ -69,7 +69,7 @@ public class MyPlace extends Place {
     public MyPlace(Game game, int tileSize) {
         super(game, tileSize);
         Area.X_IN_TILES = 32;
-        Area.Y_IN_TILES = 20;
+        Area.Y_IN_TILES = 24;
         Place.xAreaInPixels = X_IN_TILES * tileSize;
         Place.yAreaInPixels = Y_IN_TILES * tileSize;
         dayCycle.setTime(12, 30);
