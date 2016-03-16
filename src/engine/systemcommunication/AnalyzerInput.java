@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class AnalyzerInput {
 
-    public static void AnaliseInput(String name) {
+    public static void AnalizeInput(String name) {
         String[] p = name.split("\\s+");
         int players = Integer.parseInt(p[0]);
         int act = Integer.parseInt(p[1]);
@@ -33,7 +33,20 @@ public class AnalyzerInput {
         }
     }
 
-    public static void Update() {
+    public static void AnalizeDefaultInput(String name, int player, int template) {
+        String[] p = name.split("\\s+");
+        if (Integer.parseInt(p[0]) == template + 1) {
+            int act = Integer.parseInt(p[1]);
+            int type = Integer.parseInt(p[2]);
+            int[] table = new int[p.length - 3];
+            for (int i = 0; i < p.length - 3; i++) {
+                table[i] = Integer.parseInt(p[i + 3]);
+            }
+            Settings.players[player].getController().actions[act].setInput(AnyInput.createInput(type, table));
+        }
+    }
+
+    public static void update() {
         FileWriter fw;
         try {
             fw = new FileWriter("res/input.ini");

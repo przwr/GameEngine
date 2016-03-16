@@ -43,7 +43,22 @@ public final class IO {
             BufferedReader read = new BufferedReader(fl);
             String line;
             while ((line = read.readLine()) != null) {
-                AnalyzerInput.AnaliseInput(line);
+                AnalyzerInput.AnalizeInput(line);
+            }
+            read.close();
+            fl.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void loadDefaultInputFromFile(File file, int player, int template) {
+        try {
+            FileReader fl = new FileReader(file);
+            BufferedReader read = new BufferedReader(fl);
+            String line;
+            while ((line = read.readLine()) != null) {
+                AnalyzerInput.AnalizeDefaultInput(line, player, template);
             }
             read.close();
             fl.close();

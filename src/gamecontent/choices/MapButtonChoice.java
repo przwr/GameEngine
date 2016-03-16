@@ -114,7 +114,7 @@ public class MapButtonChoice extends MenuChoice {
 
     private void set(AnyInput input) {
         ctrl.actions[i].setInput(input);
-        AnalyzerInput.Update();
+        AnalyzerInput.update();
         mapped = false;
     }
 

@@ -48,6 +48,10 @@ public class LangPL extends Language {
         menu.StartGame = "Uruchom grę!";
         menu.Language = "Język";
         menu.Controls = "Sterowanie";
+        menu.Default = "Domyślne";
+        menu.WSAD = "WSAD";
+        menu.Arrows = "Strzałki";
+        menu.Gamepad = "Pad";
         menu.Player1 = "Gracz 1";
         menu.Player2 = "Gracz 2";
         menu.Player3 = "Gracz 3";

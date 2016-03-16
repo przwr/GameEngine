@@ -52,6 +52,10 @@ public class Language {
         public String StartGame;
         public String Language;
         public String Controls;
+        public String Default;
+        public String WSAD;
+        public String Arrows;
+        public String Gamepad;
         public String Player1;
         public String Player2;
         public String Player3;

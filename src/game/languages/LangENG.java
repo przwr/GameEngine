@@ -47,6 +47,10 @@ public class LangENG extends Language {
         menu.StartGame = "Start game!";
         menu.Language = "Language";
         menu.Controls = "Controls";
+        menu.Default = "Default";
+        menu.WSAD = "WSAD";
+        menu.Arrows = "Arrows";
+        menu.Gamepad = "Gamepad";
         menu.Player1 = "Player 1";
         menu.Player2 = "Player 2";
         menu.Player3 = "Player 3";

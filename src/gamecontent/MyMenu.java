@@ -37,7 +37,6 @@ public class MyMenu extends Menu {
     private final Color gammaColor2 = new Color(0.16f, 0.16f, 0.16f);
     private final Color gammaColor3 = new Color(0.1f, 0.1f, 0.1f);
 
-
     public MyMenu(Game game) {
         super(game);
         setFirstRoot(new MenuChoice(Settings.language.menu.Menu, this));
@@ -75,7 +74,6 @@ public class MyMenu extends Menu {
         gameplay.addChoice(new JoinSplitScreenChoice(Settings.language.menu.JoinSS, this));
 //        options.addChoice(gameplay);
 
-
         MenuChoice controls = new MenuChoice(Settings.language.menu.Controls, this);
         addControlsChoices(controls);
         options.addChoice(controls);
@@ -112,10 +110,37 @@ public class MyMenu extends Menu {
         MenuChoice player3 = new MenuChoice(Settings.language.menu.Player3, this);
         MenuChoice player4 = new MenuChoice(Settings.language.menu.Player4, this);
         int i;
-        for (i = 0; i < MyController.MENU_ACTIONS_COUNT; i++) {
-            player1.addChoice(new NotMapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0], i));
-        }
-        for (; i < Settings.actionsCount; i++) {
+//        for (i = 0; i < MyController.MENU_ACTIONS_COUNT; i++) {
+//            player1.addChoice(new NotMapButtonChoice(Settings.language.menu.Actions[i], this, Settings.players[0], i));
+//        }
+        MenuChoice player1Default = new MenuChoice(Settings.language.menu.Default, this);
+        player1Default.addChoice(new DefaultInputChoice(Settings.language.menu.WSAD, 0, 0, this));
+        player1Default.addChoice(new DefaultInputChoice(Settings.language.menu.Arrows, 0, 1, this));
+        player1Default.addChoice(new DefaultInputChoice(Settings.language.menu.Gamepad, 0, 2, this));
+        player1.addChoice(player1Default);
+
+        MenuChoice player2Default = new MenuChoice(Settings.language.menu.Default, this);
+        player2Default.addChoice(new DefaultInputChoice(Settings.language.menu.WSAD, 1, 0, this));
+        player2Default.addChoice(new DefaultInputChoice(Settings.language.menu.Arrows, 1, 1, this));
+        player2Default.addChoice(new DefaultInputChoice(Settings.language.menu.Gamepad, 1, 2, this));
+        player2.addChoice(player2Default);
+
+        MenuChoice player3Default = new MenuChoice(Settings.language.menu.Default, this);
+        player3Default.addChoice(new DefaultInputChoice(Settings.language.menu.WSAD, 2, 0, this));
+        player3Default.addChoice(new DefaultInputChoice(Settings.language.menu.Arrows, 2, 1, this));
+        player3Default.addChoice(new DefaultInputChoice(Settings.language.menu.Gamepad, 2, 2, this));
+        player3.addChoice(player3Default);
+
+        MenuChoice player4Default = new MenuChoice(Settings.language.menu.Default, this);
+        player4Default.addChoice(new DefaultInputChoice(Settings.language.menu.WSAD, 3, 0, this));
+        player4Default.addChoice(new DefaultInputChoice(Settings.language.menu.Arrows, 3, 1, this));
+        player4Default.addChoice(new DefaultInputChoice(Settings.language.menu.Gamepad, 3, 2, this));
+        player4.addChoice(player4Default);
+
+//        player2.addChoice(new MapButtonChoice(Settings.language.menu.Actions[3], this, 1, 3));
+//        player3.addChoice(new MapButtonChoice(Settings.language.menu.Actions[3], this, 2, 3));
+//        player4.addChoice(new MapButtonChoice(Settings.language.menu.Actions[3], this, 3, 3));
+        for (i = MyController.MENU_ACTIONS_COUNT; i < Settings.actionsCount; i++) {
             player1.addChoice(new MapButtonChoice(Settings.language.menu.Actions[i], this, 0, i));
         }
         player2.addChoice(new MapButtonChoice(Settings.language.menu.Actions[3], this, 1, 3));
@@ -154,7 +179,7 @@ public class MyMenu extends Menu {
             }
         }
         Drawer.renderStringCentered(root.getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1))
-                        * smallFont.getHeight() * 0.7),
+                * smallFont.getHeight() * 0.7),
                 bigFont, normalColor);
         line--;
         if (shift > 0) {
