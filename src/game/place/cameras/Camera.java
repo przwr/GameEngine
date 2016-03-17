@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class Camera {
 
     //    private static final double[] scales = {0.75, 0.5, 0.5, 0.375, 0.375, 0.25, 1, 0.75, 0.75, 0.5, 0.5, 0.375};
-    private static final double[] scales = {0.75, 0.5, 0.375, 0.5, 0.375, 0.25, 0.375, 0.25, 0.125, 1, 0.75, 0.5, 0.75, 0.5, 0.375, 0.5, 0.375, 0.25};
+    private static final double[] scales = {1, 0.75, 0.5, 0.375, 0.25, 0.1875};
     //    private static final short O7FULL = 0, O7FULL_ZOOMED = 1, O7HALF = 2, O7HALF_ZOOMED = 3, O7QUARTER = 4, O7QUARTER_ZOOMED = 5,
 //            FULL = 6, FULL_ZOOMED = 7, HALF = 8, HALF_ZOOMED = 9, QUARTER = 10, QUARTER_ZOOMED = 11;
     final ArrayList<GameObject> owners = new ArrayList<>();
@@ -168,16 +168,17 @@ public abstract class Camera {
     }
 
     void setScale(int ssX, int ssY, int ownersCount) {
+        int nativeModifier = Settings.nativeScale == 1 ? 0 : 1;
         switch (ownersCount) {
             case 0:
-                scale = scales[((int) (Settings.nativeScale) * 9) + zoom];
-                break;
             case 1:
-            case 3:
-                scale = scales[(int) (Settings.nativeScale) * 9 + (ownersCount == 1 ? 1 : 2) + zoom];
+                scale = scales[nativeModifier + ownersCount + zoom];
                 break;
             case 2:
-                scale = scales[(int) (Settings.nativeScale) * 9 + (ssX == ssY ? 6 : 3) + zoom];
+                scale = scales[nativeModifier + (ssX == ssY ? 2 : 1) + zoom];
+                break;
+            case 3:
+                scale = scales[nativeModifier + 2 + zoom];
                 break;
         }
     }

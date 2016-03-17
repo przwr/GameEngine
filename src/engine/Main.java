@@ -184,8 +184,8 @@ public class Main {
             glEnable(GL_MULTISAMPLE);
             glEnable(GL_BLEND);
             glEnable(GL_SCISSOR_TEST);
-//            glEnable(GL_CULL_FACE);
-//            glCullFace(GL_BACK);
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glMatrixMode(GL_PROJECTION);
             glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
@@ -318,6 +318,7 @@ public class Main {
             game.getInput();
             game.update();
         } catch (Exception exception) {
+            exception.printStackTrace();
             game.endGame();
             game.update();
             ErrorHandler.exception(exception);

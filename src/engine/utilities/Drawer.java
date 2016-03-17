@@ -8,12 +8,15 @@ package engine.utilities;
 import game.ScreenPlace;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Appearance;
 import sprites.fbo.FrameBufferObject;
+import sprites.shaders.SpriteShader;
+import sprites.shaders.StaticShader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +34,8 @@ import static org.lwjgl.opengl.GL15.GL_SRC1_RGB;
 public class Drawer {
 
     private static final Texture font = loadFontTexture();
+    public static StaticShader staticShader;
+    public static SpriteShader spriteShader;
     public static int displayWidth, displayHeight;
     private static float xCurrent, yCurrent;
     private static Color currentColor = Color.white;
@@ -76,10 +81,44 @@ public class Drawer {
 
     public static void refreshColor() {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, 1.0f);
+        Drawer.spriteShader.start();
+        spriteShader.loadColourModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, 1.0f));
+        Drawer.spriteShader.stop();
     }
 
     public static void setColorAlpha(float alpha) {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, alpha);
+        Drawer.spriteShader.start();
+        spriteShader.loadColourModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, alpha));
+        Drawer.spriteShader.stop();
+    }
+
+    public static void setColorStatic(Color color) {
+        glColor4f(color.r, color.g, color.b, color.a);
+        Drawer.spriteShader.start();
+        spriteShader.loadColourModifier(new Vector4f(color.r, color.g, color.b, color.a));
+        Drawer.spriteShader.stop();
+    }
+
+    public static void setColorBlended(Color color) {
+        glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
+        Drawer.spriteShader.start();
+        spriteShader.loadColourModifier(new Vector4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a));
+        Drawer.spriteShader.stop();
+    }
+
+    public static void setColorStatic(float r, float g, float b, float a) {
+        glColor4f(r, g, b, a);
+        Drawer.spriteShader.start();
+        spriteShader.loadColourModifier(new Vector4f(r, g, b, a));
+        Drawer.spriteShader.stop();
+    }
+
+    public static void setColorBlended(float r, float g, float b, float a) {
+        glColor4f(r * currentColor.r, g * currentColor.g, b * currentColor.b, a);
+        Drawer.spriteShader.start();
+        spriteShader.loadColourModifier(new Vector4f(r * currentColor.r, g * currentColor.g, b * currentColor.b, a));
+        Drawer.spriteShader.stop();
     }
 
     public static Color getCurrentColor() {
@@ -490,21 +529,6 @@ public class Drawer {
         glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
     }
 
-    public static void setColorStatic(Color color) {
-        glColor4f(color.r, color.g, color.b, color.a);
-    }
-
-    public static void setColorBlended(Color color) {
-        glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
-    }
-
-    public static void setColorStatic(float r, float g, float b, float a) {
-        glColor4f(r, g, b, a);
-    }
-
-    public static void setColorBlended(float r, float g, float b, float a) {
-        glColor4f(r * currentColor.r, g * currentColor.g, b * currentColor.b, a);
-    }
 
     public static void renderStringCentered(String message, double x, double y, FontHandler font, Color color) {
         Drawer.bindFontTexture();
@@ -515,5 +539,21 @@ public class Drawer {
     public static void renderString(String message, double x, double y, FontHandler font, Color color) {
         Drawer.bindFontTexture();
         font.drawLine(message, (int) x, (int) y, color);
+    }
+
+    public static void setShaders() {
+        staticShader = new StaticShader();
+        spriteShader = new SpriteShader();
+    }
+
+    public static void cleanUp() {
+        if (staticShader != null) {
+            staticShader.cleanUp();
+            staticShader = null;
+        }
+        if (staticShader != null) {
+            spriteShader.cleanUp();
+            spriteShader = null;
+        }
     }
 }

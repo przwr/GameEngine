@@ -32,6 +32,7 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sounds.Sound;
 import sprites.fbo.FrameBufferObject;
+import sprites.vbo.VertexBufferObject;
 
 import java.io.File;
 import java.util.Iterator;
@@ -43,6 +44,8 @@ import static engine.systemcommunication.IO.loadInputFromFile;
  */
 public class MyGame extends Game {
 
+    static long sum = 0;
+    static int count = 0;
     private final getInput[] inputs = new getInput[2];
     private final updateType[] ups = new updateType[2];
     public boolean gameLoaded;
@@ -201,11 +204,20 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
+        long start = System.nanoTime();
         if (running && place != null) {
             place.render();
         } else {
             Drawer.clearScreen(0);
             menu.render();
+        }
+        long end = System.nanoTime();
+        sum += (end - start);
+        count++;
+        if (count == 200) {
+            System.out.println("Time: " + (sum / 200000f));
+            count = 0;
+            sum = 0;
         }
     }
 
@@ -223,6 +235,7 @@ public class MyGame extends Game {
     @Override
     public void startGame() {
         Main.backgroundLoader.resetFirstLoaded();
+        Drawer.setShaders();
         int playersCount = Settings.playersCount;
         if (designer) {
             place = new ObjectPlace(this, 64);
@@ -475,6 +488,9 @@ public class MyGame extends Game {
         GrassClump.fbos.clear();
         Place.currentCamera = null;
         Renderer.place = null;
+        Drawer.cleanUp();
+        VertexBufferObject.cleanUp();
+        FrameBufferObject.cleanUp();
         for (int i = 0; i < players.length; i++) {
             if (players[i] != null) {
                 players[i].clearLights();
@@ -494,7 +510,6 @@ public class MyGame extends Game {
         place = null;
         mode = 0;
         Main.restartBackGroundLoader();
-        FrameBufferObject.cleanUp();
         Methods.gc();
     }
 

@@ -68,16 +68,15 @@ public class MyGUI extends GUIObject {
                 0, 2 * base, 2 * base, base, 0, 0,
                 base, 2 * base, 2 * base, 0, 0, 0,
                 0, base, 2 * base, 2 * base, 2 * base, 0};
+        arrows = new VertexBufferObject(arrowsVertices);
+
         int r = size / 2 - border / 3 - border / 6;
         float[] ringVs1 = Drawer.getRingVertices(size / 2, size / 2, r, border / 3, size);
         float[] ringVs2 = Drawer.getRingVertices(size + border, size + border, size + border, border / 3, size);
         float[] ringVs3 = Drawer.getRingVertices(size + border, size + border, size, border / 3, size);
-
         addSize(0, ringVs1.length);
         addSize(1, ringVs2.length);
         addSize(2, ringVs3.length);
-
-        arrows = new VertexBufferObject(arrowsVertices);
         rings = new VertexBufferObject(Methods.concatAll(ringVs1, ringVs2, ringVs3));
     }
 

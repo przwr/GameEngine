@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 /**
@@ -15,47 +16,86 @@ import java.util.ArrayList;
 public class VertexBufferObject {
 
 
-    private static ArrayList<Integer> vaos = new ArrayList<>();
-    private static ArrayList<Integer> vbos = new ArrayList<>();
+    private static ArrayList<VertexBufferObject> vbos = new ArrayList<>();
 
     private int vaoID;
+    private ArrayList<Integer> vbosIDs = new ArrayList<>();
     private int vertexCount;
 
     public VertexBufferObject(float[] positions) {
         int vaoID = createVAO();
-        storeDataInAttributeList(0, positions);
+        storeDataInAttributeList(0, 2, positions);
         GL30.glBindVertexArray(0);
         this.vaoID = vaoID;
         this.vertexCount = positions.length / 2;
+        vbos.add(this);
+    }
+
+    public VertexBufferObject(float[] positions, float[] textureCoords, int[] indices) {
+        int vaoID = createVAO();
+        storeDataInAttributeList(0, 2, positions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        bindIndicesBuffer(indices);
+        GL30.glBindVertexArray(0);
+        this.vaoID = vaoID;
+        this.vertexCount = indices.length;
+        vbos.add(this);
     }
 
     public static void cleanUp() {
-        for (int vao : vaos) {
-            GL30.glDeleteVertexArrays(vao);
+        for (VertexBufferObject vbo : vbos) {
+            vbo.delete();
         }
-        for (int vbo : vbos) {
-            GL15.glDeleteBuffers(vbo);
-        }
+        vbos.clear();
     }
 
     private static int createVAO() {
         int vaoID = GL30.glGenVertexArrays();
-        vaos.add(vaoID);
         GL30.glBindVertexArray(vaoID);
         return vaoID;
     }
 
-    private static void storeDataInAttributeList(int attributeNumber, float[] data) {
+    public void clear() {
+        delete();
+        if (vbos.contains(this)) {
+            vbos.remove(this);
+        }
+    }
+
+    private void delete() {
+        GL30.glDeleteVertexArrays(vaoID);
+        for (int vbo : vbosIDs) {
+            GL15.glDeleteBuffers(vbo);
+        }
+        vbosIDs.clear();
+    }
+
+    private void storeDataInAttributeList(int attributeNumber, int size, float[] data) {
         int vboID = GL15.glGenBuffers();
-        vbos.add(vboID);
+        vbosIDs.add(vboID);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
         FloatBuffer buffer = storeDataInFloatBuffer(data);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attributeNumber, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(attributeNumber, size, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 
-    private static FloatBuffer storeDataInFloatBuffer(float[] data) {
+    private void bindIndicesBuffer(int[] indices) {
+        int vboID = GL15.glGenBuffers();
+        vbosIDs.add(vboID);
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
+        IntBuffer buffer = storeDataInIntBuffer(indices);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+    }
+
+    private IntBuffer storeDataInIntBuffer(int[] data) {
+        IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
+        buffer.put(data);
+        buffer.flip();
+        return buffer;
+    }
+
+    private FloatBuffer storeDataInFloatBuffer(float[] data) {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
         buffer.put(data);
         buffer.flip();
@@ -89,8 +129,24 @@ public class VertexBufferObject {
         GL30.glBindVertexArray(0);
     }
 
-    public int getVaoID() {
-        return vaoID;
+    public void renderTextured(int start, int renderCount) {
+        GL30.glBindVertexArray(vaoID);
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL11.glDrawElements(GL11.GL_TRIANGLES, renderCount, GL11.GL_UNSIGNED_INT, start);
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL30.glBindVertexArray(0);
+    }
+
+    public void renderTexturePiece(int start) {
+        GL30.glBindVertexArray(vaoID);
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL11.glDrawElements(GL11.GL_TRIANGLES, 6, GL11.GL_UNSIGNED_INT, 0);
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL30.glBindVertexArray(0);
     }
 
     public int getVertexCount() {

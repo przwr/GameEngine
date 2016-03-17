@@ -6,11 +6,17 @@
 package sprites;
 
 import game.gameobject.entities.Player;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  * @author przemek
  */
 public interface Appearance {
+
+    Matrix4f transformationMatrix = new Matrix4f();
+    Vector3f translationVector = new Vector3f();
+//    Vector4f colorModifier = new Vector4f(1f, 1f, 1f, 1f);
 
     boolean bindCheck();
 
