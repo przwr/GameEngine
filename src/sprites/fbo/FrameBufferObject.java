@@ -37,7 +37,7 @@ public abstract class FrameBufferObject implements Appearance {
         this.height = height;
         texture = glGenTextures();
         version = Settings.supportedFrameBufferObjectVersion;
-        if (multiSample && Settings.multiSampleSupported && Settings.samplesCount > 0) {
+        if (multiSample && Settings.multiSampleSupported) {
             if (version == NATIVE) {
                 type = MULTI_SAMPLE_NATIVE;
             } else if (version == ARB) {

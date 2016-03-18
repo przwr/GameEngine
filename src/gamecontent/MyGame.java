@@ -204,21 +204,21 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-        long start = System.nanoTime();
+//        long start = System.nanoTime();
         if (running && place != null) {
             place.render();
         } else {
             Drawer.clearScreen(0);
             menu.render();
         }
-        long end = System.nanoTime();
-        sum += (end - start);
-        count++;
-        if (count == 200) {
-            System.out.println("Time: " + (sum / 200000f));
-            count = 0;
-            sum = 0;
-        }
+//        long end = System.nanoTime();
+//        sum += (end - start);
+//        count++;
+//        if (count == 200) {
+//            System.out.println("Render Time: " + (sum / 200000f) + " µs");
+//            count = 0;
+//            sum = 0;
+//        }
     }
 
     @Override

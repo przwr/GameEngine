@@ -136,9 +136,9 @@ public class Settings {
             GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
             supportedFrameBufferObjectVersion = NATIVE;
             multiSampleSupported = true;
-            maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES) / 2;
-            maxSamples = maxSamples > 8 ? 8 : maxSamples;
-            samplesCount = (samplesCount > maxSamples) ? maxSamples : samplesCount;
+            maxSamples = glGetInteger(GL30.GL_MAX_SAMPLES);
+            maxSamples = Math.min(8, maxSamples);
+            samplesCount = Math.min(samplesCount, maxSamples);
         } catch (Exception exception) {
             if (GLContext.getCapabilities().GL_ARB_framebuffer_object) {
                 supportedFrameBufferObjectVersion = ARB;

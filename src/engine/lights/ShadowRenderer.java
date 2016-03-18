@@ -152,10 +152,10 @@ public class ShadowRenderer {
         for (GameObject object : area.getNearDepthObjects()) {
             Figure tempShade = object.getCollision();
             if (tempShade != null && tempShade.isLitable() && tempShade.getOwner().getAppearance() != null && object.isVisible()
-                    && object.getY() - tempShade.getActualHeight() + tempShade.getHeightHalf() <= lightYEnd
-                    && object.getY() + tempShade.getActualHeight() - tempShade.getHeightHalf() >= lightYStart
-                    && object.getX() - tempShade.getActualWidth() / 2 <= lightXEnd
-                    && object.getX() + tempShade.getActualWidth() / 2 >= lightXStart) {
+                    && object.getYSpriteBegin() <= lightYEnd
+                    && object.getYSpriteEnd() >= lightYStart
+                    && object.getXSpriteBegin() <= lightXEnd
+                    && object.getXSpriteEnd() >= lightXStart) {
                 shades.add(tempShade);
             }
         }

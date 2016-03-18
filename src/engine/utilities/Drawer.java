@@ -43,7 +43,7 @@ public class Drawer {
     private static Texture loadFontTexture() {
         try {
             InputStream stream = ResourceLoader.getResourceAsStream("/res/textures/white.png");
-            Texture t = TextureLoader.getTexture("png", stream, GL_LINEAR);
+            Texture t = TextureLoader.getTexture("png", stream, GL_NEAREST);
             stream.close();
             return t;
         } catch (IOException exception) {
@@ -70,13 +70,13 @@ public class Drawer {
     public static void refreshForRegularDrawing() {
         refreshColor();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        if (Display.isFullscreen()) {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        } else {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        }
+//        if (Display.isFullscreen()) {
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//        } else {
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//        }
     }
 
     public static void refreshColor() {
@@ -544,6 +544,7 @@ public class Drawer {
     public static void setShaders() {
         staticShader = new StaticShader();
         spriteShader = new SpriteShader();
+//        Drawer.spriteShader.start();
     }
 
     public static void cleanUp() {

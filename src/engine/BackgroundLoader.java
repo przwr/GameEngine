@@ -10,8 +10,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.GLSync;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Sprite;
 import sprites.SpriteBase;
@@ -21,7 +19,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glFlush;
 import static org.lwjgl.opengl.GL32.GL_SYNC_GPU_COMMANDS_COMPLETE;
 import static org.lwjgl.opengl.GL32.glFenceSync;
 
@@ -204,13 +202,7 @@ public abstract class BackgroundLoader {
     }
 
     private void loadTexture(Sprite sprite, InputStream stream) {
-        Texture tex = null;
-        try {
-            tex = TextureLoader.getTexture("png", stream, sprite.AA ? GL_LINEAR : GL_NEAREST);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        sprite.setTexture(tex);
+        sprite.setTexture(SpriteBase.loadTextureFromStream(stream, sprite.AA));
 //        System.out.println("Texture loaded: " + sprite.path);
     }
 

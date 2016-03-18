@@ -15,7 +15,6 @@ import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.fbo.FrameBufferObject;
 import sprites.fbo.MultiSampleFrameBufferObject;
-import sprites.fbo.RegularFrameBufferObject;
 
 import java.util.*;
 
@@ -59,7 +58,7 @@ public class Bush extends GameObject {
         String bushCode = width + "-" + height + "-" + spread + "-" + ins;
         fbo = fbos.get(bushCode);
         if (fbo == null) {
-            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) : new RegularFrameBufferObject(fboWidth, fboHeight);
+            fbo = new MultiSampleFrameBufferObject(fboWidth, fboHeight, Settings.maxSamples);
             fbos.put(bushCode, fbo);
         }
         appearance = fbo;

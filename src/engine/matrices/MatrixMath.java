@@ -20,10 +20,15 @@ public class MatrixMath {
         return matrix;
     }
 
-    public static void transformationMatrix(Matrix4f matrix, Vector3f translation) {
+    public static void transformMatrix(Matrix4f matrix, Vector3f translation, float xScale, float yScale) {
         matrix.setIdentity();
         Matrix4f.translate(translation, matrix, matrix);
         Matrix4f.translate(translation, matrix, matrix);
+        Matrix4f.scale(new Vector3f(xScale, yScale, 1f), matrix, matrix);
     }
 
+    public static void scaleMatrix(Matrix4f matrix, float scale) {
+        matrix.setIdentity();
+        Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
+    }
 }

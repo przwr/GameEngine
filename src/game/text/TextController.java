@@ -985,7 +985,7 @@ public class TextController extends GUIObject {
                 }
             }
         }
-        
+
         @Override
         public void clear() {
             super.clear();

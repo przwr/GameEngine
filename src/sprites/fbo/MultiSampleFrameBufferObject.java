@@ -12,11 +12,11 @@ public class MultiSampleFrameBufferObject extends FrameBufferObject {
     private int frameBufferObjectMultiSample;
     private int textureMultiSample;
 
-    public MultiSampleFrameBufferObject(int width, int height) {
+    public MultiSampleFrameBufferObject(int width, int height, int... samples) {
         super(width, height, true);
         createFrameBufferObjects();
         textureMultiSample = glGenTextures();
-        type.makeMultiSample(Settings.samplesCount, textureMultiSample, width, height, frameBufferObjectMultiSample);
+        type.makeMultiSample(samples.length > 0 ? samples[0] : Settings.samplesCount, textureMultiSample, width, height, frameBufferObjectMultiSample);
         type.makeTexture(texture, frameBufferObject, width, height);
         type.deactivate();
     }

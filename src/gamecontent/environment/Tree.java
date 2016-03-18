@@ -15,7 +15,6 @@ import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.fbo.FrameBufferObject;
 import sprites.fbo.MultiSampleFrameBufferObject;
-import sprites.fbo.RegularFrameBufferObject;
 
 import java.util.*;
 
@@ -61,7 +60,7 @@ public class Tree extends GameObject {
         String treeCode = width + "-" + height + "-" + spread + "-" + branchless + "-" + ins;
         fbo = fbos.get(treeCode);
         if (fbo == null) {
-            fbo = (Settings.samplesCount > 0) ? new MultiSampleFrameBufferObject(fboWidth, fboHeight) : new RegularFrameBufferObject(fboWidth, fboHeight);
+            fbo = new MultiSampleFrameBufferObject(fboWidth, fboHeight, Settings.maxSamples);
             fbos.put(treeCode, fbo);
         }
         woodHeight = height * 2 + 20;
@@ -237,7 +236,8 @@ public class Tree extends GameObject {
                 drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
                         * fraction / 3));
             } else {
-                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round(height * fraction / 3));
+                drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math.round
+                        (height * fraction / 3));
             }
             left = !left;
         }
@@ -468,8 +468,8 @@ public class Tree extends GameObject {
     }
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
-        if (Math.abs(points.get(i).getY() + y) < leafHeight * 0.7f
-                && (points.get(i).getY() + y < 0 || points.get(i).getY() + y < leafHeight * 0.3)
+        if (Math.abs(points.get(i).getY() + y) < leafHeight * 0.66f
+                && (points.get(i).getY() + y < 0 || points.get(i).getY() + y < leafHeight * 0.33f)
                 && Math.abs(points.get(i).getX() + x) < fbo.getWidth() / 2 - leaf.getWidth() - leaf.getHeight()) {
             float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
             change -= Math.abs(points.get(i).getX() + x) / maxX / 4;

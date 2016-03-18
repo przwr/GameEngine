@@ -59,10 +59,10 @@ public abstract class Mob extends Entity {
         this.sightAngle = 180;
         this.setMaxSpeed(speed);
         if (npc.length > 0) {
-            this.appearance = place.getSprite(spriteName, "entities/npcs");
+            this.appearance = place.getSprite(spriteName, "entities/npcs", false, true, true);
             setTargetable(false);
         } else {
-            this.appearance = place.getSprite(spriteName, "entities/mobs");
+            this.appearance = place.getSprite(spriteName, "entities/mobs", true, true);
         }
         initialize(name, x, y);
         this.mobID = mobID;

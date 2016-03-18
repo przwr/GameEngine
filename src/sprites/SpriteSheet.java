@@ -13,8 +13,6 @@ import game.Settings;
 import org.newdawn.slick.opengl.Texture;
 import sprites.vbo.VertexBufferObject;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * @author przemek
  */
@@ -89,22 +87,30 @@ public class SpriteSheet extends Sprite {
                 0, height,
                 width, height,
                 width, 0,
+                xStart, yStart,
+                xStart, yStart + heightWhole,
+                xStart + widthWhole, yStart + heightWhole,
+                xStart + widthWhole, yStart,
                 0, 0,
-                0, heightWhole,
-                widthWhole, heightWhole,
-                widthWhole, 0,
+                0, height,
+                width, height,
+                width, 0
         };
         float[] textureCoordinates = {
-                0, 0,
+                0, 0,                           //Klatki
                 0, 1f / yTiles,
                 1f / xTiles, 1f / yTiles,
                 1f / xTiles, 0,
-                0, 0,
-                0, 1,
-                1, 1,
-                1, 0
+                0, 0,                           //Całość
+                0, 1f,
+                1f, 1f,
+                1f, 0,
+                1f / xTiles, 0,                 //Klatki odwrócone
+                1f / xTiles, 1f / yTiles,
+                0, 1f / yTiles,
+                0, 0
         };
-        int[] indices = {0, 1, 3, 3, 1, 2, 0, 1, 3, 3, 1, 2};
+        int[] indices = {0, 1, 3, 3, 1, 2, 4, 5, 7, 7, 5, 6, 8, 9, 11, 11, 9, 10};
         vbo = new VertexBufferObject(vertices, textureCoordinates, indices);
     }
 
@@ -120,22 +126,15 @@ public class SpriteSheet extends Sprite {
 
     @Override
     public void render() {  //Rysuje CAŁY spriteSheet
-        bindCheck();
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(0, 0);
-        glVertex2f(xStart, yStart);
-        glTexCoord2f(0, 1);
-        glVertex2f(xStart, yStart + heightWhole);
-        glTexCoord2f(1, 1);
-        glVertex2f(xStart + widthWhole, yStart + heightWhole);
-
-        glTexCoord2f(1, 1);
-        glVertex2f(xStart + widthWhole, yStart + heightWhole);
-        glTexCoord2f(1, 0);
-        glVertex2f(xStart + widthWhole, yStart);
-        glTexCoord2f(0, 0);
-        glVertex2f(xStart, yStart);
-        glEnd();
+        if (bindCheck()) {
+            translationVector.set(0, 0);
+            MatrixMath.transformMatrix(transformationMatrix, translationVector, 1f, 1f);
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
+            vbo.renderTextured(6, 6);
+            Drawer.spriteShader.stop();
+        }
     }
 
     @Override
@@ -147,59 +146,41 @@ public class SpriteSheet extends Sprite {
         return isStartMoving ? (startingPoints[frame] != null ? startingPoints[frame].getValue() : -1) : frame;
     }
 
-
     public void renderPiece(int piece) {
+        renderPiece(piece, 1f, 1f, 0);
+    }
+
+    public void renderPiece(int piece, float xScale, float yScale, int type) {
         if (bindCheck()) {
             frame = piece;
             translationVector.set(getXStart() / 2f, getYStart() / 2f);
-            MatrixMath.transformationMatrix(transformationMatrix, translationVector);
-            piece = getFramesPosition(piece);
-            if (isValidPiece(piece)) {
+            MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
+            frame = getFramesPosition(frame);
+            if (isValidPiece(frame)) {
                 Drawer.spriteShader.start();
-//                Drawer.spriteShader.loadColourModifier(colorModifier);
                 Drawer.spriteShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
                 Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
-                vbo.renderTextured(0, 6);
+                vbo.renderTextured(type * 6, 6);
                 Drawer.spriteShader.stop();
             }
         }
-
-//        frame = piece;
-//        piece = getFramesPosition(piece);
-//        if (isValidPiece(piece)) {
-//            int x = (int) (piece % xTiles);
-//            int y = (int) (piece / xTiles);
-//            renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
-//        }
     }
 
     public void renderPiece(int x, int y) {
         if (areValidCoordinates(x, y)) {
-            frame = x + y * xTiles;
-            renderSpritePiece((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
+            renderPiece(x + y * xTiles);
         }
     }
 
     public void renderPieceResized(int x, int y, float width, float height) {
-        if (areValidCoordinates(x, y)) {
-            frame = x + y * xTiles;
-            renderSpritePieceResized((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, width, height);
+        if (bindCheck()) {
+            renderPiece(x + y * xTiles, width / this.width, height / this.height, 0);
         }
     }
 
     public void renderPiecePart(int id, int xStart, int xEnd) {
         id = getFramesPosition(id);
-        int x = id % xTiles;
-        int y = id / xTiles;
-        if (isValidPiece(id) && areValidCoordinates(x, y)) {
-            frame = x + y * xTiles;
-            if (xStart > xEnd) {
-                int temp = xStart;
-                xStart = xEnd;
-                xEnd = temp;
-            }
-            renderSpritePiecePart((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
-        }
+        renderPiecePart(id % xTiles, id / xTiles, xStart, xEnd);
     }
 
     public void renderPiecePart(int x, int y, int xStart, int xEnd) {
@@ -214,14 +195,8 @@ public class SpriteSheet extends Sprite {
         }
     }
 
-    public void renderPieceMirrored(int id) {
-        id = getFramesPosition(id);
-        int x = id % xTiles;
-        int y = id / xTiles;
-        if (isValidPiece(id) && areValidCoordinates(x, y)) {
-            frame = id;
-            renderSpritePieceMirrored((float) x / xTiles, (float) (x + 1) / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles);
-        }
+    public void renderPieceMirrored(int piece) {
+        renderPiece(piece, 1f, 1f, 2);
     }
 
     private boolean isValidPiece(int piece) {

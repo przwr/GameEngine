@@ -18,15 +18,13 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author Wojtek
  */
 public class SpriteBase {
 
-    //    private static final int GL_MODE = org.lwjgl.opengl.GL11.GL_NEAREST;
     private final Map<String, Sprite> sprites = new HashMap<>();
 
     public SpriteBase() {
@@ -54,6 +52,18 @@ public class SpriteBase {
                 return "res/textures/" + folder + (folder.endsWith("/") ? "" : "/");
             }
         }
+    }
+
+    public static Texture loadTextureFromStream(InputStream stream, boolean AA) {
+        Texture tex = null;
+        try {
+            tex = TextureLoader.getTexture("png", stream, AA ? GL_LINEAR : GL_NEAREST);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, AA ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, AA ? GL_LINEAR : GL_NEAREST);
+        return tex;
     }
 
     public Sprite getSprite(String textureKey, String folder, boolean... now) {
@@ -199,11 +209,7 @@ public class SpriteBase {
         sprite.yOffset = yOffset;
         sprite.actualWidth = actualWidth;
         sprite.actualHeight = actualHeight;
-        if (now.length > 0 && now[0]) {
-            loadTextureIfRequired(now, sprite);
-        } else {
-            Main.backgroundLoader.requestSprite(sprite);
-        }
+        loadTextureIfRequired(now, sprite);
         return sprite;
     }
 
@@ -245,11 +251,7 @@ public class SpriteBase {
         sprite = Sprite.create(path, folder, width, height, 0, 0, this);
         sprite.setKey(key);
         sprite.AA = true;
-        if (now.length > 0 && now[0]) {
-            loadTextureIfRequired(now, sprite);
-        } else {
-            Main.backgroundLoader.requestSprite(sprite);
-        }
+        loadTextureIfRequired(now, sprite);
         return sprite;
     }
 
@@ -309,27 +311,26 @@ public class SpriteBase {
         }
         sprite.setKey(key);
         sprite.AA = true;
-        if (now.length > 0 && now[0]) {
-            loadTextureIfRequired(now, sprite);
-        } else {
-            Main.backgroundLoader.requestSprite(sprite);
-        }
+        loadTextureIfRequired(now, sprite);
         return sprite;
     }
 
     private void loadTextureIfRequired(boolean[] now, Sprite sprite) {
+        if (now.length > 1) {
+            sprite.AA = now[1];
+        }
         if (now.length > 0 && now[0] && sprite.getTextureID() == 0) {
-            Texture tex = null;
+            InputStream stream = ResourceLoader.getResourceAsStream(sprite.getPath());
+            sprite.setTexture(loadTextureFromStream(stream, sprite.AA));
             try {
-                InputStream stream = ResourceLoader.getResourceAsStream(sprite.getPath());
-                tex = TextureLoader.getTexture("png", stream, sprite.AA ? GL_LINEAR : GL_NEAREST);
                 stream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            sprite.setTexture(tex);
-            //System.out.println("Zaladowano " + sprite.getKey());
             Main.backgroundLoader.notifySprite(sprite);
+            //System.out.println("Zaladowano " + sprite.getKey());
+        } else {
+            Main.backgroundLoader.requestSprite(sprite);
         }
     }
 

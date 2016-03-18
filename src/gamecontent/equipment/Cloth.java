@@ -84,11 +84,11 @@ public class Cloth {
     public SpriteSheet getLastPart() {
         return hasLast ? list.get(list.size() - 1) : null;
     }
-    
+
     public SpriteSheet getPart(int i) {
         return list.get(i);
     }
-    
+
     public int getFirstPartNumber() {
         return 0;
     }
