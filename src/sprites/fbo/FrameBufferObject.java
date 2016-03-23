@@ -24,7 +24,6 @@ public abstract class FrameBufferObject implements Appearance {
     private static final FrameBufferType MULTI_SAMPLE_NATIVE = new MultiSampleNative();
     private static final FrameBufferType MULTI_SAMPLE_ARB = new MultiSampleARB();
     private static final FrameBufferType MULTI_SAMPLE_EXT = new MultiSampleEXT();
-    private static VertexBufferObject screenVBO;
     private static float lastScreenData[] = new float[10];
     private static float checkSum = 0;
     private static List<FrameBufferObject> instances = new ArrayList<>();
@@ -127,16 +126,6 @@ public abstract class FrameBufferObject implements Appearance {
             };
             int[] indices = {0, 1, 3, 2};
             vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
-        }
-        if (screenVBO == null) {
-            float[] vertices = {
-                    0, 0, 0, 0, 0, 0, 0, 0
-            };
-            float[] textureCoordinates = {
-                    0, 0, 0, 0, 0, 0, 0, 0
-            };
-            int[] indices = {0, 1, 3, 2};
-            screenVBO = VertexBufferObject.create(vertices, textureCoordinates, indices);
         }
     }
 
@@ -268,14 +257,14 @@ public abstract class FrameBufferObject implements Appearance {
                     xTEnd, yTStart,
                     xTEnd, yTEnd
             };
-            screenVBO.updateVerticesAndTextureCoords(vertices, textureCoordinates);
+            Drawer.screenVBO.updateVerticesAndTextureCoords(vertices, textureCoordinates);
         }
         bindCheck();
         Drawer.spriteShader.start();
         Drawer.spriteShader.loadTextureShift(0, 0);
         Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
         Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-        screenVBO.renderTextured(0, 4);
+        Drawer.screenVBO.renderTextured(0, 4);
         Drawer.spriteShader.stop();
     }
 

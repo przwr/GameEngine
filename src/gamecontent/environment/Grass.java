@@ -14,7 +14,6 @@ import game.place.map.Map;
 import gamedesigner.ObjectPlayer;
 import org.newdawn.slick.Color;
 import sprites.Appearance;
-import sprites.vbo.VertexBufferObject;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -24,7 +23,6 @@ import static org.lwjgl.opengl.GL11.*;
 public class Grass extends GameObject {
 
     public static RandomGenerator random;
-    private static VertexBufferObject grassVBO;
     private final Color color = new Color(0x28A705);
     int distance = Integer.MAX_VALUE, factor, xBladesCount, yBladesCount, bladeWidth, bladeSpacing, bladeHeight, bladeHeightHalf, tempX, tempY,
             xCurrentDistance, yCurrentDistance, xRadius, yRadius;
@@ -148,7 +146,7 @@ public class Grass extends GameObject {
                 Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
                 Drawer.spriteShader.setUseTexture(false);
                 Drawer.spriteShader.setUseColour(true);
-                grassVBO.renderColoredTriangleStream(vertices, colors);
+                Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
                 Drawer.spriteShader.setUseTexture(true);
                 Drawer.spriteShader.setUseColour(false);
                 Drawer.spriteShader.stop();
@@ -206,8 +204,7 @@ public class Grass extends GameObject {
                     vertices[10] = tempX;
                     vertices[11] = tempY;
                 }
-
-                grassVBO.renderColoredTriangleStream(vertices, colors);
+                Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
                 Drawer.spriteShader.setUseTexture(true);
                 Drawer.spriteShader.setUseColour(false);
                 Drawer.spriteShader.stop();
@@ -218,11 +215,6 @@ public class Grass extends GameObject {
     }
 
     public void renderStill() {
-        if (grassVBO == null) {
-            float[] vertices = {0, 0, 0, 1, 1, 0,};
-            float[] colors = {1, 1, 1, 1, 1, 1, 1, 1, 1};
-            grassVBO = VertexBufferObject.createColored(vertices, colors);
-        }
         if (masking) {
             tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
             Drawer.setColorStatic(color);
@@ -247,7 +239,7 @@ public class Grass extends GameObject {
             Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
             Drawer.spriteShader.setUseTexture(false);
             Drawer.spriteShader.setUseColour(true);
-            grassVBO.renderColoredTriangleStream(vertices, colors);
+            Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
             Drawer.spriteShader.setUseTexture(true);
             Drawer.spriteShader.setUseColour(false);
             Drawer.spriteShader.stop();

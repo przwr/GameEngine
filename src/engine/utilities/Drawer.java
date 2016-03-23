@@ -36,6 +36,8 @@ public class Drawer {
 
     private static final Texture font = loadFontTexture();
     public static VertexBufferObject streamVBO;
+    public static VertexBufferObject grassVBO;
+    public static VertexBufferObject screenVBO;
     public static ArrayList<Float> streamData = new ArrayList<>(60);
     public static StaticShader staticShader;
     public static SpriteShader spriteShader;
@@ -546,6 +548,17 @@ public class Drawer {
         };
         int[] indices = {0, 1, 3, 2};
         streamVBO = VertexBufferObject.create(vertices, textureCoords, indices);
+        float[] positions = {0, 0, 0, 1, 1, 0,};
+        float[] colors = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+        grassVBO = VertexBufferObject.createColored(positions, colors);
+        float[] screenVertices = {
+                0, 0, 0, 0, 0, 0, 0, 0
+        };
+        float[] textureCoordinates = {
+                0, 0, 0, 0, 0, 0, 0, 0
+        };
+        int[] screenIndices = {0, 1, 3, 2};
+        screenVBO = VertexBufferObject.create(screenVertices, textureCoordinates, screenIndices);
     }
 
     public static void cleanUp() {
@@ -565,6 +578,14 @@ public class Drawer {
             streamVBO.clear();
             streamVBO = null;
             streamData.clear();
+        }
+        if (grassVBO == null) {
+            grassVBO.clear();
+            grassVBO = null;
+        }
+        if (screenVBO == null) {
+            screenVBO.clear();
+            screenVBO = null;
         }
     }
 }
