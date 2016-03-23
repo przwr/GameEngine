@@ -99,14 +99,14 @@ public class Popup {
                 WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space,
         };
         if (Drawer.streamVBO != null) {
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-            Drawer.spriteShader.setUseTexture(false);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
-            Drawer.spriteShader.setUseTexture(true);
-            Drawer.spriteShader.stop();
+            Drawer.regularShader.setUseTexture(true);
+//            Drawer.spriteShader.stop();
         } else {
             Drawer.setShaders();
         }
@@ -124,14 +124,14 @@ public class Popup {
                 WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2,
         };
         if (Drawer.streamVBO != null) {
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-            Drawer.spriteShader.setUseTexture(false);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
-            Drawer.spriteShader.setUseTexture(true);
-            Drawer.spriteShader.stop();
+            Drawer.regularShader.setUseTexture(true);
+//            Drawer.spriteShader.stop();
         } else {
             Drawer.setShaders();
         }
@@ -157,14 +157,14 @@ public class Popup {
                 WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2,
         };
         if (Drawer.streamVBO != null) {
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-            Drawer.spriteShader.setUseTexture(false);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
-            Drawer.spriteShader.setUseTexture(true);
-            Drawer.spriteShader.stop();
+            Drawer.regularShader.setUseTexture(true);
+//            Drawer.spriteShader.stop();
         } else {
             Drawer.setShaders();
         }
@@ -240,14 +240,14 @@ public class Popup {
                 WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift
         };
         if (Drawer.streamVBO != null) {
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-            Drawer.spriteShader.setUseTexture(false);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
-            Drawer.spriteShader.setUseTexture(true);
-            Drawer.spriteShader.stop();
+            Drawer.regularShader.setUseTexture(true);
+//            Drawer.spriteShader.stop();
         } else {
             Drawer.setShaders();
         }

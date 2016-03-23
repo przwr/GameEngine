@@ -9,6 +9,7 @@ import collision.Block;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.RoundRectangle;
+import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
@@ -93,6 +94,7 @@ public class ShadowRenderer {
         lightXCentralShifted = light.getXCenterShift() - light.getX();
         lightYCentralShifted = light.getYCenterShift() - light.getY() + displayHeight - light.getHeight();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        Drawer.shadowShader.start();
     }
 
     private static void prepareToPreRender(Light light) {
@@ -443,6 +445,7 @@ public class ShadowRenderer {
     private static void endPreRender(Light light) {
         glColor3f(1f, 1f, 1f);
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        Drawer.regularShader.start();
         light.render(displayHeight);
         light.getFrameBufferObject().deactivate();
     }

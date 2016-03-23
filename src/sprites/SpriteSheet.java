@@ -128,12 +128,12 @@ public class SpriteSheet extends Sprite {
     public void render() {  //Rysuje CAŁY spriteSheet
         if (bindCheck()) {
             MatrixMath.resetMatrix(transformationMatrix);
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
-            Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(ZERO_VECTOR);
+            Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
             vbo.renderTextured(WHOLE, 4);
-            Drawer.spriteShader.stop();
+//            Drawer.spriteShader.stop();
         }
     }
 
@@ -168,12 +168,12 @@ public class SpriteSheet extends Sprite {
             if (isValidPiece(piece)) {
                 translationVector.set(getXStart() / 2f, getYStart() / 2f);
                 MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-                Drawer.spriteShader.start();
-                Drawer.spriteShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
-                Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
-                Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
+//                Drawer.spriteShader.start();
+                Drawer.regularShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
+                Drawer.regularShader.loadSizeModifier(ZERO_VECTOR);
+                Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
                 vbo.renderTextured(type * 4, 4);
-                Drawer.spriteShader.stop();
+//                Drawer.spriteShader.stop();
             }
         }
     }
@@ -185,14 +185,14 @@ public class SpriteSheet extends Sprite {
             if (isValidPiece(piece)) {
                 translationVector.set(getXStart() / 2f, getYStart() / 2f);
                 MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-                Drawer.shadowShader.start();
+//                Drawer.shadowShader.start();
                 vectorModifier.set(color, color, color, 1);
                 Drawer.shadowShader.loadColourModifier(vectorModifier);
                 Drawer.shadowShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
                 Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
                 Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
                 vbo.renderTextured(type * 4, 4);
-                Drawer.shadowShader.stop();
+//                Drawer.shadowShader.stop();
             }
         }
     }
@@ -216,14 +216,14 @@ public class SpriteSheet extends Sprite {
                 translationVector.set(getXStart() / 2f, getYStart() / 2f);
                 vectorModifier.set(color, color, color, 1f);
                 MatrixMath.transformMatrix(transformationMatrix, translationVector, 1, 1);
-                Drawer.shadowShader.start();
+//                Drawer.shadowShader.start();
                 Drawer.shadowShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
                 Drawer.shadowShader.loadColourModifier(vectorModifier);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.shadowShader.loadSizeModifier(vectorModifier);
                 Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
                 vbo.renderTextured(NORMAL * 4, 4);
-                Drawer.shadowShader.stop();
+//                Drawer.shadowShader.stop();
             }
         }
     }
@@ -240,13 +240,13 @@ public class SpriteSheet extends Sprite {
             if (isValidPiece(piece)) {
                 translationVector.set(getXStart() / 2f, getYStart() / 2f);
                 MatrixMath.transformMatrix(transformationMatrix, translationVector, 1, 1);
-                Drawer.spriteShader.start();
-                Drawer.spriteShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
+//                Drawer.spriteShader.start();
+                Drawer.regularShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
-                Drawer.spriteShader.loadSizeModifier(vectorModifier);
-                Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
+                Drawer.regularShader.loadSizeModifier(vectorModifier);
+                Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
                 vbo.renderTextured(NORMAL * 4, 4);
-                Drawer.spriteShader.stop();
+//                Drawer.spriteShader.stop();
             }
         }
     }

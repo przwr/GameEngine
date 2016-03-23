@@ -6,11 +6,11 @@ import org.lwjgl.util.vector.Vector4f;
 /**
  * Created by przemek on 16.03.16.
  */
-public class SpriteShader extends ShaderProgram {
+public class RegularShader extends ShaderProgram {
 
 
-    private static final String VERTEX_FILE = "src/sprites/shaders/sprite.vert";
-    private static final String FRAGMENT_FILE = "src/sprites/shaders/sprite.frag";
+    private static final String VERTEX_FILE = "src/sprites/shaders/regular.vert";
+    private static final String FRAGMENT_FILE = "src/sprites/shaders/regular.frag";
 
     private int locationTransformationMatrix;
     private int locationTextureShift;
@@ -19,7 +19,7 @@ public class SpriteShader extends ShaderProgram {
     private int locationUseTexture;
     private int locationUseColour;
 
-    public SpriteShader() {
+    public RegularShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
 

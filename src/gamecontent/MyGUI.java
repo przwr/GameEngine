@@ -223,17 +223,17 @@ public class MyGUI extends GUIObject {
 
     private void renderIconRing() {
         Drawer.setColorStatic(color);
-        glDisable(GL_TEXTURE_2D);
+        Drawer.regularShader.setUseTexture(false);
         rings.renderTriangleStrip(placement[0], placement[1]);
-        glEnable(GL_TEXTURE_2D);
+        Drawer.regularShader.setUseTexture(true);
     }
 
     private void renderLifeEnergyRings() {
         Drawer.setColorStatic(color);
-        glDisable(GL_TEXTURE_2D);
+        Drawer.regularShader.setUseTexture(false);
         rings.renderTriangleStrip(placement[2], placement[3]);
         rings.renderTriangleStrip(placement[4], placement[5]);
-        glEnable(GL_TEXTURE_2D);
+        Drawer.regularShader.setUseTexture(true);
     }
 
     private void renderLife() {
@@ -292,7 +292,7 @@ public class MyGUI extends GUIObject {
     }
 
     private void renderPairArrow() {
-        glDisable(GL_TEXTURE_2D);
+        Drawer.regularShader.setUseTexture(false);
         Drawer.setColorStatic(color);
         switch (corner) {
             case LEFT_TOP:
@@ -324,7 +324,7 @@ public class MyGUI extends GUIObject {
             default:
         }
         Drawer.returnToCentralPoint();
-        glEnable(GL_TEXTURE_2D);
+        Drawer.regularShader.setUseTexture(true);
     }
 
 

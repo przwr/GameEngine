@@ -97,12 +97,12 @@ public class Sprite implements Appearance {
     @Override
     public void render() {
         if (bindCheck()) {
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
-            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(ZERO_VECTOR);
+            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
             vbo.renderTextured(0, 4);
-            Drawer.spriteShader.stop();
+//            Drawer.spriteShader.stop();
         }
     }
 
@@ -110,13 +110,13 @@ public class Sprite implements Appearance {
     public void renderShadow(float color) {
         if (bindCheck()) {
             vectorModifier.set(color, color, color, 1f);
-            Drawer.shadowShader.start();
+//            Drawer.shadowShader.start();
             Drawer.shadowShader.loadTextureShift(0, 0);
             Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
             Drawer.shadowShader.loadColourModifier(vectorModifier);
             Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
             vbo.renderTextured(0, 4);
-            Drawer.shadowShader.stop();
+//            Drawer.shadowShader.stop();
         }
     }
 
@@ -124,12 +124,12 @@ public class Sprite implements Appearance {
         if (bindCheck()) {
             MatrixMath.resetMatrix(transformationMatrix);
             MatrixMath.rotateMatrix(transformationMatrix, angle);
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
-            Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(ZERO_VECTOR);
+            Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
             vbo.renderTextured(0, 4);
-            Drawer.spriteShader.stop();
+//            Drawer.spriteShader.stop();
         }
     }
 
@@ -142,12 +142,12 @@ public class Sprite implements Appearance {
                 partXEnd = temp;
             }
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(vectorModifier);
-            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(vectorModifier);
+            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
             vbo.renderTextured(0, 4);
-            Drawer.spriteShader.stop();
+//            Drawer.spriteShader.stop();
         }
     }
 
@@ -161,14 +161,14 @@ public class Sprite implements Appearance {
                 partXEnd = temp;
             }
             vectorModifier.set(color, color, color, 1f);
-            Drawer.shadowShader.start();
+//            Drawer.shadowShader.start();
             Drawer.shadowShader.loadTextureShift(0, 0);
             Drawer.shadowShader.loadColourModifier(vectorModifier);
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.shadowShader.loadSizeModifier(vectorModifier);
             Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
             vbo.renderTextured(0, 4);
-            Drawer.shadowShader.stop();
+//            Drawer.shadowShader.stop();
         }
     }
 

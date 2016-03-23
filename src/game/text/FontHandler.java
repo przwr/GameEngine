@@ -5,6 +5,7 @@
  */
 package game.text;
 
+import engine.utilities.Drawer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.util.ResourceLoader;
@@ -48,7 +49,13 @@ public class FontHandler {
     }
 
     public void drawLine(String text, float x, float y, Color color) {
+        if (Drawer.regularShader != null) {
+            Drawer.regularShader.stop();
+        }
         trueFont.drawString(x, y, text, color);
+        if (Drawer.regularShader != null) {
+            Drawer.regularShader.start();
+        }
     }
 
     public void drawManyLines(String text, int x, int y, Color color) {

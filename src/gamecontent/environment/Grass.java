@@ -140,25 +140,25 @@ public class Grass extends GameObject {
                         color.r * Drawer.getCurrentColor().r, (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g, color.b * Drawer
                         .getCurrentColor().b
                 };
-                Drawer.spriteShader.start();
-                Drawer.spriteShader.loadTextureShift(0, 0);
-                Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-                Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-                Drawer.spriteShader.setUseTexture(false);
-                Drawer.spriteShader.setUseColour(true);
+//                Drawer.spriteShader.start();
+                Drawer.regularShader.loadTextureShift(0, 0);
+                Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+                Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+                Drawer.regularShader.setUseTexture(false);
+                Drawer.regularShader.setUseColour(true);
                 Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
-                Drawer.spriteShader.setUseTexture(true);
-                Drawer.spriteShader.setUseColour(false);
-                Drawer.spriteShader.stop();
+                Drawer.regularShader.setUseTexture(true);
+                Drawer.regularShader.setUseColour(false);
+//                Drawer.spriteShader.stop();
             } else {
                 tempX = (blades[i].getX() + factor + (blades[i + 1].getX() + blades[i + 2].getX())) / 3;
                 tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
-                Drawer.spriteShader.start();
-                Drawer.spriteShader.loadTextureShift(0, 0);
-                Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-                Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-                Drawer.spriteShader.setUseTexture(false);
-                Drawer.spriteShader.setUseColour(true);
+//                Drawer.spriteShader.start();
+                Drawer.regularShader.loadTextureShift(0, 0);
+                Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+                Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+                Drawer.regularShader.setUseTexture(false);
+                Drawer.regularShader.setUseColour(true);
 
                 float[] colors = new float[18];
                 colors[0] = color.r * Drawer.getCurrentColor().r;
@@ -205,9 +205,9 @@ public class Grass extends GameObject {
                     vertices[11] = tempY;
                 }
                 Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
-                Drawer.spriteShader.setUseTexture(true);
-                Drawer.spriteShader.setUseColour(false);
-                Drawer.spriteShader.stop();
+                Drawer.regularShader.setUseTexture(true);
+                Drawer.regularShader.setUseColour(false);
+//                Drawer.spriteShader.stop();
             }
         }
         Drawer.refreshColor();
@@ -233,16 +233,16 @@ public class Grass extends GameObject {
                     color.r, color.g, color.b,
                     color.r, (color.g + ((float) blades[i].getValue() / 256)), color.b
             };
-            Drawer.spriteShader.start();
-            Drawer.spriteShader.loadTextureShift(0, 0);
-            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-            Drawer.spriteShader.setUseTexture(false);
-            Drawer.spriteShader.setUseColour(true);
+//            Drawer.spriteShader.start();
+            Drawer.regularShader.loadTextureShift(0, 0);
+            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.setUseTexture(false);
+            Drawer.regularShader.setUseColour(true);
             Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
-            Drawer.spriteShader.setUseTexture(true);
-            Drawer.spriteShader.setUseColour(false);
-            Drawer.spriteShader.stop();
+            Drawer.regularShader.setUseTexture(true);
+            Drawer.regularShader.setUseColour(false);
+//            Drawer.spriteShader.stop();
         }
         Drawer.refreshColor();
     }
