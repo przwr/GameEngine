@@ -154,7 +154,6 @@ public class Block extends GameObject {
                     Drawer.drawShapeInShade(wall, 1);
                 }
             });
-
         }
         glPopMatrix();
     }

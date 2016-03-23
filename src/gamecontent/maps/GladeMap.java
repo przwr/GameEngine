@@ -8,7 +8,7 @@ package gamecontent.maps;
 import collision.Rectangle;
 import game.place.Place;
 import game.place.map.*;
-import gamecontent.environment.Tree;
+import gamecontent.environment.GrassClump;
 
 import static collision.OpticProperties.TRANSPARENT;
 
@@ -89,23 +89,22 @@ public class GladeMap extends Map {
         int yStart = 2304;
         for (int x = xStart; x < xStart + 2048; x += xSpace) {
             for (int y = yStart; y < yStart + 2048; y += ySpace) {
-//                addObject(GrassClump.createRectangle(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight));
+                addObject(GrassClump.createRectangle(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight));
             }
         }
 
 
 //        addObject(new Bush(800, 800, 10, 50, 1f));
 //        addObject(new Bush(1024, 920, 12, 70, 0.8f));
-        addObject(Tree.create(350, 924, 32, 200, 0.8f));
-        addObject(Tree.create(450, 874, 32, 200, 0.8f));
+//        addObject(Tree.create(350, 924, 32, 200, 0.8f));
+//        addObject(Tree.create(450, 874, 32, 200, 0.8f));
 //        addObject(new Bush(350, 1474, 12, 70, 0.8f));
 //        addObject(GrassClump.createRound(256, 512, 2, 8, 7, 2, 8, 32));
-//        addObject(GrassClump.createRectangle(256, 768, 2, 8, 7, 2, 8, 32));
 //        addObject(GrassClump.createCorner(256, 864, 2, 8, 8, 2, 8, 32, 0));
 //        addObject(GrassClump.createCorner(256, 736, 2, 8, 8, 2, 8, 32, 1));
 //        addObject(GrassClump.createCorner(448, 736, 2, 8, 8, 2, 8, 32, 2));
 //        addObject(GrassClump.createCorner(448, 864, 2, 8, 8, 2, 8, 32, 3));
-//        addObject(GrassClump.createRectangle(256, 800, 2, 8, 8, 2, 8, 32));
+        addObject(GrassClump.createRectangle(256, 800, 2, 8, 8, 2, 8, 32));
 //        addObject(GrassClump.createRectangle(352, 864, 2, 8, 8, 2, 8, 32));
 //        addObject(GrassClump.createRectangle(352, 736, 2, 8, 8, 2, 8, 32));
 //        addObject(GrassClump.createRectangle(352, 800, 2, 8, 8, 2, 8, 32));
@@ -142,7 +141,6 @@ public class GladeMap extends Map {
 //        GameObject light = new LightSource(1784, 1296, 206, 64, "lamp", place, "lamp", false);
 //        light.setDepth(1024);
 //        addObject(light);
-
 
 //        addObject(new MyNPC(200, 200, place, mobID++));
 //        addObject(new Melodia(200, 500, place, mobID++, new Shen(), new Rock(0, 0, place, mobID)));

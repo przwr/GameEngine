@@ -343,16 +343,6 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
-//        frame = lowerBody.getCurrentFrameIndex();
-//        for (byte i : lowerQueue.get(frame)) {
-//            lowerRenderList[i].renderPiecePart(frame, partXStart, partXEnd);
-//            lowerRenderList[i].returnFromTranslation(frame);
-//        }
-//        frame = upperBody.getCurrentFrameIndex();
-//        for (byte i : upperQueue.get(frame)) {
-//            upperRenderList[i].renderPiecePart(frame, partXStart, partXEnd);
-//            upperRenderList[i].returnFromTranslation(frame);
-//        }
         glTranslatef(-fbo.getWidth() / 2, -fbo.getHeight() / 2, 0);
         if (partXStart > partXEnd) {
             int temp = partXEnd;
@@ -367,6 +357,30 @@ public class ClothedAppearance implements Appearance {
             fbo.renderPart(partXStart + xOffset / 2, partXEnd + xOffset / 2);
         }
     }
+
+    @Override
+    public void renderShadow(float color) {
+        glTranslatef(-fbo.getWidth() / 2, -fbo.getHeight() / 2, 0);
+        fbo.renderShadow(color);
+    }
+
+    @Override
+    public void renderShadowPart(int partXStart, int partXEnd, float color) {
+        glTranslatef(-fbo.getWidth() / 2, -fbo.getHeight() / 2, 0);
+        if (partXStart > partXEnd) {
+            int temp = partXEnd;
+            partXEnd = partXStart;
+            partXStart = temp;
+        }
+        int startDelta = partXStart;
+        int endDelta = fbo.getWidth() - partXEnd;
+        if (startDelta > endDelta) {
+            fbo.renderShadowPart(partXStart - xOffset / 2, partXEnd - xOffset / 2, color);
+        } else {
+            fbo.renderShadowPart(partXStart + xOffset / 2, partXEnd + xOffset / 2, color);
+        }
+    }
+
 
     @Override
     public void updateTexture(Player owner) {

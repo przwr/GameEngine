@@ -92,14 +92,12 @@ public class ShadowRenderer {
         lightXStart = light.getX() - lightWidthHalf;
         lightXCentralShifted = light.getXCenterShift() - light.getX();
         lightYCentralShifted = light.getYCenterShift() - light.getY() + displayHeight - light.getHeight();
-        glEnable(GL_TEXTURE_2D);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     private static void prepareToPreRender(Light light) {
         light.getFrameBufferObject().activate();
         clearScreen(1);
-        glDisable(GL_TEXTURE_2D);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
@@ -136,8 +134,8 @@ public class ShadowRenderer {
         for (GameObject fgTile : area.getNearForegroundTiles()) {
             if (!fgTile.isInBlock()) {
                 Figure tempShade = fgTile.getCollision();
-                if (tempShade != null && (tempShade.isLitable() || tempShade.getType() == OpticProperties.IN_SHADE_NO_SHADOW) && tempShade.getOwner()
-                        .getAppearance() != null
+                if (tempShade != null && (tempShade.isLitable() || tempShade.getType() == OpticProperties.IN_SHADE_NO_SHADOW)
+                        && tempShade.getOwner().getAppearance() != null
                         && fgTile.getY() - tempShade.getActualHeight() + tempShade.getHeightHalf() <= lightYEnd
                         && fgTile.getY() + tempShade.getActualHeight() - tempShade.getHeightHalf() >= lightYStart
                         && fgTile.getX() - tempShade.getActualWidth() / 2 <= lightXEnd
@@ -435,7 +433,6 @@ public class ShadowRenderer {
     }
 
     private static void renderShadows(Light light) {
-        glEnable(GL_TEXTURE_2D);
         for (Figure shaded : shades) {
             solveShadows(shaded);
             drawAllShadows(shaded, lightXCentralShifted, lightYCentralShifted);

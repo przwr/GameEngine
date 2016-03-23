@@ -6,11 +6,14 @@
 package engine.view;
 
 import engine.Main;
+import engine.matrices.MatrixMath;
+import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.Settings;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
+import sprites.Appearance;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -76,137 +79,178 @@ public class Popup {
             renderLine(smallFont, WIDTH_HALF, HEIGHT_HALF - height / 2 + space + shift / 2 + shift * (i + 1) + border, lines[i], Color.black);
         }
         glDisable(GL_BLEND);
-        glBegin(GL_TRIANGLES);
         renderButtonArea();
         renderTitleAndButtonBackground();
         renderBorders();
-        glEnd();
         glEnable(GL_BLEND);
         renderLine(smallFont, WIDTH_HALF, HEIGHT_HALF + height / 2, "[ENTER]", Color.black);
         renderLine(bigFont, WIDTH_HALF, HEIGHT_HALF - height / 2 + space, Main.getTitle(), Color.black);
-        glEnable(GL_TEXTURE_2D);
     }
 
     private void renderBackground() {
-        glDisable(GL_BLEND);
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLES);
-        glColor3f(1f, 1f, 1f);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 - space);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space);
+        Drawer.setColorStatic(1f, 1f, 1f, 1f);
+        float[] data = {
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space,
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space,
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 - space,
 
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space);
-        glEnd();
-        glEnable(GL_BLEND);
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space,
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space,
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space,
+        };
+        if (Drawer.streamVBO != null) {
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.spriteShader.setUseTexture(false);
+            Drawer.streamVBO.renderTriangleStream(data);
+            Drawer.spriteShader.setUseTexture(true);
+            Drawer.spriteShader.stop();
+        } else {
+            Drawer.setShaders();
+        }
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     private void renderButtonArea() {
-        glColor3f(1f, 1f, 1f);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 - space);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2);
-
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space);
+        Drawer.setColorStatic(1f, 1f, 1f, 1f);
+        float[] data = {
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space,
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2,
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 - space,
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2,
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space,
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2,
+        };
+        if (Drawer.streamVBO != null) {
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.spriteShader.setUseTexture(false);
+            Drawer.streamVBO.renderTriangleStream(data);
+            Drawer.spriteShader.setUseTexture(true);
+            Drawer.spriteShader.stop();
+        } else {
+            Drawer.setShaders();
+        }
     }
 
     private void renderTitleAndButtonBackground() {
-        glColor3f(0.8f, 0.8f, 0.8f);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2);
+        Drawer.setColorStatic(0.8f, 0.8f, 0.8f, 1f);
+        float[] data = {
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space,
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space,
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2,
+//
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2,
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2,
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space,
 
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
+                WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift,
+                WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2,
+                WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2 - shift,
 
-        glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift);
-        glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2 - shift);
-        glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2);
-
-        glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift);
+                WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2,
+                WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift,
+                WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2,
+        };
+        if (Drawer.streamVBO != null) {
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.spriteShader.setUseTexture(false);
+            Drawer.streamVBO.renderTriangleStream(data);
+            Drawer.spriteShader.setUseTexture(true);
+            Drawer.spriteShader.stop();
+        } else {
+            Drawer.setShaders();
+        }
     }
 
     private void renderBorders() {
-        glColor3f(0.5f, 0.5f, 0.5f);
-        renderOuterBorders();
-        renderInnerBorders();
-    }
+        Drawer.setColorStatic(0.5f, 0.5f, 0.5f, 1f);
+        float[] data = {
+//                OUTER
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2,
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2,
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border,
 
-    private void renderOuterBorders() {
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border);
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border,
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border,
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2,
 
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2);
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2,
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border,
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2,
 
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border,
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2,
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 + border,
 
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border);
+                WIDTH_HALF - width / 2 - border, HEIGHT_HALF + height / 2 + border,
+                WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 + border,
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border,
 
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 + border);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2);
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border,
+                WIDTH_HALF - width / 2 - border, HEIGHT_HALF - height / 2 - border,
+                WIDTH_HALF - width / 2 - border, HEIGHT_HALF + height / 2 + border,
 
-        glVertex2f(WIDTH_HALF - width / 2 - border, HEIGHT_HALF + height / 2 + border);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 + border);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border);
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border,
+                WIDTH_HALF + width / 2 + border, HEIGHT_HALF + height / 2 + border,
+                WIDTH_HALF + width / 2 + border, HEIGHT_HALF - height / 2 - border,
 
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 - border);
-        glVertex2f(WIDTH_HALF - width / 2 - border, HEIGHT_HALF - height / 2 - border);
-        glVertex2f(WIDTH_HALF - width / 2 - border, HEIGHT_HALF + height / 2 + border);
+                WIDTH_HALF + width / 2 + border, HEIGHT_HALF - height / 2 - border,
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border,
+                WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border,
 
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border);
-        glVertex2f(WIDTH_HALF + width / 2 + border, HEIGHT_HALF + height / 2 + border);
-        glVertex2f(WIDTH_HALF + width / 2 + border, HEIGHT_HALF - height / 2 - border);
+//                INNER
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space,
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space + border,
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space,
 
-        glVertex2f(WIDTH_HALF + width / 2 + border, HEIGHT_HALF - height / 2 - border);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 - border);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF + height / 2 + border);
-    }
+                WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space + border,
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space,
+                WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space + border,
 
-    private void renderInnerBorders() {
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space);
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space + border);
+                WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift,
+                WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2,
+                WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift,
 
-        glVertex2f(WIDTH_HALF + width / 2, HEIGHT_HALF - height / 2 + space + border);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space + border);
-        glVertex2f(WIDTH_HALF - width / 2, HEIGHT_HALF - height / 2 + space);
+                WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2,
+                WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift,
+                WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2,
 
-        glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift);
-        glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2 - shift);
-        glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2);
+                WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift - border,
+                WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift,
+                WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift - border,
 
-        glVertex2f(WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift);
+                WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift,
+                WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift - border,
+                WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift,
 
-        glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift - border);
-        glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift - border);
-        glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift);
+                WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift,
+                WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2 - shift,
+                WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2,
 
-        glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift);
-        glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift);
-        glVertex2f(WIDTH_HALF - middleOk - border, HEIGHT_HALF + height / 2 - shift - border);
-
-        glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift);
-        glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2 - shift);
-        glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2);
-
-        glVertex2f(WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2);
-        glVertex2f(WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift);
+                WIDTH_HALF + middleOk, HEIGHT_HALF + height / 2,
+                WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2,
+                WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift
+        };
+        if (Drawer.streamVBO != null) {
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.spriteShader.setUseTexture(false);
+            Drawer.streamVBO.renderTriangleStream(data);
+            Drawer.spriteShader.setUseTexture(true);
+            Drawer.spriteShader.stop();
+        } else {
+            Drawer.setShaders();
+        }
     }
 
     private void renderLine(FontHandler font, int x, int y, String message, Color color) {

@@ -180,7 +180,6 @@ public class Main {
     private static void initializeOpenGL() {
         if (Display.isCreated()) {
             glDisable(GL_DEPTH_TEST);
-            glEnable(GL_TEXTURE_2D);
             glEnable(GL_MULTISAMPLE);
             glEnable(GL_BLEND);
             glEnable(GL_SCISSOR_TEST);

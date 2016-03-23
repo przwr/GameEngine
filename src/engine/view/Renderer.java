@@ -18,6 +18,7 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.fbo.FrameBufferObject;
 import sprites.fbo.RegularFrameBufferObject;
+import sprites.vbo.VertexBufferObject;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -33,6 +34,7 @@ public class Renderer {
     private static int displayWidth, displayHeight, halfDisplayWidth, halfDisplayHeight;
     private static FrameBufferObject frame;
     private static boolean visible;
+    private static VertexBufferObject borderVBO;
 
     private Renderer() {
     }
@@ -188,7 +190,7 @@ public class Renderer {
             lightStrength = 3;
             lightColor = 1.00f - 1.5f * lightBrightness;
         }
-        glColor3f(lightColor, lightColor, lightColor);
+        Drawer.setColorStatic(lightColor, lightColor, lightColor, 1);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < lightStrength; i++) {
             frame.renderScreenPart(displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
@@ -197,90 +199,92 @@ public class Renderer {
 
     public static void initializeVariables() {
         frame = new RegularFrameBufferObject(displayWidth, displayHeight);
-        borders[0] = () -> {
-            glBegin(GL_TRIANGLES);
-            glVertex2f(0, halfDisplayHeight - 1);
-            glVertex2f(0, halfDisplayHeight + 1);
-            glVertex2f(displayWidth, halfDisplayHeight + 1);
+        float[] vertices = {
+                //0
+                0, halfDisplayHeight - 1,
+                0, halfDisplayHeight + 1,
+                displayWidth, halfDisplayHeight + 1,
 
-            glVertex2f(displayWidth, halfDisplayHeight + 1);
-            glVertex2f(displayWidth, halfDisplayHeight - 1);
-            glVertex2f(0, halfDisplayHeight - 1);
-            glEnd();
+                displayWidth, halfDisplayHeight + 1,
+                displayWidth, halfDisplayHeight - 1,
+                0, halfDisplayHeight - 1,
+
+                //1      
+                halfDisplayWidth - 1, 0,
+                halfDisplayWidth - 1, displayHeight,
+                halfDisplayWidth + 1, displayHeight,
+
+                halfDisplayWidth + 1, displayHeight,
+                halfDisplayWidth + 1, 0,
+                halfDisplayWidth - 1, 0,
+
+                //2
+                0, halfDisplayHeight - 1,
+                0, halfDisplayHeight + 1,
+                displayWidth, halfDisplayHeight + 1,
+
+                displayWidth, halfDisplayHeight + 1,
+                displayWidth, halfDisplayHeight - 1,
+                0, halfDisplayHeight - 1,
+
+                halfDisplayWidth - 1, halfDisplayHeight,
+                halfDisplayWidth - 1, displayHeight,
+                halfDisplayWidth + 1, displayHeight,
+
+                halfDisplayWidth + 1, displayHeight,
+                halfDisplayWidth + 1, halfDisplayHeight,
+                halfDisplayWidth - 1, halfDisplayHeight,
+
+                //3
+                halfDisplayWidth, halfDisplayHeight - 1,
+                halfDisplayWidth, halfDisplayHeight + 1,
+                displayWidth, halfDisplayHeight + 1,
+
+                displayWidth, halfDisplayHeight + 1,
+                displayWidth, halfDisplayHeight - 1,
+                halfDisplayWidth, halfDisplayHeight - 1,
+
+                halfDisplayWidth - 1, 0,
+                halfDisplayWidth - 1, displayHeight,
+                halfDisplayWidth + 1, displayHeight,
+
+                halfDisplayWidth + 1, displayHeight,
+                halfDisplayWidth + 1, 0,
+                halfDisplayWidth - 1, 0,
+
+                //4
+                0, halfDisplayHeight - 1,
+                0, halfDisplayHeight + 1,
+                displayWidth, halfDisplayHeight + 1,
+
+                displayWidth, halfDisplayHeight + 1,
+                displayWidth, halfDisplayHeight - 1,
+                0, halfDisplayHeight - 1,
+
+                halfDisplayWidth - 1, 0,
+                halfDisplayWidth - 1, displayHeight,
+                halfDisplayWidth + 1, displayHeight,
+
+                halfDisplayWidth + 1, displayHeight,
+                halfDisplayWidth + 1, 0,
+                halfDisplayWidth - 1, 0,
+        };
+        borderVBO = VertexBufferObject.create(vertices);
+        borders[0] = () -> {
+            borderVBO.renderTriangles(0, 6);
         };
         borders[1] = () -> {
-            glBegin(GL_TRIANGLES);
-            glVertex2f(halfDisplayWidth - 1, 0);
-            glVertex2f(halfDisplayWidth - 1, displayHeight);
-            glVertex2f(halfDisplayWidth + 1, displayHeight);
-
-            glVertex2f(halfDisplayWidth + 1, displayHeight);
-            glVertex2f(halfDisplayWidth + 1, 0);
-            glVertex2f(halfDisplayWidth - 1, 0);
-            glEnd();
+            borderVBO.renderTriangles(6, 6);
         };
-        initializeBorders();
-    }
-
-    private static void initializeBorders() {
         borders[2] = () -> {
-            glBegin(GL_TRIANGLES);
-            glVertex2f(0, halfDisplayHeight - 1);
-            glVertex2f(0, halfDisplayHeight + 1);
-            glVertex2f(displayWidth, halfDisplayHeight + 1);
-
-            glVertex2f(displayWidth, halfDisplayHeight + 1);
-            glVertex2f(displayWidth, halfDisplayHeight - 1);
-            glVertex2f(0, halfDisplayHeight - 1);
-
-            glVertex2f(halfDisplayWidth - 1, halfDisplayHeight);
-            glVertex2f(halfDisplayWidth - 1, displayHeight);
-            glVertex2f(halfDisplayWidth + 1, displayHeight);
-
-            glVertex2f(halfDisplayWidth + 1, displayHeight);
-            glVertex2f(halfDisplayWidth + 1, halfDisplayHeight);
-            glVertex2f(halfDisplayWidth - 1, halfDisplayHeight);
-            glEnd();
+            borderVBO.renderTriangles(12, 12);
         };
         borders[3] = () -> {
-            glBegin(GL_TRIANGLES);
-            glVertex2f(halfDisplayWidth, halfDisplayHeight - 1);
-            glVertex2f(halfDisplayWidth, halfDisplayHeight + 1);
-            glVertex2f(displayWidth, halfDisplayHeight + 1);
-
-            glVertex2f(displayWidth, halfDisplayHeight + 1);
-            glVertex2f(displayWidth, halfDisplayHeight - 1);
-            glVertex2f(halfDisplayWidth, halfDisplayHeight - 1);
-
-            glVertex2f(halfDisplayWidth - 1, 0);
-            glVertex2f(halfDisplayWidth - 1, displayHeight);
-            glVertex2f(halfDisplayWidth + 1, displayHeight);
-
-            glVertex2f(halfDisplayWidth + 1, displayHeight);
-            glVertex2f(halfDisplayWidth + 1, 0);
-            glVertex2f(halfDisplayWidth - 1, 0);
-            glEnd();
+            borderVBO.renderTriangles(24, 12);
         };
         borders[4] = () -> {
-            glBegin(GL_TRIANGLES);
-            glVertex2f(0, halfDisplayHeight - 1);
-            glVertex2f(0, halfDisplayHeight + 1);
-            glVertex2f(displayWidth, halfDisplayHeight + 1);
-
-            glVertex2f(displayWidth, halfDisplayHeight + 1);
-            glVertex2f(displayWidth, halfDisplayHeight - 1);
-            glVertex2f(0, halfDisplayHeight - 1);
-
-            glVertex2f(halfDisplayWidth - 1, 0);
-            glVertex2f(halfDisplayWidth - 1, displayHeight);
-            glVertex2f(halfDisplayWidth + 1, displayHeight);
-
-            glVertex2f(halfDisplayWidth + 1, displayHeight);
-            glVertex2f(halfDisplayWidth + 1, 0);
-            glVertex2f(halfDisplayWidth - 1, 0);
-            glEnd();
+            borderVBO.renderTriangles(36, 12);
         };
-
         orthos[0] = () -> glOrtho(-1.0, 1.0, -2.0, 2.0, 1.0, -1.0);
         orthos[1] = () -> glOrtho(-2.0, 2.0, -1.0, 1.0, 1.0, -1.0);
         orthos[2] = orthos[3] = orthos[4] = () -> glOrtho(-2.0, 2.0, -2.0, 2.0, 1.0, -1.0);

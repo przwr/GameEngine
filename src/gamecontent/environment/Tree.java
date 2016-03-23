@@ -57,13 +57,14 @@ public class Tree extends GameObject {
         int fboWidth = Math.round(spread * 2.5f * height);
         int fboHeight = Math.round(height * 3.8f);
         int ins = random.random(12);
+        woodHeight = height * 2 + 20;
         String treeCode = width + "-" + height + "-" + spread + "-" + branchless + "-" + ins;
         fbo = fbos.get(treeCode);
         if (fbo == null) {
             fbo = new MultiSampleFrameBufferObject(fboWidth, fboHeight, Settings.maxSamples);
+            fbo.setHeightSlice(woodHeight);
             fbos.put(treeCode, fbo);
         }
-        woodHeight = height * 2 + 20;
         leafHeight = Math.round(height * 1.6f);
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
@@ -124,22 +125,19 @@ public class Tree extends GameObject {
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
-        fbo.renderBottom(woodHeight);
+        fbo.renderBottom();
         Drawer.translate(0, -fbo.getHeight() + leafHeight);
-        fbo.renderTop(woodHeight);
+        fbo.renderTop();
         Drawer.refreshColor();
         glPopMatrix();
     }
 
+
     private void drawTree() {
-        glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
         Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10)
                 / 10240f)));
 //        TODO liczyć gdzie są prawdziwe granice tekstury
-//        Drawer.setCentralPoint();
-//        Drawer.drawRectangle(-Math.round(fbo.getWidth() * 0.4f), -fbo.getHeight() + 20, Math.round(fbo.getWidth() * 0.8f), fbo.getHeight());
-//        Drawer.returnToCentralPoint();
         if (!branchless) {
             drawRoots();
         }
@@ -149,9 +147,9 @@ public class Tree extends GameObject {
     }
 
     private void drawRoots() {
-        int change1 = -2 + random.next(4) + Math.round(width * 0.2f + width * random.next(10) / 10240f);
-        int change2 = -2 + random.next(4) + Math.round(width * 0.2f + width * random.next(10) / 10240f);
-        int change3 = -2 + random.next(2) + Math.round(width * 0.15f + width * random.next(10) / 10240f);
+        int change1 = Math.round(width * 0.2f + width * random.next(10) / 10240f);
+        int change2 = Math.round(width * 0.2f + width * random.next(10) / 10240f);
+        int change3 = Math.round(width * 0.15f + width * random.next(10) / 10240f);
         Drawer.drawTextureQuad(width + change1, 2, width + change1, -6, width, -12, width / 2, 0);
         Drawer.drawTextureTriangle(width + change1, -6, width + change1, 2, width + change1 * 2, change2 < 6 ? change2 : 6);
         Drawer.drawTextureQuad(width / 2, 0, 0, -12, -change2, -6, -change2, 2);
@@ -468,8 +466,8 @@ public class Tree extends GameObject {
     }
 
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
-        if (Math.abs(points.get(i).getY() + y) < leafHeight * 0.66f
-                && (points.get(i).getY() + y < 0 || points.get(i).getY() + y < leafHeight * 0.33f)
+        if (Math.abs(points.get(i).getY() + y) < leafHeight * 0.66 - leaf.getHeight() / 2
+                && (points.get(i).getY() + y < 0 || points.get(i).getY() + y < leafHeight * 0.33f - leaf.getHeight() / 2)
                 && Math.abs(points.get(i).getX() + x) < fbo.getWidth() / 2 - leaf.getWidth() - leaf.getHeight()) {
             float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
             change -= Math.abs(points.get(i).getX() + x) / maxX / 4;
@@ -493,9 +491,9 @@ public class Tree extends GameObject {
         if (appearance != null) {
             glPushMatrix();
             Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
-            Drawer.drawShapeBottomInShade(fbo, 1, woodHeight);
+            Drawer.drawShapeBottomInShade(fbo, 1);
             Drawer.translate(0, -fbo.getHeight() + leafHeight);
-            Drawer.drawShapeTopInBlack(fbo, woodHeight);
+            Drawer.drawShapeTopInBlack(fbo);
             glPopMatrix();
         }
     }
@@ -505,9 +503,9 @@ public class Tree extends GameObject {
         if (appearance != null) {
             glPushMatrix();
             Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
-            Drawer.drawShapeBottomInBlack(fbo, woodHeight);
+            Drawer.drawShapeBottomInBlack(fbo);
             Drawer.translate(0, -fbo.getHeight() + leafHeight);
-            Drawer.drawShapeTopInBlack(fbo, woodHeight);
+            Drawer.drawShapeTopInBlack(fbo);
             glPopMatrix();
         }
     }
@@ -515,12 +513,23 @@ public class Tree extends GameObject {
     @Override
     public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
+            if (xStart > xEnd) {
+                int temp = xStart;
+                xStart = xEnd;
+                xEnd = temp;
+            }
+            if (xStart < 0) {
+                xStart = 0;
+            }
+            if (xEnd > 2 * collision.getWidth()) {
+                xEnd = 2 * collision.getWidth();
+            }
             glPushMatrix();
             Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
-            Drawer.drawShapeBottomPartInShade(fbo, 1, fbo.getWidth() / 2 - collision.getWidth() + xStart, fbo.getWidth() / 2 - collision.getWidth() + xEnd,
-                    woodHeight);
+            Drawer.drawShapeBottomPartInShade(fbo, 1, fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 +
+                    xEnd);
             Drawer.translate(0, -fbo.getHeight() + leafHeight);
-            Drawer.drawShapeTopInBlack(fbo, woodHeight);
+            Drawer.drawShapeTopInBlack(fbo);
             glPopMatrix();
         }
     }
@@ -528,12 +537,23 @@ public class Tree extends GameObject {
     @Override
     public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
         if (appearance != null) {
+            if (xStart > xEnd) {
+                int temp = xStart;
+                xStart = xEnd;
+                xEnd = temp;
+            }
+            if (xStart < 0) {
+                xStart = 0;
+            }
+            if (xEnd > 2 * collision.getWidth()) {
+                xEnd = 2 * collision.getWidth();
+            }
             glPushMatrix();
             Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
-            Drawer.drawShapeBottomPartInBlack(fbo, fbo.getWidth() / 2 - collision.getWidth() + xStart, fbo.getWidth() / 2 - collision.getWidth() + xEnd,
-                    woodHeight);
+            Drawer.drawShapeBottomPartInBlack(fbo, fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 +
+                    xEnd);
             Drawer.translate(0, -fbo.getHeight() + leafHeight);
-            Drawer.drawShapeTopInBlack(fbo, woodHeight);
+            Drawer.drawShapeTopInBlack(fbo);
             glPopMatrix();
         }
     }

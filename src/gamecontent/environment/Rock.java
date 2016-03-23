@@ -26,6 +26,7 @@ public class Rock extends Mob {
     public Rock(int x, int y, Place place, short mobID) {
         super(x, y, 3, 400, "rock", place, "rock", true, mobID);
         setCollision(Rectangle.create(appearance.getActualWidth(), appearance.getActualWidth() / 2, OpticProperties.NO_SHADOW, this));
+        setDepth(-collision.getHeight() / 2);
         stats = new MobStats(this);
         stats.setStartHealth(1000);
         stats.setDefence(20);

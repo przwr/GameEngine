@@ -3,9 +3,7 @@
 in vec2 position;
 in vec2 textureCoords;
 in int gl_VertexID;
-in vec3 colour;
 
-out vec3 o_colour;
 out vec2 pass_textureCoords;
 
 uniform mat4 transformationMatrix;
@@ -15,7 +13,7 @@ uniform vec4 sizeModifier;
 uniform float useTexture;
 
 void main(void){
-    if(useTexture == 1.0){
+    if(useTexture == 1.0) {
         switch (gl_VertexID % 4){
             case 0:
             case 1:
@@ -30,6 +28,5 @@ void main(void){
         }
     } else {
         gl_Position =  gl_ModelViewProjectionMatrix * transformationMatrix *  vec4(position, 0.0, 1.0);
-        o_colour = colour;
     }
 }

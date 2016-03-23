@@ -213,8 +213,18 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
+    public void renderShadow(float color) {
+        tileStack.stream().forEach((piece) -> spriteSheet.renderShadowPiece(piece.getX(), piece.getY(), color));
+    }
+
+    @Override
     public void renderPart(int partXStart, int partXEnd) {
         tileStack.stream().forEach((piece) -> spriteSheet.renderPiecePart(piece.getX(), piece.getY(), partXStart, partXEnd));
+    }
+
+    @Override
+    public void renderShadowPart(int partXStart, int partXEnd, float color) {
+        tileStack.stream().forEach((piece) -> spriteSheet.renderShadowPiecePart(piece.getX(), piece.getY(), partXStart, partXEnd, color));
     }
 
     @Override
