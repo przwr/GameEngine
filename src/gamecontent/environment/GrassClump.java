@@ -159,7 +159,6 @@ public class GrassClump extends GameObject {
 
     private void setUp(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int type) {
         initialize("GrassClump", x, y);
-        toUpdate = true;
         this.xCount = xCount;
         this.yCount = yCount;
         this.xBladesCount = xBladesCount;
@@ -191,8 +190,7 @@ public class GrassClump extends GameObject {
         depth = yCount * yBladesCount;
     }
 
-    @Override
-    public void update() {
+    private void updateGrasses() {
         if (map != null) {
             boolean objectMode = map.place instanceof ObjectPlace;
             updateGrass = false;
@@ -207,7 +205,7 @@ public class GrassClump extends GameObject {
             if (!objectMode) {
                 Area area = map.getArea(this.area);
                 if (!updateGrass) {
-                    for (GameObject object : area.getNearDepthObjects()) {
+                    for (GameObject object : area.getNearSolidMobs()) {
                         if (object.getCollision() != null && object.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - object.getX()) < xRadius +
                                 object.getCollision().getWidthHalf() && Math.abs(getY() + yRadius - object.getY()) < yRadius + object.getCollision()
                                 .getHeightHalf()) {
@@ -347,6 +345,7 @@ public class GrassClump extends GameObject {
 
     @Override
     public void render(int xEffect, int yEffect) {
+        updateGrasses();
         if (!updateGrass) {
             preRender();
             glPushMatrix();

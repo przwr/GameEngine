@@ -5,6 +5,7 @@
  */
 package engine.utilities;
 
+import engine.matrices.MatrixMath;
 import game.ScreenPlace;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
@@ -15,18 +16,18 @@ import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Appearance;
 import sprites.fbo.FrameBufferObject;
+import sprites.shaders.ShadowShader;
 import sprites.shaders.SpriteShader;
 import sprites.shaders.StaticShader;
+import sprites.vbo.VertexBufferObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL15.GL_SRC0_RGB;
-import static org.lwjgl.opengl.GL15.GL_SRC1_RGB;
 
 /**
  * @author Wojtek
@@ -34,8 +35,11 @@ import static org.lwjgl.opengl.GL15.GL_SRC1_RGB;
 public class Drawer {
 
     private static final Texture font = loadFontTexture();
+    public static VertexBufferObject streamVBO;
+    public static ArrayList<Float> streamData = new ArrayList<>(60);
     public static StaticShader staticShader;
     public static SpriteShader spriteShader;
+    public static ShadowShader shadowShader;
     public static int displayWidth, displayHeight;
     private static float xCurrent, yCurrent;
     private static Color currentColor = Color.white;
@@ -81,44 +85,44 @@ public class Drawer {
 
     public static void refreshColor() {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, 1.0f);
-        Drawer.spriteShader.start();
+        spriteShader.start();
         spriteShader.loadColourModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, 1.0f));
-        Drawer.spriteShader.stop();
+        spriteShader.stop();
     }
 
     public static void setColorAlpha(float alpha) {
         glColor4f(currentColor.r, currentColor.g, currentColor.b, alpha);
-        Drawer.spriteShader.start();
+        spriteShader.start();
         spriteShader.loadColourModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, alpha));
-        Drawer.spriteShader.stop();
+        spriteShader.stop();
     }
 
     public static void setColorStatic(Color color) {
         glColor4f(color.r, color.g, color.b, color.a);
-        Drawer.spriteShader.start();
+        spriteShader.start();
         spriteShader.loadColourModifier(new Vector4f(color.r, color.g, color.b, color.a));
-        Drawer.spriteShader.stop();
+        spriteShader.stop();
     }
 
     public static void setColorBlended(Color color) {
         glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
-        Drawer.spriteShader.start();
+        spriteShader.start();
         spriteShader.loadColourModifier(new Vector4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a));
-        Drawer.spriteShader.stop();
+        spriteShader.stop();
     }
 
     public static void setColorStatic(float r, float g, float b, float a) {
         glColor4f(r, g, b, a);
-        Drawer.spriteShader.start();
+        spriteShader.start();
         spriteShader.loadColourModifier(new Vector4f(r, g, b, a));
-        Drawer.spriteShader.stop();
+        spriteShader.stop();
     }
 
     public static void setColorBlended(float r, float g, float b, float a) {
         glColor4f(r * currentColor.r, g * currentColor.g, b * currentColor.b, a);
-        Drawer.spriteShader.start();
+        spriteShader.start();
         spriteShader.loadColourModifier(new Vector4f(r * currentColor.r, g * currentColor.g, b * currentColor.b, a));
-        Drawer.spriteShader.stop();
+        spriteShader.stop();
     }
 
     public static Color getCurrentColor() {
@@ -126,7 +130,7 @@ public class Drawer {
     }
 
     public static void setCurrentColor(Color color) {
-        Drawer.currentColor = color;
+        currentColor = color;
     }
 
     public static Color setPercentToRGBColor(int percent, Color color) {
@@ -164,44 +168,55 @@ public class Drawer {
     }
 
     public static void drawRectangleInShade(int xStart, int yStart, int width, int height, float color) {
-        glColor3f(color, color, color);
+        setColorStatic(color, color, color, 1);
         if (width < 0) {
             width = -width;
             xStart -= width;
         }
         drawRectangle(xStart, yStart, width, height);
-        glColor3f(1f, 1f, 1f);
+        setColorStatic(1, 1, 1, 1);
     }
 
     public static void drawRectangleInBlack(int xStart, int yStart, int width, int height) {
-        glColor3f(0f, 0f, 0f);
+        setColorStatic(0, 0, 0, 1);
         if (width < 0) {
             width = -width;
             xStart -= width;
         }
         drawRectangle(xStart, yStart, width, height);
-        glColor3f(1f, 1f, 1f);
+        setColorStatic(1, 1, 1, 1);
     }
 
     public static void drawTextureTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(1, 1);
-        glVertex2f(xA, yA);
-        glTexCoord2f(0, 1);
-        glVertex2f(xB, yB);
-        glTexCoord2f(1, 0);
-        glVertex2f(xC, yC);
-        glEnd();
+        float[] data = {
+                xA, yA,
+                xB, yB,
+                0, 0,
+                xC, yC,
+        };
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        streamVBO.updateVerticesStream(data);
+        streamVBO.renderTextured(0, 3);
+        spriteShader.stop();
     }
 
     public static void drawTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLES);
-        glVertex2f(xA, yA);
-        glVertex2f(xB, yB);
-        glVertex2f(xC, yC);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        float[] data = {
+                xA, yA,
+                xB, yB,
+                xC, yC,
+        };
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        spriteShader.setUseTexture(false);
+        streamVBO.renderTriangleStream(data);
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
     }
 
     public static void drawTriangleInRow(int xA, int yA, int xB, int yB, int xC, int yC) {
@@ -211,80 +226,93 @@ public class Drawer {
     }
 
     public static void drawRectangle(int xStart, int yStart, int width, int height) {
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLES);
-        glVertex2f(xStart, yStart);
-        glVertex2f(xStart, yStart + height);
-        glVertex2f(xStart + width, yStart + height);
-
-        glVertex2f(xStart + width, yStart + height);
-        glVertex2f(xStart + width, yStart);
-        glVertex2f(xStart, yStart);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        float[] data = {
+                xStart, yStart,
+                xStart, yStart + height,
+                xStart + width, yStart,
+                xStart + width, yStart + height,
+        };
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        spriteShader.setUseTexture(false);
+        streamVBO.renderTriangleStripStream(data);
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
     }
 
     public static void drawRectangleBorder(int xStart, int yStart, int width, int height) {
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_LINE_LOOP);
-        glVertex2f(xStart, yStart);
-        glVertex2f(xStart, yStart + height);
-        glVertex2f(xStart + width, yStart + height);
-        glVertex2f(xStart + width, yStart);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        float[] data = {
+                xStart, yStart,
+                xStart, yStart + height,
+                xStart + width, yStart + height,
+                xStart + width, yStart,
+        };
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        spriteShader.setUseTexture(false);
+        streamVBO.renderLineLoopStream(data);
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
     }
 
     public static void drawTextureQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(1, 0);
-        glVertex2f(xA, yA);
-        glTexCoord2f(0, 0);
-        glVertex2f(xB, yB);
-        glTexCoord2f(0, 1);
-        glVertex2f(xC, yC);
-
-        glTexCoord2f(0, 1);
-        glVertex2f(xC, yC);
-        glTexCoord2f(1, 1);
-        glVertex2f(xD, yD);
-        glTexCoord2f(1, 0);
-        glVertex2f(xA, yA);
-        glEnd();
-    }
-
-    public static void drawQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLES);
-        glVertex2f(xA, yA);
-        glVertex2f(xB, yB);
-        glVertex2f(xC, yC);
-
-        glVertex2f(xC, yC);
-        glVertex2f(xD, yD);
-        glVertex2f(xA, yA);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        float[] data = {
+                xD, yD,
+                xA, yA,
+                xB, yB,
+                xC, yC,
+        };
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        streamVBO.updateVerticesStream(data);
+        streamVBO.renderTextured(0, 6);
+        spriteShader.stop();
     }
 
     public static void drawCircle(int xStart, int yStart, int radius, int precision) {
         drawEllipse(xStart, yStart, radius, radius, precision);
     }
 
-    public static void drawEllipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {  //Zbyt mała precyzja tworzy figury foremne
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLE_FAN);
-        glVertex2f(xStart, yStart);
+    public static void drawEllipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        spriteShader.setUseTexture(false);
+        streamVBO.renderTriangleFanStream(getEllipseVertices(xStart, yStart, xRadius, yRadius, precision));
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
+
+
+    }
+
+    public static float[] getCircleVertices(int xStart, int yStart, int radius, int precision) {
+        return getEllipseVertices(xStart, yStart, radius, radius, precision);
+    }
+
+    public static float[] getEllipseVertices(int xStart, int yStart, int xRadius, int yRadius, int precision) {
         int step = 360 / precision;
-        if (step <= 0) {
+        if (step < 1) {
             step = 1;
         }
+        float[] vertices = new float[(360 / step) * 2 + 4 + (360 % step == 0 ? 0 : 2)];
+        int j = 1;
+        vertices[0] = xStart + xRadius;
+        vertices[1] = yStart;
         for (int i = 360; i > 0; i -= step) {
-            glVertex2f(xStart + (float) Methods.xRadius(i, xRadius), yStart + (float) Methods.yRadius(i, yRadius));
+            vertices[j * 2] = xStart + (float) Methods.xRadius(i, xRadius);
+            vertices[j * 2 + 1] = yStart + (float) Methods.yRadius(i, yRadius);
+            j++;
         }
-        glVertex2f(xStart + xRadius, yStart);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        vertices[j * 2] = xStart;
+        vertices[j * 2 + 1] = yStart;
+        return vertices;
     }
 
     public static void drawCircleSector(int xStart, int yStart, int radius, int startAngle, int endAngle, int precision) {
@@ -292,85 +320,96 @@ public class Drawer {
     }
 
     public static void drawEllipseSector(int xStart, int yStart, int xRadius, int yRadius, int startAngle, int endAngle, int precision) {
-        // Zbyt mała precyzja tworzy figury foremne
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        spriteShader.setUseTexture(false);
+        streamVBO.renderTriangleFanStream(getEllipseSectorVertices(xStart, yStart, xRadius, yRadius, startAngle, endAngle, precision));
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
+    }
+
+    public static float[] getCircleSectorVertices(int xStart, int yStart, int radius, int startAngle, int endAngle, int precision) {
+        return getEllipseSectorVertices(xStart, yStart, radius, radius, startAngle, endAngle, precision);
+    }
+
+    public static float[] getEllipseSectorVertices(int xStart, int yStart, int xRadius, int yRadius, int startAngle, int endAngle, int precision) {
         if (endAngle < startAngle) {
             endAngle += 360;
         }
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLE_FAN);
-        glVertex2f(xStart, yStart);
         int step = (endAngle - startAngle) / precision;
         if (step <= 0) {
             step = 1;
         }
-        for (int i = startAngle; i <= endAngle; i += step) {
-            glVertex2f(xStart + (float) Methods.xRadius(i, xRadius), yStart + (float) Methods.yRadius(i, yRadius));
+        float[] vertices = new float[((endAngle - startAngle) / step) * 2 + 2 + ((endAngle - startAngle) % step == 0 ? 0 : 2)];
+        int j = 1;
+        vertices[0] = xStart;
+        vertices[1] = yStart;
+        for (int i = endAngle; i > startAngle; i -= step) {
+            vertices[j * 2] = xStart + (float) Methods.xRadius(i, xRadius);
+            vertices[j * 2 + 1] = yStart + (float) Methods.yRadius(i, yRadius);
+            j++;
         }
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        return vertices;
     }
 
     public static void drawEllipseBow(int xStart, int yStart, int xRadius, int yRadius, int width, int startAngle, int endAngle, int precision) {
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        spriteShader.setUseTexture(false);
+        streamVBO.renderTriangleStripStream(getEllipseBowVertices(xStart, yStart, xRadius, yRadius, width, startAngle, endAngle, precision));
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
+    }
+
+    public static void drawBow(int xStart, int yStart, int radius, int width, int startAngle, int endAngle, int precision) {
+        drawEllipseBow(xStart, yStart, radius, radius, width, startAngle, endAngle, precision);
+    }
+
+    public static float[] getBowVertices(int xStart, int yStart, int radius, int width, int startAngle, int endAngle, int precision) {
+        return getEllipseBowVertices(xStart, yStart, radius, radius, width, startAngle, endAngle, precision);
+    }
+
+
+    public static float[] getEllipseBowVertices(int xStart, int yStart, int xRadius, int yRadius, int width, int startAngle, int endAngle, int precision) {
         if (startAngle > endAngle) {
             int tmp = startAngle;
             startAngle = endAngle;
             endAngle = tmp;
         }
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLE_STRIP);
         int step = (endAngle - startAngle) / precision;
         if (step <= 0) {
             step = 1;
         }
+        float[] vertices = new float[((endAngle - startAngle) / step) * 4 + 4 + ((endAngle - startAngle) % step == 0 ? 0 : 4)];
+        int j = 0;
         for (int i = startAngle; i < endAngle; i += step) {
-            glVertex2f(xStart + (float) Methods.xRadius(i, xRadius), yStart + (float) Methods.yRadius(i, yRadius));
-            glVertex2f(xStart + (float) Methods.xRadius(i, xRadius - width), yStart + (float) Methods.yRadius(i, yRadius - width));
+            vertices[j * 4] = xStart + (float) Methods.xRadius(i, xRadius);
+            vertices[j * 4 + 1] = yStart + (float) Methods.yRadius(i, yRadius);
+            vertices[j * 4 + 2] = xStart + (float) Methods.xRadius(i, xRadius - width);
+            vertices[j * 4 + 3] = yStart + (float) Methods.yRadius(i, yRadius - width);
+            j++;
         }
-        glVertex2f(xStart + (float) Methods.xRadius(endAngle, xRadius), yStart + (float) Methods.yRadius(endAngle, yRadius));
-        glVertex2f(xStart + (float) Methods.xRadius(endAngle, xRadius - width), yStart + (float) Methods.yRadius(endAngle, yRadius - width));
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
-    }
-
-    public static void drawBow(int xStart, int yStart, int radius, int width, int startAngle, int endAngle, int precision) {
-        if (startAngle > endAngle) {
-            int tmp = startAngle;
-            startAngle = endAngle;
-            endAngle = tmp;
-        }
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLE_STRIP);
-        int step = (endAngle - startAngle) / precision;
-        if (step < 1) {
-            step = 1;
-        }
-        for (int i = startAngle; i < endAngle; i += step) {
-            glVertex2f(xStart + (float) Methods.xRadius(i, radius), yStart + (float) Methods.yRadius(i, radius));
-            glVertex2f(xStart + (float) Methods.xRadius(i, radius - width), yStart + (float) Methods.yRadius(i, radius - width));
-        }
-        glVertex2f(xStart + (float) Methods.xRadius(endAngle, radius), yStart + (float) Methods.yRadius(endAngle, radius));
-        glVertex2f(xStart + (float) Methods.xRadius(endAngle, radius - width), yStart + (float) Methods.yRadius(endAngle, radius - width));
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        vertices[j * 4] = xStart + (float) Methods.xRadius(endAngle, xRadius);
+        vertices[j * 4 + 1] = yStart + (float) Methods.yRadius(endAngle, yRadius);
+        vertices[j * 4 + 2] = xStart + (float) Methods.xRadius(endAngle, xRadius - width);
+        vertices[j * 4 + 3] = yStart + (float) Methods.yRadius(endAngle, yRadius - width);
+        return vertices;
     }
 
     public static void drawRing(int xStart, int yStart, int radius, int width, int precision) {
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLE_STRIP);
-        int step = 360 / precision;
-        if (step < 1) {
-            step = 1;
-        }
-        for (int i = 0; i < 360; i += step) {
-            glVertex2f(xStart + (float) Methods.xRadius(i, radius), yStart + (float) Methods.yRadius(i, radius));
-            glVertex2f(xStart + (float) Methods.xRadius(i, radius - width), yStart + (float) Methods.yRadius(i, radius - width));
-        }
-        glVertex2f(xStart + (float) Methods.xRadius(360, radius), yStart + (float) Methods.yRadius(360, radius));
-        glVertex2f(xStart + (float) Methods.xRadius(360, radius - width), yStart + (float) Methods.yRadius(360, radius - width));
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        spriteShader.setUseTexture(false);
+        streamVBO.renderTriangleStripStream(getRingVertices(xStart, yStart, radius, width, precision));
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
     }
-
 
     public static float[] getRingVertices(int xStart, int yStart, int radius, int width, int precision) {
         int step = 360 / precision;
@@ -394,20 +433,23 @@ public class Drawer {
     }
 
     public static void drawLineWidth(int xStart, int yStart, int xDelta, int yDelta, int width) {
-        glDisable(GL_TEXTURE_2D);
-        glBegin(GL_TRIANGLES);
         int angle = (int) Methods.pointAngleClockwise(xStart, yStart, xStart + xDelta, yStart + yDelta) + 90;
         int xWidth = (int) Methods.xRadius(angle, width / 2);
         int yWidth = (int) Methods.yRadius(angle, width / 2);
-        glVertex2f(xStart + xWidth, yStart + yWidth);
-        glVertex2f(xStart + -xWidth, yStart + -yWidth);
-        glVertex2f(xStart + xDelta - xWidth, yStart + yDelta - yWidth);
-
-        glVertex2f(xStart + xDelta - xWidth, yStart + yDelta - yWidth);
-        glVertex2f(xStart + xDelta + xWidth, yStart + yDelta + yWidth);
-        glVertex2f(xStart + xWidth, yStart + yWidth);
-        glEnd();
-        glEnable(GL_TEXTURE_2D);
+        float[] data = {
+                xStart + xWidth, yStart + yWidth,
+                xStart + xDelta + xWidth, yStart + yDelta + yWidth,
+                xStart - xWidth, yStart - yWidth,
+                xStart + xDelta - xWidth, yStart + yDelta - yWidth,
+        };
+        spriteShader.start();
+        spriteShader.loadTextureShift(0, 0);
+        spriteShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+        spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        spriteShader.setUseTexture(false);
+        streamVBO.renderTriangleStripStream(data);
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
     }
 
     public static void drawLine(int xStart, int yStart, int xDelta, int yDelta) {
@@ -415,136 +457,102 @@ public class Drawer {
     }
 
     public static void drawShapeInShade(Appearance appearance, float color) {
-        prepareDrawingShape(color);
-        appearance.bindCheck();
-        changeShapeToColor();
-        appearance.render();
-        cleanAfterDrawingShape();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadow(color);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
 
-    public static void drawShapeTopInShade(FrameBufferObject appearance, float color, float h) {
-        prepareDrawingShape(color);
-        appearance.bindCheck();
-        changeShapeToColor();
-        appearance.renderTop(h);
-        cleanAfterDrawingShape();
+    public static void drawShapeTopInShade(FrameBufferObject appearance, float color) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadowTop(color);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
 
-    public static void drawShapeBottomInShade(FrameBufferObject appearance, float color, float h) {
-        prepareDrawingShape(color);
-        appearance.bindCheck();
-        changeShapeToColor();
-        appearance.renderBottom(h);
-        cleanAfterDrawingShape();
+    public static void drawShapeBottomInShade(FrameBufferObject appearance, float color) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadowBottom(color);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public static void drawShapePartInShade(Appearance appearance, float color, int partXStart, int partXEnd) {
-        prepareDrawingShape(color);
-        appearance.bindCheck();
-        changeShapeToColor();
-        appearance.renderPart(partXStart, partXEnd);
-        cleanAfterDrawingShape();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadowPart(partXStart, partXEnd, color);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void drawShapeTopPartInShade(FrameBufferObject appearance, float color, int partXStart, int partXEnd, float h) {
-        prepareDrawingShape(color);
-        appearance.bindCheck();
-        changeShapeToColor();
-        appearance.renderTopPart(partXStart, partXEnd, h);
-        cleanAfterDrawingShape();
-    }
-
-    public static void drawShapeBottomPartInShade(FrameBufferObject appearance, float color, int partXStart, int partXEnd, float h) {
-        prepareDrawingShape(color);
-        appearance.bindCheck();
-        changeShapeToColor();
-        appearance.renderBottomPart(partXStart, partXEnd, h);
-        cleanAfterDrawingShape();
+    public static void drawShapeBottomPartInShade(FrameBufferObject appearance, float color, int partXStart, int partXEnd) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadowBottomPart(partXStart, partXEnd, color);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public static void drawShapeInBlack(Appearance appearance) {
-        appearance.bindCheck();
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.render();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadow(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void drawShapeTopInBlack(FrameBufferObject appearance, float h) {
-        appearance.bindCheck();
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderTop(h);
+    public static void drawShapeTopInBlack(FrameBufferObject appearance) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadowTop(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void drawShapeBottomInBlack(FrameBufferObject appearance, float h) {
-        appearance.bindCheck();
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderBottom(h);
+    public static void drawShapeBottomInBlack(FrameBufferObject appearance) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadowBottom(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
-
 
     public static void drawShapePartInBlack(Appearance appearance, int partXStart, int partXEnd) {
-        appearance.bindCheck();
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderPart(partXStart, partXEnd);
-        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-
-    }
-
-    public static void drawShapeTopPartInBlack(FrameBufferObject appearance, int partXStart, int partXEnd, float h) {
-        appearance.bindCheck();
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderTopPart(partXStart, partXEnd, h);
-        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    public static void drawShapeBottomPartInBlack(FrameBufferObject appearance, int partXStart, int partXEnd, float h) {
-        appearance.bindCheck();
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderBottomPart(partXStart, partXEnd, h);
-        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    private static void prepareDrawingShape(float color) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(color * color, color * color, color * color);
-        glBindTexture(GL_TEXTURE_2D, font.getTextureID());
-    }
-
-    private static void cleanAfterDrawingShape() {
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        appearance.renderShadowPart(partXStart, partXEnd, 0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glColor3f(1, 1, 1);
     }
 
-    private static void changeShapeToColor() {
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
-        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    public static void drawShapeBottomPartInBlack(FrameBufferObject appearance, int partXStart, int partXEnd) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        appearance.renderShadowBottomPart(partXStart, partXEnd, 0);
+        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     }
-
 
     public static void renderStringCentered(String message, double x, double y, FontHandler font, Color color) {
-        Drawer.bindFontTexture();
+        bindFontTexture();
         font.drawLine(message, (float) (x - font.getWidth(message) / 2),
                 (float) (y - (4 * font.getHeight()) / 3), color);
     }
 
     public static void renderString(String message, double x, double y, FontHandler font, Color color) {
-        Drawer.bindFontTexture();
+        bindFontTexture();
         font.drawLine(message, (int) x, (int) y, color);
     }
 
     public static void setShaders() {
         staticShader = new StaticShader();
         spriteShader = new SpriteShader();
-//        Drawer.spriteShader.start();
+        shadowShader = new ShadowShader();
+        spriteShader.start();
+        spriteShader.setUseTexture(true);
+        spriteShader.stop();
+        shadowShader.start();
+        shadowShader.setUseTexture(true);
+        shadowShader.stop();
+        float[] vertices = {
+                0, 0,
+                0, 20,
+                20, 0,
+                20, 20,
+        };
+        float[] textureCoords = {
+                0, 0,
+                0, 1f,
+                1f, 1f,
+                1f, 0,
+        };
+        int[] indices = {0, 1, 3, 2};
+        streamVBO = VertexBufferObject.create(vertices, textureCoords, indices);
     }
 
     public static void cleanUp() {
@@ -555,6 +563,15 @@ public class Drawer {
         if (staticShader != null) {
             spriteShader.cleanUp();
             spriteShader = null;
+        }
+        if (shadowShader != null) {
+            shadowShader.cleanUp();
+            shadowShader = null;
+        }
+        if (streamVBO != null) {
+            streamVBO.clear();
+            streamVBO = null;
+            streamData.clear();
         }
     }
 }

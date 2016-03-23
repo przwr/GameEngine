@@ -158,7 +158,7 @@ public class MyController extends PlayerController {
             long current = Place.getDayCycle().getCurrentTimeInMiliSeconds();
             long difference = current - lastEnergyUp;
             if (running && inControl.getSpeed() > 0 && inControl.isAbleToMove()) {
-                float decrease = 0.8f - energyGain * difference;
+                float decrease = 0.7f + energyGain * difference;
                 if (decrease < 0) {
                     decrease = 0;
                 }

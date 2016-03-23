@@ -68,7 +68,7 @@ public class MyGUI extends GUIObject {
                 0, 2 * base, 2 * base, base, 0, 0,
                 base, 2 * base, 2 * base, 0, 0, 0,
                 0, base, 2 * base, 2 * base, 2 * base, 0};
-        arrows = new VertexBufferObject(arrowsVertices);
+        arrows = VertexBufferObject.create(arrowsVertices);
 
         int r = size / 2 - border / 3 - border / 6;
         float[] ringVs1 = Drawer.getRingVertices(size / 2, size / 2, r, border / 3, size);
@@ -77,7 +77,7 @@ public class MyGUI extends GUIObject {
         addSize(0, ringVs1.length);
         addSize(1, ringVs2.length);
         addSize(2, ringVs3.length);
-        rings = new VertexBufferObject(Methods.concatAll(ringVs1, ringVs2, ringVs3));
+        rings = VertexBufferObject.create(Methods.concatAll(ringVs1, ringVs2, ringVs3));
     }
 
     private void addSize(int i, int count) {
@@ -310,16 +310,16 @@ public class MyGUI extends GUIObject {
         }
         switch (((MyPlayer) player).getActiveActionPairID()) {
             case 0:
-                arrows.renderTriangles(0, 1, 1);
+                arrows.renderTriangles(0, 3);
                 break;
             case 1:
-                arrows.renderTriangles(1, 1, 1);
+                arrows.renderTriangles(3, 6);
                 break;
             case 2:
-                arrows.renderTriangles(2, 1, 1);
+                arrows.renderTriangles(6, 9);
                 break;
             case 3:
-                arrows.renderTriangles(3, 1, 1);
+                arrows.renderTriangles(9, 12);
                 break;
             default:
         }

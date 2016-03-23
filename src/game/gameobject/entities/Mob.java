@@ -62,7 +62,7 @@ public abstract class Mob extends Entity {
             this.appearance = place.getSprite(spriteName, "entities/npcs", false, true, true);
             setTargetable(false);
         } else {
-            this.appearance = place.getSprite(spriteName, "entities/mobs", true, true);
+            this.appearance = place.getSprite(spriteName, "entities/mobs", false, true);
         }
         initialize(name, x, y);
         this.mobID = mobID;

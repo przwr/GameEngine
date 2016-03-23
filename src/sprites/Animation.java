@@ -180,15 +180,23 @@ public class Animation implements Appearance {
         spriteSheet.renderPiece(currentFrame);
     }
 
+    @Override
+    public void renderShadow(float color) {
+        spriteSheet.renderShadowPiece(currentFrame, color);
+    }
+
     public void renderWhole() {
         spriteSheet.renderPiece(currentFrame);
-
     }
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
         spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
+    }
 
+    @Override
+    public void renderShadowPart(int partXStart, int partXEnd, float color) {
+        spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
     }
 
     @Override

@@ -8,6 +8,7 @@ package sprites;
 import game.gameobject.entities.Player;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  * @author przemek
@@ -16,13 +17,18 @@ public interface Appearance {
 
     Matrix4f transformationMatrix = new Matrix4f();
     Vector3f translationVector = new Vector3f();
-//    Vector4f colorModifier = new Vector4f(1f, 1f, 1f, 1f);
+    Vector4f vectorModifier = new Vector4f(1f, 1f, 1f, 1f);
+    Vector4f ZERO_VECTOR = new Vector4f(0, 0, 0, 0);
 
     boolean bindCheck();
 
     void render();
 
+    void renderShadow(float color);
+
     void renderPart(int partXStart, int partXEnd);
+
+    void renderShadowPart(int partXStart, int partXEnd, float color);
 
     void updateTexture(Player owner); //Potrzebne tutaj?
 

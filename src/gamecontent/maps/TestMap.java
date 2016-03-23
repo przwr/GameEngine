@@ -80,6 +80,8 @@ public class TestMap extends Map {
         addObject(new Dummy(4643, 1793, place, mobID++));
         rock = new Rock(4060, 2976, place, mobID++);
         addObject(rock);
+        rock = new Rock(4060, 6976, place, mobID++);
+        addObject(rock);
         addObject(new Melodia(4034, 1811, place, mobID++, shen, rock));
         addObject(new Blazag(5473, 3783, place, mobID++));
         addObject(new Blazag(5722, 3797, place, mobID++));

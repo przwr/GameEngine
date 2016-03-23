@@ -6,6 +6,8 @@
 package sprites;
 
 import engine.Main;
+import engine.matrices.MatrixMath;
+import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import game.gameobject.entities.Player;
 import org.newdawn.slick.opengl.Texture;
@@ -53,8 +55,24 @@ public class Sprite implements Appearance {
         return new Sprite(path, folder, width, height, xStart, yStart, spriteBase);
     }
 
-    public void initializeBuffers() {
+
+    protected void initializeBuffers() {
+        float[] vertices = {
+                xStart, yStart,
+                xStart, yStart + height,
+                xStart + width, yStart + height,
+                xStart + width, yStart
+        };
+        float[] textureCoordinates = {
+                0, 0,                           //Całość
+                0, 1f,
+                1f, 1f,
+                1f, 0
+        };
+        int[] indices = {0, 1, 3, 2};
+        vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
     }
+
 
     @Override
     public boolean bindCheck() {
@@ -79,47 +97,41 @@ public class Sprite implements Appearance {
     @Override
     public void render() {
         if (bindCheck()) {
-            glBegin(GL_TRIANGLES);
-            glTexCoord2f(0, 0);
-            glVertex2f(getXStart(), getYStart());
-            glTexCoord2f(0, 1);
-            glVertex2f(getXStart(), getYStart() + height);
-            glTexCoord2f(1, 1);
-            glVertex2f(getXStart() + width, getYStart() + height);
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
+            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            vbo.renderTextured(0, 4);
+            Drawer.spriteShader.stop();
+        }
+    }
 
-            glTexCoord2f(1, 1);
-            glVertex2f(getXStart() + width, getYStart() + height);
-            glTexCoord2f(1, 0);
-            glVertex2f(getXStart() + width, getYStart());
-            glTexCoord2f(0, 0);
-            glVertex2f(getXStart(), getYStart());
-            glEnd();
+    @Override
+    public void renderShadow(float color) {
+        if (bindCheck()) {
+            vectorModifier.set(color, color, color, 1f);
+            Drawer.shadowShader.start();
+            Drawer.shadowShader.loadTextureShift(0, 0);
+            Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
+            Drawer.shadowShader.loadColourModifier(vectorModifier);
+            Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            vbo.renderTextured(0, 4);
+            Drawer.shadowShader.stop();
         }
     }
 
     public void renderRotate(float angle) {
         if (bindCheck()) {
-            glTranslatef(width / 2, height / 2, 0);
-            glRotatef(angle, 0f, 0f, 1f);
-            glTranslatef(-width / 2, -height / 2, 0);
-            glBegin(GL_TRIANGLES);
-            glTexCoord2f(0, 0);
-            glVertex2f(getXStart(), getYStart());
-            glTexCoord2f(0, 1);
-            glVertex2f(getXStart(), getYStart() + height);
-            glTexCoord2f(1, 1);
-            glVertex2f(getXStart() + width, getYStart() + height);
-
-            glTexCoord2f(1, 1);
-            glVertex2f(getXStart() + width, getYStart() + height);
-            glTexCoord2f(1, 0);
-            glVertex2f(getXStart() + width, getYStart());
-            glTexCoord2f(0, 0);
-            glVertex2f(getXStart(), getYStart());
-            glEnd();
+            MatrixMath.resetMatrix(transformationMatrix);
+            MatrixMath.rotateMatrix(transformationMatrix, angle);
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
+            Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
+            vbo.renderTextured(0, 4);
+            Drawer.spriteShader.stop();
         }
     }
-
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
@@ -129,109 +141,34 @@ public class Sprite implements Appearance {
                 partXStart = partXEnd;
                 partXEnd = temp;
             }
-            glBegin(GL_TRIANGLES);
-            glTexCoord2d(((double) partXStart / (double) width), 0);
-            glVertex2f(getXStart() + partXStart, getYStart());
-            glTexCoord2d(((double) partXStart / (double) width), 1);
-            glVertex2f(getXStart() + partXStart, getYStart() + height);
-            glTexCoord2d(((double) partXEnd / (double) width), 1);
-            glVertex2f(getXStart() + partXEnd, getYStart() + height);
-
-            glTexCoord2d(((double) partXEnd / (double) width), 1);
-            glVertex2f(getXStart() + partXEnd, getYStart() + height);
-            glTexCoord2d(((double) partXEnd / (double) width), 0);
-            glVertex2f(getXStart() + partXEnd, getYStart());
-            glTexCoord2d(((double) partXStart / (double) width), 0);
-            glVertex2f(getXStart() + partXStart, getYStart());
-            glEnd();
-        }
-    }
-
-    public void renderSpritePiece(float xBegin, float xEnd, float yBegin, float yEnd) {
-        if (bindCheck()) {
-            glBegin(GL_TRIANGLES);
-            glTexCoord2f(xBegin, yBegin);
-            glVertex2f(getXStart(), getYStart());
-            glTexCoord2f(xBegin, yEnd);
-            glVertex2f(getXStart(), getYStart() + height);
-            glTexCoord2f(xEnd, yEnd);
-            glVertex2f(getXStart() + width, getYStart() + height);
-
-            glTexCoord2f(xBegin, yBegin);
-            glVertex2f(getXStart(), getYStart());
-            glTexCoord2f(xEnd, yEnd);
-            glVertex2f(getXStart() + width, getYStart() + height);
-            glTexCoord2f(xEnd, yBegin);
-            glVertex2f(getXStart() + width, getYStart());
-            glEnd();
-        }
-    }
-
-    public void renderSpritePieceResized(float xBegin, float xEnd, float yBegin, float yEnd, float width, float height) {
-        if (bindCheck()) {
-            glBegin(GL_TRIANGLES);
-            glTexCoord2f(xBegin, yBegin);
-            glVertex2f(getXStart(), getYStart());
-            glTexCoord2f(xBegin, yEnd);
-            glVertex2f(getXStart(), getYStart() + height);
-            glTexCoord2f(xEnd, yEnd);
-            glVertex2f(getXStart() + width, getYStart() + height);
-
-            glTexCoord2f(xEnd, yEnd);
-            glVertex2f(getXStart() + width, getYStart() + height);
-            glTexCoord2f(xEnd, yBegin);
-            glVertex2f(getXStart() + width, getYStart());
-            glTexCoord2f(xBegin, yBegin);
-            glVertex2f(getXStart(), getYStart());
-            glEnd();
+            vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(vectorModifier);
+            Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            vbo.renderTextured(0, 4);
+            Drawer.spriteShader.stop();
         }
     }
 
 
-    public void renderSpritePieceMirrored(float xBegin, float xEnd, float yBegin, float yEnd) {
+    @Override
+    public void renderShadowPart(int partXStart, int partXEnd, float color) {
         if (bindCheck()) {
-            glBegin(GL_TRIANGLES);
-            glTexCoord2f(xEnd, yBegin);
-            glVertex2f(getXStart(), getYStart());
-            glTexCoord2f(xBegin, yBegin);
-            glVertex2f(getXStart() + width, getYStart());
-            glTexCoord2f(xBegin, yEnd);
-            glVertex2f(getXStart() + width, getYStart() + height);
-
-            glTexCoord2f(xBegin, yEnd);
-            glVertex2f(getXStart() + width, getYStart() + height);
-            glTexCoord2f(xEnd, yEnd);
-            glVertex2f(getXStart(), getYStart() + height);
-            glTexCoord2f(xEnd, yBegin);
-            glVertex2f(getXStart(), getYStart());
-            glEnd();
-        }
-    }
-
-    public void renderSpritePiecePart(float xBegin, float yBegin, float yEnd, int partXStart, int partXEnd, float xTiles) {
-        if (bindCheck()) {
-            begin = xBegin + ((double) partXStart) / (double) width / xTiles;
-            ending = xBegin + ((double) partXEnd) / (double) width / xTiles;
             if (partXStart > partXEnd) {
                 int temp = partXStart;
                 partXStart = partXEnd;
                 partXEnd = temp;
             }
-            glBegin(GL_TRIANGLES);
-            glTexCoord2d(begin, yBegin);
-            glVertex2f(getXStart() + partXStart, getYStart());
-            glTexCoord2d(begin, yEnd);
-            glVertex2f(getXStart() + partXStart, getYStart() + height);
-            glTexCoord2d(ending, yEnd);
-            glVertex2f(getXStart() + partXEnd, getYStart() + height);
-
-            glTexCoord2d(ending, yEnd);
-            glVertex2f(getXStart() + partXEnd, getYStart() + height);
-            glTexCoord2d(ending, yBegin);
-            glVertex2f(getXStart() + partXEnd, getYStart());
-            glTexCoord2d(begin, yBegin);
-            glVertex2f(getXStart() + partXStart, getYStart());
-            glEnd();
+            vectorModifier.set(color, color, color, 1f);
+            Drawer.shadowShader.start();
+            Drawer.shadowShader.loadTextureShift(0, 0);
+            Drawer.shadowShader.loadColourModifier(vectorModifier);
+            vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
+            Drawer.shadowShader.loadSizeModifier(vectorModifier);
+            Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            vbo.renderTextured(0, 4);
+            Drawer.shadowShader.stop();
         }
     }
 
@@ -260,7 +197,6 @@ public class Sprite implements Appearance {
         this.heightWhole = texture.getImageHeight();
         this.widthWhole = texture.getImageWidth();
         this.textureID = texture.getTextureID();
-        initializeBuffers();
     }
 
     public synchronized void releaseTexture() {

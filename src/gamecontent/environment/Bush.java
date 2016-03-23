@@ -114,14 +114,10 @@ public class Bush extends GameObject {
     }
 
     private void drawBush() {
-        glEnable(GL_TEXTURE_2D);
         bark.bindCheck();
         Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next
                 (10) / 10240f)));
 //        TODO liczyć gdzie są prawdziwe granice tekstury
-//        Drawer.setCentralPoint();
-//        Drawer.drawRectangle(-Math.round(fbo.getWidth() * 0.4f), -fbo.getHeight() + 20, Math.round(fbo.getWidth() * 0.8f), fbo.getHeight());
-//        Drawer.returnToCentralPoint();
         drawRoots();
         drawBranches();
         drawLeafs();

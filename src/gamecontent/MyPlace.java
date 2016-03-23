@@ -73,7 +73,8 @@ public class MyPlace extends Place {
         Place.xAreaInPixels = X_IN_TILES * tileSize;
         Place.yAreaInPixels = Y_IN_TILES * tileSize;
 //        dayCycle.setTime(12, 30);
-        dayCycle.setTime(21, 30);
+//        dayCycle.setTime(21, 30);
+        dayCycle.setTime(5, 30);
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
         loadingMap = new LoadingMap(this);

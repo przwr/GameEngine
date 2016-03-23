@@ -6,20 +6,19 @@ import org.lwjgl.util.vector.Vector4f;
 /**
  * Created by przemek on 16.03.16.
  */
-public class SpriteShader extends ShaderProgram {
+public class ShadowShader extends ShaderProgram {
 
 
-    private static final String VERTEX_FILE = "src/sprites/shaders/sprite.vert";
-    private static final String FRAGMENT_FILE = "src/sprites/shaders/sprite.frag";
+    private static final String VERTEX_FILE = "src/sprites/shaders/shadow.vert";
+    private static final String FRAGMENT_FILE = "src/sprites/shaders/shadow.frag";
 
     private int locationTransformationMatrix;
     private int locationTextureShift;
     private int locationColourModifier;
     private int locationSizeModifier;
     private int locationUseTexture;
-    private int locationUseColour;
 
-    public SpriteShader() {
+    public ShadowShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
 
@@ -30,16 +29,13 @@ public class SpriteShader extends ShaderProgram {
         locationColourModifier = super.getUniformLocation("colourModifier");
         locationSizeModifier = super.getUniformLocation("sizeModifier");
         locationUseTexture = super.getUniformLocation("useTexture");
-        locationUseColour = super.getUniformLocation("useColour");
         setUseTexture(true);
-        setUseColour(false);
     }
 
     @Override
     protected void bindAttributes() {
         super.bindAttribute(0, "position");
         super.bindAttribute(1, "textureCoords");
-        super.bindAttribute(2, "colour");
     }
 
     public void loadTextureShift(float x, float y) {
@@ -59,10 +55,8 @@ public class SpriteShader extends ShaderProgram {
     }
 
     public void setUseTexture(boolean use) {
-        super.loadBoolean(locationUseTexture, use);
+        loadBoolean(locationUseTexture, use);
     }
 
-    public void setUseColour(boolean use) {
-        super.loadBoolean(locationUseColour, use);
-    }
 }
+

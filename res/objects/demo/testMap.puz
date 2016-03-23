@@ -12067,7 +12067,6 @@ o:Bush:66:69
 o:Bush:57:68
 o:Bush:49:61
 o:Bush:54:50
-o:Bush:59:49
 o:Bush:67:49
 o:Bush:70:52
 o:Bush:50:50
@@ -12500,3 +12499,5 @@ o:Grass:114:63
 o:Grass:117:67
 o:Tree:124:61
 o:Tree:44:15
+o:Bush:57:49
+o:Tree:60:48

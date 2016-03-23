@@ -1,11 +1,14 @@
 package sprites.fbo;
 
+import engine.matrices.MatrixMath;
+import engine.utilities.Drawer;
 import game.Settings;
 import game.gameobject.entities.Player;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL30;
 import sprites.Appearance;
+import sprites.vbo.VertexBufferObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +24,19 @@ public abstract class FrameBufferObject implements Appearance {
     private static final FrameBufferType MULTI_SAMPLE_NATIVE = new MultiSampleNative();
     private static final FrameBufferType MULTI_SAMPLE_ARB = new MultiSampleARB();
     private static final FrameBufferType MULTI_SAMPLE_EXT = new MultiSampleEXT();
-
+    private static VertexBufferObject screenVBO;
+    private static float lastScreenData[] = new float[10];
+    private static float checkSum = 0;
     private static List<FrameBufferObject> instances = new ArrayList<>();
-
     final FrameBufferType type;
     final int height;
     final int width;
     final int texture;
     public boolean generated;
+    float heightSlice;
     int frameBufferObject;
     int version;
+    private VertexBufferObject vbo;
 
     FrameBufferObject(int width, int height, boolean multiSample) {
         this.width = width;
@@ -66,6 +72,74 @@ public abstract class FrameBufferObject implements Appearance {
         instances.clear();
     }
 
+    public void setHeightSlice(float heightSlice) {
+        this.heightSlice = heightSlice;
+        if (vbo != null) {
+            vbo.clear();
+            vbo = null;
+        }
+    }
+
+    protected void initializeBuffers() {
+        if (heightSlice != 0) {
+            float[] vertices = {
+                    0, 0,
+                    0, 0 + height,
+                    0 + width, 0 + height,
+                    0 + width, 0,
+                    0, 0,
+                    0, 0 + heightSlice,
+                    0 + width, 0 + heightSlice,
+                    0 + width, 0,
+                    0, heightSlice,
+                    0, 0 + height,
+                    0 + width, 0 + height,
+                    0 + width, heightSlice,
+            };
+            float[] textureCoordinates = {
+                    0, 1f,                           //Całość
+                    0, 0,
+                    1f, 0,
+                    1f, 1f,
+                    0, heightSlice / height,         //Dół
+                    0, 0,
+                    1f, 0,
+                    1f, heightSlice / height,
+                    0, 1f,                          //Góra
+                    0, heightSlice / height,
+                    1f, heightSlice / height,
+                    1f, 1f,
+            };
+            int[] indices = {0, 1, 3, 2, 4, 5, 7, 6, 8, 9, 11, 10};
+            vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
+        } else {
+            float[] vertices = {
+                    0, 0,
+                    0, 0 + height,
+                    0 + width, 0 + height,
+                    0 + width, 0
+            };
+            float[] textureCoordinates = {
+                    0, 1f,                           //Całość
+                    0, 0,
+                    1f, 0,
+                    1f, 1f
+            };
+            int[] indices = {0, 1, 3, 2};
+            vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
+        }
+        if (screenVBO == null) {
+            float[] vertices = {
+                    0, 0, 0, 0, 0, 0, 0, 0
+            };
+            float[] textureCoordinates = {
+                    0, 0, 0, 0, 0, 0, 0, 0
+            };
+            int[] indices = {0, 1, 3, 2};
+            screenVBO = VertexBufferObject.create(vertices, textureCoordinates, indices);
+        }
+    }
+
     public void clear() {
         for (int texture : getTextures()) {
             glDeleteTextures(texture);
@@ -90,101 +164,141 @@ public abstract class FrameBufferObject implements Appearance {
     public abstract void deactivate();
 
     public void render() {
-        bindCheck();
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, height);
-        glTexCoord2f(1, 0);
-        glVertex2f(width, height);
-        glTexCoord2f(1, 1);
-        glVertex2f(width, 0);
-
-        glTexCoord2f(1, 1);
-        glVertex2f(width, 0);
-        glTexCoord2f(0, 1);
-        glVertex2f(0, 0);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, height);
-        glEnd();
+        render(0);
     }
 
-    public void renderBottom(float h) {
+    private void render(int type) {
         bindCheck();
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, h);
-        glTexCoord2f(1, 0);
-        glVertex2f(width, h);
-        glTexCoord2f(1, h / height);
-        glVertex2f(width, 0);
-
-        glTexCoord2f(1, h / height);
-        glVertex2f(width, 0);
-        glTexCoord2f(0, h / height);
-        glVertex2f(0, 0);
-        glTexCoord2f(0, 0);
-        glVertex2f(0, h);
-        glEnd();
+        Drawer.spriteShader.start();
+        Drawer.spriteShader.loadTextureShift(0, 0);
+        Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
+        Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        vbo.renderTextured(type * 4, 4);
+        Drawer.spriteShader.stop();
     }
 
-    public void renderTop(float h) {
-        bindCheck();
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(0, h / height);
-        glVertex2f(0, height);
-        glTexCoord2f(1, h / height);
-        glVertex2f(width, height);
-        glTexCoord2f(1, 1);
-        glVertex2f(width, h);
+    public void renderShadow(float color) {
+        renderShadow(0, color);
+    }
 
-        glTexCoord2f(1, 1);
-        glVertex2f(width, h);
-        glTexCoord2f(0, 1);
-        glVertex2f(0, h);
-        glTexCoord2f(0, h / height);
-        glVertex2f(0, height);
-        glEnd();
+    public void renderShadowBottom(float color) {
+        renderShadow(1, color);
+    }
+
+    public void renderShadowTop(float color) {
+        renderShadow(2, color);
+    }
+
+    public void renderShadow(int type, float color) {
+        bindCheck();
+        Drawer.shadowShader.start();
+        vectorModifier.set(color, color, color, 1);
+        Drawer.shadowShader.loadColourModifier(vectorModifier);
+        Drawer.shadowShader.loadTextureShift(0, 0);
+        Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
+        Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        vbo.renderTextured(type * 4, 4);
+        Drawer.shadowShader.stop();
+    }
+
+    public void renderBottom() {
+        render(1);
+    }
+
+    public void renderTop() {
+        render(2);
+    }
+
+
+    public void renderBottomPart(int partXStart, int partXEnd) {
+        renderPart(1, partXStart, partXEnd);
+    }
+
+
+    public void renderTopPart(int partXStart, int partXEnd) {
+        renderPart(2, partXStart, partXEnd);
+    }
+
+
+    public void renderShadowBottomPart(int partXStart, int partXEnd, float color) {
+        renderShadowPart(1, partXStart, partXEnd, color);
+    }
+
+    public void renderShadowTopPart(int partXStart, int partXEnd, float color) {
+        renderShadowPart(2, partXStart, partXEnd, color);
+    }
+
+    public void renderShadowPart(int type, int partXStart, int partXEnd, float color) {
+        if (bindCheck()) {
+            if (partXStart > partXEnd) {
+                int temp = partXStart;
+                partXStart = partXEnd;
+                partXEnd = temp;
+            }
+            if (partXEnd > width) {
+                partXEnd = width;
+            }
+            if (partXStart < 0) {
+                partXStart = 0;
+            }
+            vectorModifier.set(color, color, color, 1f);
+            Drawer.shadowShader.start();
+            Drawer.shadowShader.loadTextureShift(0, 0);
+            Drawer.shadowShader.loadColourModifier(vectorModifier);
+            vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
+            Drawer.shadowShader.loadSizeModifier(vectorModifier);
+            Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            vbo.renderTextured(type * 4, 4);
+            Drawer.shadowShader.stop();
+        }
     }
 
     public void renderScreenPart(float displayWidth, float displayHeight, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart,
-            float xTEnd, float yTEnd) {
-        glPushMatrix();
+                                 float xTEnd, float yTEnd) {
+        if (areDifferent(displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd)) {
+            float[] vertices = {
+                    xStart * displayWidth, yStart * displayHeight,
+                    xStart * displayWidth, yEnd * displayHeight,
+                    xEnd * displayWidth, yEnd * displayHeight,
+                    xEnd * displayWidth, yStart * displayHeight
+            };
+            float[] textureCoordinates = {
+                    xTStart, yTEnd,
+                    xTStart, yTStart,
+                    xTEnd, yTStart,
+                    xTEnd, yTEnd
+            };
+            screenVBO.updateVerticesAndTextureCoords(vertices, textureCoordinates);
+        }
         bindCheck();
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(xTStart, yTStart);
-        glVertex2f(xStart * displayWidth, yEnd * displayHeight);
-        glTexCoord2f(xTEnd, yTStart);
-        glVertex2f(xEnd * displayWidth, yEnd * displayHeight);
-        glTexCoord2f(xTEnd, yTEnd);
-        glVertex2f(xEnd * displayWidth, yStart * displayHeight);
-
-        glTexCoord2f(xTEnd, yTEnd);
-        glVertex2f(xEnd * displayWidth, yStart * displayHeight);
-        glTexCoord2f(xTStart, yTEnd);
-        glVertex2f(xStart * displayWidth, yStart * displayHeight);
-        glTexCoord2f(xTStart, yTStart);
-        glVertex2f(xStart * displayWidth, yEnd * displayHeight);
-        glEnd();
-        glPopMatrix();
+        Drawer.spriteShader.start();
+        Drawer.spriteShader.loadTextureShift(0, 0);
+        Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
+        Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        screenVBO.renderTextured(0, 4);
+        Drawer.spriteShader.stop();
     }
 
-    public void renderPiece(int xStart, int yStart, float xBeg, float yBeg, float xEnd, float yEnd) {
-        bindCheck();
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(xEnd / width, yBeg / height);
-        glVertex2f(xStart + xEnd, yStart + yEnd);
-        glTexCoord2f(xEnd / width, yEnd / height);
-        glVertex2f(xStart + xEnd, yStart + yBeg);
-        glTexCoord2f(xBeg / width, yEnd / height);
-        glVertex2f(xStart + xBeg, yStart + yBeg);
 
-        glTexCoord2f(xBeg / width, yEnd / height);
-        glVertex2f(xStart + xBeg, yStart + yBeg);
-        glTexCoord2f(xBeg / width, yBeg / height);
-        glVertex2f(xStart + xBeg, yStart + yEnd);
-        glTexCoord2f(xEnd / width, yBeg / height);
-        glVertex2f(xStart + xEnd, yStart + yEnd);
-        glEnd();
+    private boolean areDifferent(float displayWidth, float displayHeight, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart,
+                                 float
+                                         xTEnd, float yTEnd) {
+        float curSum = displayWidth * displayHeight + xStart * yStart * xEnd * yEnd + xTStart * yTStart * xTEnd * yTEnd;
+        if (curSum != checkSum) {
+            checkSum = curSum;
+            lastScreenData[0] = displayWidth;
+            lastScreenData[1] = displayHeight;
+            lastScreenData[2] = xStart;
+            lastScreenData[3] = yStart;
+            lastScreenData[4] = xEnd;
+            lastScreenData[5] = yEnd;
+            lastScreenData[6] = xTStart;
+            lastScreenData[7] = yTStart;
+            lastScreenData[8] = xTEnd;
+            lastScreenData[9] = yTEnd;
+            return true;
+        }
+        return false;
     }
 
     public int getTexture() {
@@ -201,83 +315,48 @@ public abstract class FrameBufferObject implements Appearance {
 
     @Override
     public boolean bindCheck() {
+        if (vbo == null) {
+            initializeBuffers();
+        }
         if (glGetInteger(GL_TEXTURE_BINDING_2D) != texture) {
             glBindTexture(GL_TEXTURE_2D, texture);
         }
         return true;
     }
 
+    public void renderPart(int type, int partXStart, int partXEnd) {
+        if (bindCheck()) {
+            if (partXStart > partXEnd) {
+                int temp = partXStart;
+                partXStart = partXEnd;
+                partXEnd = temp;
+            }
+            if (partXEnd > width) {
+                partXEnd = width;
+            }
+            if (partXStart < 0) {
+                partXEnd = 0;
+            }
+            vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
+            MatrixMath.resetMatrix(transformationMatrix);
+            Drawer.spriteShader.start();
+            Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(vectorModifier);
+            Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
+            vbo.renderTextured(type * 4, 4);
+            Drawer.spriteShader.stop();
+        }
+    }
+
     @Override
     public void renderPart(int partXStart, int partXEnd) {
-        bindCheck();
-        if (partXStart > partXEnd) {
-            int temp = partXEnd;
-            partXEnd = partXStart;
-            partXStart = temp;
-        }
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(partXStart / (float) width, 0);
-        glVertex2f(partXStart, height);
-        glTexCoord2f(partXEnd / (float) width, 0);
-        glVertex2f(partXEnd, height);
-        glTexCoord2f(partXEnd / (float) width, 1);
-        glVertex2f(partXEnd, 0);
-
-        glTexCoord2f(partXEnd / (float) width, 1);
-        glVertex2f(partXEnd, 0);
-        glTexCoord2f(partXStart / (float) width, 1);
-        glVertex2f(partXStart, 0);
-        glTexCoord2f(partXStart / (float) width, 0);
-        glVertex2f(partXStart, height);
-        glEnd();
+        renderPart(0, partXStart, partXEnd);
     }
 
-    public void renderBottomPart(int partXStart, int partXEnd, float h) {
-        bindCheck();
-        if (partXStart > partXEnd) {
-            int temp = partXEnd;
-            partXEnd = partXStart;
-            partXStart = temp;
-        }
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(partXStart / (float) width, 0);
-        glVertex2f(partXStart, h);
-        glTexCoord2f(partXEnd / (float) width, 0);
-        glVertex2f(partXEnd, h);
-        glTexCoord2f(partXEnd / (float) width, h / height);
-        glVertex2f(partXEnd, 0);
 
-        glTexCoord2f(partXEnd / (float) width, h / height);
-        glVertex2f(partXEnd, 0);
-        glTexCoord2f(partXStart / (float) width, h / height);
-        glVertex2f(partXStart, 0);
-        glTexCoord2f(partXStart / (float) width, 0);
-        glVertex2f(partXStart, h);
-        glEnd();
-    }
-
-    public void renderTopPart(int partXStart, int partXEnd, float h) {
-        bindCheck();
-        if (partXStart > partXEnd) {
-            int temp = partXEnd;
-            partXEnd = partXStart;
-            partXStart = temp;
-        }
-        glBegin(GL_TRIANGLES);
-        glTexCoord2f(partXStart / (float) width, h / height);
-        glVertex2f(partXStart, height);
-        glTexCoord2f(partXEnd / (float) width, h / height);
-        glVertex2f(partXEnd, height);
-        glTexCoord2f(partXEnd / (float) width, 1);
-        glVertex2f(partXEnd, h);
-
-        glTexCoord2f(partXEnd / (float) width, 1);
-        glVertex2f(partXEnd, h);
-        glTexCoord2f(partXStart / (float) width, 1);
-        glVertex2f(partXStart, h);
-        glTexCoord2f(partXStart / (float) width, h / height);
-        glVertex2f(partXStart, height);
-        glEnd();
+    @Override
+    public void renderShadowPart(int partXStart, int partXEnd, float color) {
+        renderShadowPart(0, partXStart, partXEnd, color);
     }
 
     @Override

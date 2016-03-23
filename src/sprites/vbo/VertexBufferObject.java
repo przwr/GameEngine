@@ -22,24 +22,46 @@ public class VertexBufferObject {
     private ArrayList<Integer> vbosIDs = new ArrayList<>();
     private int vertexCount;
 
-    public VertexBufferObject(float[] positions) {
+
+    private VertexBufferObject(float[] positions, float[] colors) {
         int vaoID = createVAO();
-        storeDataInAttributeList(0, 2, positions);
+        storeDataInAttributeList(0, positions, GL15.GL_STATIC_DRAW);
+        storeColorInAttributeList(2, colors, GL15.GL_STATIC_DRAW);
+        GL30.glBindVertexArray(0);
+        this.vaoID = vaoID;
+        vbos.add(this);
+    }
+
+    private VertexBufferObject(float[] positions, int usage) {
+        int vaoID = createVAO();
+        storeDataInAttributeList(0, positions, usage);
         GL30.glBindVertexArray(0);
         this.vaoID = vaoID;
         this.vertexCount = positions.length / 2;
         vbos.add(this);
     }
 
-    public VertexBufferObject(float[] positions, float[] textureCoords, int[] indices) {
+    private VertexBufferObject(float[] positions, float[] textureCoords, int[] indices, int usage) {
         int vaoID = createVAO();
-        storeDataInAttributeList(0, 2, positions);
-        storeDataInAttributeList(1, 2, textureCoords);
+        storeDataInAttributeList(0, positions, usage);
+        storeDataInAttributeList(1, textureCoords, usage);
         bindIndicesBuffer(indices);
         GL30.glBindVertexArray(0);
         this.vaoID = vaoID;
         this.vertexCount = indices.length;
         vbos.add(this);
+    }
+
+    public static VertexBufferObject create(float[] positions) {
+        return new VertexBufferObject(positions, GL15.GL_STATIC_DRAW);
+    }
+
+    public static VertexBufferObject create(float[] positions, float[] textureCoords, int[] indices) {
+        return new VertexBufferObject(positions, textureCoords, indices, GL15.GL_STATIC_DRAW);
+    }
+
+    public static VertexBufferObject createColored(float[] positions, float[] colors) {
+        return new VertexBufferObject(positions, colors);
     }
 
     public static void cleanUp() {
@@ -53,6 +75,41 @@ public class VertexBufferObject {
         int vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
         return vaoID;
+    }
+
+    public void renderColoredTriangleStream(float[] positions, float[] colors) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
+        storeColorInAttributeList(vbosIDs.get(1), 2, colors, GL15.GL_STREAM_DRAW);
+        renderColoredTriangles(0, positions.length / 2);
+    }
+
+    public void renderTriangleStripStream(float[] positions) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
+        render(0, positions.length / 2, GL11.GL_TRIANGLE_STRIP);
+    }
+
+    public void renderLineLoopStream(float[] positions) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
+        render(0, positions.length / 2, GL11.GL_LINE_LOOP);
+    }
+
+    public void renderTriangleFanStream(float[] positions) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
+        render(0, positions.length / 2, GL11.GL_TRIANGLE_FAN);
+    }
+
+    public void renderTriangleStream(float[] positions) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
+        render(0, positions.length / 2, GL11.GL_TRIANGLES);
+    }
+
+    public void updateVerticesStream(float[] positions) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
+    }
+
+    public void updateVerticesAndTextureCoords(float[] positions, float[] textureCoords) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STATIC_DRAW);
+        storeDataInAttributeList(vbosIDs.get(1), 1, textureCoords, GL15.GL_STATIC_DRAW);
     }
 
     public void clear() {
@@ -70,22 +127,44 @@ public class VertexBufferObject {
         vbosIDs.clear();
     }
 
-    private void storeDataInAttributeList(int attributeNumber, int size, float[] data) {
+    private void storeColorInAttributeList(int attributeNumber, float[] data, int usage) {
         int vboID = GL15.glGenBuffers();
         vbosIDs.add(vboID);
+        storeColorInAttributeList(vboID, attributeNumber, data, usage);
+    }
+
+    private void storeColorInAttributeList(int vboID, int attributeNumber, float[] data, int usage) {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
         FloatBuffer buffer = storeDataInFloatBuffer(data);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attributeNumber, size, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, usage);
+        GL20.glVertexAttribPointer(attributeNumber, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    }
+
+    private void storeDataInAttributeList(int attributeNumber, float[] data, int usage) {
+        int vboID = GL15.glGenBuffers();
+        vbosIDs.add(vboID);
+        storeDataInAttributeList(vboID, attributeNumber, data, usage);
+    }
+
+    private void storeDataInAttributeList(int vboID, int attributeNumber, float[] data, int usage) {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
+        FloatBuffer buffer = storeDataInFloatBuffer(data);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, usage);
+        GL20.glVertexAttribPointer(attributeNumber, 2, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 
     private void bindIndicesBuffer(int[] indices) {
         int vboID = GL15.glGenBuffers();
         vbosIDs.add(vboID);
+        bindIndicesBuffer(vboID, indices, GL15.GL_STATIC_DRAW);
+    }
+
+    private void bindIndicesBuffer(int vboID, int[] indices, int type) {
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
         IntBuffer buffer = storeDataInIntBuffer(indices);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, type);
     }
 
     private IntBuffer storeDataInIntBuffer(int[] data) {
@@ -102,10 +181,7 @@ public class VertexBufferObject {
         return buffer;
     }
 
-    public void renderTriangles(int start, int renderCount, int sizeInTriangles) {
-        sizeInTriangles *= 3;
-        start *= sizeInTriangles;
-        renderCount *= sizeInTriangles;
+    public void renderTriangles(int start, int renderCount) {
         render(start, renderCount, GL11.GL_TRIANGLES);
     }
 
@@ -129,25 +205,26 @@ public class VertexBufferObject {
         GL30.glBindVertexArray(0);
     }
 
+    public void renderColoredTriangles(int start, int renderCount) {
+        GL30.glBindVertexArray(vaoID);
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(2);
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, start, renderCount); // size of UNSIGNED_INT in BYTES
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(2);
+        GL30.glBindVertexArray(0);
+    }
+
     public void renderTextured(int start, int renderCount) {
         GL30.glBindVertexArray(vaoID);
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-        GL11.glDrawElements(GL11.GL_TRIANGLES, renderCount, GL11.GL_UNSIGNED_INT, start * 4L); // size of UNSIGNED_INT in BYTES
+        GL11.glDrawElements(GL11.GL_TRIANGLE_STRIP, renderCount, GL11.GL_UNSIGNED_INT, start * 4L); // size of UNSIGNED_INT in BYTES
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
     }
 
-    public void renderTexturePiece(int start) {
-        GL30.glBindVertexArray(vaoID);
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL11.glDrawElements(GL11.GL_TRIANGLES, 6, GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(0);
-        GL20.glDisableVertexAttribArray(1);
-        GL30.glBindVertexArray(0);
-    }
 
     public int getVertexCount() {
         return vertexCount;

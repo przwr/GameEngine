@@ -14,6 +14,7 @@ import java.awt.geom.Line2D;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -627,6 +628,15 @@ public class Methods {
         for (float[] array : rest) {
             System.arraycopy(array, 0, result, offset, array.length);
             offset += array.length;
+        }
+        return result;
+    }
+
+    public static float[] toArray(ArrayList<Float> list) {
+        float[] result = new float[list.size()];
+        int i = 0;
+        for (Float n : list) {
+            result[i++] = n;
         }
         return result;
     }

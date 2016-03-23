@@ -6,8 +6,11 @@
 package engine.lights;
 
 import collision.Figure;
+import engine.matrices.MatrixMath;
+import engine.utilities.Drawer;
 import engine.utilities.Point;
 import game.place.Place;
+import sprites.Sprite;
 
 import static engine.lights.Shadow.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -54,104 +57,171 @@ public class ShadowDrawer {
 
     public static void drawLeftConcaveBottom(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
-        glBegin(GL_TRIANGLES);
-        glVertex2f(shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize);
-        glVertex2f(x, y);
-        glVertex2f(shaded.getX() + Place.tileSize, shaded.getYEnd());
+        float[] data = {
+                shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
+                x, y,
+                shaded.getX() + Place.tileSize, shaded.getYEnd(),
+        };
+        Drawer.spriteShader.start();
+        Drawer.spriteShader.loadTextureShift(0, 0);
+        Drawer.spriteShader.loadSizeModifier(Sprite.ZERO_VECTOR);
+        Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.spriteShader.setUseTexture(false);
+        Drawer.streamVBO.renderTriangleStream(data);
+        Drawer.spriteShader.setUseTexture(true);
+        Drawer.spriteShader.stop();
         endDrawingShadow();
     }
 
     public static void drawConcaveTop(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
-        glBegin(GL_TRIANGLES);
-        glVertex2f(shaded.getX(), shaded.getYEnd() - Place.tileSize);
-        glVertex2f(x, y);
-        glVertex2f(shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize);
+        float[] data = {
+                shaded.getX(), shaded.getYEnd() - Place.tileSize,
+                x, y,
+                shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
+        };
+        Drawer.spriteShader.start();
+        Drawer.spriteShader.loadTextureShift(0, 0);
+        Drawer.spriteShader.loadSizeModifier(Sprite.ZERO_VECTOR);
+        Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.spriteShader.setUseTexture(false);
+        Drawer.streamVBO.renderTriangleStream(data);
+        Drawer.spriteShader.setUseTexture(true);
+        Drawer.spriteShader.stop();
         endDrawingShadow();
     }
 
     public static void drawRightConcaveBottom(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
-        glBegin(GL_TRIANGLES);
-        glVertex2f(shaded.getX(), shaded.getYEnd());
-        glVertex2f(x, y);
-        glVertex2f(shaded.getX(), shaded.getYEnd() - Place.tileSize);
+        float[] data = {
+                shaded.getX(), shaded.getYEnd(),
+                x, y,
+                shaded.getX(), shaded.getYEnd() - Place.tileSize,
+        };
+        Drawer.spriteShader.start();
+        Drawer.spriteShader.loadTextureShift(0, 0);
+        Drawer.spriteShader.loadSizeModifier(Sprite.ZERO_VECTOR);
+        Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.spriteShader.setUseTexture(false);
+        Drawer.streamVBO.renderTriangleStream(data);
+        Drawer.spriteShader.setUseTexture(true);
+        Drawer.spriteShader.stop();
         endDrawingShadow();
     }
 
     private static void startDrawingShadow(byte color, int lightXCentralShifted, int lightYCentralShifted) {
-        glDisable(GL_TEXTURE_2D);
-        glColor3f(color, color, color);
+        Drawer.setColorStatic(color, color, color, 1f);
         glPushMatrix();
         glTranslatef(lightXCentralShifted, lightYCentralShifted, 0);
     }
 
     private static void endDrawingShadow() {
-        glEnd();
+        Drawer.refreshColor();
         glPopMatrix();
-        glEnable(GL_TEXTURE_2D);
     }
 
     public static void drawShadowFromConcave(Figure shaded, Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         corner.set(shaded.getX() + (shaded.isLeftBottomRound() ? Place.tileSize : 0), shaded.getY());
-        glBegin(GL_TRIANGLES);
         boolean a = false, b = false;
+
+        Drawer.spriteShader.start();
+        Drawer.spriteShader.loadTextureShift(0, 0);
+        Drawer.spriteShader.loadSizeModifier(Sprite.ZERO_VECTOR);
+        Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.spriteShader.setUseTexture(false);
+
+        float[] data = new float[18];
         if (((corner.getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
                 - ((corner.getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
-            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
-            glVertex2f(corner.getX(), corner.getY());
-            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
+            data[0] = shadowPoints[2].getX();
+            data[1] = shadowPoints[2].getY();
+            data[2] = corner.getX();
+            data[3] = corner.getY();
+            data[4] = shadowPoints[0].getX();
+            data[5] = shadowPoints[0].getY();
             a = true;
         } else {
-            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
-            glVertex2f(corner.getX(), corner.getY());
-            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+            data[0] = shadowPoints[0].getX();
+            data[1] = shadowPoints[0].getY();
+            data[2] = corner.getX();
+            data[3] = corner.getY();
+            data[4] = shadowPoints[2].getX();
+            data[5] = shadowPoints[2].getY();
         }
+
         if (((corner.getX() - shadowPoints[3].getX()) * (shadowPoints[1].getY() - shadowPoints[3].getY()))
                 - ((corner.getY() - shadowPoints[3].getY()) * (shadowPoints[1].getX() - shadowPoints[3].getX())) > 0) {
-            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
-            glVertex2f(corner.getX(), corner.getY());
-            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+            data[6] = shadowPoints[1].getX();
+            data[7] = shadowPoints[1].getY();
+            data[8] = corner.getX();
+            data[9] = corner.getY();
+            data[10] = shadowPoints[3].getX();
+            data[11] = shadowPoints[3].getY();
             b = true;
         } else {
-            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
-            glVertex2f(corner.getX(), corner.getY());
-            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+            data[6] = shadowPoints[3].getX();
+            data[7] = shadowPoints[3].getY();
+            data[8] = corner.getX();
+            data[9] = corner.getY();
+            data[10] = shadowPoints[1].getX();
+            data[11] = shadowPoints[1].getY();
         }
+
         if (a || b) {
-            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
-            glVertex2f(corner.getX(), corner.getY());
-            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
+            data[12] = shadowPoints[3].getX();
+            data[13] = shadowPoints[3].getY();
+            data[14] = corner.getX();
+            data[15] = corner.getY();
+            data[16] = shadowPoints[2].getX();
+            data[17] = shadowPoints[2].getY();
         } else {
-            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
-            glVertex2f(corner.getX(), corner.getY());
-            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
+            data[12] = shadowPoints[2].getX();
+            data[13] = shadowPoints[2].getY();
+            data[14] = corner.getX();
+            data[15] = corner.getY();
+            data[16] = shadowPoints[3].getX();
+            data[17] = shadowPoints[3].getY();
         }
+        Drawer.streamVBO.renderTriangleStream(data);
+        Drawer.spriteShader.setUseTexture(true);
+        Drawer.spriteShader.stop();
         endDrawingShadow();
     }
 
     public static void drawShadow(Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
-        glBegin(GL_TRIANGLES);
+
+        Drawer.spriteShader.start();
+        Drawer.spriteShader.loadTextureShift(0, 0);
+        Drawer.spriteShader.loadSizeModifier(Sprite.ZERO_VECTOR);
+        Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.spriteShader.setUseTexture(false);
+
         if (((shadowPoints[1].getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
                 - ((shadowPoints[1].getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
-            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
-            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
-            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
-
-            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
-            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
-            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
+            float[] data = {
+                    shadowPoints[0].getX(), shadowPoints[0].getY(),
+                    shadowPoints[2].getX(), shadowPoints[2].getY(),
+                    shadowPoints[3].getX(), shadowPoints[3].getY(),
+                    shadowPoints[3].getX(), shadowPoints[3].getY(),
+                    shadowPoints[1].getX(), shadowPoints[1].getY(),
+                    shadowPoints[0].getX(), shadowPoints[0].getY(),
+            };
+            Drawer.streamVBO.renderTriangleStream(data);
         } else {
-            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
-            glVertex2f(shadowPoints[3].getX(), shadowPoints[3].getY());
-            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
-
-            glVertex2f(shadowPoints[2].getX(), shadowPoints[2].getY());
-            glVertex2f(shadowPoints[0].getX(), shadowPoints[0].getY());
-            glVertex2f(shadowPoints[1].getX(), shadowPoints[1].getY());
+            float[] data = {
+                    shadowPoints[1].getX(), shadowPoints[1].getY(),
+                    shadowPoints[3].getX(), shadowPoints[3].getY(),
+                    shadowPoints[2].getX(), shadowPoints[2].getY(),
+                    shadowPoints[2].getX(), shadowPoints[2].getY(),
+                    shadowPoints[0].getX(), shadowPoints[0].getY(),
+                    shadowPoints[1].getX(), shadowPoints[1].getY()
+            };
+            Drawer.streamVBO.renderTriangleStream(data);
         }
+        Drawer.spriteShader.setUseTexture(true);
+        Drawer.spriteShader.stop();
         endDrawingShadow();
     }
 
@@ -167,14 +237,34 @@ public class ShadowDrawer {
         int firstShadowPoint = shade.getYEnd();
         int secondShadowPoint = shade.getY() - shade.getShadowHeight();
         startDrawingShadow(color, lightXCentralShifted, lightYCentralShifted);
-        glBegin(GL_TRIANGLES);
-        glVertex2f(xS, firstShadowPoint);
-        glVertex2f(xS, secondShadowPoint);
-        glVertex2f(xE, secondShadowPoint);
-
-        glVertex2f(xE, secondShadowPoint);
-        glVertex2f(xE, firstShadowPoint);
-        glVertex2f(xS, firstShadowPoint);
+        Drawer.spriteShader.start();
+        Drawer.spriteShader.loadTextureShift(0, 0);
+        Drawer.spriteShader.loadSizeModifier(Sprite.ZERO_VECTOR);
+        Drawer.spriteShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.spriteShader.setUseTexture(false);
+        if (xS < xE) {
+            float[] data = {
+                    xS, firstShadowPoint,
+                    xE, secondShadowPoint,
+                    xS, secondShadowPoint,
+                    xE, secondShadowPoint,
+                    xS, firstShadowPoint,
+                    xE, firstShadowPoint,
+            };
+            Drawer.streamVBO.renderTriangleStream(data);
+        } else {
+            float[] data = {
+                    xS, firstShadowPoint,
+                    xS, secondShadowPoint,
+                    xE, secondShadowPoint,
+                    xE, secondShadowPoint,
+                    xE, firstShadowPoint,
+                    xS, firstShadowPoint,
+            };
+            Drawer.streamVBO.renderTriangleStream(data);
+        }
+        Drawer.spriteShader.setUseTexture(true);
+        Drawer.spriteShader.stop();
         endDrawingShadow();
     }
 

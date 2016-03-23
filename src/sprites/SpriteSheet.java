@@ -18,6 +18,7 @@ import sprites.vbo.VertexBufferObject;
  */
 public class SpriteSheet extends Sprite {
 
+    private static final int WHOLE = 0, NORMAL = 1, MIRRORED = 2;
     private final boolean isStartMoving, scale;
     private int xTiles;
     private int yTiles;
@@ -82,36 +83,35 @@ public class SpriteSheet extends Sprite {
 
     @Override
     public void initializeBuffers() {
-        float[] vertices = {
-                0, 0,
-                0, height,
-                width, height,
-                width, 0,
-                xStart, yStart,
+        float[] vertices = {xStart, yStart,
                 xStart, yStart + heightWhole,
                 xStart + widthWhole, yStart + heightWhole,
                 xStart + widthWhole, yStart,
                 0, 0,
                 0, height,
                 width, height,
+                width, 0,
+                0, 0,
+                0, height,
+                width, height,
                 width, 0
         };
         float[] textureCoordinates = {
-                0, 0,                           //Klatki
-                0, 1f / yTiles,
-                1f / xTiles, 1f / yTiles,
-                1f / xTiles, 0,
                 0, 0,                           //Całość
                 0, 1f,
                 1f, 1f,
                 1f, 0,
+                0, 0,                           //Klatki
+                0, 1f / yTiles,
+                1f / xTiles, 1f / yTiles,
+                1f / xTiles, 0,
                 1f / xTiles, 0,                 //Klatki odwrócone
                 1f / xTiles, 1f / yTiles,
                 0, 1f / yTiles,
                 0, 0
         };
-        int[] indices = {0, 1, 3, 3, 1, 2, 4, 5, 7, 7, 5, 6, 8, 9, 11, 11, 9, 10};
-        vbo = new VertexBufferObject(vertices, textureCoordinates, indices);
+        int[] indices = {0, 1, 3, 2, 4, 5, 7, 6, 8, 9, 11, 10};
+        vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
     }
 
     private void setTilesCount(boolean scale) {
@@ -127,12 +127,12 @@ public class SpriteSheet extends Sprite {
     @Override
     public void render() {  //Rysuje CAŁY spriteSheet
         if (bindCheck()) {
-            translationVector.set(0, 0);
-            MatrixMath.transformMatrix(transformationMatrix, translationVector, 1f, 1f);
+            MatrixMath.resetMatrix(transformationMatrix);
             Drawer.spriteShader.start();
             Drawer.spriteShader.loadTextureShift(0, 0);
+            Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
             Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
-            vbo.renderTextured(6, 6);
+            vbo.renderTextured(WHOLE, 4);
             Drawer.spriteShader.stop();
         }
     }
@@ -146,21 +146,106 @@ public class SpriteSheet extends Sprite {
         return isStartMoving ? (startingPoints[frame] != null ? startingPoints[frame].getValue() : -1) : frame;
     }
 
+
     public void renderPiece(int piece) {
-        renderPiece(piece, 1f, 1f, 0);
+        renderPiece(piece, 1f, 1f, NORMAL);
+    }
+
+    public void renderShadowPiece(int x, int y, float color) {
+        if (areValidCoordinates(x, y)) {
+            renderShadowPiece(x + y * xTiles, color);
+        }
+    }
+
+    public void renderShadowPiece(int piece, float color) {
+        renderShadowPiece(piece, 1f, 1f, 1, color);
     }
 
     public void renderPiece(int piece, float xScale, float yScale, int type) {
         if (bindCheck()) {
             frame = piece;
-            translationVector.set(getXStart() / 2f, getYStart() / 2f);
-            MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-            frame = getFramesPosition(frame);
-            if (isValidPiece(frame)) {
+            piece = getFramesPosition(piece);
+            if (isValidPiece(piece)) {
+                translationVector.set(getXStart() / 2f, getYStart() / 2f);
+                MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
                 Drawer.spriteShader.start();
                 Drawer.spriteShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
+                Drawer.spriteShader.loadSizeModifier(ZERO_VECTOR);
                 Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
-                vbo.renderTextured(type * 6, 6);
+                vbo.renderTextured(type * 4, 4);
+                Drawer.spriteShader.stop();
+            }
+        }
+    }
+
+    public void renderShadowPiece(int piece, float xScale, float yScale, int type, float color) {
+        if (bindCheck()) {
+            frame = piece;
+            piece = getFramesPosition(piece);
+            if (isValidPiece(piece)) {
+                translationVector.set(getXStart() / 2f, getYStart() / 2f);
+                MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
+                Drawer.shadowShader.start();
+                vectorModifier.set(color, color, color, 1);
+                Drawer.shadowShader.loadColourModifier(vectorModifier);
+                Drawer.shadowShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
+                Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
+                Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
+                vbo.renderTextured(type * 4, 4);
+                Drawer.shadowShader.stop();
+            }
+        }
+    }
+
+    public void renderShadowPiecePart(int x, int y, int partXStart, int partXEnd, float color) {
+        if (areValidCoordinates(x, y)) {
+            renderShadowPiecePart(x + y * xTiles, partXStart, partXEnd, color);
+        }
+    }
+
+    public void renderShadowPiecePart(int piece, int partXStart, int partXEnd, float color) {
+        if (bindCheck()) {
+            if (partXStart > partXEnd) {
+                int temp = partXStart;
+                partXStart = partXEnd;
+                partXEnd = temp;
+            }
+            frame = piece;
+            piece = getFramesPosition(piece);
+            if (isValidPiece(piece)) {
+                translationVector.set(getXStart() / 2f, getYStart() / 2f);
+                vectorModifier.set(color, color, color, 1f);
+                MatrixMath.transformMatrix(transformationMatrix, translationVector, 1, 1);
+                Drawer.shadowShader.start();
+                Drawer.shadowShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
+                Drawer.shadowShader.loadColourModifier(vectorModifier);
+                vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
+                Drawer.shadowShader.loadSizeModifier(vectorModifier);
+                Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
+                vbo.renderTextured(NORMAL * 4, 4);
+                Drawer.shadowShader.stop();
+            }
+        }
+    }
+
+    public void renderPiecePart(int piece, int partXStart, int partXEnd) {
+        if (bindCheck()) {
+            if (partXStart > partXEnd) {
+                int temp = xStart;
+                partXStart = partXEnd;
+                partXEnd = temp;
+            }
+            frame = piece;
+            piece = getFramesPosition(piece);
+            if (isValidPiece(piece)) {
+                translationVector.set(getXStart() / 2f, getYStart() / 2f);
+                MatrixMath.transformMatrix(transformationMatrix, translationVector, 1, 1);
+                Drawer.spriteShader.start();
+                Drawer.spriteShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
+                vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
+                Drawer.spriteShader.loadSizeModifier(vectorModifier);
+                Drawer.spriteShader.loadTransformationMatrix(transformationMatrix);
+                vbo.renderTextured(NORMAL * 4, 4);
                 Drawer.spriteShader.stop();
             }
         }
@@ -174,24 +259,13 @@ public class SpriteSheet extends Sprite {
 
     public void renderPieceResized(int x, int y, float width, float height) {
         if (bindCheck()) {
-            renderPiece(x + y * xTiles, width / this.width, height / this.height, 0);
+            renderPiece(x + y * xTiles, width / this.width, height / this.height, 1);
         }
     }
 
-    public void renderPiecePart(int id, int xStart, int xEnd) {
-        id = getFramesPosition(id);
-        renderPiecePart(id % xTiles, id / xTiles, xStart, xEnd);
-    }
-
-    public void renderPiecePart(int x, int y, int xStart, int xEnd) {
+    public void renderPiecePart(int x, int y, int partXStart, int partXEnd) {
         if (areValidCoordinates(x, y)) {
-            if (xStart > xEnd) {
-                int temp = xStart;
-                xStart = xEnd;
-                xEnd = temp;
-            }
-            frame = x + y * xTiles;
-            renderSpritePiecePart((float) x / xTiles, (float) y / yTiles, (float) (y + 1) / yTiles, xStart, xEnd, xTiles);
+            renderPiecePart(x + y * xTiles, partXStart, partXEnd);
         }
     }
 
