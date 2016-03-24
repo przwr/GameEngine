@@ -9,6 +9,7 @@ import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Methods;
+import engine.utilities.Timer;
 import engine.view.Renderer;
 import engine.view.SplitScreen;
 import game.Game;
@@ -49,6 +50,7 @@ public class MyGame extends Game {
     private final getInput[] inputs = new getInput[2];
     private final updateType[] ups = new updateType[2];
     public boolean gameLoaded;
+    Timer timer = new Timer("Render", 300);
     private boolean designer = false;
 
     public MyGame(String title, Controller[] controllers) {
@@ -204,21 +206,14 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-        long start = System.nanoTime();
+        timer.start();
         if (running && place != null) {
             place.render();
         } else {
             Drawer.clearScreen(0);
             menu.render();
         }
-        long end = System.nanoTime();
-        sum += (end - start);
-        count++;
-        if (count == 200) {
-            System.out.println("Render Time: " + (sum / 200000f) + " µs");
-            count = 0;
-            sum = 0;
-        }
+        timer.stop();
     }
 
     @Override
@@ -253,6 +248,7 @@ public class MyGame extends Game {
                     players[0].initializeSetPosition(56, 104, place, 1676, 1197);
                 } else {
                     players[0].initializeSetPosition(56, 104, place, 256, 256);
+//                    players[0].initializeSetPosition(56, 104, place, 1024, 3000);
                 }
                 players[0].setCamera(new PlayersCamera(players[0], 2, 2, 0)); // 2 i 2 to tryb SS
                 break;

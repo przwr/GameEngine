@@ -23,21 +23,25 @@ public class VertexBufferObject {
     private int vertexCount;
 
 
-    private VertexBufferObject(float[] positions, float[] colors) {
-        int vaoID = createVAO();
-        storeDataInAttributeList(0, positions, GL15.GL_STATIC_DRAW);
-        storeColorInAttributeList(2, colors, GL15.GL_STATIC_DRAW);
-        GL30.glBindVertexArray(0);
-        this.vaoID = vaoID;
-        vbos.add(this);
-    }
-
     private VertexBufferObject(float[] positions, int usage) {
         int vaoID = createVAO();
         storeDataInAttributeList(0, positions, usage);
         GL30.glBindVertexArray(0);
         this.vaoID = vaoID;
         this.vertexCount = positions.length / 2;
+        vbos.add(this);
+    }
+
+    private VertexBufferObject(float[] positions, float[] colors, boolean shaded) {
+        int vaoID = createVAO();
+        storeDataInAttributeList(0, positions, GL15.GL_STATIC_DRAW);
+        if (shaded) {
+            storeShadeInAttributeList(2, colors, GL15.GL_STATIC_DRAW);
+        } else {
+            storeColorInAttributeList(2, colors, GL15.GL_STATIC_DRAW);
+        }
+        GL30.glBindVertexArray(0);
+        this.vaoID = vaoID;
         vbos.add(this);
     }
 
@@ -61,7 +65,11 @@ public class VertexBufferObject {
     }
 
     public static VertexBufferObject createColored(float[] positions, float[] colors) {
-        return new VertexBufferObject(positions, colors);
+        return new VertexBufferObject(positions, colors, false);
+    }
+
+    public static VertexBufferObject createShaded(float[] positions, float[] colors) {
+        return new VertexBufferObject(positions, colors, true);
     }
 
     public static void cleanUp() {
@@ -82,6 +90,13 @@ public class VertexBufferObject {
         storeColorInAttributeList(vbosIDs.get(1), 2, colors, GL15.GL_STREAM_DRAW);
         renderColoredTriangles(0, positions.length / 2);
     }
+
+    public void renderShadedTriangleStream(float[] positions, float[] colors) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
+        storeShadeInAttributeList(vbosIDs.get(1), 2, colors, GL15.GL_STREAM_DRAW);
+        renderColoredTriangles(0, positions.length / 2);
+    }
+
 
     public void renderTriangleStripStream(float[] positions) {
         storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
@@ -138,6 +153,20 @@ public class VertexBufferObject {
         FloatBuffer buffer = storeDataInFloatBuffer(data);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, usage);
         GL20.glVertexAttribPointer(attributeNumber, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    }
+
+    private void storeShadeInAttributeList(int attributeNumber, float[] data, int usage) {
+        int vboID = GL15.glGenBuffers();
+        vbosIDs.add(vboID);
+        storeShadeInAttributeList(vboID, attributeNumber, data, usage);
+    }
+
+    private void storeShadeInAttributeList(int vboID, int attributeNumber, float[] data, int usage) {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
+        FloatBuffer buffer = storeDataInFloatBuffer(data);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, usage);
+        GL20.glVertexAttribPointer(attributeNumber, 1, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 
@@ -209,7 +238,7 @@ public class VertexBufferObject {
         GL30.glBindVertexArray(vaoID);
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(2);
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, start, renderCount); // size of UNSIGNED_INT in BYTES
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, start, renderCount);
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);

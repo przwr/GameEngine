@@ -3,11 +3,12 @@
 in vec2 position;
 in vec2 textureCoords;
 in int gl_VertexID;
+in float shade;
 
 out vec2 pass_textureCoords;
+out float o_colour;
 
 uniform mat4 transformationMatrix;
-uniform mat4 projectionMatrix;
 uniform vec2 textureShift;
 uniform vec4 sizeModifier;
 uniform float useTexture;
@@ -28,5 +29,6 @@ void main(void){
         }
     } else {
         gl_Position =  gl_ModelViewProjectionMatrix * transformationMatrix *  vec4(position, 0.0, 1.0);
+        o_colour = shade;
     }
 }

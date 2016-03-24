@@ -6,11 +6,9 @@
 package engine.lights;
 
 import collision.Figure;
-import engine.matrices.MatrixMath;
 import engine.utilities.Drawer;
 import engine.utilities.Point;
 import game.place.Place;
-import sprites.Sprite;
 
 import static engine.lights.Shadow.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -62,14 +60,15 @@ public class ShadowDrawer {
                 x, y,
                 shaded.getX() + Place.tileSize, shaded.getYEnd(),
         };
-//        Drawer.shadowShader.start();
-        Drawer.shadowShader.loadTextureShift(0, 0);
-        Drawer.shadowShader.loadSizeModifier(Sprite.ZERO_VECTOR);
-        Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
-        Drawer.streamVBO.renderTriangleStream(data);
+        float[] colors = new float[3];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = 0f;
+        }
+        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//        Drawer.streamVBO.renderTriangleStream(data);
         Drawer.shadowShader.setUseTexture(true);
-//        Drawer.shadowShader.stop();
         endDrawingShadow();
     }
 
@@ -80,14 +79,15 @@ public class ShadowDrawer {
                 x, y,
                 shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
         };
-//        Drawer.shadowShader.start();
-        Drawer.shadowShader.loadTextureShift(0, 0);
-        Drawer.shadowShader.loadSizeModifier(Sprite.ZERO_VECTOR);
-        Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
-        Drawer.streamVBO.renderTriangleStream(data);
+        float[] colors = new float[3];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = 0f;
+        }
+        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//        Drawer.streamVBO.renderTriangleStream(data);
         Drawer.shadowShader.setUseTexture(true);
-//        Drawer.shadowShader.stop();
         endDrawingShadow();
     }
 
@@ -98,39 +98,36 @@ public class ShadowDrawer {
                 x, y,
                 shaded.getX(), shaded.getYEnd() - Place.tileSize,
         };
-//        Drawer.shadowShader.start();
-        Drawer.shadowShader.loadTextureShift(0, 0);
-        Drawer.shadowShader.loadSizeModifier(Sprite.ZERO_VECTOR);
-        Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
-        Drawer.streamVBO.renderTriangleStream(data);
+        float[] colors = new float[3];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = 0f;
+        }
+        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//        Drawer.streamVBO.renderTriangleStream(data);
         Drawer.shadowShader.setUseTexture(true);
-//        Drawer.shadowShader.stop();
         endDrawingShadow();
     }
 
     private static void startDrawingShadow(byte color, int lightXCentralShifted, int lightYCentralShifted) {
-        Drawer.setColorStatic(color, color, color, 1f);
+//        Drawer.setColorStatic(color, color, color, 1f);
         glPushMatrix();
         glTranslatef(lightXCentralShifted, lightYCentralShifted, 0);
     }
 
     private static void endDrawingShadow() {
-        Drawer.refreshColor();
+//        Drawer.refreshColor();
         glPopMatrix();
     }
 
     public static void drawShadowFromConcave(Figure shaded, Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
-        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         corner.set(shaded.getX() + (shaded.isLeftBottomRound() ? Place.tileSize : 0), shaded.getY());
         boolean a = false, b = false;
 
-//        Drawer.shadowShader.start();
-        Drawer.shadowShader.loadTextureShift(0, 0);
-        Drawer.shadowShader.loadSizeModifier(Sprite.ZERO_VECTOR);
-        Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
+        Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
-
         float[] data = new float[18];
         if (((corner.getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
                 - ((corner.getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
@@ -183,19 +180,20 @@ public class ShadowDrawer {
             data[16] = shadowPoints[3].getX();
             data[17] = shadowPoints[3].getY();
         }
-        Drawer.streamVBO.renderTriangleStream(data);
+
+        float[] colors = new float[9];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = 0f;
+        }
+        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
         Drawer.shadowShader.setUseTexture(true);
-//        Drawer.shadowShader.stop();
         endDrawingShadow();
     }
 
     public static void drawShadow(Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
         startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
 
-//        Drawer.shadowShader.start();
-        Drawer.shadowShader.loadTextureShift(0, 0);
-        Drawer.shadowShader.loadSizeModifier(Sprite.ZERO_VECTOR);
-        Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
 
         if (((shadowPoints[1].getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
@@ -208,7 +206,12 @@ public class ShadowDrawer {
                     shadowPoints[1].getX(), shadowPoints[1].getY(),
                     shadowPoints[0].getX(), shadowPoints[0].getY(),
             };
-            Drawer.streamVBO.renderTriangleStream(data);
+            float[] colors = new float[6];
+            for (int i = 0; i < colors.length; i++) {
+                colors[i] = 0f;
+            }
+            Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//            Drawer.streamVBO.renderTriangleStream(data);
         } else {
             float[] data = {
                     shadowPoints[1].getX(), shadowPoints[1].getY(),
@@ -218,10 +221,14 @@ public class ShadowDrawer {
                     shadowPoints[0].getX(), shadowPoints[0].getY(),
                     shadowPoints[1].getX(), shadowPoints[1].getY()
             };
-            Drawer.streamVBO.renderTriangleStream(data);
+            float[] colors = new float[6];
+            for (int i = 0; i < colors.length; i++) {
+                colors[i] = 0f;
+            }
+            Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//            Drawer.streamVBO.renderTriangleStream(data);
         }
         Drawer.shadowShader.setUseTexture(true);
-//        Drawer.shadowShader.stop();
         endDrawingShadow();
     }
 
@@ -237,10 +244,7 @@ public class ShadowDrawer {
         int firstShadowPoint = shade.getYEnd();
         int secondShadowPoint = shade.getY() - shade.getShadowHeight();
         startDrawingShadow(color, lightXCentralShifted, lightYCentralShifted);
-//        Drawer.shadowShader.start();
-        Drawer.shadowShader.loadTextureShift(0, 0);
-        Drawer.shadowShader.loadSizeModifier(Sprite.ZERO_VECTOR);
-        Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
         if (xS < xE) {
             float[] data = {
@@ -251,7 +255,12 @@ public class ShadowDrawer {
                     xS, firstShadowPoint,
                     xE, firstShadowPoint,
             };
-            Drawer.streamVBO.renderTriangleStream(data);
+            float[] colors = new float[6];
+            for (int i = 0; i < colors.length; i++) {
+                colors[i] = color;
+            }
+            Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//            Drawer.streamVBO.renderTriangleStream(data);
         } else {
             float[] data = {
                     xS, firstShadowPoint,
@@ -261,10 +270,14 @@ public class ShadowDrawer {
                     xE, firstShadowPoint,
                     xS, firstShadowPoint,
             };
-            Drawer.streamVBO.renderTriangleStream(data);
+            float[] colors = new float[6];
+            for (int i = 0; i < colors.length; i++) {
+                colors[i] = color;
+            }
+            Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//            Drawer.streamVBO.renderTriangleStream(data);
         }
         Drawer.shadowShader.setUseTexture(true);
-//        Drawer.shadowShader.stop();
         endDrawingShadow();
     }
 

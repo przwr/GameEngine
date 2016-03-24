@@ -6,14 +6,12 @@
 package engine.view;
 
 import engine.Main;
-import engine.matrices.MatrixMath;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.Settings;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
-import sprites.Appearance;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -99,14 +97,10 @@ public class Popup {
                 WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space,
         };
         if (Drawer.streamVBO != null) {
-//            Drawer.spriteShader.start();
-            Drawer.regularShader.loadTextureShift(0, 0);
-            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.resetUniform();
             Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
             Drawer.regularShader.setUseTexture(true);
-//            Drawer.spriteShader.stop();
         } else {
             Drawer.setShaders();
         }
@@ -124,14 +118,10 @@ public class Popup {
                 WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2,
         };
         if (Drawer.streamVBO != null) {
-//            Drawer.spriteShader.start();
-            Drawer.regularShader.loadTextureShift(0, 0);
-            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.resetUniform();
             Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
             Drawer.regularShader.setUseTexture(true);
-//            Drawer.spriteShader.stop();
         } else {
             Drawer.setShaders();
         }
@@ -157,14 +147,10 @@ public class Popup {
                 WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2,
         };
         if (Drawer.streamVBO != null) {
-//            Drawer.spriteShader.start();
-            Drawer.regularShader.loadTextureShift(0, 0);
-            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.resetUniform();
             Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
             Drawer.regularShader.setUseTexture(true);
-//            Drawer.spriteShader.stop();
         } else {
             Drawer.setShaders();
         }
@@ -240,14 +226,10 @@ public class Popup {
                 WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift
         };
         if (Drawer.streamVBO != null) {
-//            Drawer.spriteShader.start();
-            Drawer.regularShader.loadTextureShift(0, 0);
-            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.resetUniform();
             Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
             Drawer.regularShader.setUseTexture(true);
-//            Drawer.spriteShader.stop();
         } else {
             Drawer.setShaders();
         }

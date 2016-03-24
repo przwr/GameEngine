@@ -1,7 +1,9 @@
 package sprites.shaders;
 
+import engine.matrices.MatrixMath;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
+import sprites.Appearance;
 
 /**
  * Created by przemek on 16.03.16.
@@ -18,6 +20,8 @@ public class RegularShader extends ShaderProgram {
     private int locationSizeModifier;
     private int locationUseTexture;
     private int locationUseColour;
+
+    private boolean reset;
 
     public RegularShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -42,20 +46,33 @@ public class RegularShader extends ShaderProgram {
         super.bindAttribute(2, "colour");
     }
 
+    public void resetUniform() {
+//        if (!reset) {
+        super.load2Floats(locationTextureShift, 0, 0);
+        super.loadVector4f(locationSizeModifier, Appearance.ZERO_VECTOR);
+        super.loadMatrix(locationTransformationMatrix, MatrixMath.STATIC_MATRIX);
+        reset = true;
+//        }
+    }
+    
+
     public void loadTextureShift(float x, float y) {
         super.load2Floats(locationTextureShift, x, y);
-    }
-
-    public void loadTransformationMatrix(Matrix4f matrix) {
-        super.loadMatrix(locationTransformationMatrix, matrix);
-    }
-
-    public void loadColourModifier(Vector4f vector) {
-        super.loadVector4f(locationColourModifier, vector);
+        reset = false;
     }
 
     public void loadSizeModifier(Vector4f vector) {
         super.loadVector4f(locationSizeModifier, vector);
+        reset = false;
+    }
+
+    public void loadTransformationMatrix(Matrix4f matrix) {
+        super.loadMatrix(locationTransformationMatrix, matrix);
+        reset = false;
+    }
+
+    public void loadColourModifier(Vector4f vector) {
+        super.loadVector4f(locationColourModifier, vector);
     }
 
     public void setUseTexture(boolean use) {

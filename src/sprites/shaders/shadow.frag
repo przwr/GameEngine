@@ -1,6 +1,7 @@
 #version 400 core
 
 in vec2 pass_textureCoords;
+in float o_colour;
 
 out vec4 out_colour;
 
@@ -15,6 +16,6 @@ void main(void){
             out_colour = colourModifier;
         }
     } else {
-        out_colour = colourModifier;
+        out_colour = vec4(o_colour, o_colour, o_colour, 1);
     }
 }

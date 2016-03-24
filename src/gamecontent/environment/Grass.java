@@ -1,7 +1,6 @@
 package gamecontent.environment;
 
 import collision.Figure;
-import engine.matrices.MatrixMath;
 import engine.utilities.Drawer;
 import engine.utilities.PointedValue;
 import engine.utilities.RandomGenerator;
@@ -13,7 +12,6 @@ import game.place.map.Area;
 import game.place.map.Map;
 import gamedesigner.ObjectPlayer;
 import org.newdawn.slick.Color;
-import sprites.Appearance;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -113,6 +111,7 @@ public class Grass extends GameObject {
         }
     }
 
+
     @Override
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
@@ -122,94 +121,45 @@ public class Grass extends GameObject {
         if (masking) {
             tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
             Drawer.setColorBlended(color);
-            Drawer.setCentralPoint();
             Drawer.drawRectangle(tempX, blades[1].getY(), blades[blades.length - 2].getX() - tempX, blades[blades.length - 1].getY() - blades[1].getY());
-            Drawer.returnToCentralPoint();
         }
+        Drawer.streamVertexData.clear();
+        Drawer.streamColorData.clear();
         for (int i = 0; i < blades.length; i += 3) {
             calculateFactor(blades[i].getX(), blades[i + 1].getY());
             if (factor == 0) {
-                float[] vertices = {
-                        blades[i + 2].getX(), blades[i + 2].getY(),
+                Drawer.streamVertexData.add(blades[i + 2].getX(), blades[i + 2].getY(),
                         blades[i + 1].getX(), blades[i + 1].getY(),
-                        blades[i].getX(), blades[i].getY(),
-                };
-                float[] colors = {
-                        color.r * Drawer.getCurrentColor().r, color.g * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b,
-                        color.r * Drawer.getCurrentColor().r, color.g * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b,
-                        color.r * Drawer.getCurrentColor().r, (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g, color.b * Drawer
-                        .getCurrentColor().b
-                };
-//                Drawer.spriteShader.start();
-                Drawer.regularShader.loadTextureShift(0, 0);
-                Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-                Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-                Drawer.regularShader.setUseTexture(false);
-                Drawer.regularShader.setUseColour(true);
-                Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
-                Drawer.regularShader.setUseTexture(true);
-                Drawer.regularShader.setUseColour(false);
-//                Drawer.spriteShader.stop();
+                        blades[i].getX(), blades[i].getY());
+                Drawer.streamColorData.add(color.r * Drawer.getCurrentColor().r, color.g * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b,
+                        color.r * Drawer.getCurrentColor().r, color.g * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b, color.r * Drawer
+                                .getCurrentColor().r, (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g, color.b * Drawer
+                                .getCurrentColor().b);
             } else {
                 tempX = (blades[i].getX() + factor + (blades[i + 1].getX() + blades[i + 2].getX())) / 3;
                 tempY = (blades[i].getY() + blades[i + 1].getY()) / 2;
-//                Drawer.spriteShader.start();
-                Drawer.regularShader.loadTextureShift(0, 0);
-                Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-                Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
-                Drawer.regularShader.setUseTexture(false);
-                Drawer.regularShader.setUseColour(true);
-
-                float[] colors = new float[18];
-                colors[0] = color.r * Drawer.getCurrentColor().r;
-                colors[1] = color.g * Drawer.getCurrentColor().g;
-                colors[2] = color.b * Drawer.getCurrentColor().b;
-                colors[3] = color.r * Drawer.getCurrentColor().r;
-                colors[4] = color.g * Drawer.getCurrentColor().g;
-                colors[5] = color.b * Drawer.getCurrentColor().b;
-                colors[6] = color.r * Drawer.getCurrentColor().r;
-                colors[7] = (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g;
-                colors[8] = color.b * Drawer.getCurrentColor().b;
-
-                colors[9] = color.r * Drawer.getCurrentColor().r;
-                colors[10] = (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g;
-                colors[11] = color.b * Drawer.getCurrentColor().b;
-                colors[12] = color.r * Drawer.getCurrentColor().r;
-                colors[13] = (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g;
-                colors[14] = color.b * Drawer.getCurrentColor().b;
-                colors[15] = color.r * Drawer.getCurrentColor().r;
-                colors[16] = (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g;
-                colors[17] = color.b * Drawer.getCurrentColor().b;
-
-                float[] vertices = new float[12];
-                vertices[0] = blades[i + 2].getX();
-                vertices[1] = blades[i + 2].getY();
-                vertices[2] = blades[i + 1].getX();
-                vertices[3] = blades[i + 1].getY();
-                vertices[4] = tempX;
-                vertices[5] = tempY;
-
+                Drawer.streamColorData.add(color.r * Drawer.getCurrentColor().r, color.g * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b,
+                        color.r * Drawer.getCurrentColor().r, color.g * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b,
+                        color.r * Drawer.getCurrentColor().r, (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g,
+                        color.b * Drawer.getCurrentColor().b, color.r * Drawer.getCurrentColor().r, (color.g + ((float) blades[i].getValue() / 256)) * Drawer
+                                .getCurrentColor().g, color.b * Drawer.getCurrentColor().b, color.r * Drawer.getCurrentColor().r, (color.g + ((float)
+                                blades[i].getValue() / 256)) * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b, color.r * Drawer
+                                .getCurrentColor().r, (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g, color.b * Drawer
+                                .getCurrentColor().b);
+                Drawer.streamVertexData.add(blades[i + 2].getX(), blades[i + 2].getY(), blades[i + 1].getX(), blades[i + 1].getY(), tempX, tempY);
                 if (factor > 0) {
-                    vertices[6] = blades[i].getX() + factor;
-                    vertices[7] = blades[i].getY();
-                    vertices[8] = tempX;
-                    vertices[9] = tempY;
-                    vertices[10] = blades[i + 2].getX();
-                    vertices[11] = blades[i + 2].getY();
+                    Drawer.streamVertexData.add(blades[i].getX() + factor, blades[i].getY(), tempX, tempY, blades[i + 2].getX(), blades[i + 2].getY());
                 } else {
-                    vertices[6] = blades[i].getX() + factor;
-                    vertices[7] = blades[i].getY();
-                    vertices[8] = blades[i + 1].getX();
-                    vertices[9] = blades[i + 1].getY();
-                    vertices[10] = tempX;
-                    vertices[11] = tempY;
+                    Drawer.streamVertexData.add(blades[i].getX() + factor, blades[i].getY(), blades[i + 1].getX(), blades[i + 1].getY(), tempX, tempY);
                 }
-                Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
-                Drawer.regularShader.setUseTexture(true);
-                Drawer.regularShader.setUseColour(false);
-//                Drawer.spriteShader.stop();
             }
         }
+        Drawer.regularShader.resetUniform();
+        Drawer.regularShader.setUseTexture(false);
+        Drawer.regularShader.setUseColour(true);
+        Drawer.grassVBO.renderColoredTriangleStream(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray());
+        Drawer.regularShader.setUseTexture(true);
+        Drawer.regularShader.setUseColour(false);
         Drawer.refreshColor();
         glPopMatrix();
     }
@@ -233,34 +183,14 @@ public class Grass extends GameObject {
                     color.r, color.g, color.b,
                     color.r, (color.g + ((float) blades[i].getValue() / 256)), color.b
             };
-//            Drawer.spriteShader.start();
-            Drawer.regularShader.loadTextureShift(0, 0);
-            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-            Drawer.regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+            Drawer.regularShader.resetUniform();
             Drawer.regularShader.setUseTexture(false);
             Drawer.regularShader.setUseColour(true);
             Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
             Drawer.regularShader.setUseTexture(true);
             Drawer.regularShader.setUseColour(false);
-//            Drawer.spriteShader.stop();
         }
         Drawer.refreshColor();
-    }
-
-    private void drawTriangleStill(int xA, int yA, int xB, int yB, int xC, int yC, int colorValue) {
-        Drawer.setColorStatic(color);
-        glVertex2f(xC, yC);
-        glVertex2f(xB, yB);
-        Drawer.setColorStatic(color.r, color.g + ((float) colorValue / 256), color.b, color.a);
-        glVertex2f(xA, yA);
-    }
-
-    private void drawTriangle(int xA, int yA, int xB, int yB, int xC, int yC, int colorValue) {
-        Drawer.setColorBlended(color);
-        glVertex2f(xC, yC);
-        glVertex2f(xB, yB);
-        Drawer.setColorBlended(color.r, color.g + ((float) colorValue / 256), color.b, color.a);
-        glVertex2f(xA, yA);
     }
 
     private void calculateFactor(int x, int y) {

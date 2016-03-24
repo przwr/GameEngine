@@ -1,15 +1,14 @@
 #version 400 compatibility
 
+in int gl_VertexID;
 in vec2 position;
 in vec2 textureCoords;
-in int gl_VertexID;
 in vec3 colour;
 
 out vec3 o_colour;
 out vec2 pass_textureCoords;
 
 uniform mat4 transformationMatrix;
-uniform mat4 projectionMatrix;
 uniform vec2 textureShift;
 uniform vec4 sizeModifier;
 uniform float useTexture;

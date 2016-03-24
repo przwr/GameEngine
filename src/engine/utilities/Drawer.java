@@ -5,7 +5,6 @@
  */
 package engine.utilities;
 
-import engine.matrices.MatrixMath;
 import game.ScreenPlace;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
@@ -23,7 +22,6 @@ import sprites.vbo.VertexBufferObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,8 +35,10 @@ public class Drawer {
     private static final Texture font = loadFontTexture();
     public static VertexBufferObject streamVBO;
     public static VertexBufferObject grassVBO;
+    public static VertexBufferObject shadowVBO;
     public static VertexBufferObject screenVBO;
-    public static ArrayList<Float> streamData = new ArrayList<>(60);
+    public static FloatContainer streamVertexData = new FloatContainer(300);
+    public static FloatContainer streamColorData = new FloatContainer(300);
     public static StaticShader staticShader;
     public static RegularShader regularShader;
     public static ShadowShader shadowShader;
@@ -79,45 +79,23 @@ public class Drawer {
     }
 
     public static void refreshColor() {
-        glColor4f(currentColor.r, currentColor.g, currentColor.b, 1.0f);
-//        spriteShader.start();
         regularShader.loadColourModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, 1.0f));
-//        spriteShader.stop();
     }
 
     public static void setColorAlpha(float alpha) {
-        glColor4f(currentColor.r, currentColor.g, currentColor.b, alpha);
-//        spriteShader.start();
         regularShader.loadColourModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, alpha));
-//        spriteShader.stop();
     }
 
     public static void setColorStatic(Color color) {
-        glColor4f(color.r, color.g, color.b, color.a);
-//        spriteShader.start();
         regularShader.loadColourModifier(new Vector4f(color.r, color.g, color.b, color.a));
-//        spriteShader.stop();
     }
 
     public static void setColorBlended(Color color) {
-        glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
-//        spriteShader.start();
         regularShader.loadColourModifier(new Vector4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a));
-//        spriteShader.stop();
     }
 
     public static void setColorStatic(float r, float g, float b, float a) {
-        glColor4f(r, g, b, a);
-//        spriteShader.start();
         regularShader.loadColourModifier(new Vector4f(r, g, b, a));
-//        spriteShader.stop();
-    }
-
-    public static void setColorBlended(float r, float g, float b, float a) {
-        glColor4f(r * currentColor.r, g * currentColor.g, b * currentColor.b, a);
-//        spriteShader.start();
-        regularShader.loadColourModifier(new Vector4f(r * currentColor.r, g * currentColor.g, b * currentColor.b, a));
-//        spriteShader.stop();
     }
 
     public static Color getCurrentColor() {
@@ -163,7 +141,6 @@ public class Drawer {
     }
 
     public static void drawRectangleInShade(int xStart, int yStart, int width, int height, float color) {
-        setColorStatic(color, color, color, 1);
         if (width < 0) {
             width = -width;
             xStart -= width;
@@ -172,20 +149,22 @@ public class Drawer {
                 xStart, yStart,
                 xStart, yStart + height,
                 xStart + width, yStart,
+                xStart + width, yStart,
+                xStart, yStart + height,
                 xStart + width, yStart + height,
         };
-//        shadowShader.start();
-        shadowShader.loadTextureShift(0, 0);
-        shadowShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        shadowShader.resetUniform();
         shadowShader.setUseTexture(false);
-        streamVBO.renderTriangleStripStream(data);
+        float[] colors = new float[6];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = color;
+        }
+        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//        streamVBO.renderTriangleStripStream(data);
         shadowShader.setUseTexture(true);
-        setColorStatic(1, 1, 1, 1);
     }
 
     public static void drawRectangleInBlack(int xStart, int yStart, int width, int height) {
-        setColorStatic(0, 0, 0, 1);
         if (width < 0) {
             width = -width;
             xStart -= width;
@@ -194,16 +173,19 @@ public class Drawer {
                 xStart, yStart,
                 xStart, yStart + height,
                 xStart + width, yStart,
+                xStart + width, yStart,
+                xStart, yStart + height,
                 xStart + width, yStart + height,
         };
-//        shadowShader.start();
-        shadowShader.loadTextureShift(0, 0);
-        shadowShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        shadowShader.resetUniform();
         shadowShader.setUseTexture(false);
-        streamVBO.renderTriangleStripStream(data);
+        float[] colors = new float[6];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = 0f;
+        }
+        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+//        streamVBO.renderTriangleStripStream(data);
         shadowShader.setUseTexture(true);
-        setColorStatic(1, 1, 1, 1);
     }
 
     public static void drawTextureTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
@@ -213,13 +195,9 @@ public class Drawer {
                 0, 0,
                 xC, yC,
         };
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         streamVBO.updateVerticesStream(data);
         streamVBO.renderTextured(0, 3);
-//        spriteShader.stop();
     }
 
     public static void drawTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
@@ -228,14 +206,10 @@ public class Drawer {
                 xB, yB,
                 xC, yC,
         };
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStream(data);
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
     }
 
     public static void drawRectangle(int xStart, int yStart, int width, int height) {
@@ -245,14 +219,10 @@ public class Drawer {
                 xStart + width, yStart,
                 xStart + width, yStart + height,
         };
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStripStream(data);
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
     }
 
     public static void drawRectangleBorder(int xStart, int yStart, int width, int height) {
@@ -262,14 +232,10 @@ public class Drawer {
                 xStart + width, yStart + height,
                 xStart + width, yStart,
         };
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderLineLoopStream(data);
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
     }
 
     public static void drawTextureQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
@@ -279,13 +245,9 @@ public class Drawer {
                 xB, yB,
                 xC, yC,
         };
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         streamVBO.updateVerticesStream(data);
         streamVBO.renderTextured(0, 6);
-//        spriteShader.stop();
     }
 
     public static void drawCircle(int xStart, int yStart, int radius, int precision) {
@@ -293,16 +255,10 @@ public class Drawer {
     }
 
     public static void drawEllipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleFanStream(getEllipseVertices(xStart, yStart, xRadius, yRadius, precision));
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
-
-
     }
 
     public static float[] getCircleVertices(int xStart, int yStart, int radius, int precision) {
@@ -333,14 +289,10 @@ public class Drawer {
     }
 
     public static void drawEllipseSector(int xStart, int yStart, int xRadius, int yRadius, int startAngle, int endAngle, int precision) {
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleFanStream(getEllipseSectorVertices(xStart, yStart, xRadius, yRadius, startAngle, endAngle, precision));
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
     }
 
     public static float[] getCircleSectorVertices(int xStart, int yStart, int radius, int startAngle, int endAngle, int precision) {
@@ -368,14 +320,10 @@ public class Drawer {
     }
 
     public static void drawEllipseBow(int xStart, int yStart, int xRadius, int yRadius, int width, int startAngle, int endAngle, int precision) {
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStripStream(getEllipseBowVertices(xStart, yStart, xRadius, yRadius, width, startAngle, endAngle, precision));
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
     }
 
     public static void drawBow(int xStart, int yStart, int radius, int width, int startAngle, int endAngle, int precision) {
@@ -414,14 +362,10 @@ public class Drawer {
     }
 
     public static void drawRing(int xStart, int yStart, int radius, int width, int precision) {
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStripStream(getRingVertices(xStart, yStart, radius, width, precision));
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
     }
 
     public static float[] getRingVertices(int xStart, int yStart, int radius, int width, int precision) {
@@ -455,14 +399,10 @@ public class Drawer {
                 xStart - xWidth, yStart - yWidth,
                 xStart + xDelta - xWidth, yStart + yDelta - yWidth,
         };
-//        spriteShader.start();
-        regularShader.loadTextureShift(0, 0);
-        regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
-        regularShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
+        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStripStream(data);
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
     }
 
     public static void drawLine(int xStart, int yStart, int xDelta, int yDelta) {
@@ -550,8 +490,6 @@ public class Drawer {
         shadowShader.setUseTexture(true);
         regularShader.start();
         regularShader.setUseTexture(true);
-//        spriteShader.stop();
-//        shadowShader.stop();
         float[] vertices = {
                 0, 0,
                 0, 20,
@@ -569,6 +507,7 @@ public class Drawer {
         float[] positions = {0, 0, 0, 1, 1, 0,};
         float[] colors = {1, 1, 1, 1, 1, 1, 1, 1, 1};
         grassVBO = VertexBufferObject.createColored(positions, colors);
+        shadowVBO = VertexBufferObject.createShaded(positions, colors);
         float[] screenVertices = {
                 0, 0, 0, 0, 0, 0, 0, 0
         };
@@ -595,11 +534,16 @@ public class Drawer {
         if (streamVBO != null) {
             streamVBO.clear();
             streamVBO = null;
-            streamData.clear();
+            streamVertexData.clear();
+            streamColorData.clear();
         }
         if (grassVBO != null) {
             grassVBO.clear();
             grassVBO = null;
+        }
+        if (shadowVBO != null) {
+            shadowVBO.clear();
+            shadowVBO = null;
         }
         if (screenVBO != null) {
             screenVBO.clear();

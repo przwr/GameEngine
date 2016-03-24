@@ -443,9 +443,9 @@ public class ShadowRenderer {
     }
 
     private static void endPreRender(Light light) {
-        glColor3f(1f, 1f, 1f);
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         Drawer.regularShader.start();
+        Drawer.setColorStatic(1, 1, 1, 1);
         light.render(displayHeight);
         light.getFrameBufferObject().deactivate();
     }

@@ -54,4 +54,9 @@ public class MatrixMath {
         Matrix4f.scale(ONE_VECTOR, matrix, matrix);
     }
 
+    public static boolean equals(Matrix4f f, Matrix4f s) {
+        return f.m00 == s.m00 && f.m01 == s.m01 && f.m02 == s.m02 && f.m03 == s.m03 && f.m10 == s.m10 && f.m11 == s.m11 && f.m12 == s.m12 && f.m13 == s.m13
+                && f.m20 == s.m20 && f.m21 == s.m21 && f.m22 == s.m22 && f.m23 == s.m23 && f.m30 == s.m30 && f.m31 == s.m31 && f.m32 == s.m32 && f.m33 == s.m33;
+    }
+
 }
