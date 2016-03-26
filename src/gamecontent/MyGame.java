@@ -206,14 +206,14 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-        timer.start();
+//        timer.start();
         if (running && place != null) {
             place.render();
         } else {
             Drawer.clearScreen(0);
             menu.render();
         }
-        timer.stop();
+//        timer.stop();
     }
 
     @Override
@@ -292,9 +292,7 @@ public class MyGame extends Game {
                 break;
         }
         loading(2, font);
-        for (int i = 0; i < 4; i++) {
-            place.players[i] = players[i];
-        }
+        System.arraycopy(players, 0, place.players, 0, 4);
         place.makeShadows();
         mode = 0;
         place.generateAsHost();
