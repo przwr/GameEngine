@@ -1,4 +1,4 @@
-#version 400 compatibility
+#version 330 compatibility
 
 in int gl_VertexID;
 in vec2 position;

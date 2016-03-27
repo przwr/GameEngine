@@ -1,4 +1,4 @@
-#version 400 compatibility
+#version 330 compatibility
 
 in vec2 position;
 in vec2 textureCoords;

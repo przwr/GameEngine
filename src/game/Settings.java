@@ -130,7 +130,9 @@ public class Settings {
     }
 
     public static void detectFrameBuffers() {
+        System.out.println("Using GPU: " + GL11.glGetString(GL11.GL_VENDOR) + " - " + GL11.glGetString(GL11.GL_RENDERER));
         System.out.println("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
+        System.out.println("Shader Version: " + GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
         try {
             GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, samplesCount, GL_RGBA8, 10, 10, false);
             GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
