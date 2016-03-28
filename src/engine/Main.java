@@ -234,14 +234,16 @@ public class Main {
                 int frames = (int) (60 / Time.getDelta());
                 if (game != null && game.getPlace() != null) {
                     console = game.getPlace().getConsole();
-                    info = " [" + frames + " fps] " + game.getPlace().getTime();
+                    float memory = ((long) (((Runtime.getRuntime().totalMemory()) / (double) 1048576) * 100)) / 100f;
+                    info = " [" + frames + " fps] " + game.getPlace().getTime() + " " + memory + " MB";
                     fInput();
                     if (console.areStatsRendered()) {
                         console.clearStats();
                         console.printStats(info + " Player 1: " + game.getPlayerCoordinates());
                     }
                 } else {
-                    info = " [" + frames + " fps]";
+                    float memory = ((long) (((Runtime.getRuntime().totalMemory()) / (double) 1048576) * 100)) / 100f;
+                    info = " [" + frames + " fps] " + memory + " MB";
                 }
                 Display.setTitle(game.getTitle() + info);
                 if (LOG) {
