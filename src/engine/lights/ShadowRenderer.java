@@ -12,6 +12,7 @@ import collision.RoundRectangle;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
+import engine.utilities.Timer;
 import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.Area;
@@ -51,6 +52,7 @@ public class ShadowRenderer {
     private static Shadow tempShadow, minShadow, maxShadow;
     private static Point tempPoint;
     private static Area area;
+    private static Timer timer = new Timer("Shadows Renderer", 240);
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -64,24 +66,15 @@ public class ShadowRenderer {
         }
     }
 
-    //    static long sum = 0;
-//    static int count = 0;
     public static void preRenderLight(Map map, Light light) {
-//        long start = System.nanoTime();
+//        timer.start();
         prepareToFindShades(light);
         findShades(light, map);
         prepareToPreRender(light);
         calculateShadows(light);
         renderShadows(light);
-        endPreRender(light);
-//        long end = System.nanoTime();
-//        sum += (end - start);
-//        count++;
-//        if (count == 200) {
-//            System.out.println("Time: " + (sum / 200000f));
-//            count = 0;
-//            sum = 0;
-//        }
+//        endPreRender(light);
+        timer.stop();
     }
 
     private static void prepareToFindShades(Light light) {
@@ -101,6 +94,8 @@ public class ShadowRenderer {
         light.getFrameBufferObject().activate();
         clearScreen(1);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glPushMatrix();
+        glTranslatef(lightXCentralShifted, lightYCentralShifted, 0);
     }
 
     private static void findShades(Light light, Map map) {
@@ -328,7 +323,7 @@ public class ShadowRenderer {
         yc = shaded.getYEnd() - Place.tileSize;
         xc = Math.round((yc - bs) / as);
         if (xc >= shaded.getX() && xc <= shaded.getX() + Place.tileSize) {
-            drawLeftConcaveBottom(shaded, xc, yc, lightXCentralShifted, lightYCentralShifted);
+            drawLeftConcaveBottom(shaded, xc, yc);
         }
         as *= as;
         xc = Math.round((Place.tileSize * (as - 1)) / (1 + as));
@@ -346,7 +341,7 @@ public class ShadowRenderer {
         xc = shaded.getX() + Place.tileSize;
         yc = Math.round(as * xc + bs);
         if (yc >= shaded.getYEnd() - Place.tileSize) {
-            drawConcaveTop(shaded, xc, yc, lightXCentralShifted, lightYCentralShifted);
+            drawConcaveTop(shaded, xc, yc);
         }
         yc = shaded.getYEnd() - yc;
         xc = Methods.roundDouble(FastMath.sqrt(Place.tileSquared - yc * yc));
@@ -364,7 +359,7 @@ public class ShadowRenderer {
         yc = shaded.getYEnd() - Place.tileSize;
         xc = Math.round((yc - bs) / as);
         if (xc >= shaded.getX() && xc <= shaded.getX() + Place.tileSize) {
-            drawRightConcaveBottom(shaded, xc, yc, lightXCentralShifted, lightYCentralShifted);
+            drawRightConcaveBottom(shaded, xc, yc);
         }
         xc = Math.round((Place.tileDoubleSize) / (1 + as * as));
         if (xc >= Place.tileSize) {
@@ -381,7 +376,7 @@ public class ShadowRenderer {
         xc = shaded.getX();
         yc = Math.round(as * xc + bs);
         if (yc >= shaded.getYEnd() - Place.tileSize) {
-            drawConcaveTop(shaded, xc, yc, lightXCentralShifted, lightYCentralShifted);
+            drawConcaveTop(shaded, xc, yc);
         }
         yc = shaded.getYEnd() - yc;
         xc = Methods.roundDouble(Place.tileSize - FastMath.sqrt(Place.tileSquared - yc * yc));
@@ -437,12 +432,13 @@ public class ShadowRenderer {
     private static void renderShadows(Light light) {
         for (Figure shaded : shades) {
             solveShadows(shaded);
-            drawAllShadows(shaded, lightXCentralShifted, lightYCentralShifted);
+            drawAllShadows(shaded);
             shaded.clearShadows();
         }
     }
 
     private static void endPreRender(Light light) {
+        glPopMatrix();
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         Drawer.regularShader.start();
         Drawer.setColorStatic(1, 1, 1, 1);
@@ -464,7 +460,7 @@ public class ShadowRenderer {
 
     private static void calculateRoundShade(Figure shaded, Light light) {
         if (isRoundInLight(shaded, light)) {
-            shaded.getOwner().renderShadowLit(lightXCentralShifted, lightYCentralShifted, shaded);
+            shaded.getOwner().renderShadowLit(shaded);
             shaded.addShadowType(BRIGHT);
         } else {
             shaded.addShadowType(DARK);
@@ -513,7 +509,7 @@ public class ShadowRenderer {
 
     private static void calculateRegularShade(Figure shaded, Light light) {
         if (light.getY() > shaded.getYEnd()) {
-            shaded.getOwner().renderShadowLit(lightXCentralShifted, lightYCentralShifted, shaded);
+            shaded.getOwner().renderShadowLit(shaded);
             shaded.addShadowType(BRIGHT);
         } else {
             shaded.addShadowType(DARK);

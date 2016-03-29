@@ -508,42 +508,38 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
+    public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
+            glTranslatef(getX(), getY() - (int) floatHeight, 0);
             Drawer.drawShapeInShade(appearance, 1);
-            glPopMatrix();
+            glTranslatef(-getX(), -getY() + (int) floatHeight, 0);
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure) {
+    public void renderShadow(Figure figure) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
+            glTranslatef(getX(), getY() - (int) floatHeight, 0);
             Drawer.drawShapeInBlack(appearance);
-            glPopMatrix();
+            glTranslatef(-getX(), -getY() + (int) floatHeight, 0);
         }
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
+            glTranslatef(getX(), getY() - (int) floatHeight, 0);
             Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
-            glPopMatrix();
+            glTranslatef(-getX(), -getY() + (int) floatHeight, 0);
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect - (int) floatHeight, 0);
+            glTranslatef(getX(), getY() - (int) floatHeight, 0);
             Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
-            glPopMatrix();
+            glTranslatef(-getX(), -getY() + (int) floatHeight, 0);
         }
     }
 

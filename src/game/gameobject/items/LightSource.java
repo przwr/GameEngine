@@ -50,40 +50,40 @@ public class LightSource extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
+    public void renderShadowLit(Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX(), getY(), 0);
             Drawer.drawShapeInShade(appearance, 1);
             glPopMatrix();
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure) {
+    public void renderShadow(Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX(), getY(), 0);
             Drawer.drawShapeInBlack(appearance);
             glPopMatrix();
         }
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX(), getY(), 0);
             Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
             glPopMatrix();
         }
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(getX() + xEffect, getY() + yEffect, 0);
+            glTranslatef(getX(), getY(), 0);
             Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
             glPopMatrix();
         }

@@ -56,13 +56,13 @@ public abstract class GameObject {
 
     public abstract void render(int xEffect, int yEffect);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, Figure figure);
+    public abstract void renderShadowLit(Figure figure);
 
-    public abstract void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd);
+    public abstract void renderShadowLit(int xStart, int xEnd);
 
-    public abstract void renderShadow(int xEffect, int yEffect, Figure figure);
+    public abstract void renderShadow(Figure figure);
 
-    public abstract void renderShadow(int xEffect, int yEffect, int xStart, int xEnd);
+    public abstract void renderShadow(int xStart, int xEnd);
 
     protected void initialize(String name, int x, int y) {
         this.name = name;

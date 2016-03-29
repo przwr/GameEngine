@@ -11,7 +11,6 @@ import engine.utilities.Point;
 import game.place.Place;
 
 import static engine.lights.Shadow.*;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author przemek
@@ -23,38 +22,34 @@ public class ShadowDrawer {
     private static final Point corner = new Point();
 
     static {
-        shadeRenderers[DARK] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadow
-                (lightXCentralShifted, lightYCentralShifted, shade);
-        shadeRenderers[BRIGHT] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner().renderShadowLit
-                (lightXCentralShifted, lightYCentralShifted, shade);
-        shadeRenderers[BRIGHTEN] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> {
+        shadeRenderers[DARK] = (Figure shade, int xS, int xE) -> shade.getOwner().renderShadow(shade);
+        shadeRenderers[BRIGHT] = (Figure shade, int xS, int xE) -> shade.getOwner().renderShadowLit(shade);
+        shadeRenderers[BRIGHTEN] = (Figure shade, int xS, int xE) -> {
             if (!shade.isBottomRounded()) {
-                drawShadeLit(shade, xS, xE, lightXCentralShifted, lightYCentralShifted);
+                drawShadeLit(shade, xS, xE);
             } else {
-                shade.getOwner().renderShadowLit(lightXCentralShifted, lightYCentralShifted, xS, xE);
+                shade.getOwner().renderShadowLit(xS, xE);
             }
         };
-        shadeRenderers[DARKEN] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> {
+        shadeRenderers[DARKEN] = (Figure shade, int xS, int xE) -> {
             if (!shade.isBottomRounded()) {
-                drawShade(shade, xS, xE, lightXCentralShifted, lightYCentralShifted);
+                drawShade(shade, xS, xE);
             } else {
-                shade.getOwner().renderShadow(lightXCentralShifted, lightYCentralShifted, xS, xE);
+                shade.getOwner().renderShadow(xS, xE);
             }
         };
-        shadeRenderers[BRIGHTEN_OBJECT] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
-                .renderShadowLit(lightXCentralShifted, lightYCentralShifted, xS, xE);
-        shadeRenderers[DARKEN_OBJECT] = (Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) -> shade.getOwner()
-                .renderShadow(lightXCentralShifted, lightYCentralShifted, xS, xE);
+        shadeRenderers[BRIGHTEN_OBJECT] = (Figure shade, int xS, int xE) -> shade.getOwner().renderShadowLit(xS, xE);
+        shadeRenderers[DARKEN_OBJECT] = (Figure shade, int xS, int xE) -> shade.getOwner().renderShadow(xS, xE);
     }
 
-    public static void drawAllShadows(Figure shaded, int lightXCentralShifted, int lightYCentralShifted) {
+
+    public static void drawAllShadows(Figure shaded) {
         for (int i = 0; i < shaded.getShadowCount(); i++) {
-            shadeRenderers[shaded.getShadow(i).type].render(shaded, shaded.getShadow(i).xS, shaded.getShadow(i).xE, lightXCentralShifted, lightYCentralShifted);
+            shadeRenderers[shaded.getShadow(i).type].render(shaded, shaded.getShadow(i).xS, shaded.getShadow(i).xE);
         }
     }
 
-    public static void drawLeftConcaveBottom(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
-        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
+    public static void drawLeftConcaveBottom(Figure shaded, int x, int y) {
         float[] data = {
                 shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
                 x, y,
@@ -67,13 +62,10 @@ public class ShadowDrawer {
             colors[i] = 0f;
         }
         Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//        Drawer.streamVBO.renderTriangleStream(data);
         Drawer.shadowShader.setUseTexture(true);
-        endDrawingShadow();
     }
 
-    public static void drawConcaveTop(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
-        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
+    public static void drawConcaveTop(Figure shaded, int x, int y) {
         float[] data = {
                 shaded.getX(), shaded.getYEnd() - Place.tileSize,
                 x, y,
@@ -86,13 +78,10 @@ public class ShadowDrawer {
             colors[i] = 0f;
         }
         Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//        Drawer.streamVBO.renderTriangleStream(data);
         Drawer.shadowShader.setUseTexture(true);
-        endDrawingShadow();
     }
 
-    public static void drawRightConcaveBottom(Figure shaded, int x, int y, int lightXCentralShifted, int lightYCentralShifted) {
-        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
+    public static void drawRightConcaveBottom(Figure shaded, int x, int y) {
         float[] data = {
                 shaded.getX(), shaded.getYEnd(),
                 x, y,
@@ -105,27 +94,13 @@ public class ShadowDrawer {
             colors[i] = 0f;
         }
         Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//        Drawer.streamVBO.renderTriangleStream(data);
         Drawer.shadowShader.setUseTexture(true);
-        endDrawingShadow();
-    }
-
-    private static void startDrawingShadow(byte color, int lightXCentralShifted, int lightYCentralShifted) {
-//        Drawer.setColorStatic(color, color, color, 1f);
-        glPushMatrix();
-        glTranslatef(lightXCentralShifted, lightYCentralShifted, 0);
-    }
-
-    private static void endDrawingShadow() {
-//        Drawer.refreshColor();
-        glPopMatrix();
     }
 
     public static void drawShadowFromConcave(Figure shaded, Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
         corner.set(shaded.getX() + (shaded.isLeftBottomRound() ? Place.tileSize : 0), shaded.getY());
         boolean a = false, b = false;
 
-        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
         Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
         float[] data = new float[18];
@@ -187,12 +162,9 @@ public class ShadowDrawer {
         }
         Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
         Drawer.shadowShader.setUseTexture(true);
-        endDrawingShadow();
     }
 
     public static void drawShadow(Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
-        startDrawingShadow(BLACK, lightXCentralShifted, lightYCentralShifted);
-
         Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
 
@@ -211,7 +183,6 @@ public class ShadowDrawer {
                 colors[i] = 0f;
             }
             Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//            Drawer.streamVBO.renderTriangleStream(data);
         } else {
             float[] data = {
                     shadowPoints[1].getX(), shadowPoints[1].getY(),
@@ -226,24 +197,21 @@ public class ShadowDrawer {
                 colors[i] = 0f;
             }
             Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//            Drawer.streamVBO.renderTriangleStream(data);
         }
         Drawer.shadowShader.setUseTexture(true);
-        endDrawingShadow();
     }
 
-    private static void drawShade(Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) {
-        drawShadeInColor(BLACK, shade, xS, xE, lightXCentralShifted, lightYCentralShifted);
+    private static void drawShade(Figure shade, int xS, int xE) {
+        drawShadeInColor(BLACK, shade, xS, xE);
     }
 
-    private static void drawShadeLit(Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) {
-        drawShadeInColor(WHITE, shade, xS, xE, lightXCentralShifted, lightYCentralShifted);
+    private static void drawShadeLit(Figure shade, int xS, int xE) {
+        drawShadeInColor(WHITE, shade, xS, xE);
     }
 
-    private static void drawShadeInColor(byte color, Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted) {
+    private static void drawShadeInColor(byte color, Figure shade, int xS, int xE) {
         int firstShadowPoint = shade.getYEnd();
         int secondShadowPoint = shade.getY() - shade.getShadowHeight();
-        startDrawingShadow(color, lightXCentralShifted, lightYCentralShifted);
         Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.setUseTexture(false);
         if (xS < xE) {
@@ -278,11 +246,10 @@ public class ShadowDrawer {
 //            Drawer.streamVBO.renderTriangleStream(data);
         }
         Drawer.shadowShader.setUseTexture(true);
-        endDrawingShadow();
     }
 
     protected interface shadeRenderer {
 
-        void render(Figure shade, int xS, int xE, int lightXCentralShifted, int lightYCentralShifted);
+        void render(Figure shade, int xS, int xE);
     }
 }

@@ -7,11 +7,7 @@ package gamedesigner;
 
 import collision.Figure;
 import engine.systemcommunication.Time;
-import engine.utilities.Drawer;
-import engine.utilities.Methods;
-import engine.utilities.Point;
-import engine.utilities.RandomGenerator;
-import engine.utilities.SimpleKeyboard;
+import engine.utilities.*;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
@@ -39,6 +35,7 @@ public class ObjectPlayer extends Player {
     public static int currectDepth;
 
     private final SimpleKeyboard key;
+    private final RandomGenerator rand;
     private int maxTimer;
     private int ix, iy;
     private int xTimer, yTimer;
@@ -50,12 +47,8 @@ public class ObjectPlayer extends Player {
     private int blockHeight, tileHeight, mode;
     private boolean roundBlocksMode, alreadyPlaced, alreadyChangedObject;
     private boolean paused, shadow, nightLight;
-
     private RoundedTMPBlock rTmpBlock;
     private ArrayList<TemporaryBlock> movingBlock;
-
-    private final RandomGenerator rand;
-
     private Point lastRTMPBState = new Point(0, 0);
 
     public ObjectPlayer(boolean first, String name) {
@@ -527,18 +520,18 @@ public class ObjectPlayer extends Player {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
+    public void renderShadowLit(Figure figure) {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadowLit(int xStart, int xEnd) {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure) {
+    public void renderShadow(Figure figure) {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadow(int xStart, int xEnd) {
     }
 }

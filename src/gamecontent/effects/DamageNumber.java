@@ -100,19 +100,19 @@ public class DamageNumber extends Entity {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
+    public void renderShadowLit(Figure figure) {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure) {
+    public void renderShadow(Figure figure) {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadowLit(int xStart, int xEnd) {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadow(int xStart, int xEnd) {
     }
 
 }

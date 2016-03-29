@@ -42,6 +42,7 @@ public abstract class Map {
     public static final PointContainer NO_SOLUTION = new PointContainer(0);
     protected static final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) ->
             firstObject.getDepth() - secondObject.getDepth();
+    private static engine.utilities.Timer timer = new engine.utilities.Timer("Map", 200);
     public final Place place;
     protected final int tileSize;
     protected final ArrayList<GameObject> seeThroughs = new ArrayList<>();
@@ -514,6 +515,7 @@ public abstract class Map {
     }
 
     public void renderBackground(Camera camera) {
+//        timer.start();
         Drawer.clearScreen(0);
         Drawer.refreshForRegularDrawing();
         for (int i : placement.getNearAreas(camera.getArea())) {
@@ -522,6 +524,7 @@ public abstract class Map {
                 renderAreaBounds(i);
             }
         }
+//        timer.stop();
     }
 
     private void renderAreaBounds(int i) {

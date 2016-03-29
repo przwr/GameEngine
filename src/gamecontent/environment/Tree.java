@@ -487,10 +487,10 @@ public class Tree extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
+    public void renderShadowLit(Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
             Drawer.drawShapeBottomInShade(fbo, 1);
             Drawer.translate(0, -fbo.getHeight() + leafHeight);
             Drawer.drawShapeTopInBlack(fbo);
@@ -499,10 +499,10 @@ public class Tree extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure) {
+    public void renderShadow(Figure figure) {
         if (appearance != null) {
             glPushMatrix();
-            Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
             Drawer.drawShapeBottomInBlack(fbo);
             Drawer.translate(0, -fbo.getHeight() + leafHeight);
             Drawer.drawShapeTopInBlack(fbo);
@@ -511,7 +511,7 @@ public class Tree extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
             if (xStart > xEnd) {
                 int temp = xStart;
@@ -525,7 +525,7 @@ public class Tree extends GameObject {
                 xEnd = 2 * collision.getWidth();
             }
             glPushMatrix();
-            Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
             Drawer.drawShapeBottomPartInShade(fbo, 1, fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 +
                     xEnd);
             Drawer.translate(0, -fbo.getHeight() + leafHeight);
@@ -535,7 +535,7 @@ public class Tree extends GameObject {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
             if (xStart > xEnd) {
                 int temp = xStart;
@@ -549,7 +549,7 @@ public class Tree extends GameObject {
                 xEnd = 2 * collision.getWidth();
             }
             glPushMatrix();
-            Drawer.translate(xEffect + getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), yEffect + getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
             Drawer.drawShapeBottomPartInBlack(fbo, fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 +
                     xEnd);
             Drawer.translate(0, -fbo.getHeight() + leafHeight);

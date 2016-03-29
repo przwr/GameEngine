@@ -11,17 +11,10 @@ import engine.utilities.Methods;
 import game.gameobject.GameObject;
 import game.place.Place;
 import gamedesigner.ObjectPlace;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_COLOR;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- *
  * @author Wojtek
  */
 public class TemporaryObject extends GameObject {
@@ -31,7 +24,7 @@ public class TemporaryObject extends GameObject {
     private final String[] data;
 
     public TemporaryObject(GameObject covered, ObjectPlace place, String... data) {
-        this.initialize("tmpBlock", Methods.makeDivisibleBy(covered.getX(), Place.tileSize), 
+        this.initialize("tmpBlock", Methods.makeDivisibleBy(covered.getX(), Place.tileSize),
                 Methods.makeDivisibleBy(covered.getY(), Place.tileSize));
         this.covered = covered;
         this.onTop = true;
@@ -46,11 +39,11 @@ public class TemporaryObject extends GameObject {
     public GameObject getCovered() {
         return covered;
     }
-    
+
     public String[] getAdditionalData() {
         return data;
     }
-    
+
     @Override
     public void render(int xEffect, int yEffect) {
         if (objPlace.getMode() != ObjectPlace.MODE_VIEWING) {
@@ -69,19 +62,19 @@ public class TemporaryObject extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
+    public void renderShadowLit(Figure figure) {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadowLit(int xStart, int xEnd) {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure) {
+    public void renderShadow(Figure figure) {
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
+    public void renderShadow(int xStart, int xEnd) {
     }
 
 }

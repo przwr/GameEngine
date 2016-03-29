@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static collision.OpticProperties.*;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author Wojtek
@@ -27,7 +26,8 @@ public class Block extends GameObject {
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
     private boolean forNavigationMesh;
 
-    private Block(int x, int y, int width, int height, int shadowHeight, boolean round, boolean invisible) {  //Point (x, y) should be in left top corner of Block
+    private Block(int x, int y, int width, int height, int shadowHeight, boolean round, boolean invisible) {  //Point (x, y) should be in left top corner of
+        // Block
         this.x = x;
         this.y = y;
         name = "area";
@@ -136,97 +136,84 @@ public class Block extends GameObject {
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, Figure figure) {
-        glPushMatrix();
+    public void renderShadowLit(Figure figure) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInShade(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect,
+            Drawer.drawRectangleInShade(figure.getX(), figure.getY() - figure.getShadowHeight(),
                     figure.width, figure.height + figure.getShadowHeight(), 1);
         } else {
-            glTranslatef(xEffect + getX(), yEffect + getY(), 0);
-            Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
-                Drawer.returnToCentralPoint();
-                Drawer.translate(col.getX() - getX(), col.getY() - getY() - col.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInShade(0, 0, col.width, col.height + col.getShadowHeight(), 1);
+                    Drawer.drawRectangleInShade(col.getX(), col.getY() - col.getShadowHeight(), col.width, col.height + col.getShadowHeight(), 1);
                 } else {
+                    Drawer.translate(col.getX(), col.getY() - col.getShadowHeight());
                     Drawer.drawShapeInShade(wall, 1);
+                    Drawer.translate(-col.getX(), -col.getY() + col.getShadowHeight());
                 }
             });
         }
-        glPopMatrix();
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, Figure figure) {
-        glPushMatrix();
+    public void renderShadow(Figure figure) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInBlack(figure.getX() + xEffect, figure.getY() - figure.getShadowHeight() + yEffect,
+            Drawer.drawRectangleInBlack(figure.getX(), figure.getY() - figure.getShadowHeight(),
                     figure.width, figure.height + (top.contains(figure) ? 0 : figure.getShadowHeight()));
         } else {
-            glTranslatef(xEffect + getX(), yEffect + getY(), 0);
-            Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure tempCollision = wall.getCollision();
-                Drawer.returnToCentralPoint();
-                Drawer.translate(tempCollision.getX() - getX(), tempCollision.getY() - getY() - tempCollision.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInBlack(0, 0, tempCollision.width, tempCollision.height + tempCollision.getShadowHeight());
+                    Drawer.drawRectangleInBlack(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), tempCollision.width,
+                            tempCollision.height + tempCollision.getShadowHeight());
                 } else {
+                    Drawer.translate(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
                     Drawer.drawShapeInBlack(wall);
+                    Drawer.translate(-tempCollision.getX(), -tempCollision.getY() + tempCollision.getShadowHeight());
                 }
             });
         }
-        glPopMatrix();
     }
 
     @Override
-    public void renderShadowLit(int xEffect, int yEffect, int xStart, int xEnd) {
-        glPushMatrix();
+    public void renderShadowLit(int xStart, int xEnd) {
         if (isSimpleLighting() || !collision.isBottomRounded()) {
             if (Main.DEBUG) {
                 System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
             }
         } else {
-            glTranslatef(xEffect + getX(), yEffect + getY(), 0);
-            Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure tempCollision = wall.getCollision();
-                Drawer.returnToCentralPoint();
-                Drawer.translate(tempCollision.getX() - getX(), tempCollision.getY() - getY() - tempCollision.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInShade(xStart, 0, xEnd - xStart, tempCollision.height + tempCollision.getShadowHeight(), 1);
+                    Drawer.drawRectangleInShade(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
+                            tempCollision.height + tempCollision.getShadowHeight(), 1);
                 } else {
+                    Drawer.translate(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
                     Drawer.drawShapePartInShade(wall, 1, xStart, xEnd);
+                    Drawer.translate(-tempCollision.getX(), -tempCollision.getY() + tempCollision.getShadowHeight());
                 }
             });
         }
-        glPopMatrix();
     }
 
     @Override
-    public void renderShadow(int xEffect, int yEffect, int xStart, int xEnd) {
-        glPushMatrix();
+    public void renderShadow(int xStart, int xEnd) {
         if (isSimpleLighting()) {
             if (Main.DEBUG) {
                 System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
             }
         } else {
-            glTranslatef(xEffect + getX(), yEffect + getY(), 0);
-            Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure tempCollision = wall.getCollision();
-                Drawer.returnToCentralPoint();
-                Drawer.translate(tempCollision.getX() - getX(), tempCollision.getY() - getY() - tempCollision.getShadowHeight());
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInBlack(xStart, 0, xEnd - xStart, tempCollision.height + tempCollision.getShadowHeight());
+                    Drawer.drawRectangleInBlack(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
+                            tempCollision.height + tempCollision.getShadowHeight());
                 } else {
+                    Drawer.translate(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
                     Drawer.drawShapePartInBlack(wall, xStart, xEnd);
+                    Drawer.translate(-tempCollision.getX(), -tempCollision.getY() + tempCollision.getShadowHeight());
                 }
             });
         }
-        glPopMatrix();
     }
 
     @Override

@@ -362,6 +362,7 @@ public class ClothedAppearance implements Appearance {
     public void renderShadow(float color) {
         glTranslatef(-fbo.getWidth() / 2, -fbo.getHeight() / 2, 0);
         fbo.renderShadow(color);
+        glTranslatef(fbo.getWidth() / 2, fbo.getHeight() / 2, 0);
     }
 
     @Override
@@ -379,6 +380,7 @@ public class ClothedAppearance implements Appearance {
         } else {
             fbo.renderShadowPart(partXStart + xOffset / 2, partXEnd + xOffset / 2, color);
         }
+        glTranslatef(fbo.getWidth() / 2, fbo.getHeight() / 2, 0);
     }
 
 
