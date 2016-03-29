@@ -18,6 +18,10 @@ import game.logic.navmeshpathfinding.Window;
 import game.place.Console;
 import game.place.map.Area;
 import gamecontent.MyGame;
+import org.hyperic.sigar.CpuPerc;
+import org.hyperic.sigar.Mem;
+import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.cmd.Shell;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Controllers;
@@ -49,7 +53,7 @@ public class Main {
 
     public static final boolean DEBUG = true;
     public static final boolean LOG = false;
-    private static final Delay delay = Delay.createInMilliseconds(200, true);
+    private static final Delay delay = Delay.createInMilliseconds(500, true);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
     public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREAS, SHOW_MESH, pause, enter = true, TEST = false;
@@ -61,6 +65,7 @@ public class Main {
     private static Controller[] controllers;
     private static boolean lastFrame;
     private static Console console;
+    private static Shell shell;
 
     public static void run() {
         setSettingsFromFile(new File("res/settings.ini"));
@@ -215,6 +220,7 @@ public class Main {
     }
 
     private static void initializeGame() {
+        shell = new Shell();
         game = new MyGame("Crossroads (PROTOTYPE)", controllers);
         backgroundLoader.setGame(game);
         Display.setTitle(game.getTitle());
@@ -232,18 +238,26 @@ public class Main {
                 delay.start();
                 String info;
                 int frames = (int) (60 / Time.getDelta());
+                String cpuUsage = "";
+                float memoryUsage = 0;
+                try {
+                    CpuPerc cpu = shell.getSigar().getCpuPerc();
+                    cpuUsage = CpuPerc.format(cpu.getCombined());
+                    Mem mem = shell.getSigar().getMem();
+                    memoryUsage = 100 * mem.getUsed() / 1024 / 1024 / 1024 / 100f;
+                } catch (SigarException e) {
+                }
+                info = "; PID: " + shell.getSigar().getPid() + "; Memory usage: " + memoryUsage + " GB; CPU usage: " + cpuUsage + " %";
                 if (game != null && game.getPlace() != null) {
                     console = game.getPlace().getConsole();
-                    float memory = ((long) (((Runtime.getRuntime().totalMemory()) / (double) 1048576) * 100)) / 100f;
-                    info = " [" + frames + " fps] " + game.getPlace().getTime() + " " + memory + " MB";
+                    info = " [" + frames + " fps] " + game.getPlace().getTime() + info;
                     fInput();
                     if (console.areStatsRendered()) {
                         console.clearStats();
                         console.printStats(info + " Player 1: " + game.getPlayerCoordinates());
                     }
                 } else {
-                    float memory = ((long) (((Runtime.getRuntime().totalMemory()) / (double) 1048576) * 100)) / 100f;
-                    info = " [" + frames + " fps] " + memory + " MB";
+                    info = " [" + frames + " fps] " + info;
                 }
                 Display.setTitle(game.getTitle() + info);
                 if (LOG) {
