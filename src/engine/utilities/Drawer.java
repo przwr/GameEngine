@@ -5,6 +5,7 @@
  */
 package engine.utilities;
 
+import engine.lights.ShadowDrawer;
 import game.ScreenPlace;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
@@ -140,52 +141,30 @@ public class Drawer {
         setCentralPoint();
     }
 
-    public static void drawRectangleInShade(int xStart, int yStart, int width, int height, float color) {
+    public static void drawRectangleShade(int xStart, int yStart, int width, int height, float color) {
         if (width < 0) {
             width = -width;
             xStart -= width;
         }
-        float[] data = {
-                xStart, yStart,
+        ShadowDrawer.addShadowToRender(color, xStart, yStart,
                 xStart, yStart + height,
                 xStart + width, yStart,
                 xStart + width, yStart,
                 xStart, yStart + height,
-                xStart + width, yStart + height,
-        };
-        shadowShader.resetUniform();
-        shadowShader.setUseTexture(false);
-        float[] colors = new float[6];
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = color;
-        }
-        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//        streamVBO.renderTriangleStripStream(data);
-        shadowShader.setUseTexture(true);
+                xStart + width, yStart + height);
     }
 
-    public static void drawRectangleInBlack(int xStart, int yStart, int width, int height) {
+    public static void drawRectangleBlack(int xStart, int yStart, int width, int height) {
         if (width < 0) {
             width = -width;
             xStart -= width;
         }
-        float[] data = {
-                xStart, yStart,
+        ShadowDrawer.addShadowToRender(0f, xStart, yStart,
                 xStart, yStart + height,
                 xStart + width, yStart,
                 xStart + width, yStart,
                 xStart, yStart + height,
-                xStart + width, yStart + height,
-        };
-        shadowShader.resetUniform();
-        shadowShader.setUseTexture(false);
-        float[] colors = new float[6];
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = 0f;
-        }
-        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//        streamVBO.renderTriangleStripStream(data);
-        shadowShader.setUseTexture(true);
+                xStart + width, yStart + height);
     }
 
     public static void drawTextureTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
@@ -409,66 +388,96 @@ public class Drawer {
         drawLineWidth(xStart, yStart, xDelta, yDelta, 1);
     }
 
-    public static void drawShapeInShade(Appearance appearance, float color) {
+    public static void drawShapeShade(Appearance appearance, float color, float xPosition, float yPosition) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadow(color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
 
-    public static void drawShapeTopInShade(FrameBufferObject appearance, float color) {
+    public static void drawShapeTopShade(FrameBufferObject appearance, float color, float xPosition, float yPosition) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowTop(color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
 
-    public static void drawShapeBottomInShade(FrameBufferObject appearance, float color) {
+    public static void drawShapeBottomShade(FrameBufferObject appearance, float color, float xPosition, float yPosition) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowBottom(color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
-    public static void drawShapePartInShade(Appearance appearance, float color, int partXStart, int partXEnd) {
+    public static void drawShapePartShade(Appearance appearance, float color, float xPosition, float yPosition, int partXStart, int partXEnd) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowPart(partXStart, partXEnd, color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
-    public static void drawShapeBottomPartInShade(FrameBufferObject appearance, float color, int partXStart, int partXEnd) {
+    public static void drawShapeBottomPartShade(FrameBufferObject appearance, float color, float xPosition, float yPosition, int partXStart, int partXEnd) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowBottomPart(partXStart, partXEnd, color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
-    public static void drawShapeInBlack(Appearance appearance) {
+    public static void drawShapeBlack(Appearance appearance, float xPosition, float yPosition) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadow(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
-    public static void drawShapeTopInBlack(FrameBufferObject appearance) {
+    public static void drawShapeTopBlack(FrameBufferObject appearance, float xPosition, float yPosition) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowTop(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
-    public static void drawShapeBottomInBlack(FrameBufferObject appearance) {
+    public static void drawShapeBottomBlack(FrameBufferObject appearance, float xPosition, float yPosition) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowBottom(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
-    public static void drawShapePartInBlack(Appearance appearance, int partXStart, int partXEnd) {
+    public static void drawShapePartBlack(Appearance appearance, float xPosition, float yPosition, int partXStart, int partXEnd) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowPart(partXStart, partXEnd, 0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
-    public static void drawShapeBottomPartInBlack(FrameBufferObject appearance, int partXStart, int partXEnd) {
+    public static void drawShapeBottomPartBlack(FrameBufferObject appearance, float xPosition, float yPosition, int partXStart, int partXEnd) {
+        ShadowDrawer.renderCurrentVBO();
+        glTranslatef(xPosition, yPosition, 0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowBottomPart(partXStart, partXEnd, 0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+        glTranslatef(-xPosition, -yPosition, 0);
     }
 
     public static void renderStringCentered(String message, double x, double y, FontHandler font, Color color) {

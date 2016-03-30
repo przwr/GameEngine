@@ -18,7 +18,7 @@ import static engine.lights.Shadow.*;
 public class ShadowDrawer {
 
     private static final shadeRenderer[] shadeRenderers = new shadeRenderer[6];
-    private static final byte BLACK = 0, WHITE = 1;
+    private static final float BLACK = 0, WHITE = 1;
     private static final Point corner = new Point();
 
     static {
@@ -42,6 +42,27 @@ public class ShadowDrawer {
         shadeRenderers[DARKEN_OBJECT] = (Figure shade, int xS, int xE) -> shade.getOwner().renderShadow(xS, xE);
     }
 
+    public static void prepareVBO() {
+        Drawer.shadowShader.resetUniform();
+        Drawer.streamVertexData.clear();
+        Drawer.streamColorData.clear();
+    }
+
+    public static void renderCurrentVBO() {
+        if (!Drawer.streamVertexData.isEmpty()) {
+            Drawer.shadowShader.setUseTexture(false);
+            Drawer.shadowShader.resetUniform();
+            Drawer.shadowVBO.renderShadedTriangleStream(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray());
+            Drawer.streamVertexData.clear();
+            Drawer.streamColorData.clear();
+            Drawer.shadowShader.setUseTexture(true);
+        }
+    }
+
+    public static void addShadowToRender(float color, float... vertices) {
+        Drawer.streamVertexData.add(vertices);
+        Drawer.streamColorData.add(color, vertices.length / 2);
+    }
 
     public static void drawAllShadows(Figure shaded) {
         for (int i = 0; i < shaded.getShadowCount(); i++) {
@@ -50,59 +71,24 @@ public class ShadowDrawer {
     }
 
     public static void drawLeftConcaveBottom(Figure shaded, int x, int y) {
-        float[] data = {
-                shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
-                x, y,
-                shaded.getX() + Place.tileSize, shaded.getYEnd(),
-        };
-        Drawer.shadowShader.resetUniform();
-        Drawer.shadowShader.setUseTexture(false);
-        float[] colors = new float[3];
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = 0f;
-        }
-        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-        Drawer.shadowShader.setUseTexture(true);
+        addShadowToRender(0f, shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
+                x, y, shaded.getX() + Place.tileSize, shaded.getYEnd());
     }
 
     public static void drawConcaveTop(Figure shaded, int x, int y) {
-        float[] data = {
-                shaded.getX(), shaded.getYEnd() - Place.tileSize,
-                x, y,
-                shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
-        };
-        Drawer.shadowShader.resetUniform();
-        Drawer.shadowShader.setUseTexture(false);
-        float[] colors = new float[3];
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = 0f;
-        }
-        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-        Drawer.shadowShader.setUseTexture(true);
+        addShadowToRender(0f, shaded.getX(), shaded.getYEnd() - Place.tileSize,
+                x, y, shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize);
     }
 
     public static void drawRightConcaveBottom(Figure shaded, int x, int y) {
-        float[] data = {
-                shaded.getX(), shaded.getYEnd(),
-                x, y,
-                shaded.getX(), shaded.getYEnd() - Place.tileSize,
-        };
-        Drawer.shadowShader.resetUniform();
-        Drawer.shadowShader.setUseTexture(false);
-        float[] colors = new float[3];
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = 0f;
-        }
-        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-        Drawer.shadowShader.setUseTexture(true);
+        addShadowToRender(0f, shaded.getX(), shaded.getYEnd(),
+                x, y, shaded.getX(), shaded.getYEnd() - Place.tileSize);
     }
 
     public static void drawShadowFromConcave(Figure shaded, Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
         corner.set(shaded.getX() + (shaded.isLeftBottomRound() ? Place.tileSize : 0), shaded.getY());
         boolean a = false, b = false;
 
-        Drawer.shadowShader.resetUniform();
-        Drawer.shadowShader.setUseTexture(false);
         float[] data = new float[18];
         if (((corner.getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
                 - ((corner.getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
@@ -155,50 +141,26 @@ public class ShadowDrawer {
             data[16] = shadowPoints[3].getX();
             data[17] = shadowPoints[3].getY();
         }
-
-        float[] colors = new float[9];
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = 0f;
-        }
-        Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-        Drawer.shadowShader.setUseTexture(true);
+        addShadowToRender(0f, data);
     }
 
     public static void drawShadow(Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
-        Drawer.shadowShader.resetUniform();
-        Drawer.shadowShader.setUseTexture(false);
-
         if (((shadowPoints[1].getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
                 - ((shadowPoints[1].getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
-            float[] data = {
-                    shadowPoints[0].getX(), shadowPoints[0].getY(),
+            addShadowToRender(0f, shadowPoints[0].getX(), shadowPoints[0].getY(),
                     shadowPoints[2].getX(), shadowPoints[2].getY(),
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
                     shadowPoints[1].getX(), shadowPoints[1].getY(),
-                    shadowPoints[0].getX(), shadowPoints[0].getY(),
-            };
-            float[] colors = new float[6];
-            for (int i = 0; i < colors.length; i++) {
-                colors[i] = 0f;
-            }
-            Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+                    shadowPoints[0].getX(), shadowPoints[0].getY());
         } else {
-            float[] data = {
-                    shadowPoints[1].getX(), shadowPoints[1].getY(),
+            addShadowToRender(0f, shadowPoints[1].getX(), shadowPoints[1].getY(),
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
                     shadowPoints[2].getX(), shadowPoints[2].getY(),
                     shadowPoints[2].getX(), shadowPoints[2].getY(),
                     shadowPoints[0].getX(), shadowPoints[0].getY(),
-                    shadowPoints[1].getX(), shadowPoints[1].getY()
-            };
-            float[] colors = new float[6];
-            for (int i = 0; i < colors.length; i++) {
-                colors[i] = 0f;
-            }
-            Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
+                    shadowPoints[1].getX(), shadowPoints[1].getY());
         }
-        Drawer.shadowShader.setUseTexture(true);
     }
 
     private static void drawShade(Figure shade, int xS, int xE) {
@@ -209,44 +171,26 @@ public class ShadowDrawer {
         drawShadeInColor(WHITE, shade, xS, xE);
     }
 
-    private static void drawShadeInColor(byte color, Figure shade, int xS, int xE) {
+    private static void drawShadeInColor(float color, Figure shade, int xS, int xE) {
         int firstShadowPoint = shade.getYEnd();
         int secondShadowPoint = shade.getY() - shade.getShadowHeight();
-        Drawer.shadowShader.resetUniform();
-        Drawer.shadowShader.setUseTexture(false);
         if (xS < xE) {
-            float[] data = {
-                    xS, firstShadowPoint,
+            addShadowToRender(color, xS, firstShadowPoint,
                     xE, secondShadowPoint,
                     xS, secondShadowPoint,
                     xE, secondShadowPoint,
                     xS, firstShadowPoint,
-                    xE, firstShadowPoint,
-            };
-            float[] colors = new float[6];
-            for (int i = 0; i < colors.length; i++) {
-                colors[i] = color;
-            }
-            Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//            Drawer.streamVBO.renderTriangleStream(data);
+                    xE, firstShadowPoint);
         } else {
-            float[] data = {
-                    xS, firstShadowPoint,
+            addShadowToRender(color, xS, firstShadowPoint,
                     xS, secondShadowPoint,
                     xE, secondShadowPoint,
                     xE, secondShadowPoint,
                     xE, firstShadowPoint,
-                    xS, firstShadowPoint,
-            };
-            float[] colors = new float[6];
-            for (int i = 0; i < colors.length; i++) {
-                colors[i] = color;
-            }
-            Drawer.shadowVBO.renderShadedTriangleStream(data, colors);
-//            Drawer.streamVBO.renderTriangleStream(data);
+                    xS, firstShadowPoint);
         }
-        Drawer.shadowShader.setUseTexture(true);
     }
+
 
     protected interface shadeRenderer {
 

@@ -17,6 +17,7 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
+import gamecontent.environment.Rock;
 import net.jodk.lang.FastMath;
 
 import java.awt.*;
@@ -67,13 +68,13 @@ public class ShadowRenderer {
     }
 
     public static void preRenderLight(Map map, Light light) {
-//        timer.start();
+        timer.start();
         prepareToFindShades(light);
         findShades(light, map);
         prepareToPreRender(light);
         calculateShadows(light);
         renderShadows(light);
-//        endPreRender(light);
+        endPreRender(light);
         timer.stop();
     }
 
@@ -96,6 +97,7 @@ public class ShadowRenderer {
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         glPushMatrix();
         glTranslatef(lightXCentralShifted, lightYCentralShifted, 0);
+        ShadowDrawer.prepareVBO();
     }
 
     private static void findShades(Light light, Map map) {
@@ -438,6 +440,7 @@ public class ShadowRenderer {
     }
 
     private static void endPreRender(Light light) {
+        ShadowDrawer.renderCurrentVBO();
         glPopMatrix();
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         Drawer.regularShader.start();
@@ -509,6 +512,9 @@ public class ShadowRenderer {
 
     private static void calculateRegularShade(Figure shaded, Light light) {
         if (light.getY() > shaded.getYEnd()) {
+            if (shaded.getOwner() instanceof Rock) {
+                System.out.print("");
+            }
             shaded.getOwner().renderShadowLit(shaded);
             shaded.addShadowType(BRIGHT);
         } else {

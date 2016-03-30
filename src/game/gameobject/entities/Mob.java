@@ -333,36 +333,28 @@ public abstract class Mob extends Entity {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
-            Drawer.drawShapeInShade(appearance, 1);
-            glTranslatef(-getX(), -getY() + (int) floatHeight, 0);
+            Drawer.drawShapeShade(appearance, 1, getX(), getY() - (int) floatHeight);
         }
     }
 
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
-            Drawer.drawShapeInBlack(appearance);
-            glTranslatef(-getX(), -getY() + (int) floatHeight, 0);
+            Drawer.drawShapeBlack(appearance, getX(), getY() - (int) floatHeight);
         }
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
-            Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
-            glTranslatef(-getX(), -getY() + (int) floatHeight, 0);
+            Drawer.drawShapePartShade(appearance, 1, getX(), getY() - (int) floatHeight, xStart, xEnd);
         }
     }
 
     @Override
     public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
-            Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
-            glTranslatef(-getX(), -getY() + (int) floatHeight, 0);
+            Drawer.drawShapePartBlack(appearance, getX(), getY() - (int) floatHeight, xStart, xEnd);
         }
     }
 

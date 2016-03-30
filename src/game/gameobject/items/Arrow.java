@@ -9,6 +9,7 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Main;
+import engine.lights.ShadowDrawer;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.gameobject.GameObject;
@@ -50,7 +51,8 @@ public class Arrow extends Entity {
         tail = new ArrowTail(6, (float) (lenght / 8), this);
         stats = new Stats(this);
         stats.setStrength((int) (speed / 3));
-        Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1, 2f, 1f);
+        Interactive attack = Interactive.create(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 64), BOW_HURT, BOW, (byte) 1,
+                2f, 1f);
         attack.addException(owner);
         attack.setCollidesWithEnvironment(false);
         addInteractive(attack);
@@ -160,40 +162,29 @@ public class Arrow extends Entity {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
-            Drawer.drawShapeInShade(appearance, 1);
-            glPopMatrix();
+            Drawer.drawShapeShade(appearance, 1, getX(), getY() - (int) floatHeight);
         }
     }
 
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
-            Drawer.drawShapeInBlack(appearance);
-            glPopMatrix();
+            Drawer.drawShapeBlack(appearance, getX(), getY() - (int) floatHeight);
         }
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
-            Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
-            glPopMatrix();
+            Drawer.drawShapePartShade(appearance, 1, getX(), getY() - (int) floatHeight, xStart, xEnd);
         }
     }
 
     @Override
     public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
-            Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
-            glPopMatrix();
+            ShadowDrawer.renderCurrentVBO();
+            Drawer.drawShapePartBlack(appearance, getX(), getY() - (int) floatHeight, xStart, xEnd);
         }
     }
 

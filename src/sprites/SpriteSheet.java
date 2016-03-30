@@ -230,13 +230,11 @@ public class SpriteSheet extends Sprite {
             if (isValidPiece(piece)) {
                 translationVector.set(getXStart() / 2f, getYStart() / 2f);
                 MatrixMath.transformMatrix(transformationMatrix, translationVector, 1, 1);
-//                Drawer.spriteShader.start();
                 Drawer.regularShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.regularShader.loadSizeModifier(vectorModifier);
                 Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
                 vbo.renderTextured(NORMAL * 4, 4);
-//                Drawer.spriteShader.stop();
             }
         }
     }

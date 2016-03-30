@@ -23,6 +23,13 @@ public class FloatContainer {
         floats[pointCount++] = value;
     }
 
+    public void add(float value, int times) {
+        ensureCapacity(times);
+        for (int i = 0; i < times; i++) {
+            floats[pointCount++] = value;
+        }
+    }
+
 
     public void add(float... values) {
         ensureCapacity(values.length);
