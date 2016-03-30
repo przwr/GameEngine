@@ -17,6 +17,7 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
+import gamecontent.environment.Rock;
 import net.jodk.lang.FastMath;
 
 import java.awt.*;
@@ -72,9 +73,9 @@ public class ShadowRenderer {
         findShades(light, map);
         prepareToPreRender(light);
         calculateShadows(light);
-        renderShadows(light);
-//        endPreRender(light);
-        timer.stop();
+        renderShadows();
+        endPreRender(light);
+//        timer.stop();
     }
 
     private static void prepareToFindShades(Light light) {
@@ -96,6 +97,7 @@ public class ShadowRenderer {
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         glPushMatrix();
         glTranslatef(lightXCentralShifted, lightYCentralShifted, 0);
+        ShadowDrawer.prepareVBO();
     }
 
     private static void findShades(Light light, Map map) {
@@ -429,7 +431,7 @@ public class ShadowRenderer {
         }
     }
 
-    private static void renderShadows(Light light) {
+    private static void renderShadows() {
         for (Figure shaded : shades) {
             solveShadows(shaded);
             drawAllShadows(shaded);
@@ -438,6 +440,7 @@ public class ShadowRenderer {
     }
 
     private static void endPreRender(Light light) {
+        ShadowDrawer.renderCurrentVBO();
         glPopMatrix();
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         Drawer.regularShader.start();
@@ -460,7 +463,7 @@ public class ShadowRenderer {
 
     private static void calculateRoundShade(Figure shaded, Light light) {
         if (isRoundInLight(shaded, light)) {
-            shaded.getOwner().renderShadowLit(shaded);
+//            shaded.getOwner().renderShadowLit(shaded);
             shaded.addShadowType(BRIGHT);
         } else {
             shaded.addShadowType(DARK);
@@ -509,7 +512,10 @@ public class ShadowRenderer {
 
     private static void calculateRegularShade(Figure shaded, Light light) {
         if (light.getY() > shaded.getYEnd()) {
-            shaded.getOwner().renderShadowLit(shaded);
+            if (shaded.getOwner() instanceof Rock) {
+                System.out.print("");
+            }
+//            shaded.getOwner().renderShadowLit(shaded);
             shaded.addShadowType(BRIGHT);
         } else {
             shaded.addShadowType(DARK);

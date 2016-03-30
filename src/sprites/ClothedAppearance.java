@@ -269,13 +269,11 @@ public class ClothedAppearance implements Appearance {
             if (!isThisLowerPlacement(i)) {
                 if (upperRenderList[i].cloth.isWearing() && upperRenderList[i].getSprite() != null) {
                     upperRenderList[i].getSprite().renderPiece(upperFrame);
-                    //upperRenderList[i].getSprite().returnFromTranslation(upperFrame);
                 }
             } else {
                 for (byte j : lowerQueue.get(lowerFrame)) {
                     if (lowerRenderList[j].cloth.isWearing() && lowerRenderList[j].getSprite() != null) {
                         lowerRenderList[j].getSprite().renderPiece(lowerFrame);
-                        //lowerRenderList[j].getSprite().returnFromTranslation(lowerFrame);
                     }
                 }
             }

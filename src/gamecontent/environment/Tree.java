@@ -489,24 +489,18 @@ public class Tree extends GameObject {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            glPushMatrix();
-            Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
-            Drawer.drawShapeBottomInShade(fbo, 1);
-            Drawer.translate(0, -fbo.getHeight() + leafHeight);
-            Drawer.drawShapeTopInBlack(fbo);
-            glPopMatrix();
+            Drawer.drawShapeBottomShade(fbo, 1, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.drawShapeTopBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf() - fbo
+                    .getHeight() + leafHeight);
         }
     }
 
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            glPushMatrix();
-            Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
-            Drawer.drawShapeBottomInBlack(fbo);
-            Drawer.translate(0, -fbo.getHeight() + leafHeight);
-            Drawer.drawShapeTopInBlack(fbo);
-            glPopMatrix();
+            Drawer.drawShapeBottomBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.drawShapeTopBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf() - fbo
+                    .getHeight() + leafHeight);
         }
     }
 
@@ -524,13 +518,10 @@ public class Tree extends GameObject {
             if (xEnd > 2 * collision.getWidth()) {
                 xEnd = 2 * collision.getWidth();
             }
-            glPushMatrix();
-            Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
-            Drawer.drawShapeBottomPartInShade(fbo, 1, fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 +
-                    xEnd);
-            Drawer.translate(0, -fbo.getHeight() + leafHeight);
-            Drawer.drawShapeTopInBlack(fbo);
-            glPopMatrix();
+            Drawer.drawShapeBottomPartShade(fbo, 1, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf
+                    (), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
+            Drawer.drawShapeTopBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf() - fbo
+                    .getHeight() + leafHeight);
         }
     }
 
@@ -548,13 +539,10 @@ public class Tree extends GameObject {
             if (xEnd > 2 * collision.getWidth()) {
                 xEnd = 2 * collision.getWidth();
             }
-            glPushMatrix();
-            Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
-            Drawer.drawShapeBottomPartInBlack(fbo, fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 +
-                    xEnd);
-            Drawer.translate(0, -fbo.getHeight() + leafHeight);
-            Drawer.drawShapeTopInBlack(fbo);
-            glPopMatrix();
+            Drawer.drawShapeBottomPartBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf(),
+                    fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
+            Drawer.drawShapeTopBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf() - fbo
+                    .getHeight() + leafHeight);
         }
     }
 

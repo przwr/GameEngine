@@ -369,40 +369,32 @@ public class Bush extends GameObject {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-            Drawer.drawShapeInShade(appearance, 1);
-            glPopMatrix();
+            Drawer.drawShapeShade(appearance, 1, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
+                    .getHeightHalf());
         }
     }
 
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-            Drawer.drawShapeInBlack(appearance);
-            glPopMatrix();
+            Drawer.drawShapeBlack(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
+                    .getHeightHalf());
         }
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-            Drawer.drawShapePartInShade(appearance, 1, xStart, xEnd);
-            glPopMatrix();
+            Drawer.drawShapePartShade(appearance, 1, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
+                    .getHeightHalf(), xStart, xEnd);
         }
     }
 
     @Override
     public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
-            Drawer.drawShapePartInBlack(appearance, xStart, xEnd);
-            glPopMatrix();
+            Drawer.drawShapePartBlack(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
+                    .getHeightHalf(), xStart, xEnd);
         }
     }
 

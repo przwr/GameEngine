@@ -196,7 +196,7 @@ public class Animation implements Appearance {
 
     @Override
     public void renderShadowPart(int partXStart, int partXEnd, float color) {
-        spriteSheet.renderPiecePart(currentFrame, partXStart, partXEnd);
+        spriteSheet.renderShadowPiecePart(currentFrame, partXStart, partXEnd, color);
     }
 
     @Override

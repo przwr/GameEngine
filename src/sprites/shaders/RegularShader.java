@@ -35,8 +35,6 @@ public class RegularShader extends ShaderProgram {
         locationSizeModifier = super.getUniformLocation("sizeModifier");
         locationUseTexture = super.getUniformLocation("useTexture");
         locationUseColour = super.getUniformLocation("useColour");
-        setUseTexture(true);
-        setUseColour(false);
     }
 
     @Override
@@ -54,7 +52,7 @@ public class RegularShader extends ShaderProgram {
         reset = true;
 //        }
     }
-    
+
 
     public void loadTextureShift(float x, float y) {
         super.load2Floats(locationTextureShift, x, y);

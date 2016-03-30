@@ -102,46 +102,40 @@ public class Tile extends GameObject implements Appearance {
 
     @Override
     public void renderShadowLit(Figure figure) {
-        glTranslatef(getX(), getY() - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), 1);
+            Drawer.drawRectangleShade(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight()
+                    , 1);
         } else {
-            Drawer.drawShapeInShade(this, 1);
+            Drawer.drawShapeShade(this, 1, getX(), getY() - collision.getShadowHeight());
         }
-        glTranslatef(-getX(), -getY() + collision.getShadowHeight(), 0);
     }
 
     @Override
     public void renderShadow(Figure figure) {
-        glTranslatef(getX(), getY() - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInBlack(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
+            Drawer.drawRectangleBlack(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
         } else {
-            Drawer.drawShapeInBlack(this);
+            Drawer.drawShapeBlack(this, getX(), getY() - collision.getShadowHeight());
         }
-        glTranslatef(-getX(), -getY() + collision.getShadowHeight(), 0);
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
-        glTranslatef(getX(), getY() - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInShade(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight(), 1);
+            Drawer.drawRectangleShade(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight()
+                    , 1);
         } else {
-            Drawer.drawShapePartInShade(this, 1, xStart, xEnd);
+            Drawer.drawShapePartShade(this, 1, getX(), getY() - collision.getShadowHeight(), xStart, xEnd);
         }
-        glTranslatef(-getX(), -getY() + collision.getShadowHeight(), 0);
     }
 
     @Override
     public void renderShadow(int xStart, int xEnd) {
-        glTranslatef(getX(), getY() - collision.getShadowHeight(), 0);
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInBlack(0, 0, collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
+            Drawer.drawRectangleBlack(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
         } else {
-            Drawer.drawShapePartInBlack(this, xStart, xEnd);
+            Drawer.drawShapePartBlack(this, getX(), getY() - collision.getShadowHeight(), xStart, xEnd);
         }
-        glTranslatef(-getX(), -getY() + collision.getShadowHeight(), 0);
     }
 
     @Override

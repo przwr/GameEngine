@@ -32,7 +32,6 @@ public class ShadowShader extends ShaderProgram {
         locationColourModifier = super.getUniformLocation("colourModifier");
         locationSizeModifier = super.getUniformLocation("sizeModifier");
         locationUseTexture = super.getUniformLocation("useTexture");
-        setUseTexture(true);
     }
 
     @Override

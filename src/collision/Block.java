@@ -138,17 +138,15 @@ public class Block extends GameObject {
     @Override
     public void renderShadowLit(Figure figure) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInShade(figure.getX(), figure.getY() - figure.getShadowHeight(),
+            Drawer.drawRectangleShade(figure.getX(), figure.getY() - figure.getShadowHeight(),
                     figure.width, figure.height + figure.getShadowHeight(), 1);
         } else {
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInShade(col.getX(), col.getY() - col.getShadowHeight(), col.width, col.height + col.getShadowHeight(), 1);
+                    Drawer.drawRectangleShade(col.getX(), col.getY() - col.getShadowHeight(), col.width, col.height + col.getShadowHeight(), 1);
                 } else {
-                    Drawer.translate(col.getX(), col.getY() - col.getShadowHeight());
-                    Drawer.drawShapeInShade(wall, 1);
-                    Drawer.translate(-col.getX(), -col.getY() + col.getShadowHeight());
+                    Drawer.drawShapeShade(wall, 1, col.getX(), col.getY() - col.getShadowHeight());
                 }
             });
         }
@@ -157,18 +155,16 @@ public class Block extends GameObject {
     @Override
     public void renderShadow(Figure figure) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleInBlack(figure.getX(), figure.getY() - figure.getShadowHeight(),
+            Drawer.drawRectangleBlack(figure.getX(), figure.getY() - figure.getShadowHeight(),
                     figure.width, figure.height + (top.contains(figure) ? 0 : figure.getShadowHeight()));
         } else {
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure tempCollision = wall.getCollision();
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInBlack(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), tempCollision.width,
+                    Drawer.drawRectangleBlack(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), tempCollision.width,
                             tempCollision.height + tempCollision.getShadowHeight());
                 } else {
-                    Drawer.translate(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
-                    Drawer.drawShapeInBlack(wall);
-                    Drawer.translate(-tempCollision.getX(), -tempCollision.getY() + tempCollision.getShadowHeight());
+                    Drawer.drawShapeBlack(wall, tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
                 }
             });
         }
@@ -184,12 +180,10 @@ public class Block extends GameObject {
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure tempCollision = wall.getCollision();
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInShade(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
+                    Drawer.drawRectangleShade(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
                             tempCollision.height + tempCollision.getShadowHeight(), 1);
                 } else {
-                    Drawer.translate(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
-                    Drawer.drawShapePartInShade(wall, 1, xStart, xEnd);
-                    Drawer.translate(-tempCollision.getX(), -tempCollision.getY() + tempCollision.getShadowHeight());
+                    Drawer.drawShapePartShade(wall, 1, tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), xStart, xEnd);
                 }
             });
         }
@@ -205,12 +199,10 @@ public class Block extends GameObject {
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure tempCollision = wall.getCollision();
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleInBlack(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
+                    Drawer.drawRectangleBlack(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
                             tempCollision.height + tempCollision.getShadowHeight());
                 } else {
-                    Drawer.translate(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
-                    Drawer.drawShapePartInBlack(wall, xStart, xEnd);
-                    Drawer.translate(-tempCollision.getX(), -tempCollision.getY() + tempCollision.getShadowHeight());
+                    Drawer.drawShapePartBlack(wall, tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), xStart, xEnd);
                 }
             });
         }

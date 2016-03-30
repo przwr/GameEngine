@@ -107,6 +107,7 @@ public class Sprite implements Appearance {
         if (bindCheck()) {
             vectorModifier.set(color, color, color, 1f);
             Drawer.shadowShader.resetUniform();
+            Drawer.shadowShader.loadColourModifier(vectorModifier);
             vbo.renderTextured(0, 4);
         }
     }

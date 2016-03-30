@@ -85,32 +85,32 @@ public class SpriteSheet extends Sprite {
     public void initializeBuffers() {
         float[] vertices = {xStart, yStart,
                 xStart, yStart + heightWhole,
-                xStart + widthWhole, yStart + heightWhole,
                 xStart + widthWhole, yStart,
+                xStart + widthWhole, yStart + heightWhole,
                 0, 0,
                 0, height,
-                width, height,
                 width, 0,
+                width, height,
                 0, 0,
                 0, height,
+                width, 0,
                 width, height,
-                width, 0
         };
         float[] textureCoordinates = {
                 0, 0,                           //Całość
                 0, 1f,
-                1f, 1f,
                 1f, 0,
+                1f, 1f,
                 0, 0,                           //Klatki
                 0, 1f / yTiles,
-                1f / xTiles, 1f / yTiles,
                 1f / xTiles, 0,
+                1f / xTiles, 1f / yTiles,
                 1f / xTiles, 0,                 //Klatki odwrócone
                 1f / xTiles, 1f / yTiles,
+                0, 0,
                 0, 1f / yTiles,
-                0, 0
         };
-        int[] indices = {0, 1, 3, 2, 4, 5, 7, 6, 8, 9, 11, 10};
+        int[] indices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
     }
 
@@ -230,13 +230,11 @@ public class SpriteSheet extends Sprite {
             if (isValidPiece(piece)) {
                 translationVector.set(getXStart() / 2f, getYStart() / 2f);
                 MatrixMath.transformMatrix(transformationMatrix, translationVector, 1, 1);
-//                Drawer.spriteShader.start();
                 Drawer.regularShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.regularShader.loadSizeModifier(vectorModifier);
                 Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
                 vbo.renderTextured(NORMAL * 4, 4);
-//                Drawer.spriteShader.stop();
             }
         }
     }

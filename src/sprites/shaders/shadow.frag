@@ -13,7 +13,7 @@ void main(void){
     if(useTexture == 1.0) {
         out_colour = texture(textureSampler, pass_textureCoords);
         if(out_colour.w > 0){
-            out_colour = colourModifier;
+            out_colour = vec4(colourModifier.x, colourModifier.x, colourModifier.x, out_colour.w);
         }
     } else {
         out_colour = vec4(o_colour, o_colour, o_colour, 1);

@@ -1,5 +1,7 @@
 package engine.utilities;
 
+import java.util.Arrays;
+
 /**
  * @author przemek
  */
@@ -23,12 +25,17 @@ public class FloatContainer {
         floats[pointCount++] = value;
     }
 
+    public void add(float value, int times) {
+        ensureCapacity(times);
+        Arrays.fill(floats, pointCount, pointCount + times, value);
+        pointCount += times;
+    }
+
 
     public void add(float... values) {
         ensureCapacity(values.length);
-        for (int i = 0; i < values.length; i++) {
-            floats[pointCount++] = values[i];
-        }
+        System.arraycopy(values, 0, floats, pointCount, values.length);
+        pointCount += values.length;
     }
 
     private void ensureCapacity(int capacity) {
