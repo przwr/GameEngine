@@ -129,6 +129,7 @@ public class GameClient {
     public synchronized void Close() {
         client.stop();
         client.close();
+
     }
 
     private synchronized void cleanUp() {

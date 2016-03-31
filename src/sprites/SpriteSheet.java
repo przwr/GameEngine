@@ -204,7 +204,7 @@ public class SpriteSheet extends Sprite {
                     MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
                     Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
                 }
-                vbo.renderTextured(4 + type * framesCount + piece * 4, 4);
+                vbo.renderTextured(4 + type * framesCount + frame * 4, 4);
             }
         }
     }
@@ -225,26 +225,11 @@ public class SpriteSheet extends Sprite {
                 frame = coords.getX() + coords.getY() * xTiles;
                 int piece = getFramesPosition(frame);
                 if (isValidPiece(piece)) {
-                    vbo.renderTextured(4 + type * framesCount + piece * 4, 4);
+                    vbo.renderTextured(4 + type * framesCount + frame * 4, 4);
                 }
             }
         }
     }
-
-
-//
-//    public void renderMultiplePieces(int[] vertices, float xScale, float yScale, int type) {
-//        if (bindCheck()) {
-//            Drawer.regularShader.resetUniform();
-//            if (xScale != 1f || yScale != 1f) {
-//                translationVector.set(0, 0);
-//                MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-//                Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
-//            }
-//            vbo.renderTextured(4 + type * framesCount + piece * 4, 4);
-//        }
-//    }
-
 
     public void renderShadowPiece(int piece, float xScale, float yScale, int type, float color) {
         if (bindCheck()) {
@@ -259,7 +244,7 @@ public class SpriteSheet extends Sprite {
                     MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
                     Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
                 }
-                vbo.renderTextured(4 + type * framesCount + piece * 4, 4);
+                vbo.renderTextured(4 + type * framesCount + frame * 4, 4);
             }
         }
     }
@@ -285,7 +270,7 @@ public class SpriteSheet extends Sprite {
                 Drawer.shadowShader.loadColourModifier(vectorModifier);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.shadowShader.loadSizeModifier(vectorModifier);
-                vbo.renderTextured(4 + piece * 4, 4);
+                vbo.renderTextured(4 + frame * 4, 4);
             }
         }
     }
@@ -303,7 +288,7 @@ public class SpriteSheet extends Sprite {
                 Drawer.regularShader.resetUniform();
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.regularShader.loadSizeModifier(vectorModifier);
-                vbo.renderTextured(4 + piece * 4, 4);
+                vbo.renderTextured(4 + frame * 4, 4);
             }
         }
     }

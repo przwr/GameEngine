@@ -29,6 +29,7 @@ public class GameServer {
     private final Delay delay;
     //    private final int scopeX, scopeY;
     public boolean isRunning;
+    private Thread thread;
     private int nrPlayers = 0;
     private byte id = 0;
 
@@ -142,7 +143,7 @@ public class GameServer {
     }
 
     public synchronized void Start() {
-        Thread thread = new Thread(server, "Server");
+        thread = new Thread(server, "Server");
         try {
             thread.start();
         } catch (Exception e) {
@@ -153,6 +154,9 @@ public class GameServer {
     public synchronized void Close() {
         server.stop();
         server.close();
+        thread.stop();
+        thread.destroy();
+        thread = null;
     }
 
     public synchronized void sendUpdate(short mapId, int x, int y, boolean isEmits, boolean isHop) {

@@ -526,7 +526,6 @@ public abstract class Map {
     }
 
     public void renderBackground(Camera camera) {
-//        timer.start();
         Drawer.clearScreen(0);
         Drawer.refreshForRegularDrawing();
         Drawer.streamVertexData.clear();
@@ -538,48 +537,52 @@ public abstract class Map {
         for (int i : placement.getNearAreas(camera.getArea())) {
             if (i >= 0 && i < areas.length) {
                 renderArea(i);
-//                renderAreaBounds(i);
             }
         }
         renderBackgroundFromVBO();
         glPopMatrix();
-//        timer.stop();
+
+        if (Main.SHOW_AREAS) {
+            for (int i : placement.getNearAreas(camera.getArea())) {
+                if (i >= 0 && i < areas.length) {
+                    renderAreaBounds(i);
+                }
+            }
+        }
     }
 
     private void renderAreaBounds(int i) {
-        if (Main.SHOW_AREAS) {
-            int yTemp = (i / xAreas) * Y_IN_TILES;
-            int xTemp = (i % xAreas) * X_IN_TILES;
-            glPushMatrix();
-            glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(xTemp * Place.tileSize, yTemp * Place.tileSize, 0);
-            Drawer.setColorStatic(Color.cyan);
-            Drawer.setCentralPoint();
-            Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
-            Drawer.returnToCentralPoint();
-            Drawer.renderStringCentered(String.valueOf(i), Place.tileSize, Place.tileSize,
-                    Settings.fonts.getFont("Amble-Regular", (int) (Place.getCurrentScale() * 32)), Color.cyan);
-            glPopMatrix();
+        int yTemp = (i / xAreas) * Y_IN_TILES;
+        int xTemp = (i % xAreas) * X_IN_TILES;
+        glPushMatrix();
+        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+        glTranslatef(xTemp * Place.tileSize, yTemp * Place.tileSize, 0);
+        Drawer.setColorStatic(Color.cyan);
+        Drawer.setCentralPoint();
+        Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
+        Drawer.returnToCentralPoint();
+        Drawer.renderStringCentered(String.valueOf(i), Place.tileSize, Place.tileSize,
+                Settings.fonts.getFont("Amble-Regular", (int) (Place.getCurrentScale() * 32)), Color.cyan);
+        glPopMatrix();
 
-            glPushMatrix();
-            glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            Drawer.setCentralPoint();
-            if (areaConnectors != null && areaConnectors[i] != null) {
-                int c = 0;
-                for (AreaConnection connection : areaConnectors[i].getConnections()) {
-                    Drawer.setColorStatic(colors[c % colors.length]);
-                    for (Point point : connection.getConnectionPoints()) {
-                        Drawer.drawRectangle(point.getX() - 5, point.getY() - 5, 10, 10);
-                        Drawer.returnToCentralPoint();
-                    }
-                    c++;
+        glPushMatrix();
+        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+        Drawer.setCentralPoint();
+        if (areaConnectors != null && areaConnectors[i] != null) {
+            int c = 0;
+            for (AreaConnection connection : areaConnectors[i].getConnections()) {
+                Drawer.setColorStatic(colors[c % colors.length]);
+                for (Point point : connection.getConnectionPoints()) {
+                    Drawer.drawRectangle(point.getX() - 5, point.getY() - 5, 10, 10);
+                    Drawer.returnToCentralPoint();
                 }
+                c++;
             }
-            glPopMatrix();
-            Drawer.refreshColor();
         }
+        glPopMatrix();
+        Drawer.refreshColor();
     }
 
     protected void renderArea(int i) {

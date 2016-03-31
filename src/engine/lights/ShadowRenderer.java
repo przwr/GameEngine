@@ -983,7 +983,7 @@ public class ShadowRenderer {
                 }
                 XL2 = al > 0 ? other.getX() : other.getXEnd();
             }
-            if (XL1 >= other.getX() && XL1 <= other.getXEnd() && XL1 != XL2) {
+            if (XL1 >= other.getX() && XL1 <= other.getXEnd()) {
                 if (XL1 < source.getX() || (XL1 == other.getXEnd() && XL1 == current.getX()) || (XL1 == other.getX() && XL1 == current.getXEnd())) { //dodaj
                     // światło
                     if (other.getYEnd() == current.getYEnd()) {
@@ -1009,7 +1009,9 @@ public class ShadowRenderer {
                         checked = true;
                         return;
                     }
-                    other.addShadowWithCaster(BRIGHTEN, XL1 - other.getX(), XL2 - other.getX(), current);
+                    if (XL1 != XL2) {
+                        other.addShadowWithCaster(BRIGHTEN, XL1 - other.getX(), XL2 - other.getX(), current);
+                    }
                     addDarkenLeftRoundBlockIfNeeded(other, current);
                     checked = true;
                     DEBUG("Left Round Light XL1 " + (XL1 - other.getX()) + " XL2 " + (XL2 - other.getX()));
@@ -1076,7 +1078,7 @@ public class ShadowRenderer {
                 }
                 XR2 = ar > 0 ? other.getX() : other.getXEnd();
             }
-            if (XR1 >= other.getX() && XR1 <= other.getXEnd() && XR1 != XR2) {
+            if (XR1 >= other.getX() && XR1 <= other.getXEnd()) {
                 if (XR1 > source.getX() || (XR1 == other.getX() && XR1 == current.getXEnd()) || (XR1 == other.getXEnd() && XR1 == current.getX())) { // dodaj
                     // światło
                     if (other.getYEnd() == current.getYEnd()) {
@@ -1102,7 +1104,9 @@ public class ShadowRenderer {
                         checked = true;
                         return;
                     }
-                    other.addShadowWithCaster(BRIGHTEN, XR1 - other.getX(), XR2 - other.getX(), current);
+                    if (XR1 != XR2) {
+                        other.addShadowWithCaster(BRIGHTEN, XR1 - other.getX(), XR2 - other.getX(), current);
+                    }
                     addDarkenRightRoundBlockIfNeeded(other, current);
                     checked = true;
                     DEBUG("Right Round Light XR1 " + (XR1) + " XR2 " + (XR2));

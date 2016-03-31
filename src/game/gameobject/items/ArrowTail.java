@@ -20,7 +20,9 @@ public class ArrowTail extends TailEffect {
 
     @Override
     public void innerRender() {
+        Drawer.regularShader.resetUniform();
         Drawer.setColorStatic(color);
+        Drawer.regularShader.setUseTexture(false);
         if (length >= 3 && tail[2] != null) {
             float vertices[] = new float[8 + last * 4];
             vertices[0] = tail[0].x;
@@ -62,6 +64,7 @@ public class ArrowTail extends TailEffect {
             vertices[10] = tail[1].x;
             vertices[11] = tail[1].y - tail[1].height;
             Drawer.streamVBO.renderTriangleStream(vertices);
+            Drawer.regularShader.setUseTexture(true);
         }
     }
 }
