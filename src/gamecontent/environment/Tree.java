@@ -60,12 +60,13 @@ public class Tree extends GameObject {
         woodHeight = height * 2 + 20;
         String treeCode = width + "-" + height + "-" + spread + "-" + branchless + "-" + ins;
         fbo = fbos.get(treeCode);
+        leafHeight = Math.round(height * 1.6f);
         if (fbo == null) {
             fbo = new MultiSampleFrameBufferObject(fboWidth, fboHeight, Settings.maxSamples);
             fbo.setHeightSlice(woodHeight);
+            fbo.setHeightShift(-fbo.getHeight() + leafHeight);
             fbos.put(treeCode, fbo);
         }
-        leafHeight = Math.round(height * 1.6f);
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
@@ -124,11 +125,8 @@ public class Tree extends GameObject {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        Drawer.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
-        fbo.renderBottom();
-        Drawer.translate(0, -fbo.getHeight() + leafHeight);
-        fbo.renderTop();
-        Drawer.refreshColor();
+        glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf(), 0);
+        fbo.renderTopAndBottom();
         glPopMatrix();
     }
 

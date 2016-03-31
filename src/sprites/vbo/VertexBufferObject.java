@@ -264,7 +264,7 @@ public class VertexBufferObject {
         GL30.glBindVertexArray(vaoID);
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-        GL11.glDrawElements(GL11.GL_TRIANGLE_STRIP, renderCount, GL11.GL_UNSIGNED_INT, start * 4L); // size of UNSIGNED_INT in BYTES
+        GL11.glDrawElements(GL11.GL_TRIANGLES, renderCount, GL11.GL_UNSIGNED_INT, start * 4L); // size of UNSIGNED_INT in BYTES
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
