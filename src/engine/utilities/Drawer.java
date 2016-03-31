@@ -35,6 +35,7 @@ public class Drawer {
 
     private static final Texture font = loadFontTexture();
     public static VertexBufferObject streamVBO;
+    public static VertexBufferObject spriteVBO;
     public static VertexBufferObject grassVBO;
     public static VertexBufferObject shadowVBO;
     public static VertexBufferObject screenVBO;
@@ -513,6 +514,7 @@ public class Drawer {
         };
         int[] indices = {0, 1, 3, 2};
         streamVBO = VertexBufferObject.create(vertices, textureCoords, indices);
+        spriteVBO = VertexBufferObject.create(vertices, textureCoords, indices);
         float[] positions = {0, 0, 0, 1, 1, 0,};
         float[] colors = {1, 1, 1, 1, 1, 1, 1, 1, 1};
         grassVBO = VertexBufferObject.createColored(positions, colors);
@@ -540,11 +542,15 @@ public class Drawer {
             shadowShader.cleanUp();
             shadowShader = null;
         }
+        streamVertexData.clear();
+        streamColorData.clear();
         if (streamVBO != null) {
             streamVBO.clear();
             streamVBO = null;
-            streamVertexData.clear();
-            streamColorData.clear();
+        }
+        if (spriteVBO != null) {
+            spriteVBO.clear();
+            spriteVBO = null;
         }
         if (grassVBO != null) {
             grassVBO.clear();

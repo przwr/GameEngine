@@ -18,11 +18,11 @@ import sprites.vbo.VertexBufferObject;
  */
 public class SpriteSheet extends Sprite {
 
-    private static final int WHOLE = 0, NORMAL = 1, MIRRORED = 2;
+    private static final int NORMAL = 0, MIRRORED = 4;
     private final boolean isStartMoving, scale;
     private int xTiles;
     private int yTiles;
-    private int frame;
+    private int frame, framesCount;
     private PointedValue[] startingPoints;
 
 
@@ -31,6 +31,7 @@ public class SpriteSheet extends Sprite {
         isStartMoving = false;
         this.scale = scale;
         setTilesCount(scale);
+        framesCount = xTiles * yTiles;
     }
 
     private SpriteSheet(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase, boolean scale, PointedValue[]
@@ -40,6 +41,7 @@ public class SpriteSheet extends Sprite {
         isStartMoving = true;
         this.scale = scale;
         setTilesCount(scale);
+        framesCount = startingPoints.length;
     }
 
     public static SpriteSheet create(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
@@ -83,34 +85,65 @@ public class SpriteSheet extends Sprite {
 
     @Override
     public void initializeBuffers() {
-        float[] vertices = {xStart, yStart,
-                xStart, yStart + heightWhole,
-                xStart + widthWhole, yStart,
-                xStart + widthWhole, yStart + heightWhole,
-                0, 0,
-                0, height,
-                width, 0,
-                width, height,
-                0, 0,
-                0, height,
-                width, 0,
-                width, height,
-        };
-        float[] textureCoordinates = {
-                0, 0,                           //Całość
-                0, 1f,
-                1f, 0,
-                1f, 1f,
-                0, 0,                           //Klatki
-                0, 1f / yTiles,
-                1f / xTiles, 0,
-                1f / xTiles, 1f / yTiles,
-                1f / xTiles, 0,                 //Klatki odwrócone
-                1f / xTiles, 1f / yTiles,
-                0, 0,
-                0, 1f / yTiles,
-        };
-        int[] indices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+        float[] vertices;
+        float[] textureCoordinates;
+        vertices = new float[8 + framesCount * 2 * 8];
+        textureCoordinates = new float[8 + framesCount * 2 * 8];
+        int[] indices = new int[4 + framesCount * 2 * 4];
+        vertices[0] = xStart;
+        vertices[1] = yStart;
+        vertices[2] = xStart;
+        vertices[3] = yStart + heightWhole;
+        vertices[4] = xStart + widthWhole;
+        vertices[5] = yStart;
+        vertices[6] = xStart + widthWhole;
+        vertices[7] = yStart + heightWhole;
+        textureCoordinates[0] = 0;
+        textureCoordinates[1] = 0;
+        textureCoordinates[2] = 0;
+        textureCoordinates[3] = 1f;
+        textureCoordinates[4] = 1f;
+        textureCoordinates[5] = 0;
+        textureCoordinates[6] = 1f;
+        textureCoordinates[7] = 1f;
+        for (int i = 8; i < vertices.length; i += 8) {
+            frame = ((i - 8) % ((vertices.length - 8) / 2)) / 8;
+            vertices[i] = getXStart();
+            vertices[i + 1] = getYStart();
+            vertices[i + 2] = getXStart();
+            vertices[i + 3] = getYStart() + height;
+            vertices[i + 4] = getXStart() + width;
+            vertices[i + 5] = getYStart();
+            vertices[i + 6] = getXStart() + width;
+            vertices[i + 7] = getYStart() + height;
+        }
+        for (int i = 8; i < 4 + textureCoordinates.length / 2; i += 8) {
+            frame = (i - 8) / 8;
+            int piece = getFramesPosition(frame);
+            textureCoordinates[i] = (float) (piece % xTiles) / xTiles;
+            textureCoordinates[i + 1] = (float) (piece / xTiles) / yTiles;
+            textureCoordinates[i + 2] = (float) (piece % xTiles) / xTiles;
+            textureCoordinates[i + 3] = (1f + (piece / xTiles)) / yTiles;
+            textureCoordinates[i + 4] = (1f + (piece % xTiles)) / xTiles;
+            textureCoordinates[i + 5] = (float) (piece / xTiles) / yTiles;
+            textureCoordinates[i + 6] = (1f + (piece % xTiles)) / xTiles;
+            textureCoordinates[i + 7] = (1f + (piece / xTiles)) / yTiles;
+        }
+        for (int i = 4 + textureCoordinates.length / 2; i < textureCoordinates.length; i += 8) {
+            frame = ((i - 8) % ((textureCoordinates.length - 8) / 2)) / 8;
+            int piece = getFramesPosition(frame);
+            textureCoordinates[i] = (1f + (piece % xTiles)) / xTiles;
+            textureCoordinates[i + 1] = (float) (piece / xTiles) / yTiles;
+            textureCoordinates[i + 2] = (1f + (piece % xTiles)) / xTiles;
+            textureCoordinates[i + 3] = (1f + (piece / xTiles)) / yTiles;
+            textureCoordinates[i + 4] = (float) (piece % xTiles) / xTiles;
+            textureCoordinates[i + 5] = (float) (piece / xTiles) / yTiles;
+            textureCoordinates[i + 6] = (float) (piece % xTiles) / xTiles;
+            textureCoordinates[i + 7] = (1f + (piece / xTiles)) / yTiles;
+        }
+        for (int i = 0; i < indices.length; i++) {
+            indices[i] = i;
+        }
         vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
     }
 
@@ -129,7 +162,7 @@ public class SpriteSheet extends Sprite {
         if (bindCheck()) {
             MatrixMath.resetMatrix(transformationMatrix);
             Drawer.regularShader.resetUniform();
-            vbo.renderTextured(WHOLE, 4);
+            vbo.renderTextured(0, 4);
         }
     }
 
@@ -154,7 +187,7 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderShadowPiece(int piece, float color) {
-        renderShadowPiece(piece, 1f, 1f, 1, color);
+        renderShadowPiece(piece, 1f, 1f, NORMAL, color);
     }
 
     public void renderPiece(int piece, float xScale, float yScale, int type) {
@@ -162,12 +195,13 @@ public class SpriteSheet extends Sprite {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                translationVector.set(getXStart() / 2f, getYStart() / 2f);
-                MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-                Drawer.regularShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
-                Drawer.regularShader.loadSizeModifier(ZERO_VECTOR);
-                Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
-                vbo.renderTextured(type * 4, 4);
+                Drawer.regularShader.resetUniform();
+                if (xScale != 1f || yScale != 1f) {
+                    translationVector.set(0, 0);
+                    MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
+                    Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
+                }
+                vbo.renderTextured(4 + type * framesCount + piece * 4, 4);
             }
         }
     }
@@ -177,14 +211,15 @@ public class SpriteSheet extends Sprite {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
-                translationVector.set(getXStart() / 2f, getYStart() / 2f);
-                MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-                Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
+                Drawer.shadowShader.resetUniform();
                 vectorModifier.set(color, color, color, 1);
                 Drawer.shadowShader.loadColourModifier(vectorModifier);
-                Drawer.shadowShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
-                vbo.renderTextured(type * 4, 4);
+                if (xScale != 1f || yScale != 1f) {
+                    translationVector.set(0, 0);
+                    MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
+                    Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
+                }
+                vbo.renderTextured(4 + type * framesCount + piece * 4, 4);
             }
         }
     }
@@ -205,15 +240,12 @@ public class SpriteSheet extends Sprite {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                translationVector.set(getXStart() / 2f, getYStart() / 2f);
-                MatrixMath.transformMatrix(transformationMatrix, translationVector, 1, 1);
-                Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
-                Drawer.shadowShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
-                vectorModifier.set(color, color, color, 1f);
+                Drawer.shadowShader.resetUniform();
+                vectorModifier.set(color, color, color, 1);
                 Drawer.shadowShader.loadColourModifier(vectorModifier);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.shadowShader.loadSizeModifier(vectorModifier);
-                vbo.renderTextured(NORMAL * 4, 4);
+                vbo.renderTextured(4 + piece * 4, 4);
             }
         }
     }
@@ -228,13 +260,10 @@ public class SpriteSheet extends Sprite {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                translationVector.set(getXStart() / 2f, getYStart() / 2f);
-                MatrixMath.transformMatrix(transformationMatrix, translationVector, 1, 1);
-                Drawer.regularShader.loadTextureShift((float) (piece % xTiles) / xTiles, (float) (piece / xTiles) / yTiles);
+                Drawer.regularShader.resetUniform();
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.regularShader.loadSizeModifier(vectorModifier);
-                Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
-                vbo.renderTextured(NORMAL * 4, 4);
+                vbo.renderTextured(4 + piece * 4, 4);
             }
         }
     }
@@ -247,7 +276,7 @@ public class SpriteSheet extends Sprite {
 
     public void renderPieceResized(int x, int y, float width, float height) {
         if (bindCheck()) {
-            renderPiece(x + y * xTiles, width / this.width, height / this.height, 1);
+            renderPiece(x + y * xTiles, width / this.width, height / this.height, NORMAL);
         }
     }
 
@@ -258,7 +287,7 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderPieceMirrored(int piece) {
-        renderPiece(piece, 1f, 1f, 2);
+        renderPiece(piece, 1f, 1f, MIRRORED);
     }
 
     private boolean isValidPiece(int piece) {

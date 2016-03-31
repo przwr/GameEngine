@@ -127,6 +127,12 @@ public class VertexBufferObject {
         storeDataInAttributeList(vbosIDs.get(1), 1, textureCoords, GL15.GL_STATIC_DRAW);
     }
 
+    public void updateAll(float[] positions, float[] textureCoords, int[] indices) {
+        storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STATIC_DRAW);
+        storeDataInAttributeList(vbosIDs.get(1), 1, textureCoords, GL15.GL_STATIC_DRAW);
+        bindIndicesBuffer(vbosIDs.get(2), indices, GL15.GL_STATIC_DRAW);
+    }
+
     public void clear() {
         delete();
         if (vbos.contains(this)) {
@@ -254,6 +260,15 @@ public class VertexBufferObject {
         GL30.glBindVertexArray(0);
     }
 
+    public void renderTexturedTriangles(int start, int renderCount) {
+        GL30.glBindVertexArray(vaoID);
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL11.glDrawElements(GL11.GL_TRIANGLE_STRIP, renderCount, GL11.GL_UNSIGNED_INT, start * 4L); // size of UNSIGNED_INT in BYTES
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL30.glBindVertexArray(0);
+    }
 
     public int getVertexCount() {
         return vertexCount;

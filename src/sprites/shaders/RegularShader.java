@@ -45,12 +45,12 @@ public class RegularShader extends ShaderProgram {
     }
 
     public void resetUniform() {
-//        if (!reset) {
-        super.load2Floats(locationTextureShift, 0, 0);
-        super.loadVector4f(locationSizeModifier, Appearance.ZERO_VECTOR);
-        super.loadMatrix(locationTransformationMatrix, MatrixMath.STATIC_MATRIX);
-        reset = true;
-//        }
+        if (!reset) {
+            super.load2Floats(locationTextureShift, 0, 0);
+            super.loadVector4f(locationSizeModifier, Appearance.ZERO_VECTOR);
+            super.loadMatrix(locationTransformationMatrix, MatrixMath.STATIC_MATRIX);
+            reset = true;
+        }
     }
 
 
