@@ -19,6 +19,7 @@ import sprites.vbo.VertexBufferObject;
 public class SpriteSheet extends Sprite {
 
     private static final int NORMAL = 0, MIRRORED = 4;
+    private static Point tempPoint = new Point();
     private final boolean isStartMoving, scale;
     private int xTiles;
     private int yTiles;
@@ -87,9 +88,9 @@ public class SpriteSheet extends Sprite {
     public void initializeBuffers() {
         float[] vertices;
         float[] textureCoordinates;
-        vertices = new float[8 + framesCount * 2 * 8];
-        textureCoordinates = new float[8 + framesCount * 2 * 8];
-        int[] indices = new int[4 + framesCount * 2 * 4];
+        vertices = new float[8 + framesCount * (canBeMirrored ? 2 : 1) * 8];
+        textureCoordinates = new float[8 + framesCount * (canBeMirrored ? 2 : 1) * 8];
+        int[] indices = new int[4 + framesCount * (canBeMirrored ? 2 : 1) * 4];
         vertices[0] = xStart;
         vertices[1] = yStart;
         vertices[2] = xStart;
@@ -107,7 +108,7 @@ public class SpriteSheet extends Sprite {
         textureCoordinates[6] = 1f;
         textureCoordinates[7] = 1f;
         for (int i = 8; i < vertices.length; i += 8) {
-            frame = ((i - 8) % ((vertices.length - 8) / 2)) / 8;
+            frame = ((i - 8) % ((vertices.length - 8) / (canBeMirrored ? 2 : 1))) / 8;
             vertices[i] = getXStart();
             vertices[i + 1] = getYStart();
             vertices[i + 2] = getXStart();
@@ -117,7 +118,7 @@ public class SpriteSheet extends Sprite {
             vertices[i + 6] = getXStart() + width;
             vertices[i + 7] = getYStart() + height;
         }
-        for (int i = 8; i < 4 + textureCoordinates.length / 2; i += 8) {
+        for (int i = 8; i < textureCoordinates.length / (canBeMirrored ? 2 : 1) + (canBeMirrored ? 4 : 0); i += 8) {
             frame = (i - 8) / 8;
             int piece = getFramesPosition(frame);
             textureCoordinates[i] = (float) (piece % xTiles) / xTiles;
@@ -129,17 +130,19 @@ public class SpriteSheet extends Sprite {
             textureCoordinates[i + 6] = (1f + (piece % xTiles)) / xTiles;
             textureCoordinates[i + 7] = (1f + (piece / xTiles)) / yTiles;
         }
-        for (int i = 4 + textureCoordinates.length / 2; i < textureCoordinates.length; i += 8) {
-            frame = ((i - 8) % ((textureCoordinates.length - 8) / 2)) / 8;
-            int piece = getFramesPosition(frame);
-            textureCoordinates[i] = (1f + (piece % xTiles)) / xTiles;
-            textureCoordinates[i + 1] = (float) (piece / xTiles) / yTiles;
-            textureCoordinates[i + 2] = (1f + (piece % xTiles)) / xTiles;
-            textureCoordinates[i + 3] = (1f + (piece / xTiles)) / yTiles;
-            textureCoordinates[i + 4] = (float) (piece % xTiles) / xTiles;
-            textureCoordinates[i + 5] = (float) (piece / xTiles) / yTiles;
-            textureCoordinates[i + 6] = (float) (piece % xTiles) / xTiles;
-            textureCoordinates[i + 7] = (1f + (piece / xTiles)) / yTiles;
+        if (canBeMirrored) {
+            for (int i = 4 + textureCoordinates.length / 2; i < textureCoordinates.length; i += 8) {
+                frame = ((i - 8) % ((textureCoordinates.length - 8) / 2)) / 8;
+                int piece = getFramesPosition(frame);
+                textureCoordinates[i] = (1f + (piece % xTiles)) / xTiles;
+                textureCoordinates[i + 1] = (float) (piece / xTiles) / yTiles;
+                textureCoordinates[i + 2] = (1f + (piece % xTiles)) / xTiles;
+                textureCoordinates[i + 3] = (1f + (piece / xTiles)) / yTiles;
+                textureCoordinates[i + 4] = (float) (piece % xTiles) / xTiles;
+                textureCoordinates[i + 5] = (float) (piece / xTiles) / yTiles;
+                textureCoordinates[i + 6] = (float) (piece % xTiles) / xTiles;
+                textureCoordinates[i + 7] = (1f + (piece / xTiles)) / yTiles;
+            }
         }
         for (int i = 0; i < indices.length; i++) {
             indices[i] = i;
@@ -206,6 +209,43 @@ public class SpriteSheet extends Sprite {
         }
     }
 
+    public void renderMultiplePieces(Iterable<Point> pieces) {
+        renderMultiplePieces(pieces, 1f, 1f, NORMAL);
+    }
+
+    public void renderMultiplePieces(Iterable<Point> pieces, float xScale, float yScale, int type) {
+        if (bindCheck()) {
+            Drawer.regularShader.resetUniform();
+            if (xScale != 1f || yScale != 1f) {
+                translationVector.set(0, 0);
+                MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
+                Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
+            }
+            for (Point coords : pieces) {
+                frame = coords.getX() + coords.getY() * xTiles;
+                int piece = getFramesPosition(frame);
+                if (isValidPiece(piece)) {
+                    vbo.renderTextured(4 + type * framesCount + piece * 4, 4);
+                }
+            }
+        }
+    }
+
+
+//
+//    public void renderMultiplePieces(int[] vertices, float xScale, float yScale, int type) {
+//        if (bindCheck()) {
+//            Drawer.regularShader.resetUniform();
+//            if (xScale != 1f || yScale != 1f) {
+//                translationVector.set(0, 0);
+//                MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
+//                Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
+//            }
+//            vbo.renderTextured(4 + type * framesCount + piece * 4, 4);
+//        }
+//    }
+
+
     public void renderShadowPiece(int piece, float xScale, float yScale, int type, float color) {
         if (bindCheck()) {
             frame = piece;
@@ -268,6 +308,15 @@ public class SpriteSheet extends Sprite {
         }
     }
 
+    public int getPieceFromCoordinates(int x, int y) {
+        return x + y * xTiles;
+    }
+
+    public Point getCoordinatesFromPiece(int piece) {
+        tempPoint.set(piece % xTiles, piece / xTiles);
+        return tempPoint;
+    }
+
     public void renderPiece(int x, int y) {
         if (areValidCoordinates(x, y)) {
             renderPiece(x + y * xTiles);
@@ -287,7 +336,11 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderPieceMirrored(int piece) {
-        renderPiece(piece, 1f, 1f, MIRRORED);
+        if (canBeMirrored) {
+            renderPiece(piece, 1f, 1f, MIRRORED);
+        } else {
+            System.out.println(path + " can't be Mirrored!");
+        }
     }
 
     private boolean isValidPiece(int piece) {

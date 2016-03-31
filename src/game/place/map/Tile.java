@@ -7,11 +7,8 @@ import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.place.Place;
-import org.lwjgl.opengl.Display;
 import sprites.Appearance;
 import sprites.SpriteSheet;
-import sprites.fbo.FrameBufferObject;
-import sprites.fbo.RegularFrameBufferObject;
 
 import java.util.ArrayList;
 
@@ -21,8 +18,6 @@ public class Tile extends GameObject implements Appearance {
 
     final SpriteSheet spriteSheet;
     final ArrayList<Point> tileStack;
-    FrameBufferObject fbo;
-    boolean upToDate;
 
     public Tile(SpriteSheet spriteSheet, int xSheet, int ySheet) {
         this.spriteSheet = spriteSheet;
@@ -38,30 +33,6 @@ public class Tile extends GameObject implements Appearance {
         if (!tileStack.contains(p)) {
             tileStack.add(p);
         }
-//        updateFBO();
-    }
-
-    private void updateFBO() {
-        if (fbo == null && tileStack.size() > 1) {
-            fbo = new RegularFrameBufferObject(Place.tileSize, Place.tileSize);
-            renderToFBO();
-        }
-        if (fbo != null) {
-            if (tileStack.size() <= 1) {
-                fbo = null;
-            } else {
-                renderToFBO();
-            }
-        }
-    }
-
-    private void renderToFBO() {
-        fbo.activate();
-        glPushMatrix();
-        glTranslatef(0, Display.getHeight() - Place.tileSize, 0);
-        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
-        glPopMatrix();
-        fbo.deactivate();
     }
 
     public int tileStackSize() {
@@ -72,7 +43,6 @@ public class Tile extends GameObject implements Appearance {
         if (!tileStack.isEmpty()) {
             Point p = tileStack.remove(tileStack.size() - 1);
             tileStack.trimToSize();
-//            updateFBO();
             return p;
         }
         return null;
@@ -92,12 +62,39 @@ public class Tile extends GameObject implements Appearance {
     }
 
     public void renderSpecific(int xEffect, int yEffect, int x, int y) {
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(x, y, 0);
-        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
-        glPopMatrix();
+        spriteSheet.renderMultiplePieces(tileStack);
+        glTranslatef(-x, -y, 0);
+    }
+
+    public void addToTileVBO(int x, int y) {
+        if (glGetInteger(GL_TEXTURE_BINDING_2D) != spriteSheet.getTextureID()) {
+            Map.renderBackgroundFromVBO();
+            bindCheck();
+        }
+        for (Point tile : tileStack) {
+            int size = Drawer.streamVertexData.size() / 2;
+            Drawer.streamVertexData.add(
+                    spriteSheet.getXStart() + x, spriteSheet.getYStart() + y,
+                    spriteSheet.getXStart() + x, spriteSheet.getYStart() + y + spriteSheet.getHeight(),
+                    spriteSheet.getXStart() + x + spriteSheet.getWidth(), spriteSheet.getYStart() + y,
+                    spriteSheet.getXStart() + x + spriteSheet.getWidth(), spriteSheet.getYStart() + y + spriteSheet.getHeight()
+            );
+            int piece = spriteSheet.getPieceFromCoordinates(tile.getX(), tile.getY());
+            int xTiles = spriteSheet.getXLimit();
+            int yTiles = spriteSheet.getYLimit();
+            Drawer.streamColorData.add(
+                    (float) (piece % xTiles) / xTiles,
+                    (float) (piece / xTiles) / yTiles,
+                    (float) (piece % xTiles) / xTiles,
+                    (1f + (piece / xTiles)) / yTiles,
+                    (1f + (piece % xTiles)) / xTiles,
+                    (float) (piece / xTiles) / yTiles,
+                    (1f + (piece % xTiles)) / xTiles,
+                    (1f + (piece / xTiles)) / yTiles
+            );
+            Drawer.streamIndexData.add(size, size + 1, size + 2, size + 3, size + 2, size + 1);
+        }
     }
 
     @Override
@@ -142,18 +139,10 @@ public class Tile extends GameObject implements Appearance {
     public void render(int xEffect, int yEffect) {
         glPushMatrix();
         glTranslatef(xEffect, yEffect, 0);
-
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-
         glTranslatef(getX(), getY(), 0);
-
-        if (tileStack.size() <= 1 || fbo == null) {
-            tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
-        } else {
-            fbo.render();
-        }
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
         glPopMatrix();
-
     }
 
     public SpriteSheet getSpriteSheet() {

@@ -95,6 +95,17 @@ public abstract class Map {
         this.tileSize = tileSize;
     }
 
+    public static void renderBackgroundFromVBO() {
+        if (Drawer.streamVertexData.size() > 0) {
+            Drawer.regularShader.resetUniform();
+            Drawer.tileVBO.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
+            Drawer.tileVBO.renderTexturedTriangles(0, Drawer.streamIndexData.size());
+        }
+        Drawer.streamVertexData.clear();
+        Drawer.streamColorData.clear();
+        Drawer.streamIndexData.clear();
+    }
+
     protected void initializeAreas(int width, int height) {
         this.width = width;
         this.height = height;
@@ -518,12 +529,20 @@ public abstract class Map {
 //        timer.start();
         Drawer.clearScreen(0);
         Drawer.refreshForRegularDrawing();
+        Drawer.streamVertexData.clear();
+        Drawer.streamColorData.clear();
+        Drawer.streamIndexData.clear();
+        glPushMatrix();
+        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         for (int i : placement.getNearAreas(camera.getArea())) {
             if (i >= 0 && i < areas.length) {
                 renderArea(i);
-                renderAreaBounds(i);
+//                renderAreaBounds(i);
             }
         }
+        renderBackgroundFromVBO();
+        glPopMatrix();
 //        timer.stop();
     }
 
@@ -575,7 +594,7 @@ public abstract class Map {
                         Area area = areas[i];
                         Tile tempTile = area != null ? area.getTile(xTiles, yTiles) : null;
                         if (tempTile != null && tempTile.isVisible()) {
-                            tempTile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
+                            tempTile.addToTileVBO(x * tileSize, y * tileSize);
                         }
                     }
                 }

@@ -177,7 +177,7 @@ public class TextController extends GUIObject {
                     last = 0;
                     tmp = new TextRow(lineNum);
                     if (line.length() != 0) {
-                        for (lineIndex = 0; lineIndex < line.length();) {
+                        for (lineIndex = 0; lineIndex < line.length(); ) {
                             if (line.charAt(lineIndex) == '$') {
                                 String symbol = line.substring(lineIndex + 1, lineIndex + 3).toLowerCase();
                                 switch (symbol) {
@@ -950,6 +950,7 @@ public class TextController extends GUIObject {
         Portrait(SpriteSheet image, boolean onRight) {
             this.image = image;
             this.onRight = onRight;
+            image.canBeMirrored = true;
         }
     }
 

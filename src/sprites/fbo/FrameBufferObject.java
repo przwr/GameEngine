@@ -2,7 +2,6 @@ package sprites.fbo;
 
 import engine.matrices.MatrixMath;
 import engine.utilities.Drawer;
-import engine.utilities.Timer;
 import game.Settings;
 import game.gameobject.entities.Player;
 import org.lwjgl.opengl.ARBFramebufferObject;
@@ -28,7 +27,6 @@ public abstract class FrameBufferObject implements Appearance {
     private static float lastScreenData[] = new float[10];
     private static float checkSum = 0;
     private static List<FrameBufferObject> instances = new ArrayList<>();
-    private static Timer t = new Timer("Tree", 200);
     final FrameBufferType type;
     final int height;
     final int width;

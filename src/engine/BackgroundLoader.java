@@ -10,6 +10,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.GLSync;
+import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Sprite;
 import sprites.SpriteBase;
@@ -71,31 +72,28 @@ public abstract class BackgroundLoader {
 
     public void start() throws LWJGLException {
         drawable = getDrawable();
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    drawable.makeCurrent();
-                } catch (LWJGLException e) {
-                    throw new RuntimeException(e);
-                }
-                useFences = GLContext.getCapabilities().OpenGL32;
-                while (running) {
-                    try {
-                        loadTextures();
-                        loadSounds();
-                        if (spritesList1.isEmpty() && spritesList2.isEmpty() && Settings.sounds != null) {
-                            try {
-                                Thread.sleep(3600000);
-                            } catch (InterruptedException e) {
-                            }
-                        }
-                    } catch (Exception exception) {
-                        ErrorHandler.swallowLogAndPrint(exception);
-                    }
-                }
-                drawable.destroy();
+        thread = new Thread(() -> {
+            try {
+                drawable.makeCurrent();
+            } catch (LWJGLException e) {
+                throw new RuntimeException(e);
             }
+            useFences = GLContext.getCapabilities().OpenGL32;
+            while (running) {
+                try {
+                    loadTextures();
+//                    loadSounds();
+                    if (spritesList1.isEmpty() && spritesList2.isEmpty()/*) && Settings.sounds != null*/) {
+                        try {
+                            Thread.sleep(3600000);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                } catch (Exception exception) {
+                    ErrorHandler.swallowLogAndPrint(exception);
+                }
+            }
+            drawable.destroy();
         });
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
@@ -123,7 +121,7 @@ public abstract class BackgroundLoader {
                     workingList.removeAll(spritesToClear);
                     addToSprites();
                 }
-            } else if (spritesList1.isEmpty() && spritesList2.isEmpty() && Settings.sounds != null) {
+            } else if (spritesList1.isEmpty() && spritesList2.isEmpty()/* && Settings.sounds != null*/) {
                 unloadTextures();
             }
             firstSpriteActive = !firstSpriteActive;
@@ -229,8 +227,8 @@ public abstract class BackgroundLoader {
 
     private void loadSounds() {
         if (Settings.sounds == null && spritesList1.isEmpty() && spritesList2.isEmpty() && game != null && game.getPlace() != null) {
-//            game.getPlace().getSounds().initialize("res");
-//            SoundStore.get().poll(0);
+            game.getPlace().getSounds().initialize("res");
+            SoundStore.get().poll(0);
         }
     }
 

@@ -22,7 +22,7 @@ public class Sprite implements Appearance {
 
     protected final int xStart;
     protected final int yStart;
-    public boolean AA = false;
+    public boolean AA = false, canBeMirrored = false;
     public String path;
     protected VertexBufferObject vbo;
     float widthWhole;

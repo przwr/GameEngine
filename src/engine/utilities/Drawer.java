@@ -35,12 +35,13 @@ public class Drawer {
 
     private static final Texture font = loadFontTexture();
     public static VertexBufferObject streamVBO;
-    public static VertexBufferObject spriteVBO;
+    public static VertexBufferObject tileVBO;
     public static VertexBufferObject grassVBO;
     public static VertexBufferObject shadowVBO;
     public static VertexBufferObject screenVBO;
-    public static FloatContainer streamVertexData = new FloatContainer(300);
-    public static FloatContainer streamColorData = new FloatContainer(300);
+    public static FloatContainer streamVertexData = new FloatContainer(14000);
+    public static FloatContainer streamColorData = new FloatContainer(14000);
+    public static IntegerContainer streamIndexData = new IntegerContainer(15000);
     public static StaticShader staticShader;
     public static RegularShader regularShader;
     public static ShadowShader shadowShader;
@@ -514,7 +515,7 @@ public class Drawer {
         };
         int[] indices = {0, 1, 3, 2};
         streamVBO = VertexBufferObject.create(vertices, textureCoords, indices);
-        spriteVBO = VertexBufferObject.create(vertices, textureCoords, indices);
+        tileVBO = VertexBufferObject.create(vertices, textureCoords, indices);
         float[] positions = {0, 0, 0, 1, 1, 0,};
         float[] colors = {1, 1, 1, 1, 1, 1, 1, 1, 1};
         grassVBO = VertexBufferObject.createColored(positions, colors);
@@ -544,13 +545,14 @@ public class Drawer {
         }
         streamVertexData.clear();
         streamColorData.clear();
+        streamIndexData.clear();
         if (streamVBO != null) {
             streamVBO.clear();
             streamVBO = null;
         }
-        if (spriteVBO != null) {
-            spriteVBO.clear();
-            spriteVBO = null;
+        if (tileVBO != null) {
+            tileVBO.clear();
+            tileVBO = null;
         }
         if (grassVBO != null) {
             grassVBO.clear();

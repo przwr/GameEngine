@@ -133,6 +133,14 @@ public class VertexBufferObject {
         bindIndicesBuffer(vbosIDs.get(2), indices, GL15.GL_STATIC_DRAW);
     }
 
+    public void updateIndices(int[] indices) {
+        bindIndicesBuffer(vbosIDs.get(2), indices, GL15.GL_STATIC_DRAW);
+    }
+
+    public void updateIndicesStream(int[] indices) {
+        bindIndicesBuffer(vbosIDs.get(2), indices, GL15.GL_STREAM_DRAW);
+    }
+
     public void clear() {
         delete();
         if (vbos.contains(this)) {

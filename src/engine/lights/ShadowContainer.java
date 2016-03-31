@@ -58,7 +58,6 @@ public class ShadowContainer {
     public void addWithCaster(int type, int x, int y, Figure caster) {
         ensureCapacity(1);
         shadows[shadowsCount].type = type;
-        shadows[shadowsCount].type = type;
         shadows[shadowsCount].xS = x;
         shadows[shadowsCount].xE = y;
         shadows[shadowsCount].xC = caster.getX();

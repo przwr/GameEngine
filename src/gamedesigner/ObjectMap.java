@@ -484,7 +484,7 @@ public class ObjectMap extends Map {
         }
         GameObject object;
         for (Area area : areas) {
-            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext();) {
+            for (Iterator<GameObject> iterator = area.getTopObjects().iterator(); iterator.hasNext(); ) {
                 object = iterator.next();
                 if (object instanceof TemporaryBlock) {
                     ((TemporaryBlock) object).clear();

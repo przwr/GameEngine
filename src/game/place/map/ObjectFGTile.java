@@ -66,18 +66,11 @@ public class ObjectFGTile extends ForegroundTile {
         if (map != null) {
             glPushMatrix();
             glTranslatef(xEffect, yEffect, 0);
-
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-
             glTranslatef(getX(), getY(), 0);
+            for (Point piece : tileStack) {
+                spriteSheet.renderPiece(piece.getX(), piece.getY());
 
-            if (tileStack.size() <= 1 || fbo == null) {
-                for (Point piece : tileStack) {
-                    spriteSheet.renderPiece(piece.getX(), piece.getY());
-
-                }
-            } else {
-                fbo.render();
             }
             if (((ObjectPlace) map.place).getMode() == ObjectPlace.MODE_TILE) {
                 if (ObjectPlayer.currectDepth == depth) {
