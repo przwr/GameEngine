@@ -11,7 +11,7 @@ package engine.systemcommunication;
  */
 public final class Time {
 
-    private static final float DAMPING = 17000000;
+    private static float DAMPING = 50000000 / 3f;
     private static long currentTime;
     private static long lastTime;
 
@@ -30,5 +30,14 @@ public final class Time {
     public static void initialize() {
         lastTime = System.nanoTime();
         currentTime = System.nanoTime();
+    }
+
+    public static void resetGameSpeed() {
+        DAMPING = 50000000 / 3f;
+    }
+
+    public static void setGameSpeed(float factor) {
+        resetGameSpeed();
+        DAMPING *= factor;
     }
 }

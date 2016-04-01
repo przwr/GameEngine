@@ -39,9 +39,9 @@ public class Drawer {
     public static VertexBufferObject grassVBO;
     public static VertexBufferObject shadowVBO;
     public static VertexBufferObject screenVBO;
-    public static FloatContainer streamVertexData = new FloatContainer(14000);
-    public static FloatContainer streamColorData = new FloatContainer(14000);
-    public static IntegerContainer streamIndexData = new IntegerContainer(15000);
+    public static FloatContainer streamVertexData = new FloatContainer(30000);
+    public static FloatContainer streamColorData = new FloatContainer(30000);
+    public static IntegerContainer streamIndexData = new IntegerContainer(30000);
     public static StaticShader staticShader;
     public static RegularShader regularShader;
     public static ShadowShader shadowShader;

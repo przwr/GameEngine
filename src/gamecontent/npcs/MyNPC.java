@@ -41,6 +41,7 @@ public class MyNPC extends Mob {
 
     @Override
     public void update() {
+        animation.updateFrame();
         if (animation.isUpToDate()) {
             if (getTarget() != null && ((MyPlayer) getTarget()).isInGame()) {
                 MyPlayer mpPrey = (MyPlayer) getTarget();
@@ -116,7 +117,6 @@ public class MyNPC extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.render();
-            animation.updateFrame();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }

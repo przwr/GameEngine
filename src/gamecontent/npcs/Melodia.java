@@ -17,12 +17,12 @@ import game.place.Place;
 import game.text.Writer;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
+import gamecontent.environment.Rock;
+import gamecontent.mobs.Shen;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
 import static game.gameobject.items.Weapon.SWORD;
-import gamecontent.environment.Rock;
-import gamecontent.mobs.Shen;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -30,11 +30,10 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Melodia extends Mob {
 
-    private Animation animation;
-    private String dialog = "0";
-    
     private final Shen shen;
     private final Rock rock;
+    private Animation animation;
+    private String dialog = "0";
 
     public Melodia(int x, int y, Place place, short mobID, Shen shen, Rock rock) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
@@ -51,6 +50,7 @@ public class Melodia extends Mob {
 
     @Override
     public void update() {
+        animation.updateFrame();
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
                 MyPlayer player = (MyPlayer) target;
@@ -130,7 +130,6 @@ public class Melodia extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.render();
-            animation.updateFrame();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }

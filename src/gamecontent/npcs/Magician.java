@@ -35,6 +35,7 @@ public class Magician extends Mob {
 
     @Override
     public void update() {
+        animation.updateFrame();
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
                 MyPlayer player = (MyPlayer) target;
@@ -85,7 +86,6 @@ public class Magician extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.render();
-            animation.updateFrame();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }

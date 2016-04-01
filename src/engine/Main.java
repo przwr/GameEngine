@@ -60,12 +60,15 @@ public class Main {
     public static Window meshWindow;
     public static BackgroundLoader backgroundLoader;
     public static SimpleKeyboard key = new SimpleKeyboard();
+    static long variableYieldTime;
     private static Game game;
     private static Popup pop;
     private static Controller[] controllers;
     private static boolean lastFrame;
     private static Console console;
     private static Shell shell;
+    private static long lastTime;
+    private static String info;
 
     public static void run() {
         setSettingsFromFile(new File("res/settings.ini"));
@@ -79,6 +82,7 @@ public class Main {
             ErrorHandler.logToFile("\n-------------------- Game Started at " + STARTED_DATE + " -------------------- \n\n");
         }
         delay.terminate();
+        lastTime = System.nanoTime();
         gameLoop();
         cleanUp();
     }
@@ -183,21 +187,21 @@ public class Main {
     }
 
     private static void initializeOpenGL() {
-        if (Display.isCreated()) {
-            glDisable(GL_DEPTH_TEST);
-            glEnable(GL_MULTISAMPLE);
-            glEnable(GL_BLEND);
-            glEnable(GL_SCISSOR_TEST);
-            glEnable(GL_CULL_FACE);
-            glCullFace(GL_BACK);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glMatrixMode(GL_PROJECTION);
-            glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
-            glMatrixMode(GL_MODELVIEW);
-            glClearColor(0, 0, 0, 0);
-            glLoadIdentity();
-            glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        while (!Display.isCreated()) {
         }
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_MULTISAMPLE);
+        glEnable(GL_BLEND);
+        glEnable(GL_SCISSOR_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glMatrixMode(GL_PROJECTION);
+        glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
+        glMatrixMode(GL_MODELVIEW);
+        glClearColor(0, 0, 0, 0);
+        glLoadIdentity();
+        glViewport(0, 0, Display.getWidth(), Display.getHeight());
         restartBackGroundLoader();
     }
 
@@ -232,37 +236,13 @@ public class Main {
 
     private static void gameLoop() {
         while (isRunning()) {
-            key.keyboardStart();
             Time.update();
-            if (delay.isOver()) {
-                delay.start();
-                String info;
-                int frames = (int) (60 / Time.getDelta());
-                String cpuUsage = "";
-                float memoryUsage = 0, totalMemory = 0;
-                try {
-                    CpuPerc cpu = shell.getSigar().getCpuPerc();
-                    cpuUsage = CpuPerc.format(cpu.getCombined());
-                    Mem mem = shell.getSigar().getMem();
-                    memoryUsage = Math.round((long) (mem.getUsedPercent() * mem.getTotal()) / 1073741824 / 10f) / 10f;
-                    totalMemory = Math.round(100 * mem.getTotal() / 1073741824 / 10f) / 10f;
-                } catch (SigarException e) {
-                }
-                info = " [ FPS: " + frames + " | MEM: " + memoryUsage + " / " + totalMemory + " GB | CPU: " + cpuUsage + " ]";
-                if (game != null && game.getPlace() != null) {
-                    console = game.getPlace().getConsole();
-                    info = game.getPlace().getTime() + info;
-                    fInput();
-                    if (console.areStatsRendered()) {
-                        console.clearStats();
-                        console.printStats(info + " Player 1: " + game.getPlayerCoordinates());
-                    }
-                }
-                Display.setTitle(game.getTitle() + info);
-                if (LOG) {
-                    ErrorHandler.logToFile(info + "\n");
-                }
+            key.keyboardStart();
+            if (game != null && game.getPlace() != null) {
+                console = game.getPlace().getConsole();
+                fInput();
             }
+            loggingAndStats();
             if (!pause) {
                 update();
             } else {
@@ -270,6 +250,33 @@ public class Main {
             }
             render();
             key.keyboardEnd();
+        }
+    }
+
+    private static void loggingAndStats() {
+        if (delay.isOver()) {
+            delay.start();
+            if (console != null && console.areStatsRendered() || LOG) {
+                int frames = Math.round(60 / Time.getDelta());
+                try {
+                    CpuPerc cpu = shell.getSigar().getCpuPerc();
+                    String cpuUsage = CpuPerc.format(cpu.getCombined());
+                    Mem mem = shell.getSigar().getMem();
+                    float memoryUsage = Math.round((long) (mem.getUsedPercent() * mem.getTotal()) / 1073741824 / 10f) / 10f;
+                    float totalMemory = Math.round(100 * mem.getTotal() / 1073741824 / 10f) / 10f;
+                    info = " [ FPS: " + frames + " | MEM: " + memoryUsage + " / " + totalMemory + " GB | CPU: " + cpuUsage + " ]";
+                } catch (SigarException e) {
+                }
+//                Display.setTitle(game.getTitle() + info);
+                if (LOG) {
+                    ErrorHandler.logToFile(info + "\n");
+                }
+                if (console.areStatsRendered() && game != null && game.getPlace() != null) {
+                    info = game.getPlace().getTime() + info;
+                    console.clearStats();
+                    console.printStats(info + " Player 1: " + game.getPlayerCoordinates());
+                }
+            }
         }
     }
 
@@ -313,7 +320,7 @@ public class Main {
     }
 
     private static boolean isRunning() {
-        return !Display.isCloseRequested() && !game.exitFlag;
+        return !Display.isCloseRequested() && Display.isCreated() && !game.exitFlag;
     }
 
     private static void PopMessageIfNeeded() {
@@ -337,6 +344,7 @@ public class Main {
             game.update();
             ErrorHandler.exception(exception);
         }
+
     }
 
     private static void render() {
@@ -350,9 +358,36 @@ public class Main {
         }
         renderMessageIfNeeded();
         resolveGamma();
-        lastFrame = Display.isActive();
-        Display.sync(Settings.framesLimit);
         Display.update();
+        lastFrame = Display.isActive();
+        game.getInput();
+        sync(Settings.framesLimit);
+    }
+
+    public static void sync(int fps) {
+        long sleepTime = 1000000000 / fps;
+        long yieldTime = Math.min(sleepTime, variableYieldTime + sleepTime % 1000000);
+        long overSleep = 0;
+        try {
+            while (true) {
+                long t = System.nanoTime() - lastTime;
+                if (t < sleepTime - yieldTime) {
+                    Thread.sleep(1);
+                } else if (t < sleepTime) {
+                    Thread.yield();
+                } else {
+                    overSleep = t - sleepTime;
+                    break;
+                }
+            }
+        } catch (InterruptedException e) {
+        }
+        lastTime = System.nanoTime() - Math.min(overSleep, sleepTime);
+        if (overSleep > variableYieldTime) {
+            variableYieldTime = Math.min(variableYieldTime + 200 * 1000, sleepTime);
+        } else if (overSleep < variableYieldTime - 200 * 1000) {
+            variableYieldTime = Math.max(variableYieldTime - 2 * 1000, 0);
+        }
     }
 
     private static void renderMessageIfNeeded() {

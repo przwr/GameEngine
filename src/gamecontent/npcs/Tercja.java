@@ -23,9 +23,9 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Tercja extends Mob {
 
+    private final Plurret[] plurrets;
     private Animation animation;
     private String dialog = "0";
-    private final Plurret[] plurrets;
     private int left;
 
     public Tercja(int x, int y, Place place, short mobID, Plurret[] plurrets) {
@@ -42,6 +42,7 @@ public class Tercja extends Mob {
 
     @Override
     public void update() {
+        animation.updateFrame();
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
                 MyPlayer player = (MyPlayer) target;
@@ -122,7 +123,6 @@ public class Tercja extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.render();
-            animation.updateFrame();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }

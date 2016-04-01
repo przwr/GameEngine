@@ -62,15 +62,18 @@ public class BrainlessShen extends Mob {
 
     @Override
     public void update() {
-        if (isHurt()) {
-            updateGettingHurt();
-        } else {
-            updateAnimation();
+        animation.updateFrame();
+        if (animation.isUpToDate()) {
+            if (isHurt()) {
+                updateGettingHurt();
+            } else {
+                updateAnimation();
+            }
+            updateChangers();
+            updateWithGravity();
+            moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+            brakeOthers();
         }
-        updateChangers();
-        updateWithGravity();
-        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
-        brakeOthers();
     }
 
     @Override
@@ -99,7 +102,6 @@ public class BrainlessShen extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             //Drawer.setColor(skinColor);
-            animation.updateFrame();
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision.getHeightHalf()), 15);
             Drawer.setColorStatic(color);

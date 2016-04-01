@@ -11,22 +11,22 @@ import game.gameobject.stats.NPCStats;
 import game.place.Place;
 import gamecontent.MyPlayer;
 import gamecontent.environment.MoneyBag;
-import gamecontent.environment.Rock;
-import java.util.ArrayList;
+import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
-import org.newdawn.slick.Color;
 
 /**
  * Created by przemek on 01.02.16.
  */
 public class Zuocieyka extends Mob {
 
+    private final MoneyBag money;
     private Animation animation;
     private String dialog = "0";
-    private final MoneyBag money;
 
     public Zuocieyka(int x, int y, Place place, short mobID, MoneyBag money) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
@@ -45,6 +45,7 @@ public class Zuocieyka extends Mob {
 
     @Override
     public void update() {
+        animation.updateFrame();
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
                 MyPlayer player = (MyPlayer) target;
@@ -86,7 +87,6 @@ public class Zuocieyka extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.render();
-            animation.updateFrame();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }

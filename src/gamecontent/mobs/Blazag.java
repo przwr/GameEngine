@@ -240,7 +240,6 @@ public class Blazag extends Mob {
                             stats.setUnhurtableState(false);
                             jumpOver = false;
                             state = attack;
-                            jumpDelay.start();
                         } else {
                             jumper.setFrames(30);
                             double angle = Methods.pointAngleClockwise(x, y, target.getX(), target.getY());
@@ -844,6 +843,7 @@ public class Blazag extends Mob {
 
     @Override
     public void update() {
+        appearance.updateFrame();
         if (animation.isUpToDate()) {
             if (isHurt()) {
                 updateGettingHurt();
@@ -959,6 +959,7 @@ public class Blazag extends Mob {
                 }
             }
         }
+
     }
 
     @Override
@@ -985,7 +986,6 @@ public class Blazag extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             appearance.render();
-            appearance.updateFrame();
             Drawer.refreshColor();
             glPopMatrix();
 //            renderPathPoints(xEffect, yEffect);

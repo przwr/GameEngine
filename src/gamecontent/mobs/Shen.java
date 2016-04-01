@@ -356,6 +356,7 @@ public class Shen extends Mob {
 
     @Override
     public void update() {
+        appearance.updateFrame();
         if (animation.isUpToDate()) {
             if (isHurt()) {
                 updateGettingHurt();
@@ -452,7 +453,6 @@ public class Shen extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             appearance.render();
-            appearance.updateFrame();
             Drawer.refreshColor();
             glPopMatrix();
 //            renderPathPoints(xEffect, yEffect);

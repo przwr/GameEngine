@@ -214,6 +214,7 @@ public class Plurret extends Mob {
 
     @Override
     public void update() {
+        animation.updateFrame();
         if (animation.isUpToDate()) {
             if (isHurt()) {
                 updateGettingHurt();
@@ -281,7 +282,6 @@ public class Plurret extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             //Drawer.setColor(skinColor);
-            animation.updateFrame();
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision.getHeightHalf()), 15);
             Drawer.refreshColor();

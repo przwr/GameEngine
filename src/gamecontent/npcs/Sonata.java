@@ -7,20 +7,19 @@ import engine.lights.Light;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
-import game.gameobject.items.Weapon;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
 import game.text.Writer;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import gamecontent.environment.MoneyBag;
-import gamecontent.mobs.Plurret;
-import java.util.ArrayList;
+import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
-import org.newdawn.slick.Color;
 
 /**
  * Created by przemek on 01.02.16.
@@ -52,6 +51,7 @@ public class Sonata extends Mob {
 
     @Override
     public void update() {
+        animation.updateFrame();
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
                 MyPlayer player = (MyPlayer) target;
@@ -111,7 +111,6 @@ public class Sonata extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.render();
-            animation.updateFrame();
             glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             glPopMatrix();
         }

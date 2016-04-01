@@ -432,6 +432,7 @@ public class Tongub extends Mob {
 
     @Override
     public void render(int xEffect, int yEffect) {
+        appearance.updateFrame();
         if (appearance != null) {
             glPushMatrix();
             glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
@@ -454,7 +455,6 @@ public class Tongub extends Mob {
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             appearance.render();
-            appearance.updateFrame();
             Drawer.refreshColor();
             glPopMatrix();
 //            renderPathPoints(xEffect, yEffect);
