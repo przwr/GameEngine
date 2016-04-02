@@ -313,10 +313,9 @@ public abstract class Mob extends Entity {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY() - (int) floatHeight, 0);
             appearance.render();

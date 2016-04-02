@@ -105,10 +105,9 @@ public class CircleInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void render(GameObject owner, int xEffect, int yEffect) {
+    public void render(GameObject owner) {
         Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
         glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         Drawer.drawEllipse(position.getX(), position.getY(), radius, Methods.roundDouble(radius * Methods.ONE_BY_SQRT_ROOT_OF_2), 16);
         Drawer.refreshColor();

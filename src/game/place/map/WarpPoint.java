@@ -171,7 +171,7 @@ public class WarpPoint extends GameObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

@@ -104,7 +104,7 @@ public class MyGUI extends GUIObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (on) {
             calculateLifeAlpha();
             renderGUI();
@@ -313,13 +313,13 @@ public class MyGUI extends GUIObject {
                 arrows.renderTriangles(0, 3);
                 break;
             case 1:
-                arrows.renderTriangles(3, 6);
+                arrows.renderTriangles(3, 3);
                 break;
             case 2:
-                arrows.renderTriangles(6, 9);
+                arrows.renderTriangles(6, 3);
                 break;
             case 3:
-                arrows.renderTriangles(9, 12);
+                arrows.renderTriangles(9, 3);
                 break;
             default:
         }

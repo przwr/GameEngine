@@ -73,7 +73,6 @@ public abstract class Map {
     protected Color lightColor;
     protected List<GameObject> depthObjects, foregroundTiles;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
-    protected Color pointingColor = new Color(0f, 0f, 0f, 0.7f);
     private Color[] colors = {Color.red, Color.magenta};
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
@@ -615,24 +614,27 @@ public abstract class Map {
         foregroundTiles = areas[camera.getArea()].getNearForegroundTiles();
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
         int y = 0;
+        glPushMatrix();
+        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         for (GameObject object : depthObjects) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
                 if (foregroundTiles.get(y).isVisible() && isObjectInSight(foregroundTiles.get(y))) {
-                    foregroundTiles.get(y).render(cameraXOffEffect, cameraYOffEffect);
+                    foregroundTiles.get(y).render();
                 }
             }
             if (object.isVisible() && isObjectInSight(object)) {
                 if (isBehindSomething(object)) {
                     seeThroughs.add(object);
                 }
-                object.render(cameraXOffEffect, cameraYOffEffect);
+                object.render();
             }
         }
         for (int i = y; i < foregroundTiles.size(); i++) {
             if (foregroundTiles.get(i).isVisible() && isObjectInSight(foregroundTiles.get(i))) {
-                foregroundTiles.get(i).render(cameraXOffEffect, cameraYOffEffect);
+                foregroundTiles.get(i).render();
             }
         }
+        glPopMatrix();
     }
 
     private boolean isBehindSomething(GameObject object) {
@@ -663,17 +665,18 @@ public abstract class Map {
     }
 
     private void renderTop(Camera camera) {
+        glPushMatrix();
+        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         updateNearTopObjects(camera.getArea());
-        topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render(cameraXOffEffect,
-                cameraYOffEffect));
+        topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render());
         for (GameObject see : seeThroughs) {
             renderSeeThroughs(see);
         }
+        glPopMatrix();
     }
 
     private void renderSeeThroughs(GameObject object) {
         glPushMatrix();
-        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         Color c = Drawer.getCurrentColor();
         float val = Math.min(Math.min(c.r, c.g), c.b);

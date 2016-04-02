@@ -333,7 +333,7 @@ public class GUIHandler extends GUIObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (player != null) {
             glPushMatrix();
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);

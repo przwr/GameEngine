@@ -125,7 +125,7 @@ public class LineInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void render(GameObject owner, int xEffect, int yEffect) {
+    public void render(GameObject owner) {
         Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
         int tempWidth = (int) (Methods.ONE_BY_SQRT_ROOT_OF_2 * width);
         boolean ellipse = true;
@@ -145,7 +145,6 @@ public class LineInteractiveCollision extends InteractiveCollision {
                 break;
         }
         glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         Drawer.setCentralPoint();
         Drawer.drawLineWidth(position.getX(), position.getY(), end.getX() - position.getX(), end.getY() - position.getY(), tempWidth);

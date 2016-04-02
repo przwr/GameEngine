@@ -54,7 +54,7 @@ public abstract class GameObject {
     public void update() {
     }
 
-    public abstract void render(int xEffect, int yEffect);
+    public abstract void render();
 
     public abstract void renderShadowLit(Figure figure);
 

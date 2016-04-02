@@ -14,7 +14,6 @@ import static collision.OpticProperties.FULL_SHADOW;
 import static collision.OpticProperties.TRANSPARENT;
 
 /**
- *
  * @author Wojtek
  */
 public class ShadowLightTile extends ForegroundTile {
@@ -62,7 +61,7 @@ public class ShadowLightTile extends ForegroundTile {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         tmpColor = Drawer.getCurrentColor();
         if (isShadow) {
             alteredColor.r = tmpColor.r;
@@ -74,7 +73,7 @@ public class ShadowLightTile extends ForegroundTile {
             alteredColor.a = Place.getDayCycle().getNightLightAlpha();
         }
         Drawer.setColorStatic(alteredColor);
-        super.render(xEffect, yEffect);
+        super.render();
         Drawer.refreshColor();
     }
 

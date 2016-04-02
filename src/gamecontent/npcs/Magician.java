@@ -79,10 +79,9 @@ public class Magician extends Mob {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (appearance != null) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             animation.render();

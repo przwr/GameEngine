@@ -56,9 +56,8 @@ public class TemporaryBlock extends GameObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
 
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
 

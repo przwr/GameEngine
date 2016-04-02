@@ -344,12 +344,11 @@ public class GrassClump extends GameObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         updateGrasses();
         if (!updateGrass) {
             preRender();
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX() + xCentering - xRadius - 2, (int) (getY() - fbo.getHeight() + 2 * yRadius - floatHeight), 0);
             fbo.render();

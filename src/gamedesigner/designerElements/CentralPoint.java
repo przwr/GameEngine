@@ -40,10 +40,9 @@ public class CentralPoint extends GameObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (objPlace.getMode() != 2) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);

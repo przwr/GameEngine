@@ -189,9 +189,9 @@ public class Interactive {
         }
     }
 
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (active && collision != null) {
-            collision.render(owner, xEffect, yEffect);
+            collision.render(owner);
         }
     }
 

@@ -362,11 +362,11 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (appearance != null) {
             if (visibleShadow) {
                 glPushMatrix();
-                glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
+                glTranslatef((int) (getX() * Place.getCurrentScale()), (int) (getY() * Place.getCurrentScale()), 0);
                 Drawer.setColorStatic(JUMP_SHADOW_COLOR);
                 Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
                         * Place.getCurrentScale() / 2f), 24);
@@ -383,12 +383,11 @@ public class MyPlayer extends Player {
 
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 for (Interactive interactive : interactiveObjects) {
-                    interactive.render(xEffect, yEffect);
+                    interactive.render();
                 }
             }
 
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             Drawer.setCentralPoint();

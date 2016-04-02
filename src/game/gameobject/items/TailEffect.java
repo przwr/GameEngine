@@ -94,10 +94,9 @@ public abstract class TailEffect {
 
     public abstract void innerRender();
 
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (isActive()) {
             glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
             glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             innerRender();
             Drawer.refreshColor();

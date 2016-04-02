@@ -120,10 +120,9 @@ public class Tree extends GameObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         preRender();
         glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf(), 0);
         fbo.renderTopAndBottom();

@@ -110,10 +110,9 @@ public class Arrow extends Entity {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
-        tail.render(xEffect, yEffect);
+    public void render() {
+        tail.render();
         glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX(), getY(), 0);
         int ix = (int) (Methods.xRadius(getDirection(), lenght / 2));
@@ -134,7 +133,7 @@ public class Arrow extends Entity {
         glPopMatrix();
         if (Main.SHOW_INTERACTIVE_COLLISION) {
             interactiveObjects.stream().forEach((interactive) -> {
-                interactive.render(xEffect, yEffect);
+                interactive.render();
             });
         }
     }

@@ -136,9 +136,8 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX(), getY(), 0);
         tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
@@ -184,11 +183,6 @@ public class Tile extends GameObject implements Appearance {
     @Override
     public boolean bindCheck() {
         return spriteSheet.bindCheck();
-    }
-
-    @Override
-    public void render() {
-        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
     }
 
     @Override

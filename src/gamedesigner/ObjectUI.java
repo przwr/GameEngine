@@ -26,13 +26,13 @@ public class ObjectUI extends GUIObject {
 
     private final int tile;
     private final Point coordinates = new Point(0, 0);
-    private int choosenObject = 0;
     private final Point playerPosition = new Point(0, 0);
     private final Point selection = new Point(1, 1);
+    private final String[] mapObjectsNames;
+    private int choosenObject = 0;
     private SpriteSheet texture;
     private boolean change;
     private int mode;
-    private final String[] mapObjectsNames;
     private GameObject[] mapObjects;
     private Map map;
 
@@ -105,9 +105,9 @@ public class ObjectUI extends GUIObject {
         return choosenObject;
     }
 
-    public void renderChosenObject(int x, int y, int xEffect, int yEffect) {
+    public void renderChosenObject(int x, int y) {
         mapObjects[choosenObject].setPositionWithoutAreaUpdate(x, y);
-        mapObjects[choosenObject].render(xEffect, yEffect);
+        mapObjects[choosenObject].render();
     }
 
     public String[] getData() {
@@ -157,7 +157,7 @@ public class ObjectUI extends GUIObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (player != null) {
             glPushMatrix();
             int d = 2;

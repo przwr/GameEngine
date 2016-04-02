@@ -92,9 +92,9 @@ public class DamageNumber extends Entity {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         glPushMatrix();
-        glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) ((getY() - floatHeight) * Place.getCurrentScale() + yEffect), 0);
+        glTranslatef((int) (getX() * Place.getCurrentScale()), (int) ((getY() - floatHeight) * Place.getCurrentScale()), 0);
         Drawer.renderStringCentered("" + damage, 0, 0, place.standardFont, color);
         glPopMatrix();
     }

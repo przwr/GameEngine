@@ -606,7 +606,7 @@ public class TextController extends GUIObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (started) {
             int tile = Place.tileSize;
             action = playerController.getAction(MyController.INPUT_ACTION).isKeyClicked();
