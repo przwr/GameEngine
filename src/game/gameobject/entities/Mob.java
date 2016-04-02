@@ -17,7 +17,8 @@ import org.newdawn.slick.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -315,18 +316,16 @@ public abstract class Mob extends Entity {
     @Override
     public void render() {
         if (appearance != null) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY() - (int) floatHeight, 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             appearance.render();
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
+            if (map != null) {
+                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
+                Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
+                        (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont,
+                        Drawer.getCurrentColor());
+            }
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
-        if (map != null) {
-            Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
-                    (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont,
-                    Drawer.getCurrentColor());
-        }
-        glPopMatrix();
     }
 
     @Override
@@ -425,13 +424,10 @@ public abstract class Mob extends Entity {
         return null;
     }
 
-    protected void renderPathPoints(int xEffect, int yEffect) {
+    protected void renderPathPoints() {
         PointContainer path = pathData.getPath();
         int current = pathData.getCurrentPointIndex();
         Drawer.setColorStatic(Color.green);
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         if (path != null) {
             for (int i = current; i < path.size(); i++) {
                 Drawer.drawRectangle(path.get(i).getX() - 5, path.get(i).getY() - 5, 10, 10);
@@ -441,6 +437,5 @@ public abstract class Mob extends Entity {
             Drawer.drawRectangle(destination.getX() - 5, destination.getY() - 5, 10, 10);
         }
         Drawer.refreshColor();
-        glPopMatrix();
     }
 }

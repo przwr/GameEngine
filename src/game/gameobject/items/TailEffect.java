@@ -7,10 +7,7 @@ package game.gameobject.items;
 
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
-import game.place.Place;
 import org.newdawn.slick.Color;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -96,11 +93,8 @@ public abstract class TailEffect {
 
     public void render() {
         if (isActive()) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             innerRender();
             Drawer.refreshColor();
-            glPopMatrix();
         }
     }
 

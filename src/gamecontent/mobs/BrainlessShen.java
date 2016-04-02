@@ -18,7 +18,8 @@ import org.newdawn.slick.Color;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -97,23 +98,17 @@ public class BrainlessShen extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY(), 0);
-            //Drawer.setColor(skinColor);
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision.getHeightHalf()), 15);
+            glTranslatef(getX(), getY() - (int) floatHeight, 0);
             Drawer.setColorStatic(color);
-            glTranslatef(0, (int) -floatHeight, 0);
             appearance.render();
-            Drawer.refreshColor();
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            /*if (map != null) {
-             Drawer.renderString(name, 0, (int) -((animation.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
-             }*/
-            glPopMatrix();
-
+            if (map != null) {
+                glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
+                Drawer.renderStringCentered(name, (int) ((collision.getWidth() * Place.getCurrentScale()) / 2),
+                        (int) ((collision.getHeight() * Place.getCurrentScale()) / 2), place.standardFont,
+                        Drawer.getCurrentColor());
+            }
 //          renderPathPoints(xEffect, yEffect);
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

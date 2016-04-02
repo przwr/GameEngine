@@ -429,12 +429,10 @@ public class ObjectPlayer extends Player {
     }
 
     public void render() {
-        glPushMatrix();
+        glTranslatef(Math.min(ix, xStop) * tileSize, Math.min(iy, yStop) * tileSize, 0);
         int d = 3;
         int xd = (Math.abs(ix - xStop) + 1) * tileSize;
         int yd = (Math.abs(iy - yStop) + 1) * tileSize;
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(Math.min(ix, xStop) * tileSize, Math.min(iy, yStop) * tileSize, 0);
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         if (shadow) {
             glColor4f(0.7f, 0.7f, 1f, 1f);
@@ -486,7 +484,7 @@ public class ObjectPlayer extends Player {
         }
 
         Drawer.refreshForRegularDrawing();
-        glPopMatrix();
+        glTranslatef(-Math.min(ix, xStop) * tileSize, -Math.min(iy, yStop) * tileSize, 0);
         if (mode == ObjectPlace.MODE_OBJECT) {
             Drawer.setColorAlpha(0.5f);
             ui.renderChosenObject(Math.min(ix, xStop) * tileSize + tileSize / 2,

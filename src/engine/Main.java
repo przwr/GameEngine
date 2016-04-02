@@ -360,7 +360,6 @@ public class Main {
         resolveGamma();
         Display.update();
         lastFrame = Display.isActive();
-        game.getInput();
         sync(Settings.framesLimit);
     }
 

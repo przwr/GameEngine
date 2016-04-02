@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import static game.logic.navmeshpathfinding.PathData.OBSTACLE_BETWEEN;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -965,29 +965,21 @@ public class Blazag extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef((int) (getX() * Place.getCurrentScale()), (int) (getY() * Place.getCurrentScale()), 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
-                    * Place.getCurrentScale() / 2f), 24);
-            glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
+            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
+                    Methods.roundDouble(collision.getHeight() / 2f), 24);
             Drawer.refreshColor();
 //			Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight()) * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
-            glPopMatrix();
-
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
                     interactive.render();
                 });
             }
-
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             appearance.render();
             Drawer.refreshColor();
-            glPopMatrix();
 //            renderPathPoints(xEffect, yEffect);
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

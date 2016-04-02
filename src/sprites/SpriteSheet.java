@@ -308,6 +308,12 @@ public class SpriteSheet extends Sprite {
         }
     }
 
+    public void renderPieceResized(int piece, float width, float height) {
+        if (bindCheck()) {
+            renderPiece(piece, width / this.width, height / this.height, NORMAL);
+        }
+    }
+
     public void renderPieceResized(int x, int y, float width, float height) {
         if (bindCheck()) {
             renderPiece(x + y * xTiles, width / this.width, height / this.height, NORMAL);

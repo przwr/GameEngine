@@ -11,11 +11,9 @@ import engine.utilities.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
-import game.place.Place;
 import org.newdawn.slick.Color;
 
 import static game.gameobject.GameObject.*;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author przemek
@@ -107,11 +105,8 @@ public class CircleInteractiveCollision extends InteractiveCollision {
     @Override
     public void render(GameObject owner) {
         Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
-        glPushMatrix();
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         Drawer.drawEllipse(position.getX(), position.getY(), radius, Methods.roundDouble(radius * Methods.ONE_BY_SQRT_ROOT_OF_2), 16);
         Drawer.refreshColor();
-        glPopMatrix();
     }
 
 

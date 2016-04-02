@@ -30,7 +30,7 @@ public class Animation implements Appearance {
             this.finalEnd = this.end = spriteSheet.getSize() - 1;
         }
         delay = Delay.createInMilliseconds(delayTime);
-        delay.start();
+        delay.terminate();
         this.framesPerDirection = framesPerDirection;
     }
 

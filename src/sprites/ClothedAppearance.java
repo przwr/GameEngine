@@ -1,6 +1,5 @@
 package sprites;
 
-import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import game.gameobject.entities.Player;
@@ -262,7 +261,7 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void render() {
-        Drawer.translate(-xStart + xDelta, -yStart + yDelta);
+        glTranslatef(-xStart + xDelta, -yStart + yDelta, 0);
         int upperFrame = upperBody.getCurrentFrameIndex();
         int lowerFrame = lowerBody.getCurrentFrameIndex();
         for (byte i : upperQueue.get(upperFrame)) {
@@ -278,6 +277,7 @@ public class ClothedAppearance implements Appearance {
                 }
             }
         }
+        glTranslatef(xStart - xDelta, yStart - yDelta, 0);
     }
 
     private boolean isThisLowerPlacement(byte i) {
@@ -354,6 +354,7 @@ public class ClothedAppearance implements Appearance {
         } else {
             fbo.renderPart(partXStart + xOffset / 2, partXEnd + xOffset / 2);
         }
+        glTranslatef(fbo.getWidth() / 2, fbo.getHeight() / 2, 0);
     }
 
     @Override
@@ -385,13 +386,11 @@ public class ClothedAppearance implements Appearance {
     @Override
     public void updateTexture(Player owner) {
         fbo.activate();
-        glPushMatrix();
         glClear(GL_COLOR_BUFFER_BIT);
-        glColor3f(1, 1, 1);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glTranslatef(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight(), 0);
         render();
-        glPopMatrix();
+        glTranslatef(-fbo.getWidth() / 2, +fbo.getHeight() / 2 - Display.getHeight(), 0);
         fbo.deactivate();
     }
 

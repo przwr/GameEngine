@@ -42,15 +42,13 @@ public class CentralPoint extends GameObject {
     @Override
     public void render() {
         if (objPlace.getMode() != 2) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), getY(), 0);
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-            glColor4f(0f, 0f, 1f, 1f);
+            Drawer.setColorStatic(0f, 0f, 1f, 1f);
             Drawer.drawRectangle(0, 0, tile, 3);
             Drawer.drawRectangle(0, 3, 3, tile - 3);
             Drawer.refreshForRegularDrawing();
-            glPopMatrix();
+            glTranslatef(-getX(), -getY(), 0);
         }
     }
 

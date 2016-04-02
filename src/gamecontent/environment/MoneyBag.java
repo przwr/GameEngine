@@ -17,7 +17,7 @@ import game.place.Place;
 import game.text.TextController;
 import gamecontent.MyPlayer;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -41,8 +41,8 @@ public class MoneyBag extends Mob {
             if (isPlayerTalkingToMe(player)) {
                 TextController text = player.getTextController();
                 text.lockEntity(player);
-                text.startFromText(new String[] {
-                    "Aria włożyła $cfFF0000$sakiewkę z pieniędzmi$CN do kieszeni."
+                text.startFromText(new String[]{
+                        "Aria włożyła $cfFF0000$sakiewkę z pieniędzmi$CN do kieszeni."
                 });
                 text.addEventOnBranchEnd(this::delete, "0");
             }
@@ -66,15 +66,13 @@ public class MoneyBag extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY(), 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) appearance.getActualWidth() / 4), Methods.roundDouble((float) appearance.getActualWidth() / 8), 15);
+            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) appearance.getActualWidth() / 4), Methods.roundDouble((float) appearance
+                    .getActualWidth() / 8), 15);
             Drawer.refreshColor();
             appearance.render();
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            glPopMatrix();
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

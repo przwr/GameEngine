@@ -10,8 +10,6 @@ import game.gameobject.GUIObject;
 import game.place.cameras.Camera;
 import org.newdawn.slick.Color;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * @author Wojtek
  */
@@ -68,9 +66,6 @@ public class Console extends GUIObject {
     @Override
     public void render() {
         if (alpha > 0f || stats) {
-            glPushMatrix();
-            glScaled(camera.getScale(), camera.getScale(), 1);
-            glScaled(1 / camera.getScale(), 1 / camera.getScale(), 1);
             if (alpha > 0f) {
                 for (int i = 0; i < messages.length; i++) {
                     if (messages[i] != null) {
@@ -92,8 +87,6 @@ public class Console extends GUIObject {
                 statNumber = 0;
             }
             Drawer.refreshForRegularDrawing();
-            glPopMatrix();
         }
     }
-
 }

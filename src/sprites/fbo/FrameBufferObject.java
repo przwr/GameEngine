@@ -341,6 +341,7 @@ public abstract class FrameBufferObject implements Appearance {
             }
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             MatrixMath.resetMatrix(transformationMatrix);
+            Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
             Drawer.regularShader.resetUniform();
             vbo.renderTextured(type * 4, 4);
         }

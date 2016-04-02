@@ -6,7 +6,6 @@ import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
-import game.place.Place;
 import sprites.Appearance;
 import sprites.SpriteSheet;
 
@@ -137,11 +136,9 @@ public class Tile extends GameObject implements Appearance {
 
     @Override
     public void render() {
-        glPushMatrix();
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX(), getY(), 0);
         tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
-        glPopMatrix();
+        glTranslatef(-getX(), -getY(), 0);
     }
 
     public SpriteSheet getSpriteSheet() {

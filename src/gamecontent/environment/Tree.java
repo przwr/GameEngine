@@ -9,7 +9,6 @@ import engine.utilities.Point;
 import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.place.Place;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
@@ -122,13 +121,10 @@ public class Tree extends GameObject {
     @Override
     public void render() {
         preRender();
-        glPushMatrix();
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf(), 0);
         fbo.renderTopAndBottom();
-        glPopMatrix();
+        glTranslatef(-getX() + fbo.getWidth() / 2 + collision.getWidthHalf(), -getY() - 20 + woodHeight - collision.getHeightHalf(), 0);
     }
-
 
     private void drawTree() {
         bark.bindCheck();
@@ -475,11 +471,9 @@ public class Tree extends GameObject {
             Drawer.setColorStatic(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
                     leafColor.b * (1 + change / 2f + rand / 25f)));
             float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
-            Drawer.translate(points.get(i).getX() + x, points.get(i).getY() + y);
-            glPushMatrix();
+            glTranslatef(points.get(i).getX() + x, points.get(i).getY() + y, 0);
             leaf.renderRotate(angle);
-            glPopMatrix();
-            Drawer.translate(-points.get(i).getX() - x, -points.get(i).getY() - y);
+            glTranslatef(-points.get(i).getX() - x, -points.get(i).getY() - y, 0);
         }
     }
 

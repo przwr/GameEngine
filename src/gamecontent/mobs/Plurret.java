@@ -19,7 +19,7 @@ import sprites.SpriteSheet;
 
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -277,23 +277,20 @@ public class Plurret extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY(), 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            animation.render();
             //Drawer.setColor(skinColor);
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision.getHeightHalf()), 15);
+            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
+                    .getHeightHalf()), 15);
             Drawer.refreshColor();
-            glTranslatef(0, (int) -floatHeight, 0);
             appearance.render();
             Drawer.refreshColor();
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             /*if (map != null) {
              Drawer.renderString(name, 0, (int) -((animation.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
              }*/
-            glPopMatrix();
-
 //          renderPathPoints(xEffect, yEffect);
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

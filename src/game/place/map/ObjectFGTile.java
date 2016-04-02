@@ -14,7 +14,8 @@ import sprites.SpriteSheet;
 
 import static collision.OpticProperties.FULL_SHADOW;
 import static collision.OpticProperties.TRANSPARENT;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -64,9 +65,7 @@ public class ObjectFGTile extends ForegroundTile {
     @Override
     public void render() {
         if (map != null) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY(), 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             for (Point piece : tileStack) {
                 spriteSheet.renderPiece(piece.getX(), piece.getY());
             }
@@ -81,7 +80,7 @@ public class ObjectFGTile extends ForegroundTile {
                 Drawer.drawCircle(0, depth - tile / 2, (int) (tile * 0.3), 10);
                 Drawer.refreshForRegularDrawing();
             }
-            glPopMatrix();
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

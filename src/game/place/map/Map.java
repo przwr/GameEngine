@@ -558,24 +558,15 @@ public abstract class Map {
         glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         glTranslatef(xTemp * Place.tileSize, yTemp * Place.tileSize, 0);
         Drawer.setColorStatic(Color.cyan);
-        Drawer.setCentralPoint();
         Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
-        Drawer.returnToCentralPoint();
         Drawer.renderStringCentered(String.valueOf(i), Place.tileSize, Place.tileSize,
                 Settings.fonts.getFont("Amble-Regular", (int) (Place.getCurrentScale() * 32)), Color.cyan);
-        glPopMatrix();
-
-        glPushMatrix();
-        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        Drawer.setCentralPoint();
         if (areaConnectors != null && areaConnectors[i] != null) {
             int c = 0;
             for (AreaConnection connection : areaConnectors[i].getConnections()) {
                 Drawer.setColorStatic(colors[c % colors.length]);
                 for (Point point : connection.getConnectionPoints()) {
                     Drawer.drawRectangle(point.getX() - 5, point.getY() - 5, 10, 10);
-                    Drawer.returnToCentralPoint();
                 }
                 c++;
             }
@@ -606,16 +597,18 @@ public abstract class Map {
 
     public void renderObjects(Camera camera) {
         Drawer.refreshForRegularDrawing();
+        glPushMatrix();
+        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         renderBottom(camera);
         renderTop(camera);
+        glPopMatrix();
     }
 
     private void renderBottom(Camera camera) {
         foregroundTiles = areas[camera.getArea()].getNearForegroundTiles();
         depthObjects = areas[camera.getArea()].getNearDepthObjects();
         int y = 0;
-        glPushMatrix();
-        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         for (GameObject object : depthObjects) {
             for (; y < foregroundTiles.size() && foregroundTiles.get(y).getDepth() < object.getDepth(); y++) {
                 if (foregroundTiles.get(y).isVisible() && isObjectInSight(foregroundTiles.get(y))) {
@@ -634,7 +627,6 @@ public abstract class Map {
                 foregroundTiles.get(i).render();
             }
         }
-        glPopMatrix();
     }
 
     private boolean isBehindSomething(GameObject object) {
@@ -665,19 +657,15 @@ public abstract class Map {
     }
 
     private void renderTop(Camera camera) {
-        glPushMatrix();
-        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
         updateNearTopObjects(camera.getArea());
         topObjects.stream().filter((object) -> (object.isVisible() && isObjectInSight(object))).forEach((object) -> object.render());
         for (GameObject see : seeThroughs) {
-            renderSeeThroughs(see);
+            renderSeeThrough(see);
         }
-        glPopMatrix();
     }
 
-    private void renderSeeThroughs(GameObject object) {
+    private void renderSeeThrough(GameObject object) {
         glPushMatrix();
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         Color c = Drawer.getCurrentColor();
         float val = Math.min(Math.min(c.r, c.g), c.b);
         if (object instanceof Entity) {

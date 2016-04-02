@@ -16,10 +16,10 @@ import game.place.Place;
 import net.packets.Update;
 import org.newdawn.slick.Color;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
- *
  * @author Wojtek
  */
 public class DamageNumber extends Entity {
@@ -93,10 +93,11 @@ public class DamageNumber extends Entity {
 
     @Override
     public void render() {
-        glPushMatrix();
+        glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
         glTranslatef((int) (getX() * Place.getCurrentScale()), (int) ((getY() - floatHeight) * Place.getCurrentScale()), 0);
         Drawer.renderStringCentered("" + damage, 0, 0, place.standardFont, color);
-        glPopMatrix();
+        glTranslatef(-(int) (getX() * Place.getCurrentScale()), -(int) ((getY() - floatHeight) * Place.getCurrentScale()), 0);
+        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
     }
 
     @Override

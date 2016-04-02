@@ -167,7 +167,7 @@ public class ObjectUI extends GUIObject {
             int hTex = texture.getHeight();
 
             glScaled(Settings.nativeScale, Settings.nativeScale, 1);
-            Drawer.translate(tile / 2, tile / 2);
+            glTranslatef(tile / 2, tile / 2, 0);
             Drawer.setCentralPoint();
             if (mode == ObjectPlace.MODE_TILE) {
                 if (change) {
@@ -181,7 +181,7 @@ public class ObjectUI extends GUIObject {
                 glColor4f(1f, 1f, 1f, 1f);
                 Drawer.drawRectangle(-1, -1, wTex + 2, hTex + 2);
 
-                Drawer.translate(-xStart + 1, -yStart + 1);
+                glTranslatef(-xStart + 1, -yStart + 1, 0);
                 texture.renderPiece(coordinates.getX(), coordinates.getY());
 
                 glColor4f(0f, 0f, 0f, 1f);
@@ -190,7 +190,7 @@ public class ObjectUI extends GUIObject {
                 Drawer.drawRectangle(-d, -1, d - 1, hTex + 2);
                 Drawer.drawRectangle(wTex + 1, -1, d - 1, hTex + 2);
             } else if (mode == ObjectPlace.MODE_OBJECT) {
-                Drawer.translate(0, tile);
+                glTranslatef(0, tile, 0);
                 glScaled(1 / Settings.nativeScale, 1 / Settings.nativeScale, 1);
                 int h = place.standardFont.getHeight("0");
                 if (change) {

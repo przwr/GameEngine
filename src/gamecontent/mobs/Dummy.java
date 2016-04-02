@@ -18,7 +18,7 @@ import game.place.Place;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -97,20 +97,17 @@ public class Dummy extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY(), 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision.getHeightHalf()), 15);
+            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
+                    .getHeightHalf()), 15);
             Drawer.refreshColor();
-            glTranslatef(0, (int) -floatHeight, 0);
             if (isHurt()) {
                 glTranslatef(rand.randomInRange(-power, power), rand.randomInRange(-power, power), 0);
                 power /= 1.2;
             }
             appearance.render();
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-            glPopMatrix();
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

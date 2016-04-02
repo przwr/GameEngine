@@ -5,7 +5,6 @@ import engine.utilities.Drawer;
 import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
-import game.place.Place;
 import game.place.map.Area;
 import gamedesigner.ObjectPlace;
 import org.lwjgl.opengl.Display;
@@ -349,7 +348,6 @@ public class GrassClump extends GameObject {
         if (!updateGrass) {
             preRender();
             glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX() + xCentering - xRadius - 2, (int) (getY() - fbo.getHeight() + 2 * yRadius - floatHeight), 0);
             fbo.render();
             glPopMatrix();

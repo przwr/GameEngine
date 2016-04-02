@@ -619,10 +619,6 @@ public class TextController extends GUIObject {
 
             glPushMatrix();
 
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
-
             glTranslatef((getCamera().getWidth() - optimalWidth) / 2, (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - 3.5f * tile, 0);
 
             Drawer.setCentralPoint();

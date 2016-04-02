@@ -130,13 +130,9 @@ public abstract class GameObject {
 
     public boolean isPlayerTalkingToMe(MyPlayer player) {
         return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
-                && !player.getTextController().isStarted()
-                && Methods.pointDistanceSimple(getX(), getY(),
-                player.getX(), player.getY()) <= Place.tileSize * 1.5
-                + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
-                && Math.abs(Methods.angleDifference(
-                player.getDirection(),
-                (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
+                && !player.getTextController().isStarted() && Methods.pointDistanceSimple(getX(), getY(),
+                player.getX(), player.getY()) <= Place.tileSize * 1.5 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
+                && Math.abs(Methods.angleDifference(player.getDirection(), (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
     }
 
     public double getGravity() {

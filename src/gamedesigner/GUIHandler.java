@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * @author Wojtek
  */
@@ -335,10 +333,6 @@ public class GUIHandler extends GUIObject {
     @Override
     public void render() {
         if (player != null) {
-            glPushMatrix();
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            //glTranslatef(xEffect, yEffect, 0);
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
             switch (mode) {
                 case QUESTIONING:
                     renderQuestion();
@@ -357,7 +351,6 @@ public class GUIHandler extends GUIObject {
                     break;
             }
             Drawer.refreshForRegularDrawing();
-            glPopMatrix();
         }
     }
 

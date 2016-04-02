@@ -93,39 +93,29 @@ public class Light {
     }
 
     public void render(int x, int y, Camera camera) {
+        glColor3f(color.getRed(), color.getGreen(), color.getBlue());
+        glTranslatef(x, y, 0);
+        glScaled(camera.getScale(), camera.getScale(), 1);
+        glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
         if (spriteSheet != null) {
-            glColor3f(color.getRed(), color.getGreen(), color.getBlue());
-            glPushMatrix();
-            glTranslatef(x, y, 0);
-            glScaled(camera.getScale(), camera.getScale(), 1);
-            glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
             spriteSheet.renderPiece(piece);
-            glPopMatrix();
         } else {
-            glColor3f(color.getRed(), color.getGreen(), color.getBlue());
-            glPushMatrix();
-            glTranslatef(x, y, 0);
-            glScaled(camera.getScale(), camera.getScale(), 1);
-            glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
             sprite.render();
-            glPopMatrix();
         }
+        glTranslatef(-owner.getX() + xCenterShift, -owner.getY() + yCenterShift, 0);
+        glScaled(1 / camera.getScale(), 1 / camera.getScale(), 1);
+        glTranslatef(-x, -y, 0);
     }
 
     public void render(int height) {
+        glColor3f(color.r, color.g, color.b);
+        glTranslatef(0, height - this.height, 0);
         if (spriteSheet != null) {
-            glColor3f(color.r, color.g, color.b);
-            glPushMatrix();
-            glTranslatef(0, height - this.height, 0);
             spriteSheet.renderPiece(piece);
-            glPopMatrix();
         } else {
-            glColor3f(color.r, color.g, color.b);
-            glPushMatrix();
-            glTranslatef(0, height - this.height, 0);
             sprite.render();
-            glPopMatrix();
         }
+        glTranslatef(0, -height + this.height, 0);
     }
 
     private void setShift() {
