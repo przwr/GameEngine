@@ -35,6 +35,7 @@ public class ClothedAppearance implements Appearance {
     private ArrayList<byte[]> upperQueue;
     private ArrayList<byte[]> lowerQueue;
     private FrameBufferObject fbo;
+    private boolean inSync;
     private boolean upToDate;
 
     public ClothedAppearance(Place place, int delayTime, String characterName, int width) {
@@ -51,31 +52,31 @@ public class ClothedAppearance implements Appearance {
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
-                           Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
-                           Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
+            Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
+            Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
         lowerRenderList = new ClothCombo[]{
-                new ClothCombo(legs.getLastPartNumber(), legs),
-                new ClothCombo(boots.getFirstPartNumber(), boots),
-                new ClothCombo(legs.getFirstPartNumber(), legs),
-                new ClothCombo(boots.getLastPartNumber(), boots),
-                new ClothCombo(pants.getFirstPartNumber(), pants),
-                new ClothCombo(pants.getLastPartNumber(), pants)
+            new ClothCombo(legs.getLastPartNumber(), legs),
+            new ClothCombo(boots.getFirstPartNumber(), boots),
+            new ClothCombo(legs.getFirstPartNumber(), legs),
+            new ClothCombo(boots.getLastPartNumber(), boots),
+            new ClothCombo(pants.getFirstPartNumber(), pants),
+            new ClothCombo(pants.getLastPartNumber(), pants)
         };
         upperRenderList = new ClothCombo[]{
-                new ClothCombo(torso.getSecondPartNumber(), torso),
-                new ClothCombo(gloves.getFirstPartNumber(), gloves),
-                new ClothCombo(shirt.getSecondPartNumber(), shirt),
-                new ClothCombo(torso.getFirstPartNumber(), torso),
-                new ClothCombo(shirt.getFirstPartNumber(), shirt),
-                new ClothCombo(head.getFirstPartNumber(), head),
-                new ClothCombo(hair.getFirstPartNumber(), hair),
-                new ClothCombo(cap.getFirstPartNumber(), cap),
-                new ClothCombo(torso.getLastPartNumber(), torso),
-                new ClothCombo(gloves.getLastPartNumber(), gloves),
-                new ClothCombo(shirt.getLastPartNumber(), shirt),
-                new ClothCombo(sword.getFirstPartNumber(), sword),
-                new ClothCombo(bow.getFirstPartNumber(), bow),
-                new ClothCombo(shield.getFirstPartNumber(), shield)
+            new ClothCombo(torso.getSecondPartNumber(), torso),
+            new ClothCombo(gloves.getFirstPartNumber(), gloves),
+            new ClothCombo(shirt.getSecondPartNumber(), shirt),
+            new ClothCombo(torso.getFirstPartNumber(), torso),
+            new ClothCombo(shirt.getFirstPartNumber(), shirt),
+            new ClothCombo(head.getFirstPartNumber(), head),
+            new ClothCombo(hair.getFirstPartNumber(), hair),
+            new ClothCombo(cap.getFirstPartNumber(), cap),
+            new ClothCombo(torso.getLastPartNumber(), torso),
+            new ClothCombo(gloves.getLastPartNumber(), gloves),
+            new ClothCombo(shirt.getLastPartNumber(), shirt),
+            new ClothCombo(sword.getFirstPartNumber(), sword),
+            new ClothCombo(bow.getFirstPartNumber(), bow),
+            new ClothCombo(shield.getFirstPartNumber(), shield)
         };
         calculateDimensions();
     }
@@ -171,14 +172,20 @@ public class ClothedAppearance implements Appearance {
     }
 
     private void synchronize() {
-        lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+        if (!inSync) {
+            lowerBody.setCurrentFrame(upperBody.getCurrentFrameIndex());
+            lowerBody.synchronizeWith(upperBody);
+            inSync = true;
+        }
     }
 
     public Animation getUpperBody() {
+        inSync = false;
         return upperBody;
     }
 
     public Animation getLowerBody() {
+        inSync = false;
         return lowerBody;
     }
 
@@ -378,7 +385,6 @@ public class ClothedAppearance implements Appearance {
             fbo.renderShadowPart(partXStart + xOffset / 2, partXEnd + xOffset / 2, color);
         }
     }
-
 
     @Override
     public void updateTexture(Player owner) {

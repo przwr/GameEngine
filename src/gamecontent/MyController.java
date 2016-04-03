@@ -421,6 +421,9 @@ public class MyController extends PlayerController {
                         -(int) Methods.yRadius8Directions(tempDirection, 5 * Place.tileSize));
             }
         } else {
+            if (!charging) {
+                actions[lastAttackButton].setInterrupted();
+            }
             inControl.brake(2);
         }
     }

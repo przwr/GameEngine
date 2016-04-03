@@ -5,6 +5,7 @@
  */
 package engine.utilities;
 
+import engine.systemcommunication.Time;
 import game.place.Place;
 
 /**
@@ -23,10 +24,15 @@ public class Delay {
         started = false;
     }
 
+    public void synchronizeWith(Delay other) {
+        this.endTime = other.endTime;
+        this.length = other.length;
+    }
+
     public static Delay createEmpty(boolean... realTime) {
         return new Delay(0, realTime.length > 0 && realTime[0]);
     }
-    
+
     public static Delay createInMinutesAndSeconds(int minutes, int seconds, boolean... realTime) {
         return new Delay((seconds + minutes * 60) * 1000, realTime.length > 0 && realTime[0]);
     }
@@ -87,6 +93,12 @@ public class Delay {
         endTime = length + getCurrentMiliSeconds();
     }
 
+    public void startFPSDependent() {
+        started = true;
+        //System.out.println((length * Time.getDelta()) + " " + (length / Time.getDelta()));
+        endTime = length + getCurrentMiliSeconds();
+    }
+
     public void startAt(int start) {
         started = true;
         endTime = start + getCurrentMiliSeconds();
@@ -108,7 +120,6 @@ public class Delay {
     public long getDifference() {
         return endTime - getCurrentMiliSeconds();
     }
-
 
     private long getCurrentMiliSeconds() {
         return realTime ? System.currentTimeMillis() : Place.getDayCycle().getCurrentTimeInMiliSeconds();
