@@ -5,6 +5,7 @@
  */
 package sprites;
 
+import engine.systemcommunication.Time;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.gameobject.entities.Player;
@@ -30,7 +31,7 @@ public class Animation implements Appearance {
             this.finalEnd = this.end = spriteSheet.getSize() - 1;
         }
         delay = Delay.createInMilliseconds(delayTime);
-        delay.start();
+        delay.startFPSDependent();
         this.framesPerDirection = framesPerDirection;
     }
 
@@ -54,7 +55,7 @@ public class Animation implements Appearance {
     public void updateFrame() {
         if (upToDate) {
             if (animate && delay.isOver()) {
-                delay.start();
+                delay.startFPSDependent();
                 if (!reversed) {    //NORMALNE
                     setCurrentFrame(currentFrame + 1);
                     if (currentFrame > end) {
@@ -96,6 +97,10 @@ public class Animation implements Appearance {
         }
     }
 
+    public void synchronizeWith(Animation other) {
+        delay.synchronizeWith(other.delay);
+    }
+    
     public void animateSingle(int index) {
         animate = false;
         setCurrentFrame(start = end = Methods.interval(0, index, finalEnd));
