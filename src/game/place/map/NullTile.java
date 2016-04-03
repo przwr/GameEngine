@@ -14,7 +14,7 @@ public class NullTile extends Tile implements Appearance {
     }
 
     @Override
-    public void renderSpecific(int xEffect, int yEffect, int x, int y) {
+    public void renderSpecific(int x, int y) {
     }
 
     @Override

@@ -4,6 +4,7 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Main;
 import engine.lights.Light;
+import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
@@ -16,8 +17,6 @@ import sprites.Animation;
 import sprites.SpriteSheet;
 
 import java.util.ArrayList;
-
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * Created by przemek on 01.02.16.
@@ -82,9 +81,8 @@ public class Zuocieyka extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             animation.render();
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

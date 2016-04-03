@@ -429,22 +429,21 @@ public class ObjectPlayer extends Player {
     }
 
     public void render() {
-        glTranslatef(Math.min(ix, xStop) * tileSize, Math.min(iy, yStop) * tileSize, 0);
+        Drawer.regularShader.translate(Math.min(ix, xStop) * tileSize, Math.min(iy, yStop) * tileSize);
         int d = 3;
         int xd = (Math.abs(ix - xStop) + 1) * tileSize;
         int yd = (Math.abs(iy - yStop) + 1) * tileSize;
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         if (shadow) {
-            glColor4f(0.7f, 0.7f, 1f, 1f);
+            Drawer.setColorStatic(0.7f, 0.7f, 1f, 1f);
         } else if (nightLight) {
-            glColor4f(1f, 0.7f, 0.7f, 1f);
+            Drawer.setColorStatic(1f, 0.7f, 0.7f, 1f);
         } else {
-            glColor4f(1f, 1f, 1f, 1f);
+            Drawer.setColorStatic(1f, 1f, 1f, 1f);
         }
-        Drawer.setCentralPoint();
         if (mode == ObjectPlace.MODE_TILE) {
             if (tileHeight > 0) {
-                Drawer.translate(0, -(tileHeight / 2) * tileSize);
+                Drawer.regularShader.translateNoReset(0, -(tileHeight / 2) * tileSize);
             }
             Drawer.drawRectangle(-d, -d, xd + 2 * d, d);
             Drawer.drawRectangle(-d, yd, xd + 2 * d, d);
@@ -457,9 +456,9 @@ public class ObjectPlayer extends Player {
         }
         if (mode == ObjectPlace.MODE_BLOCK) {
             if (roundBlocksMode) {
-                glColor3f(0f, 0f, 1f);
+                Drawer.setColorStatic(0f, 0f, 1f, 1f);
             } else {
-                glColor4f(1f, 0.78f, 0f, 1f);
+                Drawer.setColorStatic(1f, 0.78f, 0f, 1f);
             }
             int tmpH = blockHeight * tileSize;
             if (blockHeight == 0) {
@@ -484,11 +483,10 @@ public class ObjectPlayer extends Player {
         }
 
         Drawer.refreshForRegularDrawing();
-        glTranslatef(-Math.min(ix, xStop) * tileSize, -Math.min(iy, yStop) * tileSize, 0);
+        Drawer.regularShader.translateNoReset(-Math.min(ix, xStop) * tileSize, -Math.min(iy, yStop) * tileSize);
         if (mode == ObjectPlace.MODE_OBJECT) {
             Drawer.setColorAlpha(0.5f);
-            ui.renderChosenObject(Math.min(ix, xStop) * tileSize + tileSize / 2,
-                    Math.min(iy, yStop) * tileSize + tileSize / 2);
+            ui.renderChosenObject(Math.min(ix, xStop) * tileSize + tileSize / 2, Math.min(iy, yStop) * tileSize + tileSize / 2);
             Drawer.refreshColor();
         }
     }

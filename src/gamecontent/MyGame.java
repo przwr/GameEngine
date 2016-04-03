@@ -203,14 +203,14 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-        timer.start();
+//        timer.start();
         if (running && place != null) {
             place.render();
         } else {
             Drawer.clearScreen(0);
             menu.render();
         }
-        timer.stop();
+//        timer.stop();
     }
 
     @Override

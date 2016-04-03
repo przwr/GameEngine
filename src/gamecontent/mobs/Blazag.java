@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 import static game.logic.navmeshpathfinding.PathData.OBSTACLE_BETWEEN;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -965,7 +964,7 @@ public class Blazag extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
                     Methods.roundDouble(collision.getHeight() / 2f), 24);
@@ -979,7 +978,6 @@ public class Blazag extends Mob {
             appearance.render();
             Drawer.refreshColor();
 //            renderPathPoints(xEffect, yEffect);
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

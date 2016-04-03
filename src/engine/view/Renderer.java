@@ -29,7 +29,6 @@ public class Renderer {
 
     private static final int[] xStart = new int[7], xEnd = new int[7], yStart = new int[7], yEnd = new int[7];
     private static final drawBorder[] borders = new drawBorder[5];
-    private static final resetOrthogonal[] orthos = new resetOrthogonal[5];
     public static Place place;
     private static int displayWidth, displayHeight, halfDisplayWidth, halfDisplayHeight;
     private static FrameBufferObject frame;
@@ -155,7 +154,7 @@ public class Renderer {
     public static void preRenderShadowedLights(Camera camera) {
         frame.activate();
         Drawer.clearScreen(0);
-        glColor3f(1, 1, 1);
+        Drawer.setColorStatic(1, 1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
         camera.getVisibleLights().stream().forEach((light) -> {
             if (Settings.shadowOff || !light.isGiveShadows()) {
@@ -168,12 +167,9 @@ public class Renderer {
     }
 
     private static void drawLight(Light light, Camera camera) {
-        glPushMatrix();
-        glTranslated(camera.getXOffsetEffect(), camera.getYOffsetEffect(), 0);
-        glScaled(camera.getScale(), camera.getScale(), 1);
-        glTranslated(light.getX() - light.getXCenterShift(), light.getY() - light.getYCenterShift(), 0);
+        Drawer.regularShader.translateScale(camera.getXOffsetEffect(), camera.getYOffsetEffect(), camera.getScale(), camera.getScale());
+        Drawer.regularShader.translateNoReset(light.getX() - light.getXCenterShift(), light.getY() - light.getYCenterShift());
         light.getFrameBufferObject().render();
-        glPopMatrix();
     }
 
     public static void renderLights(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float yTEnd) {
@@ -285,33 +281,25 @@ public class Renderer {
         borders[4] = () -> {
             borderVBO.renderTriangles(36, 12);
         };
-        orthos[0] = () -> glOrtho(-1.0, 1.0, -2.0, 2.0, 1.0, -1.0);
-        orthos[1] = () -> glOrtho(-2.0, 2.0, -1.0, 1.0, 1.0, -1.0);
-        orthos[2] = orthos[3] = orthos[4] = () -> glOrtho(-2.0, 2.0, -2.0, 2.0, 1.0, -1.0);
     }
 
     public static void border(int splitScreenMode) {
         glViewport(0, 0, displayWidth, displayHeight);
         if (splitScreenMode != 0) {
             glBlendFunc(GL_ZERO, GL_ZERO);
-            glColor3f(0, 0, 0);
+            Drawer.setColorStatic(0, 0, 0, 1);
             borders[splitScreenMode - 1].draw();
         }
     }
 
     public static void resetOrthogonal(int ssMode) {
         if (ssMode != 0) {
-            orthos[ssMode - 1].reset();
+            Drawer.resetOrtho();
         }
     }
 
     private interface drawBorder {
 
         void draw();
-    }
-
-    private interface resetOrthogonal {
-
-        void reset();
     }
 }

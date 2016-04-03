@@ -89,9 +89,9 @@ public class Bush extends GameObject {
                 fbo.activate();
                 glClearColor(0.5f, 0.35f, 0.2f, 0);
                 glClear(GL_COLOR_BUFFER_BIT);
-                glTranslatef(fbo.getWidth() / 2, Display.getHeight() - 20, 0);
+                Drawer.regularShader.translateDefault(fbo.getWidth() / 2, Display.getHeight() - 20);
                 drawBush();
-                glTranslatef(-fbo.getWidth() / 2, -Display.getHeight() + 20, 0);
+                Drawer.regularShader.translateDefault(-fbo.getWidth() / 2, -Display.getHeight() + 20);
                 fbo.deactivate();
                 points.clear();
                 points = null;
@@ -102,10 +102,9 @@ public class Bush extends GameObject {
     @Override
     public void render() {
         preRender();
-        glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf(), 0);
+        Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf());
         fbo.render();
         Drawer.refreshColor();
-        glTranslatef(-getX() + fbo.getWidth() / 2 + collision.getWidthHalf(), -getY() - 20 + fbo.getHeight() - collision.getHeightHalf(), 0);
     }
 
     private void drawBush() {
@@ -308,7 +307,6 @@ public class Bush extends GameObject {
     private void drawLeafs() {
         points.sort(comparator);
         int rand1, rand2;
-        Drawer.setCentralPoint();
         int radius = Methods.roundDouble(leaf.getActualWidth() / 2 * Methods.SQRT_ROOT_OF_2);
         int dif = (radius + radius) / 3;
         int dif2 = dif * dif * 9;
@@ -353,9 +351,8 @@ public class Bush extends GameObject {
             Drawer.setColorStatic(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
                     leafColor.b * (1 + change / 2f + rand / 25f)));
             float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
-            glTranslatef(points.get(i).getX() + x, points.get(i).getY() + y, 0);
-            leaf.renderRotate(angle);
-            glTranslatef(-points.get(i).getX() - x, -points.get(i).getY() - y, 0);
+            Drawer.regularShader.rotateTranslate(points.get(i).getX() + x, points.get(i).getY() + y, angle);
+            leaf.render();
         }
     }
 

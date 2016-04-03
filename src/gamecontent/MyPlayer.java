@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -365,7 +364,7 @@ public class MyPlayer extends Player {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             if (visibleShadow) {
                 Drawer.setColorStatic(JUMP_SHADOW_COLOR);
                 Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
@@ -389,7 +388,6 @@ public class MyPlayer extends Player {
             } else if (((ClothedAppearance) appearance).isUpToDate()) {
                 appearance.render();
             }
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

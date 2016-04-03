@@ -14,7 +14,6 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import org.newdawn.slick.Color;
 
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Przemek
@@ -40,9 +39,8 @@ public class LightSource extends GameObject {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             appearance.render();
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

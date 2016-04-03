@@ -6,6 +6,7 @@
 package engine.lights;
 
 import collision.Figure;
+import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.Settings;
 import game.gameobject.GameObject;
@@ -17,8 +18,6 @@ import sprites.SpriteSheet;
 import sprites.fbo.FrameBufferObject;
 import sprites.fbo.MultiSampleFrameBufferObject;
 import sprites.fbo.RegularFrameBufferObject;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author przemek
@@ -93,29 +92,23 @@ public class Light {
     }
 
     public void render(int x, int y, Camera camera) {
-        glColor3f(color.getRed(), color.getGreen(), color.getBlue());
-        glTranslatef(x, y, 0);
-        glScaled(camera.getScale(), camera.getScale(), 1);
-        glTranslatef(owner.getX() - xCenterShift, owner.getY() - yCenterShift, 0);
+        Drawer.regularShader.translateScale(x, y, camera.getScale(), camera.getScale());
+        Drawer.regularShader.translateNoReset(owner.getX() - xCenterShift, owner.getY() - yCenterShift);
         if (spriteSheet != null) {
             spriteSheet.renderPiece(piece);
         } else {
             sprite.render();
         }
-        glTranslatef(-owner.getX() + xCenterShift, -owner.getY() + yCenterShift, 0);
-        glScaled(1 / camera.getScale(), 1 / camera.getScale(), 1);
-        glTranslatef(-x, -y, 0);
     }
 
     public void render(int height) {
-        glColor3f(color.r, color.g, color.b);
-        glTranslatef(0, height - this.height, 0);
+        Drawer.setColorStatic(color.r, color.g, color.b, 1f);
+        Drawer.regularShader.translate(0, height - this.height);
         if (spriteSheet != null) {
             spriteSheet.renderPiece(piece);
         } else {
             sprite.render();
         }
-        glTranslatef(0, -height + this.height, 0);
     }
 
     private void setShift() {

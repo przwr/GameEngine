@@ -13,7 +13,6 @@ import game.place.map.ForegroundTile;
 import game.place.map.Map;
 import sprites.SpriteSheet;
 
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -194,14 +193,14 @@ public class RoundedTMPBlock extends TemporaryBlock {
 
     @Override
     public void render() {
-        glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+        Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
         int mode = objPlace.getMode();
         if (mode != 2 && (objPlace.isBlocksMode() || mode == 1)) {
             int d = 2;
             Drawer.refreshColor();
             int tmpH = upHeight * tile;
             if (!blocked) {
-                glTranslatef(0, -tmpH, 0);
+                Drawer.regularShader.translateNoReset(0, -tmpH);
                 if (mode == 1) {
                     Drawer.drawRectangle(0, 0, width, height);
                 }
@@ -223,8 +222,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
                     Drawer.drawRectangle(0, height - d + tmpH, d, -tmpH - height + d);
                     Drawer.drawRectangle(width - d, height - d + tmpH, d, -tmpH - height + d);
 
-                    Drawer.setCentralPoint();
-                    Drawer.translate(width - d, height - d + tmpH);
+                    Drawer.regularShader.translateNoReset(width - d, height - d + tmpH);
                     switch (lowerState) {
                         case 1:
                             Drawer.drawBow(-tile + d, -tile + d, tile - 1, d + 1, 0, 90, 10);
@@ -251,7 +249,6 @@ public class RoundedTMPBlock extends TemporaryBlock {
                             Drawer.drawBow(-tile + d, -tmpH, tile - 1, d + 1, 270, 360, 10);
                             break;
                     }
-                    //Drawer.returnToCentralPoint();
                     if (yTiles > 1) {
                         switch (upperState) {
                             case 1:
@@ -295,6 +292,5 @@ public class RoundedTMPBlock extends TemporaryBlock {
             }
         }
         Drawer.refreshForRegularDrawing();
-        glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
     }
 }

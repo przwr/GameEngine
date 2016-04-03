@@ -32,7 +32,6 @@ import static game.place.Place.xAreaInPixels;
 import static game.place.Place.yAreaInPixels;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author Wojtek
@@ -96,7 +95,7 @@ public abstract class Map {
 
     public static void renderBackgroundFromVBO() {
         if (Drawer.streamVertexData.size() > 0) {
-            Drawer.regularShader.resetUniform();
+            Drawer.regularShader.resetTransformationMatrix();
             Drawer.tileVBO.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
             Drawer.tileVBO.renderTexturedTriangles(0, Drawer.streamIndexData.size());
         }
@@ -519,8 +518,6 @@ public abstract class Map {
         cameraYStart = camera.getYStart();
         cameraXEnd = camera.getXEnd();
         cameraYEnd = camera.getYEnd();
-        cameraXOffEffect = camera.getXOffsetEffect();
-        cameraYOffEffect = camera.getYOffsetEffect();
         seeThroughs.clear();
     }
 
@@ -530,17 +527,12 @@ public abstract class Map {
         Drawer.streamVertexData.clear();
         Drawer.streamColorData.clear();
         Drawer.streamIndexData.clear();
-        glPushMatrix();
-        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         for (int i : placement.getNearAreas(camera.getArea())) {
             if (i >= 0 && i < areas.length) {
                 renderArea(i);
             }
         }
         renderBackgroundFromVBO();
-        glPopMatrix();
-
         if (Main.SHOW_AREAS) {
             for (int i : placement.getNearAreas(camera.getArea())) {
                 if (i >= 0 && i < areas.length) {
@@ -553,10 +545,7 @@ public abstract class Map {
     private void renderAreaBounds(int i) {
         int yTemp = (i / xAreas) * Y_IN_TILES;
         int xTemp = (i % xAreas) * X_IN_TILES;
-        glPushMatrix();
-        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(xTemp * Place.tileSize, yTemp * Place.tileSize, 0);
+        Drawer.regularShader.translate(xTemp * Place.tileSize, yTemp * Place.tileSize);
         Drawer.setColorStatic(Color.cyan);
         Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
         Drawer.renderStringCentered(String.valueOf(i), Place.tileSize, Place.tileSize,
@@ -571,7 +560,6 @@ public abstract class Map {
                 c++;
             }
         }
-        glPopMatrix();
         Drawer.refreshColor();
     }
 
@@ -597,12 +585,8 @@ public abstract class Map {
 
     public void renderObjects(Camera camera) {
         Drawer.refreshForRegularDrawing();
-        glPushMatrix();
-        glTranslatef(cameraXOffEffect, cameraYOffEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         renderBottom(camera);
         renderTop(camera);
-        glPopMatrix();
     }
 
     private void renderBottom(Camera camera) {
@@ -665,7 +649,6 @@ public abstract class Map {
     }
 
     private void renderSeeThrough(GameObject object) {
-        glPushMatrix();
         Color c = Drawer.getCurrentColor();
         float val = Math.min(Math.min(c.r, c.g), c.b);
         if (object instanceof Entity) {
@@ -673,14 +656,13 @@ public abstract class Map {
         } else {
             Drawer.setColorAlpha(0.5f);
         }
-        glTranslatef(object.getX(), object.getY() - (int) (object.getFloatHeight()), 0);
+        Drawer.regularShader.translate(object.getX(), object.getY() - (int) (object.getFloatHeight()));
         if (object.getAppearance() instanceof ClothedAppearance) {
             object.getAppearance().renderPart(0, object.getAppearance().getWidth());
         } else {
             object.getAppearance().render();
         }
         Drawer.refreshColor();
-        glPopMatrix();
     }
 
     private boolean isObjectInSight(GameObject object) {

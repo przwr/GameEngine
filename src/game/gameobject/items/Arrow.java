@@ -25,7 +25,6 @@ import org.newdawn.slick.Color;
 
 import static game.gameobject.interactive.Interactive.BOW_HURT;
 import static game.gameobject.items.Weapon.BOW;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -112,7 +111,7 @@ public class Arrow extends Entity {
     @Override
     public void render() {
         tail.render();
-        glTranslatef(getX(), getY(), 0);
+        Drawer.regularShader.translate(getX(), getY());
         int ix = (int) (Methods.xRadius(getDirection(), lenght / 2));
         int iy = (int) (-Methods.yRadius(getDirection(), lenght / 2));
         Drawer.setColorStatic(JUMP_SHADOW_COLOR);
@@ -124,7 +123,6 @@ public class Arrow extends Entity {
         }
         Drawer.drawLineWidth(-ix, -iy - (int) floatHeight, ix, iy, lenght / 15);
         Drawer.refreshColor();
-        glTranslatef(-getX(), -getY(), 0);
         if (Main.SHOW_INTERACTIVE_COLLISION) {
             interactiveObjects.stream().forEach((interactive) -> {
                 interactive.render();

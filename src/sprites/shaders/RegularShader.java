@@ -3,7 +3,6 @@ package sprites.shaders;
 import engine.matrices.MatrixMath;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
-import sprites.Appearance;
 
 /**
  * Created by przemek on 16.03.16.
@@ -15,69 +14,116 @@ public class RegularShader extends ShaderProgram {
     private static final String FRAGMENT_FILE = "src/sprites/shaders/regular.frag";
 
     private int locationTransformationMatrix;
-    private int locationTextureShift;
     private int locationColourModifier;
     private int locationSizeModifier;
     private int locationUseTexture;
     private int locationUseColour;
 
-    private boolean reset;
-
     public RegularShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
+        super.start();
+        loadBoolean(locationUseTexture, true);
+        loadMatrix(locationTransformationMatrix, MatrixMath.STATIC_MATRIX);
+        resetOrtho();
+        super.stop();
     }
 
     @Override
     protected void getAllUniformLocations() {
-        locationTransformationMatrix = super.getUniformLocation("transformationMatrix");
-        locationTextureShift = super.getUniformLocation("textureShift");
-        locationColourModifier = super.getUniformLocation("colourModifier");
-        locationSizeModifier = super.getUniformLocation("sizeModifier");
-        locationUseTexture = super.getUniformLocation("useTexture");
-        locationUseColour = super.getUniformLocation("useColour");
+        locationTransformationMatrix = getUniformLocation("transformationMatrix");
+        locationColourModifier = getUniformLocation("colourModifier");
+        locationSizeModifier = getUniformLocation("sizeModifier");
+        locationUseTexture = getUniformLocation("useTexture");
+        locationUseColour = getUniformLocation("useColour");
     }
 
     @Override
     protected void bindAttributes() {
-        super.bindAttribute(0, "position");
-        super.bindAttribute(1, "textureCoords");
-        super.bindAttribute(2, "colour");
-    }
-
-    public void resetUniform() {
-        if (!reset) {
-            super.load2Floats(locationTextureShift, 0, 0);
-            super.loadVector4f(locationSizeModifier, Appearance.ZERO_VECTOR);
-            super.loadMatrix(locationTransformationMatrix, MatrixMath.STATIC_MATRIX);
-            reset = true;
-        }
-    }
-
-
-    public void loadTextureShift(float x, float y) {
-        super.load2Floats(locationTextureShift, x, y);
-        reset = false;
+        bindAttribute(0, "position");
+        bindAttribute(1, "textureCoords");
+        bindAttribute(2, "colour");
     }
 
     public void loadSizeModifier(Vector4f vector) {
-        super.loadVector4f(locationSizeModifier, vector);
-        reset = false;
+        loadVector4f(locationSizeModifier, vector);
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
-        super.loadMatrix(locationTransformationMatrix, matrix);
-        reset = false;
+        loadMatrix(locationTransformationMatrix, matrix);
     }
 
     public void loadColourModifier(Vector4f vector) {
-        super.loadVector4f(locationColourModifier, vector);
+        loadVector4f(locationColourModifier, vector);
     }
 
     public void setUseTexture(boolean use) {
-        super.loadBoolean(locationUseTexture, use);
+        loadBoolean(locationUseTexture, use);
     }
 
     public void setUseColour(boolean use) {
-        super.loadBoolean(locationUseColour, use);
+        loadBoolean(locationUseColour, use);
+    }
+
+    public void resetWorkingMatrix() {
+        transformationMatrix.load(defaultMatrix);
+    }
+
+    public void resetTransformationMatrix() {
+        loadMatrix(locationTransformationMatrix, defaultMatrix);
+    }
+
+    public void resetDefaultMatrix() {
+        defaultMatrix.setIdentity();
+    }
+
+    public void translate(float x, float y) {
+        transformationMatrix.load(defaultMatrix);
+        MatrixMath.translateMatrix(transformationMatrix, x, y);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
+    }
+
+    public void translateNoReset(float x, float y) {
+        MatrixMath.translateMatrix(transformationMatrix, x, y);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
+    }
+
+    public void rotateTranslate(float x, float y, float angle) {
+        transformationMatrix.load(defaultMatrix);
+        MatrixMath.translateRotate(transformationMatrix, x, y, angle);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
+    }
+
+    public void rotate(float angle) {
+        transformationMatrix.load(defaultMatrix);
+        MatrixMath.rotate(transformationMatrix, angle);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
+    }
+
+    public void translateScale(float x, float y, float xScale, float yScale) {
+        transformationMatrix.load(defaultMatrix);
+        MatrixMath.translateScale(transformationMatrix, x, y, xScale, yScale);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
+    }
+
+    public void scaleTranslate(float x, float y, float xScale, float yScale) {
+        transformationMatrix.load(defaultMatrix);
+        MatrixMath.scaleTranslate(transformationMatrix, x, y, xScale, yScale);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
+    }
+
+    public void translateDefault(int x, int y) {
+        MatrixMath.translateMatrix(defaultMatrix, x, y);
+        loadMatrix(locationTransformationMatrix, defaultMatrix);
+    }
+
+    public void scaleTranslateDefault(int x, int y, float scale) {
+        MatrixMath.translateMatrix(defaultMatrix, x, y);
+        MatrixMath.scale(defaultMatrix, scale, scale);
+        loadMatrix(locationTransformationMatrix, defaultMatrix);
+    }
+
+    public void scaleNoReset(float xScale, float yScale) {
+        MatrixMath.scale(transformationMatrix, xScale, yScale);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
     }
 }

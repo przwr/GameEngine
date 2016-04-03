@@ -5,7 +5,6 @@
  */
 package sprites;
 
-import engine.matrices.MatrixMath;
 import engine.utilities.Drawer;
 import engine.utilities.Point;
 import engine.utilities.PointedValue;
@@ -121,14 +120,14 @@ public class SpriteSheet extends Sprite {
         for (int i = 8; i < textureCoordinates.length / (canBeMirrored ? 2 : 1) + (canBeMirrored ? 4 : 0); i += 8) {
             frame = (i - 8) / 8;
             int piece = getFramesPosition(frame);
-            textureCoordinates[i] = (float) (piece % xTiles) / xTiles;
-            textureCoordinates[i + 1] = (float) (piece / xTiles) / yTiles;
-            textureCoordinates[i + 2] = (float) (piece % xTiles) / xTiles;
-            textureCoordinates[i + 3] = (1f + (piece / xTiles)) / yTiles;
-            textureCoordinates[i + 4] = (1f + (piece % xTiles)) / xTiles;
-            textureCoordinates[i + 5] = (float) (piece / xTiles) / yTiles;
-            textureCoordinates[i + 6] = (1f + (piece % xTiles)) / xTiles;
-            textureCoordinates[i + 7] = (1f + (piece / xTiles)) / yTiles;
+            textureCoordinates[i] = (piece % xTiles) / (float) xTiles;
+            textureCoordinates[i + 1] = (piece / xTiles) / (float) yTiles;
+            textureCoordinates[i + 2] = (piece % xTiles) / (float) xTiles;
+            textureCoordinates[i + 3] = (1f + (piece / xTiles)) / (float) yTiles;
+            textureCoordinates[i + 4] = (1f + (piece % xTiles)) / (float) xTiles;
+            textureCoordinates[i + 5] = (piece / xTiles) / (float) yTiles;
+            textureCoordinates[i + 6] = (1f + (piece % xTiles)) / (float) xTiles;
+            textureCoordinates[i + 7] = (1f + (piece / xTiles)) / (float) yTiles;
         }
         if (canBeMirrored) {
             for (int i = 4 + textureCoordinates.length / 2; i < textureCoordinates.length; i += 8) {
@@ -163,8 +162,6 @@ public class SpriteSheet extends Sprite {
     @Override
     public void render() {  //Rysuje CAŁY spriteSheet
         if (bindCheck()) {
-            MatrixMath.resetMatrix(transformationMatrix);
-            Drawer.regularShader.resetUniform();
             vbo.renderTextured(0, 4);
         }
     }
@@ -180,7 +177,7 @@ public class SpriteSheet extends Sprite {
 
 
     public void renderPiece(int piece) {
-        renderPiece(piece, 1f, 1f, NORMAL);
+        renderPieceType(piece, NORMAL);
     }
 
     public void renderShadowPiece(int x, int y, float color) {
@@ -190,37 +187,25 @@ public class SpriteSheet extends Sprite {
     }
 
     public void renderShadowPiece(int piece, float color) {
-        renderShadowPiece(piece, 1f, 1f, NORMAL, color);
+        renderShadowPieceType(piece, NORMAL, color);
     }
 
-    public void renderPiece(int piece, float xScale, float yScale, int type) {
+    public void renderPieceType(int piece, int type) {
         if (bindCheck()) {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                Drawer.regularShader.resetUniform();
-                if (xScale != 1f || yScale != 1f) {
-                    translationVector.set(0, 0);
-                    MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-                    Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
-                }
                 vbo.renderTextured(4 + type * framesCount + frame * 4, 4);
             }
         }
     }
 
     public void renderMultiplePieces(Iterable<Point> pieces) {
-        renderMultiplePieces(pieces, 1f, 1f, NORMAL);
+        renderMultiplePieces(pieces, NORMAL);
     }
 
-    public void renderMultiplePieces(Iterable<Point> pieces, float xScale, float yScale, int type) {
+    public void renderMultiplePieces(Iterable<Point> pieces, int type) {
         if (bindCheck()) {
-            Drawer.regularShader.resetUniform();
-            if (xScale != 1f || yScale != 1f) {
-                translationVector.set(0, 0);
-                MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-                Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
-            }
             for (Point coords : pieces) {
                 frame = coords.getX() + coords.getY() * xTiles;
                 int piece = getFramesPosition(frame);
@@ -231,19 +216,13 @@ public class SpriteSheet extends Sprite {
         }
     }
 
-    public void renderShadowPiece(int piece, float xScale, float yScale, int type, float color) {
+    public void renderShadowPieceType(int piece, int type, float color) {
         if (bindCheck()) {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                Drawer.shadowShader.resetUniform();
                 vectorModifier.set(color, color, color, 1);
                 Drawer.shadowShader.loadColourModifier(vectorModifier);
-                if (xScale != 1f || yScale != 1f) {
-                    translationVector.set(0, 0);
-                    MatrixMath.transformMatrix(transformationMatrix, translationVector, xScale, yScale);
-                    Drawer.shadowShader.loadTransformationMatrix(transformationMatrix);
-                }
                 vbo.renderTextured(4 + type * framesCount + frame * 4, 4);
             }
         }
@@ -265,12 +244,12 @@ public class SpriteSheet extends Sprite {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                Drawer.shadowShader.resetUniform();
                 vectorModifier.set(color, color, color, 1);
                 Drawer.shadowShader.loadColourModifier(vectorModifier);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.shadowShader.loadSizeModifier(vectorModifier);
                 vbo.renderTextured(4 + frame * 4, 4);
+                Drawer.shadowShader.loadSizeModifier(Appearance.ZERO_VECTOR);
             }
         }
     }
@@ -285,10 +264,10 @@ public class SpriteSheet extends Sprite {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                Drawer.regularShader.resetUniform();
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.regularShader.loadSizeModifier(vectorModifier);
                 vbo.renderTextured(4 + frame * 4, 4);
+                Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
             }
         }
     }
@@ -310,13 +289,15 @@ public class SpriteSheet extends Sprite {
 
     public void renderPieceResized(int piece, float width, float height) {
         if (bindCheck()) {
-            renderPiece(piece, width / this.width, height / this.height, NORMAL);
+            Drawer.regularShader.scaleNoReset(width / this.width, height / this.height);
+            renderPieceType(piece, NORMAL);
+            Drawer.regularShader.scaleNoReset(this.width / width, this.height / height);
         }
     }
 
     public void renderPieceResized(int x, int y, float width, float height) {
         if (bindCheck()) {
-            renderPiece(x + y * xTiles, width / this.width, height / this.height, NORMAL);
+            renderPieceResized(x + y * xTiles, width, height);
         }
     }
 
@@ -328,7 +309,7 @@ public class SpriteSheet extends Sprite {
 
     public void renderPieceMirrored(int piece) {
         if (canBeMirrored) {
-            renderPiece(piece, 1f, 1f, MIRRORED);
+            renderPieceType(piece, MIRRORED);
         } else {
             System.out.println(path + " can't be Mirrored!");
         }

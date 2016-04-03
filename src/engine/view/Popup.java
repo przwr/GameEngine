@@ -97,7 +97,7 @@ public class Popup {
                 WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2 - space,
         };
         if (Drawer.streamVBO != null) {
-            Drawer.regularShader.resetUniform();
+            Drawer.regularShader.resetTransformationMatrix();
             Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
             Drawer.regularShader.setUseTexture(true);
@@ -118,7 +118,7 @@ public class Popup {
                 WIDTH_HALF - width / 2, HEIGHT_HALF + height / 2,
         };
         if (Drawer.streamVBO != null) {
-            Drawer.regularShader.resetUniform();
+            Drawer.regularShader.resetTransformationMatrix();
             Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
             Drawer.regularShader.setUseTexture(true);
@@ -147,7 +147,7 @@ public class Popup {
                 WIDTH_HALF - middleOk, HEIGHT_HALF + height / 2,
         };
         if (Drawer.streamVBO != null) {
-            Drawer.regularShader.resetUniform();
+            Drawer.regularShader.resetTransformationMatrix();
             Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
             Drawer.regularShader.setUseTexture(true);
@@ -226,7 +226,7 @@ public class Popup {
                 WIDTH_HALF + middleOk + border, HEIGHT_HALF + height / 2 - shift
         };
         if (Drawer.streamVBO != null) {
-            Drawer.regularShader.resetUniform();
+            Drawer.regularShader.resetTransformationMatrix();
             Drawer.regularShader.setUseTexture(false);
             Drawer.streamVBO.renderTriangleStream(data);
             Drawer.regularShader.setUseTexture(true);

@@ -30,7 +30,7 @@ public class Tree extends GameObject {
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
     private final Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
-    int width, height;
+    int width, height, leafXShift;
     float spread;
     boolean branchless;
     private FrameBufferObject fbo;
@@ -105,12 +105,11 @@ public class Tree extends GameObject {
                 bark = map.place.getSprite("bark", "", true);
                 leaf = map.place.getSprite("leaf", "", true);
                 fbo.activate();
-                glPushMatrix();
                 glClearColor(0.5f, 0.35f, 0.2f, 0);
                 glClear(GL_COLOR_BUFFER_BIT);
-                glTranslatef(fbo.getWidth() / 2, Display.getHeight() - 20, 0);
+                Drawer.regularShader.translateDefault(fbo.getWidth() / 2, Display.getHeight() - 20);
                 drawTree();
-                glPopMatrix();
+                Drawer.regularShader.translateDefault(-fbo.getWidth() / 2, -Display.getHeight() + 20);
                 fbo.deactivate();
                 points.clear();
                 points = null;
@@ -121,9 +120,8 @@ public class Tree extends GameObject {
     @Override
     public void render() {
         preRender();
-        glTranslatef(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf(), 0);
+        Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
         fbo.renderTopAndBottom();
-        glTranslatef(-getX() + fbo.getWidth() / 2 + collision.getWidthHalf(), -getY() - 20 + woodHeight - collision.getHeightHalf(), 0);
     }
 
     private void drawTree() {
@@ -135,7 +133,6 @@ public class Tree extends GameObject {
             drawRoots();
         }
         drawTrunkAndBranches();
-        glTranslatef(0, -leafHeight, 0);
         drawLeafs();
     }
 
@@ -175,6 +172,7 @@ public class Tree extends GameObject {
         }
         levels[levelsCount - 1] = height;
         lastChange = changes[levelsCount * 2 - 2];
+        leafXShift = lastChange;
         changes[levelsCount * 2 - 1] = lastChange;
         int lastX1 = 0;
         int lastY = 0;
@@ -192,24 +190,23 @@ public class Tree extends GameObject {
         int thick = 2 * width / 3;
         float heightModifier = 0.9f;
         float spreadModifier = 0.6f;
-        glTranslatef(lastChange, -height, 0);
-        Drawer.setCentralPoint();
+        Drawer.regularShader.translate(lastChange, -height);
         drawBranch(width / 2 - thick / 2, height, 0, thick, thick / 2, 0);
         boolean left = random.nextBoolean();
         if (left) {
             drawBranch(0, Math.round(height * heightModifier), -spread * spreadModifier, thick, thick / 2, 0);
-            Drawer.translate(0, Math.round(height * fraction / 4));
+            Drawer.regularShader.translateNoReset(0, Math.round(height * fraction / 4));
             drawBranch(width - thick, Math.round(height * heightModifier), spread * spreadModifier, thick, thick / 2, Math.round(height * fraction / 3));
         } else {
             drawBranch(width - thick, Math.round(height * heightModifier), spread * spreadModifier, thick, thick / 2, 0);
-            Drawer.translate(0, Math.round(height * fraction / 4));
+            Drawer.regularShader.translateNoReset(0, Math.round(height * fraction / 4));
             drawBranch(0, Math.round(height * heightModifier), -spread * spreadModifier, thick, thick / 2, Math.round(height * fraction / 3));
         }
         int sum = 0;
         for (int i = 0; i < levelsCount - 1; i++) {
             if (levels[i] > 3 * height / 5) {
                 int change = random.randomInRange(Math.round(height * fraction / 4), Math.round(height * fraction / 2));
-                Drawer.translate(0, change);
+                Drawer.regularShader.translateNoReset(0, change);
                 i--;
                 if (left) {
                     drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
@@ -218,10 +215,10 @@ public class Tree extends GameObject {
                     drawBranch(width + changes[(levelsCount - 1 - i) * 2 - 2] - lastChange - thick - 2, height, spread, thick, thick / 2, levels[i] + Math
                             .round(height * fraction / 3) + change);
                 }
-                Drawer.translate(0, -change);
+                Drawer.regularShader.translateNoReset(0, -change);
                 break;
             }
-            Drawer.translate(0, levels[i] - sum);
+            Drawer.regularShader.translateNoReset(0, levels[i] - sum);
             sum += levels[i] - sum;
             if (left) {
                 drawBranch(changes[(levelsCount - 1 - i) * 2 - 1] - lastChange + 2, height, -spread, thick, thick / 2, levels[i] + Math.round(height
@@ -232,7 +229,6 @@ public class Tree extends GameObject {
             }
             left = !left;
         }
-        Drawer.returnToCentralPoint();
     }
 
     private void drawBranch(int x, int height, float spread, int widthBase, int widthTop, int yShift) {
@@ -425,7 +421,6 @@ public class Tree extends GameObject {
     private void drawLeafs() {
         points.sort(comparator);
         int rand1, rand2;
-        Drawer.setCentralPoint();
         int radius = height / 25;
         int dif = (radius + radius) / 3;
         int dif2 = dif * dif * 100;
@@ -471,9 +466,8 @@ public class Tree extends GameObject {
             Drawer.setColorStatic(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
                     leafColor.b * (1 + change / 2f + rand / 25f)));
             float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
-            glTranslatef(points.get(i).getX() + x, points.get(i).getY() + y, 0);
-            leaf.renderRotate(angle);
-            glTranslatef(-points.get(i).getX() - x, -points.get(i).getY() - y, 0);
+            Drawer.regularShader.rotateTranslate(points.get(i).getX() + x + leafXShift, points.get(i).getY() + y - leafHeight - height, angle);
+            leaf.render();
         }
     }
 

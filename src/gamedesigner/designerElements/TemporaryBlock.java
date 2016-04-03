@@ -20,8 +20,6 @@ import sprites.SpriteSheet;
 import java.util.ArrayList;
 
 import static collision.OpticProperties.NO_SHADOW;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -57,29 +55,29 @@ public class TemporaryBlock extends GameObject {
 
     @Override
     public void render() {
-        glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+        Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
         int mode = objPlace.getMode();
         if (mode != 2 && (objPlace.isBlocksMode() || mode == 1)) {
             int d = 2;
             Drawer.refreshColor();
             int tmpH = upHeight * tile;
             if (!blocked) {
-                glTranslatef(0, -tmpH, 0);
+                Drawer.regularShader.translateNoReset(0, -tmpH);
                 if (mode == 1) {
                     Drawer.drawRectangle(0, 0, width, height);
                 }
                 if (upHeight == 0) {
-                    glColor3f(1f, 0f, 0f);
+                    Drawer.setColorStatic(1f, 0f, 0f, 1f);
                     Drawer.drawRectangle(0, 0, width, d);
                     Drawer.drawRectangle(0, height - d, width, d);
                     Drawer.drawRectangle(0, 0, d, height);
                     Drawer.drawRectangle(width - d, 0, d, height);
                 } else {
                     if (mode == 1) {
-                        glColor3f(0.9f, 0.9f, 0.9f);
+                        Drawer.setColorStatic(0.9f, 0.9f, 0.9f, 1f);
                         Drawer.drawRectangle(0, height, width, tmpH);
                     }
-                    glColor3f(1f, 0f, 0f);
+                    Drawer.setColorStatic(1f, 0f, 0f, 1f);
                     Drawer.drawRectangle(0, 0, width, d);
                     Drawer.drawRectangle(0, height - d, width, d);
                     Drawer.drawRectangle(0, height - d + tmpH, width, d);
@@ -87,7 +85,7 @@ public class TemporaryBlock extends GameObject {
                     Drawer.drawRectangle(width - d, height - d + tmpH, d, -tmpH - height + d);
                 }
             } else {
-                glColor3f(1f, 0.5f, 0.5f);
+                Drawer.setColorStatic(1f, 0.5f, 0.5f, 1f);
                 Drawer.drawRectangle(0, 0, width, d);
                 Drawer.drawRectangle(0, height - d, width, d);
                 Drawer.drawRectangle(0, 0, d, height);
@@ -95,7 +93,6 @@ public class TemporaryBlock extends GameObject {
             }
         }
         Drawer.refreshForRegularDrawing();
-        glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
     }
 
     public void move(int dx, int dy) {

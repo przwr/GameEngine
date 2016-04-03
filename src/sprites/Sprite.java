@@ -6,7 +6,6 @@
 package sprites;
 
 import engine.Main;
-import engine.matrices.MatrixMath;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import game.gameobject.entities.Player;
@@ -97,7 +96,6 @@ public class Sprite implements Appearance {
     @Override
     public void render() {
         if (bindCheck()) {
-            Drawer.regularShader.resetUniform();
             vbo.renderTextured(0, 4);
         }
     }
@@ -106,19 +104,7 @@ public class Sprite implements Appearance {
     public void renderShadow(float color) {
         if (bindCheck()) {
             vectorModifier.set(color, color, color, 1f);
-            Drawer.shadowShader.resetUniform();
             Drawer.shadowShader.loadColourModifier(vectorModifier);
-            vbo.renderTextured(0, 4);
-        }
-    }
-
-    public void renderRotate(float angle) {
-        if (bindCheck()) {
-            MatrixMath.resetMatrix(transformationMatrix);
-            MatrixMath.rotateMatrix(transformationMatrix, angle);
-            Drawer.regularShader.loadTextureShift(0, 0);
-            Drawer.regularShader.loadSizeModifier(ZERO_VECTOR);
-            Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
             vbo.renderTextured(0, 4);
         }
     }
@@ -132,7 +118,7 @@ public class Sprite implements Appearance {
                 partXEnd = temp;
             }
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
-            Drawer.regularShader.resetUniform();
+            Drawer.regularShader.resetTransformationMatrix();
             vbo.renderTextured(0, 4);
         }
     }
@@ -146,13 +132,12 @@ public class Sprite implements Appearance {
                 partXStart = partXEnd;
                 partXEnd = temp;
             }
-            Drawer.shadowShader.loadTextureShift(0, 0);
-            Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
             vectorModifier.set(color, color, color, 1f);
             Drawer.shadowShader.loadColourModifier(vectorModifier);
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.shadowShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(0, 4);
+            Drawer.shadowShader.loadSizeModifier(Appearance.ZERO_VECTOR);
         }
     }
 

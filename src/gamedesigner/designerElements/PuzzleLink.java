@@ -37,9 +37,9 @@ public class PuzzleLink extends GameObject {
     @Override
     public void render() {
         if (objPlace.getMode() == 3) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-            glColor4f(0f, 0f, 1f, 1f);
+            Drawer.setColorStatic(0f, 0f, 1f, 1f);
             int d = 2;
             Drawer.drawRing(tile / 2, tile / 2, tile / 3, d, 10);
             Drawer.drawRing(0, 0, tile / 5, d, 10);
@@ -50,7 +50,6 @@ public class PuzzleLink extends GameObject {
                 Drawer.drawRing(-tile / 2, -tile / 2, radius * tile / 2, d, complex);
             }
             Drawer.refreshForRegularDrawing();
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

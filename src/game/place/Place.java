@@ -79,47 +79,44 @@ public abstract class Place extends ScreenPlace {
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
                 Map map = players[player].getMap();
-                try {
-                    if (map != null) {
-                        Drawer.setCurrentColor(map.getLightColor());
-                        SplitScreen.setSplitScreen(this, playersCount, player);
-                        if (player == 0 || !singleCamera) {
-                            if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
-                                glEnable(GL_SCISSOR_TEST);
-                                Renderer.preRenderShadowedLights(currentCamera);
-                                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                                map.updateCamerasVariables(currentCamera);
-                                manageFading(map);
-                                map.renderBackground(currentCamera);
-                                map.renderObjects(currentCamera);
-                                if (map.getVisibleLights().size() > 0) {
-                                    Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd,
-                                            camYTEnd);
-                                }
-                                Drawer.setCurrentColor(Color.white);
-                                glPopMatrix();
-                                currentCamera.renderGUI();
-                                currentCamera.neutralizeEffect();
-                                console.setCamera(currentCamera);
-                                console.render();
-                                glDisable(GL_SCISSOR_TEST);
-                            } else {
-                                Drawer.clearScreen(0);
-                                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                                if (loading.isOver()) {
-                                    loading.start();
-                                    progress++;
-                                    if (progress > 3) {
-                                        progress = 0;
-                                    }
-                                }
-                                game.showLoading(progress, loadingFont);
+                if (map != null) {
+                    Drawer.setCurrentColor(map.getLightColor());
+                    SplitScreen.setSplitScreen(this, playersCount, player);
+                    if (player == 0 || !singleCamera) {
+                        if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
+                            glEnable(GL_SCISSOR_TEST);
+                            Renderer.preRenderShadowedLights(currentCamera);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                            map.updateCamerasVariables(currentCamera);
+                            manageFading(map);
+                            Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
+                                    .getCurrentScale());
+                            map.renderBackground(currentCamera);
+                            map.renderObjects(currentCamera);
+                            Drawer.regularShader.resetDefaultMatrix();
+                            if (map.getVisibleLights().size() > 0) {
+                                Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd,
+                                        camYTEnd);
                             }
+                            Drawer.setCurrentColor(Color.white);
+                            currentCamera.renderGUI();
+                            currentCamera.neutralizeEffect();
+                            console.setCamera(currentCamera);
+                            console.render();
+                            glDisable(GL_SCISSOR_TEST);
+                        } else {
+                            Drawer.clearScreen(0);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                            if (loading.isOver()) {
+                                loading.start();
+                                progress++;
+                                if (progress > 3) {
+                                    progress = 0;
+                                }
+                            }
+                            game.showLoading(progress, loadingFont);
                         }
                     }
-                } catch (Exception e) { //BY WYJĄTEK PODCZAS RYSOWANIA NIE PSUŁ GRY :D
-                    glPopMatrix();
-                    throw e;
                 }
             }
             Renderer.resetOrthogonal(splitScreenMode);
@@ -128,47 +125,45 @@ public abstract class Place extends ScreenPlace {
 
         renders[ONLINE] = () -> {
             Map map = players[0].getMap();
-            try {
-                if (map != null) {
-                    Drawer.setCurrentColor(map.getLightColor());
-                    Renderer.findVisibleLights(map, 1);
-                    if (!Settings.shadowOff) {
-                        Renderer.preRenderLights(map);
-                    }
-                    currentCamera = (((Player) players[0]).getCamera());
-                    SplitScreen.setSplitScreen(this, 1, 0);
-                    if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
-                        glEnable(GL_SCISSOR_TEST);
-                        Renderer.preRenderShadowedLights(currentCamera);
-                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        map.updateCamerasVariables(currentCamera);
-                        manageFading(map);
-                        map.renderBackground(currentCamera);
-                        map.renderObjects(currentCamera);
-                        if (map.getVisibleLights().size() > 0) {
-                            Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                        }
-                        Drawer.setCurrentColor(Color.white);
-                        currentCamera.renderGUI();
-                        currentCamera.neutralizeEffect();
-                        console.setCamera(currentCamera);
-                        console.render();
-                        glDisable(GL_SCISSOR_TEST);
-                    } else {
-                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        if (loading.isOver()) {
-                            loading.start();
-                            progress++;
-                            if (progress > 3) {
-                                progress = 0;
-                            }
-                        }
-                        game.showLoading(progress, loadingFont);
-                    }
+            if (map != null) {
+                Drawer.setCurrentColor(map.getLightColor());
+                Renderer.findVisibleLights(map, 1);
+                if (!Settings.shadowOff) {
+                    Renderer.preRenderLights(map);
                 }
-            } catch (Exception e) {
-                glPopMatrix();
-                throw e;
+                currentCamera = (((Player) players[0]).getCamera());
+                SplitScreen.setSplitScreen(this, 1, 0);
+                if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
+                    glEnable(GL_SCISSOR_TEST);
+                    Renderer.preRenderShadowedLights(currentCamera);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    map.updateCamerasVariables(currentCamera);
+                    manageFading(map);
+                    Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
+                            .getCurrentScale());
+                    map.renderBackground(currentCamera);
+                    map.renderObjects(currentCamera);
+                    Drawer.regularShader.resetDefaultMatrix();
+                    if (map.getVisibleLights().size() > 0) {
+                        Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+                    }
+                    Drawer.setCurrentColor(Color.white);
+                    currentCamera.renderGUI();
+                    currentCamera.neutralizeEffect();
+                    console.setCamera(currentCamera);
+                    console.render();
+                    glDisable(GL_SCISSOR_TEST);
+                } else {
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    if (loading.isOver()) {
+                        loading.start();
+                        progress++;
+                        if (progress > 3) {
+                            progress = 0;
+                        }
+                    }
+                    game.showLoading(progress, loadingFont);
+                }
             }
         };
     }
@@ -208,27 +203,10 @@ public abstract class Place extends ScreenPlace {
             if (currentCamera.isFading() || currentCamera.isFaded()) {
                 float fadingValue = currentCamera.getFadingValue();
                 if (fadingValue < 0) {
-                    // Hack, bo czasem coś się wali i nie wiem dlaczego
-//                    if (fadingValue < -125) {
-//                        currentCamera.setFaded(false);
-//                        for (GameObject owner : currentCamera.getOwners()) {
-//                            if (owner instanceof Entity) {
-//                                ((Entity) owner).setAbleToMove(true);
-//                                owner.setVisible(true);
-//                            }
-//                            if (owner instanceof MyPlayer) {
-//                                ((MyPlayer) owner).getGUI().setVisible(true);
-//                            }
-//                        }
-//                    }
                     fadingValue = 0;
                 }
                 Color c = map.getLightColor();
-                if (currentCamera.isFaded()) {
-                    Drawer.setCurrentColor(new Color(c.r * fadingValue, c.r * fadingValue, c.b * fadingValue));
-                } else {
-                    Drawer.setCurrentColor(new Color(c.r * fadingValue, c.r * fadingValue, c.b * fadingValue));
-                }
+                Drawer.setCurrentColor(new Color(c.r * fadingValue, c.g * fadingValue, c.b * fadingValue));
             }
         }
     }

@@ -1,6 +1,5 @@
 package sprites.fbo;
 
-import engine.matrices.MatrixMath;
 import engine.utilities.Drawer;
 import game.Settings;
 import game.gameobject.entities.Player;
@@ -180,13 +179,11 @@ public abstract class FrameBufferObject implements Appearance {
 
     private void render(int type) {
         bindCheck();
-        Drawer.regularShader.resetUniform();
         vbo.renderTextured(type * 4, 4);
     }
 
     public void renderTopAndBottom() {
         bindCheck();
-        Drawer.regularShader.resetUniform();
         vbo.renderTexturedTriangles(3 * 4, 12);
     }
 
@@ -205,7 +202,6 @@ public abstract class FrameBufferObject implements Appearance {
     public void renderShadow(int type, float color) {
         bindCheck();
         vectorModifier.set(color, color, color, 1);
-        Drawer.shadowShader.resetUniform();
         Drawer.shadowShader.loadColourModifier(vectorModifier);
         vbo.renderTextured(type * 4, 4);
     }
@@ -250,13 +246,12 @@ public abstract class FrameBufferObject implements Appearance {
             if (partXStart < 0) {
                 partXStart = 0;
             }
-            Drawer.shadowShader.loadTextureShift(0, 0);
-            Drawer.shadowShader.loadTransformationMatrix(MatrixMath.STATIC_MATRIX);
             vectorModifier.set(color, color, color, 1f);
             Drawer.shadowShader.loadColourModifier(vectorModifier);
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.shadowShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(type * 4, 4);
+            Drawer.shadowShader.loadSizeModifier(Appearance.ZERO_VECTOR);
         }
     }
 
@@ -278,14 +273,14 @@ public abstract class FrameBufferObject implements Appearance {
             Drawer.screenVBO.updateVerticesAndTextureCoords(vertices, textureCoordinates);
         }
         bindCheck();
-        Drawer.regularShader.resetUniform();
+        Drawer.shadowShader.resetTransformationMatrix();
         Drawer.screenVBO.renderTextured(0, 4);
     }
 
 
     private boolean areDifferent(float displayWidth, float displayHeight, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart,
                                  float xTEnd, float yTEnd) {
-        float curSum = displayWidth * displayHeight + xStart * yStart * xEnd * yEnd + xTStart * yTStart * xTEnd * yTEnd;
+        float curSum = displayWidth * 2 * displayHeight + xStart * 77 + yStart * 33 + xEnd * 22 + yEnd * 11 + xTStart * 5 + yTStart * 3 + xTEnd * 2 + yTEnd;
         if (curSum != checkSum) {
             checkSum = curSum;
             lastScreenData[0] = displayWidth;
@@ -340,10 +335,9 @@ public abstract class FrameBufferObject implements Appearance {
                 partXEnd = 0;
             }
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
-            MatrixMath.resetMatrix(transformationMatrix);
-            Drawer.regularShader.loadTransformationMatrix(transformationMatrix);
-            Drawer.regularShader.resetUniform();
+            Drawer.regularShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(type * 4, 4);
+            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
         }
     }
 

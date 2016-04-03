@@ -16,8 +16,6 @@ import game.gameobject.stats.MobStats;
 import game.place.Place;
 import gamecontent.MyPlayer;
 
-import static org.lwjgl.opengl.GL11.glTranslatef;
-
 /**
  * @author Wojtek
  */
@@ -68,12 +66,12 @@ public class Rock extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision.getHeightHalf()), 32);
+            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
+                    .getHeightHalf()), 32);
             Drawer.refreshColor();
             appearance.render();
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

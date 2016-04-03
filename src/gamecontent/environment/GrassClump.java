@@ -243,10 +243,10 @@ public class GrassClump extends GameObject {
     private void preRender() {
         if (!fbo.generated) {
             fbo.activate();
-            glPushMatrix();
             glClearColor(0, 0.7f, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            glTranslatef(xRadius + 2, -2 * yRadius + ySpacing + Display.getHeight(), 0);
+            Drawer.regularShader.translateDefault(xRadius + 2, -2 * yRadius + ySpacing + Display.getHeight());
+            Drawer.regularShader.resetWorkingMatrix();
             if (corner >= 0) {
                 preRenderCorner();
             } else if (curve > 0) {
@@ -254,7 +254,7 @@ public class GrassClump extends GameObject {
             } else {
                 preRenderRectangle();
             }
-            glPopMatrix();
+            Drawer.regularShader.translateDefault(-xRadius - 2, 2 * yRadius - ySpacing - Display.getHeight());
             fbo.deactivate();
         }
     }
@@ -270,16 +270,16 @@ public class GrassClump extends GameObject {
                 if (curve > 0 && xCount > 1) {
                     if (j == 0) {
                         xCenter = xCentering - (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * Math.round((bladeWidth - 2) / 2f);
-                        glTranslatef(xCenter, 0, 0);
+                        Drawer.regularShader.translateNoReset(xCenter, 0);
                     } else if (j == xCount - 1) {
                         xCenter = (xBladesCount - (i <= middle1 ? (middle1 - i) : (i - middle2)) / curve) * Math.round((bladeWidth - 2) / 2f) - xCentering;
-                        glTranslatef(xCenter, 0, 0);
+                        Drawer.regularShader.translateNoReset(xCenter, 0);
                     }
                 }
                 grasses[i * xCount + j].renderStill();
-                glTranslatef(grassWidth - xCenter, 0, 0);
+                Drawer.regularShader.translateNoReset(grassWidth - xCenter, 0);
             }
-            glTranslatef(-grassWidth * (xCount), ySpacing, 0);
+            Drawer.regularShader.translateNoReset(-grassWidth * (xCount), ySpacing);
         }
     }
 
@@ -287,9 +287,9 @@ public class GrassClump extends GameObject {
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
                 grasses[i * xCount + j].renderStill();
-                glTranslatef(grassWidth, 0, 0);
+                Drawer.regularShader.translateNoReset(grassWidth, 0);
             }
-            glTranslatef(-grassWidth * (xCount), ySpacing, 0);
+            Drawer.regularShader.translateNoReset(-grassWidth * (xCount), ySpacing);
         }
     }
 
@@ -299,7 +299,7 @@ public class GrassClump extends GameObject {
             middle1 -= 1;
         }
         int xChange = (xCount * xBladesCount) / yCount;
-        glTranslatef(-xCentering, 0, 0);
+        Drawer.regularShader.translateNoReset(-xCentering, 0);
         for (int i = 0; i < yCount; i++) {
             for (int j = 0; j < xCount; j++) {
                 modXBladesCount = xBladesCount;
@@ -332,13 +332,13 @@ public class GrassClump extends GameObject {
                     }
                     xCenter = xCentering - Math.round((xBladesCount - modXBladesCount) * bladeWidth * 0.375f);
                 }
-                glTranslatef(xCenter, 0, 0);
+                Drawer.regularShader.translateNoReset(xCenter, 0);
                 if (modXBladesCount > 0) {
                     grasses[i * xCount + j].renderStill();
                 }
-                glTranslatef(grassWidth - xCenter, 0, 0);
+                Drawer.regularShader.translateNoReset(grassWidth - xCenter, 0);
             }
-            glTranslatef(-grassWidth * (xCount), ySpacing, 0);
+            Drawer.regularShader.translateNoReset(-grassWidth * (xCount), ySpacing);
         }
     }
 
@@ -347,10 +347,8 @@ public class GrassClump extends GameObject {
         updateGrasses();
         if (!updateGrass) {
             preRender();
-            glPushMatrix();
-            glTranslatef(getX() + xCentering - xRadius - 2, (int) (getY() - fbo.getHeight() + 2 * yRadius - floatHeight), 0);
+            Drawer.regularShader.translate(getX() + xCentering - xRadius - 2, (int) (getY() - fbo.getHeight() + 2 * yRadius - floatHeight));
             fbo.render();
-            glPopMatrix();
         }
     }
 

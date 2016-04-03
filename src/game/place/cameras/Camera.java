@@ -312,8 +312,8 @@ public abstract class Camera {
         this.delayLength = delayLength;
     }
 
-    public double getScale() {
-        return scale;
+    public float getScale() {
+        return (float) scale;
     }
 
     public int getArea() {

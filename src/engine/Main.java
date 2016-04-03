@@ -196,11 +196,8 @@ public class Main {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glMatrixMode(GL_PROJECTION);
-        glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
-        glMatrixMode(GL_MODELVIEW);
+        glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1); // TODO Do wywalenia, tylko chwilowo tekst z tego korzysta
         glClearColor(0, 0, 0, 0);
-        glLoadIdentity();
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
         restartBackGroundLoader();
     }

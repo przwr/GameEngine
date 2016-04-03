@@ -19,8 +19,6 @@ import sprites.SpriteSheet;
 
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.glTranslatef;
-
 /**
  * @author przemek
  */
@@ -277,7 +275,7 @@ public class Plurret extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             animation.render();
             //Drawer.setColor(skinColor);
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
@@ -286,11 +284,7 @@ public class Plurret extends Mob {
             Drawer.refreshColor();
             appearance.render();
             Drawer.refreshColor();
-            /*if (map != null) {
-             Drawer.renderString(name, 0, (int) -((animation.getHeight() * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
-             }*/
 //          renderPathPoints(xEffect, yEffect);
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

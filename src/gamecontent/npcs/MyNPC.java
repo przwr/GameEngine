@@ -8,6 +8,7 @@ package gamecontent.npcs;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Main;
+import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.NPCStats;
@@ -17,7 +18,6 @@ import gamecontent.MyPlayer;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -112,9 +112,8 @@ public class MyNPC extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             animation.render();
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

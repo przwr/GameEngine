@@ -18,7 +18,6 @@ import sprites.Appearance;
 import sprites.fbo.FrameBufferObject;
 import sprites.shaders.RegularShader;
 import sprites.shaders.ShadowShader;
-import sprites.shaders.StaticShader;
 import sprites.vbo.VertexBufferObject;
 
 import java.io.IOException;
@@ -42,12 +41,12 @@ public class Drawer {
     public static FloatContainer streamVertexData = new FloatContainer(30000);
     public static FloatContainer streamColorData = new FloatContainer(30000);
     public static IntegerContainer streamIndexData = new IntegerContainer(30000);
-    public static StaticShader staticShader;
     public static RegularShader regularShader;
     public static ShadowShader shadowShader;
     public static int displayWidth, displayHeight;
     private static float xCurrent, yCurrent;
     private static Color currentColor = Color.white;
+    private static Timer t = new Timer("Test", 200);
 
     private static Texture loadFontTexture() {
         try {
@@ -127,22 +126,6 @@ public class Drawer {
         return color;
     }
 
-    public static void setCentralPoint() {  //Miejsce do którego można wrócić
-        xCurrent = 0;
-        yCurrent = 0;
-    }
-
-    public static void translate(float x, float y) {
-        xCurrent += x;
-        yCurrent += y;
-        glTranslatef((int) x, (int) y, 0f);
-    }
-
-    public static void returnToCentralPoint() {
-        glTranslatef(-xCurrent, -yCurrent, 0f);
-        setCentralPoint();
-    }
-
     public static void drawRectangleShade(int xStart, int yStart, int width, int height, float color) {
         if (width < 0) {
             width = -width;
@@ -176,7 +159,6 @@ public class Drawer {
                 0, 0,
                 xC, yC,
         };
-        regularShader.resetUniform();
         streamVBO.updateVerticesStream(data);
         streamVBO.renderTextured(0, 3);
     }
@@ -187,7 +169,6 @@ public class Drawer {
                 xB, yB,
                 xC, yC,
         };
-        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStream(data);
         regularShader.setUseTexture(true);
@@ -200,7 +181,6 @@ public class Drawer {
                 xStart + width, yStart,
                 xStart + width, yStart + height,
         };
-        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStripStream(data);
         regularShader.setUseTexture(true);
@@ -213,7 +193,6 @@ public class Drawer {
                 xStart + width, yStart + height,
                 xStart + width, yStart,
         };
-        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderLineLoopStream(data);
         regularShader.setUseTexture(true);
@@ -226,7 +205,6 @@ public class Drawer {
                 xB, yB,
                 xC, yC,
         };
-        regularShader.resetUniform();
         streamVBO.updateVerticesStream(data);
         streamVBO.renderTextured(0, 6);
     }
@@ -236,7 +214,6 @@ public class Drawer {
     }
 
     public static void drawEllipse(int xStart, int yStart, int xRadius, int yRadius, int precision) {
-        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleFanStream(getEllipseVertices(xStart, yStart, xRadius, yRadius, precision));
         regularShader.setUseTexture(true);
@@ -270,7 +247,6 @@ public class Drawer {
     }
 
     public static void drawEllipseSector(int xStart, int yStart, int xRadius, int yRadius, int startAngle, int endAngle, int precision) {
-        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleFanStream(getEllipseSectorVertices(xStart, yStart, xRadius, yRadius, startAngle, endAngle, precision));
         regularShader.setUseTexture(true);
@@ -301,7 +277,6 @@ public class Drawer {
     }
 
     public static void drawEllipseBow(int xStart, int yStart, int xRadius, int yRadius, int width, int startAngle, int endAngle, int precision) {
-        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStripStream(getEllipseBowVertices(xStart, yStart, xRadius, yRadius, width, startAngle, endAngle, precision));
         regularShader.setUseTexture(true);
@@ -314,7 +289,6 @@ public class Drawer {
     public static float[] getBowVertices(int xStart, int yStart, int radius, int width, int startAngle, int endAngle, int precision) {
         return getEllipseBowVertices(xStart, yStart, radius, radius, width, startAngle, endAngle, precision);
     }
-
 
     public static float[] getEllipseBowVertices(int xStart, int yStart, int xRadius, int yRadius, int width, int startAngle, int endAngle, int precision) {
         if (startAngle > endAngle) {
@@ -343,7 +317,6 @@ public class Drawer {
     }
 
     public static void drawRing(int xStart, int yStart, int radius, int width, int precision) {
-        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStripStream(getRingVertices(xStart, yStart, radius, width, precision));
         regularShader.setUseTexture(true);
@@ -380,7 +353,6 @@ public class Drawer {
                 xStart - xWidth, yStart - yWidth,
                 xStart + xDelta - xWidth, yStart + yDelta - yWidth,
         };
-        regularShader.resetUniform();
         regularShader.setUseTexture(false);
         streamVBO.renderTriangleStripStream(data);
         regularShader.setUseTexture(true);
@@ -392,94 +364,91 @@ public class Drawer {
 
     public static void drawShapeShade(Appearance appearance, float color, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadow(color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
-
 
     public static void drawShapeTopShade(FrameBufferObject appearance, float color, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowTop(color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
-
 
     public static void drawShapeBottomShade(FrameBufferObject appearance, float color, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowBottom(color);
-        glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
 
     public static void drawShapePartShade(Appearance appearance, float color, float xPosition, float yPosition, int partXStart, int partXEnd) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowPart(partXStart, partXEnd, color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
 
     public static void drawShapeBottomPartShade(FrameBufferObject appearance, float color, float xPosition, float yPosition, int partXStart, int partXEnd) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowBottomPart(partXStart, partXEnd, color);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
 
     public static void drawShapeBlack(Appearance appearance, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadow(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
 
     public static void drawShapeTopBlack(FrameBufferObject appearance, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowTop(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
 
     public static void drawShapeBottomBlack(FrameBufferObject appearance, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowBottom(0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
 
     public static void drawShapePartBlack(Appearance appearance, float xPosition, float yPosition, int partXStart, int partXEnd) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowPart(partXStart, partXEnd, 0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
 
     public static void drawShapeBottomPartBlack(FrameBufferObject appearance, float xPosition, float yPosition, int partXStart, int partXEnd) {
         ShadowDrawer.renderCurrentVBO();
-        glTranslatef(xPosition, yPosition, 0);
+        shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         appearance.renderShadowBottomPart(partXStart, partXEnd, 0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(-xPosition, -yPosition, 0);
+        shadowShader.resetTransformationMatrix();
     }
 
     public static void renderStringCentered(String message, double x, double y, FontHandler font, Color color) {
@@ -494,13 +463,9 @@ public class Drawer {
     }
 
     public static void setShaders() {
-        staticShader = new StaticShader();
         regularShader = new RegularShader();
         shadowShader = new ShadowShader();
-        shadowShader.start();
-        shadowShader.setUseTexture(true);
         regularShader.start();
-        regularShader.setUseTexture(true);
         float[] vertices = {
                 0, 0,
                 0, 20,
@@ -531,11 +496,7 @@ public class Drawer {
     }
 
     public static void cleanUp() {
-        if (staticShader != null) {
-            staticShader.cleanUp();
-            staticShader = null;
-        }
-        if (staticShader != null) {
+        if (regularShader != null) {
             regularShader.cleanUp();
             regularShader = null;
         }
@@ -566,5 +527,15 @@ public class Drawer {
             screenVBO.clear();
             screenVBO = null;
         }
+    }
+
+    public static void setOrtho(float left, float right, float bottom, float top) {
+        shadowShader.setOrtho(left, right, bottom, top);
+        regularShader.setOrtho(left, right, bottom, top);
+    }
+
+    public static void resetOrtho() {
+        shadowShader.resetOrtho();
+        regularShader.resetOrtho();
     }
 }

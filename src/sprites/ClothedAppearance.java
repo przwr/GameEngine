@@ -1,5 +1,6 @@
 package sprites;
 
+import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import game.gameobject.entities.Player;
@@ -261,7 +262,7 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void render() {
-        glTranslatef(-xStart + xDelta, -yStart + yDelta, 0);
+        Drawer.regularShader.translateNoReset(-xStart + xDelta, -yStart + yDelta);
         int upperFrame = upperBody.getCurrentFrameIndex();
         int lowerFrame = lowerBody.getCurrentFrameIndex();
         for (byte i : upperQueue.get(upperFrame)) {
@@ -277,7 +278,6 @@ public class ClothedAppearance implements Appearance {
                 }
             }
         }
-        glTranslatef(xStart - xDelta, yStart - yDelta, 0);
     }
 
     private boolean isThisLowerPlacement(byte i) {
@@ -341,7 +341,7 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderPart(int partXStart, int partXEnd) {
-        glTranslatef(-fbo.getWidth() / 2, -fbo.getHeight() / 2, 0);
+        Drawer.regularShader.translateNoReset(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
         if (partXStart > partXEnd) {
             int temp = partXEnd;
             partXEnd = partXStart;
@@ -354,19 +354,17 @@ public class ClothedAppearance implements Appearance {
         } else {
             fbo.renderPart(partXStart + xOffset / 2, partXEnd + xOffset / 2);
         }
-        glTranslatef(fbo.getWidth() / 2, fbo.getHeight() / 2, 0);
     }
 
     @Override
     public void renderShadow(float color) {
-        glTranslatef(-fbo.getWidth() / 2, -fbo.getHeight() / 2, 0);
+        Drawer.regularShader.translate(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
         fbo.renderShadow(color);
-        glTranslatef(fbo.getWidth() / 2, fbo.getHeight() / 2, 0);
     }
 
     @Override
     public void renderShadowPart(int partXStart, int partXEnd, float color) {
-        glTranslatef(-fbo.getWidth() / 2, -fbo.getHeight() / 2, 0);
+        Drawer.regularShader.translate(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
         if (partXStart > partXEnd) {
             int temp = partXEnd;
             partXEnd = partXStart;
@@ -379,7 +377,6 @@ public class ClothedAppearance implements Appearance {
         } else {
             fbo.renderShadowPart(partXStart + xOffset / 2, partXEnd + xOffset / 2, color);
         }
-        glTranslatef(fbo.getWidth() / 2, fbo.getHeight() / 2, 0);
     }
 
 
@@ -388,9 +385,8 @@ public class ClothedAppearance implements Appearance {
         fbo.activate();
         glClear(GL_COLOR_BUFFER_BIT);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glTranslatef(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight(), 0);
+        Drawer.regularShader.translate(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight());
         render();
-        glTranslatef(-fbo.getWidth() / 2, +fbo.getHeight() / 2 - Display.getHeight(), 0);
         fbo.deactivate();
     }
 

@@ -18,8 +18,6 @@ import game.place.Place;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
-import static org.lwjgl.opengl.GL11.glTranslatef;
-
 /**
  * @author przemek
  */
@@ -97,17 +95,16 @@ public class Dummy extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
                     .getHeightHalf()), 15);
             Drawer.refreshColor();
             if (isHurt()) {
-                glTranslatef(rand.randomInRange(-power, power), rand.randomInRange(-power, power), 0);
+                Drawer.regularShader.translateNoReset(rand.randomInRange(-power, power), rand.randomInRange(-power, power));
                 power /= 1.2;
             }
             appearance.render();
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

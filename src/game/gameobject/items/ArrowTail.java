@@ -20,8 +20,8 @@ public class ArrowTail extends TailEffect {
 
     @Override
     public void innerRender() {
-        Drawer.regularShader.resetUniform();
-        Drawer.setColorStatic(color);
+        Drawer.regularShader.resetTransformationMatrix();
+        Drawer.setColorBlended(color);
         Drawer.regularShader.setUseTexture(false);
         if (length >= 3 && tail[2] != null) {
             float vertices[] = new float[8 + last * 4];

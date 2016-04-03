@@ -17,8 +17,6 @@ import gamecontent.environment.GrassClump;
 import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * @author Wojtek
  */
@@ -159,39 +157,35 @@ public class ObjectUI extends GUIObject {
     @Override
     public void render() {
         if (player != null) {
-            glPushMatrix();
             int d = 2;
             int xStart = texture.getXStart();
             int yStart = texture.getYStart();
             int wTex = texture.getWidth();
             int hTex = texture.getHeight();
 
-            glScaled(Settings.nativeScale, Settings.nativeScale, 1);
-            glTranslatef(tile / 2, tile / 2, 0);
-            Drawer.setCentralPoint();
+            Drawer.regularShader.scaleTranslate(tile / 2, tile / 2, (float) Settings.nativeScale, (float) Settings.nativeScale);
             if (mode == ObjectPlace.MODE_TILE) {
                 if (change) {
-                    Drawer.translate(player.getCamera().getWidthHalf() / 2, player.getCamera().getHeightHalf() / 2);
-                    glColor4f(1f, 1f, 1f, 1f);
-                    Drawer.translate(-xStart - coordinates.getX() * wTex, -yStart - coordinates.getY() * hTex);
+                    Drawer.regularShader.translateNoReset(player.getCamera().getWidthHalf() / 2, player.getCamera().getHeightHalf() / 2);
+                    Drawer.setColorStatic(1f, 1f, 1f, 1f);
+                    Drawer.regularShader.translateNoReset(-xStart - coordinates.getX() * wTex, -yStart - coordinates.getY() * hTex);
                     texture.render();
-                    Drawer.translate(coordinates.getX() * wTex, coordinates.getY() * hTex);
+                    Drawer.regularShader.translateNoReset(coordinates.getX() * wTex, coordinates.getY() * hTex);
                 }
 
-                glColor4f(1f, 1f, 1f, 1f);
+                Drawer.setColorStatic(1f, 1f, 1f, 1f);
                 Drawer.drawRectangle(-1, -1, wTex + 2, hTex + 2);
-
-                glTranslatef(-xStart + 1, -yStart + 1, 0);
+//
+                Drawer.regularShader.translateNoReset(-xStart + 1, -yStart + 1);
                 texture.renderPiece(coordinates.getX(), coordinates.getY());
 
-                glColor4f(0f, 0f, 0f, 1f);
+                Drawer.setColorStatic(0f, 0f, 0f, 1f);
                 Drawer.drawRectangle(-d, -d, wTex + 2 * d, d - 1);
                 Drawer.drawRectangle(-d, hTex + 1, wTex + 2 * d, d - 1);
                 Drawer.drawRectangle(-d, -1, d - 1, hTex + 2);
                 Drawer.drawRectangle(wTex + 1, -1, d - 1, hTex + 2);
             } else if (mode == ObjectPlace.MODE_OBJECT) {
-                glTranslatef(0, tile, 0);
-                glScaled(1 / Settings.nativeScale, 1 / Settings.nativeScale, 1);
+                Drawer.regularShader.translateNoReset(0, tile);
                 int h = place.standardFont.getHeight("0");
                 if (change) {
                     for (int i = 0; i < mapObjectsNames.length; i++) {
@@ -204,16 +198,13 @@ public class ObjectUI extends GUIObject {
                     Drawer.renderString(mapObjectsNames[choosenObject], 0, 0, place.standardFont,
                             new Color(1f, 1f, 1f));
                 }
-                glScaled(Settings.nativeScale, Settings.nativeScale, 1);
             }
             if (mode != ObjectPlace.MODE_VIEWING) {
-                Drawer.returnToCentralPoint();
-                glScaled(1 / Settings.nativeScale, 1 / Settings.nativeScale, 1);
+                Drawer.regularShader.scaleTranslate(tile / 2, tile / 2, (float) Settings.nativeScale, (float) Settings.nativeScale);
                 Drawer.renderString(playerPosition.getX() + ":" + playerPosition.getY() + " - "
                         + selection.getX() + ":" + selection.getY(), tile, 0, place.standardFont, new Color(1f, 1f, 1f));
             }
             Drawer.refreshForRegularDrawing();
-            glPopMatrix();
         }
     }
 }

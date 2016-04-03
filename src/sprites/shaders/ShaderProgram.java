@@ -1,6 +1,8 @@
 package sprites.shaders;
 
+import engine.matrices.MatrixMath;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
@@ -16,11 +18,19 @@ import java.nio.FloatBuffer;
  * Created by przemek on 16.03.16.
  */
 public abstract class ShaderProgram {
+    public static Matrix4f defaultMatrix = new Matrix4f();
+    public static Matrix4f orthoMatrix = new Matrix4f();
+    protected static Matrix4f transformationMatrix = new Matrix4f();
     private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
+    protected int locationMVPMatrix;
     private int programID;
     private int vertexShaderID;
     private int fragmentShaderID;
 
+    {
+        transformationMatrix.setIdentity();
+        defaultMatrix.setIdentity();
+    }
 
     public ShaderProgram(String vertexFile, String fragmentFile) {
         vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
@@ -32,6 +42,7 @@ public abstract class ShaderProgram {
         GL20.glLinkProgram(programID);
         GL20.glValidateProgram(programID);
         getAllUniformLocations();
+        locationMVPMatrix = getUniformLocation("mvpMatrix");
     }
 
     private static int loadShader(String file, int type) {
@@ -53,6 +64,24 @@ public abstract class ShaderProgram {
             System.err.println("Could not compile shader");
         }
         return shaderID;
+    }
+
+    public void resetOrtho() {
+        start();
+        orthoMatrix.setIdentity();
+        MatrixMath.ortho(ShaderProgram.orthoMatrix, 0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
+        loadMVPMatrix(orthoMatrix);
+    }
+
+    public void setOrtho(float left, float right, float bottom, float top) {
+        start();
+        orthoMatrix.setIdentity();
+        MatrixMath.ortho(orthoMatrix, left, right, bottom, top, 1, -1);
+        loadMVPMatrix(orthoMatrix);
+    }
+
+    public void loadMVPMatrix(Matrix4f matrix) {
+        loadMatrix(locationMVPMatrix, matrix);
     }
 
     protected abstract void getAllUniformLocations();

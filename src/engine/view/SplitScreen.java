@@ -5,6 +5,7 @@
  */
 package engine.view;
 
+import engine.utilities.Drawer;
 import game.Settings;
 import game.gameobject.entities.Player;
 import game.place.Place;
@@ -12,7 +13,8 @@ import game.place.cameras.PlayersCamera;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glScissor;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * @author przemek
@@ -153,7 +155,7 @@ public class SplitScreen {
         players2h[0] = (Place place) -> {
             glViewport(0, height1o2, Display.getWidth(), height1o2);
             glScissor(0, height1o2, Display.getWidth(), height1o2);
-            glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+            Drawer.setOrtho(0, Display.getWidth(), Display.getHeight() / 2, 0);
             place.camXStart = place.camXTStart = 0f;
             place.camYStart = place.camYTStart = -0.5f;
             place.camXEnd = place.camXTEnd = 1f;
@@ -171,7 +173,7 @@ public class SplitScreen {
         players2v[0] = (Place place) -> {
             glViewport(0, 0, width1o2, Display.getHeight());
             glScissor(0, 0, width1o2, Display.getHeight());
-            glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+            Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight(), 0);
             place.camXStart = place.camXTStart = place.camYStart = place.camYTStart = 0f;
             place.camXEnd = place.camXTEnd = 0.5f;
             place.camYEnd = place.camYTEnd = 1f;
@@ -218,7 +220,7 @@ public class SplitScreen {
         players3h[0] = (Place place) -> {
             glViewport(0, height1o2, Display.getWidth(), height1o2);
             glScissor(0, height1o2, Display.getWidth(), height1o2);
-            glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+            Drawer.setOrtho(0, Display.getWidth(), Display.getHeight() / 2, 0);
             place.camXStart = place.camXTStart = 0f;
             place.camYStart = place.camYTStart = -0.5f;
             place.camXEnd = place.camXTEnd = 1f;
@@ -228,7 +230,7 @@ public class SplitScreen {
         players3h[1] = (Place place) -> {
             glViewport(0, 0, width1o2, height1o2);
             glScissor(0, 0, width1o2, height1o2);
-            glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+            Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight() / 2, 0);
             place.camYStart = place.camYTStart = place.camXStart = place.camXTStart = 0f;
             place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
             corner = LEFT_BOTTOM;
@@ -244,7 +246,7 @@ public class SplitScreen {
         players3v[0] = (Place place) -> {
             glViewport(0, 0, width1o2, Display.getHeight());
             glScissor(0, 0, width1o2, Display.getHeight());
-            glOrtho(-0.5, 0.5, -1.0, 1.0, 1.0, -1.0);
+            Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight(), 0);
             place.camXStart = place.camXTStart = place.camYStart = place.camYTStart = 0f;
             place.camXEnd = place.camXTEnd = 0.5f;
             place.camYEnd = place.camYTEnd = 1f;
@@ -253,7 +255,7 @@ public class SplitScreen {
         players3v[1] = (Place place) -> {
             glViewport(width1o2, height1o2, width1o2, height1o2);
             glScissor(width1o2, height1o2, width1o2, height1o2);
-            glOrtho(-1.0, 1.0, -0.5, 0.5, 1.0, -1.0);
+            Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight() / 2, 0);
             place.camXTStart = place.camXEnd = place.camYTStart = place.camYEnd = 0.5f;
             place.camXTEnd = place.camYTEnd = 1f;
             place.camXStart = place.camYStart = 0f;
@@ -294,7 +296,7 @@ public class SplitScreen {
         players4[0] = (Place place) -> {
             glViewport(0, height1o2, width1o2, height1o2);
             glScissor(0, height1o2, width1o2, height1o2);
-            glOrtho(-0.5, 0.5, -0.5, 0.5, 1.0, -1.0);
+            Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight() / 2, 0);
             place.camXStart = place.camXTStart = 0f;
             place.camYStart = place.camYTStart = -0.5f;
             place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;

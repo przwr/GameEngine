@@ -12,46 +12,74 @@ public class MatrixMath {
     public static Vector3f ONE_VECTOR = new Vector3f(1, 1, 1);
     public static Vector3f ROTATE_VECTOR = new Vector3f(0, 0, 1);
     public static Matrix4f STATIC_MATRIX = new Matrix4f();
+    public static Matrix4f orthoMatrix = new Matrix4f();
 
     {
         STATIC_MATRIX.setIdentity();
-        Matrix4f.translate(ZERO_VECTOR, STATIC_MATRIX, STATIC_MATRIX);
         Matrix4f.translate(ZERO_VECTOR, STATIC_MATRIX, STATIC_MATRIX);
         Matrix4f.scale(ONE_VECTOR, STATIC_MATRIX, STATIC_MATRIX);
     }
 
 
-    public static Matrix4f createTransformationMatrix(Vector3f translation, float scale) {
+    public static Matrix4f createTransformationMatrix(float x, float y, float scale) {
         Matrix4f matrix = new Matrix4f();
         matrix.setIdentity();
-        Matrix4f.translate(translation, matrix, matrix);
-        Matrix4f.translate(translation, matrix, matrix);
-        Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
+        translateMatrix(matrix, x, y);
+        scale(matrix, scale, scale);
         return matrix;
     }
 
-    public static void transformMatrix(Matrix4f matrix, Vector3f translation, float xScale, float yScale) {
-        matrix.setIdentity();
-        Matrix4f.translate(translation, matrix, matrix);
-        Matrix4f.translate(translation, matrix, matrix);
-        Matrix4f.scale(new Vector3f(xScale, yScale, 1f), matrix, matrix);
+    public static void translateScale(Matrix4f matrix, float x, float y, float xScale, float yScale) {
+        translateMatrix(matrix, x, y);
+        scale(matrix, xScale, yScale);
     }
 
-    public static void scaleMatrix(Matrix4f matrix, float scale) {
-        matrix.setIdentity();
-        Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
+    public static void scaleTranslate(Matrix4f matrix, float x, float y, float xScale, float yScale) {
+        scale(matrix, xScale, yScale);
+        translateMatrix(matrix, x, y);
     }
 
-    public static void rotateMatrix(Matrix4f matrix, float angle) {
-        matrix.setIdentity();
+
+    public static void translateRotate(Matrix4f matrix, float x, float y, float angle) {
+        translateMatrix(matrix, x, y);
+        rotate(matrix, angle);
+    }
+
+    public static void translateMatrix(Matrix4f matrix, float x, float y) {
+        matrix.m30 += matrix.m00 * x + matrix.m10 * y;
+        matrix.m31 += matrix.m01 * x + matrix.m11 * y;
+        matrix.m32 += matrix.m02 * x + matrix.m12 * y;
+        matrix.m33 += matrix.m03 * x + matrix.m13 * y;
+    }
+
+    public static void scale(Matrix4f matrix, float xScale, float yScale) {
+        matrix.m00 = matrix.m00 * xScale;
+        matrix.m01 = matrix.m01 * xScale;
+        matrix.m02 = matrix.m02 * xScale;
+        matrix.m03 = matrix.m03 * xScale;
+        matrix.m10 = matrix.m10 * yScale;
+        matrix.m11 = matrix.m11 * yScale;
+        matrix.m12 = matrix.m12 * yScale;
+        matrix.m13 = matrix.m13 * yScale;
+    }
+
+    public static void ortho(Matrix4f matrix, float left, float right, float bottom, float top, float near, float far) {
+        orthoMatrix.m00 = 2f / (right - left);
+        orthoMatrix.m11 = 2f / (top - bottom);
+        orthoMatrix.m22 = -2f / (far - near);
+        orthoMatrix.m33 = 1f;
+        orthoMatrix.m30 = -(right + left) / (right - left);
+        orthoMatrix.m31 = -(top + bottom) / (top - bottom);
+        orthoMatrix.m32 = -(far + near) / (far - near);
+        Matrix4f.mul(matrix, orthoMatrix, matrix);
+    }
+
+    public static void rotate(Matrix4f matrix, float angle) {
         Matrix4f.rotate((float) Math.toRadians(angle), ROTATE_VECTOR, matrix, matrix);
     }
 
     public static void resetMatrix(Matrix4f matrix) {
         matrix.setIdentity();
-        Matrix4f.translate(ZERO_VECTOR, matrix, matrix);
-        Matrix4f.translate(ZERO_VECTOR, matrix, matrix);
-        Matrix4f.scale(ONE_VECTOR, matrix, matrix);
     }
 
     public static boolean equals(Matrix4f f, Matrix4f s) {

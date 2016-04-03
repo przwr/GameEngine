@@ -23,8 +23,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * @author Wojtek
  */
@@ -70,7 +68,7 @@ public class TextController extends GUIObject {
         littleFont = Settings.fonts.getFont("Amble-Regular", 20);
         started = false;
         priority = 1;
-        frame = place.getSpriteSheet("messageFrame", "");
+        frame = place.getSpriteSheet("messageFrame", "", false, false);
         rows = 3;
         speakers = new ArrayList<>(1);
         portraits = new ArrayList<>(1);
@@ -617,23 +615,21 @@ public class TextController extends GUIObject {
                 return;
             }
 
-            glPushMatrix();
-
-            glTranslatef((getCamera().getWidth() - optimalWidth) / 2, (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - 3.5f * tile, 0);
-
-            Drawer.setCentralPoint();
+            Drawer.regularShader.translate((getCamera().getWidth() - optimalWidth) / 2, (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - 3.5f
+                    * tile);
 
             drawGui();
 
-            Drawer.returnToCentralPoint();
+            Drawer.regularShader.translate((getCamera().getWidth() - optimalWidth) / 2, (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - 3.5f
+                    * tile);
 
             if (!firstStep) {
                 if (portraits.size() > 0) {
                     if (portraits.get(portrait).onRight) {
-                        Drawer.translate(optimalWidth - 3 * tile, 0);
+                        Drawer.regularShader.translateNoReset(optimalWidth - 3 * tile, 0);
                         portraits.get(portrait).image.renderPieceMirrored(expression);
                     } else {
-                        Drawer.translate(3 * tile, 0);
+                        Drawer.regularShader.translateNoReset(3 * tile, 0);
                         portraits.get(portrait).image.renderPiece(expression);
                     }
                 }
@@ -642,21 +638,19 @@ public class TextController extends GUIObject {
                 firstStep = false;
             }
 
-            Drawer.returnToCentralPoint();
+            Drawer.regularShader.translate((getCamera().getWidth() - optimalWidth) / 2, (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - 3.5f
+                    * tile);
+
 
             if (question) {
                 drawQuestion();
             }
 
-            Drawer.returnToCentralPoint();
-
             Drawer.bindFontTexture();
-
             if (!speakers.get(speaker).isEmpty()) {
                 littleFont.drawLine(speakers.get(speaker) + ":", Place.tileHalf, tile / 5, Color.gray);
             }
-
-            Drawer.translate(Place.tileHalf, 2 * tile / 3
+            Drawer.regularShader.translateNoReset(Place.tileHalf, 2 * tile / 3
                     - (int) (Math.max((deltaLines + (flushing ? change : 0)) * fonts[0].getHeight() * 1.2, 0)));
 
             time += Time.getDelta();
@@ -691,7 +685,6 @@ public class TextController extends GUIObject {
             }
             branch.setLength();
             Drawer.refreshForRegularDrawing();
-            glPopMatrix();
         }
     }
 
@@ -721,30 +714,30 @@ public class TextController extends GUIObject {
     private void drawGui() {
         int tile = Place.tileSize;
         frame.renderPiece(0, 0);
-        Drawer.translate(0, tile);
+        Drawer.regularShader.translateNoReset(0, tile);
         frame.renderPieceResized(0, 1, tile, tile * 1.5f);
-        Drawer.translate(0, tile * 1.5f);
+        Drawer.regularShader.translateNoReset(0, tile * 1.5f);
         frame.renderPiece(0, 2);
-        Drawer.translate(tile, -2.5f * tile);
+        Drawer.regularShader.translateNoReset(tile, -2.5f * tile);
         frame.renderPieceResized(1, 0, optimalWidth - 2 * tile, tile);
-        Drawer.translate(0, tile);
+        Drawer.regularShader.translateNoReset(0, tile);
         frame.renderPieceResized(1, 1, optimalWidth - 2 * tile, tile * 1.5f);
-        Drawer.translate(0, tile * 1.5f);
+        Drawer.regularShader.translateNoReset(0, tile * 1.5f);
         frame.renderPieceResized(1, 2, optimalWidth - 2 * tile, tile);
-        Drawer.translate(optimalWidth - 2 * tile, -2.5f * tile);
+        Drawer.regularShader.translateNoReset(optimalWidth - 2 * tile, -2.5f * tile);
         frame.renderPiece(2, 0);
-        Drawer.translate(0, tile);
+        Drawer.regularShader.translateNoReset(0, tile);
         frame.renderPieceResized(2, 1, tile, tile * 1.5f);
-        Drawer.translate(0, tile * 1.5f);
+        Drawer.regularShader.translateNoReset(0, tile * 1.5f);
         frame.renderPiece(2, 2);
 
         if (!question) {
             if (flushReady) {
-                Drawer.translate(-Place.tileHalf, (int) (5 * Math.sin(time / 30 * Math.PI)));
+                Drawer.regularShader.translateNoReset(-Place.tileHalf, (int) (5 * Math.sin(time / 30 * Math.PI)));
                 frame.renderPiece(3, 0);
             }
             if (index >= branch.length && jumpTo < 0) {
-                Drawer.translate(-Place.tileHalf, 0);
+                Drawer.regularShader.translateNoReset(-Place.tileHalf, 0);
                 frame.renderPiece(3, 1);
             }
         }
@@ -760,31 +753,31 @@ public class TextController extends GUIObject {
             }
         }
         maxL = Math.max(maxL + tile, 3 * tile);
-        Drawer.translate(optimalWidth - maxL - Place.tileHalf, 0);
+        Drawer.regularShader.translateNoReset(optimalWidth - maxL - Place.tileHalf, 0);
         for (i = answerText.length - 1; i >= 0; i--) {
-            Drawer.translate(0, -tile - 2);
+            Drawer.regularShader.translateNoReset(0, -tile - 2);
             if (answer == i) {
-                Drawer.translate(-tile, 0);
+                Drawer.regularShader.translateNoReset(-tile, 0);
                 frame.renderPiece(0, 3);
-                Drawer.translate(tile, 0);
+                Drawer.regularShader.translateNoReset(tile, 0);
             }
             frame.renderPiece(1, 3);
-            Drawer.translate(tile, 0);
+            Drawer.regularShader.translateNoReset(tile, 0);
             frame.renderPieceResized(2, 3, maxL - 2 * tile, tile);
-            Drawer.translate(maxL - 2 * tile, 0);
+            Drawer.regularShader.translateNoReset(maxL - 2 * tile, 0);
             frame.renderPiece(3, 3);
-            Drawer.translate(-maxL + tile, 0);
+            Drawer.regularShader.translateNoReset(-maxL + tile, 0);
             len = (maxL - fonts[0].getWidth(answerText[i])) / 2;
             Drawer.bindFontTexture();
             fonts[0].drawLine(answerText[i], len, tile / 4, Color.black);
             Drawer.refreshColor();
         }
         if (answer < 0) {
-            Drawer.translate(-tile * 0.7f, Place.tileHalf);
+            Drawer.regularShader.translateNoReset(-tile * 0.7f, Place.tileHalf);
             Drawer.setColorStatic(Color.gray);
             frame.renderPiece(0, 3);
             Drawer.refreshColor();
-            Drawer.translate(tile * 0.7f, -Place.tileHalf);
+            Drawer.regularShader.translateNoReset(tile * 0.7f, -Place.tileHalf);
         }
     }
 

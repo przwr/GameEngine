@@ -43,7 +43,7 @@ public class ShadowDrawer {
     }
 
     public static void prepareVBO() {
-        Drawer.shadowShader.resetUniform();
+        Drawer.shadowShader.resetTransformationMatrix();
         Drawer.streamVertexData.clear();
         Drawer.streamColorData.clear();
     }
@@ -51,7 +51,7 @@ public class ShadowDrawer {
     public static void renderCurrentVBO() {
         if (!Drawer.streamVertexData.isEmpty()) {
             Drawer.shadowShader.setUseTexture(false);
-            Drawer.shadowShader.resetUniform();
+            Drawer.shadowShader.resetTransformationMatrix();
             Drawer.shadowVBO.renderShadedTriangleStream(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray());
             Drawer.streamVertexData.clear();
             Drawer.streamColorData.clear();

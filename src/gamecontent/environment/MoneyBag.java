@@ -17,7 +17,6 @@ import game.place.Place;
 import game.text.TextController;
 import gamecontent.MyPlayer;
 
-import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -66,13 +65,12 @@ public class MoneyBag extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
             Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) appearance.getActualWidth() / 4), Methods.roundDouble((float) appearance
                     .getActualWidth() / 8), 15);
             Drawer.refreshColor();
             appearance.render();
-            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

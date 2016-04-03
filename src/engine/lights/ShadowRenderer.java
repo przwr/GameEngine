@@ -95,8 +95,7 @@ public class ShadowRenderer {
         light.getFrameBufferObject().activate();
         clearScreen(1);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-        glPushMatrix();
-        glTranslatef(lightXCentralShifted, lightYCentralShifted, 0);
+        Drawer.shadowShader.translateDefault(lightXCentralShifted, lightYCentralShifted);
         ShadowDrawer.prepareVBO();
     }
 
@@ -441,10 +440,11 @@ public class ShadowRenderer {
 
     private static void endPreRender(Light light) {
         ShadowDrawer.renderCurrentVBO();
-        glPopMatrix();
+        Drawer.shadowShader.translateDefault(-lightXCentralShifted, -lightYCentralShifted);
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         Drawer.regularShader.start();
-        Drawer.setColorStatic(1, 1, 1, 1);
+        Drawer.regularShader.resetTransformationMatrix();
+        Drawer.setColorStatic(1f, 1f, 1f, 1f);
         light.render(displayHeight);
         light.getFrameBufferObject().deactivate();
     }

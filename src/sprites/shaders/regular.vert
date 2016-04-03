@@ -1,4 +1,4 @@
-#version 330 compatibility
+#version 330 core
 
 in int gl_VertexID;
 in vec2 position;
@@ -9,7 +9,7 @@ out vec3 o_colour;
 out vec2 pass_textureCoords;
 
 uniform mat4 transformationMatrix;
-uniform vec2 textureShift;
+uniform mat4 mvpMatrix;
 uniform vec4 sizeModifier;
 uniform float useTexture;
 
@@ -18,17 +18,17 @@ void main(void){
         switch (gl_VertexID % 4){
             case 0:
             case 1:
-                gl_Position =  gl_ModelViewProjectionMatrix * transformationMatrix *  vec4(position.x + sizeModifier.x, position.y, 0.0, 1.0);
-                pass_textureCoords = vec2 (textureCoords.x + textureShift.x + sizeModifier.z, textureCoords.y + textureShift.y);
+                gl_Position =  mvpMatrix * transformationMatrix *  vec4(position.x + sizeModifier.x, position.y, 0.0, 1.0);
+                pass_textureCoords = vec2 (textureCoords.x + sizeModifier.z, textureCoords.y);
                 break;
             case 2:
             case 3:
-                gl_Position =  gl_ModelViewProjectionMatrix * transformationMatrix *  vec4(position.x + sizeModifier.y, position.y, 0.0, 1.0);
-                pass_textureCoords = vec2 (textureCoords.x + textureShift.x + sizeModifier.w, textureCoords.y + textureShift.y);
+                gl_Position =  mvpMatrix * transformationMatrix *  vec4(position.x + sizeModifier.y, position.y, 0.0, 1.0);
+                pass_textureCoords = vec2 (textureCoords.x + sizeModifier.w, textureCoords.y);
                 break;
         }
     } else {
-        gl_Position =  gl_ModelViewProjectionMatrix * transformationMatrix *  vec4(position, 0.0, 1.0);
+        gl_Position =  mvpMatrix * transformationMatrix *  vec4(position, 0.0, 1.0);
         o_colour = colour;
     }
 }

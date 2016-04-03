@@ -19,8 +19,6 @@ import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 import sprites.vbo.VertexBufferObject;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * @author Wojtek
  */
@@ -117,7 +115,6 @@ public class MyGUI extends GUIObject {
             Color light = player.getMap().getLightColor();
             Camera cam = Place.currentCamera;
             color.r = color.g = color.b = (1f - Math.min(Math.min(light.r, light.g), light.b)) * 0.5f;
-            glPushMatrix();
             if (place.playersCount == 1 || !place.singleCamera) {
                 corner = SplitScreen.corner;
             } else {
@@ -132,96 +129,102 @@ public class MyGUI extends GUIObject {
             }
             switch (corner) {
                 case LEFT_TOP:
-                    glTranslatef(2 * border / 3, 2 * border / 3, 0);
+                    Drawer.regularShader.translateDefault(2 * border / 3, 2 * border / 3);
+                    renderAllElements();
+                    Drawer.regularShader.translateDefault(-2 * border / 3, -2 * border / 3);
                     break;
                 case RIGHT_TOP:
-                    glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, 2 * border / 3, 0);
+                    Drawer.regularShader.translateDefault(cam.getWidth() - size * 2 - 8 * border / 3, 2 * border / 3);
+                    renderAllElements();
+                    Drawer.regularShader.translateDefault(-cam.getWidth() + size * 2 + 8 * border / 3, -2 * border / 3);
                     break;
                 case LEFT_BOTTOM:
-                    glTranslatef(2 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
+                    Drawer.regularShader.translateDefault(2 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3);
+                    renderAllElements();
+                    Drawer.regularShader.translateDefault(-2 * border / 3, -cam.getHeight() + size * 2 + 8 * border / 3);
                     break;
                 case RIGHT_BOTTOM:
-                    glTranslatef(cam.getWidth() - size * 2 - 8 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3, 0);
+                    Drawer.regularShader.translateDefault(cam.getWidth() - size * 2 - 8 * border / 3, cam.getHeight() - size * 2 - 8 * border / 3);
+                    renderAllElements();
+                    Drawer.regularShader.translateDefault(-cam.getWidth() + size * 2 + 8 * border / 3, -cam.getHeight() + size * 2 + 8 * border / 3);
                     break;
             }
-            Drawer.setCentralPoint();
-            renderLife();
-            renderEnergy();
-            renderPairArrow();
-            renderIcons();
-            glPopMatrix();
         }
     }
 
+    private void renderAllElements() {
+        renderLife();
+        renderEnergy();
+        renderPairArrow();
+        renderIcons();
+    }
+
     private void renderIcons() {
-        Drawer.translate(size / 2 + border, 2 * border / 3);
+        Drawer.regularShader.translate(size / 2 + border, 2 * border / 3);
         renderItemIcon(0);
         renderIconRing();
 
-        Drawer.translate(size / 2 + border / 3, size / 2 + border / 3);
+        Drawer.regularShader.translateNoReset(size / 2 + border / 3, size / 2 + border / 3);
         renderItemIcon(0);
         renderIconRing();
 
-        Drawer.translate(-size / 2 - border / 3, size / 2 + border / 3);
+        Drawer.regularShader.translateNoReset(-size / 2 - border / 3, size / 2 + border / 3);
         renderItemIcon(1);
         renderIconRing();
 
-        Drawer.translate(-size / 2 - border / 3, -size / 2 - border / 3);
+        Drawer.regularShader.translateNoReset(-size / 2 - border / 3, -size / 2 - border / 3);
         renderItemIcon(0);
         renderIconRing();
-
-        Drawer.returnToCentralPoint();
 
         renderLifeEnergyRings();
 
         switch (corner) {
             case LEFT_TOP:
-                Drawer.translate(2 * (size + border), -2 * border / 3 + border / 6);
+                Drawer.regularShader.translate(2 * (size + border), -2 * border / 3 + border / 6);
                 break;
             case RIGHT_TOP:
-                Drawer.translate(-2 * (size) - border, -2 * border / 3 + border / 6);
+                Drawer.regularShader.translate(-2 * (size) - border, -2 * border / 3 + border / 6);
                 break;
             case LEFT_BOTTOM:
-                Drawer.translate(2 * (size + border), size + 8 * border / 3 - border / 6);
+                Drawer.regularShader.translate(2 * (size + border), size + 8 * border / 3 - border / 6);
                 break;
             case RIGHT_BOTTOM:
-                Drawer.translate(-2 * (size) - border, size + 8 * border / 3 - border / 6);
+                Drawer.regularShader.translate(-2 * (size) - border, size + 8 * border / 3 - border / 6);
                 break;
         }
 
         renderAttackIcon(firstAttackType);
         renderIconRing();
 
-        Drawer.translate(size + border, 0);
+        Drawer.regularShader.translateNoReset(size + border, 0);
         renderAttackIcon(secondAttackType);
         renderIconRing();
-
-        Drawer.returnToCentralPoint();
     }
 
     private void renderItemIcon(int icon) {
         Drawer.setColorStatic(Color.white);
         if (scale != 1f) {
-            glScalef(scale, scale, scale);
+            Drawer.regularShader.scaleNoReset(scale, scale);
         }
         itemIcons.renderPiece(icon);
         if (scale != 1f) {
-            glScalef(1 / scale, 1 / scale, 1 / scale);
+            Drawer.regularShader.scaleNoReset(1 / scale, 1 / scale);
         }
     }
 
     private void renderAttackIcon(int icon) {
         Drawer.setColorStatic(Color.white);
         if (scale != 1f) {
-            glScalef(scale, scale, scale);
+            Drawer.regularShader.scaleNoReset(scale, scale);
         }
         attackIcons.renderPiece(icon);
         if (scale != 1f) {
-            glScalef(1 / scale, 1 / scale, 1 / scale);
+            Drawer.regularShader.scaleNoReset(1 / scale, 1 / scale);
         }
     }
 
-    private void renderIconRing() {
+    private void
+    renderIconRing() {
         Drawer.setColorStatic(color);
         Drawer.regularShader.setUseTexture(false);
         rings.renderTriangleStrip(placement[0], placement[1]);
@@ -229,6 +232,7 @@ public class MyGUI extends GUIObject {
     }
 
     private void renderLifeEnergyRings() {
+        Drawer.regularShader.resetTransformationMatrix();
         Drawer.setColorStatic(color);
         Drawer.regularShader.setUseTexture(false);
         rings.renderTriangleStrip(placement[2], placement[3]);
@@ -296,16 +300,16 @@ public class MyGUI extends GUIObject {
         Drawer.setColorStatic(color);
         switch (corner) {
             case LEFT_TOP:
-                Drawer.translate(3 * size + 5 * border / 2 - base, base + size / 4 - 2 * border / 3 + border / 6);
+                Drawer.regularShader.translate(3 * size + 5 * border / 2 - base, base + size / 4 - 2 * border / 3 + border / 6);
                 break;
             case RIGHT_TOP:
-                Drawer.translate(-size - base - border / 2, base + size / 4 - 2 * border / 3 + border / 6);
+                Drawer.regularShader.translate(-size - base - border / 2, base + size / 4 - 2 * border / 3 + border / 6);
                 break;
             case LEFT_BOTTOM:
-                Drawer.translate(3 * size + 5 * border / 2 - base, size * 2 + base + size / 4 - 8 * border / 3 - border / 6);
+                Drawer.regularShader.translate(3 * size + 5 * border / 2 - base, size * 2 + base + size / 4 - 8 * border / 3 - border / 6);
                 break;
             case RIGHT_BOTTOM:
-                Drawer.translate(-size - base - border / 2, size * 2 + base + size / 4 - 8 * border / 3 - border / 6);
+                Drawer.regularShader.translate(-size - base - border / 2, size * 2 + base + size / 4 - 8 * border / 3 - border / 6);
                 break;
         }
         switch (((MyPlayer) player).getActiveActionPairID()) {
@@ -323,7 +327,6 @@ public class MyGUI extends GUIObject {
                 break;
             default:
         }
-        Drawer.returnToCentralPoint();
         Drawer.regularShader.setUseTexture(true);
     }
 

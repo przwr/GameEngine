@@ -11,7 +11,8 @@ import sprites.SpriteSheet;
 
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_BINDING_2D;
+import static org.lwjgl.opengl.GL11.glGetInteger;
 
 public class Tile extends GameObject implements Appearance {
 
@@ -60,10 +61,9 @@ public class Tile extends GameObject implements Appearance {
         return i >= tileStack.size() ? null : tileStack.get(i);
     }
 
-    public void renderSpecific(int xEffect, int yEffect, int x, int y) {
-        glTranslatef(x, y, 0);
+    public void renderSpecific(int x, int y) {
+        Drawer.regularShader.translate(x, y);
         spriteSheet.renderMultiplePieces(tileStack);
-        glTranslatef(-x, -y, 0);
     }
 
     public void addToTileVBO(int x, int y) {
@@ -136,9 +136,8 @@ public class Tile extends GameObject implements Appearance {
 
     @Override
     public void render() {
-        glTranslatef(getX(), getY(), 0);
+        Drawer.regularShader.translate(getX(), getY());
         tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
-        glTranslatef(-getX(), -getY(), 0);
     }
 
     public SpriteSheet getSpriteSheet() {
