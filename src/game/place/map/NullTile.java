@@ -34,16 +34,12 @@ public class NullTile extends Tile implements Appearance {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
     }
 
     @Override
     public boolean bindCheck() {
         return true;
-    }
-
-    @Override
-    public void render() {
     }
 
     @Override

@@ -45,11 +45,8 @@ import static engine.systemcommunication.IO.loadInputFromFile;
  */
 public class MyGame extends Game {
 
-    static long sum = 0;
-    static int count = 0;
     private final getInput[] inputs = new getInput[2];
     private final updateType[] ups = new updateType[2];
-    public boolean gameLoaded;
     Timer timer = new Timer("Render", 300);
     private boolean designer = false;
 
@@ -206,14 +203,14 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-//        timer.start();
+        timer.start();
         if (running && place != null) {
             place.render();
         } else {
             Drawer.clearScreen(0);
             menu.render();
         }
-//        timer.stop();
+        timer.stop();
     }
 
     @Override

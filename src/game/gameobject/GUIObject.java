@@ -29,7 +29,7 @@ public abstract class GUIObject {
         visible = true;
     }
 
-    public abstract void render(int xEffect, int yEffect);
+    public abstract void render();
 
     public Player getPlayer() {
         return player;

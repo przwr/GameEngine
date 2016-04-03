@@ -606,7 +606,7 @@ public class TextController extends GUIObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (started) {
             int tile = Place.tileSize;
             action = playerController.getAction(MyController.INPUT_ACTION).isKeyClicked();
@@ -618,10 +618,6 @@ public class TextController extends GUIObject {
             }
 
             glPushMatrix();
-
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-
-            glScaled(1 / Place.getCurrentScale(), 1 / Place.getCurrentScale(), 1);
 
             glTranslatef((getCamera().getWidth() - optimalWidth) / 2, (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - 3.5f * tile, 0);
 

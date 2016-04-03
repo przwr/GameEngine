@@ -10,7 +10,6 @@ import collision.Figure;
 import engine.utilities.Drawer;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
-import game.place.Place;
 import game.place.map.ForegroundTile;
 import game.place.map.Map;
 import game.place.map.Tile;
@@ -21,7 +20,8 @@ import sprites.SpriteSheet;
 import java.util.ArrayList;
 
 import static collision.OpticProperties.NO_SHADOW;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -56,13 +56,8 @@ public class TemporaryBlock extends GameObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-
-        glTranslatef(getX(), getY(), 0);
+    public void render() {
+        glTranslatef(getX(), (int) (getY() - floatHeight), 0);
         int mode = objPlace.getMode();
         if (mode != 2 && (objPlace.isBlocksMode() || mode == 1)) {
             int d = 2;
@@ -100,7 +95,7 @@ public class TemporaryBlock extends GameObject {
             }
         }
         Drawer.refreshForRegularDrawing();
-        glPopMatrix();
+        glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
     }
 
     public void move(int dx, int dy) {

@@ -6,11 +6,9 @@ import engine.utilities.Methods;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
-import game.place.Place;
 import org.newdawn.slick.Color;
 
 import static game.gameobject.GameObject.*;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author przemek
@@ -125,16 +123,12 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void render(GameObject owner, int xEffect, int yEffect) {
+    public void render(GameObject owner) {
         Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
         int angle = 360 - (owner.getDirection8Way() * 45);
         Drawer.drawEllipseSector(position.getX(), position.getY(), radius, Methods.roundDouble(radius * Methods.ONE_BY_SQRT_ROOT_OF_2), angle -
                 activationAngle / 2, angle + activationAngle / 2, 32);
         Drawer.refreshColor();
-        glPopMatrix();
     }
 
 

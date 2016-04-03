@@ -7,11 +7,9 @@ import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
-import game.place.Place;
 import org.newdawn.slick.Color;
 
 import static game.gameobject.GameObject.*;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by przemek on 29.08.15.
@@ -125,7 +123,7 @@ public class LineInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void render(GameObject owner, int xEffect, int yEffect) {
+    public void render(GameObject owner) {
         Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
         int tempWidth = (int) (Methods.ONE_BY_SQRT_ROOT_OF_2 * width);
         boolean ellipse = true;
@@ -144,26 +142,18 @@ public class LineInteractiveCollision extends InteractiveCollision {
                 ellipse = false;
                 break;
         }
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        Drawer.setCentralPoint();
         Drawer.drawLineWidth(position.getX(), position.getY(), end.getX() - position.getX(), end.getY() - position.getY(), tempWidth);
-        Drawer.returnToCentralPoint();
-        Drawer.setCentralPoint();
         if (ellipse) {
             Drawer.drawEllipse(position.getX(), position.getY(), width / 2, (int) (Methods.ONE_BY_SQRT_ROOT_OF_2 * (width / 2)), 32);
         } else {
             Drawer.drawCircle(position.getX(), position.getY(), width / 4, 16);
         }
-        Drawer.returnToCentralPoint();
         if (ellipse) {
             Drawer.drawEllipse(end.getX(), end.getY(), width / 2, (int) (Methods.ONE_BY_SQRT_ROOT_OF_2 * (width / 2)), 32);
         } else {
             Drawer.drawCircle(end.getX(), end.getY(), width / 4, 16);
         }
         Drawer.refreshColor();
-        glPopMatrix();
     }
 
     public void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half) {

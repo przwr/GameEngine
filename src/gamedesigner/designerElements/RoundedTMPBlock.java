@@ -9,12 +9,11 @@ import collision.Block;
 import collision.RoundRectangle;
 import engine.utilities.Drawer;
 import engine.utilities.Point;
-import game.place.Place;
 import game.place.map.ForegroundTile;
 import game.place.map.Map;
 import sprites.SpriteSheet;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -194,11 +193,8 @@ public class RoundedTMPBlock extends TemporaryBlock {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-        glTranslatef(getX(), getY(), 0);
+    public void render() {
+        glTranslatef(getX(), (int) (getY() - floatHeight), 0);
         int mode = objPlace.getMode();
         if (mode != 2 && (objPlace.isBlocksMode() || mode == 1)) {
             int d = 2;
@@ -210,17 +206,17 @@ public class RoundedTMPBlock extends TemporaryBlock {
                     Drawer.drawRectangle(0, 0, width, height);
                 }
                 if (upHeight == 0) {
-                    glColor3f(0f, 0f, 1f);
+                    Drawer.setColorStatic(0f, 0f, 1f, 1f);
                     Drawer.drawRectangle(0, 0, width, d);
                     Drawer.drawRectangle(0, height - d, width, d);
                     Drawer.drawRectangle(0, 0, d, height);
                     Drawer.drawRectangle(width - d, 0, d, height);
                 } else {
                     if (mode == 1) {
-                        glColor3f(0.9f, 0.9f, 0.9f);
+                        Drawer.setColorStatic(0.9f, 0.9f, 0.9f, 1f);
                         Drawer.drawRectangle(0, height, width, tmpH);
                     }
-                    glColor3f(0f, 0f, 1f);
+                    Drawer.setColorStatic(0f, 0f, 1f, 1f);
                     Drawer.drawRectangle(0, 0, width, d);
                     Drawer.drawRectangle(0, height - d, width, d);
                     Drawer.drawRectangle(0, height - d + tmpH, width, d);
@@ -279,7 +275,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
                         }
                     }
                     if (!complete) {
-                        glColor3f(1f, 1f, 1f);
+                        Drawer.setColorStatic(1f, 1f, 1f, 1f);
                         Drawer.drawLineWidth(-tile / 2 + d, -height - tmpH - tile / 2 - d, tile / 3, tile / 3, 2 * d);
                         Drawer.drawLineWidth(-tile / 2 + d, -height - tmpH - tile / 2 - d, -tile / 3, tile / 3, 2 * d);
                         Drawer.drawLineWidth(-tile / 2 + d, tile / 2 + d, tile / 3, -tile / 3, 2 * d);
@@ -291,7 +287,7 @@ public class RoundedTMPBlock extends TemporaryBlock {
                     }
                 }
             } else {
-                glColor3f(0.5f, 0.5f, 1f);
+                Drawer.setColorStatic(0.5f, 0.5f, 1f, 1f);
                 Drawer.drawRectangle(0, 0, width, d);
                 Drawer.drawRectangle(0, height - d, width, d);
                 Drawer.drawRectangle(0, 0, d, height);
@@ -299,6 +295,6 @@ public class RoundedTMPBlock extends TemporaryBlock {
             }
         }
         Drawer.refreshForRegularDrawing();
-        glPopMatrix();
+        glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
     }
 }

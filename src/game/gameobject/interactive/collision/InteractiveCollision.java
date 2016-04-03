@@ -118,7 +118,7 @@ public abstract class InteractiveCollision {
         return directions[Math.abs(objectDirection - ownerDirection)];
     }
 
-    public abstract void render(GameObject owner, int xEffect, int yEffect);
+    public abstract void render(GameObject owner);
 
     public Point getPosition() {
         return position;

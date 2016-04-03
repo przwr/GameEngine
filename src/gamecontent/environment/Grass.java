@@ -7,13 +7,12 @@ import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
-import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
 import gamedesigner.ObjectPlayer;
 import org.newdawn.slick.Color;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * Created by przemek on 27.11.15.
@@ -113,10 +112,7 @@ public class Grass extends GameObject {
 
 
     @Override
-    public void render(int xEffect, int yEffect) {
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+    public void render() {
         glTranslatef(getX(), (int) (getY() - floatHeight), 0);
         if (masking) {
             tempX = blades[(yBladesCount - 1) * 3 * xBladesCount + 2].getX();
@@ -161,7 +157,7 @@ public class Grass extends GameObject {
         Drawer.regularShader.setUseTexture(true);
         Drawer.regularShader.setUseColour(false);
         Drawer.refreshColor();
-        glPopMatrix();
+        glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
     }
 
     public void renderStill() {

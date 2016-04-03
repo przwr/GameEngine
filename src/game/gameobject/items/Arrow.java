@@ -25,7 +25,7 @@ import org.newdawn.slick.Color;
 
 import static game.gameobject.interactive.Interactive.BOW_HURT;
 import static game.gameobject.items.Weapon.BOW;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author Wojtek
@@ -110,31 +110,24 @@ public class Arrow extends Entity {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
-        tail.render(xEffect, yEffect);
-        glPushMatrix();
-        glTranslatef(xEffect, yEffect, 0);
-        glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
+    public void render() {
+        tail.render();
         glTranslatef(getX(), getY(), 0);
         int ix = (int) (Methods.xRadius(getDirection(), lenght / 2));
         int iy = (int) (-Methods.yRadius(getDirection(), lenght / 2));
         Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-        Drawer.setCentralPoint();
         Drawer.drawLineWidth(-ix, -iy, ix, iy, lenght / 15);
         Drawer.setColorBlended(color);
-        Drawer.returnToCentralPoint();
         if (tail.isActive()) {
             ix = (int) (Methods.xRadius(tail.getDirection(), lenght / 2));
             iy = (int) (-Methods.yRadius(tail.getDirection(), lenght / 2));
         }
-        Drawer.translate(0, (float) -floatHeight);
-        Drawer.drawLineWidth(-ix, -iy, ix, iy, lenght / 15);
-        Drawer.returnToCentralPoint();
+        Drawer.drawLineWidth(-ix, -iy - (int) floatHeight, ix, iy, lenght / 15);
         Drawer.refreshColor();
-        glPopMatrix();
+        glTranslatef(-getX(), -getY(), 0);
         if (Main.SHOW_INTERACTIVE_COLLISION) {
             interactiveObjects.stream().forEach((interactive) -> {
-                interactive.render(xEffect, yEffect);
+                interactive.render();
             });
         }
     }

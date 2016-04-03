@@ -101,7 +101,7 @@ public abstract class Place extends ScreenPlace {
                                 currentCamera.renderGUI();
                                 currentCamera.neutralizeEffect();
                                 console.setCamera(currentCamera);
-                                console.render(0, 0);
+                                console.render();
                                 glDisable(GL_SCISSOR_TEST);
                             } else {
                                 Drawer.clearScreen(0);
@@ -152,7 +152,7 @@ public abstract class Place extends ScreenPlace {
                         currentCamera.renderGUI();
                         currentCamera.neutralizeEffect();
                         console.setCamera(currentCamera);
-                        console.render(0, 0);
+                        console.render();
                         glDisable(GL_SCISSOR_TEST);
                     } else {
                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

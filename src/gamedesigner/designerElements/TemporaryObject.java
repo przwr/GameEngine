@@ -45,19 +45,14 @@ public class TemporaryObject extends GameObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (objPlace.getMode() != ObjectPlace.MODE_VIEWING) {
-            glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), getY(), 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-            glColor4f(0f, 0.5f, 1f, 1f);
-
+            Drawer.setColorStatic(0f, 0.5f, 1f, 1f);
             Drawer.drawRing(Place.tileSize / 2, Place.tileSize / 2, Place.tileSize / 2, 3, 10);
-
             Drawer.refreshForRegularDrawing();
-            glPopMatrix();
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

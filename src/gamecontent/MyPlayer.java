@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -89,6 +89,7 @@ public class MyPlayer extends Player {
         actionSets.add(new InteractionSet(BOW));
         if (!Main.TEST) {
             Weapon sword = new Weapon("Sword", SWORD);
+            this.weapon.setWearing(true);
             sword.setModifier(1.2f);
             firstWeapon = sword;
             Weapon bow = new Weapon("Bow", BOW);
@@ -362,36 +363,25 @@ public class MyPlayer extends Player {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (appearance != null) {
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             if (visibleShadow) {
-                glPushMatrix();
-                glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
                 Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-                Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
-                        * Place.getCurrentScale() / 2f), 24);
-                /*DEMO
-                 glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
-                 Drawer.refreshColor();
-                 Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) * Place.getCurrentScale()) / 2), place.standardFont,
-                 Drawer.getCurrentColor());*/
-                glPopMatrix();
+                Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
+                        Methods.roundDouble(collision.getHeight() / 2f), 24);
             } else {
                 visibleShadow = true;
             }
             Drawer.refreshColor();
-
+//            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) / 2)), place.standardFont, Drawer.getCurrentColor());
+//            Drawer.refreshColor();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 for (Interactive interactive : interactiveObjects) {
-                    interactive.render(xEffect, yEffect);
+                    interactive.render();
                 }
             }
 
-            glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
-            Drawer.setCentralPoint();
             if (colorAlpha < 1f) {
                 Drawer.setColorAlpha(colorAlpha);
                 appearance.renderPart(0, appearance.getWidth());
@@ -399,7 +389,7 @@ public class MyPlayer extends Player {
             } else if (((ClothedAppearance) appearance).isUpToDate()) {
                 appearance.render();
             }
-            glPopMatrix();
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

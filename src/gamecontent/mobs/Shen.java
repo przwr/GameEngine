@@ -26,7 +26,7 @@ import net.jodk.lang.FastMath;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -409,7 +409,7 @@ public class Shen extends Mob {
                 animation.animateIntervalInDirection(getDirection8Way(), 12, 14);
             }
         } else {
-            if (fold || (stats.isProtectionState() && !unfold)) {
+            if (fold) {
                 animation.setFPS(15);
                 animation.animateIntervalInDirection(getDirection8Way(), 7, 12);
                 animation.setStopAtEnd(true);
@@ -423,6 +423,8 @@ public class Shen extends Mob {
                 if (animation.getDirectionalFrameIndex() == 7) {
                     unfold = false;
                 }
+            } else if (stats.isProtectionState()) {
+                animation.animateSingleInDirection(getDirection8Way(), 12);
             } else {
                 animation.animateSingleInDirection(getDirection8Way(), 0);
             }
@@ -430,32 +432,23 @@ public class Shen extends Mob {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
-                    * Place.getCurrentScale() / 2f), 24);
-            glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
+            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
+                    Methods.roundDouble(collision.getHeight() / 2f), 24);
             Drawer.refreshColor();
 //			Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight()) * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
-            glPopMatrix();
-
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
-                    interactive.render(xEffect, yEffect);
+                    interactive.render();
                 });
             }
-
-            glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             appearance.render();
             Drawer.refreshColor();
-            glPopMatrix();
 //            renderPathPoints(xEffect, yEffect);
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

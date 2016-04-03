@@ -14,7 +14,7 @@ import game.place.map.Area;
 import game.place.map.Map;
 import sprites.Appearance;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * Created by przemek on 16.11.15.
@@ -106,15 +106,12 @@ public class SpawnPoint extends GameObject {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
             glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             appearance.render();
             Drawer.refreshColor();
-            glPopMatrix();
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 

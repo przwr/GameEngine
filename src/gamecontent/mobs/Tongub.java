@@ -27,7 +27,7 @@ import sprites.SpriteSheet;
 
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 
 /**
  * @author przemek
@@ -396,7 +396,7 @@ public class Tongub extends Mob {
      animation.animateIntervalInDirection(getDirection8Way(), 17, 22); - wykopanie
      */
     private void updateAnimation() {
-        if (dig || stats.isProtectionState()) {
+        if (dig) {
             animation.setFPS(15);
             animation.animateIntervalInDirection(getDirection8Way(), 11, 17);
             animation.setStopAtEnd(true);
@@ -410,6 +410,8 @@ public class Tongub extends Mob {
             if (animation.getDirectionalFrameIndex() == 23) {
                 undig = false;
             }
+        } else if (stats.isProtectionState()) {
+            animation.animateSingleInDirection(getDirection8Way(), 17);
         } else if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
             pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
             if (currentPastDirection > 1) {
@@ -431,33 +433,24 @@ public class Tongub extends Mob {
     }
 
     @Override
-    public void render(int xEffect, int yEffect) {
+    public void render() {
         appearance.updateFrame();
         if (appearance != null) {
-            glPushMatrix();
-            glTranslatef((int) (getX() * Place.getCurrentScale() + xEffect), (int) (getY() * Place.getCurrentScale() + yEffect), 0);
+            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, 0, Methods.roundDouble(collision.getWidth() * Place.getCurrentScale() / 2f), Methods.roundDouble(collision.getHeight()
-                    * Place.getCurrentScale() / 2f), 24);
-            glTranslatef(0, -(int) (floatHeight * Place.getCurrentScale()), 0);
+            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
+                    Methods.roundDouble(collision.getHeight() / 2f), 24);
             Drawer.refreshColor();
 //			Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight()) * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
-            glPopMatrix();
-
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
-                    interactive.render(xEffect, yEffect);
+                    interactive.render();
                 });
             }
-
-            glPushMatrix();
-            glTranslatef(xEffect, yEffect, 0);
-            glScaled(Place.getCurrentScale(), Place.getCurrentScale(), 1);
-            glTranslatef(getX(), (int) (getY() - floatHeight), 0);
             appearance.render();
             Drawer.refreshColor();
-            glPopMatrix();
 //            renderPathPoints(xEffect, yEffect);
+            glTranslatef(-getX(), -(int) (getY() - floatHeight), 0);
         }
     }
 }

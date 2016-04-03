@@ -30,9 +30,9 @@ public abstract class Player extends Entity {
     protected boolean first, stopped;
     protected boolean visibleShadow = true;
     protected Weapon activeWeapon;
-    private Menu menu;
     protected Map empty;
     protected GameOnline online;
+    private Menu menu;
 
     protected Player(String name) {
         super();
@@ -62,7 +62,7 @@ public abstract class Player extends Entity {
         Drawer.refreshForRegularDrawing();
         guiList.stream().forEach((go) -> {
             if (go.isVisible()) {
-                go.render(xEffect, yEffect);
+                go.render();
             }
         });
     }
