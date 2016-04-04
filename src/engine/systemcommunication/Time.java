@@ -14,6 +14,7 @@ public final class Time {
     private static float DAMPING = 50000000 / 3f;
     private static long currentTime;
     private static long lastTime;
+    public static float speed = 1;
 
     private Time() {
     }
@@ -38,6 +39,7 @@ public final class Time {
 
     public static void setGameSpeed(float factor) {
         resetGameSpeed();
-        DAMPING *= factor;
+        speed = factor;
+        DAMPING /= speed;
     }
 }

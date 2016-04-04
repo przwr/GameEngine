@@ -5,7 +5,7 @@
  */
 package engine.utilities;
 
-import engine.systemcommunication.Time;
+import static engine.systemcommunication.Time.speed;
 import game.place.Place;
 
 /**
@@ -96,7 +96,7 @@ public class Delay {
     public void startFPSDependent() {
         started = true;
         //System.out.println((length * Time.getDelta()) + " " + (length / Time.getDelta()));
-        endTime = length + getCurrentMiliSeconds();
+        endTime = (long) (length / speed) + getCurrentMiliSeconds();
     }
 
     public void startAt(int start) {
