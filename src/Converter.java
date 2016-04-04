@@ -19,14 +19,14 @@ import java.util.logging.Logger;
  */
 public class Converter {    //Jakby ktoś chciał na szybko przekonwertować duże ilości plików <(^.^<)
 
-    private static final String folder = "res/objects/demo/testMap.puz";
+    private static final String destination = "res/objects/demo/testMap.puz";
     private static final String extension = ".puz";
     private static final boolean openFolders = true;
     private static final boolean isThisOkayMommy = true;   //Trzeba uważać :D
 
     public static void main(String[] argv) {
         if (isThisOkayMommy) {
-            File open = new File(folder);
+            File open = new File(destination);
             if (open.isDirectory()) {
                 readFolder(open);
             } else {
@@ -61,13 +61,17 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
             String line;
             String placer;
             String[] data;
+            boolean analysing = true;
             while ((line = read.readLine()) != null) {
-                if (line.startsWith("ft")) {
+                if (line.startsWith("b")) {
+                    analysing = false;
+                }
+                if (analysing && line.startsWith("ft")) {
                     data = line.split(":");
                     placer = "ft";
                     for (int i = 1; i < data.length; i++) {
                         if (i == 5) {
-                            placer += ":" + (data[5].equals("2") ? OpticProperties.IN_SHADE_NO_SHADOW : data[5]);
+                            placer += ":" + (data[5].equals("0") ? OpticProperties.IN_SHADE_NO_SHADOW : data[5]);
                         } else {
                             placer += ":" + data[i];
                         }
