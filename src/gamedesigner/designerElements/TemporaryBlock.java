@@ -78,11 +78,11 @@ public class TemporaryBlock extends GameObject {
                         Drawer.drawRectangle(0, height, width, tmpH);
                     }
                     Drawer.setColorStatic(1f, 0f, 0f, 1f);
-                    Drawer.drawRectangle(0, 0, width, d);
-                    Drawer.drawRectangle(0, height - d, width, d);
-                    Drawer.drawRectangle(0, height - d + tmpH, width, d);
-                    Drawer.drawRectangle(0, height - d + tmpH, d, -tmpH - height + d);
-                    Drawer.drawRectangle(width - d, height - d + tmpH, d, -tmpH - height + d);
+                    Drawer.drawRectangle(d, 0, width - 2 * d, d);
+                    Drawer.drawRectangle(d, height - d, width - 2 * d, d);
+                    Drawer.drawRectangle(d, height - d + tmpH, width - 2 * d, d);
+                    Drawer.drawRectangle(0, 0, d, tmpH + height);
+                    Drawer.drawRectangle(width - d, 0, d, tmpH + height);
                 }
             } else {
                 Drawer.setColorStatic(1f, 0.5f, 0.5f, 1f);

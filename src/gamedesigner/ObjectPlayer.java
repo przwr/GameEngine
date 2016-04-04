@@ -467,11 +467,11 @@ public class ObjectPlayer extends Player {
                 Drawer.drawRectangle(-d, 0, d, yd);
                 Drawer.drawRectangle(xd, 0, d, yd);
             } else {
-                Drawer.drawRectangle(-d, -d - tmpH, xd + 2 * d, d);
+                Drawer.drawRectangle(0, -d - tmpH, xd, d);
                 Drawer.drawRectangle(0, yd - tmpH, xd, d);
                 Drawer.drawRectangle(0, yd, xd, d);
-                Drawer.drawRectangle(-d, yd + d, d, -tmpH - yd - d);
-                Drawer.drawRectangle(xd, yd + d, d, -tmpH - yd - d);
+                Drawer.drawRectangle(-d, -tmpH - d, d, tmpH + yd + 2 * d);
+                Drawer.drawRectangle(xd, -tmpH - d, d, tmpH + yd + 2 * d);
             }
         }
         if (key.key(KEY_LMENU) && mode <= ObjectPlace.MODE_BLOCK) {
