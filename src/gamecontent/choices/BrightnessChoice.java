@@ -35,6 +35,6 @@ public class BrightnessChoice extends MenuChoice {
 
     @Override
     public String getLabel() {
-        return label + Settings.gameBrightness + (((int) (Settings.gameBrightness * 100) % 10 == 0) ? "0" : "");
+        return label + Settings.gameBrightness + (((int) (Settings.gameBrightness * 100) % 10 == 0) ? "0 " : " ") + "###";
     }
 }

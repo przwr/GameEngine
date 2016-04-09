@@ -12,7 +12,6 @@ import engine.lights.Light;
 import engine.utilities.Drawer;
 import engine.utilities.Point;
 import engine.utilities.PointContainer;
-import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
@@ -548,8 +547,6 @@ public abstract class Map {
         Drawer.regularShader.translate(xTemp * Place.tileSize, yTemp * Place.tileSize);
         Drawer.setColorStatic(Color.cyan);
         Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
-        Drawer.renderStringCentered(String.valueOf(i), Place.tileSize, Place.tileSize,
-                Settings.fonts.getFont("Amble-Regular", (int) (Place.getCurrentScale() * 32)), Color.cyan);
         if (areaConnectors != null && areaConnectors[i] != null) {
             int c = 0;
             for (AreaConnection connection : areaConnectors[i].getConnections()) {

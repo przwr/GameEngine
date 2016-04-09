@@ -123,24 +123,24 @@ public class SpriteSheet extends Sprite {
             textureCoordinates[i] = (piece % xTiles) / (float) xTiles;
             textureCoordinates[i + 1] = (piece / xTiles) / (float) yTiles;
             textureCoordinates[i + 2] = (piece % xTiles) / (float) xTiles;
-            textureCoordinates[i + 3] = (1f + (piece / xTiles)) / (float) yTiles;
-            textureCoordinates[i + 4] = (1f + (piece % xTiles)) / (float) xTiles;
+            textureCoordinates[i + 3] = (1 + piece / xTiles) / (float) yTiles;
+            textureCoordinates[i + 4] = (1 + piece % xTiles) / (float) xTiles;
             textureCoordinates[i + 5] = (piece / xTiles) / (float) yTiles;
-            textureCoordinates[i + 6] = (1f + (piece % xTiles)) / (float) xTiles;
-            textureCoordinates[i + 7] = (1f + (piece / xTiles)) / (float) yTiles;
+            textureCoordinates[i + 6] = (1 + piece % xTiles) / (float) xTiles;
+            textureCoordinates[i + 7] = (1 + piece / xTiles) / (float) yTiles;
         }
         if (canBeMirrored) {
             for (int i = 4 + textureCoordinates.length / 2; i < textureCoordinates.length; i += 8) {
                 frame = ((i - 8) % ((textureCoordinates.length - 8) / 2)) / 8;
                 int piece = getFramesPosition(frame);
-                textureCoordinates[i] = (1f + (piece % xTiles)) / xTiles;
+                textureCoordinates[i] = (1 + piece % xTiles) / xTiles;
                 textureCoordinates[i + 1] = (float) (piece / xTiles) / yTiles;
-                textureCoordinates[i + 2] = (1f + (piece % xTiles)) / xTiles;
-                textureCoordinates[i + 3] = (1f + (piece / xTiles)) / yTiles;
+                textureCoordinates[i + 2] = (1 + piece % xTiles) / xTiles;
+                textureCoordinates[i + 3] = (1 + piece / xTiles) / yTiles;
                 textureCoordinates[i + 4] = (float) (piece % xTiles) / xTiles;
                 textureCoordinates[i + 5] = (float) (piece / xTiles) / yTiles;
                 textureCoordinates[i + 6] = (float) (piece % xTiles) / xTiles;
-                textureCoordinates[i + 7] = (1f + (piece / xTiles)) / yTiles;
+                textureCoordinates[i + 7] = (1 + piece / xTiles) / yTiles;
             }
         }
         for (int i = 0; i < indices.length; i++) {
@@ -222,7 +222,7 @@ public class SpriteSheet extends Sprite {
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
                 vectorModifier.set(color, color, color, 1);
-                Drawer.shadowShader.loadColourModifier(vectorModifier);
+                Drawer.shadowShader.loadColorModifier(vectorModifier);
                 vbo.renderTextured(4 + type * framesCount + frame * 4, 4);
             }
         }
@@ -245,7 +245,7 @@ public class SpriteSheet extends Sprite {
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
                 vectorModifier.set(color, color, color, 1);
-                Drawer.shadowShader.loadColourModifier(vectorModifier);
+                Drawer.shadowShader.loadColorModifier(vectorModifier);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.shadowShader.loadSizeModifier(vectorModifier);
                 vbo.renderTextured(4 + frame * 4, 4);

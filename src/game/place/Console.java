@@ -5,21 +5,22 @@
  */
 package game.place;
 
-import engine.utilities.Drawer;
+import game.Settings;
 import game.gameobject.GUIObject;
-import game.place.cameras.Camera;
-import org.newdawn.slick.Color;
+import game.text.fonts.TextMaster;
+import game.text.fonts.TextPiece;
+import org.lwjgl.opengl.Display;
 
 /**
  * @author Wojtek
  */
 public class Console extends GUIObject {
 
+    private static TextPiece text;
     private final String[] messages;
     private final int tile;
     private final String[] stat;
     private float alpha;
-    private Camera camera;
     private int statNumber;
     private boolean stats;
 
@@ -30,6 +31,7 @@ public class Console extends GUIObject {
         this.stat = new String[30];
         statNumber = 0;
         tile = Place.tileSize;
+        text = new TextPiece("", 24, TextMaster.getFont("Lato-Regular"), Display.getWidth(), false);
 //        stats = true;
     }
 
@@ -59,19 +61,16 @@ public class Console extends GUIObject {
         return stats;
     }
 
-    public void setCamera(Camera cam) {
-        camera = cam;
-    }
-
     @Override
     public void render() {
         if (alpha > 0f || stats) {
+            TextMaster.startRenderText();
             if (alpha > 0f) {
                 for (int i = 0; i < messages.length; i++) {
                     if (messages[i] != null) {
-                        Drawer.renderString(messages[i], (int) ((tile * 0.1) * camera.getScale()),
-                                (int) (camera.getHeight() - (i + 1.1) * tile * 0.5 * camera.getScale()),
-                                place.standardFont, new Color(1f, 1f, 1f, Math.min(alpha, 1) * (i == 0 ? 1f : 0.5f)));
+                        text.setText(messages[i]);
+                        TextMaster.render(text, (int) ((tile * 0.1) * Settings.nativeScale),
+                                Display.getHeight() - (int) ((i + 1.1) * tile * 0.5 * Settings.nativeScale));
                     }
                 }
                 alpha -= 0.01f;
@@ -79,14 +78,13 @@ public class Console extends GUIObject {
             if (stats) {
                 for (int i = 0; i < stat.length; i++) {
                     if (stat[i] != null) {
-                        Drawer.renderString(stat[i], (int) ((tile * 0.1) * camera.getScale()),
-                                (int) (i * tile * 0.5 * camera.getScale()),
-                                place.standardFont, Color.white);
+                        text.setText(stat[i]);
+                        TextMaster.render(text, (int) ((tile * 0.1) * Settings.nativeScale), 0);
                     }
                 }
                 statNumber = 0;
             }
-            Drawer.refreshForRegularDrawing();
+            TextMaster.endRenderText();
         }
     }
 }

@@ -21,7 +21,8 @@ import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
 import game.place.cameras.PlayersCamera;
 import game.place.map.Map;
-import game.text.FontHandler;
+import game.text.fonts.TextMaster;
+import game.text.fonts.TextPiece;
 import gamecontent.environment.Bush;
 import gamecontent.environment.GrassClump;
 import gamecontent.environment.Tree;
@@ -30,10 +31,7 @@ import gamedesigner.ObjectPlayer;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.Color;
 import sounds.Sound;
-import sprites.fbo.FrameBufferObject;
-import sprites.vbo.VertexBufferObject;
 
 import java.io.File;
 import java.util.Iterator;
@@ -47,11 +45,14 @@ public class MyGame extends Game {
 
     private final getInput[] inputs = new getInput[2];
     private final updateType[] ups = new updateType[2];
+    public TextPiece loading;
     Timer timer = new Timer("Render", 300);
     private boolean designer = false;
 
     public MyGame(String title, Controller[] controllers) {
         super(title);
+        font = TextMaster.getFont("Lato-Regular");
+        loading = new TextPiece(Settings.language.menu.Loading + " . . .", 36, font, Display.getWidth(), true);
         SplitScreen.initialise();
         players = new Player[4];
         players[0] = new MyPlayer(true, "Player 1");
@@ -237,8 +238,7 @@ public class MyGame extends Game {
         place.players = new GameObject[4];
         place.playersCount = playersCount;
         Place.progress = 2;
-        FontHandler font = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
-        loading(1, font);
+        loading(1);
         switch (playersCount) {
             case 1:
                 if (Main.TEST) {
@@ -288,7 +288,7 @@ public class MyGame extends Game {
             default:
                 break;
         }
-        loading(2, font);
+        loading(2);
         System.arraycopy(players, 0, place.players, 0, 4);
         place.makeShadows();
         mode = 0;
@@ -307,27 +307,18 @@ public class MyGame extends Game {
         started = running = true;
     }
 
-    public void loading(int progress, FontHandler font) {
+    public void loading(int progress) {
         Drawer.clearScreen(0);
-        showLoading(progress, font);
+        showLoading(progress);
         Display.sync(60);
         Display.update();
     }
 
     @Override
-    public void showLoading(int progress, FontHandler font) {
-        String loading = Settings.language.menu.Loading;
-        String dots = "";
-        for (int i = 0; i < progress; i++) {
-            if (i == 0) {
-                dots = " .";
-            } else {
-                dots = " " + dots + ".";
-            }
-        }
+    public void showLoading(int progress) {
         Drawer.clearScreen(0);
-        Drawer.renderStringCentered(loading, Display.getWidth() / 2, Display.getHeight() / 2, font, Color.white);
-        Drawer.renderStringCentered(dots, (Display.getWidth() + font.getWidth(loading)) / 2, Display.getHeight() / 2, font, Color.white);
+        TextMaster.renderFirstCharactersOnce(loading, 0, Display.getHeight() / 2 - (int) (Settings.nativeScale * loading.getFontSize() / 2), loading
+                .getTextString().length() - 6 + progress);
     }
 
     private void addPlayerOffline(int i) {
@@ -479,9 +470,6 @@ public class MyGame extends Game {
         GrassClump.fbos.clear();
         Place.currentCamera = null;
         Renderer.place = null;
-        Drawer.cleanUp();
-        VertexBufferObject.cleanUp();
-        FrameBufferObject.cleanUp();
         for (int i = 0; i < players.length; i++) {
             if (players[i] != null) {
                 players[i].clearLights();

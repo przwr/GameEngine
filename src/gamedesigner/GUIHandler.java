@@ -6,13 +6,14 @@
 package gamedesigner;
 
 import engine.systemcommunication.IO;
-import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.SimpleKeyboard;
 import game.gameobject.GUIObject;
 import game.place.Place;
+import game.text.fonts.TextMaster;
+import game.text.fonts.TextPiece;
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.Color;
+import org.lwjgl.opengl.Display;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,6 +28,7 @@ import java.util.Comparator;
  */
 public class GUIHandler extends GUIObject {
 
+    public static TextPiece text;
     private final int tile, xStart, yStart;
     private final ObjectPlace objPlace;
     private final SimpleKeyboard key;
@@ -82,7 +84,7 @@ public class GUIHandler extends GUIObject {
             "SHIFT + ARROWS:", "Change link radius"};
     private int mode, selected;
     private ArrayList<File> list;
-    private String text = "", extension;
+    private String string = "", extension;
     private boolean firstLoop;
     private boolean[] options;
     private String[] prettyOptions;
@@ -99,10 +101,12 @@ public class GUIHandler extends GUIObject {
         visible = false;
         xStart = (int) (tile * 0.1);
         yStart = (int) (tile * 2.5);
-
+        if (text == null) {
+            text = new TextPiece("", 24, TextMaster.getFont("Lato-Regular"), Display.getWidth(), false);
+        }
         for (String s : help) {
             if (!s.equals("") && s.charAt(s.length() - 1) == ':') {
-                helpLength = Math.max(helpLength, place.standardFont.getWidth(s));
+                helpLength = Math.max(helpLength, text.getTextWidth(s, text.getFontSize()));
             }
         }
         helpLength *= 1.1;
@@ -160,14 +164,14 @@ public class GUIHandler extends GUIObject {
             firstLoop = false;
             return;
         }
-        text = Methods.editWithKeyboard(text);
-        Drawer.renderString("Write filename: " + text, (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
-                place.standardFont, new Color(1f, 1f, 1f));
+        string = Methods.editWithKeyboard(string);
+        text.setText("Write filename: " + string);
+        TextMaster.renderOnce(text, (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()));
 
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
-            if (text.length() > 0) {
+            if (string.length() > 0) {
                 try {
-                    FileReader fl = new FileReader("res/objects/" + text + ".puz");
+                    FileReader fl = new FileReader("res/objects/" + string + ".puz");
                     BufferedReader load = new BufferedReader(fl);
                     mode = QUESTIONING;
                     load.close();
@@ -175,7 +179,7 @@ public class GUIHandler extends GUIObject {
                     return;
                 } catch (IOException e) {
                 }
-                objPlace.saveObject(text);
+                objPlace.saveObject(string);
             }
             stop();
         }
@@ -186,8 +190,9 @@ public class GUIHandler extends GUIObject {
     private void renderChoosingFile() {
         key.keyboardStart();
 
-        Drawer.renderString(">", (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
-                place.standardFont, new Color(1f, 1f, 1f));
+        TextMaster.startRenderText();
+        text.setText(">");
+        TextMaster.render(text, (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()));
 
         int delta;
         String name;
@@ -202,9 +207,10 @@ public class GUIHandler extends GUIObject {
             } else {
                 name = tmp.getName();
             }
-            Drawer.renderString(name, (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
-                    place.standardFont, new Color(1f, 1f, 1f));
+            text.setText(name);
+            TextMaster.render(text, (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()));
         }
+        TextMaster.endRenderText();
 
         if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;
@@ -241,21 +247,23 @@ public class GUIHandler extends GUIObject {
     private void renderHelp() {
         key.keyboardStart();
 
-        Drawer.renderString(">", (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
-                place.standardFont, new Color(1f, 1f, 1f));
-
+        TextMaster.startRenderText();
+        text.setText(">");
+        TextMaster.render(text, (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()));
         int delta;
         int index = 0;
         for (int i = 0; i < help.length; i++, index++) {
             delta = (int) ((index - selected) * tile * 0.5);
-            Drawer.renderString(help[i], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()),
-                    place.standardFont, new Color(1f, 1f, 1f));
+            text.setText(help[i]);
+            TextMaster.render(text, (int) ((xStart + tile * 0.4) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()));
             if (!help[i].equals("") && help[i].charAt(help[i].length() - 1) == ':') {
-                Drawer.renderString(help[++i], helpLength + (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place
-                                .getCurrentScale()),
-                        place.standardFont, new Color(1f, 1f, 1f));
+                text.setText(help[++i]);
+                TextMaster.render(text, helpLength + (int) ((xStart + tile * 0.2) * Place.getCurrentScale()),
+                        (int) ((yStart + delta) * Place.getCurrentScale()));
             }
         }
+        TextMaster.endRenderText();
+
         if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;
             if (selected < 0) {
@@ -277,16 +285,16 @@ public class GUIHandler extends GUIObject {
     private void renderViewingOptions() {
         key.keyboardStart();
 
-        Drawer.renderString(">", (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
-                place.standardFont, new Color(1f, 1f, 1f));
-
+        TextMaster.startRenderText();
+        text.setText(">");
+        TextMaster.render(text, (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()));
         int delta;
         for (int i = 0; i < options.length; i++) {
             delta = (int) ((i - selected) * tile * 0.5);
-            Drawer.renderString(prettyOptions[2 * i] + prettyOptions[2 * i + 1], (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart +
-                            delta) * Place.getCurrentScale()),
-                    place.standardFont, new Color(1f, 1f, 1f));
+            text.setText(prettyOptions[2 * i] + prettyOptions[2 * i + 1]);
+            TextMaster.render(text, (int) ((xStart + tile * 0.2) * Place.getCurrentScale()), (int) ((yStart + delta) * Place.getCurrentScale()));
         }
+        TextMaster.endRenderText();
 
         if (key.keyPressed(Keyboard.KEY_UP)) {
             selected--;
@@ -313,15 +321,16 @@ public class GUIHandler extends GUIObject {
 
     private void renderQuestion() {
         key.keyboardStart();
-        Drawer.renderString("File with that name already exist.", (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()),
-                place.standardFont, new Color(1f, 1f, 1f));
-        Drawer.renderString("Replace?", (int) (xStart * Place.getCurrentScale()), (int) ((yStart + tile * 0.5) * Place.getCurrentScale()),
-                place.standardFont, new Color(1f, 1f, 1f));
-        Drawer.renderString("YES[Enter] / NO[Backspace]", (int) (xStart * Place.getCurrentScale()), (int) ((yStart + tile) * Place.getCurrentScale()),
-                place.standardFont, new Color(1f, 1f, 1f));
-
+        TextMaster.startRenderText();
+        text.setText("File with that name already exist.");
+        TextMaster.render(text, (int) (xStart * Place.getCurrentScale()), (int) (yStart * Place.getCurrentScale()));
+        text.setText("Replace?");
+        TextMaster.render(text, (int) (xStart * Place.getCurrentScale()), (int) ((yStart + tile * 0.5) * Place.getCurrentScale()));
+        text.setText("YES[Enter] / NO[Backspace]");
+        TextMaster.render(text, (int) (xStart * Place.getCurrentScale()), (int) ((yStart + tile) * Place.getCurrentScale()));
+        TextMaster.endRenderText();
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
-            objPlace.saveObject(text);
+            objPlace.saveObject(string);
             stop();
         }
         if (key.keyPressed(Keyboard.KEY_BACK)) {
@@ -350,7 +359,6 @@ public class GUIHandler extends GUIObject {
                     renderViewingOptions();
                     break;
             }
-            Drawer.refreshForRegularDrawing();
         }
     }
 

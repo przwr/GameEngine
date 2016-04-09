@@ -7,7 +7,6 @@ package engine.utilities;
 
 import engine.lights.ShadowDrawer;
 import game.ScreenPlace;
-import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.Color;
@@ -16,6 +15,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Appearance;
 import sprites.fbo.FrameBufferObject;
+import sprites.shaders.FontShader;
 import sprites.shaders.RegularShader;
 import sprites.shaders.ShadowShader;
 import sprites.vbo.VertexBufferObject;
@@ -32,7 +32,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Drawer {
 
-    private static final Texture font = loadFontTexture();
+    public static final Texture font = loadFontTexture();
     public static VertexBufferObject streamVBO;
     public static VertexBufferObject tileVBO;
     public static VertexBufferObject grassVBO;
@@ -43,8 +43,8 @@ public class Drawer {
     public static IntegerContainer streamIndexData = new IntegerContainer(30000);
     public static RegularShader regularShader;
     public static ShadowShader shadowShader;
+    public static FontShader fontShader;
     public static int displayWidth, displayHeight;
-    private static float xCurrent, yCurrent;
     private static Color currentColor = Color.white;
     private static Timer t = new Timer("Test", 200);
 
@@ -64,6 +64,7 @@ public class Drawer {
     public static void setUpDisplay() {
         displayWidth = Display.getWidth();
         displayHeight = Display.getHeight();
+        fontShader = new FontShader();
     }
 
     public static void bindFontTexture() {
@@ -81,23 +82,23 @@ public class Drawer {
     }
 
     public static void refreshColor() {
-        regularShader.loadColourModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, 1.0f));
+        regularShader.loadColorModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, 1.0f));
     }
 
     public static void setColorAlpha(float alpha) {
-        regularShader.loadColourModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, alpha));
+        regularShader.loadColorModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, alpha));
     }
 
     public static void setColorStatic(Color color) {
-        regularShader.loadColourModifier(new Vector4f(color.r, color.g, color.b, color.a));
+        regularShader.loadColorModifier(new Vector4f(color.r, color.g, color.b, color.a));
     }
 
     public static void setColorBlended(Color color) {
-        regularShader.loadColourModifier(new Vector4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a));
+        regularShader.loadColorModifier(new Vector4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a));
     }
 
     public static void setColorStatic(float r, float g, float b, float a) {
-        regularShader.loadColourModifier(new Vector4f(r, g, b, a));
+        regularShader.loadColorModifier(new Vector4f(r, g, b, a));
     }
 
     public static Color getCurrentColor() {
@@ -228,7 +229,7 @@ public class Drawer {
         if (step < 1) {
             step = 1;
         }
-        float[] vertices = new float[(360 / step) * 2 + 4 + (360 % step == 0 ? 0 : 2)];
+        float[] vertices = new float[(360 / step) * 2 + 2 + (360 % step == 0 ? 0 : 2)];
         int j = 1;
         vertices[0] = xStart + xRadius;
         vertices[1] = yStart;
@@ -237,8 +238,6 @@ public class Drawer {
             vertices[j * 2 + 1] = yStart + (float) Methods.yRadius(i, yRadius);
             j++;
         }
-        vertices[j * 2] = xStart;
-        vertices[j * 2 + 1] = yStart;
         return vertices;
     }
 
@@ -449,17 +448,6 @@ public class Drawer {
         appearance.renderShadowBottomPart(partXStart, partXEnd, 0);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
-    }
-
-    public static void renderStringCentered(String message, double x, double y, FontHandler font, Color color) {
-        bindFontTexture();
-        font.drawLine(message, (float) (x - font.getWidth(message) / 2),
-                (float) (y - (4 * font.getHeight()) / 3), color);
-    }
-
-    public static void renderString(String message, double x, double y, FontHandler font, Color color) {
-        bindFontTexture();
-        font.drawLine(message, (int) x, (int) y, color);
     }
 
     public static void setShaders() {

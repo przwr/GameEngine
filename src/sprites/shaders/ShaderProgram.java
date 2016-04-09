@@ -42,7 +42,6 @@ public abstract class ShaderProgram {
         GL20.glLinkProgram(programID);
         GL20.glValidateProgram(programID);
         getAllUniformLocations();
-        locationMVPMatrix = getUniformLocation("mvpMatrix");
     }
 
     private static int loadShader(String file, int type) {
@@ -64,6 +63,13 @@ public abstract class ShaderProgram {
             System.err.println("Could not compile shader");
         }
         return shaderID;
+    }
+
+    public static void stop() {
+        try {
+            GL20.glUseProgram(0);
+        } catch (Exception e) {
+        }
     }
 
     public void resetOrtho() {
@@ -92,13 +98,6 @@ public abstract class ShaderProgram {
 
     public void start() {
         GL20.glUseProgram(programID);
-    }
-
-    public void stop() {
-        try {
-            GL20.glUseProgram(0);
-        } catch (Exception e) {
-        }
     }
 
     public void cleanUp() {

@@ -17,6 +17,7 @@ import game.Settings;
 import game.logic.navmeshpathfinding.Window;
 import game.place.Console;
 import game.place.map.Area;
+import game.text.fonts.TextMaster;
 import gamecontent.MyGame;
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Mem;
@@ -31,6 +32,8 @@ import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.*;
 import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.ImageIOImageData;
+import sprites.fbo.FrameBufferObject;
+import sprites.vbo.VertexBufferObject;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -165,9 +168,18 @@ public class Main {
 
     private static void createDisplay() {
         try {
+//            ContextAttribs attribs = new ContextAttribs(3, 2)
+//                    .withForwardCompatible(true)
+//                    .withProfileCore(true);
             PixelFormat pixelFormat = new PixelFormat(32, 0, 24, 0, Settings.samplesCount);
             ContextAttribs contextAttributes = new ContextAttribs(1, 1);
             contextAttributes.withForwardCompatible(true);
+
+//            Display.setDisplayMode(new DisplayMode(WIDTH,HEIGHT));
+//            Display.create(new PixelFormat(), attribs);
+//            Display.setTitle("Our First Display!");
+//            GL11.glEnable(GL13.GL_MULTISAMPLE);
+
             Display.create(pixelFormat, contextAttributes);
         } catch (Exception exception) {
             Display.destroy();
@@ -193,8 +205,8 @@ public class Main {
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_BLEND);
         glEnable(GL_SCISSOR_TEST);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+//        glEnable(GL_CULL_FACE);
+//        glCullFace(GL_BACK);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1); // TODO Do wywalenia, tylko chwilowo tekst z tego korzysta
         glClearColor(0, 0, 0, 0);
@@ -228,7 +240,7 @@ public class Main {
         Renderer.setUpDisplay();
         Drawer.setUpDisplay();
         SplitScreen.setUpDisplay();
-        pop = new Popup("Amble-Regular");
+        pop = new Popup();
     }
 
     private static void gameLoop() {
@@ -438,6 +450,10 @@ public class Main {
             game.endGame();
         }
         backgroundLoader.cleanup();
+        Drawer.cleanUp();
+        VertexBufferObject.cleanUp();
+        FrameBufferObject.cleanUp();
+        TextMaster.cleanUp();
         AL.destroy();
         Keyboard.destroy();
         Mouse.destroy();

@@ -21,7 +21,6 @@ import game.gameobject.entities.Player;
 import game.logic.DayCycle;
 import game.place.cameras.Camera;
 import game.place.map.Map;
-import game.text.FontHandler;
 import org.newdawn.slick.Color;
 import sounds.SoundBase;
 import sprites.Sprite;
@@ -59,7 +58,6 @@ public abstract class Place extends ScreenPlace {
     protected SoundBase sounds;
     protected short mapIDCounter = 0;
     private Console console;
-    private FontHandler loadingFont = null;
 
     {
         loading.terminate();
@@ -101,7 +99,6 @@ public abstract class Place extends ScreenPlace {
                             Drawer.setCurrentColor(Color.white);
                             currentCamera.renderGUI();
                             currentCamera.neutralizeEffect();
-                            console.setCamera(currentCamera);
                             console.render();
                             glDisable(GL_SCISSOR_TEST);
                         } else {
@@ -114,7 +111,7 @@ public abstract class Place extends ScreenPlace {
                                     progress = 0;
                                 }
                             }
-                            game.showLoading(progress, loadingFont);
+                            game.showLoading(progress);
                         }
                     }
                 }
@@ -150,7 +147,6 @@ public abstract class Place extends ScreenPlace {
                     Drawer.setCurrentColor(Color.white);
                     currentCamera.renderGUI();
                     currentCamera.neutralizeEffect();
-                    console.setCamera(currentCamera);
                     console.render();
                     glDisable(GL_SCISSOR_TEST);
                 } else {
@@ -162,7 +158,7 @@ public abstract class Place extends ScreenPlace {
                             progress = 0;
                         }
                     }
-                    game.showLoading(progress, loadingFont);
+                    game.showLoading(progress);
                 }
             }
         };
@@ -179,8 +175,6 @@ public abstract class Place extends ScreenPlace {
         sprites = new SpriteBase();
         console = new Console(this);
         dayCycle = new DayCycle();
-        standardFont = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 24));
-        loadingFont = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 48));
     }
 
     public static double getCurrentScale() {

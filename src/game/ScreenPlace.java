@@ -6,8 +6,6 @@
 package game;
 
 import game.gameobject.GameObject;
-import game.text.FontBase;
-import game.text.FontHandler;
 
 /**
  * @author przemek
@@ -16,7 +14,6 @@ public abstract class ScreenPlace {
 
     public final Game game;
     public GameObject[] players;
-    public FontHandler standardFont;
 
     public ScreenPlace(Game game) {
         this.game = game;

@@ -10,7 +10,7 @@ import game.logic.maploader.MapLoaderModule;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.menu.Menu;
 import game.place.Place;
-import game.text.FontHandler;
+import game.text.fonts.FontType;
 import net.GameOnline;
 import org.lwjgl.input.Keyboard;
 
@@ -21,6 +21,7 @@ public abstract class Game {
 
     public static final byte OFFLINE = 0, ONLINE = 1;
     private final String title;
+    public FontType font;
     public int mode;
     public GameOnline online;
     public boolean started;
@@ -53,7 +54,7 @@ public abstract class Game {
 
     public abstract void runServer();
 
-    public abstract void showLoading(int progress, FontHandler font);
+    public abstract void showLoading(int progress);
 
     public abstract void update();
 
@@ -79,9 +80,9 @@ public abstract class Game {
     public String getPlayerCoordinates() {
         Player p = (Player) place.players[0];
         return "[" + p.getX() + ", " + p.getY() + "] : "
-                + "{" + (int) p.getX() / Place.tileSize + ", " + (int) p.getY() / Place.tileSize + "}";
+                + "{" + p.getX() / Place.tileSize + ", " + p.getY() / Place.tileSize + "}";
     }
-    
+
     public String getSimplePlayerCoordinates() {
         Player p = (Player) place.players[0];
         return p.getX() + ", " + p.getY();

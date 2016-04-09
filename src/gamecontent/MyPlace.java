@@ -125,7 +125,7 @@ public class MyPlace extends Place {
         }
 //        if (game.getMapLoader().isRunning()) { // TODO Wywalić, jak będzie wczytywane z pliku
 //            for (Map map : unloadedMaps) {        // TODO Trzeba sprawdzić z aktualnie wczytywanymi mapami, żeby nie wywalać tych, co się właśnie wczytało.
-//                maps.remove(map);
+//                maps.destroy(map);
 //            }
 //        }
         addMapsToAdd();

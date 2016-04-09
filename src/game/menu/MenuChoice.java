@@ -5,6 +5,9 @@
  */
 package game.menu;
 
+import game.text.fonts.TextPiece;
+import org.lwjgl.opengl.Display;
+
 import java.util.ArrayList;
 
 /**
@@ -19,10 +22,12 @@ public class MenuChoice {
     protected MenuChoice previous;
     protected int current;
     protected boolean blockOnRun;
+    private TextPiece text;
 
     public MenuChoice(String label, Menu menu) {
         this.label = label;
         this.menu = menu;
+        this.text = new TextPiece(label, menu.fontSize, menu.font, Display.getWidth(), true);
     }
 
     public void action(int button) {
@@ -81,5 +86,10 @@ public class MenuChoice {
 
     public boolean isBlocked() {
         return blockOnRun && menu.game.started;
+    }
+
+    public TextPiece getText() {
+        text.setText(getLabel());
+        return text;
     }
 }

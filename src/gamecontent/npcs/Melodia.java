@@ -15,7 +15,7 @@ import game.gameobject.entities.Player;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
-import game.text.Writer;
+import game.text.effects.Writer;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import gamecontent.environment.Rock;

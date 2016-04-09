@@ -3,9 +3,9 @@
 in int gl_VertexID;
 in vec2 position;
 in vec2 textureCoords;
-in vec3 colour;
+in vec3 color;
 
-out vec3 o_colour;
+out vec3 o_color;
 out vec2 pass_textureCoords;
 
 uniform mat4 transformationMatrix;
@@ -29,6 +29,6 @@ void main(void){
         }
     } else {
         gl_Position =  mvpMatrix * transformationMatrix *  vec4(position, 0.0, 1.0);
-        o_colour = colour;
+        o_color = color;
     }
 }

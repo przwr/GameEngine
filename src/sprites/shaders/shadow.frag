@@ -1,21 +1,21 @@
 #version 330 core
 
 in vec2 pass_textureCoords;
-in float o_colour;
+in float o_color;
 
-out vec4 out_colour;
+out vec4 out_color;
 
 uniform sampler2D textureSampler;
-uniform vec4 colourModifier;
+uniform vec4 colorModifier;
 uniform float useTexture;
 
 void main(void){
     if(useTexture == 1.0) {
-        out_colour = texture(textureSampler, pass_textureCoords);
-        if(out_colour.w > 0){
-            out_colour = vec4(colourModifier.x, colourModifier.x, colourModifier.x, out_colour.w);
+        out_color = texture(textureSampler, pass_textureCoords);
+        if(out_color.w > 0){
+            out_color = vec4(colorModifier.x, colorModifier.x, colorModifier.x, out_color.w);
         }
     } else {
-        out_colour = vec4(o_colour, o_colour, o_colour, 1);
+        out_color = vec4(o_color, o_color, o_color, 1);
     }
 }
