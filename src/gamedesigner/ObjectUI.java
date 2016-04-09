@@ -13,8 +13,10 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.MapObjectContainer;
+import game.text.fonts.TextMaster;
+import game.text.fonts.TextPiece;
 import gamecontent.environment.GrassClump;
-import org.newdawn.slick.Color;
+import org.lwjgl.opengl.Display;
 import sprites.SpriteSheet;
 
 /**
@@ -22,6 +24,7 @@ import sprites.SpriteSheet;
  */
 public class ObjectUI extends GUIObject {
 
+    private static TextPiece text;
     private final int tile;
     private final Point coordinates = new Point(0, 0);
     private final Point playerPosition = new Point(0, 0);
@@ -33,7 +36,6 @@ public class ObjectUI extends GUIObject {
     private int mode;
     private GameObject[] mapObjects;
     private Map map;
-
     private int lastX, lastY;
     private String[] data;
 
@@ -50,6 +52,7 @@ public class ObjectUI extends GUIObject {
             mapObjects[i].update();
         }
         map = m;
+        text = new TextPiece("", 24, TextMaster.getFont("Lato-Regular"), Display.getWidth(), false);
     }
 
     public void changeCoordinates(int x, int y) {
@@ -185,24 +188,24 @@ public class ObjectUI extends GUIObject {
                 Drawer.drawRectangle(-d, -1, d - 1, hTex + 2);
                 Drawer.drawRectangle(wTex + 1, -1, d - 1, hTex + 2);
             } else if (mode == ObjectPlace.MODE_OBJECT) {
-                Drawer.regularShader.translateNoReset(0, tile);
-                int h = place.standardFont.getHeight("0");
+                TextMaster.startRenderText();
+                int h = (int) (text.getFontSize() * Settings.nativeScale);
                 if (change) {
                     for (int i = 0; i < mapObjectsNames.length; i++) {
-                        Drawer.renderString(mapObjectsNames[i], 0, i * h, place.standardFont,
-                                new Color(1f, 1f, 1f));
+                        text.setText(mapObjectsNames[i]);
+                        TextMaster.render(text, h + (int) (tile * 0.1 * Settings.nativeScale), (i + 2) * h);
                     }
-                    Drawer.renderString(">", -h, choosenObject * h, place.standardFont,
-                            new Color(1f, 1f, 1f));
+                    text.setText(">");
+                    TextMaster.render(text, h / 3, (choosenObject + 2) * h);
                 } else {
-                    Drawer.renderString(mapObjectsNames[choosenObject], 0, 0, place.standardFont,
-                            new Color(1f, 1f, 1f));
+                    text.setText(mapObjectsNames[choosenObject]);
+                    TextMaster.render(text, h + (int) (tile * 0.1 * Settings.nativeScale), 2 * h);
                 }
+                TextMaster.endRenderText();
             }
             if (mode != ObjectPlace.MODE_VIEWING) {
-                Drawer.regularShader.scaleTranslate(tile / 2, tile / 2, (float) Settings.nativeScale, (float) Settings.nativeScale);
-                Drawer.renderString(playerPosition.getX() + ":" + playerPosition.getY() + " - "
-                        + selection.getX() + ":" + selection.getY(), tile, 0, place.standardFont, new Color(1f, 1f, 1f));
+                text.setText(playerPosition.getX() + ":" + playerPosition.getY() + " - " + selection.getX() + ":" + selection.getY());
+                TextMaster.renderOnce(text, (int) (tile * 0.1 * Settings.nativeScale), 0);
             }
             Drawer.refreshForRegularDrawing();
         }

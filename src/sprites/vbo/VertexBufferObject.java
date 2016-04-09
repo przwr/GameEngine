@@ -45,6 +45,16 @@ public class VertexBufferObject {
         vbos.add(this);
     }
 
+    private VertexBufferObject(float[] positions, float[] textureCoords, int usage) {
+        int vaoID = createVAO();
+        storeDataInAttributeList(0, positions, usage);
+        storeDataInAttributeList(1, textureCoords, usage);
+        GL30.glBindVertexArray(0);
+        this.vaoID = vaoID;
+        this.vertexCount = positions.length / 2;
+    }
+
+
     private VertexBufferObject(float[] positions, float[] textureCoords, int[] indices, int usage) {
         int vaoID = createVAO();
         storeDataInAttributeList(0, positions, usage);
@@ -54,6 +64,10 @@ public class VertexBufferObject {
         this.vaoID = vaoID;
         this.vertexCount = indices.length;
         vbos.add(this);
+    }
+
+    public static VertexBufferObject createNoStore(float[] positions, float[] textureCoords) {
+        return new VertexBufferObject(positions, textureCoords, GL15.GL_STATIC_DRAW);
     }
 
     public static VertexBufferObject create(float[] positions) {
@@ -120,17 +134,20 @@ public class VertexBufferObject {
 
     public void updateVerticesStream(float[] positions) {
         storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STREAM_DRAW);
+        this.vertexCount = positions.length / 2;
     }
 
     public void updateVerticesAndTextureCoords(float[] positions, float[] textureCoords) {
         storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STATIC_DRAW);
         storeDataInAttributeList(vbosIDs.get(1), 1, textureCoords, GL15.GL_STATIC_DRAW);
+        this.vertexCount = positions.length / 2;
     }
 
     public void updateAll(float[] positions, float[] textureCoords, int[] indices) {
         storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STATIC_DRAW);
         storeDataInAttributeList(vbosIDs.get(1), 1, textureCoords, GL15.GL_STATIC_DRAW);
         bindIndicesBuffer(vbosIDs.get(2), indices, GL15.GL_STATIC_DRAW);
+        this.vertexCount = positions.length / 2;
     }
 
     public void updateIndices(int[] indices) {
@@ -150,6 +167,7 @@ public class VertexBufferObject {
 
     private void delete() {
         GL30.glDeleteVertexArrays(vaoID);
+        vaoID = -1;
         for (int vbo : vbosIDs) {
             GL15.glDeleteBuffers(vbo);
         }
@@ -282,4 +300,7 @@ public class VertexBufferObject {
         return vertexCount;
     }
 
+    public int getVAOID() {
+        return vaoID;
+    }
 }

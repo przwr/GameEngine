@@ -26,7 +26,7 @@ import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
-import game.text.TextController;
+import game.text.effects.TextController;
 import gamecontent.equipment.Cloth;
 import net.jodk.lang.FastMath;
 import net.packets.MultiPlayerUpdate;

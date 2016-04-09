@@ -6,13 +6,12 @@
 package gamecontent;
 
 import engine.utilities.Delay;
-import engine.utilities.Drawer;
-import engine.utilities.Methods;
 import game.Game;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;
-import game.text.FontHandler;
+import game.text.fonts.TextMaster;
+import game.text.fonts.TextPiece;
 import gamecontent.choices.*;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
@@ -24,34 +23,34 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyMenu extends Menu {
 
-    private final FontHandler smallFont, bigFont;
     private final int maxPositions;
     private final Color normalColor = new Color(1f, 1f, 1f);
     private final Color darkColor = new Color(0.5f, 0.5f, 0.5f);
     private final Color chosenColor = new Color(1f, 1f, 0.5f);
     private final Color darkChosenColor = new Color(0.75f, 0.75f, 0.375f);
-    //    private final Color gammaColor1 = new Color(0.32f, 0.32f, 0.32f);
-//    private final Color gammaColor2 = new Color(0.16f, 0.16f, 0.16f);
-//    private final Color gammaColor3 = new Color(0.08f, 0.08f, 0.08f);
     private final Color gammaColor1 = new Color(0.32f, 0.32f, 0.32f);
     private final Color gammaColor2 = new Color(0.16f, 0.16f, 0.16f);
     private final Color gammaColor3 = new Color(0.1f, 0.1f, 0.1f);
+    private int bigFontSize;
+    private TextPiece arrowUp, arrowDown, title;
 
     public MyMenu(Game game) {
         super(game);
-        setFirstRoot(new MenuChoice(Settings.language.menu.Menu, this));
-        int normalFontSize = Methods.roundDouble(Settings.nativeScale * 38);
-        int bigFontSize = Methods.roundDouble(Settings.nativeScale * 64);
-        smallFont = Settings.fonts.getFont("Amble-Regular", normalFontSize);
-        bigFont = Settings.fonts.getFont("Amble-Regular", bigFontSize);
+        bigFontSize = 64;
+        fontSize = 36;
+        font = TextMaster.getFont("Lato-Regular");
         delay = Delay.createInMilliseconds(25, true);
-        delay.start();
-        maxPositions = calculateMaxPositions(normalFontSize, bigFontSize);
+        delay.terminate();
+        maxPositions = calculateMaxPositions(fontSize, bigFontSize);
+        arrowUp = new TextPiece("/|\\", fontSize, font, Display.getWidth(), true);
+        arrowDown = new TextPiece("\\|/", fontSize, font, Display.getWidth(), true);
+        title = new TextPiece("Menu", bigFontSize, font, Display.getWidth(), true);
+        setFirstRoot(new MenuChoice(Settings.language.menu.Menu, this));
         generate();
     }
 
     private int calculateMaxPositions(int normal, int big) {
-        return (int) ((Display.getHeight() - big * 2) / (1.5 * normal)) - 2;
+        return (int) ((Display.getHeight() - 2 * big) / (1.5 * normal * Settings.nativeScale)) - 2;
     }
 
     private void generate() {
@@ -178,40 +177,42 @@ public class MyMenu extends Menu {
                 shift = root.getSize() - positions;
             }
         }
-        Drawer.renderStringCentered(root.getLabel(), widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1))
-                * smallFont.getHeight() * 0.7),
-                bigFont, normalColor);
+        TextMaster.startRenderText();
+        title.setText(root.getLabel());
+        TextMaster.render(title, 0, calculatePosition(positions, line) - (int) ((bigFontSize - fontSize / 2f) * Settings.nativeScale));
         line--;
         if (shift > 0) {
-            Drawer.renderStringCentered("/|\\", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * smallFont.getHeight() * 0.7),
-                    smallFont, darkColor);
+            TextMaster.render(arrowUp, 0, calculatePosition(positions, line));
         }
         line--;
         for (int i = 0; i < positions; i++) {
+            root.getChoice(i + shift).getText().setColor(getColor(i + shift));
             if (root.getChoice(i + shift) instanceof GammaChoice || root.getChoice(i + shift) instanceof BrightnessChoice) {
-                renderGammaHelper(line, i + shift);
+                renderGammaHelper(root.getChoice(i + shift).getText(), calculatePosition(positions, line));
+            } else {
+                TextMaster.render(root.getChoice(i + shift).getText(), 0, calculatePosition(positions, line));
             }
-            Drawer.renderStringCentered(root.getChoice(i + shift).getLabel(), widthHalf / 2,
-                    heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * smallFont.getHeight() * 0.7),
-                    smallFont, getColor(i + shift));
             line--;
         }
         if (root.getSize() > maxPositions && positions + shift <= root.getSize() - 1) {
-            Drawer.renderStringCentered("\\|/", widthHalf / 2, heightHalf / 2 - (int) ((1.5 * line - (positions + 1)) * smallFont.getHeight() * 0.7),
-                    smallFont, darkColor);
+            TextMaster.render(arrowDown, 0, calculatePosition(positions, line));
         }
+        TextMaster.endRenderText();
     }
 
-    private void renderGammaHelper(int position, int i) {
-        Drawer.renderStringCentered("#", (widthHalf + smallFont.getWidth(root.getChoice(i).getLabel() + "##")) / 2,
-                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * smallFont.getHeight() * 0.7),
-                smallFont, gammaColor1);
-        Drawer.renderStringCentered("#", (widthHalf + smallFont.getWidth(root.getChoice(i).getLabel() + "####")) / 2,
-                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * smallFont.getHeight() * 0.7),
-                smallFont, gammaColor2);
-        Drawer.renderStringCentered("#", (widthHalf + smallFont.getWidth(root.getChoice(i).getLabel() + "######")) / 2,
-                heightHalf / 2 - (int) ((1.5 * position - (root.getSize() + 1)) * smallFont.getHeight() * 0.7),
-                smallFont, gammaColor3);
+    private int calculatePosition(int positions, int line) {
+        return (int) (Display.getHeight() - ((1.5 * (2 * line - positions - 1.5)) * fontSize * Settings.nativeScale)) / 2;
+    }
+
+    private void renderGammaHelper(TextPiece text, int positions) {
+        String temp = text.getTextString();
+        TextMaster.renderFirstCharacters(text, 0, positions, temp.length() - 8);
+        text.setColor(gammaColor1);
+        TextMaster.renderCharacters(text, 0, positions, temp.length() - 8, 1);
+        text.setColor(gammaColor2);
+        TextMaster.renderCharacters(text, 0, positions, temp.length() - 7, 1);
+        text.setColor(gammaColor3);
+        TextMaster.renderCharacters(text, 0, positions, temp.length() - 6, 1);
     }
 
     private Color getColor(int choice) {

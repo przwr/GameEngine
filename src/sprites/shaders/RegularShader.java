@@ -14,10 +14,10 @@ public class RegularShader extends ShaderProgram {
     private static final String FRAGMENT_FILE = "src/sprites/shaders/regular.frag";
 
     private int locationTransformationMatrix;
-    private int locationColourModifier;
+    private int locationColorModifier;
     private int locationSizeModifier;
     private int locationUseTexture;
-    private int locationUseColour;
+    private int locationUseColor;
 
     public RegularShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -25,23 +25,25 @@ public class RegularShader extends ShaderProgram {
         loadBoolean(locationUseTexture, true);
         loadMatrix(locationTransformationMatrix, MatrixMath.STATIC_MATRIX);
         resetOrtho();
-        super.stop();
+        stop();
     }
 
     @Override
     protected void getAllUniformLocations() {
+
         locationTransformationMatrix = getUniformLocation("transformationMatrix");
-        locationColourModifier = getUniformLocation("colourModifier");
+        locationColorModifier = getUniformLocation("colorModifier");
         locationSizeModifier = getUniformLocation("sizeModifier");
         locationUseTexture = getUniformLocation("useTexture");
-        locationUseColour = getUniformLocation("useColour");
+        locationUseColor = getUniformLocation("useColor");
+        locationMVPMatrix = getUniformLocation("mvpMatrix");
     }
 
     @Override
     protected void bindAttributes() {
         bindAttribute(0, "position");
         bindAttribute(1, "textureCoords");
-        bindAttribute(2, "colour");
+        bindAttribute(2, "color");
     }
 
     public void loadSizeModifier(Vector4f vector) {
@@ -52,16 +54,16 @@ public class RegularShader extends ShaderProgram {
         loadMatrix(locationTransformationMatrix, matrix);
     }
 
-    public void loadColourModifier(Vector4f vector) {
-        loadVector4f(locationColourModifier, vector);
+    public void loadColorModifier(Vector4f vector) {
+        loadVector4f(locationColorModifier, vector);
     }
 
     public void setUseTexture(boolean use) {
         loadBoolean(locationUseTexture, use);
     }
 
-    public void setUseColour(boolean use) {
-        loadBoolean(locationUseColour, use);
+    public void setUseColor(boolean use) {
+        loadBoolean(locationUseColor, use);
     }
 
     public void resetWorkingMatrix() {

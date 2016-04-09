@@ -15,7 +15,6 @@ import game.gameobject.inputs.InputKeyBoard;
 import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
-import game.text.FontBase;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.openal.SoundStore;
 import sprites.SpriteBase;
@@ -41,6 +40,8 @@ public class ObjectPlace extends Place {
     private final SimpleKeyboard key;
     private final String[] prettyOptions;
     private final boolean[] viewingOptions;
+    private final short xWorkingAreaInTiles = 320;
+    private final short yWorkingAreaInTiles = 320;
     private ObjectUI ui;
     private int mode;
     private File currentFile;
@@ -49,8 +50,6 @@ public class ObjectPlace extends Place {
     private boolean altMode, noBlocks, grid;
     private ObjectMap objMap;
     private UndoControl undo;
-    private final short xWorkingAreaInTiles = 320;
-    private final short yWorkingAreaInTiles = 320;
 
     public ObjectPlace(Game game, int tileSize) {
         super(game, tileSize);
@@ -82,7 +81,6 @@ public class ObjectPlace extends Place {
         editor.addGui(guiHandler);
         undo = new UndoControl(objMap, 20);
         //sounds.init("res");
-        standardFont = Settings.fonts.getFont("Amble-Regular", (int) (Settings.nativeScale * 24));
         SoundStore.get().poll(0);
         initializeMethods();
     }

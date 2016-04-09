@@ -14,7 +14,7 @@ import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
-import game.text.TextController;
+import game.text.effects.TextController;
 import gamecontent.MyPlayer;
 
 

@@ -7,12 +7,14 @@ package gamecontent.effects;
 
 import collision.Figure;
 import engine.utilities.Delay;
-import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.RandomGenerator;
+import game.Settings;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.place.Place;
+import game.text.fonts.TextMaster;
+import game.text.fonts.TextPiece;
 import net.packets.Update;
 import org.newdawn.slick.Color;
 
@@ -21,6 +23,8 @@ import org.newdawn.slick.Color;
  */
 public class DamageNumber extends Entity {
 
+    public static TextPiece text;
+    private static int size = 20;
     private final Color color;
     private final int damage;
     private final Delay time;
@@ -54,6 +58,9 @@ public class DamageNumber extends Entity {
             color = Color.red;
         } else {
             color = Color.black;
+        }
+        if (text == null) {
+            text = new TextPiece("Menu", size, place.game.font, (int) (size * 5 * Settings.nativeScale), true);
         }
     }
 
@@ -90,8 +97,13 @@ public class DamageNumber extends Entity {
 
     @Override
     public void render() {
-        Drawer.regularShader.translate((int) (getX() * Place.getCurrentScale()), (int) ((getY() - floatHeight) * Place.getCurrentScale()));
-        Drawer.renderStringCentered("" + damage, 0, 0, place.standardFont, color);
+        if (text != null && text.getFont() != null) {
+            text.setText("" + damage);
+            text.setColor(color);
+            TextMaster.renderOnce(text, (int) ((getX() - Place.currentCamera.getXStart()) * Place.getCurrentScale())
+                    - (int) (size * 2.5 * Settings.nativeScale), (int) ((getY() - floatHeight - Place.currentCamera.getYStart()) * Place.getCurrentScale())
+                    - (int) (size * Settings.nativeScale));
+        }
     }
 
     @Override

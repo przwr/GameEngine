@@ -13,7 +13,7 @@ public class ShadowShader extends ShaderProgram {
     private static final String FRAGMENT_FILE = "src/sprites/shaders/shadow.frag";
 
     private int locationTransformationMatrix;
-    private int locationColourModifier;
+    private int locationColorModifier;
     private int locationSizeModifier;
     private int locationUseTexture;
 
@@ -28,10 +28,11 @@ public class ShadowShader extends ShaderProgram {
 
     @Override
     protected void getAllUniformLocations() {
-        locationTransformationMatrix = super.getUniformLocation("transformationMatrix");
-        locationColourModifier = super.getUniformLocation("colourModifier");
-        locationSizeModifier = super.getUniformLocation("sizeModifier");
-        locationUseTexture = super.getUniformLocation("useTexture");
+        locationTransformationMatrix = getUniformLocation("transformationMatrix");
+        locationColorModifier = getUniformLocation("colorModifier");
+        locationSizeModifier = getUniformLocation("sizeModifier");
+        locationUseTexture = getUniformLocation("useTexture");
+        locationMVPMatrix = getUniformLocation("mvpMatrix");
     }
 
     @Override
@@ -49,8 +50,8 @@ public class ShadowShader extends ShaderProgram {
         loadVector4f(locationSizeModifier, vector);
     }
 
-    public void loadColourModifier(Vector4f vector) {
-        loadVector4f(locationColourModifier, vector);
+    public void loadColorModifier(Vector4f vector) {
+        loadVector4f(locationColorModifier, vector);
     }
 
     public void resetWorkingMatrix() {

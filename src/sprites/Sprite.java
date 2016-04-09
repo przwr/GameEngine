@@ -104,7 +104,7 @@ public class Sprite implements Appearance {
     public void renderShadow(float color) {
         if (bindCheck()) {
             vectorModifier.set(color, color, color, 1f);
-            Drawer.shadowShader.loadColourModifier(vectorModifier);
+            Drawer.shadowShader.loadColorModifier(vectorModifier);
             vbo.renderTextured(0, 4);
         }
     }
@@ -133,7 +133,7 @@ public class Sprite implements Appearance {
                 partXEnd = temp;
             }
             vectorModifier.set(color, color, color, 1f);
-            Drawer.shadowShader.loadColourModifier(vectorModifier);
+            Drawer.shadowShader.loadColorModifier(vectorModifier);
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.shadowShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(0, 4);

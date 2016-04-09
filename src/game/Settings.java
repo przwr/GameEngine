@@ -10,7 +10,6 @@ import game.gameobject.entities.Player;
 import game.languages.LangENG;
 import game.languages.LangPL;
 import game.languages.Language;
-import game.text.FontBase;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.*;
@@ -65,7 +64,6 @@ public class Settings {
     public static float defaultBrightness = 0f;
     public static float gameGamma = 1.5f;
     public static float gameBrightness = 0f;
-    public static FontBase fonts;
     private static int modesCount;
 
     public static void initialize() {
@@ -109,7 +107,6 @@ public class Settings {
         }
         language = languages.get(0);
         languageName = language.lang;
-        fonts = new FontBase(20);
     }
 
     private static boolean isBigger(DisplayMode checked, DisplayMode temp) {

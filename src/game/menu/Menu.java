@@ -8,6 +8,7 @@ package game.menu;
 import engine.utilities.Delay;
 import game.Game;
 import game.ScreenPlace;
+import game.text.fonts.FontType;
 import org.lwjgl.opengl.Display;
 
 /**
@@ -19,6 +20,8 @@ public abstract class Menu extends ScreenPlace {
     protected final int heightHalf = Display.getHeight();
     public boolean isMapping;
     public Delay delay;
+    public FontType font;
+    public int fontSize = 64;
     protected MenuChoice root;
     protected MenuChoice defaultRoot;
 

@@ -72,9 +72,9 @@ public class MyPlace extends Place {
         Area.Y_IN_TILES = 24;
         Place.xAreaInPixels = X_IN_TILES * tileSize;
         Place.yAreaInPixels = Y_IN_TILES * tileSize;
-//        dayCycle.setTime(12, 30);
+        dayCycle.setTime(12, 30);
 //        dayCycle.setTime(21, 30);
-        dayCycle.setTime(6, 30);
+//        dayCycle.setTime(6, 30);
         changeSplitScreenMode = new Action(new InputKeyBoard(Keyboard.KEY_INSERT));
         changeSplitScreenJoin = new Action(new InputKeyBoard(Keyboard.KEY_END));
         loadingMap = new LoadingMap(this);
@@ -125,7 +125,7 @@ public class MyPlace extends Place {
         }
 //        if (game.getMapLoader().isRunning()) { // TODO Wywalić, jak będzie wczytywane z pliku
 //            for (Map map : unloadedMaps) {        // TODO Trzeba sprawdzić z aktualnie wczytywanymi mapami, żeby nie wywalać tych, co się właśnie wczytało.
-//                maps.remove(map);
+//                maps.destroy(map);
 //            }
 //        }
         addMapsToAdd();

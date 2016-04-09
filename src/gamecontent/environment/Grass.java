@@ -149,10 +149,10 @@ public class Grass extends GameObject {
             }
         }
         Drawer.regularShader.setUseTexture(false);
-        Drawer.regularShader.setUseColour(true);
+        Drawer.regularShader.setUseColor(true);
         Drawer.grassVBO.renderColoredTriangleStream(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray());
         Drawer.regularShader.setUseTexture(true);
-        Drawer.regularShader.setUseColour(false);
+        Drawer.regularShader.setUseColor(false);
         Drawer.refreshColor();
     }
 
@@ -174,10 +174,10 @@ public class Grass extends GameObject {
                     color.r, (color.g + ((float) blades[i].getValue() / 256)), color.b
             };
             Drawer.regularShader.setUseTexture(false);
-            Drawer.regularShader.setUseColour(true);
+            Drawer.regularShader.setUseColor(true);
             Drawer.grassVBO.renderColoredTriangleStream(vertices, colors);
             Drawer.regularShader.setUseTexture(true);
-            Drawer.regularShader.setUseColour(false);
+            Drawer.regularShader.setUseColor(false);
         }
         Drawer.refreshColor();
     }
