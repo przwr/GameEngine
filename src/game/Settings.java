@@ -42,7 +42,8 @@ public class Settings {
     public static boolean horizontalSplitScreen;
     public static boolean joinSplitScreen;
     public static int playersCount = 1;
-    public static float volume = 0.5f;
+    public static float soundVolume = 0.5f;
+    public static float musicVolume = 0.5f;
     public static SoundBase sounds;
     public static int resolutionWidth;
     public static int resolutionHeight;

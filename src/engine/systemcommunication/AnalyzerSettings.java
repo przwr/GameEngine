@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.newdawn.slick.openal.SoundStore;
 
 /**
  * @author przemek
@@ -85,10 +86,18 @@ public final class AnalyzerSettings {
                     }
                 }
                 break;
-            case "Volume:":
-                final float v = Float.parseFloat(p[1]);
-                if (v >= -0.01f && v <= 1.01f) {
-                    Settings.volume = v;
+            case "SoundVolume:":
+                final float sv = Float.parseFloat(p[1]);
+                if (sv >= -0.01f && sv <= 1.01f) {
+                    Settings.soundVolume = sv;
+                    SoundStore.get().setSoundVolume(sv);
+                }
+                break;
+            case "MusicVolume:":
+                final float mv = Float.parseFloat(p[1]);
+                if (mv >= -0.01f && mv <= 1.01f) {
+                    Settings.musicVolume = mv;
+                    SoundStore.get().setMusicVolume(mv);
                 }
                 break;
             case "Language:":
@@ -163,9 +172,12 @@ public final class AnalyzerSettings {
             writer.write("ResolutionHeight: " + Settings.resolutionHeight + "\n");
             writer.write("ResolutionFreq: " + Settings.frequency + "\n");
             {
-                final int v = (int) (Settings.volume * 10);
-                final float vol = (float) v / 10;
-                writer.write("Volume: " + vol + "\n");
+                int v = (int) (Settings.soundVolume * 10);
+                float vol = (float) v / 10;
+                writer.write("SoundVolume: " + vol + "\n");
+                v = (int) (Settings.musicVolume * 10);
+                vol = (float) v / 10;
+                writer.write("MusicVolume: " + vol + "\n");
             }
             writer.write("Language: " + Settings.languageName + "\n");
             writer.write("DefaultGamma: " + Settings.defaultGamma + "\n");

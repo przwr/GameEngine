@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.lwjgl.openal.AL;
 
 /**
  * ¬B
@@ -38,11 +39,22 @@ public class SoundBase {
         search(new File(folder), fileList);
         fileList.stream().forEach((file) -> {
             String[] temp = file.getName().split("\\.");
-            try {
-                InputStream stream = ResourceLoader.getResourceAsStream(file.getPath());
-                Audio sound = AudioLoader.getAudio("OGG", stream);
-                sounds.put(temp[0], new Sound(temp[0], sound));
-                stream.close();
+            try (InputStream stream = ResourceLoader.getResourceAsStream(file.getPath())) {
+                Audio sound = null;
+                switch (temp[1]) {
+                    case "ogg":
+                        sound = AudioLoader.getAudio("OGG", stream);
+                        break;
+                    case "wav":
+                        sound = AudioLoader.getAudio("WAV", stream);
+                        break;
+                    default:
+                        System.err.println("Unknown audio file format : '" + temp[1] + "'! in file '" + temp[0] + "'!");
+                }
+                if (sound != null) {
+                    sounds.put(temp[0], new Sound(temp[0], sound));
+                    System.out.println("Loaded sound : " + temp[0]);
+                }
             } catch (IOException e) {
                 ErrorHandler.error(e.toString());
             }
@@ -60,7 +72,7 @@ public class SoundBase {
                 search(target, fileList);
             } else {
                 String[] temp = target.getName().split("\\.");
-                if (temp.length > 1 && temp[1].equals("ogg")) {
+                if (temp.length > 1) {
                     fileList.add(target);
                 }
             }
@@ -80,5 +92,6 @@ public class SoundBase {
         }
         sounds.clear();
         SoundStore.get().clear();
+        AL.destroy();
     }
 }

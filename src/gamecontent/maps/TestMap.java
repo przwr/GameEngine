@@ -70,12 +70,6 @@ public class TestMap extends Map {
         Shen shen = new Shen(3010, 1226, place, mobID++);
         addObject(shen);
 
-        /*addObject(GrassClump.createRectangle(2650, 1320, 1, 5, 8, 2, 8, 32));
-        addObject(GrassClump.createCorner(2750, 1320, 2, 5, 7, 2, 8, 32, 0));
-        addObject(GrassClump.createCorner(2850, 1320, 2, 5, 7, 2, 8, 32, 1));
-        addObject(GrassClump.createCorner(2950, 1320, 2, 5, 7, 2, 8, 32, 2));
-        addObject(GrassClump.createCorner(3050, 1320, 2, 5, 7, 2, 8, 32, 3));*/
-
         Rock rock;
         addObject(new Dummy(4643, 1793, place, mobID++));
         rock = new Rock(4060, 2976, place, mobID++);

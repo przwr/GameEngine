@@ -506,7 +506,7 @@ public class MyGame extends Game {
 
     private void soundPause() {
         if (Settings.sounds != null) {
-            Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
+            /*Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
             Sound sound;
             while (it.hasNext()) {
                 java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
@@ -520,13 +520,13 @@ public class MyGame extends Game {
                 } else {
                     sound.setStopped(true);
                 }
-            }
+            }*/
         }
     }
 
     private void soundResume() {
         if (Settings.sounds != null) {
-            Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
+            /*Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
             Sound sound;
             while (it.hasNext()) {
                 java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
@@ -537,7 +537,7 @@ public class MyGame extends Game {
                     sound.resume();
                     sound.smoothStart(0.5);
                 }
-            }
+            }*/
         }
     }
 

@@ -19,6 +19,9 @@ import game.place.Place;
 import sprites.ClothedAppearance;
 
 import static game.gameobject.GameObject.*;
+import org.lwjgl.openal.AL10;
+import org.newdawn.slick.openal.SoundStore;
+import sounds.Sound;
 
 /**
  * @author przemek
@@ -83,9 +86,18 @@ public class MyController extends PlayerController {
         }
     }
 
+    private Sound sound;
+
+    public void initializeSounds() {
+        if (sound == null) {
+            sound = inControl.getPlace().getSounds().getSound("pichuun");
+        }
+    }
+
     @Override
     public void getInput() {
         if (gui != null) {
+            initializeSounds();
             updateActionsIfNoLag();
             //ANIMACJA//
             animation = (ClothedAppearance) inControl.getAppearance();
@@ -172,10 +184,24 @@ public class MyController extends PlayerController {
         }
     }
 
+    float tmp = 3;
+    int lastID = 0;
+
     private void updateBlock() {
+        System.out.println(AL10.alGetSourcei(lastID, AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING);
         if (actions[INPUT_BLOCK].isKeyClicked()) {
             //PERFEKCYJNY BLOK (pierwsza klatka obrony)
+            if (sound != null) {
+                if (lastID == 0 || AL10.alGetSourcei(lastID, AL10.AL_SOURCE_STATE) != AL10.AL_PLAYING) {
+                    lastID = sound.playAsSoundEffect();
+                    AL10.alSourcef(lastID, AL10.AL_POSITION, 100000.0f);
+                } else {
+                    AL10.alSourceStop(lastID);
+                    lastID = 0;
+                }
+            }
         }
+        System.out.println(lastID + " " + SoundStore.get().getSourceCount() + " " + SoundStore.get().getMusicVolume());
         animation.getUpperBody().animateSingleInDirection(tempDirection, animation.SHIELD);
         stats.setProtectionState(true);
         updateChargingMovement();

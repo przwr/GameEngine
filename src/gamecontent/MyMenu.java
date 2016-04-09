@@ -78,8 +78,9 @@ public class MyMenu extends Menu {
         addControlsChoices(controls);
         options.addChoice(controls);
         MenuChoice sound = new MenuChoice(Settings.language.menu.Sound, this);
-        sound.addChoice(new VolumeChoice(Settings.language.menu.Volume, this));
-//        options.addChoice(sound);
+        sound.addChoice(new SoundVolumeChoice(Settings.language.menu.SoundVolume, this));
+        sound.addChoice(new MusicVolumeChoice(Settings.language.menu.MusicVolume, this));
+        options.addChoice(sound);
         MenuChoice graphic = new MenuChoice(Settings.language.menu.Video, this);
         graphic.addChoice(new BrightnessChoice(Settings.language.menu.Brightness, this));
         graphic.addChoice(new GammaChoice(Settings.language.menu.Gamma, this));

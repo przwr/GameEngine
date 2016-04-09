@@ -6,6 +6,7 @@ import game.Settings;
 import gamecontent.environment.Bush;
 import gamecontent.environment.GrassClump;
 import gamecontent.environment.Tree;
+import java.io.File;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.GLContext;
@@ -82,7 +83,7 @@ public abstract class BackgroundLoader {
             while (running) {
                 try {
                     loadTextures();
-//                    loadSounds();
+                    loadSounds();
                     if (spritesList1.isEmpty() && spritesList2.isEmpty()/*) && Settings.sounds != null*/) {
                         try {
                             Thread.sleep(3600000);
@@ -227,8 +228,8 @@ public abstract class BackgroundLoader {
 
     private void loadSounds() {
         if (Settings.sounds == null && spritesList1.isEmpty() && spritesList2.isEmpty() && game != null && game.getPlace() != null) {
-            game.getPlace().getSounds().initialize("res");
-            SoundStore.get().poll(0);
+            SoundStore.get().init();
+            game.getPlace().getSounds().initialize("res/sound");
         }
     }
 

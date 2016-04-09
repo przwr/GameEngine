@@ -35,7 +35,8 @@ public class LangPL extends Language {
         menu.Vertical = "Pionowo";
         menu.Horizontal = "Poziomo";
         menu.Brightness = "Jasność (3ci # niewidoczny): ";
-        menu.Volume = "Głośność: ";
+        menu.SoundVolume = "Głośność dźwięków: ";
+        menu.MusicVolume = "Głośność muzyki: ";
         menu.Gamma = "Gamma (2gi # niewidoczny): ";
         menu.Resolution = "Rozdzielczość: ";
         menu.FullScreen = "Pełny ekran: ";

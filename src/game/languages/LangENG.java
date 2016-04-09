@@ -35,7 +35,8 @@ public class LangENG extends Language {
         menu.Vertical = "Vertical";
         menu.Horizontal = "Horizontal";
         menu.Brightness = "Brightness (3rd # invisible): ";
-        menu.Volume = "Volume: ";
+        menu.SoundVolume = "Sound Volume: ";
+        menu.MusicVolume = "Music Volume: ";
         menu.Gamma = "Gamma (2nd # invisible): ";
         menu.Resolution = "Resolution: ";
         menu.FullScreen = "FullScreen: ";

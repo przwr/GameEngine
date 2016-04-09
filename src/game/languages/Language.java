@@ -40,7 +40,8 @@ public class Language {
         public String Vertical;
         public String Horizontal;
         public String Brightness;
-        public String Volume;
+        public String SoundVolume;
+        public String MusicVolume;
         public String Gamma;
         public String Resolution;
         public String FullScreen;
