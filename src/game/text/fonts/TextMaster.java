@@ -91,8 +91,8 @@ public class TextMaster {
             GL20.glEnableVertexAttribArray(1);
             Drawer.fontShader.loadColor(text.getColor());
             float ff = text.getFontSize() * (float) Settings.nativeScale;
-            Drawer.fontShader.loadWidth((-0.000135f * ff * ff + 0.015f * ff + 1.5f / ff));
-            Drawer.fontShader.loadEdge(7.5f / ff);
+            Drawer.fontShader.loadWidth((-0.00016f * ff * ff + 0.017f * ff + 2f / (ff)));
+            Drawer.fontShader.loadEdge(4.5f / ff);
             Drawer.fontShader.loadBorderWidth(0.0f);
             Drawer.fontShader.loadBorderEdge(0.1f);
             Drawer.fontShader.loadOffset(0, 0);

@@ -46,6 +46,13 @@ public class TextPiece {
         return font;
     }
 
+    public void setFont(FontType font) {
+        if (font != this.font) {
+            this.font = font;
+            TextMaster.loadText(this);
+        }
+    }
+
     public void setColor(float r, float g, float b) {
         color.set(r, g, b, 1f);
     }
