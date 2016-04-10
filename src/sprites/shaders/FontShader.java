@@ -1,6 +1,5 @@
 package sprites.shaders;
 
-import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 public class FontShader extends ShaderProgram {
@@ -59,8 +58,8 @@ public class FontShader extends ShaderProgram {
         loadVector4f(locationColor, color);
     }
 
-    public void loadBorderColor(Vector3f borderColor) {
-        loadVector3f(locationBorderColor, borderColor);
+    public void loadBorderColor(Vector4f borderColor) {
+        loadVector4f(locationBorderColor, borderColor);
     }
 
     public void loadTranslation(float x, float y) {

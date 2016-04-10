@@ -1531,7 +1531,7 @@ kerning first=123 second=119 amount=-1
 kerning first=347 second=75 amount=-1
 kerning first=73 second=281 amount=-1
 kerning first=89 second=45 amount=-3
-kerning first=77 second=101 amount=-1
+kerning first=77 second=101 amount=1
 kerning first=108 second=85 amount=-1
 kerning first=79 second=84 amount=-2
 kerning first=44 second=118 amount=-2
