@@ -1,5 +1,6 @@
 package game.gameobject.stats;
 
+import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.interactive.InteractiveResponse;
@@ -8,6 +9,7 @@ import gamecontent.effects.DamageNumber;
 import net.jodk.lang.FastMath;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
+import sounds.Sound;
 
 /**
  * Created by przemek on 10.08.15.
@@ -28,9 +30,18 @@ public class Stats {
     protected float protectionBackModifier = 1;
     protected boolean protectionState;
     protected boolean unhurtableState;  //stan kiedy nie ma reakcji na ból
+    
+    Sound deadSound;
+
+    public void initializeSounds() {
+        if (deadSound == null) {
+            deadSound = Settings.sounds.getSoundEffect("ded.ogg");
+        }
+    }
 
     public Stats(Entity owner) {
         this.owner = owner;
+        initializeSounds();
     }
 
     public void decreaseHealth(InteractiveResponse response) {
@@ -73,6 +84,7 @@ public class Stats {
     }
 
     public void died(GameObject attacker) {
+        deadSound.play();
         owner.delete();
         System.out.println(owner.getName() + " zginał.");
     }

@@ -11,7 +11,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.GLSync;
-import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.util.ResourceLoader;
 import sprites.Sprite;
 import sprites.SpriteBase;
@@ -24,6 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import static org.lwjgl.opengl.GL11.glFlush;
 import static org.lwjgl.opengl.GL32.GL_SYNC_GPU_COMMANDS_COMPLETE;
 import static org.lwjgl.opengl.GL32.glFenceSync;
+import sounds.SoundBase;
 
 /**
  * Created by przemek on 30.01.16.
@@ -228,8 +228,8 @@ public abstract class BackgroundLoader {
 
     private void loadSounds() {
         if (Settings.sounds == null && spritesList1.isEmpty() && spritesList2.isEmpty() && game != null && game.getPlace() != null) {
-            SoundStore.get().init();
-            game.getPlace().getSounds().initialize("res/sound");
+            Settings.sounds = new SoundBase();
+            Settings.sounds.init();
         }
     }
 

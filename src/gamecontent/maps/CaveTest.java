@@ -13,9 +13,10 @@ import gamecontent.mobs.Tongub;
 import gamecontent.npcs.Sonata;
 import gamecontent.npcs.Zuocieyka;
 import org.newdawn.slick.Color;
-import sounds.Sound;
 
 import static collision.OpticProperties.TRANSPARENT;
+import game.Settings;
+import sounds.Sound;
 
 /**
  * Created by przemek on 21.11.15.
@@ -26,13 +27,13 @@ public class CaveTest extends Map {
 
     public CaveTest(short ID, Place place, int tileSize) {
         super(ID, "CaveTest", place, tileSize);
-        
+
         PuzzleObject puzzle = new PuzzleObject("demo/cave", place);
         initializeAreas((puzzle.getWidth() + 20) * tileSize, (puzzle.getHeight() + 20) * tileSize);
-        
-        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT));    
+
+        setColor(new Color(DayCycle.NIGHT, DayCycle.NIGHT, DayCycle.NIGHT));
         puzzle.addTileChanger("grassland", 10, 1, 4,
-                7, 10,   8, 10,    9, 10,  10, 10,    11, 10,    12, 10,    13, 10);
+                7, 10, 8, 10, 9, 10, 10, 10, 11, 10, 12, 10, 13, 10);
         placePuzzle(0, 0, puzzle);
 
         WarpPoint warp = new WarpPoint("toTestLeft", 27 * tileSize, 17 * tileSize, "Test");
@@ -81,12 +82,13 @@ public class CaveTest extends Map {
         super.updateEntitesFromAreasToUpdate();
         if (envSounds != null) {
             if (place.players[0].getMap() == this) {
-                envSounds.resume();
+                envSounds.play();
             } else {
-                envSounds.fade(1000, false);
+                //envSounds.fade(1000, false);
+                envSounds.stop();
             }
         } else {
-            envSounds = place.getSounds().getSound("env_cave");
+            envSounds = Settings.sounds.getBGSound("env_cave.ogg");
         }
     }
 }

@@ -16,7 +16,6 @@ import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.openal.SoundStore;
 import sprites.SpriteBase;
 
 import java.io.File;
@@ -26,6 +25,7 @@ import java.util.ArrayList;
 
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
+import sounds.SoundBase;
 
 /**
  * @author przemek
@@ -81,7 +81,6 @@ public class ObjectPlace extends Place {
         editor.addGui(guiHandler);
         undo = new UndoControl(objMap, 20);
         //sounds.init("res");
-        SoundStore.get().poll(0);
         initializeMethods();
     }
 

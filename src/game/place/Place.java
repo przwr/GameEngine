@@ -22,7 +22,6 @@ import game.logic.DayCycle;
 import game.place.cameras.Camera;
 import game.place.map.Map;
 import org.newdawn.slick.Color;
-import sounds.SoundBase;
 import sprites.Sprite;
 import sprites.SpriteBase;
 import sprites.SpriteSheet;
@@ -55,7 +54,6 @@ public abstract class Place extends ScreenPlace {
     public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int splitScreenMode, playersCount;
     protected SpriteBase sprites;
-    protected SoundBase sounds;
     protected short mapIDCounter = 0;
     private Console console;
 
@@ -171,7 +169,6 @@ public abstract class Place extends ScreenPlace {
         Place.tileDoubleSize = tileSize + tileSize;
         Place.tileSquared = tileSize * tileSize;
         Place.tileHalf = tileSize / 2;
-        sounds = new SoundBase();
         sprites = new SpriteBase();
         console = new Console(this);
         dayCycle = new DayCycle();
@@ -248,10 +245,6 @@ public abstract class Place extends ScreenPlace {
 
     public Point[] getStartPointFromFile(String folder) {
         return sprites.getStartPointFromFile(folder);
-    }
-
-    public SoundBase getSounds() {
-        return sounds;
     }
 
     //    public void addDebugConsoles() {
@@ -341,9 +334,6 @@ public abstract class Place extends ScreenPlace {
         mapsToAdd1.clear();
         mapsToAdd2.clear();
         tempMaps.clear();
-        if (sounds != null)
-            sounds.cleanUp();
-        sounds = null;
         BackgroundLoader.base = sprites;
         sprites = null;
         Main.backgroundLoader.unloadAllTextures();

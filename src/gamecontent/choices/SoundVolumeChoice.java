@@ -9,9 +9,6 @@ import engine.systemcommunication.AnalyzerSettings;
 import game.Settings;
 import game.menu.Menu;
 import game.menu.MenuChoice;
-import sounds.Sound;
-
-import java.util.Iterator;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
@@ -36,7 +33,7 @@ public class SoundVolumeChoice extends MenuChoice {
                 Settings.soundVolume = 1.0f;
             }
         }
-        SoundStore.get().setSoundVolume(Settings.soundVolume);
+        Settings.sounds.setSoundVolume(Settings.soundVolume);
         AnalyzerSettings.update();
     }
 

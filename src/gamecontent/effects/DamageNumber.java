@@ -17,12 +17,21 @@ import game.text.fonts.TextMaster;
 import game.text.fonts.TextPiece;
 import net.packets.Update;
 import org.newdawn.slick.Color;
+import sounds.Sound;
 
 /**
  * @author Wojtek
  */
 public class DamageNumber extends Entity {
 
+    private Sound normalHit;
+
+    public final void initializeSounds() {
+        if (normalHit == null) {
+            normalHit = Settings.sounds.getSoundEffect("slash.wav");
+        }
+    }
+    
     public static TextPiece text;
     private static int size = 20;
     private final Color color;
@@ -31,6 +40,7 @@ public class DamageNumber extends Entity {
 
     public DamageNumber(int damage, int health, int x, int y, int height, Place place) {
         initialize("damage", x, y);
+        initializeSounds();
         this.place = place;
         this.floatHeight = height;
         this.damage = damage;
@@ -48,20 +58,27 @@ public class DamageNumber extends Entity {
         float percent = (float) damage / health * 100;
         if (percent <= 1) {
             color = Color.lightGray;
+            normalHit.setVolume(0.4f);
         } else if (percent <= 3) {
             color = Color.white;
+            normalHit.setVolume(0.6f);
         } else if (percent <= 10) {
             color = Color.yellow;
+            normalHit.setVolume(0.8f);
         } else if (percent <= 21) {
             color = Color.orange;
+            normalHit.setVolume(0.9f);
         } else if (percent <= 50) {
             color = Color.red;
+            normalHit.setVolume(0.95f);
         } else {
             color = Color.black;
+            normalHit.setVolume(1f);
         }
         if (text == null) {
             text = new TextPiece("Menu", size, place.game.font, (int) (size * 5 * Settings.nativeScale), true);
         }
+        normalHit.play();
     }
 
     @Override

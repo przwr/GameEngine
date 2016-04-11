@@ -6,234 +6,211 @@
 package sounds;
 
 import engine.utilities.Methods;
-import game.Settings;
-import net.jodk.lang.FastMath;
-import org.newdawn.slick.openal.Audio;
+import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.AL11;
 
 /**
+ * (SlickAudioImpl) A sound that can be played through OpenAL
+ *
+ * @author Kevin Glass
+ * @author Nathan Sweet <misc@n4te.com>
+ *
+ * Altered by
  * @author Wojtek
  */
 public class Sound {
 
-    private final Audio soundEffect;
     private final String name;
-    private boolean paused, stopped;
-    private float gain, savedGainModifier, gainModifier = 1.0f, position = 1.0f, pitch = 1.0f;
-    private boolean looped = true, fading = false;
+    /**
+     * The store from which this sound was loaded
+     */
+    private final SoundBase store;
+    /**
+     * The buffer containing the sound
+     */
+    private final int buffer;
+    /**
+     * The index of the source being used to play this sound
+     */
+    private int index = -1;
+    private boolean isIndexUsable;
+    /**
+     * The length of the audio
+     */
+    private final float length;
+    private boolean isMusic;
+    private float gain = 1f, pitch = 1f;
+    private boolean looped, fading = false;
 
-    public Sound(String name, Audio soundEffect) {
-        this.soundEffect = soundEffect;
+    public Sound(String name, SoundBase store, int buffer, boolean isMusic) {
+        this.store = store;
+        this.buffer = buffer;
+        this.isMusic = isMusic;
         this.name = name;
-        gain = gainModifier;
+        looped = isMusic;
+
+        int bytes = AL10.alGetBufferi(buffer, AL10.AL_SIZE);
+        int bits = AL10.alGetBufferi(buffer, AL10.AL_BITS);
+        int channels = AL10.alGetBufferi(buffer, AL10.AL_CHANNELS);
+        int freq = AL10.alGetBufferi(buffer, AL10.AL_FREQUENCY);
+
+        int samples = bytes / (bits / 8);
+        length = (samples / (float) freq) / channels;
     }
 
-    public int playAsSoundEffect(float pitch, float gainModifier, boolean looped) {
-        if (!soundEffect.isPlaying()) {
-            this.gainModifier = gainModifier;
-            this.pitch = FastMath.max(0, pitch);
-            this.looped = looped;
-            gain = Methods.interval(0, gainModifier, 1);
-            return soundEffect.playAsSoundEffect(pitch, gainModifier, looped);
-        } else {
-            return 0;
+    public Sound(Sound other) {
+        name = other.name;
+        store = other.store;
+        buffer = other.buffer;
+        isMusic = other.isMusic;
+        length = other.length;
+        gain = other.gain;
+        pitch = other.pitch;
+        looped = other.looped;
+        fading = other.fading;
+    }
+
+    public int getBufferID() {
+        return buffer;
+    }
+
+    public void setVolume(float volume) {
+        this.gain = Methods.interval(0, volume, 1);
+    }
+
+    public void setVolumeAndUpdate(float volume) {
+        this.gain = Methods.interval(0, volume, 1);
+        updateVolume();
+    }
+
+    void updateVolume() {
+        if (isIndexUsable) {
+            store.changeGain(index, getTotalVolume());
         }
     }
 
-    public int playAsSoundEffect() {
-        return soundEffect.playAsSoundEffect(1, 1, false);
-    }
-    
-    public int playAsMusic() {
-        if (!soundEffect.isPlaying()) {
-            return soundEffect.playAsMusic(1, Settings.musicVolume, true);
-        } else {
-            return 0;
-        }
+    public float getTotalVolume() {
+        return gain * (isMusic ? store.getMusicVolume() : store.getSoundVolume());
     }
 
-    public int playAsSoundEffect(float pitch, float gainModifier, boolean looped, float f0, float f1, float f2) {
-        if (!soundEffect.isPlaying()) {
-            this.gainModifier = gainModifier;
-            this.pitch = FastMath.max(0, pitch);
-            this.looped = looped;
-            gain = Methods.interval(0, gainModifier, 1);
-            return soundEffect.playAsSoundEffect(pitch, gainModifier, looped, f0, f1, f2);
-        } else {
-            return 0;
-        }
+    public float getVolume() {
+        return gain;
     }
 
-    public int playAsMusic(float pitch, float gainModifier, boolean looped) {
-        if (!soundEffect.isPlaying()) {
-            this.pitch = FastMath.max(0, pitch);
-            this.looped = looped;
-            gain = Methods.interval(0, gainModifier, 1);
-            return soundEffect.playAsMusic(pitch, gainModifier, looped);
-        } else {
-            return 0;
-        }
+    public float getCurrentVolume() {
+        return isIndexUsable ? store.getCurrentGain(index) : 0;
     }
 
-    public void smoothStart(double time) {  //Smooth start on already started sound
-        if (!fading && soundEffect.isPlaying()) {
-            fading = true;
-            new Thread(new Fade(time, this, 50, false, false)).start();
-        }
+    public boolean isPlaying() {
+        return isIndexUsable && store.isSourcePlaying(index);
     }
 
-    public int resume() {
-        if (!soundEffect.isPlaying()) {
-            int temp = soundEffect.playAsSoundEffect(pitch, gain, looped);
-            soundEffect.setPosition(position);
-            paused = false;
-            return temp;
+    public Sound play() {
+        return play(pitch, looped, 0, 0, 0);
+    }
+
+    public Sound play(float pitch, boolean loop) {
+        return play(pitch, loop, 0, 0, 0);
+    }
+
+    public Sound play(float pitch, boolean loop, float x, float y, float z) {
+        if (isPlaying()) {
+            if (!isMusic) {
+                Sound copy = new Sound(this);
+                copy.index = store.playSound(copy, pitch * this.pitch, getTotalVolume(), loop, x, y, z);
+                return copy;
+            } else {
+                return this;
+            }
         } else {
-            return 0;
+            index = store.playSound(this, pitch * this.pitch, getTotalVolume(), loop, x, y, z);
+            return this;
         }
     }
 
     public void stop() {
-        if (soundEffect.isPlaying()) {
-            position = 0;
-            soundEffect.stop();
-            paused = false;
+        if (isIndexUsable) {
+            store.stopSource(index);
         }
     }
 
     public void pause() {
-        if (soundEffect.isPlaying()) {
-            position = soundEffect.getPosition();
-            soundEffect.stop();
-            paused = true;
+        if (isIndexUsable) {
+            store.pauseSource(index);
         }
-    }
-
-    public void fade(double time, boolean pause) {
-        if (!fading && soundEffect.isPlaying()) {
-            fading = true;
-            new Thread(new Fade(time, this, 50, true, pause)).start();
-        }
-    }
-
-    public void addPitch(float a) {
-        setPitch(pitch + a);
-    }
-
-    public boolean setPosition(float f) {
-        return soundEffect.setPosition(f);
-    }
-
-    private void setGainModifier(float a) {
-        if (soundEffect.isPlaying()) {
-            pause();
-            gainModifier = a;
-            gain = Methods.interval(0, gainModifier, 1);
-            resume();
-        } else {
-            gainModifier = a;
-            gain = Methods.interval(0, gainModifier, 1);
-        }
-    }
-
-    public void addGainModifier(float a) {
-        setGainModifier(gainModifier + a);
-    }
-
-    public boolean isPlaying() {
-        return soundEffect.isPlaying();
     }
 
     public boolean isPaused() {
-        return paused;
+        return isIndexUsable && store.isSourcePaused(index);
     }
 
-    public boolean isStopped() {
-        return stopped;
+    public void resume() {
+        if (isIndexUsable) {
+            store.resumeSource(index);
+        }
     }
 
-    public void setStopped(boolean stopped) {
-        this.stopped = stopped;
+    void setIndexUsable(boolean usable) {
+        this.isIndexUsable = usable;
+    }
+
+    int getIndex() {
+        return index;
+    }
+
+    public boolean setPosition(float position) {
+        if (isIndexUsable) {
+            position = position % length;
+
+            AL10.alSourcef(store.getSource(index), AL11.AL_SEC_OFFSET, position);
+            return AL10.alGetError() == 0;
+        }
+        return false;
     }
 
     public float getPosition() {
-        return soundEffect.getPosition();
+        if (isIndexUsable) {
+            return AL10.alGetSourcef(store.getSource(index), AL11.AL_SEC_OFFSET);
+        }
+        return 0;
     }
 
-    public String getName() {
-        return name;
+    public float getLength() {
+        return length;
     }
 
-    public Audio getSound() {
-        return soundEffect;
+    public boolean isItMusic() {
+        return isMusic;
+    }
+
+    public void setToMusic(boolean isMusic) {
+        this.isMusic = isMusic;
     }
 
     public float getPitch() {
         return pitch;
     }
 
-    private void setPitch(float a) {
-        if (soundEffect.isPlaying()) {
-            pause();
-            pitch = FastMath.max(0, a);
-            resume();
-        } else {
-            pitch = FastMath.max(0, a);
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
+    public void setPitchNow(float pitch) {
+        this.pitch = pitch;
+        if (isIndexUsable) {
+            store.changePitch(index, pitch);
         }
     }
 
-    public float getGain() {
-        return gain;
+    public boolean isLooped() {
+        return looped;
     }
 
-    public int getBufferID() {
-        return soundEffect.getBufferID();
+    public void setLooped(boolean looped) {
+        this.looped = looped;
     }
 
-    private class Fade implements Runnable {
-
-        private final double time;
-        private final Sound sound;
-        private final long period;
-        private final boolean fade, pause;
-
-        private Fade(double time, Sound snd, int period, boolean fade, boolean pause) {
-            this.time = time;
-            this.sound = snd;
-            this.period = period;
-            this.fade = fade;
-            this.pause = pause;
-        }
-
-        private void end() {
-            if (fade) {
-                if (pause) {
-                    sound.pause();
-                } else {
-                    sound.stop();
-                }
-            }
-            fading = false;
-        }
-
-        @Override
-        public void run() {
-            float vol = fade ? gainModifier : 0.0f;
-            float delta = (float) (gainModifier / (1000 * time / period));
-            delta = fade ? -delta : delta;
-            if (!fade) {
-                savedGainModifier = gainModifier;
-            }
-            float targetVol = savedGainModifier;
-            while (vol >= 0 && vol <= targetVol) {
-                try {
-                    Thread.sleep(period);
-                    vol += delta;
-                    sound.setGainModifier(vol);
-                } catch (InterruptedException e) {
-                    end();
-                }
-            }
-            end();
-        }
+    public String getName() {
+        return name;
     }
 }

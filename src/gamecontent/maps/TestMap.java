@@ -16,9 +16,10 @@ import gamecontent.mobs.Shen;
 import gamecontent.npcs.Melodia;
 import gamecontent.npcs.Nutka;
 import gamecontent.npcs.Tercja;
-import sounds.Sound;
 
 import static collision.OpticProperties.TRANSPARENT;
+import game.Settings;
+import sounds.Sound;
 
 /**
  * Created by przemek on 21.11.15.
@@ -101,12 +102,13 @@ public class TestMap extends Map {
         super.updateEntitesFromAreasToUpdate();
         if (envSounds != null) {
             if (place.players[0].getMap() == this) {
-                envSounds.resume();
+                envSounds.play();
             } else {
-                envSounds.fade(1000, false);
+                //envSounds.fade(1000, false);
+                envSounds.stop();
             }
         } else {
-            envSounds = place.getSounds().getSound("env_forest");
+            envSounds = Settings.sounds.getBGSound("env_forest.ogg");
         }
     }
 }

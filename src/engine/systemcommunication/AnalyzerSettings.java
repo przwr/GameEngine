@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.newdawn.slick.openal.SoundStore;
+import sounds.SoundBase;
 
 /**
  * @author przemek
@@ -90,14 +90,14 @@ public final class AnalyzerSettings {
                 final float sv = Float.parseFloat(p[1]);
                 if (sv >= -0.01f && sv <= 1.01f) {
                     Settings.soundVolume = sv;
-                    SoundStore.get().setSoundVolume(sv);
+                    Settings.sounds.setSoundVolume(sv);
                 }
                 break;
             case "MusicVolume:":
                 final float mv = Float.parseFloat(p[1]);
                 if (mv >= -0.01f && mv <= 1.01f) {
                     Settings.musicVolume = mv;
-                    SoundStore.get().setMusicVolume(mv);
+                    Settings.sounds.setMusicVolume(mv);
                 }
                 break;
             case "Language:":

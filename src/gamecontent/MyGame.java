@@ -31,10 +31,8 @@ import gamedesigner.ObjectPlayer;
 import org.lwjgl.input.Controller;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import sounds.Sound;
 
 import java.io.File;
-import java.util.Iterator;
 
 import static engine.systemcommunication.IO.loadInputFromFile;
 
@@ -452,7 +450,7 @@ public class MyGame extends Game {
     public void endGame() {
         running = started = false;
         if (Settings.sounds != null)
-            Settings.sounds.cleanUp();
+            Settings.sounds.clear();
         Settings.sounds = null;
         PathFindingModule.stop();
         pathThread = null;
@@ -494,38 +492,13 @@ public class MyGame extends Game {
 
     private void soundPause() {
         if (Settings.sounds != null) {
-            /*Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
-            Sound sound;
-            while (it.hasNext()) {
-                java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
-                sound = pair.getValue();
-                if (pair.getValue().isPlaying()) {
-                    if (sound.isPaused()) {
-                        sound.setStopped(true);
-                    } else {
-                        sound.fade(0.01, true);
-                    }
-                } else {
-                    sound.setStopped(true);
-                }
-            }*/
+            Settings.sounds.pauseAllSounds();
         }
     }
 
     private void soundResume() {
         if (Settings.sounds != null) {
-            /*Iterator it = Settings.sounds.getSoundsMap().entrySet().iterator();
-            Sound sound;
-            while (it.hasNext()) {
-                java.util.Map.Entry<String, Sound> pair = (java.util.Map.Entry) it.next();
-                sound = pair.getValue();
-                if (sound.isStopped()) {
-                    sound.setStopped(false);
-                } else {
-                    sound.resume();
-                    sound.smoothStart(0.5);
-                }
-            }*/
+            Settings.sounds.resumeAllSounds();
         }
     }
 

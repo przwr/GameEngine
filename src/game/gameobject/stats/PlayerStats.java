@@ -1,6 +1,7 @@
 package game.gameobject.stats;
 
 import collision.OpticProperties;
+import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
@@ -12,6 +13,7 @@ import gamecontent.MyPlayer;
 import gamecontent.effects.DamageNumber;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
+import sounds.Sound;
 
 /**
  * Created by przemek on 10.08.15.
@@ -22,6 +24,13 @@ public class PlayerStats extends Stats {
     private final float maxEnergy = 100;
     private final Player player;
 
+    @Override
+    public void initializeSounds() {
+        if (deadSound == null) {
+            deadSound = Settings.sounds.getSoundEffect("pichuun.wav");
+        }
+    }
+    
     public PlayerStats(Player owner) {
         super(owner);
         this.player = owner;
@@ -84,6 +93,7 @@ public class PlayerStats extends Stats {
         player.addChanger(death);
         player.knockBack(20, 8, attacker);
         death.start();
+        deadSound.play();
 //        ((MyPlayer) player).getGUI().deactivate();
         System.out.println(player.getName() + " zginał.");
     }

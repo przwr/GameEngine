@@ -13,7 +13,6 @@ import game.languages.Language;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.*;
-import sounds.SoundBase;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -21,6 +20,7 @@ import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.glGetInteger;
+import sounds.SoundBase;
 import static sprites.fbo.FrameBufferObject.*;
 
 /**
@@ -68,6 +68,8 @@ public class Settings {
     private static int modesCount;
 
     public static void initialize() {
+        sounds = new SoundBase();
+        sounds.init();
         modesCount = 0;
         try {
             modesTemp = Display.getAvailableDisplayModes();
