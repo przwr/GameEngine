@@ -2,8 +2,9 @@ package sprites;
 
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
+import engine.utilities.Methods;
 import engine.utilities.Point;
-import game.gameobject.entities.Player;
+import game.gameobject.GameObject;
 import game.place.Place;
 import gamecontent.equipment.Cloth;
 import org.lwjgl.opengl.Display;
@@ -16,7 +17,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 
 /**
  * @author Wojtek
@@ -35,6 +37,7 @@ public class ClothedAppearance implements Appearance {
     private ArrayList<byte[]> upperQueue;
     private ArrayList<byte[]> lowerQueue;
     private FrameBufferObject fbo;
+    private FrameBufferObject staticShadowFbo;
     private boolean inSync;
     private boolean upToDate;
 
@@ -48,35 +51,37 @@ public class ClothedAppearance implements Appearance {
         yDelta = renderPoints[1].getY();
         upperBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
         lowerBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
+//        TODO wyliczać na jakieś podstawie wielkość fbo
         fbo = new RegularFrameBufferObject(210, 256);
+        staticShadowFbo = new RegularFrameBufferObject(210, 256);
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
-            Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
-            Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
+                           Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
+                           Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
         lowerRenderList = new ClothCombo[]{
-            new ClothCombo(legs.getLastPartNumber(), legs),
-            new ClothCombo(boots.getFirstPartNumber(), boots),
-            new ClothCombo(legs.getFirstPartNumber(), legs),
-            new ClothCombo(boots.getLastPartNumber(), boots),
-            new ClothCombo(pants.getFirstPartNumber(), pants),
-            new ClothCombo(pants.getLastPartNumber(), pants)
+                new ClothCombo(legs.getLastPartNumber(), legs),
+                new ClothCombo(boots.getFirstPartNumber(), boots),
+                new ClothCombo(legs.getFirstPartNumber(), legs),
+                new ClothCombo(boots.getLastPartNumber(), boots),
+                new ClothCombo(pants.getFirstPartNumber(), pants),
+                new ClothCombo(pants.getLastPartNumber(), pants)
         };
         upperRenderList = new ClothCombo[]{
-            new ClothCombo(torso.getSecondPartNumber(), torso),
-            new ClothCombo(gloves.getFirstPartNumber(), gloves),
-            new ClothCombo(shirt.getSecondPartNumber(), shirt),
-            new ClothCombo(torso.getFirstPartNumber(), torso),
-            new ClothCombo(shirt.getFirstPartNumber(), shirt),
-            new ClothCombo(head.getFirstPartNumber(), head),
-            new ClothCombo(hair.getFirstPartNumber(), hair),
-            new ClothCombo(cap.getFirstPartNumber(), cap),
-            new ClothCombo(torso.getLastPartNumber(), torso),
-            new ClothCombo(gloves.getLastPartNumber(), gloves),
-            new ClothCombo(shirt.getLastPartNumber(), shirt),
-            new ClothCombo(sword.getFirstPartNumber(), sword),
-            new ClothCombo(bow.getFirstPartNumber(), bow),
-            new ClothCombo(shield.getFirstPartNumber(), shield)
+                new ClothCombo(torso.getSecondPartNumber(), torso),
+                new ClothCombo(gloves.getFirstPartNumber(), gloves),
+                new ClothCombo(shirt.getSecondPartNumber(), shirt),
+                new ClothCombo(torso.getFirstPartNumber(), torso),
+                new ClothCombo(shirt.getFirstPartNumber(), shirt),
+                new ClothCombo(head.getFirstPartNumber(), head),
+                new ClothCombo(hair.getFirstPartNumber(), hair),
+                new ClothCombo(cap.getFirstPartNumber(), cap),
+                new ClothCombo(torso.getLastPartNumber(), torso),
+                new ClothCombo(gloves.getLastPartNumber(), gloves),
+                new ClothCombo(shirt.getLastPartNumber(), shirt),
+                new ClothCombo(sword.getFirstPartNumber(), sword),
+                new ClothCombo(bow.getFirstPartNumber(), bow),
+                new ClothCombo(shield.getFirstPartNumber(), shield)
         };
         calculateDimensions();
     }
@@ -361,6 +366,7 @@ public class ClothedAppearance implements Appearance {
         } else {
             fbo.renderPart(partXStart + xOffset / 2, partXEnd + xOffset / 2);
         }
+        Drawer.regularShader.translateNoReset(fbo.getWidth() / 2, fbo.getHeight() / 2);
     }
 
     @Override
@@ -387,13 +393,34 @@ public class ClothedAppearance implements Appearance {
     }
 
     @Override
-    public void updateTexture(Player owner) {
+    public void updateTexture(GameObject owner) {
+        int direction = owner.getDirection8Way();
+        upperBody.changeDirection((direction + 2) % 8);
+        lowerBody.changeDirection((direction + 2) % 8);
+        staticShadowFbo.activate();
+        glClear(GL_COLOR_BUFFER_BIT);
+        Drawer.regularShader.translate(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight());
+        render();
+        upperBody.changeDirection(direction);
+        lowerBody.changeDirection(direction);
+        staticShadowFbo.deactivate();
+
         fbo.activate();
         glClear(GL_COLOR_BUFFER_BIT);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Drawer.regularShader.translate(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight());
         render();
         fbo.deactivate();
+    }
+
+    public void renderStaticShadow() {
+        Drawer.regularShader.rotateNoReset(90);
+        Drawer.regularShader.scaleNoReset((float) Methods.ONE_BY_SQRT_ROOT_OF_2, (float) Methods.ONE_BY_SQRT_ROOT_OF_2);
+        float change = 4;
+        Drawer.regularShader.translateNoReset(-staticShadowFbo.getWidth() / 2 - change, -staticShadowFbo.getHeight() / 2 - 10);
+        staticShadowFbo.render();
+        Drawer.regularShader.translateNoReset(staticShadowFbo.getWidth() / 2 + change, staticShadowFbo.getHeight() / 2 + 10);
+        Drawer.regularShader.scaleNoReset(1f / (float) Methods.ONE_BY_SQRT_ROOT_OF_2, 1f / (float) Methods.ONE_BY_SQRT_ROOT_OF_2);
+        Drawer.regularShader.rotateNoReset(-90);
     }
 
     public boolean isUpToDate() {

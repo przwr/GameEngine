@@ -5,7 +5,6 @@ import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
-import game.gameobject.entities.Player;
 import sprites.Appearance;
 import sprites.SpriteSheet;
 
@@ -197,8 +196,12 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void updateTexture(Player owner) {
+    public void updateTexture(GameObject owner) {
         ErrorHandler.warring("Incorrect method use", this);
+    }
+
+    @Override
+    public void renderStaticShadow() {
     }
 
     @Override

@@ -5,10 +5,9 @@
  */
 package sprites;
 
-import engine.systemcommunication.Time;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
-import game.gameobject.entities.Player;
+import game.gameobject.GameObject;
 
 /**
  * @author przemek
@@ -48,7 +47,11 @@ public class Animation implements Appearance {
     }
 
     @Override
-    public void updateTexture(Player owner) {
+    public void updateTexture(GameObject owner) {
+    }
+
+    @Override
+    public void renderStaticShadow() {
     }
 
     @Override
@@ -100,7 +103,7 @@ public class Animation implements Appearance {
     public void synchronizeWith(Animation other) {
         delay.synchronizeWith(other.delay);
     }
-    
+
     public void animateSingle(int index) {
         animate = false;
         setCurrentFrame(start = end = Methods.interval(0, index, finalEnd));

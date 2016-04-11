@@ -2,7 +2,7 @@ package sprites.fbo;
 
 import engine.utilities.Drawer;
 import game.Settings;
-import game.gameobject.entities.Player;
+import game.gameobject.GameObject;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL30;
@@ -353,7 +353,11 @@ public abstract class FrameBufferObject implements Appearance {
     }
 
     @Override
-    public void updateTexture(Player owner) {
+    public void updateTexture(GameObject owner) {
+    }
+
+    @Override
+    public void renderStaticShadow() {
     }
 
     @Override

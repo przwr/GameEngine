@@ -8,7 +8,7 @@ package sprites;
 import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
-import game.gameobject.entities.Player;
+import game.gameobject.GameObject;
 import org.newdawn.slick.opengl.Texture;
 import sprites.vbo.VertexBufferObject;
 
@@ -243,8 +243,12 @@ public class Sprite implements Appearance {
     }
 
     @Override
-    public void updateTexture(Player owner) {
+    public void updateTexture(GameObject owner) {
         ErrorHandler.warring("Incorrect method use", this);
+    }
+
+    @Override
+    public void renderStaticShadow() {
     }
 
     @Override

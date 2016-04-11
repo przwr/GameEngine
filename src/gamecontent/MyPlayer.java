@@ -367,20 +367,16 @@ public class MyPlayer extends Player {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             if (visibleShadow) {
                 Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-                Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
-                        Methods.roundDouble(collision.getHeight() / 2f), 24);
+                appearance.renderStaticShadow();
             } else {
                 visibleShadow = true;
             }
             Drawer.refreshColor();
-//            Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight() + Place.tileHalf) / 2)), place.standardFont, Drawer.getCurrentColor());
-//            Drawer.refreshColor();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 for (Interactive interactive : interactiveObjects) {
                     interactive.render();
                 }
             }
-
             if (colorAlpha < 1f) {
                 Drawer.setColorAlpha(colorAlpha);
                 appearance.renderPart(0, appearance.getWidth());

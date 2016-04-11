@@ -5,7 +5,7 @@
  */
 package sprites;
 
-import game.gameobject.entities.Player;
+import game.gameobject.GameObject;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -30,7 +30,9 @@ public interface Appearance {
 
     void renderShadowPart(int partXStart, int partXEnd, float color);
 
-    void updateTexture(Player owner); //Potrzebne tutaj?
+    void renderStaticShadow();
+
+    void updateTexture(GameObject owner); //Potrzebne tutaj?
 
     void updateFrame(); //Potrzebne tutaj?
 

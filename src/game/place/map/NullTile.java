@@ -2,7 +2,7 @@ package game.place.map;
 
 import collision.Figure;
 import engine.utilities.ErrorHandler;
-import game.gameobject.entities.Player;
+import game.gameobject.GameObject;
 import sprites.Appearance;
 
 public class NullTile extends Tile implements Appearance {
@@ -47,8 +47,12 @@ public class NullTile extends Tile implements Appearance {
     }
 
     @Override
-    public void updateTexture(Player owner) {
+    public void updateTexture(GameObject owner) {
         ErrorHandler.warring("Incorrect method use", this);
+    }
+
+    @Override
+    public void renderStaticShadow() {
     }
 
     @Override

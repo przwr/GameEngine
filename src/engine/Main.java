@@ -389,8 +389,9 @@ public class Main {
     private static float average() {
         int count = 0;
         float sum = 0;
-        int cond = fpsPosition == fps.length - 1 ? 0 : fpsPosition + 1;
-        for (int i = fpsPosition; i != cond; i--) {
+        boolean enough = false;
+        int cond = fpsPosition - 1 == fps.length - 1 ? 0 : fpsPosition;
+        for (int i = fpsPosition - 1; i != cond; i--) {
             if (i < 0) {
                 i = fps.length - 1;
             }
@@ -398,11 +399,12 @@ public class Main {
                 sum += fps[i];
                 count++;
             }
-            if (count == Settings.currentFramesCap * 5 || count == fps.length - 2) { // 5 to liczba ostatnich sekund do obczajenia
+            if (count > (Settings.currentFramesCap / 60f) * 60 * 5 || count == fps.length - 2) { // 5 to liczba ostatnich sekund do obczajenia
+                enough = true;
                 break;
             }
         }
-        if (count == Settings.currentFramesCap * 5 || count == fps.length - 2) {
+        if (enough) {
             return sum / count;
         }
         return Settings.currentFramesCap;

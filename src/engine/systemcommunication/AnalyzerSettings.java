@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sounds.SoundBase;
 
 /**
  * @author przemek
@@ -136,7 +135,7 @@ public final class AnalyzerSettings {
                 break;
             case "FramesLimit:":
                 int framesLimit = Integer.parseInt(p[1]);
-                Settings.framesLimit = (framesLimit < 24 || framesLimit > 1200) ? 60 : framesLimit;
+                Settings.framesLimit = (framesLimit < 24 || framesLimit > 120) ? 60 : framesLimit;
                 Settings.currentFramesCap = Settings.framesLimit;
                 break;
             case "AutoFrames:":

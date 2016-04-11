@@ -101,6 +101,11 @@ public class RegularShader extends ShaderProgram {
         loadMatrix(locationTransformationMatrix, transformationMatrix);
     }
 
+    public void rotateNoReset(float angle) {
+        MatrixMath.rotate(transformationMatrix, angle);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
+    }
+
     public void translateScale(float x, float y, float xScale, float yScale) {
         transformationMatrix.load(defaultMatrix);
         MatrixMath.translateScale(transformationMatrix, x, y, xScale, yScale);
