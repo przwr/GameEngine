@@ -36,5 +36,5 @@ void main(void){
 	    borderAlpha = smoothStep(borderWidth, borderEdge, borderDistance);
 	}
 	out_color = vec4(mix(vec3(borderColor.x, borderColor.y, borderColor.z), vec3(color.x, color.y, color.z), alpha/borderAlpha)
-	, alpha * color.w + (1.0 - alpha) * borderAlpha * borderColor.w);
+	, alpha * color.w + (1.0 - alpha) * borderAlpha * borderColor.w * color.w);
 }

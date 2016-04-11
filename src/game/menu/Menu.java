@@ -39,6 +39,9 @@ public abstract class Menu extends ScreenPlace {
     public void setChosen(int i) {
         if (!isMapping && delay.isOver()) {
             root.changeCurrent(i);
+            if (root.getChoice(root.getCurrent()).isBlocked() || root.getChoice(root.getCurrent()) instanceof Label) {
+                setChosen(i);
+            }
         }
     }
 
@@ -59,6 +62,7 @@ public abstract class Menu extends ScreenPlace {
     public void setRoot(MenuChoice root) {
         if (!isMapping && delay.isOver()) {
             this.root = root;
+            root.setCurrent(0);
         }
     }
 

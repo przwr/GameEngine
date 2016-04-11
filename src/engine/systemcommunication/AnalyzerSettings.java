@@ -79,7 +79,8 @@ public final class AnalyzerSettings {
                 final int f = Integer.parseInt(p[1]);
                 Settings.frequency = (f <= 0) ? Settings.modes[0].getFrequency() : f;
                 for (int i = 0; i < Settings.modes.length; i++) {
-                    if (Settings.modes[i] != null && Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings.resolutionHeight && Settings
+                    if (Settings.modes[i] != null && Settings.modes[i].getWidth() == Settings.resolutionWidth && Settings.modes[i].getHeight() == Settings
+                            .resolutionHeight && Settings
                             .modes[i].getFrequency() == Settings.frequency) {
                         Settings.currentMode = i;
                     }
@@ -126,7 +127,13 @@ public final class AnalyzerSettings {
                 break;
             case "FramesLimit:":
                 int framesLimit = Integer.parseInt(p[1]);
-                Settings.framesLimit = (framesLimit < 24 || framesLimit > 120) ? 60 : framesLimit;
+                Settings.framesLimit = (framesLimit < 24 || framesLimit > 1200) ? 60 : framesLimit;
+                Settings.currentFramesCap = Settings.framesLimit;
+                break;
+            case "AutoFrames:":
+                if (0 == p[1].compareTo("On")) {
+                    Settings.autoFrames = true;
+                }
                 break;
             default:
         }
@@ -150,6 +157,11 @@ public final class AnalyzerSettings {
                 writer.write("VSync: On\n");
             } else {
                 writer.write("VSync: Off\n");
+            }
+            if (Settings.autoFrames) {
+                writer.write("AutoFrames: On\n");
+            } else {
+                writer.write("AutoFrames: Off\n");
             }
             if (Settings.shadowOff) {
                 writer.write("ShadowOff: On\n");

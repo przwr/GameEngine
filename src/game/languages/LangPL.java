@@ -100,6 +100,7 @@ public class LangPL extends Language {
         menu.Video = "Wideo";
         menu.Gameplay = "Rozgrywka";
         menu.FramesLimit = "Limit klatek: ";
+        menu.FramesAdjustment = "Automatyczne dostosowanie klatek: ";
         menu.Sound = "Dźwięk";
     }
 }

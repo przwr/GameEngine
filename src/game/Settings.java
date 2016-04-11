@@ -49,6 +49,8 @@ public class Settings {
     public static boolean verticalSynchronization;
     public static int samplesCount = 0;
     public static int framesLimit = 60;
+    public static int currentFramesCap = 60;
+    public static boolean autoFrames = false;
     public static String languageName;
     public static Language language;
     public static int actionsCount;
@@ -59,6 +61,7 @@ public class Settings {
     public static boolean multiSampleSupported;
     public static boolean shadowOff;
     public static double nativeScale;
+    public static String gpu = "";
     public static String serverIP = "127.0.0.1";
     public static float defaultGamma = 1.0f;
     public static float defaultBrightness = 0f;
@@ -127,7 +130,8 @@ public class Settings {
     }
 
     public static void detectFrameBuffers() {
-        System.out.println("Using GPU: " + GL11.glGetString(GL11.GL_VENDOR) + " - " + GL11.glGetString(GL11.GL_RENDERER));
+        gpu = "GPU: " + GL11.glGetString(GL11.GL_RENDERER);
+        System.out.println(gpu);
         System.out.println("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
         System.out.println("Shader Version: " + GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
         try {

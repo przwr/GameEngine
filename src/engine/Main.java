@@ -39,6 +39,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,6 +73,9 @@ public class Main {
     private static Shell shell;
     private static long lastTime;
     private static String info;
+    private static int[] fps = new int[3600];
+    private static int fpsPosition = 0;
+
 
     public static void run() {
         setSettingsFromFile(new File("res/settings.ini"));
@@ -168,17 +172,10 @@ public class Main {
 
     private static void createDisplay() {
         try {
-//            ContextAttribs attribs = new ContextAttribs(3, 2)
-//                    .withForwardCompatible(true)
-//                    .withProfileCore(true);
+            ContextAttribs contextAttributes = new ContextAttribs(3, 2)
+                    .withForwardCompatible(true)
+                    .withProfileCore(true);
             PixelFormat pixelFormat = new PixelFormat(32, 0, 24, 0, Settings.samplesCount);
-            ContextAttribs contextAttributes = new ContextAttribs(1, 1);
-            contextAttributes.withForwardCompatible(true);
-
-//            Display.setDisplayMode(new DisplayMode(WIDTH,HEIGHT));
-//            Display.create(new PixelFormat(), attribs);
-//            Display.setTitle("Our First Display!");
-//            GL11.glEnable(GL13.GL_MULTISAMPLE);
 
             Display.create(pixelFormat, contextAttributes);
         } catch (Exception exception) {
@@ -205,10 +202,9 @@ public class Main {
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_BLEND);
         glEnable(GL_SCISSOR_TEST);
-//        glEnable(GL_CULL_FACE);
-//        glCullFace(GL_BACK);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1); // TODO Do wywalenia, tylko chwilowo tekst z tego korzysta
         glClearColor(0, 0, 0, 0);
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
         restartBackGroundLoader();
@@ -241,6 +237,8 @@ public class Main {
         Drawer.setUpDisplay();
         SplitScreen.setUpDisplay();
         pop = new Popup();
+        Arrays.fill(fps, -1);
+        fpsPosition = 0;
     }
 
     private static void gameLoop() {
@@ -263,10 +261,15 @@ public class Main {
     }
 
     private static void loggingAndStats() {
+        int frames = Math.round(60 / Time.getDelta() * Time.speed);
+        fps[fpsPosition] = frames;
+        fpsPosition++;
+        if (fpsPosition >= fps.length) {
+            fpsPosition = 0;
+        }
         if (delay.isOver()) {
             delay.start();
             if (console != null && console.areStatsRendered() || LOG) {
-                int frames = Math.round(60 / Time.getDelta());
                 try {
                     CpuPerc cpu = shell.getSigar().getCpuPerc();
                     String cpuUsage = CpuPerc.format(cpu.getCombined());
@@ -353,7 +356,6 @@ public class Main {
             game.update();
             ErrorHandler.exception(exception);
         }
-
     }
 
     private static void render() {
@@ -369,7 +371,41 @@ public class Main {
         resolveGamma();
         Display.update();
         lastFrame = Display.isActive();
-        sync(Settings.framesLimit);
+        calculateFramesCap();
+        sync(Settings.currentFramesCap);
+    }
+
+    private static void calculateFramesCap() {
+        if (Settings.autoFrames) {
+            float newFPS = average();
+            if (newFPS + 1 < Settings.currentFramesCap) {
+                Settings.currentFramesCap--;
+            } else if (Settings.currentFramesCap < Settings.framesLimit && newFPS - 1 > Settings.currentFramesCap) {
+                Settings.currentFramesCap++;
+            }
+        }
+    }
+
+    private static float average() {
+        int count = 0;
+        float sum = 0;
+        int cond = fpsPosition == fps.length - 1 ? 0 : fpsPosition + 1;
+        for (int i = fpsPosition; i != cond; i--) {
+            if (i < 0) {
+                i = fps.length - 1;
+            }
+            if (fps[i] != -1) {
+                sum += fps[i];
+                count++;
+            }
+            if (count == Settings.currentFramesCap * 5 || count == fps.length - 2) { // 5 to liczba ostatnich sekund do obczajenia
+                break;
+            }
+        }
+        if (count == Settings.currentFramesCap * 5 || count == fps.length - 2) {
+            return sum / count;
+        }
+        return Settings.currentFramesCap;
     }
 
     public static void sync(int fps) {

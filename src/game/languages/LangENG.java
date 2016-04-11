@@ -99,6 +99,7 @@ public class LangENG extends Language {
         menu.Gameplay = "Gameplay";
         menu.Text = "Text: ";
         menu.FramesLimit = "Frames limit: ";
+        menu.FramesAdjustment = "Auto frames adjustment: ";
         menu.Sound = "Sound";
     }
 }
