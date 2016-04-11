@@ -14,7 +14,7 @@ uniform float borderWidth;
 uniform float borderEdge;
 
 uniform vec2 offset;
-uniform vec3 borderColor;
+uniform vec4 borderColor;
 
 float smoothStep(float width, float edge, float distance){
     if (distance < width) {
@@ -28,12 +28,13 @@ float smoothStep(float width, float edge, float distance){
 }
 
 void main(void){
-    float distance = 1.0 - texture(fontAtlas, pass_textureCoords + offset).a;
+    float distance = 1.0 - texture(fontAtlas, pass_textureCoords).a;
 	float alpha = smoothStep(width, edge, distance);
 	float borderAlpha = alpha;
 	if (borderWidth > 0.0) {
-	    float borderDistance = 1.0 - texture(fontAtlas, pass_textureCoords).a;
+	    float borderDistance = 1.0 - texture(fontAtlas, pass_textureCoords - offset).a;
 	    borderAlpha = smoothStep(borderWidth, borderEdge, borderDistance);
 	}
-	out_color = vec4(mix(borderColor, vec3(color.x, color.y, color.z), alpha/borderAlpha), (alpha + (1.0 - alpha) * borderAlpha) * color.w);
+	out_color = vec4(mix(vec3(borderColor.x, borderColor.y, borderColor.z), vec3(color.x, color.y, color.z), alpha/borderAlpha)
+	, alpha * color.w + (1.0 - alpha) * borderAlpha * borderColor.w * color.w);
 }

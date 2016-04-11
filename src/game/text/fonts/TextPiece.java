@@ -11,6 +11,7 @@ public class TextPiece {
 
     private String textString;
     private float fontSize;
+    private boolean hasBorder;
 
     private VertexBufferObject vbo;
     private Vector4f color = new Vector4f(1f, 1f, 1f, 1f);
@@ -20,9 +21,11 @@ public class TextPiece {
 
     private FontType font;
 
-    private boolean centerText = false;
+    private boolean centerText;
     private boolean visible = true;
     private int width = 0;
+    private Vector4f borderColor = new Vector4f(0.5f, 0.5f, 0.5f, 0.75f);
+    private boolean hasShadow;
 
     public TextPiece(String text, float fontSize, FontType font, int maxLineLength, boolean centered) {
         this.textString = text;
@@ -44,6 +47,13 @@ public class TextPiece {
 
     public FontType getFont() {
         return font;
+    }
+
+    public void setFont(FontType font) {
+        if (font != this.font) {
+            this.font = font;
+            TextMaster.loadText(this);
+        }
     }
 
     public void setColor(float r, float g, float b) {
@@ -126,5 +136,37 @@ public class TextPiece {
 
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    public boolean hasBorder() {
+        return hasBorder;
+    }
+
+    public Vector4f getBorderColor() {
+        return borderColor;
+    }
+
+    public void setBorderColor(Color newColor) {
+        borderColor.set(newColor.r, newColor.g, newColor.b, newColor.a);
+    }
+
+    public boolean isHasBorder() {
+        return hasBorder;
+    }
+
+    public void setHasBorder(boolean hasBorder) {
+        this.hasBorder = hasBorder;
+    }
+
+    public void setBorderColor(float r, float g, float b) {
+        borderColor.set(r, g, b, 1f);
+    }
+
+    public boolean hasShadow() {
+        return hasShadow;
+    }
+
+    public void setHasShadow(boolean hasShadow) {
+        this.hasShadow = hasShadow;
     }
 }

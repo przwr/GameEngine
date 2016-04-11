@@ -33,7 +33,7 @@ public class TextRenderer extends TextEvent {
             line = new TextPiece("", (int) (36 / Settings.nativeScale), TextMaster.getFont("Lato-Regular"), Display.getWidth(), false);
             line.setColor(0, 0, 0);
         }
-        y = Methods.roundDouble(line.getFontSize() * Settings.nativeScale * 1.2f * lineNum);
+        y = Methods.roundDouble(line.getFontSize() * Settings.nativeScale * 1.5f * lineNum);
         this.color = color;
     }
 

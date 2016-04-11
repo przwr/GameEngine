@@ -411,13 +411,16 @@ public class TextController extends GUIObject {
                                         }
                                         switch (symbol) {
                                             case "pl":
-//                                                TODO ustawianie normalnej czcionki efekty
+                                                TextRenderer.line.setFont(TextMaster.getFont("Lato-Regular"));
                                                 break;
                                             case "bo":
-//                                                TODO ustawianie BOLD czcionki
+                                                TextRenderer.line.setFont(TextMaster.getFont("Lato-Bold"));
                                                 break;
                                             case "it":
-//                                                TODO ustawianie ITALIC czcionki
+                                                TextRenderer.line.setFont(TextMaster.getFont("Lato-Italic"));
+                                                break;
+                                            case "bi":
+                                                TextRenderer.line.setFont(TextMaster.getFont("Lato-BoldItalic"));
                                                 break;
                                         }
                                         line = line.substring(0, lineIndex) + line.substring(lineIndex + 3);
@@ -682,8 +685,11 @@ public class TextController extends GUIObject {
             }
             for (TextRow tr : branch) {
                 int x = (getCamera().getWidth() - optimalWidth) / 2 + Place.tileHalf;
-                int y = (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - Methods.roundDouble(3f * tile)
-                        - (int) (Math.max((deltaLines + (flushing ? change : 0)) * TextRenderer.line.getFontSize() * Settings.nativeScale * 1.2f, 0));
+                int y = (getCamera().getHeight() - optimalHeight) / 2 + optimalHeight - Math.round(2.875f * tile) - Methods.roundDouble(Math.max((deltaLines
+                        + (flushing ? change : 0)) * TextRenderer.line.getFontSize() * 1.5f * Settings.nativeScale, 0));
+                if (speakers.get(speaker).isEmpty()) {
+                    y -= Math.round(0.125 * tile);
+                }
                 handleEvent(tr, x, y);
             }
 

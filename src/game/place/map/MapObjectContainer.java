@@ -11,7 +11,6 @@ import game.place.Place;
 import gamecontent.environment.Bush;
 import gamecontent.environment.GrassClump;
 import gamecontent.environment.Tree;
-import java.util.Arrays;
 
 /**
  * @author Wojtek
@@ -61,7 +60,8 @@ public class MapObjectContainer {
         GameObject ret = null;
         switch (type) {
             case TREE:
-                ret = Tree.create(x + dx, y + dy);
+//                ret = Tree.createBackground(x + dx, y + dy, 32, 200, 0.8f);
+                ret = Tree.create(x + dx, y + dy, 32, 200, 0.8f);
                 break;
             case BUSH:
                 ret = new Bush(x + dx, y + dy);

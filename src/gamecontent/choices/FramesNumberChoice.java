@@ -28,6 +28,7 @@ public class FramesNumberChoice extends MenuChoice {
                 Settings.framesLimit = 120;
             }
         }
+        Settings.currentFramesCap = Settings.framesLimit;
         AnalyzerSettings.update();
     }
 

@@ -8,6 +8,7 @@ package gamecontent;
 import engine.utilities.Delay;
 import game.Game;
 import game.Settings;
+import game.menu.Label;
 import game.menu.Menu;
 import game.menu.MenuChoice;
 import game.text.fonts.TextMaster;
@@ -84,12 +85,15 @@ public class MyMenu extends Menu {
         graphic.addChoice(new BrightnessChoice(Settings.language.menu.Brightness, this));
         graphic.addChoice(new GammaChoice(Settings.language.menu.Gamma, this));
         graphic.addChoice(new FramesNumberChoice(Settings.language.menu.FramesLimit, this));
+        graphic.addChoice(new AutoFramesChoice(Settings.language.menu.FramesAdjustment, this));
         graphic.addChoice(new ResolutionChoice(Settings.language.menu.Resolution, this).setBlockOnRun(true));
         graphic.addChoice(new FullScreenChoice(Settings.language.menu.FullScreen, this).setBlockOnRun(true));
         graphic.addChoice(new VerticalSynchronizationChoice(Settings.language.menu.VSync, this).setBlockOnRun(true));
 //        graphic.addChoice(new ShadowsOffChoice(Settings.language.menu.ShadowOff, this));
         graphic.addChoice(new SmoothShadowsChoice(Settings.language.menu.SmoothShadows, this).setBlockOnRun(true));
         graphic.addChoice(new ApplyChoice(Settings.language.menu.Apply, this).setBlockOnRun(true));
+        graphic.addChoice(new Label("", this));
+        graphic.addChoice(new Label(Settings.gpu, this));
         options.addChoice(graphic);
 
         MenuChoice language = new MenuChoice(Settings.language.menu.Language, this);
@@ -223,7 +227,7 @@ public class MyMenu extends Menu {
             } else {
                 return chosenColor;
             }
-        } else if (root.getChoice(choice).isBlocked()) {
+        } else if (root.getChoice(choice).isBlocked() || root.getChoice(choice) instanceof Label) {
             return darkColor;
         } else {
             return normalColor;

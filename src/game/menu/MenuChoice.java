@@ -65,6 +65,10 @@ public class MenuChoice {
         return current;
     }
 
+    public void setCurrent(int current) {
+        this.current = current;
+    }
+
     public int getSize() {
         return choices.size();
     }
