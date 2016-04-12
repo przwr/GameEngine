@@ -52,10 +52,6 @@ public class NullTile extends Tile implements Appearance {
     }
 
     @Override
-    public void renderStaticShadow() {
-    }
-
-    @Override
     public void updateFrame() {
         ErrorHandler.warring("Incorrect method use", this);
     }

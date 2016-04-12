@@ -30,7 +30,7 @@ public interface Appearance {
 
     void renderShadowPart(int partXStart, int partXEnd, float color);
 
-    void renderStaticShadow();
+    void renderStaticShadow(GameObject object, float x, float y);
 
     void updateTexture(GameObject owner); //Potrzebne tutaj?
 

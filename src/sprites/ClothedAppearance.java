@@ -371,6 +371,7 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderShadow(float color) {
+
         Drawer.regularShader.translate(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
         fbo.renderShadow(color);
     }
@@ -394,6 +395,12 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void updateTexture(GameObject owner) {
+        fbo.activate();
+        glClear(GL_COLOR_BUFFER_BIT);
+        Drawer.regularShader.translate(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight());
+        render();
+        fbo.deactivate();
+
         int direction = owner.getDirection8Way();
         upperBody.changeDirection((direction + 2) % 8);
         lowerBody.changeDirection((direction + 2) % 8);
@@ -404,23 +411,26 @@ public class ClothedAppearance implements Appearance {
         upperBody.changeDirection(direction);
         lowerBody.changeDirection(direction);
         staticShadowFbo.deactivate();
-
-        fbo.activate();
-        glClear(GL_COLOR_BUFFER_BIT);
-        Drawer.regularShader.translate(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight());
-        render();
-        fbo.deactivate();
     }
 
-    public void renderStaticShadow() {
+    @Override
+    public void renderStaticShadow(GameObject object, float x, float y) {
+//        float changeX = 0;
+//        float changeY = 0 - (float) object.getFloatHeight();
+//        Drawer.regularShader.translateNoReset(-staticShadowFbo.getWidth() / 2 - changeX, -staticShadowFbo.getHeight() / 2 + changeY);
+//        Drawer.regularShader.scaleNoReset((float) Methods.ONE_BY_SQRT_ROOT_OF_2, 1f);
+        float changeX = -4 + staticShadowFbo.getWidth() / 2 + object.getCollisionWidth() / 2;
+        float changeY = -staticShadowFbo.getHeight() / 2 + object.getCollisionHeight() / 2 - (float) object.getFloatHeight();
+        float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
+        Drawer.regularShader.scaleNoReset(1f, scale);
+        Drawer.regularShader.translateNoReset(changeX, changeY);
         Drawer.regularShader.rotateNoReset(90);
-        Drawer.regularShader.scaleNoReset((float) Methods.ONE_BY_SQRT_ROOT_OF_2, (float) Methods.ONE_BY_SQRT_ROOT_OF_2);
-        float change = 4;
-        Drawer.regularShader.translateNoReset(-staticShadowFbo.getWidth() / 2 - change, -staticShadowFbo.getHeight() / 2 - 10);
         staticShadowFbo.render();
-        Drawer.regularShader.translateNoReset(staticShadowFbo.getWidth() / 2 + change, staticShadowFbo.getHeight() / 2 + 10);
-        Drawer.regularShader.scaleNoReset(1f / (float) Methods.ONE_BY_SQRT_ROOT_OF_2, 1f / (float) Methods.ONE_BY_SQRT_ROOT_OF_2);
         Drawer.regularShader.rotateNoReset(-90);
+        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.scaleNoReset(1f, 1f / scale);
+//        Drawer.regularShader.scaleNoReset(1f / (float) Methods.ONE_BY_SQRT_ROOT_OF_2, 1f);
+//        Drawer.regularShader.translateNoReset(staticShadowFbo.getWidth() / 2 + changeX, staticShadowFbo.getHeight() / 2 - changeY);
     }
 
     public boolean isUpToDate() {

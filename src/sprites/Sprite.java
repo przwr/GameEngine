@@ -248,7 +248,7 @@ public class Sprite implements Appearance {
     }
 
     @Override
-    public void renderStaticShadow() {
+    public void renderStaticShadow(GameObject object, float x, float y) {
     }
 
     @Override

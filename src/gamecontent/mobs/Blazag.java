@@ -966,10 +966,8 @@ public class Blazag extends Mob {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
-                    Methods.roundDouble(collision.getHeight() / 2f), 24);
+            appearance.renderStaticShadow(this, 4, -2);
             Drawer.refreshColor();
-//			Drawer.renderStringCentered(name, 0, -(((appearance.getActualHeight()) * Place.getCurrentScale()) / 2), place.standardFont, map.getLightColor());
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
                     interactive.render();
@@ -977,7 +975,7 @@ public class Blazag extends Mob {
             }
             appearance.render();
             Drawer.refreshColor();
-//            renderPathPoints(xEffect, yEffect);
+//            renderPathPoints();
         }
     }
 

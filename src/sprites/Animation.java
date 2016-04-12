@@ -6,6 +6,7 @@
 package sprites;
 
 import engine.utilities.Delay;
+import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.gameobject.GameObject;
 
@@ -51,7 +52,22 @@ public class Animation implements Appearance {
     }
 
     @Override
-    public void renderStaticShadow() {
+    public void renderStaticShadow(GameObject object, float x, float y) {
+        float changeX = x;
+        float changeY = y - (float) object.getFloatHeight();
+        float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
+        int direction = object.getDirection8Way();
+        changeDirection((direction + 2) % 8);
+
+        Drawer.regularShader.scaleNoReset(1f, scale);
+        Drawer.regularShader.translateNoReset(changeX, changeY);
+        Drawer.regularShader.rotateNoReset(90);
+        render();
+        Drawer.regularShader.rotateNoReset(-90);
+        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.scaleNoReset(1f, 1f / scale);
+
+        changeDirection(direction);
     }
 
     @Override

@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author przemek
@@ -364,14 +365,15 @@ public class MyPlayer extends Player {
     @Override
     public void render() {
         if (appearance != null) {
+            glDisable(GL_TEXTURE_2D);
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             if (visibleShadow) {
                 Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-                appearance.renderStaticShadow();
+                appearance.renderStaticShadow(this, 0, 0);
+                Drawer.refreshColor();
             } else {
                 visibleShadow = true;
             }
-            Drawer.refreshColor();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 for (Interactive interactive : interactiveObjects) {
                     interactive.render();
@@ -384,6 +386,7 @@ public class MyPlayer extends Player {
             } else if (((ClothedAppearance) appearance).isUpToDate()) {
                 appearance.render();
             }
+            glEnable(GL_TEXTURE_2D);
         }
     }
 
