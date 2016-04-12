@@ -37,7 +37,7 @@ public class Sound {
     /**
      * The length of the audio
      */
-    private final float length;
+    private float length;
     private boolean isMusic;
     private float gain = 1f, pitch = 1f, randomDelta;
     private boolean looped, fading = false, randomized;
@@ -48,14 +48,7 @@ public class Sound {
         this.isMusic = isMusic;
         this.name = name;
         looped = isMusic;
-
-        int bytes = AL10.alGetBufferi(buffer, AL10.AL_SIZE);
-        int bits = AL10.alGetBufferi(buffer, AL10.AL_BITS);
-        int channels = AL10.alGetBufferi(buffer, AL10.AL_CHANNELS);
-        int freq = AL10.alGetBufferi(buffer, AL10.AL_FREQUENCY);
-
-        int samples = bytes / (bits / 8);
-        length = (samples / (float) freq) / channels;
+        setBuffer(buffer);
     }
 
     public Sound(Sound other) {
@@ -70,6 +63,18 @@ public class Sound {
         fading = other.fading;
         randomDelta = other.randomDelta;
         randomized = other.randomized;
+    }
+
+    private void setBuffer(int buffer) {
+        if (buffer != -1) {
+            int bytes = AL10.alGetBufferi(buffer, AL10.AL_SIZE);
+            int bits = AL10.alGetBufferi(buffer, AL10.AL_BITS);
+            int channels = AL10.alGetBufferi(buffer, AL10.AL_CHANNELS);
+            int freq = AL10.alGetBufferi(buffer, AL10.AL_FREQUENCY);
+
+            int samples = bytes / (bits / 8);
+            length = (samples / (float) freq) / channels;
+        }
     }
 
     public void setRandomized(float delta) {
@@ -125,16 +130,20 @@ public class Sound {
     }
 
     public Sound play(float pitch, boolean loop, float x, float y, float z) {
-        if (isPlaying()) {
-            if (!isMusic) {
-                Sound copy = new Sound(this);
-                copy.index = playSound(copy, pitch, loop, x, y, z);
-                return copy;
+        if (buffer != -1) {
+            if (isPlaying()) {
+                if (!isMusic) {
+                    Sound copy = new Sound(this);
+                    copy.index = playSound(copy, pitch, loop, x, y, z);
+                    return copy;
+                } else {
+                    return this;
+                }
             } else {
+                index = playSound(this, pitch, loop, x, y, z);
                 return this;
             }
         } else {
-            index = playSound(this, pitch, loop, x, y, z);
             return this;
         }
     }

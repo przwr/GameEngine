@@ -57,6 +57,7 @@ public class Main {
 
     public static final boolean DEBUG = true;
     public static final boolean LOG = false;
+    public static final boolean MUSIC = true;
     private static final Delay delay = Delay.createInMilliseconds(500, true);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");

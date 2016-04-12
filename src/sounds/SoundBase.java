@@ -5,6 +5,7 @@
  */
 package sounds;
 
+import engine.Main;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Methods;
 import engine.utilities.RandomGenerator;
@@ -106,11 +107,13 @@ public class SoundBase {
      * Clear out the sound store contents
      */
     public void clear() {
-        for (Sound sound : playingSoundBase) {
-            sound.stop();
+        if (inited) {
+            for (Sound sound : playingSoundBase) {
+                sound.stop();
+            }
+            playingSoundBase.clear();
+            sources.clear();
         }
-        playingSoundBase.clear();
-        sources.clear();
     }
 
     /**
@@ -250,6 +253,10 @@ public class SoundBase {
         if (inited) {
             return;
         }
+        if (!Main.MUSIC) {
+            soundWorks = false;
+            return;
+        }
         Log.info("Initialising sounds..");
         inited = true;
 
@@ -361,7 +368,7 @@ public class SoundBase {
             }
         }
     }
-    
+
     public void pauseAllSounds() {
         for (Sound sound : playingSoundBase) {
             sound.pause();
@@ -544,9 +551,7 @@ public class SoundBase {
             } else if (name.endsWith(".ogg")) {
                 buffer = loadOgg(name, ResourceLoader.getResourceAsStream(folder + name));
             }
-            if (buffer != -1) {
-                return new Sound(name, this, buffer, music);
-            }
+            return new Sound(name, this, buffer, music);
         } catch (IOException e) {
             ErrorHandler.error("Sound file '" + folder + name + "' cannot be loaded!");
         }
@@ -562,9 +567,7 @@ public class SoundBase {
             } else if (name.endsWith(".ogg")) {
                 buffer = loadOgg(name, ResourceLoader.getResourceAsStream(folder + name));
             }
-            if (buffer != -1) {
-                return new Sound3D(name, this, buffer, music, owner);
-            }
+            return new Sound3D(name, this, buffer, music, owner);
         } catch (IOException e) {
             ErrorHandler.error("Sound file '" + folder + name + "' cannot be loaded!");
         }
