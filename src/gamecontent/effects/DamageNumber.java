@@ -29,6 +29,7 @@ public class DamageNumber extends Entity {
     public final void initializeSounds() {
         if (normalHit == null) {
             normalHit = Settings.sounds.getSoundEffect("slash.wav");
+            normalHit.setRandomized(0.1f);
         }
     }
     

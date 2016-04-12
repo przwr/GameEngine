@@ -9,6 +9,7 @@ import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 
 /**
  * @author przemek
@@ -52,7 +53,9 @@ public class Animation implements Appearance {
     }
 
     @Override
-    public void renderStaticShadow(GameObject object, float x, float y) {
+    public void renderStaticShadow(GameObject object, float x, float y/*, boolean... changeDirection*/) {
+        Drawer.setColorStatic(Entity.JUMP_SHADOW_COLOR);
+
         float changeX = x;
         float changeY = y - (float) object.getFloatHeight();
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
@@ -68,6 +71,7 @@ public class Animation implements Appearance {
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
 
         changeDirection(direction);
+        Drawer.refreshColor();
     }
 
     @Override
@@ -148,10 +152,12 @@ public class Animation implements Appearance {
     }
 
     public void changeDirection(int direction) {
-        int directionalStart = direction * framesPerDirection;
-        start = directionalStart + start % framesPerDirection;
-        end = directionalStart + end % framesPerDirection;
-        setCurrentFrame(directionalStart + currentFrame % framesPerDirection);
+        if (framesPerDirection > 0) {
+            int directionalStart = direction * framesPerDirection;
+            start = directionalStart + start % framesPerDirection;
+            end = directionalStart + end % framesPerDirection;
+            setCurrentFrame(directionalStart + currentFrame % framesPerDirection);
+        }
     }
 
     public void reverseAnimation() {

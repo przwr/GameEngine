@@ -9,6 +9,7 @@ import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.view.SplitScreen;
+import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.PlayerStats;
@@ -16,6 +17,7 @@ import game.place.Place;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
 import org.newdawn.slick.Color;
+import sounds.Sound;
 import sprites.SpriteSheet;
 import sprites.vbo.VertexBufferObject;
 
@@ -39,9 +41,17 @@ public class MyGUI extends GUIObject {
     private int corner = LEFT_TOP;
     private int size, base, border, innerSize;
     private float scale;
+    private Sound error;
+
+    public final void initializeSounds() {
+        if (error == null) {
+            error = Settings.sounds.getSoundEffect("error.ogg");
+        }
+    }
 
     public MyGUI(String name, Place place) {
         super(name, place);
+        initializeSounds();
         emptySlot = 0;
         firstAttackType = emptySlot;
         secondAttackType = emptySlot;
@@ -370,6 +380,7 @@ public class MyGUI extends GUIObject {
     public void activateLowEnergy(float need) {
         energyNeeded = need;
         energyLowDelay.start();
+        error.play();
     }
 
 }

@@ -24,7 +24,7 @@ public class Sound {
     /**
      * The store from which this sound was loaded
      */
-    private final SoundBase store;
+    final SoundBase store;
     /**
      * The buffer containing the sound
      */
@@ -39,8 +39,8 @@ public class Sound {
      */
     private final float length;
     private boolean isMusic;
-    private float gain = 1f, pitch = 1f;
-    private boolean looped, fading = false;
+    private float gain = 1f, pitch = 1f, randomDelta;
+    private boolean looped, fading = false, randomized;
 
     public Sound(String name, SoundBase store, int buffer, boolean isMusic) {
         this.store = store;
@@ -68,6 +68,17 @@ public class Sound {
         pitch = other.pitch;
         looped = other.looped;
         fading = other.fading;
+        randomDelta = other.randomDelta;
+        randomized = other.randomized;
+    }
+
+    public void setRandomized(float delta) {
+        randomized = true;
+        randomDelta = delta;
+    }
+
+    public void setNotRandomized() {
+        randomized = false;
     }
 
     public int getBufferID() {
@@ -106,7 +117,7 @@ public class Sound {
     }
 
     public Sound play() {
-        return play(pitch, looped, 0, 0, 0);
+        return play(1f, looped, 0, 0, 0);
     }
 
     public Sound play(float pitch, boolean loop) {
@@ -117,31 +128,41 @@ public class Sound {
         if (isPlaying()) {
             if (!isMusic) {
                 Sound copy = new Sound(this);
-                copy.index = store.playSound(copy, pitch * this.pitch, getTotalVolume(), loop, x, y, z);
+                copy.index = playSound(copy, pitch, loop, x, y, z);
                 return copy;
             } else {
                 return this;
             }
         } else {
-            index = store.playSound(this, pitch * this.pitch, getTotalVolume(), loop, x, y, z);
+            index = playSound(this, pitch, loop, x, y, z);
             return this;
         }
     }
 
+    private int playSound(Sound sound, float pitch, boolean loop, float x, float y, float z) {
+        float volume = sound.getTotalVolume();
+        pitch = pitch * sound.pitch;
+        if (randomized) {
+            pitch += store.getRandomInterval(randomDelta);
+            volume += store.getRandomInterval(randomDelta);
+        }
+        return store.playSound(sound, pitch, volume, loop, x, y, z);
+    }
+
     public void stop() {
         if (isIndexUsable) {
-            store.stopSource(index);
+            AL10.alSourceStop(store.getSource(index));
         }
     }
 
     public void pause() {
         if (isIndexUsable) {
-            store.pauseSource(index);
+            AL10.alSourcePause(store.getSource(index));
         }
     }
 
     public boolean isPaused() {
-        return isIndexUsable && store.isSourcePaused(index);
+        return isIndexUsable && AL10.alGetSourcei(store.getSource(index), AL10.AL_SOURCE_STATE) == AL10.AL_PAUSED;
     }
 
     public void resume() {
@@ -198,7 +219,7 @@ public class Sound {
     public void setPitchNow(float pitch) {
         this.pitch = pitch;
         if (isIndexUsable) {
-            store.changePitch(index, pitch);
+            AL10.alSourcef(store.getSource(index), AL10.AL_PITCH, pitch);
         }
     }
 

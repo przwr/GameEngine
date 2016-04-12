@@ -37,7 +37,7 @@ public class Dummy extends Mob {
 
     private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
+        animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 0);
         appearance = animation;
         collision.setMobile(true);
         rand = RandomGenerator.create();
@@ -80,7 +80,7 @@ public class Dummy extends Mob {
         knockBack.start();
         power = knockBackPower;
         addChanger(knockBack);
-        stats.setHealth(10000);
+        stats.setHealth(stats.getMaxHealth());
     }
 
     private void updateGettingHurt() {
@@ -96,14 +96,15 @@ public class Dummy extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
-                    .getHeightHalf()), 15);
-            Drawer.refreshColor();
+//            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
+//            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
+//                    .getHeightHalf()), 15);
+//            Drawer.refreshColor();
             if (isHurt()) {
                 Drawer.regularShader.translateNoReset(rand.randomInRange(-power, power), rand.randomInRange(-power, power));
                 power /= 1.2;
             }
+            appearance.renderStaticShadow(this, 0, 0);
             appearance.render();
         }
     }

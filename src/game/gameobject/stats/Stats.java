@@ -36,6 +36,7 @@ public class Stats {
     public void initializeSounds() {
         if (deadSound == null) {
             deadSound = Settings.sounds.getSoundEffect("ded.ogg");
+            deadSound.setRandomized(0.1f);
         }
     }
 

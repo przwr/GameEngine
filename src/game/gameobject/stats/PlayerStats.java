@@ -28,6 +28,7 @@ public class PlayerStats extends Stats {
     public void initializeSounds() {
         if (deadSound == null) {
             deadSound = Settings.sounds.getSoundEffect("pichuun.wav");
+            deadSound.setRandomized(0.1f);
         }
     }
     

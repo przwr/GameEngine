@@ -10,6 +10,7 @@ import collision.Rectangle;
 import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import game.Settings;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.items.Weapon;
@@ -24,6 +25,8 @@ import sprites.Animation;
 import sprites.SpriteSheet;
 
 import static game.gameobject.items.Weapon.SWORD;
+import sounds.Sound;
+import sounds.Sound3D;
 
 /**
  * @author Wojtek
@@ -34,13 +37,22 @@ public class Melodia extends Mob {
     private final Rock rock;
     private Animation animation;
     private String dialog = "0";
+    private Sound3D siren;
+
+    public final void initializeSounds() {
+        if (siren == null) {
+            siren = Settings.sounds.get3DBGSound("melody.ogg", this);
+            siren.setSoundRanges(0f, 0.7f);
+        }
+    }
 
     public Melodia(int x, int y, Place place, short mobID, Shen shen, Rock rock) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
+        initializeSounds();
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
         if (appearance != null) {
-            appearance = animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 0);
+            appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
         }
         addPushInteraction();
         setDirection8way(DOWN);
@@ -112,6 +124,7 @@ public class Melodia extends Mob {
                 lookForPlayers(place.players);
             }
             animation.animateSingle(getDirection8Way());
+            siren.play();
         }
     }
 
@@ -126,6 +139,7 @@ public class Melodia extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
+            appearance.renderStaticShadow(this, 0, 0);
             animation.render();
         }
     }

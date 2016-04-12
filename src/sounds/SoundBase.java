@@ -7,6 +7,9 @@ package sounds;
 
 import engine.utilities.ErrorHandler;
 import engine.utilities.Methods;
+import engine.utilities.RandomGenerator;
+import game.Settings;
+import game.gameobject.GameObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
@@ -57,8 +60,8 @@ public class SoundBase {
     /**
      * The map of references to IDs of previously loaded sounds
      */
-    private final HashMap loaded = new HashMap();
-    private final ArrayList<Sound> audioBase = new ArrayList<>();
+    private final HashMap loaded;
+    private final ArrayList<Sound> playingSoundBase;
     /**
      * The OpenGL AL sound sources in use
      */
@@ -88,20 +91,25 @@ public class SoundBase {
      */
     private int maxSources = 64;
 
+    private final RandomGenerator random;
+
     /**
      * Create a new sound store
      */
     public SoundBase() {
+        random = RandomGenerator.create();
+        playingSoundBase = new ArrayList<>();
+        loaded = new HashMap();
     }
 
     /**
      * Clear out the sound store contents
      */
     public void clear() {
-        for (Sound sound : audioBase) {
+        for (Sound sound : playingSoundBase) {
             sound.stop();
         }
-        audioBase.clear();
+        playingSoundBase.clear();
         sources.clear();
     }
 
@@ -123,7 +131,7 @@ public class SoundBase {
 
         if (soundWorks) {
             musicVolume = volume;
-            for (Sound sound : audioBase) {
+            for (Sound sound : playingSoundBase) {
                 if (sound.isItMusic()) {
                     System.out.print(sound.getVolume() + " " + sound.getTotalVolume() + " " + sound.getCurrentVolume());
                     sound.updateVolume();
@@ -143,7 +151,7 @@ public class SoundBase {
 
         if (soundWorks) {
             soundVolume = volume;
-            for (Sound sound : audioBase) {
+            for (Sound sound : playingSoundBase) {
                 if (!sound.isItMusic()) {
                     System.out.print(sound.getVolume() + " " + sound.getTotalVolume() + " " + sound.getCurrentVolume());
                     sound.updateVolume();
@@ -310,6 +318,19 @@ public class SoundBase {
         }
     }
 
+    float getRandom(float delta) {
+        return random.nextFloat() * delta;
+    }
+
+    float getRandomInterval(float delta) {
+        return delta * (2 * random.nextFloat() - 1);
+    }
+
+    float getSoundDistance(GameObject soundOwner) {
+        GameObject listener = Settings.players[0];
+        return (float) Methods.pointDifference(soundOwner.getX(), soundOwner.getY(), listener.getX(), listener.getY()) / 1024;
+    }
+
     /**
      * Stop a particular sound source
      *
@@ -332,22 +353,30 @@ public class SoundBase {
             AL10.alSourcePlay(sources.get(index));
         }
     }
-    
-    public void pauseAllSounds() {
-        for (Sound sound : audioBase) {
-            sound.pause();
+
+    public void update3DSounds() {
+        for (Sound sound : playingSoundBase) {
+            if (sound instanceof Sound3D) {
+                ((Sound3D) sound).update3DSound();
+            }
         }
     }
     
+    public void pauseAllSounds() {
+        for (Sound sound : playingSoundBase) {
+            sound.pause();
+        }
+    }
+
     public void resumeAllSounds() {
-        for (Sound sound : audioBase) {
+        for (Sound sound : playingSoundBase) {
             sound.resume();
         }
     }
 
     int playSound(Sound sound, float pitch, float gain, boolean loop, float x, float y, float z) {
-        if (!audioBase.contains(sound)) {
-            audioBase.add(sound);
+        if (!playingSoundBase.contains(sound)) {
+            playingSoundBase.add(sound);
             sound.setIndexUsable(true);
             return playSound(sound.getBufferID(), pitch, gain, loop, x, y, z, -1);
         } else {
@@ -445,14 +474,14 @@ public class SoundBase {
 
             if ((state != AL10.AL_PLAYING) && (state != AL10.AL_PAUSED)) {
                 Sound toRemove = null;
-                for (Sound sound : audioBase) {
+                for (Sound sound : playingSoundBase) {
                     if (sound.getIndex() == i) {
                         toRemove = sound;
                         break;
                     }
                 }
                 if (toRemove != null) {
-                    audioBase.remove(toRemove);
+                    playingSoundBase.remove(toRemove);
                     toRemove.setIndexUsable(false);
                 }
                 return i;
@@ -472,6 +501,22 @@ public class SoundBase {
                 return "res/sound/" + folder + (folder.endsWith("/") ? "" : "/");
             }
         }
+    }
+
+    public Sound3D get3DSoundEffect(String name, GameObject owner) {
+        return get3DSound(name, "se/", false, owner);
+    }
+
+    public Sound3D get3DSoundEffect(String name, String folder, GameObject owner) {
+        return get3DSound(name, "se/" + folder, false, owner);
+    }
+
+    public Sound3D get3DBGSound(String name, GameObject owner) {
+        return get3DSound(name, "bg/", true, owner);
+    }
+
+    public Sound3D get3DBGSound(String name, String folder, GameObject owner) {
+        return get3DSound(name, "bg/" + folder, true, owner);
     }
 
     public Sound getSoundEffect(String name) {
@@ -501,6 +546,24 @@ public class SoundBase {
             }
             if (buffer != -1) {
                 return new Sound(name, this, buffer, music);
+            }
+        } catch (IOException e) {
+            ErrorHandler.error("Sound file '" + folder + name + "' cannot be loaded!");
+        }
+        return null;
+    }
+
+    private Sound3D get3DSound(String name, String folder, boolean music, GameObject owner) {
+        try {
+            int buffer = -1;
+            folder = fullFolderPath(folder);
+            if (name.endsWith(".wav")) {
+                buffer = loadWAV(name, ResourceLoader.getResourceAsStream(folder + name));
+            } else if (name.endsWith(".ogg")) {
+                buffer = loadOgg(name, ResourceLoader.getResourceAsStream(folder + name));
+            }
+            if (buffer != -1) {
+                return new Sound3D(name, this, buffer, music, owner);
             }
         } catch (IOException e) {
             ErrorHandler.error("Sound file '" + folder + name + "' cannot be loaded!");

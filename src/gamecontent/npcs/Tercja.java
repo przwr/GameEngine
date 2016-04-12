@@ -33,7 +33,7 @@ public class Tercja extends Mob {
         stats = new NPCStats(this);
         this.plurrets = plurrets;
         if (appearance != null) {
-            appearance = animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 0);
+            appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
         }
         addPushInteraction();
         setDirection8way(RIGHT);
@@ -118,6 +118,7 @@ public class Tercja extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
+            appearance.renderStaticShadow(this, 0, 0);
             animation.render();
         }
     }

@@ -26,7 +26,7 @@ public class Magician extends Mob {
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
         if (appearance != null) {
-            appearance = animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 0);
+            appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
         }
         addPushInteraction();
         setDirection8way(RIGHT);
@@ -81,6 +81,7 @@ public class Magician extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
+            appearance.renderStaticShadow(this, 0, 0);
             animation.render();
         }
     }

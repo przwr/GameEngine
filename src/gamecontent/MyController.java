@@ -20,6 +20,7 @@ import sprites.ClothedAppearance;
 
 import static game.gameobject.GameObject.*;
 import sounds.Sound;
+import sounds.Sound3D;
 
 /**
  * @author przemek
@@ -84,18 +85,9 @@ public class MyController extends PlayerController {
         }
     }
 
-    private Sound sound;
-
-    public void initializeSounds() {
-        if (sound == null) {
-            sound = Settings.sounds.getSoundEffect("pichuun.wav");
-        }
-    }
-
     @Override
     public void getInput() {
         if (gui != null) {
-            initializeSounds();
             updateActionsIfNoLag();
             //ANIMACJA//
             animation = (ClothedAppearance) inControl.getAppearance();

@@ -92,6 +92,7 @@ public class ObjectPlace extends Place {
     @Override
     public void update() {
         updates[game.mode].update();
+        Settings.sounds.update3DSounds();
         dayCycle.updateOnlyTime();
     }
 

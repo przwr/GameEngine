@@ -53,6 +53,7 @@ public class MyPlace extends Place {
             updateEntitiesOffline();
             updateObjectsOffline();
             updateInteractiveObjectsOffline();
+            Settings.sounds.update3DSounds();
             dayCycle.updateTime();
         };
         updates[ONLINE] = () -> {
@@ -60,6 +61,7 @@ public class MyPlace extends Place {
             updateMobsOnline();
             updatePlayersOnline();
             updateInteractiveObjectsOnline();
+            Settings.sounds.update3DSounds();
             dayCycle.updateTime();
             throw new UnsupportedOperationException("There is no updateEntitiesOnline");
         };

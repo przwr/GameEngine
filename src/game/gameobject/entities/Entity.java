@@ -31,7 +31,7 @@ import java.util.Iterator;
  */
 public abstract class Entity extends GameObject {
 
-    protected static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 0.2f);
+    public static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 0.2f);
     protected static final RandomGenerator random = RandomGenerator.create();
     protected double xSpeed, ySpeed;
     protected double xEnvironmentalSpeed, yEnvironmentalSpeed;

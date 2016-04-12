@@ -9,6 +9,7 @@ import collision.OpticProperties;
 import collision.Rectangle;
 import engine.Main;
 import engine.utilities.*;
+import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
 import game.gameobject.entities.Agro;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import static game.logic.navmeshpathfinding.PathData.OBSTACLE_BETWEEN;
+import sounds.Sound3D;
 
 /**
  * @author przemek
@@ -57,6 +59,15 @@ public class Blazag extends Mob {
             jumpAnimation, jumpAttackAnimation;
     private SpeedChanger jumper;
     private Order order = new Order();
+    private Sound3D tupSound;
+
+    public final void initializeSounds() {
+        if (tupSound == null) {
+            tupSound = Settings.sounds.get3DSoundEffect("tup.wav", this);
+            tupSound.setSoundRanges(0f, 0.4f);
+            tupSound.setRandomized(0.1f);
+        }
+    }
 
     {
         idle = new ActionState() {
@@ -302,6 +313,7 @@ public class Blazag extends Mob {
 
     public Blazag(int x, int y, Place place, short ID) {
         super(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
+        initializeSounds();
         setUp();
     }
 
@@ -389,8 +401,8 @@ public class Blazag extends Mob {
             }
         }
         for (Mob mob : mobs) {
-            if (mob.getClass().getName() != this.getClass().getName() && mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map &&
-                    (isHeardWhileSleep(mob))) {
+            if (mob.getClass().getName() != this.getClass().getName() && mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map
+                    && (isHeardWhileSleep(mob))) {
                 closeEnemies.add(mob);
             }
         }
@@ -449,8 +461,7 @@ public class Blazag extends Mob {
                         if (!can_attack) {
                             can_attack = true;
                             if (stats.getHealth() != stats.getMaxHealth()) {
-                                readyToAttackDelay.setFrameLengthInMilliseconds(Math.round(attackDelayTime * (stats.getHealth() / (float) stats.getMaxHealth
-                                        ())));
+                                readyToAttackDelay.setFrameLengthInMilliseconds(Math.round(attackDelayTime * (stats.getHealth() / (float) stats.getMaxHealth())));
                             }
                             readyToAttackDelay.start();
                         } else if (readyToAttackDelay.isOver()) {
@@ -939,6 +950,9 @@ public class Blazag extends Mob {
             slashL = false;
         } else if ((frame < 19 || frame == 34 || frame == 43 || frame == 22 || frame == 25)) {
             if (Math.abs(xSpeed) >= 0.1 || Math.abs(ySpeed) >= 0.1) {
+                if (!tupSound.isPlaying()) {
+                    tupSound.play();
+                }
                 pastDirections[currentPastDirection++] = Methods.pointAngle8Directions(0, 0, xSpeed, ySpeed);
                 if (currentPastDirection > 1) {
                     currentPastDirection = 0;
