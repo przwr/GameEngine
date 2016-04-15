@@ -30,7 +30,6 @@ public class RegularShader extends ShaderProgram {
 
     @Override
     protected void getAllUniformLocations() {
-
         locationTransformationMatrix = getUniformLocation("transformationMatrix");
         locationColorModifier = getUniformLocation("colorModifier");
         locationSizeModifier = getUniformLocation("sizeModifier");
@@ -130,6 +129,12 @@ public class RegularShader extends ShaderProgram {
     }
 
     public void scaleNoReset(float xScale, float yScale) {
+        MatrixMath.scale(transformationMatrix, xScale, yScale);
+        loadMatrix(locationTransformationMatrix, transformationMatrix);
+    }
+
+    public void scale(float xScale, float yScale) {
+        transformationMatrix.load(defaultMatrix);
         MatrixMath.scale(transformationMatrix, xScale, yScale);
         loadMatrix(locationTransformationMatrix, transformationMatrix);
     }

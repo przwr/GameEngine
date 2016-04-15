@@ -8,6 +8,7 @@ package sprites;
 import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 
@@ -16,6 +17,7 @@ import game.gameobject.entities.Entity;
  */
 public class Animation implements Appearance {
 
+    private static Point ZERO = new Point(0, 0);
     private final SpriteSheet spriteSheet;
     private final Delay delay;
     private int finalEnd;
@@ -52,16 +54,24 @@ public class Animation implements Appearance {
     public void updateTexture(GameObject owner) {
     }
 
+    public Point getShadowShift(int frame) {
+        if (spriteSheet != null) {
+            return spriteSheet.getShadowShift(frame);
+        }
+        return ZERO;
+    }
+
     @Override
-    public void renderStaticShadow(GameObject object, float x, float y/*, boolean... changeDirection*/) {
+    public void renderStaticShadow(GameObject object) {
         Drawer.setColorStatic(Entity.JUMP_SHADOW_COLOR);
 
-        float changeX = x;
-        float changeY = y - (float) object.getFloatHeight();
-        float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
         int direction = object.getDirection8Way();
-        changeDirection((direction + 2) % 8);
+        Point shift = getShadowShift(currentFrame);
+        float changeX = shift.getX();
+        float changeY = shift.getY() - (float) object.getFloatHeight();
+        float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
 
+        changeDirection((direction + 2) % 8);
         Drawer.regularShader.scaleNoReset(1f, scale);
         Drawer.regularShader.translateNoReset(changeX, changeY);
         Drawer.regularShader.rotateNoReset(90);

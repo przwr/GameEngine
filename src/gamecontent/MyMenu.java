@@ -183,6 +183,23 @@ public class MyMenu extends Menu {
             }
         }
         TextMaster.startRenderText();
+
+//        title.setFontSize(12);
+//        TextMaster.render(title, 0, 10);
+//        title.setFontSize(16);
+//        TextMaster.render(title, 0, 26);
+//        title.setFontSize(20);
+//        TextMaster.render(title, 0, 46);
+//        title.setFontSize(24);
+//        TextMaster.render(title, 0, 70);
+//        title.setFontSize(36);
+//        TextMaster.render(title, 0, 106);
+//        title.setFontSize(48);
+//        TextMaster.render(title, 0, 170);
+//        title.setFontSize(64);
+//        TextMaster.render(title, 0, 220);
+//        title.setFontSize(72);
+
         title.setText(root.getLabel());
         TextMaster.render(title, 0, calculatePosition(positions, line) - (int) ((bigFontSize - fontSize / 2f) * Settings.nativeScale));
         line--;

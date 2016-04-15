@@ -67,10 +67,7 @@ public class Rock extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
-                    .getHeightHalf()), 32);
-            Drawer.refreshColor();
+            appearance.renderStaticShadow(this);
             appearance.render();
         }
     }

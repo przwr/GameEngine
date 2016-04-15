@@ -1,10 +1,8 @@
 package sprites;
 
-import engine.utilities.Drawer;
-import engine.utilities.ErrorHandler;
-import engine.utilities.Methods;
-import engine.utilities.Point;
+import engine.utilities.*;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.place.Place;
 import gamecontent.equipment.Cloth;
 import org.lwjgl.opengl.Display;
@@ -25,6 +23,7 @@ import static org.lwjgl.opengl.GL11.glClear;
  */
 public class ClothedAppearance implements Appearance {
 
+    private static Point ZERO = new Point(0, 0);
     private final int xStart, yStart;
     private final int xDelta, yDelta;
     private final Animation upperBody, lowerBody;
@@ -40,6 +39,7 @@ public class ClothedAppearance implements Appearance {
     private FrameBufferObject staticShadowFbo;
     private boolean inSync;
     private boolean upToDate;
+    private Point[] shadowShiftPoints;
 
     public ClothedAppearance(Place place, int delayTime, String characterName, int width) {
         setClothParameters("characters/" + characterName);
@@ -54,6 +54,7 @@ public class ClothedAppearance implements Appearance {
 //        TODO wyliczać na jakieś podstawie wielkość fbo
         fbo = new RegularFrameBufferObject(210, 256);
         staticShadowFbo = new RegularFrameBufferObject(210, 256);
+        loadShadowShifts(characterName);
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
@@ -174,6 +175,45 @@ public class ClothedAppearance implements Appearance {
         } catch (IOException e) {
             ErrorHandler.error("File " + folder + File.pathSeparator + "intervals.txt not found!\n" + e.getMessage());
         }
+    }
+
+    private void loadShadowShifts(String name) {
+        File f = new File("res/textures/characters/" + name + "/" + name + ".shad");
+        if (f.exists() && !f.isDirectory()) {
+            try {
+                ArrayList<PointedValue> temp = new ArrayList<>();
+                FileReader fl = new FileReader(f);
+                BufferedReader input = new BufferedReader(fl);
+                int frames = 0;
+                String line;
+                while ((line = input.readLine()) != null) {
+                    String[] data = line.split(";");
+                    if (data.length >= 3) {
+                        int frame = Integer.parseInt(data[0]);
+                        temp.add(new PointedValue(Integer.parseInt(data[1]), Integer.parseInt(data[2]), frame));
+                        if (frame > frames) {
+                            frames = frame;
+                        }
+                    }
+                }
+                input.close();
+                fl.close();
+                shadowShiftPoints = new Point[frames + 1];
+                for (PointedValue pt : temp) {
+                    shadowShiftPoints[pt.getValue()] = new Point(pt.getX(), pt.getY());
+                }
+                temp.clear();
+            } catch (IOException e) {
+                System.err.println("Błąd wczytywania pliku: " + e.getMessage());
+            }
+        }
+    }
+
+    public Point getShadowShift(int frame) {
+        if (shadowShiftPoints != null && frame < shadowShiftPoints.length && shadowShiftPoints[frame] != null) {
+            return shadowShiftPoints[frame];
+        }
+        return ZERO;
     }
 
     private void synchronize() {
@@ -414,13 +454,12 @@ public class ClothedAppearance implements Appearance {
     }
 
     @Override
-    public void renderStaticShadow(GameObject object, float x, float y) {
-//        float changeX = 0;
-//        float changeY = 0 - (float) object.getFloatHeight();
-//        Drawer.regularShader.translateNoReset(-staticShadowFbo.getWidth() / 2 - changeX, -staticShadowFbo.getHeight() / 2 + changeY);
-//        Drawer.regularShader.scaleNoReset((float) Methods.ONE_BY_SQRT_ROOT_OF_2, 1f);
-        float changeX = -4 + staticShadowFbo.getWidth() / 2 + object.getCollisionWidth() / 2;
-        float changeY = -staticShadowFbo.getHeight() / 2 + object.getCollisionHeight() / 2 - (float) object.getFloatHeight();
+    public void renderStaticShadow(GameObject object) {
+        Drawer.setColorStatic(Entity.JUMP_SHADOW_COLOR);
+
+        Point shift = getShadowShift(lowerBody.getCurrentFrameIndex());
+        float changeX = shift.getX() + staticShadowFbo.getWidth() / 2 + object.getCollisionWidth() / 2;
+        float changeY = shift.getY() - staticShadowFbo.getHeight() / 2 + object.getCollisionHeight() / 2 - (float) object.getFloatHeight();
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
         Drawer.regularShader.scaleNoReset(1f, scale);
         Drawer.regularShader.translateNoReset(changeX, changeY);
@@ -429,8 +468,8 @@ public class ClothedAppearance implements Appearance {
         Drawer.regularShader.rotateNoReset(-90);
         Drawer.regularShader.translateNoReset(-changeX, -changeY);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
-//        Drawer.regularShader.scaleNoReset(1f / (float) Methods.ONE_BY_SQRT_ROOT_OF_2, 1f);
-//        Drawer.regularShader.translateNoReset(staticShadowFbo.getWidth() / 2 + changeX, staticShadowFbo.getHeight() / 2 - changeY);
+
+        Drawer.refreshColor();
     }
 
     public boolean isUpToDate() {

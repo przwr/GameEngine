@@ -21,12 +21,11 @@ import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import gamecontent.environment.Rock;
 import gamecontent.mobs.Shen;
+import sounds.Sound3D;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
 import static game.gameobject.items.Weapon.SWORD;
-import sounds.Sound;
-import sounds.Sound3D;
 
 /**
  * @author Wojtek
@@ -38,13 +37,6 @@ public class Melodia extends Mob {
     private Animation animation;
     private String dialog = "0";
     private Sound3D siren;
-
-    public final void initializeSounds() {
-        if (siren == null) {
-            siren = Settings.sounds.get3DBGSound("melody.ogg", this);
-            siren.setSoundRanges(0f, 0.7f);
-        }
-    }
 
     public Melodia(int x, int y, Place place, short mobID, Shen shen, Rock rock) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
@@ -58,6 +50,13 @@ public class Melodia extends Mob {
         setDirection8way(DOWN);
         this.shen = shen;
         this.rock = rock;
+    }
+
+    public final void initializeSounds() {
+        if (siren == null) {
+            siren = Settings.sounds.get3DBGSound("melody.ogg", this);
+            siren.setSoundRanges(0f, 0.7f);
+        }
     }
 
     @Override
@@ -139,7 +138,7 @@ public class Melodia extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            appearance.renderStaticShadow(this, 0, 0);
+            appearance.renderStaticShadow(this);
             animation.render();
         }
     }

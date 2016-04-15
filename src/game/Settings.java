@@ -13,6 +13,7 @@ import game.languages.Language;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Controller;
 import org.lwjgl.opengl.*;
+import sounds.SoundBase;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -20,7 +21,6 @@ import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.glGetInteger;
-import sounds.SoundBase;
 import static sprites.fbo.FrameBufferObject.*;
 
 /**
@@ -61,7 +61,7 @@ public class Settings {
     public static int supportedFrameBufferObjectVersion;
     public static boolean multiSampleSupported;
     public static boolean shadowOff;
-    public static double nativeScale;
+    public static double nativeScale = 1f;
     public static String gpu = "";
     public static String serverIP = "127.0.0.1";
     public static float defaultGamma = 1.0f;

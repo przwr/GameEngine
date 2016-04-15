@@ -201,7 +201,7 @@ public class Tile extends GameObject implements Appearance {
     }
 
     @Override
-    public void renderStaticShadow(GameObject object, float x, float y) {
+    public void renderStaticShadow(GameObject object) {
     }
 
     @Override

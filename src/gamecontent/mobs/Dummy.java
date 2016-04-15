@@ -37,7 +37,7 @@ public class Dummy extends Mob {
 
     private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 0);
+        animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 1);
         appearance = animation;
         collision.setMobile(true);
         rand = RandomGenerator.create();
@@ -104,7 +104,7 @@ public class Dummy extends Mob {
                 Drawer.regularShader.translateNoReset(rand.randomInRange(-power, power), rand.randomInRange(-power, power));
                 power /= 1.2;
             }
-            appearance.renderStaticShadow(this, 0, 0);
+            appearance.renderStaticShadow(this);
             appearance.render();
         }
     }

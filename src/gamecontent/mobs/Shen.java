@@ -251,7 +251,19 @@ public class Shen extends Mob {
                     maxSpeed = 1;
                     rest.terminate();
                 }
-                goTo(destination);
+                if (leader && !closeFriends.isEmpty()) {
+                    int x = 0, y = 0;
+                    for (Mob mob : closeFriends) {
+                        x += mob.getX();
+                        y += mob.getY();
+                    }
+                    if (Methods.pointDistanceSimple2(getX(), getY(), x / closeFriends.size(), y / closeFriends.size()) < sightRange2 / 4) {
+                        goTo(destination);
+                    }
+
+                } else {
+                    goTo(destination);
+                }
             }
         };
     }
@@ -434,7 +446,7 @@ public class Shen extends Mob {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            appearance.renderStaticShadow(this, 5, 4);
+            appearance.renderStaticShadow(this);
             Drawer.refreshColor();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {

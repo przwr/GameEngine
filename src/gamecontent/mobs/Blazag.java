@@ -23,6 +23,7 @@ import game.gameobject.stats.MobStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
+import sounds.Sound3D;
 import sprites.Animation;
 import sprites.SpriteSheet;
 
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Set;
 
 import static game.logic.navmeshpathfinding.PathData.OBSTACLE_BETWEEN;
-import sounds.Sound3D;
 
 /**
  * @author przemek
@@ -60,14 +60,6 @@ public class Blazag extends Mob {
     private SpeedChanger jumper;
     private Order order = new Order();
     private Sound3D tupSound;
-
-    public final void initializeSounds() {
-        if (tupSound == null) {
-            tupSound = Settings.sounds.get3DSoundEffect("tup.wav", this);
-            tupSound.setSoundRanges(0f, 0.4f);
-            tupSound.setRandomized(0.1f);
-        }
-    }
 
     {
         idle = new ActionState() {
@@ -315,6 +307,14 @@ public class Blazag extends Mob {
         super(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
         initializeSounds();
         setUp();
+    }
+
+    public final void initializeSounds() {
+        if (tupSound == null) {
+            tupSound = Settings.sounds.get3DSoundEffect("tup.wav", this);
+            tupSound.setSoundRanges(0f, 0.4f);
+            tupSound.setRandomized(0.1f);
+        }
     }
 
     private void setUp() {
@@ -980,7 +980,7 @@ public class Blazag extends Mob {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            appearance.renderStaticShadow(this, 4, -2);
+            appearance.renderStaticShadow(this);
             Drawer.refreshColor();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {

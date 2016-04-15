@@ -19,6 +19,8 @@ import static org.lwjgl.opengl.GL11.glGetInteger;
 
 public class TextMaster {
 
+//    TODO UWAGA! Czcionki dobrze się skalują - są odpowiedniej grubości dla czcionek od 12 do 64
+
     public static ArrayList<FontType> fonts = new ArrayList<>(1);
     private static ArrayList<VertexBufferObject> vbos = new ArrayList<>();
     private static Vector3f color = new Vector3f(1f, 0f, 1f);
@@ -91,9 +93,9 @@ public class TextMaster {
             GL20.glEnableVertexAttribArray(1);
             Drawer.fontShader.loadColor(text.getColor());
             float ff = text.getFontSize() * (float) Settings.nativeScale;
-            float width = (-0.00016f * ff * ff + 0.017f * ff + 2f / ff);
+            float width = (-0.000145f * ff * ff + 0.016f * ff + 2f / ff);
             Drawer.fontShader.loadWidth(width);
-            Drawer.fontShader.loadEdge(4.5f / ff);
+            Drawer.fontShader.loadEdge(4f / ff);
             Drawer.fontShader.loadBorderWidth(text.hasBorder() ? width * 1.2f : text.hasShadow() ? width : 0);
             Drawer.fontShader.loadBorderEdge(5f / ff);
             Drawer.fontShader.loadOffset(text.hasShadow() ? 0.005f : 0, text.hasShadow() ? 0.005f : 0);

@@ -118,7 +118,7 @@ public class Tercja extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            appearance.renderStaticShadow(this, 0, 0);
+            appearance.renderStaticShadow(this);
             animation.render();
         }
     }
