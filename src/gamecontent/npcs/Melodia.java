@@ -59,13 +59,6 @@ public class Melodia extends Mob {
         this.rock = rock;
     }
 
-    public final void initializeSounds() {
-        if (siren == null) {
-            siren = Settings.sounds.get3DBGSound("melody.ogg", this);
-            siren.setSoundRanges(0f, 0.7f);
-        }
-    }
-
     @Override
     public void update() {
         animation.updateFrame();
