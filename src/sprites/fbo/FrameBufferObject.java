@@ -357,7 +357,7 @@ public abstract class FrameBufferObject implements Appearance {
     }
 
     @Override
-    public void renderStaticShadow(GameObject object, float x, float y) {
+    public void renderStaticShadow(GameObject object) {
     }
 
     @Override

@@ -33,6 +33,8 @@ public abstract class Entity extends GameObject {
 
     public static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 0.2f);
     protected static final RandomGenerator random = RandomGenerator.create();
+    public final Update[] updates = new Update[4];
+    public int lastAdded;
     protected double xSpeed, ySpeed;
     protected double xEnvironmentalSpeed, yEnvironmentalSpeed;
     protected double maxSpeed;
@@ -50,17 +52,13 @@ public abstract class Entity extends GameObject {
     protected PathData pathData;
     protected PathStrategy pathStrategy;
     protected Update currentUpdate;
-
     protected ArrayList<TemporalChanger> changers;
     protected SpeedChanger knockBack;
     protected Delay invicibleTime;
-    
     //ONLINE
     protected boolean jumping;
     protected boolean hop;
-    public final Update[] updates = new Update[4];
     protected Player collided;
-    public int lastAdded;
     protected int currentUpdateID, deltasCount, xDestination, yDestination;
 
     public Entity() {
@@ -224,7 +222,7 @@ public abstract class Entity extends GameObject {
 
     public void updateChangers() {
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
@@ -237,7 +235,7 @@ public abstract class Entity extends GameObject {
 
     public void endChangers() {
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
             tc = iterator.next();
             tc.onStop();
             iterator.remove();
@@ -517,12 +515,12 @@ public abstract class Entity extends GameObject {
         return true;
     }
 
-    public void setAbleToMove(boolean ableToMove) {
-        this.ableToMove = ableToMove;
-    }
-
     public boolean isAbleToMove() {
         return ableToMove;
+    }
+
+    public void setAbleToMove(boolean ableToMove) {
+        this.ableToMove = ableToMove;
     }
 
     public boolean isJumping() {

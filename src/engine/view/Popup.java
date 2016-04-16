@@ -67,6 +67,9 @@ public class Popup {
     }
 
     private void renderMessage(int id) {
+        Drawer.regularShader.start();
+        Drawer.regularShader.resetDefaultMatrix();
+        Drawer.regularShader.resetTransformationMatrix();
         String[] lines = messages[id].split("\\r?\\n");
         int current;
         shift = (int) (Settings.nativeScale * smallFont / 0.75f);

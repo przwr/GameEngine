@@ -47,6 +47,8 @@ public class Drawer {
     public static int displayWidth, displayHeight;
     private static Color currentColor = Color.white;
     private static Timer t = new Timer("Test", 200);
+    private static float[] data3 = new float[6];
+    private static float[] data4 = new float[8];
 
     private static Texture loadFontTexture() {
         try {
@@ -154,59 +156,68 @@ public class Drawer {
     }
 
     public static void drawTextureTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
-        float[] data = {
-                xA, yA,
-                xB, yB,
-                0, 0,
-                xC, yC,
-        };
-        streamVBO.updateVerticesStream(data);
+        data4[0] = xA;
+        data4[1] = yA;
+        data4[2] = xB;
+        data4[3] = yB;
+        data4[4] = 0;
+        data4[5] = 0;
+        data4[6] = xC;
+        data4[7] = yC;
+        streamVBO.updateVerticesStream(data4);
         streamVBO.renderTextured(0, 3);
     }
 
     public static void drawTriangle(int xA, int yA, int xB, int yB, int xC, int yC) {
-        float[] data = {
-                xA, yA,
-                xB, yB,
-                xC, yC,
-        };
+        data3[0] = xA;
+        data3[1] = yA;
+        data3[2] = xB;
+        data3[3] = yB;
+        data3[4] = xC;
+        data3[5] = yC;
         regularShader.setUseTexture(false);
-        streamVBO.renderTriangleStream(data);
+        streamVBO.renderTriangleStream(data3);
         regularShader.setUseTexture(true);
     }
 
     public static void drawRectangle(int xStart, int yStart, int width, int height) {
-        float[] data = {
-                xStart, yStart,
-                xStart, yStart + height,
-                xStart + width, yStart,
-                xStart + width, yStart + height,
-        };
+        data4[0] = xStart;
+        data4[1] = yStart;
+        data4[2] = xStart;
+        data4[3] = yStart + height;
+        data4[4] = xStart + width;
+        data4[5] = yStart;
+        data4[6] = xStart + width;
+        data4[7] = yStart + height;
         regularShader.setUseTexture(false);
-        streamVBO.renderTriangleStripStream(data);
+        streamVBO.renderTriangleStripStream(data4);
         regularShader.setUseTexture(true);
     }
 
     public static void drawRectangleBorder(int xStart, int yStart, int width, int height) {
-        float[] data = {
-                xStart, yStart,
-                xStart, yStart + height,
-                xStart + width, yStart + height,
-                xStart + width, yStart,
-        };
+        data4[0] = xStart;
+        data4[1] = yStart;
+        data4[2] = xStart;
+        data4[3] = yStart + height;
+        data4[4] = xStart + width;
+        data4[5] = yStart + height;
+        data4[6] = xStart + width;
+        data4[7] = yStart;
         regularShader.setUseTexture(false);
-        streamVBO.renderLineLoopStream(data);
+        streamVBO.renderLineLoopStream(data4);
         regularShader.setUseTexture(true);
     }
 
     public static void drawTextureQuad(int xA, int yA, int xB, int yB, int xC, int yC, int xD, int yD) {
-        float[] data = {
-                xD, yD,
-                xA, yA,
-                xB, yB,
-                xC, yC,
-        };
-        streamVBO.updateVerticesStream(data);
+        data4[0] = xD;
+        data4[1] = yD;
+        data4[2] = xA;
+        data4[3] = yA;
+        data4[4] = xB;
+        data4[5] = yB;
+        data4[6] = xC;
+        data4[7] = yC;
+        streamVBO.updateVerticesStream(data4);
         streamVBO.renderTextured(0, 6);
     }
 
@@ -346,14 +357,16 @@ public class Drawer {
         int angle = (int) Methods.pointAngleClockwise(xStart, yStart, xStart + xDelta, yStart + yDelta) + 90;
         int xWidth = (int) Methods.xRadius(angle, width / 2);
         int yWidth = (int) Methods.yRadius(angle, width / 2);
-        float[] data = {
-                xStart + xWidth, yStart + yWidth,
-                xStart + xDelta + xWidth, yStart + yDelta + yWidth,
-                xStart - xWidth, yStart - yWidth,
-                xStart + xDelta - xWidth, yStart + yDelta - yWidth,
-        };
+        data4[0] = xStart + xWidth;
+        data4[1] = yStart + yWidth;
+        data4[2] = xStart + xDelta + xWidth;
+        data4[3] = yStart + yDelta + yWidth;
+        data4[4] = xStart - xWidth;
+        data4[5] = yStart - yWidth;
+        data4[6] = xStart + xDelta - xWidth;
+        data4[7] = yStart + yDelta - yWidth;
         regularShader.setUseTexture(false);
-        streamVBO.renderTriangleStripStream(data);
+        streamVBO.renderTriangleStripStream(data4);
         regularShader.setUseTexture(true);
     }
 

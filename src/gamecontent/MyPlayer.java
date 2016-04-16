@@ -369,7 +369,7 @@ public class MyPlayer extends Player {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             if (visibleShadow) {
                 Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-                appearance.renderStaticShadow(this, 0, 0);
+                appearance.renderStaticShadow(this);
                 Drawer.refreshColor();
             } else {
                 visibleShadow = true;

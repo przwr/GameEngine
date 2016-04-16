@@ -55,7 +55,7 @@ public class MyNPC extends Mob {
                     TextController text = mpPrey.getTextController();
                     text.lockEntity(mpPrey);
                     text.startFromFile("inwokacja");
-                    /*Executive e = () -> {
+                    /*xecutive e = () -> {
                         spinning = !spinning;
                     };
                     text.addExternalEventOnBranch(e, "0", false);
@@ -113,7 +113,7 @@ public class MyNPC extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            appearance.renderStaticShadow(this, 0, 0);
+            appearance.renderStaticShadow(this);
             animation.render();
         }
     }
