@@ -82,10 +82,9 @@ public class CaveTest extends Map {
         super.updateEntitesFromAreasToUpdate();
         if (envSounds != null) {
             if (place.players[0].getMap() == this) {
-                envSounds.play();
+                envSounds.playSmooth(1000);
             } else {
-                //envSounds.fade(1000, false);
-                envSounds.stop();
+                envSounds.stopSmooth(1000);
             }
         } else {
             envSounds = Settings.sounds.getBGSound("env_cave.ogg");

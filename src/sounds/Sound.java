@@ -40,7 +40,7 @@ public class Sound {
     private float length;
     private boolean isMusic;
     private float gain = 1f, pitch = 1f, randomDelta;
-    private boolean looped, fading = false, randomized;
+    private boolean looped, randomized;
 
     public Sound(String name, SoundBase store, int buffer, boolean isMusic) {
         this.store = store;
@@ -60,7 +60,6 @@ public class Sound {
         gain = other.gain;
         pitch = other.pitch;
         looped = other.looped;
-        fading = other.fading;
         randomDelta = other.randomDelta;
         randomized = other.randomized;
     }
@@ -158,15 +157,54 @@ public class Sound {
         return store.playSound(sound, pitch, volume, loop, x, y, z);
     }
 
+    public Sound playSmooth(int time) {
+        return playSmooth(time, 1f);
+    }
+
+    public Sound playSmooth(int time, float endVolume) {
+        if (buffer != -1 && !isFading()) {
+            if (isPlaying()) {
+                if (!isMusic) {
+                    Sound copy = new Sound(this);
+                    copy.gain = 0f;
+                    copy.index = playSound(copy, pitch, looped, 0, 0, 0);
+                    store.getFader().resumeSound(copy, time, endVolume);
+                    return copy;
+                } else {
+                    return this;
+                }
+            } else {
+                gain = 0f;
+                index = playSound(this, pitch, looped, 0, 0, 0);
+                store.getFader().resumeSound(this, time, endVolume);
+                return this;
+            }
+        } else {
+            return this;
+        }
+    }
+
     public void stop() {
         if (isIndexUsable) {
             AL10.alSourceStop(store.getSource(index));
         }
     }
 
+    public void stopSmooth(int time) {
+        if (isIndexUsable && !isFading()) {
+            store.getFader().fadeSound(this, time, false);
+        }
+    }
+
     public void pause() {
         if (isIndexUsable) {
             AL10.alSourcePause(store.getSource(index));
+        }
+    }
+
+    public void pauseSmooth(int time) {
+        if (isIndexUsable && !isFading()) {
+            store.getFader().fadeSound(this, time, true);
         }
     }
 
@@ -177,6 +215,17 @@ public class Sound {
     public void resume() {
         if (isIndexUsable) {
             store.resumeSource(index);
+        }
+    }
+
+    public void resumeSmooth(int time) {
+        resumeSmooth(time, 1f);
+    }
+
+    public void resumeSmooth(int time, float endVolume) {
+        if (isIndexUsable) {
+            store.resumeSource(index);
+            store.getFader().resumeSound(this, time, endVolume);
         }
     }
 
@@ -245,10 +294,6 @@ public class Sound {
     }
 
     public boolean isFading() {
-        return fading;
-    }
-
-    void setFading(boolean fading) {
-        this.fading = fading;
+        return store.getFader().isSoundFading(this);
     }
 }

@@ -93,6 +93,8 @@ public class SoundBase {
     private int maxSources = 64;
 
     private final RandomGenerator random;
+    
+    private final Fader fader;
 
     /**
      * Create a new sound store
@@ -101,6 +103,7 @@ public class SoundBase {
         random = RandomGenerator.create();
         playingSoundBase = new ArrayList<>();
         loaded = new HashMap();
+        fader = new Fader();
     }
 
     /**
@@ -247,6 +250,8 @@ public class SoundBase {
         Log.info("Initialising sounds..");
         inited = true;
 
+        fader.start();
+        
         if (!AL.isCreated()) {
             AccessController.doPrivileged((PrivilegedAction) () -> {
                 try {
@@ -304,7 +309,15 @@ public class SoundBase {
             playingSoundBase.clear();
         }
     }
+    
+    public void stopInternalThreads() {
+        fader.stop();
+    }
 
+    Fader getFader() {
+        return fader;
+    }
+    
     private void initializeSources() {
         sourceCount = 0;
         sources = BufferUtils.createIntBuffer(maxSources);
@@ -375,23 +388,27 @@ public class SoundBase {
 
     public void pauseAllSounds() {
         for (Sound sound : playingSoundBase) {
-            sound.pause();
+            sound.pauseSmooth(100);
         }
     }
 
     public void resumeAllSounds() {
         for (Sound sound : playingSoundBase) {
-            sound.resume();
+            sound.resumeSmooth(100);
         }
     }
 
     int playSound(Sound sound, float pitch, float gain, boolean loop, float x, float y, float z) {
-        if (!playingSoundBase.contains(sound)) {
-            playingSoundBase.add(sound);
-            sound.setIndexUsable(true);
-            return playSound(sound.getBufferID(), pitch, gain, loop, x, y, z, -1);
+        if (sound.getBufferID() != -1) {
+            if (!playingSoundBase.contains(sound)) {
+                playingSoundBase.add(sound);
+                sound.setIndexUsable(true);
+                return playSound(sound.getBufferID(), pitch, gain, loop, x, y, z, -1);
+            } else {
+                return playSound(sound.getBufferID(), pitch, gain, loop, x, y, z, sound.getIndex());
+            }
         } else {
-            return playSound(sound.getBufferID(), pitch, gain, loop, x, y, z, sound.getIndex());
+            return -1;
         }
     }
 
