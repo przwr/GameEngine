@@ -1,6 +1,7 @@
 package sprites.fbo;
 
 import engine.utilities.Drawer;
+import engine.utilities.Methods;
 import game.Settings;
 import game.gameobject.GameObject;
 import org.lwjgl.opengl.ARBFramebufferObject;
@@ -23,6 +24,7 @@ public abstract class FrameBufferObject implements Appearance {
     private static final FrameBufferType MULTI_SAMPLE_NATIVE = new MultiSampleNative();
     private static final FrameBufferType MULTI_SAMPLE_ARB = new MultiSampleARB();
     private static final FrameBufferType MULTI_SAMPLE_EXT = new MultiSampleEXT();
+
     private static float lastScreenData[] = new float[10];
     private static float checkSum = 0;
     private static List<FrameBufferObject> instances = new ArrayList<>();
@@ -251,7 +253,7 @@ public abstract class FrameBufferObject implements Appearance {
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.shadowShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(type * 4, 4);
-            Drawer.shadowShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
         }
     }
 
@@ -337,7 +339,7 @@ public abstract class FrameBufferObject implements Appearance {
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.regularShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(type * 4, 4);
-            Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.regularShader.loadSizeModifier(ZERO_VECTOR);
         }
     }
 
@@ -358,6 +360,34 @@ public abstract class FrameBufferObject implements Appearance {
 
     @Override
     public void renderStaticShadow(GameObject object) {
+    }
+
+    public void renderStaticShadowTopAndBottom(GameObject object, int x, int y) {
+        float changeX = x;
+        float changeY = y - (float) object.getFloatHeight();
+        float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
+
+        Drawer.regularShader.scaleNoReset(1f, scale);
+        Drawer.regularShader.translateNoReset(changeX, changeY);
+        Drawer.regularShader.rotateNoReset(90);
+        renderTopAndBottom();
+        Drawer.regularShader.rotateNoReset(-90);
+        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.scaleNoReset(1f, 1f / scale);
+    }
+
+    public void renderStaticShadow(GameObject object, int x, int y) {
+        float changeX = x;
+        float changeY = y - (float) object.getFloatHeight();
+        float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
+
+        Drawer.regularShader.scaleNoReset(1f, scale);
+        Drawer.regularShader.translateNoReset(changeX, changeY);
+        Drawer.regularShader.rotateNoReset(90);
+        render();
+        Drawer.regularShader.rotateNoReset(-90);
+        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.scaleNoReset(1f, 1f / scale);
     }
 
     @Override

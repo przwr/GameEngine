@@ -191,6 +191,18 @@ public abstract class Camera {
         nearObjects.clearVisibleLights();
     }
 
+    public void addStaticShadow(GameObject shadow) {
+        nearObjects.addStaticShadow(shadow);
+    }
+
+    public void clearStaticShadows() {
+        nearObjects.clearStaticShadows();
+    }
+
+    public List<GameObject> getStaticShadows() {
+        return nearObjects.getStaticShadows();
+    }
+
     private double getXMiddle() {
         xMiddle = 0;
         owners.stream().forEach((owner) -> xMiddle += owner.getX());

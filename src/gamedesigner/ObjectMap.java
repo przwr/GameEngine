@@ -239,7 +239,7 @@ public class ObjectMap extends Map {
                 addForegroundTile(newTile, x, y, depth);
             }
         } else {
-            ForegroundTile newTile = ShadowLightTile.createOrdinaryShadowHeight(tex, tileSize, xSheet, ySheet, depth + tileSize, isShadow);
+            ForegroundTile newTile = ShadowLightTile.createSimple(tex, tileSize, xSheet, ySheet, depth + tileSize, isShadow, tileSize, tileSize);
             addForegroundTile(newTile, x, y, depth);
         }
     }

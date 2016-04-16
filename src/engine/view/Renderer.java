@@ -9,9 +9,12 @@ import engine.lights.Light;
 import engine.lights.ShadowRenderer;
 import engine.utilities.Drawer;
 import game.Settings;
+import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.place.Place;
 import game.place.cameras.Camera;
+import game.place.map.ForegroundTile;
 import game.place.map.Map;
 import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
@@ -31,7 +34,7 @@ public class Renderer {
     private static final drawBorder[] borders = new drawBorder[5];
     public static Place place;
     private static int displayWidth, displayHeight, halfDisplayWidth, halfDisplayHeight;
-    private static FrameBufferObject frame;
+    private static FrameBufferObject dynamicShadows, staticShadows;
     private static boolean visible;
     private static VertexBufferObject borderVBO;
 
@@ -152,18 +155,18 @@ public class Renderer {
     }
 
     public static void preRenderShadowedLights(Camera camera) {
-        frame.activate();
+        dynamicShadows.activate();
         Drawer.clearScreen(0);
         Drawer.setColorStatic(1, 1, 1, 1);
         glBlendFunc(GL_ONE, GL_ONE);
         camera.getVisibleLights().stream().forEach((light) -> {
             if (Settings.shadowOff || !light.isGiveShadows()) {
-                light.render(camera.getXOffsetEffect(), camera.getYOffsetEffect(), camera);
+                light.render(camera);
             } else {
                 drawLight(light, camera);
             }
         });
-        frame.deactivate();
+        dynamicShadows.deactivate();
     }
 
     private static void drawLight(Light light, Camera camera) {
@@ -189,12 +192,13 @@ public class Renderer {
         Drawer.setColorStatic(lightColor, lightColor, lightColor, 1);
         glBlendFunc(GL_DST_COLOR, GL_ONE);
         for (int i = 0; i < lightStrength; i++) {
-            frame.renderScreenPart(displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
+            dynamicShadows.renderScreenPart(displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
         }
     }
 
     public static void initializeVariables() {
-        frame = new RegularFrameBufferObject(displayWidth, displayHeight);
+        dynamicShadows = new RegularFrameBufferObject(displayWidth, displayHeight);
+        staticShadows = new RegularFrameBufferObject(displayWidth, displayHeight);
         float[] vertices = {
                 //0
                 0, halfDisplayHeight - 1,
@@ -296,6 +300,105 @@ public class Renderer {
         if (ssMode != 0) {
             Drawer.resetOrtho();
         }
+    }
+
+    public static void findVisibleStaticShadows(Map map, int playersLength) {
+        place = map.place;
+        readyVarsToFindStaticShadows(map);
+        for (GameObject object : map.getDepthObjectsAndForegroundTilesFromAreasToUpdate()) {
+            for (int i = 0; i < playersLength; i++) {
+                if (place.players[i].getMap() == map) {
+                    if (place.singleCamera && playersLength > 1) {
+                        if (object.hasStaticShadow()) {
+                            if (object instanceof ForegroundTile) {
+                                visible = true;
+                                if (!place.cameras[playersLength - 2].getStaticShadows().contains(object)) {
+                                    place.cameras[playersLength - 2].addStaticShadow(object);
+                                }
+                            } else if (yStart[2 + playersLength] <= object.getY() + object.getAppearance().getActualWidth() / 2
+                                    && yEnd[2 + playersLength] >= object.getY() - object.getAppearance().getActualWidth() / 2
+                                    && xStart[2 + playersLength] <= object.getX() + object.getCollisionWidth() + object.getActualHeight()
+                                    && xEnd[2 + playersLength] >= object.getX() - object.getCollisionWidth() / 2) {
+                                visible = true;
+                                if (!place.cameras[playersLength - 2].getStaticShadows().contains(object)) {
+                                    place.cameras[playersLength - 2].addStaticShadow(object);
+                                }
+                            }
+                        }
+                    } else {
+                        for (int j = 0; j < playersLength; j++) {
+                            if (place.players[j].getMap() == map && object.hasStaticShadow()) {
+                                if (object instanceof ForegroundTile) {
+                                    visible = true;
+                                    if (!(((Player) place.players[j]).getCamera()).getStaticShadows().contains(object)) {
+                                        (((Player) place.players[j]).getCamera()).addStaticShadow(object);
+                                    }
+                                } else if (yStart[j] <= object.getY() + object.getAppearance().getActualWidth() / 2
+                                        && yEnd[j] >= object.getY() - object.getAppearance().getActualWidth() / 2
+                                        && xStart[j] <= object.getX() + object.getCollisionWidth() + object.getActualHeight()
+                                        && xEnd[j] >= object.getX() - object.getCollisionWidth() / 2) {
+                                    visible = true;
+                                    if (!(((Player) place.players[j]).getCamera()).getStaticShadows().contains(object)) {
+                                        (((Player) place.players[j]).getCamera()).addStaticShadow(object);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (visible) {
+                        if (!map.getStaticShadows().contains(object)) {
+                            map.addStaticShadows(object);
+                        }
+                        visible = false;
+                    }
+                }
+            }
+        }
+    }
+
+    private static void readyVarsToFindStaticShadows(Map map) {
+        Camera camera;
+        for (int p = 0; p < place.getPlayersCount(); p++) {
+            if (map == place.players[p].getMap()) {
+                camera = (((Player) place.players[p]).getCamera());
+                camera.clearStaticShadows();
+                xStart[p] = camera.getXStart();
+                xEnd[p] = camera.getXEnd();
+                yStart[p] = camera.getYStart();
+                yEnd[p] = camera.getYEnd();
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (place.cameras[i] != null) {
+                camera = place.cameras[i];
+                camera.clearStaticShadows();
+                xStart[4 + i] = camera.getXStart();            // 4 to maksymalna liczba graczy
+                xEnd[4 + i] = camera.getXEnd();
+                yStart[4 + i] = camera.getYStart();
+                yEnd[4 + i] = camera.getYEnd();
+            }
+        }
+        map.clearStaticShadows();
+    }
+
+    public static void preRenderStaticShadows(Camera camera) {
+        staticShadows.activate();
+        glClearColor(1f, 1f, 1f, 0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        Drawer.setColorStatic(Entity.JUMP_SHADOW_COLOR);
+        camera.getStaticShadows().stream().forEach((object) -> {
+            Drawer.regularShader.translateScale(camera.getXOffsetEffect(), camera.getYOffsetEffect(), camera.getScale(), camera.getScale());
+            Drawer.regularShader.translateNoReset(object.getX(), object.getY());
+            object.renderStaticShadow();
+        });
+        Drawer.refreshColor();
+        staticShadows.deactivate();
+    }
+
+    public static void renderStaticShadows(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float
+            yTEnd) {
+        Drawer.setColorStatic(1, 1, 1, 0.2f * Place.getDayCycle().getDayShadowAlpha());
+        staticShadows.renderScreenPart(displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
     }
 
     private interface drawBorder {

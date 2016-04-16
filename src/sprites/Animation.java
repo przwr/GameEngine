@@ -10,7 +10,6 @@ import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
-import game.gameobject.entities.Entity;
 
 /**
  * @author przemek
@@ -63,8 +62,6 @@ public class Animation implements Appearance {
 
     @Override
     public void renderStaticShadow(GameObject object) {
-        Drawer.setColorStatic(Entity.JUMP_SHADOW_COLOR);
-
         int direction = object.getDirection8Way();
         Point shift = getShadowShift(currentFrame);
         float changeX = shift.getX();
@@ -81,7 +78,6 @@ public class Animation implements Appearance {
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
 
         changeDirection(direction);
-        Drawer.refreshColor();
     }
 
     @Override

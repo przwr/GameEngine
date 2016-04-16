@@ -7,6 +7,7 @@ package game.place.cameras;
 
 import engine.lights.Light;
 import game.gameobject.GUIObject;
+import game.gameobject.GameObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class NearObjects {
 
     protected final ArrayList<GUIObject> gui = new ArrayList<>();
     private final ArrayList<Light> visibleLights = new ArrayList<>();
+    private final ArrayList<GameObject> staticShadows = new ArrayList<>();
 
 
     public void addVisibleLight(Light light) {
@@ -32,4 +34,15 @@ public class NearObjects {
         visibleLights.clear();
     }
 
+    public void addStaticShadow(GameObject shadow) {
+        staticShadows.add(shadow);
+    }
+
+    public List<GameObject> getStaticShadows() {
+        return staticShadows;
+    }
+
+    public void clearStaticShadows() {
+        staticShadows.clear();
+    }
 }

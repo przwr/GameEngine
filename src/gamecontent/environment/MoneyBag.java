@@ -27,7 +27,9 @@ public class MoneyBag extends Mob {
         super(x, y, 3, 400, "moneyBag", place, "money", true, mobID);
         setCollision(Rectangle.create(appearance.getActualWidth() / 2, appearance.getActualWidth() / 2, OpticProperties.NO_SHADOW, this));
         solid = false;
+        hasStaticShadow = true;
         stats = new NPCStats(this);
+        hasStaticShadow = true;
         addPushInteraction();
         setTargetable(false);
     }
@@ -66,10 +68,6 @@ public class MoneyBag extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) appearance.getActualWidth() / 4), Methods.roundDouble((float) appearance
-                    .getActualWidth() / 8), 15);
-            Drawer.refreshColor();
             appearance.render();
         }
     }

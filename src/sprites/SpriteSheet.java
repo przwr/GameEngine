@@ -249,7 +249,7 @@ public class SpriteSheet extends Sprite {
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.shadowShader.loadSizeModifier(vectorModifier);
                 vbo.renderTextured(4 + frame * 4, 4);
-                Drawer.shadowShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+                Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
             }
         }
     }
@@ -267,7 +267,7 @@ public class SpriteSheet extends Sprite {
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.regularShader.loadSizeModifier(vectorModifier);
                 vbo.renderTextured(4 + frame * 4, 4);
-                Drawer.regularShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+                Drawer.regularShader.loadSizeModifier(ZERO_VECTOR);
             }
         }
     }

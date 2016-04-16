@@ -26,6 +26,7 @@ public class Dummy extends Mob {
     private Animation animation;
     private RandomGenerator rand;
     private int power;
+    private float lastRandomX, lastRandomY;
 
     public Dummy() {
     }
@@ -40,6 +41,7 @@ public class Dummy extends Mob {
         animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 1);
         appearance = animation;
         collision.setMobile(true);
+        hasStaticShadow = true;
         rand = RandomGenerator.create();
         stats = new MobStats(this);
         stats.setStrength(10);
@@ -96,16 +98,22 @@ public class Dummy extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-//            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-//            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
-//                    .getHeightHalf()), 15);
-//            Drawer.refreshColor();
             if (isHurt()) {
-                Drawer.regularShader.translateNoReset(rand.randomInRange(-power, power), rand.randomInRange(-power, power));
+                lastRandomX = rand.randomInRange(-power, power);
+                lastRandomY = rand.randomInRange(-power, power);
                 power /= 1.2;
+            } else {
+                lastRandomX = lastRandomY = 0;
             }
-            appearance.renderStaticShadow(this);
             appearance.render();
         }
+    }
+
+    public int getX() {
+        return (int) (x + lastRandomX);
+    }
+
+    public int getY() {
+        return (int) (y + lastRandomY);
     }
 }

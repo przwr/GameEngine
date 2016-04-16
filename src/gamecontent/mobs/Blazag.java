@@ -325,6 +325,7 @@ public class Blazag extends Mob {
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 44);
         appearance = animation;
         collision.setMobile(true);
+        hasStaticShadow = true;
         stats = new MobStats(this);
         stats.setStrength(10);
         stats.setDefence(2);
@@ -461,7 +462,8 @@ public class Blazag extends Mob {
                         if (!can_attack) {
                             can_attack = true;
                             if (stats.getHealth() != stats.getMaxHealth()) {
-                                readyToAttackDelay.setFrameLengthInMilliseconds(Math.round(attackDelayTime * (stats.getHealth() / (float) stats.getMaxHealth())));
+                                readyToAttackDelay.setFrameLengthInMilliseconds(Math.round(attackDelayTime * (stats.getHealth() / (float) stats.getMaxHealth
+                                        ())));
                             }
                             readyToAttackDelay.start();
                         } else if (readyToAttackDelay.isOver()) {
@@ -979,16 +981,12 @@ public class Blazag extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            appearance.renderStaticShadow(this);
-            Drawer.refreshColor();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
                     interactive.render();
                 });
             }
             appearance.render();
-            Drawer.refreshColor();
 //            renderPathPoints();
         }
     }

@@ -148,6 +148,7 @@ public class Plurret extends Mob {
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 18);
         appearance = animation;
         collision.setMobile(true);
+        hasStaticShadow = true;
         stats = new MobStats(this);
         stats.setStrength(1);
         stats.setDefence(1);
@@ -278,13 +279,9 @@ public class Plurret extends Mob {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             animation.render();
             //Drawer.setColor(skinColor);
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble((float) collision.getWidthHalf()), Methods.roundDouble((float) collision
-                    .getHeightHalf()), 15);
-            Drawer.refreshColor();
             appearance.render();
             Drawer.refreshColor();
-//          renderPathPoints(xEffect, yEffect);
+//          renderPathPoints();
         }
     }
 }

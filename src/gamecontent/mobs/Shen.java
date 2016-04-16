@@ -286,6 +286,7 @@ public class Shen extends Mob {
         appearance = animation;
         setDirection8way(random.randomInRange(0, 7));
         collision.setMobile(true);
+        hasStaticShadow = true;
         stats = new MobStats(this);
         stats.setStrength(10);
         stats.setDefence(3);
@@ -445,16 +446,12 @@ public class Shen extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            appearance.renderStaticShadow(this);
-            Drawer.refreshColor();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
                     interactive.render();
                 });
             }
             appearance.render();
-            Drawer.refreshColor();
 //            renderPathPoints(t);
         }
     }

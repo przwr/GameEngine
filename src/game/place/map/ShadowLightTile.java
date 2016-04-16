@@ -10,7 +10,6 @@ import game.place.Place;
 import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
-import static collision.OpticProperties.FULL_SHADOW;
 import static collision.OpticProperties.TRANSPARENT;
 
 /**
@@ -21,60 +20,47 @@ public class ShadowLightTile extends ForegroundTile {
     private final boolean isShadow;
 
     private final Color alteredColor = new Color(0, 0, 0);
-    private Color tmpColor;
+    private int width;
+    private int height;
 
-    ShadowLightTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int type, int yStart, boolean round, boolean solid, boolean isShadow) {
+    public ShadowLightTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int type, int yStart, boolean round, boolean solid, boolean isShadow) {
         super(spriteSheet, size, xSheet, ySheet, type, yStart, round, solid);
         this.isShadow = isShadow;
+        hasStaticShadow = isShadow;
+        setVisible(!isShadow);
     }
 
-    public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {
+    public static ForegroundTile create(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {
         return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, yStart, false, false, isShadow);
     }
 
-    public static ForegroundTile createOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, 0, false, false, isShadow);
-    }
-
-    public static ForegroundTile createWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, yStart, false, true, isShadow);
-    }
-
-    public static ForegroundTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, 0, false, true, isShadow);
-    }
-
-    public static ForegroundTile createRoundOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, yStart, true, false, isShadow);
-    }
-
-    public static ForegroundTile createRoundOrdinary(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, 0, true, false, isShadow);
-    }
-
-    public static ForegroundTile createRoundWallShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, yStart, true, true, isShadow);
-    }
-
-    public static ForegroundTile createRoundWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, boolean isShadow) {
-        return new ShadowLightTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, 0, true, true, isShadow);
+    public static ForegroundTile createSimple(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart, boolean isShadow, int width, int height) {
+        ShadowLightTile st = new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, yStart, false, false, isShadow);
+        st.width = width;
+        st.height = height;
+        st.simpleLighting = true;
+        return st;
     }
 
     @Override
     public void render() {
-        tmpColor = Drawer.getCurrentColor();
-        if (isShadow) {
-            alteredColor.r = tmpColor.r;
-            alteredColor.g = tmpColor.g;
-            alteredColor.b = tmpColor.b;
-            alteredColor.a = Place.getDayCycle().getDayShadowAlpha();
-        } else {
+        if (!isShadow) {
             alteredColor.r = alteredColor.g = alteredColor.b = 0.5f;
             alteredColor.a = Place.getDayCycle().getNightLightAlpha();
         }
         Drawer.setColorStatic(alteredColor);
         super.render();
         Drawer.refreshColor();
+    }
+
+
+    @Override
+    public void renderStaticShadow() {
+        if (simpleLighting) {
+            Drawer.drawRectangle(0, 0, width, height);
+        } else {
+            appearance.render();
+        }
     }
 
     public boolean isShadow() {
@@ -94,5 +80,15 @@ public class ShadowLightTile extends ForegroundTile {
     @Override
     public int getPureDepth() {
         return depth + 1;
+    }
+
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    @Override
+    public void setHeight(int height) {
+        this.height = height;
     }
 }

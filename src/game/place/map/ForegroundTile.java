@@ -65,7 +65,8 @@ public class ForegroundTile extends Tile {
     @Override
     public ForegroundTile copy() {
         Point first = tileStack.get(0);
-        ForegroundTile copy = new ForegroundTile(spriteSheet, Place.tileSize, first.getX(), first.getY(), getCollision().getType(), tmpYStart, !simpleLighting, solid);
+        ForegroundTile copy = new ForegroundTile(spriteSheet, Place.tileSize, first.getX(), first.getY(), getCollision().getType(), tmpYStart,
+                !simpleLighting, solid);
         copy.depth = depth;
         for (int i = 1; i < tileStack.size(); i++) {
             copy.tileStack.add(tileStack.get(i));
@@ -98,5 +99,11 @@ public class ForegroundTile extends Tile {
 
     public void setInCollidingPosition(boolean inCollidingPosition) {
         this.inCollidingPosition = inCollidingPosition;
+    }
+
+    public void setWidth(int width) {
+    }
+
+    public void setHeight(int height) {
     }
 }

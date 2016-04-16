@@ -31,6 +31,7 @@ public class Tercja extends Mob {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
+        hasStaticShadow = true;
         this.plurrets = plurrets;
         if (appearance != null) {
             appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
@@ -118,7 +119,6 @@ public class Tercja extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            appearance.renderStaticShadow(this);
             animation.render();
         }
     }

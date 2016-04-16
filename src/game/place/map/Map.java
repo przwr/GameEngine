@@ -52,11 +52,12 @@ public abstract class Map {
     protected final ArrayList<Entity> tempEntities = new ArrayList<>();
     protected final ArrayList<Interactive> tempInteractiveObjects = new ArrayList<>();
     protected final ArrayList<GameObject> topObjects = new ArrayList<>();
-    protected final HashSet<GameObject> tempDepthObjects = new HashSet<>();
+    protected final HashSet<GameObject> tempDepthObjects = new HashSet<>(), tempDepthPbjectsAndForegroundTiles = new HashSet<>();
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
     protected final ArrayList<Light> lights = new ArrayList<>();
     protected final ArrayList<Block> blocks = new ArrayList<>();
     protected final ArrayList<Light> visibleLights = new ArrayList<>();
+    protected final ArrayList<GameObject> staticShadows = new ArrayList<>();
     protected final Set<Integer> areasToUpdate = new HashSet<>(36);
     public Area[] areas;
     public Area[] areasCopies; //Tylko do testów - powinno być wywalone - a areas wczytywane z pliku
@@ -70,7 +71,7 @@ public abstract class Map {
     protected short mobID = 0;
     protected Color lightColor;
     protected List<GameObject> depthObjects, foregroundTiles;
-    protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd, cameraXOffEffect, cameraYOffEffect;     //Camera's variables for current rendering
+    protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd;     //Camera's variables for current rendering
     private Color[] colors = {Color.red, Color.magenta};
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
@@ -335,8 +336,11 @@ public abstract class Map {
 
     public void updateObjectsFromAreasToUpdate() {
         tempDepthObjects.clear();
+        tempDepthPbjectsAndForegroundTiles.clear();
         getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> {
             tempDepthObjects.addAll(areas[area].getDepthObjects());
+            tempDepthPbjectsAndForegroundTiles.addAll(areas[area].getDepthObjects());
+            tempDepthPbjectsAndForegroundTiles.addAll(areas[area].getForegroundTiles());
         });
         for (GameObject object : tempDepthObjects) {
             if (object.isToUpdate()) {
@@ -344,6 +348,15 @@ public abstract class Map {
             }
         }
     }
+
+    public Set<GameObject> getDepthObjectsFromAreasToUpdate() {
+        return tempDepthObjects;
+    }
+
+    public Set<GameObject> getDepthObjectsAndForegroundTilesFromAreasToUpdate() {
+        return tempDepthPbjectsAndForegroundTiles;
+    }
+
 
     public void hardUpdateMobsFromAreasToUpdate() {
         prepareMobsToUpdate();
@@ -408,6 +421,14 @@ public abstract class Map {
 
     public void clearVisibleLights() {
         visibleLights.clear();
+    }
+
+    public void addStaticShadows(GameObject staticShadow) {
+        staticShadows.add(staticShadow);
+    }
+
+    public void clearStaticShadows() {
+        staticShadows.clear();
     }
 
     public Block getBlock(int x, int y) {
@@ -819,6 +840,10 @@ public abstract class Map {
 
     public AreaConnector[] getAreaConnectors() {
         return areaConnectors;
+    }
+
+    public ArrayList<GameObject> getStaticShadows() {
+        return staticShadows;
     }
 }
 

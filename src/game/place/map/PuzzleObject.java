@@ -119,33 +119,33 @@ public class PuzzleObject {
 
     private void readLine(String line) {
         //try {
-            lineTab = line.split(":");
-            switch (lineTab[0]) {
-                case "t":
-                    decodeTile();
-                    break;
-                case "ft":
-                    decodeFGTile(false);
-                    break;
-                case "sft":
-                    decodeFGTile(true);
-                    break;
-                case "b":
-                    decodeBlock();
-                    break;
-                case "rb":
-                    decodeRoundedBlock();
-                    break;
-                case "pl":
-                    decodePortLinks();
-                    break;
-                case "o":
-                    mapObjects.add(new MapObjectContainer(lineTab));
-                    break;
-                default:
-                    ErrorHandler.error("The object \"" + lineTab[0] + "\" is undefined");
-            }
-            lineNum++;
+        lineTab = line.split(":");
+        switch (lineTab[0]) {
+            case "t":
+                decodeTile();
+                break;
+            case "ft":
+                decodeFGTile(false);
+                break;
+            case "sft":
+                decodeFGTile(true);
+                break;
+            case "b":
+                decodeBlock();
+                break;
+            case "rb":
+                decodeRoundedBlock();
+                break;
+            case "pl":
+                decodePortLinks();
+                break;
+            case "o":
+                mapObjects.add(new MapObjectContainer(lineTab));
+                break;
+            default:
+                ErrorHandler.error("The object \"" + lineTab[0] + "\" is undefined");
+        }
+        lineNum++;
         /*} catch (Exception e) {
             throw new RuntimeException(e.getMessage() + " at line " + lineNum);
         }*/
@@ -456,6 +456,9 @@ public class PuzzleObject {
                 }
             } else {
                 fgt = new ShadowLightTile(texture, values[0], firstTile.getX(), firstTile.getY(), type, values[3], round, solid, isShadow);
+                fgt.setWidth(tileSize);
+                fgt.setHeight(tileSize);
+                fgt.setSimpleLighting(true);
             }
             fgt.setPosition(xBegin + x, yBegin + y);
             fgt.setDepth(values[4]);

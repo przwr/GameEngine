@@ -139,6 +139,10 @@ public class Tile extends GameObject implements Appearance {
         tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
     }
 
+    public void renderHere() {
+        tileStack.stream().forEach((piece) -> spriteSheet.renderPiece(piece.getX(), piece.getY()));
+    }
+
     public SpriteSheet getSpriteSheet() {
         return spriteSheet;
     }

@@ -44,6 +44,7 @@ public class Tree extends GameObject {
         setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), background ? OpticProperties.NO_SHADOW :
                 OpticProperties.FULL_SHADOW, this));
         canCover = true;
+        hasStaticShadow = true;
         solid = !background;
         this.leafless = leafless;
         this.width = width;
@@ -129,6 +130,11 @@ public class Tree extends GameObject {
         } else {
             fbo.renderBottom();
         }
+    }
+
+    @Override
+    public void renderStaticShadow() {
+        fbo.renderStaticShadowTopAndBottom(this, woodHeight - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
     }
 
     private void drawTree() {

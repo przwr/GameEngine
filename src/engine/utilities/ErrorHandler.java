@@ -59,11 +59,10 @@ public class ErrorHandler {
     }
 
     private static void log(String string) {
-//        TODO - Zamykać Streamy
         try {
-            try (final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "UTF-8"))) {
-                writer.append(string);
-            }
+            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), "UTF-8"));
+            writer.append(string);
+            writer.close();
         } catch (IOException ex) {
             Logger.getLogger(ErrorHandler.class.getName()).log(Level.SEVERE, null, ex);
         }

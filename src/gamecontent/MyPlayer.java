@@ -285,6 +285,7 @@ public class MyPlayer extends Player {
         centralPoint = renderPoints[0];
 
         visible = true;
+        hasStaticShadow = true;
         depth = 0;
         setResistance(2);
         if (lights == null) {
@@ -368,9 +369,7 @@ public class MyPlayer extends Player {
             glDisable(GL_TEXTURE_2D);
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
             if (visibleShadow) {
-                Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-                appearance.renderStaticShadow(this);
-                Drawer.refreshColor();
+//                appearance.renderStaticShadow(this);
             } else {
                 visibleShadow = true;
             }

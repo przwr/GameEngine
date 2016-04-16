@@ -2,7 +2,6 @@ package sprites;
 
 import engine.utilities.*;
 import game.gameobject.GameObject;
-import game.gameobject.entities.Entity;
 import game.place.Place;
 import gamecontent.equipment.Cloth;
 import org.lwjgl.opengl.Display;
@@ -455,8 +454,6 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderStaticShadow(GameObject object) {
-        Drawer.setColorStatic(Entity.JUMP_SHADOW_COLOR);
-
         Point shift = getShadowShift(lowerBody.getCurrentFrameIndex());
         float changeX = shift.getX() + staticShadowFbo.getWidth() / 2 + object.getCollisionWidth() / 2;
         float changeY = shift.getY() - staticShadowFbo.getHeight() / 2 + object.getCollisionHeight() / 2 - (float) object.getFloatHeight();
@@ -468,8 +465,6 @@ public class ClothedAppearance implements Appearance {
         Drawer.regularShader.rotateNoReset(-90);
         Drawer.regularShader.translateNoReset(-changeX, -changeY);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
-
-        Drawer.refreshColor();
     }
 
     public boolean isUpToDate() {

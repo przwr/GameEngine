@@ -8,7 +8,6 @@ package sprites;
 import engine.Main;
 import engine.utilities.*;
 import game.gameobject.GameObject;
-import game.gameobject.entities.Entity;
 import org.newdawn.slick.opengl.Texture;
 import sprites.vbo.VertexBufferObject;
 
@@ -123,8 +122,6 @@ public class Sprite implements Appearance {
 
     @Override
     public void renderStaticShadow(GameObject object) {
-        Drawer.setColorStatic(Entity.JUMP_SHADOW_COLOR);
-
         Point shift = getShadowShift(0);
         float changeX = shift.getX();
         float changeY = shift.getY() - (float) object.getFloatHeight();
@@ -137,8 +134,6 @@ public class Sprite implements Appearance {
         Drawer.regularShader.rotateNoReset(-90);
         Drawer.regularShader.translateNoReset(-changeX, -changeY);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
-
-        Drawer.refreshColor();
     }
 
 
@@ -206,7 +201,7 @@ public class Sprite implements Appearance {
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.shadowShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(0, 4);
-            Drawer.shadowShader.loadSizeModifier(Appearance.ZERO_VECTOR);
+            Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
         }
     }
 

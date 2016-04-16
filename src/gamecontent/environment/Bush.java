@@ -48,6 +48,7 @@ public class Bush extends GameObject {
         setSimpleLighting(false);
         solid = true;
         canCover = true;
+        hasStaticShadow = true;
         this.width = width;
         this.height = height;
         this.spread = spread;
@@ -105,6 +106,11 @@ public class Bush extends GameObject {
         Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf());
         fbo.render();
         Drawer.refreshColor();
+    }
+
+    @Override
+    public void renderStaticShadow() {
+        fbo.renderStaticShadow(this, fbo.getHeight() - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
     }
 
     private void drawBush() {

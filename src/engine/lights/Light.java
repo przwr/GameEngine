@@ -51,7 +51,7 @@ public class Light {
         setShift();
     }
 
-    private Light(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
+    private Light(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece, boolean shifts) {
         this.color = color;
         this.owner = owner;
         this.spriteSheet = spriteSheet;
@@ -62,7 +62,9 @@ public class Light {
         this.giveShadows = false;
         this.widthWholeLight = this.width * 2;
         this.heightWholeLight = this.height * 2;
-        setShift();
+        if (shifts) {
+            setShift();
+        }
     }
 
     private static int adjustHeightForWindow(int height) {
@@ -80,8 +82,8 @@ public class Light {
         return new Light(sprite, color, width, height, owner, false);
     }
 
-    public static Light createNoShadows(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece) {
-        return new Light(spriteSheet, color, width, height, owner, piece);
+    public static Light createNoShadows(SpriteSheet spriteSheet, Color color, int width, int height, GameObject owner, int piece, boolean shifts) {
+        return new Light(spriteSheet, color, width, height, owner, piece, shifts);
     }
 
     private void setFrameBuffer() {
@@ -91,8 +93,8 @@ public class Light {
         }
     }
 
-    public void render(int x, int y, Camera camera) {
-        Drawer.regularShader.translateScale(x, y, camera.getScale(), camera.getScale());
+    public void render(Camera camera) {
+        Drawer.regularShader.translateScale(camera.getXOffsetEffect(), camera.getYOffsetEffect(), camera.getScale(), camera.getScale());
         Drawer.regularShader.translateNoReset(owner.getX() - xCenterShift, owner.getY() - yCenterShift);
         if (spriteSheet != null) {
             spriteSheet.renderPiece(piece);

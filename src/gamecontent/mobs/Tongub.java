@@ -270,6 +270,7 @@ public class Tongub extends Mob {
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
         appearance = animation;
         collision.setMobile(true);
+        hasStaticShadow = true;
         stats = new MobStats(this);
         stats.setStrength(10);
         stats.setDefence(1);
@@ -435,17 +436,12 @@ public class Tongub extends Mob {
         appearance.updateFrame();
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-            Drawer.drawEllipse(0, (int) floatHeight, Methods.roundDouble(collision.getWidth() / 2f),
-                    Methods.roundDouble(collision.getHeight() / 2f), 24);
-            Drawer.refreshColor();
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 interactiveObjects.stream().forEach((interactive) -> {
                     interactive.render();
                 });
             }
             appearance.render();
-            Drawer.refreshColor();
 //            renderPathPoints();
         }
     }

@@ -43,6 +43,7 @@ public abstract class Place extends ScreenPlace {
     private static final renderType[] renders = new renderType[2];
     public static int tileSize, tileSquared, tileHalf, tileDoubleSize, xAreaInPixels, yAreaInPixels, progress;
     public static Camera currentCamera;
+    public static float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     protected static DayCycle dayCycle;
     private static Delay loading = Delay.createInMilliseconds(500, true);
     public final ArrayList<Map> maps = new ArrayList<>();
@@ -51,7 +52,6 @@ public abstract class Place extends ScreenPlace {
     public final Camera[] cameras = new Camera[3];
     public Map loadingMap;
     public boolean changeSSMode, singleCamera, firstMapsToAddActive;
-    public float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
     public int splitScreenMode, playersCount;
     protected SpriteBase sprites;
     protected short mapIDCounter = 0;
@@ -65,12 +65,13 @@ public abstract class Place extends ScreenPlace {
         renders[OFFLINE] = () -> {
             SplitScreen.setSingleCamera(this);
             for (int p = 0; p < playersCount; p++) {
-                tempMaps.stream().forEach((map) -> {
-                    Renderer.findVisibleLights(map, playersCount);
+                for (Map map : tempMaps) {
                     if (!Settings.shadowOff) {
+                        Renderer.findVisibleLights(map, playersCount);
                         Renderer.preRenderLights(map);
                     }
-                });
+                    Renderer.findVisibleStaticShadows(map, playersCount);
+                }
             }
             for (int player = 0; player < playersCount; player++) {
                 currentCamera = (((Player) players[player]).getCamera());
@@ -83,21 +84,13 @@ public abstract class Place extends ScreenPlace {
                             glEnable(GL_SCISSOR_TEST);
                             Renderer.preRenderShadowedLights(currentCamera);
                             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                            Renderer.preRenderStaticShadows(currentCamera);
                             map.updateCamerasVariables(currentCamera);
                             manageFading(map);
-                            Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
-                                    .getCurrentScale());
-                            map.renderBackground(currentCamera);
-                            map.renderObjects(currentCamera);
-                            Drawer.regularShader.resetDefaultMatrix();
-                            if (map.getVisibleLights().size() > 0) {
-                                Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd,
-                                        camYTEnd);
-                            }
-                            Drawer.setCurrentColor(Color.white);
-                            currentCamera.renderGUI();
-                            currentCamera.neutralizeEffect();
+
+                            renderCurrentCamera(map);
                             console.render();
+
                             glDisable(GL_SCISSOR_TEST);
                         } else {
                             Drawer.clearScreen(0);
@@ -132,20 +125,13 @@ public abstract class Place extends ScreenPlace {
                     glEnable(GL_SCISSOR_TEST);
                     Renderer.preRenderShadowedLights(currentCamera);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    Renderer.preRenderStaticShadows(currentCamera);
                     map.updateCamerasVariables(currentCamera);
                     manageFading(map);
-                    Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
-                            .getCurrentScale());
-                    map.renderBackground(currentCamera);
-                    map.renderObjects(currentCamera);
-                    Drawer.regularShader.resetDefaultMatrix();
-                    if (map.getVisibleLights().size() > 0) {
-                        Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-                    }
-                    Drawer.setCurrentColor(Color.white);
-                    currentCamera.renderGUI();
-                    currentCamera.neutralizeEffect();
+
+                    renderCurrentCamera(map);
                     console.render();
+
                     glDisable(GL_SCISSOR_TEST);
                 } else {
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -172,6 +158,25 @@ public abstract class Place extends ScreenPlace {
         sprites = new SpriteBase();
         console = new Console(this);
         dayCycle = new DayCycle();
+    }
+
+    private static void renderCurrentCamera(Map map) {
+        Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
+                .getCurrentScale());
+        map.renderBackground(currentCamera);
+        Drawer.regularShader.resetDefaultMatrix();
+        Renderer.renderStaticShadows(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd,
+                camYTEnd);
+        Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
+                .getCurrentScale());
+        map.renderObjects(currentCamera);
+        Drawer.regularShader.resetDefaultMatrix();
+        if (map.getVisibleLights().size() > 0) {
+            Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+        }
+        Drawer.setCurrentColor(Color.white);
+        currentCamera.renderGUI();
+        currentCamera.neutralizeEffect();
     }
 
     public static double getCurrentScale() {

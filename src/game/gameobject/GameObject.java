@@ -33,7 +33,7 @@ public abstract class GameObject {
     protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     protected int depth;
-    protected boolean solid, emitter, emits, onTop, simpleLighting, visible, makeNoise;
+    protected boolean solid, emitter, emits, onTop, simpleLighting, visible, makeNoise, hasStaticShadow;
     protected Appearance appearance;
     protected Figure collision;
     protected Stats stats;
@@ -63,6 +63,10 @@ public abstract class GameObject {
     public abstract void renderShadow(Figure figure);
 
     public abstract void renderShadow(int xStart, int xEnd);
+
+    public void renderStaticShadow() {
+        appearance.renderStaticShadow(this);
+    }
 
     protected void initialize(String name, int x, int y) {
         this.name = name;
@@ -499,5 +503,9 @@ public abstract class GameObject {
 
     public boolean canBeCovered() {
         return canBeCovered;
+    }
+
+    public boolean hasStaticShadow() {
+        return hasStaticShadow;
     }
 }

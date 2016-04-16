@@ -25,6 +25,7 @@ public class Rock extends Mob {
         super(x, y, 3, 400, "rock", place, "rock", true, mobID);
         setCollision(Rectangle.create(appearance.getActualWidth(), appearance.getActualWidth() / 2, OpticProperties.NO_SHADOW, this));
         setDepth(-collision.getHeight() / 2);
+        hasStaticShadow = true;
         stats = new MobStats(this);
         stats.setStartHealth(1);
         stats.setDefence(20);
@@ -67,7 +68,6 @@ public class Rock extends Mob {
     public void render() {
         if (appearance != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            appearance.renderStaticShadow(this);
             appearance.render();
         }
     }
