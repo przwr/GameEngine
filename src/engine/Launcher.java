@@ -25,8 +25,8 @@ public class Launcher {
             }
         } catch (Exception exception) {
             ErrorHandler.javaException(exception);
+            cleanUp();
         }
-        cleanUp();
         System.exit(0);
     }
 }

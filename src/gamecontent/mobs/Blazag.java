@@ -305,7 +305,6 @@ public class Blazag extends Mob {
 
     public Blazag(int x, int y, Place place, short ID) {
         super(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
-        initializeSounds();
         setUp();
     }
 
@@ -318,6 +317,7 @@ public class Blazag extends Mob {
     }
 
     private void setUp() {
+        initializeSounds();
         setHearRange(512);
         setCollision(Rectangle.create(54, 38, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 8);

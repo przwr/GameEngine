@@ -36,7 +36,14 @@ public class Melodia extends Mob {
     private final Rock rock;
     private Animation animation;
     private String dialog = "0";
-    private Sound3D siren;
+    private Sound3D piano;
+
+    public final void initializeSounds() {
+        if (piano == null) {
+            piano = Settings.sounds.get3DBGSound("melody.ogg", this);
+            piano.setSoundRanges(0.7f);
+        }
+    }
 
     public Melodia(int x, int y, Place place, short mobID, Shen shen, Rock rock) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
@@ -51,13 +58,6 @@ public class Melodia extends Mob {
         setDirection8way(DOWN);
         this.shen = shen;
         this.rock = rock;
-    }
-
-    public final void initializeSounds() {
-        if (siren == null) {
-            siren = Settings.sounds.get3DBGSound("melody.ogg", this);
-            siren.setSoundRanges(0f, 0.7f);
-        }
     }
 
     @Override
@@ -124,7 +124,7 @@ public class Melodia extends Mob {
                 lookForPlayers(place.players);
             }
             animation.animateSingle(getDirection8Way());
-            siren.play();
+            piano.play();
         }
     }
 
