@@ -37,16 +37,15 @@ public class Sound3D extends Sound {
     public void update3DSound() {
         if (isPlaying()) {
             float distance = store.getSoundDistance(owner);
-            if (distance < allSoundRange) {
-                distanceGain = 1;
+            if (distance < noSoundRange * 3) {
+                if (distance < allSoundRange) {
+                    distanceGain = 1;
+                } else if (distance < noSoundRange) {
+                    distanceGain = (deltaRange + allSoundRange - distance) / deltaRange;
+                } else {
+                    distanceGain = 0;
+                }
                 updateVolume();
-            } else if (distance < noSoundRange) {
-                distanceGain = (deltaRange + allSoundRange - distance) / deltaRange;
-                updateVolume();
-            } else if (distance < noSoundRange * 3) {
-                distanceGain = 0;
-                updateVolume();
-                //TODO CHECK AREA!!!
             } else {
                 stop();
             }
@@ -57,7 +56,7 @@ public class Sound3D extends Sound {
     public float getTotalVolume() {
         return super.getTotalVolume() * distanceGain;
     }
-    
+
     @Override
     public Sound play(float pitch, boolean loop, float x, float y, float z) {
         if (store.getSoundDistance(owner) < noSoundRange) {
@@ -65,11 +64,17 @@ public class Sound3D extends Sound {
         }
         return this;
     }
-    
+
     public void setSoundRanges(float allSoundRange, float noSoundRange) {
         this.allSoundRange = allSoundRange;
         this.noSoundRange = noSoundRange;
         deltaRange = Math.abs(noSoundRange - allSoundRange);
+    }
+
+    public void setSoundRanges(float noSoundRange) {
+        this.allSoundRange = 0f;
+        this.noSoundRange = noSoundRange;
+        deltaRange = noSoundRange;
     }
 
     public float getAllSoundRange() {

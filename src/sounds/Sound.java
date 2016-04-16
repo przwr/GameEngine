@@ -243,4 +243,12 @@ public class Sound {
     public String getName() {
         return name;
     }
+
+    public boolean isFading() {
+        return fading;
+    }
+
+    void setFading(boolean fading) {
+        this.fading = fading;
+    }
 }

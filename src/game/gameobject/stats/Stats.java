@@ -10,6 +10,7 @@ import net.jodk.lang.FastMath;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
 import sounds.Sound;
+import sounds.Sound3D;
 
 /**
  * Created by przemek on 10.08.15.
@@ -31,11 +32,12 @@ public class Stats {
     protected boolean protectionState;
     protected boolean unhurtableState;  //stan kiedy nie ma reakcji na ból
     
-    Sound deadSound;
+    Sound3D deadSound;
 
     public void initializeSounds() {
         if (deadSound == null) {
-            deadSound = Settings.sounds.getSoundEffect("ded.ogg");
+            deadSound = Settings.sounds.get3DSoundEffect("ded.ogg", owner);
+            deadSound.setSoundRanges(0.8f, 1.1f);
             deadSound.setRandomized(0.1f);
         }
     }

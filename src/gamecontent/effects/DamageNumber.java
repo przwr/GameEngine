@@ -18,17 +18,19 @@ import game.text.fonts.TextPiece;
 import net.packets.Update;
 import org.newdawn.slick.Color;
 import sounds.Sound;
+import sounds.Sound3D;
 
 /**
  * @author Wojtek
  */
 public class DamageNumber extends Entity {
 
-    private Sound normalHit;
+    private Sound3D normalHit;
 
     public final void initializeSounds() {
         if (normalHit == null) {
-            normalHit = Settings.sounds.getSoundEffect("slash.wav");
+            normalHit = Settings.sounds.get3DSoundEffect("slash.wav", this);
+            normalHit.setSoundRanges(0.8f, 1.1f);
             normalHit.setRandomized(0.1f);
         }
     }

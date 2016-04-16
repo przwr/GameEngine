@@ -37,12 +37,12 @@ public class Melodia extends Mob {
     private final Rock rock;
     private Animation animation;
     private String dialog = "0";
-    private Sound3D siren;
+    private Sound3D piano;
 
     public final void initializeSounds() {
-        if (siren == null) {
-            siren = Settings.sounds.get3DBGSound("melody.ogg", this);
-            siren.setSoundRanges(0f, 0.7f);
+        if (piano == null) {
+            piano = Settings.sounds.get3DBGSound("melody.ogg", this);
+            piano.setSoundRanges(0.7f);
         }
     }
 
@@ -124,7 +124,7 @@ public class Melodia extends Mob {
                 lookForPlayers(place.players);
             }
             animation.animateSingle(getDirection8Way());
-            siren.play();
+            piano.play();
         }
     }
 

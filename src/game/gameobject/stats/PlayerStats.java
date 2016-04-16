@@ -27,7 +27,8 @@ public class PlayerStats extends Stats {
     @Override
     public void initializeSounds() {
         if (deadSound == null) {
-            deadSound = Settings.sounds.getSoundEffect("pichuun.wav");
+            deadSound = Settings.sounds.get3DSoundEffect("pichuun.wav", owner);
+            deadSound.setSoundRanges(0.8f, 1.1f);
             deadSound.setRandomized(0.1f);
         }
     }

@@ -227,6 +227,7 @@ public class MyGame extends Game {
     public void startGame() {
         Main.backgroundLoader.resetFirstLoaded();
         Drawer.setShaders();
+        //Settings.sounds.init();
         int playersCount = Settings.playersCount;
         if (designer) {
             place = new ObjectPlace(this, 64);
@@ -451,7 +452,6 @@ public class MyGame extends Game {
         running = started = false;
         if (Settings.sounds != null)
             Settings.sounds.clear();
-        Settings.sounds = null;
         PathFindingModule.stop();
         pathThread = null;
         mapLoader.stop();

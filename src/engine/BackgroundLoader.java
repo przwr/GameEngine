@@ -227,9 +227,8 @@ public abstract class BackgroundLoader {
     }
 
     private void loadSounds() {
-        if (Settings.sounds == null && spritesList1.isEmpty() && spritesList2.isEmpty() && game != null && game.getPlace() != null) {
-            Settings.sounds = new SoundBase();
-            Settings.sounds.init();
+        if (!Settings.sounds.isInited() && spritesList1.isEmpty() && spritesList2.isEmpty() && game != null && game.getPlace() != null) {
+            //Settings.sounds.init();
         }
     }
 
