@@ -5,63 +5,141 @@
  */
 package sounds;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Wojtek
  */
-class Fader implements Runnable {
+class Fader {
 
-    private final static long period = 100;
+    private final static long period = 10;
+    private Thread thread;
+    private boolean running, waiting;
 
-    private final int time;
-    private final Sound sound;
-    private final float startVolume, goalVolume;
-    private final boolean pause;
+    private final ArrayList<FadeData> fadingSounds;
+    private final ArrayList<FadeData> soundsToClear;
 
-    static Fader createFading(Sound sound, int time, boolean pausing) {
-        return new Fader(time, sound, sound.getVolume(), 0f, pausing);
-    }
-    
-    static Fader createResuming(Sound sound, int time, float endVolume) {
-        return new Fader(time, sound, 0f, endVolume, false);
-    }
-    
-    private Fader(int time, Sound snd, float startVolume, float goalVolume, boolean pause) {
-        this.time = time;
-        this.sound = snd;
-        this.startVolume = startVolume;
-        this.goalVolume = goalVolume;
-        this.pause = pause;
+    void fadeSound(Sound sound, int time, boolean pausing) {
+        fadingSounds.add(new FadeData(sound, time, sound.getVolume(), 0f, pausing));
+        if (waiting) {
+            thread.interrupt();
+        }
     }
 
-    private void end() {
-        if (goalVolume == 0f) {
-            if (pause) {
-                sound.pause();
-            } else {
-                sound.stop();
+    void resumeSound(Sound sound, int time, float endVolume) {
+        fadingSounds.add(new FadeData(sound, time, 0f, endVolume, false));
+        if (waiting) {
+            thread.interrupt();
+        }
+    }
+
+    Fader() {
+        fadingSounds = new ArrayList<>();
+        soundsToClear = new ArrayList<>();
+    }
+
+    public void start() {
+        running = true;
+        waiting = false;
+        thread = new Thread(() -> {
+            while (running) {
+                waiting = false;
+                if (running) {
+                    try {
+                        Thread.sleep(period);
+                    } catch (InterruptedException ex) {
+                    }
+                }
+                fadeSounds();
+                if (running && !isWorkLeft()) {
+                    try {
+                        waiting = true;
+                        Thread.sleep(3600000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        });
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.start();
+    }
+
+    public void stop() {
+        running = false;
+        thread.interrupt();
+        while (thread.isAlive()) {
+        }
+        fadingSounds.clear();
+        soundsToClear.clear();
+    }
+
+    private synchronized void fadeSounds() {
+        for (FadeData fd : fadingSounds) {
+            fd.refresh();
+            if (fd.isDone()) {
+                fd.end();
+                soundsToClear.add(fd);
             }
         }
-        sound.setFading(false);
+        if (!soundsToClear.isEmpty()) {
+            for (FadeData fd : soundsToClear) {
+                fadingSounds.remove(fd);
+            }
+            soundsToClear.clear();
+        }
     }
 
-    @Override
-    public void run() {
-        if (!sound.isPlaying()) {
-            sound.play();
-        }
-        int periods = (int) (time / period);
-        float delta = (float) (goalVolume - startVolume) / periods;
-        sound.setFading(true);
-        for (int i = 0; i < periods; i++) {
-            try {
-                Thread.sleep(period);
-                sound.setVolumeAndUpdate(startVolume + i * delta);
-            } catch (InterruptedException e) {
-                end();
-                break;
+    public boolean isSoundFading(Sound sound) {
+        for (FadeData fd : fadingSounds) {
+            if (fd.sound == sound) {
+                return true;
             }
         }
-        end();
+        return false;
+    }
+
+    private boolean isWorkLeft() {
+        return !fadingSounds.isEmpty();
+    }
+
+    private class FadeData {
+
+        Sound sound;
+        int time, periods, current;
+        float startVolume, goalVolume, delta;
+        boolean pause;
+
+        FadeData(Sound sound, int time, float startVolume, float goalVolume, boolean pause) {
+            this.sound = sound;
+            this.time = time;
+            this.periods = (int) (time / period);
+            this.startVolume = startVolume;
+            this.goalVolume = goalVolume;
+            this.delta = (float) (goalVolume - startVolume) / periods;
+            this.pause = pause;
+            current = 0;
+        }
+
+        void end() {
+            if (sound.getCurrentVolume() <= 0.01f) {
+                if (pause) {
+                    sound.pause();
+                } else {
+                    sound.stop();
+                }
+            }
+        }
+
+        void refresh() {
+            if (current <= periods) {
+                sound.setVolumeAndUpdate(startVolume + current * delta);
+                current++;
+            }
+        }
+
+        boolean isDone() {
+            return current > periods;
+        }
     }
 }
