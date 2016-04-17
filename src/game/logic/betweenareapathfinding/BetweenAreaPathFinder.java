@@ -4,6 +4,8 @@ import collision.Figure;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.PointContainer;
+import game.gameobject.entities.Entity;
+import game.logic.navmeshpathfinding.PathData;
 import game.place.map.Area;
 import game.place.map.Map;
 
@@ -148,6 +150,7 @@ public class BetweenAreaPathFinder {
             yDestination, AreaConnection connection, Figure collision) {
         List<Point> currentAreaPoints = connection.getConnectionPoints();
         List<Point> tempPoints = new ArrayList<>(currentAreaPoints);
+        PathData data = ((Entity) collision.getOwner()).getPathData();
         if (connection.getConnectedAreaIndex(area) == endArea) {
             tempPoints.sort((o1, o2) -> calculateValueOfLastPoint(o1, xDestination, yDestination) - calculateValueOfLastPoint(o2, xDestination, yDestination));
         } else {
@@ -167,11 +170,12 @@ public class BetweenAreaPathFinder {
             if (solution != null) {
                 int changeX = currentPoint.getX() - x;
                 int changeY = currentPoint.getY() - y;
+
                 if (currentPoint.getX() % (X_IN_TILES * 64) == 0) {
-                    changeX += currentPoint.getX() > x ? collision.getWidthHalf() : -collision.getWidthHalf();
+                    changeX += currentPoint.getX() > x ? collision.getWidthHalf() + data.getScope() / 2 : -collision.getWidthHalf() - data.getScope() / 2;
                 }
                 if (currentPoint.getY() % (Y_IN_TILES * 64) == 0) {
-                    changeY += currentPoint.getY() > y ? collision.getWidthHalf() : -collision.getWidthHalf();
+                    changeY += currentPoint.getY() > y ? collision.getWidthHalf() + data.getScope() / 2 : -collision.getWidthHalf() - data.getScope() / 2;
                 }
                 solution.add(new Point(changeX, changeY));
                 return solution;

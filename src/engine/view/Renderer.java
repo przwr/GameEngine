@@ -383,12 +383,12 @@ public class Renderer {
 
     public static void preRenderStaticShadows(Camera camera) {
         staticShadows.activate();
-        glClearColor(1f, 1f, 1f, 0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        Drawer.clearScreen(1);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         Drawer.setColorStatic(Entity.JUMP_SHADOW_COLOR);
         camera.getStaticShadows().stream().forEach((object) -> {
             Drawer.regularShader.translateScale(camera.getXOffsetEffect(), camera.getYOffsetEffect(), camera.getScale(), camera.getScale());
-            Drawer.regularShader.translateNoReset(object.getX(), object.getY());
+            Drawer.regularShader.translateNoReset(object.getX() + object.getXEffect(), object.getY() + object.getYEffect());
             object.renderStaticShadow();
         });
         Drawer.refreshColor();

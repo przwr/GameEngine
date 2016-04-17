@@ -73,8 +73,8 @@ public class Plurret extends Mob {
                 } else {
                     goTo(destination.getX() > 0 ? destination : secondaryDestination);
                 }
-                if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(),
-                        secondaryDestination.getY()) < hearRange2 / 4 || closeEnemies.isEmpty())) {
+                if (closeEnemies.isEmpty() || (destination.getX() < 0 && Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(),
+                        secondaryDestination.getY()) < hearRange2 / 4)) {
                     state = idle;
                     secondaryDestination.set(-1, -1);
                     destination.set(-1, -1);
@@ -160,6 +160,7 @@ public class Plurret extends Mob {
         spawnPosition.set(getX(), getY());
         secondaryDestination.set(-1, -1);
         destination.set(-1, -1);
+        neutral.add(Shen.class.getName());
         setGravity(0.1);
         addPushInteraction();
     }

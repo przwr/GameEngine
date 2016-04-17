@@ -102,8 +102,8 @@ public class Tongub extends Mob {
                         destination.set(-1, -1);
                         secondaryDestination.set(-1, -1);
                         dig = true;
-                    } else if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination
-                            .getX(), secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
+                    } else if (closeEnemies.isEmpty() || (destination.getX() < 0 && Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(),
+                            secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
                         state = idle;
                         secondaryDestination.set(-1, -1);
                         destination.set(-1, -1);
