@@ -12,6 +12,8 @@ import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
+import game.gameobject.items.Arrow;
+import game.logic.DayCycle;
 import game.place.Place;
 import game.place.cameras.Camera;
 import game.place.map.ForegroundTile;
@@ -328,7 +330,8 @@ public class Renderer {
                     } else {
                         for (int j = 0; j < playersLength; j++) {
                             if (place.players[j].getMap() == map && object.hasStaticShadow()) {
-                                if (object instanceof ForegroundTile) {
+//                                TODO wyliczać czy widoczne
+                                if (object instanceof ForegroundTile || object instanceof Arrow) {
                                     visible = true;
                                     if (!(((Player) place.players[j]).getCamera()).getStaticShadows().contains(object)) {
                                         (((Player) place.players[j]).getCamera()).addStaticShadow(object);
@@ -397,7 +400,7 @@ public class Renderer {
 
     public static void renderStaticShadows(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float
             yTEnd) {
-        Drawer.setColorStatic(1, 1, 1, 0.2f * Place.getDayCycle().getDayShadowAlpha());
+        Drawer.setColorStatic(1, 1, 1, 0.2f * DayCycle.calculateShadowAlpha(color));
         staticShadows.renderScreenPart(displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
     }
 

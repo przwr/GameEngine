@@ -441,9 +441,9 @@ public class ClothedAppearance implements Appearance {
     @Override
     public void renderStaticShadow(GameObject object) {
         Point shift = getShadowShift(lowerBody.getCurrentFrameIndex());
-        float changeX = shift.getX();
-        float changeY = shift.getY() - (float) object.getFloatHeight();
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
+        float changeX = shift.getX() + (float) object.getFloatHeight() / 2;
+        float changeY = shift.getY() - (float) object.getFloatHeight() / scale;
         int direction = object.getDirection8Way();
         upperBody.changeDirection((direction + 2) % 8);
         lowerBody.changeDirection((direction + 2) % 8);

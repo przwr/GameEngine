@@ -61,7 +61,11 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(500, true);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean SHOW_INTERACTIVE_COLLISION, SHOW_AREAS, SHOW_MESH, pause, enter = true, TEST = true;
+    public static boolean TEST = false;
+    public static boolean SHOW_AREAS;
+    public static boolean SHOW_MESH;
+    public static boolean SHOW_INTERACTIVE_COLLISION;
+    public static boolean pause, enter = true;
     public static Window meshWindow;
     public static BackgroundLoader backgroundLoader;
     public static SimpleKeyboard key = new SimpleKeyboard();

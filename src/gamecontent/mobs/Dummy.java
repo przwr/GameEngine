@@ -97,23 +97,15 @@ public class Dummy extends Mob {
     @Override
     public void render() {
         if (appearance != null) {
-            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
+            Drawer.regularShader.translate(getX() + xEffect, (int) (getY() + yEffect - floatHeight));
             if (isHurt()) {
-                lastRandomX = rand.randomInRange(-power, power);
-                lastRandomY = rand.randomInRange(-power, power);
+                xEffect = rand.randomInRange(-power, power);
+                yEffect = rand.randomInRange(-power, power);
                 power /= 1.2;
             } else {
-                lastRandomX = lastRandomY = 0;
+                xEffect = yEffect = 0;
             }
             appearance.render();
         }
-    }
-
-    public int getX() {
-        return (int) (x + lastRandomX);
-    }
-
-    public int getY() {
-        return (int) (y + lastRandomY);
     }
 }

@@ -50,8 +50,7 @@ public abstract class GameObject {
     protected double gravity = 0.6;
     protected ArrayList<Light> lights;
     protected ArrayList<Interactive> interactiveObjects;
-    private int xEffect;
-    private int yEffect;
+    protected int xEffect, yEffect;
 
     public void update() {
     }
