@@ -50,8 +50,8 @@ public class ShadowShader extends ShaderProgram {
         loadVector4f(locationSizeModifier, vector);
     }
 
-    public void loadColorModifier(Vector4f vector) {
-        loadVector4f(locationColorModifier, vector);
+    public void loadColorModifier(float color) {
+        loadFloat(locationColorModifier, color);
     }
 
     public void resetWorkingMatrix() {

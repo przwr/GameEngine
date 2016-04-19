@@ -10,6 +10,7 @@ import engine.utilities.Drawer;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.place.map.ForegroundTile;
+import net.jodk.lang.FastMath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,11 @@ public class Block extends GameObject {
         this.visible = visible;
         topForegroundTiles.stream().forEach((fgt) -> fgt.setVisible(visible));
         wallForegroundTiles.stream().forEach((fgt) -> fgt.setVisible(visible));
+    }
+
+    public void setDarkValue(float darkValue) {
+        topForegroundTiles.stream().forEach((fgt) -> fgt.getCollision().setDarkValue(0f));
+        wallForegroundTiles.stream().forEach((fgt) -> fgt.getCollision().setDarkValue(darkValue));
     }
 
     public void addForegroundTile(ForegroundTile foregroundTile) {
@@ -138,15 +144,15 @@ public class Block extends GameObject {
     @Override
     public void renderShadowLit(Figure figure) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleShade(figure.getX(), figure.getY() - figure.getShadowHeight(),
-                    figure.width, figure.height + figure.getShadowHeight(), 1);
+            Drawer.drawRectangleLit(figure.getX(), figure.getY() - figure.getShadowHeight(),
+                    figure.width, figure.height + figure.getShadowHeight());
         } else {
             wallForegroundTiles.stream().forEach((wall) -> {
                 Figure col = wall.getCollision();
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleShade(col.getX(), col.getY() - col.getShadowHeight(), col.width, col.height + col.getShadowHeight(), 1);
+                    Drawer.drawRectangleLit(col.getX(), col.getY() - col.getShadowHeight(), col.width, col.height + col.getShadowHeight());
                 } else {
-                    Drawer.drawShapeShade(wall, 1, col.getX(), col.getY() - col.getShadowHeight());
+                    Drawer.drawShapeLit(wall, col.getX(), col.getY() - col.getShadowHeight());
                 }
             });
         }
@@ -156,17 +162,17 @@ public class Block extends GameObject {
     public void renderShadow(Figure figure) {
         if (isSimpleLighting()) {
             Drawer.drawRectangleBlack(figure.getX(), figure.getY() - figure.getShadowHeight(),
-                    figure.width, figure.height + (top.contains(figure) ? 0 : figure.getShadowHeight()));
+                    figure.width, figure.height + (top.contains(figure) ? 0 : figure.getShadowHeight()), (float) FastMath.sqrt(collision.getDarkValue()));
         } else {
-            wallForegroundTiles.stream().forEach((wall) -> {
+            for (ForegroundTile wall : wallForegroundTiles) {
                 Figure tempCollision = wall.getCollision();
                 if (wall.isSimpleLighting()) {
                     Drawer.drawRectangleBlack(tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), tempCollision.width,
-                            tempCollision.height + tempCollision.getShadowHeight());
+                            tempCollision.height + tempCollision.getShadowHeight(), (float) FastMath.sqrt(collision.getDarkValue()));
                 } else {
-                    Drawer.drawShapeBlack(wall, tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
+                    Drawer.drawShapeBlack(wall, collision.getDarkValue(), tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight());
                 }
-            });
+            }
         }
     }
 
@@ -177,15 +183,15 @@ public class Block extends GameObject {
                 System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
             }
         } else {
-            wallForegroundTiles.stream().forEach((wall) -> {
+            for (ForegroundTile wall : wallForegroundTiles) {
                 Figure tempCollision = wall.getCollision();
                 if (wall.isSimpleLighting()) {
-                    Drawer.drawRectangleShade(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
-                            tempCollision.height + tempCollision.getShadowHeight(), 1);
+                    Drawer.drawRectangleLit(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
+                            tempCollision.height + tempCollision.getShadowHeight());
                 } else {
-                    Drawer.drawShapePartShade(wall, 1, tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), xStart, xEnd);
+                    Drawer.drawShapePartLit(wall, tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), xStart, xEnd);
                 }
-            });
+            }
         }
     }
 
@@ -196,16 +202,18 @@ public class Block extends GameObject {
                 System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
             }
         } else {
-            wallForegroundTiles.stream().forEach((wall) -> {
+            for (ForegroundTile wall : wallForegroundTiles) {
                 Figure tempCollision = wall.getCollision();
                 if (wall.isSimpleLighting()) {
                     Drawer.drawRectangleBlack(tempCollision.getX() + xStart, tempCollision.getY() - tempCollision.getShadowHeight(), xEnd - xStart,
-                            tempCollision.height + tempCollision.getShadowHeight());
+                            tempCollision.height + tempCollision.getShadowHeight(), (float) FastMath.sqrt(collision.getDarkValue()));
                 } else {
-                    Drawer.drawShapePartBlack(wall, tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(), xStart, xEnd);
+                    Drawer.drawShapePartBlack(wall, collision.getDarkValue(), tempCollision.getX(), tempCollision.getY() - tempCollision.getShadowHeight(),
+                            xStart, xEnd);
                 }
-            });
+            }
         }
+
     }
 
     @Override

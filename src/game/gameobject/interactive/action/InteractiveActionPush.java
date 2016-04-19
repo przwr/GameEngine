@@ -16,7 +16,7 @@ public class InteractiveActionPush extends InteractiveAction {
         if (object instanceof Entity && activator.getOwner() instanceof Entity) {
             Entity owner = (Entity) activator.getOwner();
             if (object.getFloatHeight() == 0) {
-                double speed = Math.sqrt(owner.getKnockBack().getXSpeed() * owner.getKnockBack().getXSpeed() + owner.getKnockBack().getYSpeed() * owner
+                double speed = FastMath.sqrt(owner.getKnockBack().getXSpeed() * owner.getKnockBack().getXSpeed() + owner.getKnockBack().getYSpeed() * owner
                         .getKnockBack().getYSpeed());
                 double hurtPower = 0.5 * FastMath.logQuick(owner.getStats().getWeight() * speed * ((float) (100 - object.getStats().getWeight()) / 100) + 1);
                 object.getHurt((int) hurtPower, hurtPower / 3, owner);

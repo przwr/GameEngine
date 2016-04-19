@@ -159,21 +159,21 @@ public class Arrow extends Entity {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeShade(appearance, 1, getX(), getY() - (int) floatHeight);
+            Drawer.drawShapeLit(appearance, getX(), getY() - (int) floatHeight);
         }
     }
 
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeBlack(appearance, getX(), getY() - (int) floatHeight);
+            Drawer.drawShapeBlack(appearance, collision.getDarkValue(), getX(), getY() - (int) floatHeight);
         }
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
-            Drawer.drawShapePartShade(appearance, 1, getX(), getY() - (int) floatHeight, xStart, xEnd);
+            Drawer.drawShapePartLit(appearance, getX(), getY() - (int) floatHeight, xStart, xEnd);
         }
     }
 
@@ -181,7 +181,7 @@ public class Arrow extends Entity {
     public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
             ShadowDrawer.renderCurrentVBO();
-            Drawer.drawShapePartBlack(appearance, getX(), getY() - (int) floatHeight, xStart, xEnd);
+            Drawer.drawShapePartBlack(appearance, collision.getDarkValue(), getX(), getY() - (int) floatHeight, xStart, xEnd);
         }
     }
 

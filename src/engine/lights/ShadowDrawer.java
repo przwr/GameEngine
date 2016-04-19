@@ -9,6 +9,7 @@ import collision.Figure;
 import engine.utilities.Drawer;
 import engine.utilities.Point;
 import game.place.Place;
+import net.jodk.lang.FastMath;
 
 import static engine.lights.Shadow.*;
 
@@ -18,7 +19,7 @@ import static engine.lights.Shadow.*;
 public class ShadowDrawer {
 
     private static final shadeRenderer[] shadeRenderers = new shadeRenderer[6];
-    private static final float BLACK = 0, WHITE = 1;
+    private static final float WHITE = 1;
     private static final Point corner = new Point();
 
     static {
@@ -33,7 +34,7 @@ public class ShadowDrawer {
         };
         shadeRenderers[DARKEN] = (Figure shade, int xS, int xE) -> {
             if (!shade.isBottomRounded()) {
-                drawShade(shade, xS, xE);
+                drawDark(shade, xS, xE);
             } else {
                 shade.getOwner().renderShadow(xS, xE);
             }
@@ -71,17 +72,17 @@ public class ShadowDrawer {
     }
 
     public static void drawLeftConcaveBottom(Figure shaded, int x, int y) {
-        addShadowToRender(0f, shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
+        addShadowToRender(ShadowRenderer.maxDarkness, shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize,
                 x, y, shaded.getX() + Place.tileSize, shaded.getYEnd());
     }
 
     public static void drawConcaveTop(Figure shaded, int x, int y) {
-        addShadowToRender(0f, shaded.getX(), shaded.getYEnd() - Place.tileSize,
+        addShadowToRender(ShadowRenderer.maxDarkness, shaded.getX(), shaded.getYEnd() - Place.tileSize,
                 x, y, shaded.getX() + Place.tileSize, shaded.getYEnd() - Place.tileSize);
     }
 
     public static void drawRightConcaveBottom(Figure shaded, int x, int y) {
-        addShadowToRender(0f, shaded.getX(), shaded.getYEnd(),
+        addShadowToRender(ShadowRenderer.maxDarkness, shaded.getX(), shaded.getYEnd(),
                 x, y, shaded.getX(), shaded.getYEnd() - Place.tileSize);
     }
 
@@ -140,20 +141,20 @@ public class ShadowDrawer {
             data[16] = shadowPoints[3].getX();
             data[17] = shadowPoints[3].getY();
         }
-        addShadowToRender(0f, data);
+        addShadowToRender(ShadowRenderer.maxDarkness, data);
     }
 
     public static void drawShadow(Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
         if (((shadowPoints[1].getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
                 - ((shadowPoints[1].getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
-            addShadowToRender(0f, shadowPoints[0].getX(), shadowPoints[0].getY(),
+            addShadowToRender(ShadowRenderer.maxDarkness, shadowPoints[0].getX(), shadowPoints[0].getY(),
                     shadowPoints[2].getX(), shadowPoints[2].getY(),
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
                     shadowPoints[1].getX(), shadowPoints[1].getY(),
                     shadowPoints[0].getX(), shadowPoints[0].getY());
         } else {
-            addShadowToRender(0f, shadowPoints[1].getX(), shadowPoints[1].getY(),
+            addShadowToRender(ShadowRenderer.maxDarkness, shadowPoints[1].getX(), shadowPoints[1].getY(),
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
                     shadowPoints[2].getX(), shadowPoints[2].getY(),
                     shadowPoints[2].getX(), shadowPoints[2].getY(),
@@ -162,8 +163,8 @@ public class ShadowDrawer {
         }
     }
 
-    private static void drawShade(Figure shade, int xS, int xE) {
-        drawShadeInColor(BLACK, shade, xS, xE);
+    private static void drawDark(Figure shade, int xS, int xE) {
+        drawShadeInColor(shade.getDarkValue(), shade, xS, xE);
     }
 
     private static void drawShadeLit(Figure shade, int xS, int xE) {
@@ -174,14 +175,16 @@ public class ShadowDrawer {
         int firstShadowPoint = shade.getYEnd();
         int secondShadowPoint = shade.getY() - shade.getShadowHeight();
         if (xS < xE) {
-            addShadowToRender(color, xS, firstShadowPoint,
+            addShadowToRender((float) FastMath.sqrt(color),
+                    xS, firstShadowPoint,
                     xE, secondShadowPoint,
                     xS, secondShadowPoint,
                     xE, secondShadowPoint,
                     xS, firstShadowPoint,
                     xE, firstShadowPoint);
         } else {
-            addShadowToRender(color, xS, firstShadowPoint,
+            addShadowToRender((float) FastMath.sqrt(color),
+                    xS, firstShadowPoint,
                     xS, secondShadowPoint,
                     xE, secondShadowPoint,
                     xE, secondShadowPoint,

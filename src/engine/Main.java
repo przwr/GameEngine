@@ -61,7 +61,7 @@ public class Main {
     private static final Delay delay = Delay.createInMilliseconds(500, true);
     private static final Date date = new Date();
     public static final String STARTED_DATE = date.toString().replaceAll(" |:", "_");
-    public static boolean TEST = false;
+    public static boolean TEST = true;
     public static boolean SHOW_AREAS;
     public static boolean SHOW_MESH;
     public static boolean SHOW_INTERACTIVE_COLLISION;

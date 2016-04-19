@@ -203,8 +203,7 @@ public abstract class FrameBufferObject implements Appearance {
 
     public void renderShadow(int type, float color) {
         bindCheck();
-        vectorModifier.set(color, color, color, 1);
-        Drawer.shadowShader.loadColorModifier(vectorModifier);
+        Drawer.shadowShader.loadColorModifier(color);
         vbo.renderTextured(type * 4, 4);
     }
 
@@ -248,8 +247,7 @@ public abstract class FrameBufferObject implements Appearance {
             if (partXStart < 0) {
                 partXStart = 0;
             }
-            vectorModifier.set(color, color, color, 1f);
-            Drawer.shadowShader.loadColorModifier(vectorModifier);
+            Drawer.shadowShader.loadColorModifier(color);
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.shadowShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(type * 4, 4);

@@ -5,6 +5,7 @@ import engine.utilities.Drawer;
 import engine.utilities.ErrorHandler;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
+import net.jodk.lang.FastMath;
 import sprites.Appearance;
 import sprites.SpriteSheet;
 
@@ -98,38 +99,38 @@ public class Tile extends GameObject implements Appearance {
     @Override
     public void renderShadowLit(Figure figure) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleShade(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight()
-                    , 1);
+            Drawer.drawRectangleLit(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
         } else {
-            Drawer.drawShapeShade(this, 1, getX(), getY() - collision.getShadowHeight());
+            Drawer.drawShapeLit(this, getX(), getY() - collision.getShadowHeight());
         }
     }
 
     @Override
     public void renderShadow(Figure figure) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleBlack(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
+            Drawer.drawRectangleBlack(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight()
+                    , (float) FastMath.sqrt(collision.getDarkValue()));
         } else {
-            Drawer.drawShapeBlack(this, getX(), getY() - collision.getShadowHeight());
+            Drawer.drawShapeBlack(this, collision.getDarkValue(), getX(), getY() - collision.getShadowHeight());
         }
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleShade(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight()
-                    , 1);
+            Drawer.drawRectangleLit(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
         } else {
-            Drawer.drawShapePartShade(this, 1, getX(), getY() - collision.getShadowHeight(), xStart, xEnd);
+            Drawer.drawShapePartLit(this, getX(), getY() - collision.getShadowHeight(), xStart, xEnd);
         }
     }
 
     @Override
     public void renderShadow(int xStart, int xEnd) {
         if (isSimpleLighting()) {
-            Drawer.drawRectangleBlack(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight());
+            Drawer.drawRectangleBlack(getX(), getY() - collision.getShadowHeight(), collision.getWidth(), collision.getHeight() + collision.getShadowHeight()
+                    , (float) FastMath.sqrt(collision.getDarkValue()));
         } else {
-            Drawer.drawShapePartBlack(this, getX(), getY() - collision.getShadowHeight(), xStart, xEnd);
+            Drawer.drawShapePartBlack(this, collision.getDarkValue(), getX(), getY() - collision.getShadowHeight(), xStart, xEnd);
         }
     }
 

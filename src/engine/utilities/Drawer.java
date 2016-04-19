@@ -129,12 +129,12 @@ public class Drawer {
         return color;
     }
 
-    public static void drawRectangleShade(int xStart, int yStart, int width, int height, float color) {
+    public static void drawRectangleLit(int xStart, int yStart, int width, int height) {
         if (width < 0) {
             width = -width;
             xStart -= width;
         }
-        ShadowDrawer.addShadowToRender(color, xStart, yStart,
+        ShadowDrawer.addShadowToRender(1, xStart, yStart,
                 xStart, yStart + height,
                 xStart + width, yStart,
                 xStart + width, yStart,
@@ -142,12 +142,12 @@ public class Drawer {
                 xStart + width, yStart + height);
     }
 
-    public static void drawRectangleBlack(int xStart, int yStart, int width, int height) {
+    public static void drawRectangleBlack(int xStart, int yStart, int width, int height, float darkValue) {
         if (width < 0) {
             width = -width;
             xStart -= width;
         }
-        ShadowDrawer.addShadowToRender(0f, xStart, yStart,
+        ShadowDrawer.addShadowToRender(darkValue, xStart, yStart,
                 xStart, yStart + height,
                 xStart + width, yStart,
                 xStart + width, yStart,
@@ -374,91 +374,91 @@ public class Drawer {
         drawLineWidth(xStart, yStart, xDelta, yDelta, 1);
     }
 
-    public static void drawShapeShade(Appearance appearance, float color, float xPosition, float yPosition) {
+    public static void drawShapeLit(Appearance appearance, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadow(color);
+        appearance.renderShadow(1);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapeTopShade(FrameBufferObject appearance, float color, float xPosition, float yPosition) {
+    public static void drawShapeTopShade(FrameBufferObject appearance, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadowTop(color);
+        appearance.renderShadowTop(1);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapeBottomShade(FrameBufferObject appearance, float color, float xPosition, float yPosition) {
+    public static void drawShapeBottomLit(FrameBufferObject appearance, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadowBottom(color);
+        appearance.renderShadowBottom(1);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapePartShade(Appearance appearance, float color, float xPosition, float yPosition, int partXStart, int partXEnd) {
+    public static void drawShapePartLit(Appearance appearance, float xPosition, float yPosition, int partXStart, int partXEnd) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadowPart(partXStart, partXEnd, color);
+        appearance.renderShadowPart(partXStart, partXEnd, 1);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapeBottomPartShade(FrameBufferObject appearance, float color, float xPosition, float yPosition, int partXStart, int partXEnd) {
+    public static void drawShapeBottomPartLit(FrameBufferObject appearance, float xPosition, float yPosition, int partXStart, int partXEnd) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadowBottomPart(partXStart, partXEnd, color);
+        appearance.renderShadowBottomPart(partXStart, partXEnd, 1);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapeBlack(Appearance appearance, float xPosition, float yPosition) {
+    public static void drawShapeBlack(Appearance appearance, float darkValue, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadow(0);
+        appearance.renderShadow(darkValue);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapeTopBlack(FrameBufferObject appearance, float xPosition, float yPosition) {
+    public static void drawShapeTopBlack(FrameBufferObject appearance, float darkValue, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadowTop(0);
+        appearance.renderShadowTop(darkValue);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapeBottomBlack(FrameBufferObject appearance, float xPosition, float yPosition) {
+    public static void drawShapeBottomBlack(FrameBufferObject appearance, float darkValue, float xPosition, float yPosition) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadowBottom(0);
+        appearance.renderShadowBottom(darkValue);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapePartBlack(Appearance appearance, float xPosition, float yPosition, int partXStart, int partXEnd) {
+    public static void drawShapePartBlack(Appearance appearance, float darkValue, float xPosition, float yPosition, int partXStart, int partXEnd) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadowPart(partXStart, partXEnd, 0);
+        appearance.renderShadowPart(partXStart, partXEnd, darkValue);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }
 
-    public static void drawShapeBottomPartBlack(FrameBufferObject appearance, float xPosition, float yPosition, int partXStart, int partXEnd) {
+    public static void drawShapeBottomPartBlack(FrameBufferObject appearance, float darkValue, float xPosition, float yPosition, int partXStart, int partXEnd) {
         ShadowDrawer.renderCurrentVBO();
         shadowShader.translate(xPosition, yPosition);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        appearance.renderShadowBottomPart(partXStart, partXEnd, 0);
+        appearance.renderShadowBottomPart(partXStart, partXEnd, darkValue);
         glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
         shadowShader.resetTransformationMatrix();
     }

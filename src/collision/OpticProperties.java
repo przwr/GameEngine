@@ -20,6 +20,7 @@ public class OpticProperties {
     private int shadowHeight;
     private int lightDistance;
     private ShadowContainer shadows;
+    private float darkValue;
 
     private OpticProperties(int type, int shadowHeight) {
         this.type = type;
@@ -93,6 +94,14 @@ public class OpticProperties {
 
     public void setLightDistance(int lightDistance) {
         this.lightDistance = lightDistance;
+    }
+
+    public float getDarkValue() {
+        return darkValue;
+    }
+
+    public void setDarkValue(float darkValue) {
+        this.darkValue = darkValue;
     }
 
     public int getShadowCount() {

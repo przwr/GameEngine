@@ -605,7 +605,7 @@ public abstract class Entity extends GameObject {
     }
 
     public double getSpeed() {
-        return Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
+        return FastMath.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
     }
 
     public void setScope(int scope) {

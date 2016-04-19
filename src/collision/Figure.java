@@ -522,6 +522,13 @@ public abstract class Figure implements Comparable<Figure> {
         return pushed;
     }
 
+    public float getDarkValue() {
+        return opticProperties.getDarkValue();
+    }
+
+    public void setDarkValue(float darkValue) {
+        opticProperties.setDarkValue(darkValue);
+    }
 
     private class DoublePoint {
 

@@ -166,8 +166,7 @@ public class Sprite implements Appearance {
     @Override
     public void renderShadow(float color) {
         if (bindCheck()) {
-            vectorModifier.set(color, color, color, 1f);
-            Drawer.shadowShader.loadColorModifier(vectorModifier);
+            Drawer.shadowShader.loadColorModifier(color);
             vbo.renderTextured(0, 4);
         }
     }
@@ -195,8 +194,7 @@ public class Sprite implements Appearance {
                 partXStart = partXEnd;
                 partXEnd = temp;
             }
-            vectorModifier.set(color, color, color, 1f);
-            Drawer.shadowShader.loadColorModifier(vectorModifier);
+            Drawer.shadowShader.loadColorModifier(color);
             vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
             Drawer.shadowShader.loadSizeModifier(vectorModifier);
             vbo.renderTextured(0, 4);

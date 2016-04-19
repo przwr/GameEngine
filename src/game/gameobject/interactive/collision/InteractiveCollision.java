@@ -12,6 +12,7 @@ import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
+import net.jodk.lang.FastMath;
 
 import java.awt.geom.Line2D;
 
@@ -48,8 +49,8 @@ public abstract class InteractiveCollision {
                 return pixelsIn > length ? length : pixelsIn;
             } else {
                 double d2 = d * d;
-                int x = (int) Math.sqrt(e * e - d2);
-                int y = (int) Math.sqrt(radius * radius - d2);
+                int x = (int) FastMath.sqrt(e * e - d2);
+                int y = (int) FastMath.sqrt(radius * radius - d2);
                 if (x < y) {
                     return y > length ? length : y;
                 }

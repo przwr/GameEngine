@@ -44,7 +44,7 @@ public class ShadowRenderer {
     private static final Polygon polygon = new Polygon();
     private static final ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
     private static final Point casting = new Point();
-
+    public static float maxDarkness = 0.1f;
     private static boolean checked;
     private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightYEnd, lightYStart, lightXEnd, lightXStart, centerX, centerY,
             lightXCentralShifted, lightYCentralShifted, shadow0X, shadow0Y, shadow1X, shadow1Y, shadow2X, shadow2Y, shadow3X, shadow3Y;
@@ -54,6 +54,7 @@ public class ShadowRenderer {
     private static Point tempPoint;
     private static Area area;
     private static Timer timer = new Timer("Shadows Renderer", 240);
+    private static float shift = 24;
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -103,8 +104,8 @@ public class ShadowRenderer {
         shades.clear();
         area = map.getArea(map.getAreaIndex(light.getX(), light.getY()));
         searchBlocks(light);
-        searchForegroundTiles();
-        searchObjects();
+        searchForegroundTiles(light);
+        searchObjects(light);
         area = null;
         Collections.sort(shades);
     }
@@ -116,6 +117,8 @@ public class ShadowRenderer {
                 if (tempShade.getX() <= lightXEnd && tempShade.getXEnd() >= lightXStart
                         && tempShade.getY() - FastMath.abs(tempShade.getShadowHeight()) - Place.tileSize <= lightYEnd && tempShade.getYEnd() >= lightYStart) {
                     tempShade.setLightDistance(FastMath.abs(tempShade.getXCentral() - light.getX()));
+                    calculateDarkValueForBlock(light, tempShade);
+                    block.setDarkValue(tempShade.getDarkValue());
                     shades.add(tempShade);
                 }
                 for (Figure top : block.getTop()) {
@@ -128,7 +131,27 @@ public class ShadowRenderer {
         }
     }
 
-    private static void searchForegroundTiles() {
+    private static void calculateDarkValueForBlock(Light light, Figure block) {
+        if (block.isBottomRounded()) {
+            if (block.isLeftBottomRound()) {
+                if (light.getX() < block.getXEnd()) {
+                    calculateDarkValue(light, block);
+                } else {
+                    block.setDarkValue(maxDarkness);
+                }
+            } else {
+                if (light.getX() > block.getX()) {
+                    calculateDarkValue(light, block);
+                } else {
+                    block.setDarkValue(maxDarkness);
+                }
+            }
+        } else {
+            calculateDarkValue(light, block);
+        }
+    }
+
+    private static void searchForegroundTiles(Light light) {
         for (GameObject fgTile : area.getNearForegroundTiles()) {
             if (!fgTile.isInBlock()) {
                 Figure tempShade = fgTile.getCollision();
@@ -138,14 +161,18 @@ public class ShadowRenderer {
                         && fgTile.getY() + tempShade.getActualHeight() - tempShade.getHeightHalf() >= lightYStart
                         && fgTile.getX() - tempShade.getActualWidth() / 2 <= lightXEnd
                         && fgTile.getX() + tempShade.getActualWidth() / 2 >= lightXStart) {
-                        
                     shades.add(tempShade);
+                    if (tempShade.isLitable()) {
+                        calculateDarkValue(light, tempShade);
+                    } else {
+                        tempShade.setDarkValue(0f);
+                    }
                 }
             }
         }
     }
 
-    private static void searchObjects() {
+    private static void searchObjects(Light light) {
         for (GameObject object : area.getNearDepthObjects()) {
             Figure tempShade = object.getCollision();
             if (tempShade != null && tempShade.isLitable() && tempShade.getOwner().getAppearance() != null && object.isVisible()
@@ -154,7 +181,17 @@ public class ShadowRenderer {
                     && object.getXSpriteBegin() <= lightXEnd
                     && object.getXSpriteEnd() >= lightXStart) {
                 shades.add(tempShade);
+                calculateDarkValue(light, tempShade);
             }
+        }
+    }
+
+    private static void calculateDarkValue(Light light, Figure collision) {
+        shift = 24;
+        if (collision.getYEnd() - shift > light.getY()) {
+            collision.setDarkValue(maxDarkness);
+        } else {
+            collision.setDarkValue(maxDarkness + (1f - maxDarkness) * shift / (collision.getYEnd() + shift - light.getY()));
         }
     }
 
@@ -464,7 +501,7 @@ public class ShadowRenderer {
 
     private static void calculateRoundShade(Figure shaded, Light light) {
         if (isRoundInLight(shaded, light)) {
-//            shaded.getOwner().renderShadowLit(shaded);
+            shaded.getOwner().renderShadowLit(shaded);
             shaded.addShadowType(BRIGHT);
         } else {
             shaded.addShadowType(DARK);
@@ -516,7 +553,7 @@ public class ShadowRenderer {
             if (shaded.getOwner() instanceof Rock) {
                 System.out.print("");
             }
-//            shaded.getOwner().renderShadowLit(shaded);
+            shaded.getOwner().renderShadowLit(shaded);
             shaded.addShadowType(BRIGHT);
         } else {
             shaded.addShadowType(DARK);

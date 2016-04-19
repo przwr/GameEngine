@@ -221,8 +221,7 @@ public class SpriteSheet extends Sprite {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                vectorModifier.set(color, color, color, 1);
-                Drawer.shadowShader.loadColorModifier(vectorModifier);
+                Drawer.shadowShader.loadColorModifier(color);
                 vbo.renderTextured(4 + type * framesCount + frame * 4, 4);
             }
         }
@@ -244,8 +243,7 @@ public class SpriteSheet extends Sprite {
             frame = piece;
             piece = getFramesPosition(piece);
             if (isValidPiece(piece)) {
-                vectorModifier.set(color, color, color, 1);
-                Drawer.shadowShader.loadColorModifier(vectorModifier);
+                Drawer.shadowShader.loadColorModifier(color);
                 vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width / xTiles, (partXEnd - width) / (float) width / xTiles);
                 Drawer.shadowShader.loadSizeModifier(vectorModifier);
                 vbo.renderTextured(4 + frame * 4, 4);

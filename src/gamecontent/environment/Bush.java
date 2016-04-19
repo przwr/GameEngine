@@ -365,7 +365,7 @@ public class Bush extends GameObject {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeShade(appearance, 1, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
+            Drawer.drawShapeLit(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
                     .getHeightHalf());
         }
     }
@@ -373,15 +373,15 @@ public class Bush extends GameObject {
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeBlack(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
-                    .getHeightHalf());
+            Drawer.drawShapeBlack(appearance, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight()
+                    + collision.getHeightHalf());
         }
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
-            Drawer.drawShapePartShade(appearance, 1, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
+            Drawer.drawShapePartLit(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
                     .getHeightHalf(), xStart, xEnd);
         }
     }
@@ -389,8 +389,8 @@ public class Bush extends GameObject {
     @Override
     public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
-            Drawer.drawShapePartBlack(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
-                    .getHeightHalf(), xStart, xEnd);
+            Drawer.drawShapePartBlack(appearance, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo
+                    .getHeight() + collision.getHeightHalf(), xStart, xEnd);
         }
     }
 

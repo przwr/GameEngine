@@ -3,6 +3,7 @@ package gamecontent.environment;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.lights.ShadowRenderer;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
@@ -43,8 +44,8 @@ public class Tree extends GameObject {
         initialize("Tree", x, y);
         setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), background ? OpticProperties.NO_SHADOW :
                 OpticProperties.FULL_SHADOW, this));
-        canCover = true;
-        hasStaticShadow = true;
+        canCover = !background;
+        hasStaticShadow = !background;
         solid = !background;
         this.leafless = leafless;
         this.width = width;
@@ -459,10 +460,10 @@ public class Tree extends GameObject {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeBottomShade(fbo, 1, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.drawShapeBottomLit(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
             if (!leafless) {
-                Drawer.drawShapeTopBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf() - fbo
-                        .getHeight() + leafHeight);
+                Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                        collision.getHeightHalf() - fbo.getHeight() + leafHeight);
             }
         }
     }
@@ -470,10 +471,12 @@ public class Tree extends GameObject {
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeBottomBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
+            Drawer.drawShapeBottomBlack(fbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                    collision
+                            .getHeightHalf());
             if (!leafless) {
-                Drawer.drawShapeTopBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf() - fbo
-                        .getHeight() + leafHeight);
+                Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                        collision.getHeightHalf() - fbo.getHeight() + leafHeight);
             }
         }
     }
@@ -492,11 +495,11 @@ public class Tree extends GameObject {
             if (xEnd > 2 * collision.getWidth()) {
                 xEnd = 2 * collision.getWidth();
             }
-            Drawer.drawShapeBottomPartShade(fbo, 1, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf
+            Drawer.drawShapeBottomPartLit(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf
                     (), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
             if (!leafless) {
-                Drawer.drawShapeTopBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf() - fbo
-                        .getHeight() + leafHeight);
+                Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                        collision.getHeightHalf() - fbo.getHeight() + leafHeight);
             }
         }
     }
@@ -515,11 +518,11 @@ public class Tree extends GameObject {
             if (xEnd > 2 * collision.getWidth()) {
                 xEnd = 2 * collision.getWidth();
             }
-            Drawer.drawShapeBottomPartBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf(),
-                    fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
+            Drawer.drawShapeBottomPartBlack(fbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                    collision.getHeightHalf(), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
             if (!leafless) {
-                Drawer.drawShapeTopBlack(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf() - fbo
-                        .getHeight() + leafHeight);
+                Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                        collision.getHeightHalf() - fbo.getHeight() + leafHeight);
             }
         }
     }
