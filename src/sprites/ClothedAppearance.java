@@ -50,9 +50,6 @@ public class ClothedAppearance implements Appearance {
         yDelta = renderPoints[1].getY();
         upperBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
         lowerBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
-//        TODO wyliczać na jakieś podstawie wielkość fbo
-        fbo = new RegularFrameBufferObject(210, 256);
-        staticShadowFbo = new RegularFrameBufferObject(210, 256);
         loadShadowShifts(characterName);
     }
 
@@ -96,6 +93,9 @@ public class ClothedAppearance implements Appearance {
         height = dims[0].getY();
         xOffset = dims[1].getX();
         yOffset = dims[1].getY();
+        fbo = new RegularFrameBufferObject(width, height);
+        staticShadowFbo = new RegularFrameBufferObject(width, height);
+        System.out.println(width + " " + height);
     }
 
     private void setRenderQueue(String folder) {
@@ -410,7 +410,6 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderShadow(float color) {
-
         Drawer.regularShader.translate(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
         fbo.renderShadow(color);
     }

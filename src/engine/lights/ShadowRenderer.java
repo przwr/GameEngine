@@ -138,6 +138,7 @@ public class ShadowRenderer {
                         && fgTile.getY() + tempShade.getActualHeight() - tempShade.getHeightHalf() >= lightYStart
                         && fgTile.getX() - tempShade.getActualWidth() / 2 <= lightXEnd
                         && fgTile.getX() + tempShade.getActualWidth() / 2 >= lightXStart) {
+                        
                     shades.add(tempShade);
                 }
             }

@@ -12,6 +12,8 @@ import engine.Main;
 import engine.lights.Light;
 import engine.systemcommunication.Time;
 import engine.utilities.*;
+import game.Settings;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.InputKeyBoard;
 import game.gameobject.interactive.InteractionSet;
@@ -48,7 +50,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MyPlayer extends Player {
 
-    private final int framesPerDir = 52;
     private final String characterName = "aria";
     private Cloth head = Cloth.nullCloth;
     private Cloth torso = Cloth.nullCloth;
@@ -327,11 +328,11 @@ public class MyPlayer extends Player {
 
     public void randomizeClothes() {
         RandomGenerator r = RandomGenerator.create();
-        cap.setWearing(r.chance(50));
-        /*shirt.setWearing(r.chance(50));
-        boots.setWearing(r.chance(50));
-        pants.setWearing(r.chance(50));
-        gloves.setWearing(r.chance(50));*/
+        cap.setWearing(false);
+        shirt.setWearing(false);
+        boots.setWearing(false);
+        pants.setWearing(false);
+        gloves.setWearing(false);
     }
 
     private Cloth loadCloth(String name, String type) {
@@ -357,6 +358,19 @@ public class MyPlayer extends Player {
         return dims;
     }
 
+    private void pushOtherPlayers() {
+        GameObject other;
+        if (place.playersCount > 1) {
+            for (int i = 0; i < place.playersCount; i++) {
+                other = place.players[i];
+                if (Methods.pointDifference(getX(), getY(), other.getX(), other.getY()) < collision.getWidthHalf()) {
+                    xEnvironmentalSpeed += (x - other.getXInDouble()) / 10;
+                    yEnvironmentalSpeed += (y - other.getYInDouble()) / 10;
+                }
+            }
+        }
+    }
+
     @Override
     protected boolean isCollided(double xMagnitude, double yMagnitude) {
         return !Main.key.key(Keyboard.KEY_TAB) //DO TESTÓW DEMO
@@ -366,13 +380,8 @@ public class MyPlayer extends Player {
     @Override
     public void render() {
         if (appearance != null) {
-            glDisable(GL_TEXTURE_2D);
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            if (visibleShadow) {
-//                appearance.renderStaticShadow(this);
-            } else {
-                visibleShadow = true;
-            }
+            //Drawer.drawCircle(0, 0, 10, 10);
             if (Main.SHOW_INTERACTIVE_COLLISION) {
                 for (Interactive interactive : interactiveObjects) {
                     interactive.render();
@@ -385,7 +394,6 @@ public class MyPlayer extends Player {
             } else if (((ClothedAppearance) appearance).isUpToDate()) {
                 appearance.render();
             }
-            glEnable(GL_TEXTURE_2D);
         }
     }
 
@@ -406,6 +414,7 @@ public class MyPlayer extends Player {
                     jumpDelta = 22.6f;
                 }
             }
+            pushOtherPlayers();
             updateChangers();
             updateWithGravity();
             moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);

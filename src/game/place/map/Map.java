@@ -31,6 +31,8 @@ import static game.place.Place.xAreaInPixels;
 import static game.place.Place.yAreaInPixels;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
+import gamecontent.MyPlayer;
+import gamecontent.environment.Rock;
 
 /**
  * @author Wojtek
@@ -644,6 +646,9 @@ public abstract class Map {
             }
             for (GameObject other : depthObjects) {
                 if (other != object) {
+                    /*if(object instanceof MyPlayer && other instanceof Rock){
+                        System.out.println("");
+                    }*/
                     if (!(other instanceof Entity) && other.canCover() && object.getAppearance() != null && other.getAppearance() != null
                             && object.getCollision() != null && other.getDepth() > object.getDepth()
                             && object.getX() - object.getAppearance().getActualWidth() / 2 < other.getXSpriteEnd(true)
