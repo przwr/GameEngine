@@ -35,6 +35,7 @@ public class ClothedAppearance implements Appearance {
     private ArrayList<byte[]> upperQueue;
     private ArrayList<byte[]> lowerQueue;
     private FrameBufferObject fbo;
+    private FrameBufferObject staticShadowFbo;
     private boolean inSync;
     private boolean upToDate;
     private Point[] shadowShiftPoints;
