@@ -105,9 +105,9 @@ public class Methods {
     }
 
     public static int pointDistanceSimple2(int x, int y, int xa, int ya) {
-        int yIDelta = ya - y;
-        int xIDelta = xa - x;
-        return xIDelta * xIDelta + yIDelta * yIDelta;
+        int yDelta = ya - y;
+        int xDelta = xa - x;
+        return xDelta * xDelta + yDelta * yDelta;
     }
 
     public static int pointDifference(int x, int y, int xa, int ya) {

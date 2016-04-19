@@ -25,12 +25,29 @@ public final class DayCycle {
     private long stoppedAt;
     private boolean stopped;
 
-    private float dayShadowAlpha;
-    private float nightLightAlpha;
-
     public DayCycle() {
         midnightTime = System.currentTimeMillis();
         setNormalDayColors();
+    }
+
+    public static float calculateShadowAlpha(Color lightColor) {
+        float delta = (lightColor.r + lightColor.g + lightColor.b) / 3;
+        return (delta - NIGHT) / (1 - NIGHT);
+    }
+
+    public static float calculateNightLightAlpha(Color lightColor) {
+        float delta = (lightColor.r + lightColor.g + lightColor.b) / 3;
+        float alpha = (delta - NIGHT) / (1 - NIGHT);
+        if (delta <= NIGHT * 2f) {
+            if (delta != NIGHT) {
+                alpha = 1f - (delta - NIGHT) / (NIGHT);
+            } else {
+                alpha = 1f;
+            }
+        } else {
+            alpha = 0f;
+        }
+        return alpha;
     }
 
     public void setNormalDayColors() {
@@ -66,7 +83,7 @@ public final class DayCycle {
             updateLightColor();
         }
     }
-    
+
     public void updateOnlyTime() {
         if (!stopped) {
             updateDifference();
@@ -133,18 +150,6 @@ public final class DayCycle {
             delta = (float) (timeInMinutes - TIME_END_DUSK) / (TIME_END_AFTERDUSK - TIME_END_DUSK);
             mixColors(lightColor, DARK_BLUE_SKY, NIGHT_SKY, delta);
         }
-
-        delta = (lightColor.r + lightColor.g + lightColor.b) / 3;
-        dayShadowAlpha = (delta - NIGHT) / (1 - NIGHT);
-        if (delta <= NIGHT * 2f) {
-            if (delta != NIGHT) {
-                nightLightAlpha = 1f - (delta - NIGHT) / (NIGHT);
-            } else {
-                nightLightAlpha = 1f;
-            }
-        } else {
-            nightLightAlpha = 0f;
-        }
     }
 
     private void mixColors(Color mix, Color from, Color to, float alpha) {
@@ -178,25 +183,13 @@ public final class DayCycle {
         updateTime();
     }
 
+
     public long getCurrentTimeInMiliSeconds() {
         return currentTime;
     }
 
     public Color getShade() {
         return lightColor;
-    }
-
-    public Color getDayShadowColor() {
-        shadowColor.a = dayShadowAlpha * 0.2f;
-        return shadowColor;
-    }
-    
-    public float getDayShadowAlpha() {
-        return dayShadowAlpha;
-    }
-
-    public float getNightLightAlpha() {
-        return nightLightAlpha;
     }
 
     public boolean isNightNow() {
@@ -221,4 +214,6 @@ public final class DayCycle {
         int minutes = this.timeInMinutes % 60;
         return (hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes;
     }
+
+
 }

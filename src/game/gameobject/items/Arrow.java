@@ -35,6 +35,7 @@ public class Arrow extends Entity {
     private final Color color;
     private final int lenght;
     private final TailEffect tail;
+    int ix, iy;
     private boolean stopped;
 
     public Arrow(double speed, int direction, int height, GameObject owner) {
@@ -43,6 +44,7 @@ public class Arrow extends Entity {
         this.ySpeed = -Methods.yRadius(direction, speed);
         this.owner = owner;
         setDirection(direction);
+        hasStaticShadow = true;
         lenght = (int) (Place.tileSize * 1.2);
         setCollision(Rectangle.create(lenght / 10, lenght / 10, OpticProperties.NO_SHADOW, this));
         visible = true;
@@ -112,10 +114,8 @@ public class Arrow extends Entity {
     public void render() {
         tail.render();
         Drawer.regularShader.translate(getX(), getY());
-        int ix = (int) (Methods.xRadius(getDirection(), lenght / 2));
-        int iy = (int) (-Methods.yRadius(getDirection(), lenght / 2));
-        Drawer.setColorStatic(JUMP_SHADOW_COLOR);
-        Drawer.drawLineWidth(-ix, -iy, ix, iy, lenght / 15);
+        ix = (int) (Methods.xRadius(getDirection(), lenght / 2));
+        iy = (int) (-Methods.yRadius(getDirection(), lenght / 2));
         Drawer.setColorBlended(color);
         if (tail.isActive()) {
             ix = (int) (Methods.xRadius(tail.getDirection(), lenght / 2));
@@ -129,6 +129,12 @@ public class Arrow extends Entity {
             });
         }
     }
+
+    @Override
+    public void renderStaticShadow() {
+        Drawer.drawLineWidth(-ix + (int) floatHeight, -iy, ix, iy, lenght / 15);
+    }
+
 
     @Override
     public int getYSpriteBegin(boolean... forCover) {

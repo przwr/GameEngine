@@ -64,10 +64,9 @@ public class Animation implements Appearance {
     public void renderStaticShadow(GameObject object) {
         int direction = object.getDirection8Way();
         Point shift = getShadowShift(currentFrame);
-        float changeX = shift.getX();
-        float changeY = shift.getY() - (float) object.getFloatHeight();
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
-
+        float changeX = shift.getX() + (float) object.getFloatHeight() / 2;
+        float changeY = shift.getY() - (float) object.getFloatHeight() / scale;
         changeDirection((direction + 2) % 8);
         Drawer.regularShader.scaleNoReset(1f, scale);
         Drawer.regularShader.translateNoReset(changeX, changeY);

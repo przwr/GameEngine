@@ -85,8 +85,8 @@ public class Shen extends Mob {
 //                System.out.println(RUN_AWAY);
                 if (destination.getX() > 0) {
                     secondaryDestination.set(destination.getX(), destination.getY());
-//                    System.out.println(secondaryDestination);
                 }
+//                    System.out.println(secondaryDestination);
                 lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                 calculateDestinationsForEscape();
                 goTo(destination.getX() > 0 ? destination : secondaryDestination);
@@ -96,8 +96,8 @@ public class Shen extends Mob {
                     destination.set(-1, -1);
                     secondaryDestination.set(-1, -1);
                     fold = true;
-                } else if (destination.getX() < 0 && (secondaryDestination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination
-                        .getX(), secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
+                } else if (closeEnemies.isEmpty() || (destination.getX() < 0 && Methods.pointDistanceSimple2(getX(), getY(), secondaryDestination.getX(),
+                        secondaryDestination.getY()) < 4 * hearRange2 / 9)) {
                     state = idle;
                     secondaryDestination.set(-1, -1);
                     destination.set(-1, -1);
@@ -302,6 +302,7 @@ public class Shen extends Mob {
         state = idle;
         bouncer = new SpeedChanger();
         spawnPosition.set(getX(), getY());
+        neutral.add(Plurret.class.getName());
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,
                 ATTACK_NORMAL, 0.5f, 2.5f));
         addInteractive(Interactive.createNotWeapon(this, new UpdateBasedActivator(), new CircleInteractiveCollision(0, 64, -24, 32), Interactive.STRENGTH_HURT,

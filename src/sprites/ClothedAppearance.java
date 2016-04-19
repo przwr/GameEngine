@@ -35,7 +35,6 @@ public class ClothedAppearance implements Appearance {
     private ArrayList<byte[]> upperQueue;
     private ArrayList<byte[]> lowerQueue;
     private FrameBufferObject fbo;
-    private FrameBufferObject staticShadowFbo;
     private boolean inSync;
     private boolean upToDate;
     private Point[] shadowShiftPoints;
@@ -438,32 +437,26 @@ public class ClothedAppearance implements Appearance {
         Drawer.regularShader.translate(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight());
         render();
         fbo.deactivate();
-
-        int direction = owner.getDirection8Way();
-        upperBody.changeDirection((direction + 2) % 8);
-        lowerBody.changeDirection((direction + 2) % 8);
-        staticShadowFbo.activate();
-        glClear(GL_COLOR_BUFFER_BIT);
-        Drawer.regularShader.translate(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight());
-        render();
-        upperBody.changeDirection(direction);
-        lowerBody.changeDirection(direction);
-        staticShadowFbo.deactivate();
     }
 
     @Override
     public void renderStaticShadow(GameObject object) {
         Point shift = getShadowShift(lowerBody.getCurrentFrameIndex());
-        float changeX = shift.getX() + staticShadowFbo.getWidth() / 2 + object.getCollisionWidth() / 2;
-        float changeY = shift.getY() - staticShadowFbo.getHeight() / 2 + object.getCollisionHeight() / 2 - (float) object.getFloatHeight();
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
+        float changeX = shift.getX() + (float) object.getFloatHeight() / 2;
+        float changeY = shift.getY() - (float) object.getFloatHeight() / scale;
+        int direction = object.getDirection8Way();
+        upperBody.changeDirection((direction + 2) % 8);
+        lowerBody.changeDirection((direction + 2) % 8);
         Drawer.regularShader.scaleNoReset(1f, scale);
         Drawer.regularShader.translateNoReset(changeX, changeY);
         Drawer.regularShader.rotateNoReset(90);
-        staticShadowFbo.render();
+        render();
         Drawer.regularShader.rotateNoReset(-90);
         Drawer.regularShader.translateNoReset(-changeX, -changeY);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
+        upperBody.changeDirection(direction);
+        lowerBody.changeDirection(direction);
     }
 
     public boolean isUpToDate() {

@@ -50,6 +50,7 @@ public abstract class GameObject {
     protected double gravity = 0.6;
     protected ArrayList<Light> lights;
     protected ArrayList<Interactive> interactiveObjects;
+    protected int xEffect, yEffect;
 
     public void update() {
     }
@@ -507,5 +508,13 @@ public abstract class GameObject {
 
     public boolean hasStaticShadow() {
         return hasStaticShadow;
+    }
+
+    public int getXEffect() {
+        return xEffect;
+    }
+
+    public int getYEffect() {
+        return yEffect;
     }
 }

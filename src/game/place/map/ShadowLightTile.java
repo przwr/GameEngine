@@ -6,7 +6,7 @@
 package game.place.map;
 
 import engine.utilities.Drawer;
-import game.place.Place;
+import game.logic.DayCycle;
 import org.newdawn.slick.Color;
 import sprites.SpriteSheet;
 
@@ -46,7 +46,7 @@ public class ShadowLightTile extends ForegroundTile {
     public void render() {
         if (!isShadow) {
             alteredColor.r = alteredColor.g = alteredColor.b = 0.5f;
-            alteredColor.a = Place.getDayCycle().getNightLightAlpha();
+            alteredColor.a = DayCycle.calculateNightLightAlpha(Color.white); //TODO używać koloru z mapy
         }
         Drawer.setColorStatic(alteredColor);
         super.render();

@@ -83,8 +83,8 @@ public abstract class Place extends ScreenPlace {
                         if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
                             glEnable(GL_SCISSOR_TEST);
                             Renderer.preRenderShadowedLights(currentCamera);
-                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                             Renderer.preRenderStaticShadows(currentCamera);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                             map.updateCamerasVariables(currentCamera);
                             manageFading(map);
 
