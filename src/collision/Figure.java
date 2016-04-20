@@ -41,6 +41,7 @@ public abstract class Figure implements Comparable<Figure> {
     protected int xStart, yStart, width, height, xCenter, yCenter, heightHalf, widthHalf;
     private GameObject owner;
     private boolean mobile = false, collide = true, hitable = true;
+    private boolean column;
 
     public Figure(int xStart, int yStart, GameObject owner, OpticProperties opticProperties) {
         this.xStart = xStart;
@@ -221,6 +222,9 @@ public abstract class Figure implements Comparable<Figure> {
     }
 
     public void addShadowType(int type) {
+//        if (type == DARK) {
+//            opticProperties.setDarkValue(ShadowRenderer.maxDarkness);
+//        }
         opticProperties.addShadowType(type);
     }
 
@@ -528,6 +532,14 @@ public abstract class Figure implements Comparable<Figure> {
 
     public void setDarkValue(float darkValue) {
         opticProperties.setDarkValue(darkValue);
+    }
+
+    public boolean isColumn() {
+        return column;
+    }
+
+    public void setColumn(boolean column) {
+        this.column = column;
     }
 
     private class DoublePoint {

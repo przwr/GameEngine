@@ -17,7 +17,6 @@ import game.gameobject.GameObject;
 import game.place.Place;
 import game.place.map.Area;
 import game.place.map.Map;
-import gamecontent.environment.Rock;
 import net.jodk.lang.FastMath;
 
 import java.awt.*;
@@ -54,7 +53,7 @@ public class ShadowRenderer {
     private static Point tempPoint;
     private static Area area;
     private static Timer timer = new Timer("Shadows Renderer", 240);
-    private static float shift = 24;
+    private static float shift = 32;
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -133,17 +132,21 @@ public class ShadowRenderer {
 
     private static void calculateDarkValueForBlock(Light light, Figure block) {
         if (block.isBottomRounded()) {
-            if (block.isLeftBottomRound()) {
-                if (light.getX() < block.getXEnd()) {
-                    calculateDarkValue(light, block);
-                } else {
-                    block.setDarkValue(maxDarkness);
-                }
+            if (block.isColumn()) {
+                block.setDarkValue(maxDarkness);
             } else {
-                if (light.getX() > block.getX()) {
-                    calculateDarkValue(light, block);
+                if (block.isLeftBottomRound()) {
+                    if (light.getX() < block.getX()) {
+                        calculateDarkValue(light, block);
+                    } else {
+                        block.setDarkValue(maxDarkness);
+                    }
                 } else {
-                    block.setDarkValue(maxDarkness);
+                    if (light.getX() > block.getXEnd()) {
+                        calculateDarkValue(light, block);
+                    } else {
+                        block.setDarkValue(maxDarkness);
+                    }
                 }
             }
         } else {
@@ -187,8 +190,7 @@ public class ShadowRenderer {
     }
 
     private static void calculateDarkValue(Light light, Figure collision) {
-        shift = 24;
-        if (collision.getYEnd() - shift > light.getY()) {
+        if (collision.getYEnd() - shift > light.getY() || collision.getYEnd() < light.getY()) {
             collision.setDarkValue(maxDarkness);
         } else {
             collision.setDarkValue(maxDarkness + (1f - maxDarkness) * shift / (collision.getYEnd() + shift - light.getY()));
@@ -550,9 +552,6 @@ public class ShadowRenderer {
 
     private static void calculateRegularShade(Figure shaded, Light light) {
         if (light.getY() > shaded.getYEnd()) {
-            if (shaded.getOwner() instanceof Rock) {
-                System.out.print("");
-            }
             shaded.getOwner().renderShadowLit(shaded);
             shaded.addShadowType(BRIGHT);
         } else {
@@ -649,6 +648,7 @@ public class ShadowRenderer {
             if (other != current && other != source.getOwnerCollision()) {
                 checked = false;
                 if (other.getOwner() instanceof Block) {
+                    shouldChangeDarkValue(other, current, source);
                     if (other instanceof RoundRectangle && other.isBottomRounded()) {
                         if (other.getYEnd() < source.getY()) {
                             calculateRoundBlockFromBottomVertical(other, current, source);
@@ -660,6 +660,22 @@ public class ShadowRenderer {
                     }
                 } else if (other.isLitable()) {
                     calculateObjectVertical(other, current, source);
+                }
+            }
+        }
+    }
+
+    private static void shouldChangeDarkValue(Figure other, Figure current, Light source) {
+        if (current.getOwner() instanceof Block
+                && current.getYEnd() - shift <= source.getY() && current.getYEnd() >= source.getY()
+                && other.getY() <= current.getYEnd() && other.getYEnd() > current.getYEnd()) {
+            if (source.getX() > current.getXEnd()) {
+                if (other.getXEnd() > current.getX()) {
+                    current.setDarkValue(maxDarkness);
+                }
+            } else if (source.getX() < current.getX()) {
+                if (other.getX() < current.getXEnd()) {
+                    current.setDarkValue(maxDarkness);
                 }
             }
         }

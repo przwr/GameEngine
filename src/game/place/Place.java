@@ -44,6 +44,7 @@ public abstract class Place extends ScreenPlace {
     public static int tileSize, tileSquared, tileHalf, tileDoubleSize, xAreaInPixels, yAreaInPixels, progress;
     public static Camera currentCamera;
     public static float camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd;
+    public static float staticShadowAlpha = 0f;
     protected static DayCycle dayCycle;
     private static Delay loading = Delay.createInMilliseconds(500, true);
     public final ArrayList<Map> maps = new ArrayList<>();
@@ -70,7 +71,10 @@ public abstract class Place extends ScreenPlace {
                         Renderer.findVisibleLights(map, playersCount);
                         Renderer.preRenderLights(map);
                     }
-                    Renderer.findVisibleStaticShadows(map, playersCount);
+                    staticShadowAlpha = 0.2f * DayCycle.calculateShadowAlpha(map.getLightColor());
+                    if (staticShadowAlpha > 0.001f) {
+                        Renderer.findVisibleStaticShadows(map, playersCount);
+                    }
                 }
             }
             for (int player = 0; player < playersCount; player++) {
@@ -90,8 +94,8 @@ public abstract class Place extends ScreenPlace {
 
                             renderCurrentCamera(map);
                             console.render();
-
                             glDisable(GL_SCISSOR_TEST);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         } else {
                             Drawer.clearScreen(0);
                             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -160,25 +164,6 @@ public abstract class Place extends ScreenPlace {
         dayCycle = new DayCycle();
     }
 
-    private static void renderCurrentCamera(Map map) {
-        Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
-                .getCurrentScale());
-        map.renderBackground(currentCamera);
-        Drawer.regularShader.resetDefaultMatrix();
-        Renderer.renderStaticShadows(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd,
-                camYTEnd);
-        Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
-                .getCurrentScale());
-        map.renderObjects(currentCamera);
-        Drawer.regularShader.resetDefaultMatrix();
-        if (map.getVisibleLights().size() > 0) {
-            Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
-        }
-        Drawer.setCurrentColor(Color.white);
-        currentCamera.renderGUI();
-        currentCamera.neutralizeEffect();
-    }
-
     public static double getCurrentScale() {
         if (currentCamera != null) {
             return currentCamera.getScale();
@@ -192,6 +177,26 @@ public abstract class Place extends ScreenPlace {
 
     public static Color getLightColor() {
         return dayCycle.getShade();
+    }
+
+    private void renderCurrentCamera(Map map) {
+        Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
+                .getCurrentScale());
+        map.renderBackground(currentCamera);
+        if (staticShadowAlpha > 0.001f) {
+            Drawer.regularShader.resetDefaultMatrix();
+            Renderer.renderStaticShadows(camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+            Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
+                    .getCurrentScale());
+        }
+        map.renderObjects(currentCamera);
+        Drawer.regularShader.resetDefaultMatrix();
+        if (map.getVisibleLights().size() > 0) {
+            Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
+        }
+        Drawer.setCurrentColor(Color.white);
+        currentCamera.renderGUI();
+        currentCamera.neutralizeEffect();
     }
 
     private void manageFading(Map map) {

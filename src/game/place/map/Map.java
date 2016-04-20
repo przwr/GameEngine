@@ -31,8 +31,6 @@ import static game.place.Place.xAreaInPixels;
 import static game.place.Place.yAreaInPixels;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
-import gamecontent.MyPlayer;
-import gamecontent.environment.Rock;
 
 /**
  * @author Wojtek

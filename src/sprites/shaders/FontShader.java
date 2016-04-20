@@ -9,6 +9,7 @@ public class FontShader extends ShaderProgram {
 
     private int locationColor;
     private int locationTranslation;
+    private int locationScale;
     private int locationWidth;
     private int locationEdge;
     private int locationBorderWidth;
@@ -30,6 +31,7 @@ public class FontShader extends ShaderProgram {
         locationOffset = getUniformLocation("offset");
         locationBorderColor = getUniformLocation("borderColor");
         locationTranslation = getUniformLocation("translation");
+        locationScale = getUniformLocation("scale");
     }
 
     @Override
@@ -64,6 +66,10 @@ public class FontShader extends ShaderProgram {
 
     public void loadTranslation(float x, float y) {
         load2Floats(locationTranslation, x, y);
+    }
+
+    public void loadScale(float x, float y) {
+        load2Floats(locationScale, x, y);
     }
 
     public void loadOffset(float x, float y) {

@@ -6,6 +6,7 @@
 package gamecontent;
 
 import engine.utilities.Delay;
+import engine.utilities.Drawer;
 import game.Game;
 import game.Settings;
 import game.menu.Label;
@@ -166,6 +167,8 @@ public class MyMenu extends Menu {
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
         glScissor(0, 0, Display.getWidth(), Display.getHeight());
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        Drawer.fontShader.start();
+        Drawer.fontShader.loadScale(0, 0);
         renderText();
     }
 

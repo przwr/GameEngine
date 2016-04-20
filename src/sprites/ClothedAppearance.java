@@ -35,7 +35,6 @@ public class ClothedAppearance implements Appearance {
     private ArrayList<byte[]> upperQueue;
     private ArrayList<byte[]> lowerQueue;
     private FrameBufferObject fbo;
-    private FrameBufferObject staticShadowFbo;
     private boolean inSync;
     private boolean upToDate;
     private Point[] shadowShiftPoints;
@@ -94,8 +93,6 @@ public class ClothedAppearance implements Appearance {
         xOffset = dims[1].getX();
         yOffset = dims[1].getY();
         fbo = new RegularFrameBufferObject(width, height);
-        staticShadowFbo = new RegularFrameBufferObject(width, height);
-        System.out.println(width + " " + height);
     }
 
     private void setRenderQueue(String folder) {
@@ -410,13 +407,13 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderShadow(float color) {
-        Drawer.regularShader.translate(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
+        Drawer.shadowShader.translateNoReset(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
         fbo.renderShadow(color);
     }
 
     @Override
     public void renderShadowPart(int partXStart, int partXEnd, float color) {
-        Drawer.regularShader.translate(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
+        Drawer.shadowShader.translateNoReset(-fbo.getWidth() / 2, -fbo.getHeight() / 2);
         if (partXStart > partXEnd) {
             int temp = partXEnd;
             partXEnd = partXStart;
@@ -435,6 +432,7 @@ public class ClothedAppearance implements Appearance {
     public void updateTexture(GameObject owner) {
         fbo.activate();
         glClear(GL_COLOR_BUFFER_BIT);
+        Drawer.setColorStatic(1f, 1f, 1f, 1f);
         Drawer.regularShader.translate(fbo.getWidth() / 2, -fbo.getHeight() / 2 + Display.getHeight());
         render();
         fbo.deactivate();

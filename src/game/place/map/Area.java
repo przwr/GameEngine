@@ -147,6 +147,27 @@ public class Area {
 
     public void addBlock(Block block) {
         block.setMapNotChange(map);
+        Figure col = block.getCollision();
+        if (col.isBottomRounded() && !col.isTriangular()) {
+            map.updateNearBlocks(xArea + yArea * map.getXAreas(), nearBlocks);
+            if (col.isLeftBottomRound()) {
+                for (Block bl : nearBlocks) {
+                    if (bl.getCollision().isBottomRounded() && !bl.getCollision().isTriangular() && bl.getX() == col.getXEnd()
+                            && bl.getCollision().getYEnd() == col.getYEnd()) {
+                        bl.getCollision().setColumn(true);
+                        col.setColumn(true);
+                    }
+                }
+            } else {
+                for (Block bl : nearBlocks) {
+                    if (bl.getCollision().isBottomRounded() && !bl.getCollision().isTriangular() && bl.getCollision().getXEnd() == col.getX()
+                            && bl.getCollision().getYEnd() == col.getYEnd()) {
+                        bl.getCollision().setColumn(true);
+                        col.setColumn(true);
+                    }
+                }
+            }
+        }
         blocks.add(block);
     }
 

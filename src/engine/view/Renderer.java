@@ -13,7 +13,6 @@ import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.items.Arrow;
-import game.logic.DayCycle;
 import game.place.Place;
 import game.place.cameras.Camera;
 import game.place.map.ForegroundTile;
@@ -295,6 +294,8 @@ public class Renderer {
             glBlendFunc(GL_ZERO, GL_ZERO);
             Drawer.setColorStatic(0, 0, 0, 1);
             borders[splitScreenMode - 1].draw();
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            Drawer.refreshColor();
         }
     }
 
@@ -398,9 +399,9 @@ public class Renderer {
         staticShadows.deactivate();
     }
 
-    public static void renderStaticShadows(Color color, float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float
+    public static void renderStaticShadows(float xStart, float yStart, float xEnd, float yEnd, float xTStart, float yTStart, float xTEnd, float
             yTEnd) {
-        Drawer.setColorStatic(1, 1, 1, 0.2f * DayCycle.calculateShadowAlpha(color));
+        Drawer.setColorStatic(1, 1, 1, Place.staticShadowAlpha);
         staticShadows.renderScreenPart(displayWidth, displayHeight, xStart, yStart, xEnd, yEnd, xTStart, yTStart, xTEnd, yTEnd);
     }
 

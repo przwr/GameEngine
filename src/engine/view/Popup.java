@@ -57,7 +57,10 @@ public class Popup {
     }
 
     public void addMessage(String message) {
-        messages[++messagesPointer] = message;
+        if (messages[messagesPointer + 1] != message) {
+            messages[++messagesPointer] = message;
+        }
+
     }
 
     public void renderMessages() {
@@ -67,9 +70,18 @@ public class Popup {
     }
 
     private void renderMessage(int id) {
-        Drawer.regularShader.start();
-        Drawer.regularShader.resetDefaultMatrix();
-        Drawer.regularShader.resetTransformationMatrix();
+        Drawer.fontShader.start();
+        Drawer.fontShader.loadScale(0, 0);
+        if (Drawer.regularShader != null) {
+            Drawer.regularShader.start();
+            Drawer.regularShader.resetDefaultMatrix();
+            Drawer.regularShader.resetTransformationMatrix();
+            title.setColor(0, 0, 0);
+            text.setColor(0, 0, 0);
+        } else {
+            title.setColor(1, 1, 1);
+            text.setColor(1, 1, 1);
+        }
         String[] lines = messages[id].split("\\r?\\n");
         int current;
         shift = (int) (Settings.nativeScale * smallFont / 0.75f);
@@ -84,7 +96,9 @@ public class Popup {
         }
         width = Methods.interval(WIDTH_HALF >> 2, biggest + shift, (WIDTH_HALF << 1) - (border << 1));
         height = Methods.interval(0, space + shift + shift * (lines.length + 1) + 2 * border, (HEIGHT_HALF << 1) - (border << 1));
-        renderBackground();
+        if (Drawer.regularShader != null) {
+            renderBackground();
+        }
         TextMaster.startRenderText();
         for (int i = 0; i < lines.length; i++) {
             text.setText(lines[i]);
@@ -92,9 +106,11 @@ public class Popup {
         }
         TextMaster.endRenderText();
         glDisable(GL_BLEND);
-        renderButtonArea();
-        renderTitleAndButtonBackground();
-        renderBorders();
+        if (Drawer.regularShader != null) {
+            renderButtonArea();
+            renderTitleAndButtonBackground();
+            renderBorders();
+        }
         glEnable(GL_BLEND);
         TextMaster.startRenderText();
         text.setText("[ENTER]");

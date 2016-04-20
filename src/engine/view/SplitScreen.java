@@ -57,6 +57,9 @@ public class SplitScreen {
             place.singleCamera = Settings.joinSplitScreen && !isFar(place);
         }
         corner = LEFT_TOP;
+        Drawer.fontShader.start();
+        Drawer.fontShader.loadScale(0, 0);
+        Drawer.regularShader.start();
     }
 
     public static boolean isClose(Place place) {
@@ -156,36 +159,48 @@ public class SplitScreen {
             glViewport(0, height1o2, Display.getWidth(), height1o2);
             glScissor(0, height1o2, Display.getWidth(), height1o2);
             Drawer.setOrtho(0, Display.getWidth(), Display.getHeight() / 2, 0);
-            place.camXStart = place.camXTStart = 0f;
-            place.camYStart = place.camYTStart = -0.5f;
-            place.camXEnd = place.camXTEnd = 1f;
-            place.camYEnd = place.camYTEnd = 0.5f;
+            Place.camXStart = Place.camXTStart = 0f;
+            Place.camYStart = Place.camYTStart = -0.5f;
+            Place.camXEnd = Place.camXTEnd = 1f;
+            Place.camYEnd = Place.camYTEnd = 0.5f;
             corner = LEFT_TOP;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(0, 1);
+            Drawer.regularShader.start();
         };
         players2h[1] = (Place place) -> {
             glViewport(0, 0, Display.getWidth(), height1o2);
             glScissor(0, 0, Display.getWidth(), height1o2);
-            place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
-            place.camXEnd = place.camXTEnd = 1f;
-            place.camYEnd = place.camYTEnd = 0.5f;
+            Place.camXStart = Place.camYStart = Place.camXTStart = Place.camYTStart = 0f;
+            Place.camXEnd = Place.camXTEnd = 1f;
+            Place.camYEnd = Place.camYTEnd = 0.5f;
             corner = LEFT_BOTTOM;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(0, 1);
+            Drawer.regularShader.start();
         };
         players2v[0] = (Place place) -> {
             glViewport(0, 0, width1o2, Display.getHeight());
             glScissor(0, 0, width1o2, Display.getHeight());
             Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight(), 0);
-            place.camXStart = place.camXTStart = place.camYStart = place.camYTStart = 0f;
-            place.camXEnd = place.camXTEnd = 0.5f;
-            place.camYEnd = place.camYTEnd = 1f;
+            Place.camXStart = Place.camXTStart = Place.camYStart = Place.camYTStart = 0f;
+            Place.camXEnd = Place.camXTEnd = 0.5f;
+            Place.camYEnd = Place.camYTEnd = 1f;
             corner = LEFT_TOP;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 0);
+            Drawer.regularShader.start();
         };
         players2v[1] = (Place place) -> {
             glViewport(width1o2, 0, width1o2, Display.getHeight());
             glScissor(width1o2, 0, width1o2, Display.getHeight());
-            place.camXTStart = place.camXEnd = 0.5f;
-            place.camXTEnd = place.camYTEnd = place.camYEnd = 1f;
-            place.camXStart = place.camYStart = place.camYTStart = 0f;
+            Place.camXTStart = Place.camXEnd = 0.5f;
+            Place.camXTEnd = Place.camYTEnd = Place.camYEnd = 1f;
+            Place.camXStart = Place.camYStart = Place.camYTStart = 0f;
             corner = RIGHT_TOP;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 0);
+            Drawer.regularShader.start();
         };
         orients2[0] = (Place place, int player) -> {
             place.splitScreenMode = 1;
@@ -198,8 +213,9 @@ public class SplitScreen {
         splits[0] = (Place place, int player) -> {
             glViewport(0, 0, Display.getWidth(), Display.getHeight());
             glScissor(0, 0, Display.getWidth(), Display.getHeight());
-            place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
-            place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
+
+            Place.camXStart = Place.camYStart = Place.camXTStart = Place.camYTStart = 0f;
+            Place.camXEnd = Place.camYEnd = Place.camXTEnd = Place.camYTEnd = 1f;
         };
         splits[1] = (Place place, int player) -> {
             if (!Settings.joinSplitScreen || isFar(place)) {
@@ -209,8 +225,8 @@ public class SplitScreen {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
                 Place.currentCamera = place.cameras[0];
                 place.splitScreenMode = 0;
-                place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
-                place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
+                Place.camXStart = Place.camYStart = Place.camXTStart = Place.camYTStart = 0f;
+                Place.camXEnd = Place.camYEnd = Place.camXTEnd = Place.camYTEnd = 1f;
                 place.singleCamera = true;
             }
         };
@@ -221,53 +237,71 @@ public class SplitScreen {
             glViewport(0, height1o2, Display.getWidth(), height1o2);
             glScissor(0, height1o2, Display.getWidth(), height1o2);
             Drawer.setOrtho(0, Display.getWidth(), Display.getHeight() / 2, 0);
-            place.camXStart = place.camXTStart = 0f;
-            place.camYStart = place.camYTStart = -0.5f;
-            place.camXEnd = place.camXTEnd = 1f;
-            place.camYEnd = place.camYTEnd = 0.5f;
+            Place.camXStart = Place.camXTStart = 0f;
+            Place.camYStart = Place.camYTStart = -0.5f;
+            Place.camXEnd = Place.camXTEnd = 1f;
+            Place.camYEnd = Place.camYTEnd = 0.5f;
             corner = LEFT_TOP;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(0, 1);
+            Drawer.regularShader.start();
         };
         players3h[1] = (Place place) -> {
             glViewport(0, 0, width1o2, height1o2);
             glScissor(0, 0, width1o2, height1o2);
             Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight() / 2, 0);
-            place.camYStart = place.camYTStart = place.camXStart = place.camXTStart = 0f;
-            place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
+            Place.camYStart = Place.camYTStart = Place.camXStart = Place.camXTStart = 0f;
+            Place.camXEnd = Place.camXTEnd = Place.camYEnd = Place.camYTEnd = 0.5f;
             corner = LEFT_BOTTOM;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 1);
+            Drawer.regularShader.start();
         };
         players3h[2] = (Place place) -> {
             glViewport(width1o2, 0, width1o2, height1o2);
             glScissor(width1o2, 0, width1o2, height1o2);
-            place.camXStart = place.camYStart = place.camYTStart = 0f;
-            place.camXTEnd = 1f;
-            place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;
+            Place.camXStart = Place.camYStart = Place.camYTStart = 0f;
+            Place.camXTEnd = 1f;
+            Place.camYEnd = Place.camYTEnd = Place.camXTStart = Place.camXEnd = 0.5f;
             corner = RIGHT_BOTTOM;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 1);
+            Drawer.regularShader.start();
         };
         players3v[0] = (Place place) -> {
             glViewport(0, 0, width1o2, Display.getHeight());
             glScissor(0, 0, width1o2, Display.getHeight());
             Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight(), 0);
-            place.camXStart = place.camXTStart = place.camYStart = place.camYTStart = 0f;
-            place.camXEnd = place.camXTEnd = 0.5f;
-            place.camYEnd = place.camYTEnd = 1f;
+            Place.camXStart = Place.camXTStart = Place.camYStart = Place.camYTStart = 0f;
+            Place.camXEnd = Place.camXTEnd = 0.5f;
+            Place.camYEnd = Place.camYTEnd = 1f;
             corner = LEFT_TOP;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 0);
+            Drawer.regularShader.start();
         };
         players3v[1] = (Place place) -> {
             glViewport(width1o2, height1o2, width1o2, height1o2);
             glScissor(width1o2, height1o2, width1o2, height1o2);
             Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight() / 2, 0);
-            place.camXTStart = place.camXEnd = place.camYTStart = place.camYEnd = 0.5f;
-            place.camXTEnd = place.camYTEnd = 1f;
-            place.camXStart = place.camYStart = 0f;
+            Place.camXTStart = Place.camXEnd = Place.camYTStart = Place.camYEnd = 0.5f;
+            Place.camXTEnd = Place.camYTEnd = 1f;
+            Place.camXStart = Place.camYStart = 0f;
             corner = RIGHT_TOP;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 1);
+            Drawer.regularShader.start();
         };
         players3v[2] = (Place place) -> {
             glViewport(width1o2, 0, width1o2, height1o2);
             glScissor(width1o2, 0, width1o2, height1o2);
-            place.camXStart = place.camYStart = place.camYTStart = 0f;
-            place.camXTEnd = 1f;
-            place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;
+            Place.camXStart = Place.camYStart = Place.camYTStart = 0f;
+            Place.camXTEnd = 1f;
+            Place.camYEnd = Place.camYTEnd = Place.camXTStart = Place.camXEnd = 0.5f;
             corner = RIGHT_BOTTOM;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 1);
+            Drawer.regularShader.start();
         };
         orients3[0] = (Place place, int player) -> {
             place.splitScreenMode = 3;
@@ -285,8 +319,8 @@ public class SplitScreen {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
                 Place.currentCamera = place.cameras[1];
                 place.splitScreenMode = 0;
-                place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
-                place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
+                Place.camXStart = Place.camYStart = Place.camXTStart = Place.camYTStart = 0f;
+                Place.camXEnd = Place.camYEnd = Place.camXTEnd = Place.camYTEnd = 1f;
                 place.singleCamera = true;
             }
         };
@@ -297,33 +331,45 @@ public class SplitScreen {
             glViewport(0, height1o2, width1o2, height1o2);
             glScissor(0, height1o2, width1o2, height1o2);
             Drawer.setOrtho(0, Display.getWidth() / 2, Display.getHeight() / 2, 0);
-            place.camXStart = place.camXTStart = 0f;
-            place.camYStart = place.camYTStart = -0.5f;
-            place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
+            Place.camXStart = Place.camXTStart = 0f;
+            Place.camYStart = Place.camYTStart = -0.5f;
+            Place.camXEnd = Place.camXTEnd = Place.camYEnd = Place.camYTEnd = 0.5f;
             corner = LEFT_TOP;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 1);
+            Drawer.regularShader.start();
         };
         players4[1] = (Place place) -> {
             glViewport(width1o2, height1o2, width1o2, height1o2);
             glScissor(width1o2, height1o2, width1o2, height1o2);
-            place.camXTStart = place.camXEnd = place.camYTStart = place.camYEnd = 0.5f;
-            place.camXTEnd = place.camYTEnd = 1f;
-            place.camXStart = place.camYStart = 0f;
+            Place.camXTStart = Place.camXEnd = Place.camYTStart = Place.camYEnd = 0.5f;
+            Place.camXTEnd = Place.camYTEnd = 1f;
+            Place.camXStart = Place.camYStart = 0f;
             corner = RIGHT_TOP;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 1);
+            Drawer.regularShader.start();
         };
         players4[2] = (Place place) -> {
             glViewport(0, 0, width1o2, height1o2);
             glScissor(0, 0, width1o2, height1o2);
-            place.camYStart = place.camYTStart = place.camXStart = place.camXTStart = 0f;
-            place.camXEnd = place.camXTEnd = place.camYEnd = place.camYTEnd = 0.5f;
+            Place.camYStart = Place.camYTStart = Place.camXStart = Place.camXTStart = 0f;
+            Place.camXEnd = Place.camXTEnd = Place.camYEnd = Place.camYTEnd = 0.5f;
             corner = LEFT_BOTTOM;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 1);
+            Drawer.regularShader.start();
         };
         players4[3] = (Place place) -> {
             glViewport(width1o2, 0, width1o2, height1o2);
             glScissor(width1o2, 0, width1o2, height1o2);
-            place.camXStart = place.camYStart = place.camYTStart = 0f;
-            place.camXTEnd = 1f;
-            place.camYEnd = place.camYTEnd = place.camXTStart = place.camXEnd = 0.5f;
+            Place.camXStart = Place.camYStart = Place.camYTStart = 0f;
+            Place.camXTEnd = 1f;
+            Place.camYEnd = Place.camYTEnd = Place.camXTStart = Place.camXEnd = 0.5f;
             corner = RIGHT_BOTTOM;
+            Drawer.fontShader.start();
+            Drawer.fontShader.loadScale(1, 1);
+            Drawer.regularShader.start();
         };
         splits[3] = (Place place, int player) -> {
             if (!Settings.joinSplitScreen || isFar(place)) {
@@ -333,8 +379,8 @@ public class SplitScreen {
                 glScissor(0, 0, Display.getWidth(), Display.getHeight());
                 Place.currentCamera = place.cameras[2];
                 place.splitScreenMode = 0;
-                place.camXStart = place.camYStart = place.camXTStart = place.camYTStart = 0f;
-                place.camXEnd = place.camYEnd = place.camXTEnd = place.camYTEnd = 1f;
+                Place.camXStart = Place.camYStart = Place.camXTStart = Place.camYTStart = 0f;
+                Place.camXEnd = Place.camYEnd = Place.camXTEnd = Place.camYTEnd = 1f;
                 place.singleCamera = true;
             }
         };
