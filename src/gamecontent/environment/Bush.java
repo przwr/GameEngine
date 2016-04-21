@@ -30,12 +30,12 @@ public class Bush extends GameObject {
     static Sprite bark;
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
+    private static ArrayList<Point> points;
     FrameBufferObject fbo;
     int width, height;
     float spread;
     private Color branchColor;
     private Color leafColor;
-    private ArrayList<Point> points = new ArrayList<>();
     private Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
 
     public Bush(int x, int y) {
@@ -85,6 +85,7 @@ public class Bush extends GameObject {
     private void preRender() {
         if (!fbo.generated) {
             if (map != null) {
+                points = new ArrayList<>();
                 bark = map.place.getSprite("bark", "", true);
                 leaf = map.place.getSprite("leaf", "", true);
                 fbo.activate();
@@ -104,7 +105,23 @@ public class Bush extends GameObject {
     public void render() {
         preRender();
         Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf());
-        fbo.render();
+//        fbo.render();
+        float[] vertices = {
+                0, 0,
+                0, fbo.getHeight(),
+                0 + fbo.getWidth(), fbo.getHeight(),
+                0 + fbo.getWidth(), 0
+        };
+        float[] textureCoordinates = {
+                0, 1f,                          //Całość
+                0, 0,
+                1f, 0,
+                1f, 1f
+        };
+        int[] indices = {0, 1, 3, 2};
+        fbo.bindCheck();
+        Drawer.streamVBO.updateAll(vertices, textureCoordinates, indices);
+        Drawer.streamVBO.renderTextured(0, 4);
         Drawer.refreshColor();
     }
 

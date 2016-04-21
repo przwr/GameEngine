@@ -30,6 +30,7 @@ public class Tree extends GameObject {
     static Sprite bark;
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
+    private static ArrayList<Point> points;
     private final Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
     int width, height, leafXShift;
     float spread;
@@ -37,7 +38,6 @@ public class Tree extends GameObject {
     private FrameBufferObject fbo;
     private Color branchColor;
     private Color leafColor;
-    private ArrayList<Point> points = new ArrayList<>();
     private int woodHeight, leafHeight;
 
     private Tree(int x, int y, int width, int height, float spread, boolean leafless, boolean background) {
@@ -107,6 +107,7 @@ public class Tree extends GameObject {
     private void preRender() {
         if (!fbo.generated) {
             if (map != null) {
+                points = new ArrayList<>();
                 bark = map.place.getSprite("bark", "", true);
                 leaf = map.place.getSprite("leaf", "", true);
                 fbo.activate();
@@ -127,11 +128,71 @@ public class Tree extends GameObject {
         preRender();
         Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
         if (!leafless) {
-            fbo.renderTopAndBottom();
+//            fbo.renderTopAndBottom();
+
+            Drawer.streamVertexData.clear();
+            Drawer.streamColorData.clear();
+            Drawer.streamIndexData.clear();
+            int vc = 0;
+            for (int i = 0; i < 1; i++) {
+                Drawer.streamVertexData.add(
+                        0, 0,
+                        0, woodHeight,
+                        0 + fbo.getWidth(), woodHeight,
+                        0 + fbo.getWidth(), 0);
+                Drawer.streamColorData.add(
+                        0, woodHeight / (float) fbo.getHeight(),
+                        0, 0,
+                        1f, 0,
+                        1f, woodHeight / (float) fbo.getHeight());
+                Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1);
+                vc += 4;
+            }
+
+
+            int yStart = 0;
+            int yEnd = 32;
+            int yMax = fbo.getHeight() - woodHeight;
+            int yShift = yMax - yEnd;
+            float heightShift = -fbo.getHeight() + leafHeight;
+
+
+            int xEnd = 25;
+            int xStart = 0;
+
+            xStart *= (-0.5 + Math.random()) / 2f;
+
+            while (yEnd < yMax) {
+                Drawer.streamVertexData.add(
+                        xStart, heightShift + woodHeight + yStart,
+                        xStart / 2, heightShift + fbo.getHeight() - yShift,
+                        fbo.getWidth(), heightShift + fbo.getHeight() - yShift,
+                        fbo.getWidth(), heightShift + woodHeight + yStart
+                );
+                Drawer.streamColorData.add(
+                        0, (fbo.getHeight() - yStart) / (float) fbo.getHeight(),
+                        0, (woodHeight + yShift) / (float) fbo.getHeight(),
+                        1f, (woodHeight + yShift) / (float) fbo.getHeight(),
+                        1f, (fbo.getHeight() - yStart) / (float) fbo.getHeight()
+                );
+                Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1);
+                vc += 4;
+                yStart = yEnd;
+                yEnd += 32;
+                yShift = yMax - yEnd;
+                if (yEnd >= yMax) {
+                    yEnd = yMax;
+                }
+                xStart /= 1.5;
+            }
+            fbo.bindCheck();
+            Drawer.streamVBO.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
+            Drawer.streamVBO.renderTexturedTriangles(0, Drawer.streamIndexData.size());
         } else {
             fbo.renderBottom();
         }
     }
+
 
     @Override
     public void renderStaticShadow() {
