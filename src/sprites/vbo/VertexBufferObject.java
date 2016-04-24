@@ -147,7 +147,7 @@ public class VertexBufferObject {
         storeDataInAttributeList(vbosIDs.get(0), 0, positions, GL15.GL_STATIC_DRAW);
         storeDataInAttributeList(vbosIDs.get(1), 1, textureCoords, GL15.GL_STATIC_DRAW);
         bindIndicesBuffer(vbosIDs.get(2), indices, GL15.GL_STATIC_DRAW);
-        this.vertexCount = positions.length / 2;
+        this.vertexCount = indices.length;
     }
 
     public void updateIndices(int[] indices) {

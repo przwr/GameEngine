@@ -73,6 +73,7 @@ public abstract class Map {
     protected List<GameObject> depthObjects, foregroundTiles;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd;     //Camera's variables for current rendering
     private Color[] colors = {Color.red, Color.magenta};
+    private float windStrength = 20, windDirection = 200;
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
@@ -844,6 +845,14 @@ public abstract class Map {
 
     public ArrayList<GameObject> getStaticShadows() {
         return staticShadows;
+    }
+
+    public double getWindStrength() {
+        return windStrength;
+    }
+
+    public float getWindDirection() {
+        return windDirection;
     }
 }
 

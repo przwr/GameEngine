@@ -37,6 +37,7 @@ public abstract class FrameBufferObject implements Appearance {
     int frameBufferObject;
     int version;
     private VertexBufferObject vbo;
+    private int partShift;
 
     FrameBufferObject(int width, int height, boolean multiSample) {
         this.width = width;
@@ -85,54 +86,68 @@ public abstract class FrameBufferObject implements Appearance {
         if (heightSlice != 0) {
             float[] vertices = {
                     0, 0,
-                    0, height,
-                    0 + width, height,
-                    0 + width, 0,
-
                     0, heightSlice,
-                    0, height,
-                    0 + width, height,
-                    0 + width, heightSlice,
+                    width, heightSlice,
+                    width, 0,
 
+                    partShift, heightShift + heightSlice,
+                    partShift, heightShift + height,
+                    partShift + width / 2, heightShift + height,
+                    partShift + width / 2, heightShift + heightSlice,
+
+                    -partShift + width / 2, heightShift + heightSlice,
+                    -partShift + width / 2, heightShift + height,
+                    -partShift + width, heightShift + height,
+                    -partShift + width, heightShift + heightSlice,
                     0, 0,
                     0, heightSlice,
-                    0 + width, heightSlice,
-                    0 + width, 0,
+                    width, heightSlice,
+                    width, 0,
 
-                    0, 0,
-                    0, heightSlice,
-                    0 + width, heightSlice,
-                    0 + width, 0,
+                    -partShift + width / 2, heightShift + heightSlice,
+                    -partShift + width / 2, heightShift + height,
+                    -partShift + width, heightShift + height,
+                    -partShift + width, heightShift + heightSlice,
 
-                    0, heightShift + heightSlice,
-                    0, heightShift + height,
-                    0 + width, heightShift + height,
-                    0 + width, heightShift + heightSlice,
+                    partShift, heightShift + heightSlice,
+                    partShift, heightShift + height,
+                    partShift + width / 2, heightShift + height,
+                    partShift + width / 2, heightShift + heightSlice,
             };
             float[] textureCoordinates = {
-                    0, 1f,                          //Całość
-                    0, 0,
-                    1f, 0,
-                    1f, 1f,
-                    0, 1f,                          //Góra
-                    0, heightSlice / height,
-                    1f, heightSlice / height,
-                    1f, 1f,
-                    0, heightSlice / height,         //Dół
+                    0, heightSlice / height,         //Dół i góra
                     0, 0,
                     1f, 0,
                     1f, heightSlice / height,
 
-                    0, heightSlice / height,         //Góra i dół
+                    0, 1f,
+                    0, heightSlice / height,
+                    0.5f, heightSlice / height,
+                    0.5f, 1f,
+
+                    0.5f, 1f,
+                    0.5f, heightSlice / height,
+                    1f, heightSlice / height,
+                    1f, 1f,
+
+                    0, heightSlice / height,         //Dół i góra
                     0, 0,
                     1f, 0,
                     1f, heightSlice / height,
-                    0, 1f,
-                    0, heightSlice / height,
+
+                    0.5f, 1f,
+                    0.5f, heightSlice / height,
                     1f, heightSlice / height,
                     1f, 1f,
+
+                    0, 1f,
+                    0, heightSlice / height,
+                    0.5f, heightSlice / height,
+                    0.5f, 1f,
             };
-            int[] indices = {0, 1, 3, 2, 4, 5, 7, 6, 8, 9, 11, 10, 12, 13, 15, 14, 15, 13, 16, 17, 19, 18, 19, 17};
+            int[] indices = {0, 1, 3, 2, 3, 1, 4, 5, 7, 6, 7, 5, 8, 9, 11, 10, 11, 9, 12, 13, 15, 14, 15, 13,
+                    16, 17, 19, 18, 19, 17, 20, 21, 23, 22, 23, 21,
+            };
             vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
         } else {
             float[] vertices = {
@@ -184,9 +199,9 @@ public abstract class FrameBufferObject implements Appearance {
         vbo.renderTextured(type * 4, 4);
     }
 
-    public void renderTopAndBottom() {
+    public void renderTopAndBottom(boolean order) {
         bindCheck();
-        vbo.renderTexturedTriangles(3 * 4, 12);
+        vbo.renderTexturedTriangles(order ? 0 : 18, 18);
     }
 
     public void renderShadow(float color) {
@@ -194,11 +209,60 @@ public abstract class FrameBufferObject implements Appearance {
     }
 
     public void renderShadowBottom(float color) {
-        renderShadow(2, color);
+        bindCheck();
+        Drawer.shadowShader.loadColorModifier(color);
+        vbo.renderTextured(0, 4);
+    }
+
+    public void renderShadowBottomFromVbo(float color, VertexBufferObject vbo) {
+        bindCheck();
+        Drawer.shadowShader.loadColorModifier(color);
+        vbo.renderTexturedTriangles(0, 12);
     }
 
     public void renderShadowTop(float color) {
-        renderShadow(1, color);
+        bindCheck();
+        Drawer.shadowShader.translateNoReset(0, -heightShift);
+        Drawer.shadowShader.loadColorModifier(color);
+        vbo.renderTexturedTriangles(6, 12);
+        Drawer.shadowShader.translateNoReset(0, heightShift);
+    }
+
+    public void renderShadowTopFromVbo(float color, VertexBufferObject vbo) {
+        bindCheck();
+        Drawer.shadowShader.translateNoReset(0, -heightShift);
+        Drawer.shadowShader.loadColorModifier(color);
+        vbo.renderTexturedTriangles(12, vbo.getVertexCount() - 12);
+        Drawer.shadowShader.translateNoReset(0, heightShift);
+    }
+
+    public void renderShadowFromVbo(float color, VertexBufferObject vbo) {
+        bindCheck();
+        Drawer.shadowShader.translateNoReset(0, -heightShift);
+        Drawer.shadowShader.loadColorModifier(color);
+        vbo.renderTexturedTriangles(0, vbo.getVertexCount());
+        Drawer.shadowShader.translateNoReset(0, heightShift);
+    }
+
+    public void renderShadowPartFromVbo(int partXStart, int partXEnd, float color, VertexBufferObject vbo) {
+        if (bindCheck()) {
+            if (partXStart > partXEnd) {
+                int temp = partXStart;
+                partXStart = partXEnd;
+                partXEnd = temp;
+            }
+            if (partXEnd > width) {
+                partXEnd = width;
+            }
+            if (partXStart < 0) {
+                partXStart = 0;
+            }
+            Drawer.shadowShader.loadColorModifier(color);
+            vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
+            Drawer.shadowShader.loadSizeModifier(vectorModifier);
+            vbo.renderTextured(0, vbo.getVertexCount());
+            Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
+        }
     }
 
     public void renderShadow(int type, float color) {
@@ -207,32 +271,40 @@ public abstract class FrameBufferObject implements Appearance {
         vbo.renderTextured(type * 4, 4);
     }
 
+
     public void renderBottom() {
-        render(2);
+        render(0);
     }
-
-    public void renderTop() {
-        render(1);
-    }
-
 
     public void renderBottomPart(int partXStart, int partXEnd) {
-        renderPart(1, partXStart, partXEnd);
+        renderPart(0, partXStart, partXEnd);
     }
-
-
-    public void renderTopPart(int partXStart, int partXEnd) {
-        renderPart(1, partXStart, partXEnd);
-    }
-
 
     public void renderShadowBottomPart(int partXStart, int partXEnd, float color) {
-        renderShadowPart(2, partXStart, partXEnd, color);
+        renderShadowPart(0, partXStart, partXEnd, color);
     }
 
-    public void renderShadowTopPart(int partXStart, int partXEnd, float color) {
-        renderShadowPart(1, partXStart, partXEnd, color);
+    public void renderShadowBottomPartFromVbo(int partXStart, int partXEnd, float color, VertexBufferObject vbo) {
+        if (bindCheck()) {
+            if (partXStart > partXEnd) {
+                int temp = partXStart;
+                partXStart = partXEnd;
+                partXEnd = temp;
+            }
+            if (partXEnd > width) {
+                partXEnd = width;
+            }
+            if (partXStart < 0) {
+                partXStart = 0;
+            }
+            Drawer.shadowShader.loadColorModifier(color);
+            vectorModifier.set(partXStart, partXEnd - width, partXStart / (float) width, (partXEnd - width) / (float) width);
+            Drawer.shadowShader.loadSizeModifier(vectorModifier);
+            vbo.renderTextured(0, 12);
+            Drawer.shadowShader.loadSizeModifier(ZERO_VECTOR);
+        }
     }
+
 
     public void renderShadowPart(int type, int partXStart, int partXEnd, float color) {
         if (bindCheck()) {
@@ -361,22 +433,48 @@ public abstract class FrameBufferObject implements Appearance {
     }
 
     public void renderStaticShadowTopAndBottom(GameObject object, int x, int y) {
-        float changeX = x;
-        float changeY = y - (float) object.getFloatHeight();
+        float changeX = x + (float) (object.getFloatHeight());
+        float changeY = y;
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
-
         Drawer.regularShader.scaleNoReset(1f, scale);
         Drawer.regularShader.translateNoReset(changeX, changeY);
         Drawer.regularShader.rotateNoReset(90);
-        renderTopAndBottom();
+        renderTopAndBottom(true);
+        Drawer.regularShader.rotateNoReset(-90);
+        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.scaleNoReset(1f, 1f / scale);
+    }
+
+    public void renderStaticShadowBottom(GameObject object, int x, int y) {
+        float changeX = x + (float) (object.getFloatHeight());
+        float changeY = y;
+        float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
+        Drawer.regularShader.scaleNoReset(1f, scale);
+        Drawer.regularShader.translateNoReset(changeX, changeY);
+        Drawer.regularShader.rotateNoReset(90);
+        renderBottom();
+        Drawer.regularShader.rotateNoReset(-90);
+        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.scaleNoReset(1f, 1f / scale);
+    }
+
+    public void renderStaticShadowFromVBO(VertexBufferObject vbo, GameObject object, int x, int y) {
+        float changeX = x + (float) (object.getFloatHeight());
+        float changeY = y;
+        float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
+        Drawer.regularShader.scaleNoReset(1f, scale);
+        Drawer.regularShader.translateNoReset(changeX, changeY);
+        Drawer.regularShader.rotateNoReset(90);
+        bindCheck();
+        vbo.renderTexturedTriangles(0, vbo.getVertexCount());
         Drawer.regularShader.rotateNoReset(-90);
         Drawer.regularShader.translateNoReset(-changeX, -changeY);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
     }
 
     public void renderStaticShadow(GameObject object, int x, int y) {
-        float changeX = x;
-        float changeY = y - (float) object.getFloatHeight();
+        float changeX = x + (float) (object.getFloatHeight());
+        float changeY = y;
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
 
         Drawer.regularShader.scaleNoReset(1f, scale);
@@ -439,5 +537,9 @@ public abstract class FrameBufferObject implements Appearance {
 
     public void setHeightShift(float heightShift) {
         this.heightShift = heightShift;
+    }
+
+    public void setPartShift(int partShift) {
+        this.partShift = partShift;
     }
 }

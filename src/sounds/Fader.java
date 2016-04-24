@@ -8,17 +8,20 @@ package sounds;
 import java.util.ArrayList;
 
 /**
- *
  * @author Wojtek
  */
 class Fader {
 
     private final static long period = 10;
+    private final ArrayList<FadeData> fadingSounds;
+    private final ArrayList<FadeData> soundsToClear;
     private Thread thread;
     private boolean running, waiting;
 
-    private final ArrayList<FadeData> fadingSounds;
-    private final ArrayList<FadeData> soundsToClear;
+    Fader() {
+        fadingSounds = new ArrayList<>();
+        soundsToClear = new ArrayList<>();
+    }
 
     void fadeSound(Sound sound, int time, boolean pausing) {
         fadingSounds.add(new FadeData(sound, time, sound.getVolume(), 0f, pausing));
@@ -32,11 +35,6 @@ class Fader {
         if (waiting) {
             thread.interrupt();
         }
-    }
-
-    Fader() {
-        fadingSounds = new ArrayList<>();
-        soundsToClear = new ArrayList<>();
     }
 
     public void start() {
@@ -116,7 +114,7 @@ class Fader {
             this.periods = (int) (time / period);
             this.startVolume = startVolume;
             this.goalVolume = goalVolume;
-            this.delta = (float) (goalVolume - startVolume) / periods;
+            this.delta = (goalVolume - startVolume) / periods;
             this.pause = pause;
             current = 0;
         }

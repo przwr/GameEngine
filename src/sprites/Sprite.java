@@ -124,8 +124,8 @@ public class Sprite implements Appearance {
     public void renderStaticShadow(GameObject object) {
         Point shift = getShadowShift(0);
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
-        float changeX = shift.getX() + (float) object.getFloatHeight() / 2;
-        float changeY = shift.getY() - (float) object.getFloatHeight() / scale;
+        float changeX = shift.getX() + (float) (object.getFloatHeight());
+        float changeY = shift.getY();
         Drawer.regularShader.scaleNoReset(1f, scale);
         Drawer.regularShader.translateNoReset(changeX, changeY);
         Drawer.regularShader.rotateNoReset(90);

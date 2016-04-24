@@ -4,17 +4,20 @@ import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
 import engine.lights.ShadowRenderer;
+import engine.systemcommunication.Time;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
+import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.fbo.FrameBufferObject;
 import sprites.fbo.MultiSampleFrameBufferObject;
+import sprites.vbo.VertexBufferObject;
 
 import java.util.*;
 
@@ -35,10 +38,14 @@ public class Tree extends GameObject {
     int width, height, leafXShift;
     float spread;
     boolean leafless;
+    int partShift;
     private FrameBufferObject fbo;
+    private VertexBufferObject vbo;
     private Color branchColor;
     private Color leafColor;
     private int woodHeight, leafHeight;
+    private float windStage, windDirectionModifier;
+    private boolean windChange, order;
 
     private Tree(int x, int y, int width, int height, float spread, boolean leafless, boolean background) {
         initialize("Tree", x, y);
@@ -51,7 +58,8 @@ public class Tree extends GameObject {
         this.width = width;
         this.height = height;
         this.spread = spread;
-        int fboWidth = Math.round(spread * 2.5f * height);
+        this.partShift = 48 + height / 40;
+        int fboWidth = Math.round(spread * 2.8f * height);
         int fboHeight = Math.round(height * 3.8f);
         int ins = random.random(12);
         woodHeight = height * 2 + 20;
@@ -62,12 +70,16 @@ public class Tree extends GameObject {
             fbo = new MultiSampleFrameBufferObject(fboWidth, fboHeight, Settings.maxSamples);
             fbo.setHeightSlice(woodHeight);
             fbo.setHeightShift(-fbo.getHeight() + leafHeight);
+            fbo.setPartShift(partShift);
             fbos.put(treeCode, fbo);
         }
         appearance = fbo;
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
         instances.add(this);
+        windStage = random.randomInRange(0, 31416);
+        windDirectionModifier = random.randomInRange(-18, 18);
+        order = random.chance(50);
     }
 
 //    32, 200, 0.8f
@@ -117,9 +129,15 @@ public class Tree extends GameObject {
                 drawTree();
                 Drawer.regularShader.translateDefault(-fbo.getWidth() / 2, -Display.getHeight() + 20);
                 fbo.deactivate();
+
                 points.clear();
                 points = null;
             }
+        }
+        if (vbo == null) {
+            float[] vertices = {0};
+            int[] indices = {0};
+            vbo = VertexBufferObject.create(vertices, vertices, indices);
         }
     }
 
@@ -127,76 +145,142 @@ public class Tree extends GameObject {
     public void render() {
         preRender();
         Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
-        if (!leafless) {
-//            fbo.renderTopAndBottom();
-
-            Drawer.streamVertexData.clear();
-            Drawer.streamColorData.clear();
-            Drawer.streamIndexData.clear();
-            int vc = 0;
-            for (int i = 0; i < 1; i++) {
-                Drawer.streamVertexData.add(
-                        0, 0,
-                        0, woodHeight,
-                        0 + fbo.getWidth(), woodHeight,
-                        0 + fbo.getWidth(), 0);
-                Drawer.streamColorData.add(
-                        0, woodHeight / (float) fbo.getHeight(),
-                        0, 0,
-                        1f, 0,
-                        1f, woodHeight / (float) fbo.getHeight());
-                Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1);
-                vc += 4;
+        if (map.getWindStrength() > 2) {
+            updateWithWind();
+        } else if (vbo.getVertexCount() > 1) {
+            float[] vertices = {0};
+            int[] indices = {0};
+            vbo.updateAll(vertices, vertices, indices);
+        }
+        if (vbo.getVertexCount() > 1) {
+            fbo.bindCheck();
+            vbo.renderTexturedTriangles(0, vbo.getVertexCount());
+        } else {
+            if (leafless) {
+                fbo.renderBottom();
+            } else {
+                fbo.renderTopAndBottom(order);
             }
+        }
+    }
 
-
-            int yStart = 0;
-            int yEnd = 32;
-            int yMax = fbo.getHeight() - woodHeight;
-            int yShift = yMax - yEnd;
-            float heightShift = -fbo.getHeight() + leafHeight;
-
-
-            int xEnd = 25;
-            int xStart = 0;
-
-            xStart *= (-0.5 + Math.random()) / 2f;
-
-            while (yEnd < yMax) {
+    private void updateWithWind() {
+        Drawer.streamVertexData.clear();
+        Drawer.streamColorData.clear();
+        Drawer.streamIndexData.clear();
+        int yStart, yShift, yEnd = 0, vc = 0;
+        int yMax = fbo.getHeight() - woodHeight;
+        int change = 32;
+//        TODO why slices?
+        float xDirection2;
+        float heightShift = -fbo.getHeight() + leafHeight;
+        float xDirection = xDirection2 = (float) Methods.xRadius(map.getWindDirection() + windDirectionModifier, map.getWindStrength());
+        float yDirection = (float) Methods.yRadius(map.getWindDirection() + windDirectionModifier, map.getWindStrength());
+        yDirection = Math.round(yDirection * Methods.ONE_BY_SQRT_ROOT_OF_2);
+        if (windStage >= 31416) {
+            windChange = false;
+        } else if (windStage <= 0) {
+            windChange = true;
+        }
+        windStage += (windChange ? 0.1 : -0.1) * (Time.getDelta() + (random.randomInRange(-5, 5) / 10f));
+        float stageValue = (float) FastMath.sin(windStage);
+        xDirection += Methods.roundDouble(xDirection * stageValue);
+        yDirection += Methods.roundDouble(yDirection * stageValue);
+        int squeezShift = (int) yDirection + (yMax - Methods.roundDouble(FastMath.sqrt(yMax * yMax - xDirection * xDirection)));
+        float ySqueez = (yMax - squeezShift) / (float) yMax;
+        squeezShift = Math.round(squeezShift / (fbo.getWidth() / (float) yMax));
+        xDirection2 += Methods.roundDouble(xDirection2 * FastMath.sin(windStage + 0.75f + windDirectionModifier / 72f));
+        Drawer.streamVertexData.add(
+                xDirection / 2, squeezShift,
+                0, squeezShift + (2 * woodHeight / 3) * ySqueez,
+                0 + fbo.getWidth(), squeezShift + (2 * woodHeight / 3) * ySqueez,
+                xDirection / 2 + fbo.getWidth(), squeezShift,
+                0, squeezShift + (2 * woodHeight / 3) * ySqueez,
+                0, woodHeight,
+                0 + fbo.getWidth(), woodHeight,
+                0 + fbo.getWidth(), squeezShift + (2 * woodHeight / 3) * ySqueez
+        );
+        Drawer.streamColorData.add(
+                0, woodHeight / (float) fbo.getHeight(),
+                0, woodHeight / 3 / (float) fbo.getHeight(),
+                1f, woodHeight / 3 / (float) fbo.getHeight(),
+                1f, woodHeight / (float) fbo.getHeight(),
+                0, woodHeight / 3 / (float) fbo.getHeight(),
+                0, 0,
+                1f, 0,
+                1f, woodHeight / 3 / (float) fbo.getHeight()
+        );
+        float xMod = 1.1f;
+        Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1, vc + 4, vc + 5, vc + 7, vc + 6, vc + 7, vc + 5);
+        if (!leafless) {
+            vc = 8;
+            int i = 0;
+            while (true) {
+                yStart = yEnd;
+                yEnd += change;
+                if (yEnd > yMax) {
+                    yEnd = yMax;
+                }
+                yShift = yMax - yEnd;
                 Drawer.streamVertexData.add(
-                        xStart, heightShift + woodHeight + yStart,
-                        xStart / 2, heightShift + fbo.getHeight() - yShift,
-                        fbo.getWidth(), heightShift + fbo.getHeight() - yShift,
-                        fbo.getWidth(), heightShift + woodHeight + yStart
+                        partShift + (xDirection) * ((float) (yShift + change) / (float) (yMax)), squeezShift + (heightShift + woodHeight +
+                                yStart) *
+                                ySqueez,
+                        partShift + (xDirection / xMod) * ((float) (yShift) / (float) (yMax)), squeezShift + (heightShift + fbo.getHeight() - yShift) *
+                                ySqueez,
+                        partShift + fbo.getWidth() / 2 + (xDirection / xMod) * ((float) (yShift) / (float) (yMax)), squeezShift + (heightShift + fbo
+                                .getHeight() - yShift) *
+                                ySqueez,
+                        partShift + fbo.getWidth() / 2 + (xDirection) * ((float) (yShift + change) / (float) (yMax)), squeezShift + (heightShift +
+                                woodHeight +
+                                yStart) * ySqueez,
+
+                        -partShift + fbo.getWidth() / 2 + xDirection2 * ((yShift + change) / (float) (yMax)),
+                        squeezShift + (heightShift + woodHeight + yStart) * ySqueez,
+                        -partShift + fbo.getWidth() / 2 + xDirection2 / xMod * (yShift / (float) (yMax)),
+                        squeezShift + (heightShift + fbo.getHeight() - yShift) * ySqueez,
+                        -partShift + fbo.getWidth() + xDirection2 / xMod * (yShift / (float) (yMax)),
+                        squeezShift + (heightShift + fbo.getHeight() - yShift) * ySqueez,
+                        -partShift + fbo.getWidth() + xDirection2 * ((yShift + change) / (float) (yMax)),
+                        squeezShift + (heightShift + woodHeight + yStart) * ySqueez
                 );
                 Drawer.streamColorData.add(
                         0, (fbo.getHeight() - yStart) / (float) fbo.getHeight(),
                         0, (woodHeight + yShift) / (float) fbo.getHeight(),
+                        0.5f, (woodHeight + yShift) / (float) fbo.getHeight(),
+                        0.5f, (fbo.getHeight() - yStart) / (float) fbo.getHeight(),
+                        0.5f, (fbo.getHeight() - yStart) / (float) fbo.getHeight(),
+                        0.5f, (woodHeight + yShift) / (float) fbo.getHeight(),
                         1f, (woodHeight + yShift) / (float) fbo.getHeight(),
                         1f, (fbo.getHeight() - yStart) / (float) fbo.getHeight()
                 );
-                Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1);
-                vc += 4;
-                yStart = yEnd;
-                yEnd += 32;
-                yShift = yMax - yEnd;
-                if (yEnd >= yMax) {
-                    yEnd = yMax;
+                if (order) {
+                    Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1, vc + 4, vc + 5, vc + 7, vc + 6, vc + 7, vc + 5);
+                } else {
+                    Drawer.streamIndexData.add(vc + 4, vc + 5, vc + 7, vc + 6, vc + 7, vc + 5, vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1);
                 }
-                xStart /= 1.5;
+                vc += 8;
+                if (yEnd == yMax) {
+                    break;
+                }
+                xDirection /= xMod;
+                xDirection2 /= xMod;
             }
-            fbo.bindCheck();
-            Drawer.streamVBO.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
-            Drawer.streamVBO.renderTexturedTriangles(0, Drawer.streamIndexData.size());
-        } else {
-            fbo.renderBottom();
         }
+        vbo.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
     }
-
 
     @Override
     public void renderStaticShadow() {
-        fbo.renderStaticShadowTopAndBottom(this, woodHeight - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
+        if (map.getWindStrength() > 2 && vbo.getVertexCount() > 1) {
+            fbo.renderStaticShadowFromVBO(vbo, this, woodHeight - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
+        } else {
+            if (leafless) {
+                fbo.renderStaticShadowBottom(this, woodHeight - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
+            } else {
+                fbo.renderStaticShadowTopAndBottom(this, woodHeight - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
+            }
+        }
     }
 
     private void drawTree() {
@@ -468,8 +552,7 @@ public class Tree extends GameObject {
     private void drawLeafs() {
         points.sort(comparator);
         int rand1, rand2;
-        int radius = height / 25;
-        int dif = (radius + radius) / 3;
+        int dif = height / 40;
         int dif2 = dif * dif * 100;
         int count = height * 2;
         int maxX = 0;
@@ -503,7 +586,7 @@ public class Tree extends GameObject {
     private void randomLeaf(int i, int x, int y, float maxX, float maxY, float minY) {
         if (Math.abs(points.get(i).getY() + y) < leafHeight * 0.66 - leaf.getHeight() / 2
                 && (points.get(i).getY() + y < 0 || points.get(i).getY() + y < leafHeight * 0.33f - leaf.getHeight() / 2)
-                && Math.abs(points.get(i).getX() + x) < fbo.getWidth() / 2 - leaf.getWidth() - leaf.getHeight()) {
+                && Math.abs(points.get(i).getX() + x + leafXShift) < fbo.getWidth() / 2 - partShift - leaf.getHeight()) {
             float change = Math.abs(points.get(i).getY() + minY + y) / (maxY - minY);
             change -= Math.abs(points.get(i).getX() + x) / maxX / 4;
             if (change < 0) {
@@ -513,7 +596,12 @@ public class Tree extends GameObject {
             Drawer.setColorStatic(new Color(leafColor.r * (1 + change / 2f + rand / 20f), leafColor.g * (1 + change / 2f + rand / 75f),
                     leafColor.b * (1 + change / 2f + rand / 25f)));
             float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
-            Drawer.regularShader.rotateTranslate(points.get(i).getX() + x + leafXShift, points.get(i).getY() + y - leafHeight - height, angle);
+
+            int xShift = partShift;
+            if (points.get(i).getX() + leafXShift < points.get(points.size() - 1).getX()) {
+                xShift = -partShift;
+            }
+            Drawer.regularShader.rotateTranslate(points.get(i).getX() + x + leafXShift + xShift, points.get(i).getY() + y - leafHeight - height, angle);
             leaf.render();
         }
     }
@@ -521,10 +609,19 @@ public class Tree extends GameObject {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeBottomLit(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
-            if (!leafless) {
-                Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
-                        collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+            if (map.getWindStrength() > 2) {
+                Drawer.drawShapeBottomLitFromVBO(fbo, vbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision
+                        .getHeightHalf());
+                if (!leafless) {
+                    Drawer.drawShapeTopBlackFromVbo(fbo, vbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 -
+                            woodHeight + collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+                }
+            } else {
+                Drawer.drawShapeBottomLit(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
+                if (!leafless) {
+                    Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                            collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+                }
             }
         }
     }
@@ -532,12 +629,20 @@ public class Tree extends GameObject {
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeBottomBlack(fbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
-                    collision
-                            .getHeightHalf());
-            if (!leafless) {
-                Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
-                        collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+            if (map.getWindStrength() > 2) {
+                Drawer.drawShapeBottomBlackFromVbo(fbo, vbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 -
+                        woodHeight + collision.getHeightHalf());
+                if (!leafless) {
+                    Drawer.drawShapeTopBlackFromVbo(fbo, vbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 -
+                            woodHeight + collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+                }
+            } else {
+                Drawer.drawShapeBottomBlack(fbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                        collision.getHeightHalf());
+                if (!leafless) {
+                    Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                            collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+                }
             }
         }
     }
@@ -556,11 +661,20 @@ public class Tree extends GameObject {
             if (xEnd > 2 * collision.getWidth()) {
                 xEnd = 2 * collision.getWidth();
             }
-            Drawer.drawShapeBottomPartLit(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf
-                    (), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
-            if (!leafless) {
-                Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
-                        collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+            if (map.getWindStrength() > 2) {
+                Drawer.drawShapeBottomPartLitFromVbo(fbo, vbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision
+                        .getHeightHalf(), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
+                if (!leafless) {
+                    Drawer.drawShapeTopBlackFromVbo(fbo, vbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 -
+                            woodHeight + collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+                }
+            } else {
+                Drawer.drawShapeBottomPartLit(fbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf
+                        (), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
+                if (!leafless) {
+                    Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                            collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+                }
             }
         }
     }
@@ -579,11 +693,22 @@ public class Tree extends GameObject {
             if (xEnd > 2 * collision.getWidth()) {
                 xEnd = 2 * collision.getWidth();
             }
-            Drawer.drawShapeBottomPartBlack(fbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
-                    collision.getHeightHalf(), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision.getWidth() / 2 + xEnd);
-            if (!leafless) {
-                Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
-                        collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+            if (map.getWindStrength() > 2) {
+                Drawer.drawShapeBottomPartBlackFromVbo(fbo, vbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 -
+                        woodHeight + collision.getHeightHalf(), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision
+                        .getWidth() / 2 + xEnd);
+                if (!leafless) {
+                    Drawer.drawShapeTopBlackFromVbo(fbo, vbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 -
+                            woodHeight + collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+                }
+            } else {
+                Drawer.drawShapeBottomPartBlack(fbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 -
+                        woodHeight + collision.getHeightHalf(), fbo.getWidth() / 2 - collision.getWidth() / 2 + xStart, fbo.getWidth() / 2 - collision
+                        .getWidth() / 2 + xEnd);
+                if (!leafless) {
+                    Drawer.drawShapeTopBlack(fbo, ShadowRenderer.maxDarkness, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight +
+                            collision.getHeightHalf() - fbo.getHeight() + leafHeight);
+                }
             }
         }
     }

@@ -3,17 +3,20 @@ package gamecontent.environment;
 import collision.Figure;
 import collision.OpticProperties;
 import collision.Rectangle;
+import engine.systemcommunication.Time;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.RandomGenerator;
 import game.Settings;
 import game.gameobject.GameObject;
+import net.jodk.lang.FastMath;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sprites.Sprite;
 import sprites.fbo.FrameBufferObject;
 import sprites.fbo.MultiSampleFrameBufferObject;
+import sprites.vbo.VertexBufferObject;
 
 import java.util.*;
 
@@ -31,12 +34,17 @@ public class Bush extends GameObject {
     static Sprite leaf;
     private static RandomGenerator random = RandomGenerator.create();
     private static ArrayList<Point> points;
-    FrameBufferObject fbo;
     int width, height;
     float spread;
+    private FrameBufferObject fbo;
+    private VertexBufferObject vbo;
     private Color branchColor;
     private Color leafColor;
     private Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
+
+    private float windStage, windDirectionModifier;
+    private boolean windChange;
+
 
     public Bush(int x, int y) {
         this(x, y, 14, 80, 0.8f);
@@ -65,6 +73,8 @@ public class Bush extends GameObject {
         branchColor = new Color(0x8C6B1F);//new Color(0.4f, 0.3f, 0.15f);
         leafColor = new Color(0.1f, 0.4f, 0.15f);//new Color(0x388A4B);
         instances.add(this);
+        windStage = random.randomInRange(0, 31416);
+        windDirectionModifier = random.randomInRange(-18, 18);
     }
 
     public static boolean allGenerated() {
@@ -99,35 +109,99 @@ public class Bush extends GameObject {
                 points = null;
             }
         }
+        if (vbo == null) {
+            float[] vertices = {0};
+            int[] indices = {0};
+            vbo = VertexBufferObject.create(vertices, vertices, indices);
+        }
     }
 
     @Override
     public void render() {
         preRender();
         Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf());
-//        fbo.render();
-        float[] vertices = {
-                0, 0,
-                0, fbo.getHeight(),
-                0 + fbo.getWidth(), fbo.getHeight(),
-                0 + fbo.getWidth(), 0
-        };
-        float[] textureCoordinates = {
-                0, 1f,                          //Całość
-                0, 0,
-                1f, 0,
-                1f, 1f
-        };
-        int[] indices = {0, 1, 3, 2};
-        fbo.bindCheck();
-        Drawer.streamVBO.updateAll(vertices, textureCoordinates, indices);
-        Drawer.streamVBO.renderTextured(0, 4);
+        if (map.getWindStrength() > 2) {
+            updateWithWind();
+        } else if (vbo.getVertexCount() > 1) {
+            float[] vertices = {0};
+            int[] indices = {0};
+            vbo.updateAll(vertices, vertices, indices);
+        }
+        if (vbo.getVertexCount() > 1) {
+            fbo.bindCheck();
+            vbo.renderTexturedTriangles(0, vbo.getVertexCount());
+        } else {
+            fbo.render();
+        }
         Drawer.refreshColor();
+    }
+
+
+    private void updateWithWind() {
+        Drawer.streamVertexData.clear();
+        Drawer.streamColorData.clear();
+        Drawer.streamIndexData.clear();
+        int yStart, yShift, yEnd = 0, vc = 0;
+        int change = 34;
+        int yMax = fbo.getHeight();
+        float xMod = 1.1f;
+        float xDirection = (float) Methods.xRadius(map.getWindDirection() + windDirectionModifier, map.getWindStrength());
+        float yDirection = (float) Methods.yRadius(map.getWindDirection() + windDirectionModifier, map.getWindStrength());
+        yDirection = Math.round(yDirection * Methods.ONE_BY_SQRT_ROOT_OF_2);
+        if (windStage >= 31416) {
+            windChange = false;
+        } else if (windStage <= 0) {
+            windChange = true;
+        }
+        windStage += (windChange ? 0.1 : -0.1) * (Time.getDelta() + (random.randomInRange(-5, 5) / 10f));
+        float stageValue = (float) FastMath.sin(windStage) * 0.5f;
+        xDirection += Methods.roundDouble(xDirection * stageValue);
+        yDirection += Methods.roundDouble(yDirection * stageValue);
+        int squeezShift = (int) yDirection + (yMax - Methods.roundDouble(FastMath.sqrt(yMax * yMax - xDirection * xDirection)));
+        float ySqueez = (yMax - squeezShift) / (float) yMax;
+        squeezShift = Math.round(squeezShift / (fbo.getWidth() / (float) yMax));
+        int slices = fbo.getHeight() / change + (fbo.getHeight() % change == 0 ? 0 : 1);
+        int trunkE = 1;
+        int trunkS = 1;
+        for (int i = 0; i < slices; i++) {
+            yStart = yEnd;
+            yEnd += change;
+            if (yEnd > yMax) {
+                yEnd = yMax;
+            }
+            if (i == slices - 2) {
+                trunkS = 0;
+            }
+            if (i == slices - 1) {
+                trunkE = 0;
+            }
+            yShift = yMax - yEnd;
+            Drawer.streamVertexData.add(
+                    trunkE * xDirection * ((yShift + change) / (float) yMax), squeezShift + (yStart) * ySqueez,
+                    trunkS * xDirection / xMod * ((yShift) / (float) yMax), squeezShift + (fbo.getHeight() - yShift) * ySqueez,
+                    fbo.getWidth() + trunkS * xDirection / xMod * ((yShift) / (float) yMax), squeezShift + (fbo.getHeight() - yShift) * ySqueez,
+                    fbo.getWidth() + trunkE * xDirection * ((yShift + change) / (float) yMax), squeezShift + (yStart) * ySqueez
+            );
+            Drawer.streamColorData.add(
+                    0, (fbo.getHeight() - yStart) / (float) fbo.getHeight(),
+                    0, (yShift) / (float) fbo.getHeight(),
+                    1f, (yShift) / (float) fbo.getHeight(),
+                    1f, (fbo.getHeight() - yStart) / (float) fbo.getHeight()
+            );
+            Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1);
+            vc += 4;
+            xDirection /= xMod;
+        }
+        vbo.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
     }
 
     @Override
     public void renderStaticShadow() {
-        fbo.renderStaticShadow(this, fbo.getHeight() - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
+        if (map.getWindStrength() > 2 && vbo.getVertexCount() > 1) {
+            fbo.renderStaticShadowFromVBO(vbo, this, fbo.getHeight() - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
+        } else {
+            fbo.renderStaticShadow(this, fbo.getHeight() - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
+        }
     }
 
     private void drawBush() {
@@ -330,7 +404,7 @@ public class Bush extends GameObject {
     private void drawLeafs() {
         points.sort(comparator);
         int rand1, rand2;
-        int radius = Methods.roundDouble(leaf.getActualWidth() / 2 * Methods.SQRT_ROOT_OF_2);
+        int radius = Methods.roundDouble(Methods.SQRT_ROOT_OF_2 * leaf.getWidth() / 2);
         int dif = (radius + radius) / 3;
         int dif2 = dif * dif * 9;
         int count = height * 2;
@@ -382,32 +456,52 @@ public class Bush extends GameObject {
     @Override
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeLit(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
-                    .getHeightHalf());
+            if (map.getWindStrength() > 2) {
+                Drawer.drawShapeLitFromVbo(fbo, vbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() +
+                        collision.getHeightHalf());
+            } else {
+                Drawer.drawShapeLit(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
+                        .getHeightHalf());
+            }
         }
     }
 
     @Override
     public void renderShadow(Figure figure) {
         if (appearance != null) {
-            Drawer.drawShapeBlack(appearance, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight()
-                    + collision.getHeightHalf());
+            if (map.getWindStrength() > 2) {
+                Drawer.drawShapeBlackFromVbo(fbo, vbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo
+                        .getHeight() + collision.getHeightHalf());
+            } else {
+                Drawer.drawShapeBlack(appearance, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo
+                        .getHeight() + collision.getHeightHalf());
+            }
         }
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
-            Drawer.drawShapePartLit(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
-                    .getHeightHalf(), xStart, xEnd);
+            if (map.getWindStrength() > 2) {
+                Drawer.drawShapePartLitFromVbo(fbo, vbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() +
+                        collision.getHeightHalf(), xStart, xEnd);
+            } else {
+                Drawer.drawShapePartLit(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
+                        .getHeightHalf(), xStart, xEnd);
+            }
         }
     }
 
     @Override
     public void renderShadow(int xStart, int xEnd) {
         if (appearance != null) {
-            Drawer.drawShapePartBlack(appearance, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo
-                    .getHeight() + collision.getHeightHalf(), xStart, xEnd);
+            if (map.getWindStrength() > 2) {
+                Drawer.drawShapePartBlackFromVbo(fbo, vbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo
+                        .getHeight() + collision.getHeightHalf(), xStart, xEnd);
+            } else {
+                Drawer.drawShapePartBlack(appearance, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo
+                        .getHeight() + collision.getHeightHalf(), xStart, xEnd);
+            }
         }
     }
 

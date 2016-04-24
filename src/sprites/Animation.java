@@ -65,8 +65,8 @@ public class Animation implements Appearance {
         int direction = object.getDirection8Way();
         Point shift = getShadowShift(currentFrame);
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
-        float changeX = shift.getX() + (float) object.getFloatHeight() / 2;
-        float changeY = shift.getY() - (float) object.getFloatHeight() / scale;
+        float changeX = shift.getX() + (float) (object.getFloatHeight());
+        float changeY = shift.getY();
         changeDirection((direction + 2) % 8);
         Drawer.regularShader.scaleNoReset(1f, scale);
         Drawer.regularShader.translateNoReset(changeX, changeY);
@@ -75,7 +75,6 @@ public class Animation implements Appearance {
         Drawer.regularShader.rotateNoReset(-90);
         Drawer.regularShader.translateNoReset(-changeX, -changeY);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
-
         changeDirection(direction);
     }
 
