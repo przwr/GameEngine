@@ -40,7 +40,7 @@ public class Sound {
     private float length;
     private boolean isMusic;
     private float gain = 1f, pitch = 1f, randomDelta;
-    private boolean looped, randomized;
+    private boolean looped, randomized, fading;
 
     public Sound(String name, SoundBase store, int buffer, boolean isMusic) {
         this.store = store;
@@ -294,6 +294,10 @@ public class Sound {
     }
 
     public boolean isFading() {
-        return store.getFader().isSoundFading(this);
+        return fading;
+    }
+    
+    void setFading(boolean fading) {
+        this.fading = fading;
     }
 }
