@@ -122,7 +122,8 @@ public class Grass extends GameObject {
         for (int i = 0; i < blades.length; i += 3) {
             calculateFactor(blades[i].getX(), blades[i + 1].getY());
             if (factor == 0) {
-                Drawer.streamVertexData.add(blades[i + 2].getX(), blades[i + 2].getY(),
+                Drawer.streamVertexData.add(
+                        blades[i + 2].getX(), blades[i + 2].getY(),
                         blades[i + 1].getX(), blades[i + 1].getY(),
                         blades[i].getX(), blades[i].getY());
                 Drawer.streamColorData.add(color.r * Drawer.getCurrentColor().r, color.g * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b,
@@ -140,7 +141,9 @@ public class Grass extends GameObject {
                                 blades[i].getValue() / 256)) * Drawer.getCurrentColor().g, color.b * Drawer.getCurrentColor().b, color.r * Drawer
                                 .getCurrentColor().r, (color.g + ((float) blades[i].getValue() / 256)) * Drawer.getCurrentColor().g, color.b * Drawer
                                 .getCurrentColor().b);
-                Drawer.streamVertexData.add(blades[i + 2].getX(), blades[i + 2].getY(), blades[i + 1].getX(), blades[i + 1].getY(), tempX, tempY);
+                Drawer.streamVertexData.add(blades[i + 2].getX(),
+                        blades[i + 2].getY(), blades[i + 1].getX(),
+                        blades[i + 1].getY(), tempX, tempY);
                 if (factor > 0) {
                     Drawer.streamVertexData.add(blades[i].getX() + factor, blades[i].getY(), tempX, tempY, blades[i + 2].getX(), blades[i + 2].getY());
                 } else {

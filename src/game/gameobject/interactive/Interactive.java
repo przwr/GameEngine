@@ -34,7 +34,7 @@ public class Interactive {
     public static final InteractiveAction STRENGTH_HURT = new InteractiveActionStrengthHurt();
     public static final InteractiveAction BOW_HURT = new InteractiveActionBowHurt();
     public static final InteractiveActivator ALWAYS = new InteractiveActivatorAlways();
-
+    private final static int PLAYERS = 0, ENVIRONMENT = 1, MOBS = 2, FRIENDS = 3, SELF = 4;
     private final GameObject owner;
     private final InteractiveCollision collision;
     private final InteractiveAction action;
@@ -50,7 +50,6 @@ public class Interactive {
     private byte attackType = -1;
     private boolean active, activated, halfEnvironmentalCollision;
     private ArrayList<GameObject> exceptions;
-
     private Object actionModifier;
 
     private Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte
@@ -68,17 +67,49 @@ public class Interactive {
     }
 
     public static Interactive create(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
-                                     byte weaponType, byte attackType, float strenght, float knockback) {
-        return new Interactive(owner, activator, collision, action, weaponType, attackType, strenght, knockback);
+                                     byte weaponType, byte attackType, float strenght, float knockback, boolean... collides) {
+        Interactive interactive = new Interactive(owner, activator, collision, action, weaponType, attackType, strenght, knockback);
+        setCollides(collides, interactive);
+        return interactive;
     }
 
     public static Interactive createNotWeapon(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
-                                              byte attackType, float strenght, float knockback) {
-        return new Interactive(owner, activator, collision, action, (byte) -1, attackType, strenght, knockback);
+                                              byte attackType, float strenght, float knockback, boolean... collides) {
+        Interactive interactive = new Interactive(owner, activator, collision, action, (byte) -1, attackType, strenght, knockback);
+        setCollides(collides, interactive);
+        return interactive;
     }
 
-    public static Interactive createSpawner(GameObject owner, InteractiveActivator activator, InteractiveAction action, byte weaponType, byte attackType) {
-        return new Interactive(owner, activator, null, action, weaponType, attackType, 0, 0);
+    public static Interactive createSpawner(GameObject owner, InteractiveActivator activator, InteractiveAction action, byte weaponType, byte attackType,
+                                            boolean... collides) {
+        Interactive interactive = new Interactive(owner, activator, null, action, weaponType, attackType, 0, 0);
+        setCollides(collides, interactive);
+
+        return interactive;
+    }
+
+    private static void setCollides(boolean[] collides, Interactive interactive) {
+        if (collides.length > 0) {
+            for (int i = 0; i < collides.length; i++) {
+                switch (i) {
+                    case PLAYERS:
+                        interactive.setCollidesPlayers(collides[i]);
+                        break;
+                    case ENVIRONMENT:
+                        interactive.setCollidesWithEnvironment(collides[i]);
+                        break;
+                    case MOBS:
+                        interactive.setCollidesMobs(collides[i]);
+                        break;
+                    case FRIENDS:
+                        interactive.setCollidesFriends(collides[i]);
+                        break;
+                    case SELF:
+                        interactive.setCollidesSelf(collides[i]);
+                        break;
+                }
+            }
+        }
     }
 
     public void addException(GameObject exception) {

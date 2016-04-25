@@ -208,9 +208,8 @@ public class Bush extends GameObject {
         bark.bindCheck();
         Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next
                 (10) / 10240f)));
-//        TODO liczyć gdzie są prawdziwe granice tekstury
-        drawRoots();
         drawBranches();
+        drawRoots();
         drawLeafs();
     }
 
@@ -449,6 +448,7 @@ public class Bush extends GameObject {
                     leafColor.b * (1 + change / 2f + rand / 25f)));
             float angle = 90f * (points.get(i).getX() + x + random.randomInRange(-10, 10)) / maxX;
             Drawer.regularShader.rotateTranslate(points.get(i).getX() + x, points.get(i).getY() + y, angle);
+            Drawer.regularShader.scaleNoReset(1f + random.randomInRange(-50, 50) / 1000f, 1f + random.randomInRange(-50, 50) / 1000f);
             leaf.render();
         }
     }

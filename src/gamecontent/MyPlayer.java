@@ -103,25 +103,25 @@ public class MyPlayer extends Player {
             switch (attack) {
                 case ATTACK_SLASH:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new CurveInteractiveCollision(42, 32, 0, 75, 150), STRENGTH_HURT, SWORD, (byte) attack, 2f, 2.5f));
+                            new CurveInteractiveCollision(42, 32, 0, 75, 150), STRENGTH_HURT, SWORD, (byte) attack, 2f, 2.5f, false));
                     break;
                 case ATTACK_THRUST:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(52, 10, 6, 65, 24), STRENGTH_HURT, SWORD, (byte) attack, 2.5f, 1.5f));
+                            new LineInteractiveCollision(52, 10, 6, 65, 24), STRENGTH_HURT, SWORD, (byte) attack, 2.5f, 1.5f, false));
                     break;
                 case ATTACK_WEAK_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(72, 12, 2, 36, 20), STRENGTH_HURT, UNIVERSAL, (byte) attack, 1f, 2f));
+                            new LineInteractiveCollision(72, 12, 2, 36, 20), STRENGTH_HURT, UNIVERSAL, (byte) attack, 1f, 2f, false));
                     actionSets.get(1).setInteraction(2, 0, actionSets.get(0).getFirstInteractive());
                     break;
                 case ATTACK_STRONG_PUNCH:
                     actionSets.get(0).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(72, 12, 2, 36, 20), STRENGTH_HURT, UNIVERSAL, (byte) attack, 1.5f, 2f));
+                            new LineInteractiveCollision(72, 12, 2, 36, 20), STRENGTH_HURT, UNIVERSAL, (byte) attack, 1.5f, 2f, false));
                     actionSets.get(1).setInteraction(2, 1, actionSets.get(0).getSecondInteractive());
                     break;
                 case ATTACK_UPPER_SLASH:
                     actionSets.get(1).addInteractionToNextFree(Interactive.create(this, new UpdateBasedActivator(),
-                            new LineInteractiveCollision(0, 128, 10, 65, 40), STRENGTH_HURT, SWORD, (byte) attack, 2f, 5f));
+                            new LineInteractiveCollision(0, 128, 10, 65, 40), STRENGTH_HURT, SWORD, (byte) attack, 2f, 5f, false));
                     break;
                 case ATTACK_NORMAL_ARROW_SHOT:
                     InteractiveAction arrow = new InteractiveActionArrow();

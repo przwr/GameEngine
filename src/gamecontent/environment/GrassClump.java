@@ -354,30 +354,18 @@ public class GrassClump extends GameObject {
 
     @Override
     public void renderShadowLit(Figure figure) {
-        if (appearance != null) {
-            Drawer.drawShapeLit(appearance, getX(), getY() - (int) floatHeight);
-        }
     }
 
     @Override
     public void renderShadow(Figure figure) {
-        if (appearance != null) {
-            Drawer.drawShapeBlack(appearance, collision.getDarkValue(), getX(), getY() - (int) floatHeight);
-        }
     }
 
     @Override
     public void renderShadowLit(int xStart, int xEnd) {
-        if (appearance != null) {
-            Drawer.drawShapePartLit(appearance, getX(), getY() - (int) floatHeight, xStart, xEnd);
-        }
     }
 
     @Override
     public void renderShadow(int xStart, int xEnd) {
-        if (appearance != null) {
-            Drawer.drawShapePartBlack(appearance, collision.getDarkValue(), getX(), getY() - (int) floatHeight, xStart, xEnd);
-        }
     }
 
     @Override
