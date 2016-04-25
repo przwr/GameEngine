@@ -68,12 +68,19 @@ class Fader {
         thread.interrupt();
         while (thread.isAlive()) {
         }
+        for (FadeData fd : fadingSounds) {
+            fd.sound.setFading(false);
+        }
         fadingSounds.clear();
+        for (FadeData fd : soundsToClear) {
+            fd.sound.setFading(false);
+        }
         soundsToClear.clear();
     }
 
     private synchronized void fadeSounds() {
         for (FadeData fd : fadingSounds) {
+            fd.sound.setFading(true);
             fd.refresh();
             if (fd.isDone()) {
                 fd.end();
@@ -82,19 +89,11 @@ class Fader {
         }
         if (!soundsToClear.isEmpty()) {
             for (FadeData fd : soundsToClear) {
+                fd.sound.setFading(false);
                 fadingSounds.remove(fd);
             }
             soundsToClear.clear();
         }
-    }
-
-    public boolean isSoundFading(Sound sound) {
-        for (FadeData fd : fadingSounds) {
-            if (fd.sound == sound) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean isWorkLeft() {
