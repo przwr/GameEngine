@@ -136,8 +136,7 @@ public class GrassClump extends GameObject {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1);
     }
 
-    public static GrassClump createCorner(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int
-            corner) {
+    public static GrassClump createCorner(int x, int y, int xCount, int yCount, int xBladesCount, int yBladesCount, int bladeWidth, int bladeHeight, int corner) {
         return new GrassClump(x, y, xCount, yCount, xBladesCount, yBladesCount, bladeWidth, bladeHeight, 1, corner);
     }
 
@@ -205,8 +204,8 @@ public class GrassClump extends GameObject {
                 Area area = map.getArea(this.area);
                 if (!updateGrass) {
                     for (GameObject object : area.getNearSolidMobs()) {
-                        if (object.getCollision() != null && object.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - object.getX()) < xRadius +
-                                object.getCollision().getWidthHalf() && Math.abs(getY() + yRadius - object.getY()) < yRadius + object.getCollision()
+                        if (object.getCollision() != null && object.getFloatHeight() < bladeHeight && Math.abs(getX() + xRadius - object.getX()) < xRadius
+                                + object.getCollision().getWidthHalf() && Math.abs(getY() + yRadius - object.getY()) < yRadius + object.getCollision()
                                 .getHeightHalf()) {
                             updateGrass = true;
                             break;
@@ -245,6 +244,8 @@ public class GrassClump extends GameObject {
             fbo.activate();
             glClearColor(0, 0.7f, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
+            Drawer.regularShader.rememberDefaultMatrix();
+            Drawer.regularShader.resetDefaultMatrix();
             Drawer.regularShader.translateDefault(xRadius + 2, -2 * yRadius + ySpacing + Display.getHeight());
             Drawer.regularShader.resetWorkingMatrix();
             if (corner >= 0) {
@@ -255,6 +256,7 @@ public class GrassClump extends GameObject {
                 preRenderRectangle();
             }
             Drawer.regularShader.translateDefault(-xRadius - 2, 2 * yRadius - ySpacing - Display.getHeight());
+            Drawer.regularShader.restoreDefaultMatrix();
             fbo.deactivate();
         }
     }

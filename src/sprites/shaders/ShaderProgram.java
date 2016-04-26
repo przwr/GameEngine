@@ -18,8 +18,10 @@ import java.nio.FloatBuffer;
  * Created by przemek on 16.03.16.
  */
 public abstract class ShaderProgram {
+
     public static Matrix4f defaultMatrix = new Matrix4f();
     public static Matrix4f orthoMatrix = new Matrix4f();
+    public static Matrix4f copyMatrix = new Matrix4f();
     protected static Matrix4f transformationMatrix = new Matrix4f();
     private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
     protected int locationMVPMatrix;
@@ -70,6 +72,14 @@ public abstract class ShaderProgram {
             GL20.glUseProgram(0);
         } catch (Exception e) {
         }
+    }
+
+    public void rememberDefaultMatrix() {
+        copyMatrix.load(defaultMatrix);
+    }
+
+    public void restoreDefaultMatrix() {
+        defaultMatrix.load(copyMatrix);
     }
 
     public void resetOrtho() {

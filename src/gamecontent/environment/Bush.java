@@ -27,7 +27,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Bush extends GameObject {
 
-
     public static Map<String, FrameBufferObject> fbos = new HashMap<>();
     public static List<Bush> instances = new ArrayList();
     static Sprite bark;
@@ -44,7 +43,6 @@ public class Bush extends GameObject {
 
     private float windStage, windDirectionModifier;
     private boolean windChange;
-
 
     public Bush(int x, int y) {
         this(x, y, 14, 80, 0.8f);
@@ -101,9 +99,12 @@ public class Bush extends GameObject {
                 fbo.activate();
                 glClearColor(0.5f, 0.35f, 0.2f, 0);
                 glClear(GL_COLOR_BUFFER_BIT);
+                Drawer.regularShader.rememberDefaultMatrix();
+                Drawer.regularShader.resetDefaultMatrix();
                 Drawer.regularShader.translateDefault(fbo.getWidth() / 2, Display.getHeight() - 20);
                 drawBush();
                 Drawer.regularShader.translateDefault(-fbo.getWidth() / 2, -Display.getHeight() + 20);
+                Drawer.regularShader.restoreDefaultMatrix();
                 fbo.deactivate();
                 points.clear();
                 points = null;
@@ -135,7 +136,6 @@ public class Bush extends GameObject {
         }
         Drawer.refreshColor();
     }
-
 
     private void updateWithWind() {
         Drawer.streamVertexData.clear();
@@ -206,8 +206,7 @@ public class Bush extends GameObject {
 
     private void drawBush() {
         bark.bindCheck();
-        Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next
-                (10) / 10240f)));
+        Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) / 10240f)));
         drawBranches();
         drawRoots();
         drawLeafs();
@@ -272,8 +271,8 @@ public class Bush extends GameObject {
             }
             int change1 = Math.round(length * (random.next(10) / 4096f));
             if (deviation > 0) {
-                Drawer.drawTextureQuad(x + Math.round(1.3f * xPosition), Math.round(-1f * length), x + Math.round(1.3f * xPosition), Math.round(-1f *
-                        length) + Math.round(-0.5f * widthTop), xB, yB, xA, yA);
+                Drawer.drawTextureQuad(x + Math.round(1.3f * xPosition), Math.round(-1f * length), x + Math.round(1.3f * xPosition), Math.round(-1f
+                        * length) + Math.round(-0.5f * widthTop), xB, yB, xA, yA);
             } else {
                 Drawer.drawTextureQuad(xA, yA, xB, yB,
                         x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop),
@@ -287,8 +286,8 @@ public class Bush extends GameObject {
                         x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop),
                         x + Math.round(1.3f * xPosition), Math.round(-1f * length));
             } else {
-                Drawer.drawTextureQuad(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 +
-                                Math.round(-0.4f * widthTop),
+                Drawer.drawTextureQuad(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1
+                        + Math.round(-0.4f * widthTop),
                         x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
                         x + Math.round(1.3f * xPosition), Math.round(-1f * length),
                         x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop));
@@ -296,14 +295,14 @@ public class Bush extends GameObject {
             points.add(new Point(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1 + yShift));
             if (deviation > 0) {
                 Drawer.drawTextureTriangle(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 + Math
-                                .round(-0.4f * widthTop),
+                        .round(-0.4f * widthTop),
                         x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
                         x + Math.round(1.7f * xPosition), Math.round(-1.3f * length));
             } else {
                 Drawer.drawTextureTriangle(x + Math.round(1.7f * xPosition), Math.round(-1.3f * length),
                         x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
-                        x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 + Math.round(-0.4f *
-                                widthTop));
+                        x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 + Math.round(-0.4f
+                                * widthTop));
             }
             points.add(new Point(x + Math.round(1.7f * xPosition), Math.round(-1.3f * length) + yShift));
             // Small Branch
@@ -457,8 +456,8 @@ public class Bush extends GameObject {
     public void renderShadowLit(Figure figure) {
         if (appearance != null) {
             if (map.getWindStrength() > 2) {
-                Drawer.drawShapeLitFromVbo(fbo, vbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() +
-                        collision.getHeightHalf());
+                Drawer.drawShapeLitFromVbo(fbo, vbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight()
+                        + collision.getHeightHalf());
             } else {
                 Drawer.drawShapeLit(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
                         .getHeightHalf());
@@ -483,8 +482,8 @@ public class Bush extends GameObject {
     public void renderShadowLit(int xStart, int xEnd) {
         if (appearance != null) {
             if (map.getWindStrength() > 2) {
-                Drawer.drawShapePartLitFromVbo(fbo, vbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() +
-                        collision.getHeightHalf(), xStart, xEnd);
+                Drawer.drawShapePartLitFromVbo(fbo, vbo, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight()
+                        + collision.getHeightHalf(), xStart, xEnd);
             } else {
                 Drawer.drawShapePartLit(appearance, getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision
                         .getHeightHalf(), xStart, xEnd);

@@ -73,6 +73,8 @@ public class RegularShader extends ShaderProgram {
         loadMatrix(locationTransformationMatrix, defaultMatrix);
     }
 
+
+    
     public void resetDefaultMatrix() {
         defaultMatrix.setIdentity();
     }
