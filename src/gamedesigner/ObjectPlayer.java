@@ -46,7 +46,7 @@ public class ObjectPlayer extends Player {
     private ObjectUI ui;
     private int blockHeight, tileHeight, mode;
     private boolean roundBlocksMode, alreadyPlaced, alreadyChangedObject;
-    private boolean paused, shadow, nightLight;
+    private boolean paused, shadow, nightLight, altMode;
     private RoundedTMPBlock rTmpBlock;
     private ArrayList<TemporaryBlock> movingBlock;
     private Point lastRTMPBState = new Point(0, 0);
@@ -111,7 +111,6 @@ public class ObjectPlayer extends Player {
         int ydelta = (int) yPos;
         double realTimer = (double) maxTimer / Time.getDelta();
         boolean ctrl = key.key(KEY_LCONTROL);
-        boolean ctrlOne = key.keyPressed(KEY_LCONTROL);
         if (xdelta != 0 && xTimer == 0) {
             ix = Methods.interval(0, ix + xdelta, map.getWidthInTiles() - 1);
             setX(ix * tileSize);
@@ -166,7 +165,7 @@ public class ObjectPlayer extends Player {
 
             moveBlocksKey();
 
-            if (!key.key(KEY_SPACE) && !key.key(KEY_LMENU) && !key.key(KEY_DELETE)) {
+            if (!key.key(KEY_SPACE) && !key.key(KEY_DELETE)) {
                 alreadyPlaced = false;
             }
 
@@ -181,7 +180,7 @@ public class ObjectPlayer extends Player {
                         tmp.applyStates();
                     }
                 }
-                if (key.key(KEY_SPACE) || key.key(KEY_LMENU)) {
+                if (key.key(KEY_SPACE)) {
                     alreadyPlaced = true;
                     if (mode == ObjectPlace.MODE_TILE) {
                         setTile();
@@ -199,6 +198,10 @@ public class ObjectPlayer extends Player {
                 }
             }
 
+            if (key.keyPressed(KEY_LMENU)) {
+                altMode = !altMode;
+            }
+            
             if (key.keyPressed(KEY_B)) {
                 objMap.changeBlockUsability(ix, iy);
             }
@@ -363,9 +366,9 @@ public class ObjectPlayer extends Player {
             for (int yTemp = yBegin; yTemp <= yEnd; yTemp++) {
                 Point p = ui.getCoordinates();
                 if (tileHeight == 0 && !shadow && !nightLight) {
-                    objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), key.key(KEY_LMENU));
+                    objMap.addTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), altMode);
                 } else {
-                    objMap.addFGTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), tileHeight, key.key(KEY_LMENU), shadow || nightLight, shadow);
+                    objMap.addFGTile(xTemp, yTemp, p.getX(), p.getY(), ui.getSpriteSheet(), tileHeight, altMode, shadow || nightLight, shadow);
                 }
             }
         }
@@ -381,11 +384,11 @@ public class ObjectPlayer extends Player {
             if (!objMap.checkBlockCollision(xBegin * tileSize, yBegin * tileSize, xd * tileSize, yd * tileSize)) {
                 if (roundBlocksMode) {
                     rTmpBlock = new RoundedTMPBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, yd, map);
-                    objMap.addObject(rTmpBlock, key.key(KEY_LMENU));
+                    objMap.addObject(rTmpBlock, altMode);
                     paused = true;
                     return rTmpBlock;
                 } else {
-                    objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map), key.key(KEY_LMENU));
+                    objMap.addObject(new TemporaryBlock(xBegin * tileSize, yBegin * tileSize, blockHeight, xd, yd, map), altMode);
                 }
             }
         } else if (mode == ObjectPlace.MODE_OBJECT) {
@@ -474,7 +477,7 @@ public class ObjectPlayer extends Player {
                 Drawer.drawRectangle(xd, -tmpH - d, d, tmpH + yd + 2 * d);
             }
         }
-        if (key.key(KEY_LMENU) && mode <= ObjectPlace.MODE_BLOCK) {
+        if (altMode && mode <= ObjectPlace.MODE_BLOCK) {
             Drawer.drawRing(-tileSize / 3, -tileSize / 3, tileSize / 5, d, 10);
         }
         if (mode == ObjectPlace.MODE_OBJECT) {

@@ -269,7 +269,7 @@ public class Tree extends GameObject {
 
     @Override
     public void renderStaticShadow() {
-        if (map.getWindStrength() > 2 && vbo.getVertexCount() > 1) {
+        if (map.getWindStrength() > 2 && vbo != null && vbo.getVertexCount() > 1) {
             fbo.renderStaticShadowFromVBO(vbo, this, woodHeight - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
         } else {
             if (leafless) {

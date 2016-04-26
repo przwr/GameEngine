@@ -75,7 +75,7 @@ public class ObjectFGTile extends ForegroundTile {
                 }
                 int tile = Place.tileSize;
                 Drawer.drawRectangle(tile / 2 - 1, tile, 2, depth - tile / 2);
-                Drawer.drawCircle(0, depth - tile / 2, (int) (tile * 0.3), 10);
+                Drawer.drawCircle(tile / 2 - 1, depth - tile / 2, (int) (tile * 0.3), 10);
                 Drawer.refreshForRegularDrawing();
             }
         }
