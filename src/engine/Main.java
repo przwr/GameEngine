@@ -177,7 +177,7 @@ public class Main {
 
     private static void createDisplay() {
         try {
-            ContextAttribs contextAttributes = new ContextAttribs(3, 2)
+            ContextAttribs contextAttributes = new ContextAttribs(3, 3)
                     .withForwardCompatible(true)
                     .withProfileCore(true);
             PixelFormat pixelFormat = new PixelFormat(32, 0, 24, 0, Settings.samplesCount);

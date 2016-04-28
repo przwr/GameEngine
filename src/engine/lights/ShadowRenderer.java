@@ -670,11 +670,11 @@ public class ShadowRenderer {
                 && current.getYEnd() - shift <= source.getY() && current.getYEnd() >= source.getY()
                 && other.getY() <= current.getYEnd() && other.getYEnd() > current.getYEnd()) {
             if (source.getX() > current.getXEnd()) {
-                if (other.getXEnd() > current.getX()) {
+                if (other.getXEnd() >= current.getXEnd() && other.getXEnd() < source.getX()) {
                     current.setDarkValue(maxDarkness);
                 }
             } else if (source.getX() < current.getX()) {
-                if (other.getX() < current.getXEnd()) {
+                if (other.getX() <= current.getX() && other.getX() > source.getX()) {
                     current.setDarkValue(maxDarkness);
                 }
             }

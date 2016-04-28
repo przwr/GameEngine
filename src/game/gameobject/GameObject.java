@@ -335,12 +335,13 @@ public abstract class GameObject {
         if (floatHeight > 0 || jumpForce > 0) {
             floatHeight += jumpForce;
             jumpForce -= gravity;
+            if (floatHeight < 0) {
+                floatHeight = 0;
+            }
         } else {
             floatHeight = 0;
         }
-        if (floatHeight < 0) {
-            floatHeight = 0;
-        }
+
     }
 
     public int getDirection() {

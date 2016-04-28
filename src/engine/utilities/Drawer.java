@@ -16,6 +16,7 @@ import org.newdawn.slick.util.ResourceLoader;
 import sprites.Appearance;
 import sprites.fbo.FrameBufferObject;
 import sprites.shaders.FontShader;
+import sprites.shaders.ParticleShader;
 import sprites.shaders.RegularShader;
 import sprites.shaders.ShadowShader;
 import sprites.vbo.VertexBufferObject;
@@ -42,6 +43,7 @@ public class Drawer {
     public static FloatContainer streamColorData = new FloatContainer(30000);
     public static IntegerContainer streamIndexData = new IntegerContainer(30000);
     public static RegularShader regularShader;
+    public static ParticleShader particleShader;
     public static ShadowShader shadowShader;
     public static FontShader fontShader;
     public static int displayWidth, displayHeight;
@@ -542,6 +544,7 @@ public class Drawer {
     public static void setShaders() {
         regularShader = new RegularShader();
         shadowShader = new ShadowShader();
+        particleShader = new ParticleShader();
         regularShader.start();
         float[] vertices = {
                 0, 0,
@@ -577,6 +580,10 @@ public class Drawer {
             regularShader.cleanUp();
             regularShader = null;
         }
+        if (particleShader != null) {
+            particleShader.cleanUp();
+            particleShader = null;
+        }
         if (shadowShader != null) {
             shadowShader.cleanUp();
             shadowShader = null;
@@ -608,11 +615,13 @@ public class Drawer {
 
     public static void setOrtho(float left, float right, float bottom, float top) {
         shadowShader.setOrtho(left, right, bottom, top);
+        particleShader.setOrtho(left, right, bottom, top);
         regularShader.setOrtho(left, right, bottom, top);
     }
 
     public static void resetOrtho() {
         shadowShader.resetOrtho();
+        particleShader.resetOrtho();
         regularShader.resetOrtho();
     }
 }

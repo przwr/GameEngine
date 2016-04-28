@@ -150,6 +150,10 @@ public class VertexBufferObject {
         this.vertexCount = indices.length;
     }
 
+    public void updateInstancedData(float[] data) {
+
+    }
+
     public void updateIndices(int[] indices) {
         bindIndicesBuffer(vbosIDs.get(2), indices, GL15.GL_STATIC_DRAW);
     }

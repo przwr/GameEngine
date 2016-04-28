@@ -2,12 +2,14 @@ package gamecontent.maps;
 
 import collision.Rectangle;
 import engine.utilities.RandomGenerator;
+import game.Settings;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.PuzzleObject;
 import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
+import gamecontent.environment.Fire;
 import gamecontent.environment.Rock;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
@@ -16,10 +18,9 @@ import gamecontent.mobs.Shen;
 import gamecontent.npcs.Melodia;
 import gamecontent.npcs.Nutka;
 import gamecontent.npcs.Tercja;
+import sounds.Sound;
 
 import static collision.OpticProperties.TRANSPARENT;
-import game.Settings;
-import sounds.Sound;
 
 /**
  * Created by przemek on 21.11.15.
@@ -70,6 +71,8 @@ public class TestMap extends Map {
     public void populate() {
         Shen shen = new Shen(3010, 1226, place, mobID++);
         addObject(shen);
+
+        addObject(new Fire(2600, 1200, place));
 
         Rock rock;
         addObject(new Dummy(4643, 1793, place, mobID++));

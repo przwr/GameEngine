@@ -73,7 +73,7 @@ public abstract class Map {
     protected List<GameObject> depthObjects, foregroundTiles;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd;     //Camera's variables for current rendering
     private Color[] colors = {Color.red, Color.magenta};
-    private float windStrength = 4, windDirection = 200;
+    private float windStrength = 10, windDirection = 200;
 
     protected Map(short mapID, String name, Place place, int width, int height, int tileSize) {
         this.place = place;
