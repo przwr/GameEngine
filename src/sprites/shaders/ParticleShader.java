@@ -15,7 +15,7 @@ public class ParticleShader extends ShaderProgram {
 
     private int locationTransformationMatrix;
     private int locationColorModifier;
-    private int locationSizeModifier;
+    private int locationFrames;
 
     public ParticleShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -29,9 +29,9 @@ public class ParticleShader extends ShaderProgram {
     @Override
     protected void getAllUniformLocations() {
         locationTransformationMatrix = getUniformLocation("transformationMatrix");
-        locationColorModifier = getUniformLocation("colorModifier");
-        locationSizeModifier = getUniformLocation("sizeModifier");
         locationMVPMatrix = getUniformLocation("mvpMatrix");
+        locationColorModifier = getUniformLocation("colorModifier");
+        locationFrames = getUniformLocation("frames");
     }
 
     @Override
@@ -40,8 +40,8 @@ public class ParticleShader extends ShaderProgram {
         bindAttribute(1, "stage");
     }
 
-    public void loadSizeModifier(Vector4f vector) {
-        loadVector4f(locationSizeModifier, vector);
+    public void loadFrames(float x, float y) {
+        load2Floats(locationFrames, x, y);
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {

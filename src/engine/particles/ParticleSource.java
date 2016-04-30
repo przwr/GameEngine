@@ -13,14 +13,16 @@ import java.util.Arrays;
 public class ParticleSource {
 
     private static final int INITIAL_POINT_COUNT = 100;
+
     private static RandomGenerator random = RandomGenerator.create();
-    private float ppf;
-    private int particlesCount;
-    private float speed;
-    private float gravity, drag;
-    private float lifeLength;
-    private Particle[] particles;
     private SpriteSheet spriteSheet;
+    private Particle[] particles;
+    private int particlesCount;
+    private float ppf;
+    private float xSpread = 1f, ySpread = 1f;
+    private int frames = 1;
+    private float gravity, drag;
+    private float speed, lifeLength;
 
     public ParticleSource(float ppf, float speed, float gravity, float drag, float lifeLength, SpriteSheet spiteSheet) {
         this.ppf = ppf;
@@ -30,6 +32,7 @@ public class ParticleSource {
         this.lifeLength = lifeLength;
         this.particles = new Particle[INITIAL_POINT_COUNT];
         this.spriteSheet = spiteSheet;
+        frames = spiteSheet.getSize();
     }
 
     public void add(int x, int y, int floatHeight, float xVelocity, float yVelocity, float heightVelocity, float lifeLength) {
@@ -64,18 +67,18 @@ public class ParticleSource {
     }
 
     private void emitParticle(int position, int x, int y, int floatHeight) {
-        float dirX = (random.randomInRange(-10000, 10000) / 10000f);
-        float dirY = (random.randomInRange(-10000, 10000) / 10000f);
-        float dirH = (random.randomInRange(-10000, 10000) / 10000f);
-        particles[position].set(x + (int) dirX, y + (int) dirY, floatHeight + (int) dirH, dirX * speed, dirY * speed, dirH * speed,
+        float dirX = (random.randomInRange(-10000, 10000) / 20000f);
+        float dirY = (random.randomInRange(-10000, 10000) / 20000f);
+        float dirH = (random.randomInRange(0, 10000) / 20000f);
+        particles[position].set(x + (int) (dirX * xSpread), y + (int) (dirY * ySpread), floatHeight, dirX * speed, dirY * speed, (0.75f + dirH) * speed,
                 lifeLength * (0.75f + (random.randomInRange(0, 10000) / 20000f)));
     }
 
     private void emitParticle(int x, int y, int floatHeight) {
-        float dirX = (random.randomInRange(-10000, 10000) / 10000f);
-        float dirY = (random.randomInRange(-10000, 10000) / 10000f);
-        float dirH = (random.randomInRange(-10000, 10000) / 10000f);
-        add(x + (int) dirX, y + (int) dirY, floatHeight + (int) dirH, dirX * speed, dirY * speed, dirH * speed,
+        float dirX = (random.randomInRange(-10000, 10000) / 20000f);
+        float dirY = (random.randomInRange(-10000, 10000) / 20000);
+        float dirH = (random.randomInRange(0, 10000) / 20000f);
+        add(x + (int) (dirX * xSpread), y + (int) (dirY * ySpread), floatHeight, dirX * speed, dirY * speed, (0.75f + dirH) * speed,
                 lifeLength * (0.75f + (random.randomInRange(0, 10000) / 20000f)));
     }
 
@@ -104,17 +107,13 @@ public class ParticleSource {
         Drawer.streamVertexData.clear();
         Drawer.streamColorData.clear();
         Drawer.streamIndexData.clear();
-
-        int size = spriteSheet.getSize();
         float stage;
-//        TODO unroll the loop
-//        TODO wczytywanie uniforms
         int index = 0;
         for (int i = 0; i < particlesCount; i++) {
             if (!particles[i].dead) {
-                stage = (size * particles[i].getLifePercent());
-                if (stage > size - 1)
-                    stage = size - 1;
+                stage = (frames * particles[i].getLifePercent());
+                if (stage > frames - 1)
+                    stage = frames - 1;
                 Drawer.streamVertexData.add(
                         particles[i].getX(), particles[i].getYWithFloatHeight(),
                         particles[i].getX(), particles[i].getYWithFloatHeight() + 8,
@@ -128,9 +127,73 @@ public class ParticleSource {
         }
         Drawer.particleShader.translate(x, y);
         Drawer.streamVBO.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
+        Drawer.particleShader.loadFrames(spriteSheet.getXLimit(), spriteSheet.getYLimit());
         spriteSheet.bindCheck();
         Drawer.streamVBO.renderTexturedTriangles(0, Drawer.streamVBO.getVertexCount());
         Drawer.regularShader.start();
     }
 
+    public float getXSpread() {
+        return xSpread;
+    }
+
+    public void setXSpread(float xSpread) {
+        this.xSpread = xSpread;
+    }
+
+    public float getPPF() {
+        return ppf;
+    }
+
+    public void setPPF(float ppf) {
+        this.ppf = ppf;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public float getGravity() {
+        return gravity;
+    }
+
+    public void setGravity(float gravity) {
+        this.gravity = gravity;
+    }
+
+    public float getDrag() {
+        return drag;
+    }
+
+    public void setDrag(float drag) {
+        this.drag = drag;
+    }
+
+    public float getLifeLength() {
+        return lifeLength;
+    }
+
+    public void setLifeLength(float lifeLength) {
+        this.lifeLength = lifeLength;
+    }
+
+    public float getYSpread() {
+        return ySpread;
+    }
+
+    public void setYSpread(float ySpread) {
+        this.ySpread = ySpread;
+    }
+
+    public int getFrames() {
+        return frames;
+    }
+
+    public void setFrames(int frames) {
+        this.frames = frames;
+    }
 }

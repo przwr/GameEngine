@@ -385,7 +385,7 @@ public class Main {
             float newFPS = average();
             if (newFPS + 1 < Settings.currentFramesCap) {
                 Settings.currentFramesCap--;
-            } else if (Settings.currentFramesCap < Settings.framesLimit && newFPS - 1 > Settings.currentFramesCap) {
+            } else if (Settings.currentFramesCap < Settings.framesLimit && newFPS + 0.5 > Settings.currentFramesCap) {
                 Settings.currentFramesCap++;
             }
         }

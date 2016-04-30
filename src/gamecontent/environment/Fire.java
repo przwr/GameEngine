@@ -22,14 +22,23 @@ public class Fire extends GameObject {
     public Fire(int x, int y, Place place) {
         initialize("Fire", x, y);
         this.place = place;
-        particleSource = new ParticleSource(2.5f, 5, 0.1f, 0.02f, 240, place.getSpriteSheet("particle", ""));
+        particleSource = new ParticleSource(2.5f, 5, 0.001f, 0.8f, 30, place.getSpriteSheet("particle", ""));
+        particleSource.setXSpread(16);
         setCollision(Rectangle.create(0, 0, OpticProperties.NO_SHADOW, this));
         toUpdate = true;
     }
 
     @Override
     public void update() {
-        particleSource.updateParticles(0, 0, 120);
+        particleSource.setXSpread(18);
+        particleSource.setYSpread(12);
+        particleSource.setPPF(16);
+        particleSource.setSpeed(1f);
+        particleSource.setGravity(0f);
+        particleSource.setDrag(0.01f);
+        particleSource.setLifeLength(45);
+        particleSource.setFrames(7);
+        particleSource.updateParticles(0, 0, 0);
     }
 
 
