@@ -198,7 +198,7 @@ public class Area {
             depthObjects.add(object);
         }
         if (object.isInteractive()) {
-            object.getInteractiveObjects().stream().forEach(interactiveObjects::add);
+            ((Entity) object).getInteractiveObjects().stream().forEach(interactiveObjects::add);
         }
         if (!(object instanceof Player)) {
             addNotPlayerObject(object);
@@ -249,7 +249,7 @@ public class Area {
                 object.getLights().stream().forEach(lights::remove);
             }
             if (object.isInteractive()) {
-                object.getInteractiveObjects().stream().forEach(interactiveObjects::remove);
+                ((Entity) object).getInteractiveObjects().stream().forEach(interactiveObjects::remove);
             }
             if (!(object instanceof Player)) {
                 deleteNotPlayerObject(object);

@@ -65,7 +65,7 @@ public class Tercja extends Mob {
 
                     player.getTextController().addEventOnBranchStart(() -> {
                         if (player.getSecondWeapon() == null) {
-                            Weapon bow = new Weapon("Bow", Weapon.BOW);
+                            Weapon bow = new Weapon("Bow", 1, Weapon.BOW);
                             bow.setModifier(1f);
                             player.addWeapon(bow);
                         }

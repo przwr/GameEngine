@@ -7,10 +7,9 @@ import game.gameobject.interactive.InteractiveResponse;
 import game.place.Place;
 import gamecontent.effects.DamageNumber;
 import net.jodk.lang.FastMath;
+import sounds.Sound3D;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
-import sounds.Sound;
-import sounds.Sound3D;
 
 /**
  * Created by przemek on 10.08.15.
@@ -34,17 +33,17 @@ public class Stats {
     
     Sound3D deadSound;
 
+    public Stats(Entity owner) {
+        this.owner = owner;
+        initializeSounds();
+    }
+
     public void initializeSounds() {
         if (deadSound == null) {
             deadSound = Settings.sounds.get3DSoundEffect("ded.ogg", owner);
             deadSound.setSoundRanges(0.8f, 1.1f);
             deadSound.setRandomized(0.1f);
         }
-    }
-
-    public Stats(Entity owner) {
-        this.owner = owner;
-        initializeSounds();
     }
 
     public void decreaseHealth(InteractiveResponse response) {
@@ -160,7 +159,7 @@ public class Stats {
     }
 
     public boolean isInvicibleState() {
-        return owner.isInvicibleState();
+        return owner.isInvincibleState();
     }
 
     public float getSideDefenceModifier() {

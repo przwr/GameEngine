@@ -12,8 +12,6 @@ package game.gameobject;
 import collision.Figure;
 import engine.lights.Light;
 import engine.utilities.Methods;
-import game.gameobject.interactive.Interactive;
-import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.stats.Stats;
 import game.place.Place;
 import game.place.map.Map;
@@ -27,11 +25,8 @@ import java.util.List;
 
 public abstract class GameObject {
 
-    public final static byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
     protected String name;
     protected double x, y;
-    protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
-    protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     protected int depth;
     protected boolean solid, emitter, emits, onTop, simpleLighting, visible, makeNoise, hasStaticShadow;
     protected Appearance appearance;
@@ -45,11 +40,10 @@ public abstract class GameObject {
     protected WarpPoint warp;
     protected boolean toUpdate;
     protected boolean canCover, canBeCovered = true;
-    protected double jumpForce;
+    protected double upForce;
     protected double floatHeight;
     protected double gravity = 0.6;
     protected ArrayList<Light> lights;
-    protected ArrayList<Interactive> interactiveObjects;
     protected int xEffect, yEffect;
 
     public void update() {
@@ -117,13 +111,6 @@ public abstract class GameObject {
         lights.add(light);
     }
 
-    protected void addInteractive(Interactive interactive) {
-        interactiveObjects.add(interactive);
-    }
-
-    protected void removeInteractive(Interactive interactive) {
-        interactiveObjects.remove(interactive);
-    }
 
     public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
@@ -192,9 +179,6 @@ public abstract class GameObject {
         this.visible = vis;
     }
 
-    public boolean isInteractive() {
-        return interactiveObjects != null && !interactiveObjects.isEmpty();
-    }
 
     public int getX() {
         return (int) x;
@@ -323,18 +307,18 @@ public abstract class GameObject {
         this.floatHeight = floatHeight;
     }
 
-    public double getJumpForce() {
-        return jumpForce;
+    public double getUpForce() {
+        return upForce;
     }
 
-    public void setJumpForce(double jumpForce) {
-        this.jumpForce = jumpForce;
+    public void setUpForce(double upForce) {
+        this.upForce = upForce;
     }
 
     protected void updateWithGravity() {
-        if (floatHeight > 0 || jumpForce > 0) {
-            floatHeight += jumpForce;
-            jumpForce -= gravity;
+        if (floatHeight > 0 || upForce > 0) {
+            floatHeight += upForce;
+            upForce -= gravity;
             if (floatHeight < 0) {
                 floatHeight = 0;
             }
@@ -344,22 +328,8 @@ public abstract class GameObject {
 
     }
 
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int direction) {
-        this.direction = direction % 360;
-        direction8Way = (int) (((float) direction / 45 + 0.5f) % 8);
-    }
-
-    public int getDirection8Way() {
-        return direction8Way;
-    }
-
-    public void setDirection8way(int direction8Way) {
-        this.direction8Way = direction8Way % 8;
-        direction = direction8Way * 45;
+    public boolean isInteractive() {
+        return false;
     }
 
     public int getCollisionWidth() {
@@ -382,47 +352,6 @@ public abstract class GameObject {
         return lights;
     }
 
-    public List<Interactive> getInteractiveObjects() {
-        return interactiveObjects;
-    }
-
-    public Interactive getInteractive(byte attackType) {
-        for (Interactive interactive : interactiveObjects) {
-            if (interactive.getAttackType() == attackType) {
-                return interactive;
-            }
-        }
-        return null;
-    }
-
-    public InteractiveActivator getAttackActivator(byte attackType, Object modifier) {
-        for (Interactive i : interactiveObjects) {
-            if (i.getAttackType() == attackType) {
-                i.setActionModifier(modifier);
-                return i.getActivator();
-            }
-        }
-        return null;
-    }
-
-    public InteractiveActivator getAttackActivator(Object modifier) {
-        Interactive ret = interactiveObjects.get(0);
-        ret.setActionModifier(modifier);
-        return ret.getActivator();
-    }
-
-    public InteractiveActivator getAttackActivator(byte attackType) {
-        for (Interactive i : interactiveObjects) {
-            if (i.getAttackType() == attackType) {
-                return i.getActivator();
-            }
-        }
-        return null;
-    }
-
-    public InteractiveActivator getAttackActivator() {
-        return interactiveObjects.get(0).getActivator();
-    }
 
     public Appearance getAppearance() {
         return appearance;

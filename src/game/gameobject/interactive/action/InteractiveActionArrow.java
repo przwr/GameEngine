@@ -5,7 +5,7 @@
  */
 package game.gameobject.interactive.action;
 
-import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.items.Arrow;
@@ -17,9 +17,9 @@ import game.place.Place;
 public class InteractiveActionArrow extends InteractiveAction {
 
     @Override
-    public void act(GameObject object, Interactive activator, InteractiveResponse response, Object modifier) {
-        Arrow arrow = new Arrow(modifier != null ? (double) modifier : 80, object.getDirection(), Place.tileSize, object);
-        arrow.setPositionWithoutAreaUpdate(object.getX(), object.getY());
-        object.getMap().addObject(arrow);
+    public void act(Entity entity, Interactive activator, InteractiveResponse response, Object modifier) {
+        Arrow arrow = new Arrow(modifier != null ? (double) modifier : 80, entity.getDirection(), Place.tileSize, entity);
+        arrow.setPositionWithoutAreaUpdate(entity.getX(), entity.getY());
+        entity.getMap().addObject(arrow);
     }
 }

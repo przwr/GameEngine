@@ -4,12 +4,12 @@ import collision.Rectangle;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
-import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import org.newdawn.slick.Color;
 
-import static game.gameobject.GameObject.*;
+import static game.gameobject.entities.Entity.*;
 
 /**
  * Created by przemek on 29.08.15.
@@ -27,7 +27,7 @@ public class LineInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void updatePosition(GameObject owner) {
+    public void updatePosition(Entity owner) {
         int x = owner.getX();
         int y = owner.getY();
         switch (owner.getDirection8Way()) {
@@ -84,16 +84,16 @@ public class LineInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    protected InteractiveResponse collideImplementation(GameObject owner, GameObject object, byte attackType) {
-        if (object != null && object.getCollision() != null) {
-            int objectBottom = (int) object.getFloatHeight();
-            int objectTop = objectBottom + object.getActualHeight();
+    protected InteractiveResponse collideImplementation(Entity owner, Entity entity, byte attackType) {
+        if (entity != null && entity.getCollision() != null) {
+            int objectBottom = (int) entity.getFloatHeight();
+            int objectTop = objectBottom + entity.getActualHeight();
             int bottom = (int) owner.getFloatHeight() + fromBottom;
             int top = bottom + height;
             if (objectTop > bottom && objectBottom < top) {
-                int pixelsIn = lineToCircleDistance(object.getX(), object.getY(), (object.getCollisionWidth() + width) / 2, position, end, length);
+                int pixelsIn = lineToCircleDistance(entity.getX(), entity.getY(), (entity.getCollisionWidth() + width) / 2, position, end, length);
                 if (pixelsIn > 0) {
-                    response.setResponse(pixelsIn, length, (byte) (calculateInteractionDirection(object.getDirection8Way(), object.getCollision(), owner.getX
+                    response.setResponse(pixelsIn, length, (byte) (calculateInteractionDirection(entity.getDirection8Way(), entity.getCollision(), owner.getX
                             (), owner.getY())), attackType, owner);
                     return response;
                 }
@@ -103,7 +103,7 @@ public class LineInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    protected InteractiveResponse collideImplementation(GameObject owner, Player player, byte attackType) {
+    protected InteractiveResponse collideImplementation(Entity owner, Player player, byte attackType) {
         if (player != null && player.isInGame()) {
             int playerBottom = (int) player.getFloatHeight();
             int playerTop = playerBottom + player.getActualHeight();
@@ -123,7 +123,7 @@ public class LineInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void render(GameObject owner) {
+    public void render(Entity owner) {
         Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
         int tempWidth = (int) (Methods.ONE_BY_SQRT_ROOT_OF_2 * width);
         boolean ellipse = true;
@@ -156,7 +156,7 @@ public class LineInteractiveCollision extends InteractiveCollision {
         Drawer.refreshColor();
     }
 
-    public void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half) {
+    public void setEnvironmentCollision(Rectangle environmentCollision, Entity owner, boolean half) {
         if (half) {
             originalLength = length;
             length /= 2;

@@ -8,12 +8,13 @@ package game.gameobject.interactive.collision;
 import collision.Rectangle;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
-import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import org.newdawn.slick.Color;
 
-import static game.gameobject.GameObject.*;
+import static game.gameobject.entities.Entity.*;
+
 
 /**
  * @author przemek
@@ -28,7 +29,7 @@ public class CircleInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void updatePosition(GameObject owner) {
+    public void updatePosition(Entity owner) {
         int x = owner.getX();
         int y = owner.getY();
         switch (owner.getDirection8Way()) {
@@ -65,7 +66,7 @@ public class CircleInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    protected InteractiveResponse collideImplementation(GameObject owner, GameObject object, byte attackType) {
+    protected InteractiveResponse collideImplementation(Entity owner, Entity object, byte attackType) {
         if (object != null && object.getCollision() != null) {
             int objectBottom = (int) object.getFloatHeight();
             int objectTop = objectBottom + object.getActualHeight();
@@ -84,7 +85,7 @@ public class CircleInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    protected InteractiveResponse collideImplementation(GameObject owner, Player player, byte attackType) {
+    protected InteractiveResponse collideImplementation(Entity owner, Player player, byte attackType) {
         if (player != null && player.isInGame()) {
             int playerBottom = (int) player.getFloatHeight();
             int playerTop = playerBottom + player.getActualHeight();
@@ -103,14 +104,14 @@ public class CircleInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void render(GameObject owner) {
+    public void render(Entity owner) {
         Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
         Drawer.drawEllipse(position.getX(), position.getY(), radius, Methods.roundDouble(radius * Methods.ONE_BY_SQRT_ROOT_OF_2), 16);
         Drawer.refreshColor();
     }
 
-
-    public void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half) {
+    @Override
+    public void setEnvironmentCollision(Rectangle environmentCollision, Entity owner, boolean half) {
         int r = half ? radius / 2 : radius;
         int sqrt2Radius = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * r);
         environmentCollision.setXStart(position.getX() - r);

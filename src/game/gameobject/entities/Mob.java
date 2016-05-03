@@ -68,8 +68,8 @@ public abstract class Mob extends Entity {
         spawner = null;
     }
 
-    protected synchronized void lookForPlayers(GameObject[] players) {
-        GameObject object;
+    protected synchronized void lookForPlayers(Player[] players) {
+        Entity object;
         for (int i = 0; i < getPlace().playersCount; i++) {
             object = players[i];
             if (object.getMap() == map && isInRange(object)) {
@@ -79,14 +79,14 @@ public abstract class Mob extends Entity {
         }
     }
 
-    protected synchronized void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+    protected synchronized void lookForCloseEntities(Player[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
-        GameObject object;
+        Player player;
         for (int i = 0; i < getPlace().playersCount; i++) {
-            object = players[i];
-            if (object.getMap() == map && object.getCollision().isHitable() && (isHeard(object) || isSeen(object))) {
-                closeEnemies.add(object);
+            player = players[i];
+            if (player.getMap() == map && player.getCollision().isHitable() && (isHeard(player) || isSeen(player))) {
+                closeEnemies.add(player);
             }
         }
         for (Mob mob : mobs) {
@@ -137,14 +137,14 @@ public abstract class Mob extends Entity {
         return false;
     }
 
-    protected synchronized void lookForCloseEntitiesWhileSleep(GameObject[] players, List<Mob> mobs) {
+    protected synchronized void lookForCloseEntitiesWhileSleep(Player[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
-        GameObject object;
+        Player player;
         for (int i = 0; i < getPlace().playersCount; i++) {
-            object = players[i];
-            if (object.getMap() == map && (isHeardWhileSleep(object))) {
-                closeEnemies.add(object);
+            player = players[i];
+            if (player.getMap() == map && (isHeardWhileSleep(player))) {
+                closeEnemies.add(player);
             }
         }
         for (Mob mob : mobs) {

@@ -64,7 +64,7 @@ public class MyPlayer extends Player {
     private Weapon firstWeapon;
     private Weapon secondWeapon;
     private Weapon lastWeapon;
-    private Weapon universal = new Weapon("Hands", UNIVERSAL);
+    private Weapon universal = new Weapon("Bare Hands", 0, UNIVERSAL);
     private ArrayList<InteractionSet> actionSets = new ArrayList<>();
     private int activeActionSet;
     private TextController textControl;
@@ -87,11 +87,11 @@ public class MyPlayer extends Player {
         actionSets.add(new InteractionSet(SWORD));
         actionSets.add(new InteractionSet(BOW));
         if (!Main.TEST) {
-            Weapon sword = new Weapon("Sword", SWORD);
+            Weapon sword = new Weapon("Sword", 2, SWORD);
             this.weapon.setWearing(true);
             sword.setModifier(1.2f);
             firstWeapon = sword;
-            Weapon bow = new Weapon("Bow", BOW);
+            Weapon bow = new Weapon("Bow", 1, BOW);
             bow.setModifier(5f);
             secondWeapon = bow;
         }
@@ -159,12 +159,13 @@ public class MyPlayer extends Player {
     }
 
     public void addWeapon(Weapon weapon) {
-        this.weapon.setWearing(true);
         if (firstWeapon == null) {
             firstWeapon = weapon;
         } else if (secondWeapon == null) {
             secondWeapon = weapon;
+            this.weapon.setWearing(true);
         } else {
+            items.add(weapon);
 //            TODO add to backpack
         }
     }

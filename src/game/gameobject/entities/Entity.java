@@ -11,8 +11,10 @@ import engine.systemcommunication.Time;
 import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.CircleInteractiveCollision;
+import game.gameobject.items.Item;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.logic.navmeshpathfinding.PathData;
@@ -25,16 +27,20 @@ import org.newdawn.slick.Color;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author przemek
  */
 public abstract class Entity extends GameObject {
 
+    public static final byte RIGHT = 0, UP_RIGHT = 1, UP = 2, UP_LEFT = 3, LEFT = 4, DOWN_LEFT = 5, DOWN = 6, DOWN_RIGHT = 7;
     public static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 1f);
     protected static final RandomGenerator random = RandomGenerator.create();
     public final Update[] updates = new Update[4];
     public int lastAdded;
+    protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
+    protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     protected double xSpeed, ySpeed;
     protected double xEnvironmentalSpeed, yEnvironmentalSpeed;
     protected double maxSpeed;
@@ -45,8 +51,8 @@ public abstract class Entity extends GameObject {
     protected double resistance;    // 1 nic się nie dzieje, > 1 - opóźnianie
     protected boolean ableToMove = true;
     protected float colorAlpha = 1f;
-    protected GameObject target;
-    protected ArrayList<GameObject> closeEnemies = new ArrayList<>();
+    protected Entity target;
+    protected ArrayList<Entity> closeEnemies = new ArrayList<>();
     protected Point destination = new Point(), secondaryDestination = new Point(),
             spawnPosition = new Point();
     protected PathData pathData;
@@ -54,7 +60,9 @@ public abstract class Entity extends GameObject {
     protected Update currentUpdate;
     protected ArrayList<TemporalChanger> changers;
     protected SpeedChanger knockBack;
-    protected Delay invicibleTime;
+    protected Delay invincibleTime;
+    protected ArrayList<Interactive> interactiveObjects;
+    protected ArrayList<Item> items = new ArrayList<>(1);
     //ONLINE
     protected boolean jumping;
     protected boolean hop;
@@ -63,7 +71,7 @@ public abstract class Entity extends GameObject {
 
     public Entity() {
         knockBack = new SpeedChanger(30);
-        invicibleTime = Delay.createInMilliseconds(950);
+        invincibleTime = Delay.createInMilliseconds(950);
         changers = new ArrayList<>(1);
         interactiveObjects = new ArrayList<>();
         resistance = 1;
@@ -76,6 +84,7 @@ public abstract class Entity extends GameObject {
         push.setCollidesFriends(true);
         addInteractive(push);
     }
+
 
     public abstract void updateOnline();
 
@@ -96,7 +105,9 @@ public abstract class Entity extends GameObject {
     }
 
     public void knockBack(int knockBackPower, double jumpPower, GameObject attacker) {
-        knockBack.setAttackerDirection(attacker.getDirection());
+        if (attacker instanceof Entity) {
+            knockBack.setAttackerDirection(((Entity) attacker).direction);
+        }
         Point closest = null;
         if (attacker instanceof Block) {
             closest = Methods.getClosestPointToRectangle(getX(), getY(), attacker.getCollision());
@@ -105,11 +116,11 @@ public abstract class Entity extends GameObject {
         int attackerY = closest != null ? closest.getY() : attacker.getY();
         int angle = (int) Methods.pointAngleCounterClockwise(attackerX, attackerY, x, y);
         knockBack.setSpeedInDirection(angle, Methods.interval(1, knockBackPower, 20));
-        setJumpForce(jumpPower);
+        setUpForce(jumpPower);
         setDirection(angle + 180);
         knockBack.setType(SpeedChanger.DECREASING);
         knockBack.start();
-        invicibleTime.start();
+        invincibleTime.start();
         addChanger(knockBack);
     }
 
@@ -121,8 +132,8 @@ public abstract class Entity extends GameObject {
         }
     }
 
-    public boolean isInvicibleState() {
-        return invicibleTime.isWorking();
+    public boolean isInvincibleState() {
+        return invincibleTime.isWorking();
     }
 
     public SpeedChanger getKnockBack() {
@@ -250,13 +261,13 @@ public abstract class Entity extends GameObject {
 
     @Override
     protected void updateWithGravity() {
-        if (floatHeight > 0 || jumpForce > 0) {
-            if (jumpForce == 0) {
-                jumpForce = -1;
+        if (floatHeight > 0 || upForce > 0) {
+            if (upForce == 0) {
+                upForce = -1;
             }
-            int sign = (int) Math.signum(jumpForce);
-            double change, remainder = Math.abs(jumpForce - (int) jumpForce);
-            for (double i = jumpForce; sign > 0 ? i > -1 : i < 1; i -= sign) {
+            int sign = (int) Math.signum(upForce);
+            double change, remainder = Math.abs(upForce - (int) upForce);
+            for (double i = upForce; sign > 0 ? i > -1 : i < 1; i -= sign) {
                 change = Math.abs(i) < 1 ? (Math.signum(i) == sign ? -i : i) : sign;
                 floatHeight += change;
                 if (isCollided(0, 0)) {
@@ -270,10 +281,10 @@ public abstract class Entity extends GameObject {
                     break;
                 }
             }
-            jumpForce -= gravity;
+            upForce -= gravity;
         } else {
             floatHeight = 0;
-            jumpForce = 0;
+            upForce = 0;
         }
         if (floatHeight < 0) {
             floatHeight = 0;
@@ -479,7 +490,6 @@ public abstract class Entity extends GameObject {
 
     public boolean isInSightRange(GameObject object) {
         if (Methods.pointDistanceSimple2(object.getX(), object.getY(), getX(), getY()) < sightRange2) {
-            int direction = getDirection();
             double angle = Methods.pointAngleCounterClockwise(getX(), getY(), object.getX(), object.getY());
             if (direction == 0) {
                 if (Math.abs(360 - angle) <= sightAngle / 2) {
@@ -513,6 +523,78 @@ public abstract class Entity extends GameObject {
             }
         }
         return true;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction % 360;
+        direction8Way = (int) (((float) direction / 45 + 0.5f) % 8);
+    }
+
+    public int getDirection8Way() {
+        return direction8Way;
+    }
+
+    public void setDirection8way(int direction8Way) {
+        this.direction8Way = direction8Way % 8;
+        direction = direction8Way * 45;
+    }
+
+    protected void addInteractive(Interactive interactive) {
+        interactiveObjects.add(interactive);
+    }
+
+    public boolean isInteractive() {
+        return interactiveObjects != null && !interactiveObjects.isEmpty();
+    }
+
+    public List<Interactive> getInteractiveObjects() {
+        return interactiveObjects;
+    }
+
+    public Interactive getInteractive(byte attackType) {
+        for (Interactive interactive : interactiveObjects) {
+            if (interactive.getAttackType() == attackType) {
+                return interactive;
+            }
+        }
+        return null;
+    }
+
+    public InteractiveActivator getAttackActivator(byte attackType, Object modifier) {
+        for (Interactive i : interactiveObjects) {
+            if (i.getAttackType() == attackType) {
+                i.setActionModifier(modifier);
+                return i.getActivator();
+            }
+        }
+        return null;
+    }
+
+    public InteractiveActivator getAttackActivator(Object modifier) {
+        Interactive ret = interactiveObjects.get(0);
+        ret.setActionModifier(modifier);
+        return ret.getActivator();
+    }
+
+    public InteractiveActivator getAttackActivator(byte attackType) {
+        for (Interactive i : interactiveObjects) {
+            if (i.getAttackType() == attackType) {
+                return i.getActivator();
+            }
+        }
+        return null;
+    }
+
+    public InteractiveActivator getAttackActivator() {
+        return interactiveObjects.get(0).getActivator();
+    }
+
+    protected void removeInteractive(Interactive interactive) {
+        interactiveObjects.remove(interactive);
     }
 
     public boolean isAbleToMove() {
@@ -649,7 +731,7 @@ public abstract class Entity extends GameObject {
         return changers;
     }
 
-    public ArrayList<GameObject> getCloseEnemies() {
+    public ArrayList<Entity> getCloseEnemies() {
         return closeEnemies;
     }
 

@@ -11,6 +11,7 @@ import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
 import game.gameobject.entities.Mob;
+import game.gameobject.entities.Player;
 import game.gameobject.stats.MobStats;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
@@ -174,7 +175,7 @@ public class Plurret extends Mob {
 
     private void rise() {
         if (rising) {
-            setJumpForce(2);
+            setUpForce(2);
             if (getFloatHeight() >= highLevel) {
                 rising = false;
                 lowLevel = 334 + random.next(4);
@@ -188,15 +189,15 @@ public class Plurret extends Mob {
     }
 
     @Override
-    protected void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+    protected void lookForCloseEntities(Player[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
-        GameObject object;
+        Player player;
         for (int i = 0; i < getPlace().playersCount; i++) {
-            object = players[i];
-            if (object.getMap() == map && object.getCollision().isHitable() && object.getFloatHeight() + object.getActualHeight() > floatHeight && (isHeard
-                    (object) || isSeen(object))) {
-                closeEnemies.add(object);
+            player = players[i];
+            if (player.getMap() == map && player.getCollision().isHitable() && player.getFloatHeight() + player.getActualHeight() > floatHeight && (isHeard
+                    (player) || isSeen(player))) {
+                closeEnemies.add(player);
             }
         }
         for (Mob mob : mobs) {

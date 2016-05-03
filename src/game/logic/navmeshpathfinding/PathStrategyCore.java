@@ -11,7 +11,6 @@ import engine.utilities.Methods;
 import engine.utilities.Point;
 import engine.utilities.PointContainer;
 import engine.utilities.PointedValue;
-import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import net.jodk.lang.FastMath;
 
@@ -475,7 +474,7 @@ class PathStrategyCore {
         return null;
     }
 
-    public static Figure anyFigureInAWay(Polygon poly, List<Figure> close, List<GameObject> closeEnemies) {
+    public static Figure anyFigureInAWay(Polygon poly, List<Figure> close, List<Entity> closeEnemies) {
         for (Figure figure : close) {
             if (!closeEnemies.contains(figure.getOwner())) {
                 if (poly.contains(figure.getXCentral(), figure.getYCentral())) {

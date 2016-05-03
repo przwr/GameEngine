@@ -5,7 +5,7 @@
  */
 package game;
 
-import game.gameobject.GameObject;
+import game.gameobject.entities.Player;
 
 /**
  * @author przemek
@@ -13,7 +13,7 @@ import game.gameobject.GameObject;
 public abstract class ScreenPlace {
 
     public final Game game;
-    public GameObject[] players;
+    public Player[] players;
 
     public ScreenPlace(Game game) {
         this.game = game;

@@ -8,7 +8,6 @@ package gamecontent;
 import engine.utilities.ErrorHandler;
 import game.Game;
 import game.Settings;
-import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.place.map.Map;
@@ -226,11 +225,11 @@ public class MyGameOnline extends GameOnline {
                     for (int i = 0; i < removeIDs.length; i++) {
                         for (int p = 1; p < tempPlace.playersCount; p++) {
                             if (game.players[p].playerID == removeIDs[i]) {
-                                ((Player) tempPlace.players[p]).setNotInGame();
+                                tempPlace.players[p].setNotInGame();
                                 tempPlace.players[p].getMap().deleteObject(tempPlace.players[p]);
                                 if (p != tempPlace.playersCount - 1) {
                                     Player tempG = game.players[tempPlace.playersCount - 1];
-                                    GameObject tempP = tempPlace.players[tempPlace.playersCount - 1];
+                                    Player tempP = tempPlace.players[tempPlace.playersCount - 1];
                                     game.players[tempPlace.playersCount - 1] = game.players[p];
                                     tempPlace.players[tempPlace.playersCount - 1] = tempPlace.players[p];
                                     game.players[p] = tempG;

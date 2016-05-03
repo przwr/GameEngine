@@ -17,7 +17,6 @@ import game.text.fonts.TextMaster;
 import game.text.fonts.TextPiece;
 import net.packets.Update;
 import org.newdawn.slick.Color;
-import sounds.Sound;
 import sounds.Sound3D;
 
 /**
@@ -25,22 +24,12 @@ import sounds.Sound3D;
  */
 public class DamageNumber extends Entity {
 
-    private Sound3D normalHit;
-
-    public final void initializeSounds() {
-        if (normalHit == null) {
-            normalHit = Settings.sounds.get3DSoundEffect("slash.wav", this);
-            normalHit.setSoundRanges(0.8f, 1.1f);
-            normalHit.setRandomized(0.1f);
-        }
-    }
-    
     public static TextPiece text;
     private static int size = 20;
     private final Color color;
     private final int damage;
     private final Delay time;
-
+    private Sound3D normalHit;
     public DamageNumber(int damage, int health, int x, int y, int height, Place place) {
         initialize("damage", x, y);
         initializeSounds();
@@ -50,7 +39,7 @@ public class DamageNumber extends Entity {
         RandomGenerator rand = RandomGenerator.create();
         int direction = rand.random(360);
         int speed = Math.min(rand.randomInRange(damage / 20, damage / 10) + 1, 5);
-        setJumpForce(Math.min(rand.randomInRange(damage / 20, damage / 10) + 1, 2));
+        setUpForce(Math.min(rand.randomInRange(damage / 20, damage / 10) + 1, 2));
         setGravity(0.1);
         this.xSpeed = Methods.xRadius(direction, speed);
         this.ySpeed = -Methods.yRadius(direction, speed);
@@ -82,6 +71,14 @@ public class DamageNumber extends Entity {
             text = new TextPiece("Menu", size, place.game.font, (int) (size * 5 * Settings.nativeScale), true);
         }
         normalHit.play();
+    }
+
+    public final void initializeSounds() {
+        if (normalHit == null) {
+            normalHit = Settings.sounds.get3DSoundEffect("slash.wav", this);
+            normalHit.setSoundRanges(0.8f, 1.1f);
+            normalHit.setRandomized(0.1f);
+        }
     }
 
     @Override

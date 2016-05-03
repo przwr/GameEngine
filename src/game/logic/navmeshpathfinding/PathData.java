@@ -123,7 +123,7 @@ public class PathData {
         return PathStrategyCore.anyFigureInAWay(poly, close) != null;
     }
 
-    public boolean isAnyObstacleBetween(Entity owner, int xDest, int yDest, List<GameObject> closeEnemies) {
+    public boolean isAnyObstacleBetween(Entity owner, int xDest, int yDest, List<Entity> closeEnemies) {
         NavigationMesh mesh = owner.getMap().getArea(owner.getArea()).getNavigationMesh();
         int xDelta = xDest - owner.getX();
         int yDelta = yDest - owner.getY();

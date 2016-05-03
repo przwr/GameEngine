@@ -5,7 +5,7 @@
  */
 package game.gameobject.interactive.action;
 
-import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.items.Weapon;
@@ -17,7 +17,7 @@ import net.jodk.lang.FastMath;
 public class InteractiveActionBowHurt extends InteractiveAction {
 
     @Override
-    public void act(GameObject object, Interactive activator, InteractiveResponse response, Object modifier) {
+    public void act(Entity object, Interactive activator, InteractiveResponse response, Object modifier) {
         recalculateData(activator, response);
         object.getStats().decreaseHealth(response);
     }

@@ -14,7 +14,9 @@ import engine.utilities.Methods;
 import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
+import game.gameobject.entities.Player;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.LineInteractiveCollision;
@@ -52,7 +54,7 @@ public class Tongub extends Mob {
                     brake(2);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
                     if (closeEnemies.size() * 1.5 <= closeFriends.size()) {
-                        GameObject closerEnemy = getCloserEnemy();
+                        Entity closerEnemy = getCloserEnemy();
                         if (closerEnemy != null && isInHalfHearingRange(closerEnemy)) {
                             state = attack;
                             target = closerEnemy;
@@ -294,14 +296,14 @@ public class Tongub extends Mob {
     }
 
     @Override
-    protected void lookForCloseEntities(GameObject[] players, List<Mob> mobs) {
+    protected void lookForCloseEntities(Player[] players, List<Mob> mobs) {
         closeEnemies.clear();
         closeFriends.clear();
-        GameObject object;
+        Player player;
         for (int i = 0; i < getPlace().playersCount; i++) {
-            object = players[i];
-            if (object.getMap() == map && object.getCollision().isHitable() && isInHalfHearingRange(object)) {
-                closeEnemies.add(object);
+            player = players[i];
+            if (player.getMap() == map && player.getCollision().isHitable() && isInHalfHearingRange(player)) {
+                closeEnemies.add(player);
             }
         }
         for (Mob mob : mobs) {
@@ -321,10 +323,10 @@ public class Tongub extends Mob {
         destination.set(getRandomPointInDistance((int) (sightRange * 0.375), xD, yD));
     }
 
-    private GameObject getCloserEnemy() {
-        for (GameObject object : closeEnemies) {
-            if (isInHalfHearingRange(object)) {
-                return object;
+    private Entity getCloserEnemy() {
+        for (Entity entity : closeEnemies) {
+            if (isInHalfHearingRange(entity)) {
+                return entity;
             }
         }
         return null;

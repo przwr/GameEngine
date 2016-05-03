@@ -10,6 +10,7 @@ import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 
 /**
  * @author przemek
@@ -62,7 +63,7 @@ public class Animation implements Appearance {
 
     @Override
     public void renderStaticShadow(GameObject object) {
-        int direction = object.getDirection8Way();
+        int direction = ((Entity) object).getDirection8Way();
         Point shift = getShadowShift(currentFrame);
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
         float changeX = shift.getX() + (float) (object.getFloatHeight());

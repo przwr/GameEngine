@@ -12,6 +12,7 @@ import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.MobStats;
 import game.place.Place;
@@ -74,7 +75,9 @@ public class Dummy extends Mob {
 
     @Override
     public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
-        knockBack.setAttackerDirection(attacker.getDirection());
+        if (attacker instanceof Entity) {
+            knockBack.setAttackerDirection(((Entity) attacker).getDirection());
+        }
         int attackerX = attacker.getX() + (attacker instanceof Block ? attacker.getCollision().getWidthHalf() : 0);
         int attackerY = attacker.getY() + (attacker instanceof Block ? attacker.getCollision().getHeightHalf() : 0);
         setDirection8way(Methods.pointAngle8Directions(attackerX, attackerY, x, y));

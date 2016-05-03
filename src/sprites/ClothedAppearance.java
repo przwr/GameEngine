@@ -2,6 +2,7 @@ package sprites;
 
 import engine.utilities.*;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.place.Place;
 import gamecontent.equipment.Cloth;
 import org.lwjgl.opengl.Display;
@@ -444,7 +445,7 @@ public class ClothedAppearance implements Appearance {
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
         float changeX = shift.getX() + (float) object.getFloatHeight() / 2;
         float changeY = shift.getY() - (float) object.getFloatHeight() / scale;
-        int direction = object.getDirection8Way();
+        int direction = ((Entity) object).getDirection8Way();
         upperBody.changeDirection((direction + 2) % 8);
         lowerBody.changeDirection((direction + 2) % 8);
         Drawer.regularShader.scaleNoReset(1f, scale);

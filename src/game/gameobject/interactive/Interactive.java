@@ -8,6 +8,7 @@ package game.gameobject.interactive;
 import collision.Block;
 import collision.Rectangle;
 import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.action.InteractiveAction;
@@ -35,7 +36,7 @@ public class Interactive {
     public static final InteractiveAction BOW_HURT = new InteractiveActionBowHurt();
     public static final InteractiveActivator ALWAYS = new InteractiveActivatorAlways();
     private final static int PLAYERS = 0, ENVIRONMENT = 1, MOBS = 2, FRIENDS = 3, SELF = 4;
-    private final GameObject owner;
+    private final Entity owner;
     private final InteractiveCollision collision;
     private final InteractiveAction action;
     private final InteractiveActivator activator;
@@ -52,7 +53,7 @@ public class Interactive {
     private ArrayList<GameObject> exceptions;
     private Object actionModifier;
 
-    private Interactive(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte
+    private Interactive(Entity owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action, byte weaponType, byte
             attackType, float strenght, float knockback) {
         this.owner = owner;
         this.activator = activator;
@@ -66,21 +67,21 @@ public class Interactive {
         this.environmentCollision.setOwner(owner);
     }
 
-    public static Interactive create(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
+    public static Interactive create(Entity owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
                                      byte weaponType, byte attackType, float strenght, float knockback, boolean... collides) {
         Interactive interactive = new Interactive(owner, activator, collision, action, weaponType, attackType, strenght, knockback);
         setCollides(collides, interactive);
         return interactive;
     }
 
-    public static Interactive createNotWeapon(GameObject owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
+    public static Interactive createNotWeapon(Entity owner, InteractiveActivator activator, InteractiveCollision collision, InteractiveAction action,
                                               byte attackType, float strenght, float knockback, boolean... collides) {
         Interactive interactive = new Interactive(owner, activator, collision, action, (byte) -1, attackType, strenght, knockback);
         setCollides(collides, interactive);
         return interactive;
     }
 
-    public static Interactive createSpawner(GameObject owner, InteractiveActivator activator, InteractiveAction action, byte weaponType, byte attackType,
+    public static Interactive createSpawner(Entity owner, InteractiveActivator activator, InteractiveAction action, byte weaponType, byte attackType,
                                             boolean... collides) {
         Interactive interactive = new Interactive(owner, activator, null, action, weaponType, attackType, 0, 0);
         setCollides(collides, interactive);
@@ -129,7 +130,7 @@ public class Interactive {
         this.actionModifier = modifier;
     }
 
-    public void actIfActivated(GameObject[] players, List<Mob> mobs) {
+    public void actIfActivated(Player[] players, List<Mob> mobs) {
         activated = false;
         if (owner != null) {
             if (collisionActivates()) {
@@ -164,9 +165,9 @@ public class Interactive {
                     }
                 }
                 if (collidesPlayers) {
-                    for (GameObject player : players) {
-                        if (((Player) player).isInGame() && !isException(player) && (collidesSelf || (player != owner))) {
-                            InteractiveResponse response = collision.collide(owner, (Player) player, attackType);
+                    for (Player player : players) {
+                        if (player.isInGame() && !isException(player) && (collidesSelf || (player != owner))) {
+                            InteractiveResponse response = collision.collide(owner, player, attackType);
                             if (response.getPixels() > 0) {
                                 activated = true;
                                 action.act(player, this, response, actionModifier);
@@ -182,7 +183,7 @@ public class Interactive {
         }
     }
 
-    public boolean wouldCollide(GameObject object) {
+    public boolean wouldCollide(Entity object) {
         collision.updatePosition(owner);
         if (object instanceof Player) {
             if (collidesPlayers) {
@@ -282,7 +283,7 @@ public class Interactive {
         return collision != null;
     }
 
-    public GameObject getOwner() {
+    public Entity getOwner() {
         return owner;
     }
 

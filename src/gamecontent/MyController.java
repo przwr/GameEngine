@@ -16,11 +16,10 @@ import game.gameobject.stats.PlayerStats;
 import game.gameobject.temporalmodifiers.Charger;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.place.Place;
+import sounds.Sound;
 import sprites.ClothedAppearance;
 
-import static game.gameobject.GameObject.*;
-import sounds.Sound;
-import sounds.Sound3D;
+import static game.gameobject.entities.Entity.*;
 
 /**
  * @author przemek
@@ -46,6 +45,8 @@ public class MyController extends PlayerController {
     private final Charger chargeValue;
     private final boolean[] blockedInputs;
     private final byte[] changedButtonState;
+    float tmp = 3;
+    Sound lastSound = null;
     private int tempDirection, sideDirection;
     private byte firstAttackType, secondAttackType, chargingType, lastAttackButton, lastAttackType;
     private boolean running, sneaking, diagonal, inputLag, charging, attacking, attacked, scoping;
@@ -173,9 +174,6 @@ public class MyController extends PlayerController {
             lastEnergyUp = Place.getDayCycle().getCurrentTimeInMiliSeconds();
         }
     }
-
-    float tmp = 3;
-    Sound lastSound = null;
 
     private void updateBlock() {
         if (actions[INPUT_BLOCK].isKeyClicked()) {
@@ -773,7 +771,7 @@ public class MyController extends PlayerController {
         inControl.addChanger(jumpMaker);
         jumpDelay.stop();
         setInputBlocked(true, INPUT_ATTACK, INPUT_SECOND_ATTACK);
-        inControl.setJumpForce(jumpMaker.getTotalTime() / 4);
+        inControl.setUpForce(jumpMaker.getTotalTime() / 4);
         jumpLag = jumpMaker.getTotalTime() / 2;
         setInputLag(jumpLag);
         animation.setFPS(60);

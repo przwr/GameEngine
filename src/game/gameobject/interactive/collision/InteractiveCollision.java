@@ -9,14 +9,14 @@ import collision.Figure;
 import collision.Rectangle;
 import engine.utilities.Methods;
 import engine.utilities.Point;
-import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import net.jodk.lang.FastMath;
 
 import java.awt.geom.Line2D;
 
-import static game.gameobject.GameObject.*;
+import static game.gameobject.entities.Entity.*;
 
 /**
  * @author przemek
@@ -61,15 +61,15 @@ public abstract class InteractiveCollision {
         return -1;
     }
 
-    public abstract void updatePosition(GameObject owner);
+    public abstract void updatePosition(Entity owner);
 
-    protected abstract InteractiveResponse collideImplementation(GameObject owner, GameObject object, byte attackType);
+    protected abstract InteractiveResponse collideImplementation(Entity owner, Entity object, byte attackType);
 
-    protected abstract InteractiveResponse collideImplementation(GameObject owner, Player player, byte attackType);
+    protected abstract InteractiveResponse collideImplementation(Entity owner, Player player, byte attackType);
 
-    public abstract void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half);
+    public abstract void setEnvironmentCollision(Rectangle environmentCollision, Entity owner, boolean half);
 
-    public InteractiveResponse collide(GameObject owner, GameObject object, byte attackType) {
+    public InteractiveResponse collide(Entity owner, Entity object, byte attackType) {
         if (owner.getCollision().isCollide() && object.getCollision().isHitable()) {
             return collideImplementation(owner, object, attackType);
         } else {
@@ -77,7 +77,7 @@ public abstract class InteractiveCollision {
         }
     }
 
-    public InteractiveResponse collide(GameObject owner, Player player, byte attackType) {
+    public InteractiveResponse collide(Entity owner, Player player, byte attackType) {
         if (owner.getCollision().isCollide() && player.getCollision().isHitable()) {
             return collideImplementation(owner, player, attackType);
         } else {
@@ -119,7 +119,7 @@ public abstract class InteractiveCollision {
         return directions[Math.abs(objectDirection - ownerDirection)];
     }
 
-    public abstract void render(GameObject owner);
+    public abstract void render(Entity owner);
 
     public Point getPosition() {
         return position;

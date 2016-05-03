@@ -3,12 +3,12 @@ package game.gameobject.interactive.collision;
 import collision.Rectangle;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
-import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import org.newdawn.slick.Color;
 
-import static game.gameobject.GameObject.*;
+import static game.gameobject.entities.Entity.*;
 
 /**
  * @author przemek
@@ -24,7 +24,7 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void updatePosition(GameObject owner) {
+    public void updatePosition(Entity owner) {
         int x = owner.getX();
         int y = owner.getY();
         switch (owner.getDirection8Way()) {
@@ -61,17 +61,17 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    protected InteractiveResponse collideImplementation(GameObject owner, GameObject object, byte attackType) {
-        if (object != null && object.getCollision() != null) {
-            int objectBottom = (int) object.getFloatHeight();
-            int objectTop = objectBottom + object.getActualHeight();
+    protected InteractiveResponse collideImplementation(Entity owner, Entity entity, byte attackType) {
+        if (entity != null && entity.getCollision() != null) {
+            int objectBottom = (int) entity.getFloatHeight();
+            int objectTop = objectBottom + entity.getActualHeight();
             int bottom = (int) owner.getFloatHeight() + fromBottom;
             int top = bottom + height;
             if (objectTop > bottom && objectBottom < top) {
-                int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), object.getX(), object.getY(), radius, object.getCollisionWidth() / 2);
+                int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), entity.getX(), entity.getY(), radius, entity.getCollisionWidth() / 2);
                 if (pixelsIn > 0) {
                     int direction = owner.getDirection8Way();
-                    double angle = Methods.pointAngleCounterClockwise(position.getX(), position.getY(), object.getX(), object.getY());
+                    double angle = Methods.pointAngleCounterClockwise(position.getX(), position.getY(), entity.getX(), entity.getY());
                     if (direction == 0) {
                         direction = 8;
                     }
@@ -81,8 +81,8 @@ public class CurveInteractiveCollision extends InteractiveCollision {
                     double angleDifference = direction * 45 - angle;
                     if (Math.abs(angleDifference) <= activationAngle || Math.abs(angleDifference - 360) <= activationAngle || Math.abs(angleDifference + 360)
                             <= activationAngle) {
-                        response.setResponse(pixelsIn, shift + radius, (byte) (calculateInteractionDirection(object.getDirection8Way(),
-                                object.getCollision(), owner.getX(), owner.getY())), attackType, owner);
+                        response.setResponse(pixelsIn, shift + radius, (byte) (calculateInteractionDirection(entity.getDirection8Way(),
+                                entity.getCollision(), owner.getX(), owner.getY())), attackType, owner);
                         return response;
                     }
                 }
@@ -92,7 +92,7 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    protected InteractiveResponse collideImplementation(GameObject owner, Player player, byte attackType) {
+    protected InteractiveResponse collideImplementation(Entity owner, Player player, byte attackType) {
         if (player != null && player.isInGame()) {
             int playerBottom = (int) player.getFloatHeight();
             int playerTop = playerBottom + player.getActualHeight();
@@ -123,7 +123,7 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
     @Override
-    public void render(GameObject owner) {
+    public void render(Entity owner) {
         Drawer.setColorStatic(new Color(0.9f, 0.1f, 0.1f));
         int angle = 360 - (owner.getDirection8Way() * 45);
         Drawer.drawEllipseSector(position.getX(), position.getY(), radius, Methods.roundDouble(radius * Methods.ONE_BY_SQRT_ROOT_OF_2), angle -
@@ -132,10 +132,10 @@ public class CurveInteractiveCollision extends InteractiveCollision {
     }
 
 
-    public void setEnvironmentCollision(Rectangle environmentCollision, GameObject owner, boolean half) {
+    public void setEnvironmentCollision(Rectangle environmentCollision, Entity owner, boolean half) {
         int r = half ? radius / 2 : radius;
         int sqrt2Radius = Methods.roundDouble(Methods.ONE_BY_SQRT_ROOT_OF_2 * r);
-        switch (environmentCollision.getOwner().getDirection8Way()) {
+        switch (((Entity) environmentCollision.getOwner()).getDirection8Way()) {
             case RIGHT:
                 environmentCollision.setXStart(position.getX());
                 environmentCollision.setYStart(position.getY() - sqrt2Radius);

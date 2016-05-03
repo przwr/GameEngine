@@ -5,7 +5,7 @@
  */
 package game.gameobject.interactive.action;
 
-import game.gameobject.GameObject;
+import game.gameobject.entities.Entity;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.InteractiveResponse;
 
@@ -14,9 +14,9 @@ import game.gameobject.interactive.InteractiveResponse;
  */
 public abstract class InteractiveAction {
 
-    public void act(GameObject object, Interactive activator, InteractiveResponse response) {
-        act(object, activator, response, null);
+    public void act(Entity entity, Interactive activator, InteractiveResponse response) {
+        act(entity, activator, response, null);
     }
-    
-    abstract public void act(GameObject object, Interactive activator, InteractiveResponse response, Object modifier);
+
+    abstract public void act(Entity entity, Interactive activator, InteractiveResponse response, Object modifier);
 }

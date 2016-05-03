@@ -38,13 +38,6 @@ public class Melodia extends Mob {
     private String dialog = "0";
     private Sound3D piano;
 
-    public final void initializeSounds() {
-        if (piano == null) {
-            piano = Settings.sounds.get3DBGSound("melody.ogg", this);
-            piano.setSoundRanges(0.7f);
-        }
-    }
-
     public Melodia(int x, int y, Place place, short mobID, Shen shen, Rock rock) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         initializeSounds();
@@ -58,6 +51,13 @@ public class Melodia extends Mob {
         setDirection8way(DOWN);
         this.shen = shen;
         this.rock = rock;
+    }
+
+    public final void initializeSounds() {
+        if (piano == null) {
+            piano = Settings.sounds.get3DBGSound("melody.ogg", this);
+            piano.setSoundRanges(0.7f);
+        }
     }
 
     @Override
@@ -76,10 +76,9 @@ public class Melodia extends Mob {
                     player.getTextController().startFromFile("npcdemo", dialog);
                     player.getTextController().addEventOnBranchEnd(() -> {
                         if (player.getFirstWeapon() == null) {
-                            Weapon sword = new Weapon("Sword", SWORD);
+                            Weapon sword = new Weapon("Sword", 2, SWORD);
                             sword.setModifier(1.2f);
                             player.addWeapon(sword);
-//                        map.deleteBlock(4096, 6592); // otworzenie 2 przejścia
                         }
                         dialog = "2";
                     }, "11", "12");

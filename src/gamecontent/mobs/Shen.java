@@ -14,6 +14,7 @@ import engine.utilities.Methods;
 import engine.utilities.RandomGenerator;
 import game.gameobject.GameObject;
 import game.gameobject.entities.ActionState;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
@@ -112,7 +113,7 @@ public class Shen extends Mob {
                 if (!fold) {
                     stats.setProtectionState(true);
                     lookForCloseEntities(place.players, map.getArea(area).getNearSolidMobs());
-                    GameObject closerEnemy = getCloserEnemy();
+                    Entity closerEnemy = getCloserEnemy();
                     if (!unfold && animation.getDirectionalFrameIndex() == 7) {
                         state = idle;
                         stats.setProtectionState(false);
@@ -188,7 +189,7 @@ public class Shen extends Mob {
                     bouncer.start();
                     stats.setUnhurtableState(true);
                     addChanger(bouncer);
-                    setJumpForce((Math.abs(xSpeed) + Math.abs(ySpeed)) / 2);
+                    setUpForce((Math.abs(xSpeed) + Math.abs(ySpeed)) / 2);
                     xSpeed = 0;
                     ySpeed = 0;
                 } else if (bouncer.isOver() && animation.getDirectionalFrameIndex() != 7) {
@@ -357,10 +358,10 @@ public class Shen extends Mob {
         return false;
     }
 
-    private GameObject getCloserEnemy() {
-        for (GameObject object : closeEnemies) {
-            if (isInHalfHearingRange(object)) {
-                return object;
+    private Entity getCloserEnemy() {
+        for (Entity entity : closeEnemies) {
+            if (isInHalfHearingRange(entity)) {
+                return entity;
             }
         }
         return null;
