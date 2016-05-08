@@ -61,9 +61,17 @@ public class ObjectFGTile extends ForegroundTile {
     }
 
     @Override
+    public int getYSpriteEnd(boolean... forCover) {
+        return super.getYSpriteEnd(forCover) + depth + Place.tileSize / 2;
+    }
+    
+    @Override
     public void render() {
         if (map != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
+            if (!simpleLighting) {
+                
+            }
             for (Point piece : tileStack) {
                 spriteSheet.renderPiece(piece.getX(), piece.getY());
             }
@@ -75,7 +83,7 @@ public class ObjectFGTile extends ForegroundTile {
                 }
                 int tile = Place.tileSize;
                 Drawer.drawRectangle(tile / 2 - 1, tile, 2, depth - tile / 2);
-                Drawer.drawCircle(tile / 2 - 1, depth - tile / 2, (int) (tile * 0.3), 10);
+                Drawer.drawCircle(tile / 2 - 1, depth + tile / 2, (int) (tile * 0.3), 10);
                 Drawer.refreshForRegularDrawing();
             }
         }

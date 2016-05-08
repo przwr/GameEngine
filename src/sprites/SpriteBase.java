@@ -125,25 +125,24 @@ public class SpriteBase {
         int width, height, startX, startY, pieceWidth, pieceHeight, xOffset, yOffset, actualWidth, actualHeight;
         boolean spriteSheet, movingStart = false;
         PointedValue[] startPoints = null;
-        String image, key, path;
+        String image, key;
         Sprite sprite;
         folder = fullFolderPath(folder);
         try {
             FileReader fl = new FileReader(folder + name + ".spr");
             BufferedReader input = new BufferedReader(fl);
-            String line = input.readLine();
-            String[] data = line.split(";");
-            key = data[0];
-            spriteSheet = data[1].equals("1");
-            line = input.readLine();
-            image = line;
-
-            image = image.replace("\\", File.separator);
-            image = image.replace("/", File.separator);
+            image = folder + name + ".png";
+            key = name;
+            String line;
+            String[] data;
 
             data = input.readLine().split(";");
             width = Integer.parseInt(data[0]);
             height = Integer.parseInt(data[1]);
+            spriteSheet = data[2].equals("1");
+            if (data.length > 3) {
+                image = folder + data[3];
+            }
 
             data = input.readLine().split(";");
             startX = Integer.parseInt(data[0]);
@@ -196,15 +195,14 @@ public class SpriteBase {
             ErrorHandler.error("File " + folder + name + " not found!\n" + e.getMessage());
             return null;
         }
-        path = folder + image;
         if (spriteSheet) {
             if (movingStart) {
-                sprite = SpriteSheet.createWithMovingStart(path, folder, pieceWidth, pieceHeight, startX, startY, this, startPoints);
+                sprite = SpriteSheet.createWithMovingStart(image, folder, pieceWidth, pieceHeight, startX, startY, this, startPoints);
             } else {
-                sprite = SpriteSheet.create(path, folder, pieceWidth, pieceHeight, startX, startY, this);
+                sprite = SpriteSheet.create(image, folder, pieceWidth, pieceHeight, startX, startY, this);
             }
         } else {
-            sprite = Sprite.create(path, folder, width, height, startX, startY, this);
+            sprite = Sprite.create(image, folder, width, height, startX, startY, this);
         }
         sprite.setKey(key);
         sprite.xOffset = xOffset;
@@ -232,7 +230,7 @@ public class SpriteBase {
     }
 
     private Sprite loadSpriteInSize(String name, String folder, int width, int height, boolean... now) {
-        String image, key, path;
+        String image;
         Sprite sprite;
         folder = fullFolderPath(folder);
         try {
@@ -240,18 +238,19 @@ public class SpriteBase {
             BufferedReader input = new BufferedReader(fl);
             String line = input.readLine();
             String[] data = line.split(";");
-            key = data[0];
-            line = input.readLine();
-            image = line;
+            if (data.length > 3) {
+                image = folder + data[3];
+            } else {
+                image = folder + name + ".png";
+            }
             input.close();
             fl.close();
         } catch (IOException e) {
             ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
-        path = folder + image;
-        sprite = Sprite.create(path, folder, width, height, 0, 0, this);
-        sprite.setKey(key);
+        sprite = Sprite.create(image, folder, width, height, 0, 0, this);
+        sprite.setKey(name);
         sprite.AA = true;
         loadTextureIfRequired(now, sprite);
         return sprite;
@@ -284,15 +283,18 @@ public class SpriteBase {
         try {
             FileReader fl = new FileReader(folder + name + ".spr");
             BufferedReader input = new BufferedReader(fl);
-            String line = input.readLine();
-            String[] data = line.split(";");
-            key = data[0];
-            spriteSheet = data[1].equals("1");
-            line = input.readLine();
-            image = line;
+            String line;
+            String[] data;
+            key = name;
             data = input.readLine().split(";");
             width = (int) (Integer.parseInt(data[0]) * Settings.nativeScale);
             height = (int) (Integer.parseInt(data[1]) * Settings.nativeScale);
+            spriteSheet = data[2].equals("1");
+            if (data.length > 3) {
+                image = folder + data[3];
+            } else {
+                image = folder + name + ".png";
+            }
             data = input.readLine().split(";");
             startX = (int) (Integer.parseInt(data[0]) * Settings.nativeScale);
             startY = (int) (Integer.parseInt(data[1]) * Settings.nativeScale);
@@ -305,11 +307,10 @@ public class SpriteBase {
             ErrorHandler.error("File " + name + " not found!\n" + e.getMessage());
             return null;
         }
-        path = folder + image;
         if (spriteSheet) {
-            sprite = SpriteSheet.createSetScale(path, folder, pieceWidth, pieceHeight, startX, startY, this);
+            sprite = SpriteSheet.createSetScale(image, folder, pieceWidth, pieceHeight, startX, startY, this);
         } else {
-            sprite = Sprite.create(path, folder, width, height, startX, startY, this);
+            sprite = Sprite.create(image, folder, width, height, startX, startY, this);
         }
         sprite.setKey(key);
         sprite.AA = true;

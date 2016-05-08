@@ -40,7 +40,7 @@ public class Sound {
     private float length;
     private boolean isMusic;
     private float gain = 1f, pitch = 1f, randomDelta;
-    private boolean looped, randomized, fading;
+    private boolean looped, randomized, fadingToResume, fadingToStop;
 
     public Sound(String name, SoundBase store, int buffer, boolean isMusic) {
         this.store = store;
@@ -95,6 +95,11 @@ public class Sound {
 
     public void setVolumeAndUpdate(float volume) {
         this.gain = Methods.interval(0, volume, 1);
+        updateVolume();
+    }
+    
+    public void addVolumeAndUpdate(float volume) {
+        this.gain = Methods.interval(0, this.gain + volume, 1);
         updateVolume();
     }
 
@@ -162,7 +167,7 @@ public class Sound {
     }
 
     public Sound playSmooth(int time, float endVolume) {
-        if (buffer != -1 && !isFading()) {
+        if (buffer != -1 && !fadingToResume) {
             if (isPlaying()) {
                 if (!isMusic) {
                     Sound copy = new Sound(this);
@@ -191,7 +196,7 @@ public class Sound {
     }
 
     public void stopSmooth(int time) {
-        if (isIndexUsable && !isFading()) {
+        if (isIndexUsable && !fadingToStop) {
             store.getFader().fadeSound(this, time, false);
         }
     }
@@ -203,7 +208,7 @@ public class Sound {
     }
 
     public void pauseSmooth(int time) {
-        if (isIndexUsable && !isFading()) {
+        if (isIndexUsable && !fadingToStop) {
             store.getFader().fadeSound(this, time, true);
         }
     }
@@ -223,7 +228,7 @@ public class Sound {
     }
 
     public void resumeSmooth(int time, float endVolume) {
-        if (isIndexUsable) {
+        if (isIndexUsable && !fadingToResume) {
             store.resumeSource(index);
             store.getFader().resumeSound(this, time, endVolume);
         }
@@ -293,11 +298,19 @@ public class Sound {
         return name;
     }
 
-    public boolean isFading() {
-        return fading;
+    public boolean isFadingToResume() {
+        return fadingToResume;
     }
     
-    void setFading(boolean fading) {
-        this.fading = fading;
+    void setFadingToResume(boolean fading) {
+        this.fadingToResume = fading;
+    }
+
+    public boolean isFadingToStop() {
+        return fadingToStop;
+    }
+    
+    void setFadingToStop(boolean fading) {
+        this.fadingToStop = fading;
     }
 }

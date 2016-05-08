@@ -13,14 +13,13 @@ import java.util.logging.Logger;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  * @author Wojtek
  */
 public class Converter {    //Jakby ktoś chciał na szybko przekonwertować duże ilości plików <(^.^<)
 
-    private static final String destination = "res/objects/demo/testMap.puz";
-    private static final String extension = ".puz";
+    private static final String destination = "res/textures";
+    private static final String extension = ".spr";
     private static final boolean openFolders = true;
     private static final boolean isThisOkayMommy = true;   //Trzeba uważać :D
 
@@ -61,25 +60,18 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
             String line;
             String placer;
             String[] data;
-            boolean analysing = true;
+            boolean spritesheet = true;
+
+            line = read.readLine();
+            data = line.split(";");
+            spritesheet = data[1].equals("1");
+            read.readLine();
+            line = read.readLine();
+            placer = line + ";" + (spritesheet ? "1" : "0");
+            buffer.add(placer);
+            
             while ((line = read.readLine()) != null) {
-                if (line.startsWith("b")) {
-                    analysing = false;
-                }
-                if (analysing && line.startsWith("ft")) {
-                    data = line.split(":");
-                    placer = "ft";
-                    for (int i = 1; i < data.length; i++) {
-                        if (i == 5) {
-                            placer += ":" + (data[5].equals("0") ? OpticProperties.IN_SHADE_NO_SHADOW : data[5]);
-                        } else {
-                            placer += ":" + data[i];
-                        }
-                    }
-                    buffer.add(placer);
-                } else {
-                    buffer.add(line);
-                }
+                buffer.add(line);
             }
             read.close();
             fl.close();
@@ -98,6 +90,42 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private static Collection<String> readObjects(File file) {
+        ArrayList<String> buffer = new ArrayList<>();
+        try {
+            FileReader fl = new FileReader(file);
+            BufferedReader read = new BufferedReader(fl);
+            String line;
+            String placer;
+            String[] data;
+            boolean analysing = true;
+            while ((line = read.readLine()) != null) {
+                if (line.startsWith("b")) {
+                    analysing = false;
+                }
+                if (analysing && line.startsWith("ft")) {
+                    data = line.split(":");
+                    placer = "ft";
+                    for (int i = 1; i < data.length; i++) {
+                        if (i == 5) {
+                            placer += ":" + (data[5].equals("2") ? OpticProperties.IN_SHADE_NO_SHADOW : data[5]);
+                        } else {
+                            placer += ":" + data[i];
+                        }
+                    }
+                    buffer.add(placer);
+                } else {
+                    buffer.add(line);
+                }
+            }
+            read.close();
+            fl.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return buffer;
     }
 
 }

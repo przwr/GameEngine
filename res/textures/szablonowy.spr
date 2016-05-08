@@ -1,6 +1,4 @@
-nazwa;czy-to-spritesheet
-adres-obrazka (res/textures/...)
-szerokosc;wysokosc (CALOSC)
+szerokosc;wysokosc (CALOSC);0
 x;y (PUNKT CENTRALNY)
 szerokosc;wysokosc (KLATKA)
 x;y(OFFSET);szerokosc;wysokosc (PRAWDZIWA)
