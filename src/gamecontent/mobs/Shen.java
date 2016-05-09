@@ -287,7 +287,7 @@ public class Shen extends Mob {
         appearance = animation;
         setDirection8way(random.randomInRange(0, 7));
         collision.setMobile(true);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         stats = new MobStats(this);
         stats.setStrength(10);
         stats.setDefence(3);

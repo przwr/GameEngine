@@ -13,6 +13,7 @@ import game.menu.Menu;
 import game.place.Place;
 import game.place.cameras.Camera;
 import game.place.map.Map;
+import game.text.effects.TextController;
 import net.GameOnline;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public abstract class Player extends Entity {
     private final ArrayList<GUIObject> guiList = new ArrayList<>();
     public byte playerID;
     protected PlayerController playerController;
+    protected TextController textControl;
     protected Camera camera;
     protected boolean first, stopped;
     protected boolean visibleShadow = true;
@@ -44,6 +46,10 @@ public abstract class Player extends Entity {
     public abstract void initialize(int width, int height, Place place);
 
     public abstract void sendUpdate();
+
+    public void interact() {
+
+    }
 
     public void addGui(GUIObject gui) {
         guiList.add(gui);
@@ -84,8 +90,8 @@ public abstract class Player extends Entity {
 
     public void setShadowVisibility(boolean shadow) {
         visibleShadow = shadow;
-    } 
-    
+    }
+
     @Override
     public void changeMap(Map map, int x, int y) {
         super.changeMap(map, x, y);
@@ -186,5 +192,9 @@ public abstract class Player extends Entity {
 
     public Weapon getWeapon() {
         return activeWeapon;
+    }
+
+    public TextController getTextController() {
+        return textControl;
     }
 }

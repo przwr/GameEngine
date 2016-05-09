@@ -55,9 +55,9 @@ public class Tree extends GameObject {
         this.height = height;
         this.leafless = leafless;
         this.spread = spread;
-        this.canCover = !background;
-        this.hasStaticShadow = !background;
-        this.solid = !background;
+        this.setCanCover(!background);
+        this.setHasStaticShadow(!background);
+        this.setSolid(!background);
         this.partShift = 48 + height / 40;
         this.woodHeight = height * 2 + 20;
         this.leafHeight = Math.round(height * 1.6f);

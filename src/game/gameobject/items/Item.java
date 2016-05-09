@@ -1,38 +1,25 @@
 package game.gameobject.items;
 
-import collision.Figure;
 import game.gameobject.GameObject;
+import game.place.Place;
 
 /**
  * Created by Domi on 2016-05-02.
  */
 public class Item extends GameObject {
+    public short itemID;
     private float weight;
 
 
-    public Item(String name, float weight) {
-        this.name = name;
+    public Item(int x, int y, String name, Place place, float weight, String spriteName, short itemID) {
+        super.initialize(name, x, y);
         this.weight = weight;
-    }
-
-    @Override
-    public void render() {
-    }
-
-    @Override
-    public void renderShadowLit(Figure figure) {
-    }
-
-    @Override
-    public void renderShadowLit(int xStart, int xEnd) {
-    }
-
-    @Override
-    public void renderShadow(Figure figure) {
-    }
-
-    @Override
-    public void renderShadow(int xStart, int xEnd) {
+        this.place = place;
+        this.itemID = itemID;
+        this.setCanInteract(true);
+        if (spriteName != null) {
+            this.appearance = place.getSprite(spriteName, "entities/mobs", false, true);
+        }
     }
 
     public String getName() {

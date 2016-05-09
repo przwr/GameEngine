@@ -47,7 +47,7 @@ public class TemporaryBlock extends GameObject {
         xTiles = width;
         yTiles = height;
         this.map = map;
-        onTop = true;
+        setOnTop(true);
         objMap = (ObjectMap) map;
         objPlace = (ObjectPlace) map.place;
         tiles = new ArrayList<>();

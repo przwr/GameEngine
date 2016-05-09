@@ -64,10 +64,9 @@ public class MyPlayer extends Player {
     private Weapon firstWeapon;
     private Weapon secondWeapon;
     private Weapon lastWeapon;
-    private Weapon universal = new Weapon("Bare Hands", 0, UNIVERSAL);
+    private Weapon universal = new Weapon(0, 0, "Bare Hands", place, 0, null, (short) -1, UNIVERSAL);
     private ArrayList<InteractionSet> actionSets = new ArrayList<>();
     private int activeActionSet;
-    private TextController textControl;
     private Point centralPoint;
     private MyGUI gui;
     private float jumpDelta = 22.6f; //Potrzebne?
@@ -87,11 +86,11 @@ public class MyPlayer extends Player {
         actionSets.add(new InteractionSet(SWORD));
         actionSets.add(new InteractionSet(BOW));
         if (!Main.TEST) {
-            Weapon sword = new Weapon("Sword", 2, SWORD);
+            Weapon sword = new Weapon(0, 0, "Sword", place, 2, null, (short) -1, SWORD);
             this.weapon.setWearing(true);
             sword.setModifier(1.2f);
             firstWeapon = sword;
-            Weapon bow = new Weapon("Bow", 1, BOW);
+            Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, (short) -1, BOW);
             bow.setModifier(5f);
             secondWeapon = bow;
         }
@@ -248,6 +247,21 @@ public class MyPlayer extends Player {
         return false;
     }
 
+
+    public void interact() {
+        for (GameObject object : map.getInteractiveObjects()) {
+//            TODO wyświetlać listę do wyboru, jeśli wiecej, niż 1 który da się aktywować
+            if (!getTextController().isStarted() && Methods.pointDistanceSimple(object.getX(), object.getY(),
+                    getX(), getY()) <= Place.tileSize * 1.5 + Math.max(object.getActualWidth(), object.getActualHeight()) / 2) {
+                if (Math.abs(Methods.angleDifference(getDirection(),
+                        (int) Methods.pointAngleCounterClockwise(getX(), getY(), object.getX(), object.getY()))) <= 80) {
+                    object.interact(this);
+                    break;
+                }
+            }
+        }
+    }
+
     private void initializeControllerForFirst() {
         playerController = new MyController(this, gui);
         playerController.inputs[0] = new InputKeyBoard(Keyboard.KEY_UP);
@@ -275,8 +289,8 @@ public class MyPlayer extends Player {
     public void initialize(int width, int height, Place place) {
         this.place = place;
         this.online = place.game.online;
-        emitter = true;
-        emits = false;
+        setEmitter(true);
+        setEmits(false);
         centralPoint = new Point(0, 0);
 
         appearance = new ClothedAppearance(place, 200, characterName, width);
@@ -284,8 +298,8 @@ public class MyPlayer extends Player {
         Point[] renderPoints = place.getStartPointFromFile("characters/" + characterName);
         centralPoint = renderPoints[0];
 
-        visible = true;
-        hasStaticShadow = true;
+        setVisible(true);
+        setHasStaticShadow(true);
         depth = 0;
         setResistance(2);
         if (lights == null) {
@@ -529,9 +543,6 @@ public class MyPlayer extends Player {
         }
     }
 
-    public TextController getTextController() {
-        return textControl;
-    }
 
     public MyGUI getGUI() {
         return gui;

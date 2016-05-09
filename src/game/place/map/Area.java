@@ -49,9 +49,9 @@ public class Area {
     private final ArrayList<GameObject> topObjects = new ArrayList<>();
     private final ArrayList<GameObject> depthObjects = new ArrayList<>();
     private final ArrayList<WarpPoint> warps = new ArrayList<>();
+    private final ArrayList<GameObject> interactiveObjects = new ArrayList<>();
     private final ArrayList<Light> lights = new ArrayList<>();
-    private final ArrayList<Interactive> interactiveObjects = new ArrayList<>();
-
+    private final ArrayList<Interactive> interactives = new ArrayList<>();
     private final ArrayList<Block> nearBlocks = new ArrayList<>();
     private final ArrayList<Mob> nearSolidMobs = new ArrayList<>();
     private final ArrayList<Mob> nearFlatMobs = new ArrayList<>();
@@ -198,7 +198,7 @@ public class Area {
             depthObjects.add(object);
         }
         if (object.isInteractive()) {
-            ((Entity) object).getInteractiveObjects().stream().forEach(interactiveObjects::add);
+            ((Entity) object).getInteractiveObjects().stream().forEach(interactives::add);
         }
         if (!(object instanceof Player)) {
             addNotPlayerObject(object);
@@ -208,6 +208,9 @@ public class Area {
     private void addNotPlayerObject(GameObject object) {
         if (object.isEmitter()) {
             object.getLights().stream().forEach(lights::add);
+        }
+        if (object.canInteract()) {
+            interactiveObjects.add(object);
         }
         if (object instanceof WarpPoint) {
             addWarpPoint((WarpPoint) object);
@@ -249,7 +252,7 @@ public class Area {
                 object.getLights().stream().forEach(lights::remove);
             }
             if (object.isInteractive()) {
-                ((Entity) object).getInteractiveObjects().stream().forEach(interactiveObjects::remove);
+                ((Entity) object).getInteractiveObjects().stream().forEach(interactives::remove);
             }
             if (!(object instanceof Player)) {
                 deleteNotPlayerObject(object);
@@ -261,6 +264,9 @@ public class Area {
     private void deleteNotPlayerObject(GameObject object) {
         if (object.isEmitter()) {
             object.getLights().stream().forEach(lights::remove);
+        }
+        if (object.canInteract()) {
+            interactiveObjects.remove(object);
         }
         if (object instanceof WarpPoint) {
             warps.remove(object);
@@ -367,8 +373,8 @@ public class Area {
         return foregroundTiles.get(i);
     }
 
-    public List<Interactive> getInteractiveObjects() {
-        return interactiveObjects;
+    public List<Interactive> getInteractives() {
+        return interactives;
     }
 
     public int getXArea() {
@@ -433,5 +439,9 @@ public class Area {
 
     public Tile[] getTiles() {
         return tiles;
+    }
+
+    public ArrayList<GameObject> getInteractiveObjects() {
+        return interactiveObjects;
     }
 }

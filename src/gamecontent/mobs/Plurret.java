@@ -149,7 +149,7 @@ public class Plurret extends Mob {
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 18);
         appearance = animation;
         collision.setMobile(true);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         stats = new MobStats(this);
         stats.setStrength(1);
         stats.setDefence(1);

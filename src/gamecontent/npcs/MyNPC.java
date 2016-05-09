@@ -33,7 +33,7 @@ public class MyNPC extends Mob {
         this.appearance = place.getSprite("melodia", "entities/npcs");
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         if (appearance != null) {
             appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
         }

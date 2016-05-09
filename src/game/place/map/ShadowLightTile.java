@@ -26,7 +26,7 @@ public class ShadowLightTile extends ForegroundTile {
     public ShadowLightTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int type, int yStart, boolean round, boolean solid, boolean isShadow) {
         super(spriteSheet, size, xSheet, ySheet, type, yStart, round, solid);
         this.isShadow = isShadow;
-        hasStaticShadow = isShadow;
+        setHasStaticShadow(isShadow);
         setVisible(!isShadow);
     }
 
@@ -38,7 +38,7 @@ public class ShadowLightTile extends ForegroundTile {
         ShadowLightTile st = new ShadowLightTile(spriteSheet, size, xSheet, ySheet, TRANSPARENT, yStart, false, false, isShadow);
         st.width = width;
         st.height = height;
-        st.simpleLighting = true;
+        st.setSimpleLighting(true);
         return st;
     }
 
@@ -56,7 +56,7 @@ public class ShadowLightTile extends ForegroundTile {
 
     @Override
     public void renderStaticShadow() {
-        if (simpleLighting) {
+        if (isSimpleLighting()) {
             Drawer.drawRectangle(0, 0, width, height);
         } else {
             appearance.render();

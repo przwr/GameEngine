@@ -23,11 +23,11 @@ public class ForegroundTile extends Tile {
 
     ForegroundTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int type, int yStart, boolean round, boolean solid) {
         super(spriteSheet, xSheet, ySheet);
-        this.solid = solid;
+        this.setSolid(solid);
         name = "FGTile";
         tmpYStart = yStart;
         setCollision(Rectangle.create(0, yStart, size, size, type, this));
-        simpleLighting = !round;
+        setSimpleLighting(!round);
     }
 
     public static ForegroundTile createOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
@@ -66,7 +66,7 @@ public class ForegroundTile extends Tile {
     public ForegroundTile copy() {
         Point first = tileStack.get(0);
         ForegroundTile copy = new ForegroundTile(spriteSheet, Place.tileSize, first.getX(), first.getY(), getCollision().getType(), tmpYStart,
-                !simpleLighting, solid);
+                !isSimpleLighting(), isSolid());
         copy.depth = depth;
         for (int i = 1; i < tileStack.size(); i++) {
             copy.tileStack.add(tileStack.get(i));
@@ -79,7 +79,7 @@ public class ForegroundTile extends Tile {
     public String saveToString(SpriteSheet s, int xBegin, int yBegin, int tile) {
         String txt = "ft:" + ((getX() - xBegin) / tile) + ":" + ((getY() - yBegin) / tile) + ":" + (depth / (tile / 2)) + ":"
                 + (spriteSheet.equals(s) ? "" : spriteSheet.getKey());
-        txt += ":" + (collision.getType()) + ":" + (collision.getYStart() / tile) + ":" + (simpleLighting ? 0 : 1) + ":" + (solid ? "1" : "0");
+        txt += ":" + (collision.getType()) + ":" + (collision.getYStart() / tile) + ":" + (isSimpleLighting() ? 0 : 1) + ":" + (isSolid() ? "1" : "0");
         txt = tileStack.stream().map((p) -> ":" + p.getX() + ":" + p.getY()).reduce(txt, String::concat);
         return txt;
     }

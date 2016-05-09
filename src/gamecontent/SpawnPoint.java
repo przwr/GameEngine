@@ -7,7 +7,6 @@ import engine.utilities.Delay;
 import engine.utilities.Drawer;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Mob;
-import game.gameobject.entities.Player;
 import game.place.Place;
 import game.place.cameras.Camera;
 import game.place.map.Area;
@@ -26,13 +25,13 @@ public class SpawnPoint extends GameObject {
     private SpawnPoint(int x, int y, int width, int height, String name, Class<? extends Mob> mob, int seconds, int maxMobs, Appearance appearance) {
         initialize(name, x, y);
         setCollision(Rectangle.create(width, height, OpticProperties.NO_SHADOW, this));
-        solid = appearance != null;
+        setSolid(appearance != null);
         this.width = width;
         this.height = height;
         this.mob = mob;
         this.appearance = appearance;
         this.currentMaxMobs = this.maxMobs = maxMobs;
-        this.toUpdate = true;
+        this.setToUpdate(true);
         delay = Delay.createInSeconds(seconds);
         delay.start();
     }
@@ -89,7 +88,7 @@ public class SpawnPoint extends GameObject {
         for (int player = 0; player < this.map.place.getPlayersCount(); player++) {
             map = this.map.place.players[player].getMap();
             if (map == this.map) {
-                cam = (((Player) this.map.place.players[player]).getCamera());
+                cam = (this.map.place.players[player].getCamera());
                 if ((cam.getYStart() - height - Place.tileSize + floatHeight < y && cam.getYEnd() + height + Place.tileSize > y)
                         && (cam.getXStart() - width - Place.tileSize < x && cam.getXEnd() + width + Place.tileSize > x)) {
                     return false;

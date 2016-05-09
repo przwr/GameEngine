@@ -26,7 +26,7 @@ public class CentralPoint extends GameObject {
         initialize("central", x, y);
         this.objPlace = objPlace;
         tile = Place.tileSize;
-        onTop = true;
+        setOnTop(true);
         depth = -100;
     }
 

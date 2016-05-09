@@ -50,7 +50,7 @@ public abstract class Mob extends Entity {
 
     public void initialize(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID, boolean... npc) {
         this.place = place;
-        this.solid = solid;
+        this.setSolid(solid);
         this.hearRange = hearRange;
         this.hearRange2 = hearRange * hearRange;
         this.sightRange = hearRange;
@@ -309,14 +309,6 @@ public abstract class Mob extends Entity {
     @Override
     public Player getCollided(double xMagnitude, double yMagnitude) {
         return collision.firstPlayerCollide((int) (getXInDouble() + xMagnitude), (int) (getYInDouble() + yMagnitude), getPlace());
-    }
-
-    @Override
-    public void render() {
-        if (appearance != null) {
-            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            appearance.render();
-        }
     }
 
     @Override

@@ -322,7 +322,7 @@ public class Blazag extends Mob {
         animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 44);
         appearance = animation;
         collision.setMobile(true);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         stats = new MobStats(this);
         stats.setStrength(10);
         stats.setDefence(2);

@@ -44,10 +44,10 @@ public class Arrow extends Entity {
         this.ySpeed = -Methods.yRadius(direction, speed);
         this.owner = owner;
         setDirection(direction);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         lenght = (int) (Place.tileSize * 1.2);
         setCollision(Rectangle.create(lenght / 10, lenght / 10, OpticProperties.NO_SHADOW, this));
-        visible = true;
+        setVisible(true);
         this.color = new Color(108, 59, 44);
         tail = new ArrowTail(6, (float) (lenght / 8), this);
         stats = new Stats(this);

@@ -42,7 +42,7 @@ public class Dummy extends Mob {
         animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 1);
         appearance = animation;
         collision.setMobile(true);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         rand = RandomGenerator.create();
         stats = new MobStats(this);
         stats.setStrength(10);

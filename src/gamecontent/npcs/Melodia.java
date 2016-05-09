@@ -43,7 +43,7 @@ public class Melodia extends Mob {
         initializeSounds();
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         if (appearance != null) {
             appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
         }
@@ -76,7 +76,7 @@ public class Melodia extends Mob {
                     player.getTextController().startFromFile("npcdemo", dialog);
                     player.getTextController().addEventOnBranchEnd(() -> {
                         if (player.getFirstWeapon() == null) {
-                            Weapon sword = new Weapon("Sword", 2, SWORD);
+                            Weapon sword = new Weapon(0, 0, "Sword", place, 2, null, map.getNextItemID(), SWORD);
                             sword.setModifier(1.2f);
                             player.addWeapon(sword);
                         }

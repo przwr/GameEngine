@@ -10,7 +10,7 @@ public class NullTile extends Tile implements Appearance {
     public NullTile() {
         super(null, 0, 0);
         name = "NullTile";
-        visible = false;
+        setVisible(false);
     }
 
     @Override

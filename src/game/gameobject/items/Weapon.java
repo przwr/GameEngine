@@ -1,5 +1,7 @@
 package game.gameobject.items;
 
+import game.place.Place;
+
 /**
  * Created by przemek on 02.09.15.
  */
@@ -12,8 +14,8 @@ public class Weapon extends Item {
     private float knockback = 1;
 
 
-    public Weapon(String name, float weight, byte type) {
-        super(name, weight);
+    public Weapon(int x, int y, String name, Place place, float weight, String spriteName, short itemID, byte type) {
+        super(x, y, name, place, weight, spriteName, itemID);
         this.type = type;
     }
 

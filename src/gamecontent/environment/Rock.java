@@ -25,11 +25,11 @@ public class Rock extends Mob {
         super(x, y, 3, 400, "rock", place, "rock", true, mobID);
         setCollision(Rectangle.create(appearance.getActualWidth(), appearance.getActualWidth() / 2, OpticProperties.NO_SHADOW, this));
         setDepth(-collision.getHeight() / 2);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         stats = new MobStats(this);
         stats.setStartHealth(1);
         stats.setDefence(20);
-        canBeCovered = false;
+        setCanBeCovered(false);
         setResistance(50);
         addPushInteraction();
         setTargetable(false);

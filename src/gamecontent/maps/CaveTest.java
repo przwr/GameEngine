@@ -1,6 +1,7 @@
 package gamecontent.maps;
 
 import collision.Rectangle;
+import game.Settings;
 import game.logic.DayCycle;
 import game.place.Place;
 import game.place.map.Map;
@@ -13,10 +14,9 @@ import gamecontent.mobs.Tongub;
 import gamecontent.npcs.Sonata;
 import gamecontent.npcs.Zuocieyka;
 import org.newdawn.slick.Color;
+import sounds.Sound;
 
 import static collision.OpticProperties.TRANSPARENT;
-import game.Settings;
-import sounds.Sound;
 
 /**
  * Created by przemek on 21.11.15.
@@ -53,7 +53,7 @@ public class CaveTest extends Map {
 
     @Override
     public void populate() {
-        MoneyBag mb = new MoneyBag(4350, 7461, place, mobID++);
+        MoneyBag mb = new MoneyBag(4350, 7461, place, itemID++);
         addObject(mb);
         Zuocieyka zuo = new Zuocieyka(2216, 3117, place, mobID++, mb);
         addObject(zuo);

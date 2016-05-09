@@ -45,7 +45,7 @@ public class DamageNumber extends Entity {
         this.ySpeed = -Methods.yRadius(direction, speed);
         time = Delay.createInMilliseconds((rand.random(5) + 5) * 100);
         time.start();
-        onTop = true;
+        setOnTop(true);
         setDirection(direction);
         float percent = (float) damage / health * 100;
         if (percent <= 1) {

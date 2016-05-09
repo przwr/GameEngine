@@ -52,9 +52,9 @@ public class Bush extends GameObject {
         initialize("Bush", x, y);
         setCollision(Rectangle.create(width, Methods.roundDouble(width * Methods.ONE_BY_SQRT_ROOT_OF_2), OpticProperties.NO_SHADOW, this));
         setSimpleLighting(false);
-        solid = true;
-        canCover = true;
-        hasStaticShadow = true;
+        setSolid(true);
+        setCanCover(true);
+        setHasStaticShadow(true);
         this.width = width;
         this.height = height;
         this.spread = spread;

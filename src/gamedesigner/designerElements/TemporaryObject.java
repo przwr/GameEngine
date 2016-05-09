@@ -27,7 +27,7 @@ public class TemporaryObject extends GameObject {
         this.initialize("tmpBlock", Methods.makeDivisibleBy(covered.getX(), Place.tileSize),
                 Methods.makeDivisibleBy(covered.getY(), Place.tileSize));
         this.covered = covered;
-        this.onTop = true;
+        this.setOnTop(true);
         objPlace = place;
         if (data != null && data.length != 0) {
             this.data = data;

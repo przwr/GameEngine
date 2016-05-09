@@ -824,6 +824,9 @@ public class MyController extends PlayerController {
         } else {
             inControl.setMaxSpeed(getNumberSquared(10, diagonal));
         }
+        if (actions[INPUT_ACTION].isKeyClicked()) {
+            inControl.interact();
+        }
         if (actions[INPUT_ACTION_3].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());
         }

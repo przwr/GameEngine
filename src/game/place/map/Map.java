@@ -50,7 +50,8 @@ public abstract class Map {
     protected final Set<Block> tempBlocks = new HashSet<>();
     protected final ArrayList<Mob> tempMobs = new ArrayList<>();
     protected final ArrayList<Entity> tempEntities = new ArrayList<>();
-    protected final ArrayList<Interactive> tempInteractiveObjects = new ArrayList<>();
+    protected final ArrayList<Interactive> tempInteractives = new ArrayList<>();
+    protected final ArrayList<GameObject> tempInteractiveObjects = new ArrayList<>();
     protected final ArrayList<GameObject> topObjects = new ArrayList<>();
     protected final HashSet<GameObject> tempDepthObjects = new HashSet<>(), tempDepthPbjectsAndForegroundTiles = new HashSet<>();
     protected final ArrayList<WarpPoint> warps = new ArrayList<>();
@@ -68,7 +69,7 @@ public abstract class Map {
     protected Placement placement;
     protected int xAreas;
     protected int yAreas;
-    protected short mobID = 0;
+    protected short mobID = 0, itemID;
     protected Color lightColor;
     protected List<GameObject> depthObjects, foregroundTiles;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd;     //Camera's variables for current rendering
@@ -374,7 +375,7 @@ public abstract class Map {
 
     public void updateInteractiveObjectsFromAreasToUpdate() {
         prepareInteractive();
-        tempInteractiveObjects.stream().forEach((interactive) -> {
+        tempInteractives.stream().forEach((interactive) -> {
             interactive.update();
             if (interactive.isActive()) {
                 interactive.actIfActivated(place.players, tempMobs);
@@ -383,9 +384,16 @@ public abstract class Map {
     }
 
     private void prepareInteractive() {
+        tempInteractives.clear();
+        getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> tempInteractives
+                .addAll(areas[area].getInteractives()));
+    }
+
+    public ArrayList<GameObject> getInteractiveObjects() {
         tempInteractiveObjects.clear();
         getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> tempInteractiveObjects
                 .addAll(areas[area].getInteractiveObjects()));
+        return tempInteractiveObjects;
     }
 
     public void placePuzzle(int x, int y, PuzzleObject po) {
@@ -715,7 +723,7 @@ public abstract class Map {
         tempTilePositions.clear();
         tempDepthObjects.clear();
         tempEntities.clear();
-        tempInteractiveObjects.clear();
+        tempInteractives.clear();
         areasToUpdate.clear();
     }
 
@@ -837,6 +845,10 @@ public abstract class Map {
 
     public short getNextMobID() {
         return mobID++;
+    }
+
+    public short getNextItemID() {
+        return itemID++;
     }
 
     public AreaConnector[] getAreaConnectors() {

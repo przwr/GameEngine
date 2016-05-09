@@ -31,7 +31,7 @@ public class Tercja extends Mob {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         this.plurrets = plurrets;
         if (appearance != null) {
             appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
@@ -65,7 +65,7 @@ public class Tercja extends Mob {
 
                     player.getTextController().addEventOnBranchStart(() -> {
                         if (player.getSecondWeapon() == null) {
-                            Weapon bow = new Weapon("Bow", 1, Weapon.BOW);
+                            Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, map.getNextItemID(), Weapon.BOW);
                             bow.setModifier(1f);
                             player.addWeapon(bow);
                         }

@@ -15,6 +15,7 @@ import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.CircleInteractiveCollision;
 import game.gameobject.items.Item;
+import game.gameobject.stats.Stats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
 import game.logic.navmeshpathfinding.PathData;
@@ -63,6 +64,8 @@ public abstract class Entity extends GameObject {
     protected Delay invincibleTime;
     protected ArrayList<Interactive> interactiveObjects;
     protected ArrayList<Item> items = new ArrayList<>(1);
+    protected Stats stats;
+
     //ONLINE
     protected boolean jumping;
     protected boolean hop;
@@ -745,6 +748,14 @@ public abstract class Entity extends GameObject {
 
     public void setCurrentLocationAsSpawnPosition() {
         spawnPosition.set((int) x, (int) y);
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+    public Stats getStats() {
+        return stats;
     }
 
     public Point getRandomPointInDistance(int distance, int xP, int yP) {

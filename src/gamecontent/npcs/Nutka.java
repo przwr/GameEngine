@@ -25,7 +25,7 @@ public class Nutka extends Mob {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         if (appearance != null) {
             appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
         }

@@ -101,8 +101,8 @@ public class CurveInteractiveCollision extends InteractiveCollision {
             if (playerTop > bottom && playerBottom < top) {
                 int pixelsIn = circleToCircleDistance(position.getX(), position.getY(), player.getX(), player.getY(), radius, player.getCollisionWidth() / 2);
                 if (pixelsIn > 0) {
-                    int direction = owner.getDirection8Way();
                     double angle = Methods.pointAngleCounterClockwise(position.getX(), position.getY(), player.getX(), player.getY());
+                    int direction = owner.getDirection8Way();
                     if (direction == 0) {
                         direction = 8;
                     }

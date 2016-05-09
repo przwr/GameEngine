@@ -93,11 +93,11 @@ public class ObjectPlayer extends Player {
         this.place = place;
         this.online = place.game.online;
         this.setResistance(2);
-        this.emitter = true;
-        emits = false;
+        this.setEmitter(true);
+        setEmits(false);
         tileSize = Place.tileSize;
         objPlace = (ObjectPlace) place;
-        onTop = true;
+        setOnTop(true);
     }
 
     @Override

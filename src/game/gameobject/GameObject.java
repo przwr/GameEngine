@@ -11,53 +11,71 @@ package game.gameobject;
 
 import collision.Figure;
 import engine.lights.Light;
+import engine.utilities.Drawer;
 import engine.utilities.Methods;
-import game.gameobject.stats.Stats;
+import game.gameobject.entities.Entity;
+import game.gameobject.entities.Player;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
 import gamecontent.MyController;
-import gamecontent.MyPlayer;
 import sprites.Appearance;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 public abstract class GameObject {
 
+
+    private final static int SOLID = 0, EMITTER = 1, EMITS = 2, ON_TOP = 3, SIMPLE_LIGHTING = 4, VISIBLE = 5, MAKE_NOISE = 6, HAS_STATIC_SHADOW = 7,
+            TO_UPDATE = 8, CAN_COVER = 9, CAN_BE_COVERED = 10, CAN_INTERACT = 11;
     protected String name;
     protected double x, y;
     protected int depth;
-    protected boolean solid, emitter, emits, onTop, simpleLighting, visible, makeNoise, hasStaticShadow;
+    protected BitSet flags = new BitSet();
     protected Appearance appearance;
     protected Figure collision;
-    protected Stats stats;
     protected Place place;
     protected Map map;
     protected Map prevMap;
     protected int area = -1;
     protected int prevArea = -1;
     protected WarpPoint warp;
-    protected boolean toUpdate;
-    protected boolean canCover, canBeCovered = true;
     protected double upForce;
     protected double floatHeight;
     protected double gravity = 0.6;
     protected ArrayList<Light> lights;
     protected int xEffect, yEffect;
 
+    {
+        flags.set(CAN_BE_COVERED);
+    }
+
     public void update() {
     }
 
-    public abstract void render();
+    public void render() {
+        if (appearance != null) {
+            Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
+            appearance.render();
+        }
+    }
 
-    public abstract void renderShadowLit(Figure figure);
+    public void interact(Entity entity) {
+    }
 
-    public abstract void renderShadowLit(int xStart, int xEnd);
+    public void renderShadowLit(Figure figure) {
+    }
 
-    public abstract void renderShadow(Figure figure);
+    public void renderShadowLit(int xStart, int xEnd) {
+    }
 
-    public abstract void renderShadow(int xStart, int xEnd);
+    public void renderShadow(Figure figure) {
+    }
+
+    public void renderShadow(int xStart, int xEnd) {
+    }
 
     public void renderStaticShadow() {
         appearance.renderStaticShadow(this);
@@ -68,7 +86,7 @@ public abstract class GameObject {
         this.x = x;
         this.y = y;
         depth = 0;
-        visible = true;
+        setVisible(true);
         updateAreaPlacement();
     }
 
@@ -120,7 +138,7 @@ public abstract class GameObject {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
 
-    public boolean isPlayerTalkingToMe(MyPlayer player) {
+    public boolean isPlayerTalkingToMe(Player player) {
         return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
                 && !player.getTextController().isStarted() && Methods.pointDistanceSimple(getX(), getY(),
                 player.getX(), player.getY()) <= Place.tileSize * 1.5 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
@@ -133,50 +151,6 @@ public abstract class GameObject {
 
     public void setGravity(double gravity) {
         this.gravity = gravity;
-    }
-
-    public boolean isSolid() {
-        return solid;
-    }
-
-    public void setSolid(boolean solid) {
-        this.solid = solid;
-    }
-
-    public boolean isOnTop() {
-        return onTop;
-    }
-
-    public void setOnTop(boolean onTop) {
-        this.onTop = onTop;
-    }
-
-    public boolean isEmitter() {
-        return emitter;
-    }
-
-    public boolean isEmits() {
-        return emits;
-    }
-
-    public void setEmits(boolean emits) {
-        this.emits = emits;
-    }
-
-    public boolean isSimpleLighting() {
-        return simpleLighting;
-    }
-
-    public void setSimpleLighting(boolean simpleLighting) {
-        this.simpleLighting = simpleLighting;
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean vis) {
-        this.visible = vis;
     }
 
 
@@ -367,6 +341,16 @@ public abstract class GameObject {
         return 0;
     }
 
+    public int getActualWidth() {
+        if (appearance != null) {
+            return appearance.getActualWidth();
+        }
+        if (collision != null) {
+            return collision.getWidth();
+        }
+        return 0;
+    }
+
     public void setPositionWithoutAreaUpdate(double x, double y) {
         setX(x);
         setY(y);
@@ -385,10 +369,6 @@ public abstract class GameObject {
         }
     }
 
-    public Stats getStats() {
-        return stats;
-    }
-
     public void delete() {
         if (map != null) {
             clearLights();
@@ -396,32 +376,14 @@ public abstract class GameObject {
         }
     }
 
-    public boolean isMakeNoise() {
-        return makeNoise;
-    }
-
-    public void setMakeNoise(boolean makeNoise) {
-        this.makeNoise = makeNoise;
-    }
 
     public boolean isInBlock() {
         return false;
     }
 
-    public boolean isToUpdate() {
-        return toUpdate;
-    }
-
-    public void setToUpdate(boolean toUpdate) {
-        this.toUpdate = toUpdate;
-    }
-
-    public void setCanCover(boolean canCover) {
-        this.canCover = canCover;
-    }
 
     public boolean canCover() {
-        return canCover;
+        return isCanCover();
     }
 
     public WarpPoint getWarp() {
@@ -433,11 +395,7 @@ public abstract class GameObject {
     }
 
     public boolean canBeCovered() {
-        return canBeCovered;
-    }
-
-    public boolean hasStaticShadow() {
-        return hasStaticShadow;
+        return isCanBeCovered();
     }
 
     public int getXEffect() {
@@ -446,5 +404,103 @@ public abstract class GameObject {
 
     public int getYEffect() {
         return yEffect;
+    }
+
+
+    public boolean isToUpdate() {
+        return flags.get(TO_UPDATE);
+    }
+
+    public void setToUpdate(boolean toUpdate) {
+        flags.set(TO_UPDATE, toUpdate);
+    }
+
+    public boolean isCanCover() {
+        return flags.get(CAN_COVER);
+    }
+
+    public void setCanCover(boolean canCover) {
+        flags.set(CAN_COVER, canCover);
+    }
+
+    public boolean isMakeNoise() {
+        return flags.get(MAKE_NOISE);
+    }
+
+    public void setMakeNoise(boolean makeNoise) {
+        flags.set(MAKE_NOISE, makeNoise);
+    }
+
+    public boolean hasStaticShadow() {
+        return flags.get(HAS_STATIC_SHADOW);
+    }
+
+    public void setHasStaticShadow(boolean hasStaticShadow) {
+        flags.set(HAS_STATIC_SHADOW, hasStaticShadow);
+    }
+
+    public boolean isSolid() {
+        return flags.get(SOLID);
+    }
+
+    public void setSolid(boolean solid) {
+        flags.set(SOLID, solid);
+    }
+
+    public boolean isOnTop() {
+        return flags.get(ON_TOP);
+
+    }
+
+    public void setOnTop(boolean onTop) {
+        flags.set(ON_TOP, onTop);
+    }
+
+    public boolean isEmitter() {
+        return flags.get(EMITTER);
+    }
+
+    public void setEmitter(boolean emitter) {
+        flags.set(EMITTER, emitter);
+    }
+
+    public boolean isEmits() {
+        return flags.get(EMITS);
+    }
+
+    public void setEmits(boolean emits) {
+        flags.set(EMITS, emits);
+    }
+
+    public boolean isSimpleLighting() {
+        return flags.get(SIMPLE_LIGHTING);
+    }
+
+    public void setSimpleLighting(boolean simpleLighting) {
+        flags.set(SIMPLE_LIGHTING, simpleLighting);
+    }
+
+    public boolean isVisible() {
+        return flags.get(VISIBLE);
+    }
+
+    public void setVisible(boolean visible) {
+        flags.set(VISIBLE, visible);
+    }
+
+    public boolean isCanBeCovered() {
+        return flags.get(CAN_BE_COVERED);
+    }
+
+    public void setCanBeCovered(boolean canBeCovered) {
+        flags.set(CAN_BE_COVERED, canBeCovered);
+    }
+
+    public boolean canInteract() {
+        return flags.get(CAN_INTERACT);
+    }
+
+    public void setCanInteract(boolean canInteract) {
+        flags.set(CAN_INTERACT, canInteract);
     }
 }

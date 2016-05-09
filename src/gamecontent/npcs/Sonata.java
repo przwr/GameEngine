@@ -35,7 +35,7 @@ public class Sonata extends Mob {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         this.money = money;
         this.zuo = zuo;
         if (appearance != null) {
@@ -44,7 +44,7 @@ public class Sonata extends Mob {
         lights = new ArrayList<>();
         lights.add(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         setEmits(true);
-        emitter = true;
+        setEmitter(true);
         addPushInteraction();
         setDirection8way(DOWN);
     }

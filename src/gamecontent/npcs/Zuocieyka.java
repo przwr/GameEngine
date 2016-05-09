@@ -31,14 +31,14 @@ public class Zuocieyka extends Mob {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         if (appearance != null) {
             appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
         }
         lights = new ArrayList<>();
         lights.add(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
         setEmits(true);
-        emitter = true;
+        setEmitter(true);
         setDirection8way(DOWN);
         this.money = money;
     }

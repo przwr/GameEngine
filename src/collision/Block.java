@@ -32,7 +32,8 @@ public class Block extends GameObject {
         this.x = x;
         this.y = y;
         name = "area";
-        solid = visible = true;
+        setVisible(true);
+        setSolid(true);
         if (round) {
             setCollision(RoundRectangle.createShadowHeight(0, 0, width, height, FULL_SHADOW, shadowHeight, this));
         } else if (invisible) {
@@ -40,7 +41,7 @@ public class Block extends GameObject {
         } else {
             setCollision(Rectangle.createShadowHeight(0, 0, width, height, FULL_SHADOW, shadowHeight, this));
             top.add(Rectangle.createShadowHeight(0, 0, width, height, TRANSPARENT, shadowHeight + height, this));
-            simpleLighting = true;
+            setSimpleLighting(true);
         }
     }
 
@@ -69,7 +70,7 @@ public class Block extends GameObject {
 
     @Override
     public void setVisible(boolean visible) {
-        this.visible = visible;
+        super.setVisible(visible);
         topForegroundTiles.stream().forEach((fgt) -> fgt.setVisible(visible));
         wallForegroundTiles.stream().forEach((fgt) -> fgt.setVisible(visible));
     }
@@ -233,7 +234,7 @@ public class Block extends GameObject {
     public String saveToString(int xBegin, int yBegin, int tile) {
         String string = ((collision instanceof RoundRectangle) ? "rb:" : "b:") + ((int) (x - xBegin) / tile) + ":" + ((int) (y - yBegin) / tile) + ":"
                 + (collision.width / tile) + ":" + (collision.height / tile) + ":" + (collision.getShadowHeight() / tile) + ":"
-                + (simpleLighting ? "0" : "1");
+                + (isSimpleLighting() ? "0" : "1");
         if (collision instanceof RoundRectangle) {
             for (int i = 0; i < 4; i++) {
                 Point temp = getPushValueOfCorner(i);

@@ -25,7 +25,7 @@ public class Fire extends GameObject {
         particleSource = new ParticleSource(2.5f, 5, 0.001f, 0.8f, 30, place.getSpriteSheet("particle", ""));
         particleSource.setXSpread(16);
         setCollision(Rectangle.create(0, 0, OpticProperties.NO_SHADOW, this));
-        toUpdate = true;
+        setToUpdate(true);
     }
 
     @Override

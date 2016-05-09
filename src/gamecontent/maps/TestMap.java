@@ -10,6 +10,7 @@ import game.place.map.Tile;
 import game.place.map.WarpPoint;
 import gamecontent.SpawnPoint;
 import gamecontent.environment.Fire;
+import gamecontent.environment.MoneyBag;
 import gamecontent.environment.Rock;
 import gamecontent.mobs.Blazag;
 import gamecontent.mobs.Dummy;
@@ -69,10 +70,13 @@ public class TestMap extends Map {
 
     @Override
     public void populate() {
+        MoneyBag mb = new MoneyBag(3010, 1400, place, itemID++);
+        addObject(mb);
+
         Shen shen = new Shen(3010, 1226, place, mobID++);
         addObject(shen);
 
-        addObject(new Fire(2600, 1200, place));
+        addObject(new Fire(2620, 1240, place));
 
         Rock rock;
         addObject(new Dummy(4643, 1793, place, mobID++));

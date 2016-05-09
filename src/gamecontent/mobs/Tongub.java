@@ -272,7 +272,7 @@ public class Tongub extends Mob {
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
         appearance = animation;
         collision.setMobile(true);
-        hasStaticShadow = true;
+        setHasStaticShadow(true);
         stats = new MobStats(this);
         stats.setStrength(10);
         stats.setDefence(1);
