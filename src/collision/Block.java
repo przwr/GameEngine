@@ -163,7 +163,8 @@ public class Block extends GameObject {
     public void renderShadow(Figure figure) {
         if (isSimpleLighting()) {
             Drawer.drawRectangleBlack(figure.getX(), figure.getY() - figure.getShadowHeight(),
-                    figure.width, figure.height + (top.contains(figure) ? 0 : figure.getShadowHeight()), (float) FastMath.sqrt(collision.getDarkValue()));
+                    figure.width, figure.height + (top.contains(figure) ? 0 : figure.getShadowHeight()),
+                    top.contains(figure) ? 0f : (float) FastMath.sqrt(collision.getDarkValue()));
         } else {
             for (ForegroundTile wall : wallForegroundTiles) {
                 Figure tempCollision = wall.getCollision();
@@ -198,7 +199,7 @@ public class Block extends GameObject {
 
     @Override
     public void renderShadow(int xStart, int xEnd) {
-        if (isSimpleLighting()) {
+        if (isSimpleLighting() || !collision.isBottomRounded()) {
             if (Main.DEBUG) {
                 System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
             }

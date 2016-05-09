@@ -849,8 +849,9 @@ public class ShadowRenderer {
     }
 
     private static boolean shouldAddLightLeftBlock(Figure other, Figure current, Light source) {
-        return (XL1 < source.getX() || (current.getX() < source.getX() && current.getXEnd() > source.getX()
-                && source.getY() < current.getYEnd() && shadow0X < shadow2X)
+//      TODO latelly changed 1 line: was just: XL1 < source.getX()
+        return ((XL1 < source.getX() && XL1 < current.getX())
+                || (current.getX() < source.getX() && current.getXEnd() > source.getX() && source.getY() < current.getYEnd() && shadow0X < shadow2X)
                 || (XL1 == other.getXEnd() && XL1 == current.getX()));
     }
 
@@ -947,8 +948,9 @@ public class ShadowRenderer {
     }
 
     private static boolean shouldAddLightRightBlock(Figure other, Figure current, Light source) {
-        return (XR1 > source.getX() || (current.getX() < source.getX() && current.getXEnd() > source.getX()
-                && source.getY() < current.getYEnd() && shadow1X > shadow3X)
+//      TODO latelly changed 1 line: was just: XR1 > source.getX()
+        return ((XR1 > source.getX() && XR1 > current.getXEnd())
+                || (current.getX() < source.getX() && current.getXEnd() > source.getX() && source.getY() < current.getYEnd() && shadow1X > shadow3X)
                 || (XR1 == other.getX() && XR1 == current.getXEnd()));
     }
 

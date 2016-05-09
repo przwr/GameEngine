@@ -120,21 +120,23 @@ public class Bush extends GameObject {
     @Override
     public void render() {
         preRender();
-        Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf());
-        if (map.getWindStrength() > 2) {
-            updateWithWind();
-        } else if (vbo.getVertexCount() > 1) {
-            float[] vertices = {0};
-            int[] indices = {0};
-            vbo.updateAll(vertices, vertices, indices);
+        if (map != null && vbo != null) {
+            Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf());
+            if (map.getWindStrength() > 2) {
+                updateWithWind();
+            } else if (vbo.getVertexCount() > 1) {
+                float[] vertices = {0};
+                int[] indices = {0};
+                vbo.updateAll(vertices, vertices, indices);
+            }
+            if (vbo.getVertexCount() > 1) {
+                fbo.bindCheck();
+                vbo.renderTexturedTriangles(0, vbo.getVertexCount());
+            } else {
+                fbo.render();
+            }
+            Drawer.refreshColor();
         }
-        if (vbo.getVertexCount() > 1) {
-            fbo.bindCheck();
-            vbo.renderTexturedTriangles(0, vbo.getVertexCount());
-        } else {
-            fbo.render();
-        }
-        Drawer.refreshColor();
     }
 
     private void updateWithWind() {
@@ -197,7 +199,7 @@ public class Bush extends GameObject {
 
     @Override
     public void renderStaticShadow() {
-        if (map.getWindStrength() > 2 && vbo != null && vbo.getVertexCount() > 1) {
+        if (map != null && map.getWindStrength() > 2 && vbo != null && vbo.getVertexCount() > 1) {
             fbo.renderStaticShadowFromVBO(vbo, this, fbo.getHeight() - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
         } else {
             fbo.renderStaticShadow(this, fbo.getHeight() - 20 - collision.getHeightHalf(), -fbo.getWidth() / 2 - collision.getWidthHalf());
@@ -206,7 +208,8 @@ public class Bush extends GameObject {
 
     private void drawBush() {
         bark.bindCheck();
-        Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next(10) / 10240f)));
+        Drawer.setColorStatic(new Color(branchColor.r + (random.next(10) / 10240f), branchColor.g + (random.next(10) / 10240f), branchColor.b + (random.next
+                (10) / 10240f)));
         drawBranches();
         drawRoots();
         drawLeafs();
@@ -287,7 +290,7 @@ public class Bush extends GameObject {
                         x + Math.round(1.3f * xPosition), Math.round(-1f * length));
             } else {
                 Drawer.drawTextureQuad(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1
-                        + Math.round(-0.4f * widthTop),
+                                + Math.round(-0.4f * widthTop),
                         x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
                         x + Math.round(1.3f * xPosition), Math.round(-1f * length),
                         x + Math.round(1.3f * xPosition), Math.round(-1f * length) + Math.round(-0.5f * widthTop));
@@ -295,7 +298,7 @@ public class Bush extends GameObject {
             points.add(new Point(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1 + yShift));
             if (deviation > 0) {
                 Drawer.drawTextureTriangle(x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) + Math.round(-0.4f * widthTop) - change1 + Math
-                        .round(-0.4f * widthTop),
+                                .round(-0.4f * widthTop),
                         x + Math.round(1.5f * xPosition), Math.round(-0.95f * length) - change1,
                         x + Math.round(1.7f * xPosition), Math.round(-1.3f * length));
             } else {

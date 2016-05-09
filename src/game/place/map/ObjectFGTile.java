@@ -64,13 +64,13 @@ public class ObjectFGTile extends ForegroundTile {
     public int getYSpriteEnd(boolean... forCover) {
         return super.getYSpriteEnd(forCover) + depth + Place.tileSize / 2;
     }
-    
+
     @Override
     public void render() {
         if (map != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            if (!simpleLighting) {
-                
+            if (!isSimpleLighting()) {
+
             }
             for (Point piece : tileStack) {
                 spriteSheet.renderPiece(piece.getX(), piece.getY());
