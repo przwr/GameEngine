@@ -56,6 +56,12 @@ public class ClothedAppearance implements Appearance {
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
                            Cloth cap, Cloth hair, Cloth shirt, Cloth gloves,
                            Cloth pants, Cloth boots, Cloth sword, Cloth bow, Cloth shield) {
+        shirt.setWearing(false);
+        boots.setWearing(false);
+        pants.setWearing(false);
+        gloves.setWearing(false);
+        cap.setWearing(false);
+        shield.setWearing(false);
         lowerRenderList = new ClothCombo[]{
                 new ClothCombo(legs.getLastPartNumber(), legs),
                 new ClothCombo(boots.getFirstPartNumber(), boots),

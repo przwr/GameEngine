@@ -24,14 +24,19 @@ class Fader {
     }
 
     void fadeSound(Sound sound, int time, boolean pausing) {
-        fadingSounds.add(new FadeData(sound, time, sound.getVolume(), 0f, pausing));
+        fadingSounds.add(new FadeData(sound, time, sound.getVolume(), 0f, pausing, false));
         if (waiting) {
             thread.interrupt();
         }
     }
 
     void resumeSound(Sound sound, int time, float endVolume) {
-        fadingSounds.add(new FadeData(sound, time, 0f, endVolume, false));
+        for (FadeData fd : fadingSounds) {
+            if (fd.sound == sound && fd.goalVolume == 0f) {
+                fd.goalVolume = 1f;
+            }
+        }
+        fadingSounds.add(new FadeData(sound, time, 0f, endVolume, false, true));
         if (waiting) {
             thread.interrupt();
         }
@@ -69,18 +74,18 @@ class Fader {
         while (thread.isAlive()) {
         }
         for (FadeData fd : fadingSounds) {
-            fd.sound.setFading(false);
+            fd.unlockSound();
         }
         fadingSounds.clear();
         for (FadeData fd : soundsToClear) {
-            fd.sound.setFading(false);
+            fd.unlockSound();
         }
         soundsToClear.clear();
     }
 
     private synchronized void fadeSounds() {
         for (FadeData fd : fadingSounds) {
-            fd.sound.setFading(true);
+            fd.lockSound();
             fd.refresh();
             if (fd.isDone()) {
                 fd.end();
@@ -89,7 +94,7 @@ class Fader {
         }
         if (!soundsToClear.isEmpty()) {
             for (FadeData fd : soundsToClear) {
-                fd.sound.setFading(false);
+                fd.unlockSound();
                 fadingSounds.remove(fd);
             }
             soundsToClear.clear();
@@ -105,9 +110,9 @@ class Fader {
         Sound sound;
         int time, periods, current;
         float startVolume, goalVolume, delta;
-        boolean pause;
+        boolean pause, start;
 
-        FadeData(Sound sound, int time, float startVolume, float goalVolume, boolean pause) {
+        FadeData(Sound sound, int time, float startVolume, float goalVolume, boolean pause, boolean start) {
             this.sound = sound;
             this.time = time;
             this.periods = (int) (time / period);
@@ -115,11 +120,12 @@ class Fader {
             this.goalVolume = goalVolume;
             this.delta = (goalVolume - startVolume) / periods;
             this.pause = pause;
+            this.start = start;
             current = 0;
         }
 
         void end() {
-            if (sound.getCurrentVolume() <= 0.01f) {
+            if (goalVolume == 0f) {
                 if (pause) {
                     sound.pause();
                 } else {
@@ -129,14 +135,34 @@ class Fader {
         }
 
         void refresh() {
-            if (current <= periods) {
-                sound.setVolumeAndUpdate(startVolume + current * delta);
+            if (isWorking()) {
+                sound.addVolumeAndUpdate(delta);
                 current++;
             }
         }
 
+        void unlockSound() {
+            if (start) {
+                sound.setFadingToResume(false);
+            } else {
+                sound.setFadingToStop(false);
+            }
+        }
+        
+        void lockSound() {
+            if (start) {
+                sound.setFadingToResume(true);
+            } else {
+                sound.setFadingToStop(true);
+            }
+        }
+        
+        boolean isWorking() {
+            return current <= periods || (goalVolume == 0f && sound.getVolume() > 0);
+        }
+        
         boolean isDone() {
-            return current > periods;
+            return !isWorking();
         }
     }
 }
