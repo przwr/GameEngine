@@ -11,6 +11,7 @@ import engine.utilities.RandomGenerator;
 import game.place.Place;
 import game.place.map.ForegroundTile;
 import game.place.map.Map;
+import game.place.map.ObjectFGTile;
 import game.place.map.PuzzleObject;
 import gamedesigner.designerElements.PuzzleLink;
 import gamedesigner.designerElements.RoundedTMPBlock;
@@ -62,7 +63,7 @@ public class ObjectPO extends PuzzleObject {
             }
             map.addObject(tmp);
             tmp.createBlock();
-            block.getForegroundTiles().stream().forEach((tile) -> tmp.addTile(tile.generateFGT(x * tileSize, y * tileSize, false)));
+            block.getForegroundTiles().stream().forEach((tile) -> tmp.addTile(((ObjectFGTile)tile.generateFGT(x * tileSize, y * tileSize, true)).setInBlock()));
 
             if (block instanceof RoundBlockContainer) {
                 int[] corners = ((RoundBlockContainer) block).getCorners();

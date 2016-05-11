@@ -17,8 +17,8 @@ import gamecontent.environment.Tree;
  */
 public class MapObjectContainer {
 
-    public static final byte TREE = 0, BUSH = 1, GRASS = 2;
-    private static final String[] names = new String[]{"Tree", "Bush", "Grass"};
+    public static final byte TREE = 0, SIMPLE_TREE = 1, BUSH = 2, GRASS = 3;
+    private static final String[] names = new String[]{"Tree", "SimpleTree", "Bush", "Grass"};
     private int x, y;
     private String[] data;
     private byte type;
@@ -62,6 +62,10 @@ public class MapObjectContainer {
             case TREE:
 //                ret = Tree.createBackground(x + dx, y + dy, 32, 200, 0.8f);
                 ret = Tree.create(x + dx, y + dy, 32, 200, 0.8f);
+                break;
+            case SIMPLE_TREE:
+//                ret = Tree.createBackground(x + dx, y + dy, 32, 200, 0.8f);
+                ret = Tree.createBackground(x + dx, y + dy, 32, 200, 0.8f);
                 break;
             case BUSH:
                 ret = new Bush(x + dx, y + dy);

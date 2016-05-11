@@ -20,6 +20,8 @@ import static collision.OpticProperties.TRANSPARENT;
  */
 public class ObjectFGTile extends ForegroundTile {
 
+    private boolean isInBlock;
+
     ObjectFGTile(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int type, int yStart, boolean round, boolean solid) {
         super(spriteSheet, size, xSheet, ySheet, type, yStart, round, solid);
     }
@@ -65,26 +67,35 @@ public class ObjectFGTile extends ForegroundTile {
         return super.getYSpriteEnd(forCover) + depth + Place.tileSize / 2;
     }
 
+    public ForegroundTile setInBlock() {
+        isInBlock = true;
+        return this;
+    }
+
     @Override
     public void render() {
         if (map != null) {
             Drawer.regularShader.translate(getX(), (int) (getY() - floatHeight));
-            if (!isSimpleLighting()) {
-
-            }
             for (Point piece : tileStack) {
                 spriteSheet.renderPiece(piece.getX(), piece.getY());
             }
             if (((ObjectPlace) map.place).getMode() == ObjectPlace.MODE_TILE) {
-                if (ObjectPlayer.currectDepth == depth) {
-                    Drawer.setColorStatic(1f, 0f, 0f, 0.5f);
-                } else {
-                    Drawer.setColorStatic(1f, 1f, 1f, 0.5f);
-                }
                 int tile = Place.tileSize;
-                Drawer.drawRectangle(tile / 2 - 1, tile, 2, depth - tile / 2);
-                Drawer.drawCircle(tile / 2 - 1, depth + tile / 2, (int) (tile * 0.3), 10);
-                Drawer.refreshForRegularDrawing();
+                if (!isSimpleLighting()) {
+                    Drawer.setColorStatic(1f, 0f, 1f, 1f);
+                    Drawer.drawRectangle(tile / 2 - 2, tile / 2 - 2, 4, 4);
+                    Drawer.refreshForRegularDrawing();
+                }
+                if (!isInBlock) {
+                    if (ObjectPlayer.currectDepth == depth) {
+                        Drawer.setColorStatic(1f, 0f, 0f, 0.5f);
+                    } else {
+                        Drawer.setColorStatic(1f, 1f, 1f, 0.5f);
+                    }
+                    Drawer.drawRectangle(tile / 2 - 1, tile, 2, depth - tile / 2);
+                    Drawer.drawCircle(tile / 2 - 1, depth + tile / 2, (int) (tile * 0.3), 10);
+                    Drawer.refreshForRegularDrawing();
+                }
             }
         }
     }

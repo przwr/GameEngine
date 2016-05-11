@@ -20,6 +20,8 @@ import sprites.SpriteSheet;
 import java.util.ArrayList;
 
 import static collision.OpticProperties.NO_SHADOW;
+import game.place.Place;
+import game.place.map.ObjectFGTile;
 
 /**
  * @author Wojtek
@@ -154,6 +156,11 @@ public class TemporaryBlock extends GameObject {
     public void addTile(ForegroundTile fgt) {
         map.addForegroundTile(fgt);
         tiles.add(fgt);
+        int level = (int) ((this.y / tile) + yTiles - 1 - (int) (fgt.getY()) / Place.tileSize);
+        if (level == 0) {
+            System.out.println(level + " " + x + " " + y);
+            fgt.setSimpleLighting(false);
+        }
         if (block == null) {
             createBlock();
         }
@@ -182,6 +189,10 @@ public class TemporaryBlock extends GameObject {
         int level = yEnd - y;
         int maxLevel = Math.min(level, upHeight + 1);
         fgt = createTile(tex, y, tile, xSheet, ySheet, level, altMode);
+        //System.out.println(level + " " + x + " " + y);
+        if (level == 0) {
+            fgt.setSimpleLighting(false);
+        }
         if (altMode) {
             map.addForegroundTile(fgt, x * tile, y * tile, (maxLevel) * tile);
             fgt.setDepth(-1);
@@ -193,6 +204,7 @@ public class TemporaryBlock extends GameObject {
             createBlock();
         }
         block.addForegroundTile(fgt);
+        //System.out.println(fgt.isSimpleLighting());
         return fgt;
     }
 
@@ -206,9 +218,9 @@ public class TemporaryBlock extends GameObject {
 
     ForegroundTile createTile(SpriteSheet texture, int y, int tile, int xSheet, int ySheet, int level, boolean altMode) {
         if (level + 1 <= upHeight) {
-            return ForegroundTile.createWall(texture, tile, xSheet, ySheet);
+            return ((ObjectFGTile)ObjectFGTile.createWall(texture, tile, xSheet, ySheet)).setInBlock();
         } else {
-            return ForegroundTile.createOrdinaryShadowHeight(texture, tile, xSheet, ySheet, level * tile);
+            return ((ObjectFGTile)ObjectFGTile.createOrdinaryShadowHeight(texture, tile, xSheet, ySheet, level * tile)).setInBlock();
         }
     }
 

@@ -639,7 +639,7 @@ public class Tree extends GameObject {
 
     @Override
     public void renderShadow(Figure figure) {
-        if (appearance != null) {
+        if (appearance != null && fbo != null && vbo != null) {
             if (map.getWindStrength() > 2) {
                 Drawer.drawShapeBottomBlackFromVbo(fbo, vbo, collision.getDarkValue(), getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20
                         - woodHeight + collision.getHeightHalf());

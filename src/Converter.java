@@ -18,8 +18,8 @@ import java.util.logging.Logger;
  */
 public class Converter {    //Jakby ktoś chciał na szybko przekonwertować duże ilości plików <(^.^<)
 
-    private static final String destination = "res/textures";
-    private static final String extension = ".spr";
+    private static final String destination = "res/objects/demo/testMap.puz";
+    private static final String extension = ".puz";
     private static final boolean openFolders = true;
     private static final boolean isThisOkayMommy = true;   //Trzeba uważać :D
 
@@ -53,7 +53,7 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
     }
 
     private static Collection<String> read(File file) {
-        ArrayList<String> buffer = new ArrayList<>();
+        /*ArrayList<String> buffer = new ArrayList<>();
         try {
             FileReader fl = new FileReader(file);
             BufferedReader read = new BufferedReader(fl);
@@ -78,7 +78,8 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return buffer;
+        return buffer;*/
+        return readObjects(file);
     }
 
     private static void save(Collection<String> list, File file) {
@@ -102,15 +103,15 @@ public class Converter {    //Jakby ktoś chciał na szybko przekonwertować du�
             String[] data;
             boolean analysing = true;
             while ((line = read.readLine()) != null) {
-                if (line.startsWith("b")) {
+                /*if (line.startsWith("b")) {
                     analysing = false;
-                }
-                if (analysing && line.startsWith("ft")) {
+                }*/
+                if (analysing && line.startsWith("o")) {
                     data = line.split(":");
-                    placer = "ft";
+                    placer = "o";
                     for (int i = 1; i < data.length; i++) {
-                        if (i == 5) {
-                            placer += ":" + (data[5].equals("2") ? OpticProperties.IN_SHADE_NO_SHADOW : data[5]);
+                        if (i == 1) {
+                            placer += ":" + (data[1].equals("Tree") ? "SimpleTree" : data[1]);
                         } else {
                             placer += ":" + data[i];
                         }

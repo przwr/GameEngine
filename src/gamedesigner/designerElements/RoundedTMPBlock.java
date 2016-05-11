@@ -11,6 +11,7 @@ import engine.utilities.Drawer;
 import engine.utilities.Point;
 import game.place.map.ForegroundTile;
 import game.place.map.Map;
+import game.place.map.ObjectFGTile;
 import sprites.SpriteSheet;
 
 
@@ -36,12 +37,12 @@ public class RoundedTMPBlock extends TemporaryBlock {
         int alt = objPlace.isAltMode() ? 0 : 1;
         if (level + 1 - alt <= upHeight) {
             if (y * tile == this.y + height - tile) {
-                fgt = ForegroundTile.createRoundWall(texture, tile, xSheet, ySheet);
+                fgt = ((ObjectFGTile)ObjectFGTile.createRoundWall(texture, tile, xSheet, ySheet)).setInBlock();
             } else {
                 if (level + 1 <= upHeight) {
-                    fgt = ForegroundTile.createWall(texture, tile, xSheet, ySheet);
+                    fgt = ((ObjectFGTile)ObjectFGTile.createWall(texture, tile, xSheet, ySheet)).setInBlock();
                 } else {
-                    fgt = ForegroundTile.createWall(texture, tile, xSheet, ySheet);
+                    fgt = ((ObjectFGTile)ObjectFGTile.createWall(texture, tile, xSheet, ySheet)).setInBlock();
                 }
             }
         } else {
