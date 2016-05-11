@@ -37,7 +37,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class ShadowRenderer {
 
-    private static final boolean DEBUG = false, OBJECT_DEBUG = false;
+    private static final boolean DEBUG = true, OBJECT_DEBUG = false;
     private static final ArrayList<Figure> shades = new ArrayList<>(512);
     private static final Point[] shadowPoints = {new Point(), new Point(), new Point(), new Point()};
     private static final Polygon polygon = new Polygon();
@@ -206,9 +206,9 @@ public class ShadowRenderer {
     public static void calculateShadowAndWalls(Light light, Figure shaded) {
         calculateShadow(light, shaded);
         if (shaded.isConcave()) {
-            drawShadowFromConcave(shaded, shadowPoints, lightXCentralShifted, lightYCentralShifted);
+            drawShadowFromConcave(shaded, shadowPoints);
         } else {
-            drawShadow(shadowPoints, lightXCentralShifted, lightYCentralShifted);
+            drawShadow(light, shaded, shadowPoints);
         }
         calculateVerticalShadows(shaded, light);
     }
