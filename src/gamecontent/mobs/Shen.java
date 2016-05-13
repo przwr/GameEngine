@@ -283,7 +283,7 @@ public class Shen extends Mob {
         //skinColor = Color.getHSBColor(r.nextFloat(), 1, 1);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
+        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 17);
         appearance = animation;
         setDirection8way(random.randomInRange(0, 7));
         collision.setMobile(true);

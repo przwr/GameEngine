@@ -158,7 +158,7 @@ public class TemporaryBlock extends GameObject {
         tiles.add(fgt);
         int level = (int) ((this.y / tile) + yTiles - 1 - (int) (fgt.getY()) / Place.tileSize);
         if (level == 0) {
-            System.out.println(level + " " + x + " " + y);
+            //System.out.println(level + " " + x + " " + y);
             fgt.setSimpleLighting(false);
         }
         if (block == null) {

@@ -63,9 +63,9 @@ public class ClothedAppearance implements Appearance {
         cap.setWearing(false);
         shield.setWearing(false);
         lowerRenderList = new ClothCombo[]{
-                new ClothCombo(legs.getLastPartNumber(), legs),
-                new ClothCombo(boots.getFirstPartNumber(), boots),
                 new ClothCombo(legs.getFirstPartNumber(), legs),
+                new ClothCombo(boots.getFirstPartNumber(), boots),
+                new ClothCombo(legs.getLastPartNumber(), legs),
                 new ClothCombo(boots.getLastPartNumber(), boots),
                 new ClothCombo(pants.getFirstPartNumber(), pants),
                 new ClothCombo(pants.getLastPartNumber(), pants)

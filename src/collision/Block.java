@@ -41,7 +41,7 @@ public class Block extends GameObject {
         } else {
             setCollision(Rectangle.createShadowHeight(0, 0, width, height, FULL_SHADOW, shadowHeight, this));
             top.add(Rectangle.createShadowHeight(0, 0, width, height, TRANSPARENT, shadowHeight + height, this));
-            setSimpleLighting(true);
+//            setSimpleLighting(true);
         }
     }
 

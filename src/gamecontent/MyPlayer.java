@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
+import gamedesigner.ObjectPlayer;
 
 /**
  * @author przemek
@@ -248,6 +249,7 @@ public class MyPlayer extends Player {
     }
 
 
+    @Override
     public void interact() {
         for (GameObject object : map.getInteractiveObjects()) {
 //            TODO wyświetlać listę do wyboru, jeśli wiecej, niż 1 który da się aktywować
@@ -357,26 +359,12 @@ public class MyPlayer extends Player {
         return Cloth.nullCloth;
     }
 
-    private Point[] calculateDimensions() {
-        Point[] dims = Cloth.getMergedDimensions(
-                head, torso, legs, hair,
-                cap, shirt, gloves, pants, boots, weapon);
-        int tempx = dims[0].getX(), tempy = dims[0].getY();
-        dims[0].set(Methods.roundUpToBinaryNumber(dims[0].getX()),
-                Methods.roundUpToBinaryNumber(dims[0].getY()));
-        tempx = dims[0].getX() - tempx;
-        tempy = dims[0].getY() - tempy;
-        dims[1].set(centralPoint.getX() - (dims[1].getX() - tempx / 2),
-                centralPoint.getY() - (dims[1].getY() - tempy / 2));
-        return dims;
-    }
-
     private void pushOtherPlayers() {
         GameObject other;
         if (place.playersCount > 1) {
             for (int i = 0; i < place.playersCount; i++) {
                 other = place.players[i];
-                if (Methods.pointDifference(getX(), getY(), other.getX(), other.getY()) < collision.getWidthHalf()) {
+                if (!(other instanceof ObjectPlayer) && Methods.pointDifference(getX(), getY(), other.getX(), other.getY()) < collision.getWidthHalf()) {
                     xEnvironmentalSpeed += (x - other.getXInDouble()) / 10;
                     yEnvironmentalSpeed += (y - other.getYInDouble()) / 10;
                 }
