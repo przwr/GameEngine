@@ -8,13 +8,13 @@ package game.gameobject;
 /**
  * @author przemek
  */
-
 import collision.Figure;
 import engine.lights.Light;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
+import game.gameobject.items.Item;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
@@ -26,7 +26,6 @@ import java.util.BitSet;
 import java.util.List;
 
 public abstract class GameObject {
-
 
     private final static int SOLID = 0, EMITTER = 1, EMITS = 2, ON_TOP = 3, SIMPLE_LIGHTING = 4, VISIBLE = 5, MAKE_NOISE = 6, HAS_STATIC_SHADOW = 7,
             TO_UPDATE = 8, CAN_COVER = 9, CAN_BE_COVERED = 10, CAN_INTERACT = 11;
@@ -46,6 +45,7 @@ public abstract class GameObject {
     protected double floatHeight;
     protected double gravity = 0.6;
     protected ArrayList<Light> lights;
+    protected ArrayList<Item> items;
     protected int xEffect, yEffect;
 
     {
@@ -129,7 +129,6 @@ public abstract class GameObject {
         lights.add(light);
     }
 
-
     public void getHurt(int knockBackPower, double jumpPower, GameObject attacker) {
         //<(^.^<) TIII DADADA NANA NANA KENTACZDIS (>^-')>
     }
@@ -141,7 +140,7 @@ public abstract class GameObject {
     public boolean isPlayerTalkingToMe(Player player) {
         return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
                 && !player.getTextController().isStarted() && Methods.pointDistanceSimple(getX(), getY(),
-                player.getX(), player.getY()) <= Place.tileSize * 1.5 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
+                        player.getX(), player.getY()) <= Place.tileSize * 1.5 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
                 && Math.abs(Methods.angleDifference(player.getDirection(), (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
     }
 
@@ -152,7 +151,6 @@ public abstract class GameObject {
     public void setGravity(double gravity) {
         this.gravity = gravity;
     }
-
 
     public int getX() {
         return (int) x;
@@ -326,7 +324,6 @@ public abstract class GameObject {
         return lights;
     }
 
-
     public Appearance getAppearance() {
         return appearance;
     }
@@ -376,11 +373,9 @@ public abstract class GameObject {
         }
     }
 
-
     public boolean isInBlock() {
         return false;
     }
-
 
     public boolean canCover() {
         return isCanCover();
@@ -405,7 +400,6 @@ public abstract class GameObject {
     public int getYEffect() {
         return yEffect;
     }
-
 
     public boolean isToUpdate() {
         return flags.get(TO_UPDATE);
@@ -502,5 +496,16 @@ public abstract class GameObject {
 
     public void setCanInteract(boolean canInteract) {
         flags.set(CAN_INTERACT, canInteract);
+    }
+
+    public void addItem(Item item) {
+        if (items != null) {
+            items = new ArrayList<>();
+        }
+        items.add(item);
+    }
+    
+    public ArrayList<Item> getItems() {
+        return items;
     }
 }

@@ -165,7 +165,7 @@ public class MyPlayer extends Player {
             secondWeapon = weapon;
             this.weapon.setWearing(true);
         } else {
-            items.add(weapon);
+            addItem(weapon);
 //            TODO add to backpack
         }
     }

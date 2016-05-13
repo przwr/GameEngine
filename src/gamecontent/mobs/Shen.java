@@ -23,6 +23,7 @@ import game.gameobject.stats.MobStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
+import gamecontent.environment.Corpse;
 import net.jodk.lang.FastMath;
 import sprites.Animation;
 import sprites.SpriteSheet;
@@ -289,6 +290,7 @@ public class Shen extends Mob {
         collision.setMobile(true);
         setHasStaticShadow(true);
         stats = new MobStats(this);
+        stats.setStartHealth(1);
         stats.setStrength(10);
         stats.setDefence(3);
         stats.setWeight(70);
@@ -464,4 +466,12 @@ public class Shen extends Mob {
         state = bounce;
     }
 
+    @Override
+    public void deathReaction(GameObject attacker) {        
+        animation.setFPS(4);
+        animation.animateIntervalInDirectionOnce(getDirection8Way(), 15, 16);
+        Corpse corpse = new Corpse(this, animation);
+        map.addObject(corpse);
+    }
+    
 }

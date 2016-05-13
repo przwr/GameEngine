@@ -10,6 +10,7 @@ import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.place.Place;
 import gamecontent.SpawnPoint;
+import gamecontent.environment.Corpse;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.newdawn.slick.Color;
@@ -367,6 +368,9 @@ public abstract class Mob extends Entity {
         if (hurt > 2) {
             letGoDelay.start();
         }
+    }
+    
+    public void deathReaction(GameObject attacker) {
     }
 
     @Override

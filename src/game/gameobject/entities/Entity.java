@@ -63,7 +63,6 @@ public abstract class Entity extends GameObject {
     protected SpeedChanger knockBack;
     protected Delay invincibleTime;
     protected ArrayList<Interactive> interactiveObjects;
-    protected ArrayList<Item> items = new ArrayList<>(1);
     protected Stats stats;
 
     //ONLINE
@@ -748,10 +747,6 @@ public abstract class Entity extends GameObject {
 
     public void setCurrentLocationAsSpawnPosition() {
         spawnPosition.set((int) x, (int) y);
-    }
-
-    public void addItem(Item item) {
-        items.add(item);
     }
 
     public Stats getStats() {
