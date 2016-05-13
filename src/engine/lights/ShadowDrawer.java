@@ -86,7 +86,7 @@ public class ShadowDrawer {
                 x, y, shaded.getX(), shaded.getYEnd() - Place.tileSize);
     }
 
-    public static void drawShadowFromConcave(Figure shaded, Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
+    public static void drawShadowFromConcave(Figure shaded, Point[] shadowPoints) {
         corner.set(shaded.getX() + (shaded.isLeftBottomRound() ? Place.tileSize : 0), shaded.getY());
         boolean a = false, b = false;
         float[] data = new float[18];
@@ -144,7 +144,7 @@ public class ShadowDrawer {
         addShadowToRender(ShadowRenderer.maxDarkness, data);
     }
 
-    public static void drawShadow(Point[] shadowPoints, int lightXCentralShifted, int lightYCentralShifted) {
+    public static void drawShadow(Light light, Figure shaded, Point[] shadowPoints) {
         if (((shadowPoints[1].getX() - shadowPoints[0].getX()) * (shadowPoints[2].getY() - shadowPoints[0].getY()))
                 - ((shadowPoints[1].getY() - shadowPoints[0].getY()) * (shadowPoints[2].getX() - shadowPoints[0].getX())) > 0) {
             addShadowToRender(ShadowRenderer.maxDarkness, shadowPoints[0].getX(), shadowPoints[0].getY(),
@@ -153,6 +153,21 @@ public class ShadowDrawer {
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
                     shadowPoints[1].getX(), shadowPoints[1].getY(),
                     shadowPoints[0].getX(), shadowPoints[0].getY());
+            if (!shaded.getOwner().isSimpleLighting()) {
+                if (light.getY() < shaded.getYEnd()) {
+                    if (light.getX() < shaded.getX()) {
+                        addShadowToRender(ShadowRenderer.maxDarkness, shaded.getX(), shaded.getY(),
+                                shaded.getX(), shaded.getYEnd(),
+                                shaded.getXEnd(), shaded.getY()
+                        );
+                    } else if (light.getX() > shaded.getXEnd()) {
+                        addShadowToRender(ShadowRenderer.maxDarkness, shaded.getX(), shaded.getY(),
+                                shaded.getXEnd(), shaded.getYEnd(),
+                                shaded.getXEnd(), shaded.getY()
+                        );
+                    }
+                }
+            }
         } else {
             addShadowToRender(ShadowRenderer.maxDarkness, shadowPoints[1].getX(), shadowPoints[1].getY(),
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
@@ -160,6 +175,29 @@ public class ShadowDrawer {
                     shadowPoints[2].getX(), shadowPoints[2].getY(),
                     shadowPoints[0].getX(), shadowPoints[0].getY(),
                     shadowPoints[1].getX(), shadowPoints[1].getY());
+            if (!shaded.getOwner().isSimpleLighting()) {
+                if (light.getY() > shaded.getYEnd()) {
+                    if (light.getX() < shaded.getX()) {
+                        addShadowToRender(1f, shaded.getX(), shaded.getY(),
+                                shaded.getXEnd(), shaded.getYEnd(),
+                                shaded.getXEnd(), shaded.getY()
+                        );
+                    } else if (light.getX() > shaded.getXEnd()) {
+                        addShadowToRender(1f, shaded.getX(), shaded.getY(),
+                                shaded.getX(), shaded.getYEnd(),
+                                shaded.getXEnd(), shaded.getY()
+                        );
+                    } else {
+                        addShadowToRender(1f, shaded.getX(), shaded.getYEnd(),
+                                shaded.getXEnd(), shaded.getYEnd(),
+                                shaded.getX(), shaded.getY(),
+                                shaded.getX(), shaded.getY(),
+                                shaded.getXEnd(), shaded.getYEnd(),
+                                shaded.getXEnd(), shaded.getY()
+                        );
+                    }
+                }
+            }
         }
     }
 
