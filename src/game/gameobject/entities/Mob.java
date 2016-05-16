@@ -8,6 +8,7 @@ package game.gameobject.entities;
 import collision.Figure;
 import engine.utilities.*;
 import game.gameobject.GameObject;
+import game.gameobject.interactive.InteractiveResponse;
 import game.place.Place;
 import gamecontent.SpawnPoint;
 import gamecontent.environment.Corpse;
@@ -370,7 +371,7 @@ public abstract class Mob extends Entity {
         }
     }
     
-    public void deathReaction(GameObject attacker) {
+    public void deathReaction(InteractiveResponse response) {
     }
 
     @Override

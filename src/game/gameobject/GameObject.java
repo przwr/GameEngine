@@ -361,6 +361,9 @@ public abstract class GameObject {
 
     public void setMapNotChange(Map map) {
         this.map = map;
+        if (map != null) {
+            this.place = map.place;
+        }
         if (prevMap == null) {
             prevMap = map;
         }
@@ -499,12 +502,12 @@ public abstract class GameObject {
     }
 
     public void addItem(Item item) {
-        if (items != null) {
+        if (items == null) {
             items = new ArrayList<>();
         }
         items.add(item);
     }
-    
+
     public ArrayList<Item> getItems() {
         return items;
     }

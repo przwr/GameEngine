@@ -74,7 +74,7 @@ public class Stats {
                     Place.tileSize, owner.getMap().place);
             owner.getMap().addObject(damage);
             if (health == 0) {
-                died(response.getAttacker());
+                died(response);
             } else if (hurt != 0) {
                 hurtReaction(response);
                 //response.getAttacker().updateCausedDamage(owner, hurt);
@@ -85,18 +85,22 @@ public class Stats {
     public void reactionWhileProtect(InteractiveResponse response) {
     }
 
-    public void died(GameObject attacker) {
+    public void died(InteractiveResponse response) {
         deadSound.play();
         owner.delete();
         System.out.println(owner.getName() + " zginał.");
     }
 
     public void hurtReaction(InteractiveResponse response) {
-        double hurtPower = response.getKnockBack() * FastMath.logQuick(20 * ((float) (100 - weight) / 100) + 1);
+        double hurtPower = attackKnockbackPower(response.getKnockBack(), weight);
         owner.getHurt((int) hurtPower, hurtPower / 6, response.getAttacker());
         response.getAttacker().reactToAttack(response.getAttackType(), owner, hurt);
     }
 
+    public static double attackKnockbackPower(float knockback, int weight) {
+        return knockback * FastMath.logQuick(20 * ((float) (100 - weight) / 100) + 1);
+    }
+    
     public int getWeight() {
         return weight;
     }

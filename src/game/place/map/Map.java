@@ -31,6 +31,7 @@ import static game.place.Place.xAreaInPixels;
 import static game.place.Place.yAreaInPixels;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
+import gamecontent.environment.Corpse;
 
 /**
  * @author Wojtek
@@ -38,8 +39,8 @@ import static game.place.map.Area.Y_IN_TILES;
 public abstract class Map {
 
     public static final PointContainer NO_SOLUTION = new PointContainer(0);
-    protected static final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) ->
-            firstObject.getDepth() - secondObject.getDepth();
+    protected static final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject)
+            -> firstObject.getDepth() - secondObject.getDepth();
     private static engine.utilities.Timer timer = new engine.utilities.Timer("Map", 200);
     public final Place place;
     protected final int tileSize;
@@ -174,8 +175,8 @@ public abstract class Map {
     private boolean isOnArea(Block block, int area) {
         Figure collision = block.getCollision();
         return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area
-                || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd() -
-                Place.tileSize, collision.getY()) == area;
+                || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd()
+                        - Place.tileSize, collision.getY()) == area;
     }
 
     public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
@@ -358,7 +359,6 @@ public abstract class Map {
     public Set<GameObject> getDepthObjectsAndForegroundTilesFromAreasToUpdate() {
         return tempDepthPbjectsAndForegroundTiles;
     }
-
 
     public void hardUpdateMobsFromAreasToUpdate() {
         prepareMobsToUpdate();
@@ -768,7 +768,6 @@ public abstract class Map {
         return (color.r + color.g + color.b) / 3;
     }
 
-
     public int getXAreas() {
         return xAreas;
     }
@@ -867,4 +866,3 @@ public abstract class Map {
         return windDirection;
     }
 }
-

@@ -19,14 +19,14 @@ public class MobStats extends Stats {
     }
 
     @Override
-    public void died(GameObject attacker) {
+    public void died(InteractiveResponse response) {
         Mob owner = (Mob) this.owner;
         SpawnPoint spawn = owner.getSpawner();
         if (spawn != null) {
             spawn.lowerSpawning();
         }
-        owner.deathReaction(attacker);
-        super.died(attacker);
+        owner.deathReaction(response);
+        super.died(response);
     }
 
     @Override

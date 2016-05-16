@@ -17,9 +17,11 @@ import game.gameobject.entities.ActionState;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.CircleInteractiveCollision;
 import game.gameobject.stats.MobStats;
+import game.gameobject.stats.Stats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
@@ -467,9 +469,11 @@ public class Shen extends Mob {
     }
 
     @Override
-    public void deathReaction(GameObject attacker) {        
+    public void deathReaction(InteractiveResponse response) {        
         animation.setFPS(4);
         animation.animateIntervalInDirectionOnce(getDirection8Way(), 15, 16);
+        double knockback = Stats.attackKnockbackPower(response.getKnockBack() * 1.5f, stats.getWeight());
+        knockBack((int) knockback, knockback / 6, response.getAttacker());
         Corpse corpse = new Corpse(this, animation);
         map.addObject(corpse);
     }

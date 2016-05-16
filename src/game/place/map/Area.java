@@ -106,17 +106,16 @@ public class Area {
         return PathFinder.pathExists(navigationMesh, xStart, yStart, xDestination, yDestination, collision);
     }
 
-
     public void addForegroundTileAndReplace(GameObject tile) {
         addForegroundTileAndReplace(tile, tile.getX(), tile.getY(), tile.getPureDepth());
     }
 
     public void addForegroundTileAndReplace(GameObject tile, int x, int y, int depth) {
         /*if (tile.isSimpleLighting()) {
-            tiles[x / Place.tileSize + y / Place.tileSize * Y_IN_TILES] = null;
-        }*/
+         tiles[x / Place.tileSize + y / Place.tileSize * Y_IN_TILES] = null;
+         }*/
         GameObject object;
-        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext(); ) {
+        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
             object = iterator.next();
             if (object.isVisible() && object.getX() == x && object.getY() == y) {
                 iterator.remove();
@@ -216,9 +215,10 @@ public class Area {
             addWarpPoint((WarpPoint) object);
         } else if (object instanceof Mob) {
             addMob((Mob) object);
-        } else if (object instanceof Entity) {
-            entities.add((Entity) object);
         } else {
+            if (object instanceof Entity) {
+                entities.add((Entity) object);
+            }
             if (object.isSolid()) {
                 solidObjects.add(object);
             } else {
@@ -272,9 +272,10 @@ public class Area {
             warps.remove(object);
         } else if (object instanceof Mob) {
             deleteMob((Mob) object);
-        } else if (object instanceof Entity) {
-            entities.remove(object);
         } else {
+            if (object instanceof Entity) {
+                entities.remove(object);
+            }
             if (object.isSolid()) {
                 solidObjects.remove(object);
             } else {

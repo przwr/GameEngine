@@ -74,7 +74,7 @@ public class PlayerStats extends Stats {
                     Place.tileSize, owner.getMap().place);
             owner.getMap().addObject(damage);
             if (health == 0) {
-                died(response.getAttacker());
+                died(response);
             } else if (hurt != 0) {
                 hurtReaction(response);
                 //response.getAttacker().updateCausedDamage(owner, hurt);
@@ -83,7 +83,7 @@ public class PlayerStats extends Stats {
     }
 
     @Override
-    public void died(GameObject attacker) {
+    public void died(InteractiveResponse response) {
 //        player.getCollision().setCollide(false);
         ((MyController) player.getController()).stopAttack();
         player.getCollision().setHitable(false);
@@ -93,7 +93,7 @@ public class PlayerStats extends Stats {
         player.setColorAlpha(0.5f);
         TemporalChanger death = new DeathChanger(100, player);
         player.addChanger(death);
-        player.knockBack(20, 8, attacker);
+        player.knockBack(20, 8, response.getAttacker());
         death.start();
         deadSound.play();
 //        ((MyPlayer) player).getGUI().deactivate();

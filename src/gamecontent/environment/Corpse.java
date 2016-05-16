@@ -10,6 +10,7 @@ import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
 import game.gameobject.items.Item;
+import game.place.map.Area;
 import java.util.ArrayList;
 import net.packets.Update;
 import sprites.Animation;
@@ -31,6 +32,7 @@ public class Corpse extends Entity {
         setCanCover(false);
         this.items = owner.getItems();
         this.collision = owner.getCollision();
+        collision.setOwner(this);
         this.appearance = animation;
         xEnvironmentalSpeed = owner.getXEnvironmentalSpeed();
         yEnvironmentalSpeed = owner.getYEnvironmentalSpeed();
@@ -38,14 +40,25 @@ public class Corpse extends Entity {
         ySpeed = owner.getYSpeed();
         floatHeight = owner.getFloatHeight();
         upForce = owner.getUpForce();
-        setSolid(false);
+        changers = owner.getChangers();
+        setSolid(true);
     }
-    
+
     @Override
     public void update() {
         appearance.updateFrame();
-        updateWithGravity();
-        moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+        if (isSolid()) {
+            updateWithGravity();
+            updateChangers();
+            moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+            if (Math.abs(xEnvironmentalSpeed + xSpeed + yEnvironmentalSpeed + ySpeed) < 0.001) {
+                System.out.println("JUŻ CZAS!");
+                Area tmp = map.getArea(area);
+                tmp.deleteObject(this);
+                setSolid(false);
+                tmp.addObject(this);
+            }
+        }
         brakeOthers();
     }
 
