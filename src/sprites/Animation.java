@@ -54,27 +54,18 @@ public class Animation implements Appearance {
     public void updateTexture(GameObject owner) {
     }
 
-    public Point getShadowShift(int frame) {
-        if (spriteSheet != null) {
-            return spriteSheet.getShadowShift(frame);
-        }
-        return ZERO;
-    }
-
     @Override
     public void renderStaticShadow(GameObject object) {
         int direction = ((Entity) object).getDirection8Way();
-        Point shift = getShadowShift(currentFrame);
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
-        float changeX = shift.getX() + (float) (object.getFloatHeight());
-        float changeY = shift.getY();
+        float changeX = (float) (object.getFloatHeight());
         changeDirection((direction + 2) % 8);
         Drawer.regularShader.scaleNoReset(1f, scale);
-        Drawer.regularShader.translateNoReset(changeX, changeY);
+        Drawer.regularShader.translateNoReset(changeX, 0);
         Drawer.regularShader.rotateNoReset(90);
         render();
         Drawer.regularShader.rotateNoReset(-90);
-        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.translateNoReset(-changeX, 0);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
         changeDirection(direction);
     }

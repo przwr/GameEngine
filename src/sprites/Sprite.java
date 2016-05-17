@@ -6,16 +6,13 @@
 package sprites;
 
 import engine.Main;
-import engine.utilities.*;
+import engine.utilities.Drawer;
+import engine.utilities.ErrorHandler;
+import engine.utilities.Methods;
+import engine.utilities.Point;
 import game.gameobject.GameObject;
 import org.newdawn.slick.opengl.Texture;
 import sprites.vbo.VertexBufferObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -44,7 +41,6 @@ public class Sprite implements Appearance {
     private double begin;
     private double ending;
     private long lastUsed;
-    private Point[] shadowShiftPoints;
 
 
     Sprite(String path, String folder, int width, int height, int xStart, int yStart, SpriteBase spriteBase) {
@@ -80,58 +76,16 @@ public class Sprite implements Appearance {
         vbo = VertexBufferObject.create(vertices, textureCoordinates, indices);
     }
 
-    public void loadShadowShifts() {
-        File f = new File(path.substring(0, path.length() - 4) + ".shad");
-        if (f.exists() && !f.isDirectory()) {
-            try {
-                ArrayList<PointedValue> temp = new ArrayList<>();
-                FileReader fl = new FileReader(f);
-                BufferedReader input = new BufferedReader(fl);
-                int frames = 0;
-                String line;
-                while ((line = input.readLine()) != null) {
-                    String[] data = line.split(";");
-                    if (data.length >= 3) {
-                        int frame = Integer.parseInt(data[0]);
-                        temp.add(new PointedValue(Integer.parseInt(data[1]), Integer.parseInt(data[2]), frame));
-                        if (frame > frames) {
-                            frames = frame;
-                        }
-                    }
-                }
-                input.close();
-                fl.close();
-                shadowShiftPoints = new Point[frames + 1];
-                for (PointedValue pt : temp) {
-                    shadowShiftPoints[pt.getValue()] = new Point(pt.getX(), pt.getY());
-                }
-                temp.clear();
-            } catch (IOException e) {
-                System.err.println("Błąd wczytywania pliku: " + e.getMessage());
-            }
-        }
-    }
-
-
-    public Point getShadowShift(int frame) {
-        if (shadowShiftPoints != null && frame < shadowShiftPoints.length && shadowShiftPoints[frame] != null) {
-            return shadowShiftPoints[frame];
-        }
-        return ZERO;
-    }
-
     @Override
     public void renderStaticShadow(GameObject object) {
-        Point shift = getShadowShift(0);
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
-        float changeX = shift.getX() + (float) (object.getFloatHeight());
-        float changeY = shift.getY();
+        float changeX = (float) (object.getFloatHeight());
         Drawer.regularShader.scaleNoReset(1f, scale);
-        Drawer.regularShader.translateNoReset(changeX, changeY);
+        Drawer.regularShader.translateNoReset(changeX, 0);
         Drawer.regularShader.rotateNoReset(90);
         render();
         Drawer.regularShader.rotateNoReset(-90);
-        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.translateNoReset(-changeX, 0);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
     }
 
@@ -227,7 +181,6 @@ public class Sprite implements Appearance {
         this.heightWhole = texture.getImageHeight();
         this.widthWhole = texture.getImageWidth();
         this.textureID = texture.getTextureID();
-        loadShadowShifts();
     }
 
     public synchronized void releaseTexture() {

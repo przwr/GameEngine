@@ -215,9 +215,11 @@ public abstract class FrameBufferObject implements Appearance {
     }
 
     public void renderShadowBottomFromVbo(float color, VertexBufferObject vbo) {
-        bindCheck();
-        Drawer.shadowShader.loadColorModifier(color);
-        vbo.renderTexturedTriangles(0, 12);
+        if (vbo != null) {
+            bindCheck();
+            Drawer.shadowShader.loadColorModifier(color);
+            vbo.renderTexturedTriangles(0, 12);
+        }
     }
 
     public void renderShadowTop(float color) {
@@ -229,19 +231,23 @@ public abstract class FrameBufferObject implements Appearance {
     }
 
     public void renderShadowTopFromVbo(float color, VertexBufferObject vbo) {
-        bindCheck();
-        Drawer.shadowShader.translateNoReset(0, -heightShift);
-        Drawer.shadowShader.loadColorModifier(color);
-        vbo.renderTexturedTriangles(12, vbo.getVertexCount() - 12);
-        Drawer.shadowShader.translateNoReset(0, heightShift);
+        if (vbo != null) {
+            bindCheck();
+            Drawer.shadowShader.translateNoReset(0, -heightShift);
+            Drawer.shadowShader.loadColorModifier(color);
+            vbo.renderTexturedTriangles(12, vbo.getVertexCount() - 12);
+            Drawer.shadowShader.translateNoReset(0, heightShift);
+        }
     }
 
     public void renderShadowFromVbo(float color, VertexBufferObject vbo) {
-        bindCheck();
-        Drawer.shadowShader.translateNoReset(0, -heightShift);
-        Drawer.shadowShader.loadColorModifier(color);
-        vbo.renderTexturedTriangles(0, vbo.getVertexCount());
-        Drawer.shadowShader.translateNoReset(0, heightShift);
+        if (vbo != null) {
+            bindCheck();
+            Drawer.shadowShader.translateNoReset(0, -heightShift);
+            Drawer.shadowShader.loadColorModifier(color);
+            vbo.renderTexturedTriangles(0, vbo.getVertexCount());
+            Drawer.shadowShader.translateNoReset(0, heightShift);
+        }
     }
 
     public void renderShadowPartFromVbo(int partXStart, int partXEnd, float color, VertexBufferObject vbo) {

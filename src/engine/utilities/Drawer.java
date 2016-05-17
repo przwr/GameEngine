@@ -8,7 +8,6 @@ package engine.utilities;
 import engine.lights.ShadowDrawer;
 import game.ScreenPlace;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -86,23 +85,23 @@ public class Drawer {
     }
 
     public static void refreshColor() {
-        regularShader.loadColorModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, 1.0f));
+        regularShader.loadColorModifier(currentColor.r, currentColor.g, currentColor.b, 1.0f);
     }
 
     public static void setColorAlpha(float alpha) {
-        regularShader.loadColorModifier(new Vector4f(currentColor.r, currentColor.g, currentColor.b, alpha));
+        regularShader.loadColorModifier(currentColor.r, currentColor.g, currentColor.b, alpha);
     }
 
     public static void setColorStatic(Color color) {
-        regularShader.loadColorModifier(new Vector4f(color.r, color.g, color.b, color.a));
+        regularShader.loadColorModifier(color.r, color.g, color.b, color.a);
     }
 
     public static void setColorBlended(Color color) {
-        regularShader.loadColorModifier(new Vector4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a));
+        regularShader.loadColorModifier(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
     }
 
     public static void setColorStatic(float r, float g, float b, float a) {
-        regularShader.loadColorModifier(new Vector4f(r, g, b, a));
+        regularShader.loadColorModifier(r, g, b, a);
     }
 
     public static Color getCurrentColor() {

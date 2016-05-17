@@ -34,6 +34,7 @@ public class Light {
     private Color color;
     private SpriteSheet spriteSheet;
     private int xCenterShift, yCenterShift;
+    private int xEffect, yEffect;
     private int piece;
     private int widthWholeLight, heightWholeLight;
     private Sprite sprite;
@@ -157,11 +158,11 @@ public class Light {
     }
 
     public int getX() {
-        return owner.getX();
+        return owner.getX() + xEffect;
     }
 
     public int getY() {
-        return owner.getY();
+        return owner.getY() + yEffect;
     }
 
     public int getXCenterShift() {
@@ -261,4 +262,22 @@ public class Light {
             return heightWholeLight;
         }
     }
+
+    public int getXEffect() {
+        return xEffect;
+    }
+
+    public void setXEffect(int xEffect) {
+        this.xEffect = xEffect;
+    }
+
+    public int getYEffect() {
+        return yEffect;
+    }
+
+    public void setYEffect(int yEffect) {
+        this.yEffect = yEffect;
+    }
+
+
 }

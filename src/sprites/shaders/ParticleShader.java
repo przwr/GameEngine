@@ -2,7 +2,6 @@ package sprites.shaders;
 
 import engine.matrices.MatrixMath;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  * Created by przemek on 28.04.16.
@@ -20,7 +19,7 @@ public class ParticleShader extends ShaderProgram {
     public ParticleShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
         super.start();
-        loadColorModifier(new Vector4f(1f, 1f, 1f, 1f));
+        loadColorModifier(1f, 1f, 1f, 1f);
         loadMatrix(locationTransformationMatrix, MatrixMath.STATIC_MATRIX);
         resetOrtho();
         stop();
@@ -48,8 +47,8 @@ public class ParticleShader extends ShaderProgram {
         loadMatrix(locationTransformationMatrix, matrix);
     }
 
-    public void loadColorModifier(Vector4f vector) {
-        loadVector4f(locationColorModifier, vector);
+    public void loadColorModifier(float x, float y, float z, float w) {
+        loadVector4f(locationColorModifier, x, y, z, w);
     }
 
     public void resetWorkingMatrix() {

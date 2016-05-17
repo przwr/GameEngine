@@ -53,8 +53,8 @@ public class RegularShader extends ShaderProgram {
         loadMatrix(locationTransformationMatrix, matrix);
     }
 
-    public void loadColorModifier(Vector4f vector) {
-        loadVector4f(locationColorModifier, vector);
+    public void loadColorModifier(float x, float y, float z, float w) {
+        loadVector4f(locationColorModifier, x, y, z, w);
     }
 
     public void setUseTexture(boolean use) {
@@ -74,7 +74,6 @@ public class RegularShader extends ShaderProgram {
     }
 
 
-    
     public void resetDefaultMatrix() {
         defaultMatrix.setIdentity();
     }
