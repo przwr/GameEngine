@@ -29,6 +29,8 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import sprites.Animation;
+import sprites.SpriteSheet;
 
 /**
  * @author przemek
@@ -39,6 +41,7 @@ public abstract class Entity extends GameObject {
     public static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 1f);
     protected static final RandomGenerator random = RandomGenerator.create();
     public final Update[] updates = new Update[4];
+    protected Animation animation;
     public int lastAdded;
     protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
@@ -86,7 +89,6 @@ public abstract class Entity extends GameObject {
         push.setCollidesFriends(true);
         addInteractive(push);
     }
-
 
     public abstract void updateOnline();
 
@@ -235,7 +237,7 @@ public abstract class Entity extends GameObject {
 
     public void updateChangers() {
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
             tc = iterator.next();
             tc.modifyEntity(this);
             if (tc.isOver()) {
@@ -248,7 +250,7 @@ public abstract class Entity extends GameObject {
 
     public void endChangers() {
         TemporalChanger tc;
-        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TemporalChanger> iterator = changers.iterator(); iterator.hasNext();) {
             tc = iterator.next();
             tc.onStop();
             iterator.remove();
@@ -525,6 +527,16 @@ public abstract class Entity extends GameObject {
             }
         }
         return true;
+    }
+
+    public void setUpDirectionalAnimation(int delayTime, int framesPerDirection) {
+        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, delayTime, framesPerDirection);
+        appearance = animation;
+    }
+    
+    public void setUpSimpleAnimation(int delayTime) {
+        animation = Animation.createSimpleAnimation((SpriteSheet) appearance, delayTime);
+        appearance = animation;
     }
 
     public int getDirection() {

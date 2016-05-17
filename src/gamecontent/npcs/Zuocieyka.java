@@ -6,15 +6,13 @@ import engine.Main;
 import engine.lights.Light;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
-import gamecontent.MyPlayer;
 import gamecontent.environment.MoneyBag;
 import org.newdawn.slick.Color;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 import java.util.ArrayList;
 
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 public class Zuocieyka extends Mob {
 
     private final MoneyBag money;
-    private Animation animation;
     private String dialog = "0";
 
     public Zuocieyka(int x, int y, Place place, short mobID, MoneyBag money) {
@@ -33,7 +30,7 @@ public class Zuocieyka extends Mob {
         stats = new NPCStats(this);
         setHasStaticShadow(true);
         if (appearance != null) {
-            appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
+            setUpDirectionalAnimation(0, 1);
         }
         lights = new ArrayList<>();
         lights.add(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
@@ -41,6 +38,7 @@ public class Zuocieyka extends Mob {
         setEmitter(true);
         setDirection8way(DOWN);
         this.money = money;
+        setCanInteract(true);
     }
 
     @Override
@@ -48,19 +46,7 @@ public class Zuocieyka extends Mob {
         animation.updateFrame();
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
-                MyPlayer player = (MyPlayer) target;
                 int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-                if (isPlayerTalkingToMe(player)) {
-                    if (money.getMap() == null) {
-                        dialog = "a";
-                    }
-                    setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
-                    player.getTextController().lockEntity(player);
-                    player.getTextController().startFromFile("zuo", dialog);
-                    player.getTextController().addEventOnBranchEnd(() -> {
-                        delete();
-                    }, "1");
-                }
                 if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                     setDirection8way(RIGHT);
                     target = null;
@@ -69,6 +55,22 @@ public class Zuocieyka extends Mob {
                 lookForPlayers(place.players);
             }
             animation.animateSingle(getDirection8Way());
+        }
+    }
+
+    @Override
+    public void interact(Entity entity) {
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            if (money.getMap() == null) {
+                dialog = "a";
+            }
+            setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
+            player.getTextController().lockEntity(player);
+            player.getTextController().startFromFile("zuo", dialog);
+            player.getTextController().addEventOnBranchEnd(() -> {
+                delete();
+            }, "1");
         }
     }
 

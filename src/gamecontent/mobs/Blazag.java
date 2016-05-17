@@ -21,8 +21,6 @@ import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
 import sounds.Sound3D;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -40,7 +38,6 @@ public class Blazag extends Mob {
     private final static Comparator<Mob> comparator = (Mob firstObject, Mob secondObject)
             -> ((Blazag) firstObject).targetDistance - ((Blazag) secondObject).targetDistance;
     static RandomGenerator random = RandomGenerator.create((int) System.currentTimeMillis());
-    private Animation animation;
     private int seconds = 0, max = 5, targetDistance, attackDelayTime = 150, attackCount = 0, maxAttackCount = 6;
     private float SLEEP_VALUE = 0.5f;
     private float current_sleep_value;
@@ -319,8 +316,7 @@ public class Blazag extends Mob {
         setCollision(Rectangle.create(54, 38, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 8);
         setDirection8way(random.randomInRange(0, 7));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 44);
-        appearance = animation;
+        setUpDirectionalAnimation(0, 44);
         collision.setMobile(true);
         setHasStaticShadow(true);
         stats = new MobStats(this);
@@ -374,7 +370,7 @@ public class Blazag extends Mob {
             }
         }
         for (Mob mob : mobs) {
-            if (mob.getClass().getName() == this.getClass().getName()) {
+            if (mob.getClass().getName().equals(this.getClass().getName())) {
                 if (this != mob && mob.getMap() == map && isInHalfHearingRange(mob)) {
                     if (((Blazag) mob).awake) {
                         closeFriends.add(mob);
@@ -399,7 +395,7 @@ public class Blazag extends Mob {
             }
         }
         for (Mob mob : mobs) {
-            if (mob.getClass().getName() != this.getClass().getName() && mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map
+            if (!mob.getClass().getName().equals(this.getClass().getName()) && mob.getCollision().isHitable() && !isNeutral(mob) && mob.getMap() == map
                     && (isHeardWhileSleep(mob))) {
                 closeEnemies.add(mob);
             }
@@ -591,7 +587,7 @@ public class Blazag extends Mob {
     private void findTargetForGroup() {
         int xCenter = getX(), yCenter = getY();
         int distance = Integer.MAX_VALUE;
-        int agro = 0;
+        int agroValue = 0;
         int currentAgro;
         int currentDistance;
         boolean agresor = false;
@@ -619,8 +615,8 @@ public class Blazag extends Mob {
                     }
                 }
                 if (currentAgro > 0 && currentDistance < sightRange2) {
-                    if (currentAgro > agro) {
-                        agro = currentAgro;
+                    if (currentAgro > agroValue) {
+                        agroValue = currentAgro;
                         target = entity;
                     }
                 }
@@ -639,7 +635,7 @@ public class Blazag extends Mob {
                 }
                 if (currentAgro > 0 && currentDistance < sightRange2) {
                     agresor = true;
-                    agro = currentAgro;
+                    agroValue = currentAgro;
                     target = entity;
                 } else if (currentDistance < distance && currentDistance < sightRange2) {
                     target = entity;
@@ -803,7 +799,7 @@ public class Blazag extends Mob {
 
     private void setEnemyToAttack() {
         int distance = Integer.MAX_VALUE;
-        int agro = 0;
+        int agroValue = 0;
         int currentDistance;
         int currentAgro;
         boolean agresor = false;
@@ -828,8 +824,8 @@ public class Blazag extends Mob {
                     Agro a = getAgresor(entity);
                     if (a != null) {
                         currentAgro = a.getHurtsOwner();
-                        if (currentAgro > agro) {
-                            agro = currentAgro;
+                        if (currentAgro > agroValue) {
+                            agroValue = currentAgro;
                             target = entity;
                         }
                     }
@@ -839,7 +835,7 @@ public class Blazag extends Mob {
                     if (a != null) {
                         currentAgro = a.getHurtsOwner();
                         agresor = true;
-                        agro = currentAgro;
+                        agroValue = currentAgro;
                         target = entity;
                     } else if (currentDistance < distance) {
                         target = entity;

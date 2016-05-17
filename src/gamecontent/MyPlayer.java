@@ -43,6 +43,7 @@ import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
 import gamedesigner.ObjectPlayer;
+import java.util.List;
 
 /**
  * @author przemek
@@ -248,20 +249,21 @@ public class MyPlayer extends Player {
         return false;
     }
 
-
     @Override
-    public void interact() {
-        for (GameObject object : map.getInteractiveObjects()) {
-//            TODO wyświetlać listę do wyboru, jeśli wiecej, niż 1 który da się aktywować
-            if (!getTextController().isStarted() && Methods.pointDistanceSimple(object.getX(), object.getY(),
-                    getX(), getY()) <= Place.tileSize * 1.5 + Math.max(object.getActualWidth(), object.getActualHeight()) / 2) {
-                if (Math.abs(Methods.angleDifference(getDirection(),
-                        (int) Methods.pointAngleCounterClockwise(getX(), getY(), object.getX(), object.getY()))) <= 80) {
-                    object.interact(this);
-                    break;
+    public ArrayList<GameObject> getInteractingObjects() {
+        if (!textControl.isStarted()) {
+            ArrayList<GameObject> close = new ArrayList<>();
+            for (GameObject object : map.getInteractiveObjects()) {
+                if (Methods.pointDistanceSimple(object.getX(), object.getY(),
+                        getX(), getY()) <= Place.tileSize * 1.5 + Math.max(object.getActualWidth(), object.getActualHeight()) / 2 
+                    && Math.abs(Methods.angleDifference(getDirection(), 
+                            (int) Methods.pointAngleCounterClockwise(getX(), getY(), object.getX(), object.getY()))) <= 80) {
+                    close.add(object);
                 }
             }
+            return close;
         }
+        return null;
     }
 
     private void initializeControllerForFirst() {
@@ -530,7 +532,6 @@ public class MyPlayer extends Player {
             Drawer.drawShapePartBlack(appearance, collision.getDarkValue(), getX(), getY() - (int) floatHeight, xStart, xEnd);
         }
     }
-
 
     public MyGUI getGUI() {
         return gui;

@@ -9,6 +9,7 @@ import collision.Figure;
 import engine.utilities.*;
 import game.gameobject.GameObject;
 import game.gameobject.interactive.InteractiveResponse;
+import game.gameobject.stats.Stats;
 import game.place.Place;
 import gamecontent.SpawnPoint;
 import gamecontent.environment.Corpse;
@@ -18,7 +19,7 @@ import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import sprites.Animation;
 
 /**
  * @author przemek
@@ -370,8 +371,18 @@ public abstract class Mob extends Entity {
             letGoDelay.start();
         }
     }
-    
+
     public void deathReaction(InteractiveResponse response) {
+        createCorpse(response);
+    }
+
+    public void createCorpse(InteractiveResponse response) {
+        if (animation != null) {
+            double knockback = Stats.attackKnockbackPower(response.getKnockBack() * 1.5f, stats.getWeight());
+            knockBack((int) knockback, knockback / 6, response.getAttacker());
+            Corpse corpse = new Corpse(this, animation);
+            map.addObject(corpse);
+        }
     }
 
     @Override

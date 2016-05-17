@@ -5,13 +5,18 @@
  */
 package gamecontent.environment;
 
+import collision.Figure;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
+import game.gameobject.items.Item;
 import game.place.map.Area;
+import java.util.ArrayList;
 import net.packets.Update;
 import sprites.Animation;
 
 /**
+ *
  * @author Wojtek
  */
 public class Corpse extends Entity {
@@ -21,7 +26,7 @@ public class Corpse extends Entity {
         animation.animateSingle(index);
     }
 
-    //TUTAJ TRZEBA USTALIĆ ANIMACJĘ PRZED (LUB PO) JEJ PRZEKAZANIU
+    //TUTAJ TRZEBA USTALIĆ ANIMACJĘ PRZED (LUB PO) JEJ PRZEKAZANIEM
     public Corpse(Entity owner, Animation animation) {
         initialize(owner.getName() + "'s DEAD corpse!", owner.getX(), owner.getY());
         setCanCover(false);
@@ -47,8 +52,8 @@ public class Corpse extends Entity {
             updateChangers();
             moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
             brakeOthers();
+            brake(2);
             if (Math.abs(xEnvironmentalSpeed + xSpeed + yEnvironmentalSpeed + ySpeed) < 0.001) {
-                System.out.println("JUŻ CZAS!");
                 Area tmp = map.getArea(area);
                 tmp.deleteObject(this);
                 setSolid(false);

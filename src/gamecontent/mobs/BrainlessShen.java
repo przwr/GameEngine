@@ -15,15 +15,12 @@ import game.gameobject.entities.Mob;
 import game.gameobject.stats.MobStats;
 import game.place.Place;
 import org.newdawn.slick.Color;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 /**
  * @author przemek
  */
 public class BrainlessShen extends Mob {
 
-    private Animation animation;
     private Color color;
     private RandomGenerator rand;
     private float colorHue;
@@ -38,8 +35,7 @@ public class BrainlessShen extends Mob {
 
     private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 15);
-        appearance = animation;
+        setUpDirectionalAnimation(0, 17);
         collision.setMobile(true);
         rand = RandomGenerator.create();
         colorHue = rand.random(360);

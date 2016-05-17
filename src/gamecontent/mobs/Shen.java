@@ -36,7 +36,6 @@ import sprites.SpriteSheet;
 public class Shen extends Mob {
 
     private final static byte ATTACK_NORMAL = 0, ATTACK_CRITICAL = 1;
-    private Animation animation;
     private int seconds = 0, max = 5;
     private Delay attack_delay = Delay.createInMilliseconds(1250);           //TODO - te wartości losowe i zależne od poziomu trudności
     private Delay rest = Delay.createInMilliseconds(1250);            //TODO - te wartości losowe i zależne od poziomu trudności
@@ -286,8 +285,7 @@ public class Shen extends Mob {
         //skinColor = Color.getHSBColor(r.nextFloat(), 1, 1);
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 17);
-        appearance = animation;
+        setUpDirectionalAnimation(0, 17);
         setDirection8way(random.randomInRange(0, 7));
         collision.setMobile(true);
         setHasStaticShadow(true);
@@ -472,10 +470,7 @@ public class Shen extends Mob {
     public void deathReaction(InteractiveResponse response) {        
         animation.setFPS(4);
         animation.animateIntervalInDirectionOnce(getDirection8Way(), 15, 16);
-        double knockback = Stats.attackKnockbackPower(response.getKnockBack() * 1.5f, stats.getWeight());
-        knockBack((int) knockback, knockback / 6, response.getAttacker());
-        Corpse corpse = new Corpse(this, animation);
-        map.addObject(corpse);
+        super.deathReaction(response);
     }
     
 }

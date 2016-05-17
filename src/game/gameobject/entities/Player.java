@@ -6,7 +6,9 @@
 package game.gameobject.entities;
 
 import engine.utilities.Drawer;
+import engine.utilities.Methods;
 import game.gameobject.GUIObject;
+import game.gameobject.GameObject;
 import game.gameobject.inputs.PlayerController;
 import game.gameobject.items.Weapon;
 import game.menu.Menu;
@@ -14,15 +16,16 @@ import game.place.Place;
 import game.place.cameras.Camera;
 import game.place.map.Map;
 import game.text.effects.TextController;
+import gamecontent.MyController;
 import net.GameOnline;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author przemek
  */
 public abstract class Player extends Entity {
-
 
     private final ArrayList<GUIObject> guiList = new ArrayList<>();
     public byte playerID;
@@ -47,8 +50,8 @@ public abstract class Player extends Entity {
 
     public abstract void sendUpdate();
 
-    public void interact() {
-
+    public ArrayList<GameObject> getInteractingObjects() {
+        return null;
     }
 
     public void addGui(GUIObject gui) {
@@ -145,6 +148,13 @@ public abstract class Player extends Entity {
         }
         return false;
     }
+
+    /*public boolean isPlayerTalkingToMe(Player player) {
+        return player.getController().getAction(MyController.INPUT_ACTION).isKeyClicked()
+                && !player.getTextController().isStarted() && Methods.pointDistanceSimple(getX(), getY(),
+                        player.getX(), player.getY()) <= Place.tileSize * 1.5 + Math.max(appearance.getActualWidth(), appearance.getActualHeight()) / 2
+                && Math.abs(Methods.angleDifference(player.getDirection(), (int) Methods.pointAngleCounterClockwise(player.getX(), player.getY(), x, y))) <= 80;
+    }*/
 
     public boolean isInGame() {
         return place != null;

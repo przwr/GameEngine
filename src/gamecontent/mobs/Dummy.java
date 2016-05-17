@@ -16,15 +16,12 @@ import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.stats.MobStats;
 import game.place.Place;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 /**
  * @author przemek
  */
 public class Dummy extends Mob {
 
-    private Animation animation;
     private RandomGenerator rand;
     private int power;
     private float lastRandomX, lastRandomY;
@@ -39,8 +36,7 @@ public class Dummy extends Mob {
 
     private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createSimpleAnimation((SpriteSheet) appearance, 1);
-        appearance = animation;
+        setUpSimpleAnimation(1);
         collision.setMobile(true);
         setHasStaticShadow(true);
         rand = RandomGenerator.create();
