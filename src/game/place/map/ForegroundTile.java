@@ -44,7 +44,7 @@ public class ForegroundTile extends Tile {
     }
 
     public static ForegroundTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new ForegroundTile(spriteSheet, size, xSheet, ySheet, OpticProperties.NO_SHADOW, 0, false, true);
+        return new ForegroundTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, 0, false, true);
     }
 
     public static ForegroundTile createRoundOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {

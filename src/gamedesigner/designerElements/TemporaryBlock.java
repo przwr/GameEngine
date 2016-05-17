@@ -158,9 +158,6 @@ public class TemporaryBlock extends GameObject {
         map.addForegroundTile(fgt);
         tiles.add(fgt);
         int level = (int) ((this.y / tile) + yTiles - 1 - (int) (fgt.getY()) / Place.tileSize);
-        if (level + 1 <= upHeight) {
-            fgt.getCollision().setOpticProperties(OpticProperties.NO_SHADOW);
-        }
         if (level == 0) {
             //System.out.println(level + " " + x + " " + y);
             fgt.setSimpleLighting(false);
