@@ -26,8 +26,11 @@ public class Block extends GameObject {
     private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
     private boolean forNavigationMesh;
+    private Figure topSimple;
 
-    private Block(int x, int y, int width, int height, int shadowHeight, boolean round, boolean invisible) {  //Point (x, y) should be in left top corner of
+    private Block(int x, int y, int width, int height, int shadowHeight, boolean round, boolean invisible) {  //Point (x, y) should be
+        // in left top
+        // corner of
         // Block
         this.x = x;
         this.y = y;
@@ -40,8 +43,7 @@ public class Block extends GameObject {
             setCollision(Rectangle.createShadowHeight(0, 0, width, height, NO_SHADOW, shadowHeight, this));
         } else {
             setCollision(Rectangle.createShadowHeight(0, 0, width, height, FULL_SHADOW, shadowHeight, this));
-            top.add(Rectangle.createShadowHeight(0, 0, width, height, TRANSPARENT, shadowHeight + height, this));
-//            setSimpleLighting(true);
+            setSimpleLighting(true);
         }
     }
 
@@ -69,6 +71,24 @@ public class Block extends GameObject {
     }
 
     @Override
+    public void setSimpleLighting(boolean simpleLighting) {
+        super.setSimpleLighting(simpleLighting);
+        if (simpleLighting) {
+            if (topSimple == null) {
+                topSimple = Rectangle.createShadowHeight(0, 0, collision.getWidth(), collision.getHeight(), TRANSPARENT, collision.getShadowHeight() + collision
+                        .getHeight(), this);
+            }
+            if (!top.contains(topSimple)) {
+                top.add(topSimple);
+            }
+        } else {
+            if (topSimple != null) {
+                top.remove(topSimple);
+            }
+        }
+    }
+
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         topForegroundTiles.stream().forEach((fgt) -> fgt.setVisible(visible));
@@ -91,6 +111,9 @@ public class Block extends GameObject {
         }
         foregroundTile.setBlockPart(true);
         foregroundTile.setInCollidingPosition(inCollision(foregroundTile));
+        if (!foregroundTile.isSimpleLighting()) {
+            setSimpleLighting(false);
+        }
     }
 
     private boolean inCollision(ForegroundTile foregroundTile) {
