@@ -1,6 +1,9 @@
 package sprites;
 
-import engine.utilities.*;
+import engine.utilities.Drawer;
+import engine.utilities.ErrorHandler;
+import engine.utilities.Methods;
+import engine.utilities.Point;
 import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.place.Place;
@@ -38,7 +41,6 @@ public class ClothedAppearance implements Appearance {
     private FrameBufferObject fbo;
     private boolean inSync;
     private boolean upToDate;
-    private Point[] shadowShiftPoints;
 
     public ClothedAppearance(Place place, int delayTime, String characterName, int width) {
         setClothParameters("characters/" + characterName);
@@ -50,7 +52,6 @@ public class ClothedAppearance implements Appearance {
         yDelta = renderPoints[1].getY();
         upperBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
         lowerBody = Animation.createDirectionalAnimation(null, delayTime, framesPerDirection);
-        loadShadowShifts(characterName);
     }
 
     public void setClothes(Cloth head, Cloth torso, Cloth legs,
@@ -180,44 +181,6 @@ public class ClothedAppearance implements Appearance {
         }
     }
 
-    private void loadShadowShifts(String name) {
-        File f = new File("res/textures/characters/" + name + "/" + name + ".shad");
-        if (f.exists() && !f.isDirectory()) {
-            try {
-                ArrayList<PointedValue> temp = new ArrayList<>();
-                FileReader fl = new FileReader(f);
-                BufferedReader input = new BufferedReader(fl);
-                int frames = 0;
-                String line;
-                while ((line = input.readLine()) != null) {
-                    String[] data = line.split(";");
-                    if (data.length >= 3) {
-                        int frame = Integer.parseInt(data[0]);
-                        temp.add(new PointedValue(Integer.parseInt(data[1]), Integer.parseInt(data[2]), frame));
-                        if (frame > frames) {
-                            frames = frame;
-                        }
-                    }
-                }
-                input.close();
-                fl.close();
-                shadowShiftPoints = new Point[frames + 1];
-                for (PointedValue pt : temp) {
-                    shadowShiftPoints[pt.getValue()] = new Point(pt.getX(), pt.getY());
-                }
-                temp.clear();
-            } catch (IOException e) {
-                System.err.println("Błąd wczytywania pliku: " + e.getMessage());
-            }
-        }
-    }
-
-    public Point getShadowShift(int frame) {
-        if (shadowShiftPoints != null && frame < shadowShiftPoints.length && shadowShiftPoints[frame] != null) {
-            return shadowShiftPoints[frame];
-        }
-        return ZERO;
-    }
 
     private void synchronize() {
         if (!inSync) {
@@ -447,19 +410,17 @@ public class ClothedAppearance implements Appearance {
 
     @Override
     public void renderStaticShadow(GameObject object) {
-        Point shift = getShadowShift(lowerBody.getCurrentFrameIndex());
         float scale = (float) Methods.ONE_BY_SQRT_ROOT_OF_2;
-        float changeX = shift.getX() + (float) object.getFloatHeight() / 2;
-        float changeY = shift.getY() - (float) object.getFloatHeight() / scale;
+        float changeX = (float) object.getFloatHeight();
         int direction = ((Entity) object).getDirection8Way();
         upperBody.changeDirection((direction + 2) % 8);
         lowerBody.changeDirection((direction + 2) % 8);
         Drawer.regularShader.scaleNoReset(1f, scale);
-        Drawer.regularShader.translateNoReset(changeX, changeY);
+        Drawer.regularShader.translateNoReset(changeX, 0);
         Drawer.regularShader.rotateNoReset(90);
         render();
         Drawer.regularShader.rotateNoReset(-90);
-        Drawer.regularShader.translateNoReset(-changeX, -changeY);
+        Drawer.regularShader.translateNoReset(-changeX, 0);
         Drawer.regularShader.scaleNoReset(1f, 1f / scale);
         upperBody.changeDirection(direction);
         lowerBody.changeDirection(direction);

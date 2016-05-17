@@ -153,7 +153,7 @@ public class ShadowDrawer {
                     shadowPoints[3].getX(), shadowPoints[3].getY(),
                     shadowPoints[1].getX(), shadowPoints[1].getY(),
                     shadowPoints[0].getX(), shadowPoints[0].getY());
-            if (!shaded.getOwner().isSimpleLighting()) {
+            if (!shaded.getOwner().isSimpleLighting() && !shaded.getOwner().getCollision().isBottomRounded()) {
                 if (light.getY() < shaded.getYEnd()) {
                     if (light.getX() < shaded.getX()) {
                         addShadowToRender(ShadowRenderer.maxDarkness, shaded.getX(), shaded.getY(),
@@ -175,25 +175,25 @@ public class ShadowDrawer {
                     shadowPoints[2].getX(), shadowPoints[2].getY(),
                     shadowPoints[0].getX(), shadowPoints[0].getY(),
                     shadowPoints[1].getX(), shadowPoints[1].getY());
-            if (!shaded.getOwner().isSimpleLighting()) {
+            if (!shaded.getOwner().isSimpleLighting() && !shaded.getOwner().getCollision().isBottomRounded()) {
                 if (light.getY() > shaded.getYEnd()) {
                     if (light.getX() < shaded.getX()) {
-                        addShadowToRender(1f, shaded.getX(), shaded.getY(),
+                        addShadowToRender(1f, shaded.getX(), shaded.getYEnd() - Place.tileSize,
                                 shaded.getXEnd(), shaded.getYEnd(),
-                                shaded.getXEnd(), shaded.getY()
+                                shaded.getXEnd(), shaded.getYEnd() - Place.tileSize
                         );
                     } else if (light.getX() > shaded.getXEnd()) {
-                        addShadowToRender(1f, shaded.getX(), shaded.getY(),
+                        addShadowToRender(1f, shaded.getX(), shaded.getYEnd() - Place.tileSize,
                                 shaded.getX(), shaded.getYEnd(),
-                                shaded.getXEnd(), shaded.getY()
+                                shaded.getXEnd(), shaded.getYEnd() - Place.tileSize
                         );
                     } else {
                         addShadowToRender(1f, shaded.getX(), shaded.getYEnd(),
                                 shaded.getXEnd(), shaded.getYEnd(),
-                                shaded.getX(), shaded.getY(),
-                                shaded.getX(), shaded.getY(),
+                                shaded.getX(), shaded.getYEnd() - Place.tileSize,
+                                shaded.getX(), shaded.getYEnd() - Place.tileSize,
                                 shaded.getXEnd(), shaded.getYEnd(),
-                                shaded.getXEnd(), shaded.getY()
+                                shaded.getXEnd(), shaded.getYEnd() - Place.tileSize
                         );
                     }
                 }

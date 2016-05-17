@@ -11,8 +11,10 @@ import collision.OpticProperties;
 import engine.utilities.Drawer;
 import engine.utilities.Point;
 import game.gameobject.GameObject;
+import game.place.Place;
 import game.place.map.ForegroundTile;
 import game.place.map.Map;
+import game.place.map.ObjectFGTile;
 import game.place.map.Tile;
 import gamedesigner.ObjectMap;
 import gamedesigner.ObjectPlace;
@@ -21,8 +23,6 @@ import sprites.SpriteSheet;
 import java.util.ArrayList;
 
 import static collision.OpticProperties.NO_SHADOW;
-import game.place.Place;
-import game.place.map.ObjectFGTile;
 
 /**
  * @author Wojtek
@@ -157,7 +157,11 @@ public class TemporaryBlock extends GameObject {
     public void addTile(ForegroundTile fgt) {
         map.addForegroundTile(fgt);
         tiles.add(fgt);
-        int level = (int) ((this.y / tile) + yTiles - 1 - (int) (fgt.getY()) / Place.tileSize);
+        int level = (int) ((this.y / tile) + yTiles - 1 - (fgt.getY()) / Place.tileSize);
+//        TODO Wywalić to, bo jednak ma być FULL SHADOW
+        if (level + 1 <= upHeight) {
+            fgt.getCollision().setOpticProperties(OpticProperties.FULL_SHADOW);
+        }
         if (level == 0) {
             //System.out.println(level + " " + x + " " + y);
             fgt.setSimpleLighting(false);
@@ -219,9 +223,9 @@ public class TemporaryBlock extends GameObject {
 
     ForegroundTile createTile(SpriteSheet texture, int y, int tile, int xSheet, int ySheet, int level, boolean altMode) {
         if (level + 1 <= upHeight) {
-            return ((ObjectFGTile)ObjectFGTile.createWall(texture, tile, xSheet, ySheet)).setInBlock();
+            return ((ObjectFGTile) ObjectFGTile.createWall(texture, tile, xSheet, ySheet)).setInBlock();
         } else {
-            return ((ObjectFGTile)ObjectFGTile.createOrdinaryShadowHeight(texture, tile, xSheet, ySheet, level * tile)).setInBlock();
+            return ((ObjectFGTile) ObjectFGTile.createOrdinaryShadowHeight(texture, tile, xSheet, ySheet, level * tile)).setInBlock();
         }
     }
 

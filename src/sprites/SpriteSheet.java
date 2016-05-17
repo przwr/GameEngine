@@ -361,6 +361,5 @@ public class SpriteSheet extends Sprite {
         this.widthWhole = texture.getImageWidth();
         setTilesCount(scale);
         setTextureID(texture.getTextureID());
-        loadShadowShifts();
     }
 }

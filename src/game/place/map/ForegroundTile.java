@@ -5,7 +5,6 @@
  */
 package game.place.map;
 
-import collision.OpticProperties;
 import collision.Rectangle;
 import engine.utilities.Point;
 import game.place.Place;

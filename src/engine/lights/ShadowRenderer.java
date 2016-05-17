@@ -37,7 +37,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class ShadowRenderer {
 
-    private static final boolean DEBUG = true, OBJECT_DEBUG = false;
+    private static final boolean DEBUG = false, OBJECT_DEBUG = false;
     private static final ArrayList<Figure> shades = new ArrayList<>(512);
     private static final Point[] shadowPoints = {new Point(), new Point(), new Point(), new Point()};
     private static final Polygon polygon = new Polygon();

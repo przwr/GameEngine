@@ -14,7 +14,7 @@ public class ParticleSource {
 
     private static final int INITIAL_POINT_COUNT = 100;
 
-    private static RandomGenerator random = RandomGenerator.create();
+    public static RandomGenerator random = RandomGenerator.create();
     private SpriteSheet spriteSheet;
     private Particle[] particles;
     private int particlesCount;
@@ -22,7 +22,12 @@ public class ParticleSource {
     private float xSpread = 1f, ySpread = 1f;
     private int frames = 1;
     private float gravity, drag;
-    private float speed, lifeLength;
+    private float speed;
+    private float lifeLength;
+    private float xDirectionFactor = 1f;
+    private float yDirectionFactor = 1f;
+    private float xDirectionBalance;
+    private float yDirectionBalance;
 
     public ParticleSource(float ppf, float speed, float gravity, float drag, float lifeLength, SpriteSheet spiteSheet) {
         this.ppf = ppf;
@@ -67,18 +72,20 @@ public class ParticleSource {
     }
 
     private void emitParticle(int position, int x, int y, int floatHeight) {
-        float dirX = (random.randomInRange(-10000, 10000) / 20000f);
-        float dirY = (random.randomInRange(-10000, 10000) / 20000f);
-        float dirH = (random.randomInRange(0, 10000) / 20000f);
-        particles[position].set(x + (int) (dirX * xSpread), y + (int) (dirY * ySpread), floatHeight, dirX * speed, dirY * speed, (0.75f + dirH) * speed,
+        float dirX = (random.randomInRange(-10000, 10000) / 10000f);
+        float dirY = (random.randomInRange(-10000, 10000) / 10000f);
+        float dirH = (random.randomInRange(0, 10000) / 10000f);
+        particles[position].set(x + (int) (dirX * xSpread), y + (int) (dirY * ySpread), floatHeight, (xDirectionBalance + dirX) * speed / xDirectionFactor,
+                (yDirectionBalance + dirY) * speed / yDirectionFactor, (0.75f + dirH) * speed,
                 lifeLength * (0.75f + (random.randomInRange(0, 10000) / 20000f)));
     }
 
     private void emitParticle(int x, int y, int floatHeight) {
-        float dirX = (random.randomInRange(-10000, 10000) / 20000f);
-        float dirY = (random.randomInRange(-10000, 10000) / 20000);
-        float dirH = (random.randomInRange(0, 10000) / 20000f);
-        add(x + (int) (dirX * xSpread), y + (int) (dirY * ySpread), floatHeight, dirX * speed, dirY * speed, (0.75f + dirH) * speed,
+        float dirX = (random.randomInRange(-10000, 10000) / 10000f);
+        float dirY = (random.randomInRange(-10000, 10000) / 10000);
+        float dirH = (random.randomInRange(0, 10000) / 10000f);
+        add(x + (int) (dirX * xSpread), y + (int) (dirY * ySpread), floatHeight, (xDirectionBalance + dirX) * speed / xDirectionFactor,
+                (yDirectionBalance + dirY) * speed / yDirectionFactor, (0.75f + dirH) * speed,
                 lifeLength * (0.75f + (random.randomInRange(0, 10000) / 20000f)));
     }
 
@@ -128,6 +135,7 @@ public class ParticleSource {
         Drawer.particleShader.translate(x, y);
         Drawer.streamVBO.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
         Drawer.particleShader.loadFrames(spriteSheet.getXLimit(), spriteSheet.getYLimit());
+        Drawer.particleShader.loadColorModifier(Drawer.getCurrentColor().r, Drawer.getCurrentColor().g, Drawer.getCurrentColor().b, Drawer.getCurrentColor().a);
         spriteSheet.bindCheck();
         Drawer.streamVBO.renderTexturedTriangles(0, Drawer.streamVBO.getVertexCount());
         Drawer.regularShader.start();
@@ -195,5 +203,37 @@ public class ParticleSource {
 
     public void setFrames(int frames) {
         this.frames = frames;
+    }
+
+    public float getXDirectionFactor() {
+        return xDirectionFactor;
+    }
+
+    public void setXDirectionFactor(float xDirectionFactor) {
+        this.xDirectionFactor = xDirectionFactor;
+    }
+
+    public float getYDirectionFactor() {
+        return yDirectionFactor;
+    }
+
+    public void setYDirectionFactor(float yDirectionFactor) {
+        this.yDirectionFactor = yDirectionFactor;
+    }
+
+    public float getXDirectionBalance() {
+        return xDirectionBalance;
+    }
+
+    public void setXDirectionBalance(float xDirectionBalance) {
+        this.xDirectionBalance = xDirectionBalance;
+    }
+
+    public float getYDirectionBalance() {
+        return yDirectionBalance;
+    }
+
+    public void setYDirectionBalance(float yDirectionBalance) {
+        this.yDirectionBalance = yDirectionBalance;
     }
 }

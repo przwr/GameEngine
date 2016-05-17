@@ -9,8 +9,6 @@ import engine.Main;
 import engine.utilities.Delay;
 import game.Game;
 import game.Settings;
-import game.gameobject.entities.Entity;
-import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
 import game.gameobject.inputs.InputKeyBoard;
 import game.logic.navmeshpathfinding.navigationmesh.NavigationMeshGenerator;
@@ -170,10 +168,10 @@ public class MyPlace extends Place {
     }
 
     private void updatePlayersOnline() {
-        ((Player) players[0]).sendUpdate();
+        (players[0]).sendUpdate();
         for (int i = 1; i < playersCount; i++) {
-            ((Entity) players[i]).updateSoft();
-            ((Entity) players[i]).updateOnline();
+            (players[i]).updateSoft();
+            (players[i]).updateOnline();
         }
     }
 
