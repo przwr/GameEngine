@@ -6,17 +6,15 @@ import engine.Main;
 import engine.lights.Light;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
 import game.text.effects.Writer;
 import gamecontent.MyController;
-import gamecontent.MyPlayer;
 import gamecontent.environment.MoneyBag;
 import org.newdawn.slick.Color;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 import java.util.ArrayList;
 
@@ -25,11 +23,9 @@ import java.util.ArrayList;
  */
 public class Sonata extends Mob {
 
-    private Animation animation;
     private String dialog = "0";
-    private MoneyBag money;
-    private Zuocieyka zuo;
-    private int left;
+    private final MoneyBag money;
+    private final Zuocieyka zuo;
 
     public Sonata(int x, int y, Place place, short mobID, Zuocieyka zuo, MoneyBag money) {
         super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
@@ -39,7 +35,7 @@ public class Sonata extends Mob {
         this.money = money;
         this.zuo = zuo;
         if (appearance != null) {
-            appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
+            setUpDirectionalAnimation(0, 1);
         }
         lights = new ArrayList<>();
         lights.add(Light.create(place.getSpriteInSize("light", "", 768, 768), new Color(0.85f, 0.85f, 0.85f), 768, 768, this));
@@ -47,6 +43,7 @@ public class Sonata extends Mob {
         setEmitter(true);
         addPushInteraction();
         setDirection8way(DOWN);
+        setCanInteract(true);
     }
 
     @Override
@@ -54,37 +51,7 @@ public class Sonata extends Mob {
         animation.updateFrame();
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
-                MyPlayer player = (MyPlayer) target;
                 int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-                if (isPlayerTalkingToMe(player)) {
-                    if (!dialog.equals("0") && !dialog.equals("3a2") && money.getMap() == null) {
-                        if (zuo.getMap() == null) {
-                            dialog = "3b";
-                        } else {
-                            dialog = "3a";
-                        }
-                    }
-                    setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
-                    player.getTextController().lockEntity(player);
-                    player.getTextController().startFromFile("sonata", dialog);
-
-                    player.getTextController().addEventOnBranchStart(() -> {
-                        dialog = "3";
-                    }, "0");
-                    player.getTextController().addEventOnBranchEnd(() -> {
-                        dialog = "3a2";
-                        zuo.delete();
-                    }, "4");
-                    player.getTextController().addEventOnBranchEnd(() -> {
-                        player.getStats().setHealth(player.getStats().getMaxHealth());
-                    }, "5");
-                    player.getTextController().addExternalWriter(new Writer("but") {
-                        @Override
-                        public String write() {
-                            return "[" + player.getController().actions[MyController.INPUT_ACTION_3].input.getLabel() + "]";
-                        }
-                    });
-                }
                 if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                     setDirection8way(RIGHT);
                     target = null;
@@ -93,6 +60,40 @@ public class Sonata extends Mob {
                 lookForPlayers(place.players);
             }
             animation.animateSingle(getDirection8Way());
+        }
+    }
+
+    @Override
+    public void interact(Entity entity) {
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            if (!dialog.equals("0") && !dialog.equals("3a2") && money.getMap() == null) {
+                if (zuo.getMap() == null) {
+                    dialog = "3b";
+                } else {
+                    dialog = "3a";
+                }
+            }
+            setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
+            player.getTextController().lockEntity(player);
+            player.getTextController().startFromFile("sonata", dialog);
+
+            player.getTextController().addEventOnBranchStart(() -> {
+                dialog = "3";
+            }, "0");
+            player.getTextController().addEventOnBranchEnd(() -> {
+                dialog = "3a2";
+                zuo.delete();
+            }, "4");
+            player.getTextController().addEventOnBranchEnd(() -> {
+                player.getStats().setHealth(player.getStats().getMaxHealth());
+            }, "5");
+            player.getTextController().addExternalWriter(new Writer("but") {
+                @Override
+                public String write() {
+                    return "[" + player.getController().actions[MyController.INPUT_ACTION_3].input.getLabel() + "]";
+                }
+            });
         }
     }
 

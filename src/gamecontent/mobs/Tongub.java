@@ -35,7 +35,6 @@ import java.util.List;
 public class Tongub extends Mob {
 
     private final static byte ATTACK_NORMAL = 0;
-    private Animation animation;
     private int seconds = 0, max = 5;
     private ActionState idle, run_away, hide, attack, wander;
     private Delay attack_delay = Delay.createInMilliseconds(1500);   //TODO - te wartości losowe i zależne od poziomu trudności
@@ -268,9 +267,8 @@ public class Tongub extends Mob {
 
     private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 24);
+        setUpDirectionalAnimation(0, 24);
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
-        appearance = animation;
         collision.setMobile(true);
         setHasStaticShadow(true);
         stats = new MobStats(this);

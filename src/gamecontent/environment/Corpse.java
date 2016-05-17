@@ -51,15 +51,15 @@ public class Corpse extends Entity {
             updateWithGravity();
             updateChangers();
             moveWithSliding(xEnvironmentalSpeed + xSpeed, yEnvironmentalSpeed + ySpeed);
+            brakeOthers();
+            brake(2);
             if (Math.abs(xEnvironmentalSpeed + xSpeed + yEnvironmentalSpeed + ySpeed) < 0.001) {
-                System.out.println("JUŻ CZAS!");
                 Area tmp = map.getArea(area);
                 tmp.deleteObject(this);
                 setSolid(false);
                 tmp.addObject(this);
             }
         }
-        brakeOthers();
     }
 
     @Override

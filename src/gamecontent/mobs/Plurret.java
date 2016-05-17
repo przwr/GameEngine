@@ -25,7 +25,6 @@ import java.util.List;
  */
 public class Plurret extends Mob {
 
-    private Animation animation;
     private int seconds = 0, max = 5, highLevel = 350, lowLevel = 334;
     private Delay rest = Delay.createInSeconds(3);          //TODO - te wartości losowe i zależne od poziomu trudności
     private ActionState idle, run_away, wander;
@@ -146,8 +145,7 @@ public class Plurret extends Mob {
     private void setUp() {
         setCollision(Rectangle.create(48, 34, OpticProperties.NO_SHADOW, this));
         setPathStrategy(PathFindingModule.GET_CLOSE, sightRange / 4);
-        animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 18);
-        appearance = animation;
+        setUpDirectionalAnimation(0, 18);
         collision.setMobile(true);
         setHasStaticShadow(true);
         stats = new MobStats(this);

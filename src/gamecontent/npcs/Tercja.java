@@ -5,6 +5,7 @@ import collision.Rectangle;
 import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.items.Weapon;
@@ -14,8 +15,6 @@ import game.text.effects.Writer;
 import gamecontent.MyController;
 import gamecontent.MyPlayer;
 import gamecontent.mobs.Plurret;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 /**
  * Created by przemek on 01.02.16.
@@ -23,7 +22,6 @@ import sprites.SpriteSheet;
 public class Tercja extends Mob {
 
     private final Plurret[] plurrets;
-    private Animation animation;
     private String dialog = "0";
     private int left;
 
@@ -34,10 +32,11 @@ public class Tercja extends Mob {
         setHasStaticShadow(true);
         this.plurrets = plurrets;
         if (appearance != null) {
-            appearance = animation = Animation.createDirectionalAnimation((SpriteSheet) appearance, 0, 1);
+            setUpDirectionalAnimation(0, 1);
         }
         addPushInteraction();
         setDirection8way(RIGHT);
+        setCanInteract(true);
     }
 
     @Override
@@ -45,58 +44,7 @@ public class Tercja extends Mob {
         animation.updateFrame();
         if (animation.isUpToDate()) {
             if (target != null && ((Player) getTarget()).isInGame()) {
-                MyPlayer player = (MyPlayer) target;
                 int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-                if (isPlayerTalkingToMe(player)) {
-                    left = 0;
-                    if (dialog.equals("1a")) {
-                        for (Plurret p : plurrets) {
-                            if (p.getMap() != null) {
-                                left++;
-                            }
-                        }
-                        if (left == 0) {
-                            dialog = "1b";
-                        }
-                    }
-                    setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
-                    player.getTextController().lockEntity(player);
-                    player.getTextController().startFromFile("npc3demo", dialog);
-
-                    player.getTextController().addEventOnBranchStart(() -> {
-                        if (player.getSecondWeapon() == null) {
-                            Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, map.getNextItemID(), Weapon.BOW);
-                            bow.setModifier(1f);
-                            player.addWeapon(bow);
-                        }
-                        dialog = "1";
-                    }, "0");
-                    player.getTextController().addEventOnBranchStart(() -> {
-                        dialog = "1a";
-                    }, "13");
-                    player.getTextController().addEventOnBranchEnd(() -> {
-                        player.getStats().setHealth(player.getStats().getMaxHealth());
-                    }, "12b", "3a");
-                    player.getTextController().addEventOnBranchEnd(() -> {
-                        dialog = "1c";
-                    }, "3a");
-                    player.getTextController().addExternalWriter(new Writer("atk") {
-                        @Override
-                        public String write() {
-                            return "[" + player.getController().actions[MyController.INPUT_CHANGE_WEAPON].input.getLabel() + "]";
-                        }
-                    });
-                    player.getTextController().addExternalWriter(new Writer("left") {
-                        @Override
-                        public String write() {
-                            if (left == 1) {
-                                return " jeszcze jeden";
-                            } else {
-                                return "y jeszcze " + left;
-                            }
-                        }
-                    });
-                }
                 if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                     setDirection8way(RIGHT);
                     target = null;
@@ -105,6 +53,61 @@ public class Tercja extends Mob {
                 lookForPlayers(place.players);
             }
             animation.animateSingle(getDirection8Way());
+        }
+    }
+
+    @Override
+    public void interact(Entity entity) {
+        if (entity instanceof MyPlayer) {
+            MyPlayer player = (MyPlayer) entity;
+            left = 0;
+            if (dialog.equals("1a")) {
+                for (Plurret p : plurrets) {
+                    if (p.getMap() != null) {
+                        left++;
+                    }
+                }
+                if (left == 0) {
+                    dialog = "1b";
+                }
+            }
+            setDirection8way(Methods.pointAngle8Directions(getX(), getY(), getTarget().getX(), getTarget().getY()));
+            player.getTextController().lockEntity(player);
+            player.getTextController().startFromFile("npc3demo", dialog);
+
+            player.getTextController().addEventOnBranchStart(() -> {
+                if (player.getSecondWeapon() == null) {
+                    Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, map.getNextItemID(), Weapon.BOW);
+                    bow.setModifier(1f);
+                    player.addWeapon(bow);
+                }
+                dialog = "1";
+            }, "0");
+            player.getTextController().addEventOnBranchStart(() -> {
+                dialog = "1a";
+            }, "13");
+            player.getTextController().addEventOnBranchEnd(() -> {
+                player.getStats().setHealth(player.getStats().getMaxHealth());
+            }, "12b", "3a");
+            player.getTextController().addEventOnBranchEnd(() -> {
+                dialog = "1c";
+            }, "3a");
+            player.getTextController().addExternalWriter(new Writer("atk") {
+                @Override
+                public String write() {
+                    return "[" + player.getController().actions[MyController.INPUT_CHANGE_WEAPON].input.getLabel() + "]";
+                }
+            });
+            player.getTextController().addExternalWriter(new Writer("left") {
+                @Override
+                public String write() {
+                    if (left == 1) {
+                        return " jeszcze jeden";
+                    } else {
+                        return "y jeszcze " + left;
+                    }
+                }
+            });
         }
     }
 

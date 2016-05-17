@@ -10,11 +10,11 @@ import collision.Rectangle;
 import engine.Main;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
+import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.stats.MobStats;
 import game.place.Place;
-import gamecontent.MyPlayer;
 
 /**
  * @author Wojtek
@@ -33,20 +33,13 @@ public class Rock extends Mob {
         setResistance(50);
         addPushInteraction();
         setTargetable(false);
+        setCanInteract(true);
     }
 
     @Override
     public void update() {
         if (target != null && ((Player) getTarget()).isInGame()) {
-            MyPlayer player = (MyPlayer) target;
             int d = Methods.pointDistance(getX(), getY(), getTarget().getX(), getTarget().getY());
-            if (isPlayerTalkingToMe(player)) {
-                player.getTextController().lockEntity(player);
-                player.getTextController().startFromText(new String[]{
-                        "To jest kamień$FL",
-                        "Jego położenie jest doprawdy specyficzne."
-                });
-            }
             if (d > hearRange * 1.5 || getTarget().getMap() != map) {
                 target = null;
             }
@@ -55,6 +48,18 @@ public class Rock extends Mob {
         }
         updateChangers();
         updateWithGravity();
+    }
+
+    @Override
+    public void interact(Entity entity) {
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            player.getTextController().lockEntity(player);
+            player.getTextController().startFromText(new String[]{
+                "To jest kamień$FL",
+                "Jego położenie jest doprawdy specyficzne."
+            });
+        }
     }
 
     @Override

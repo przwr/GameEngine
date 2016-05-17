@@ -8,6 +8,7 @@ package gamecontent;
 import engine.utilities.Delay;
 import engine.utilities.Methods;
 import game.Settings;
+import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.inputs.Action;
 import game.gameobject.inputs.AnyInput;
@@ -20,6 +21,7 @@ import sounds.Sound;
 import sprites.ClothedAppearance;
 
 import static game.gameobject.entities.Entity.*;
+import java.util.ArrayList;
 
 /**
  * @author przemek
@@ -825,7 +827,11 @@ public class MyController extends PlayerController {
             inControl.setMaxSpeed(getNumberSquared(10, diagonal));
         }
         if (actions[INPUT_ACTION].isKeyClicked()) {
-            inControl.interact();
+            ArrayList<GameObject> interacting = inControl.getInteractingObjects();
+            if (interacting != null && !interacting.isEmpty()) {
+                //TODO LISTA!!
+                interacting.get(0).interact(inControl);
+            }
         }
         if (actions[INPUT_ACTION_3].isKeyClicked()) {
             inControl.setEmits(!inControl.isEmits());
