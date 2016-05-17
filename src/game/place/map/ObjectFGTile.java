@@ -13,6 +13,7 @@ import gamedesigner.ObjectPlayer;
 import sprites.SpriteSheet;
 
 import static collision.OpticProperties.FULL_SHADOW;
+import static collision.OpticProperties.NO_SHADOW;
 import static collision.OpticProperties.TRANSPARENT;
 
 /**
@@ -39,7 +40,7 @@ public class ObjectFGTile extends ForegroundTile {
     }
 
     public static ForegroundTile createWall(SpriteSheet spriteSheet, int size, int xSheet, int ySheet) {
-        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, FULL_SHADOW, 0, false, true);
+        return new ObjectFGTile(spriteSheet, size, xSheet, ySheet, NO_SHADOW, 0, false, true);
     }
 
     public static ForegroundTile createRoundOrdinaryShadowHeight(SpriteSheet spriteSheet, int size, int xSheet, int ySheet, int yStart) {
