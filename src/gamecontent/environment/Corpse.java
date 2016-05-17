@@ -5,13 +5,9 @@
  */
 package gamecontent.environment;
 
-import collision.Figure;
-import game.gameobject.GameObject;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
-import game.gameobject.items.Item;
 import game.place.map.Area;
-import java.util.ArrayList;
 import net.packets.Update;
 import sprites.Animation;
 
@@ -21,6 +17,8 @@ import sprites.Animation;
  */
 public class Corpse extends Entity {
 
+    private String ownerName;
+    
     public Corpse(Entity owner, Animation animation, int index) {
         this(owner, animation);
         animation.animateSingle(index);
@@ -29,6 +27,7 @@ public class Corpse extends Entity {
     //TUTAJ TRZEBA USTALIĆ ANIMACJĘ PRZED (LUB PO) JEJ PRZEKAZANIEM
     public Corpse(Entity owner, Animation animation) {
         initialize(owner.getName() + "'s DEAD corpse!", owner.getX(), owner.getY());
+        ownerName = owner.getName();
         setCanCover(false);
         this.items = owner.getItems();
         this.collision = owner.getCollision();
@@ -42,6 +41,7 @@ public class Corpse extends Entity {
         upForce = owner.getUpForce();
         changers = owner.getChangers();
         setSolid(true);
+        setCanInteract(true);
     }
 
     @Override
@@ -59,6 +59,21 @@ public class Corpse extends Entity {
                 setSolid(false);
                 tmp.addObject(this);
             }
+        }
+    }
+
+    @Override
+    public void interact(Entity entity) {
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            player.getTextController().lockEntity(player);
+            player.getTextController().startFromText(new String[]{
+                "Proszę państwa, oto " + ownerName + ".$FL",
+                ownerName + " jest bardzo martwy dziś.$FL",
+                "Chętnie państwu łapę poda.$FL",
+                "Nie chce podać?$VE0.1$....$VE0.7$",
+                "A to szkoda."
+            });
         }
     }
 
